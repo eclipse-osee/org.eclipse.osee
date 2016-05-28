@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.api;
 
-import static org.eclipse.osee.framework.core.data.RelationalConstants.BRANCH_SENTINEL;
 import static org.eclipse.osee.framework.core.enums.BranchState.MODIFIED;
 import static org.eclipse.osee.framework.core.enums.BranchType.BASELINE;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
@@ -91,7 +90,7 @@ public class OrcsBranchQueryTest {
       List<BranchReadable> list = results.getList();
 
       // list, IOseeBranch, BranchType, BranchState, isArchived, parentId, baseTx, sourceTx, assocArtId
-      assertBranch(branch1, SYSTEM_ROOT, BranchType.SYSTEM_ROOT, MODIFIED, false, -1, 1, 1, -1);
+      assertBranch(branch1, SYSTEM_ROOT, BranchType.SYSTEM_ROOT, MODIFIED, false, BranchId.SENTINEL, 1, 1, -1);
       assertBranch(branch2, SAW_Bld_1, BASELINE, MODIFIED, false, 1, 15, 3, -1);
       assertBranch(branch3, CIS_Bld_1, BASELINE, MODIFIED, false, 1, 17, 3, -1);
       assertBranch(branch4, SAW_Bld_2, BASELINE, CREATED, false, 3, 23, 22, 9);

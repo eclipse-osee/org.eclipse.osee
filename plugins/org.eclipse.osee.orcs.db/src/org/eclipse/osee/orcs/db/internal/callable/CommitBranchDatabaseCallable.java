@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.callable;
 
-import static org.eclipse.osee.framework.core.data.RelationalConstants.BRANCH_SENTINEL;
 import static org.eclipse.osee.framework.core.data.RelationalConstants.TRANSACTION_SENTINEL;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +93,7 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Inte
 
    @Override
    public Integer call() throws Exception {
-      BranchId mergeBranch = getJdbcClient().fetch(BRANCH_SENTINEL, SELECT_MERGE_BRANCH_UUID, source, destination);
+      BranchId mergeBranch = getJdbcClient().fetch(BranchId.SENTINEL, SELECT_MERGE_BRANCH_UUID, source, destination);
       List<ChangeItem> changes = callComputeChanges(mergeBranch);
 
       CancellableCallable<Integer> commitCallable = new CommitBranchDatabaseTxCallable(getLogger(), getSession(),

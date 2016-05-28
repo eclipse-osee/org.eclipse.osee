@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.branch;
 
-import static org.eclipse.osee.framework.core.data.RelationalConstants.BRANCH_SENTINEL;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -138,7 +137,7 @@ public class BranchUtilBranchReadableTest {
    }
 
    private void initBranchParentageList() {
-      one.setParentBranch(BRANCH_SENTINEL);
+      one.setParentBranch(BranchId.SENTINEL);
       two.setParentBranch(one);
       three.setParentBranch(two);
       four.setParentBranch(three);
@@ -151,7 +150,7 @@ public class BranchUtilBranchReadableTest {
    }
 
    private void initDisjointParentageList() {
-      one.setParentBranch(BRANCH_SENTINEL);
+      one.setParentBranch(BranchId.SENTINEL);
       two.setParentBranch(one);
       three.setParentBranch(two);
       four.setParentBranch(three);
@@ -164,14 +163,14 @@ public class BranchUtilBranchReadableTest {
    }
 
    private void initOutsideParentList() {
-      one.setParentBranch(BRANCH_SENTINEL);
+      one.setParentBranch(BranchId.SENTINEL);
       two.setParentBranch(one);
       three.setParentBranch(two);
       four.setParentBranch(three);
-      five.setParentBranch(BRANCH_SENTINEL);
+      five.setParentBranch(BranchId.SENTINEL);
       six.setParentBranch(five);
       seven.setParentBranch(six);
-      eight.setParentBranch(BRANCH_SENTINEL);
+      eight.setParentBranch(BranchId.SENTINEL);
       nine.setParentBranch(eight);
       ten.setParentBranch(nine);
    }

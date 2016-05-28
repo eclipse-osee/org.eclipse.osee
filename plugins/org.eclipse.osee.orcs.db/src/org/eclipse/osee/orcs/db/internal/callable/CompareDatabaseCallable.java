@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.callable;
 
-import static org.eclipse.osee.framework.core.data.RelationalConstants.BRANCH_SENTINEL;
 import static org.eclipse.osee.framework.core.data.RelationalConstants.TRANSACTION_SENTINEL;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -57,7 +56,7 @@ public class CompareDatabaseCallable extends AbstractDatastoreCallable<List<Chan
          callable =
             new LoadDeltasBetweenTxsOnTheSameBranch(getLogger(), getSession(), getJdbcClient(), joinFactory, txDelta);
       } else {
-         BranchId mergeBranch = getJdbcClient().fetch(BRANCH_SENTINEL, SELECT_MERGE_BRANCH_UUID, sourceTx.getBranch(),
+         BranchId mergeBranch = getJdbcClient().fetch(BranchId.SENTINEL, SELECT_MERGE_BRANCH_UUID, sourceTx.getBranch(),
             destinationTx.getBranch());
 
          Integer mergeTxId = null;

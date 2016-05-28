@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -43,13 +44,13 @@ public final class OseeLinkParser {
       }
    }
 
-   public int getId() throws OseeCoreException {
-      int branchUuid = -1;
+   public BranchId getId() throws OseeCoreException {
+      BranchId branchUuid = BranchId.SENTINEL;
       if (parameterMap != null) {
          String branchUuidStr = parameterMap.get("branchUuid");
          if (Strings.isValid(branchUuidStr)) {
             try {
-               branchUuid = Integer.parseInt(branchUuidStr);
+               branchUuid = BranchId.valueOf(branchUuidStr);
             } catch (Exception ex) {
                OseeCoreException.wrapAndThrow(ex);
             }

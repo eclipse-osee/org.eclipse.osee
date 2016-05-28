@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
-import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -514,7 +513,7 @@ public final class BranchManager {
 
    private static IOseeBranch createBranch(BranchType branchType, TransactionRecord parentTransaction, String branchName, long branchUuid, Artifact associatedArtifact, String creationComment) {
       return createBranch(branchType, parentTransaction, branchName, branchUuid, associatedArtifact, creationComment,
-         -1, RelationalConstants.BRANCH_SENTINEL);
+         -1, BranchId.SENTINEL);
    }
 
    private static IOseeBranch createBranch(BranchType branchType, TransactionRecord parentTransaction, String branchName, long branchUuid, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, BranchId destinationBranch) throws OseeCoreException {

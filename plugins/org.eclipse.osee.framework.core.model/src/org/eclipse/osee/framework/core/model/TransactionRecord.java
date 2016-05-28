@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model;
 
-import static org.eclipse.osee.framework.core.data.RelationalConstants.BRANCH_SENTINEL;
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -41,7 +40,7 @@ public class TransactionRecord extends BaseIdentity<Integer> implements ITransac
    }
 
    public TransactionRecord(int transactionNumber) {
-      this(transactionNumber, BRANCH_SENTINEL, "INVALID", new Date(0), -1, -1, TransactionDetailsType.INVALID);
+      this(transactionNumber, BranchId.SENTINEL, "INVALID", new Date(0), -1, -1, TransactionDetailsType.INVALID);
    }
 
    @Override

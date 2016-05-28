@@ -56,7 +56,7 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
 
    public CreateBranchHttpRequestOperation(BranchType branchType, TransactionRecord parentTransaction, String branchName, long branchUuid, Artifact associatedArtifact, String creationComment) {
       this(branchType, parentTransaction, branchName, branchUuid, associatedArtifact, creationComment, -1,
-         RelationalConstants.BRANCH_SENTINEL);
+         BranchId.SENTINEL);
    }
 
    public CreateBranchHttpRequestOperation(BranchType branchType, TransactionRecord parentTransaction, String branchName, long branchUuid, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, BranchId destinationBranch) {

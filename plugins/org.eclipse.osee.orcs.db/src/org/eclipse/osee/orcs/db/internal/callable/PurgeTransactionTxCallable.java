@@ -98,8 +98,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
 
          List<Object[]> txsToDelete = new ArrayList<>();
 
-         BranchId txBranchId =
-            getJdbcClient().fetch(RelationalConstants.BRANCH_SENTINEL, SELECT_TRANSACTION_BRANCH_ID, tx);
+         BranchId txBranchId = getJdbcClient().fetch(BranchId.SENTINEL, SELECT_TRANSACTION_BRANCH_ID, tx);
          if (txBranchId.isInvalid()) {
             throw new OseeArgumentException("Cannot find branch for transaction record [%s]", tx);
          }

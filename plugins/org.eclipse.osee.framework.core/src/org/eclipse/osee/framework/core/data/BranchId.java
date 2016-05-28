@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.jdk.core.type.Identity;
  * @author Ryan D. Brooks
  */
 public interface BranchId extends Identity<Long>, Id {
+   BranchId SENTINEL = valueOf(Id.SENTINEL);
 
    default Long getUuid() {
       return getId();

@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
-import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -26,7 +26,7 @@ public class BranchDataImpl extends NamedId implements BranchData, BranchReadabl
    private int associatedArtifactId = RelationalConstants.ART_ID_SENTINEL;
    private int baseTransaction = RelationalConstants.TRANSACTION_SENTINEL;
    private int sourceTransaction = RelationalConstants.TRANSACTION_SENTINEL;
-   private BranchId parentBranch = RelationalConstants.BRANCH_SENTINEL;
+   private BranchId parentBranch = BranchId.SENTINEL;
    private BranchArchivedState archiveState = BranchArchivedState.UNARCHIVED;
    private BranchState branchState = BranchState.CREATED;
    private BranchType branchType = BranchType.WORKING;
@@ -78,7 +78,7 @@ public class BranchDataImpl extends NamedId implements BranchData, BranchReadabl
 
    @Override
    public boolean hasParentBranch() {
-      return !RelationalConstants.BRANCH_SENTINEL.equals(getParentBranch());
+      return getParentBranch().isValid();
    }
 
    @Override

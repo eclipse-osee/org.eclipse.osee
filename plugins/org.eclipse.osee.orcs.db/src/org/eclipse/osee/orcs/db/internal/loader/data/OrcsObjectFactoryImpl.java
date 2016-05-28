@@ -56,7 +56,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    public VersionData createDefaultVersionData() {
       // @formatter:off
       return createVersion(
-         RelationalConstants.BRANCH_SENTINEL.getId(),
+         BranchId.SENTINEL.getId(),
          RelationalConstants.TRANSACTION_SENTINEL,
          RelationalConstants.GAMMA_SENTINEL,
          RelationalConstants.IS_HISTORICAL_DEFAULT,

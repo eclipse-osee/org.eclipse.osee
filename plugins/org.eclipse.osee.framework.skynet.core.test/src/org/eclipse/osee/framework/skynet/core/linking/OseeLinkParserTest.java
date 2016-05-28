@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.linking;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
 
@@ -23,10 +24,10 @@ public class OseeLinkParserTest {
    public void testNewSchoolLink() throws Exception {
       OseeLinkParser parser = new OseeLinkParser();
       String guid = GUID.create();
-      int branchUuid = 12;
-      parser.parse(String.format("http://127.0.0.1:8081/Define?guid=%s&branchUuid=%s", guid, branchUuid));
+      BranchId branch = BranchId.valueOf(12);
+      parser.parse(String.format("http://127.0.0.1:8081/Define?guid=%s&branchUuid=%s", guid, branch));
 
       Assert.assertEquals(guid, parser.getGuid());
-      Assert.assertEquals(branchUuid, parser.getId());
+      Assert.assertEquals(branch, parser.getId());
    }
 }
