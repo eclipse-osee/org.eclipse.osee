@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -35,8 +36,8 @@ public class PurgeTransactionOperationWithListener {
       return getPurgeTransactionOperationById(txIdsToDelete);
    }
 
-   public static IOperation getPurgeTransactionOperation(Integer txIdsToDelete) throws OseeCoreException {
-      return getPurgeTransactionOperationById(Arrays.asList(txIdsToDelete));
+   public static IOperation getPurgeTransactionOperation(TransactionId txIdsToDelete) throws OseeCoreException {
+      return getPurgeTransactionOperationById(Arrays.asList(txIdsToDelete.getId()));
    }
 
    public static IOperation getPurgeTransactionOperationById(List<Integer> txIdsToDelete) throws OseeCoreException {

@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.Asserts;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.ConflictTestManager;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -172,7 +173,8 @@ public class ConflictDeletionTest {
       //OK now lets delete the transaction and check for the same thing
 
       if (DELETE_TRANSACTION_TEST) {
-         IOperation operation = PurgeTransactionOperationWithListener.getPurgeTransactionOperation(deletionTransaction);
+         IOperation operation = PurgeTransactionOperationWithListener.getPurgeTransactionOperation(
+            TransactionId.valueOf(deletionTransaction));
          Asserts.assertOperation(operation, IStatus.OK);
          if (DEBUG) {
             System.err.println("Deleting the Transaction");
