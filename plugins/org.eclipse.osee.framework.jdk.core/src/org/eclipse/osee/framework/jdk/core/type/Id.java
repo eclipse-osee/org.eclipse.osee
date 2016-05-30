@@ -35,6 +35,10 @@ public interface Id {
       return getId().equals(id);
    }
 
+   default boolean notEqual(Id id) {
+      return !equals(id);
+   }
+
    default boolean isValid() {
       return !isInvalid();
    }

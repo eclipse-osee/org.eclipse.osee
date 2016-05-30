@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -163,14 +163,14 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<BranchReadable> createCopyTxBranch(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
+   public Callable<BranchReadable> createCopyTxBranch(IOseeBranch branch, ArtifactReadable author, TransactionId fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
       CreateBranchData branchData =
          branchDataFactory.createCopyTxBranchData(branch, author, fromTransaction, associatedArtifact);
       return createBranch(branchData);
    }
 
    @Override
-   public Callable<BranchReadable> createPortBranch(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
+   public Callable<BranchReadable> createPortBranch(IOseeBranch branch, ArtifactReadable author, TransactionId fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
       CreateBranchData branchData =
          branchDataFactory.createPortBranchData(branch, author, fromTransaction, associatedArtifact);
       return createBranch(branchData);

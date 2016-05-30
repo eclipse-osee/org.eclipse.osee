@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.core.internal.branch;
 
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -58,7 +58,7 @@ public class BranchDataFactory {
          false);
    }
 
-   public CreateBranchData createCopyTxBranchData(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
+   public CreateBranchData createCopyTxBranchData(IOseeBranch branch, ArtifactReadable author, TransactionId fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
       TransactionQuery txQuery = queryFactory.transactionQuery();
       BranchQuery branchQuery = queryFactory.branchQuery();
       TransactionReadable fromTx = txQuery.andTxId(fromTransaction.getGuid()).getResults().getExactlyOne();
@@ -70,7 +70,7 @@ public class BranchDataFactory {
          true);
    }
 
-   public CreateBranchData createPortBranchData(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
+   public CreateBranchData createPortBranchData(IOseeBranch branch, ArtifactReadable author, TransactionId fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
       TransactionQuery txQuery = queryFactory.transactionQuery();
       BranchQuery branchQuery = queryFactory.branchQuery();
       int value = fromTransaction.getGuid();

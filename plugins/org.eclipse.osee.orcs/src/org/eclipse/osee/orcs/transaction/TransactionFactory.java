@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.TransactionReadable;
@@ -28,9 +28,9 @@ public interface TransactionFactory {
 
    TransactionBuilder createTransaction(Long branchId, ArtifactId userArtifact, String comment) throws OseeCoreException;
 
-   Callable<Integer> purgeTransaction(Collection<? extends ITransaction> transactions);
+   Callable<Integer> purgeTransaction(Collection<? extends TransactionId> transactions);
 
-   Callable<Void> setTransactionComment(ITransaction transaction, String comment);
+   Callable<Void> setTransactionComment(TransactionId transaction, String comment);
 
    CompareResults compareTxs(int txId1, int txId2);
 

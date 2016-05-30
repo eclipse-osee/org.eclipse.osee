@@ -20,7 +20,7 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -83,7 +83,7 @@ public class OrcsBranchTest {
 
       ArtifactReadable author = getSystemUser();
 
-      ITransaction tx = TokenFactory.createTransaction(SOURCE_TX_ID);
+      TransactionId tx = TokenFactory.createTransaction(SOURCE_TX_ID);
       Callable<BranchReadable> callable = branchOps.createCopyTxBranch(branch, author, tx, null);
 
       assertNotNull(callable);
@@ -107,7 +107,7 @@ public class OrcsBranchTest {
       // create the branch with the copied transaction
       IOseeBranch postbranch = TokenFactory.createBranch("PostBranch");
 
-      ITransaction tx1 = TokenFactory.createTransaction(CHANGED_TX_ID);
+      TransactionId tx1 = TokenFactory.createTransaction(CHANGED_TX_ID);
       Callable<BranchReadable> postCallable = branchOps.createCopyTxBranch(postbranch, author, tx1, null);
 
       assertNotNull(postCallable);
@@ -135,7 +135,7 @@ public class OrcsBranchTest {
 
       ArtifactReadable author = getSystemUser();
 
-      ITransaction tx = TokenFactory.createTransaction(SOURCE_TX_ID);
+      TransactionId tx = TokenFactory.createTransaction(SOURCE_TX_ID);
       Callable<BranchReadable> callableBranch = branchOps.createCopyTxBranch(branch, author, tx, null);
 
       // the new branch will contain two transactions - these should have the same change report as the original branch

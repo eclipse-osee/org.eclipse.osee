@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -412,7 +412,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
    }
 
    //TODO this method needs to be removed
-   public ITransaction execute() throws OseeCoreException {
+   public TransactionId execute() throws OseeCoreException {
       Operations.executeWorkAndCheckStatus(this);
       return transaction;
    }

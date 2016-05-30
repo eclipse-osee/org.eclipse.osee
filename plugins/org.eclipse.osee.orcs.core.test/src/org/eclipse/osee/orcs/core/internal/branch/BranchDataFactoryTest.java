@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -139,7 +139,7 @@ public class BranchDataFactoryTest {
       when(branch.getUuid()).thenReturn(branchUuid);
       when(parent.getName()).thenReturn(parentName);
 
-      ITransaction tx = TokenFactory.createTransaction(99);
+      TransactionId tx = TokenFactory.createTransaction(99);
 
       when(txQuery.andTxId(tx.getGuid())).thenReturn(txQuery);
       when(txQuery.getResults()).thenReturn(results);
@@ -169,7 +169,7 @@ public class BranchDataFactoryTest {
       when(branch.getUuid()).thenReturn(branchUuid);
       when(parent.getName()).thenReturn(parentName);
 
-      ITransaction tx = TokenFactory.createTransaction(99);
+      TransactionId tx = TokenFactory.createTransaction(99);
 
       when(txQuery.andTxId(tx.getGuid())).thenReturn(txQuery);
       when(txQuery.getResults()).thenReturn(results);

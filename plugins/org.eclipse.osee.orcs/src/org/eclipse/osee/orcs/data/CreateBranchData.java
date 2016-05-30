@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.data;
 
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
@@ -31,8 +31,8 @@ public class CreateBranchData implements Identifiable<Long> {
    private long branchUuid;
    private BranchType branchType;
    private String creationComment;
-   private ITransaction fromTransaction;
-   private ITransaction savedTransaction;
+   private TransactionId fromTransaction;
+   private TransactionId savedTransaction;
    private ArtifactReadable associatedArtifact;
    private ArtifactReadable userArtifact;
 
@@ -97,19 +97,19 @@ public class CreateBranchData implements Identifiable<Long> {
       this.creationComment = creationComment;
    }
 
-   public ITransaction getFromTransaction() {
+   public TransactionId getFromTransaction() {
       return fromTransaction;
    }
 
-   public void setFromTransaction(ITransaction fromTransaction) {
+   public void setFromTransaction(TransactionId fromTransaction) {
       this.fromTransaction = fromTransaction;
    }
 
-   public ITransaction getSavedTransaction() {
+   public TransactionId getSavedTransaction() {
       return savedTransaction;
    }
 
-   public void setSavedTransaction(ITransaction priorTransaction) {
+   public void setSavedTransaction(TransactionId priorTransaction) {
       this.savedTransaction = priorTransaction;
    }
 

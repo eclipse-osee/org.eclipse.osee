@@ -134,11 +134,11 @@ public final class TokenFactory {
       }
    }
 
-   public static ITransaction createTransaction(int txId) {
+   public static TransactionId createTransaction(int txId) {
       return new TransactionToken(txId);
    }
 
-   private static final class TransactionToken extends BaseIdentity<Integer> implements ITransaction {
+   private static final class TransactionToken extends BaseIdentity<Integer> implements TransactionId {
       public TransactionToken(Integer txId) {
          super(txId);
       }

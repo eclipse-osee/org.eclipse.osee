@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
@@ -35,7 +35,7 @@ import org.junit.runners.Parameterized.Parameters;
 public class TransactionRecordTest {
 
    private final TransactionRecord transaction;
-   private final int transactionNumber;
+   private final Integer transactionNumber;
    private final BranchId branch;
    private final TransactionDetailsType txType;
 
@@ -116,7 +116,7 @@ public class TransactionRecordTest {
    @Test
    public void testEqualsAndHashCode() {
       TransactionRecord tx2 = MockDataFactory.createTransaction(99, 2);
-      ITransaction tx1 = TokenFactory.createTransaction(tx2.getId());
+      TransactionId tx1 = TokenFactory.createTransaction(tx2.getId());
 
       // Add some variation to tx2 so we are certain that only the txId is used in the equals method;
       tx2.setAuthor(0);

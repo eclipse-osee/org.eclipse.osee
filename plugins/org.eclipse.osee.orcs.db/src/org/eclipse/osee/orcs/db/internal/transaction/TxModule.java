@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.db.internal.transaction;
 
 import java.util.Collection;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -60,12 +60,12 @@ public class TxModule {
          }
 
          @Override
-         public Callable<Integer> purgeTransactions(OrcsSession session, Collection<? extends ITransaction> transactionsToPurge) {
+         public Callable<Integer> purgeTransactions(OrcsSession session, Collection<? extends TransactionId> transactionsToPurge) {
             return new PurgeTransactionTxCallable(logger, session, jdbcClient, sqlJoinFactory, transactionsToPurge);
          }
 
          @Override
-         public Callable<Void> setTransactionComment(OrcsSession session, ITransaction transaction, String comment) {
+         public Callable<Void> setTransactionComment(OrcsSession session, TransactionId transaction, String comment) {
             return new SetTransactionTxCallable(logger, session, jdbcClient, transaction, comment);
          }
       };

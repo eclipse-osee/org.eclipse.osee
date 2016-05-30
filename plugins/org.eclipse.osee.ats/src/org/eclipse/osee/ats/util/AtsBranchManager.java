@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
@@ -119,7 +119,7 @@ public final class AtsBranchManager {
          IOseeBranch workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
          MergeView.openView(workingBranch, destinationBranch, BranchManager.getBaseTransaction(workingBranch));
       } else if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt)) {
-         Collection<ITransaction> transactions =
+         Collection<TransactionId> transactions =
             AtsClientService.get().getBranchService().getTransactionIds(teamArt, true);
          Collection<TransactionRecord> trs = Collections.castAll(transactions);
          for (TransactionRecord transactionId : trs) {
@@ -191,7 +191,7 @@ public final class AtsBranchManager {
     */
    public static TransactionRecord getTransactionIdOrPopupChoose(TeamWorkFlowArtifact teamArt, String title, boolean showMergeManager) throws OseeCoreException {
       Collection<TransactionRecord> transactionIds = new HashSet<>();
-      Collection<ITransaction> transactions =
+      Collection<TransactionId> transactions =
          AtsClientService.get().getBranchService().getTransactionIds(teamArt, showMergeManager);
       Collection<TransactionRecord> trs = Collections.castAll(transactions);
 
@@ -263,7 +263,7 @@ public final class AtsBranchManager {
     */
    public static void showChangeReportForBranch(TeamWorkFlowArtifact teamArt, BranchId destinationBranch) {
       try {
-         Collection<ITransaction> transactions =
+         Collection<TransactionId> transactions =
             AtsClientService.get().getBranchService().getTransactionIds(teamArt, false);
          Collection<TransactionRecord> trs = Collections.castAll(transactions);
          for (TransactionRecord transactionId : trs) {

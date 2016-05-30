@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.db.internal.callable;
 
 import static org.eclipse.osee.framework.jdk.core.util.Conditions.checkNotNull;
 import static org.eclipse.osee.framework.jdk.core.util.Conditions.checkNotNullOrEmpty;
-import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
@@ -28,10 +28,10 @@ public class SetTransactionTxCallable extends AbstractDatastoreTxCallable<Void> 
    private static final String UPDATE_TRANSACTION_COMMENT =
       "UPDATE osee_tx_details SET osee_comment = ? WHERE transaction_id = ?";
 
-   private final ITransaction txs;
+   private final TransactionId txs;
    private final String comment;
 
-   public SetTransactionTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, ITransaction txs, String comment) {
+   public SetTransactionTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, TransactionId txs, String comment) {
       super(logger, session, jdbcClient);
       this.txs = txs;
       this.comment = comment;

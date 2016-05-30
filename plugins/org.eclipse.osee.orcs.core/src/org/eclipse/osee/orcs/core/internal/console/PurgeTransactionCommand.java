@@ -17,7 +17,7 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
-import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
@@ -60,9 +60,9 @@ public class PurgeTransactionCommand implements ConsoleCommand {
          @Override
          public Object call() throws Exception {
             String[] stringIds = params.getArray("txIds");
-            final List<ITransaction> transactions = new ArrayList<>();
+            final List<TransactionId> transactions = new ArrayList<>();
             for (String arg : stringIds) {
-               ITransaction tx = TokenFactory.createTransaction(Integer.parseInt(arg));
+               TransactionId tx = TokenFactory.createTransaction(Integer.parseInt(arg));
                transactions.add(tx);
             }
             console.writeln();

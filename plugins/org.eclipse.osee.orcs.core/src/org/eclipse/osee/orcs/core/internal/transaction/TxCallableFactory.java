@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.core.internal.transaction;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
@@ -39,7 +39,7 @@ public class TxCallableFactory {
       this.txManager = txManager;
    }
 
-   public CancellableCallable<Integer> purgeTransactions(OrcsSession session, final Collection<? extends ITransaction> transactions) {
+   public CancellableCallable<Integer> purgeTransactions(OrcsSession session, final Collection<? extends TransactionId> transactions) {
       return new AbstractTxCallable<Integer>("PurgeTransactions", session) {
          @Override
          protected Integer innerCall() throws Exception {
@@ -48,7 +48,7 @@ public class TxCallableFactory {
       };
    }
 
-   public Callable<Void> setTransactionComment(OrcsSession session, final ITransaction transaction, final String comment) {
+   public Callable<Void> setTransactionComment(OrcsSession session, final TransactionId transaction, final String comment) {
       return new AbstractTxCallable<Void>("SetTxComment", session) {
          @Override
          protected Void innerCall() throws Exception {

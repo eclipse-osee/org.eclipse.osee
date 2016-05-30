@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -65,7 +65,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public ITransaction execute() throws OseeCoreException {
+   public TransactionId execute() throws OseeCoreException {
       Conditions.checkNotNull(comment, "comment");
       if (objects.isEmpty() && deleteObjects.isEmpty() && execptionIfEmpty) {
          throw new OseeArgumentException("objects/deleteObjects cannot be empty");
@@ -109,7 +109,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
             throw new OseeArgumentException("ATsChangeSet: Unhandled deleteObject type: " + obj);
          }
       }
-      ITransaction transactionRecord = transaction.execute();
+      TransactionId transactionRecord = transaction.execute();
       for (IExecuteListener listener : listeners) {
          listener.changesStored(this);
       }
@@ -188,7 +188,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       }
    }
 
-   public static ITransaction execute(String comment, Object object, Object... objects) throws OseeCoreException {
+   public static TransactionId execute(String comment, Object object, Object... objects) throws OseeCoreException {
       AtsChangeSet changes = new AtsChangeSet(comment);
       changes.add(object);
       for (Object obj : objects) {

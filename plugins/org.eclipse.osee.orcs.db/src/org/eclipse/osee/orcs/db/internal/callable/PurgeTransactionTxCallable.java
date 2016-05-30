@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -64,21 +64,21 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
       "select branch_id from osee_tx_details WHERE transaction_id = ?";
 
    private final SqlJoinFactory joinFactory;
-   private final Collection<? extends ITransaction> txIdsToDelete;
+   private final Collection<? extends TransactionId> txIdsToDelete;
 
-   public PurgeTransactionTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, Collection<? extends ITransaction> txIdsToDelete) {
+   public PurgeTransactionTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, Collection<? extends TransactionId> txIdsToDelete) {
       super(logger, session, jdbcClient);
       this.joinFactory = joinFactory;
       this.txIdsToDelete = txIdsToDelete;
    }
 
-   private List<ITransaction> sortTxs(Collection<? extends ITransaction> txIdsToDelete) {
-      List<ITransaction> txs = new ArrayList<>(txIdsToDelete);
+   private List<TransactionId> sortTxs(Collection<? extends TransactionId> txIdsToDelete) {
+      List<TransactionId> txs = new ArrayList<>(txIdsToDelete);
       if (txs.size() > 1) {
-         Collections.sort(txs, new Comparator<ITransaction>() {
+         Collections.sort(txs, new Comparator<TransactionId>() {
 
             @Override
-            public int compare(ITransaction o1, ITransaction o2) {
+            public int compare(TransactionId o1, TransactionId o2) {
                return o1.getGuid().compareTo(o2.getGuid());
             }
          });
@@ -91,9 +91,9 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
       Conditions.checkNotNull(txIdsToDelete, "transaction ids to delete");
       Conditions.checkExpressionFailOnTrue(txIdsToDelete.isEmpty(), "transaction ids to delete cannot be empty");
 
-      List<ITransaction> txIds = sortTxs(txIdsToDelete);
+      List<TransactionId> txIds = sortTxs(txIdsToDelete);
       int purgeCount = 0;
-      for (ITransaction tx : txIds) {
+      for (TransactionId tx : txIds) {
          getLogger().info("Purging Transaction: [%s]", tx);
 
          List<Object[]> txsToDelete = new ArrayList<>();

@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.core.ds;
 
 import java.util.Collection;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.orcs.OrcsSession;
 
 /**
@@ -22,8 +22,8 @@ public interface TxDataStore {
 
    Callable<TransactionResult> commitTransaction(OrcsSession session, TransactionData transaction);
 
-   Callable<Integer> purgeTransactions(OrcsSession session, Collection<? extends ITransaction> transactions);
+   Callable<Integer> purgeTransactions(OrcsSession session, Collection<? extends TransactionId> transactions);
 
-   Callable<Void> setTransactionComment(OrcsSession session, ITransaction transaction, String comment);
+   Callable<Void> setTransactionComment(OrcsSession session, TransactionId transaction, String comment);
 
 }

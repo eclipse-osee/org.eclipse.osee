@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -53,9 +53,9 @@ public interface OrcsBranch {
 
    Callable<BranchReadable> createWorkingBranch(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException;
 
-   Callable<BranchReadable> createCopyTxBranch(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException;
+   Callable<BranchReadable> createCopyTxBranch(IOseeBranch branch, ArtifactReadable author, TransactionId fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException;
 
-   Callable<BranchReadable> createPortBranch(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException;
+   Callable<BranchReadable> createPortBranch(IOseeBranch branch, ArtifactReadable author, TransactionId fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException;
 
    /////////////////////////////////////////////////////////////////////////
 

@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.core.util.AbstractAtsBranchService;
 import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -42,8 +42,8 @@ import org.eclipse.osee.orcs.search.TransactionQuery;
 public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    private final OrcsApi orcsApi;
-   private static final HashMap<Integer, List<ITransaction>> commitArtifactIdMap =
-      new HashMap<Integer, List<ITransaction>>();
+   private static final HashMap<Integer, List<TransactionId>> commitArtifactIdMap =
+      new HashMap<Integer, List<TransactionId>>();
 
    public AtsBranchServiceImpl(IAtsServices atsServices, OrcsApi orcsApi, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       super(atsServices, teamWorkflowProvidersLazy);
@@ -128,14 +128,14 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public Date getTimeStamp(ITransaction transaction) {
+   public Date getTimeStamp(TransactionId transaction) {
       return ((TransactionRecord) transaction).getTimeStamp();
    }
 
    @Override
-   public Collection<ITransaction> getCommittedArtifactTransactionIds(IAtsTeamWorkflow teamWf) {
+   public Collection<TransactionId> getCommittedArtifactTransactionIds(IAtsTeamWorkflow teamWf) {
       ArtifactReadable artifactReadable = (ArtifactReadable) teamWf.getStoreObject();
-      List<ITransaction> transactionIds = commitArtifactIdMap.get(artifactReadable.getUuid());
+      List<TransactionId> transactionIds = commitArtifactIdMap.get(artifactReadable.getUuid());
       // Cache the transactionIds first time through.  Other commits will be added to cache as they
       // happen in this client or as remote commit events come through
       if (transactionIds == null) {
@@ -158,7 +158,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public ITransaction getBaseTransaction(BranchId branch) {
+   public TransactionId getBaseTransaction(BranchId branch) {
       TransactionQuery txQuery = orcsApi.getQueryFactory().transactionQuery();
       return txQuery.andBranch(branch).andIs(TransactionDetailsType.Baselined).getResults().getExactlyOne();
    }

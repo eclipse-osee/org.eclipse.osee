@@ -18,7 +18,7 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -65,7 +65,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
    }
 
    @Override
-   public CancellableCallable<Integer> purgeTransaction(Collection<? extends ITransaction> transactions) {
+   public CancellableCallable<Integer> purgeTransaction(Collection<? extends TransactionId> transactions) {
       return txCallableFactory.purgeTransactions(session, transactions);
    }
 
@@ -90,7 +90,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
    }
 
    @Override
-   public Callable<Void> setTransactionComment(ITransaction transaction, String comment) {
+   public Callable<Void> setTransactionComment(TransactionId transaction, String comment) {
       return txCallableFactory.setTransactionComment(session, transaction, comment);
    }
 

@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -40,7 +40,7 @@ public interface IAtsChangeSet {
     *
     * @throws OseeCoreException if no items exist to store. Use executeIfNeeded to execute quietly.
     */
-   ITransaction execute() throws OseeCoreException;
+   TransactionId execute() throws OseeCoreException;
 
    void clear();
 

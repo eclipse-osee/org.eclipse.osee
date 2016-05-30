@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -95,7 +95,7 @@ public class TxCallableFactoryTest {
    @Test
    public void testpurgeTransactions() throws Exception {
       Callable callable = mock(Callable.class);
-      Collection<? extends ITransaction> transactions = Collections.emptyList();
+      Collection<? extends TransactionId> transactions = Collections.emptyList();
       when(txDataStore.purgeTransactions(session, transactions)).thenReturn(callable);
 
       txFactory.purgeTransactions(session, transactions).call();
