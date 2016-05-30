@@ -61,7 +61,7 @@ public class AttributeTransactionData extends BaseTransactionData {
    @Override
    protected void internalUpdate(TransactionRecord transactionId) throws OseeCoreException {
       attribute.internalSetGammaId(getGammaId());
-      attribute.getArtifact().setTransactionId(transactionId.getId());
+      attribute.getArtifact().setTransactionId(transactionId);
    }
 
    @Override

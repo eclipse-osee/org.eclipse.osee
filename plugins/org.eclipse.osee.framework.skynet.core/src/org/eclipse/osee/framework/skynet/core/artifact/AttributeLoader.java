@@ -14,9 +14,11 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED
 import static org.eclipse.osee.framework.core.enums.LoadLevel.ARTIFACT_DATA;
 import static org.eclipse.osee.framework.core.enums.LoadLevel.RELATION_DATA;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -80,7 +82,7 @@ public class AttributeLoader {
       public int attrId = -1;
       public int gammaId = -1;
       public int modType = -1;
-      public int transactionId = -1;
+      public Long transactionId = -1L;
       public long attrTypeId = -1;
       public String value = "";
       public int stripeId = -1;
@@ -97,7 +99,7 @@ public class AttributeLoader {
          gammaId = chStmt.getInt("gamma_id");
          modType = chStmt.getInt("mod_type");
 
-         transactionId = chStmt.getInt("transaction_id");
+         transactionId = chStmt.getLong("transaction_id");
          attrTypeId = chStmt.getLong("attr_type_id");
          value = chStmt.getString("value");
          if (historical) {
@@ -130,7 +132,7 @@ public class AttributeLoader {
       if (artifact == null) {
          return; // If the artifact is null, it means the attributes are orphaned.
       }
-      List<Integer> transactionNumbers = new ArrayList<>();
+      List<Long> transactionNumbers = new ArrayList<>();
       AttrData previous = new AttrData();
       synchronized (artifact) {
          if (!artifact.isAttributesLoaded()) {
@@ -178,12 +180,8 @@ public class AttributeLoader {
       return isBooleanAttribute || isEnumAttribute;
    }
 
-   private static void setLastAttributePersistTransaction(Artifact artifact, List<Integer> transactionNumbers) {
-      int maxTransactionId = Integer.MIN_VALUE;
-      for (Integer transactionId : transactionNumbers) {
-         maxTransactionId = Math.max(maxTransactionId, transactionId);
-      }
-      artifact.setTransactionId(maxTransactionId);
+   private static void setLastAttributePersistTransaction(Artifact artifact, List<Long> transactionNumbers) {
+      artifact.setTransactionId(TransactionId.valueOf(Collections.max(transactionNumbers)));
    }
 
    private static String getSql(DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel, boolean historical, boolean isArchived) throws OseeCoreException {

@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -64,7 +65,7 @@ public final class ArtifactLoader {
       return new LinkedList<Artifact>(artifacts);
    }
 
-   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, BranchId branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionRecord transactionId) throws OseeCoreException {
+   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, BranchId branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionId transactionId) throws OseeCoreException {
       List<Pair<Integer, Long>> toLoad = new LinkedList<>();
       Long branchUuid = branch.getUuid();
       for (Integer artId : new HashSet<Integer>(artIds)) {
@@ -77,15 +78,15 @@ public final class ArtifactLoader {
    }
 
    public static List<Artifact> loadArtifacts(Collection<Integer> artIds, BranchId branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted) throws OseeCoreException {
-      return loadArtifacts(artIds, branch, loadLevel, reload, allowDeleted, null);
+      return loadArtifacts(artIds, branch, loadLevel, reload, allowDeleted, TransactionId.SENTINEL);
    }
 
-   private static List<Artifact> loadSelectedArtifacts(List<Pair<Integer, Long>> toLoad, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionRecord transactionId, boolean isArchived) throws OseeCoreException {
+   private static List<Artifact> loadSelectedArtifacts(List<Pair<Integer, Long>> toLoad, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionId transactionId, boolean isArchived) throws OseeCoreException {
       Set<Artifact> artifacts = new LinkedHashSet<>();
-      if (transactionId == null) {
-         loadActiveArtifacts(toLoad, artifacts, loadLevel, reload, allowDeleted, isArchived);
-      } else {
+      if (transactionId.isValid()) {
          loadArtifacts(toLoad, loadLevel, transactionId, reload, allowDeleted, artifacts, isArchived);
+      } else {
+         loadActiveArtifacts(toLoad, artifacts, loadLevel, reload, allowDeleted, isArchived);
       }
       return new LinkedList<Artifact>(artifacts);
    }
@@ -119,7 +120,7 @@ public final class ArtifactLoader {
 
          // load arts that are not in the cache
          try {
-            loadArtifacts(toLoad, loadLevel, null, reload, allowDeleted, artifacts, isArchived);
+            loadArtifacts(toLoad, loadLevel, TransactionId.SENTINEL, reload, allowDeleted, artifacts, isArchived);
          } finally {
             // remove and unlock locks this thread created but didn't load
             if (artifacts.size() != numRequested) {
@@ -187,9 +188,9 @@ public final class ArtifactLoader {
       }
    }
 
-   private static void loadArtifactsFromQueryId(Collection<Artifact> loadedItems, int queryId, LoadLevel loadLevel, ISearchConfirmer confirmer, int fetchSize, LoadType reload, TransactionRecord transactionId, DeletionFlag allowDeleted, boolean isArchived) throws OseeCoreException {
+   private static void loadArtifactsFromQueryId(Collection<Artifact> loadedItems, int queryId, LoadLevel loadLevel, ISearchConfirmer confirmer, int fetchSize, LoadType reload, TransactionId transactionId, DeletionFlag allowDeleted, boolean isArchived) throws OseeCoreException {
       OseeSql sqlKey;
-      boolean historical = transactionId != null;
+      boolean historical = transactionId.isValid();
 
       if (historical && isArchived) {
          sqlKey = OseeSql.LOAD_HISTORICAL_ARCHIVED_ARTIFACTS;
@@ -244,19 +245,18 @@ public final class ArtifactLoader {
     * @param artifacts
     * @param locks
     */
-   private static void loadArtifacts(List<Pair<Integer, Long>> toLoad, LoadLevel loadLevel, TransactionRecord transactionId, LoadType reload, DeletionFlag allowDeleted, Set<Artifact> artifacts, boolean isArchived) throws OseeCoreException {
+   private static void loadArtifacts(List<Pair<Integer, Long>> toLoad, LoadLevel loadLevel, TransactionId transactionId, LoadType reload, DeletionFlag allowDeleted, Set<Artifact> artifacts, boolean isArchived) throws OseeCoreException {
       if (toLoad != null && !toLoad.isEmpty()) {
 
          ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
-         Integer txId = transactionId != null ? transactionId.getId() : null;
          for (Pair<Integer, Long> pair : toLoad) {
-            joinQuery.add(pair.getFirst(), pair.getSecond(), txId);
+            joinQuery.add(pair.getFirst(), pair.getSecond(), transactionId.getId());
          }
          loadArtifacts(artifacts, joinQuery, loadLevel, null, reload, transactionId, allowDeleted, isArchived);
       }
    }
 
-   private static void loadArtifacts(Collection<Artifact> loadedItems, ArtifactJoinQuery joinQuery, LoadLevel loadLevel, ISearchConfirmer confirmer, LoadType reload, TransactionRecord transactionId, DeletionFlag allowDeleted, boolean isArchived) throws OseeCoreException {
+   private static void loadArtifacts(Collection<Artifact> loadedItems, ArtifactJoinQuery joinQuery, LoadLevel loadLevel, ISearchConfirmer confirmer, LoadType reload, TransactionId transactionId, DeletionFlag allowDeleted, boolean isArchived) throws OseeCoreException {
       if (!joinQuery.isEmpty()) {
          Collection<Artifact> data;
          if (loadedItems.isEmpty()) {
@@ -315,10 +315,9 @@ public final class ArtifactLoader {
    private static Artifact retrieveShallowArtifact(JdbcStatement chStmt, LoadType reload, boolean historical, boolean isArchived) throws OseeCoreException {
       int artifactId = chStmt.getInt("art_id");
       BranchId branch = TokenFactory.createBranch(chStmt.getLong("branch_id"));
-      int transactionId = Artifact.TRANSACTION_SENTINEL;
+      TransactionId transactionId = TransactionId.SENTINEL;
       if (historical) {
-         int stripeTransactionNumber = chStmt.getInt("stripe_transaction_id");
-         transactionId = stripeTransactionNumber;
+         transactionId = TransactionId.valueOf(chStmt.getLong("stripe_transaction_id"));
       }
 
       Artifact artifact = historical ? null : ArtifactCache.getActive(artifactId, branch);
@@ -353,13 +352,13 @@ public final class ArtifactLoader {
       }
    }
 
-   private static void loadArtifactsData(int queryId, Collection<Artifact> artifacts, LoadLevel loadLevel, LoadType reload, TransactionRecord transactionId, DeletionFlag allowDeleted, boolean isArchived) throws OseeCoreException {
+   private static void loadArtifactsData(int queryId, Collection<Artifact> artifacts, LoadLevel loadLevel, LoadType reload, TransactionId transactionId, DeletionFlag allowDeleted, boolean isArchived) throws OseeCoreException {
       if (reload == LoadType.RELOAD_CACHE) {
          for (Artifact artifact : artifacts) {
             artifact.prepareForReload();
          }
       }
-      boolean historical = transactionId != null;
+      boolean historical = transactionId.isValid();
       long key2;
 
       CompositeKeyHashMap<Integer, Long, Artifact> tempCache =

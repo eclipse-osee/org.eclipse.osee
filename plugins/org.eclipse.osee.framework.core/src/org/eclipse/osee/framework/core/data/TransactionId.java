@@ -36,7 +36,7 @@ public interface TransactionId extends Identity<Integer>, HasBranch {
    }
 
    default boolean isInvalid() {
-      return getGuid().equals(SENTINEL);
+      return Id.SENTINEL.equals(getGuid().longValue());
    }
 
    default boolean equals(Long id) {

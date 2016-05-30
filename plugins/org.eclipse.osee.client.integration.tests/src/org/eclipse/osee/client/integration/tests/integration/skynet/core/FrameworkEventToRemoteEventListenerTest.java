@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidArtifact1;
@@ -53,7 +54,7 @@ public class FrameworkEventToRemoteEventListenerTest {
    private static final BranchId BRANCH = SAW_Bld_1;
    private static final String ARTIFACT_NAME_1 =
       FrameworkEventToRemoteEventListenerTest.class.getSimpleName() + ".Edit1";
-   private static final int newArtTx = 12345;
+   private static final TransactionId newArtTx = TransactionId.valueOf(12345);
 
    private RemoteNetworkSender1 networkSender;
 
@@ -87,8 +88,8 @@ public class FrameworkEventToRemoteEventListenerTest {
       UpdateArtifactListener listener = new UpdateArtifactListener(eventFilter);
 
       RemotePersistEvent1 remoteEvent = createRemoteEvent(artifact);
-      remoteEvent.setTransactionId(newArtTx);
-      int origArtTx = artifact.getTransactionNumber();
+      remoteEvent.setTransactionId(newArtTx.getId());
+      TransactionId origArtTx = artifact.getTransaction();
 
       OseeEventManager.addListener(listener);
       OseeEventManager.setDisableEvents(false);
@@ -104,7 +105,7 @@ public class FrameworkEventToRemoteEventListenerTest {
 
       Assert.assertTrue("Event completion was not received.", listener.wasUpdateReceived());
       Artifact artifactAfterUpdate = ArtifactQuery.getArtifactFromId(artifact.getGuid(), BRANCH);
-      Assert.assertTrue("", artifactAfterUpdate.getTransactionNumber() == newArtTx);
+      Assert.assertEquals(newArtTx, artifactAfterUpdate.getTransaction());
 
       //Reset artifact tx - just to be clean
       artifact.setTransactionId(origArtTx);

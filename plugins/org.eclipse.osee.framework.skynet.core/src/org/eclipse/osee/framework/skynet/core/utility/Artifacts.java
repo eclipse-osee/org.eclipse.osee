@@ -179,7 +179,7 @@ public final class Artifacts {
          details.put("Historical", String.valueOf(artifact.isHistorical()));
          details.put("Deleted", String.valueOf(artifact.isDeleted()));
          details.put("Revision",
-            String.valueOf(artifact.isInDb() ? String.valueOf(artifact.getTransactionNumber()) : "Not In Db"));
+            String.valueOf(artifact.isInDb() ? String.valueOf(artifact.getTransaction()) : "Not In Db"));
          details.put("Read Only", String.valueOf(artifact.isReadOnly()));
          details.put("Last Modified", artifact.isInDb() ? String.valueOf(artifact.getLastModified()) : "Not In Db");
          try {

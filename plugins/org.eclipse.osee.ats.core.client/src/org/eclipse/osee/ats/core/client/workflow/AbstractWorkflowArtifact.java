@@ -56,6 +56,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
@@ -86,8 +87,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    protected TeamWorkFlowArtifact parentTeamArt;
    protected ActionArtifact parentAction;
    private IAtsLog atsLog;
-   private int atsLogTransactionNumber;
-   private int stateMgrTransactionNumber;
+   private TransactionId atsLogTx;
+   private TransactionId stateMgrTransactionNumber;
    private AtsNote atsNote;
    private IAtsStateManager stateMgr;
 
@@ -408,10 +409,10 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    @Override
    public IAtsLog getLog() {
-      if (atsLog == null || atsLogTransactionNumber != getTransactionNumber()) {
+      if (atsLog == null || !getTransaction().equals(atsLogTx)) {
          atsLog =
             AtsClientService.get().getLogFactory().getLogLoaded(this, AtsClientService.get().getAttributeResolver());
-         atsLogTransactionNumber = getTransactionNumber();
+         atsLogTx = getTransaction();
       }
       return atsLog;
    }
@@ -696,10 +697,10 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    @Override
    public IAtsStateManager getStateMgr() {
-      if (stateMgr == null || stateMgrTransactionNumber != getTransactionNumber()) {
+      if (stateMgr == null || getTransaction().notEqual(stateMgrTransactionNumber)) {
          try {
             stateMgr = AtsClientService.get().getStateFactory().getStateManager(this, isInDb());
-            stateMgrTransactionNumber = getTransactionNumber();
+            stateMgrTransactionNumber = getTransaction();
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }

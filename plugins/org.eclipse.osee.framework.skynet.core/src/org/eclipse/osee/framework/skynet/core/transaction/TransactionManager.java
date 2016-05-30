@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -220,6 +221,10 @@ public final class TransactionManager {
          chStmt.close();
       }
       return txRecord;
+   }
+
+   public static TransactionRecord getTransaction(TransactionId tx) {
+      return getTransactionId(tx.getId(), null);
    }
 
    public static TransactionRecord getTransactionId(int transactionNumber) throws OseeCoreException {

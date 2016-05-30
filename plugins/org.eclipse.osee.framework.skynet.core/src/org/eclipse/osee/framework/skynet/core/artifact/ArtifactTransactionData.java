@@ -48,7 +48,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
 
    @Override
    protected void internalUpdate(TransactionRecord transactionId) throws OseeCoreException {
-      artifact.internalSetPersistenceData(getGammaId(), transactionId.getId(), getModificationType(), false, false);
+      artifact.internalSetPersistenceData(getGammaId(), transactionId, getModificationType(), false, false);
    }
 
    @Override

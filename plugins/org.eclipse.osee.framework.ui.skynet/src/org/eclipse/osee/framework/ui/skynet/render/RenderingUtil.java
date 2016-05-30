@@ -154,7 +154,7 @@ public final class RenderingUtil {
             name.append(artifact.getSafeName());
             name.append("_");
             if (artifact.isHistorical() || presentationType == PresentationType.DIFF) {
-               name.append(artifact.getTransactionNumber());
+               name.append(artifact.getTransaction().getId());
                name.append("_");
             }
          } else {

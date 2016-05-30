@@ -37,7 +37,7 @@ public class DetailsBrowserComposite extends BrowserComposite {
          addData(sb, "Gamma Id", String.valueOf(artifact.getGammaId()));
          addData(sb, "Historical", String.valueOf(artifact.isHistorical()));
          addData(sb, "Deleted", String.valueOf(artifact.isDeleted()));
-         addData(sb, "Revision", String.valueOf(artifact.getTransactionNumber()));
+         addData(sb, "Revision", String.valueOf(artifact.getTransaction()));
          addData(sb, "Last Modified", String.valueOf(artifact.getLastModified()));
          addData(sb, "Last Modified By", String.valueOf(artifact.getLastModifiedBy()));
       } catch (Exception ex) {

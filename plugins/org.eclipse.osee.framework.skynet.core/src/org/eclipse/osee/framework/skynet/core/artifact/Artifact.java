@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -94,14 +95,13 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
-   public static final int TRANSACTION_SENTINEL = -1;
 
    private final HashCollection<IAttributeType, Attribute<?>> attributes =
       new HashCollection<IAttributeType, Attribute<?>>(false, LinkedList.class, 12);
    private final Set<DefaultBasicUuidRelationReorder> relationOrderRecords =
       new HashSet<DefaultBasicUuidRelationReorder>();
    private final BranchId branch;
-   private int transactionId = TRANSACTION_SENTINEL;
+   private TransactionId transaction = TransactionId.SENTINEL;
    private int artId;
    private int gammaId;
    private boolean linksLoaded;
@@ -122,7 +122,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    }
 
    public final boolean isInDb() {
-      return transactionId != TRANSACTION_SENTINEL;
+      return transaction.isValid();
    }
 
    /**
@@ -573,7 +573,8 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
 
    private void ensureAttributesLoaded() throws OseeCoreException {
       if (!isAttributesLoaded() && isInDb()) {
-         ArtifactLoader.loadArtifactData(this, LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA, BranchManager.isArchived(getBranch()));
+         ArtifactLoader.loadArtifactData(this, LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA,
+            BranchManager.isArchived(getBranch()));
       }
    }
 
@@ -1365,7 +1366,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       String name = getName();
 
       if (isHistorical()) {
-         name += " [Rev:" + transactionId + "]";
+         name += " [Rev:" + transaction + "]";
       }
 
       return name;
@@ -1471,15 +1472,15 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    /**
     * @return the transaction number that was set when this artifact was loaded
     */
-   public final int getTransactionNumber() {
-      return transactionId;
+   public final TransactionId getTransaction() {
+      return transaction;
    }
 
    public final TransactionRecord getTransactionRecord() throws OseeCoreException {
-      if (transactionId == TRANSACTION_SENTINEL) {
-         return null;
+      if (transaction.isValid()) {
+         return TransactionManager.getTransaction(transaction);
       }
-      return TransactionManager.getTransactionId(transactionId);
+      return null;
    }
 
    /**
@@ -1643,9 +1644,9 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    /**
     * This method should never be called from outside the OSEE Application Framework
     */
-   void internalSetPersistenceData(int gammaId, int transactionId, ModificationType modType, boolean historical, boolean useBackingData) {
+   void internalSetPersistenceData(int gammaId, TransactionId transactionId, ModificationType modType, boolean historical, boolean useBackingData) {
       this.gammaId = gammaId;
-      this.transactionId = transactionId;
+      this.transaction = transactionId;
       this.historical = historical;
       internalSetModType(modType, useBackingData);
       this.objectEditState = EditState.NO_CHANGE;
@@ -1654,15 +1655,15 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    /**
     * This method should never be called from outside the OSEE Application Framework
     */
-   public final void setTransactionId(int transactionId) {
-      this.transactionId = transactionId;
+   public final void setTransactionId(TransactionId transaction) {
+      this.transaction = transaction;
    }
 
    public final Date getLastModified() throws OseeCoreException {
-      if (transactionId == TRANSACTION_SENTINEL) {
-         return new Date();
+      if (transaction.isValid()) {
+         return getTransactionRecord().getTimeStamp();
       }
-      return getTransactionRecord().getTimeStamp();
+      return new Date();
    }
 
    public final User getLastModifiedBy() throws OseeCoreException {

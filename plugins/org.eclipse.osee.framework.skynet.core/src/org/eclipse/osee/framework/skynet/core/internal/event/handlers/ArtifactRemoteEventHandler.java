@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.internal.event.handlers;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -52,12 +53,12 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
    public void handle(Transport transport, Sender sender, RemotePersistEvent1 remoteEvent) throws OseeCoreException {
       RemotePersistEvent1 event1 = remoteEvent;
       ArtifactEvent transEvent = FrameworkEventUtil.getPersistEvent(event1);
-      updateArtifacts(sender, transEvent.getArtifacts(), remoteEvent.getTransactionId());
+      updateArtifacts(sender, transEvent.getArtifacts(), TransactionId.valueOf(remoteEvent.getTransactionId()));
       updateRelations(sender, transEvent.getRelations());
       transport.send(sender, transEvent);
    }
 
-   private void updateArtifacts(Sender sender, Collection<EventBasicGuidArtifact> artifacts, int transactionId) throws OseeCoreException {
+   private void updateArtifacts(Sender sender, Collection<EventBasicGuidArtifact> artifacts, TransactionId transactionId) throws OseeCoreException {
       // Don't crash on any one artifact update problem (no update method throughs exceptions)
       for (EventBasicGuidArtifact guidArt : artifacts) {
          EventUtil.eventLog(String.format("REM: updateArtifact -> [%s]", guidArt));
@@ -100,7 +101,7 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
       }
    }
 
-   private void updateModifiedArtifact(EventModifiedBasicGuidArtifact guidArt, int transactionId) {
+   private void updateModifiedArtifact(EventModifiedBasicGuidArtifact guidArt, TransactionId transactionId) {
       try {
          Artifact artifact = ArtifactCache.getActive(guidArt);
          if (artifact == null) {

@@ -110,7 +110,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public Date getTimeStamp(TransactionId transaction) {
-      return TransactionManager.getTransactionId(transaction.getGuid()).getTimeStamp();
+      return TransactionManager.getTransaction(transaction).getTimeStamp();
    }
 
    @Override

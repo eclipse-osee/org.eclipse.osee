@@ -11,13 +11,13 @@
 package org.eclipse.osee.framework.skynet.core;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -96,12 +96,7 @@ public class OseeGroup {
    }
 
    private Artifact getOrCreateGroupArtifact(IArtifactToken token) throws OseeCoreException {
-      Artifact groupArtifact = null;
-      try {
-         groupArtifact = ArtifactQuery.getArtifactFromToken(token, COMMON);
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
-      }
+      Artifact groupArtifact = ArtifactQuery.checkArtifactFromId(token.getUuid().intValue(), COMMON, EXCLUDE_DELETED);
       if (groupArtifact == null) {
          Artifact userGroupsFolder = getOrCreateUserGroupsFolder(COMMON);
          groupArtifact = ArtifactTypeManager.addArtifact(token, COMMON);
@@ -111,12 +106,7 @@ public class OseeGroup {
    }
 
    private Artifact getOrCreateUserGroupsFolder(BranchId branch) throws OseeCoreException {
-      Artifact usersGroupFolder = null;
-      try {
-         usersGroupFolder = ArtifactQuery.getArtifactFromId(CoreArtifactTokens.UserGroups.getUuid(), branch);
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
-      }
+      Artifact usersGroupFolder = ArtifactQuery.checkArtifactFromId(CoreArtifactTokens.UserGroups.getUuid(), branch);
       if (usersGroupFolder == null) {
          Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
          if (root.hasChild(CoreArtifactTokens.UserGroups.getName())) {

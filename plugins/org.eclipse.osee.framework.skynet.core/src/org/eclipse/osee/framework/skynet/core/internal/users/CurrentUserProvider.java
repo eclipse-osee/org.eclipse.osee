@@ -28,8 +28,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventPayload;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventPayload;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 
@@ -97,7 +97,7 @@ public class CurrentUserProvider extends LazyObject<User> {
          if (currentUser == null) {
             throw new OseeStateException("Setting current user to null.");
          } else {
-            if (currentUser.getName().equals(SystemUser.Anonymous.getName())) {
+            if (currentUser.equals(SystemUser.Anonymous)) {
                if (isGuestNotificationAllowed.compareAndSet(true, false)) {
                   OseeLog.log(Activator.class, Level.INFO,
                      "You are logged into OSEE as \"Guest\".  If this is unexpected notify your OSEE admin");

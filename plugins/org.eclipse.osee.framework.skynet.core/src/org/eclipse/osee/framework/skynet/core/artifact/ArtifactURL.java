@@ -38,7 +38,7 @@ public class ArtifactURL {
       parameters.put("branchUuid", String.valueOf(artifact.getBranch().getGuid()));
       parameters.put("isDeleted", String.valueOf(artifact.isDeleted()));
       if (artifact.isHistorical()) {
-         parameters.put("transactionId", String.valueOf(artifact.getTransactionNumber()));
+         parameters.put("transactionId", String.valueOf(artifact.getTransaction()));
       }
       parameters.put("cmd", cmd);
       String urlString = getPermanentLinkBaseUrl(OseeServerContext.CLIENT_LOOPBACK_CONTEXT, parameters);
