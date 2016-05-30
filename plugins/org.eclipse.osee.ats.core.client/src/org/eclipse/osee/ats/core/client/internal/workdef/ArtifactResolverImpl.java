@@ -83,12 +83,6 @@ public class ArtifactResolverImpl implements IArtifactResolver {
    }
 
    @Override
-   public int getTransactionNumber(ArtifactId artifact) {
-      Assert.isNotNull(artifact, "Artifact can not be null");
-      return ((Artifact) services.getArtifact(artifact)).getTransactionNumber();
-   }
-
-   @Override
    public boolean isOfType(IAtsObject atsObject, IArtifactType artifactType) {
       Assert.isNotNull(atsObject, "ATS Object can not be null");
       Assert.isNotNull(artifactType, "Artifact Type can not be null");
@@ -99,5 +93,4 @@ public class ArtifactResolverImpl implements IArtifactResolver {
    public boolean inheritsFrom(IArtifactType artType, IArtifactType parentArtType) {
       return ArtifactTypeManager.inheritsFrom(artType, parentArtType);
    }
-
 }

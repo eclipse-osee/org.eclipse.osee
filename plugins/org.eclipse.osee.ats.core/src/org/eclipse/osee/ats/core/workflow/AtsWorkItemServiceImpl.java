@@ -48,13 +48,6 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
-   public int getTransactionNumber(IAtsWorkItem workItem) throws OseeCoreException {
-      ArtifactId artifact = services.getArtifactResolver().get(workItem);
-      Conditions.checkNotNull(artifact, "workItem", "Can't Find Artifact matching [%s]", workItem.toString());
-      return services.getArtifactResolver().getTransactionNumber(artifact);
-   }
-
-   @Override
    public IStateToken getCurrentState(IAtsWorkItem workItem) throws OseeCoreException {
       ArtifactId artifact = services.getArtifactResolver().get(workItem);
       Conditions.checkNotNull(artifact, "workItem", "Can't Find Artifact matching [%s]", workItem.toString());

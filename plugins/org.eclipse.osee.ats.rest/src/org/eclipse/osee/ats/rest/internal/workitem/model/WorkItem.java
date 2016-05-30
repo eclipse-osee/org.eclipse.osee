@@ -43,7 +43,6 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    protected final ArtifactReadable artifact;
-   public static final int TRANSACTION_SENTINEL = -1;
    private IAtsStateManager stateMgr;
    private IAtsLog atsLog;
    private IWorkDefinitionMatch match;

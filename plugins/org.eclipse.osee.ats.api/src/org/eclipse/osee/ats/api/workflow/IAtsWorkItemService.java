@@ -25,8 +25,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
  */
 public interface IAtsWorkItemService {
 
-   int getTransactionNumber(IAtsWorkItem workItem) throws OseeCoreException;
-
    IStateToken getCurrentState(IAtsWorkItem workItem) throws OseeCoreException;
 
    Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf) throws OseeCoreException;

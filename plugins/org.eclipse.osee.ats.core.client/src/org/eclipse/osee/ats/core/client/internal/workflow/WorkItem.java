@@ -49,7 +49,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    protected final Artifact artifact;
-   public static final int TRANSACTION_SENTINEL = -1;
    private IAtsStateManager stateMgr;
    private IAtsLog atsLog;
    private IWorkDefinitionMatch match;

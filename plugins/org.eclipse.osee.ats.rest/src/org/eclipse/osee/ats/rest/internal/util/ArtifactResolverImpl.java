@@ -87,12 +87,6 @@ public class ArtifactResolverImpl implements IArtifactResolver {
    }
 
    @Override
-   public int getTransactionNumber(ArtifactId artifact) {
-      Assert.isNotNull(artifact, "Artifact can not be null");
-      return ((ArtifactReadable) services.getArtifact(artifact)).getTransaction();
-   }
-
-   @Override
    public boolean isOfType(IAtsObject atsObject, IArtifactType artifactType) {
       Assert.isNotNull(atsObject, "ATS Object can not be null");
       Assert.isNotNull(artifactType, "Artifact Type can not be null");
