@@ -264,4 +264,19 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
       return attributes;
    }
 
+   @SuppressWarnings("unchecked")
+   @Override
+   public <T> Collection<IAttribute<T>> getAttributes(ArtifactId artifact) {
+      List<IAttribute<T>> attributes = new LinkedList<>();
+      for (Attribute<?> attr : AtsClientService.get().getArtifact(artifact).getAttributes()) {
+         attributes.add(new AttributeWrapper<T>((Attribute<T>) attr));
+      }
+      return attributes;
+   }
+
+   @Override
+   public <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem) throws OseeCoreException {
+      return getAttributes(workItem.getStoreObject());
+   }
+
 }

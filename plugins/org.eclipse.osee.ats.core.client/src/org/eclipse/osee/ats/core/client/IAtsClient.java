@@ -124,6 +124,7 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    IAtsUserServiceClient getUserServiceClient();
 
+   @Override
    ISequenceProvider getSequenceProvider();
 
    IAtsStateFactory getStateFactory();
@@ -132,12 +133,12 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    IAtsLogFactory getLogFactory();
 
+   @Override
    IAtsUtilService getUtilService();
 
    IAtsServices getServices();
 
-   String getConfigValue(String key);
-
+   @Override
    IAtsActionFactory getActionFactory();
 
    @Override

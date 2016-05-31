@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Boeing.
+ * Copyright (c) 2016 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,9 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.client.integration.tests.ats.workflow;
+package org.eclipse.osee.ats.client.integration.tests.ats.workflow.util;
 
-import org.eclipse.osee.ats.client.integration.tests.ats.workflow.util.AtsTest_WorkflowUtil_Suite;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
@@ -19,30 +18,24 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- * @author Roberto E. Escobar
+ * @author Donald G. Dunne
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   AtsTest_WorkflowUtil_Suite.class,
-   TaskRelatedToChangedArtifactTest.class,
-   StoreWorkDefinitionTest.class,
-   AtsTaskEndpointImplTest.class,
-   SMAPromptChangeStatusTest.class,
-   TeamWorkflowProvidersTest.class,
-   AtsRelationResolverServiceTest.class,
-   CreateTaskRuleTest.class //
+   DuplicateWorkflowAtStartStateOperationTest.class, //
+   DuplicateWorkflowAsIsOperationTest.class //
 })
-public class AtsTest_Workflow_Suite {
+public class AtsTest_WorkflowUtil_Suite {
 
    @BeforeClass
    public static void setUp() throws Exception {
       OseeProperties.setIsInTest(true);
-      System.out.println("\n\nBegin " + AtsTest_Workflow_Suite.class.getSimpleName());
+      System.out.println("\n\nBegin " + AtsTest_WorkflowUtil_Suite.class.getSimpleName());
       DemoTestUtil.setUpTest();
    }
 
    @AfterClass
    public static void tearDown() throws Exception {
-      System.out.println("End " + AtsTest_Workflow_Suite.class.getSimpleName());
+      System.out.println("End " + AtsTest_WorkflowUtil_Suite.class.getSimpleName());
    }
 }

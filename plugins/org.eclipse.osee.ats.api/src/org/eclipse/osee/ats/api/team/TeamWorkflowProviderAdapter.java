@@ -20,11 +20,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public abstract class TeamWorkflowProviderAdapter implements ITeamWorkflowProvider {
 
    @Override
-   public void teamWorkflowDuplicating(IAtsTeamWorkflow teamWf, IAtsTeamWorkflow dupTeamArt) throws OseeCoreException {
-      // provided for subclass implementation
-   }
-
-   @Override
    public String getWorkflowDefinitionId(IAtsWorkItem workItem) throws OseeCoreException {
       return null;
    }

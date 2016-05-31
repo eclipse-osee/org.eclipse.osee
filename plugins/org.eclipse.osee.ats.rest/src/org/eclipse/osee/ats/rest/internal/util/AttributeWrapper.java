@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.rest.internal.util;
 
 import org.eclipse.osee.ats.api.workflow.IAttribute;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -49,6 +50,11 @@ public class AttributeWrapper<T> implements IAttribute<T> {
    @Override
    public int getId() {
       return attr.getLocalId();
+   }
+
+   @Override
+   public IAttributeType getAttrType() {
+      return attr.getAttributeType();
    }
 
 }

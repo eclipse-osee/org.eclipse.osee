@@ -115,7 +115,7 @@ public interface IAtsChangeSet {
     * User making these changes
     */
    IAtsUser getAsUser();
-   
+
    void unrelate(ArtifactId artifact, IRelationTypeSide relationSide, ArtifactId artifact2);
 
    void unrelate(IAtsObject atsObject, IRelationTypeSide relationSide, IAtsObject atsObjec2);
@@ -123,5 +123,9 @@ public interface IAtsChangeSet {
    void unrelate(ArtifactId artifact, IRelationTypeSide relationSide, IAtsObject atsObject);
 
    void unrelate(IAtsObject atsObject, IRelationTypeSide relationSide, ArtifactId artifact);
+
+   void addAttribute(ArtifactId artifactId, IAttributeType attrType, Object value);
+
+   void setSoleAttributeFromString(ArtifactId artifact, IAttributeType attrType, String value);
 
 }

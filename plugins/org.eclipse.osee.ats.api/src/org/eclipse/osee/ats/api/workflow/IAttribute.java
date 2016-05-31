@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workflow;
 
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -26,4 +27,6 @@ public interface IAttribute<T> {
    public void setValue(T value) throws OseeCoreException;
 
    public int getId();
+
+   public IAttributeType getAttrType();
 }

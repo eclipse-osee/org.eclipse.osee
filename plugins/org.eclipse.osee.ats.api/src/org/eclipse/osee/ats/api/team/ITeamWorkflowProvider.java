@@ -19,12 +19,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface ITeamWorkflowProvider {
 
-   /**
-    * Notification that a teamWorkflow is being duplicated. This allows the extension to do necessary changes to
-    * duplicated workflow.
-    */
-   public void teamWorkflowDuplicating(IAtsTeamWorkflow teamWf, IAtsTeamWorkflow dupTeamWf) throws OseeCoreException;
-
    public String getWorkflowDefinitionId(IAtsWorkItem workItem) throws OseeCoreException;
 
    public String getRelatedTaskWorkflowDefinitionId(IAtsTeamWorkflow teamWf) throws OseeCoreException;

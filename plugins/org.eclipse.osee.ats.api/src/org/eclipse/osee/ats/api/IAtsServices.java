@@ -26,6 +26,8 @@ import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
+import org.eclipse.osee.ats.api.util.IAtsUtilService;
+import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
@@ -33,6 +35,7 @@ import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsActionFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
@@ -118,5 +121,13 @@ public interface IAtsServices {
    IAtsImplementerService getImplementerService();
 
    IAtsColumnService getColumnService();
+
+   IAtsUtilService getUtilService();
+
+   ISequenceProvider getSequenceProvider();
+
+   IAtsActionFactory getActionFactory();
+
+   String getConfigValue(String key);
 
 }

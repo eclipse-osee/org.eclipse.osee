@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.client.internal.workdef;
 
 import org.eclipse.osee.ats.api.workflow.IAttribute;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 
@@ -48,6 +49,11 @@ public class AttributeWrapper<T> implements IAttribute<T> {
    @Override
    public int getId() {
       return attr.getId();
+   }
+
+   @Override
+   public IAttributeType getAttrType() {
+      return attr.getAttributeType();
    }
 
 }

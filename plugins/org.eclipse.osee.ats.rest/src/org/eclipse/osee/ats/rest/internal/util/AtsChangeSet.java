@@ -343,4 +343,18 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       add(art);
       add(art2);
    }
+
+   @Override
+   public void addAttribute(ArtifactId artifact, IAttributeType attrType, Object value) {
+      ArtifactReadable art = getArtifact(artifact);
+      getTransaction().createAttribute(artifact, attrType, value);
+      add(art);
+   }
+
+   @Override
+   public void setSoleAttributeFromString(ArtifactId artifact, IAttributeType attrType, String value) {
+      ArtifactReadable art = getArtifact(artifact);
+      getTransaction().setSoleAttributeValue(artifact, attrType, value);
+      add(art);
+   }
 }

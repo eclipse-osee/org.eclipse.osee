@@ -12,6 +12,8 @@ package org.eclipse.osee.ats.rest.internal.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -242,6 +244,21 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    @Override
    public Collection<String> getAttributesToStringList(ArtifactId artifact, IAttributeType attributeType) {
       return ((ArtifactReadable) artifact).getAttributeValues(attributeType);
+   }
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public <T> Collection<IAttribute<T>> getAttributes(ArtifactId artifact) {
+      List<IAttribute<T>> attributes = new LinkedList<>();
+      for (AttributeReadable<Object> attr : getArtifact(artifact).getAttributes()) {
+         attributes.add(new AttributeWrapper<T>((AttributeReadable<T>) attr));
+      }
+      return attributes;
+   }
+
+   @Override
+   public <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem) throws OseeCoreException {
+      return getAttributes(workItem.getStoreObject());
    }
 
 }

@@ -47,4 +47,6 @@ public interface IAtsStoreService {
 
    IAttributeType getAttributeType(String attrTypeName);
 
+   IArtifactType getArtifactType(ArtifactId artifact);
+
 }

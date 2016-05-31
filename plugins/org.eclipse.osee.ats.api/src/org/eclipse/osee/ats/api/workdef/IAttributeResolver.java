@@ -48,6 +48,10 @@ public interface IAttributeResolver {
 
    void addAttribute(IAtsWorkItem workItem, IAttributeType attributeType, Object value) throws OseeCoreException;
 
+   <T> Collection<IAttribute<T>> getAttributes(ArtifactId artifact);
+
+   <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem) throws OseeCoreException;
+
    <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException;
 
    <T> Collection<IAttribute<T>> getAttributes(ArtifactId artifact, IAttributeType attributeType) throws OseeCoreException;
