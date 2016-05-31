@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.Role;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -37,6 +38,7 @@ import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.ats.demo.api.DemoUsers;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -132,6 +134,8 @@ public class DemoDbReviews {
       // Create a PeerToPeer review and transition to Review state
       reviewArt = PeerToPeerReviewManager.createNewPeerToPeerReview(firstCodeArt, "Peer Review algorithm used in code",
          firstCodeArt.getStateMgr().getCurrentStateName(), changes);
+      changes.setSoleAttributeValue((ArtifactId) reviewArt, AtsAttributeTypes.CSCI, "csci");
+      changes.setSoleAttributeValue((ArtifactId) reviewArt, AtsAttributeTypes.Description, "description");
       List<UserRole> roles = new ArrayList<>();
       roles.add(new UserRole(Role.Author,
          AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith)));
@@ -151,6 +155,8 @@ public class DemoDbReviews {
          secondCodeArt.getStateMgr().getCurrentStateName(), new Date(),
          AtsClientService.get().getUserServiceClient().getUserFromOseeUser(DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones)),
          changes);
+      changes.setSoleAttributeValue((ArtifactId) reviewArt, AtsAttributeTypes.CSCI, "csci");
+      changes.setSoleAttributeValue((ArtifactId) reviewArt, AtsAttributeTypes.Description, "description");
       roles = new ArrayList<>();
       roles.add(new UserRole(Role.Author,
          AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Kay_Jones), 2.3, true));
