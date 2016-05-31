@@ -33,7 +33,6 @@ public class AtsXWidgetValidateManager {
    private static List<IAtsXWidgetValidatorProvider> providers;
 
    public void addWidgetValidatorProvider(IAtsXWidgetValidatorProvider provider) {
-      System.err.println("Adding provider " + provider);
       getProviders().add(provider);
    }
 
@@ -61,7 +60,7 @@ public class AtsXWidgetValidateManager {
       return results;
    }
 
-   private static List<IAtsXWidgetValidatorProvider> getProviders() {
+   static List<IAtsXWidgetValidatorProvider> getProviders() {
       if (providers == null) {
          providers = new LinkedList<>();
          providers.add(new AtsCoreXWidgetValidatorProvider());

@@ -42,6 +42,7 @@ public class AtsXWidgetValidateManagerTest {
    @Test
    public void testValidateTransition_emptyValidators() {
       List<WidgetResult> results = new LinkedList<>();
+      AtsXWidgetValidateManager.getProviders().clear();
 
       AtsXWidgetValidateManager.validateTransition(workItem, results, ValidatorTestUtil.emptyValueProvider, null, null,
          null, atsServices);
@@ -52,6 +53,7 @@ public class AtsXWidgetValidateManagerTest {
    public void testValidateTransition_validValidators() {
       List<WidgetResult> results = new LinkedList<>();
       AtsXWidgetValidateManager manager = new AtsXWidgetValidateManager();
+      AtsXWidgetValidateManager.getProviders().clear();
 
       TestValidatorProvider provider = new TestValidatorProvider(new AtsValidator());
       manager.addWidgetValidatorProvider(provider);
@@ -75,19 +77,20 @@ public class AtsXWidgetValidateManagerTest {
    }
 
    @Test
-   public void testValidateTransition_exceptoinValidators() {
+   public void testValidateTransition_exceptionValidators() {
       List<WidgetResult> results = new LinkedList<>();
       AtsXWidgetValidateManager manager = new AtsXWidgetValidateManager();
 
-      TestValidatorProvider provider = new TestValidatorProvider(new AtsExceptoinValidator());
+      TestValidatorProvider provider = new TestValidatorProvider(new AtsExceptionValidator());
       manager.addWidgetValidatorProvider(provider);
       MockWidgetDefinition widgetDef = new MockWidgetDefinition("Widget Name");
+      widgetDef.setXWidgetName("XTestWidget");
       AtsXWidgetValidateManager.validateTransition(workItem, results, ValidatorTestUtil.emptyValueProvider, widgetDef,
          null, null, atsServices);
       Assert.assertFalse(results.isEmpty());
       Assert.assertEquals(results.iterator().next().getStatus(), WidgetStatus.Exception);
       Assert.assertEquals(
-         "Exception - Widget Name - Exception retriving validation for widget [AtsExceptoinValidator] Exception [problem]",
+         "Exception - Widget Name - Exception retriving validation for widget [AtsExceptionValidator] Exception [problem]",
          results.iterator().next().toString());
       Assert.assertTrue(results.iterator().next().getException() instanceof OseeStateException);
       manager.removeWidgetValidatorProvider(provider);
@@ -109,7 +112,7 @@ public class AtsXWidgetValidateManagerTest {
       }
 
    }
-   private class AtsExceptoinValidator implements IAtsXWidgetValidator {
+   private class AtsExceptionValidator implements IAtsXWidgetValidator {
 
       @Override
       public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices atsServices) throws OseeStateException {
