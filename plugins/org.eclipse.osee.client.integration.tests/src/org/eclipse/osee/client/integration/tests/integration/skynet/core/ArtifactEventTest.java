@@ -23,6 +23,7 @@ import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.OseeData;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -90,6 +91,7 @@ public class ArtifactEventTest {
 
    private ArtifactEventListener listener;
    private RemoteNetworkSender1 networkSender;
+   private final TransactionId tx = TransactionId.valueOf(1000);
 
    @Before
    public void setup() {
@@ -340,7 +342,7 @@ public class ArtifactEventTest {
       RemotePersistEvent1 remoteEvent = new RemotePersistEvent1();
       // Set sender to something other than this client so event system will think came from another client
       remoteEvent.setNetworkSender(networkSender);
-      remoteEvent.setTransactionId(1000);
+      remoteEvent.setTransaction(tx);
 
       remoteEvent.setBranchGuid(COMMON);
 
@@ -359,7 +361,7 @@ public class ArtifactEventTest {
       RemotePersistEvent1 remoteEvent = new RemotePersistEvent1();
       // Set sender to something other than this client so event system will think came from another client
       remoteEvent.setNetworkSender(networkSender);
-      remoteEvent.setTransactionId(1000);
+      remoteEvent.setTransaction(tx);
       remoteEvent.setBranchGuid(COMMON);
 
       RemoteBasicGuidRelation1 remGuidRel = new RemoteBasicGuidRelation1();
@@ -591,7 +593,7 @@ public class ArtifactEventTest {
       RemotePersistEvent1 remoteEvent = new RemotePersistEvent1();
       // Set sender to something other than this client so event system will think came from another client
       remoteEvent.setNetworkSender(networkSender);
-      remoteEvent.setTransactionId(1000);
+      remoteEvent.setTransaction(tx);
       remoteEvent.setBranchGuid(COMMON);
 
       RemoteBasicGuidRelationReorder1 remoteReorder = new RemoteBasicGuidRelationReorder1();

@@ -98,7 +98,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
          Response response = proxy.commitBranch(sourceBranch.getUuid(), destinationBranch.getUuid(), options);
          if (Status.CREATED.getStatusCode() == response.getStatus()) {
             BranchManager.setState(sourceBranch, BranchState.COMMITTED);
-            int txId = getTransactionId(response);
+            Long txId = getTransactionId(response);
             handleResponse(txId, monitor, sourceBranch, destinationBranch);
          }
       } catch (Exception ex) {
@@ -108,8 +108,8 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       }
    }
 
-   private int getTransactionId(Response response) {
-      int toReturn = -1;
+   private long getTransactionId(Response response) {
+      long toReturn = -1;
       if (response.hasEntity()) {
          Transaction tx = response.readEntity(Transaction.class);
          toReturn = tx.getTxId();
@@ -129,7 +129,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       return toReturn;
    }
 
-   private void handleResponse(Integer newTxId, IProgressMonitor monitor, BranchId sourceBranch, BranchId destinationBranch) throws OseeCoreException {
+   private void handleResponse(Long newTxId, IProgressMonitor monitor, BranchId sourceBranch, BranchId destinationBranch) throws OseeCoreException {
       TransactionRecord newTransaction = TransactionManager.getTransactionId(newTxId);
       AccessPolicy accessPolicy = ServiceUtil.getAccessPolicy();
       accessPolicy.removePermissions(sourceBranch);
@@ -154,9 +154,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
    }
 
    private void handleArtifactEvents(TransactionRecord newTransaction, Collection<Change> changes) throws OseeCoreException {
-      ArtifactEvent artifactEvent = new ArtifactEvent(newTransaction.getBranch());
-      artifactEvent.setTransactionId(newTransaction.getId());
-
+      ArtifactEvent artifactEvent = new ArtifactEvent(newTransaction);
       Map<Integer, EventModifiedBasicGuidArtifact> artEventMap = new HashMap<>();
       Set<Artifact> artifacts = new HashSet<>();
 

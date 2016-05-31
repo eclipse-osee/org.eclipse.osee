@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.core.model.event.RelationOrderModType;
@@ -117,7 +119,7 @@ public final class FrameworkEventUtil {
       RemotePersistEvent1 event = new RemotePersistEvent1();
       event.setNetworkSender(getRemoteNetworkSender(transEvent.getNetworkSender()));
       event.setBranchGuid(transEvent.getBranch());
-      event.setTransactionId(transEvent.getTransactionId());
+      event.setTransaction(transEvent.getTransactionId());
       for (EventBasicGuidArtifact guidArt : transEvent.getArtifacts()) {
          if (guidArt.getModType() == EventModType.Modified) {
             event.getArtifacts().add(getRemoteBasicGuidArtifact(guidArt.getModType().getGuid(),
@@ -144,9 +146,10 @@ public final class FrameworkEventUtil {
    }
 
    public static ArtifactEvent getPersistEvent(RemotePersistEvent1 remEvent) {
-      ArtifactEvent event = new ArtifactEvent(getBranchUuidFromRemoteEvent(remEvent.getBranchGuid()));
+      TransactionToken tx =
+         TransactionToken.valueOf(remEvent.getTransactionId(), BranchId.valueOf(remEvent.getBranchGuid()));
+      ArtifactEvent event = new ArtifactEvent(tx);
       event.setNetworkSender(getNetworkSender(remEvent.getNetworkSender()));
-      event.setTransactionId(remEvent.getTransactionId());
       for (RemoteBasicGuidArtifact1 remGuidArt : remEvent.getArtifacts()) {
          EventModType modType = EventModType.getType(remGuidArt.getModTypeGuid());
          // This can happen if new events are added that old releases don't handle

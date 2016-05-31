@@ -80,8 +80,7 @@ public class WordUpdateEndpointImplTest extends AbstractRestTest {
       transferArts.add(artReqt.getUuid());
       wordData = wordData.replaceAll("ABCgi5iUkGgj2zhlrOgA", artReqt.getGuid());
 
-      WordUpdateChange change =
-         makeRequest(branch.getUuid(), transferArts, wordData, "Testing word update one artifact");
+      WordUpdateChange change = makeRequest(branch, transferArts, wordData, "Testing word update one artifact");
       validateWordUpdateChange(change);
       validateSafetyTeamWFExists();
    }
@@ -96,8 +95,7 @@ public class WordUpdateEndpointImplTest extends AbstractRestTest {
       List<Long> transferArts = Lists.newLinkedList();
       transferArts.add(artReqt.getUuid());
 
-      WordUpdateChange change =
-         makeRequest(branch.getUuid(), transferArts, wordData, "Testing word update one artifact");
+      WordUpdateChange change = makeRequest(branch, transferArts, wordData, "Testing word update one artifact");
       validateWordUpdateChange(change);
    }
 
@@ -114,19 +112,18 @@ public class WordUpdateEndpointImplTest extends AbstractRestTest {
       Assert.assertFalse(teamWorkflows.isEmpty());
    }
 
-   private WordUpdateChange makeRequest(long branchId, List<Long> artifacts, String wordData, String comment) {
+   private WordUpdateChange makeRequest(BranchId branch, List<Long> artifacts, String wordData, String comment) {
       byte[] data = wordData.getBytes();
       WordUpdateData wud = new WordUpdateData();
       wud.setWordData(data);
       wud.setArtifacts(artifacts);
-      wud.setBranch(branchId);
+      wud.setBranch(branch);
       wud.setThreeWayMerge(false);
       wud.setComment(comment);
       wud.setMultiEdit(false);
       wud.setUserArtId((long) UserManager.getUser().getArtId());
 
-      WordUpdateChange change = HttpWordUpdateRequest.updateWordArtifacts(wud);
-      return change;
+      return HttpWordUpdateRequest.updateWordArtifacts(wud);
    }
 
    private BranchId getWorkingBranch() {

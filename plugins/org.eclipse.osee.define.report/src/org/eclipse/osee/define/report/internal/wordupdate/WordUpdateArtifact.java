@@ -22,6 +22,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.define.report.api.WordArtifactChange;
 import org.eclipse.osee.define.report.api.WordUpdateChange;
 import org.eclipse.osee.define.report.api.WordUpdateData;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -85,9 +86,8 @@ public class WordUpdateArtifact {
       return toReturn;
    }
 
-   public ArtifactReadable getArtifact(Long branchUuid, String guid) {
-      ArtifactReadable toReturn = queryFactory.fromBranch(branchUuid).andGuid(guid).getResults().getExactlyOne();
-      return toReturn;
+   public ArtifactReadable getArtifact(BranchId branch, String guid) {
+      return queryFactory.fromBranch(branch).andGuid(guid).getResults().getExactlyOne();
    }
 
    private Document extractJaxpDocument(WordUpdateData data) throws ParserConfigurationException, SAXException, IOException {
@@ -186,7 +186,7 @@ public class WordUpdateArtifact {
    }
 
    private void postProcessChange(TransactionReadable tx, WordUpdateChange updateChange, ArtifactReadable userId) {
-      updateChange.setTx(tx.getLocalId());
+      updateChange.setTx(tx.getId());
       updateChange.setBranch(tx.getBranch());
       if (updateChange.hasSafetyRelatedArtifactChange()) {
          try {

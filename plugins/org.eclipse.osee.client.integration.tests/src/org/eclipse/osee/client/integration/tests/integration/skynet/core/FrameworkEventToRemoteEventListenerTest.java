@@ -88,7 +88,7 @@ public class FrameworkEventToRemoteEventListenerTest {
       UpdateArtifactListener listener = new UpdateArtifactListener(eventFilter);
 
       RemotePersistEvent1 remoteEvent = createRemoteEvent(artifact);
-      remoteEvent.setTransactionId(newArtTx.getId());
+      remoteEvent.setTransaction(newArtTx);
       TransactionId origArtTx = artifact.getTransaction();
 
       OseeEventManager.addListener(listener);

@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.define.report;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.Arrays;
 import java.util.LinkedList;
 import org.eclipse.osee.define.report.api.WordUpdateData;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -58,7 +60,7 @@ public class WordUpdateEndpointImplTest {
    @Test
    public void testValidateBranch() {
       // test branch
-      wud.setBranch(0L);
+      wud.setBranch(BranchId.SENTINEL);
       try {
          update.validate(wud);
       } catch (OseeArgumentException ex) {
@@ -147,7 +149,7 @@ public class WordUpdateEndpointImplTest {
 
    public WordUpdateData getWud() {
       WordUpdateData wud = new WordUpdateData();
-      wud.setBranch(570L);
+      wud.setBranch(COMMON);
       wud.setThreeWayMerge(false);
       wud.setComment("other data invalid");
       wud.setMultiEdit(false);

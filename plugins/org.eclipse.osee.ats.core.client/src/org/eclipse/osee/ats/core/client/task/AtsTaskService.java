@@ -72,14 +72,14 @@ public class AtsTaskService extends AbstractAtsTaskService {
 
       ArtifactEvent artifactEvent = new ArtifactEvent(AtsUtilCore.getAtsBranch());
       for (NewTaskData newTaskData : newTaskDatas.getTaskDatas()) {
-         processForEvents(newTaskData, response, tasks, artifactEvent);
+         processForEvents(newTaskData, response, tasks);
       }
 
       OseeEventManager.kickPersistEvent(getClass(), artifactEvent);
       return tasks;
    }
 
-   private void processForEvents(NewTaskData newTaskData, Response response, List<IAtsTask> tasks, ArtifactEvent artifactEvent2) {
+   private void processForEvents(NewTaskData newTaskData, Response response, List<IAtsTask> tasks) {
       Artifact teamWf = atsClient.getArtifact(newTaskData.getTeamWfUuid());
 
       JaxAtsTasks jaxTasks = response.readEntity(JaxAtsTasks.class);

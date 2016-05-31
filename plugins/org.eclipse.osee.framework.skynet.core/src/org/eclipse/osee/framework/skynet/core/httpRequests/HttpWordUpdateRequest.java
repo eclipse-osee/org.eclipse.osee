@@ -16,21 +16,17 @@ import org.eclipse.osee.define.report.api.WordUpdateData;
 import org.eclipse.osee.define.report.api.WordUpdateEndpoint;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
-import org.eclipse.osee.orcs.rest.client.OseeClient;
 
 /**
  * @author David W. Miller
  */
 public class HttpWordUpdateRequest {
    public static WordUpdateChange updateWordArtifacts(WordUpdateData wud) {
-      WordUpdateChange change = null;
-      OseeClient oseeClient = ServiceUtil.getOseeClient();
-      WordUpdateEndpoint endpoint = oseeClient.getWordUpdateEndpoint();
+      WordUpdateEndpoint endpoint = ServiceUtil.getOseeClient().getWordUpdateEndpoint();
       try {
-         change = endpoint.updateWordArtifacts(wud);
+         return endpoint.updateWordArtifacts(wud);
       } catch (Exception ex) {
          throw new OseeWebApplicationException(ex, Status.INTERNAL_SERVER_ERROR, "Exception in WordUpdateRequest");
       }
-      return change;
    }
 }

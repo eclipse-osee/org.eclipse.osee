@@ -11,17 +11,16 @@
 package org.eclipse.osee.define.report.api;
 
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.core.data.BranchId;
 
 /**
  * @author David W. Miller
  */
-@XmlRootElement
 public class WordUpdateData {
    private byte[] wordData;
    private Long userArtId;
    private List<Long> artifacts;
-   private Long branch;
+   private BranchId branch;
    private boolean threeWayMerge;
    private String comment;
    private boolean multiEdit;
@@ -50,11 +49,11 @@ public class WordUpdateData {
       this.artifacts = artifacts;
    }
 
-   public Long getBranch() {
+   public BranchId getBranch() {
       return branch;
    }
 
-   public void setBranch(Long branch) {
+   public void setBranch(BranchId branch) {
       this.branch = branch;
    }
 

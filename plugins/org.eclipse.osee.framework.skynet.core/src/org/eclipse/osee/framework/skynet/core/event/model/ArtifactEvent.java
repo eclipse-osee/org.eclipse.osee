@@ -18,7 +18,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
@@ -37,7 +38,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
    }
 
    private final BranchId branch;
-   private int transactionId;
+   private final TransactionToken transaction;
    private NetworkSender networkSender;
    private final List<EventBasicGuidArtifact> artifacts = new ArrayList<>();
    private final List<EventBasicGuidRelation> relations = new ArrayList<>();
@@ -49,13 +50,18 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       this(branch, ArtifactEventType.UPDATE_ARTIFACTS);
    }
 
-   public ArtifactEvent(Long branchUuid) {
-      this(TokenFactory.createBranch(branchUuid));
+   public ArtifactEvent(TransactionToken transaction) {
+      this(transaction.getBranch(), transaction, ArtifactEventType.UPDATE_ARTIFACTS);
    }
 
    public ArtifactEvent(BranchId branch, ArtifactEventType reloadEvent) {
-      this.reloadEvent = reloadEvent;
+      this(branch, TransactionToken.SENTINEL, reloadEvent);
+   }
+
+   public ArtifactEvent(BranchId branch, TransactionToken transaction, ArtifactEventType reloadEvent) {
       this.branch = branch;
+      this.transaction = transaction;
+      this.reloadEvent = reloadEvent;
    }
 
    public boolean isReloadEvent() {
@@ -74,12 +80,8 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return getBranch().equals(branch.getUuid());
    }
 
-   public int getTransactionId() {
-      return transactionId;
-   }
-
-   public void setTransactionId(int value) {
-      this.transactionId = value;
+   public TransactionId getTransactionId() {
+      return transaction;
    }
 
    public List<EventBasicGuidArtifact> getArtifacts() {
@@ -260,7 +262,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
    public String toString() {
       try {
          return String.format("ArtifactEvent: BG[%s] TrId[%d] ARTS[%s] RELS[%s] Sender[%s]", branch.getId(),
-            transactionId, getArtifactsString(artifacts), getRelationsString(relations), networkSender);
+            transaction, getArtifactsString(artifacts), getRelationsString(relations), networkSender);
       } catch (Exception ex) {
          return String.format("ArtifactEvent exception: " + ex.getLocalizedMessage());
       }

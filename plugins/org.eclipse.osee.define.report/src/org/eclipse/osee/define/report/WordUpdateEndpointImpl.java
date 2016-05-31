@@ -47,7 +47,8 @@ public final class WordUpdateEndpointImpl implements WordUpdateEndpoint {
       Conditions.checkNotNullOrEmpty(data.getArtifacts(), "WordUpdateData artifacts");
       Conditions.checkExpressionFailOnTrue(data.getUserArtId() <= 0, "WordUpdateData invalid user id %d",
          data.getUserArtId());
-      Conditions.checkExpressionFailOnTrue(data.getBranch() <= 0, "WordUpdateData invalid branch %d", data.getBranch());
+      Conditions.checkExpressionFailOnTrue(data.getBranch().isInvalid(), "WordUpdateData invalid branch %s",
+         data.getBranch());
       Conditions.checkNotNull(data.getWordData(), "WordUpdateData content");
    }
 

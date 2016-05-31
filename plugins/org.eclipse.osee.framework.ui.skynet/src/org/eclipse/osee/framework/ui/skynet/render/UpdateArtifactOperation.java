@@ -21,6 +21,7 @@ import org.eclipse.osee.define.report.api.WordArtifactChange;
 import org.eclipse.osee.define.report.api.WordUpdateChange;
 import org.eclipse.osee.define.report.api.WordUpdateData;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -66,7 +67,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
       WordUpdateData wud = new WordUpdateData();
       wud.setWordData(data);
       wud.setArtifacts(transferArts);
-      wud.setBranch(branch.getUuid());
+      wud.setBranch(branch);
       wud.setThreeWayMerge(threeWayMerge);
       wud.setComment(getComment());
       wud.setMultiEdit(UserManager.getBooleanSetting(MsWordPreferencePage.MUTI_EDIT_SAVE_ALL_CHANGES));
@@ -78,9 +79,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
 
    private void postProcessChange(WordUpdateChange change) {
       // Collect attribute events
-      Integer tx = change.getTx();
-      ArtifactEvent artifactEvent = new ArtifactEvent(change.getBranch());
-      artifactEvent.setTransactionId(tx);
+      ArtifactEvent artifactEvent = new ArtifactEvent(TransactionToken.valueOf(change.getTx(), branch));
 
       for (Artifact artifact : artifacts) {
          WordArtifactChange artChange = change.getWordArtifactChange(artifact.getArtId());

@@ -11,13 +11,16 @@
 package org.eclipse.osee.framework.core.data;
 
 import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 
 /**
  * @author Ryan D. Brooks
  */
+@JsonSerialize(using = IdSerializer.class)
 public interface TransactionId extends Identity<Integer> {
    TransactionId SENTINEL = valueOf(Id.SENTINEL);
 

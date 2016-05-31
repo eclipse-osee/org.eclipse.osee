@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -73,8 +74,8 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
    }
 
    @Override
-   public int getTransactionNumber() {
-      return transactionRecord.getId();
+   public TransactionId getTransaction() {
+      return transactionRecord;
    }
 
    @Override
@@ -168,7 +169,7 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
 
          chStmt.runPreparedQuery(query, transactionData.getItemId(), branchId);
          while (chStmt.next()) {
-            results.add(new Object[] {branchId, chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
+            results.add(new Object[] {branchId, chStmt.getLong("transaction_id"), chStmt.getLong("gamma_id")});
          }
       } finally {
          chStmt.close();
@@ -176,8 +177,7 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
    }
 
    private void updateModifiedCachedObject() throws OseeCoreException {
-      ArtifactEvent artifactEvent = new ArtifactEvent(transactionRecord.getBranch());
-      artifactEvent.setTransactionId(getTransactionNumber());
+      ArtifactEvent artifactEvent = new ArtifactEvent(transactionRecord);
 
       // Update all transaction items before collecting events
       for (BaseTransactionData transactionData : txDatas) {
