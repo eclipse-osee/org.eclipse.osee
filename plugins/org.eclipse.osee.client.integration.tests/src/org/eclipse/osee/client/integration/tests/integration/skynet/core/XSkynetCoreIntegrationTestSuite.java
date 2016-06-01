@@ -15,7 +15,6 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   ArtifactCacheQueryTest.class,
    ArtifactEventLoopbackTest.class,
    ArtifactEventTest.class,
    ArtifactGetLastModifiedTest.class,

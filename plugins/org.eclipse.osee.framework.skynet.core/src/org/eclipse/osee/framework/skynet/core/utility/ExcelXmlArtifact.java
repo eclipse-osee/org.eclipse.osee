@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCacheQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -49,8 +49,8 @@ public class ExcelXmlArtifact implements RowProcessor {
    }
 
    private void startParsing() throws OseeCoreException, IOException, SAXException {
-      Artifact artifact = ArtifactCacheQuery.getSingletonArtifactByText(CoreArtifactTypes.GeneralDocument,
-         CoreAttributeTypes.StaticId, staticId, branch, true);
+      Artifact artifact = ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.GeneralDocument,
+         CoreAttributeTypes.StaticId, staticId, branch);
       if (artifact != null) {
          String xmlData = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.NativeContent, null);
          Reader reader = new StringReader(xmlData);

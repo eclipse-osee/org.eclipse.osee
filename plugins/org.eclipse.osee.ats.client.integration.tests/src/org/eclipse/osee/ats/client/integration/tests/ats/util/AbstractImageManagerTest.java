@@ -20,17 +20,16 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCacheQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -106,11 +105,10 @@ public abstract class AbstractImageManagerTest {
 
    @org.junit.Test
    public void testGetImageByArtifact() throws Exception {
-      Artifact folder = ArtifactCacheQuery.getOrCreateSingletonArtifactByText(CoreArtifactTypes.Folder,
-         CoreAttributeTypes.StaticId, "user.groups", CoreBranches.COMMON);
+      ArtifactId folder = ArtifactQuery.getArtifactFromTypeAndNameNoException(CoreArtifactTypes.Folder, "User Groups",
+         AtsUtilCore.getAtsBranch());
       assertTrue("Image returned not a folder image.",
-         ArtifactImageManager.getImage(folder).equals(ImageManager.getImage(PluginUiImage.FOLDER)));
-      ArtifactCache.deCache(folder);
+         ArtifactImageManager.getImage((Artifact) folder).equals(ImageManager.getImage(PluginUiImage.FOLDER)));
    }
 
    public ByteArrayInputStream getByteArrayInputStream(String imageFilename) throws Exception {

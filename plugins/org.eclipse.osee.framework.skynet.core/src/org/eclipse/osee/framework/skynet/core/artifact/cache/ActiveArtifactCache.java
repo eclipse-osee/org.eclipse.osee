@@ -12,17 +12,12 @@ package org.eclipse.osee.framework.skynet.core.artifact.cache;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactKey;
 
@@ -32,14 +27,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactKey;
 public class ActiveArtifactCache extends AbstractArtifactCache {
 
    private final CompositeKeyHashMap<IArtifactType, ArtifactKey, Object> byArtifactTypeCache;
-   private final CompositeKeyHashMap<String, Long, Set<Object>> keyedArtifactCache;
    private final Map<Long, ArtifactKey> uuidToArtifactKey;
    private final CompositeKeyHashMap<Long, Long, String> uuidBranchUuidToGuid;
 
    public ActiveArtifactCache(int initialCapacity) {
       super(initialCapacity);
       byArtifactTypeCache = new CompositeKeyHashMap<>(initialCapacity, true);
-      keyedArtifactCache = new CompositeKeyHashMap<>(200, true);
       uuidToArtifactKey = new HashMap<>(200);
       uuidBranchUuidToGuid = new CompositeKeyHashMap<>(200, true);
    }
@@ -58,10 +51,6 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
    public void deCache(Artifact artifact) {
       super.deCache(artifact);
       byArtifactTypeCache.removeAndGet(artifact.getArtifactType(), new ArtifactKey(artifact));
-      List<String> guid = uuidBranchUuidToGuid.getValues(artifact.getUuid());
-      if (guid != null && !guid.isEmpty()) {
-         keyedArtifactCache.remove(guid.iterator().next(), artifact.getBranch().getUuid());
-      }
       uuidToArtifactKey.remove(artifact.getUuid());
       uuidBranchUuidToGuid.remove(artifact.getUuid());
    }
@@ -101,62 +90,11 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
       return items;
    }
 
-   public void deCacheByText(String text, BranchId branch, Artifact artifact) {
-      super.deCache(artifact);
-      Set<Object> objects = keyedArtifactCache.get(text, branch.getUuid());
-      objects.remove(artifact);
-   }
-
-   /**
-    * Return single artifact stored by text and branch or null if none.
-    *
-    * @throws OseeStateException if more than one artifact stored.
-    */
-   public Artifact getByText(String text, BranchId branch) throws OseeCoreException {
-      Set<Object> objects = keyedArtifactCache.get(text, branch.getUuid());
-      if (objects != null) {
-         if (objects.size() > 1) {
-            throw new OseeStateException(
-               String.format("Expected only one value for [%s]; found [%d]", text, objects.size()));
-         } else if (objects.size() == 1) {
-            return asArtifact(objects.iterator().next());
-         }
-      }
-      return null;
-   }
-
-   public Collection<Artifact> getListByText(String text, BranchId branch) {
-      Set<Object> objects = keyedArtifactCache.get(text, branch.getUuid());
-      if (objects == null) {
-         return Collections.emptyList();
-      }
-      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(objects);
-   }
-
-   /**
-    * @returns the previous value associated with keys, or null if there was no mapping for key. (A null return can also
-    * indicate that the map previously associated null with key, if the implementation supports null values.)
-    */
-   public Artifact cacheByText(String key, Artifact artifact) {
-      cache(artifact);
-      Set<Object> objects = keyedArtifactCache.get(key, artifact.getBranch().getUuid());
-      if (objects == null) {
-         objects = new HashSet<>();
-         keyedArtifactCache.put(key, artifact.getBranch().getUuid(), objects);
-      }
-      if (objects.contains(artifact)) {
-         return artifact;
-      }
-      objects.add(artifact);
-      return null;
-   }
-
    @Override
    public String toString() {
       StringBuilder builder = new StringBuilder();
       builder.append(super.toString());
       builder.append(String.format("ByType:     [%s]\n", byArtifactTypeCache.size()));
-      builder.append(String.format("ByText:     [%s]\n", keyedArtifactCache.size()));
       return builder.toString();
    }
 

@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.StaticId;
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -29,9 +26,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCacheQuery;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -101,14 +95,6 @@ public abstract class ImageManagerTest {
       assertTrue("Image returned not a folder image.",
          ArtifactImageManager.getImage(CoreArtifactTypes.Folder).equals(ImageManager.getImage(PluginUiImage.FOLDER)));
 
-   }
-
-   @org.junit.Test
-   public void testGetImageByArtifact() throws Exception {
-      Artifact folder = ArtifactCacheQuery.getOrCreateSingletonArtifactByText(Folder, StaticId, "user.groups", COMMON);
-      assertTrue("Image returned not a folder image.",
-         ArtifactImageManager.getImage(folder).equals(ImageManager.getImage(PluginUiImage.FOLDER)));
-      ArtifactCache.deCache(folder);
    }
 
    public static ByteArrayInputStream getByteArrayInputStream(String imageFilename) throws Exception {

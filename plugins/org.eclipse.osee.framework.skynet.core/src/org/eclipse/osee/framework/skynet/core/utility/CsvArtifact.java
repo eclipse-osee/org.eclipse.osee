@@ -15,15 +15,16 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCacheQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * Supports the loading, modifying and saving of General Document artifacts of extension csv
- * 
+ *
  * @author Donald G. Dunne
  */
 public class CsvArtifact {
@@ -74,8 +75,14 @@ public class CsvArtifact {
    }
 
    public static CsvArtifact getCsvArtifact(String staticId, BranchId branch, boolean create) throws OseeCoreException {
-      Artifact art = ArtifactCacheQuery.getSingletonArtifactByText(CoreArtifactTypes.GeneralDocument,
-         CoreAttributeTypes.StaticId, staticId, branch, true);
+      Artifact art = null;
+      try {
+         art = ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.GeneralDocument,
+            CoreAttributeTypes.StaticId, staticId, branch);
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+
       if (art != null) {
          return new CsvArtifact(art);
       }

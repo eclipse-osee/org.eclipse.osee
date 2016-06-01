@@ -15,14 +15,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.cache.ActiveArtifactCache;
 
 /**
@@ -94,17 +92,6 @@ public final class ArtifactCache {
     */
    public static void updateCachedArtifact(int artId, long branchUuid) {
       ACTIVE_CACHE.updateReferenceType(artId, branchUuid);
-   }
-
-   /**
-    * @returns the previous value associated with keys, or null if there was no mapping for key. (A null return can also
-    * indicate that the map previously associated null with key, if the implementation supports null values.)
-    */
-   public static Artifact cacheByTextId(String key, Artifact artifact) throws OseeCoreException {
-      if (artifact.isHistorical()) {
-         throw new OseeArgumentException("historical artifact cannot be cached by text [%s]", key);
-      }
-      return ACTIVE_CACHE.cacheByText(key, artifact);
    }
 
    public static List<Artifact> getArtifactsByType(IArtifactType artifactType) {
@@ -180,40 +167,6 @@ public final class ArtifactCache {
 
    public static Artifact getActive(String artGuid, BranchId branch) throws OseeCoreException {
       return getActive(artGuid, branch.getUuid());
-   }
-
-   /**
-    * Return single active artifact stored by text and branch or null if none.
-    *
-    * @throws OseeStateException if more than one artifact stored.
-    */
-   public static Artifact getByTextId(String key, BranchId branch) throws OseeCoreException {
-      Artifact artifact = ACTIVE_CACHE.getByText(key, branch);
-      // decache if deleted
-      if (artifact != null && artifact.isDeleted()) {
-         ACTIVE_CACHE.deCacheByText(key, branch, artifact);
-      }
-      return artifact;
-   }
-
-   public static Artifact deCacheByTextId(String key, BranchId branch) throws OseeCoreException {
-      Artifact artifact = ACTIVE_CACHE.getByText(key, branch);
-      ACTIVE_CACHE.deCacheByText(key, branch, artifact);
-      return artifact;
-   }
-
-   public static Collection<Artifact> getListByTextId(String key, BranchId branch) throws OseeCoreException {
-      List<Artifact> artifacts = new ArrayList<>();
-      Collection<Artifact> cached = ACTIVE_CACHE.getListByText(key, branch);
-      // decache any deleted artifacts
-      for (Artifact artifact : cached) {
-         if (artifact.isDeleted()) {
-            ACTIVE_CACHE.deCacheByText(key, branch, artifact);
-         } else {
-            artifacts.add(artifact);
-         }
-      }
-      return artifacts;
    }
 
    public static Artifact getActive(Long uuid, Long branchUuid) {
