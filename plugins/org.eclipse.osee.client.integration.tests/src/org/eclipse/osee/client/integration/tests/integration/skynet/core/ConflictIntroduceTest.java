@@ -12,6 +12,7 @@ package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -97,10 +98,10 @@ public class ConflictIntroduceTest {
       try {
          conflicts = ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destinationBranch,
             BranchManager.getBaseTransaction(sourceBranch), new NullProgressMonitor());
+         assertEquals(0, conflicts.size());
       } catch (Exception ex) {
          fail(Lib.exceptionToString(ex));
       }
-      assertTrue("Unexpected conflict found", conflicts.size() == 0);
    }
 
    @Test
@@ -122,10 +123,10 @@ public class ConflictIntroduceTest {
       try {
          conflicts = ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destinationBranch,
             BranchManager.getBaseTransaction(sourceBranch), new NullProgressMonitor());
+         assertEquals(2, conflicts.size());
       } catch (Exception ex) {
          fail(Lib.exceptionToString(ex));
       }
-      assertTrue("Expected conflict not found", conflicts.size() == 2);
    }
 
    @Test
@@ -146,10 +147,10 @@ public class ConflictIntroduceTest {
       try {
          conflicts = ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destinationBranch,
             BranchManager.getBaseTransaction(sourceBranch), new NullProgressMonitor());
+         assertEquals(1, conflicts.size());
       } catch (Exception ex) {
          fail(Lib.exceptionToString(ex));
       }
-      assertTrue("Expected conflict not found", conflicts.size() == 1);
    }
 
    @AfterClass

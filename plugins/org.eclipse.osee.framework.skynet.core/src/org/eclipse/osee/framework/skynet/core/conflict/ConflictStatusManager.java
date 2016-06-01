@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.conflict;
 
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -45,7 +46,7 @@ public class ConflictStatusManager {
       }
    }
 
-   public static ConflictStatus computeStatus(int sourceGamma, int destGamma, long branchID, int objectID, int conflictType, ConflictStatus passedStatus, int transactionId) throws OseeCoreException {
+   public static ConflictStatus computeStatus(int sourceGamma, int destGamma, long branchID, int objectID, int conflictType, ConflictStatus passedStatus, TransactionId transactionId) throws OseeCoreException {
       //Check for a value in the table, if there is not one in there then
       //add it with an unedited setting and return unedited
       //If gammas are out of date, update the gammas and down grade markedMerged to Edited

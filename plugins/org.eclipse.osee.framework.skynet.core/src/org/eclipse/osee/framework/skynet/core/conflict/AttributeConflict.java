@@ -21,12 +21,12 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
@@ -69,7 +68,7 @@ public class AttributeConflict extends Conflict {
    private static final boolean DEBUG =
       "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Merge"));
 
-   public AttributeConflict(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, TransactionRecord commitTransaction, String sourceValue, int attrId, long attrTypeId, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) throws OseeCoreException {
+   public AttributeConflict(int sourceGamma, int destGamma, int artId, TransactionToken toTransactionId, TransactionToken commitTransaction, String sourceValue, int attrId, long attrTypeId, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) throws OseeCoreException {
       super(sourceGamma, destGamma, artId, toTransactionId, commitTransaction, mergeBranch, sourceBranch, destBranch);
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;

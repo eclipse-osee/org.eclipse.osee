@@ -108,14 +108,14 @@ public class ConflictTest {
          conflicts = ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
             ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBaseTransaction(),
             new NullProgressMonitor());
+         int expectedNumber = ConflictTestManager.numberOfConflicts();
+         int actualNumber = conflicts.size();
+         assertTrue(
+            "(Intermittent failures - needs re-write) - Number of conflicts found is not equal to the number of conflicts expected",
+            expectedNumber <= actualNumber && actualNumber <= expectedNumber + 1);
       } catch (Exception ex) {
          fail(Lib.exceptionToString(ex));
       }
-      int expectedNumber = ConflictTestManager.numberOfConflicts();
-      int actualNumber = conflicts.size();
-      assertTrue(
-         "(Intermittent failures - needs re-write) - Number of conflicts found is not equal to the number of conflicts expected",
-         expectedNumber <= actualNumber && actualNumber <= expectedNumber + 1);
       assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
          monitorLog.getSevereLogs().isEmpty());
    }

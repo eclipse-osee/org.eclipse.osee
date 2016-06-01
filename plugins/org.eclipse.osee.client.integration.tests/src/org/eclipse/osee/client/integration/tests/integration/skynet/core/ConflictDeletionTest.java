@@ -133,7 +133,7 @@ public class ConflictDeletionTest {
                if (chStmt.next()) {
                   fail(
                      "Artifact " + artifact.getArtId() + " old Transaction < " + artifact.getTransaction() + "  is set to " + chStmt.getInt(
-                        "tx_current") + " , should be 0 on branch " + artifact.getBranch().getGuid());
+                        "tx_current") + " , should be 0 on branch " + artifact.getBranchId());
                }
             } finally {
                chStmt.close();
@@ -142,11 +142,11 @@ public class ConflictDeletionTest {
                chStmt.runPreparedQuery(CHECK_FOR_DELETED_TX_CURRENT, artifact.getBranchId(), artifact.getArtId());
                if (chStmt.next()) {
                   assertTrue(
-                     "Artifact " + artifact.getArtId() + " Transaction: " + artifact.getTransaction() + " should be 3 on branch " + artifact.getBranch().getGuid(),
+                     "Artifact " + artifact.getArtId() + " Transaction: " + artifact.getTransaction() + " should be 3 on branch " + artifact.getBranchId(),
                      artifact.getTransaction().equals(chStmt.getLong("transaction_id")));
                } else {
                   fail(
-                     "Artifact " + artifact.getArtId() + " was not given a tx_current value of 2 when it was deleted on branch " + artifact.getBranch().getGuid() + " on transaction " + artifact.getTransaction());
+                     "Artifact " + artifact.getArtId() + " was not given a tx_current value of 2 when it was deleted on branch " + artifact.getBranchId() + " on transaction " + artifact.getTransaction());
                }
             } finally {
                chStmt.close();
@@ -190,15 +190,14 @@ public class ConflictDeletionTest {
                   if (chStmt.next()) {
                      if (deletionTransaction.equals(chStmt.getLong("transaction_id"))) {
                         fail("Artifact " + artifact.getArtId() + " tx_current set on  " + chStmt.getInt(
-                           "transaction_id") + " when it should be < " + deletionTransaction + " on branch " + artifact.getBranch().getGuid());
+                           "transaction_id") + " when it should be < " + deletionTransaction + " on branch " + artifact.getBranchId());
                      }
                      if (chStmt.next()) {
                         fail(
-                           "Artifact " + artifact.getArtId() + " has multiple tx_current set on " + artifact.getBranch().getGuid());
+                           "Artifact " + artifact.getArtId() + " has multiple tx_current set on " + artifact.getBranchId());
                      }
                   } else {
-                     fail(
-                        "Artifact " + artifact.getArtId() + " has no tx_current set on " + artifact.getBranch().getGuid());
+                     fail("Artifact " + artifact.getArtId() + " has no tx_current set on " + artifact.getBranchId());
                   }
                } finally {
                   chStmt.close();
@@ -216,15 +215,14 @@ public class ConflictDeletionTest {
                      if (chStmt.next()) {
                         if (deletionTransaction.equals(chStmt.getLong("transaction_id"))) {
                            fail("Attribute " + attribute.getId() + " tx_current set on  " + chStmt.getInt(
-                              "transaction_id") + " when it should be < " + deletionTransaction + " on branch " + artifact.getBranch().getGuid());
+                              "transaction_id") + " when it should be < " + deletionTransaction + " on branch " + artifact.getBranchId());
                         }
                         if (chStmt.next()) {
                            fail(
-                              "Attribute " + attribute.getId() + " has multiple tx_current set on " + artifact.getBranch().getGuid());
+                              "Attribute " + attribute.getId() + " has multiple tx_current set on " + artifact.getBranchId());
                         }
                      } else {
-                        fail(
-                           "Attribute " + attribute.getId() + " has no tx_current set on " + artifact.getBranch().getGuid());
+                        fail("Attribute " + attribute.getId() + " has no tx_current set on " + artifact.getBranchId());
                      }
                   } finally {
                      chStmt.close();
@@ -241,15 +239,14 @@ public class ConflictDeletionTest {
                      if (chStmt.next()) {
                         if (deletionTransaction.equals(chStmt.getLong("transaction_id"))) {
                            fail("Relation " + relation.getId() + " tx_current set on  " + chStmt.getInt(
-                              "transaction_id") + " when it should be < " + deletionTransaction + " on branch " + artifact.getBranch().getGuid());
+                              "transaction_id") + " when it should be < " + deletionTransaction + " on branch " + artifact.getBranchId());
                         }
                         if (chStmt.next()) {
                            fail(
-                              "Relation " + relation.getId() + " has multiple tx_current set on " + artifact.getBranch().getGuid());
+                              "Relation " + relation.getId() + " has multiple tx_current set on " + artifact.getBranchId());
                         }
                      } else {
-                        fail(
-                           "Relation " + relation.getId() + " has no tx_current set on " + artifact.getBranch().getGuid());
+                        fail("Relation " + relation.getId() + " has no tx_current set on " + artifact.getBranchId());
                      }
                   } finally {
                      chStmt.close();
@@ -318,7 +315,7 @@ public class ConflictDeletionTest {
          if (chStmt.next()) {
             fail(
                "Attribute " + attribute.getId() + " old Transaction < : " + artifact.getTransaction() + "  is set to " + chStmt.getInt(
-                  "tx_current") + " , should be 0 on branch " + artifact.getBranch().getGuid());
+                  "tx_current") + " , should be 0 on branch " + artifact.getBranchId());
          }
       } finally {
          chStmt.close();
@@ -332,7 +329,7 @@ public class ConflictDeletionTest {
                artifact.getTransaction().equals(chStmt.getLong("transaction_id")));
          } else {
             fail(
-               "Attribute " + attribute.getId() + " was not given a tx_current value of 3 when it was deleted on branch " + artifact.getBranch().getGuid());
+               "Attribute " + attribute.getId() + " was not given a tx_current value of 3 when it was deleted on branch " + artifact.getBranchId());
          }
       } finally {
          chStmt.close();
@@ -350,13 +347,13 @@ public class ConflictDeletionTest {
          if (chStmt.next()) {
             fail(
                "Relation " + relation.getId() + " old Transaction < : " + artifact.getTransaction() + "  is set to " + chStmt.getInt(
-                  "tx_current") + " , should be 0 on branch " + artifact.getBranch().getGuid());
+                  "tx_current") + " , should be 0 on branch " + artifact.getBranchId());
          }
       } finally {
          chStmt.close();
       }
       try {
-         chStmt.runPreparedQuery(CHECK_FOR_DELETED_TX_CURRENT_RELATION, artifact.getBranch().getGuid(), value,
+         chStmt.runPreparedQuery(CHECK_FOR_DELETED_TX_CURRENT_RELATION, artifact.getBranchId(), value,
             relation.getId());
          if (chStmt.next()) {
             assertTrue(
@@ -364,11 +361,11 @@ public class ConflictDeletionTest {
                artifact.getTransaction().isOlderThan(TransactionId.valueOf(chStmt.getLong("transaction_id"))));
             if (chStmt.next()) {
                fail(
-                  "Relation " + relation.getId() + " has multiple tx_current values of " + value + " when it was deleted on branch " + artifact.getBranch().getGuid() + " on transaction " + artifact.getTransaction());
+                  "Relation " + relation.getId() + " has multiple tx_current values of " + value + " when it was deleted on branch " + artifact.getBranchId() + " on transaction " + artifact.getTransaction());
             }
          } else {
             fail(
-               "Relation " + relation.getId() + " was not given a tx_current value of " + value + " when it was deleted on branch " + artifact.getBranch().getGuid() + " on transaction " + artifact.getTransaction());
+               "Relation " + relation.getId() + " was not given a tx_current value of " + value + " when it was deleted on branch " + artifact.getBranchId() + " on transaction " + artifact.getTransaction());
          }
       } finally {
          chStmt.close();

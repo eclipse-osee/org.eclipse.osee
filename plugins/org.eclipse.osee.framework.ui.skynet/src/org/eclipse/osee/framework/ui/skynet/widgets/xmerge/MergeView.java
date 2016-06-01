@@ -195,9 +195,10 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
             if (memento != null) {
                if (SkynetViews.isSourceValid(memento)) {
 
-                  Integer commitTransaction = memento.getInteger(COMMIT_NUMBER);
-                  if (commitTransaction != null) {
-                     openViewUpon(null, null, null, TransactionManager.getTransactionId(commitTransaction), false);
+                  String commitTx = memento.getString(COMMIT_NUMBER);
+                  if (commitTx != null) {
+                     openViewUpon(null, null, null, TransactionManager.getTransactionId(Long.parseLong(commitTx)),
+                        false);
                      return;
                   }
                   sourceBranchId = Long.parseLong(memento.getString(SOURCE_BRANCH_ID));
@@ -218,7 +219,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                   }
                   try {
                      TransactionRecord transactionId =
-                        TransactionManager.getTransactionId(memento.getInteger(TRANSACTION_NUMBER));
+                        TransactionManager.getTransactionId(Long.parseLong(memento.getString(TRANSACTION_NUMBER)));
                      openViewUpon(sourceBranch, destBranch, transactionId, null, false);
                   } catch (OseeCoreException ex) {
                      OseeLog.log(Activator.class, Level.WARNING,
@@ -250,7 +251,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
          try {
             IMemento childMemento = memento.createChild(INPUT);
             if (commitTrans != null) {
-               childMemento.putInteger(COMMIT_NUMBER, commitTrans.getId());
+               childMemento.putString(COMMIT_NUMBER, commitTrans.getId().toString());
             }
             if (sourceBranch != null) {
                childMemento.putString(SOURCE_BRANCH_ID, Long.toString(sourceBranch.getUuid()));
@@ -259,7 +260,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                childMemento.putString(DEST_BRANCH_ID, Long.toString(destBranch.getUuid()));
             }
             if (transactionId != null) {
-               childMemento.putInteger(TRANSACTION_NUMBER, transactionId.getId());
+               childMemento.putString(TRANSACTION_NUMBER, transactionId.getId().toString());
             }
             SkynetViews.addDatabaseSourceId(childMemento);
          } catch (Exception ex) {

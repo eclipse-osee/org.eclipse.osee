@@ -17,6 +17,7 @@ import java.util.HashSet;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.sql.OseeSql;
@@ -123,11 +124,11 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
       }
       int numberAttrUpdated = 0;
       //Copy over any missing attributes
-      int baselineTransaction = BranchManager.getBaseTransaction(mergeBranch).getId();
+      TransactionId baselineTransaction = BranchManager.getBaseTransaction(mergeBranch);
       for (Artifact artifact : goodMergeBranchArtifacts) {
-         numberAttrUpdated += getJdbcClient().runPreparedUpdate(connection, UPDATE_ARTIFACTS, baselineTransaction,
-            mergeBranch.getUuid(), artifact.getArtId(), sourceBranch.getUuid(), TxChange.NOT_CURRENT.getValue(),
-            mergeBranch.getUuid(), baselineTransaction);
+         numberAttrUpdated +=
+            getJdbcClient().runPreparedUpdate(connection, UPDATE_ARTIFACTS, baselineTransaction, mergeBranch,
+               artifact.getArtId(), sourceBranch, TxChange.NOT_CURRENT.getValue(), mergeBranch, baselineTransaction);
       }
       if (DEBUG) {
          System.out.println(String.format("          Adding %d Attributes to Existing Artifacts took %s",
@@ -166,37 +167,35 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
       }
       try {
          joinQuery.store(connection);
-         Integer startTransactionNumber = BranchManager.getBaseTransaction(mergeBranch).getId();
-         insertGammas(connection, INSERT_ATTRIBUTE_GAMMAS, startTransactionNumber, joinQuery.getQueryId(), sourceBranch,
-            mergeBranch);
-         insertGammas(connection, INSERT_ARTIFACT_GAMMAS, startTransactionNumber, joinQuery.getQueryId(), sourceBranch,
-            mergeBranch);
+         TransactionId startTx = BranchManager.getBaseTransaction(mergeBranch);
+         insertGammas(connection, INSERT_ATTRIBUTE_GAMMAS, startTx, joinQuery.getQueryId(), sourceBranch, mergeBranch);
+         insertGammas(connection, INSERT_ARTIFACT_GAMMAS, startTx, joinQuery.getQueryId(), sourceBranch, mergeBranch);
       } catch (OseeCoreException ex) {
-         throw new OseeCoreException("Source Branch %s Artifact Ids: %s", sourceBranch.getUuid(),
+         throw new OseeCoreException("Source Branch %s Artifact Ids: %s", sourceBranch.getId(),
             Collections.toString(",", artIds));
       } finally {
          joinQuery.delete(connection);
       }
    }
 
-   private void insertGammas(JdbcConnection connection, String sql, int baselineTransactionNumber, int queryId, BranchId sourceBranch, BranchId mergeBranch) throws OseeCoreException {
-      getJdbcClient().runPreparedUpdate(connection, sql, baselineTransactionNumber, TxChange.CURRENT.getValue(),
-         mergeBranch.getUuid(), sourceBranch.getUuid(), queryId);
+   private void insertGammas(JdbcConnection connection, String sql, TransactionId baseTx, int queryId, BranchId sourceBranch, BranchId mergeBranch) throws OseeCoreException {
+      getJdbcClient().runPreparedUpdate(connection, sql, baseTx, TxChange.CURRENT.getValue(), mergeBranch, sourceBranch,
+         queryId);
    }
 
    private Collection<Integer> getAllMergeArtifacts(BranchId branch) throws OseeCoreException {
       Collection<Integer> artSet = new HashSet<>();
 
       getJdbcClient().runQuery(stmt -> artSet.add(stmt.getInt("art_id")),
-         ServiceUtil.getSql(OseeSql.MERGE_GET_ARTIFACTS_FOR_BRANCH), branch.getUuid());
+         ServiceUtil.getSql(OseeSql.MERGE_GET_ARTIFACTS_FOR_BRANCH), branch);
 
       getJdbcClient().runQuery(stmt -> artSet.add(stmt.getInt("art_id")),
-         ServiceUtil.getSql(OseeSql.MERGE_GET_ATTRIBUTES_FOR_BRANCH), branch.getUuid());
+         ServiceUtil.getSql(OseeSql.MERGE_GET_ATTRIBUTES_FOR_BRANCH), branch);
 
       getJdbcClient().runQuery(stmt -> {
          artSet.add(stmt.getInt("a_art_id"));
          artSet.add(stmt.getInt("b_art_id"));
-      } , ServiceUtil.getSql(OseeSql.MERGE_GET_RELATIONS_FOR_BRANCH), branch.getUuid());
+      }, ServiceUtil.getSql(OseeSql.MERGE_GET_RELATIONS_FOR_BRANCH), branch);
 
       return artSet;
    }
@@ -207,12 +206,10 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
     * will also be removed from the database only for the branch it is on).
     */
    private void purgeArtifactFromBranch(JdbcConnection connection, BranchId branch, int artId) throws OseeCoreException {
-      long branchUuid = branch.getUuid();
-
       //Remove from Baseline
-      getJdbcClient().runPreparedUpdate(connection, PURGE_ATTRIBUTE_FROM_MERGE_BRANCH, branchUuid, artId);
-      getJdbcClient().runPreparedUpdate(connection, PURGE_RELATION_FROM_MERGE_BRANCH, branchUuid, artId, artId);
-      getJdbcClient().runPreparedUpdate(connection, PURGE_ARTIFACT_FROM_MERGE_BRANCH, branchUuid, artId);
+      getJdbcClient().runPreparedUpdate(connection, PURGE_ATTRIBUTE_FROM_MERGE_BRANCH, branch, artId);
+      getJdbcClient().runPreparedUpdate(connection, PURGE_RELATION_FROM_MERGE_BRANCH, branch, artId, artId);
+      getJdbcClient().runPreparedUpdate(connection, PURGE_ARTIFACT_FROM_MERGE_BRANCH, branch, artId);
    }
 
 }

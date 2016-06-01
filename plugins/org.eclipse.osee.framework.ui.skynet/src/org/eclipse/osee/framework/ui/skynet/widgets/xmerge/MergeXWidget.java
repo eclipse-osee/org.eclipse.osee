@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.httpRequests.CommitBranchHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -236,7 +237,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
                Conflict[] conflicts = getConflicts();
                if (conflicts.length >= 0) {
                   Conflict[] artifactChanges = new Conflict[0];
-                  if (conflicts[0].getToTransactionId() != null) {
+                  if (conflicts[0].getToTransactionId().isValid()) {
                      setConflicts(ConflictManagerInternal.getConflictsPerBranch(conflicts[0].getSourceBranch(),
                         conflicts[0].getDestBranch(), conflicts[0].getToTransactionId(), monitor).toArray(
                            artifactChanges));
@@ -634,7 +635,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
                }
             } else {
                try {
-                  ChangeUiUtil.open(firstConflict.getCommitTransactionId());
+                  ChangeUiUtil.open(TransactionManager.getTransaction(firstConflict.getCommitTransactionId()));
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }

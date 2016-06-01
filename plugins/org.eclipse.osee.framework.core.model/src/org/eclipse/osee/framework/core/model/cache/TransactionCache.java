@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -119,7 +120,7 @@ public class TransactionCache implements IOseeLoadingCache<TransactionRecord> {
       return transactionIdCache.size();
    }
 
-   public TransactionRecord getPriorTransaction(TransactionRecord transactionId) throws OseeCoreException {
+   public TransactionRecord getPriorTransaction(TransactionToken transactionId) throws OseeCoreException {
       return accessor.getOrLoadPriorTransaction(this, transactionId.getId(), transactionId.getBranchId());
    }
 

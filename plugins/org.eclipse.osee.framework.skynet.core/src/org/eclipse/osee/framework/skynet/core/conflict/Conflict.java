@@ -16,6 +16,8 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
@@ -32,13 +34,13 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  * @author Jeff C. Phillips
  * @author Theron Virgin
  */
-public abstract class Conflict implements Adaptable  {
+public abstract class Conflict implements Adaptable {
    protected ConflictStatus status;
    protected int sourceGamma;
    protected int destGamma;
    private int artId;
-   private final TransactionRecord toTransactionId;
-   private final TransactionRecord commitTransactionId;
+   private final TransactionToken toTransactionId;
+   private final TransactionToken commitTransactionId;
    private Artifact artifact;
    private Artifact sourceArtifact;
    private Artifact destArtifact;
@@ -49,7 +51,7 @@ public abstract class Conflict implements Adaptable  {
    private String sourceDiffFile = null;
    private String destDiffFile = null;
 
-   protected Conflict(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, TransactionRecord commitTransactionId, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) {
+   protected Conflict(int sourceGamma, int destGamma, int artId, TransactionToken toTransactionId, TransactionToken commitTransactionId, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) {
       this.sourceGamma = sourceGamma;
       this.destGamma = destGamma;
       this.artId = artId;
@@ -128,11 +130,11 @@ public abstract class Conflict implements Adaptable  {
       this.artId = artId;
    }
 
-   public TransactionRecord getToTransactionId() {
+   public TransactionToken getToTransactionId() {
       return toTransactionId;
    }
 
-   public TransactionRecord getCommitTransactionId() {
+   public TransactionToken getCommitTransactionId() {
       return commitTransactionId;
    }
 
@@ -147,7 +149,7 @@ public abstract class Conflict implements Adaptable  {
       } catch (AttributeDoesNotExist ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      int baseTx = BranchManager.getBaseTransaction(mergeBranch).getId();
+      TransactionId baseTx = BranchManager.getBaseTransaction(mergeBranch);
       status = ConflictStatusManager.computeStatus(sourceGamma, destGamma, mergeBranch.getUuid(), objectID,
          getConflictType().getValue(), passedStatus, baseTx);
       return status;

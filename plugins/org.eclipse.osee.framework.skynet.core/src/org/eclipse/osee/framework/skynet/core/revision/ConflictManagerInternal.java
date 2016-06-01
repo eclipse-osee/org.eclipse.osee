@@ -22,7 +22,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.BranchMergeException;
@@ -87,12 +88,12 @@ public class ConflictManagerInternal {
       "SELECT dest_branch_id FROM osee_merge WHERE source_branch_id = ?";
 
    private static final String GET_MERGE_DATA =
-      "SELECT commit_transaction_id, merge_branch_id FROM osee_merge WHERE source_branch_id = ? AND dest_branch_id = ?";
+      "SELECT commit_transaction_id, merge_branch_id FROM osee_merge WHERE source_branch_id = ? AND dest_branch_id = ? and commit_transaction_id > 0";
 
    private static final String GET_COMMIT_TRANSACTION_COMMENT =
       "SELECT transaction_id FROM osee_tx_details WHERE osee_comment = ? AND branch_id = ?";
 
-   public static List<Conflict> getConflictsPerBranch(TransactionRecord commitTransaction, IProgressMonitor monitor) throws OseeCoreException {
+   public static List<Conflict> getConflictsPerBranch(TransactionToken commitTransaction, IProgressMonitor monitor) throws OseeCoreException {
       monitor.beginTask(String.format("Loading Merge Manager for Transaction %d", commitTransaction.getId()), 100);
       monitor.subTask("Finding Database stored conflicts");
       ArrayList<Conflict> conflicts = new ArrayList<>();
@@ -108,7 +109,7 @@ public class ConflictManagerInternal {
             AttributeConflict attributeConflict = new AttributeConflict(chStmt.getInt("source_gamma_id"),
                chStmt.getInt("dest_gamma_id"), chStmt.getInt("art_id"), null, commitTransaction,
                chStmt.getString("source_value"), chStmt.getInt("attr_id"), chStmt.getLong("attr_type_id"),
-               TokenFactory.createBranch(chStmt.getLong("merge_branch_id")), sourceBranch,
+               BranchId.valueOf(chStmt.getLong("merge_branch_id")), sourceBranch,
                BranchManager.getBranchToken(chStmt.getLong("dest_branch_id")));
             attributeConflict.setStatus(ConflictStatus.valueOf(chStmt.getInt("status")));
             conflicts.add(attributeConflict);
@@ -120,23 +121,22 @@ public class ConflictManagerInternal {
       return conflicts;
    }
 
-   public static List<Conflict> getConflictsPerBranch(IOseeBranch sourceBranch, IOseeBranch destinationBranch, TransactionRecord baselineTransaction, IProgressMonitor monitor) throws OseeCoreException {
+   public static List<Conflict> getConflictsPerBranch(IOseeBranch sourceBranch, IOseeBranch destinationBranch, TransactionToken baselineTransaction, IProgressMonitor monitor) throws OseeCoreException {
       List<ConflictBuilder> conflictBuilders = new ArrayList<>();
       List<Conflict> conflicts = new ArrayList<>();
       Set<Integer> artIdSet = new HashSet<>();
       Set<Integer> artIdSetDontShow = new HashSet<>();
       Set<Integer> artIdSetDontAdd = new HashSet<>();
 
+      if (sourceBranch == null || destinationBranch == null) {
+         throw new OseeArgumentException("Source Branch = %s Destination Branch = %s", sourceBranch, destinationBranch);
+      }
+
       // Check to see if the branch has already been committed, then use the
       // transaction version
-      int commitTransactionId = getCommitTransaction(sourceBranch, destinationBranch);
-      if (commitTransactionId > 0) {
-         return getConflictsPerBranch(TransactionManager.getTransactionId(commitTransactionId), monitor);
-      }
-      if (sourceBranch == null || destinationBranch == null) {
-         throw new OseeArgumentException("Source Branch = %s Destination Branch = %s",
-            sourceBranch == null ? "NULL" : sourceBranch.getUuid(),
-            destinationBranch == null ? "NULL" : destinationBranch.getUuid());
+      TransactionToken commitTransactionId = getCommitTransaction(sourceBranch, destinationBranch);
+      if (commitTransactionId.isValid()) {
+         return getConflictsPerBranch(commitTransactionId, monitor);
       }
       monitor.beginTask(String.format("Loading Merge Manager for Branch %d into Branch %d", sourceBranch.getUuid(),
          destinationBranch.getUuid()), 100);
@@ -146,8 +146,7 @@ public class ConflictManagerInternal {
 
       // check for multiplicity conflicts
       Collection<IAttributeType> singleMultiplicityTypes = AttributeTypeManager.getSingleMultiplicityTypes();
-      loadMultiplicityConflicts(singleMultiplicityTypes, sourceBranch, destinationBranch, baselineTransaction,
-         conflictBuilders, artIdSet);
+      loadMultiplicityConflicts(singleMultiplicityTypes, sourceBranch, destinationBranch, conflictBuilders, artIdSet);
 
       loadArtifactVersionConflicts(ServiceUtil.getSql(OseeSql.CONFLICT_GET_ARTIFACTS_DEST), sourceBranch,
          destinationBranch, baselineTransaction, conflictBuilders, artIdSet, artIdSetDontShow, artIdSetDontAdd, monitor,
@@ -205,7 +204,7 @@ public class ConflictManagerInternal {
       return artifacts;
    }
 
-   private static void loadMultiplicityConflicts(Collection<IAttributeType> types, BranchId source, BranchId dest, TransactionRecord baselineTransaction, List<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet) {
+   private static void loadMultiplicityConflicts(Collection<IAttributeType> types, BranchId source, BranchId dest, List<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet) {
       IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       List<Object[]> batchParams = new LinkedList<>();
@@ -241,18 +240,15 @@ public class ConflictManagerInternal {
       }
    }
 
-   private static void loadArtifactVersionConflicts(String sql, IOseeBranch sourceBranch, IOseeBranch destinationBranch, TransactionRecord baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, Set<Integer> artIdSetDontShow, Set<Integer> artIdSetDontAdd, IProgressMonitor monitor, TransactionRecord transactionId) throws OseeCoreException {
+   private static void loadArtifactVersionConflicts(String sql, IOseeBranch sourceBranch, IOseeBranch destinationBranch, TransactionToken baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, Set<Integer> artIdSetDontShow, Set<Integer> artIdSetDontAdd, IProgressMonitor monitor, TransactionRecord commonTransaction) throws OseeCoreException {
       boolean hadEntries = false;
 
       monitor.subTask("Finding Artifact Version Conflicts");
 
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
-         int commonTransactionNumber = transactionId != null ? transactionId.getId() : 0;
-         long commonBranchId = transactionId != null ? transactionId.getBranchId() : 0;
-
-         chStmt.runPreparedQuery(sql, sourceBranch.getUuid(), BranchManager.getBaseTransaction(sourceBranch).getId(),
-            destinationBranch.getUuid(), commonBranchId, commonTransactionNumber, commonTransactionNumber);
+         chStmt.runPreparedQuery(sql, sourceBranch, BranchManager.getBaseTransaction(sourceBranch), destinationBranch,
+            commonTransaction.getBranch(), commonTransaction, commonTransaction);
 
          ArtifactConflictBuilder artifactConflictBuilder;
          int artId = 0;
@@ -294,18 +290,14 @@ public class ConflictManagerInternal {
       }
    }
 
-   private static void loadAttributeConflictsNew(IOseeBranch sourceBranch, IOseeBranch destinationBranch, TransactionRecord baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, IProgressMonitor monitor, TransactionRecord transactionId) throws OseeCoreException {
+   private static void loadAttributeConflictsNew(IOseeBranch sourceBranch, IOseeBranch destinationBranch, TransactionToken baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, IProgressMonitor monitor, TransactionRecord commonTransaction) throws OseeCoreException {
       monitor.subTask("Finding the Attribute Conflicts");
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       AttributeConflictBuilder attributeConflictBuilder;
       try {
-         int commonTransactionNumber = transactionId != null ? transactionId.getId() : 0;
-         long commonBranchId = transactionId != null ? transactionId.getBranchId() : 0;
-
-         chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CONFLICT_GET_ATTRIBUTES), sourceBranch.getUuid(),
-            BranchManager.getBaseTransaction(sourceBranch).getId(), destinationBranch.getUuid(), commonBranchId,
-            commonTransactionNumber);
-
+         chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CONFLICT_GET_ATTRIBUTES), sourceBranch,
+            BranchManager.getBaseTransaction(sourceBranch), destinationBranch, commonTransaction.getBranch(),
+            commonTransaction);
          int attrId = 0;
 
          if (chStmt.next()) {
@@ -345,14 +337,14 @@ public class ConflictManagerInternal {
       boolean isValidConflict = true;
       // We just need the largest value at first so the complete source branch
       // will be searched
-      int parentTransactionNumber = Integer.MAX_VALUE;
+      TransactionId parentTransactionNumber = TransactionId.valueOf(Long.MAX_VALUE);
 
       for (BranchId branch : BranchManager.getAncestors(sourceBranch)) {
          if (!BranchManager.isParentSystemRoot(branch)) {
             isValidConflict &= isAttributeConflictValidOnBranch(destinationGammaId, branch, parentTransactionNumber);
             TransactionRecord sourceTx = BranchManager.getSourceTransaction(branch);
             if (sourceTx != null) {
-               parentTransactionNumber = sourceTx.getId();
+               parentTransactionNumber = sourceTx;
             }
          }
 
@@ -366,10 +358,10 @@ public class ConflictManagerInternal {
    /**
     * @return Returns True if the destination gamma does not exist on a branch else false if it does.
     */
-   private static boolean isAttributeConflictValidOnBranch(int destinationGammaId, BranchId branch, int endTransactionNumber) throws OseeCoreException {
+   private static boolean isAttributeConflictValidOnBranch(int destinationGammaId, BranchId branch, TransactionId endTransaction) throws OseeCoreException {
       String sql =
          "SELECT count(1) FROM osee_txs txs WHERE txs.gamma_id = ? AND txs.branch_id = ? AND txs.transaction_id <= ?";
-      return ConnectionHandler.getJdbcClient().fetch(0, sql, destinationGammaId, branch, endTransactionNumber) == 0;
+      return ConnectionHandler.getJdbcClient().fetch(0, sql, destinationGammaId, branch, endTransaction) == 0;
    }
 
    private static void cleanUpConflictDB(Collection<Conflict> conflicts, long branchUuid, IProgressMonitor monitor) throws OseeCoreException {
@@ -406,25 +398,20 @@ public class ConflictManagerInternal {
       return destinationBranches;
    }
 
-   private static int getCommitTransaction(IOseeBranch sourceBranch, BranchId destBranch) throws OseeCoreException {
-      int transactionId = 0;
-      JdbcStatement chStmt = ConnectionHandler.getStatement();
-      try {
-         if (sourceBranch != null && destBranch != null) {
-            chStmt.runPreparedQuery(GET_MERGE_DATA, sourceBranch.getUuid(), destBranch.getUuid());
-            if (chStmt.next()) {
-               transactionId = chStmt.getInt("commit_transaction_id");
-            }
-            if (transactionId == 0) {
-               chStmt.runPreparedQuery(GET_COMMIT_TRANSACTION_COMMENT,
-                  BranchManager.COMMIT_COMMENT + sourceBranch.getName(), destBranch.getUuid());
-               if (chStmt.next()) {
-                  transactionId = chStmt.getInt("transaction_id");
-               }
+   private static TransactionToken getCommitTransaction(IOseeBranch sourceBranch, BranchId destBranch) throws OseeCoreException {
+      TransactionToken transactionId = TransactionToken.SENTINEL;
+      try (JdbcStatement stmt = ConnectionHandler.getStatement()) {
+         stmt.runPreparedQuery(GET_MERGE_DATA, sourceBranch, destBranch);
+         if (stmt.next()) {
+            transactionId = TransactionToken.valueOf(stmt.getLong("commit_transaction_id"), destBranch);
+         }
+         if (transactionId.isInvalid()) {
+            stmt.runPreparedQuery(GET_COMMIT_TRANSACTION_COMMENT, BranchManager.COMMIT_COMMENT + sourceBranch.getName(),
+               destBranch);
+            if (stmt.next()) {
+               transactionId = TransactionToken.valueOf(stmt.getLong("transaction_id"), destBranch);
             }
          }
-      } finally {
-         chStmt.close();
       }
       return transactionId;
    }

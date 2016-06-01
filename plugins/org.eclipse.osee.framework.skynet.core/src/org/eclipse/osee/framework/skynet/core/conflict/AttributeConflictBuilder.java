@@ -14,9 +14,9 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
@@ -32,7 +32,7 @@ public class AttributeConflictBuilder extends ConflictBuilder {
    private final int attrId;
    private final long attrTypeId;
 
-   public AttributeConflictBuilder(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, IOseeBranch sourceBranch, IOseeBranch destBranch, String sourceValue, int attrId, long attrTypeId) {
+   public AttributeConflictBuilder(int sourceGamma, int destGamma, int artId, TransactionToken toTransactionId, IOseeBranch sourceBranch, IOseeBranch destBranch, String sourceValue, int attrId, long attrTypeId) {
       super(sourceGamma, destGamma, artId, toTransactionId, sourceBranch, destBranch);
       this.sourceValue = sourceValue;
       this.attrId = attrId;
