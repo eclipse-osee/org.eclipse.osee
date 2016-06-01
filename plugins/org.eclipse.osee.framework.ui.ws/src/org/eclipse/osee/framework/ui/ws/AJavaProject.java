@@ -95,7 +95,7 @@ public final class AJavaProject {
                IPath output = paths[i].getOutputLocation();
                File fileLocation;
                if (output == null) {
-                  fileLocation = new File(paths[i].getPath().toFile().getPath().replace("src", "bin"));
+                  fileLocation = javaProject.getOutputLocation().toFile();
                } else {
                   fileLocation = paths[i].getOutputLocation().toFile();
                }
