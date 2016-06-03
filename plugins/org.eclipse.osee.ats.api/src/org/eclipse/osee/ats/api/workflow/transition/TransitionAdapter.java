@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.workflow.transition;
 
 import java.util.Collection;
+import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -29,6 +30,11 @@ public class TransitionAdapter implements ITransitionListener {
 
    @Override
    public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) throws OseeCoreException {
+      // provided for subclass implementation
+   }
+
+   @Override
+   public void transitionPersisted(Collection<? extends IAtsWorkItem> workItems, Map<IAtsWorkItem, String> workItemFromStateMap, String toStateName) {
       // provided for subclass implementation
    }
 

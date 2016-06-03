@@ -13,8 +13,10 @@ package org.eclipse.osee.ats.core.workflow.transition;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -26,6 +28,7 @@ import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -54,7 +57,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Donald G. Dunne
  */
-public class TransitionManager implements IAtsTransitionManager {
+public class TransitionManager implements IAtsTransitionManager, IExecuteListener {
 
    private final ITransitionHelper helper;
    private String completedCancellationReason = null;
@@ -66,6 +69,7 @@ public class TransitionManager implements IAtsTransitionManager {
    private final IAtsTaskService taskService;
    private final IAtsWorkDefinitionService workDefService;
    private final IAttributeResolver attrResolver;
+   private final Map<IAtsWorkItem, String> workItemFromStateMap;
 
    public TransitionManager(ITransitionHelper helper) {
       this.helper = helper;
@@ -75,6 +79,7 @@ public class TransitionManager implements IAtsTransitionManager {
       this.workDefService = helper.getServices().getWorkDefService();
       this.attrResolver = helper.getServices().getAttributeResolver();
       this.taskService = helper.getServices().getTaskService();
+      this.workItemFromStateMap = new HashMap<>();
    }
 
    @Override
@@ -274,6 +279,7 @@ public class TransitionManager implements IAtsTransitionManager {
    @Override
    public void handleTransition(TransitionResults results) {
       try {
+         helper.getChangeSet().addExecuteListener(this);
          for (IAtsWorkItem workItem : helper.getWorkItems()) {
             try {
                IAtsStateDefinition fromState = workItem.getStateDefinition();
@@ -324,6 +330,8 @@ public class TransitionManager implements IAtsTransitionManager {
                      workItemService.clearImplementersCache(workItem);
                   }
                   helper.getChangeSet().add(workItem);
+
+                  workItemFromStateMap.put(workItem, fromState.getName());
                }
 
             } catch (Exception ex) {
@@ -382,8 +390,8 @@ public class TransitionManager implements IAtsTransitionManager {
 
          // Only check this if TeamWorkflow, not for reviews
          if (workItem.isTeamWorkflow() && (teamDefRequiresTargetedVersion || pageRequiresTargetedVersion) && //
-         !helper.getServices().getVersionService().hasTargetedVersion(workItem) && //
-         !toStateDef.getStateType().isCancelledState()) {
+            !helper.getServices().getVersionService().hasTargetedVersion(workItem) && //
+            !toStateDef.getStateType().isCancelledState()) {
             results.addResult(workItem, TransitionResult.MUST_BE_TARGETED_FOR_VERSION);
          }
 
@@ -577,6 +585,14 @@ public class TransitionManager implements IAtsTransitionManager {
          helper.getChangeSet().execute();
       }
       return result;
+   }
+
+   @Override
+   public void changesStored(IAtsChangeSet changes) {
+      // Notify extension points of transitionAndPersist
+      for (ITransitionListener listener : helper.getTransitionListeners()) {
+         listener.transitionPersisted(helper.getWorkItems(), workItemFromStateMap, helper.getToStateName());
+      }
    }
 
 }

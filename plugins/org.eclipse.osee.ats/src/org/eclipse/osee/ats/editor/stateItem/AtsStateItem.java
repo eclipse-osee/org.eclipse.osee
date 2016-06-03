@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.editor.stateItem;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -103,7 +104,17 @@ public abstract class AtsStateItem implements IAtsStateItem {
       return getName();
    }
 
+   /**
+    * Allows subclass to add changes to transition before commit.
+    */
    public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) throws OseeCoreException {
+      // provided for subclass implementation
+   }
+
+   /**
+    * Allows subclass to to operation after transition and persist.
+    */
+   public void transitionPersisted(Collection<? extends IAtsWorkItem> workItems, Map<IAtsWorkItem, String> workItemFromStateMap, String toStateName) {
       // provided for subclass implementation
    }
 }

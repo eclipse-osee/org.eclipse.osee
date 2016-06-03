@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.notify;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
@@ -44,5 +45,10 @@ public class AtsNotificationTransitionListener implements ITransitionListener {
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Error adding ATS Notification Event", ex);
       }
+   }
+
+   @Override
+   public void transitionPersisted(Collection<? extends IAtsWorkItem> workItems, Map<IAtsWorkItem, String> workItemFromStateMap, String toStateName) {
+      // do nothing
    }
 }
