@@ -41,7 +41,7 @@ public class WorkItemFactory extends AbstractWorkItemFactory {
    private final IAtsClient atsClient;
 
    public WorkItemFactory(IAtsClient atsClient) {
-      super(atsClient.getServices());
+      super();
       this.atsClient = atsClient;
    }
 

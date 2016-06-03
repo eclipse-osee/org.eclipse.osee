@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.core.workflow;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -22,12 +21,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
  * @author Donald G. Dunne
  */
 public abstract class AbstractWorkItemFactory implements IAtsWorkItemFactory {
-
-   private final IAtsServices services;
-
-   public AbstractWorkItemFactory(IAtsServices services) {
-      this.services = services;
-   }
 
    @Override
    public Collection<IAtsWorkItem> getWorkItems(Collection<? extends ArtifactId> artifacts) {

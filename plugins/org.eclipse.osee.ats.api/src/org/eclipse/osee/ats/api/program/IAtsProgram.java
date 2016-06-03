@@ -16,5 +16,5 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
  * @author Donald G. Dunne
  */
 public interface IAtsProgram extends IAtsConfigObject {
-
+   // do nothing
 }

@@ -45,7 +45,7 @@ public class WorkItemFactory extends AbstractWorkItemFactory {
    private final IAtsServer atsServer;
 
    public WorkItemFactory(Log logger, IAtsServer atsServer) {
-      super(atsServer.getServices());
+      super();
       this.logger = logger;
       this.atsServer = atsServer;
    }

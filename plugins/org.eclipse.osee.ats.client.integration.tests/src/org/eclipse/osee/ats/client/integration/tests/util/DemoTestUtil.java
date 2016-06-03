@@ -253,7 +253,7 @@ public class DemoTestUtil {
       }
    }
 
-   public static int numOfType(Collection<? extends Object> objects, Class clazz) {
+   public static int numOfType(Collection<? extends Object> objects, Class<?> clazz) {
       int num = 0;
       for (Object obj : objects) {
          if (clazz.isInstance(obj)) {

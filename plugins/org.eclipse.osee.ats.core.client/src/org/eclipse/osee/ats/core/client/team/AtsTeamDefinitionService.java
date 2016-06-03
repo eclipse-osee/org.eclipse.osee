@@ -70,7 +70,8 @@ public class AtsTeamDefinitionService implements IAtsTeamDefinitionService {
    public IAtsTeamDefinition getTeamDefHoldingVersions(IAtsProgram program) {
       return atsClient.getProgramService().getTeamDefHoldingVersions(program);
    }
-	  
+
+   @Override
    public IAtsTeamDefinition getTeamDefinition(String name) {
       IAtsTeamDefinition teamDef = null;
       ArtifactId teamDefArt = AtsClientService.get().getArtifactByName(AtsArtifactTypes.TeamDefinition, name);

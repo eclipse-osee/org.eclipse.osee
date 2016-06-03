@@ -29,7 +29,6 @@ import org.eclipse.osee.template.engine.PageCreator;
  * David.W.Miller
  */
 public class SprintPageBuilder {
-   private final IAtsServer atsServer;
    private final ArtifactReadable sprint;
    private Date startDate;
    private Date endDate;
@@ -42,7 +41,6 @@ public class SprintPageBuilder {
    TreeMap<String, FeatureGroupSum> featureSums = new TreeMap<>();
 
    public SprintPageBuilder(IAtsServer atsServer, ArtifactReadable sprint) {
-      this.atsServer = atsServer;
       this.sprint = sprint;
    }
 

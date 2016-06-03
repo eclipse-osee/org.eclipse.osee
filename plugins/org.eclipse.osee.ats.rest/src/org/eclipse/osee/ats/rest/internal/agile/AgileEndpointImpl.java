@@ -104,7 +104,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       }
 
       Long uuid = newTeam.getUuid();
-      if (uuid == null || uuid <= 0) {
+      if (uuid <= 0) {
          newTeam.setUuid(Lib.generateArtifactIdAsInt());
       }
 
@@ -183,7 +183,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
       String guid = GUID.create();
       Long uuid = newFeatureGroup.getUuid();
-      if (uuid == null || uuid <= 0) {
+      if (uuid <= 0) {
          uuid = Lib.generateArtifactIdAsInt();
       }
 
@@ -234,7 +234,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
       String guid = GUID.create();
       Long uuid = newSprint.getUuid();
-      if (uuid == null || uuid <= 0) {
+      if (uuid <= 0) {
          uuid = Lib.generateArtifactIdAsInt();
       }
 
@@ -324,7 +324,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
       String guid = GUID.create();
       Long uuid = newBacklog.getUuid();
-      if (uuid == null || uuid <= 0) {
+      if (uuid <= 0) {
          uuid = Lib.generateArtifactIdAsInt();
       }
       ArtifactReadable teamArt = atsServer.getArtifact(newBacklog.getTeamUuid());

@@ -219,7 +219,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    public IAtsInsertion createInsertion(ArtifactId programArtifact, JaxInsertion newInsertion) {
 
       Long uuid = newInsertion.getUuid();
-      if (uuid == null || uuid <= 0) {
+      if (uuid <= 0) {
          uuid = Lib.generateArtifactIdAsInt();
       }
       AtsChangeSet changes = (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Create new Insertion",
@@ -250,7 +250,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    @Override
    public IAtsInsertionActivity createInsertionActivity(ArtifactId insertion, JaxInsertionActivity newActivity) {
       Long uuid = newActivity.getUuid();
-      if (uuid == null || uuid <= 0) {
+      if (uuid <= 0) {
          uuid = Lib.generateArtifactIdAsInt();
       }
       AtsChangeSet changes =
