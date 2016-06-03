@@ -15,6 +15,7 @@ import java.util.Properties;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.define.report.api.WordUpdateEndpoint;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 import org.eclipse.osee.orcs.rest.model.IdeClientEndpoint;
@@ -52,5 +53,7 @@ public interface OseeClient {
    WordUpdateEndpoint getWordUpdateEndpoint();
 
    OrcsWriterEndpoint getOrcsWriterEndpoint();
+
+   ApplicabilityEndpoint getApplicabilityEndpoint();
 
 }

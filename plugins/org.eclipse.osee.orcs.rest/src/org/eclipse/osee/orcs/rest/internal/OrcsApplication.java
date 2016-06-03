@@ -67,6 +67,7 @@ public class OrcsApplication extends Application {
       resources.add(new IndexerEndpointImpl(orcsApi));
       resources.add(new ResourcesEndpointImpl(resourceManager));
       resources.add(new DatastoreEndpointImpl(orcsApi, activityLog));
+      resources.add(new ApplicabilityEndpointImpl(orcsApi));
 
       resources.add(new LinkUpdateResource(orcsApi));
    }

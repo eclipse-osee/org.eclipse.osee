@@ -12,6 +12,8 @@ Import-Package: javax.annotation.security;version="1.2.0",
  javax.ws.rs.core;version="2.0.0",
  javax.xml.bind.annotation,
  org.apache.cxf.jaxrs.ext.multipart;version="3.0.1",
+ org.codehaus.jackson.map.annotate,
+ org.codehaus.jackson.map.ser,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
@@ -22,3 +24,4 @@ Import-Package: javax.annotation.security;version="1.2.0",
  org.eclipse.osee.orcs.transaction,
  org.eclipse.osee.orcs.writer.model.config,
  org.eclipse.osee.orcs.writer.model.reader
+Require-Bundle: org.codehaus.jackson.mapper

@@ -24,6 +24,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -127,13 +128,20 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
          AWorkbench.popup("ERROR", "Can't change the field " + colName);
       }
       try {
-         IAttributeType attributeType = AttributeTypeManager.getType(colName);
-         Artifact useArt = (Artifact) treeItem.getData();
-         boolean persist = false;
-         if (ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(useArt), persist)) {
-            refresh();
-            editor.onDirtied();
-            return true;
+         IAttributeType attributeType = null;
+         try {
+            attributeType = AttributeTypeManager.getType(colName);
+         } catch (OseeTypeDoesNotExist ex) {
+            // do nothing
+         }
+         if (attributeType != null) {
+            Artifact useArt = (Artifact) treeItem.getData();
+            boolean persist = false;
+            if (ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(useArt), persist)) {
+               refresh();
+               editor.onDirtied();
+               return true;
+            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

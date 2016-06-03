@@ -36,6 +36,7 @@ import org.eclipse.osee.orcs.rest.client.internal.search.PredicateFactoryImpl;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryBuilderImpl;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryExecutor;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryOptions;
+import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 import org.eclipse.osee.orcs.rest.model.IdeClientEndpoint;
@@ -199,6 +200,11 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
    @Override
    public OrcsWriterEndpoint getOrcsWriterEndpoint() {
       return client.targetProxy(baseUri, OrcsWriterEndpoint.class);
+   }
+
+   @Override
+   public ApplicabilityEndpoint getApplicabilityEndpoint() {
+      return client.targetProxy(baseUri, ApplicabilityEndpoint.class);
    }
 
 }
