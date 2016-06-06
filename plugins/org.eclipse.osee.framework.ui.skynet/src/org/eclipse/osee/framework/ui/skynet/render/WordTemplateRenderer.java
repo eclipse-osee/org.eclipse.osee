@@ -22,8 +22,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.logging.Level;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -32,9 +31,11 @@ import org.eclipse.osee.define.report.api.ReportConstants;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
@@ -64,6 +65,7 @@ import org.w3c.dom.Element;
 public class WordTemplateRenderer extends WordRenderer implements ITemplateRenderer {
    private static final String EMBEDDED_OBJECT_NO = "w:embeddedObjPresent=\"no\"";
    private static final String EMBEDDED_OBJECT_YES = "w:embeddedObjPresent=\"yes\"";
+   private static final String STYLES = "<w:styles>.*?</w:styles>";
    private static final String STYLES_END = "</w:styles>";
    private static final String OLE_START = "<w:docOleData>";
    private static final String OLE_END = "</w:docOleData>";
@@ -211,6 +213,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       Artifact template;
       String templateContent = "";
       String templateOptions = "";
+      String templateStyles = "";
 
       if (artifacts.isEmpty()) {
          //  Still need to get a default template with a null artifact list
@@ -218,6 +221,19 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          if (template != null) {
             templateContent = template.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent);
             templateOptions = template.getSoleAttributeValue(CoreAttributeTypes.RendererOptions);
+
+            List<Artifact> templateRelatedArtifacts =
+               template.getRelatedArtifacts(CoreRelationTypes.SupportingInfo_SupportingInfo);
+
+            if (templateRelatedArtifacts != null) {
+               if (templateRelatedArtifacts.size() == 1) {
+                  templateStyles = templateRelatedArtifacts.get(0).getSoleAttributeValueAsString(
+                     CoreAttributeTypes.WholeWordContent, "");
+               } else {
+                  OseeLog.log(this.getClass(), Level.INFO,
+                     "More than one style relation currently not supported. Defaulting to styles defined in the template.");
+               }
+            }
          }
       } else {
          Artifact firstArtifact = artifacts.iterator().next();
@@ -225,6 +241,19 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          if (template != null) {
             templateContent = template.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent);
             templateOptions = template.getSoleAttributeValue(CoreAttributeTypes.RendererOptions);
+
+            List<Artifact> templateRelatedArtifacts =
+               template.getRelatedArtifacts(CoreRelationTypes.SupportingInfo_SupportingInfo);
+
+            if (templateRelatedArtifacts != null) {
+               if (templateRelatedArtifacts.size() == 1) {
+                  templateStyles = templateRelatedArtifacts.get(0).getSoleAttributeValueAsString(
+                     CoreAttributeTypes.WholeWordContent, "");
+               } else {
+                  OseeLog.log(this.getClass(), Level.INFO,
+                     "More than one style relation currently not supported. Defaulting to styles defined in the template.");
+               }
+            }
          }
 
          if (presentationType == PresentationType.SPECIALIZED_EDIT && artifacts.size() > 1) {
@@ -240,6 +269,13 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          } else { // support OLE data when appropriate
             if (!firstArtifact.getSoleAttributeValue(CoreAttributeTypes.WordOleData, "").equals("")) {
                templateContent = templateContent.replaceAll(EMBEDDED_OBJECT_NO, EMBEDDED_OBJECT_YES);
+
+               //Add in new template styles now so OLE Data doesn't get lost
+               if (!templateStyles.isEmpty()) {
+                  templateContent = templateContent.replace(STYLES, templateStyles);
+                  templateStyles = "";
+               }
+
                templateContent = templateContent.replaceAll(STYLES_END,
                   STYLES_END + OLE_START + firstArtifact.getSoleAttributeValue(CoreAttributeTypes.WordOleData,
                      "") + OLE_END);
@@ -248,7 +284,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       }
 
       templateContent = WordUtil.removeGUIDFromTemplate(templateContent);
-      return templateProcessor.applyTemplate(artifacts, templateContent, templateOptions, null, null,
+      return templateProcessor.applyTemplate(artifacts, templateContent, templateOptions, templateStyles, null, null,
          getStringOption("outlineType"), presentationType);
    }
 

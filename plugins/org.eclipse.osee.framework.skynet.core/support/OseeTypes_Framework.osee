@@ -608,6 +608,10 @@ artifactType "MS Word Whole Document" extends "MS Word" {
 	attribute "Whole Word Content"
 }
 
+artifactType "MS Word Styles" extends "MS Word Whole Document" {
+	uuid 0x0000000000000A12
+}
+
 artifactType "MS Word Template" extends "MS Word" {
 	uuid 0x0000000000000013
 	attribute "Word Ole Data"

@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ws.rs.core.MediaType;
@@ -46,11 +47,13 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -86,6 +89,7 @@ public class WordTemplateProcessor {
    private static final String INSERT_LINK = "INSERT_LINK_HERE";
    private static final String NESTED_TEMPLATE = "NestedTemplate";
    public static final String PGNUMTYPE_START_1 = "<w:pgNumType [^>]*w:start=\"1\"/>";
+   public static final String STYLES = "<w:styles>.*?</w:styles>";
 
    private static final Pattern headElementsPattern =
       Pattern.compile("<((\\w+:)?(" + ARTIFACT + "))>(.*?)</\\1>|" + INSERT_LINK,
@@ -107,6 +111,7 @@ public class WordTemplateProcessor {
 
    private String slaveTemplate;
    private String slaveTemplateOptions;
+   private String slaveTemplateStyles;
 
    private String elementType;
 
@@ -164,11 +169,26 @@ public class WordTemplateProcessor {
       isDiff = renderer.getBooleanOption(PUBLISH_AS_DIFF);
       renderer.setOption(ITemplateRenderer.TEMPLATE_OPTION, masterTemplateArtifact);
 
+      slaveTemplateStyles = "";
       if (slaveTemplateArtifact != null) {
          renderer.setOption(ITemplateRenderer.TEMPLATE_OPTION, slaveTemplateArtifact);
          slaveTemplate = slaveTemplateArtifact.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent, "");
          slaveTemplateOptions =
             slaveTemplateArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.RendererOptions, "");
+
+         List<Artifact> slaveTemplateRelatedArtifacts =
+            slaveTemplateArtifact.getRelatedArtifacts(CoreRelationTypes.SupportingInfo_SupportingInfo);
+
+         if (slaveTemplateRelatedArtifacts != null) {
+            if (slaveTemplateRelatedArtifacts.size() == 1) {
+               slaveTemplateStyles += slaveTemplateRelatedArtifacts.get(0).getSoleAttributeValueAsString(
+                  CoreAttributeTypes.WholeWordContent, "");
+            } else {
+               OseeLog.log(this.getClass(), Level.INFO,
+                  "More than one style relation currently not supported. Defaulting to styles defined in the template.");
+            }
+         }
+
       }
 
       try {
@@ -190,12 +210,25 @@ public class WordTemplateProcessor {
             renderer.setOption(ALL_ATTRIBUTES, true);
          }
       }
+      List<Artifact> masterTemplateRelatedArtifacts =
+         masterTemplateArtifact.getRelatedArtifacts(CoreRelationTypes.SupportingInfo_SupportingInfo);
+      String masterTemplateStyles = "";
+
+      if (masterTemplateRelatedArtifacts != null) {
+         if (masterTemplateRelatedArtifacts.size() == 1) {
+            masterTemplateStyles += masterTemplateRelatedArtifacts.get(0).getSoleAttributeValueAsString(
+               CoreAttributeTypes.WholeWordContent, "");
+         } else {
+            OseeLog.log(this.getClass(), Level.INFO,
+               "More than one style relation currently not supported. Defaulting to styles defined in the template.");
+         }
+      }
 
       excludeArtifactTypes = renderer.getArtifactTypesOption("EXCLUDE ARTIFACT TYPES").toArray(new IArtifactType[0]);
       IFile file =
          RenderingUtil.getRenderFile(renderer, COMMON, PREVIEW, "/", masterTemplateArtifact.getSafeName(), ".xml");
-      AIFile.writeToFile(file,
-         applyTemplate(artifacts, masterTemplate, masterTemplateOptions, file.getParent(), null, null, PREVIEW));
+      AIFile.writeToFile(file, applyTemplate(artifacts, masterTemplate, masterTemplateOptions, masterTemplateStyles,
+         file.getParent(), null, null, PREVIEW));
 
       if (!renderer.getBooleanOption(IRenderer.NO_DISPLAY) && !isDiff) {
          RenderingUtil.ensureFilenameLimit(file);
@@ -211,7 +244,7 @@ public class WordTemplateProcessor {
     * @param folder = null when not using an extension template
     * @param outlineNumber if null will find based on first artifact
     */
-   public InputStream applyTemplate(List<Artifact> artifacts, String templateContent, String templateOptions, IContainer folder, String outlineNumber, String outlineType, PresentationType presentationType) throws OseeCoreException {
+   public InputStream applyTemplate(List<Artifact> artifacts, String templateContent, String templateOptions, String templateStyles, IContainer folder, String outlineNumber, String outlineType, PresentationType presentationType) throws OseeCoreException {
       excludeFolders = renderer.getBooleanOption("Exclude Folders");
       WordMLProducer wordMl = null;
       CharBackedInputStream charBak = null;
@@ -221,6 +254,10 @@ public class WordTemplateProcessor {
          wordMl = new WordMLProducer(charBak);
 
          templateContent = templateContent.replaceAll(PGNUMTYPE_START_1, "");
+
+         if (!templateStyles.isEmpty()) {
+            templateContent = templateContent.replaceAll(STYLES, templateStyles);
+         }
 
          this.outlineNumber = outlineNumber == null ? peekAtFirstArtifactToGetParagraphNumber(templateContent, null,
             artifacts) : outlineNumber;
@@ -315,8 +352,8 @@ public class WordTemplateProcessor {
                   outlineType, recurseChildren);
             } else {
                IFile file = folder.getFile(new Path(subDocFileName));
-               AIFile.writeToFile(file, applyTemplate(artifacts, slaveTemplate, slaveTemplateOptions, folder,
-                  sectionNumber, outlineType, presentationType));
+               AIFile.writeToFile(file, applyTemplate(artifacts, slaveTemplate, slaveTemplateOptions,
+                  slaveTemplateStyles, folder, sectionNumber, outlineType, presentationType));
             }
             wordMl.createHyperLinkDoc(subDocFileName);
          }
