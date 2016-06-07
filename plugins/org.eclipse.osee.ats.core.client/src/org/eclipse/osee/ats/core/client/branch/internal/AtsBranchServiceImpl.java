@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -72,8 +73,8 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public Collection<TransactionId> getCommittedArtifactTransactionIds(IAtsTeamWorkflow teamWf) {
-      List<TransactionId> transactions = new ArrayList<>();
+   public Collection<TransactionToken> getCommittedArtifactTransactionIds(IAtsTeamWorkflow teamWf) {
+      List<TransactionToken> transactions = new ArrayList<>();
       for (TransactionRecord trans : TransactionManager.getCommittedArtifactTransactionIds(
          (Artifact) teamWf.getStoreObject())) {
          transactions.add(trans);
@@ -119,7 +120,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public TransactionId getBaseTransaction(BranchId branch) {
+   public TransactionToken getBaseTransaction(BranchId branch) {
       return BranchManager.getBaseTransaction(branch);
    }
 }

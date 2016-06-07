@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.type.Identity;
 /**
  * @author Ryan D. Brooks
  */
-public interface TransactionId extends Identity<Integer>, HasBranch {
+public interface TransactionId extends Identity<Integer> {
    TransactionId SENTINEL = valueOf(Id.SENTINEL);
 
    @JsonCreator

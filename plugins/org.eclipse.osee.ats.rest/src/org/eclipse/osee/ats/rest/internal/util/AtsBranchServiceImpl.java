@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -42,8 +43,8 @@ import org.eclipse.osee.orcs.search.TransactionQuery;
 public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    private final OrcsApi orcsApi;
-   private static final HashMap<Integer, List<TransactionId>> commitArtifactIdMap =
-      new HashMap<Integer, List<TransactionId>>();
+   private static final HashMap<Integer, List<TransactionToken>> commitArtifactIdMap =
+      new HashMap<Integer, List<TransactionToken>>();
 
    public AtsBranchServiceImpl(IAtsServices atsServices, OrcsApi orcsApi, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       super(atsServices, teamWorkflowProvidersLazy);
@@ -133,9 +134,9 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public Collection<TransactionId> getCommittedArtifactTransactionIds(IAtsTeamWorkflow teamWf) {
+   public Collection<TransactionToken> getCommittedArtifactTransactionIds(IAtsTeamWorkflow teamWf) {
       ArtifactReadable artifactReadable = (ArtifactReadable) teamWf.getStoreObject();
-      List<TransactionId> transactionIds = commitArtifactIdMap.get(artifactReadable.getUuid());
+      List<TransactionToken> transactionIds = commitArtifactIdMap.get(artifactReadable.getUuid());
       // Cache the transactionIds first time through.  Other commits will be added to cache as they
       // happen in this client or as remote commit events come through
       if (transactionIds == null) {
@@ -158,7 +159,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public TransactionId getBaseTransaction(BranchId branch) {
+   public TransactionToken getBaseTransaction(BranchId branch) {
       TransactionQuery txQuery = orcsApi.getQueryFactory().transactionQuery();
       return txQuery.andBranch(branch).andIs(TransactionDetailsType.Baselined).getResults().getExactlyOne();
    }

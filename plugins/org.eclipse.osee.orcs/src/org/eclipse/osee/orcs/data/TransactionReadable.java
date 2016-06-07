@@ -12,13 +12,13 @@ package org.eclipse.osee.orcs.data;
 
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.HasLocalId;
-import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface TransactionReadable extends HasLocalId<Integer>, TransactionId {
+public interface TransactionReadable extends HasLocalId<Integer>, TransactionToken {
 
    TransactionDetailsType getTxType();
 

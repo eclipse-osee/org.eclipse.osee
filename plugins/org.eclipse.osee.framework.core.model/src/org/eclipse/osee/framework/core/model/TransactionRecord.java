@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.core.model;
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Jeff C. Phillips
  */
-public class TransactionRecord extends BaseIdentity<Integer> implements TransactionId, Adaptable {
+public class TransactionRecord extends BaseIdentity<Integer> implements TransactionToken, Adaptable {
    private final TransactionDetailsType txType;
    private final BranchId branch;
    private String comment;

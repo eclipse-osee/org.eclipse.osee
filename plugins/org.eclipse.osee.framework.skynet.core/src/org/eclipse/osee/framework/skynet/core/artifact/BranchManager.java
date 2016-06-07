@@ -30,8 +30,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -730,11 +730,11 @@ public final class BranchManager {
       return getBranch(branch).getShortName();
    }
 
-   public static String getBranchName(TransactionId tx) {
+   public static String getBranchName(TransactionToken tx) {
       return getBranch(tx.getBranch()).getName();
    }
 
-   public static String getBranchShortName(TransactionId tx) {
+   public static String getBranchShortName(TransactionToken tx) {
       return getBranch(tx.getBranch()).getShortName();
    }
 }

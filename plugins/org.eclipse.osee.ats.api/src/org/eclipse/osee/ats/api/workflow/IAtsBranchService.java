@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.util.Result;
@@ -60,9 +61,9 @@ public interface IAtsBranchService {
 
    Collection<ICommitConfigItem> getConfigArtifactsConfiguredToCommitTo(IAtsTeamWorkflow teamWf);
 
-   TransactionId getEarliestTransactionId(IAtsTeamWorkflow teamWf);
+   TransactionToken getEarliestTransactionId(IAtsTeamWorkflow teamWf);
 
-   Collection<TransactionId> getTransactionIds(IAtsTeamWorkflow teamWf, boolean forMergeBranches);
+   Collection<TransactionToken> getTransactionIds(IAtsTeamWorkflow teamWf, boolean forMergeBranches);
 
    boolean isBranchesAllCommittedExcept(IAtsTeamWorkflow teamWf, BranchId branchToExclude);
 
@@ -91,15 +92,15 @@ public interface IAtsBranchService {
 
    boolean isWorkingBranchEverCommitted(IAtsTeamWorkflow teamWf);
 
-   Collection<Object> combineCommitTransactionsAndConfigItems(Collection<ICommitConfigItem> configArtSet, Collection<TransactionId> commitTxs);
+   Collection<Object> combineCommitTransactionsAndConfigItems(Collection<ICommitConfigItem> configArtSet, Collection<TransactionToken> commitTxs);
 
-   Collection<TransactionId> getCommitTransactionsToUnarchivedBaselineBranchs(IAtsTeamWorkflow teamWf);
+   Collection<TransactionToken> getCommitTransactionsToUnarchivedBaselineBranchs(IAtsTeamWorkflow teamWf);
 
    BranchType getBranchType(BranchId branch);
 
    BranchState getBranchState(BranchId branch);
 
-   Collection<TransactionId> getCommittedArtifactTransactionIds(IAtsTeamWorkflow teamWf);
+   Collection<TransactionToken> getCommittedArtifactTransactionIds(IAtsTeamWorkflow teamWf);
 
    boolean isMergeBranchExists(IAtsTeamWorkflow teamWf, BranchId destinationBranch);
 
@@ -115,7 +116,7 @@ public interface IAtsBranchService {
 
    boolean isArchived(BranchId branch);
 
-   TransactionId getCommitTransactionRecord(IAtsTeamWorkflow teamWf, BranchId branch);
+   TransactionToken getCommitTransactionRecord(IAtsTeamWorkflow teamWf, BranchId branch);
 
    Date getTimeStamp(TransactionId committedToParentTransRecord);
 
@@ -123,11 +124,11 @@ public interface IAtsBranchService {
 
    Collection<BranchId> getBranchesInCommit();
 
-   boolean workingBranchCommittedToDestinationBranchParentPriorToDestinationBranchCreation(IAtsTeamWorkflow teamWf, BranchId destinationBranch, Collection<TransactionId> commitTransactionIds) throws OseeCoreException;
+   boolean workingBranchCommittedToDestinationBranchParentPriorToDestinationBranchCreation(IAtsTeamWorkflow teamWf, BranchId destinationBranch, Collection<TransactionToken> commitTransactionIds) throws OseeCoreException;
 
    BranchId getParentBranch(BranchId branch);
 
-   TransactionId getBaseTransaction(BranchId branch);
+   TransactionToken getBaseTransaction(BranchId branch);
 
    String getBranchName(IAtsTeamWorkflow teamWf);
 }

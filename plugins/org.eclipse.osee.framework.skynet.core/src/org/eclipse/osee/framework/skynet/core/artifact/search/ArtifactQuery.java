@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -283,28 +284,28 @@ public class ArtifactQuery {
       return new ArtifactQueryBuilder(guids, branch, allowDeleted, ALL).getArtifacts(30, null);
    }
 
-   public static List<Artifact> getHistoricalArtifactListFromIds(List<String> guids, TransactionId transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
+   public static List<Artifact> getHistoricalArtifactListFromIds(List<String> guids, TransactionToken transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(guids, transactionId, allowDeleted, ALL).getArtifacts(30, null);
    }
 
-   public static List<Artifact> getHistoricalArtifactListFromIds(Collection<Integer> artifactIds, TransactionId transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
+   public static List<Artifact> getHistoricalArtifactListFromIds(Collection<Integer> artifactIds, TransactionToken transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(artifactIds, transactionId, allowDeleted, ALL).getArtifacts(30, null);
    }
 
-   public static Artifact getHistoricalArtifactFromId(int artifactId, TransactionId transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
+   public static Artifact getHistoricalArtifactFromId(int artifactId, TransactionToken transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(artifactId, transactionId, allowDeleted, ALL).getOrCheckArtifact(QueryType.GET);
    }
 
-   public static Artifact getHistoricalArtifactFromId(String guid, TransactionId transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
+   public static Artifact getHistoricalArtifactFromId(String guid, TransactionToken transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(Arrays.asList(guid), transactionId, allowDeleted, ALL).getOrCheckArtifact(
          QueryType.GET);
    }
 
-   public static Artifact checkHistoricalArtifactFromId(int artifactId, TransactionId transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
+   public static Artifact checkHistoricalArtifactFromId(int artifactId, TransactionToken transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(artifactId, transactionId, allowDeleted, ALL).getOrCheckArtifact(QueryType.CHECK);
    }
 
-   public static Artifact checkHistoricalArtifactFromId(String guid, TransactionId transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
+   public static Artifact checkHistoricalArtifactFromId(String guid, TransactionToken transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(Arrays.asList(guid), transactionId, allowDeleted, ALL).getOrCheckArtifact(
          QueryType.CHECK);
    }
