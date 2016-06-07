@@ -117,7 +117,7 @@ public class ChangeReportTable implements EditorSection.IWidget {
       } else {
          input = Arrays.asList("Not Loaded");
       }
-      xChangeViewer.setInput(input);
+      xChangeViewer.refreshColumnsWithPreCompute(input);
    }
 
    private final class ChangeDragAndDrop extends SkynetDragAndDrop {

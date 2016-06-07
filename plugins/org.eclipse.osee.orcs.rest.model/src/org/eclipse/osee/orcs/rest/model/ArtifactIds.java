@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -20,13 +20,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class ArtifactIds {
 
-   List<Long> artifactIds = new ArrayList<>();
+   Set<Long> artifactIds = new HashSet<>();
 
-   public List<Long> getArtifactIds() {
+   public Set<Long> getArtifactIds() {
       return artifactIds;
    }
 
-   public void setArtifactIds(List<Long> artifactIds) {
+   public void setArtifactIds(Set<Long> artifactIds) {
       this.artifactIds = artifactIds;
    }
 }
