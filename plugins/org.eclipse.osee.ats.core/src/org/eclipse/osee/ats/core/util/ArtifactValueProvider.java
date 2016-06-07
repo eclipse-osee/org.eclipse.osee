@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.util;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
@@ -31,6 +29,7 @@ public class ArtifactValueProvider implements IValueProvider {
    private final ArtifactId artifact;
    private final String attributeTypeName;
    private final IAtsServices services;
+   private IAttributeType attributeType;
 
    public ArtifactValueProvider(ArtifactId artifact, IAtsWidgetDefinition widgetDef, IAtsServices services) {
       this.artifact = artifact;
@@ -63,11 +62,10 @@ public class ArtifactValueProvider implements IValueProvider {
    }
 
    public IAttributeType getAtributeType() throws OseeCoreException {
-      if (Strings.isValid(attributeTypeName)) {
-         IAttributeType attrType = services.getStoreService().getAttributeType(attributeTypeName);
-         return attrType;
+      if (attributeType == null && Strings.isValid(attributeTypeName)) {
+         attributeType = services.getStoreService().getAttributeType(attributeTypeName);
       }
-      return null;
+      return attributeType;
    }
 
    @Override
@@ -79,11 +77,7 @@ public class ArtifactValueProvider implements IValueProvider {
    public Collection<Date> getDateValues() throws OseeCoreException {
       IAttributeType attributeType = getAtributeType();
       if (attributeType != null && services.getStoreService().isDateType(attributeType)) {
-         List<Date> dates = new ArrayList<>();
-         for (String attr : services.getAttributeResolver().getAttributesToStringList(artifact, attributeType)) {
-            dates.add(new Date(Long.valueOf(attr)));
-         }
-         return dates;
+         return services.getAttributeResolver().getAttributeValues(artifact, attributeType);
       }
       return Collections.emptyList();
 
