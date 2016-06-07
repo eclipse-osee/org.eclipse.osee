@@ -25,16 +25,13 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.operation.NullOperationLogger;
-import org.eclipse.osee.framework.core.operation.OperationBuilder;
-import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.skynet.core.utility.PurgeUnusedBackingDataAndTransactions;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
+import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -62,10 +59,12 @@ public class BranchPurgeTest {
       new String[] {"osee_attribute", "osee_artifact", "osee_relation_link", "osee_tx_details", "osee_txs"};
 
    private IOseeBranch workingBranch;
+   private TransactionEndpoint txEndpoint;
 
    @Before
    public void setup() {
       workingBranch = TokenFactory.createBranch(method.getQualifiedTestName());
+      txEndpoint = ServiceUtil.getOseeClient().getTransactionEndpoint();
    }
 
    @After
@@ -73,14 +72,11 @@ public class BranchPurgeTest {
       if (BranchManager.branchExists(workingBranch)) {
          BranchManager.purgeBranch(workingBranch);
       }
-      Operations.executeWorkAndCheckStatus(
-         new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
    }
 
    @Test
    public void testPurgeBranch() throws Exception {
-      Operations.executeWorkAndCheckStatus(
-         new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
+      txEndpoint.purgeUnusedBackingDataAndTransactions();
 
       Map<String, Integer> initialRowCount = TestUtil.getTableRowCounts(TABLES);
 
@@ -100,11 +96,8 @@ public class BranchPurgeTest {
       // Count rows and check that increased
       assertThatIncreased(initialRowCount, TestUtil.getTableRowCounts(TABLES));
 
-      OperationBuilder builder =
-         Operations.createBuilder(method.getQualifiedTestName(), new PurgeBranchHttpRequestOperation(branch, false),
-            new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
-
-      Operations.executeWorkAndCheckStatus(builder.build());
+      BranchManager.purgeBranch(branch);
+      txEndpoint.purgeUnusedBackingDataAndTransactions();
 
       // Count rows and check that same as when began
       // TODO looks like artifacts are not being removed when purge a branch

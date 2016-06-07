@@ -90,14 +90,18 @@ public class OseePreparedStatement {
    }
 
    public int execute() {
-      int[] updates;
-      try {
-         updates = preparedStatement.executeBatch();
-      } catch (SQLException ex) {
-         throw JdbcException.newJdbcException(ex);
-      } finally {
-         JdbcUtil.close(preparedStatement);
+      if (currentBatchSize == 0) {
+         return resultCount;
+      } else {
+         int[] updates;
+         try {
+            updates = preparedStatement.executeBatch();
+         } catch (SQLException ex) {
+            throw JdbcException.newJdbcException(ex);
+         } finally {
+            JdbcUtil.close(preparedStatement);
+         }
+         return resultCount + JdbcUtil.calculateBatchUpdateResults(updates);
       }
-      return resultCount + JdbcUtil.calculateBatchUpdateResults(updates);
    }
 }

@@ -40,7 +40,7 @@ public class TxPruneCommand extends AbstractDatastoreConsoleCommand {
       return new Callable<Void>() {
          @Override
          public Void call() throws Exception {
-            new PurgeUnusedBackingDataAndTransactions(getJdbcClient());
+            new PurgeUnusedBackingDataAndTransactions(getJdbcClient()).purge();
             return null;
          }
       };

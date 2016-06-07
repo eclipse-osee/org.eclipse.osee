@@ -30,6 +30,8 @@ public interface TransactionFactory {
 
    Callable<Integer> purgeTransaction(Collection<? extends TransactionId> transactions);
 
+   int[] purgeUnusedBackingDataAndTransactions();
+
    Callable<Void> setTransactionComment(TransactionId transaction, String comment);
 
    CompareResults compareTxs(int txId1, int txId2);

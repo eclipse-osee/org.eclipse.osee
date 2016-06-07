@@ -24,6 +24,8 @@ public interface TxDataStore {
 
    Callable<Integer> purgeTransactions(OrcsSession session, Collection<? extends TransactionId> transactions);
 
+   int[] purgeUnusedBackingDataAndTransactions();
+
    Callable<Void> setTransactionComment(OrcsSession session, TransactionId transaction, String comment);
 
 }

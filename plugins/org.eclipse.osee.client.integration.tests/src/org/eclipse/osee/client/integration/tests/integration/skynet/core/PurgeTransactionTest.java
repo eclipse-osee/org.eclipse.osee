@@ -25,15 +25,14 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.NullOperationLogger;
-import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperationWithListener;
-import org.eclipse.osee.framework.skynet.core.utility.PurgeUnusedBackingDataAndTransactions;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
+import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -54,12 +53,12 @@ public class PurgeTransactionTest {
       new String[] {"osee_attribute", "osee_artifact", "osee_relation_link", "osee_tx_details", "osee_txs"};
 
    private Collection<Artifact> softArts;
+   private final TransactionEndpoint txEndpoint = ServiceUtil.getOseeClient().getTransactionEndpoint();
 
    @Before
    @After
    public void cleanup() throws OseeCoreException {
-      Operations.executeWorkAndCheckStatus(
-         new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
+      txEndpoint.purgeUnusedBackingDataAndTransactions();
    }
 
    @Test
@@ -101,8 +100,7 @@ public class PurgeTransactionTest {
    private void purge(TransactionId transactionId) throws Exception {
       IOperation operation = PurgeTransactionOperationWithListener.getPurgeTransactionOperation(transactionId);
       Asserts.assertOperation(operation, IStatus.OK);
-      Operations.executeWorkAndCheckStatus(
-         new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
+      txEndpoint.purgeUnusedBackingDataAndTransactions();
    }
 
    private int getCurrentRows(TransactionId createTxId) throws OseeCoreException {

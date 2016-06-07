@@ -49,6 +49,9 @@ public interface TransactionEndpoint {
    @Path("{tx-ids}")
    Response purgeTxs(@PathParam("tx-ids") String txIds);
 
+   @DELETE
+   Response purgeUnusedBackingDataAndTransactions();
+
    @PUT
    @Path("{user}/branch/{branch-id}/transaction/{tx-id}/artifact/{art-id}/comment/{comment}")
    Response replaceWithBaselineTxVersion(@PathParam("user") String userId, @PathParam("branch-id") Long branchId, @PathParam("tx-id") int txId, @PathParam("art-id") int artId, @PathParam("comment") String comment);

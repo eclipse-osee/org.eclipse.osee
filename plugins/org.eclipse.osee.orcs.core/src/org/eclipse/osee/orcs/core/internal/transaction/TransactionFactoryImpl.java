@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.ds.TxDataStore;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.TransactionReadable;
@@ -52,8 +53,9 @@ public class TransactionFactoryImpl implements TransactionFactory {
    private final QueryFactory queryFactory;
    private final OrcsBranch orcsBranch;
    private final KeyValueOps keyValueOps;
+   private final TxDataStore txDataStore;
 
-   public TransactionFactoryImpl(OrcsSession session, TxDataManager txDataManager, TxCallableFactory txCallableFactory, QueryModule query, QueryFactory queryFactory, OrcsBranch orcsBranch, KeyValueOps keyValueOps) {
+   public TransactionFactoryImpl(OrcsSession session, TxDataManager txDataManager, TxCallableFactory txCallableFactory, QueryModule query, QueryFactory queryFactory, OrcsBranch orcsBranch, KeyValueOps keyValueOps, TxDataStore txDataStore) {
       super();
       this.session = session;
       this.txDataManager = txDataManager;
@@ -62,6 +64,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
       this.queryFactory = queryFactory;
       this.orcsBranch = orcsBranch;
 	  this.keyValueOps = keyValueOps;
+	  this.txDataStore = txDataStore;
    }
 
    @Override
@@ -185,5 +188,10 @@ public class TransactionFactoryImpl implements TransactionFactory {
                opName, txIds, difference);
          }
       }
+   }
+
+   @Override
+   public int[] purgeUnusedBackingDataAndTransactions() {
+      return txDataStore.purgeUnusedBackingDataAndTransactions();
    }
 }

@@ -22,6 +22,7 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.ds.TxDataStore;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -50,6 +51,7 @@ public class TransactionFactoryImplTest {
    @Mock private QueryModule query;
    @Mock private QueryFactory queryFactory;
    @Mock private OrcsBranch orcsBranch;
+   @Mock private TxDataStore txDataStore;
    @Mock private KeyValueOps keyValueOps;
 
    @Mock private ArtifactReadable expectedAuthor;
@@ -63,7 +65,7 @@ public class TransactionFactoryImplTest {
    public void init() {
       initMocks(this);
       factory = new TransactionFactoryImpl(session, txDataManager, txCallableFactory, query, queryFactory, orcsBranch,
-         keyValueOps);
+         txDataStore, keyValueOps);
 
    }
 

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.jdbc;
 
-import java.sql.SQLException;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -52,9 +51,9 @@ public interface JdbcClient {
 
    int runBatchUpdate(String query, Iterable<Object[]> dataList);
 
-   OseePreparedStatement getBatchStatement(String query) throws SQLException;
+   OseePreparedStatement getBatchStatement(String query);
 
-   OseePreparedStatement getBatchStatement(String query, int batchIncrementSize) throws SQLException;
+   OseePreparedStatement getBatchStatement(String query, int batchIncrementSize);
 
    int runPreparedUpdate(String query, Object... data);
 
