@@ -36,7 +36,8 @@ public class MassEditTeamVersionItemTest {
       IAtsTeamDefinition teamDef = TeamDefinitions.getTeamDefinitions(Arrays.asList("SAW SW"),
          AtsClientService.get().getConfig()).iterator().next();
 
-      MassEditTeamVersionItem search = new MassEditTeamVersionItem("Search", null, teamDef, AtsImage.ACTION);
+      MassEditTeamVersionItem search = new MassEditTeamVersionItem("Search", null, AtsImage.ACTION);
+      search.setSelectedTeamDef(teamDef);
       Collection<Artifact> results = search.getResults();
       Assert.assertEquals(3, results.size());
       List<String> versionNames = Arrays.asList(DemoBranches.SAW_Bld_1.getName(), DemoBranches.SAW_Bld_2.getName(),

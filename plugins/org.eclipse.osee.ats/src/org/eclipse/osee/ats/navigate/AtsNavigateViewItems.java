@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.actions.OpenArtifactEditorById;
 import org.eclipse.osee.ats.actions.OpenOrphanedTasks;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.config.AtsConfig2ExampleNavigateItem;
 import org.eclipse.osee.ats.config.ValidateAtsConfiguration;
@@ -296,7 +295,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
    private void createVersionsSection(XNavigateItem parent, List<XNavigateItem> items) {
       try {
          XNavigateItem releaseItems = new XNavigateItem(parent, "Versions", FrameworkImage.VERSION);
-         new MassEditTeamVersionItem("Team Versions", releaseItems, (IAtsTeamDefinition) null, FrameworkImage.VERSION);
+         new MassEditTeamVersionItem("Team Versions", releaseItems, FrameworkImage.VERSION);
          new SearchNavigateItem(releaseItems,
             new VersionTargetedForTeamSearchItem(null, null, false, LoadView.WorldEditor));
          new SearchNavigateItem(releaseItems, new NextVersionSearchItem(null, LoadView.WorldEditor));

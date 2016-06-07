@@ -34,29 +34,15 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  */
 public class MassEditTeamVersionItem extends XNavigateItemAction {
 
-   private final IAtsTeamDefinition teamDef;
    private IAtsTeamDefinition selectedTeamDef;
 
-   public MassEditTeamVersionItem(String name, XNavigateItem parent, String teamDefName, KeyedImage oseeImage) {
+   public MassEditTeamVersionItem(String name, XNavigateItem parent, KeyedImage oseeImage) {
       super(parent, name, oseeImage);
-      this.teamDef = null;
-   }
-
-   public MassEditTeamVersionItem(XNavigateItem parent, IAtsTeamDefinition teamDef, KeyedImage oseeImage) {
-      this("Show Team Versions", parent, teamDef, oseeImage);
-   }
-
-   public MassEditTeamVersionItem(String name, XNavigateItem parent, IAtsTeamDefinition teamDef, KeyedImage oseeImage) {
-      super(parent, name, oseeImage);
-      this.teamDef = teamDef;
    }
 
    private IAtsTeamDefinition getTeamDefinition() throws OseeCoreException {
       if (selectedTeamDef != null) {
          return selectedTeamDef;
-      }
-      if (teamDef != null) {
-         return teamDef;
       }
       TeamDefinitionDialog dialog = new TeamDefinitionDialog();
       dialog.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Active, AtsClientService.get().getConfig()));
@@ -70,11 +56,11 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       try {
-         IAtsTeamDefinition teamDef = getTeamDefinition();
-         if (teamDef == null) {
+         selectedTeamDef = getTeamDefinition();
+         if (selectedTeamDef == null) {
             return;
          }
-         if (teamDef.getTeamDefinitionHoldingVersions() == null) {
+         if (selectedTeamDef.getTeamDefinitionHoldingVersions() == null) {
             AWorkbench.popup("ERROR", "Team is not configured to use versions.");
             return;
          }
@@ -86,7 +72,8 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
    }
 
    public List<Artifact> getResults() {
-      return AtsClientService.get().getConfigArtifacts(teamDef.getTeamDefinitionHoldingVersions().getVersions());
+      return AtsClientService.get().getConfigArtifacts(
+         selectedTeamDef.getTeamDefinitionHoldingVersions().getVersions());
    }
 
    /**
