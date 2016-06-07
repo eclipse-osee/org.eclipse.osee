@@ -162,14 +162,21 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             WordUiUtil.displayUnknownGuids(artifact, unknownGuids);
 
             data = WordUtil.reassignBookMarkID(data);
-            if (presentationType == PresentationType.SPECIALIZED_EDIT) {
-               data = removeSectionBreakParagraph(data);
-               data = data.replaceAll(ReportConstants.ENTIRE_FTR + ReportConstants.FULL_PARA_END, "");
-            }
 
             // remove any existing footers and replace with the current one
             data = data.replaceAll(ReportConstants.ENTIRE_FTR, "");
             data = data.replaceAll(ReportConstants.NO_DATA_RIGHTS, "");
+
+            // remove extra paragraph inserted
+            int lastIndex = data.lastIndexOf("<w:p wsp:rsidR=");
+
+            if (lastIndex != -1) {
+               // temp should equal <w:p wsp:rsidR ..</w:p> ...
+               String temp = data.substring(lastIndex);
+               temp = temp.replaceAll("<w:p wsp:rsidR=\".*?\" wsp:rsidRDefault=\".*?\"></w:p>", "");
+               data = data.substring(0, lastIndex) + temp;
+            }
+
             data = data.concat(footer);
          }
 
@@ -188,27 +195,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          super.renderAttribute(attributeType, artifact, PresentationType.SPECIALIZED_EDIT, wordMl, attributeElement,
             footer);
       }
-   }
-
-   private String removeSectionBreakParagraph(String data) {
-      Pattern pattern = Pattern.compile(ReportConstants.ENTIRE_FTR);
-      Pattern paragraphMatch = Pattern.compile("<w:p.*?/w:p>");
-      Matcher matcher = pattern.matcher(data);
-      if (matcher.find()) {
-
-         int startIndex = matcher.start();
-         String replace = data.substring(0, startIndex);
-
-         // Matches everything but last paragraph before section break
-         Matcher matchParagraphs = paragraphMatch.matcher(replace);
-         replace = "";
-         while (matchParagraphs.find()) {
-            replace += matchParagraphs.group(0);
-         }
-         data = replace + data.substring(startIndex);
-      }
-
-      return data;
    }
 
    @Override
