@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
+import org.eclipse.osee.orcs.core.ds.TupleData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
@@ -53,6 +54,7 @@ import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.core.internal.relation.impl.RelationNodeAdjacencies;
 import org.eclipse.osee.orcs.core.internal.transaction.TxData.TxState;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager.TxDataLoader;
+import org.eclipse.osee.orcs.core.internal.tuple.TupleManager;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.junit.Before;
@@ -85,6 +87,7 @@ public class TxDataManagerTest {
    @Mock private QueryFactory queryFactory;
    @Mock private RelationManager relationManager;
    @Mock private TxDataLoader loader;
+   @Mock private TupleManager tupleManager;
 
    @Mock private TxData txData;
 
@@ -116,7 +119,7 @@ public class TxDataManagerTest {
    @Before
    public void init() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
-      txDataManager = new TxDataManager(proxyManager, artifactFactory, relationManager, loader);
+      txDataManager = new TxDataManager(proxyManager, artifactFactory, relationManager, tupleManager, loader);
 
       guid = GUID.create();
 
@@ -521,7 +524,9 @@ public class TxDataManagerTest {
    @Test
    public void testCreateChangeData() throws OseeCoreException {
       Iterable<Artifact> writeables = Arrays.asList(artifact1);
+      Iterable<TupleData> tuples = Collections.emptySet();
       when(txData.getAllWriteables()).thenReturn(writeables);
+      when(txData.getAllTuples()).thenReturn(tuples);
       when(artifact1.isDirty()).thenReturn(true);
 
       ArtifactData data = Mockito.mock(ArtifactData.class);

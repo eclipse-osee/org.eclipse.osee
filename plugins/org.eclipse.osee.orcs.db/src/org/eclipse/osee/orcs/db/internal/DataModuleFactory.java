@@ -17,12 +17,14 @@ import org.eclipse.osee.orcs.core.ds.DataFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.DataModule;
 import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
+import org.eclipse.osee.orcs.core.ds.KeyValueStore;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.core.ds.TxDataStore;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.branch.BranchModule;
+import org.eclipse.osee.orcs.db.internal.branch.KeyValueModule;
 import org.eclipse.osee.orcs.db.internal.loader.LoaderModule;
 import org.eclipse.osee.orcs.db.internal.loader.ProxyDataFactory;
 import org.eclipse.osee.orcs.db.internal.loader.processor.DynamicLoadProcessor;
@@ -38,15 +40,17 @@ public class DataModuleFactory {
    private final LoaderModule loaderModule;
    private final QueryModule queryModule;
    private final BranchModule branchModule;
+   private final KeyValueModule keyValueModule;
    private final TxModule txModule;
    private final AdminModule adminModule;
 
-   public DataModuleFactory(Log logger, LoaderModule loaderModule, QueryModule queryModule, BranchModule branchModule, TxModule txModule, AdminModule adminModule) {
+   public DataModuleFactory(Log logger, LoaderModule loaderModule, QueryModule queryModule, BranchModule branchModule, KeyValueModule keyValueModule, TxModule txModule, AdminModule adminModule) {
       super();
       this.logger = logger;
       this.loaderModule = loaderModule;
       this.queryModule = queryModule;
       this.branchModule = branchModule;
+      this.keyValueModule = keyValueModule;
       this.txModule = txModule;
       this.adminModule = adminModule;
    }
@@ -65,6 +69,7 @@ public class DataModuleFactory {
       final DataLoaderFactory dataLoaderFactory = loaderModule.createDataLoaderFactory(objectFactory, loadProcessor);
       final QueryEngine queryEngine = queryModule.createQueryEngine(dataLoaderFactory, attributeTypes);
       final BranchDataStore branchDataStore = branchModule.createBranchDataStore(dataLoaderFactory);
+      final KeyValueStore keyValueStore = keyValueModule.createKeyValueStore();
       final TxDataStore txDataStore = txModule.createTransactionStore(dataLoaderFactory, indexer, attributeTypes);
       final DataStoreAdmin dataStoreAdmin = adminModule.createDataStoreAdmin();
       return new DataModule() {
@@ -86,6 +91,11 @@ public class DataModuleFactory {
          @Override
          public BranchDataStore getBranchDataStore() {
             return branchDataStore;
+         }
+
+         @Override
+         public KeyValueStore getKeyValueStore() {
+            return keyValueStore;
          }
 
          @Override

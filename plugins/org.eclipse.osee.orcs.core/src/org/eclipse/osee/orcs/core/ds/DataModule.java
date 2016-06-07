@@ -27,4 +27,5 @@ public interface DataModule {
 
    DataStoreAdmin getDataStoreAdmin();
 
+   KeyValueStore getKeyValueStore();
 }

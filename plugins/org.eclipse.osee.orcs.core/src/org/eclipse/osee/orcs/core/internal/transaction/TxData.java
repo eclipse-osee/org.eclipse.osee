@@ -11,10 +11,13 @@
 package org.eclipse.osee.orcs.core.internal.transaction;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.ds.TupleData;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -35,6 +38,7 @@ public class TxData implements HasSession, HasBranch {
 
    private final OrcsSession session;
    private final GraphData graph;
+   private final Set<TupleData> tuples = new HashSet<>();
    private final Map<String, Artifact> writeables = new HashMap<>();
    private final Map<String, ArtifactReadable> readables = new HashMap<>();
 
@@ -108,6 +112,14 @@ public class TxData implements HasSession, HasBranch {
 
    public void add(ArtifactReadable artifact) {
       readables.put(artifact.getGuid(), artifact);
+   }
+
+   public void add(TupleData tupleData) {
+      tuples.add(tupleData);
+   }
+
+   public Iterable<TupleData> getAllTuples() {
+      return tuples;
    }
 
    public Iterable<Artifact> getAllWriteables() {

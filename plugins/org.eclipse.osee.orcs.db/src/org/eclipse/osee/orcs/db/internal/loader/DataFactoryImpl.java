@@ -23,6 +23,7 @@ import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.DataFactory;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
+import org.eclipse.osee.orcs.core.ds.TupleData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
@@ -121,6 +122,27 @@ public class DataFactoryImpl implements DataFactory {
       Integer relationId = RelationalConstants.DEFAULT_ITEM_ID;
       return objectFactory.createRelationData(version, relationId, relationType, modType, aArt.getLocalId(),
          bArt.getLocalId(), rationale);
+   }
+
+   @Override
+   public TupleData createTuple2Data(Long tupleTypeId, Long branchId, Long e1, Long e2) {
+      VersionData version = objectFactory.createDefaultVersionData();
+      TupleData tupleData = objectFactory.createTuple2Data(version, branchId, tupleTypeId, e1, e2);
+      return tupleData;
+   }
+
+   @Override
+   public TupleData createTuple3Data(Long tupleTypeId, Long branchId, Long e1, Long e2, Long e3) {
+      VersionData version = objectFactory.createDefaultVersionData();
+      TupleData tupleData = objectFactory.createTuple3Data(version, branchId, tupleTypeId, e1, e2, e3);
+      return tupleData;
+   }
+
+   @Override
+   public TupleData createTuple4Data(Long tupleTypeId, Long branchId, Long e1, Long e2, Long e3, Long e4) {
+      VersionData version = objectFactory.createDefaultVersionData();
+      TupleData tupleData = objectFactory.createTuple4Data(version, branchId, tupleTypeId, e1, e2, e3, e4);
+      return tupleData;
    }
 
    @Override

@@ -27,6 +27,8 @@ public interface OrcsApi {
 
    OrcsBranch getBranchOps();
 
+   KeyValueOps getKeyValueOps();
+
    OrcsAdmin getAdminOps();
 
    TransactionFactory getTransactionFactory();

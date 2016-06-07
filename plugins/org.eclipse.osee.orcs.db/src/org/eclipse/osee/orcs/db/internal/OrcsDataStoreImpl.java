@@ -22,6 +22,7 @@ import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
 import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.db.internal.branch.BranchModule;
+import org.eclipse.osee.orcs.db.internal.branch.KeyValueModule;
 import org.eclipse.osee.orcs.db.internal.loader.DataProxyFactoryProvider;
 import org.eclipse.osee.orcs.db.internal.loader.LoaderModule;
 import org.eclipse.osee.orcs.db.internal.search.QueryModule;
@@ -102,7 +103,10 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
 
       AdminModule adminModule = new AdminModule(logger, jdbcClient, idManager, preferences, typesDataStore);
 
-      dataModuleFactory = new DataModuleFactory(logger, loaderModule, queryModule, branchModule, txModule, adminModule);
+      KeyValueModule keyValueModule = new KeyValueModule(jdbcClient);
+
+      dataModuleFactory =
+         new DataModuleFactory(logger, loaderModule, queryModule, branchModule, keyValueModule, txModule, adminModule);
    }
 
    public void stop() throws Exception {

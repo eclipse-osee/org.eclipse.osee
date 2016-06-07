@@ -20,6 +20,7 @@ import org.eclipse.osee.orcs.api.OrcsRelationLoadingTest;
 import org.eclipse.osee.orcs.api.OrcsScriptScopeTest;
 import org.eclipse.osee.orcs.api.OrcsScriptTest;
 import org.eclipse.osee.orcs.api.OrcsTransactionTest;
+import org.eclipse.osee.orcs.api.OrcsTupleTest;
 import org.eclipse.osee.orcs.api.OrcsTxQueryTest;
 import org.eclipse.osee.orcs.writer.OrcsValidationHelperAdapterTest;
 import org.junit.runner.RunWith;
@@ -40,6 +41,7 @@ import org.junit.runners.Suite;
    OrcsRelationLoadingTest.class,
    OrcsScriptScopeTest.class,
    OrcsScriptTest.class,
+   OrcsTupleTest.class,
    OrcsTransactionTest.class,
    OrcsTxQueryTest.class})
 public class OrcsIntegrationTestSuite {

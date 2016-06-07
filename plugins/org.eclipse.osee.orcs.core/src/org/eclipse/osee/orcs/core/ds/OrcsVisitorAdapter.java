@@ -32,4 +32,9 @@ public class OrcsVisitorAdapter implements OrcsVisitor {
       //
    }
 
+   @Override
+   public void visit(TupleData data) throws OseeCoreException {
+      //
+   }
+
 }

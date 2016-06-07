@@ -41,8 +41,8 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -54,6 +54,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
@@ -90,6 +91,7 @@ public class TransactionBuilderImplTest {
    @Mock private QueryFactory queryFactory;
    @Mock private QueryBuilder builder;
    @Mock private QueryModule query;
+   @Mock private KeyValueOps keyValueOps;
 
    @Mock private BranchId branch;
 
@@ -117,7 +119,7 @@ public class TransactionBuilderImplTest {
    public void init() throws OseeCoreException {
       initMocks(this);
       guid = GUID.create();
-      factory = new TransactionBuilderImpl(txCallableFactory, txDataManager, txData, query);
+      factory = new TransactionBuilderImpl(txCallableFactory, txDataManager, txData, query, keyValueOps);
 
       when(attrId.getLocalId()).thenReturn(12345);
       when(txDataManager.getForWrite(txData, expectedAuthor)).thenReturn(artifact);

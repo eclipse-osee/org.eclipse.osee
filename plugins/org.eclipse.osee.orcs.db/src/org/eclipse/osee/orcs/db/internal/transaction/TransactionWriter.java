@@ -40,6 +40,15 @@ public class TransactionWriter {
    private static final String INSERT_RELATION_TABLE =
       "INSERT INTO osee_relation_link (rel_link_id, rel_link_type_id, gamma_id, a_art_id, b_art_id, rationale) VALUES (?,?,?,?,?,?)";
 
+   private static final String INSERT_TUPLES2_TABLE =
+      "INSERT INTO osee_tuple2 (tuple_type, e1, e2, gamma_id) VALUES (?,?,?,?)";
+
+   private static final String INSERT_TUPLES3_TABLE =
+      "INSERT INTO osee_tuple3 (tuple_type, e1, e2, e3, gamma_id) VALUES (?,?,?,?,?)";
+
+   private static final String INSERT_TUPLES4_TABLE =
+      "INSERT INTO osee_tuple4 (tuple_type, e1, e2, e3, e4, gamma_id) VALUES (?,?,?,?,?,?)";
+
    private static final String INSERT_INTO_TRANSACTION_TABLE =
       "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) VALUES (?, ?, ?, ?, ?)";
 
@@ -59,6 +68,9 @@ public class TransactionWriter {
       ARTIFACTS(INSERT_ARTIFACT, TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS),
       ATTRIBUTES(INSERT_ATTRIBUTE, TX_GET_PREVIOUS_TX_NOT_CURRENT_ATTRIBUTES),
       RELATIONS(INSERT_RELATION_TABLE, TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS),
+      TUPLES2(INSERT_TUPLES2_TABLE),
+      TUPLES3(INSERT_TUPLES3_TABLE),
+      TUPLES4(INSERT_TUPLES4_TABLE),
       TXS_DETAIL(INSERT_INTO_TRANSACTION_DETAIL),
       TXS(INSERT_INTO_TRANSACTION_TABLE);
 

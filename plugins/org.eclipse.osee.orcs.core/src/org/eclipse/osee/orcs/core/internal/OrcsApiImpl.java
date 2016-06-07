@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
-import com.google.common.collect.Sets;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -25,6 +24,7 @@ import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
@@ -65,6 +65,9 @@ import org.eclipse.osee.orcs.core.internal.transaction.TxDataLoaderImpl;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataLoaderImpl.TransactionProvider;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager.TxDataLoader;
+import org.eclipse.osee.orcs.core.internal.tuple.TupleFactory;
+import org.eclipse.osee.orcs.core.internal.tuple.TupleManager;
+import org.eclipse.osee.orcs.core.internal.tuple.TupleManagerFactory;
 import org.eclipse.osee.orcs.core.internal.types.BranchHierarchyProvider;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesModule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -72,6 +75,7 @@ import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
+import com.google.common.collect.Sets;
 
 /**
  * @author Roberto E. Escobar
@@ -188,6 +192,9 @@ public class OrcsApiImpl implements OrcsApi {
       RelationManager relationManager = RelationManagerFactory.createRelationManager(logger,
          orcsTypes.getRelationTypes(), relationFactory, nodeLoader, queryModuleProvider, proxyProvider);
 
+      TupleFactory tupleFactory = new TupleFactory(module.getDataFactory());
+      TupleManager tupleManager = TupleManagerFactory.createTupleManager(tupleFactory);
+
       GraphProvider graphProvider = new GraphProvider() {
 
          @Override
@@ -209,7 +216,7 @@ public class OrcsApiImpl implements OrcsApi {
 
       TxDataLoader txDataLoader = new TxDataLoaderImpl(module.getDataLoaderFactory(), graphFactory, graphBuilderFactory,
          graphProvider, txProvider);
-      txDataManager = new TxDataManager(proxyManager, artifactFactory, relationManager, txDataLoader);
+      txDataManager = new TxDataManager(proxyManager, artifactFactory, relationManager, tupleManager, txDataLoader);
       txCallableFactory = new TxCallableFactory(logger, module.getTxDataStore(), txDataManager);
 
       queryModule = new QueryModule(logger, module.getQueryEngine(), graphBuilderFactory, graphProvider,
@@ -266,10 +273,15 @@ public class OrcsApiImpl implements OrcsApi {
    }
 
    @Override
+   public KeyValueOps getKeyValueOps() {
+      return new KeyValueOpsImpl(module.getKeyValueStore());
+   }
+
+   @Override
    public TransactionFactory getTransactionFactory() {
       OrcsSession session = getSession();
       return new TransactionFactoryImpl(session, txDataManager, txCallableFactory, queryModule, getQueryFactory(),
-         getBranchOps());
+         getBranchOps(), getKeyValueOps());
    }
 
    @Override

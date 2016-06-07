@@ -371,5 +371,4 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
       andIds(CoreArtifactTokens.DefaultHierarchyRoot);
       return (T) this;
    }
-
 }

@@ -83,6 +83,17 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
       return Response.created(location).entity(asDatastoreInfo(metaData)).build();
    }
 
+   @Override
+   public Response migrate(DatastoreInitOptions options) {
+      activityLog.setEnabled(false);
+      OrcsAdmin adminOps = getOrcsAdmin();
+
+      Callable<OrcsMetaData> callable = adminOps.migrateDatastore();
+      OrcsMetaData metaData = executeCallable(callable);
+      URI location = getDatastoreLocation(uriInfo);
+      return Response.created(location).entity(asDatastoreInfo(metaData)).build();
+   }
+
    private URI getDatastoreLocation(UriInfo uriInfo) {
       return uriInfo.getRequestUriBuilder().path("../").path("info").build();
    }

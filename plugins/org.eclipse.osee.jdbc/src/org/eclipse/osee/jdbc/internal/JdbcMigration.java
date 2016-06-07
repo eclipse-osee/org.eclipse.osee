@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcClientConfig;
 import org.eclipse.osee.jdbc.JdbcConstants.JdbcDriverType;
@@ -30,6 +31,20 @@ public class JdbcMigration {
    private static final String DB_BIGINT = "db.bigint";
    private static final String DB_CLOB = "db.clob";
    private static final String DB_BLOB = "db.blob";
+   private static final String DB_ORGANIZATION_INDEX = "db.organization_index";
+   private static final String DB_ORGANIZATION_INDEX_3 = "db.organization_index_3";
+   private static final String DB_ORGANIZATION_INDEX_KEY_VALUE = "db.organization_index_key_value";
+   private static final String DB_SYNONYM_2 = "db.synonym2";
+   private static final String DB_GRANT_2 = "db.grant2";
+   private static final String DB_SYNONYM_3 = "db.synonym3";
+   private static final String DB_GRANT_3 = "db.grant3";
+   private static final String DB_SYNONYM_4 = "db.synonym4";
+   private static final String DB_GRANT_4 = "db.grant4";
+   private static final String DB_SYNONYM_KEY_VALUE = "db.synonym_key_value";
+   private static final String DB_GRANT_KEY_VALUE = "db.grant_key_value";
+   private static final String DB_TABLESPACE = "db.tablespace";
+   private static final String DB_PCTTHRESHOLD = "db.pctthreshold";
+   private static final String DB_OVERFLOW = "db.overflow";
 
    private static final String LOCATION_TEMPLATE = "filesystem:%s";
    private boolean baselineOnMigrate = false;
@@ -62,6 +77,8 @@ public class JdbcMigration {
          fly.setLocations(allPaths.toArray(new String[allPaths.size()]));
          before(placeholders);
          if (options.isClean()) {
+            Conditions.checkExpressionFailOnTrue(jdbcClient.getConfig().isProduction(),
+               "Error - attempting to clean a production datastore.");
             fly.clean();
          }
          fly.migrate();
@@ -93,12 +110,52 @@ public class JdbcMigration {
       placeholders.put(DB_BLOB, "blob");
       placeholders.put(DB_CLOB, "clob");
       placeholders.put(DB_BIGINT, "bigint");
+      placeholders.put(DB_ORGANIZATION_INDEX, "");
+      placeholders.put(DB_ORGANIZATION_INDEX_3, "");
+      placeholders.put(DB_ORGANIZATION_INDEX_KEY_VALUE, "");
+      placeholders.put(DB_SYNONYM_2, "");
+      placeholders.put(DB_GRANT_2, "");
+      placeholders.put(DB_SYNONYM_3, "");
+      placeholders.put(DB_GRANT_3, "");
+      placeholders.put(DB_SYNONYM_4, "");
+      placeholders.put(DB_GRANT_4, "");
+      placeholders.put(DB_SYNONYM_KEY_VALUE, "");
+      placeholders.put(DB_GRANT_KEY_VALUE, "");
+      placeholders.put(DB_TABLESPACE, "");
+      placeholders.put(DB_PCTTHRESHOLD, "");
+      placeholders.put(DB_OVERFLOW, "");
 
       if (JdbcDriverType.postgresql.getDriver().equals(driver)) {
          placeholders.put(DB_BLOB, "bytea");
          placeholders.put(DB_CLOB, "text");
+         placeholders.put(DB_SYNONYM_2, "create synonym OSEE_TUPLE2 for OSEE.OSEE_TUPLE2;");
+         placeholders.put(DB_GRANT_2, "GRANT select, insert, delete, update on osee_tuple2 to osee_client;");
+         placeholders.put(DB_SYNONYM_3, "create synonym OSEE_TUPLE3 for OSEE.OSEE_TUPLE3;");
+         placeholders.put(DB_GRANT_3, "GRANT select, insert, delete, update on osee_tuple3 to osee_client;");
+         placeholders.put(DB_SYNONYM_4, "create synonym OSEE_TUPLE4 for OSEE.OSEE_TUPLE4;");
+         placeholders.put(DB_GRANT_4, "GRANT select, insert, delete, update on osee_tuple4 to osee_client;");
+         placeholders.put(DB_SYNONYM_KEY_VALUE, "create synonym OSEE_KEY_VALUE for OSEE.OSEE_KEY_VALUE;");
+         placeholders.put(DB_GRANT_KEY_VALUE, "GRANT select, insert, delete, update on osee_key_value to osee_client;");
+         placeholders.put(DB_TABLESPACE, "TABLESPACE osee_data");
+         placeholders.put(DB_PCTTHRESHOLD, "");
+         placeholders.put(DB_OVERFLOW, "");
+
       } else if (JdbcDriverType.oracle_thin.getDriver().equals(driver)) {
          placeholders.put(DB_BIGINT, "number");
+         placeholders.put(DB_ORGANIZATION_INDEX, "ORGANIZATION INDEX COMPRESS 2");
+         placeholders.put(DB_ORGANIZATION_INDEX_3, "ORGANIZATION INDEX COMPRESS 3");
+         placeholders.put(DB_ORGANIZATION_INDEX_KEY_VALUE, "ORGANIZATION INDEX");
+         placeholders.put(DB_SYNONYM_2, "create public synonym OSEE_TUPLE2 for OSEE.OSEE_TUPLE2;");
+         placeholders.put(DB_GRANT_2, "GRANT select, insert, delete, update on osee_tuple2 to osee_client;");
+         placeholders.put(DB_SYNONYM_3, "create public synonym OSEE_TUPLE3 for OSEE.OSEE_TUPLE3;");
+         placeholders.put(DB_GRANT_3, "GRANT select, insert, delete, update on osee_tuple3 to osee_client;");
+         placeholders.put(DB_SYNONYM_4, "create public synonym OSEE_TUPLE4 for OSEE.OSEE_TUPLE4;");
+         placeholders.put(DB_GRANT_4, "GRANT select, insert, delete, update on osee_tuple4 to osee_client;");
+         placeholders.put(DB_SYNONYM_KEY_VALUE, "create public synonym OSEE_KEY_VALUE for OSEE.OSEE_KEY_VALUE;");
+         placeholders.put(DB_GRANT_KEY_VALUE, "GRANT select, insert, delete, update on osee_key_value to osee_client;");
+         placeholders.put(DB_TABLESPACE, "TABLESPACE osee_data");
+         placeholders.put(DB_PCTTHRESHOLD, "PCTTHRESHOLD 20");
+         placeholders.put(DB_OVERFLOW, "OVERFLOW TABLESPACE osee_data");
       }
 
    }

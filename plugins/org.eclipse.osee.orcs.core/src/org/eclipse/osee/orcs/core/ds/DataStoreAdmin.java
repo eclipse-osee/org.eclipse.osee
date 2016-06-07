@@ -25,4 +25,6 @@ public interface DataStoreAdmin {
 
    boolean isDataStoreInitialized();
 
+   Callable<DataStoreInfo> migrateDataStore(OrcsSession session);
+
 }

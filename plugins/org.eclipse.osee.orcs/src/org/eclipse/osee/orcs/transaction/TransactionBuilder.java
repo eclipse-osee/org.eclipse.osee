@@ -14,13 +14,17 @@ import java.io.InputStream;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.Tuple2Type;
+import org.eclipse.osee.framework.core.data.Tuple3Type;
+import org.eclipse.osee.framework.core.data.Tuple4Type;
+import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -131,5 +135,22 @@ public interface TransactionBuilder {
    void unrelateFromAll(ArtifactId art) throws OseeCoreException;
 
    void unrelateFromAll(IRelationTypeSide typeSide, ArtifactId art) throws OseeCoreException;
+
+   // Tuples
+   <E1, E2> Long addTuple2(Tuple2Type<E1, E2> tupleType, Long branchId, E1 e1, E2 e2);
+
+   <E1, E2, E3> Long addTuple3(Tuple3Type<E1, E2, E3> tupleType, Long branchId, E1 e1, E2 e2, E3 e3);
+
+   <E1, E2, E3, E4> Long addTuple4(Tuple4Type<E1, E2, E3, E4> tupleType, Long branchId, E1 e1, E2 e2, E3 e3, E4 e4);
+
+   Long addTuple(TupleTypeId tupleTypeId, Long branchId, Object... elements);
+
+   boolean deleteTuple(Long gammaId);
+
+   <E1, E2> boolean deleteTuple2(Tuple2Type<E1, E2> tupleType, E1 e1, E2 e2);
+
+   <E1, E2, E3> boolean deleteTupple3(Tuple3Type<E1, E2, E3> tupleType, E1 e1, E2 e2, E3 e3);
+
+   <E1, E2, E3, E4> boolean deleteTupple4(Tuple4Type<E1, E2, E3, E4> tupleType, E1 e1, E2 e2, E3 e3, E4 e4);
 
 }

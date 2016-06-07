@@ -51,4 +51,9 @@ public class BranchesResource {
       HtmlWriter writer = new HtmlWriter(uriInfo);
       return writer.toHtml(results);
    }
+
+   @Path("{uuid}/tuples")
+   public TupleResource getTuples(@PathParam("uuid") Long uuid) {
+      return new TupleResource(OrcsApplication.getOrcsApi(), uuid);
+   }
 }

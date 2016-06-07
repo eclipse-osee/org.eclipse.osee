@@ -13,6 +13,6 @@ package org.eclipse.osee.orcs.core.ds;
 /**
  * @author Roberto E. Escobar
  */
-public interface DataFactory extends ArtifactDataFactory, AttributeDataFactory, RelationDataFactory {
+public interface DataFactory extends ArtifactDataFactory, AttributeDataFactory, RelationDataFactory, TupleDataFactory {
    //
 }

@@ -21,7 +21,10 @@ public interface OrcsChangeSet extends OrcsVisitable {
 
    Iterable<RelationData> getRelationData();
 
+   Iterable<TupleData> getTupleData();
+
    boolean isEmpty();
 
    int size();
+
 }

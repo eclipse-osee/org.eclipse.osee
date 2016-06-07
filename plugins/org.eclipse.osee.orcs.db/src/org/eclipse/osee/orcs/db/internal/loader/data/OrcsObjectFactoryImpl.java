@@ -20,11 +20,13 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.BranchData;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.RelationData;
+import org.eclipse.osee.orcs.core.ds.TupleData;
 import org.eclipse.osee.orcs.core.ds.TxOrcsData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
@@ -216,6 +218,48 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    public TxOrcsData createCopy(TxOrcsData source) {
       return createTxData(source.getLocalId(), source.getTxType(), source.getDate(), source.getComment(),
          source.getBranchId(), source.getAuthorId(), source.getCommit());
+   }
+
+   @Override
+   public TupleData createTuple2Data(VersionData version, Long branchId, Long tupleType, Long element1, Long element2) throws OseeCoreException {
+      TupleData data = new TupleDataImpl(version);
+      data.setBaseModType(ModificationType.NEW);
+      data.setModType(ModificationType.NEW);
+      data.setTupleType(tupleType);
+      data.setElement1(element1);
+      data.setElement2(element2);
+      data.getVersion().setGammaId(Lib.generateUuid());
+      data.getVersion().setBranchId(branchId);
+      return data;
+   }
+
+   @Override
+   public TupleData createTuple3Data(VersionData version, Long branchId, Long tupleType, Long e1, Long e2, Long e3) throws OseeCoreException {
+      TupleData data = new TupleDataImpl(version);
+      data.setBaseModType(ModificationType.NEW);
+      data.setModType(ModificationType.NEW);
+      data.setTupleType(tupleType);
+      data.setElement1(e1);
+      data.setElement2(e2);
+      data.setElement3(e3);
+      data.getVersion().setGammaId(Lib.generateUuid());
+      data.getVersion().setBranchId(branchId);
+      return data;
+   }
+
+   @Override
+   public TupleData createTuple4Data(VersionData version, Long branchId, Long tupleType, Long e1, Long e2, Long e3, Long e4) throws OseeCoreException {
+      TupleData data = new TupleDataImpl(version);
+      data.setBaseModType(ModificationType.NEW);
+      data.setModType(ModificationType.NEW);
+      data.setTupleType(tupleType);
+      data.setElement1(e1);
+      data.setElement2(e2);
+      data.setElement3(e3);
+      data.setElement4(e4);
+      data.getVersion().setGammaId(Lib.generateUuid());
+      data.getVersion().setBranchId(branchId);
+      return data;
    }
 
 }

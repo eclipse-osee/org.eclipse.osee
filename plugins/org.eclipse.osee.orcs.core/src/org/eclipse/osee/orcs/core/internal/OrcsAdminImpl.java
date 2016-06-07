@@ -19,6 +19,7 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
 import org.eclipse.osee.orcs.core.internal.admin.CreateDatastoreCallable;
 import org.eclipse.osee.orcs.core.internal.admin.FetchDatastoreMetadataCallable;
+import org.eclipse.osee.orcs.core.internal.admin.MigrateDatastoreAdminCallable;
 
 /**
  * @author Roberto E. Escobar
@@ -38,6 +39,11 @@ public class OrcsAdminImpl implements OrcsAdmin {
    @Override
    public Callable<OrcsMetaData> createDatastore(Map<String, String> parameters) {
       return new CreateDatastoreCallable(logger, session, dataStoreAdmin, parameters);
+   }
+
+   @Override
+   public Callable<OrcsMetaData> migrateDatastore() {
+      return new MigrateDatastoreAdminCallable(logger, session, dataStoreAdmin);
    }
 
    @Override

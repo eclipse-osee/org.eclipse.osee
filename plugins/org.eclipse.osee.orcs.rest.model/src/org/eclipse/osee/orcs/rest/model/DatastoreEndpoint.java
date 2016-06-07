@@ -33,4 +33,9 @@ public interface DatastoreEndpoint {
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
    Response initialize(DatastoreInitOptions options);
 
+   @POST
+   @Path("migrate")
+   @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+   Response migrate(DatastoreInitOptions options);
+
 }

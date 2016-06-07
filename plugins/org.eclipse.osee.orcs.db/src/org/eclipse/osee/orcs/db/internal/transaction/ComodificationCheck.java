@@ -26,6 +26,7 @@ import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.OrcsVisitor;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
+import org.eclipse.osee.orcs.core.ds.TupleData;
 
 /**
  * @author Roberto E. Escobar
@@ -59,6 +60,7 @@ public class ComodificationCheck implements TransactionProcessor {
       private final Map<Integer, ArtifactData> artifacts = new HashMap<>();
       private final Map<Integer, AttributeData> attributes = new HashMap<>();
       private final Map<Integer, RelationData> relations = new HashMap<>();
+      private final Map<Integer, TupleData> tuples = new HashMap<>();
 
       public Collection<Integer> getArtifactIds() {
          return artifacts.keySet();
@@ -100,6 +102,11 @@ public class ComodificationCheck implements TransactionProcessor {
          if (data.getVersion().isInStorage()) {
             relations.put(data.getLocalId(), data);
          }
+      }
+
+      @Override
+      public void visit(TupleData data) {
+         tuples.put(data.getLocalId(), data);
       }
 
       @Override

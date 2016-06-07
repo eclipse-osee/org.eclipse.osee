@@ -28,6 +28,7 @@ import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.OrcsVisitor;
 import org.eclipse.osee.orcs.core.ds.RelationData;
+import org.eclipse.osee.orcs.core.ds.TupleData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
@@ -132,6 +133,26 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
          }
          addTxs(SqlOrderEnum.ATTRIBUTES, data);
       }
+   }
+
+   @Override
+   public void visit(TupleData data) {
+      updateTxValues(data);
+
+      if (data.getElement3() == null) {
+         addRow(SqlOrderEnum.TUPLES2, data.getTupleType(), data.getElement1(), data.getElement2(),
+            data.getVersion().getGammaId());
+         addTxs(SqlOrderEnum.TUPLES2, data);
+      } else if (data.getElement4() == null) {
+         addRow(SqlOrderEnum.TUPLES3, data.getTupleType(), data.getElement1(), data.getElement2(), data.getElement3(),
+            data.getVersion().getGammaId());
+         addTxs(SqlOrderEnum.TUPLES3, data);
+      } else {
+         addRow(SqlOrderEnum.TUPLES4, data.getTupleType(), data.getElement1(), data.getElement2(), data.getElement3(),
+            data.getElement4(), data.getVersion().getGammaId());
+         addTxs(SqlOrderEnum.TUPLES4, data);
+      }
+
    }
 
    @Override

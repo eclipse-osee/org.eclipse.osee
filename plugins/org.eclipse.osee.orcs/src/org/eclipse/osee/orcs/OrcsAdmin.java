@@ -22,5 +22,8 @@ public interface OrcsAdmin {
 
    Callable<OrcsMetaData> createDatastore(Map<String, String> parameters);
 
+   Callable<OrcsMetaData> migrateDatastore();
+
    boolean isDataStoreInitialized();
+
 }

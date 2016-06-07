@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal;
 
-import com.google.common.base.Supplier;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -26,7 +25,9 @@ import org.eclipse.osee.orcs.core.ds.DataStoreInfo;
 import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
 import org.eclipse.osee.orcs.db.internal.callable.FetchDatastoreInfoCallable;
 import org.eclipse.osee.orcs.db.internal.callable.InitializeDatastoreCallable;
+import org.eclipse.osee.orcs.db.internal.callable.MigrateDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.util.DynamicSchemaResourceProvider;
+import com.google.common.base.Supplier;
 
 /**
  * @author Roberto E. Escobar
@@ -61,6 +62,14 @@ public class AdminModule {
             JdbcMigrationOptions options = new JdbcMigrationOptions(true, true);
             return new InitializeDatastoreCallable(session, logger, jdbcClient, identityService, preferences,
                schemaProvider, options);
+         }
+
+         @Override
+         public Callable<DataStoreInfo> migrateDataStore(OrcsSession session) {
+            Supplier<Iterable<JdbcMigrationResource>> schemaProvider = new DynamicSchemaResourceProvider(logger);
+            JdbcMigrationOptions options = new JdbcMigrationOptions(false, false);
+
+            return new MigrateDatastoreCallable(session, logger, jdbcClient, preferences, schemaProvider, options);
          }
 
          @Override

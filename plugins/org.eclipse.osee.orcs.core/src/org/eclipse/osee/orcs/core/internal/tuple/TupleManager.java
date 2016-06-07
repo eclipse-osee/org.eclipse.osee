@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Boeing.
+ * Copyright (c) 2016 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,21 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.ds;
+package org.eclipse.osee.orcs.core.internal.tuple;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.orcs.core.internal.transaction.TxData;
 
 /**
- * @author Roberto E. Escobar
+ * @author Angel Avila
  */
-public interface OrcsVisitor {
+public interface TupleManager {
 
-   void visit(ArtifactData data) throws OseeCoreException;
+   Long addTupple2(TxData txData, Long branchId, Long tupleTypeId, Long e1, Long e2);
 
-   void visit(AttributeData data) throws OseeCoreException;
+   Long addTupple3(TxData txData, Long branchId, Long tupleTypeId, Long e1, Long e2, Long e3);
 
-   void visit(RelationData data) throws OseeCoreException;
-
-   void visit(TupleData data);
+   Long addTupple4(TxData txData, Long branchId, Long tupleTypeId, Long e1, Long e2, Long e3, Long e4);
 
 }
