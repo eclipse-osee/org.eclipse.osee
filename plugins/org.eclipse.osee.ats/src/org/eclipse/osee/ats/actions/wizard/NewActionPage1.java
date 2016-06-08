@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.util.widgets.dialog.AtsObjectNameSorter;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -111,24 +112,9 @@ public class NewActionPage1 extends WizardPage {
             }
          });
 
-         Composite aiComp = new Composite(comp, SWT.NONE);
-         aiComp.setLayout(new GridLayout(1, false));
-         aiComp.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-         new Label(aiComp, SWT.NONE).setText("Select Actionable Items:");
-         treeViewer = new FilteredCheckboxTree(aiComp,
-            SWT.CHECK | SWT.MULTI | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-         treeViewer.getViewer().getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-         treeViewer.getViewer().setContentProvider(new AITreeContentProvider(Active.Active));
-         treeViewer.getViewer().setLabelProvider(new AtsObjectLabelProvider());
-         try {
-            List<IAtsActionableItem> topLevelActionableItems =
-               ActionableItems.getTopLevelActionableItems(Active.Active, AtsClientService.get().getQueryService());
-            treeViewer.getViewer().setInput(topLevelActionableItems);
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-         treeViewer.getViewer().setSorter(new AtsObjectNameSorter());
+         Pair<FilteredCheckboxTree, Text> results = createActionableItemTreeViewer(comp);
+         treeViewer = results.getFirst();
+         descriptionLabel = results.getSecond();
          treeViewer.getCheckboxTreeViewer().addCheckStateListener(new ICheckStateListener() {
 
             @Override
@@ -136,31 +122,11 @@ public class NewActionPage1 extends WizardPage {
                getContainer().updateButtons();
             }
          });
-         GridData gridData1 = new GridData(GridData.FILL_BOTH);
-         gridData1.heightHint = 400;
-         treeViewer.setLayoutData(gridData1);
-
-         new Label(aiComp, SWT.NONE).setText("Description of highlighted Actionable Item (if any):");
-         descriptionLabel = new Text(aiComp, SWT.BORDER | SWT.WRAP);
-         gridData1 = new GridData(GridData.FILL_BOTH);
-         gridData1.heightHint = 15;
-         descriptionLabel.setLayoutData(gridData1);
-         descriptionLabel.setEnabled(false);
-
          treeViewer.getCheckboxTreeViewer().addCheckStateListener(new CheckStateListener());
-
-         Button deselectAll = new Button(aiComp, SWT.PUSH);
-         deselectAll.setText("De-Select All");
-         deselectAll.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-               treeViewer.clearChecked();
-            };
-         });
 
          setControl(comp);
          setHelpContexts();
+
          if (wizard.getInitialAias() != null) {
             treeViewer.setInitalChecked(wizard.getInitialAias());
          }
@@ -168,6 +134,49 @@ public class NewActionPage1 extends WizardPage {
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
+   }
+
+   public static Pair<FilteredCheckboxTree, Text> createActionableItemTreeViewer(Composite comp) {
+      Composite aiComp = new Composite(comp, SWT.NONE);
+      aiComp.setLayout(new GridLayout(1, false));
+      aiComp.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+      new Label(aiComp, SWT.NONE).setText("Select Actionable Items:");
+      FilteredCheckboxTree treeViewer = new FilteredCheckboxTree(aiComp,
+         SWT.CHECK | SWT.MULTI | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+      treeViewer.getViewer().getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      treeViewer.getViewer().setContentProvider(new AITreeContentProvider(Active.Active));
+      treeViewer.getViewer().setLabelProvider(new AtsObjectLabelProvider());
+      try {
+         List<IAtsActionableItem> topLevelActionableItems =
+            ActionableItems.getTopLevelActionableItems(Active.Active, AtsClientService.get().getQueryService());
+         treeViewer.getViewer().setInput(topLevelActionableItems);
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      treeViewer.getViewer().setSorter(new AtsObjectNameSorter());
+      GridData gridData1 = new GridData(GridData.FILL_BOTH);
+      gridData1.heightHint = 400;
+      treeViewer.setLayoutData(gridData1);
+
+      new Label(aiComp, SWT.NONE).setText("Description of highlighted Actionable Item (if any):");
+      Text descriptionLabel = new Text(aiComp, SWT.BORDER | SWT.WRAP);
+      gridData1 = new GridData(GridData.FILL_BOTH);
+      gridData1.heightHint = 15;
+      descriptionLabel.setLayoutData(gridData1);
+      descriptionLabel.setEnabled(false);
+
+      Button deselectAll = new Button(aiComp, SWT.PUSH);
+      deselectAll.setText("De-Select All");
+      deselectAll.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            treeViewer.clearChecked();
+         };
+      });
+
+      return new Pair<FilteredCheckboxTree, Text>(treeViewer, descriptionLabel);
    }
 
    /**
@@ -203,8 +212,13 @@ public class NewActionPage1 extends WizardPage {
          if (sel.isEmpty()) {
             return;
          }
-         IAtsActionableItem aia = (IAtsActionableItem) sel.getFirstElement();
-         descriptionLabel.setText(aia.getDescription());
+         Collection<Object> checked = treeViewer.getChecked();
+         if (checked.isEmpty()) {
+            descriptionLabel.setText("");
+         } else {
+            IAtsActionableItem aia = (IAtsActionableItem) checked.iterator().next();
+            descriptionLabel.setText(aia.getDescription());
+         }
       }
    }
 

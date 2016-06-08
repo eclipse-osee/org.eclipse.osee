@@ -99,7 +99,7 @@ public class EntryDialog extends MessageDialog {
       areaComposite = new Composite(parent, SWT.NONE);
       areaComposite.setLayout(new GridLayout(2, false));
       GridData gd = new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL);
-      gd.widthHint = 500;
+      gd.widthHint = 600;
       areaComposite.setLayoutData(gd);
       areaComposite.addMouseMoveListener(compListener);
 
@@ -145,7 +145,7 @@ public class EntryDialog extends MessageDialog {
       errorLabel.setSize(errorLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT));
       errorLabel.setText("");
       if (!fillVertically) {
-         GridData gd = new GridData();
+         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
          gd.horizontalSpan = 3;
          errorLabel.setLayoutData(gd);
       }
@@ -321,6 +321,10 @@ public class EntryDialog extends MessageDialog {
       closeEventListeners.add(event);
    }
 
+   protected XText getText() {
+      return text;
+   }
+
    public void setLabel(String label) {
       this.label = label;
    }
@@ -329,16 +333,10 @@ public class EntryDialog extends MessageDialog {
       this.textHeight = textHeight;
    }
 
-   /**
-    * @return the errorString
-    */
    public String getErrorString() {
       return errorString;
    }
 
-   /**
-    * @param errorString the errorString to set
-    */
    public void setErrorString(String errorString) {
       this.errorString = errorString;
    }

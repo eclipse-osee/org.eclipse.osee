@@ -14,10 +14,15 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @author Donald G. Dunne
+ */
 public enum Role {
    Moderator,
    Reviewer,
-   Author;
+   Author,
+   Quality;
+
    public static Collection<String> strValues() {
       Set<String> values = new HashSet<>();
       for (Enum<Role> e : values()) {

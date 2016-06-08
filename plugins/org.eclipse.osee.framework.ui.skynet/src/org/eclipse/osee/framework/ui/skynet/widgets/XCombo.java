@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.eclipse.core.runtime.IStatus;
@@ -180,6 +181,10 @@ public class XCombo extends XButtonCommon {
          }
       }
       return 0;
+   }
+
+   public void setDataStrings(Collection<String> inDataStrings) {
+      setDataStrings(inDataStrings.toArray(new String[inDataStrings.size()]));
    }
 
    public void setDataStrings(String[] inDataStrings) {

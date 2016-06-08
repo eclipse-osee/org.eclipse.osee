@@ -19,7 +19,9 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
+import org.eclipse.osee.ats.api.review.ReviewFormalType;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -39,6 +41,7 @@ import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.review.NewDecisionReviewJob;
+import org.eclipse.osee.ats.review.NewPeerReviewDialog;
 import org.eclipse.osee.ats.review.NewPeerToPeerReviewJob;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
@@ -172,18 +175,26 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                   if (workflowSection.getEditor().isDirty()) {
                      workflowSection.getEditor().doSave(null);
                   }
-                  StateListAndTitleDialog dialog = new StateListAndTitleDialog("Add Peer to Peer Review",
-                     "Select state to that review will be associated with.",
-                     AtsClientService.get().getWorkDefinitionAdmin().getStateNames(teamArt.getWorkDefinition()));
-                  dialog.setInitialSelections(new Object[] {forState.getName()});
+                  NewPeerReviewDialog dialog =
+                     new NewPeerReviewDialog("Add Peer to Peer Review", "Enter Title and Select Review Type.",
+                        AtsClientService.get().getWorkDefinitionAdmin().getStateNames(teamArt.getWorkDefinition()),
+                        forState.getName(), null);
                   dialog.setReviewTitle(PeerToPeerReviewManager.getDefaultReviewTitle(teamArt));
                   if (dialog.open() == 0) {
                      if (!Strings.isValid(dialog.getReviewTitle())) {
                         AWorkbench.popup("ERROR", "Must enter review title");
                         return;
                      }
-                     NewPeerToPeerReviewJob job =
-                        new NewPeerToPeerReviewJob(teamArt, dialog.getReviewTitle(), dialog.getSelectedState());
+                     ReviewBlockType blockType = null;
+                     if (Strings.isValid(dialog.getBlockingType())) {
+                        blockType = ReviewBlockType.valueOf(dialog.getBlockingType());
+                     }
+                     ReviewFormalType reviewType = null;
+                     if (Strings.isValid(dialog.getReviewFormalType())) {
+                        reviewType = ReviewFormalType.valueOf(dialog.getReviewFormalType());
+                     }
+                     NewPeerToPeerReviewJob job = new NewPeerToPeerReviewJob(teamArt, null, dialog.getReviewTitle(),
+                        dialog.getSelectedState(), blockType, reviewType);
                      job.setUser(true);
                      job.setPriority(Job.LONG);
                      job.schedule();
