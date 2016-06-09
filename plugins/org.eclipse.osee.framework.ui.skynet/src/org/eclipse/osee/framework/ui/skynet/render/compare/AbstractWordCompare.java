@@ -51,6 +51,7 @@ public abstract class AbstractWordCompare implements IComparator {
    private final FileSystemRenderer renderer;
    private final ArtifactDeltaToFileConverter converter;
    private final List<IAttributeType> wordAttributeType = new ArrayList<>();
+   protected boolean skipDialogs;
    private static final Pattern authorPattern =
       Pattern.compile("aml:author=\".*?\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
@@ -68,6 +69,7 @@ public abstract class AbstractWordCompare implements IComparator {
       boolean show = !getRenderer().getBooleanOption(IRenderer.NO_DISPLAY);
       boolean executeVbScript = System.getProperty("os.name").contains("Windows");
       boolean skipErrors = !getRenderer().getBooleanOption(IRenderer.SKIP_ERRORS);
+      skipDialogs = !getRenderer().getBooleanOption(IRenderer.SKIP_DIALOGS);
       boolean diffFieldCodes = !UserManager.getBooleanSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES);
 
       IVbaDiffGenerator diffGenerator = WordUiUtil.createScriptGenerator(presentationType == PresentationType.MERGE,
@@ -95,8 +97,10 @@ public abstract class AbstractWordCompare implements IComparator {
       try {
          diffGenerator.generate(monitor, data);
       } catch (OperationTimedoutException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, String.format(
-            "The View Word Change Report Timed-out for Artifact(s) [%s] on Branch [%s]", artifact, branch));
+         if (!skipDialogs) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, String.format(
+               "The View Word Change Report Timed-out for Artifact(s) [%s] on Branch [%s]", artifact, branch));
+         }
       }
 
       collector.onCompare(data);
@@ -119,8 +123,10 @@ public abstract class AbstractWordCompare implements IComparator {
       try {
          diffGenerator.generate(monitor, data);
       } catch (OperationTimedoutException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, String.format(
-            "The View Word Change Report Timed-out for Artifact(s) [%s] on Branch [%s]", newerVersion, branch));
+         if (!skipDialogs) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, String.format(
+               "The View Word Change Report Timed-out for Artifact(s) [%s] on Branch [%s]", newerVersion, branch));
+         }
       }
       collector.onCompare(data);
    }
@@ -158,7 +164,8 @@ public abstract class AbstractWordCompare implements IComparator {
             artifactDelta.getStartArtifact());
          converter.convertToFileForMerge(outputFiles, artifactDelta.getBaseArtifact(), artifactDelta.getEndArtifact());
          // this is where we are getting the exception that the length of outputFiles is 1
-         // This happens because the artifact did not exist on the previous branch or was removed on the current branch
+         // This happens because the artifact did not exist on the previous
+         // branch or was removed on the current branch
          if (outputFiles.size() == 1) {
             String outputFileName = outputFiles.get(0).getRawLocation().toOSString();
             try {

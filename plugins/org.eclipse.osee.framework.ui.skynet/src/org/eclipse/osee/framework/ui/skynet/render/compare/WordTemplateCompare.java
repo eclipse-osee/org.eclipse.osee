@@ -69,8 +69,10 @@ public class WordTemplateCompare extends AbstractWordCompare {
       try {
          diffGenerator.generate(monitor, data);
       } catch (OperationTimedoutException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, String.format(
-            "The View Word Change Report Timed-out for Artifact(s) [%s] on Branch [%s]", artifact, branch));
+         if (!skipDialogs) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, String.format(
+               "The View Word Change Report Timed-out for Artifact(s) [%s] on Branch [%s]", artifact, branch));
+         }
       }
 
       getRenderer().setOption(IRenderer.RESULT_PATH_RETURN, resultPath);
