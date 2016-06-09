@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.model.IAttribute;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -168,13 +169,13 @@ public final class SafetyInformationAccumulator {
    private void processSubsystemRequirement(ArtifactReadable subsystemRequirement, String criticality) throws IOException {
       writer.writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.Subsystem, ""),
          SafetyReportGenerator.SUBSYSTEM_INDEX);
+      writer.writeCell(subsystemRequirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
       writer.writeCell(subsystemRequirement.getName());
-      writer.writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDAL, ""));
-      writer.writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDALRationale, ""));
+      writer.writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.ItemDAL, ""));
+      writer.writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.ItemDALRationale, ""));
 
       String currentCriticality = writeCriticalityWithDesignCheck(subsystemRequirement, criticality,
-         CoreAttributeTypes.FunctionalDAL, CoreRelationTypes.Design__Design, CoreAttributeTypes.SeverityCategory);
-
+         CoreAttributeTypes.ItemDAL, CoreRelationTypes.Design__Design, CoreAttributeTypes.SeverityCategory);
       for (ArtifactReadable softwareRequirement : softwareRequirements.get(subsystemRequirement)) {
          processSoftwareRequirement(softwareRequirement, currentCriticality);
       }
@@ -187,6 +188,16 @@ public final class SafetyInformationAccumulator {
          writer.writeCell("Error: invalid content");
          return "Error";
       }
+
+      if (IAttribute.UNSPECIFIED.equals(current)) {
+         writer.writeCell(IAttribute.UNSPECIFIED);
+         return IAttribute.UNSPECIFIED;
+      }
+
+      if (IAttribute.UNSPECIFIED.equals(criticality)) {
+         criticality = "E";
+      }
+
       /**
        * check to see if the safety criticality of the child at least equal to the parent
        */
@@ -201,19 +212,23 @@ public final class SafetyInformationAccumulator {
       return current;
    }
 
-   private void checkBackTrace(ArtifactReadable subsystemRequirement, Integer current, IAttributeType thisType, IRelationTypeSide relType, IAttributeType otherType) throws IOException {
+   private void checkBackTrace(ArtifactReadable art, Integer current, IAttributeType thisType, IRelationTypeSide relType, IAttributeType otherType) throws IOException {
       /**
-       * when the parent criticality is lower than the child, we check to see if the child traces to any parent with /*
-       * the higher criticality (thus justifying the criticality of the child)
+       * when the parent criticality is less critical than the child, we check to see if the child traces to any more
+       * critical parent (thus justifying the criticality of the child) note: more critical = lower number
        */
-      List<ArtifactReadable> tracedToRequirements = Lists.newArrayList(subsystemRequirement.getRelated(relType));
+      List<ArtifactReadable> tracedToRequirements = Lists.newArrayList(art.getRelated(relType));
       int maxCritVal = 4;
       int parentCritVal = 4;
 
       for (ArtifactReadable parent : tracedToRequirements) {
          if (otherType.equals(CoreAttributeTypes.SeverityCategory)) {
-            parentCritVal = SafetyCriticalityLookup.getSeverityLevel(parent.getSoleAttributeAsString(otherType, "NH"));
-         } else if (otherType.equals(CoreAttributeTypes.FunctionalDAL)) {
+            String intermediate = parent.getSoleAttributeAsString(otherType, "NH");
+            if (IAttribute.UNSPECIFIED.equals(intermediate)) {
+               intermediate = "NH";
+            }
+            parentCritVal = SafetyCriticalityLookup.getSeverityLevel(intermediate);
+         } else if (otherType.equals(CoreAttributeTypes.ItemDAL)) {
             parentCritVal = SafetyCriticalityLookup.getDALLevel(parent.getSoleAttributeAsString(otherType, "E"));
          } else {
             throw new OseeArgumentException("Invalid attribute type: %s", otherType.toString());
@@ -225,20 +240,21 @@ public final class SafetyInformationAccumulator {
          writer.writeCell(String.format("%s [Error:<%s]", SafetyCriticalityLookup.getDALLevelFromInt(current),
             SafetyCriticalityLookup.getDALLevelFromInt(maxCritVal)));
       } else {
-         writer.writeCell(current);
+         writer.writeCell(SafetyCriticalityLookup.getDALLevelFromInt(current));
       }
    }
 
    private void processSoftwareRequirement(ArtifactReadable softwareRequirement, String sevCat) throws IOException {
       writer.writeCell(softwareRequirement.getName(), SafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX);
-      String softwareRequirementDAL =
-         writeCriticalityWithDesignCheck(softwareRequirement, sevCat, CoreAttributeTypes.ItemDAL,
-            CoreRelationTypes.Requirement_Trace__Higher_Level, CoreAttributeTypes.FunctionalDAL);
+      String softwareRequirementDAL = writeCriticalityWithDesignCheck(softwareRequirement, sevCat,
+         CoreAttributeTypes.ItemDAL, CoreRelationTypes.Requirement_Trace__Higher_Level, CoreAttributeTypes.ItemDAL);
       writer.writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.ItemDALRationale, ""));
       writer.writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.SoftwareControlCategory, ""));
       writer.writeCell(
          softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.SoftwareControlCategoryRationale, ""));
 
+      writer.writeCell(calculateBoeingEquivalentSWQualLevel(softwareRequirementDAL,
+         softwareRequirement.getAttributeCount(CoreAttributeTypes.Partition)));
       writer.writeCell(functionalCategory);
 
       writer.writeCell(

@@ -40,33 +40,37 @@ public class SafetyReportGenerator {
    private long branchUuid;
    private final Log logger;
 
-   public static int SYSTEM_REQUIREMENT_INDEX = 6;
-   public static int SUBSYSTEM_FUNCTION_INDEX = 7;
-   public static int SUBSYSTEM_INDEX = 11;
-   public static int SOFTWARE_REQUIREMENT_INDEX = 16;
-   public static int CODE_UNIT_INDEX = 24;
+   public static int SYSTEM_REQUIREMENT_INDEX = 8;
+   public static int SUBSYSTEM_FUNCTION_INDEX = 9;
+   public static int SUBSYSTEM_INDEX = 13;
+   public static int SOFTWARE_REQUIREMENT_INDEX = 19;
+   public static int CODE_UNIT_INDEX = 28;
    private final String[] columnHeadings = {
       "System Function",
       "Severity Category",
       "SFHA Hazard(s)",
       "Hazard Level Test",
+      "Software Safety Impact",
       "System FDAL",
       "System FDAL Rationale",
+      "Paragraph #",
       "System Requirement Name",
       "Subsystem Function",
       "Subsystem Severity Category",
       "Subsystem FDAL",
       "Subsystem FDAL Rationale",
       CoreAttributeTypes.Subsystem.getName(),
+      "Paragraph #",
       "Subsystem Requirement Name",
-      "Subsystem Requirement FDAL",
-      "Subsystem Requirement FDAL Rationale",
+      "Subsystem Requirement IDAL",
+      "Subsystem Requirement IDAL Rationale",
       "Subsystem Requirement Level Check",
       CoreArtifactTypes.SoftwareRequirement.getName(),
       "IDAL",
       "IDAL Rationale",
       "Software Control Category",
       "Software Control Category Rationale",
+      "Boeing Equivalent SW Qual Level",
       "Functional Category",
       "SW Partition",
       "SW CSU",
@@ -124,10 +128,14 @@ public class SafetyReportGenerator {
             }
             writer.writeCell(sevCat);
             writeSFHAInfo(systemFunction, sevCat, writer);
+
+            writer.writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.SoftwareSafetyImpact, ""));
             writer.writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDAL, ""));
             writer.writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDALRationale, ""));
+
             for (ArtifactReadable systemRequirement : systemFunction.getRelated(
                CoreRelationTypes.Design__Requirement)) {
+               writer.writeCell(systemRequirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
                writer.writeCell(systemRequirement.getName(), SYSTEM_REQUIREMENT_INDEX);
                accumulator.output();
             }
