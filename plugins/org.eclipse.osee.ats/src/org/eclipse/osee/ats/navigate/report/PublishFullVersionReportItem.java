@@ -87,7 +87,7 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
          return;
       }
 
-      String title = useTeamDef.getName() + " Version Report";
+      String title = useTeamDef == null ? "teamDef is null" : useTeamDef.getName() + " Version Report";
       PublishReportJob job = new PublishReportJob(title, teamDef, usePublishToFilename);
       job.setUser(true);
       job.setPriority(Job.LONG);

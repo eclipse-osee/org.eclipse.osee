@@ -116,10 +116,12 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
                Boolean value = ((AbstractWorkflowArtifact) element).getSoleAttributeValue(getAttributeType(), null);
                if (value == null && booleanNotSetShow != null) {
                   return booleanNotSetShow;
-               } else if (value && booleanOnTrueShow != null) {
-                  return booleanOnTrueShow;
-               } else if (!value && booleanOnFalseShow != null) {
-                  return booleanOnFalseShow;
+               } else if (value != null) {
+                  if (value && booleanOnTrueShow != null) {
+                     return booleanOnTrueShow;
+                  } else if (!value && booleanOnFalseShow != null) {
+                     return booleanOnFalseShow;
+                  }
                }
             }
          }

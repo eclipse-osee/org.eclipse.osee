@@ -96,6 +96,7 @@ public class ImportActionsViaSpreadsheetTest {
       Assert.assertEquals(2, codeCount);
       Assert.assertEquals(1, testCount);
 
+      Assert.assertNotNull(testWf);
       Assert.assertEquals("What needs to be done by Test team", testWf.getDescription());
       Assert.assertEquals("5", testWf.getSoleAttributeValue(AtsAttributeTypes.PriorityType, ""));
       Assert.assertTrue(testWf.getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0) == 4.0);

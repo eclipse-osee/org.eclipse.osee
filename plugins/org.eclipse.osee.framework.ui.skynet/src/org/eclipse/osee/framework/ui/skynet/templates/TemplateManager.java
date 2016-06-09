@@ -49,7 +49,11 @@ public class TemplateManager {
             highestRating = rating;
          }
       }
-      return bestTemplateProvider.getTemplate(renderer, artifact, presentationType, option);
+      if (bestTemplateProvider != null) {
+         return bestTemplateProvider.getTemplate(renderer, artifact, presentationType, option);
+      }
+
+      return null;
    }
 
    public static List<Artifact> getAllTemplates() {

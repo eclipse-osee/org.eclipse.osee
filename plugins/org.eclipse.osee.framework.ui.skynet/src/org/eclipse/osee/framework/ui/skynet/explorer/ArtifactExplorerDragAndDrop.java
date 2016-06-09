@@ -178,7 +178,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                InterArtifactExplorerDropHandlerOperation interDropHandler =
                   new InterArtifactExplorerDropHandlerOperation(parentArtifact, artifactsToBeRelated, true);
                Operations.executeAsJob(interDropHandler, true);
-            } else if (isValidForArtifactDrop(event) && MessageDialog.openQuestion(viewPart.getViewSite().getShell(),
+            } else if (artifactsToBeRelated != null && isValidForArtifactDrop(event) && MessageDialog.openQuestion(viewPart.getViewSite().getShell(),
                "Confirm Move",
                "Are you sure you want to make each of the selected artifacts a child of " + parentArtifact.getName() + "?")) {
                try {

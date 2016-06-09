@@ -152,7 +152,11 @@ public abstract class AbstractClientService {
             session.removeAttribute(OAuthConstants.SESSION_AUTHENTICITY_TOKEN);
          }
       }
-      return !Strings.isValid(sessionToken) ? false : sessionToken.equals(requestToken);
+
+      if (sessionToken == null || !Strings.isValid(sessionToken)) {
+         return false;
+      }
+      return sessionToken.equals(requestToken);
    }
 
 }

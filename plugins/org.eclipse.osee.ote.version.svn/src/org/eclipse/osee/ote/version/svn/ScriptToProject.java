@@ -28,21 +28,24 @@ public class ScriptToProject {
       String scriptName = scriptFile.getName();
       IProject scriptProject = null;
 
-      for(IProject project:workspaceProjects){
+      for (IProject project : workspaceProjects) {
          String projectName = project.getName();
-         if(scriptFile.toString().contains(projectName)){
+         if (scriptFile.toString().contains(projectName)) {
             scriptProject = project;
          }
       }
 
-      URI scriptProjectLocationUri = scriptProject.getLocationURI();
+      URI scriptProjectLocationUri = null;
+      if (scriptProject != null) {
+         scriptProject.getLocationURI();
+      }
       File scriptProjectFile = new File(scriptProjectLocationUri);
 
       if (isSvn(scriptProjectFile)) {
          String scriptProjectLocation = scriptProjectFile.getAbsolutePath();
          addScriptListValue(scriptProjectLocation, scriptName);
          scriptNameToScriptFileMap.put(scriptName, scriptFile);
-      } 
+      }
    }
 
    public Set<String> getProjectsSet() {
@@ -60,7 +63,7 @@ public class ScriptToProject {
 
    public File getScriptFileMatch(String project, String itemToMatch) {
       Set<String> scriptsForProject = projectsScriptsMap.get(project);
-      if(scriptsForProject.contains(itemToMatch)){
+      if (scriptsForProject.contains(itemToMatch)) {
          return scriptNameToScriptFileMap.get(itemToMatch);
       } else {
          return null;

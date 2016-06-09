@@ -238,7 +238,9 @@ public class Collections {
             }
             childList.add(item);
          }
-         childList.trimToSize();
+         if (childList != null) {
+            childList.trimToSize();
+         }
 
          aggregateList = recursiveAggregateTree(aggregateList, maxPerList);
 

@@ -158,7 +158,7 @@ public class TargetedVersionColumnUI extends XViewerAtsColumnIdColumn implements
       Object obj = dialog.getSelectedFirst();
       IAtsVersion newVersion = (IAtsVersion) obj;
       //now check selected version
-      if (newVersion.isVersionLocked()) {
+      if (newVersion != null && newVersion.isVersionLocked()) {
          String error = "Version \"" + newVersion.getCommitFullDisplayName() + "\" is locked or already released.";
          if (AtsUtilClient.isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(), "Change Version",
             error + "\n\nOverride?")) {

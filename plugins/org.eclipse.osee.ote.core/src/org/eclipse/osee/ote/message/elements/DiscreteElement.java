@@ -95,12 +95,13 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       }
 
       T actualValue = getValue();
-      CheckPoint passFail =
-         new CheckPoint(this.getFullName(), toString(value), toString(actualValue),
-            actualValue.equals(elementMask(value)), 0);
+      CheckPoint passFail = new CheckPoint(this.getFullName(), toString(value), toString(actualValue),
+         actualValue.equals(elementMask(value)), 0);
 
       if (checkGroup == null) {
-         accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
+         if (accessor != null) {
+            accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
+         }
       } else {
          checkGroup.add(passFail);
       }
@@ -167,9 +168,9 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       InRangeCondition<T> c = new InRangeCondition<>(this, minValue, minInclusive, maxValue, maxInclusive);
 
       boolean pass = c.check();
-      CheckPoint passFail =
-         new CheckPoint(this.getFullName(), "In " + expectedRangeString(toString(minValue).toString(), minInclusive,
-            toString(maxValue), maxInclusive), toString(c.getLastCheckValue()), pass, 0);
+      CheckPoint passFail = new CheckPoint(this.getFullName(),
+         "In " + expectedRangeString(toString(minValue).toString(), minInclusive, toString(maxValue), maxInclusive),
+         toString(c.getLastCheckValue()), pass, 0);
 
       if (checkGroup == null) {
          accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
@@ -239,12 +240,13 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
 
       T actualValue = getValue();
 
-      CheckPoint passFail =
-         new CheckPoint(this.getFullName(), "Not " + toString(value), toString(actualValue),
-            !actualValue.equals(value), 0);
+      CheckPoint passFail = new CheckPoint(this.getFullName(), "Not " + toString(value), toString(actualValue),
+         !actualValue.equals(value), 0);
 
       if (checkGroup == null) {
-         accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
+         if (accessor != null) {
+            accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
+         }
       } else {
          checkGroup.add(passFail);
       }
@@ -559,10 +561,9 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
          getMessage());
 
       InRangeCondition<T> c = new InRangeCondition<>(this, minValue, minInclusive, maxValue, maxInclusive);
-      CheckPoint cp =
-         waitWithCheckPoint(accessor, checkGroup,
-            "In " + expectedRangeString(toString(minValue), minInclusive, toString(maxValue), maxInclusive), c, false,
-            milliseconds);
+      CheckPoint cp = waitWithCheckPoint(accessor, checkGroup,
+         "In " + expectedRangeString(toString(minValue), minInclusive, toString(maxValue), maxInclusive), c, false,
+         milliseconds);
       accessor.getLogger().methodEnded(accessor);
       return cp.isPass();
    }
@@ -659,9 +660,8 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(value).add(milliseconds), getMessage());
-      CheckPoint cp =
-         waitWithCheckPoint(accessor, checkGroup, "Not " + toString(value), new EqualsCondition<T>(this, true, value),
-            false, milliseconds);
+      CheckPoint cp = waitWithCheckPoint(accessor, checkGroup, "Not " + toString(value),
+         new EqualsCondition<T>(this, true, value), false, milliseconds);
       accessor.getLogger().methodEnded(accessor);
       return cp.isPass();
    }
@@ -690,9 +690,8 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
 
    protected CheckPoint waitWithCheckPoint(ITestAccessor accessor, CheckGroup checkGroup, String expected, IDiscreteElementCondition<T> condition, boolean maintain, int milliseconds) throws InterruptedException {
       MsgWaitResult result = getMessage().waitForCondition(accessor, condition, maintain, milliseconds);
-      CheckPoint passFail =
-         new CheckPoint(getFullName(), expected, toString(condition.getLastCheckValue()), result.isPassed(),
-            result.getXmitCount(), result.getElapsedTime());
+      CheckPoint passFail = new CheckPoint(getFullName(), expected, toString(condition.getLastCheckValue()),
+         result.isPassed(), result.getXmitCount(), result.getElapsedTime());
 
       if (checkGroup == null) {
          accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
@@ -726,10 +725,9 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive).add(milliseconds),
          getMessage());
-      CheckPoint cp =
-         waitWithCheckPoint(accessor, checkGroup,
-            "Not In " + expectedRangeString(toString(minValue), minInclusive, toString(maxValue), maxInclusive),
-            new NotInRangeCondition<T>(this, minValue, minInclusive, maxValue, maxInclusive), false, milliseconds);
+      CheckPoint cp = waitWithCheckPoint(accessor, checkGroup,
+         "Not In " + expectedRangeString(toString(minValue), minInclusive, toString(maxValue), maxInclusive),
+         new NotInRangeCondition<T>(this, minValue, minInclusive, maxValue, maxInclusive), false, milliseconds);
       accessor.getLogger().methodEnded(accessor);
       return cp.isPass();
    }
@@ -739,9 +737,8 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive).add(milliseconds),
          getMessage());
-      MsgWaitResult cp =
-         getMessage().waitForCondition(accessor,
-            new NotInRangeCondition<T>(this, minValue, minInclusive, maxValue, maxInclusive), false, milliseconds);
+      MsgWaitResult cp = getMessage().waitForCondition(accessor,
+         new NotInRangeCondition<T>(this, minValue, minInclusive, maxValue, maxInclusive), false, milliseconds);
       accessor.getLogger().methodEnded(accessor);
       return cp.isPassed();
    }
@@ -898,7 +895,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       EqualsCondition<T> c = new EqualsCondition<>(this, true, value);
       waitWithCheckPoint(accessor, checkGroup,
 
-      "Not " + toString(value), c, true, milliseconds);
+         "Not " + toString(value), c, true, milliseconds);
       accessor.getLogger().methodEnded(accessor);
       return c.getLastCheckValue();
    }
@@ -1029,10 +1026,9 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       final PulseCondition<T> c = new PulseCondition<>(this, pulsedValue, nonPulsedValue, pulses);
 
       MsgWaitResult result = getMessage().waitForCondition(accessor, c, false, milliseconds);
-      CheckPoint passFail =
-         new CheckPoint(getFullName(), toString(pulsedValue) + " FOR " + pulses + " PULSES",
-            toString(c.getLastCheckValue()) + " FOR " + c.getPulses() + " PULSES", result.isPassed(),
-            result.getElapsedTime());
+      CheckPoint passFail = new CheckPoint(getFullName(), toString(pulsedValue) + " FOR " + pulses + " PULSES",
+         toString(c.getLastCheckValue()) + " FOR " + c.getPulses() + " PULSES", result.isPassed(),
+         result.getElapsedTime());
 
       if (checkGroup == null) {
          accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
@@ -1054,15 +1050,15 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    public final boolean checkPulse(ITestAccessor accessor, T pulsedValue, T nonPulsedValue, int milliseconds) throws InterruptedException {
       return checkPulse(accessor, null, pulsedValue, nonPulsedValue, milliseconds, 2);
    }
-   
+
    public final boolean checkPulse(ITestAccessor accessor, T pulsedValue, T nonPulsedValue, int milliseconds, int pulses) throws InterruptedException {
       return checkPulse(accessor, null, pulsedValue, nonPulsedValue, milliseconds, pulses);
    }
-   
+
    public boolean checkPulse(ITestAccessor accessor, CheckGroup checkGroup, T pulsedValue, T nonPulsedValue, int milliseconds) throws InterruptedException {
       return checkPulse(accessor, checkGroup, pulsedValue, nonPulsedValue, milliseconds, 2);
    }
-   
+
    public abstract T valueOf(MemoryResource mem);
 
    @Override
@@ -1356,7 +1352,8 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * This method checks a an array of EnumBase objects to determine if a given EnumBase object is or isn't in the list.
     * It then returns a CheckGroup object that describes the checks and pass/fail status.
     * 
-    * @param isInList <ul>
+    * @param isInList
+    * <ul>
     * <li><b>True </b> used to get a pass iff the item is in the list.</li>
     * <li><b>False </b> used to get a pass iff the item is not in the list.</li>
     * </ul>
@@ -1377,16 +1374,16 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
          // matches
          for (T val : list) {
             // Check if current item in the list matches.
-            checkGroup.add(new CheckPoint("List Item: " + i, value.toString(), val.toString(), val.equals(value),
-               elapsedTime));
+            checkGroup.add(
+               new CheckPoint("List Item: " + i, value.toString(), val.toString(), val.equals(value), elapsedTime));
             i++;
          }
       } else {
          checkGroup = new CheckGroup(Operation.AND, this.getFullName()); // Pass iff none of the
          // items match
          for (T val : list) {
-            checkGroup.add(new CheckPoint("List Item: " + i, not + value.toString(), val.toString(),
-               !val.equals(value), elapsedTime));
+            checkGroup.add(new CheckPoint("List Item: " + i, not + value.toString(), val.toString(), !val.equals(value),
+               elapsedTime));
             i++;
          }
       }
@@ -1424,17 +1421,16 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * gets this element's current value. Does logging
     */
    public T get(ITestEnvironmentAccessor accessor) {
-//      accessor.getLogger().methodCalled(accessor, new MethodFormatter());
-	   if (accessor != null) {
-		   accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter(),
-				   getMessage());
-	   }
+      //      accessor.getLogger().methodCalled(accessor, new MethodFormatter());
+      if (accessor != null) {
+         accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter(), getMessage());
+      }
 
       T v = getValue();
       ReturnFormatter returnFormatter = new ReturnFormatter();
       returnFormatter.add(v);
       if (accessor != null) {
-    	  accessor.getLogger().methodEnded(accessor, returnFormatter);    	  
+         accessor.getLogger().methodEnded(accessor, returnFormatter);
       }
       return v;
    }

@@ -102,6 +102,7 @@ public class ConflictIntroduceTest {
       } catch (Exception ex) {
          fail(Lib.exceptionToString(ex));
       }
+      Assert.assertNotNull(conflicts);
    }
 
    @Test
@@ -127,6 +128,7 @@ public class ConflictIntroduceTest {
       } catch (Exception ex) {
          fail(Lib.exceptionToString(ex));
       }
+      Assert.assertNotNull(conflicts);
    }
 
    @Test
@@ -151,6 +153,7 @@ public class ConflictIntroduceTest {
       } catch (Exception ex) {
          fail(Lib.exceptionToString(ex));
       }
+      Assert.assertNotNull(conflicts);
    }
 
    @AfterClass

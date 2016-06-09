@@ -178,7 +178,7 @@ public class ClientSession extends AbstractRemoteSession {
                return new TestHostConnection(connector, testHost, result.getEnvironment(), result.getSessionKey());
             } else {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error Connecting to the OTE Test Server.",
-                  new Exception(result.getStatus().getMessage()));
+                  new Exception(result != null ? result.getStatus().getMessage() : ""));
             }
             return null;
          } finally {

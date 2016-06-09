@@ -59,7 +59,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
                   }
                   OseeLog.logf(Activator.class, Level.SEVERE,
 
-                  "ArtifactTemplateProvider has detected a conflict with 'Template Match Criteria' [%s].  Artifact [%s] will supply the template for all requests with this match criteria.",
+                     "ArtifactTemplateProvider has detected a conflict with 'Template Match Criteria' [%s].  Artifact [%s] will supply the template for all requests with this match criteria.",
                      matchCriteria, templateMap.get(matchCriteria).getName());
 
                }
@@ -107,8 +107,9 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
 
    private List<String> getPossibleTemplateNamesOrderedBySpecialization(IRenderer renderer, Artifact artifact, PresentationType presentationType, String option) throws OseeArgumentException {
       if (renderer == null || presentationType == null) {
-         throw new OseeArgumentException("Invalid renderer[%s] or presentationType[%s]", renderer.toString(),
-            presentationType.toString());
+         throw new OseeArgumentException("Invalid renderer[%s] or presentationType[%s]",
+            renderer == null ? "null" : renderer.toString(),
+            presentationType == null ? "null" : presentationType.toString());
       }
       List<String> list = new ArrayList<>();
 

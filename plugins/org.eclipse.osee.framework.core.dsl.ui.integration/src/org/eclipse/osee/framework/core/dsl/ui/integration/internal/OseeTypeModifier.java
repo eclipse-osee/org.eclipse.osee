@@ -61,11 +61,15 @@ public class OseeTypeModifier implements AttributeModifier {
       }
 
       Set<Long> uuids = new HashSet<>();
-      for (EObject object : oseeDsl.eContents()) {
-         if (object instanceof OseeType) {
-            addUuid(uuids, (OseeType) object);
+      
+      if(oseeDsl != null) {
+         for (EObject object : oseeDsl.eContents()) {
+            if (object instanceof OseeType) {
+               addUuid(uuids, (OseeType) object);
+            }
          }
       }
+      
       Conditions.checkExpressionFailOnTrue(uuids.contains(0L), "Uuid of 0L is not allowed");
 
       InputStream inputStream = null;

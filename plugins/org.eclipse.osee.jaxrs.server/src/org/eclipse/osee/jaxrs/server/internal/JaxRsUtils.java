@@ -82,10 +82,12 @@ public final class JaxRsUtils {
       String toCheck = value;
       if (toCheck != null) {
          toCheck = toCheck.trim();
+
+         if (toCheck.startsWith("/")) {
+            toCheck = toCheck.substring(1);
+         }
       }
-      if (toCheck.startsWith("/")) {
-         toCheck = toCheck.substring(1);
-      }
+
       return Strings.isValid(toCheck);
    }
 

@@ -476,12 +476,12 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                         stateAttr.delete();
                      }
                      // else attempt to delete the oldest
-                     else if (stateAttr.getGammaId() < storedStateAttr.getGammaId()) {
+                     else if (storedStateAttr != null && stateAttr.getGammaId() < storedStateAttr.getGammaId()) {
                         errorStr += String.format(
                            " - stateStr [%s] earlier than storedStateStr [%s] - deleted stateAttr - FIXED", stateStr,
                            storedStateStr, awa.getLastModified());
                         stateAttr.delete();
-                     } else if (storedStateAttr.getGammaId() < stateAttr.getGammaId()) {
+                     } else if (storedStateAttr != null && storedStateAttr.getGammaId() < stateAttr.getGammaId()) {
                         errorStr += String.format(
                            " - stateStr [%s] later than storedStateStr [%s] - deleted storeStateAttr - FIXED", stateStr,
                            storedStateStr, awa.getLastModified());

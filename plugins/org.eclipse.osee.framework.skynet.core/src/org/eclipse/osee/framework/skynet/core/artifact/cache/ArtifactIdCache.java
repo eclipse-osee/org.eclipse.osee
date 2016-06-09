@@ -80,12 +80,15 @@ public class ArtifactIdCache {
    }
 
    private boolean isFiltered(Artifact artifact, FilterType filter) {
-      boolean isFiltered = artifact == null;
-      if (!isFiltered) {
+      boolean isFiltered = true;
+
+      if (artifact != null) {
+         isFiltered = false;
          if (FilterType.ONLY_DIRTIES == filter) {
             isFiltered = !artifact.isDirty();
          }
       }
+
       return isFiltered;
    }
 

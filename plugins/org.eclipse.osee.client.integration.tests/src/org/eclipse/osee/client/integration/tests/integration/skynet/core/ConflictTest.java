@@ -109,6 +109,7 @@ public class ConflictTest {
             ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBaseTransaction(),
             new NullProgressMonitor());
          int expectedNumber = ConflictTestManager.numberOfConflicts();
+      Assert.assertNotNull(conflicts);
          int actualNumber = conflicts.size();
          assertTrue(
             "(Intermittent failures - needs re-write) - Number of conflicts found is not equal to the number of conflicts expected",

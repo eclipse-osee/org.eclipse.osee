@@ -154,7 +154,7 @@ public class OutfileToArtifactOperation {
                   break;
                }
             } catch (Exception ex) {
-               if (operator.getTestRunArtifact() == null) {
+               if (operator == null || operator.getTestRunArtifact() == null) {
                   throw new Exception(
                      "Unable to create Test Run Artifact. Make sure type information exists in the selected branch.");
                }

@@ -238,12 +238,12 @@ public class UserRoleManager {
          if (user != null) {
             name = user.getName();
             if (!Strings.isValid(name)) {
-               name = user.getName();
+               name = "invalid name";
             }
          }
          builder.append("<TR>");
          builder.append("<TD>" + item.getRole().name() + "</TD>");
-         builder.append("<TD>" + user.getName() + "</TD>");
+         builder.append("<TD>" + name + "</TD>");
          builder.append("<TD>" + AtsUtilCore.doubleToI18nString(item.getHoursSpent()) + "</TD>");
 
          ReviewDefectManager defectMgr = new ReviewDefectManager(peerArt);

@@ -56,7 +56,11 @@ public class MessageServiceImpl implements MessageService {
             OseeLog.log(MessageServiceImpl.class, Level.SEVERE, ex1);
          }
       }
-      OseeLog.logf(Activator.class, Level.FINER, "Default URI for message Service [%s]", defaultURI.toASCIIString());
+      String message = "Default URI is null";
+      if(defaultURI != null) {
+         message =  defaultURI.toASCIIString();
+      }
+      OseeLog.logf(Activator.class, Level.FINER, "Default URI for message Service [%s]", message);
       return defaultURI;
    }
 

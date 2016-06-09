@@ -67,6 +67,8 @@ public class DiscrepancyParserTest {
             break;
          }
       }
+
+      Assert.assertNotNull(discrepancy13);
       String actualText = discrepancy13.getText();
 
       Assert.assertEquals(String.format(thirtneenFailure, 13), actualText);
@@ -80,6 +82,8 @@ public class DiscrepancyParserTest {
             break;
          }
       }
+
+      Assert.assertNotNull(discrepancy12);
       actualText = discrepancy12.getText();
 
       // @formatter:off
@@ -117,6 +121,8 @@ public class DiscrepancyParserTest {
             break;
          }
       }
+
+      Assert.assertNotNull(discrepancy13);
       String actualText = discrepancy13.getText();
 
       Assert.assertEquals(String.format(thirtneenFailure, "Thirteen"), actualText);
@@ -130,6 +136,8 @@ public class DiscrepancyParserTest {
             break;
          }
       }
+
+      Assert.assertNotNull(discrepancy12);
       actualText = discrepancy12.getText();
 
       // @formatter:off

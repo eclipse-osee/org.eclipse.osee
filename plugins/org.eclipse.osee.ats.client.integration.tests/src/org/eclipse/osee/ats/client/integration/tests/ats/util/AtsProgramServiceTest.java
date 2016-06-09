@@ -103,10 +103,12 @@ public class AtsProgramServiceTest {
          }
       }
 
+      Assert.assertNotNull(commInsertion);
       Collection<IAtsInsertionActivity> activities = programService.getInsertionActivities(commInsertion);
       assertEquals(2, activities.size());
 
       IAtsInsertion insertion = programService.getInsertion(activities.iterator().next());
+
       assertEquals(commInsertion.getUuid(), insertion.getUuid());
 
       Long uuid = activities.iterator().next().getUuid();

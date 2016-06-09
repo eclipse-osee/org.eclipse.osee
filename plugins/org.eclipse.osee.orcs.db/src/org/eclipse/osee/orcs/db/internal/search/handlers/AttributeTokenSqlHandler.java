@@ -34,7 +34,7 @@ import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywords>implements HasTagProcessor {
+public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywords> implements HasTagProcessor {
 
    private static final AliasEntry GAMMA_WITH = SqlUtil.newAlias("gamma", "gamma");
    private static final AliasEntry ATTRIBUTE_WITH = SqlUtil.newAlias("attribute", "att");
@@ -110,7 +110,10 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
                   gammaSb.append(".id AND ");
                   gammaSb.append(jIdAlias);
                   gammaSb.append(".query_id = ?");
-                  writer.addParameter(joinQuery.getQueryId());
+                  if (joinQuery != null) {
+                     writer.addParameter(joinQuery.getQueryId());
+                  }
+
                }
             }
          } else {
@@ -155,7 +158,9 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
             attrSb.append(".id AND ");
             attrSb.append(jIdAlias);
             attrSb.append(".query_id = ?");
-            writer.addParameter(joinQuery.getQueryId());
+            if (joinQuery != null) {
+               writer.addParameter(joinQuery.getQueryId());
+            }
          }
       }
       attrSb.append("\n AND \n");

@@ -43,7 +43,9 @@ public abstract class AbstractXComboViewerSearchWidget<ObjectType extends Object
       if (combo != null) {
          return (ObjectType) combo.getSelected();
       }
-      return null;
+      Object obj = null;
+      ObjectType object = (ObjectType) obj;
+      return object;
    }
 
    @Override

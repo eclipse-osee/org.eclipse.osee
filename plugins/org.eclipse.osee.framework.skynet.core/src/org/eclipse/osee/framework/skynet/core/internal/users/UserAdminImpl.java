@@ -153,14 +153,16 @@ public class UserAdminImpl implements UserAdmin {
       Iterable<User> all = null;
       try {
          all = cache.getAll();
+
+         for (User user : all) {
+            if (user.isActive()) {
+               activeUsers.add(user);
+            }
+         }
       } catch (Exception e) {
          OseeCoreException.wrapAndThrow(e);
       }
-      for (User user : all) {
-         if (user.isActive()) {
-            activeUsers.add(user);
-         }
-      }
+
       return activeUsers;
    }
 
@@ -171,12 +173,14 @@ public class UserAdminImpl implements UserAdmin {
       Iterable<User> all = null;
       try {
          all = cache.getAll();
+
+         for (User user : all) {
+            users.add(user);
+         }
       } catch (Exception e) {
          OseeCoreException.wrapAndThrow(e);
       }
-      for (User user : all) {
-         users.add(user);
-      }
+
       return users;
    }
 

@@ -26,10 +26,8 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
-
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
@@ -425,11 +423,8 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
 
    /**
-    * Gets a list of all the message's data elements.
-    * <br>
-    * This returns ALL the elements, which may not be mapped to the
-    * active data type and/or may be non-mapping elements.
-    * 
+    * Gets a list of all the message's data elements. <br>
+    * This returns ALL the elements, which may not be mapped to the active data type and/or may be non-mapping elements.
     * Use {@link #getElements(DataType)} to get mapped elements
     * 
     * @return a collection of {@link Element}s
@@ -524,13 +519,17 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
          for (int i = 2; i < elementPath.size(); i++) {
             if (elementPath.get(i) instanceof String) {
                String name = (String) elementPath.get(i);
-               el = rel.getElementMap().get(name);
+               if (rel != null) {
+                  el = rel.getElementMap().get(name);
+               }
                if (el instanceof RecordElement) {
                   rel = (RecordElement) el;
                }
             } else if (elementPath.get(i) instanceof Integer) {
                Integer index = (Integer) elementPath.get(i);
-               rel = rel.get(index);
+               if (rel != null) {
+                  rel = rel.get(index);
+               }
                el = rel;
             }
          }
@@ -762,9 +761,9 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
 
    @JsonProperty
    public String getType() {
-       return getMemType().name();
+      return getMemType().name();
    }
-   
+
    public void zeroize() {
       checkState();
       for (DataType memType : memToDataMap.keySet()) {
@@ -819,9 +818,8 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
          new MethodFormatter().add(numTransmissions).add(milliseconds));
       TransmissionCountCondition c = new TransmissionCountCondition(numTransmissions);
       MsgWaitResult result = waitForCondition(accessor, c, false, milliseconds);
-      CheckPoint passFail =
-         new CheckPoint(this.name, Integer.toString(numTransmissions), Integer.toString(result.getXmitCount()),
-            result.isPassed(), result.getXmitCount(), result.getElapsedTime());
+      CheckPoint passFail = new CheckPoint(this.name, Integer.toString(numTransmissions),
+         Integer.toString(result.getXmitCount()), result.isPassed(), result.getXmitCount(), result.getElapsedTime());
       accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
       accessor.getLogger().methodEnded(accessor);
       return passFail.isPass();
@@ -853,10 +851,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       cancelTimer.cancelTimer();
       time = accessor.getEnvTime() - time;
 
-      accessor.getLogger().testpoint(
-         accessor,
-         accessor.getTestScript(),
-         accessor.getTestScript().getTestCase(),
+      accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestScript().getTestCase(),
          new CheckPoint(this.getMessageName(), "No Transmissions",
             result ? "No Transmissions" : "Transmissions Occurred", result, time));
 
@@ -1063,7 +1058,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       checkState();
       postMemSourceChangeListeners.add(listener);
    }
-   
+
    public void removePreMemSourceChangeListener(IMemSourceChangeListener listener) {
       checkState();
       preMemSourceChangeListeners.remove(listener);
@@ -1234,7 +1229,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       return new HashMap<DataType, Class<? extends Message>[]>();
    }
 
-   @SuppressWarnings({ "rawtypes", "unchecked" })
+   @SuppressWarnings({"rawtypes", "unchecked"})
    public void postCreateMessageSetup(IMessageManager messageManager, MessageData data) throws Exception {
       Map<? extends DataType, Class<? extends Message>[]> o = getAssociatedMessages();
       messageRequestor = messageManager.createMessageRequestor(getName());
@@ -1322,20 +1317,19 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       }
       return getElement(path.getList(), type);
    }
-   
+
    public ListIterator<Element> getElementIterator() {
-	   ArrayList<Element> list = new ArrayList<>(elementMap.values());
-	   return list.listIterator();
-   }
-   
-   public ListIterator<Element> getElementIterator(Element elemnt) {
-	   ArrayList<Element> list = new ArrayList<>(elementMap.values());
-	   int index = list.indexOf(elemnt);
-	   if (index >= 0) {
-		   return list.listIterator(index);		   
-	   }
-	   return null;
+      ArrayList<Element> list = new ArrayList<>(elementMap.values());
+      return list.listIterator();
    }
 
-   
+   public ListIterator<Element> getElementIterator(Element elemnt) {
+      ArrayList<Element> list = new ArrayList<>(elementMap.values());
+      int index = list.indexOf(elemnt);
+      if (index >= 0) {
+         return list.listIterator(index);
+      }
+      return null;
+   }
+
 }

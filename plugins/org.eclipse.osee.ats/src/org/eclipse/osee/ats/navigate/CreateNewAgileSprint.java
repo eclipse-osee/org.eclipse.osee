@@ -68,7 +68,13 @@ public class CreateNewAgileSprint extends XNavigateItemAction {
                try {
                   AgileEndpointApi ageilEp = AtsClientService.getAgileEndpoint();
                   JaxNewAgileSprint newSprint = new JaxNewAgileSprint();
-                  int teamUuid = ((Artifact) dialog.getSelectedFirst()).getArtId();
+                  Artifact firstArtifact = (Artifact) dialog.getSelectedFirst();
+
+                  if (firstArtifact == null) {
+                     throw new OseeCoreException("Must make a selection");
+                  }
+                  int teamUuid = (firstArtifact).getArtId();
+
                   for (String name : ed.getEntry().split(",")) {
                      newSprint.setName(name);
                      newSprint.setTeamUuid(teamUuid);

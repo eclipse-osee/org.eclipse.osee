@@ -96,7 +96,7 @@ public class EnumeratedHandlePromptChange implements IHandlePromptChange {
                   artifact.persist(transaction);
                }
             }
-            if (persist) {
+            if (transaction != null && persist) {
                transaction.execute();
             }
          }
@@ -136,7 +136,7 @@ public class EnumeratedHandlePromptChange implements IHandlePromptChange {
                   artifact.persist(transaction);
                }
             }
-            if (persist) {
+            if (transaction != null && persist) {
                transaction.execute();
             }
             result = true;

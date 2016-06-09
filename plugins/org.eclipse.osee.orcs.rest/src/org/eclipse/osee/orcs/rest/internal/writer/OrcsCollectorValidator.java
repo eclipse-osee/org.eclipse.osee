@@ -151,7 +151,10 @@ public class OrcsCollectorValidator {
       }
       for (OwAttribute attribute : artifact.getAttributes()) {
          OwAttributeType attrType = attribute.getType();
-         if (attrType == null || attrType.getUuid() <= 0L) {
+
+         if (attrType == null) {
+            results.errorf("Invalid Attribute Type for artifact [%s].\n", artifact);
+         } else if (attrType.getUuid() <= 0L) {
             if (!helper.isAttributeTypeExists(attrType.getName())) {
                results.errorf("Invalid Attribute Type uuid [%s] for artifact [%s].\n", attrType, artifact);
             }

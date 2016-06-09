@@ -89,12 +89,13 @@ public class ResourceDataProxyFactory implements DataProxyFactory {
       AbstractDataProxy dataProxy = null;
       try {
          dataProxy = clazz.newInstance();
+         dataProxy.setLogger(getLogger());
+         dataProxy.setStorage(createStorage());
       } catch (Exception ex) {
          getLogger().error(ex, "Error creating data proxy for [%s]", factoryAlias);
          OseeCoreException.wrapAndThrow(ex);
       }
-      dataProxy.setLogger(getLogger());
-      dataProxy.setStorage(createStorage());
+
       return dataProxy;
    }
 

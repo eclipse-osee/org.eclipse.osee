@@ -174,11 +174,13 @@ public final class AtsBranchManager {
                exception = ex;
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Problem deleting branch.", ex);
             }
-            if (promptUser) {
-               AWorkbench.popup("Delete Complete",
-                  result.isTrue() ? "Branch delete was successful." : "Branch delete failed.\n" + result.getText());
-            } else if (result.isFalse()) {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, result.getText(), exception);
+            if (result != null) {
+               if (promptUser) {
+                  AWorkbench.popup("Delete Complete",
+                     result.isTrue() ? "Branch delete was successful." : "Branch delete failed.\n" + result.getText());
+               } else if (result.isFalse()) {
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, result.getText(), exception);
+               }
             }
          }
       } catch (Exception ex) {

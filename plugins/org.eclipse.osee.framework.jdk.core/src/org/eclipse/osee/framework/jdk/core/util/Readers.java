@@ -66,11 +66,11 @@ public final class Readers {
                throw new IllegalStateException("end of reader met when expecting >");
             }
 
-            if (!read.toString().endsWith("/>")) {
+            if (read != null && !read.toString().endsWith("/>")) {
                elementDepthCount++;
             }
 
-            if (appendable != null) {
+            if (appendable != null && read != null) {
                appendable.append(read);
                read.setLength(0);
             }
@@ -80,6 +80,7 @@ public final class Readers {
             throw new IllegalStateException("unexpected element returned");
          }
       }
+
    }
 
    /**

@@ -1409,8 +1409,9 @@ public final class SearchCCombo extends Composite {
       checkWidget();
       if (selection == null) {
          SWT.error(SWT.ERROR_NULL_ARGUMENT);
+      } else {
+         text.setSelection(selection.x, selection.y);
       }
-      text.setSelection(selection.x, selection.y);
    }
 
    /**

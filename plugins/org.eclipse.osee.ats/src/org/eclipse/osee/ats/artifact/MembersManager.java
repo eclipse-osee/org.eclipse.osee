@@ -79,12 +79,16 @@ public abstract class MembersManager<T extends CollectorArtifact> {
    /**
     * change member order for artifacts within given member
     */
+   @SuppressWarnings("unchecked")
    public T promptChangeMemberOrder(T memberArt, List<Artifact> artifacts) throws OseeCoreException {
+      Object obj = null;
+      T retVal = (T) obj;
+
       StringBuilder currentOrder = new StringBuilder("Current Order: ");
       for (Artifact artifact : artifacts) {
          if (artifacts.size() == 1 && !isHasCollector(artifact) || memberArt == null) {
             AWorkbench.popup(String.format("No %s set for artifact [%s]", getItemName(), artifact));
-            return null;
+            return retVal;
          }
          String currIndexStr = getMemberOrder(memberArt, artifact);
          currentOrder.append(currIndexStr + ", ");
@@ -103,7 +107,7 @@ public abstract class MembersManager<T extends CollectorArtifact> {
          Integer membersIndex = insertLast ? members.size() - 1 : enteredIndex - 1;
          if (membersIndex > members.size()) {
             AWorkbench.popup(String.format("New Order Number [%s] out of range 1..%d", newIndexStr, members.size()));
-            return null;
+            return retVal;
          }
          List<Artifact> reversed = new LinkedList<>(artifacts);
          Collections.reverse(reversed);
@@ -116,7 +120,7 @@ public abstract class MembersManager<T extends CollectorArtifact> {
          memberArt.persist("Prompt-Change " + getItemName());
          return memberArt;
       }
-      return null;
+      return retVal;
    }
 
    @SuppressWarnings("unchecked")

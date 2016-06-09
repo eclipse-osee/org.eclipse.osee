@@ -156,6 +156,7 @@ public class ArtifactPasteOperationTest {
 
       Assert.assertEquals(hasChildren, !childArtifacts.isEmpty());
       if (hasChildren) {
+         Assert.assertNotNull(names);
          Assert.assertEquals(names.length, childArtifacts.size());
 
          List<Artifact> sourceChildren = parent1.getChildren();

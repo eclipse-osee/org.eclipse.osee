@@ -91,9 +91,12 @@ public class ReleaseVersionItem extends XNavigateItemAction {
                return;
             }
 
-            verArt.setReleased(true);
-            verArt.setReleaseDate(new Date());
-            verArt.setNextVersion(false);
+            if (verArt != null) {
+               verArt.setReleased(true);
+               verArt.setReleaseDate(new Date());
+               verArt.setNextVersion(false);
+            }
+
             AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
             AtsClientService.get().storeConfigObject(verArt, changes);
             changes.execute();
@@ -105,7 +108,12 @@ public class ReleaseVersionItem extends XNavigateItemAction {
                result = dialog.open();
                if (result == 0) {
                   verArt = dialog.getSelectedFirst();
+                  if (verArt == null) {
+                     AWorkbench.popup("ERROR", "Select a version.");
+                     return;
+                  }
                   verArt.setNextVersion(true);
+
                   changes.clear();
                   AtsClientService.get().storeConfigObject(verArt, changes);
                   changes.execute();

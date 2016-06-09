@@ -44,8 +44,9 @@ public class RpcrSignalChanges {
       for (int j = 0; j < 6; j++) {
          line = in.readLine();
       }
-
-      mux = line.startsWith("      Signal Name");
+      if (line != null) {
+         mux = line.startsWith("      Signal Name");
+      }
 
       while ((line = in.readLine()) != null) {
          String result = extractSignal(line);

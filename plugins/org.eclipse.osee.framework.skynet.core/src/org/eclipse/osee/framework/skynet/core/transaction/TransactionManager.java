@@ -262,14 +262,15 @@ public final class TransactionManager {
                   throw new TransactionDoesNotExist("The transaction id %d does not exist in the databse.", txId);
                }
             }
-            TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
 
-            BranchId branch = TokenFactory.createBranch(chStmt.getLong("branch_id"));
-            transactionRecord = factory.createOrUpdate(txCache, txId, branch, chStmt.getString("osee_comment"),
-               chStmt.getTimestamp("time"), chStmt.getInt("author"), chStmt.getInt("commit_art_id"), txType);
-
+            if (chStmt != null) {
+               TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
+               BranchId branch = TokenFactory.createBranch(chStmt.getLong("branch_id"));
+               transactionRecord = factory.createOrUpdate(txCache, txId, branch, chStmt.getString("osee_comment"),
+                  chStmt.getTimestamp("time"), chStmt.getInt("author"), chStmt.getInt("commit_art_id"), txType);
+            }
          } finally {
-            if (useLocalConnection) {
+            if (chStmt != null) {
                chStmt.close();
             }
          }

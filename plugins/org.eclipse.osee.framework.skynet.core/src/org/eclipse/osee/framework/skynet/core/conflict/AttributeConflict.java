@@ -189,7 +189,7 @@ public class AttributeConflict extends Conflict {
          toReturn = (T) this;
       }
 
-      if (type.isInstance(attribute)) {
+      if (type != null && type.isInstance(attribute)) {
          try {
             toReturn = (T) getSourceAttribute(true);
          } catch (Exception ex) {

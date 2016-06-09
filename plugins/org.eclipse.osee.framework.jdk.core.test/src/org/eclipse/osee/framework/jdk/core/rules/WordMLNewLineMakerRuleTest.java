@@ -54,7 +54,7 @@ public final class WordMLNewLineMakerRuleTest {
          System.err.println("Error: " + unsupportedEx.getMessage());
          Assert.fail("Unsupported charset, " + "WordMLNewLineMaker threw an " + "UnsupportedCharsetException...");
       }
-
+      Assert.assertNotNull(modifiedFile);
       Assert.assertTrue(modifiedFile.getSourceLength() != 0);
 
       //Test Does it contain new paragraph injected signature ?

@@ -103,14 +103,15 @@ public final class IndexCollector {
          List<String> keysToRemove = new ArrayList<>();
          for (String key : notFound.keySet()) {
             Collection<Long> values = notFound.get(key);
-            if (values != null && !values.isEmpty()) {
-               values.removeAll(ids);
-               if (negativeOneAliases.contains(key)) {
-                  values.remove(-1L);
+            if (values != null) {
+               if (!values.isEmpty()) {
+                  values.removeAll(ids);
+                  if (negativeOneAliases.contains(key)) {
+                     values.remove(-1L);
+                  }
+               } else {
+                  keysToRemove.add(key);
                }
-            }
-            if (values.isEmpty()) {
-               keysToRemove.add(key);
             }
          }
          for (String key : keysToRemove) {

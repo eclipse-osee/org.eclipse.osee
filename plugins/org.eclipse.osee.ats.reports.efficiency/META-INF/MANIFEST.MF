@@ -11,6 +11,7 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.core.runtime,
+ org.eclipse.jdt.annotation,
  org.eclipse.osee.ats,
  org.eclipse.osee.ats.core.client,
  org.eclipse.osee.ats.core.client.config,

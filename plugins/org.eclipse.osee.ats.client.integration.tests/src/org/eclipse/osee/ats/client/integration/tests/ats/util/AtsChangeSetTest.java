@@ -173,6 +173,7 @@ public class AtsChangeSetTest {
             break;
          }
       }
+      Assert.assertNotNull(staticIdAttr);
 
       IAtsChangeSet changes = createAtsChangeSet();
       changes.setAttribute(folderArt, staticIdAttr.getId(), "new id");

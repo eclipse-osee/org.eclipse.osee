@@ -47,6 +47,7 @@ public class AtsXWidgetsExampleBlamTest {
       }
 
       Assert.assertTrue(String.format("%s not found from list of provided Blams.", NAME_OF_ATS_ITEM), foundBlam);
+      Assert.assertNotNull(item);
       item.run(TableLoadOption.ForcePend, TableLoadOption.NoUI);
 
       Assert.assertTrue(

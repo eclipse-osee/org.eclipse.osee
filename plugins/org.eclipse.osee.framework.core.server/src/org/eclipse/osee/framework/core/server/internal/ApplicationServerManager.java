@@ -132,7 +132,8 @@ public class ApplicationServerManager implements IApplicationServerManager {
       } catch (Exception ex) {
          logger.error(ex, "Error generating application server id");
       }
-      return new OseeServerInfo(checkSum, uri.toString(), defaultVersions, GlobalTime.GreenwichMeanTimestamp(), false);
+      return new OseeServerInfo(checkSum, uri == null ? null : uri.toString(), defaultVersions,
+         GlobalTime.GreenwichMeanTimestamp(), false);
    }
 
    @Override

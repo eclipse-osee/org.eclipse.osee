@@ -106,7 +106,7 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
          Element element = (Element) nodeList.item(i);
 
          if (properLevelChild(element)) {
-            if (parseState == ParseState.LOOKING_FOR_END) {
+            if (parseState == ParseState.LOOKING_FOR_END && extractorData != null) {
                if (isArtifactEditTag(element, false)) {
                   parseState = handleEndElement(linkBuilder, extractorData, element);
                } else {

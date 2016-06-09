@@ -97,7 +97,7 @@ public class XmlTransformServer {
          transformer.transform(new StreamSource(fisXml), new StreamResult(fos));
       } catch (Exception ex) {
          PrintWriter pw = new PrintWriter(fos);
-         pw.write("Error during Transform. " + listener.toString());
+         pw.write("Error during Transform. " + (listener != null ? listener.toString() : ""));
          ex.printStackTrace(pw);
       } finally {
          fos.close();

@@ -169,10 +169,6 @@ public class SwtXWidgetRenderer {
             currentComp = topLevelComp;
          }
 
-         if (currentComp == null) {
-            System.out.println("debug: got null composite");
-         }
-
          // defaults to grab horizontal, causes scrollbars on items that extend past the provided window space
          GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
          currentComp.setLayoutData(gd);

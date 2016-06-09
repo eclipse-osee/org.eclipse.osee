@@ -136,10 +136,10 @@ public class FindInWorkspaceOperation extends AbstractOperation {
                unit = (ICompilationUnit) jElement;
             }
 
-            String uuid = getGuid(unit.getSource());
+            String uuid = getGuid(unit == null ? null : unit.getSource());
             if (guids.containsKey(uuid)) {
                monitor.worked(1);
-               collector.onResource(unit.getResource());
+               collector.onResource(unit == null ? null : unit.getResource());
                guids.remove(uuid);
                if (guids.isEmpty()) {
                   subMonitor.setCanceled(true);

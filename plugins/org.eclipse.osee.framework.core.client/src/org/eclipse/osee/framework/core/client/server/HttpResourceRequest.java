@@ -65,7 +65,9 @@ public class HttpResourceRequest implements IHttpMethod {
          OseeLog.log(CoreClientActivator.class, Level.SEVERE, "Error sending requested resource", ex);
       } finally {
          try {
-            bis.close();
+            if (bis != null) {
+               bis.close();
+            }
          } catch (IOException ex) {
             OseeLog.log(CoreClientActivator.class, Level.SEVERE, "Error closing stream", ex);
          }

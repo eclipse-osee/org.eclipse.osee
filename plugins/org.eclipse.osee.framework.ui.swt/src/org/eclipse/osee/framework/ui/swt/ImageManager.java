@@ -75,7 +75,7 @@ public final class ImageManager {
 
    public synchronized static String setupImage(KeyedImage imageEnum) {
       String imageKey = imageEnum != null ? imageEnum.getImageKey() : MISSING.getImageKey();
-      if (getImageRegistry().getDescriptor(imageKey) == null) {
+      if (getImageRegistry().getDescriptor(imageKey) == null && imageEnum != null) {
          ImageDescriptor imageDescriptor = imageEnum.createImageDescriptor();
          if (imageDescriptor == null) {
             if (!imageKey.contains("nothere.gif")) {

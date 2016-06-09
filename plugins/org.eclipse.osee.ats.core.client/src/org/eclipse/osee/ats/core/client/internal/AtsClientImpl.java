@@ -572,8 +572,8 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
          if (!found) {
             atsConfig.addAttribute(CoreAttributeTypes.GeneralStringData, keyValue);
          }
+         atsConfig.persist(String.format("Update AtsConfig [%s] Key", key));
       }
-      atsConfig.persist(String.format("Update AtsConfig [%s] Key", key));
    }
 
    @Override

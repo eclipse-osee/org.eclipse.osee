@@ -146,8 +146,12 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
 
          } else {
             IAgileSprint selectedSprint = dialog.getSelectedFirst();
+            Artifact newSprintArt = null;
+            if (selectedSprint != null) {
+               newSprintArt = (Artifact) selectedSprint.getStoreObject();
+            }
+
             for (Artifact awa : awas) {
-               Artifact newSprintArt = (Artifact) selectedSprint.getStoreObject();
                Collection<Artifact> relatedSprintArts = AgileUtilClient.getRelatedSprints(awa);
                for (Artifact relatedSprint : relatedSprintArts) {
                   awa.deleteRelation(AtsRelationTypes.AgileSprintToItem_Sprint, relatedSprint);

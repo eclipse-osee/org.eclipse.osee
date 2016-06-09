@@ -64,14 +64,17 @@ public class XArtifactSelectWidgetWithSave extends XArtifactSelectWidget impleme
          try {
             Artifact storedArt = getStored();
             Artifact widgetArt = getSelection();
-            if (storedArt == null && widgetArt == null) {
-               return Result.FalseResult;
-            } else if (storedArt != null && widgetArt == null) {
-               return new Result(true, getAttributeType() + " is dirty");
-            } else if (storedArt == null && widgetArt != null) {
-               return new Result(true, getAttributeType() + " is dirty");
-            } else if (!storedArt.equals(widgetArt)) {
-               return new Result(true, getAttributeType() + " is dirty");
+
+            Result dirty = new Result(true, getAttributeType() + " is dirty");
+            if (widgetArt == null) {
+               return storedArt == null ? Result.FalseResult : dirty;
+            } else {
+               if (storedArt == null) {
+                  return dirty;
+               }
+               if (widgetArt.equals(storedArt)) {
+                  return dirty;
+               }
             }
          } catch (OseeCoreException ex) {
             // Do nothing

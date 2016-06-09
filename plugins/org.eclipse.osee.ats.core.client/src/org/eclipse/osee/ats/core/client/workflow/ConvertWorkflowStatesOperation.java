@@ -88,7 +88,7 @@ public class ConvertWorkflowStatesOperation extends AbstractOperation {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
-      if (persist) {
+      if (transaction != null && persist) {
          transaction.execute();
       }
    }

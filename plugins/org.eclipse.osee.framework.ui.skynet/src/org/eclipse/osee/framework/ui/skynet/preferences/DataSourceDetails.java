@@ -141,7 +141,9 @@ public class DataSourceDetails extends PreferencePage implements IWorkbenchPrefe
          builder.append(AHTML.addRowSpanMultiColumnTable(Lib.exceptionToString(ex), 3));
       } finally {
          builder.append(AHTML.endMultiColumnTable());
-         chStmt.close();
+         if (chStmt != null) {
+            chStmt.close();
+         }
       }
       return builder.toString().replaceAll("\n", "<br/>");
    }

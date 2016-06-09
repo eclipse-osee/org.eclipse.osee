@@ -61,6 +61,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 
 /**
@@ -140,6 +141,8 @@ public class AtsBranchConfigurationTest {
             version2Uuid = vArt.getUuid();
          }
       }
+
+      Assert.assertNotNull(versionToTarget);
       versionToTarget.setBaselineBranchUuid(viaTeamDefBranch.getUuid());
       versionToTarget.setAllowCommitBranch(true);
       versionToTarget.setAllowCreateBranch(true);

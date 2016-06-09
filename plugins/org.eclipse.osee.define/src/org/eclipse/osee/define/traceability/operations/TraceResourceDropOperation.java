@@ -102,7 +102,7 @@ public class TraceResourceDropOperation extends AbstractOperation {
             }
          }
 
-         if (persistChanges && isOk) {
+         if (transaction != null && persistChanges && isOk) {
             requirement.persist(transaction);
             transaction.execute();
          }

@@ -93,6 +93,7 @@ public final class JaxRsExceptions {
 
    public static OseeCoreException asOseeException(Response response) {
       String message = "";
+      String httpStatus = "";
       if (response == null) {
          message = "Error mapping response exception - response was null";
       } else {
@@ -118,8 +119,9 @@ public final class JaxRsExceptions {
             message = getResponseString(response);
          }
          message = message + ".  HTTP Reason: " + response.getStatusInfo().getReasonPhrase();
+         httpStatus = response.getStatusInfo().getReasonPhrase();
       }
-      return new OseeCoreException(message + ". HTTP Status: " + response.getStatusInfo().getReasonPhrase());
+      return new OseeCoreException(message + ". HTTP Status: " + httpStatus);
    }
 
    private static String getResponseString(Response response) {

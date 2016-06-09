@@ -272,8 +272,9 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
                         textContent = textContent + attribute.toString();
                      }
                   }
-                  if (textContent.contains(structuredRequirement.getSecond()) || textContent.contains(
-                     getCanonicalRequirementName(structuredRequirement.getSecond()))) {
+                  if (textContent != null && (textContent.contains(
+                     structuredRequirement.getSecond()) || textContent.contains(
+                        getCanonicalRequirementName(structuredRequirement.getSecond())))) {
                      foundStr = "req body match";
                   } else {
                      foundStr = "req name match/element missing in body";

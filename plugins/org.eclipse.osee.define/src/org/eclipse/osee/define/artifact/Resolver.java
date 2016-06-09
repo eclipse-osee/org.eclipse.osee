@@ -57,6 +57,9 @@ public class Resolver implements URIResolver {
       if (href.equals("profile.xsl")) {
          rightOne = xslProfile;
       }
-      return new StreamSource(new CharArrayReader(rightOne.array()));
+      if (rightOne != null) {
+         return new StreamSource(new CharArrayReader(rightOne.array()));
+      }
+      return null;
    }
 }

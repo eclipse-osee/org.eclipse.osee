@@ -110,7 +110,7 @@ public class InvalidTxCurrentsAndModTypesCallable extends AbstractDatastoreTxCal
 
       for (Address address : addresses) {
          if (address.hasSameGamma(previousAddress) && address.hasSameModType(
-            previousAddress) && address.hasSameApplicability(previousAddress)) {
+            previousAddress) && previousAddress != null && address.hasSameApplicability(previousAddress)) {
             previousAddress.setPurge(true);
          }
          previousAddress = address;
@@ -132,7 +132,7 @@ public class InvalidTxCurrentsAndModTypesCallable extends AbstractDatastoreTxCal
       for (Address address : addresses) {
          if (address.isSameTransaction(previousAddress)) {
             if (address.hasSameModType(
-               previousAddress) || !address.getModType().isDeleted() && previousAddress.getModType().isEdited()) {
+               previousAddress) || !address.getModType().isDeleted() && previousAddress != null && previousAddress.getModType().isEdited()) {
                address.setPurge(true);
             } else {
                logIssue("multiple versions in one transaction - unknown case", address);

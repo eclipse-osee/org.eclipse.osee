@@ -93,6 +93,7 @@ public class PathResourceFinder extends ResourceFinder {
                   }
                   System.err.println(String.format("trying to find :%s %d", path, j));
                } catch (InterruptedException ex) {
+                  // do nothing
                }
             } else {
                break;
@@ -100,11 +101,12 @@ public class PathResourceFinder extends ResourceFinder {
          }
       }
 
-      if (exists) {
+      if (exists && f != null) {
          if (perm.implies(new FilePermission(f.getPath(), "read"))) {
             try {
                return getBytes(new FileInputStream(f), f.length());
             } catch (FileNotFoundException e) {
+               // do nothing
             }
          }
       }

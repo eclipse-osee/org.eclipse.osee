@@ -459,7 +459,7 @@ public class ConflictManagerInternal {
          toReturn = destTransaction;
       } else if (sourceTransaction != null && destTransaction == null) {
          toReturn = sourceTransaction;
-      } else {
+      } else if (sourceTransaction != null && destTransaction != null) {
          toReturn = sourceTransaction.getId() <= destTransaction.getId() ? sourceTransaction : destTransaction;
       }
       return toReturn;

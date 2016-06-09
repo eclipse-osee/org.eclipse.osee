@@ -48,7 +48,7 @@ public class UriDataProxy extends AbstractDataProxy implements CharacterDataProx
       try {
          ByteBuffer original = getValueAsBytes();
          if (original != null && data == null || original == null && data != null || //
-         !original.equals(data)) {
+            original != null && !original.equals(data)) {
             if (data != null) {
                ResourceNameResolver resolver = getResolver();
                Conditions.checkNotNull(resolver, "ResourceNameResolver", "Unable to determine internal file name");

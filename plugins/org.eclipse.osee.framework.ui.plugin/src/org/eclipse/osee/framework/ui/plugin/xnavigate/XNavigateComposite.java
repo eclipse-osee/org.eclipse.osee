@@ -250,12 +250,8 @@ public class XNavigateComposite extends Composite {
                Tree tree = filteredTree.getViewer().getTree();
                TreeItem item = tree.getItem(new Point(event.x, event.y));
 
-               Object object = null;
-               if (item != null) {
-                  object = item.getData();
-               }
-               if (object instanceof XNavigateItem) {
-                  XNavigateItem navItem = (XNavigateItem) object;
+               if (item != null && item.getData() instanceof XNavigateItem) {
+                  XNavigateItem navItem = (XNavigateItem) item.getData();
                   String description = navItem.getDescription();
 
                   if (Strings.isValid(description)) {
