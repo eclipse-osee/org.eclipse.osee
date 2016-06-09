@@ -319,18 +319,23 @@ public final class Lib {
    public static boolean deleteFileAndEmptyParents(String stopAt, File file) {
       boolean result = true;
       if (file != null) {
-         if (file.isDirectory() != false) {
+         if (file.isDirectory()) {
             if (file.list().length == 0) {
+               File parent = file.getParentFile();
+               if (parent != null && !parent.getAbsolutePath().equals(stopAt)) {
+                  result &= deleteFileAndEmptyParents(stopAt, parent);
+               }
                result &= file.delete();
             }
          } else {
+            File parent = file.getParentFile();
+            if (parent != null && !parent.getAbsolutePath().equals(stopAt)) {
+               result &= deleteFileAndEmptyParents(stopAt, parent);
+            }
             result &= file.delete();
          }
       }
-      File parent = file.getParentFile();
-      if (parent != null && parent.getAbsolutePath().equals(stopAt) != true) {
-         result &= deleteFileAndEmptyParents(stopAt, parent);
-      }
+
       return result;
    }
 
@@ -531,7 +536,9 @@ public final class Lib {
          inputStream = new FileInputStream(file);
          inputStream.read(bytes);
       } finally {
-         inputStream.close();
+         if (inputStream != null) {
+            inputStream.close();
+         }
       }
       return bytes;
    }

@@ -92,8 +92,8 @@ public class ConvertAIsAndTeamsToAtsDsl {
       IAtsTeamDefinition teamDef = aiArt.getTeamDefinition();
       if (teamDef != null) {
          dslAIDef.setTeamDef(teamDef.getName());
+         dslAIDef.getRules().addAll(teamDef.getRules());
       }
-      dslAIDef.getRules().addAll(teamDef.getRules());
 
       // process children
       for (IAtsActionableItem childAiArt : aiArt.getChildrenActionableItems()) {

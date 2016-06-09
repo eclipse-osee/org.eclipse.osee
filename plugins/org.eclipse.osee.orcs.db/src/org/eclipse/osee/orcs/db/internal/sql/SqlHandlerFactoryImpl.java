@@ -86,13 +86,12 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
       SqlHandler<C> handler = null;
       try {
          handler = item.newInstance();
+         handler.setData(criteria);
+         handler.setIdentityService(idService);
+         handler.setLogger(logger);
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
-
-      handler.setData(criteria);
-      handler.setIdentityService(idService);
-      handler.setLogger(logger);
 
       if (handler instanceof HasTagProcessor) {
          ((HasTagProcessor) handler).setTagProcessor(tagProcessor);

@@ -123,6 +123,7 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
       }
       if (agileTeamArt == null) {
          AWorkbench.popup("No Agile Team for Agile Backlog [%s]", backlogArt.toStringWithId());
+         return false;
       }
 
       Set<IAgileSprint> activeSprints = getActiveSprints(agileTeamArt);

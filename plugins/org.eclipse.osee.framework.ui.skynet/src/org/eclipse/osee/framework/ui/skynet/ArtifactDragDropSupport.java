@@ -168,6 +168,7 @@ public class ArtifactDragDropSupport {
 
       if (artifact == null) {
          window.addInvalid(location, "Artifact has been cancelled");
+         return;
       }
       try {
          ensureLinkValidity(group, artifact);

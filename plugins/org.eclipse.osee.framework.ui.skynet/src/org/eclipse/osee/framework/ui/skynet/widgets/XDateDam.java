@@ -73,17 +73,17 @@ public class XDateDam extends XDate implements IAttributeWidget {
       if (isEditable()) {
          Date enteredValue = getDate();
          Date storedValue = getArtifact().getSoleAttributeValue(getAttributeType(), null);
-         if (enteredValue == null && storedValue == null) {
-            return Result.FalseResult;
-         }
-         if (enteredValue == null && storedValue != null) {
-            return new Result(true, getAttributeType() + " is dirty");
-         }
-         if (enteredValue != null && storedValue == null) {
-            return new Result(true, getAttributeType() + " is dirty");
-         }
-         if (enteredValue.getTime() != storedValue.getTime()) {
-            return new Result(true, getAttributeType() + " is dirty");
+         Result dirty = new Result(true, getAttributeType() + " is dirty");
+
+         if (enteredValue == null) {
+            return storedValue == null ? Result.FalseResult : dirty;
+         } else {
+            if (storedValue == null) {
+               return dirty;
+            }
+            if (enteredValue.getTime() != storedValue.getTime()) {
+               return dirty;
+            }
          }
       }
       return Result.FalseResult;
