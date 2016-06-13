@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.explorer.menu;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -18,9 +20,12 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -31,9 +36,11 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorerLinkNode;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -43,6 +50,7 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactTypeEntryDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeRelationTypeDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -97,6 +105,50 @@ public class CreateRelatedMenuItem implements SelectionListener {
                MessageDialog.openError(AWorkbench.getActiveShell(), "New Child Error",
                   "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");
             }
+         } else if (obj instanceof Artifact) {
+            Artifact parentArt = (Artifact) obj;
+
+            AccessPolicy policy = ServiceUtil.getAccessPolicy();
+
+            PermissionStatus status =
+               policy.canRelationBeModified(parentArt, null, CoreRelationTypes.Default_Hierarchical__Child, Level.FINE);
+            if (!status.matched()) {
+               MessageDialog.openError(AWorkbench.getActiveShell(), "New Child Error",
+                  "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");
+               return;
+            }
+
+            List<IRelationTypeSide> validRelationTypes = new LinkedList<>();
+            for (RelationType relType : RelationTypeManager.getValidTypes(parentArt.getBranch())) {
+               if (relType.isArtifactTypeAllowed(RelationSide.SIDE_A, parentArt.getArtifactType())) {
+                  validRelationTypes.add(new RelationTypeSide(relType, RelationSide.SIDE_B));
+               }
+               if (relType.isArtifactTypeAllowed(RelationSide.SIDE_B, parentArt.getArtifactType())) {
+                  validRelationTypes.add(new RelationTypeSide(relType, RelationSide.SIDE_A));
+               }
+            }
+
+            FilteredTreeRelationTypeDialog dialog = new FilteredTreeRelationTypeDialog("Select Relation Type",
+               String.format(
+                  "Select Relation Type where:\n<Selected> = %s\nand\n<New Artifact> is newly created artifact from this operation.",
+                  parentArt.toStringWithId()),
+               validRelationTypes, new RelationTypeSideLabelProvider());
+            int result = dialog.open();
+            if (result == 0) {
+               IRelationTypeSide relationType = dialog.getSelectedFirst();
+               if (relationType != null) {
+                  List<ArtifactType> validArtifactTypes = new LinkedList<>();
+                  for (ArtifactType artifactType : getArtifactTypesFromRelationType(relationType,
+                     parentArt.getBranch())) {
+                     if (!artifactType.isAbstract() && ArtifactTypeManager.isUserCreationAllowed(artifactType)) {
+                        validArtifactTypes.add(artifactType);
+                     }
+                  }
+                  ArtifactExplorerMenu.handleCreateChild(parentArt, validArtifactTypes,
+                     artifactExplorer.getTreeViewer(), relationType);
+               }
+            }
+
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -176,6 +228,10 @@ public class CreateRelatedMenuItem implements SelectionListener {
 
          boolean canModifyRelation = service.canRelationBeModified(artifact, null, relationSide, Level.FINE).matched();
          menuItem.setEnabled(permiss.isWritePermission() && canModifyRelation);
+      } else if (obj instanceof Artifact) {
+         Artifact artifact = (Artifact) obj;
+         GlobalMenuPermissions permiss = new GlobalMenuPermissions(artifact);
+         menuItem.setEnabled(permiss.isWritePermission());
       } else {
          menuItem.setEnabled(false);
       }
@@ -188,6 +244,41 @@ public class CreateRelatedMenuItem implements SelectionListener {
 
    public MenuItem getMenuItem() {
       return menuItem;
+   }
+
+   public class RelationTypeSideLabelProvider extends StringLabelProvider {
+
+      @Override
+      public String getText(Object arg0) {
+         if (arg0 instanceof RelationTypeSide) {
+            RelationTypeSide relationTypeSide = (RelationTypeSide) arg0;
+            RelationType relationType = RelationTypeManager.getType(relationTypeSide.getRelationType());
+            if (relationTypeSide.getSide().isSideA()) {
+               return String.format(
+                  "Relation: [%s]  <New Artifact> of type [%s] and name [%s] <---> <Selected> of type [%s] and name [%s]",
+                  relationType.getName(), relationType.getArtifactTypeSideB(), relationType.getSideBName(),
+                  relationType.getArtifactTypeSideA(), relationType.getSideAName());
+            } else {
+               return String.format(
+                  "Relation: [%s]  <Selected> of type [%s] and name [%s] <---> <New Artifact> of type [%s] and name [%s]",
+                  relationType.getName(), relationType.getArtifactTypeSideA(), relationType.getSideAName(),
+                  relationType.getArtifactTypeSideB(), relationType.getSideBName());
+            }
+         }
+         return arg0.toString();
+      }
+   }
+
+   private Collection<ArtifactType> getArtifactTypesFromRelationType(IRelationType relationType, BranchId branchToken) throws OseeCoreException {
+      RelationType relType = RelationTypeManager.getType(relationType);
+      List<ArtifactType> artifactTypes = new ArrayList<>();
+      IArtifactType artifactTypeSideB = relType.getArtifactTypeSideB();
+      for (ArtifactType artifactType : ArtifactTypeManager.getValidArtifactTypes(branchToken)) {
+         if (artifactType.inheritsFrom(artifactTypeSideB)) {
+            artifactTypes.add(artifactType);
+         }
+      }
+      return artifactTypes;
    }
 
 }

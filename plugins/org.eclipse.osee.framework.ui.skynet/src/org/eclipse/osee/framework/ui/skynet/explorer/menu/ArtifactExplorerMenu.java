@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.explorer.menu;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -24,11 +25,12 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -279,44 +281,10 @@ public class ArtifactExplorerMenu {
 
                   parent = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(getBranch());
                }
-               FilteredTreeArtifactTypeEntryDialog dialog = getDialog();
-               if (dialog.open() == Window.OK) {
-                  IArtifactType type = dialog.getSelection();
-                  String name = dialog.getEntryValue();
-
-                  if (type == null) {
-                     AWorkbench.popup("Type not selected.");
-                     return;
-                  } else if (!Strings.isValid(name)) {
-                     AWorkbench.popup("Name can not be empty.");
-                     return;
-                  }
-
-                  SkynetTransaction transaction = TransactionManager.createTransaction(getBranch(),
-                     String.format("Created new %s \"%s\" in artifact explorer", type.getName(), name));
-                  Artifact newChildArt = parent.addNewChild(RelationOrderBaseTypes.PREEXISTING, type, name);
-                  parent.persist(transaction);
-                  transaction.execute();
-                  RendererManager.open(newChildArt, PresentationType.GENERALIZED_EDIT);
-                  treeViewer.refresh();
-                  treeViewer.refresh(false);
-               }
+               handleCreateChild(parent, treeViewer);
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
-         }
-
-         private FilteredTreeArtifactTypeEntryDialog getDialog() throws OseeCoreException {
-            List<IArtifactType> artifactTypes = new ArrayList<>();
-            for (IArtifactType artifactType : ArtifactTypeManager.getConcreteArtifactTypes(getBranch())) {
-               if (ArtifactTypeManager.isUserCreationAllowed(artifactType)) {
-                  artifactTypes.add(artifactType);
-               }
-            }
-
-            FilteredTreeArtifactTypeEntryDialog dialog = new FilteredTreeArtifactTypeEntryDialog("New Child",
-               "Enter name and select Artifact type to create", "Artifact Name", artifactTypes);
-            return dialog;
          }
 
          private Artifact getParent() throws OseeCoreException {
@@ -337,6 +305,53 @@ public class ArtifactExplorerMenu {
             return parent;
          }
       });
+   }
+
+   private static Artifact handleCreateChild(Artifact parent, TreeViewer treeViewer) {
+      return handleCreateChild(parent, ArtifactTypeManager.getConcreteArtifactTypes(parent.getBranch()), treeViewer,
+         CoreRelationTypes.Default_Hierarchical__Child);
+   }
+
+   public static Artifact handleCreateChild(Artifact parent, Collection<? extends IArtifactType> validArtifactTypes, TreeViewer treeViewer, IRelationTypeSide relationTypeSide) {
+      FilteredTreeArtifactTypeEntryDialog dialog = getDialog(validArtifactTypes);
+      if (dialog.open() == Window.OK) {
+         IArtifactType type = dialog.getSelection();
+         String name = dialog.getEntryValue();
+
+         if (type == null) {
+            AWorkbench.popup("Type not selected.");
+            return null;
+         } else if (!Strings.isValid(name)) {
+            AWorkbench.popup("Name can not be empty.");
+            return null;
+         }
+
+         SkynetTransaction transaction = TransactionManager.createTransaction(parent.getBranch(),
+            String.format("Created new %s \"%s\" in artifact explorer", type.getName(), name));
+
+         Artifact newChildArt = ArtifactTypeManager.addArtifact(type, parent.getBranch(), name);
+         parent.addRelation(relationTypeSide, newChildArt);
+         parent.persist(transaction);
+         transaction.execute();
+         RendererManager.open(newChildArt, PresentationType.GENERALIZED_EDIT);
+         treeViewer.refresh();
+         treeViewer.refresh(false);
+         return newChildArt;
+      }
+      return null;
+   }
+
+   private static FilteredTreeArtifactTypeEntryDialog getDialog(Collection<? extends IArtifactType> validArtifactTypes) throws OseeCoreException {
+      List<IArtifactType> artifactTypes = new ArrayList<>();
+      for (IArtifactType artifactType : validArtifactTypes) {
+         if (!((ArtifactType) artifactType).isAbstract() && ArtifactTypeManager.isUserCreationAllowed(artifactType)) {
+            artifactTypes.add(artifactType);
+         }
+      }
+
+      FilteredTreeArtifactTypeEntryDialog dialog = new FilteredTreeArtifactTypeEntryDialog("New Child",
+         "Enter name and select Artifact type to create", "Artifact Name", artifactTypes);
+      return dialog;
    }
 
    private Artifact getExplorerRoot() {
