@@ -106,9 +106,9 @@ public class ViewApplicabilityColumn extends XViewerColumn implements IXViewerPr
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint();
       List<ApplicabilityId> applicabilityIds = applEndpoint.getApplicabilityIds().getApplicabilityIds();
-      ViewApplicabilityFilterTreeDialog dialog = new ViewApplicabilityFilterTreeDialog("Select View Applicability",
-         "Select View Applicability", applicabilityIds);
-      dialog.setInput();
+      ViewApplicabilityFilterTreeDialog dialog =
+         new ViewApplicabilityFilterTreeDialog("Select View Applicability", "Select View Applicability");
+      dialog.setInput(applicabilityIds);
       dialog.setMultiSelect(false);
       int result = dialog.open();
       if (result == Window.OK) {
@@ -120,11 +120,7 @@ public class ViewApplicabilityColumn extends XViewerColumn implements IXViewerPr
                artifacts.add(artifact);
                Applicability appl = new Applicability();
                appl.setArtId(artifact.getUuid());
-               if (dialog.isRemoveViewApplicability()) {
-                  appl.setApplicability(null);
-               } else {
-                  appl.setApplicability(dialog.getSelection());
-               }
+               appl.setApplicability(dialog.getSelection());
             }
             if (applicabilities.getApplicabilities().isEmpty()) {
                AWorkbench.popup("No Artifacts Selected");
@@ -142,10 +138,10 @@ public class ViewApplicabilityColumn extends XViewerColumn implements IXViewerPr
       if (obj instanceof Artifact) {
          Artifact artifact = (Artifact) obj;
          ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint();
-         ViewApplicabilityFilterTreeDialog dialog = new ViewApplicabilityFilterTreeDialog("Select View Applicability",
-            "Select View Applicability", applEndpoint.getApplicabilityIds().getApplicabilityIds());
+         ViewApplicabilityFilterTreeDialog dialog =
+            new ViewApplicabilityFilterTreeDialog("Select View Applicability", "Select View Applicability");
          dialog.setMultiSelect(false);
-         dialog.setInput();
+         dialog.setInput(applEndpoint.getApplicabilityIds().getApplicabilityIds());
          ArtifactIds artifactIds = new ArtifactIds();
          artifactIds.getArtifactIds().add(artifact.getUuid());
          Applicabilities applicabilities = applEndpoint.getApplicabilities(artifactIds);
@@ -157,11 +153,7 @@ public class ViewApplicabilityColumn extends XViewerColumn implements IXViewerPr
          if (result == Window.OK) {
             Applicability appl = new Applicability();
             appl.setArtId(artifact.getUuid());
-            if (dialog.isRemoveViewApplicability()) {
-               appl.setApplicability(null);
-            } else {
-               appl.setApplicability(dialog.getSelection());
-            }
+            appl.setApplicability(dialog.getSelection());
             applEndpoint.setApplicability(appl);
             ArtifactQuery.reloadArtifacts(Collections.singleton(artifact));
             return true;

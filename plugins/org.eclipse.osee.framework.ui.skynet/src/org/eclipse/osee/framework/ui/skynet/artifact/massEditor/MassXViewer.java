@@ -91,16 +91,22 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
 
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
+      super.handleColumnMultiEdit(treeColumn, treeItems);
       String colName = treeColumn.getText();
-      Set<Artifact> artifacts = new HashSet<>();
-      for (TreeItem item : treeItems) {
-         artifacts.add((Artifact) item.getData());
+      if (EXTRA_COLUMNS.contains(colName)) {
+         AWorkbench.popup("ERROR", "Can't change the field " + colName);
       }
       try {
-         IAttributeType attributeType = AttributeTypeManager.getType(colName);
-         if (ArtifactPromptChange.promptChangeAttribute(attributeType, artifacts, false)) {
-            refresh();
-            editor.onDirtied();
+         if (AttributeTypeManager.typeExists(colName)) {
+            IAttributeType attributeType = AttributeTypeManager.getType(colName);
+            Set<Artifact> artifacts = new HashSet<>();
+            for (TreeItem item : treeItems) {
+               artifacts.add((Artifact) item.getData());
+            }
+            if (ArtifactPromptChange.promptChangeAttribute(attributeType, artifacts, false)) {
+               refresh();
+               editor.onDirtied();
+            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
