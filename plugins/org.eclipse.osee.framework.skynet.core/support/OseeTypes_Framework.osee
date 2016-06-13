@@ -14,6 +14,10 @@ artifactType "Enumerated Artifact" extends "Artifact" {
 	uuid 0x401B08C5219804F3
 }
 
+artifactType "Branch View" extends "Artifact" {
+	uuid 0x512C19B4108793E2
+}
+
 artifactType "Osee Type Enum" extends "Enumerated Artifact" {
 	uuid 0x4B9A7DCF0856C368
 	attribute "Id Value"

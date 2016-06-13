@@ -25,6 +25,7 @@ public final class CoreArtifactTypes {
    public static final IArtifactType AbstractSystemRequirement = TokenFactory.createArtifactType(0x000000000000031CL, "Abstract System Requirement");
    public static final IArtifactType Artifact = TokenFactory.createArtifactType(0x0000000000000001L, "Artifact");
    public static final IArtifactType Breaker = TokenFactory.createArtifactType(0x0000AB6700000034L, "Breaker");
+   public static final IArtifactType BranchView = TokenFactory.createArtifactType(0x512C19B4108793E2L, "Branch View");
    public static final IArtifactType CodeUnit = TokenFactory.createArtifactType(0x000000000000003AL, "Code Unit");
    public static final IArtifactType Component = TokenFactory.createArtifactType(0x0000000000000039L, "Component");
    public static final IArtifactType Design = TokenFactory.createArtifactType(0x000000000000015AL, "Design");
