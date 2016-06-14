@@ -58,6 +58,7 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.UserGroup, FrameworkImage.USERS, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SubscriptionGroup, FrameworkImage.EMAIL, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.UniversalGroup, FrameworkImage.GROUP, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.BranchView, FrameworkImage.BRANCH_VIEW, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.ImplementationDetails,
          FrameworkImage.IMPLEMENTATION_DETAILS, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.ImplementationDetailsProcedure,

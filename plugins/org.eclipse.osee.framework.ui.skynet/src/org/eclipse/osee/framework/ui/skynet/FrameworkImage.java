@@ -53,6 +53,7 @@ public enum FrameworkImage implements KeyedImage {
    BRANCH_CHANGE_MANAGED("change_managed_branch.gif"),
    BRANCH_COMMIT("commitBranch.gif"),
    BRANCH_SYNCH("branchSynch.gif"),
+   BRANCH_VIEW("branchview.gif"),
    CALENDAR("calendar.png"),
    CHANGE_LOG("changelog_obj.gif"),
    CLEAR_CO("clear_co.gif"),
