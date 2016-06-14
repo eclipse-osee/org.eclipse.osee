@@ -124,7 +124,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
 
       if (!results.isErrors()) {
          for (IAtsTeamWorkflow newTeamArt : op.getResults().values()) {
-            WorkflowEditor.editArtifact(newTeamArt);
+            WorkflowEditor.editArtifact((Artifact) newTeamArt);
          }
       }
    }
@@ -160,7 +160,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
 
       if (!results.isErrors()) {
          for (IAtsTeamWorkflow newTeamArt : op.getResults().values()) {
-            SMAEditor.editArtifact((Artifact) newTeamArt);
+            WorkflowEditor.editArtifact((Artifact) newTeamArt);
          }
       }
    }
@@ -178,13 +178,13 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + TEAM_WORKFLOW + "\" />" +
       //
-         "<XWidget xwidgetType=\"XCombo(" + CREATE_NEW_WORFLOW_IN_START_STATE + "," + DUPLICATE_WORKFLOW + ")\" required=\"true\" displayName=\"" + DUPLICATE_METHOD + "\" horizontalLabel=\"true\" />" +
-         //
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + DUPLICATE_TASKS + "\" horizontalLabel=\"true\" defaultValue=\"false\"/>" +
-         //
-         "<XWidget xwidgetType=\"XText\" displayName=\"" + TITLE + "\" horizontalLabel=\"true\" defaultValue=\"" + getDefaultTitle() + "\"/>" +
-         //
-         "</xWidgets>";
+      "<XWidget xwidgetType=\"XCombo(" + CREATE_NEW_WORFLOW_IN_START_STATE + "," + DUPLICATE_WORKFLOW + ")\" required=\"true\" displayName=\"" + DUPLICATE_METHOD + "\" horizontalLabel=\"true\" />" +
+      //
+      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + DUPLICATE_TASKS + "\" horizontalLabel=\"true\" defaultValue=\"false\"/>" +
+      //
+      "<XWidget xwidgetType=\"XText\" displayName=\"" + TITLE + "\" horizontalLabel=\"true\" defaultValue=\"" + getDefaultTitle() + "\"/>" +
+      //
+      "</xWidgets>";
    }
 
    /**
