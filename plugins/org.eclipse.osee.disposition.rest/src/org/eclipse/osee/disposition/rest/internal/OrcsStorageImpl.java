@@ -155,10 +155,10 @@ public class OrcsStorageImpl implements Storage {
    @Override
    public boolean isUniqueSetName(DispoProgram program, String name) {
       ResultSet<ArtifactReadable> results = getQuery()//
-      .fromBranch(program.getUuid())//
-      .andTypeEquals(DispoConstants.DispoSet)//
-      .andNameEquals(name)//
-      .getResults();
+         .fromBranch(program.getUuid())//
+         .andTypeEquals(DispoConstants.DispoSet)//
+         .andNameEquals(name)//
+         .getResults();
 
       return results.isEmpty();
    }
@@ -167,11 +167,11 @@ public class OrcsStorageImpl implements Storage {
    public boolean isUniqueItemName(DispoProgram program, String setId, String name) {
       ArtifactReadable setArt = findDispoArtifact(program, setId, DispoConstants.DispoSet);
       ResultSet<ArtifactReadable> results = getQuery()//
-      .fromBranch(program.getUuid())//
-      .andRelatedTo(CoreRelationTypes.Default_Hierarchical__Parent, setArt)//
-      .andTypeEquals(DispoConstants.DispoItem)//
-      .andNameEquals(name)//
-      .getResults();
+         .fromBranch(program.getUuid())//
+         .andRelatedTo(CoreRelationTypes.Default_Hierarchical__Parent, setArt)//
+         .andTypeEquals(DispoConstants.DispoItem)//
+         .andNameEquals(name)//
+         .getResults();
 
       return results.isEmpty();
    }
@@ -179,9 +179,9 @@ public class OrcsStorageImpl implements Storage {
    @Override
    public List<DispoSet> findDispoSets(DispoProgram program, String type) {
       ResultSet<ArtifactReadable> results = getQuery()//
-      .fromBranch(program.getUuid())//
-      .andTypeEquals(DispoConstants.DispoSet)//
-      .getResults();
+         .fromBranch(program.getUuid())//
+         .andTypeEquals(DispoConstants.DispoSet)//
+         .getResults();
 
       List<DispoSet> toReturn = new ArrayList<>();
       for (ArtifactReadable art : results) {
@@ -201,9 +201,9 @@ public class OrcsStorageImpl implements Storage {
 
    private ArtifactReadable findDispoArtifact(DispoProgram program, String artId, IArtifactType type) {
       return getQuery()//
-      .fromBranch(program.getUuid())//
-      .andUuid(Long.valueOf(artId))//
-      .getResults().getOneOrNull();
+         .fromBranch(program.getUuid())//
+         .andUuid(Long.valueOf(artId))//
+         .getResults().getOneOrNull();
    }
 
    @Override
@@ -466,11 +466,11 @@ public class OrcsStorageImpl implements Storage {
 
       Set<DispoItem> toReturn = new HashSet<>();
       ResultSet<ArtifactReadable> dispoArtifacts = getQuery()//
-      .fromBranch(program.getUuid())//
-      .andTypeEquals(DispoConstants.DispoItem)//
-      .andRelatedTo(CoreRelationTypes.Default_Hierarchical__Parent, dispoSetArt).and(
-         DispoConstants.DispoAnnotationsJson, keyword, //
-         QueryOption.CONTAINS_MATCH_OPTIONS)//
+         .fromBranch(program.getUuid())//
+         .andTypeEquals(DispoConstants.DispoItem)//
+         .andRelatedTo(CoreRelationTypes.Default_Hierarchical__Parent, dispoSetArt).and(
+            DispoConstants.DispoAnnotationsJson, keyword, //
+            QueryOption.CONTAINS_MATCH_OPTIONS)//
          .getResults();
 
       for (ArtifactReadable art : dispoArtifacts) {
@@ -527,15 +527,14 @@ public class OrcsStorageImpl implements Storage {
       TransactionReadable commit = tx.commit();
       if (commit != null) {
 
-         ArtifactReadable newRerpotArt =
-            getQuery().fromBranch(program.getUuid()).fromTransaction(commit.getCommit()).andGuid(
-               reportArt.getGuid()).getResults().getExactlyOne();
+         ArtifactReadable newRerpotArt = getQuery().fromBranch(program.getUuid()).fromTransaction(commit).andGuid(
+            reportArt.getGuid()).getResults().getExactlyOne();
 
          AttributeReadable<Object> contentsAsAttribute =
             newRerpotArt.getAttributes(CoreAttributeTypes.GeneralStringData).getExactlyOne();
 
          toReturn = String.format("/orcs/branch/%s/artifact/%s/attribute/%s/version/%s", program.getUuid(),
-            newRerpotArt.getGuid(), contentsAsAttribute.getLocalId(), commit.getGuid());
+            newRerpotArt.getGuid(), contentsAsAttribute.getLocalId(), commit.getId());
       }
       return toReturn;
 

@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import java.util.function.Consumer;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -27,8 +28,7 @@ import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.data.TransactionReadable;
-import org.eclipse.osee.orcs.data.TransactionReadableDelta;
+import org.eclipse.osee.orcs.data.TransactionTokenDelta;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.change.ChangeItemLoader.ChangeItemFactory;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
@@ -52,10 +52,10 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
    private final HashMap<Long, Pair<ModificationType, ApplicabilityId>> changeByGammaId = new HashMap<>();
 
    private final SqlJoinFactory joinFactory;
-   private final TransactionReadableDelta txDelta;
+   private final TransactionTokenDelta txDelta;
    private final ChangeItemLoader changeItemLoader;
 
-   public LoadDeltasBetweenTxsOnTheSameBranch(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, TransactionReadableDelta txDelta) {
+   public LoadDeltasBetweenTxsOnTheSameBranch(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, TransactionTokenDelta txDelta) {
       super(logger, session, jdbcClient);
       this.joinFactory = joinFactory;
       this.txDelta = txDelta;
@@ -66,11 +66,11 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
       return getEndTx().getBranchId();
    }
 
-   private TransactionReadable getEndTx() {
+   private TransactionToken getEndTx() {
       return txDelta.getEndTx();
    }
 
-   private TransactionReadable getStartTx() {
+   private TransactionToken getStartTx() {
       return txDelta.getStartTx();
    }
 
@@ -126,7 +126,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
       };
       getJdbcClient().runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE,
          (isArchived ? SELECT_CHANGES_BETWEEN_ARCHIVED_TRANSACTIONS : SELECT_CHANGES_BETWEEN_TRANSACTIONS),
-         getBranchId(), getStartTx().getGuid(), getEndTx().getGuid());
+         getBranchId(), getStartTx(), getEndTx());
 
       txJoin.store();
 
@@ -149,10 +149,11 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
       changeData.addAll(changesByItemId.values());
    }
 
-   private void loadCurrentData(String tableName, String columnName, int queryId, HashMap<Integer, ChangeItem> changesByItemId, TransactionReadable transactionLimit, boolean isArchived) throws OseeCoreException {
-      String query = String.format("select txs.gamma_id, txs.mod_type, txs.app_id, item." + columnName + " from osee_join_id idj, " //
-      + tableName + " item, %s txs where idj.query_id = ? and idj.id = item." + columnName + //
-      " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?",
+   private void loadCurrentData(String tableName, String columnName, int queryId, HashMap<Integer, ChangeItem> changesByItemId, TransactionToken transactionLimit, boolean isArchived) throws OseeCoreException {
+      String query = String.format(
+         "select txs.gamma_id, txs.mod_type, txs.app_id, item." + columnName + " from osee_join_id idj, " //
+            + tableName + " item, %s txs where idj.query_id = ? and idj.id = item." + columnName + //
+            " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?",
          isArchived ? "osee_txs_archived" : "osee_txs");
       Consumer<JdbcStatement> consumer = stmt -> {
          checkForCancelled();
@@ -169,7 +170,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
          change.getBaselineVersion().copy(change.getDestinationVersion());
       };
       getJdbcClient().runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, query, queryId,
-         transactionLimit.getBranchId(), transactionLimit.getGuid());
+         transactionLimit.getBranchId(), transactionLimit);
 
    }
 }

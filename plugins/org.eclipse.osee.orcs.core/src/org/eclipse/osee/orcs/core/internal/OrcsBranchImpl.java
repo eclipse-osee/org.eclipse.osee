@@ -16,6 +16,7 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -37,7 +38,6 @@ import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
-import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
@@ -83,21 +83,20 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<TransactionReadable> commitBranch(ArtifactReadable committer, BranchId source, BranchId destination) {
+   public Callable<TransactionToken> commitBranch(ArtifactReadable committer, BranchId source, BranchId destination) {
       return new CommitBranchCallable(logger, session, branchStore, queryFactory, committer, source, destination);
    }
 
    @Override
-   public Callable<List<ChangeItem>> compareBranch(TransactionReadable sourceTx, TransactionReadable destinationTx) {
+   public Callable<List<ChangeItem>> compareBranch(TransactionToken sourceTx, TransactionToken destinationTx) {
       return new CompareBranchCallable(logger, session, branchStore, sourceTx, destinationTx);
    }
 
    @Override
    public Callable<List<ChangeItem>> compareBranch(BranchId branch) throws OseeCoreException {
       int baseTransaction = queryFactory.branchQuery().andIds(branch).getResults().getExactlyOne().getBaseTransaction();
-      TransactionReadable fromTx =
-         queryFactory.transactionQuery().andTxId(baseTransaction).getResults().getExactlyOne();
-      TransactionReadable toTx = queryFactory.transactionQuery().andIsHead(branch).getResults().getExactlyOne();
+      TransactionToken fromTx = queryFactory.transactionQuery().andTxId(baseTransaction).getResults().getExactlyOne();
+      TransactionToken toTx = queryFactory.transactionQuery().andIsHead(branch).getResults().getExactlyOne();
       return branchStore.compareBranch(session, fromTx, toTx);
    }
 
@@ -149,7 +148,7 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<BranchReadable> createBaselineBranch(IOseeBranch branch, ArtifactReadable author, BranchId parent, ArtifactReadable associatedArtifact) throws OseeCoreException {
+   public Callable<BranchReadable> createBaselineBranch(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException {
       CreateBranchData branchData =
          branchDataFactory.createBaselineBranchData(branch, author, parent, associatedArtifact);
       return createBranch(branchData);

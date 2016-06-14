@@ -15,8 +15,8 @@ import java.util.List;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.rest.model.Transaction;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 import org.eclipse.osee.orcs.transaction.CompareResults;
@@ -45,18 +45,17 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
    }
 
    @Override
-   public Transaction getTx(int txId) {
-      TransactionReadable tx = orcsApi.getTransactionFactory().getTxById(txId);
-      return OrcsRestUtil.asTransaction(tx);
+   public Transaction getTx(TransactionId tx) {
+      return OrcsRestUtil.asTransaction(orcsApi.getTransactionFactory().getTx(tx));
    }
 
    @Override
-   public CompareResults compareTxs(int txId1, int txId2) {
+   public CompareResults compareTxs(TransactionId txId1, TransactionId txId2) {
       return orcsApi.getTransactionFactory().compareTxs(txId1, txId2);
    }
 
    @Override
-   public Response setTxComment(int txId, String comment) {
+   public Response setTxComment(TransactionId txId, String comment) {
       return OrcsRestUtil.asResponse(orcsApi.getTransactionFactory().setTxComment(txId, comment));
    }
 
@@ -72,9 +71,8 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
    }
 
    @Override
-   public Response replaceWithBaselineTxVersion(String userId, Long branchId, int txId, int artId, String comment) {
+   public Response replaceWithBaselineTxVersion(String userId, Long branchId, TransactionId txId, int artId, String comment) {
       return OrcsRestUtil.asResponse(
          orcsApi.getTransactionFactory().replaceWithBaselineTxVersion(userId, branchId, txId, artId, comment));
    }
-
 }

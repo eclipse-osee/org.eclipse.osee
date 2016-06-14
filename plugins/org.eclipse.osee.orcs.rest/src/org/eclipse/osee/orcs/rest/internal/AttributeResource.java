@@ -22,6 +22,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.data.RelationalConstants;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -42,13 +44,13 @@ public class AttributeResource {
    private final Long branchUuid;
    private final Long artifactUuid;
    private final int attrId;
-   private final int transactionId;
+   private final TransactionId transactionId;
 
    public AttributeResource(UriInfo uriInfo, Request request, Long branchUuid, Long artifactUuid, int attributeId) {
-      this(uriInfo, request, branchUuid, artifactUuid, attributeId, -1);
+      this(uriInfo, request, branchUuid, artifactUuid, attributeId, TransactionId.SENTINEL);
    }
 
-   public AttributeResource(UriInfo uriInfo, Request request, Long branchUuid, Long artifactUuid, int attributeId, int transactionId) {
+   public AttributeResource(UriInfo uriInfo, Request request, Long branchUuid, Long artifactUuid, int attributeId, TransactionId transactionId) {
       this.uriInfo = uriInfo;
       this.request = request;
       this.branchUuid = branchUuid;
@@ -63,7 +65,7 @@ public class AttributeResource {
       try {
          QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory();
          QueryBuilder queryBuilder = factory.fromBranch(branchUuid).andUuid(artifactUuid);
-         if (transactionId > 0) {
+         if (transactionId.isValid()) {
             queryBuilder.fromTransaction(transactionId);
          }
          ArtifactReadable exactlyOne = queryBuilder.getResults().getExactlyOne();

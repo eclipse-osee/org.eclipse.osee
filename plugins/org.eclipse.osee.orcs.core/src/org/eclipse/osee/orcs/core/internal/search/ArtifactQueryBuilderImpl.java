@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -113,14 +114,14 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
 
    @SuppressWarnings("unchecked")
    @Override
-   public T fromTransaction(int transactionId) {
-      OptionsUtil.setFromTransaction(getOptions(), transactionId);
+   public T fromTransaction(TransactionId transactionId) {
+      OptionsUtil.setFromTransaction(getOptions(), transactionId.getId());
       return (T) this;
    }
 
    @Override
-   public int getFromTransaction() {
-      return OptionsUtil.getFromTransaction(getOptions());
+   public TransactionId getFromTransaction() {
+      return TransactionId.valueOf(OptionsUtil.getFromTransaction(getOptions()));
    }
 
    @SuppressWarnings("unchecked")

@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -47,7 +48,6 @@ import org.eclipse.osee.orcs.OrcsIntegrationByClassRule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
-import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.mock.OseeClassDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.Match;
@@ -470,8 +470,8 @@ public class OrcsQueryTest {
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(SAW_Bld_2, getAuthor(), "FollowTest");
       ArtifactId child = tx.createArtifact(CoreArtifactTypes.SoftwareRequirement, "Dummy Robot");
       tx.relate(parent, CoreRelationTypes.Default_Hierarchical__Child, child);
-      TransactionReadable commitTx = tx.commit();
-      int headTx = commitTx.getLocalId();
+      TransactionId commitTx = tx.commit();
+      TransactionId headTx = commitTx;
 
       results = query.getResults();
       assertEquals(3, results.size());
@@ -481,7 +481,7 @@ public class OrcsQueryTest {
       assertEquals("Robot Interfaces", iterator.next());
       assertEquals("Robot collaboration", iterator.next());
 
-      query.fromTransaction(headTx - 1);
+      query.fromTransaction(TransactionId.valueOf(headTx.getId() - 1));
       results = query.getResults();
       assertEquals(2, results.size());
 

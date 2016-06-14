@@ -12,16 +12,17 @@ package org.eclipse.osee.orcs.core.internal.branch;
 
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
-import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
-public class CommitBranchCallable extends AbstractBranchCallable<TransactionReadable> {
+public class CommitBranchCallable extends AbstractBranchCallable<TransactionToken> {
 
    private final ArtifactReadable committer;
    private final BranchId source;
@@ -37,22 +38,22 @@ public class CommitBranchCallable extends AbstractBranchCallable<TransactionRead
    }
 
    @Override
-   protected TransactionReadable innerCall() throws Exception {
+   protected TransactionToken innerCall() throws Exception {
       Conditions.checkNotNull(source, "sourceBranch");
       Conditions.checkNotNull(destination, "destinationBranch");
 
       BranchReadable sourceBranch = queryFactory.branchQuery().andIds(source).getResults().getExactlyOne();
-      TransactionReadable sourceHead = queryFactory.transactionQuery().andIsHead(source).getResults().getExactlyOne();
+      TransactionToken sourceHead = queryFactory.transactionQuery().andIsHead(source).getResults().getExactlyOne();
       BranchReadable destinationBranch = queryFactory.branchQuery().andIds(destination).getResults().getExactlyOne();
-      TransactionReadable destinationHead =
+      TransactionToken destinationHead =
          queryFactory.transactionQuery().andIsHead(destination).getResults().getExactlyOne();
 
       Conditions.checkNotNull(sourceBranch, "sourceBranch");
       Conditions.checkNotNull(destinationBranch, "destinationBranch");
 
-      Callable<Integer> commitBranchCallable = getBranchStore().commitBranch(getSession(), committer, sourceBranch,
-         sourceHead, destinationBranch, destinationHead);
-      Integer newTx = callAndCheckForCancel(commitBranchCallable);
+      Callable<TransactionId> commitBranchCallable = getBranchStore().commitBranch(getSession(), committer,
+         sourceBranch, sourceHead, destinationBranch, destinationHead);
+      TransactionId newTx = callAndCheckForCancel(commitBranchCallable);
       return queryFactory.transactionQuery().andTxId(newTx).getResults().getExactlyOne();
    }
 }

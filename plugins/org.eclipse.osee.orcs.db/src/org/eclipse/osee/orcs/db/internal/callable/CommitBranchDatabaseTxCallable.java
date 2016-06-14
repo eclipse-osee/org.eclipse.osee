@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -36,7 +37,7 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 /**
  * @author Ryan D. Brooks
  */
-public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<Integer> {
+public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<TransactionId> {
    private static final String COMMIT_COMMENT = "Commit Branch ";
 
    private static final String INSERT_COMMIT_TRANSACTION =
@@ -76,7 +77,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
    }
 
    @Override
-   protected Integer handleTxWork(JdbcConnection connection) throws OseeCoreException {
+   protected TransactionId handleTxWork(JdbcConnection connection) throws OseeCoreException {
       BranchState storedBranchState;
       if (changes.isEmpty()) {
          throw new OseeStateException("A branch can not be committed without any changes made.");
@@ -84,7 +85,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       storedBranchState = sourceBranch.getBranchState();
       checkPreconditions();
 
-      Integer newTx = null;
+      TransactionId newTx = null;
       try {
          newTx = addCommitTransactionToDatabase(userArtId, connection);
          updatePreviousCurrentsOnDestinationBranch(connection);
@@ -106,8 +107,8 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
    }
 
    public synchronized void checkPreconditions() throws OseeCoreException {
-      int count = getJdbcClient().fetch(0, SELECT_SOURCE_BRANCH_STATE, sourceBranch,
-         BranchState.COMMIT_IN_PROGRESS.getValue());
+      int count =
+         getJdbcClient().fetch(0, SELECT_SOURCE_BRANCH_STATE, sourceBranch, BranchState.COMMIT_IN_PROGRESS.getValue());
       if (sourceBranch.getBranchState().isCommitInProgress() || sourceBranch.getArchiveState().isArchived() || count > 0) {
          throw new OseeStateException("Commit completed or in progress for [%s]", sourceBranch);
       }
@@ -142,8 +143,8 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       updater.updateTxNotCurrents();
    }
 
-   private Integer addCommitTransactionToDatabase(int userArtId, JdbcConnection connection) throws OseeCoreException {
-      int newTransactionNumber = idManager.getNextTransactionId();
+   private TransactionId addCommitTransactionToDatabase(int userArtId, JdbcConnection connection) throws OseeCoreException {
+      TransactionId newTransactionNumber = TransactionId.valueOf(idManager.getNextTransactionId());
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       String comment = COMMIT_COMMENT + sourceBranch.getName();
@@ -154,7 +155,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       return newTransactionNumber;
    }
 
-   private void insertCommitAddressing(Integer newTx, JdbcConnection connection) throws OseeCoreException {
+   private void insertCommitAddressing(TransactionId newTx, JdbcConnection connection) throws OseeCoreException {
       List<Object[]> insertData = new ArrayList<>();
       for (ChangeItem change : changes) {
          ModificationType modType = change.getNetChange().getModType();

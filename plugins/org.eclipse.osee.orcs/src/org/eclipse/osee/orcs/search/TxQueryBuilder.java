@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -22,6 +23,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  * @author Roberto E. Escobar
  */
 public interface TxQueryBuilder<T> {
+
+   T andTxId(TransactionId id);
 
    T andTxId(int... id) throws OseeCoreException;
 
@@ -69,5 +72,5 @@ public interface TxQueryBuilder<T> {
 
    T andIsHead(BranchId branch) throws OseeCoreException;
 
-   T andIsPriorTx(int txId) throws OseeCoreException;
+   T andIsPriorTx(TransactionId txId) throws OseeCoreException;
 }

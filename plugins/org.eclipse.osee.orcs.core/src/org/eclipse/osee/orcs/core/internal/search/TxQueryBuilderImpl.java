@@ -18,6 +18,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.Criteria;
@@ -195,7 +196,7 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
    }
 
    @Override
-   public T andIsPriorTx(int txId) throws OseeCoreException {
+   public T andIsPriorTx(TransactionId txId) throws OseeCoreException {
       Criteria criteria = criteriaFactory.newGetPriorTx(txId);
       return addAndCheck(queryData, criteria);
    }
@@ -223,4 +224,8 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
       return queryData;
    }
 
+   @Override
+   public T andTxId(TransactionId id) {
+      return andTxIds(Arrays.asList(id.getId()));
+   }
 }

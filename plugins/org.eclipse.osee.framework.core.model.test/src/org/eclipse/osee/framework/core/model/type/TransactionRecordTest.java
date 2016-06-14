@@ -144,7 +144,7 @@ public class TransactionRecordTest {
 
    @Test
    public void testToString() {
-      Assert.assertEquals("branchId: " + branch.getId() + " txId: " + transactionNumber, transaction.toString());
+      Assert.assertEquals(String.valueOf(transactionNumber), transaction.toString());
    }
 
    @Parameters

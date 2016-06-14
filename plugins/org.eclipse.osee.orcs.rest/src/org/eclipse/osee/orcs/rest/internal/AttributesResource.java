@@ -18,6 +18,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -53,7 +54,7 @@ public class AttributesResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    @Path("{attributeId}/version/{transactionId}")
-   public AttributeResource getAttributeWithGamma(@PathParam("attributeId") int attributeId, @PathParam("transactionId") int transactionId) {
+   public AttributeResource getAttributeWithGamma(@PathParam("attributeId") int attributeId, @PathParam("transactionId") TransactionId transactionId) {
       return new AttributeResource(uriInfo, request, branchUuid, artifactUuid, attributeId, transactionId);
    }
 

@@ -34,6 +34,10 @@ public interface TransactionId extends Identity<Integer> {
       return new TransactionToken((int) id);
    }
 
+   public static TransactionId valueOf(String id) {
+      return valueOf(Long.valueOf(id));
+   }
+
    default boolean isValid() {
       return !isInvalid();
    }

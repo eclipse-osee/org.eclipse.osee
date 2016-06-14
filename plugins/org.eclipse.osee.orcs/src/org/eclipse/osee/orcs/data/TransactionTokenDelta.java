@@ -1,23 +1,25 @@
 package org.eclipse.osee.orcs.data;
 
+import org.eclipse.osee.framework.core.data.TransactionToken;
+
 /**
  * @author Roberto E. Escobar
  */
-public final class TransactionReadableDelta {
-   private final TransactionReadable startTx;
-   private final TransactionReadable endTx;
+public final class TransactionTokenDelta {
+   private final TransactionToken startTx;
+   private final TransactionToken endTx;
 
-   public TransactionReadableDelta(TransactionReadable startTx, TransactionReadable endTx) {
+   public TransactionTokenDelta(TransactionToken startTx, TransactionToken endTx) {
       super();
       this.startTx = startTx;
       this.endTx = endTx;
    }
 
-   public TransactionReadable getStartTx() {
+   public TransactionToken getStartTx() {
       return startTx;
    }
 
-   public TransactionReadable getEndTx() {
+   public TransactionToken getEndTx() {
       return endTx;
    }
 
@@ -28,8 +30,8 @@ public final class TransactionReadableDelta {
    @Override
    public boolean equals(Object obj) {
       boolean result = false;
-      if (obj instanceof TransactionReadableDelta) {
-         TransactionReadableDelta other = (TransactionReadableDelta) obj;
+      if (obj instanceof TransactionTokenDelta) {
+         TransactionTokenDelta other = (TransactionTokenDelta) obj;
          boolean left = startTx == null ? other.startTx == null : startTx.equals(other.startTx);
          boolean right = endTx == null ? other.endTx == null : endTx.equals(other.endTx);
          result = left && right;

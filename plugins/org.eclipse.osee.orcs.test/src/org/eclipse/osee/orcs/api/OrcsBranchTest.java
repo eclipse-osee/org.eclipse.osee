@@ -20,8 +20,9 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -35,7 +36,6 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
-import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -125,8 +125,8 @@ public class OrcsBranchTest {
       int SOURCE_TX_ID = 16;
 
       // get the list of changes from the original branch
-      TransactionReadable priorTx = query.transactionQuery().andTxId(PRIOR_TX_ID).getResults().getExactlyOne();
-      TransactionReadable sourceTx = query.transactionQuery().andTxId(SOURCE_TX_ID).getResults().getExactlyOne();
+      TransactionToken priorTx = query.transactionQuery().andTxId(PRIOR_TX_ID).getResults().getExactlyOne();
+      TransactionToken sourceTx = query.transactionQuery().andTxId(SOURCE_TX_ID).getResults().getExactlyOne();
       Callable<List<ChangeItem>> callable = branchOps.compareBranch(priorTx, sourceTx);
       List<ChangeItem> priorItems = callable.call();
 

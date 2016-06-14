@@ -86,7 +86,7 @@ public class TransactionRecord extends BaseIdentity<Integer> implements Transact
 
    @Override
    public String toString() {
-      return "branchId: " + getBranchId() + " txId: " + getGuid();
+      return getGuid().toString();
    }
 
    public boolean isIdValid() {

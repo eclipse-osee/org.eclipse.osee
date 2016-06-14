@@ -10,9 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.data.TransactionReadable;
@@ -21,7 +25,7 @@ import org.eclipse.osee.orcs.search.TransactionQuery;
 /**
  * @author Roberto E. Escobar
  */
-public class TransactionQueryImpl extends TxQueryBuilderImpl<TransactionQuery>implements TransactionQuery {
+public class TransactionQueryImpl extends TxQueryBuilderImpl<TransactionQuery> implements TransactionQuery {
 
    private final TransactionCallableQueryFactory queryFactory;
    private final OrcsSession session;
@@ -39,6 +43,15 @@ public class TransactionQueryImpl extends TxQueryBuilderImpl<TransactionQuery>im
       } catch (Exception ex) {
          throw OseeCoreException.wrap(ex);
       }
+   }
+
+   @Override
+   public ResultSet<TransactionToken> getTokens() {
+      List<TransactionToken> tokens = new ArrayList<>();
+      for (TransactionReadable tx : getResults()) {
+         tokens.add(tx);
+      }
+      return ResultSets.newResultSet(tokens);
    }
 
    @Override

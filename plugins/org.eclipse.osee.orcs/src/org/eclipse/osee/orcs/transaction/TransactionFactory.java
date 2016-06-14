@@ -34,17 +34,15 @@ public interface TransactionFactory {
 
    Callable<Void> setTransactionComment(TransactionId transaction, String comment);
 
-   CompareResults compareTxs(int txId1, int txId2);
+   CompareResults compareTxs(TransactionId txId1, TransactionId txId2);
 
    ResultSet<TransactionReadable> getAllTxs();
 
-   TransactionReadable getTx(int txId);
+   TransactionReadable getTx(TransactionId txId);
 
-   TransactionReadable getTxById(int txId);
+   boolean setTxComment(TransactionId txId, String comment);
 
-   boolean setTxComment(int txId, String comment);
-
-   boolean replaceWithBaselineTxVersion(String userId, Long branchId, int txId, int artId, String comment);
+   boolean replaceWithBaselineTxVersion(String userId, Long branchId, TransactionId txId, int artId, String comment);
 
    boolean purgeTxs(String txIds);
 }

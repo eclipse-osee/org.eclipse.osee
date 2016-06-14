@@ -17,7 +17,6 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
-import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TransactionQuery;
 
@@ -48,7 +47,7 @@ public class CreateBranchCallable extends AbstractBranchCallable<BranchReadable>
          TransactionId givenTx = branchData.getFromTransaction();
          Conditions.checkNotNull(givenTx, "Transaction used for copy");
          branchData.setSavedTransaction(givenTx);
-         TransactionReadable priorTx = txQuery.andIsPriorTx(givenTx.getGuid()).getResults().getExactlyOne();
+         TransactionId priorTx = txQuery.andIsPriorTx(givenTx).getResults().getExactlyOne();
          branchData.setFromTransaction(priorTx);
          getBranchStore().createBranchCopyTx(branchData);
       } else {

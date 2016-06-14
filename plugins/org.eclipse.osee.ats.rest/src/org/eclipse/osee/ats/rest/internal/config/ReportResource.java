@@ -28,8 +28,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.ats.rest.IAtsServer;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
@@ -159,14 +159,11 @@ public class ReportResource {
       BranchId parentBranch = atsServer.getBranchService().getParentBranch(branchReadable);
 
       TransactionReadable startTx = transactionQuery2.andIsHead(branchReadable).getResults().getExactlyOne();
-      Integer start = startTx.getLocalId();
 
       TransactionReadable endTx = transactionQuery3.andIsHead(parentBranch).getResults().getExactlyOne();
-      Integer end = endTx.getLocalId();
 
-      CompareResults results = orcsApi.getTransactionFactory().compareTxs(start, end);
+      CompareResults results = orcsApi.getTransactionFactory().compareTxs(startTx, endTx);
 
       return results.getChanges();
    }
-
 }

@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -281,7 +282,8 @@ public class TxQuerySqlContextFactoryImplTest {
          "txd1.transaction_id = (SELECT max(td2.transaction_id) FROM osee_tx_details td1,osee_tx_details td2 WHERE td1.transaction_id = ? AND td1.branch_id = td2.branch_id AND td1.transaction_id > td2.transaction_id)\n" + //
          " ORDER BY txd1.transaction_id";
 
-      queryData.addCriteria(prior(3));
+      TransactionId tx = TransactionId.valueOf(3);
+      queryData.addCriteria(new CriteriaTxGetPrior(tx));
 
       QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
 
@@ -293,7 +295,7 @@ public class TxQuerySqlContextFactoryImplTest {
       assertEquals(0, joins.size());
 
       Iterator<Object> iterator = parameters.iterator();
-      assertEquals(3, iterator.next());
+      assertEquals(tx, iterator.next());
    }
 
    private static Criteria id(Integer... values) {
@@ -326,9 +328,5 @@ public class TxQuerySqlContextFactoryImplTest {
 
    private static Criteria byCommitId(Collection<Integer> ids) {
       return new CriteriaCommitIds(ids);
-   }
-
-   private static Criteria prior(Integer value) {
-      return new CriteriaTxGetPrior(value);
    }
 }

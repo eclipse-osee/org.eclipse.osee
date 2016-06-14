@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -31,7 +33,6 @@ import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
-import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.ArchiveUnarchiveBranchCallable;
@@ -88,7 +89,7 @@ public class BranchModule {
          }
 
          @Override
-         public Callable<Integer> commitBranch(OrcsSession session, ArtifactReadable committer, BranchReadable source, TransactionReadable sourceHead, BranchReadable destination, TransactionReadable destinationHead) {
+         public Callable<TransactionId> commitBranch(OrcsSession session, ArtifactReadable committer, BranchReadable source, TransactionToken sourceHead, BranchReadable destination, TransactionToken destinationHead) {
             return new CommitBranchDatabaseCallable(logger, session, jdbcClient, joinFactory, idManager, committer,
                source, sourceHead, destination, destinationHead, missingChangeItemFactory);
          }
@@ -99,7 +100,7 @@ public class BranchModule {
          }
 
          @Override
-         public Callable<List<ChangeItem>> compareBranch(OrcsSession session, TransactionReadable sourceTx, TransactionReadable destinationTx) {
+         public Callable<List<ChangeItem>> compareBranch(OrcsSession session, TransactionToken sourceTx, TransactionToken destinationTx) {
             return new CompareDatabaseCallable(logger, session, jdbcClient, joinFactory, sourceTx, destinationTx,
                missingChangeItemFactory);
          }

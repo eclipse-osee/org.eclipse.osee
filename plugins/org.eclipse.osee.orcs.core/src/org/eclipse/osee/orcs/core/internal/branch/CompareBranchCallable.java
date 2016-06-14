@@ -12,19 +12,19 @@ package org.eclipse.osee.orcs.core.internal.branch;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
-import org.eclipse.osee.orcs.data.TransactionReadable;
 
 public class CompareBranchCallable extends AbstractBranchCallable<List<ChangeItem>> {
 
-   private final TransactionReadable sourceTx;
-   private final TransactionReadable destinationTx;
+   private final TransactionToken sourceTx;
+   private final TransactionToken destinationTx;
 
-   public CompareBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, TransactionReadable sourceTx, TransactionReadable destinationTx) {
+   public CompareBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, TransactionToken sourceTx, TransactionToken destinationTx) {
       super(logger, session, branchStore);
       this.sourceTx = sourceTx;
       this.destinationTx = destinationTx;

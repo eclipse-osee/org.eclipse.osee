@@ -16,6 +16,7 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -25,7 +26,6 @@ import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
-import org.eclipse.osee.orcs.data.TransactionReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -49,7 +49,7 @@ public interface OrcsBranch {
 
    Callable<BranchReadable> createTopLevelBranch(IOseeBranch branch, ArtifactReadable author) throws OseeCoreException;
 
-   Callable<BranchReadable> createBaselineBranch(IOseeBranch branch, ArtifactReadable author, BranchId parent, ArtifactReadable associatedArtifact) throws OseeCoreException;
+   Callable<BranchReadable> createBaselineBranch(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException;
 
    Callable<BranchReadable> createWorkingBranch(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException;
 
@@ -79,9 +79,9 @@ public interface OrcsBranch {
 
    Callable<List<BranchId>> purgeBranch(BranchId branch, boolean recurse);
 
-   Callable<TransactionReadable> commitBranch(ArtifactReadable committer, BranchId source, BranchId destination);
+   Callable<TransactionToken> commitBranch(ArtifactReadable committer, BranchId source, BranchId destination);
 
-   Callable<List<ChangeItem>> compareBranch(TransactionReadable sourceTx, TransactionReadable destinationTx);
+   Callable<List<ChangeItem>> compareBranch(TransactionToken sourceTx, TransactionToken destinationTx);
 
    Callable<List<ChangeItem>> compareBranch(BranchId branch) throws OseeCoreException;
 

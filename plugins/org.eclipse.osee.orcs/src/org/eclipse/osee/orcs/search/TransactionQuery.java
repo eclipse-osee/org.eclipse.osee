@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.search;
 
 import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.TransactionReadable;
@@ -22,6 +23,8 @@ import org.eclipse.osee.orcs.data.TransactionReadable;
 public interface TransactionQuery extends TxQueryBuilder<TransactionQuery>, Query {
 
    ResultSet<TransactionReadable> getResults() throws OseeCoreException;
+
+   ResultSet<TransactionToken> getTokens() throws OseeCoreException;
 
    ResultSet<Integer> getResultsAsIds() throws OseeCoreException;
 

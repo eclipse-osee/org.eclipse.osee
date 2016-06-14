@@ -18,6 +18,8 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -28,7 +30,6 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -76,12 +77,12 @@ public class OrcsPortingTest {
       String assocArtifactGuid = GUID.create();
       setupAssociatedArtifact(assocArtifactGuid);
 
-      TransactionReadable mainBranchTx = createBaselineBranchAndArtifacts(artifactGuid);
+      TransactionToken mainBranchTx = createBaselineBranchAndArtifacts(artifactGuid);
       IOseeBranch branch = TokenFactory.createBranch(mainBranchTx.getBranchId(), "testCreateBranch");
-      TransactionReadable transactionToCopy = createWorkingBranchChanges(branch, artifactGuid);
+      TransactionId transactionToCopy = createWorkingBranchChanges(branch, artifactGuid);
 
       BranchId copyTxBranch = createCopyFromTransactionBranch(transactionToCopy, assocArtifactGuid);
-      TransactionReadable finalTx = commitToDestinationBranch(copyTxBranch);
+      TransactionToken finalTx = commitToDestinationBranch(copyTxBranch);
 
       // now check to make sure everything is as expected
       // we should have a SoftwareRequirement named "SecondRequirement" with an attribute named "test changed" (changed on child branch to this)
@@ -117,8 +118,8 @@ public class OrcsPortingTest {
       String assocArtifactGuid = GUID.create();
       setupAssociatedArtifact(assocArtifactGuid);
 
-      TransactionReadable mainBranchTx = createBaselineBranchAndArtifacts(artifactGuid);
-      TransactionReadable differentBranchTx = createBaselineBranchAndArtifacts(differentGuid);
+      TransactionId mainBranchTx = createBaselineBranchAndArtifacts(artifactGuid);
+      TransactionId differentBranchTx = createBaselineBranchAndArtifacts(differentGuid);
 
       BranchId copyTxBranch = createCopyFromTransactionBranch(mainBranchTx, assocArtifactGuid);
       assertNotNull(copyTxBranch);
@@ -130,7 +131,7 @@ public class OrcsPortingTest {
       fail(); // should never get here due to thrown exception
    }
 
-   private TransactionReadable createBaselineBranchAndArtifacts(String artifactGuid) throws Exception {
+   private TransactionToken createBaselineBranchAndArtifacts(String artifactGuid) throws Exception {
       // set up the main branch
       IOseeBranch branch = TokenFactory.createBranch("MainFromBranch");
       branchApi.createTopLevelBranch(branch, author).call();
@@ -156,7 +157,7 @@ public class OrcsPortingTest {
       tx.commit();
    }
 
-   private TransactionReadable createWorkingBranchChanges(IOseeBranch parentBranch, String artifactToModifyGuid) throws Exception {
+   private TransactionId createWorkingBranchChanges(IOseeBranch parentBranch, String artifactToModifyGuid) throws Exception {
       // set up the child branch to copy to
 
       IOseeBranch childBranch = TokenFactory.createBranch("childBranch");
@@ -173,7 +174,7 @@ public class OrcsPortingTest {
       tx3.createArtifact(CoreArtifactTypes.Folder, "childBranch folder");
 
       // set this aside to use in the copy from transaction for the branch
-      TransactionReadable transactionToCopy = tx3.commit();
+      TransactionId transactionToCopy = tx3.commit();
 
       // make an additional transaction to make sure it doesn't get copied also
       TransactionBuilder tx4 = txFactory.createTransaction(childBranch, author, "after second requirement");
@@ -190,7 +191,7 @@ public class OrcsPortingTest {
       return transactionToCopy;
    }
 
-   private BranchId createCopyFromTransactionBranch(TransactionReadable transactionToCopy, String assocArtifactGuid) throws Exception {
+   private BranchId createCopyFromTransactionBranch(TransactionId transactionToCopy, String assocArtifactGuid) throws Exception {
       // create the branch with the copied transaction
       IOseeBranch branch = TokenFactory.createBranch(branchString);
 
@@ -204,7 +205,7 @@ public class OrcsPortingTest {
       return branchApi.createPortBranch(branch, author, transactionToCopy, readableReq).call();
    }
 
-   private TransactionReadable commitToDestinationBranch(BranchId copyTxBranch) throws Exception {
+   private TransactionToken commitToDestinationBranch(BranchId copyTxBranch) throws Exception {
       IOseeBranch destinationBranch = TokenFactory.createBranch("IndepToBranch");
       branchApi.createTopLevelBranch(destinationBranch, author).call();
       return branchApi.commitBranch(author, copyTxBranch, destinationBranch).call();

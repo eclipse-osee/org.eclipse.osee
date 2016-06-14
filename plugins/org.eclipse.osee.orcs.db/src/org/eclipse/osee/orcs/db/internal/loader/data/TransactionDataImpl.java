@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.loader.data;
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.orcs.core.ds.TxOrcsData;
 
@@ -102,4 +103,11 @@ public class TransactionDataImpl extends OrcsObjectImpl<Integer> implements TxOr
       return super.getLocalId();
    }
 
+   @Override
+   public boolean equals(Object other) {
+      if (other instanceof TransactionId) {
+         return getId().equals(((TransactionId) other).getId());
+      }
+      return false;
+   }
 }

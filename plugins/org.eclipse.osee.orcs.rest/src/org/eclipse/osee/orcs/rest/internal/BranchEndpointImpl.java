@@ -14,7 +14,6 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import static org.eclipse.osee.framework.jdk.core.util.Compare.isDifferent;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asBranch;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asBranches;
-import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asIntegerList;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asResponse;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asTransaction;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asTransactions;
@@ -41,6 +40,8 @@ import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -145,11 +146,6 @@ public class BranchEndpointImpl implements BranchEndpoint {
       return artifact;
    }
 
-   private BranchId getBranchFromTxId(int tx) {
-      TransactionQuery txQuery = newQuery().transactionQuery();
-      return txQuery.andTxId(tx).getResults().getExactlyOne().getBranch();
-   }
-
    private BranchReadable getBranchById(long branchUuid) {
       ResultSet<BranchReadable> results = newBranchQuery().andUuids(branchUuid)//
          .includeArchived()//
@@ -159,8 +155,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    private TransactionReadable getTxByBranchAndId(long branchUuid, int txId) {
-      ResultSet<TransactionReadable> results = newTxQuery().andBranchIds(branchUuid).andTxId(txId).getResults();
-      return results.getExactlyOne();
+      return newTxQuery().andBranchIds(branchUuid).andTxId(txId).getResults().getExactlyOne();
    }
 
    private TransactionFactory newTxFactory() {
@@ -258,20 +253,18 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public List<Transaction> getAllBranchTxs(long branchUuid) {
-      ResultSet<TransactionReadable> results = newTxQuery().andBranchIds(branchUuid).getResults();
-      return asTransactions(results);
+      return asTransactions(newTxQuery().andBranchIds(branchUuid).getResults());
    }
 
    @Override
    public Transaction getBranchTx(long branchUuid, int txId) {
-      TransactionReadable tx = getTxByBranchAndId(branchUuid, txId);
-      return asTransaction(tx);
+      return asTransaction(getTxByBranchAndId(branchUuid, txId));
    }
 
    @Override
    public CompareResults compareBranches(long branchUuid, long branchUuid2) {
-      TransactionReadable sourceTx = newTxQuery().andIsHead(branchUuid).getResults().getExactlyOne();
-      TransactionReadable destinationTx = newTxQuery().andIsHead(branchUuid2).getResults().getExactlyOne();
+      TransactionToken sourceTx = newTxQuery().andIsHead(branchUuid).getResults().getExactlyOne();
+      TransactionToken destinationTx = newTxQuery().andIsHead(branchUuid2).getResults().getExactlyOne();
 
       Callable<List<ChangeItem>> op = getBranchOps().compareBranch(sourceTx, destinationTx);
       List<ChangeItem> changes = executeCallable(op);
@@ -309,7 +302,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       createData.setUserArtifact(getArtifactById(COMMON_ID, data.getAuthorId()));
       createData.setAssociatedArtifact(getArtifactById(COMMON_ID, data.getAssociatedArtifactId()));
 
-      createData.setFromTransaction(TokenFactory.createTransaction(data.getSourceTransactionId()));
+      createData.setFromTransaction(TransactionId.valueOf(data.getSourceTransactionId()));
       createData.setParentBranch(data.getParentBranch());
 
       createData.setMergeDestinationBranchId(data.getMergeDestinationBranchId());
@@ -366,8 +359,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
       BranchReadable destBranch = getBranchById(destinationBranchUuid);
 
       ArtifactReadable committer = getArtifactById(COMMON_ID, options.getCommitterId());
-      Callable<TransactionReadable> op = getBranchOps().commitBranch(committer, srcBranch, destBranch);
-      TransactionReadable tx = executeCallable(op);
+      Callable<TransactionToken> op = getBranchOps().commitBranch(committer, srcBranch, destBranch);
+      TransactionToken tx = executeCallable(op);
 
       if (options.isArchive()) {
          Callable<?> op2 = getBranchOps().archiveUnarchiveBranch(srcBranch, ArchiveOperation.ARCHIVE);
@@ -385,13 +378,12 @@ public class BranchEndpointImpl implements BranchEndpoint {
       } catch (OseeCoreException ex) {
          OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      return Response.created(location).entity(asTransaction(tx)).build();
-
+      return Response.created(location).entity(asTransaction(orcsApi.getTransactionFactory().getTx(tx))).build();
    }
 
-   private URI getTxLocation(UriInfo uriInfo, TransactionReadable tx) {
+   private URI getTxLocation(UriInfo uriInfo, TransactionToken tx) {
       UriBuilder builder = uriInfo.getRequestUriBuilder();
-      URI location = builder.path("..").path("..").path("txs").path("{tx-id}").build(tx.getGuid());
+      URI location = builder.path("..").path("..").path("txs").path("{tx-id}").build(tx);
       return location;
    }
 
@@ -428,8 +420,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
       //TODO: Integrate data with TxBuilder
 
       TransactionReadable tx = txBuilder.commit();
-      if (tx != null) {
-         URI location = uriInfo.getRequestUriBuilder().path("{tx-id}").build(tx.getGuid());
+      if (tx.isValid()) {
+         URI location = uriInfo.getRequestUriBuilder().path("{tx-id}").build(tx);
          return Response.created(location).entity(asTransaction(tx)).build();
       } else {
          throw new OseeArgumentException("No Data Modified");
@@ -777,13 +769,13 @@ public class BranchEndpointImpl implements BranchEndpoint {
    @Override
    public Response purgeTxs(long branchUuid, String txIds) {
       boolean modified = false;
-      List<Integer> txsToDelete = asIntegerList(txIds);
+      List<Integer> txsToDelete = OrcsRestUtil.asIntegerList(txIds);
       if (!txsToDelete.isEmpty()) {
-         ResultSet<TransactionReadable> results =
+         ResultSet<? extends TransactionId> results =
             newTxQuery().andBranchIds(branchUuid).andTxIds(txsToDelete).getResults();
          if (!results.isEmpty()) {
             checkAllTxFoundAreOnBranch("Purge Transaction", branchUuid, txsToDelete, results);
-            List<TransactionReadable> list = Lists.newArrayList(results);
+            List<TransactionId> list = Lists.newArrayList(results);
             Callable<?> op = newTxFactory().purgeTransaction(list);
             executeCallable(op);
             modified = true;
@@ -802,11 +794,11 @@ public class BranchEndpointImpl implements BranchEndpoint {
       return asResponse(modified);
    }
 
-   private void checkAllTxFoundAreOnBranch(String opName, long branchUuid, List<Integer> txIds, ResultSet<TransactionReadable> result) {
+   private void checkAllTxFoundAreOnBranch(String opName, long branchUuid, List<Integer> txIds, ResultSet<? extends TransactionId> result) {
       if (txIds.size() != result.size()) {
          Set<Integer> found = new HashSet<>();
-         for (TransactionReadable tx : result) {
-            found.add(tx.getGuid());
+         for (TransactionId tx : result) {
+            found.add(tx.getId());
          }
          SetView<Integer> difference = Sets.difference(Sets.newHashSet(txIds), found);
          if (!difference.isEmpty()) {

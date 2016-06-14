@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds.criteria;
 
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
@@ -20,21 +21,21 @@ import org.eclipse.osee.orcs.core.ds.Options;
  */
 public class CriteriaTxGetPrior extends Criteria implements TxCriteria {
 
-   private final int txId;
+   private final TransactionId txId;
 
-   public CriteriaTxGetPrior(int txId) {
+   public CriteriaTxGetPrior(TransactionId txId) {
       super();
       this.txId = txId;
    }
 
-   public int getTxId() {
+   public TransactionId getTxId() {
       return txId;
    }
 
    @Override
    public void checkValid(Options options) throws OseeCoreException {
       super.checkValid(options);
-      Conditions.checkExpressionFailOnTrue(txId < 0, "TxId [%s] is invalid. Must be >= 0", txId);
+      Conditions.checkExpressionFailOnTrue(txId.isInvalid(), "TxId [%s] is invalid. Must be >= 0", txId);
    }
 
    @Override

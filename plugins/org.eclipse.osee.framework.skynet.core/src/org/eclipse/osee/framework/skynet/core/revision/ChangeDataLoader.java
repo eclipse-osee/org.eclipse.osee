@@ -19,10 +19,10 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.change.ChangeIgnoreType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
@@ -77,8 +77,7 @@ public class ChangeDataLoader extends AbstractOperation {
          monitor.setTaskName("Bulk load changed artifacts");
 
          checkForCancelledStatus(monitor);
-         CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded =
-            new CompositeKeyHashMap<TransactionRecord, Integer, Artifact>();
+         CompositeKeyHashMap<TransactionId, Integer, Artifact> bulkLoaded = new CompositeKeyHashMap<>();
 
          bulkLoadArtifactDeltas(bulkLoaded, changeItems);
          monitor.worked(calculateWork(0.20));
@@ -101,8 +100,7 @@ public class ChangeDataLoader extends AbstractOperation {
 
       checkForCancelledStatus(monitor);
       monitor.setTaskName("Bulk load changed artifacts");
-      CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded =
-         new CompositeKeyHashMap<TransactionRecord, Integer, Artifact>();
+      CompositeKeyHashMap<TransactionId, Integer, Artifact> bulkLoaded = new CompositeKeyHashMap<>();
 
       bulkLoadArtifactDeltas(bulkLoaded, changeItems);
 
@@ -117,7 +115,7 @@ public class ChangeDataLoader extends AbstractOperation {
       }
    }
 
-   private Change computeChangeFromGamma(CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded, BranchId startTxBranch, ChangeItem item) {
+   private Change computeChangeFromGamma(CompositeKeyHashMap<TransactionId, Integer, Artifact> bulkLoaded, BranchId startTxBranch, ChangeItem item) {
       Change change = null;
       try {
          int artId = item.getArtId();
@@ -157,7 +155,7 @@ public class ChangeDataLoader extends AbstractOperation {
       return change;
    }
 
-   private Change computeChange(CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded, BranchId startTxBranch, ChangeItem item) {
+   private Change computeChange(CompositeKeyHashMap<TransactionId, Integer, Artifact> bulkLoaded, BranchId startTxBranch, ChangeItem item) {
       Change change = null;
       try {
          int artId = item.getArtId();
@@ -182,7 +180,7 @@ public class ChangeDataLoader extends AbstractOperation {
       return change;
    }
 
-   private Change createChangeObject(CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded, ChangeItem item, TransactionDelta txDelta, BranchId startTxBranch, ArtifactDelta artifactDelta) throws OseeCoreException {
+   private Change createChangeObject(CompositeKeyHashMap<TransactionId, Integer, Artifact> bulkLoaded, ChangeItem item, TransactionDelta txDelta, BranchId startTxBranch, ArtifactDelta artifactDelta) throws OseeCoreException {
       Change change = null;
 
       int itemId = item.getItemId();
@@ -231,7 +229,7 @@ public class ChangeDataLoader extends AbstractOperation {
          case RELATION_CHANGE:
             RelationType relationType = RelationTypeManager.getTypeByGuid(item.getItemTypeId());
 
-            TransactionRecord transaction = txDelta.getStartTx();
+            TransactionId transaction = txDelta.getStartTx();
             if (txDelta.areOnTheSameBranch()) {
                transaction = txDelta.getEndTx();
             }
@@ -248,7 +246,7 @@ public class ChangeDataLoader extends AbstractOperation {
       return change;
    }
 
-   private void bulkLoadArtifactDeltas(CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded, Collection<ChangeItem> changeItems) throws OseeCoreException {
+   private void bulkLoadArtifactDeltas(CompositeKeyHashMap<TransactionId, Integer, Artifact> bulkLoaded, Collection<ChangeItem> changeItems) throws OseeCoreException {
       Set<Integer> artIds = asArtIds(changeItems);
 
       preloadArtifacts(bulkLoaded, artIds, txDelta.getStartTx(), txDelta.areOnTheSameBranch());
@@ -261,13 +259,13 @@ public class ChangeDataLoader extends AbstractOperation {
       }
    }
 
-   private static void preloadArtifacts(CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded, Collection<Integer> artIds, TransactionRecord tx, boolean isHistorical) throws OseeCoreException {
-      BranchId branch = TokenFactory.createBranch(tx.getBranchId());
+   private static void preloadArtifacts(CompositeKeyHashMap<TransactionId, Integer, Artifact> bulkLoaded, Collection<Integer> artIds, TransactionToken tx, boolean isHistorical) throws OseeCoreException {
       List<Artifact> artifacts;
+
       if (isHistorical) {
          artifacts = ArtifactQuery.getHistoricalArtifactListFromIds(artIds, tx, INCLUDE_DELETED);
       } else {
-         artifacts = ArtifactQuery.getArtifactListFromIds(artIds, branch, INCLUDE_DELETED);
+         artifacts = ArtifactQuery.getArtifactListFromIds(artIds, tx.getBranch(), INCLUDE_DELETED);
       }
       for (Artifact artifact : artifacts) {
          bulkLoaded.put(tx, artifact.getArtId(), artifact);
@@ -290,7 +288,7 @@ public class ChangeDataLoader extends AbstractOperation {
       TransactionEndpoint proxy = client.getTransactionEndpoint();
 
       try {
-         CompareResults results = proxy.compareTxs(txDelta.getStartTx().getId(), txDelta.getEndTx().getId());
+         CompareResults results = proxy.compareTxs(txDelta.getStartTx(), txDelta.getEndTx());
          List<ChangeItem> changes = new ArrayList<>();
          for (ChangeItem item : results.getChanges()) {
             if (isAllowableChange(item.getIgnoreType())) {

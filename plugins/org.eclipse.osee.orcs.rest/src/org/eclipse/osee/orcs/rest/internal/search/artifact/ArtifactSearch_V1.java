@@ -19,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.HasLocalId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -67,7 +68,7 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
       builder.includeDeletedArtifacts(params.isIncludeDeleted());
 
       if (params.getFromTx() > 0) {
-         builder.fromTransaction(params.getFromTx());
+         builder.fromTransaction(TransactionId.valueOf(params.getFromTx()));
       }
 
       SearchResponse result = new SearchResponse();

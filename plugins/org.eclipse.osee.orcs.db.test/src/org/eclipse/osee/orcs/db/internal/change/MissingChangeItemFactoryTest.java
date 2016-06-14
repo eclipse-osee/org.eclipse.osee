@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
@@ -36,7 +37,6 @@ import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
-import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,8 +60,8 @@ public class MissingChangeItemFactoryTest {
    @Mock private DataLoader destDataLoader;
    @Mock private Long sourceBranch;
    @Mock private Long destBranch;
-   @Mock private TransactionReadable sourceTx;
-   @Mock private TransactionReadable destTx;
+   @Mock private TransactionToken sourceTx;
+   @Mock private TransactionToken destTx;
    @Mock private OrcsSession session;
    @Mock private HasCancellation cancellation;
    // @formatter:on

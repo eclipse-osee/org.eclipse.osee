@@ -18,8 +18,9 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -98,9 +99,9 @@ public class TransactionFactoryImpl implements TransactionFactory {
    }
 
    @Override
-   public CompareResults compareTxs(int txId1, int txId2) {
-      TransactionReadable sourceTx = getTxById(txId1);
-      TransactionReadable destinationTx = getTxById(txId2);
+   public CompareResults compareTxs(TransactionId txId1, TransactionId txId2) {
+      TransactionToken sourceTx = getTx(txId1);
+      TransactionToken destinationTx = getTx(txId2);
       Callable<List<ChangeItem>> callable = orcsBranch.compareBranch(sourceTx, destinationTx);
       List<ChangeItem> changes = OrcsTransactionUtil.executeCallable(callable);
 
@@ -110,7 +111,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
    }
 
    @Override
-   public boolean replaceWithBaselineTxVersion(String userId, Long branchId, int txId, int artId, String comment) {
+   public boolean replaceWithBaselineTxVersion(String userId, Long branchId, TransactionId txId, int artId, String comment) {
       boolean introduced = false;
       ArtifactReadable userReadable =
          queryFactory.fromBranch(CoreBranches.COMMON).andGuid(userId).getResults().getOneOrNull();
@@ -136,10 +137,11 @@ public class TransactionFactoryImpl implements TransactionFactory {
       boolean modified = false;
       List<Integer> txsToDelete = OrcsTransactionUtil.asIntegerList(txIds);
       if (!txsToDelete.isEmpty()) {
-         ResultSet<TransactionReadable> results = queryFactory.transactionQuery().andTxIds(txsToDelete).getResults();
+         ResultSet<? extends TransactionId> results =
+            queryFactory.transactionQuery().andTxIds(txsToDelete).getResults();
          if (!results.isEmpty()) {
             checkAllTxsFound("Purge Transaction", txsToDelete, results);
-            List<TransactionReadable> list = Lists.newArrayList(results);
+            List<TransactionId> list = Lists.newArrayList(results);
             Callable<?> op = purgeTransaction(list);
             OrcsTransactionUtil.executeCallable(op);
             modified = true;
@@ -149,8 +151,8 @@ public class TransactionFactoryImpl implements TransactionFactory {
    }
 
    @Override
-   public boolean setTxComment(int txId, String comment) {
-      TransactionReadable tx = getTxById(txId);
+   public boolean setTxComment(TransactionId txId, String comment) {
+      TransactionReadable tx = getTx(txId);
       boolean modified = false;
       if (Compare.isDifferent(tx.getComment(), comment)) {
          setTransactionComment(tx, comment);
@@ -165,21 +167,18 @@ public class TransactionFactoryImpl implements TransactionFactory {
    }
 
    @Override
-   public TransactionReadable getTx(int txId) {
-      return getTxById(txId);
+   public TransactionReadable getTx(TransactionId tx) {
+      if (tx instanceof TransactionReadable) {
+         return (TransactionReadable) tx;
+      }
+      return queryFactory.transactionQuery().andTxId(tx).getResults().getExactlyOne();
    }
 
-   @Override
-   public TransactionReadable getTxById(int txId) {
-      ResultSet<TransactionReadable> results = queryFactory.transactionQuery().andTxId(txId).getResults();
-      return results.getExactlyOne();
-   }
-
-   private void checkAllTxsFound(String opName, List<Integer> txIds, ResultSet<TransactionReadable> result) {
+   private void checkAllTxsFound(String opName, List<Integer> txIds, ResultSet<? extends TransactionId> result) {
       if (txIds.size() != result.size()) {
          Set<Integer> found = new HashSet<>();
-         for (TransactionReadable tx : result) {
-            found.add(tx.getGuid());
+         for (TransactionId tx : result) {
+            found.add(tx.getId());
          }
          SetView<Integer> difference = Sets.difference(Sets.newHashSet(txIds), found);
          if (!difference.isEmpty()) {

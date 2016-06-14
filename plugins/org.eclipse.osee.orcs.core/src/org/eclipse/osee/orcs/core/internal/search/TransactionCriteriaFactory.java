@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllTxs;
@@ -93,7 +94,7 @@ public class TransactionCriteriaFactory {
       return new CriteriaTxGetHead(branchUuid);
    }
 
-   public Criteria newGetPriorTx(int txId) {
+   public Criteria newGetPriorTx(TransactionId txId) {
       return new CriteriaTxGetPrior(txId);
    }
 
