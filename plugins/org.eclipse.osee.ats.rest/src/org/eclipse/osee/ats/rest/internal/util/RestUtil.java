@@ -18,11 +18,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.AtsApplication;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
@@ -65,8 +65,8 @@ public class RestUtil {
 
    public static ViewModel simplePage(String title, String message) {
       return new ViewModel("simple.html") //
-      .param("PUT_MESSAGE_HERE", message) //
-      .param("PUT_TITLE_HERE", title);
+         .param("PUT_MESSAGE_HERE", message) //
+         .param("PUT_TITLE_HERE", title);
    }
 
    public static Response redirect(IAtsWorkItem workItem, String defaultUrl, IAtsServer atsServer) {
@@ -74,7 +74,7 @@ public class RestUtil {
    }
 
    public static Response redirect(Collection<? extends IAtsWorkItem> workItems, String defaultUrl, IAtsServer atsServer) {
-      String actionUrl = getBaseActionUiUrl(defaultUrl, atsServer);
+      String actionUrl = AtsUtilCore.getBaseActionUiUrl(defaultUrl, atsServer);
       String uuids = "";
       for (IAtsWorkItem teamWf : workItems) {
          uuids += teamWf.getAtsId() + ",";
@@ -83,24 +83,6 @@ public class RestUtil {
       actionUrl = actionUrl.replaceFirst("UUID", uuids);
       URI uri = UriBuilder.fromUri(actionUrl).build();
       return Response.seeOther(uri).build();
-   }
-
-   public static String getActionUrl(IAtsWorkItem workItem, String defaultUrl, IAtsServer atsServer) {
-      return getActionUrl(workItem.getAtsId(), defaultUrl, atsServer);
-   }
-
-   public static String getActionUrl(String atsId, String defaultUrl, IAtsServer atsServer) {
-      String actionUrl = getBaseActionUiUrl(defaultUrl, atsServer);
-      actionUrl = actionUrl.replaceFirst("UUID", atsId);
-      return actionUrl;
-   }
-
-   private static String getBaseActionUiUrl(String defaultUrl, IAtsServer atsServer) {
-      String actionUrl = atsServer.getConfigValue("ActionUrl2");
-      if (!Strings.isValid(actionUrl)) {
-         actionUrl = defaultUrl;
-      }
-      return actionUrl;
    }
 
    public static Response returnBadRequest(String message) {

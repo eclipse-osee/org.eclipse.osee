@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.cpa.DecisionUpdate;
 import org.eclipse.osee.ats.api.cpa.DuplicateCpa;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaService;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -43,7 +44,7 @@ import org.eclipse.osee.orcs.data.EnumEntry;
 
 /**
  * Services provided for ATS Cross Program Applicability
- * 
+ *
  * @author Donald G. Dunne
  */
 public final class CpaResource implements AtsCpaEndpointApi {
@@ -104,8 +105,7 @@ public final class CpaResource implements AtsCpaEndpointApi {
    public Response getDecision(@PathParam("uuid") String uuid, @QueryParam("pcrSystem") String pcrSystem) throws Exception {
       URI uri = null;
       if (pcrSystem == null) {
-         String actionUrl = atsServer.getConfigValue("ActionUrl");
-         actionUrl = actionUrl.replaceFirst("UUID", uuid);
+         String actionUrl = AtsUtilCore.getActionUrl(uuid, atsServer);
          uri = UriBuilder.fromUri(actionUrl).build();
       } else {
          IAtsCpaService service = cpaRegistry.getServiceById(pcrSystem);

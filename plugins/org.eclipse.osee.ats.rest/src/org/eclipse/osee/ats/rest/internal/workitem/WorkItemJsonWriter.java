@@ -26,10 +26,10 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.config.ConfigJsonWriter;
 import org.eclipse.osee.ats.rest.internal.util.ActionPage;
-import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -105,7 +105,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       String atsId = action.getSoleAttributeValue(AtsAttributeTypes.AtsId, "");
       writer.writeStringField("AtsId", atsId);
       writer.writeStringField("ArtifactType", action.getArtifactType().getName());
-      String actionUrl = RestUtil.getActionUrl(atsId, ATS_UI_ACTION_PREFIX, atsServer);
+      String actionUrl = AtsUtilCore.getActionUrl(atsId, ATS_UI_ACTION_PREFIX, atsServer);
       writer.writeStringField("actionLocation", actionUrl);
       if (!identityView) {
          ConfigJsonWriter.addAttributeData(writer, attributeTypes, action);

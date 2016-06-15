@@ -41,6 +41,8 @@ public class AtsUtilCore {
    public final static double DEFAULT_HOURS_PER_WORK_DAY = 8;
    public static final String DEFAULT_ATS_ID_VALUE = "0";
    public static final String USER_CREATION_DISABLED = "UserCreationDisabled2";
+   public static final String ATS_CONFIG_ACTION_URL_KEY = "ActionUrl";
+   public static final String ATS_DEFAULT_ACTION_URL = "/ats/ui/action/UUID";
 
    private static final Object lock = new Object();
    private volatile static BranchId atsBranch;
@@ -184,6 +186,24 @@ public class AtsUtilCore {
          }
       }
       return user;
+   }
+
+   public static String getActionUrl(String atsIdOrUuid, IAtsServices services) {
+      return getActionUrl(atsIdOrUuid, ATS_DEFAULT_ACTION_URL, services);
+   }
+
+   public static String getActionUrl(String atsIdOrUuid, String defaultUrl, IAtsServices services) {
+      String actionUrl = getBaseActionUiUrl(defaultUrl, services);
+      actionUrl = actionUrl.replaceFirst("UUID", atsIdOrUuid);
+      return actionUrl;
+   }
+
+   public static String getBaseActionUiUrl(String defaultUrl, IAtsServices services) {
+      String actionUrl = services.getConfigValue(AtsUtilCore.ATS_CONFIG_ACTION_URL_KEY);
+      if (!Strings.isValid(actionUrl)) {
+         actionUrl = defaultUrl;
+      }
+      return actionUrl;
    }
 
 }
