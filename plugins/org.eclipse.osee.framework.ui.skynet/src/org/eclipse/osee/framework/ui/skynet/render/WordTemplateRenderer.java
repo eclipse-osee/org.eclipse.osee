@@ -165,19 +165,24 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
             // remove any existing footers and replace with the current one
             // first try to remove footer for extra paragraphs
-            data = data.replaceAll(ReportConstants.ENTIRE_FTR_EXTRA_PARA, "");
+            if (presentationType == PresentationType.SPECIALIZED_EDIT) {
+               data = data.replaceAll(ReportConstants.ENTIRE_FTR_EXTRA_PARA, "");
+            }
+
             // if no extra paragraphs have been added this will replace the normal footer
             data = data.replaceAll(ReportConstants.ENTIRE_FTR, "");
             data = data.replaceAll(ReportConstants.NO_DATA_RIGHTS, "");
 
             // remove extra paragraph inserted
-            int lastIndex = data.lastIndexOf("<w:p wsp:rsidR=");
+            if (presentationType == PresentationType.SPECIALIZED_EDIT && !data.contains("<w:tbl>")) {
+               int lastIndex = data.lastIndexOf("<w:p wsp:rsidR=");
 
-            if (lastIndex != -1) {
-               // temp should equal <w:p wsp:rsidR ..</w:p> ...
-               String temp = data.substring(lastIndex);
-               temp = temp.replaceAll("<w:p wsp:rsidR=\".*?\" wsp:rsidRDefault=\".*?\"></w:p>", "");
-               data = data.substring(0, lastIndex) + temp;
+               if (lastIndex != -1) {
+                  // temp should equal <w:p wsp:rsidR ..</w:p> ...
+                  String temp = data.substring(lastIndex);
+                  temp = temp.replaceAll("<w:p wsp:rsidR=\".*?\" wsp:rsidRDefault=\".*?\"></w:p>", "");
+                  data = data.substring(0, lastIndex) + temp;
+               }
             }
 
             data = data.concat(footer);
