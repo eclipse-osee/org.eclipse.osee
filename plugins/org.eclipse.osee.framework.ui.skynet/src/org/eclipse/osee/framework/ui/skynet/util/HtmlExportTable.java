@@ -188,8 +188,10 @@ public class HtmlExportTable {
                      }
                      writer.endRow();
                   }
-                  writer.endSheet();
-                  writer.endWorkbook();
+                  if (writer != null) {
+                     writer.endSheet();
+                     writer.endWorkbook();
+                  }
 
                   if (openInSystem) {
                      Program.launch(file.getAbsolutePath());
