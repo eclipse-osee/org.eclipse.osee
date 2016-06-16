@@ -29,7 +29,10 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
@@ -57,6 +60,11 @@ public final class ExportChangeReportOperation extends AbstractOperation {
    private final Appendable resultFolder;
    private final boolean reverse;
    private final boolean writeChangeReports;
+   private final IArtifactType[] ALLOW_TYPES = {
+      CoreArtifactTypes.AbstractSoftwareRequirement,
+      CoreArtifactTypes.InterfaceRequirement,
+      CoreArtifactTypes.HeadingMSWord};
+   private final IArtifactType[] DISALLOW_TYPES = {CoreArtifactTypes.ImplementationDetails};
 
    public ExportChangeReportOperation(List<TeamWorkFlowArtifact> workflows, boolean reverse, boolean writeChangeReports, Appendable resultFolder, OperationLogger logger) {
       super("Exporting Change Report(s)", Activator.PLUGIN_ID, logger);
@@ -71,6 +79,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
       logf("Starting %s, processing %d workflows.", getClass().getSimpleName(), workflows.size());
 
       sortWorkflows();
+      Set<String> skippedTypes = new HashSet<String>();
 
       CompareDataCollector collector = new CompareDataCollector() {
 
@@ -92,12 +101,32 @@ public final class ExportChangeReportOperation extends AbstractOperation {
          Set<Integer> artIds = new HashSet<>();
          Collection<Change> changes = computeChanges(workflow, monitor, artIds);
          if (!changes.isEmpty() && changes.size() < 4000) {
-            logf("Exporting: %s", workflow.toStringWithId());
+            logf("Exporting: %s -- %s", workflow.toString(), workflow.getAtsId());
             String id = workflow.getSoleAttributeValueAsString(AtsAttributeTypes.LegacyPcrId, workflow.getAtsId());
             String prefix = "/" + id;
             if (writeChangeReports) {
 
                Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
+
+               // only allow SoftwareRequirements for HLR
+               Iterator<ArtifactDelta> it = artifactDeltas.iterator();
+               while (it.hasNext()) {
+                  ArtifactDelta next = it.next();
+                  Artifact endArtifact = next.getEndArtifact();
+                  ArtifactType artifactType = endArtifact.getArtifactType();
+                  if (artifactType.inheritsFrom(DISALLOW_TYPES) || !artifactType.inheritsFrom(ALLOW_TYPES)) {
+                     it.remove();
+                     artIds.remove(endArtifact.getArtId());
+                     logf(
+                        "skipping: [" + endArtifact.getName() + "] type: [" + endArtifact.getArtifactTypeName() + "] branch: [" + endArtifact.getBranchId() + "] artId: [" + endArtifact.getArtId() + "]");
+                     skippedTypes.add(endArtifact.getArtifactTypeName());
+                  }
+               }
+               if (artifactDeltas.isEmpty()) {
+                  logf("Nothing exported for RPCR[%s]", id);
+                  continue;
+               }
+
                RendererManager.diff(collector, artifactDeltas, prefix, NO_DISPLAY, true, SKIP_DIALOGS, true);
             }
             String artIdsAsString = org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", artIds);
@@ -113,6 +142,11 @@ public final class ExportChangeReportOperation extends AbstractOperation {
             }
          }
          monitor.worked(calculateWork(0.50));
+      }
+
+      logf("-------- skipped types --------- ");
+      for (String skipped : skippedTypes) {
+         logf(skipped);
       }
    }
 
