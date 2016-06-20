@@ -174,6 +174,7 @@ public class HtmlExportTable {
                            Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(row);
                         while (thM.find()) {
                            String cellStr = thM.group(1);
+                           cellStr = cellStr.replaceAll("<br/>", "\n");
                            cells.add(cellStr);
                         }
                      }
