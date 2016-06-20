@@ -10,13 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
@@ -25,15 +23,13 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ViewApplicabilityFilterTreeDialog;
 import org.eclipse.osee.orcs.rest.model.Applicabilities;
 import org.eclipse.osee.orcs.rest.model.Applicability;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
-import org.eclipse.osee.orcs.rest.model.ApplicabilityId;
 import org.eclipse.osee.orcs.rest.model.ArtifactIds;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -104,32 +100,21 @@ public class ViewApplicabilityColumn extends XViewerColumn implements IXViewerPr
 
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint();
-      List<ApplicabilityId> applicabilityIds = applEndpoint.getApplicabilityIds().getApplicabilityIds();
-      ViewApplicabilityFilterTreeDialog dialog =
-         new ViewApplicabilityFilterTreeDialog("Select View Applicability", "Select View Applicability");
-      dialog.setInput(applicabilityIds);
-      dialog.setMultiSelect(false);
-      int result = dialog.open();
-      if (result == Window.OK) {
-         Applicabilities applicabilities = new Applicabilities();
-         List<Artifact> artifacts = new LinkedList<>();
-         for (TreeItem treeItem : treeItems) {
-            if (treeItem.getData() instanceof Artifact) {
-               Artifact artifact = (Artifact) treeItem.getData();
-               artifacts.add(artifact);
-               Applicability appl = new Applicability();
-               appl.setArtId(artifact.getUuid());
-               appl.setApplicability(dialog.getSelection());
-            }
-            if (applicabilities.getApplicabilities().isEmpty()) {
-               AWorkbench.popup("No Artifacts Selected");
-               return;
-            }
-            applEndpoint.setApplicabilities(applicabilities);
+      List<Artifact> artifacts = new LinkedList<>();
+      for (TreeItem treeItem : treeItems) {
+         if (treeItem.getData() instanceof Artifact) {
+            artifacts.add((Artifact) treeItem.getData());
          }
-         ArtifactQuery.reloadArtifacts(artifacts);
       }
+      if (artifacts.isEmpty()) {
+         AWorkbench.popup("No Artifacts Selected");
+         return;
+      }
+      if (!ViewApplicabilityUtil.isChangeApplicabilityValid(artifacts)) {
+         AWorkbench.popup(ViewApplicabilityUtil.CHANGE_APPLICABILITY_INVAILD);
+         return;
+      }
+      ViewApplicabilityUtil.changeApplicability(artifacts);
    }
 
    @Override
@@ -137,28 +122,15 @@ public class ViewApplicabilityColumn extends XViewerColumn implements IXViewerPr
       Object obj = treeItem.getData();
       if (obj instanceof Artifact) {
          Artifact artifact = (Artifact) obj;
-         ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint();
-         ViewApplicabilityFilterTreeDialog dialog =
-            new ViewApplicabilityFilterTreeDialog("Select View Applicability", "Select View Applicability");
-         dialog.setMultiSelect(false);
-         dialog.setInput(applEndpoint.getApplicabilityIds().getApplicabilityIds());
-         ArtifactIds artifactIds = new ArtifactIds();
-         artifactIds.getArtifactIds().add(artifact.getUuid());
-         Applicabilities applicabilities = applEndpoint.getApplicabilities(artifactIds);
-         if (!applicabilities.getApplicabilities().isEmpty() && applicabilities.getApplicabilities().iterator().next().getApplicability() != null) {
-            dialog.setInitialSelections(
-               Arrays.asList(applicabilities.getApplicabilities().iterator().next().getApplicability()));
+         if (!ViewApplicabilityUtil.isChangeApplicabilityValid(Collections.singleton(artifact))) {
+            AWorkbench.popup(ViewApplicabilityUtil.CHANGE_APPLICABILITY_INVAILD);
+            return false;
          }
-         int result = dialog.open();
-         if (result == Window.OK) {
-            Applicability appl = new Applicability();
-            appl.setArtId(artifact.getUuid());
-            appl.setApplicability(dialog.getSelection());
-            applEndpoint.setApplicability(appl);
-            ArtifactQuery.reloadArtifacts(Collections.singleton(artifact));
-            return true;
-         }
+         return ViewApplicabilityUtil.changeApplicability(Collections.singleton(artifact));
+      } else {
+         AWorkbench.popup("No Artifact Selected");
+         return false;
       }
-      return false;
    }
+
 }

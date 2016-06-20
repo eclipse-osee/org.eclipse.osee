@@ -68,6 +68,7 @@ public class ArtifactFormPage extends FormPage {
 
    private final Map<SectionEnum, SectionPart> sectionParts;
    private FormText infoText;
+   private ArtifactFormPageViewApplicability applPart;
 
    public ArtifactFormPage(FormEditor editor, String id, String title) {
       super(editor, id, title);
@@ -93,6 +94,9 @@ public class ArtifactFormPage extends FormPage {
       updateTitle(form);
       updateImage(form);
       updateArtifactInfoArea(toolkit, form, true);
+      applPart = new ArtifactFormPageViewApplicability(getEditor().getArtifactFromEditorInput().getFullArtifact(),
+         toolkit, form);
+      applPart.create();
       addToolBar(toolkit, form, true);
       FormsUtil.addHeadingGradient(toolkit, form, true);
       addMessageDecoration(form);
@@ -242,6 +246,7 @@ public class ArtifactFormPage extends FormPage {
       updateTitle(sForm);
       updateImage(sForm);
       updateArtifactInfoArea(getManagedForm().getToolkit(), sForm, false);
+      applPart.refresh();
       for (SectionPart part : sectionParts.values()) {
          part.refresh();
       }
