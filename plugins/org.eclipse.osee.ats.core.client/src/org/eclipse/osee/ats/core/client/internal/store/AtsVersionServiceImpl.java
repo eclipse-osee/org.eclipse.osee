@@ -66,7 +66,9 @@ public class AtsVersionServiceImpl extends AbstractAtsVersionServiceImpl impleme
             } else {
                version = cacheProvider.get().getSoleByUuid(verArts.iterator().next().getUuid(), IAtsVersion.class);
             }
-            versionCache.cache(teamWf, version);
+            if (version != null) {
+               versionCache.cache(teamWf, version);
+            }
          }
       }
       return version;

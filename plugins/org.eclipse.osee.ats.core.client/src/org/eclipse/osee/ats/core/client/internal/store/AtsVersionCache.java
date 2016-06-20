@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * This uses the config cache to cache the relation between the team workflow and version.<br/>
  * NOTE: Each teamWf can only have one version
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsVersionCache {
@@ -40,7 +40,9 @@ public class AtsVersionCache {
    }
 
    public IAtsVersion cache(IAtsTeamWorkflow teamWf, IAtsVersion version) throws OseeCoreException {
-      configCacheProvider.get().cacheById(teamWf.getUuid(), version);
+      if (version != null) {
+         configCacheProvider.get().cacheById(teamWf.getUuid(), version);
+      }
       return version;
    }
 
