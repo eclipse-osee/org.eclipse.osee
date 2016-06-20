@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class AtsNotificationEvent {
 
    private Collection<String> userIds = new HashSet<>();
+   private Collection<String> emailAddresses = new HashSet<>();
    private String id;
    private String fromUserId;
    private String type;
@@ -77,7 +78,15 @@ public class AtsNotificationEvent {
 
    @Override
    public String toString() {
-      return "AtsNotificationEvent [userIds=" + userIds + ", id=" + id + ", fromUserId=" + fromUserId + ", type=" + type + ", description=" + description + "]";
+      return "AtsNotificationEvent [userIds=" + userIds + ", emailAddresses=" + emailAddresses + ", id=" + id + ", fromUserId=" + fromUserId + ", type=" + type + ", description=" + description + ", url=" + url + "]";
+   }
+
+   public Collection<String> getEmailAddresses() {
+      return emailAddresses;
+   }
+
+   public void setEmailAddresses(Collection<String> emailAddresses) {
+      this.emailAddresses = emailAddresses;
    }
 
 }

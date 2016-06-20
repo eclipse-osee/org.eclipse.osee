@@ -69,6 +69,8 @@ public class SendNotificationEvents {
             resultData.errorf("Testing Results Report for Osee Notification; Email to user [%s].<br>",
                testingUserEmail);
          }
+
+         // Notify specified OSEE users; one email for all events that user was specified for
          for (IAtsUser user : AtsUsersUtility.getValidEmailUsers(uniqueUusers)) {
             List<AtsNotificationEvent> notifyEvents = new ArrayList<>();
             for (AtsNotificationEvent notificationEvent : notificationEvents) {
@@ -79,11 +81,33 @@ public class SendNotificationEvents {
             }
             notifyUser(user, notifyEvents, resultData);
          }
+
+         // Notify email address; one email for all events that email was specified for
+         Set<String> uniqueEmailAddresses = getUniqueEmailAddresses(notificationEvents);
+         if (!uniqueEmailAddresses.isEmpty()) {
+            for (String email : uniqueEmailAddresses) {
+               List<AtsNotificationEvent> notifyEvents = new ArrayList<>();
+               for (AtsNotificationEvent notificationEvent : notificationEvents) {
+                  if (notificationEvent.getEmailAddresses().contains(email)) {
+                     notifyEvents.add(notificationEvent);
+                  }
+               }
+               notifyUser(email, notifyEvents);
+            }
+         }
          return Result.TrueResult;
       } catch (Exception ex) {
          logger.error(ex, "Error notifying users");
          return new Result("Error notifying users [%s]", ex.getMessage());
       }
+   }
+
+   private Set<String> getUniqueEmailAddresses(Collection<? extends AtsNotificationEvent> notificationEvents) {
+      Set<String> uniqueEmails = new HashSet<>();
+      for (AtsNotificationEvent notificationEvent : notificationEvents) {
+         uniqueEmails.addAll(notificationEvent.getEmailAddresses());
+      }
+      return uniqueEmails;
    }
 
    private String notificationEventsToHtml(List<AtsNotificationEvent> notificationEvents) {
@@ -112,7 +136,12 @@ public class SendNotificationEvents {
          // do nothing
          return;
       }
-      if (!AtsUsersUtility.isEmailValid(user.getEmail())) {
+      String email = user.getEmail();
+      notifyUser(email, notificationEvents);
+   }
+
+   private void notifyUser(String email, List<AtsNotificationEvent> notificationEvents) {
+      if (!AtsUsersUtility.isEmailValid(email)) {
          // do nothing; can't send email from user with invalid email address
          return;
       }
@@ -121,7 +150,6 @@ public class SendNotificationEvents {
          html += "<pre>" + body + "</pre>";
       }
       html += notificationEventsToHtml(notificationEvents);
-      String email = user.getEmail();
       if (!Strings.isValid(email)) {
          // do nothing
          return;
@@ -130,11 +158,11 @@ public class SendNotificationEvents {
          String useEmail = isTesting() ? testingUserEmail : email;
 
          MailMessage msg = MailMessage.newBuilder() //
-         .from(fromUserEmail) //
-         .recipients(Arrays.asList(useEmail)) //
-         .subject(getNotificationEmailSubject(notificationEvents)) //
-         .addHtml(html)//
-         .build();
+            .from(fromUserEmail) //
+            .recipients(Arrays.asList(useEmail)) //
+            .subject(getNotificationEmailSubject(notificationEvents)) //
+            .addHtml(html)//
+            .build();
 
          List<MailStatus> sendMessages = mailService.sendMessages(msg);
          System.out.println(sendMessages);
