@@ -20,8 +20,10 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -40,7 +42,7 @@ public class WfeWorkPackage extends Composite {
 
    private final static String WORK_PACKAGE = "Work Package:";
    Text valueLabel;
-   Text origLabel;
+   Label label;
    Hyperlink link;
 
    public WfeWorkPackage(Composite parent, int style, final AbstractWorkflowArtifact sma, final SMAEditor editor) {
@@ -77,9 +79,11 @@ public class WfeWorkPackage extends Composite {
                }
             });
          } else {
-            origLabel = new Text(this, SWT.NO_TRIM);
-            origLabel.setLayoutData(new GridData());
-            editor.getToolkit().adapt(origLabel, true, true);
+            label = new Label(this, SWT.NO_TRIM);
+            label.setLayoutData(new GridData());
+            label.setText(WORK_PACKAGE);
+            FormsUtil.setLabelFonts(label, FontManager.getDefaultLabelFont());
+            editor.getToolkit().adapt(label, true, true);
          }
 
          valueLabel = new Text(this, SWT.NO_TRIM);
@@ -115,8 +119,8 @@ public class WfeWorkPackage extends Composite {
       if (Widgets.isAccessible(valueLabel)) {
          valueLabel.setBackground(color);
       }
-      if (Widgets.isAccessible(origLabel)) {
-         origLabel.setBackground(color);
+      if (Widgets.isAccessible(label)) {
+         label.setBackground(color);
       }
       if (Widgets.isAccessible(link)) {
          link.setBackground(color);
