@@ -267,7 +267,12 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
             resultData.log("   - Converted \"ats.Full Name\" to " + newFullName);
          }
       }
+      if (data.getNewProgramUuid() != null) {
+         changes.setSoleAttributeFromString(newTeamDef, AtsAttributeTypes.ProgramUuid,
+            data.getNewProgramUuid().toString());
+      }
       newArtifacts.add(newTeamDef);
       return newTeamDef;
    }
+
 }

@@ -31,6 +31,7 @@ public class ConfigData {
    IAtsActionableItem actionableItem;
    boolean retainTeamLeads;
    boolean persistChanges;
+   Long newProgramUuid;
 
    public void validateData(XResultData resultData) {
       if (teamDef == null) {
@@ -118,6 +119,14 @@ public class ConfigData {
 
    public void setActionableItem(IAtsActionableItem actionableItem) {
       this.actionableItem = actionableItem;
+   }
+
+   public Long getNewProgramUuid() {
+      return newProgramUuid;
+   }
+
+   public void setNewProgramUuid(Long newProgramUuid) {
+      this.newProgramUuid = newProgramUuid;
    }
 
 }
