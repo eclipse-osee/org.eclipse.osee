@@ -254,9 +254,9 @@ public class MergeCustomMenu extends XViewerCustomMenu {
    }
 
    private String addMergeMenuItem(MenuManager menuManager, IHandler handler) {
-      CommandContributionItem mergeArtifactCommand = Commands.getLocalCommandContribution(getSite(),
-         "mergeArtifactCommand", "Generate Three Way Merge (Developmental)", null, null, null, "E", null,
-         "Merge_Source_Destination_Artifact");
+      CommandContributionItem mergeArtifactCommand =
+         Commands.getLocalCommandContribution(getSite(), "mergeArtifactCommand", "Generate Three Way Merge", null, null,
+            null, "E", null, "Merge_Source_Destination_Artifact");
       setCommandHandler(mergeArtifactCommand, handler);
       menuManager.add(mergeArtifactCommand);
       return mergeArtifactCommand.getId();
