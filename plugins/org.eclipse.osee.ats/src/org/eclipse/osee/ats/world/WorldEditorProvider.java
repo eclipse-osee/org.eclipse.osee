@@ -151,8 +151,13 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
             if (searchType == SearchType.ReSearch) {
                reload(worldEditor, selectedName, forcePend, artifacts);
             } else {
+               Artifact expandToArtifact = null;
+               if (worldEditorProvider instanceof WorldEditorSimpleProvider) {
+                  WorldEditorSimpleProvider provider = (WorldEditorSimpleProvider) worldEditorProvider;
+                  expandToArtifact = provider.getExpandToArtifact();
+               }
                worldEditor.getWorldComposite().load(selectedName != null ? selectedName : "", artifacts, customizeData,
-                  tableLoadOptions);
+                  expandToArtifact, tableLoadOptions);
             }
          } catch (final Exception ex) {
             String str = "Exception occurred.";
