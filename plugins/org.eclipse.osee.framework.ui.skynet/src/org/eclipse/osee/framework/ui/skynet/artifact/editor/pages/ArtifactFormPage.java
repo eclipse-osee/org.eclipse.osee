@@ -10,16 +10,30 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.pages;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.ReservedCharacters;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
@@ -32,9 +46,12 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummary
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributesFormSection;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.DetailsFormSection;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.RelationsFormSection;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
+import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -48,7 +65,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.IMessage;
 import org.eclipse.ui.forms.SectionPart;
-import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
@@ -57,6 +73,7 @@ import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ui.progress.UIJob;
 
 public class ArtifactFormPage extends FormPage {
 
@@ -68,10 +85,14 @@ public class ArtifactFormPage extends FormPage {
 
    private final Map<SectionEnum, SectionPart> sectionParts;
    private FormText infoText;
+   private Composite bodyComp;
+   private LoadingComposite loadingComposite;
+   private final ArtifactEditor editor;
    private ArtifactFormPageViewApplicability applPart;
 
-   public ArtifactFormPage(FormEditor editor, String id, String title) {
+   public ArtifactFormPage(ArtifactEditor editor, String id, String title) {
       super(editor, id, title);
+      this.editor = editor;
       sectionParts = new LinkedHashMap<>();
    }
 
@@ -80,6 +101,104 @@ public class ArtifactFormPage extends FormPage {
       super.createFormContent(managedForm);
       sectionParts.clear();
 
+      try {
+         final ScrolledForm form = managedForm.getForm();
+
+         bodyComp = managedForm.getForm().getBody();
+         GridLayout gridLayout = new GridLayout(1, false);
+         bodyComp.setLayout(gridLayout);
+         GridData gd = new GridData(SWT.LEFT, SWT.LEFT, true, false);
+         gd.widthHint = 300;
+         bodyComp.setLayoutData(gd);
+
+         setLoading(true);
+         HelpUtil.setHelp(form.getBody(), OseeHelpContext.ARTIFACT_EDITOR);
+
+         refreshData();
+      } catch (Exception ex) {
+         handleException(ex);
+      }
+   }
+
+   public void refreshData() {
+      List<IOperation> ops = new ArrayList<>();
+      Artifact artifact = getArtifactEditorInput().getArtifact();
+      if (artifact == null) {
+         artifact = getArtifactEditorInput().loadArtifact();
+      }
+      final Artifact fArtifact = artifact;
+      ops.add(new AbstractOperation("Load Artifact", Activator.PLUGIN_ID) {
+         @Override
+         protected void doWork(IProgressMonitor monitor) throws Exception {
+            fArtifact.reloadAttributesAndRelations();
+         }
+      });
+      IOperation operation = Operations.createBuilder("Load Artifact Editor").addAll(ops).build();
+      Operations.executeAsJob(operation, false, Job.LONG, new ReloadJobChangeAdapter(editor));
+   }
+
+   private final class ReloadJobChangeAdapter extends JobChangeAdapter {
+
+      private final ArtifactEditor editor;
+
+      private ReloadJobChangeAdapter(ArtifactEditor editor) {
+         this.editor = editor;
+         showBusy(true);
+      }
+
+      @Override
+      public void done(IJobChangeEvent event) {
+         super.done(event);
+         Job job = new UIJob("Draw Editor") {
+
+            @Override
+            public IStatus runInUIThread(IProgressMonitor monitor) {
+               try {
+                  IManagedForm managedForm = getManagedForm();
+                  if (managedForm != null && Widgets.isAccessible(managedForm.getForm())) {
+                     setLoading(false);
+                     createBody();
+                     addMessageDecoration(managedForm.getForm());
+                     FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
+                     editor.onDirtied();
+                  }
+               } catch (OseeCoreException ex) {
+                  handleException(ex);
+               } finally {
+                  showBusy(false);
+               }
+
+               return Status.OK_STATUS;
+            }
+         };
+         Operations.scheduleJob(job, false, Job.SHORT, null);
+      }
+   }
+
+   private void handleException(Exception ex) {
+      setLoading(false);
+      if (Widgets.isAccessible(bodyComp)) {
+         bodyComp.dispose();
+      }
+      OseeLog.log(Activator.class, Level.SEVERE, ex);
+      new ExceptionComposite(bodyComp, ex);
+      bodyComp.layout();
+   }
+
+   private void setLoading(boolean set) {
+      if (set) {
+         loadingComposite = new LoadingComposite(bodyComp);
+         bodyComp.layout();
+      } else {
+         if (Widgets.isAccessible(loadingComposite)) {
+            loadingComposite.dispose();
+         }
+      }
+      showBusy(set);
+   }
+
+   protected void createBody() {
+      IManagedForm managedForm = getManagedForm();
       final ScrolledForm form = managedForm.getForm();
       final FormToolkit toolkit = managedForm.getToolkit();
 
@@ -116,8 +235,6 @@ public class ArtifactFormPage extends FormPage {
          section.marginHeight = 2;
       }
       form.layout();
-
-      HelpUtil.setHelp(form.getBody(), OseeHelpContext.ARTIFACT_EDITOR);
    }
 
    @Override
@@ -263,6 +380,9 @@ public class ArtifactFormPage extends FormPage {
       }
    }
 
+   private ArtifactEditorInput getArtifactEditorInput() {
+      return (ArtifactEditorInput) getEditorInput();
+   }
    private final class RefreshAction extends Action {
 
       public RefreshAction() {
@@ -273,7 +393,7 @@ public class ArtifactFormPage extends FormPage {
 
       @Override
       public void run() {
-         ((ArtifactEditorInput) getEditorInput()).getArtifact().reloadAttributesAndRelations();
+         getArtifactEditorInput().getArtifact().reloadAttributesAndRelations();
          refresh();
       }
    }

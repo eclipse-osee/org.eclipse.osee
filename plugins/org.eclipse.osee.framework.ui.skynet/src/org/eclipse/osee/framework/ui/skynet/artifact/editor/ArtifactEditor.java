@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactEditorOutlinePage;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactEditorReloadTab;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactFormPage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
@@ -127,25 +128,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
 
    @Override
    protected void checkEnabledTooltems() {
-      //      if (!attributeComposite.isDisposed()) {
-      //        				Displays.ensureInDisplayThread(new Runnable() {
-      //		@Override
-      //		public void run() {
-      //               boolean isEditAllowed = artifact.isReadOnly() != true;
-      //
-      //               if (attributeComposite.getToolBar() == null || attributeComposite.getToolBar().isDisposed()) {
-      //                  return;
-      //               }
-      //               attributeComposite.getToolBar().getItem(REVEAL_ARTIFACT_INDEX).setEnabled(true);
-      //               attributeComposite.getToolBar().getItem(EDIT_ARTIFACT_INDEX).setEnabled(isEditAllowed);
-      //               attributeComposite.getToolBar().update();
-      //
-      //               relationsComposite.getToolBar().getItem(REVEAL_ARTIFACT_INDEX).setEnabled(true);
-      //               relationsComposite.getToolBar().getItem(EDIT_ARTIFACT_INDEX).setEnabled(isEditAllowed);
-      //               relationsComposite.getToolBar().update();
-      //            }
-      //         });
-      //      }
+      // do nothing
    }
 
    @Override
@@ -173,9 +156,27 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       OseeStatusContributionItemFactory.addTo(this, true);
       setPartName(getEditorInput().getName());
 
+      try {
+         if (getEditorInput().isReload()) {
+            createReloadTab();
+         } else {
+            performLoad();
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+
+   }
+
+   private void createReloadTab() throws PartInitException {
+      addPage(new ArtifactEditorReloadTab(this));
+   }
+
+   public void performLoad() {
       formPage = new ArtifactFormPage(this, "ArtifactFormPage", null);
       try {
          addPage(formPage);
+         setPartName(getEditorInput().getName());
       } catch (PartInitException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -186,6 +187,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
+
    }
 
    private ToolBar createToolBar(Composite parent) {
@@ -318,7 +320,9 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
 
    @Override
    public void refresh() {
-      formPage.refresh();
+      if (formPage != null) {
+         formPage.refresh();
+      }
    }
 
 }

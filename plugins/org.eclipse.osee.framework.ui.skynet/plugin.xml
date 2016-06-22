@@ -1627,4 +1627,13 @@
             </commandParameter>
       </command>
    </extension>
+  <extension
+        id="org.eclipse.osee.framework.ui.skynet.ArtifactEditorInputFactory"
+        name="Artifact Editor Input Factory"
+        point="org.eclipse.ui.elementFactories">
+     <factory
+           class="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInputFactory"
+           id="org.eclipse.osee.framework.ui.skynet.ArtifactEditorInputFactory">
+     </factory>
+  </extension>
 </plugin>
