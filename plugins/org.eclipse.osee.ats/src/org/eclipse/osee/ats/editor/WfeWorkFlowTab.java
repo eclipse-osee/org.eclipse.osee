@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.actions.EmailActionAction;
 import org.eclipse.osee.ats.actions.FavoriteAction;
 import org.eclipse.osee.ats.actions.OpenInArtifactEditorAction;
 import org.eclipse.osee.ats.actions.OpenInAtsWorldAction;
+import org.eclipse.osee.ats.actions.OpenInBrowserAction;
 import org.eclipse.osee.ats.actions.OpenParentAction;
 import org.eclipse.osee.ats.actions.OpenTeamDefinitionAction;
 import org.eclipse.osee.ats.actions.OpenVersionArtifactAction;
@@ -495,6 +496,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          toolBarMgr.add(new OpenTeamDefinitionAction((TeamWorkFlowArtifact) awa));
       }
       toolBarMgr.add(new CopyActionDetailsAction(awa));
+      toolBarMgr.add(new OpenInBrowserAction(awa));
       toolBarMgr.add(new PrivilegedEditAction(awa, editor));
       toolBarMgr.add(new ResourceHistoryAction(awa));
       toolBarMgr.add(new ReloadAction(awa));
