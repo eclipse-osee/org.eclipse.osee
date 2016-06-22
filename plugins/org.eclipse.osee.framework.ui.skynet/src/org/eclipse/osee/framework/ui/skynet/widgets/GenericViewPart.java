@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
@@ -19,16 +21,26 @@ import org.eclipse.ui.part.ViewPart;
  * This class provides &quot;general&quot; functionality to widgets having the need to override ViewPart methods and
  * providing blank functionality. Subclasses must call setFocusWidget() in their implementation for createPartControl
  * <br/>
- * 
+ *
  * @author Karol M. Wilk
  */
 public abstract class GenericViewPart extends ViewPart {
+   private static final int DEFAULT_WAIT = 500;
+   private static final String VIEW_PART_WAIT_LIMIT = "generic.view.part.wait.limit";
+
    private Control focusWidget;
 
    @Override
    public void setFocus() {
-      if (focusWidget != null && !focusWidget.isDisposed()) {
-         focusWidget.setFocus();
+      try {
+         String limit = OseeInfo.getCachedValue(VIEW_PART_WAIT_LIMIT);
+         int waitLimit = Strings.isNumeric(limit) ? Integer.valueOf(limit) : DEFAULT_WAIT;
+         Thread.sleep(waitLimit);
+         if (focusWidget != null && !focusWidget.isDisposed()) {
+            focusWidget.setFocus();
+         }
+      } catch (InterruptedException ex) {
+         //
       }
    }
 
