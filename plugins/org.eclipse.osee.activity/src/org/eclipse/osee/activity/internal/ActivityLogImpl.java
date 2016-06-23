@@ -190,44 +190,57 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    private Object[] createEntry(Long parentId, Long typeId, Long accountId, Long serverId, Long clientId, Long duration, Integer status, Object... messageArgs) {
       Object[] entry = EMPTY_ARRAY;
       if (enabled) {
-         Long entryId = Lib.generateUuid();
-         Long startTime = System.currentTimeMillis();
-         String fullMsg = null;
+         try {
+            Long entryId = Lib.generateUuid();
+            Long startTime = System.currentTimeMillis();
+            String fullMsg = null;
 
-         String messageFormat = getTypeMessageFormat(typeId);
-         if (Strings.isValid(messageFormat)) {
-            fullMsg = String.format(messageFormat, messageArgs);
-         } else {
-            fullMsg = Collections.toString("\n", messageArgs);
-         }
-
-         String msg = fullMsg.substring(0, Math.min(fullMsg.length(), JdbcConstants.JDBC__MAX_VARCHAR_LENGTH));
-         // this is the parent entry so it must be inserted first (because the entry writing is asynchronous
-         entry =
-            new Object[] {entryId, parentId, typeId, accountId, serverId, clientId, startTime, duration, status, msg};
-         newEntities.put(entryId, entry);
-
-         if (fullMsg.length() > JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
-            Long parentCursor = entryId;
-            for (int i = JdbcConstants.JDBC__MAX_VARCHAR_LENGTH; i < fullMsg.length(); i +=
-               JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
-               Long continueEntryId = Lib.generateUuid();
-               Object[] continueEntry = new Object[] {
-                  continueEntryId,
-                  parentCursor,
-                  Activity.MSG_CONTINUATION.getTypeId(),
-                  accountId,
-                  serverId,
-                  clientId,
-                  startTime,
-                  duration,
-                  status,
-                  fullMsg.substring(i, Math.min(fullMsg.length(), i + JdbcConstants.JDBC__MAX_VARCHAR_LENGTH))};
-               newEntities.put(continueEntryId, continueEntry);
-               parentCursor = continueEntryId;
+            String messageFormat = getTypeMessageFormat(typeId);
+            if (Strings.isValid(messageFormat)) {
+               fullMsg = String.format(messageFormat, messageArgs);
+            } else {
+               fullMsg = Collections.toString("\n", messageArgs);
             }
+
+            String msg = fullMsg.substring(0, Math.min(fullMsg.length(), JdbcConstants.JDBC__MAX_VARCHAR_LENGTH));
+            // this is the parent entry so it must be inserted first (because the entry writing is asynchronous
+            entry = new Object[] {
+               entryId,
+               parentId,
+               typeId,
+               accountId,
+               serverId,
+               clientId,
+               startTime,
+               duration,
+               status,
+               msg};
+            newEntities.put(entryId, entry);
+
+            if (fullMsg.length() > JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
+               Long parentCursor = entryId;
+               for (int i = JdbcConstants.JDBC__MAX_VARCHAR_LENGTH; i < fullMsg.length(); i +=
+                  JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
+                  Long continueEntryId = Lib.generateUuid();
+                  Object[] continueEntry = new Object[] {
+                     continueEntryId,
+                     parentCursor,
+                     Activity.MSG_CONTINUATION.getTypeId(),
+                     accountId,
+                     serverId,
+                     clientId,
+                     startTime,
+                     duration,
+                     status,
+                     fullMsg.substring(i, Math.min(fullMsg.length(), i + JdbcConstants.JDBC__MAX_VARCHAR_LENGTH))};
+                  newEntities.put(continueEntryId, continueEntry);
+                  parentCursor = continueEntryId;
+               }
+            }
+            flush(false);
+         } catch (Throwable th) {
+            logger.error(th, "Error ActivityLog.createEntry");
          }
-         flush(false);
       }
       return entry;
    }
@@ -275,17 +288,21 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    public boolean updateEntry(Long entryId, Integer status) {
       boolean modified = false;
       if (enabled) {
-         if (!updateIfNew(entryId, status)) {
-            Object[] data = updatedEntities.get(entryId);
-            if (data == null) {
-               addUpdatedEntryToMap(entryId, status);
-            } else {
-               data[LogEntry.STATUS.ordinal()] = status;
-               if (!updatedEntities.containsKey(entryId)) {
+         try {
+            if (!updateIfNew(entryId, status)) {
+               Object[] data = updatedEntities.get(entryId);
+               if (data == null || !(data.length >= LogEntry.STATUS.ordinal())) {
                   addUpdatedEntryToMap(entryId, status);
+               } else {
+                  data[LogEntry.STATUS.ordinal()] = status;
+                  if (!updatedEntities.containsKey(entryId)) {
+                     addUpdatedEntryToMap(entryId, status);
+                  }
                }
+               modified = true;
             }
-            modified = true;
+         } catch (Throwable th) {
+            logger.error(th, "Error in ActivityLog.updateEntry");
          }
       }
       return modified;
