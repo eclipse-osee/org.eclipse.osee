@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.config;
 
 import java.util.Arrays;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.config.ActionableItems;
@@ -28,28 +29,28 @@ public class ActionableItemArtifactReaderTest {
 
    @Test
    public void testLoad() {
-      IAtsActionableItem sawTestAi = AtsClientService.get().getCache().getByUuid(
-         DemoArtifactToken.SAW_Test_AI.getUuid(), IAtsActionableItem.class);
+      IAtsActionableItem sawTestAi =
+         AtsClientService.get().getCache().getByUuid(DemoArtifactToken.SAW_Test_AI.getUuid(), IAtsActionableItem.class);
       Assert.assertTrue(sawTestAi.isAllowUserActionCreation());
       Assert.assertEquals(1, ActionableItems.getUserEditableActionableItems(Arrays.asList(sawTestAi)).size());
 
-      sawTestAi.setAllowUserActionCreation(false);
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      changes.setSoleAttributeValue(sawTestAi, AtsAttributeTypes.AllowUserActionCreation, false);
       AtsClientService.get().storeConfigObject(sawTestAi, changes);
       changes.execute();
 
-      sawTestAi = AtsClientService.get().getCache().getByUuid(DemoArtifactToken.SAW_Test_AI.getUuid(),
-         IAtsActionableItem.class);
+      sawTestAi =
+         AtsClientService.get().getCache().getByUuid(DemoArtifactToken.SAW_Test_AI.getUuid(), IAtsActionableItem.class);
       Assert.assertFalse(sawTestAi.isAllowUserActionCreation());
       Assert.assertEquals(0, ActionableItems.getUserEditableActionableItems(Arrays.asList(sawTestAi)).size());
 
-      sawTestAi.setAllowUserActionCreation(true);
+      changes.setSoleAttributeValue(sawTestAi, AtsAttributeTypes.AllowUserActionCreation, true);
       changes = new AtsChangeSet(getClass().getSimpleName());
       AtsClientService.get().storeConfigObject(sawTestAi, changes);
       changes.execute();
 
-      sawTestAi = AtsClientService.get().getCache().getByUuid(DemoArtifactToken.SAW_Test_AI.getUuid(),
-         IAtsActionableItem.class);
+      sawTestAi =
+         AtsClientService.get().getCache().getByUuid(DemoArtifactToken.SAW_Test_AI.getUuid(), IAtsActionableItem.class);
       Assert.assertTrue(sawTestAi.isAllowUserActionCreation());
       Assert.assertEquals(1, ActionableItems.getUserEditableActionableItems(Arrays.asList(sawTestAi)).size());
 

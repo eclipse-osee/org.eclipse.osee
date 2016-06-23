@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
+import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
@@ -126,7 +127,7 @@ public class AtsConfigOperation extends AbstractOperation {
 
       teamDefinition = createTeamDefinition(changes, AtsClientService.get());
 
-      actionableItems = createActionableItems(changes, teamDefinition);
+      actionableItems = createActionableItems(changes, teamDefinition, AtsClientService.get());
 
       createVersions(changes, teamDefinition);
 
@@ -154,39 +155,36 @@ public class AtsConfigOperation extends AbstractOperation {
       return teamDef;
    }
 
-   private Collection<IAtsActionableItem> createActionableItems(IAtsChangeSet changes, IAtsTeamDefinition teamDef) throws OseeCoreException {
+   private Collection<IAtsActionableItem> createActionableItems(IAtsChangeSet changes, IAtsTeamDefinition safetyTeamDef, IAtsServices services) throws OseeCoreException {
       Collection<IAtsActionableItem> aias = new ArrayList<>();
 
       // Create top actionable item
-      IAtsActionableItem topAia = AtsClientService.get().createActionableItem(teamDefName);
-      topAia.setActionable(false);
-      topAia.setTeamDefinition(teamDef);
-      AtsClientService.get().storeConfigObject(topAia, changes);
-      teamDef.getActionableItems().add(topAia);
-      AtsClientService.get().storeConfigObject(teamDef, changes);
+      IAtsActionableItem safetyAi = AtsClientService.get().createActionableItem(teamDefName, changes, services);
+      changes.setSoleAttributeValue(safetyAi, AtsAttributeTypes.Actionable, false);
+      changes.relate(safetyTeamDef, AtsRelationTypes.TeamActionableItem_ActionableItem, safetyAi);
+      changes.relate(ActionableItems.getTopActionableItem(AtsClientService.get().getQueryService()),
+         CoreRelationTypes.Default_Hierarchical__Child, safetyAi);
 
-      aias.add(topAia);
+      aias.add(safetyAi);
 
       // Create children actionable item
       if (actionableItemToken == null) {
          for (String name : actionableItemsNames) {
-            IAtsActionableItem childAi = AtsClientService.get().createActionableItem(name);
-            addChildAi(topAia, childAi, changes, aias);
+            IAtsActionableItem childAi = AtsClientService.get().createActionableItem(name, changes, services);
+            addChildAi(safetyAi, childAi, changes, aias);
          }
       } else {
          IAtsActionableItem childAi = AtsClientService.get().createActionableItem(actionableItemToken.getGuid(),
-            actionableItemToken.getName(), actionableItemToken.getUuid());
-         addChildAi(topAia, childAi, changes, aias);
+            actionableItemToken.getName(), actionableItemToken.getUuid(), changes, services);
+         addChildAi(safetyAi, childAi, changes, aias);
       }
-      AtsClientService.get().storeConfigObject(topAia, changes);
+      AtsClientService.get().storeConfigObject(safetyAi, changes);
       return aias;
    }
 
    private void addChildAi(IAtsActionableItem topAia, IAtsActionableItem childAi, IAtsChangeSet changes, Collection<IAtsActionableItem> aias) {
-      childAi.setActionable(true);
-      topAia.getChildrenActionableItems().add(childAi);
-      childAi.setParentActionableItem(topAia);
-      AtsClientService.get().storeConfigObject(childAi, changes);
+      changes.setSoleAttributeValue(childAi, AtsAttributeTypes.Actionable, true);
+      changes.relate(topAia, CoreRelationTypes.Default_Hierarchical__Child, childAi);
       aias.add(childAi);
    }
 

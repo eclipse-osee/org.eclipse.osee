@@ -298,27 +298,27 @@ public class AtsTestUtil {
 
       String guid = GUID.create();
       testAi = AtsClientService.get().createActionableItem(guid, getTitle("AI", postFixName),
-         AtsUtilClient.createConfigObjectUuid());
-      testAi.setActive(true);
-      testAi.setActionable(true);
+         AtsUtilClient.createConfigObjectUuid(), changes, AtsClientService.get());
+      changes.setSoleAttributeValue(testAi, AtsAttributeTypes.Active, true);
+      changes.setSoleAttributeValue(testAi, AtsAttributeTypes.Actionable, true);
 
       guid = GUID.create();
       testAi2 = AtsClientService.get().createActionableItem(guid, getTitle("AI2", postFixName),
-         AtsUtilClient.createConfigObjectUuid());
-      testAi2.setActive(true);
-      testAi2.setActionable(true);
+         AtsUtilClient.createConfigObjectUuid(), changes, AtsClientService.get());
+      changes.setSoleAttributeValue(testAi2, AtsAttributeTypes.Active, true);
+      changes.setSoleAttributeValue(testAi2, AtsAttributeTypes.Actionable, true);
 
       guid = GUID.create();
       testAi3 = AtsClientService.get().createActionableItem(guid, getTitle("AI3", postFixName),
-         AtsUtilClient.createConfigObjectUuid());
-      testAi3.setActive(true);
-      testAi3.setActionable(true);
+         AtsUtilClient.createConfigObjectUuid(), changes, AtsClientService.get());
+      changes.setSoleAttributeValue(testAi3, AtsAttributeTypes.Active, true);
+      changes.setSoleAttributeValue(testAi3, AtsAttributeTypes.Actionable, true);
 
       guid = GUID.create();
       testAi4 = AtsClientService.get().createActionableItem(guid, getTitle("AI4", postFixName),
-         AtsUtilClient.createConfigObjectUuid());
-      testAi4.setActive(true);
-      testAi4.setActionable(true);
+         AtsUtilClient.createConfigObjectUuid(), changes, AtsClientService.get());
+      changes.setSoleAttributeValue(testAi4, AtsAttributeTypes.Active, true);
+      changes.setSoleAttributeValue(testAi4, AtsAttributeTypes.Actionable, true);
 
       guid = GUID.create();
       teamDef = AtsClientService.get().createTeamDefinition(guid, getTitle("Team Def", postFixName),
@@ -326,15 +326,10 @@ public class AtsTestUtil {
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.WorkflowDefinition, WORK_DEF_NAME);
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.Active, true);
       changes.relate(teamDef, AtsRelationTypes.TeamLead_Lead, AtsClientService.get().getUserService().getCurrentUser());
-
-      testAi.setTeamDefinition(teamDef);
-      testAi2.setTeamDefinition(teamDef);
-      testAi3.setTeamDefinition(teamDef);
-      testAi4.setTeamDefinition(teamDef);
-      AtsClientService.get().storeConfigObject(testAi, changes);
-      AtsClientService.get().storeConfigObject(testAi2, changes);
-      AtsClientService.get().storeConfigObject(testAi3, changes);
-      AtsClientService.get().storeConfigObject(testAi4, changes);
+      changes.relate(teamDef, AtsRelationTypes.TeamActionableItem_ActionableItem, testAi);
+      changes.relate(teamDef, AtsRelationTypes.TeamActionableItem_ActionableItem, testAi2);
+      changes.relate(teamDef, AtsRelationTypes.TeamActionableItem_ActionableItem, testAi3);
+      changes.relate(teamDef, AtsRelationTypes.TeamActionableItem_ActionableItem, testAi4);
 
       guid = GUID.create();
       verArt1 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 1.0", postFixName), guid,

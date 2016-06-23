@@ -8,39 +8,38 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.rest.internal.workitem.model;
+package org.eclipse.osee.ats.core.config;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
-import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G Dunne
  */
 public class ActionableItem extends AtsConfigObject implements IAtsActionableItem {
 
-   public ActionableItem(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
-      super(logger, atsServer, artifact);
+   public ActionableItem(Log logger, IAtsServices services, ArtifactId artifact) {
+      super(logger, services, artifact);
    }
 
    @Override
    public Collection<IAtsActionableItem> getChildrenActionableItems() {
       Set<IAtsActionableItem> children = new HashSet<>();
       try {
-         for (ArtifactReadable childArt : getArtifact().getRelated(CoreRelationTypes.Default_Hierarchical__Child)) {
+         for (ArtifactId childArt : services.getRelationResolver().getRelated(artifact,
+            CoreRelationTypes.Default_Hierarchical__Child)) {
             IAtsActionableItem childTeamDef = services.getConfigItemFactory().getActionableItem(childArt);
             children.add(childTeamDef);
          }
@@ -50,15 +49,12 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
       return children;
    }
 
-   private ArtifactReadable getArtifact() {
-      return (ArtifactReadable) artifact;
-   }
-
    @Override
    public IAtsActionableItem getParentActionableItem() {
       IAtsActionableItem parent = null;
       try {
-         ResultSet<ArtifactReadable> related = getArtifact().getRelated(CoreRelationTypes.Default_Hierarchical__Parent);
+         Collection<ArtifactId> related =
+            services.getRelationResolver().getRelated(artifact, CoreRelationTypes.Default_Hierarchical__Parent);
          if (!related.isEmpty()) {
             parent = services.getConfigItemFactory().getActionableItem(related.iterator().next());
          }
@@ -72,7 +68,8 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
    public IAtsTeamDefinition getTeamDefinition() {
       IAtsTeamDefinition teamDef = null;
       try {
-         ResultSet<ArtifactReadable> related = getArtifact().getRelated(AtsRelationTypes.TeamActionableItem_Team);
+         Collection<ArtifactId> related =
+            services.getRelationResolver().getRelated(artifact, AtsRelationTypes.TeamActionableItem_Team);
          if (!related.isEmpty()) {
             teamDef = services.getConfigItemFactory().getTeamDef(related.iterator().next());
          }
@@ -88,23 +85,8 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
    }
 
    @Override
-   public void setParentActionableItem(IAtsActionableItem parentActionableItem) {
-      throw new UnsupportedOperationException("Error ActionableItem.setParentActionableItem not implemented");
-   }
-
-   @Override
-   public void setTeamDefinition(IAtsTeamDefinition teamDef) {
-      throw new UnsupportedOperationException("Error ActionableItem.setTeamDefinition not implemented");
-   }
-
-   @Override
    public void setActionable(boolean actionable) {
       throw new UnsupportedOperationException("Error ActionableItem.setActionable not implemented");
-   }
-
-   @Override
-   public void setActive(boolean active) {
-      throw new UnsupportedOperationException("Error ActionableItem.setActive not implemented");
    }
 
    @Override
@@ -114,19 +96,15 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
 
    @Override
    public boolean isAllowUserActionCreation() {
-      return getArtifact().getSoleAttributeValue(AtsAttributeTypes.AllowUserActionCreation, true);
-   }
-
-   @Override
-   public void setAllowUserActionCreation(boolean allowUserActionCreation) {
-      throw new UnsupportedOperationException("Error ActionableItem.setAllowUserActionCreation not implemented");
+      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.AllowUserActionCreation,
+         true);
    }
 
    @Override
    public Collection<String> getRules() {
       Collection<String> rules = new ArrayList<>();
       try {
-         rules = getArtifact().getAttributeValues(AtsAttributeTypes.RuleDefinition);
+         rules = services.getAttributeResolver().getAttributeValues(artifact, AtsAttributeTypes.RuleDefinition);
       } catch (OseeCoreException ex) {
          getLogger().error(ex, "Error getting rules");
       }

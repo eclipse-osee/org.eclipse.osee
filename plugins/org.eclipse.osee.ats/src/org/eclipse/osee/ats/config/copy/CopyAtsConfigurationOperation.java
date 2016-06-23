@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -128,11 +129,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       Artifact newAiArt = duplicateTeamDefinitionOrActionableItem(changes, fromAiArt);
       changes.add(newAiArt);
       IAtsActionableItem newAi = AtsClientService.get().getConfigObject(newAiArt);
-      newAi.setParentActionableItem(parentAi);
-      parentAi.getChildrenActionableItems().add(newAi);
-
-      parentAiArt.addChild(newAiArt);
-      changes.add(parentAiArt);
+      changes.relate(parentAiArt, CoreRelationTypes.Default_Hierarchical__Child, newAi);
       existingArtifacts.add(parentAiArt);
       newArtifacts.add(newAiArt);
       // Relate new Ais to their TeamDefs just like other config

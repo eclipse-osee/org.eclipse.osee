@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.config;
 
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -18,8 +20,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IActionableItemFactory {
 
-   IAtsActionableItem createActionableItem(String guid, String name, long uuid) throws OseeCoreException;
+   IAtsActionableItem createActionableItem(String guid, String name, long uuid, IAtsChangeSet changes, IAtsServices services) throws OseeCoreException;
 
-   IAtsActionableItem createActionableItem(String name);
+   IAtsActionableItem createActionableItem(String name, IAtsChangeSet changes, IAtsServices services);
 
 }

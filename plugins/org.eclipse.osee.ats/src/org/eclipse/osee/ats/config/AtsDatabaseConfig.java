@@ -70,9 +70,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       Artifact topAiArt =
          ArtifactQuery.getArtifactFromToken(AtsArtifactToken.TopActionableItem, AtsUtilCore.getAtsBranch());
       IAtsActionableItem aia = AtsClientService.get().getConfigObject(topAiArt);
-      aia.setActionable(false);
-      changes.reset("Set Top AI to Non Actionable");
-      AtsClientService.get().storeConfigObject(aia, changes);
+      changes.setSoleAttributeValue(aia, AtsAttributeTypes.Actionable, false);
       changes.execute();
 
       AtsWorkDefinitionSheetProviders.initializeDatabase(new XResultData(false));

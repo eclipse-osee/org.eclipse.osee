@@ -81,8 +81,6 @@ import org.eclipse.osee.ats.core.client.internal.config.VersionFactory;
 import org.eclipse.osee.ats.core.client.internal.ev.AtsEarnedValueImpl;
 import org.eclipse.osee.ats.core.client.internal.query.AtsQueryServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.review.AtsReviewServiceImpl;
-import org.eclipse.osee.ats.core.client.internal.store.ActionableItemArtifactReader;
-import org.eclipse.osee.ats.core.client.internal.store.ActionableItemArtifactWriter;
 import org.eclipse.osee.ats.core.client.internal.store.AtsArtifactStore;
 import org.eclipse.osee.ats.core.client.internal.store.AtsVersionCache;
 import org.eclipse.osee.ats.core.client.internal.store.AtsVersionServiceImpl;
@@ -215,7 +213,6 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       Map<IArtifactType, IAtsArtifactReader<? extends IAtsConfigObject>> readers =
          new HashMap<IArtifactType, IAtsArtifactReader<? extends IAtsConfigObject>>();
 
-      writers.put(IAtsActionableItem.class, new ActionableItemArtifactWriter());
       writers.put(IAtsVersion.class, new VersionArtifactWriter());
 
       userService = new AtsUserServiceImpl();
@@ -234,7 +231,6 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       workItemFactory = new WorkItemFactory(this);
       versionFactory = new VersionFactory(versionService);
 
-      readers.put(AtsArtifactTypes.ActionableItem, new ActionableItemArtifactReader(actionableItemFactory));
       readers.put(AtsArtifactTypes.Version, new VersionArtifactReader(versionFactory));
 
       workDefCache = new AtsWorkDefinitionCache();
@@ -379,13 +375,13 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public IAtsActionableItem createActionableItem(String name) throws OseeCoreException {
-      return createActionableItem(GUID.create(), name, AtsUtilClient.createConfigObjectUuid());
+   public IAtsActionableItem createActionableItem(String name, IAtsChangeSet changes, IAtsServices services) throws OseeCoreException {
+      return createActionableItem(GUID.create(), name, AtsUtilClient.createConfigObjectUuid(), changes, services);
    }
 
    @Override
-   public IAtsActionableItem createActionableItem(String guid, String name, long uuid) throws OseeCoreException {
-      IAtsActionableItem item = actionableItemFactory.createActionableItem(guid, name, uuid);
+   public IAtsActionableItem createActionableItem(String guid, String name, long uuid, IAtsChangeSet changes, IAtsServices services) throws OseeCoreException {
+      IAtsActionableItem item = actionableItemFactory.createActionableItem(guid, name, uuid, changes, services);
       IAtsCache cache = atsCache();
       cache.cacheAtsObject(item);
       return item;

@@ -40,20 +40,12 @@ public interface IAtsActionableItem extends IAtsConfigObject, IAtsRules {
 
    IAtsTeamDefinition getTeamDefinitionInherited();
 
-   void setParentActionableItem(IAtsActionableItem parentActionableItem);
-
-   void setTeamDefinition(IAtsTeamDefinition teamDef);
-
    /*****************************
     * Misc
     ******************************/
    Collection<String> getStaticIds();
 
-   void setActionable(boolean actionable);
-
    public boolean isActionable() throws OseeCoreException;
-
-   void setActive(boolean active);
 
    /*****************************************************
     * Team Leads, Members
@@ -63,7 +55,5 @@ public interface IAtsActionableItem extends IAtsConfigObject, IAtsRules {
    Collection<IAtsUser> getSubscribed() throws OseeCoreException;
 
    boolean isAllowUserActionCreation();
-
-   void setAllowUserActionCreation(boolean allowUserActionCreation);
 
 }

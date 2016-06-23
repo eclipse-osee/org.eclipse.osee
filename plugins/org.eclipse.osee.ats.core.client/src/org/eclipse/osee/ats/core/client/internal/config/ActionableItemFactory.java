@@ -10,9 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal.config;
 
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
+import org.eclipse.osee.ats.core.config.ActionableItem;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
@@ -21,16 +26,17 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 public class ActionableItemFactory implements IActionableItemFactory {
 
    @Override
-   public IAtsActionableItem createActionableItem(String guid, String name, long uuid) {
+   public IAtsActionableItem createActionableItem(String guid, String name, long uuid, IAtsChangeSet changes, IAtsServices services) {
       if (guid == null) {
          throw new IllegalArgumentException("guid can not be null");
       }
-      return new ActionableItem(name, guid, uuid);
+      ArtifactId artifact = changes.createArtifact(AtsArtifactTypes.ActionableItem, name, guid, uuid);
+      return new ActionableItem(services.getLogger(), services, artifact);
    }
 
    @Override
-   public IAtsActionableItem createActionableItem(String name) {
-      return createActionableItem(GUID.create(), name, AtsUtilClient.createConfigObjectUuid());
+   public IAtsActionableItem createActionableItem(String name, IAtsChangeSet changes, IAtsServices services) {
+      return createActionableItem(GUID.create(), name, AtsUtilClient.createConfigObjectUuid(), changes, services);
    }
 
 }

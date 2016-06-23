@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.client.internal.store;
 
 import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -20,6 +21,7 @@ import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.internal.IAtsArtifactReader;
 import org.eclipse.osee.ats.core.client.internal.IAtsArtifactStore;
 import org.eclipse.osee.ats.core.client.internal.IAtsArtifactWriter;
+import org.eclipse.osee.ats.core.config.ActionableItem;
 import org.eclipse.osee.ats.core.config.TeamDefinition;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -50,6 +52,12 @@ public class AtsArtifactStore implements IAtsArtifactStore {
          changes.add(teamDef);
          return (Artifact) teamDef.getStoreObject();
       }
+      if (configObject instanceof IAtsActionableItem) {
+         IAtsActionableItem ai = (IAtsActionableItem) configObject;
+         changes.add(ai);
+         return (Artifact) ai.getStoreObject();
+      }
+
       IAtsArtifactWriter<T> writer = getWriter(configObject.getClass());
       Conditions.checkNotNull(writer, "writer");
 
@@ -68,6 +76,12 @@ public class AtsArtifactStore implements IAtsArtifactStore {
             new TeamDefinition(AtsClientService.get().getLogger(), AtsClientService.get(), artifact);
          cache.cacheAtsObject(teamDef);
          return (T) teamDef;
+      }
+      if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {
+         IAtsActionableItem ai =
+            new ActionableItem(AtsClientService.get().getLogger(), AtsClientService.get(), artifact);
+         cache.cacheAtsObject(ai);
+         return (T) ai;
       }
       IAtsArtifactReader<T> reader = getReader(artifact.getArtifactTypeToken());
       Conditions.checkNotNull(reader, "reader");
