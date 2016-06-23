@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -69,9 +70,9 @@ public final class ChangeManager {
    /**
     * Acquires artifact, relation and attribute changes from a source branch since its creation.
     */
-   public static IOperation comparedToPreviousTx(TransactionRecord transactionId, Collection<Change> changes) throws OseeCoreException {
-      TransactionRecord startTx = TransactionManager.getPriorTransaction(transactionId);
-      TransactionRecord endTx = transactionId;
+   public static IOperation comparedToPreviousTx(TransactionToken transactionId, Collection<Change> changes) throws OseeCoreException {
+      TransactionToken startTx = TransactionManager.getPriorTransaction(transactionId);
+      TransactionToken endTx = transactionId;
 
       TransactionDelta txDelta = new TransactionDelta(startTx, endTx);
       return new ChangeDataLoader(changes, txDelta);

@@ -139,7 +139,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    @Override
    public TransactionToken getCommitTransactionRecord(IAtsTeamWorkflow teamWf, BranchId branch) {
       if (branch == null) {
-         return null;
+         return TransactionToken.SENTINEL;
       }
 
       Collection<TransactionToken> transactions = getCommittedArtifactTransactionIds(teamWf);
@@ -148,7 +148,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
             return transId;
          }
       }
-      return null;
+      return TransactionToken.SENTINEL;
    }
 
    @Override
@@ -170,7 +170,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       Collection<TransactionToken> transactionIds = getTransactionIds(teamWf, false);
       TransactionToken earliestTransactionId;
       if (transactionIds.isEmpty()) {
-         earliestTransactionId = null;
+         earliestTransactionId = TransactionToken.SENTINEL;
       } else {
          earliestTransactionId = transactionIds.iterator().next();
          for (TransactionToken transactionId : transactionIds) {
@@ -601,7 +601,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
          }
       }
       if (committedToParentTransRecord != null) {
-         if (getTimeStamp(getBaseTransaction(destinationBranch)).after(getTimeStamp(committedToParentTransRecord))) {
+         if (committedToParentTransRecord.isOlderThan(getBaseTransaction(destinationBranch))) {
             return true;
          }
       }

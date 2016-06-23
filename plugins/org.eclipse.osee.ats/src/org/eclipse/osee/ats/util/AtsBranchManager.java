@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -191,8 +192,8 @@ public final class AtsBranchManager {
    /**
     * Either return a single commit transaction or user must choose from a list of valid commit transactions
     */
-   public static TransactionRecord getTransactionIdOrPopupChoose(TeamWorkFlowArtifact teamArt, String title, boolean showMergeManager) throws OseeCoreException {
-      Collection<TransactionRecord> transactionIds = new HashSet<>();
+   public static TransactionToken getTransactionIdOrPopupChoose(TeamWorkFlowArtifact teamArt, String title, boolean showMergeManager) throws OseeCoreException {
+      Collection<TransactionToken> transactionIds = new HashSet<>();
       Collection<TransactionToken> transactions =
          AtsClientService.get().getBranchService().getTransactionIds(teamArt, showMergeManager);
       Collection<TransactionRecord> trs = Collections.castAll(transactions);
@@ -215,12 +216,9 @@ public final class AtsBranchManager {
             if (e1 == null || e2 == null) {
                return 0;
             }
-            if (((TransactionRecord) e1).getId() < ((TransactionRecord) e2).getId()) {
-               return -1;
-            } else if (((TransactionRecord) e1).getId() > ((TransactionRecord) e2).getId()) {
-               return 1;
-            }
-            return 0;
+            TransactionId tx1 = (TransactionId) e1;
+            TransactionId tx2 = (TransactionId) e2;
+            return (int) (tx1.getId() - tx2.getId());
          }
       };
       FilteredTreeDialog dialog = new FilteredTreeDialog(title, "Select Commit Branch", new ArrayTreeContentProvider(),
@@ -228,9 +226,9 @@ public final class AtsBranchManager {
 
       dialog.setInput(transactionIds);
       if (dialog.open() == 0) {
-         return (TransactionRecord) dialog.getSelectedFirst();
+         return dialog.getSelectedFirst();
       }
-      return null;
+      return TransactionToken.SENTINEL;
    }
 
    /**
@@ -247,7 +245,7 @@ public final class AtsBranchManager {
             ChangeReportEditorInput input = ChangeUiUtil.createInput(workingBranch, parentBranch, true);
             ChangeUiUtil.open(input);
          } else if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt)) {
-            TransactionRecord transactionId = getTransactionIdOrPopupChoose(teamArt, "Show Change Report", false);
+            TransactionToken transactionId = getTransactionIdOrPopupChoose(teamArt, "Show Change Report", false);
             if (transactionId == null) {
                return;
             }
@@ -313,10 +311,9 @@ public final class AtsBranchManager {
          Operations.executeWorkAndCheckStatus(operation);
       } else {
          if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt)) {
-            TransactionRecord transactionId = null;
+            TransactionToken transactionId = null;
             if (commitConfigArt == null) {
-               transactionId =
-                  (TransactionRecord) AtsClientService.get().getBranchService().getEarliestTransactionId(teamArt);
+               transactionId = AtsClientService.get().getBranchService().getEarliestTransactionId(teamArt);
             } else {
                Collection<TransactionRecord> transIds =
                   Collections.castAll(AtsClientService.get().getBranchService().getTransactionIds(teamArt, false));

@@ -16,9 +16,9 @@ import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -43,7 +43,7 @@ import org.eclipse.osee.orcs.rest.model.NewBranch;
  */
 public final class CreateBranchHttpRequestOperation extends AbstractOperation {
    private final BranchType branchType;
-   private final TransactionRecord parentTransaction;
+   private final TransactionToken parentTransaction;
    private final String branchName;
    private final Artifact associatedArtifact;
    private final String creationComment;
@@ -53,12 +53,12 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
    private boolean txCopyBranchType;
    private final long branchUuid;
 
-   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionRecord parentTransaction, String branchName, long branchUuid, Artifact associatedArtifact, String creationComment) {
+   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionToken parentTransaction, String branchName, long branchUuid, Artifact associatedArtifact, String creationComment) {
       this(branchType, parentTransaction, branchName, branchUuid, associatedArtifact, creationComment, -1,
          BranchId.SENTINEL);
    }
 
-   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionRecord parentTransaction, String branchName, long branchUuid, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, BranchId destinationBranch) {
+   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionToken parentTransaction, String branchName, long branchUuid, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, BranchId destinationBranch) {
       super("Create branch " + branchName, Activator.PLUGIN_ID);
       this.branchType = branchType;
       this.parentTransaction = parentTransaction;

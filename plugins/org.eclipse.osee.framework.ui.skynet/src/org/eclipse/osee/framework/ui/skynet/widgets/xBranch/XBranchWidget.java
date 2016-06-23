@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -247,8 +246,8 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
       while (i.hasNext()) {
          Object obj = i.next();
 
-         if (obj instanceof TransactionRecord) {
-            items.add((TransactionRecord) obj);
+         if (obj instanceof TransactionId) {
+            items.add((TransactionId) obj);
          }
       }
       return items;

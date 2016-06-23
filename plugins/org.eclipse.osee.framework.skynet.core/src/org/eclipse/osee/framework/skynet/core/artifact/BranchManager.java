@@ -433,11 +433,11 @@ public final class BranchManager {
       return mergeBranch;
    }
 
-   public static IOseeBranch createWorkingBranch(TransactionRecord parentTransactionId, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
+   public static IOseeBranch createWorkingBranch(TransactionToken parentTransactionId, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
       return createWorkingBranch(parentTransactionId, childBranchName, Lib.generateUuid(), associatedArtifact);
    }
 
-   public static IOseeBranch createWorkingBranch(TransactionRecord parentTransactionId, String childBranchName, Long childBranchUuid, Artifact associatedArtifact) throws OseeCoreException {
+   public static IOseeBranch createWorkingBranch(TransactionToken parentTransactionId, String childBranchName, Long childBranchUuid, Artifact associatedArtifact) throws OseeCoreException {
       Conditions.notNull(childBranchUuid, "childBranchUuid");
       String creationComment =
          String.format("New Branch from %s (%s)", getBranchName(parentTransactionId), parentTransactionId.getId());
@@ -450,7 +450,7 @@ public final class BranchManager {
    /**
     * Creates a new Branch based on the most recent transaction on the parent branch.
     */
-   public static IOseeBranch createWorkingBranchFromTx(TransactionRecord parentTransactionId, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
+   public static IOseeBranch createWorkingBranchFromTx(TransactionToken parentTransactionId, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
       String creationComment = String.format("New branch, copy of %s from transaction %s",
          getBranchName(parentTransactionId), parentTransactionId.getId());
 
@@ -511,12 +511,12 @@ public final class BranchManager {
          associatedArtifact, creationComment);
    }
 
-   private static IOseeBranch createBranch(BranchType branchType, TransactionRecord parentTransaction, String branchName, long branchUuid, Artifact associatedArtifact, String creationComment) {
+   private static IOseeBranch createBranch(BranchType branchType, TransactionToken parentTransaction, String branchName, long branchUuid, Artifact associatedArtifact, String creationComment) {
       return createBranch(branchType, parentTransaction, branchName, branchUuid, associatedArtifact, creationComment,
          -1, BranchId.SENTINEL);
    }
 
-   private static IOseeBranch createBranch(BranchType branchType, TransactionRecord parentTransaction, String branchName, long branchUuid, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, BranchId destinationBranch) throws OseeCoreException {
+   private static IOseeBranch createBranch(BranchType branchType, TransactionToken parentTransaction, String branchName, long branchUuid, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, BranchId destinationBranch) throws OseeCoreException {
       CreateBranchHttpRequestOperation operation = new CreateBranchHttpRequestOperation(branchType, parentTransaction,
          branchName, branchUuid, associatedArtifact, creationComment, mergeAddressingQueryId, destinationBranch);
       Operations.executeWorkAndCheckStatus(operation);

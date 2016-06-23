@@ -18,10 +18,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
@@ -44,12 +44,12 @@ public class BranchCreationHandler extends CommandHandler {
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
       Object backingData = selection.getFirstElement();
 
-      final TransactionRecord parentTransactionId;
+      final TransactionToken parentTransactionId;
       if (backingData instanceof Branch) {
          Branch branch = (Branch) backingData;
          parentTransactionId = TransactionManager.getHeadTransaction(branch);
-      } else if (backingData instanceof TransactionRecord) {
-         parentTransactionId = (TransactionRecord) backingData;
+      } else if (backingData instanceof TransactionToken) {
+         parentTransactionId = (TransactionToken) backingData;
       } else {
          throw new OseeStateException(
             "Backing data for the jobbed node in the branchview was not of the expected type");
@@ -97,8 +97,8 @@ public class BranchCreationHandler extends CommandHandler {
 
       if (object instanceof BranchId) {
          branch = (BranchId) object;
-      } else if (object instanceof TransactionRecord) {
-         branch = ((TransactionRecord) object).getBranch();
+      } else if (object instanceof TransactionToken) {
+         branch = ((TransactionToken) object).getBranch();
       }
 
       if (branch == null || BranchManager.isArchived(branch)) {

@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.rest.internal.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,12 +22,10 @@ import org.eclipse.osee.ats.core.util.AbstractAtsBranchService;
 import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -126,11 +123,6 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public boolean isArchived(BranchId branch) {
       return getBranch(branch).getArchiveState().isArchived();
-   }
-
-   @Override
-   public Date getTimeStamp(TransactionId transaction) {
-      return ((TransactionRecord) transaction).getTimeStamp();
    }
 
    @Override

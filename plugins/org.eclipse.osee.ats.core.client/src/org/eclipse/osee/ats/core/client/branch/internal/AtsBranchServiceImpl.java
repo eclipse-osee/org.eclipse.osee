@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.core.client.branch.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -20,7 +19,6 @@ import org.eclipse.osee.ats.core.util.AbstractAtsBranchService;
 import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -107,11 +105,6 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public boolean isArchived(BranchId branch) {
       return BranchManager.isArchived(branch);
-   }
-
-   @Override
-   public Date getTimeStamp(TransactionId transaction) {
-      return TransactionManager.getTransaction(transaction).getTimeStamp();
    }
 
    @Override

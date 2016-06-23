@@ -20,7 +20,7 @@ public class TransactionIdLabelProvider extends LabelProvider {
 
    @Override
    public String getText(Object element) {
-      return ((TransactionRecord) element).toString() + " - " + ((TransactionRecord) element).getComment();
+      return element.toString() + " - " + ((TransactionRecord) element).getComment();
    }
 
 }

@@ -18,17 +18,21 @@ import org.eclipse.osee.ats.api.commit.CommitStatus;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
@@ -51,8 +55,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       if (element instanceof ICommitConfigItem) {
          ICommitConfigItem configArt = (ICommitConfigItem) element;
          branch = AtsClientService.get().getBranchService().getBranch(configArt);
-      } else if (element instanceof TransactionRecord) {
-         TransactionRecord txRecord = (TransactionRecord) element;
+      } else if (element instanceof TransactionToken) {
+         TransactionToken txRecord = (TransactionToken) element;
          branch = txRecord.getBranch();
       } else {
          throw new OseeArgumentException("Unhandled element type [%s]", element.getClass().toString());
@@ -70,7 +74,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
                commitXManager.getXCommitViewer().getTeamArt(), branch);
             if (commitStatus == CommitStatus.Branch_Not_Configured || commitStatus == CommitStatus.Branch_Commit_Disabled ||
             //
-            commitStatus == CommitStatus.Commit_Needed || commitStatus == CommitStatus.Working_Branch_Not_Created) {
+               commitStatus == CommitStatus.Commit_Needed || commitStatus == CommitStatus.Working_Branch_Not_Created) {
                return ImageManager.getImage(FrameworkImage.DOT_RED);
             }
 
@@ -110,8 +114,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          } else {
             branch = TokenFactory.createBranch(configArt.getBaselineBranchUuid());
          }
-      } else if (element instanceof TransactionRecord) {
-         TransactionRecord txRecord = (TransactionRecord) element;
+      } else if (element instanceof TransactionToken) {
+         TransactionToken txRecord = (TransactionToken) element;
          branch = txRecord.getBranch();
       } else {
          throw new OseeArgumentException("Unhandled element type [%s]", element.getClass().toString());
@@ -157,10 +161,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    }
 
    private String handleCommitDateColumn(BranchId branch) throws OseeCoreException {
-      TransactionRecord transactionRecord =
-         (TransactionRecord) AtsClientService.get().getBranchService().getCommitTransactionRecord(
-            commitXManager.getXCommitViewer().getTeamArt(), branch);
-      if (transactionRecord != null) {
+      TransactionRecord transactionRecord = getTransactionRecord(branch);
+      if (transactionRecord.isValid()) {
          new DateUtil();
          return DateUtil.getMMDDYYHHMM(transactionRecord.getTimeStamp());
       }
@@ -168,13 +170,17 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    }
 
    private String handleCommitCommentColumn(BranchId branch) throws OseeCoreException {
-      TransactionRecord transactionRecord =
-         (TransactionRecord) AtsClientService.get().getBranchService().getCommitTransactionRecord(
-            commitXManager.getXCommitViewer().getTeamArt(), branch);
-      if (transactionRecord != null) {
+      TransactionRecord transactionRecord = getTransactionRecord(branch);
+      if (transactionRecord.isValid()) {
          return transactionRecord.getComment();
       }
       return "Not Committed";
+   }
+
+   private TransactionRecord getTransactionRecord(BranchId branch) {
+      IAtsBranchService service = AtsClientService.get().getBranchService();
+      IAtsTeamWorkflow teamWf = commitXManager.getXCommitViewer().getTeamArt();
+      return TransactionManager.getTransaction(service.getCommitTransactionRecord(teamWf, branch));
    }
 
    private String handleDestBranchColumn(Object element, BranchId branchToken) {

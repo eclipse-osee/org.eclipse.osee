@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -150,8 +150,8 @@ public final class PortPairsOperation extends AbstractOperation {
          BranchManager.getBranchesByName(String.format("Porting [%s] branch", sourceWorkflow.getAtsId()));
 
       if (branches.isEmpty()) {
-         TransactionRecord transRecord =
-            (TransactionRecord) AtsClientService.get().getBranchService().getEarliestTransactionId(sourceWorkflow);
+         TransactionToken transRecord =
+            AtsClientService.get().getBranchService().getEarliestTransactionId(sourceWorkflow);
          if (transRecord == null) {
             return null;
          } else {

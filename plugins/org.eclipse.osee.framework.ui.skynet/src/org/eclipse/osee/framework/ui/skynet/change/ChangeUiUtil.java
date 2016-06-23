@@ -55,7 +55,7 @@ public final class ChangeUiUtil {
       open(createInput(transactionId, true));
    }
 
-   public static void open(TransactionRecord startTx, TransactionRecord endTx) throws OseeCoreException {
+   public static void open(TransactionToken startTx, TransactionToken endTx) throws OseeCoreException {
       Conditions.checkNotNull(startTx, "First TransactionId");
       Conditions.checkNotNull(endTx, "Second TransactionId");
       TransactionDelta txDelta = new TransactionDelta(startTx, endTx);

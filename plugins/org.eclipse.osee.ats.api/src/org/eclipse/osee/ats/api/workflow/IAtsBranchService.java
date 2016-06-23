@@ -11,14 +11,12 @@
 package org.eclipse.osee.ats.api.workflow;
 
 import java.util.Collection;
-import java.util.Date;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -117,8 +115,6 @@ public interface IAtsBranchService {
    boolean isArchived(BranchId branch);
 
    TransactionToken getCommitTransactionRecord(IAtsTeamWorkflow teamWf, BranchId branch);
-
-   Date getTimeStamp(TransactionId committedToParentTransRecord);
 
    Collection<BranchId> getBranchesToCommitTo(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 

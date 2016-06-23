@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -92,8 +92,8 @@ public class CommitXManager extends XViewer {
             configArt = (ICommitConfigItem) firstSelectedArt;
             branch = AtsClientService.get().getBranchService().getBranch(configArt);
             displayName = configArt.toString();
-         } else if (firstSelectedArt instanceof TransactionRecord) {
-            TransactionRecord txRecord = (TransactionRecord) firstSelectedArt;
+         } else if (firstSelectedArt instanceof TransactionToken) {
+            TransactionToken txRecord = (TransactionToken) firstSelectedArt;
             branch = txRecord.getBranch();
             displayName = txRecord.toString();
          } else {

@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -42,8 +43,8 @@ public class ChangeReportHandler extends CommandHandler {
             }
          } else if (selection.size() == 2) {
             Object[] items = selection.toArray();
-            if (items[0] instanceof TransactionRecord && items[1] instanceof TransactionRecord) {
-               if (((TransactionRecord) items[0]).isOnSameBranch((TransactionRecord) items[1])) {
+            if (items[0] instanceof TransactionToken && items[1] instanceof TransactionToken) {
+               if (((TransactionToken) items[0]).isOnSameBranch((TransactionToken) items[1])) {
                   enabled = true;
                }
             }
@@ -61,17 +62,17 @@ public class ChangeReportHandler extends CommandHandler {
          try {
             if (selection.size() == 2) {
                Object[] items = selection.toArray();
-               if (items[0] instanceof TransactionRecord && items[1] instanceof TransactionRecord) {
-                  TransactionRecord tx1 = (TransactionRecord) items[0];
-                  TransactionRecord tx2 = (TransactionRecord) items[1];
-                  TransactionRecord startTx = tx1.getId() < tx2.getId() ? tx1 : tx2;
-                  TransactionRecord endTx = startTx.getId() == tx1.getId() ? tx2 : tx1;
+               if (items[0] instanceof TransactionToken && items[1] instanceof TransactionToken) {
+                  TransactionToken tx1 = (TransactionToken) items[0];
+                  TransactionToken tx2 = (TransactionToken) items[1];
+                  TransactionToken startTx = tx1.isOlderThan(tx2) ? tx1 : tx2;
+                  TransactionToken endTx = startTx.equals(tx1) ? tx2 : tx1;
                   ChangeUiUtil.open(startTx, endTx);
                }
             } else {
                Object selectedObject = selection.getFirstElement();
-               if (selectedObject instanceof TransactionRecord) {
-                  ChangeUiUtil.open((TransactionRecord) selectedObject);
+               if (selectedObject instanceof TransactionToken) {
+                  ChangeUiUtil.open((TransactionToken) selectedObject);
                } else if (selectedObject instanceof BranchId) {
                   ChangeUiUtil.open((BranchId) selectedObject);
                }
