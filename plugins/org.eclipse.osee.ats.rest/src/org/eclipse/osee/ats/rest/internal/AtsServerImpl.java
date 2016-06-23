@@ -712,4 +712,9 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
       return atsCache;
    }
 
+   @Override
+   public Log getLogger() {
+      return logger;
+   }
+
 }

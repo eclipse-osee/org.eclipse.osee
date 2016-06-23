@@ -79,10 +79,6 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
       return value;
    }
 
-   public void setActive(boolean active) {
-      throw new UnsupportedOperationException("TeamDefinition.setActive not implemented yet");
-   }
-
    @Override
    public boolean isActive() {
       return getAttributeValue(AtsAttributeTypes.Active, false);

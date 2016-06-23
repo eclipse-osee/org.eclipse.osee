@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client;
 
-import org.eclipse.osee.ats.core.client.internal.config.InternalConfigTestSuite;
 import org.eclipse.osee.ats.core.client.internal.store.InternalStoreTestSuite;
 import org.eclipse.osee.ats.core.client.review.ReviewTestSuite;
 import org.eclipse.osee.ats.core.client.validator.ValidatorTestSuite;
@@ -21,11 +20,7 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-   InternalConfigTestSuite.class,
-   InternalStoreTestSuite.class,
-   ReviewTestSuite.class,
-   ValidatorTestSuite.class})
+@Suite.SuiteClasses({InternalStoreTestSuite.class, ReviewTestSuite.class, ValidatorTestSuite.class})
 public class AllAtsCoreClientTestSuite {
    // Test Suite
 }

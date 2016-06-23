@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -254,11 +255,12 @@ public class AtsBranchConfigurationTest {
             "Configuring team def to use branch and allow create/commit");
       }
       IAtsTeamDefinition teamDef = operation.getTeamDefinition();
-      teamDef.setBaselineBranchUuid(viaTeamDefBranch.getUuid());
-      // setup team def to allow create/commit of branch
-      teamDef.setAllowCommitBranch(true);
-      teamDef.setAllowCreateBranch(true);
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchUuid,
+         viaTeamDefBranch.getUuid().toString());
+      // setup team def to allow create/commit of branch
+      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.AllowCommitBranch, true);
+      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.AllowCreateBranch, true);
       AtsClientService.get().storeConfigObject(teamDef, changes);
       changes.execute();
 

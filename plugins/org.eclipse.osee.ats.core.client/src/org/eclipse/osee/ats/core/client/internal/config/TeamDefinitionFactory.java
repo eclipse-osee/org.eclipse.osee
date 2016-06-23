@@ -10,9 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal.config;
 
+import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
+import org.eclipse.osee.ats.core.config.TeamDefinition;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
@@ -21,16 +26,17 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 public class TeamDefinitionFactory implements ITeamDefinitionFactory {
 
    @Override
-   public IAtsTeamDefinition createTeamDefinition(String guid, String name, long uuid) {
+   public IAtsTeamDefinition createTeamDefinition(String guid, String name, long uuid, IAtsChangeSet changes, IAtsServices services) {
       if (guid == null) {
          throw new IllegalArgumentException("guid can not be null");
       }
-      return new TeamDefinition(name, guid, uuid);
+      ArtifactId artifact = changes.createArtifact(AtsArtifactTypes.TeamDefinition, name, guid, uuid);
+      return new TeamDefinition(services.getLogger(), services, artifact);
    }
 
    @Override
-   public IAtsTeamDefinition createTeamDefinition(String name) {
-      return createTeamDefinition(GUID.create(), name, AtsUtilClient.createConfigObjectUuid());
+   public IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, IAtsServices services) {
+      return createTeamDefinition(GUID.create(), name, AtsUtilClient.createConfigObjectUuid(), changes, services);
    }
 
 }

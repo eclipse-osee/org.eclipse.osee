@@ -86,8 +86,6 @@ import org.eclipse.osee.ats.core.client.internal.store.ActionableItemArtifactWri
 import org.eclipse.osee.ats.core.client.internal.store.AtsArtifactStore;
 import org.eclipse.osee.ats.core.client.internal.store.AtsVersionCache;
 import org.eclipse.osee.ats.core.client.internal.store.AtsVersionServiceImpl;
-import org.eclipse.osee.ats.core.client.internal.store.TeamDefinitionArtifactReader;
-import org.eclipse.osee.ats.core.client.internal.store.TeamDefinitionArtifactWriter;
 import org.eclipse.osee.ats.core.client.internal.store.VersionArtifactReader;
 import org.eclipse.osee.ats.core.client.internal.store.VersionArtifactWriter;
 import org.eclipse.osee.ats.core.client.internal.user.AtsUserServiceImpl;
@@ -218,7 +216,6 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
          new HashMap<IArtifactType, IAtsArtifactReader<? extends IAtsConfigObject>>();
 
       writers.put(IAtsActionableItem.class, new ActionableItemArtifactWriter());
-      writers.put(IAtsTeamDefinition.class, new TeamDefinitionArtifactWriter());
       writers.put(IAtsVersion.class, new VersionArtifactWriter());
 
       userService = new AtsUserServiceImpl();
@@ -238,7 +235,6 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       versionFactory = new VersionFactory(versionService);
 
       readers.put(AtsArtifactTypes.ActionableItem, new ActionableItemArtifactReader(actionableItemFactory));
-      readers.put(AtsArtifactTypes.TeamDefinition, new TeamDefinitionArtifactReader(teamDefFactory));
       readers.put(AtsArtifactTypes.Version, new VersionArtifactReader(versionFactory));
 
       workDefCache = new AtsWorkDefinitionCache();
@@ -370,13 +366,13 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public IAtsTeamDefinition createTeamDefinition(String name) throws OseeCoreException {
-      return createTeamDefinition(GUID.create(), name, AtsUtilClient.createConfigObjectUuid());
+   public IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, IAtsServices services) throws OseeCoreException {
+      return createTeamDefinition(GUID.create(), name, AtsUtilClient.createConfigObjectUuid(), changes, services);
    }
 
    @Override
-   public IAtsTeamDefinition createTeamDefinition(String guid, String name, long uuid) throws OseeCoreException {
-      IAtsTeamDefinition item = teamDefFactory.createTeamDefinition(guid, name, uuid);
+   public IAtsTeamDefinition createTeamDefinition(String guid, String name, long uuid, IAtsChangeSet changes, IAtsServices services) throws OseeCoreException {
+      IAtsTeamDefinition item = teamDefFactory.createTeamDefinition(guid, name, uuid, changes, services);
       IAtsCache cache = atsCache();
       cache.cacheAtsObject(item);
       return item;

@@ -16,11 +16,11 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
-import org.eclipse.osee.ats.core.config.RuleManager;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -41,7 +41,6 @@ public class ActionableItem extends AtsObject implements IAtsActionableItem {
    private Set<IAtsUser> leads;
    private Set<IAtsUser> subscribed;
    private Set<IAtsActionableItem> childrenActionableItems;
-   private final RuleManager ruleMgr = new RuleManager();
 
    public ActionableItem(String name, String guid, long uuid) {
       super(name, uuid);
@@ -185,23 +184,13 @@ public class ActionableItem extends AtsObject implements IAtsActionableItem {
     * Rules
     */
    @Override
-   public void removeRule(String rule) {
-      ruleMgr.removeRule(rule);
-   }
-
-   @Override
    public List<String> getRules() {
-      return ruleMgr.getRules();
-   }
-
-   @Override
-   public void addRule(String rule) {
-      ruleMgr.addRule(rule);
+      return ((Artifact) getStoreObject()).getAttributesToStringList(AtsAttributeTypes.RuleDefinition);
    }
 
    @Override
    public boolean hasRule(String rule) {
-      return ruleMgr.hasRule(rule);
+      return getRules().contains(rule);
    }
 
 }

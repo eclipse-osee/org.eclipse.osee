@@ -17,11 +17,13 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -60,13 +62,17 @@ public class AtsBranchServiceImplTest {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
 
       //Test Team Def-base Team Arts
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
+      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchUuid, SAW_Bld_1.getUuid().toString());
       // clear versions to config item is from teamDef
-      teamDef.getVersions().clear();
-      teamDef.setBaselineBranchUuid(SAW_Bld_1.getUuid());
+      for (IAtsVersion version : teamDef.getVersions()) {
+         changes.deleteArtifact(version.getStoreObject());
+      }
+      changes.execute();
       Collection<Object> commitObjs =
          AtsClientService.get().getBranchService().getCommitTransactionsAndConfigItemsForTeamWf(teamArt);
-      assertTrue("commitObjs has wrong size", commitObjs.size() == 1);
+      org.junit.Assert.assertEquals("commitObjs has wrong size", 1, commitObjs.size());
       assertTrue("commitObjs is missing teamDef", commitObjs.contains(teamDef));
    }
 
@@ -92,10 +98,14 @@ public class AtsBranchServiceImplTest {
       AtsTestUtil.cleanupAndReset(
          AtsBranchServiceImplTest.class.getSimpleName() + ".testGetCommitTransactionsAndConfigItemsForTeam_txRecords");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
-      teamDef.setBaselineBranchUuid(SAW_Bld_1.getUuid());
+      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchUuid, SAW_Bld_1.getUuid().toString());
       // clear versions to config item is from teamDef
-      teamDef.getVersions().clear();
+      for (IAtsVersion version : teamDef.getVersions()) {
+         changes.deleteArtifact(version.getStoreObject());
+      }
+      changes.execute();
       //Test TxRecords
       TransactionRecord txRecord = new TransactionRecord(1234L, SAW_Bld_1, "comment", new Date(0),
          UserManager.getUser().getArtId(), UserManager.getUser().getArtId(), TransactionDetailsType.Baselined);

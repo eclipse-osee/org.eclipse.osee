@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.AtsActivity;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
@@ -59,8 +60,9 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       Artifact topTeamDefArt =
          ArtifactQuery.getArtifactFromToken(AtsArtifactToken.TopTeamDefinition, AtsUtilCore.getAtsBranch());
       IAtsTeamDefinition teamDef = AtsClientService.get().getConfigObject(topTeamDefArt);
-      teamDef.setWorkflowDefinition(IAtsWorkDefinitionAdmin.TeamWorkflowDefaultDefinitionId);
       AtsChangeSet changes = new AtsChangeSet("Set Top Team Work Definition");
+      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.WorkflowDefinition,
+         IAtsWorkDefinitionAdmin.TeamWorkflowDefaultDefinitionId);
       AtsClientService.get().storeConfigObject(teamDef, changes);
       changes.execute();
 

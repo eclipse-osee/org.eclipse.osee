@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.config;
 
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -18,8 +20,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface ITeamDefinitionFactory {
 
-   IAtsTeamDefinition createTeamDefinition(String guid, String name, long uuid) throws OseeCoreException;
+   IAtsTeamDefinition createTeamDefinition(String guid, String name, long uuid, IAtsChangeSet changes, IAtsServices services) throws OseeCoreException;
 
-   IAtsTeamDefinition createTeamDefinition(String name) throws OseeCoreException;
+   IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, IAtsServices services) throws OseeCoreException;
 
 }

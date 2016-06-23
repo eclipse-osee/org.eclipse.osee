@@ -46,5 +46,6 @@ Import-Package: javax.ws.rs,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.jaxrs.mvc,
+ org.eclipse.osee.logger,
  org.osgi.framework,
  org.osgi.service.event

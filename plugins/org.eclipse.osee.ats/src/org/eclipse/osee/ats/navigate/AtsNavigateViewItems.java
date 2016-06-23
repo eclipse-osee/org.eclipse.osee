@@ -48,7 +48,6 @@ import org.eclipse.osee.ats.operation.MoveTeamWorkflowsBlam;
 import org.eclipse.osee.ats.search.AtsQuickSearchOperationFactory;
 import org.eclipse.osee.ats.search.AtsSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.util.AtsEditor;
-import org.eclipse.osee.ats.util.ConvertAIsAndTeamDefinitions;
 import org.eclipse.osee.ats.util.CreateActionUsingAllActionableItems;
 import org.eclipse.osee.ats.util.DoesNotWorkItemAts;
 import org.eclipse.osee.ats.util.Import.ImportActionsViaSpreadsheetBlam;
@@ -197,7 +196,6 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          XNavigateItem adminItems = new XNavigateItem(parent, "Admin", PluginUiImage.ADMIN);
 
          XNavigateItem dbConvertItems = new XNavigateItem(adminItems, "Database Conversions", PluginUiImage.ADMIN);
-         new ConvertAIsAndTeamDefinitions(dbConvertItems);
          new ImportAIsAndTeamDefinitionsItem(dbConvertItems);
          new ImportWorkDefinitionsItem(dbConvertItems);
          new XNavigateItemBlam(dbConvertItems, new ConvertWorkflowStatesBlam());

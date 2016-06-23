@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Donald G. Dunne
@@ -131,5 +132,7 @@ public interface IAtsServices {
    IAtsActionFactory getActionFactory();
 
    String getConfigValue(String key);
+
+   Log getLogger();
 
 }

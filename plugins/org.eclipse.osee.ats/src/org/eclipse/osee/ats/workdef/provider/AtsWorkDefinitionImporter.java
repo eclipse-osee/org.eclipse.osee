@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.workdef.provider;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
@@ -22,7 +21,6 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
-import org.eclipse.osee.ats.dsl.ModelUtil;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.dsl.atsDsl.StateDef;
 import org.eclipse.osee.ats.dsl.atsDsl.WorkDef;
@@ -49,7 +47,7 @@ import org.eclipse.osee.framework.ui.ws.AWorkspace;
 
 /**
  * Loads Work Definitions from database or file ATS DSL
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsWorkDefinitionImporter {
@@ -150,26 +148,6 @@ public class AtsWorkDefinitionImporter {
          String storageStr = AtsClientService.get().getWorkDefinitionAdmin().getStorageString(workDef, resultData);
          IFile iFile = OseeData.getIFile(filename);
          Lib.writeStringToFile(storageStr, AWorkspace.iFileToFile(iFile));
-         AWorkspace.openEditor(iFile);
-      } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
-      }
-   }
-
-   public void convertAndOpenAIandTeamAtsDsl(XResultData resultData) throws OseeCoreException {
-      ConvertAIsAndTeamsToAtsDsl converter = new ConvertAIsAndTeamsToAtsDsl(resultData);
-      AtsDsl atsDsl = converter.convert("AIsAndTeams");
-      String filename = "AIsAndTeams.ats";
-      File file = OseeData.getFile("AIsAndTeams.ats");
-      try {
-         FileOutputStream outputStream = new FileOutputStream(file);
-         ModelUtil.saveModel(atsDsl, "ats:/ats_fileanme" + Lib.getDateTimeString() + ".ats", outputStream);
-         String contents = Lib.fileToString(file);
-
-         //         contents = cleanupContents(atsDsl, null, contents);
-
-         Lib.writeStringToFile(contents, file);
-         IFile iFile = OseeData.getIFile(filename);
          AWorkspace.openEditor(iFile);
       } catch (Exception ex) {
          throw new OseeWrappedException(ex);

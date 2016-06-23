@@ -20,10 +20,6 @@ public interface IAtsRules {
 
    public Collection<String> getRules() throws OseeCoreException;
 
-   public void addRule(String rule) throws OseeCoreException;
-
    public boolean hasRule(String rule) throws OseeCoreException;
-
-   public void removeRule(String rule) throws OseeCoreException;
 
 }

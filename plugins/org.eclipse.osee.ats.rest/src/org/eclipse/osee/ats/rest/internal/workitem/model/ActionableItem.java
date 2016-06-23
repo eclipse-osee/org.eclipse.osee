@@ -123,11 +123,6 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
    }
 
    @Override
-   public void addRule(String rule) {
-      throw new UnsupportedOperationException("ActionableItem.addRule not implemented");
-   }
-
-   @Override
    public Collection<String> getRules() {
       Collection<String> rules = new ArrayList<>();
       try {
@@ -140,19 +135,7 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
 
    @Override
    public boolean hasRule(String rule) {
-      boolean result = false;
-      for (String rule2 : getRules()) {
-         if (rule.equals(rule2)) {
-            result = true;
-            break;
-         }
-      }
-      return result;
-   }
-
-   @Override
-   public void removeRule(String rule) {
-      throw new UnsupportedOperationException("ActionableItem.setActionable not implemented");
+      return getRules().contains(rule);
    }
 
 }

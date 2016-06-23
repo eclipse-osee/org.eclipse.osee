@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -321,10 +322,10 @@ public class AtsTestUtil {
 
       guid = GUID.create();
       teamDef = AtsClientService.get().createTeamDefinition(guid, getTitle("Team Def", postFixName),
-         AtsUtilClient.createConfigObjectUuid());
-      teamDef.setWorkflowDefinition(WORK_DEF_NAME);
-      teamDef.setActive(true);
-      teamDef.getLeads().add(AtsClientService.get().getUserService().getCurrentUser());
+         AtsUtilClient.createConfigObjectUuid(), changes, AtsClientService.get());
+      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.WorkflowDefinition, WORK_DEF_NAME);
+      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.Active, true);
+      changes.relate(teamDef, AtsRelationTypes.TeamLead_Lead, AtsClientService.get().getUserService().getCurrentUser());
 
       testAi.setTeamDefinition(teamDef);
       testAi2.setTeamDefinition(teamDef);
@@ -338,28 +339,26 @@ public class AtsTestUtil {
       guid = GUID.create();
       verArt1 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 1.0", postFixName), guid,
          AtsUtilClient.createConfigObjectUuid());
-      teamDef.getVersions().add(verArt1);
       AtsClientService.get().storeConfigObject(verArt1, changes);
+      changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt1);
 
       guid = GUID.create();
       verArt2 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 2.0", postFixName), guid,
          AtsUtilClient.createConfigObjectUuid());
-      teamDef.getVersions().add(verArt2);
       AtsClientService.get().storeConfigObject(verArt2, changes);
+      changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt2);
 
       guid = GUID.create();
       verArt3 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 3.0", postFixName), guid,
          AtsUtilClient.createConfigObjectUuid());
-      teamDef.getVersions().add(verArt3);
       AtsClientService.get().storeConfigObject(verArt3, changes);
+      changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt3);
 
       guid = GUID.create();
       verArt4 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 4.0", postFixName), guid,
          AtsUtilClient.createConfigObjectUuid());
-      teamDef.getVersions().add(verArt4);
       AtsClientService.get().storeConfigObject(verArt4, changes);
-
-      AtsClientService.get().storeConfigObject(teamDef, changes);
+      changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt4);
 
       actionArt = ActionManager.createAction(null, getTitle("Team WF", postFixName), "description",
          ChangeType.Improvement, "1", false, null, Arrays.asList(testAi), new Date(),

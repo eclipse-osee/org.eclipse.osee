@@ -19,9 +19,12 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsOpenOption;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -37,6 +40,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionImporter;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -120,7 +124,7 @@ public class AtsConfigOperation extends AbstractOperation {
 
       AtsChangeSet changes = new AtsChangeSet("Configure ATS for Default Team");
 
-      teamDefinition = createTeamDefinition(changes);
+      teamDefinition = createTeamDefinition(changes, AtsClientService.get());
 
       actionableItems = createActionableItems(changes, teamDefinition);
 
@@ -133,19 +137,20 @@ public class AtsConfigOperation extends AbstractOperation {
       monitor.worked(calculateWork(0.30));
    }
 
-   private IAtsTeamDefinition createTeamDefinition(IAtsChangeSet changes) throws OseeCoreException {
+   private IAtsTeamDefinition createTeamDefinition(IAtsChangeSet changes, IAtsServices services) throws OseeCoreException {
       IAtsTeamDefinition teamDef = null;
       if (teamDefToken == null) {
-         teamDef = AtsClientService.get().createTeamDefinition(teamDefName);
+         teamDef = AtsClientService.get().createTeamDefinition(teamDefName, changes, services);
       } else {
          teamDef = AtsClientService.get().createTeamDefinition(teamDefToken.getGuid(), teamDefToken.getName(),
-            teamDefToken.getUuid());
+            teamDefToken.getUuid(), changes, services);
       }
-      teamDef.getLeads().add(AtsClientService.get().getUserService().getCurrentUser());
-      teamDef.getMembers().add(AtsClientService.get().getUserService().getCurrentUser());
-      TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()).getChildrenTeamDefinitions().add(
-         teamDef);
-      AtsClientService.get().storeConfigObject(teamDef, changes);
+      changes.relate(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()),
+         AtsRelationTypes.TeamMember_Member, AtsClientService.get().getUserService().getCurrentUser());
+      changes.relate(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()),
+         AtsRelationTypes.TeamLead_Lead, AtsClientService.get().getUserService().getCurrentUser());
+      changes.relate(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()),
+         CoreRelationTypes.Default_Hierarchical__Child, teamDef);
       return teamDef;
    }
 
@@ -216,8 +221,7 @@ public class AtsConfigOperation extends AbstractOperation {
          workDef = workDefMatch.getWorkDefinition();
       }
       // Relate new team def to workflow artifact
-      teamDef.setWorkflowDefinition(workDef.getId());
-      AtsClientService.get().storeConfigObject(teamDef, changes);
+      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.WorkflowDefinition, workDef.getId());
       return workDef;
    }
 

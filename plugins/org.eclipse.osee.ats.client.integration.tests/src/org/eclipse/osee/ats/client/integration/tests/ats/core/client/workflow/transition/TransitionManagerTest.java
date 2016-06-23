@@ -52,6 +52,7 @@ import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.ws.AWorkspace;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -393,7 +394,9 @@ public class TransitionManagerTest {
       Assert.assertTrue(results.isEmpty());
 
       // validate that can't transition without targeted version when team def rule is set
-      teamArt.getTeamDefinition().addRule(RuleDefinitionOption.RequireTargetedVersion.name());
+      ((Artifact) teamArt.getTeamDefinition().getStoreObject()).addAttributeFromString(AtsAttributeTypes.RuleDefinition,
+         RuleDefinitionOption.RequireTargetedVersion.name());
+      ((Artifact) teamArt.getTeamDefinition().getStoreObject()).persist(getClass().getSimpleName());
       results.clear();
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.contains(teamArt, TransitionResult.MUST_BE_TARGETED_FOR_VERSION));

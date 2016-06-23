@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -65,7 +66,8 @@ public class CopyActionDetails {
       if (awa instanceof TeamWorkFlowArtifact) {
          TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) awa;
          result = ChangeTypeUtil.getChangeTypeStr(awa);
-         if (teamArt.getTeamDefinition().getStaticIds().contains(USE_DEVELOPER_CHANGE_TYPES)) {
+         if (AtsClientService.get().getAttributeResolver().getAttributesToStringList(teamArt.getTeamDefinition(),
+            CoreAttributeTypes.StaticId).contains(USE_DEVELOPER_CHANGE_TYPES)) {
             if (result.equals("Improvement")) {
                result = "feature";
             } else if (result.equals("Problem")) {

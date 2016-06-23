@@ -14,6 +14,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
@@ -37,7 +38,7 @@ import org.junit.BeforeClass;
 
 /**
  * Test for {@link ActionManager}
- * 
+ *
  * @author Mark Joy
  */
 public class AutoAddActionToGoalTest {
@@ -84,8 +85,10 @@ public class AutoAddActionToGoalTest {
       changes.clear();
       AtsClientService.get().storeConfigObject(actionItem2, changes);
       IAtsTeamDefinition teamDef = AtsTestUtil.getTestTeamDef();
-      teamDef.getVersions().clear();
-      AtsClientService.get().storeConfigObject(teamDef, changes);
+
+      for (IAtsVersion version : teamDef.getVersions()) {
+         changes.deleteArtifact(version.getStoreObject());
+      }
       changes.execute();
 
       Artifact testAI2 = AtsClientService.get().getArtifact(AtsTestUtil.getTestAi2());
@@ -115,8 +118,9 @@ public class AutoAddActionToGoalTest {
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       GoalArtifact goalArt = GoalManager.createGoal("AutoAddActionToGoalTest - AddActionToGoalFromTeamDef", changes);
       IAtsTeamDefinition teamDef = AtsTestUtil.getTestTeamDef();
-      teamDef.getVersions().clear();
-      AtsClientService.get().storeConfigObject(teamDef, changes);
+      for (IAtsVersion version : teamDef.getVersions()) {
+         changes.deleteArtifact(version.getStoreObject());
+      }
       changes.execute();
 
       Artifact teamDefArtifact = AtsClientService.get().getArtifact(AtsTestUtil.getTestTeamDef());
@@ -145,9 +149,10 @@ public class AutoAddActionToGoalTest {
       IAtsActionableItem testAI2 = AtsTestUtil.getTestAi2();
       AtsClientService.get().storeConfigObject(testAI2, changes);
       IAtsTeamDefinition teamDef = AtsTestUtil.getTestTeamDef();
-      teamDef.getVersions().clear();
+      for (IAtsVersion version : teamDef.getVersions()) {
+         changes.deleteArtifact(version.getStoreObject());
+      }
       AtsClientService.get().storeConfigObject(teamDef, changes);
-      changes.execute();
 
       Artifact testAI2Art = AtsClientService.get().getArtifact(AtsTestUtil.getTestAi2());
       Artifact teamDefArtifact = AtsClientService.get().getArtifact(AtsTestUtil.getTestTeamDef());
@@ -192,8 +197,9 @@ public class AutoAddActionToGoalTest {
       AtsClientService.get().storeConfigObject(actionItem2, changes);
       AtsClientService.get().storeConfigObject(actionItem3, changes);
       IAtsTeamDefinition teamDef = AtsTestUtil.getTestTeamDef();
-      teamDef.getVersions().clear();
-      AtsClientService.get().storeConfigObject(teamDef, changes);
+      for (IAtsVersion version : teamDef.getVersions()) {
+         changes.deleteArtifact(version.getStoreObject());
+      }
       changes.execute();
 
       Artifact testAI2 = AtsClientService.get().getArtifact(AtsTestUtil.getTestAi2());

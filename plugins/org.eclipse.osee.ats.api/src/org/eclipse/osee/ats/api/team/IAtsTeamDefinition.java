@@ -27,45 +27,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommitConfigItem {
 
-   /*****************************
-    * Name, Full Name, Description
-    ******************************/
-
-   void setName(String name) throws OseeCoreException;
-
-   void setDescription(String description);
-
-   @Override
-   String getDescription();
-
-   // Name
-   void setFullName(String fullName);
-
-   String getFullName();
-
-   /*****************************
-    * Misc
-    ******************************/
-
-   void setActionable(boolean actionable);
-
    boolean isActionable();
 
-   void setActive(boolean active);
-
-   Collection<String> getStaticIds();
-
-   /*****************************
-    * Related Actionable Items
-    ******************************/
-
    Collection<IAtsActionableItem> getActionableItems();
-
-   /*****************************
-    * Parent and Children Team Definitions
-    ******************************/
-
-   void setParentTeamDef(IAtsTeamDefinition parentTeamDef);
 
    IAtsTeamDefinition getParentTeamDef();
 
@@ -91,31 +55,20 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
     * Branching Data
     ******************************/
 
-   void setAllowCommitBranch(boolean allowCommitBranch);
-
    boolean isAllowCommitBranch();
 
    @Override
    Result isAllowCommitBranchInherited();
-
-   void setAllowCreateBranch(boolean allowCreateBranch);
 
    boolean isAllowCreateBranch();
 
    @Override
    Result isAllowCreateBranchInherited();
 
-   void setBaselineBranchUuid(long uuid);
-
-   void setBaselineBranchUuid(String uuid);
-
    @Override
    long getBaselineBranchUuid();
 
    long getTeamBranchUuid();
-
-   @Override
-   String getCommitFullDisplayName();
 
    /*****************************
     * Versions
@@ -143,16 +96,10 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
     * Work Definitions
     ******************************/
 
-   void setWorkflowDefinition(String workflowDefinitionName);
-
    String getWorkflowDefinition();
 
    String getRelatedTaskWorkDefinition();
 
-   void setRelatedTaskWorkDefinition(String name);
-
    String getRelatedPeerWorkDefinition();
-
-   void setRelatedPeerWorkDefinition(String relatedPeerWorkDefinition);
 
 }

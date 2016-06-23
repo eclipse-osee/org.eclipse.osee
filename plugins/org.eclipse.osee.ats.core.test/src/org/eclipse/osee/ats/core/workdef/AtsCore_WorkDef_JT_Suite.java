@@ -20,7 +20,6 @@ import org.junit.runners.Suite;
    WorkDefinitionSheetTest.class,
    StateEventTypeTest.class,
    StateColorTest.class,
-   RuleManagerTest.class,
    RuleDefinitionOptionTest.class,
    ReviewBlockTypeTest.class})
 /**

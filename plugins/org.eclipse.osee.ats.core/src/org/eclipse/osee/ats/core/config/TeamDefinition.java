@@ -8,12 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.rest.internal.workitem.model;
+package org.eclipse.osee.ats.core.config;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -23,24 +24,22 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
-import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G Dunne
  */
 public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinition {
 
-   private final IAtsServer atsServer;
+   private final IAtsServices services;
 
-   public TeamDefinition(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
-      super(logger, atsServer, artifact);
-      this.atsServer = atsServer;
+   public TeamDefinition(Log logger, IAtsServices services, ArtifactId artifact) {
+      super(logger, services, artifact);
+      this.services = services;
    }
 
    @Override
@@ -48,15 +47,12 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       return "Team Definition";
    }
 
-   private ArtifactReadable getArtifact() {
-      return (ArtifactReadable) artifact;
-   }
-
    @Override
    public Collection<IAtsActionableItem> getActionableItems() {
       Set<IAtsActionableItem> ais = new HashSet<>();
       try {
-         for (ArtifactReadable aiArt : getArtifact().getRelated(AtsRelationTypes.TeamActionableItem_ActionableItem)) {
+         for (ArtifactId aiArt : services.getRelationResolver().getRelated(artifact,
+            AtsRelationTypes.TeamActionableItem_ActionableItem)) {
             IAtsActionableItem ai = services.getConfigItemFactory().getActionableItem(aiArt);
             ais.add(ai);
          }
@@ -67,15 +63,11 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    }
 
    @Override
-   public void setParentTeamDef(IAtsTeamDefinition parentTeamDef) {
-      getLogger().error("TeamDefinition.setParentTeamDef not implemented");
-   }
-
-   @Override
    public IAtsTeamDefinition getParentTeamDef() {
       IAtsTeamDefinition parent = null;
       try {
-         ResultSet<ArtifactReadable> related = getArtifact().getRelated(CoreRelationTypes.Default_Hierarchical__Parent);
+         Collection<ArtifactId> related =
+            services.getRelationResolver().getRelated(artifact, CoreRelationTypes.Default_Hierarchical__Parent);
          if (!related.isEmpty()) {
             parent = services.getConfigItemFactory().getTeamDef(related.iterator().next());
          }
@@ -89,7 +81,8 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    public Collection<IAtsTeamDefinition> getChildrenTeamDefinitions() {
       Set<IAtsTeamDefinition> children = new HashSet<>();
       try {
-         for (ArtifactReadable childArt : getArtifact().getRelated(CoreRelationTypes.Default_Hierarchical__Child)) {
+         for (ArtifactId childArt : services.getRelationResolver().getRelated(artifact,
+            CoreRelationTypes.Default_Hierarchical__Child)) {
             IAtsTeamDefinition childTeamDef = services.getConfigItemFactory().getTeamDef(childArt);
             if (childTeamDef != null) {
                children.add(childTeamDef);
@@ -141,15 +134,11 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    }
 
    @Override
-   public void setAllowCommitBranch(boolean allowCommitBranch) {
-      throw new UnsupportedOperationException("TeamDefinition.setAllowCommitBranch not implemented");
-   }
-
-   @Override
    public boolean isAllowCommitBranch() {
       boolean set = false;
       try {
-         set = getArtifact().getSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, false);
+         set =
+            services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.AllowCommitBranch, false);
       } catch (OseeCoreException ex) {
          getLogger().error(ex, "Error is allow commit branch");
       }
@@ -168,15 +157,11 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    }
 
    @Override
-   public void setAllowCreateBranch(boolean allowCreateBranch) {
-      throw new UnsupportedOperationException("TeamDefinition.setAllowCreateBranch not implemented");
-   }
-
-   @Override
    public boolean isAllowCreateBranch() {
       boolean set = false;
       try {
-         set = getArtifact().getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, false);
+         set =
+            services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.AllowCreateBranch, false);
       } catch (OseeCoreException ex) {
          getLogger().error(ex, "Error get allow create branch");
       }
@@ -192,16 +177,6 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
          return new Result(false, "Parent Branch not configured for Team Definition [" + this + "]");
       }
       return Result.TrueResult;
-   }
-
-   @Override
-   public void setBaselineBranchUuid(long uuid) {
-      throw new UnsupportedOperationException("TeamDefinition.setBaselineBranchUuid not implemented");
-   }
-
-   @Override
-   public void setBaselineBranchUuid(String uuid) {
-      throw new UnsupportedOperationException("TeamDefinition.setBaselineBranchUuid not implemented");
    }
 
    @Override
@@ -275,8 +250,9 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    public Collection<IAtsVersion> getVersions() {
       Set<IAtsVersion> results = new HashSet<>();
       try {
-         for (ArtifactReadable verArt : getArtifact().getRelated(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
-            IAtsVersion version = atsServer.getConfigItemFactory().getVersion(verArt);
+         for (ArtifactId verArt : services.getRelationResolver().getRelated(artifact,
+            AtsRelationTypes.TeamDefinitionToVersion_Version)) {
+            IAtsVersion version = services.getConfigItemFactory().getVersion(verArt);
             results.add(version);
          }
       } catch (OseeCoreException ex) {
@@ -327,11 +303,6 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    }
 
    @Override
-   public void setWorkflowDefinition(String workflowDefinitionName) {
-      throw new UnsupportedOperationException("TeamDefinition.setWorkflowDefinition not implemented");
-   }
-
-   @Override
    public String getWorkflowDefinition() {
       return getAttributeValue(AtsAttributeTypes.WorkflowDefinition, "");
    }
@@ -342,30 +313,15 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    }
 
    @Override
-   public void setRelatedTaskWorkDefinition(String name) {
-      throw new UnsupportedOperationException("TeamDefinition.setRelatedTaskWorkDefinition not implemented");
-   }
-
-   @Override
    public String getRelatedPeerWorkDefinition() {
       return getAttributeValue(AtsAttributeTypes.RelatedPeerWorkflowDefinition, "");
-   }
-
-   @Override
-   public void setRelatedPeerWorkDefinition(String relatedPeerWorkDefinition) {
-      throw new UnsupportedOperationException("TeamDefinition.setRelatedPeerWorkDefinition not implemented");
-   }
-
-   @Override
-   public void addRule(String rule) {
-      throw new UnsupportedOperationException("TeamDefinition.addRule not implemented");
    }
 
    @Override
    public Collection<String> getRules() {
       Collection<String> rules = new ArrayList<>();
       try {
-         rules = getArtifact().getAttributeValues(AtsAttributeTypes.RuleDefinition);
+         rules = services.getAttributeResolver().getAttributeValues(artifact, AtsAttributeTypes.RuleDefinition);
       } catch (OseeCoreException ex) {
          getLogger().error(ex, "Error getting rules");
       }
@@ -382,11 +338,6 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
          }
       }
       return result;
-   }
-
-   @Override
-   public void removeRule(String rule) {
-      throw new UnsupportedOperationException("TeamDefinition.setActionable not implemented");
    }
 
 }

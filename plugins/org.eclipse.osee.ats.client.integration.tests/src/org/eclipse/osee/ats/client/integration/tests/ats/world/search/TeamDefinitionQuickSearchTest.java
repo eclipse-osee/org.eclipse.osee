@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.world.search;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -26,7 +27,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link TeamDefinitionQuickSearch}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class TeamDefinitionQuickSearchTest {
@@ -35,6 +36,7 @@ public class TeamDefinitionQuickSearchTest {
    @AfterClass
    public static void cleanup() throws Exception {
       AtsTestUtil.cleanup();
+      AtsTestUtil.cleanupSimpleTest(TeamDefinitionQuickSearchTest.class.getSimpleName());
    }
 
    @Test
@@ -43,7 +45,11 @@ public class TeamDefinitionQuickSearchTest {
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
       teamWf.persist(getClass().getSimpleName());
 
-      IAtsTeamDefinition randomTeamDef = AtsClientService.get().createTeamDefinition(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName(),
+         AtsClientService.get().getUserService().getCurrentUser());
+      IAtsTeamDefinition randomTeamDef =
+         AtsClientService.get().createTeamDefinition(getClass().getSimpleName(), changes, AtsClientService.get());
+      changes.execute();
 
       TeamDefinitionQuickSearch srch = new TeamDefinitionQuickSearch(Arrays.asList(randomTeamDef));
       Assert.assertTrue("No results should be found", srch.performSearch().isEmpty());
