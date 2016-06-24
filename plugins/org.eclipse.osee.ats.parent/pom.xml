@@ -35,11 +35,6 @@
 				<module>../../plugins/org.eclipse.osee.ats.core.client.test</module>
 				<module>../../plugins/org.eclipse.osee.ats.dsl.ui</module>
 
-				<module>../../plugins/org.eclipse.osee.ats.reports</module>
-				<module>../../plugins/org.eclipse.osee.ats.reports.burndown</module>
-				<module>../../plugins/org.eclipse.osee.ats.reports.efficiency</module>
-				<module>../../plugins/org.eclipse.osee.ats.reports.split</module>
-
 				<module>../../plugins/org.eclipse.osee.ats.client.demo</module>
 
 				<module>../../features/org.eclipse.osee.ats.feature</module>
@@ -67,11 +62,6 @@
 				<module>../../plugins/org.eclipse.osee.ats.core.client</module>
 				<module>../../plugins/org.eclipse.osee.ats.core.client.test</module>
 				<module>../../plugins/org.eclipse.osee.ats.dsl.ui</module>
-
-				<module>../../plugins/org.eclipse.osee.ats.reports</module>
-				<module>../../plugins/org.eclipse.osee.ats.reports.burndown</module>
-				<module>../../plugins/org.eclipse.osee.ats.reports.efficiency</module>
-				<module>../../plugins/org.eclipse.osee.ats.reports.split</module>
 
 				<module>../../plugins/org.eclipse.osee.ats.client.demo</module>
 

@@ -71,34 +71,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.ats.reports"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.ats.reports.burndown"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.ats.reports.efficiency"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.ats.reports.split"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.osee.ats.dsl.integration"
          download-size="0"
          install-size="0"
