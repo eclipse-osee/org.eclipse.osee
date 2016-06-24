@@ -220,8 +220,8 @@ public class ClientResource {
    }
 
    private ClientSession getClientSession(String sessionId) {
-      return jdbcService.getClient().fetch(null, stmt -> createSession(stmt, uriInfo),
-         "select * from osee_session where session_id = ?", sessionId);
+		return jdbcService.getClient().fetch((ClientSession) null, stmt -> createSession(stmt, uriInfo),
+				 "select * from osee_session where session_id = ?", sessionId);
    }
 
    private boolean alive(ClientSession session) throws OseeCoreException {

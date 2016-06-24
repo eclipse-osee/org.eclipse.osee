@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -22,7 +23,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.ToStringViewerSorter;
@@ -62,9 +63,9 @@ public class XComboViewer extends GenericXWidget {
    };
    private Collection<Object> input;
    private IContentProvider contentProvider;
-   private ViewerSorter sorter;
+   private ViewerComparator sorter;
    private int widthHint;
-   private int heightHint;
+   private int heightHint;	
 
    public XComboViewer(String displayLabel, int comboWidgetSWTStyle) {
       super(displayLabel);
@@ -81,10 +82,10 @@ public class XComboViewer extends GenericXWidget {
       this.contentProvider = contentProvider;
    }
 
-   public void setSorter(ViewerSorter sorter) {
+   public void setComparator(ViewerComparator sorter) {
       this.sorter = sorter;
       if (comboViewer != null) {
-         comboViewer.setSorter(sorter);
+         comboViewer.setComparator(sorter);
       }
    }
 
@@ -150,9 +151,9 @@ public class XComboViewer extends GenericXWidget {
       comboViewer.setContentProvider(contentProvider);
       comboViewer.setLabelProvider(getLabelProvider());
       if (sorter != null) {
-         comboViewer.setSorter(sorter);
+         comboViewer.setComparator(sorter);
       } else if (isUseToStringSorter()) {
-         comboViewer.setSorter(new ToStringViewerSorter());
+         comboViewer.setComparator(new ToStringViewerSorter());
       }
       comboViewer.setInput(input);
       comboViewer.getCombo().addSelectionListener(new SelectionAdapter() {

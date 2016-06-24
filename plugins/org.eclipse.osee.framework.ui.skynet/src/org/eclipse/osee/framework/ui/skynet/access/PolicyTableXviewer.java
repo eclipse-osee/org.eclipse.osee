@@ -23,6 +23,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
@@ -129,13 +130,7 @@ public class PolicyTableXviewer extends XViewer implements IMultiColumnEditProvi
       @Override
       protected Control createDialogArea(Composite container) {
          Control control = super.createDialogArea(container);
-         getTableViewer().setSorter(new ViewerSorter() {
-            @SuppressWarnings("unchecked")
-            @Override
-            public int compare(Viewer viewer, Object e1, Object e2) {
-               return getComparator().compare(e1, e2);
-            }
-         });
+         getTableViewer().setComparator(new ViewerComparator());
          return control;
       }
 

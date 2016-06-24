@@ -128,7 +128,7 @@ public class WfeTransitionComposite extends Composite {
       transitionToStateCombo.setInput(allPages);
       transitionToStateCombo.setLabelProvider(new StateDefinitionLabelProvider());
       transitionToStateCombo.setContentProvider(new ArrayContentProvider());
-      transitionToStateCombo.setSorter(new StateDefinitionViewSorter());
+      transitionToStateCombo.setComparator(new StateDefinitionViewSorter());
 
       transitionToStateCombo.createWidgets(this, 1);
 

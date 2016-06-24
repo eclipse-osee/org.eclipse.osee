@@ -342,8 +342,6 @@
       <import feature="org.eclipse.emf" version="2.9.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.common" version="2.9.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.ecore" version="2.9.0" match="greaterOrEqual"/>
-      <import feature="org.eclipse.xtext.runtime" version="2.9.0" match="equivalent"/>
-      <import plugin="org.eclipse.xtext.util" version="2.9.0" match="equivalent"/>
       <import plugin="com.lowagie.text" version="2.0.0" match="compatible"/>
    </requires>
 

@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.Collection;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -53,13 +54,7 @@ public class StateListAndTitleDialog extends StateListDialog {
       });
 
       Control control = super.createDialogArea(container);
-      getTableViewer().setSorter(new ViewerSorter() {
-         @SuppressWarnings("unchecked")
-         @Override
-         public int compare(Viewer viewer, Object e1, Object e2) {
-            return getComparator().compare(e1, e2);
-         }
-      });
+      getTableViewer().setComparator(new ViewerComparator());
 
       return control;
    }

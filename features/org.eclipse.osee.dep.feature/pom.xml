@@ -43,6 +43,7 @@
 								<plugin id="org.antlr.runtime" />
 								<plugin id="org.cyberneko.html" />
 								<plugin id="org.apache.commons.io" />
+								<plugin id="org.apache.commons.cli" />
 								<plugin id="org.eclipse.team.svn" />
 								<plugin id="org.eclipse.team.svn.core" />
 								<plugin id="ch.qos.logback.slf4j" />
@@ -55,6 +56,8 @@
 								<feature id="org.eclipse.core.runtime.feature" />
 								<feature id="org.eclipse.xtext.sdk" />
 								<feature id="org.eclipse.emf" />
+								<feature id="org.eclipse.emf.mwe2.language.sdk" />
+								<feature id="org.eclipse.emf.mwe2.runtime.sdk" />
 								<feature id="org.eclipse.sdk" />
 								<feature id="org.eclipse.xtend.sdk" />
 								<feature id="org.eclipse.xtext.docs" />

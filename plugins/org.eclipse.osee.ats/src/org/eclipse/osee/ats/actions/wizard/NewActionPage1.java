@@ -154,7 +154,7 @@ public class NewActionPage1 extends WizardPage {
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      treeViewer.getViewer().setSorter(new AtsObjectNameSorter());
+      treeViewer.getViewer().setComparator(new AtsObjectNameSorter());
       GridData gridData1 = new GridData(GridData.FILL_BOTH);
       gridData1.heightHint = 400;
       treeViewer.setLayoutData(gridData1);

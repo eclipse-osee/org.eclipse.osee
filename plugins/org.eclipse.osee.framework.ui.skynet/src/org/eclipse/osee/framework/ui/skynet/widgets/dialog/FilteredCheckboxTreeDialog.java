@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -47,7 +48,7 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
    private final IContentProvider contentProvider;
    private final IBaseLabelProvider labelProvider;
    private Collection<? extends Object> initialSelections;
-   private final ViewerSorter viewerSorter;
+   private final ViewerComparator viewerComparator;
    private boolean showSelectButtons = false;
    private boolean expandChecked = false;
    private boolean multiSelect = true;
@@ -58,17 +59,17 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
       this(dialogTitle, dialogMessage, contentProvider, labelProvider, null);
    }
 
-   public FilteredCheckboxTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerSorter viewerSorter) {
+   public FilteredCheckboxTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerComparator viewerSorter) {
       super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE,
          new String[] {"OK", "Cancel"}, 0);
       this.contentProvider = contentProvider;
       this.labelProvider = labelProvider;
-      this.viewerSorter = viewerSorter;
+      this.viewerComparator = viewerSorter;
       this.patternFilter = new ToStringContainsPatternFilter();
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
 
-   public FilteredCheckboxTreeDialog(String dialogTitle, String dialogMessage, Set<Artifact> artifacts, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerSorter viewerSorter) {
+   public FilteredCheckboxTreeDialog(String dialogTitle, String dialogMessage, Set<Artifact> artifacts, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerComparator viewerSorter) {
       this(dialogTitle, dialogMessage, contentProvider, labelProvider, viewerSorter);
       this.selectables = artifacts;
    }
@@ -140,8 +141,8 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
       treeViewer.getViewer().setContentProvider(contentProvider);
       treeViewer.getViewer().setLabelProvider(labelProvider);
       treeViewer.getViewer().setAutoExpandLevel(0);
-      if (viewerSorter != null) {
-         treeViewer.getViewer().setSorter(viewerSorter);
+      if (viewerComparator != null) {
+         treeViewer.getViewer().setComparator(viewerComparator);
       }
       treeViewer.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
          @Override

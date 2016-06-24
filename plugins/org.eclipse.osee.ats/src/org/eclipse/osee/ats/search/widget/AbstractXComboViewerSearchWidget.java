@@ -68,7 +68,7 @@ public abstract class AbstractXComboViewerSearchWidget<ObjectType extends Object
             input.add(CLEAR);
          }
          combo.setInput(input);
-         combo.setSorter(new ToStringViewerSorter(true));
+         combo.setComparator(new ToStringViewerSorter(true));
          combo.getCombo().setText(getInitialText());
          if (!listenerAdded) {
             listenerAdded = true;

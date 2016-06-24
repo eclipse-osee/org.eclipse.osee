@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -49,7 +50,7 @@ public class FilteredTreeDialog extends MessageDialog {
    private final IContentProvider contentProvider;
    private final IBaseLabelProvider labelProvider;
    private Collection<? extends Object> initialSelections;
-   private ViewerSorter viewerSorter;
+   private ViewerComparator viewerSorter;
    private boolean multiSelect = true;
    private PatternFilter patternFilter;
    List<Object> selected = new ArrayList<>();
@@ -58,7 +59,7 @@ public class FilteredTreeDialog extends MessageDialog {
       this(dialogTitle, dialogMessage, contentProvider, labelProvider, null);
    }
 
-   public FilteredTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerSorter viewerSorter) {
+   public FilteredTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerComparator viewerSorter) {
       super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE,
          new String[] {"OK", "Cancel"}, 0);
       this.contentProvider = contentProvider;
@@ -136,7 +137,7 @@ public class FilteredTreeDialog extends MessageDialog {
       treeViewer.getViewer().setAutoExpandLevel(0);
       treeViewer.setQuickSelectionMode(true);
       if (viewerSorter != null) {
-         treeViewer.getViewer().setSorter(viewerSorter);
+         treeViewer.getViewer().setComparator(viewerSorter);
       }
       treeViewer.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
          @Override

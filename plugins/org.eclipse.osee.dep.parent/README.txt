@@ -1,1 +1,2 @@
-mvn clean verify -Declipse-ip-site=file:../../../org.eclipse.ip/org.eclipse.ip.p2/target/repository/
+If building locally and you get an error regarding not being able to load p2 site eclipse-ip (trying from github.com), point it to a locally built p2 site via:
+  -Declipse-ip-site=file:../../../org.eclipse.ip/org.eclipse.ip.p2/target/repository/

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
@@ -21,7 +22,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -183,23 +184,22 @@ public class AttributesComposite extends Composite {
       }
       tableViewer.setContentProvider(new AttributeContentProvider());
       tableViewer.setLabelProvider(new AttributeLabelProvider());
-      tableViewer.setSorter(new AttributeNameSorter());
+      tableViewer.setComparator(new AttributeNameSorter());
       tableViewer.setInput(artifact);
    }
-   public class AttributeNameSorter extends ViewerSorter {
+   public class AttributeNameSorter extends ViewerComparator {
 
       public AttributeNameSorter() {
          super();
       }
 
       @Override
-      @SuppressWarnings("unchecked")
       public int compare(Viewer viewer, Object o1, Object o2) {
          if (o1 instanceof Attribute && o2 instanceof Attribute) {
             return getComparator().compare(((Attribute<?>) o1).getAttributeType().getName(),
                ((Attribute<?>) o2).getAttributeType().getName());
          } else if (o1 instanceof String && o2 instanceof String) {
-            return getComparator().compare(o1, o2);
+            return getComparator().compare((String) o1, (String) o2);
          }
          return super.compare(viewer, o1, o2);
       }

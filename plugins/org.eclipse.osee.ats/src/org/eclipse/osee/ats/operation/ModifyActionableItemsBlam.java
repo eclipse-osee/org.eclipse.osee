@@ -138,21 +138,21 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
       wfTree = new FilteredCheckboxTree(treeComp, SWT.CHECK | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
       wfTree.getViewer().setContentProvider(new WorkflowsActiveAisContentProvider(defaultTeamWorkflow, Active.Active));
       wfTree.getViewer().setLabelProvider(new AtsObjectLabelProvider());
-      wfTree.getViewer().setSorter(new AtsObjectNameSorter());
+      wfTree.getViewer().setComparator(new AtsObjectNameSorter());
       wfTree.setLayoutData(data);
       wfTree.getViewer().addPostSelectionChangedListener(new ModificationListener());
 
       otherTree = new FilteredCheckboxTree(treeComp, SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
       otherTree.getViewer().setContentProvider(new ArrayTreeContentProvider());
       otherTree.getViewer().setLabelProvider(new AtsObjectLabelProvider());
-      otherTree.getViewer().setSorter(new AtsObjectNameSorter());
+      otherTree.getViewer().setComparator(new AtsObjectNameSorter());
       otherTree.setLayoutData(data);
       otherTree.setEnabled(false);
 
       newTree = new FilteredCheckboxTree(treeComp, SWT.CHECK | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
       newTree.getViewer().setContentProvider(new AITreeContentProvider(Active.Active));
       newTree.getViewer().setLabelProvider(new AtsObjectLabelProvider());
-      newTree.getViewer().setSorter(new AtsObjectNameSorter());
+      newTree.getViewer().setComparator(new AtsObjectNameSorter());
       newTree.setLayoutData(data);
       newTree.getViewer().addPostSelectionChangedListener(new ModificationListener());
 

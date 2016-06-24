@@ -50,8 +50,7 @@
 				<module>../../plugins/org.eclipse.osee.orcs.rest.client</module>
 				<module>../../plugins/org.eclipse.osee.orcs.rest</module>
 				<module>../../plugins/org.eclipse.osee.orcs.rest.test</module>
-				<!--  <module>../../plugins/org.eclipse.osee.orcs.db.test</module>
-				-->
+				<module>../../plugins/org.eclipse.osee.orcs.db.test</module>
 				
 				<module>../../plugins/org.eclipse.osee.orcs.authorization</module>
 				
@@ -96,7 +95,6 @@
 				<module>../../plugins/org.eclipse.osee.orcs.rest</module>
 				<module>../../plugins/org.eclipse.osee.orcs.rest.test</module>
 				<module>../../plugins/org.eclipse.osee.orcs.db.test</module>
-				<module>../../plugins/org.eclipse.osee.orcs.test</module>
 				
 				<module>../../plugins/org.eclipse.osee.orcs.authorization</module>
 

@@ -35,7 +35,7 @@ public class XAtsProgramComboWidget extends XComboViewer {
       this.atsPrograms = atsPrograms;
       setLabelProvider(new AtsProgramLabelProvider());
       setContentProvider(new ArrayContentProvider());
-      setSorter(new StringNameSorter());
+      setComparator(new StringNameSorter());
    }
 
    public XAtsProgramComboWidget(Collection<? extends IAtsProgram> atsPrograms) throws OseeCoreException {
@@ -57,7 +57,7 @@ public class XAtsProgramComboWidget extends XComboViewer {
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       super.createControls(parent, horizontalSpan);
-      setSorter(new AtsProgramViewerSorter());
+      setComparator(new AtsProgramViewerSorter());
       reload();
    }
 

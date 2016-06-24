@@ -75,7 +75,7 @@ public class TeamVersionListDialog extends SelectionDialog {
          teamCombo.setInput(objs);
          teamCombo.setLabelProvider(new AtsObjectLabelProvider());
          teamCombo.setContentProvider(new ArrayContentProvider());
-         teamCombo.setSorter(new AtsObjectNameSorter());
+         teamCombo.setComparator(new AtsObjectNameSorter());
          teamCombo.setGrabHorizontal(true);
          teamCombo.createWidgets(comp, 2);
          teamCombo.getCombo().setVisibleItemCount(20);
@@ -105,7 +105,7 @@ public class TeamVersionListDialog extends SelectionDialog {
 
       versionCombo.setLabelProvider(new AtsObjectLabelProvider());
       versionCombo.setContentProvider(new ArrayContentProvider());
-      versionCombo.setSorter(new AtsObjectNameSorter());
+      versionCombo.setComparator(new AtsObjectNameSorter());
       versionCombo.setGrabHorizontal(true);
       versionCombo.createWidgets(comp, 2);
       versionCombo.getCombo().setVisibleItemCount(20);

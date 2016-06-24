@@ -34,6 +34,11 @@
 								<plugin id="org.eclipse.jetty.server" />
 								<plugin id="org.eclipse.jetty.servlet" />
 								<plugin id="org.eclipse.jetty.util" />
+								<plugin id="org.eclipse.xtext" />
+								<plugin id="org.eclipse.xtend.lib" />
+								<plugin id="org.eclipse.xtend.lib.macro" />
+								<plugin id="org.eclipse.xtext.smap" />
+								<plugin id="org.apache.commons.cli" />
 							</excludes>
 						</configuration>
 					</execution>

@@ -12,12 +12,13 @@ package org.eclipse.osee.framework.ui.plugin.util;
 
 import java.text.Collator;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerSorter;
 
 /**
  * @author Donald G. Dunne
  */
-public class StringViewerSorter extends ViewerSorter {
+public class StringViewerSorter extends ViewerComparator {
 
    public StringViewerSorter() {
       // do nothing
@@ -27,9 +28,10 @@ public class StringViewerSorter extends ViewerSorter {
       super(collator);
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public int compare(Viewer viewer, Object e1, Object e2) {
-      return getComparator().compare(e1, e2);
+	  String s1 = e1 != null ? e1.toString() : null;
+	  String s2 = e2 != null ? e2.toString() : null;
+      return getComparator().compare(s1, s2);
    }
 }

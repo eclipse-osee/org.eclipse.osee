@@ -34,7 +34,7 @@
 
 		<jaxdoclet-version>0.9.0</jaxdoclet-version>
 		<maven-clean-version>2.5</maven-clean-version>
-		<platform-version-name>mars</platform-version-name>
+		<platform-version-name>neon</platform-version-name>
 <!-- 		<orbit-version>R20150124073747</orbit-version> -->
 		<orbit-version>R20160520211859</orbit-version>
 		<subversive-version>1.0</subversive-version>
