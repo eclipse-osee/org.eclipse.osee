@@ -42,6 +42,12 @@ public class AttributeLabelProvider implements ITableLabelProvider {
          } catch (OseeCoreException ex) {
             return Lib.exceptionToString(ex);
          }
+      } else if (columnIndex == 2) {
+         try {
+            return String.valueOf(attribute.getId());
+         } catch (OseeCoreException ex) {
+            return Lib.exceptionToString(ex);
+         }
       } else {
          return String.valueOf(attribute.getGammaId());
       }

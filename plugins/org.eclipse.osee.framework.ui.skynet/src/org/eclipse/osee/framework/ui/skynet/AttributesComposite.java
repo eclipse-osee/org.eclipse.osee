@@ -58,8 +58,8 @@ public class AttributesComposite extends Composite {
    private TableViewer tableViewer;
    private Table table;
    private Text helpText;
-   private static final String[] columnNames = new String[] {"name", "value", "gammaId"};
-   private static final Integer[] columnWidths = new Integer[] {200, 800, 50};
+   private static final String[] columnNames = new String[] {"name", "value", "attrId", "gammaId"};
+   private static final Integer[] columnWidths = new Integer[] {200, 400, 70, 70};
    private Artifact artifact;
    private final IDirtiableEditor editor;
    private Label warningLabel;
