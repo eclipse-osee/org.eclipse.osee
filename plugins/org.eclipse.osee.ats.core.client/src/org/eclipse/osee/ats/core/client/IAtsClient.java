@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsEventService;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.IAtsUtilService;
@@ -68,8 +67,6 @@ import org.eclipse.osee.logger.Log;
  * @author Donald G. Dunne
  */
 public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolverProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsWorkItemArtifactServiceProvider, IAtsWorkItemServiceProvider, IAtsCacheProvider, ITeamDefinitionFactory, IActionableItemFactory, IArtifactProvider, IAtsVersionServiceProvider, IAtsEarnedValueServiceProvider {
-
-   <T extends IAtsConfigObject> Artifact storeConfigObject(T configObject, IAtsChangeSet changes) throws OseeCoreException;
 
    <T extends IAtsConfigObject> T getConfigObject(Artifact artifact) throws OseeCoreException;
 
@@ -183,6 +180,7 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    List<IAtsSearchDataProvider> getSearchDataProviders();
 
+   @Override
    Log getLogger();
 
    IAtsEventService getEventService();

@@ -366,11 +366,10 @@ public class ImportAIsAndTeamDefinitionsToDb {
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       if (parent == null) {
          if (isTeamDef) {
-            parent = AtsClientService.get().storeConfigObject(
-               TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()), changes);
+            parent = (Artifact) TeamDefinitions.getTopTeamDefinition(
+               AtsClientService.get().getQueryService()).getStoreObject();
          } else {
-            parent = AtsClientService.get().storeConfigObject(
-               ActionableItems.getTopActionableItem(AtsClientService.get().getQueryService()), changes);
+            parent = (Artifact) ActionableItems.getTopActionableItem(AtsClientService.get().getQueryService());
          }
          changes.execute();
       }

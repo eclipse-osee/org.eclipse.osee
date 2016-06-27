@@ -28,8 +28,7 @@ import org.junit.runners.Suite;
    InsertionActivityResourceTest.class,
    ActionableItemResourceTest.class,
    AtsTest_Demo_Copy_Suite.class,
-   AtsBranchConfigurationTest.class,
-   ActionableItemArtifactReaderTest.class})
+   AtsBranchConfigurationTest.class})
 /**
  * This test suite contains test that can be run against any production db
  *

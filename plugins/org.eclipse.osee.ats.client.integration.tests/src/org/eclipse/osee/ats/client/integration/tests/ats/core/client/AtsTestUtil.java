@@ -333,26 +333,22 @@ public class AtsTestUtil {
 
       guid = GUID.create();
       verArt1 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 1.0", postFixName), guid,
-         AtsUtilClient.createConfigObjectUuid());
-      AtsClientService.get().storeConfigObject(verArt1, changes);
+         AtsUtilClient.createConfigObjectUuid(), changes);
       changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt1);
 
       guid = GUID.create();
       verArt2 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 2.0", postFixName), guid,
-         AtsUtilClient.createConfigObjectUuid());
-      AtsClientService.get().storeConfigObject(verArt2, changes);
+         AtsUtilClient.createConfigObjectUuid(), changes);
       changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt2);
 
       guid = GUID.create();
       verArt3 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 3.0", postFixName), guid,
-         AtsUtilClient.createConfigObjectUuid());
-      AtsClientService.get().storeConfigObject(verArt3, changes);
+         AtsUtilClient.createConfigObjectUuid(), changes);
       changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt3);
 
       guid = GUID.create();
       verArt4 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 4.0", postFixName), guid,
-         AtsUtilClient.createConfigObjectUuid());
-      AtsClientService.get().storeConfigObject(verArt4, changes);
+         AtsUtilClient.createConfigObjectUuid(), changes);
       changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt4);
 
       actionArt = ActionManager.createAction(null, getTitle("Team WF", postFixName), "description",
@@ -788,15 +784,14 @@ public class AtsTestUtil {
 
    public static void configureVer1ForWorkingBranch() throws OseeCoreException {
       IAtsVersion version = getVerArt1();
-      version.setAllowCreateBranch(true);
-      version.setAllowCommitBranch(true);
-      version.setBaselineBranchUuid(SAW_Bld_1.getUuid());
-      ((Artifact) version.getStoreObject()).persist(AtsTestUtil.class.getSimpleName() + "-SetTeamWfTargetedVer1");
+      Artifact verArt = ((Artifact) version.getStoreObject());
+      verArt.setSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, true);
+      verArt.setSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, true);
+      verArt.setSoleAttributeValue(AtsAttributeTypes.BaselineBranchUuid, SAW_Bld_1.getUuid().toString());
+      verArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow,
+         Arrays.asList((Artifact) getTeamWf().getStoreObject()));
+      verArt.persist(AtsTestUtil.class.getSimpleName() + "-SetTeamWfTargetedVer1");
       AtsClientService.get().getCache().deCacheAtsObject(version);
-      if (!AtsClientService.get().getVersionService().hasTargetedVersion(getTeamWf())) {
-         AtsClientService.get().getVersionService().setTargetedVersion(getTeamWf(), getVerArt1());
-         getTeamWf().persist(AtsTestUtil.class.getSimpleName() + "-SetTeamWfTargetedVer1");
-      }
    }
 
    public static String getName() {

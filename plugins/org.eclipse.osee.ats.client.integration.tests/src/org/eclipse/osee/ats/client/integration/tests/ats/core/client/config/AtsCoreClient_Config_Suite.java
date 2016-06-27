@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.core.client.config;
 
-import org.eclipse.osee.ats.client.integration.tests.ats.core.client.config.store.AtsCoreClient_Store_Suite;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -21,7 +20,7 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AtsActionableItemToTeamDefinitionTest.class, AtsCoreClient_Store_Suite.class})
+@Suite.SuiteClasses({AtsActionableItemToTeamDefinitionTest.class})
 public class AtsCoreClient_Config_Suite {
    @BeforeClass
    public static void setUp() throws Exception {

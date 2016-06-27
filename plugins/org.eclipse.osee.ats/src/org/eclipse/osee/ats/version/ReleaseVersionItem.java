@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.version;
 
 import java.util.Date;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
@@ -64,18 +65,18 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             teamDefHoldingVersions.getVersions(VersionReleaseType.UnReleased, VersionLockedType.Both));
          int result = dialog.open();
          if (result == 0) {
-            IAtsVersion verArt = dialog.getSelectedFirst();
+            IAtsVersion version = dialog.getSelectedFirst();
 
             // Validate team lead status
             if (!AtsUtilClient.isAtsAdmin() && !AtsClientService.get().getVersionService().getTeamDefinition(
-               verArt).getLeads().contains(AtsClientService.get().getUserService().getCurrentUser())) {
+               version).getLeads().contains(AtsClientService.get().getUserService().getCurrentUser())) {
                AWorkbench.popup("ERROR", "Only lead can release version.");
                return;
             }
             // Validate that all Team Workflows are Completed or Cancelled
             String errorStr = null;
             for (IAtsTeamWorkflow team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(
-               verArt)) {
+               version)) {
                if (!team.getStateMgr().getStateType().isCancelled() && !team.getStateMgr().getStateType().isCompleted()) {
                   errorStr =
                      "All Team Workflows must be either Completed or " + "Cancelled before releasing a version.\n\n" + team.getAtsId() + " - is in the\"" + team.getStateMgr().getCurrentStateName() + "\" state.";
@@ -91,14 +92,13 @@ public class ReleaseVersionItem extends XNavigateItemAction {
                return;
             }
 
-            if (verArt != null) {
-               verArt.setReleased(true);
-               verArt.setReleaseDate(new Date());
-               verArt.setNextVersion(false);
+            AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+            if (version != null) {
+               changes.setSoleAttributeValue(version, AtsAttributeTypes.NextVersion, false);
+               changes.setSoleAttributeValue(version, AtsAttributeTypes.Released, true);
+               changes.setSoleAttributeValue(version, AtsAttributeTypes.ReleaseDate, new Date());
             }
 
-            AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
-            AtsClientService.get().storeConfigObject(verArt, changes);
             changes.execute();
 
             if (MessageDialog.openQuestion(Displays.getActiveShell(), "Select NEW Next Release Version",
@@ -107,15 +107,12 @@ public class ReleaseVersionItem extends XNavigateItemAction {
                   teamDefHoldingVersions.getVersions());
                result = dialog.open();
                if (result == 0) {
-                  verArt = dialog.getSelectedFirst();
-                  if (verArt == null) {
+                  version = dialog.getSelectedFirst();
+                  if (version == null) {
                      AWorkbench.popup("ERROR", "Select a version.");
                      return;
                   }
-                  verArt.setNextVersion(true);
-
-                  changes.clear();
-                  AtsClientService.get().storeConfigObject(verArt, changes);
+                  changes.setSoleAttributeValue(version, AtsAttributeTypes.NextVersion, true);
                   changes.execute();
                }
             }

@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.config.Versions;
 import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -47,7 +48,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
 
    protected static Map<String, IOseeBranch> idToWorkingBranchCache = new HashMap<>();
    protected static Map<String, Long> idToWorkingBranchCacheUpdated = new HashMap<>(50);
-   protected IAtsServices atsServices;
+   protected IAtsServices services;
    private static final int SHORT_NAME_LIMIT = 35;
    private static Set<BranchId> branchesInCommit = new HashSet<>();
    private ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
@@ -55,8 +56,8 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    public AbstractAtsBranchService() {
    }
 
-   public AbstractAtsBranchService(IAtsServices atsServices, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
-      this.atsServices = atsServices;
+   public AbstractAtsBranchService(IAtsServices services, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
+      this.services = services;
       this.teamWorkflowProvidersLazy = teamWorkflowProvidersLazy;
    }
 
@@ -115,7 +116,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
 
       // Check for parent branch uuid in Version artifact
       if (teamWf.getTeamDefinition().isTeamUsesVersions()) {
-         IAtsVersion verArt = atsServices.getVersionService().getTargetedVersion(teamWf);
+         IAtsVersion verArt = services.getVersionService().getTargetedVersion(teamWf);
          if (verArt != null) {
             parentBranch = getBranch((IAtsConfigObject) verArt);
          }
@@ -154,8 +155,8 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    @Override
    public ICommitConfigItem getParentBranchConfigArtifactConfiguredToCommitTo(IAtsTeamWorkflow teamWf) {
       if (teamWf.getTeamDefinition().isTeamUsesVersions()) {
-         if (atsServices.getVersionService().hasTargetedVersion(teamWf)) {
-            return atsServices.getVersionService().getTargetedVersion(teamWf);
+         if (services.getVersionService().hasTargetedVersion(teamWf)) {
+            return services.getVersionService().getTargetedVersion(teamWf);
          }
       } else {
          if (teamWf.isTeamWorkflow() && isBranchValid(teamWf.getTeamDefinition())) {
@@ -232,8 +233,9 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    public Collection<ICommitConfigItem> getConfigArtifactsConfiguredToCommitTo(IAtsTeamWorkflow teamWf) {
       Set<ICommitConfigItem> configObjects = new HashSet<>();
       if (teamWf.getTeamDefinition().isTeamUsesVersions()) {
-         if (atsServices.getVersionService().hasTargetedVersion(teamWf)) {
-            atsServices.getVersionService().getTargetedVersion(teamWf).getParallelVersions(configObjects);
+         if (services.getVersionService().hasTargetedVersion(teamWf)) {
+            Versions.getParallelVersions(services.getVersionService().getTargetedVersion(teamWf), configObjects,
+               services);
          }
       } else {
          if (teamWf.isTeamWorkflow() && isBranchValid(teamWf.getTeamDefinition())) {
@@ -347,7 +349,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
          }
       }
       if (branch == null) {
-         String branchUuid = atsServices.getAttributeResolver().getSoleAttributeValueAsString(configObject,
+         String branchUuid = services.getAttributeResolver().getSoleAttributeValueAsString(configObject,
             AtsAttributeTypes.BaselineBranchUuid, "");
          if (Strings.isValid(branchUuid)) {
             branch = getBranchByUuid(Long.valueOf(branchUuid));
@@ -430,7 +432,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
          return Result.FalseResult;
       }
       if (teamWf.getTeamDefinition().isTeamUsesVersions()) {
-         IAtsVersionService versionService = atsServices.getVersionService();
+         IAtsVersionService versionService = services.getVersionService();
          if (!versionService.hasTargetedVersion(teamWf)) {
             return new Result(false, "Workflow not targeted for Version");
          }
@@ -466,7 +468,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       }
 
       if (teamWf.getTeamDefinition().isTeamUsesVersions()) {
-         IAtsVersionService versionService = atsServices.getVersionService();
+         IAtsVersionService versionService = services.getVersionService();
          if (!versionService.hasTargetedVersion(teamWf)) {
             return new Result(false, "Workflow not targeted for Version");
          }
@@ -616,7 +618,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       if (smaTitle.length() > 40) {
          smaTitle = smaTitle.substring(0, 39) + "...";
       }
-      String typeName = atsServices.getWorkItemService().getArtifactTypeShortName(teamWf);
+      String typeName = services.getWorkItemService().getArtifactTypeShortName(teamWf);
       if (Strings.isValid(typeName)) {
          defaultBranchName = String.format("%s - %s - %s", teamWf.getAtsId(), typeName, smaTitle);
       } else {

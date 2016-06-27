@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.client.config;
 
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -32,14 +33,12 @@ public interface IAtsClientVersionService extends IAtsVersionService {
 
    BranchId getBranch(IAtsVersion version);
 
-   IAtsVersion createVersion(String name, String guid, long uuid);
+   IAtsVersion createVersion(String name, String guid, long uuid, IAtsChangeSet changes);
 
-   IAtsVersion createVersion(String name);
+   IAtsVersion createVersion(String name, IAtsChangeSet changes);
 
    void invalidateVersionCache();
 
    void invalidateVersionCache(IAtsTeamWorkflow teamWf) throws OseeCoreException;
-
-   IAtsVersion store(IAtsVersion version, IAtsTeamDefinition teamDef);
 
 }

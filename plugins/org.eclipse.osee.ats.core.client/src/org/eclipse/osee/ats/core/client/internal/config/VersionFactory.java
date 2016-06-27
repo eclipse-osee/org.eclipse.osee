@@ -10,10 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal.config;
 
+import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.version.IVersionFactory;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
+import org.eclipse.osee.ats.core.config.Version;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
@@ -21,21 +25,15 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
  */
 public class VersionFactory implements IVersionFactory {
 
-   private final IAtsVersionService versionService;
-
-   public VersionFactory(IAtsVersionService versionService) {
-      super();
-      this.versionService = versionService;
+   @Override
+   public IAtsVersion createVersion(String title, IAtsChangeSet changes, IAtsServices services) {
+      return createVersion(title, GUID.create(), AtsUtilClient.createConfigObjectUuid(), changes, services);
    }
 
    @Override
-   public IAtsVersion createVersion(String title) {
-      return createVersion(title, GUID.create(), AtsUtilClient.createConfigObjectUuid());
-   }
-
-   @Override
-   public IAtsVersion createVersion(String title, String guid, long uuid) {
-      return new Version(versionService, title, guid, uuid);
+   public IAtsVersion createVersion(String name, String guid, long uuid, IAtsChangeSet changes, IAtsServices services) {
+      ArtifactId artifact = changes.createArtifact(AtsArtifactTypes.Version, name, guid, uuid);
+      return new Version(services.getLogger(), services, artifact);
    }
 
 }

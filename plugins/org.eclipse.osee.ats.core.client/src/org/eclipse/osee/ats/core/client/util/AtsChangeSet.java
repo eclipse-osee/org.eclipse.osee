@@ -86,7 +86,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
             }
          } else if (obj instanceof IAtsConfigObject) {
             IAtsConfigObject configObj = (IAtsConfigObject) obj;
-            Artifact storeConfigObject = AtsClientService.get().storeConfigObject(configObj, this);
+            Artifact storeConfigObject = (Artifact) configObj.getStoreObject();
             storeConfigObject.persist(transaction);
          }
          if (obj instanceof Artifact) {

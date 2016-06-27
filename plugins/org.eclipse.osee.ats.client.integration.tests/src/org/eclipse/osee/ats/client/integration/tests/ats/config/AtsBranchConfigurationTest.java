@@ -144,12 +144,11 @@ public class AtsBranchConfigurationTest {
       }
 
       Assert.assertNotNull(versionToTarget);
-      versionToTarget.setBaselineBranchUuid(viaTeamDefBranch.getUuid());
-      versionToTarget.setAllowCommitBranch(true);
-      versionToTarget.setAllowCreateBranch(true);
-
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
-      AtsClientService.get().storeConfigObject(versionToTarget, changes);
+      changes.setSoleAttributeValue(versionToTarget, AtsAttributeTypes.BaselineBranchUuid,
+         viaTeamDefBranch.getUuid().toString());
+      changes.setSoleAttributeValue(versionToTarget, AtsAttributeTypes.AllowCommitBranch, true);
+      changes.setSoleAttributeValue(versionToTarget, AtsAttributeTypes.AllowCreateBranch, true);
       changes.execute();
 
       TestUtil.sleep(2000);
@@ -261,7 +260,6 @@ public class AtsBranchConfigurationTest {
       // setup team def to allow create/commit of branch
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.AllowCommitBranch, true);
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.AllowCreateBranch, true);
-      AtsClientService.get().storeConfigObject(teamDef, changes);
       changes.execute();
 
       TestUtil.sleep(2000);

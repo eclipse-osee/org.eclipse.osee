@@ -63,7 +63,6 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       AtsChangeSet changes = new AtsChangeSet("Set Top Team Work Definition");
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.WorkflowDefinition,
          IAtsWorkDefinitionAdmin.TeamWorkflowDefaultDefinitionId);
-      AtsClientService.get().storeConfigObject(teamDef, changes);
       changes.execute();
 
       // load top ai into cache

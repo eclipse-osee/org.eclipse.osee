@@ -178,7 +178,6 @@ public class AtsConfigOperation extends AbstractOperation {
             actionableItemToken.getName(), actionableItemToken.getUuid(), changes, services);
          addChildAi(safetyAi, childAi, changes, aias);
       }
-      AtsClientService.get().storeConfigObject(safetyAi, changes);
       return aias;
    }
 
@@ -191,9 +190,8 @@ public class AtsConfigOperation extends AbstractOperation {
    private void createVersions(IAtsChangeSet changes, IAtsTeamDefinition teamDef) throws OseeCoreException {
       if (versionNames != null) {
          for (String name : versionNames) {
-            IAtsVersion version = AtsClientService.get().getVersionService().createVersion(name);
+            IAtsVersion version = AtsClientService.get().getVersionService().createVersion(name, changes);
             teamDef.getVersions().add(version);
-            AtsClientService.get().storeConfigObject(version, changes);
             AtsClientService.get().getVersionService().setTeamDefinition(version, teamDef);
          }
       }

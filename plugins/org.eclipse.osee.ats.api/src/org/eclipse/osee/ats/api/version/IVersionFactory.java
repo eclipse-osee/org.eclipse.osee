@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.version;
 
+import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -17,8 +19,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IVersionFactory {
 
-   IAtsVersion createVersion(String title, String guid, long uuid) throws OseeCoreException;
+   IAtsVersion createVersion(String title, String guid, long uuid, IAtsChangeSet changes, IAtsServices services) throws OseeCoreException;
 
-   IAtsVersion createVersion(String name) throws OseeCoreException;
+   IAtsVersion createVersion(String name, IAtsChangeSet changes, IAtsServices services) throws OseeCoreException;
 
 }

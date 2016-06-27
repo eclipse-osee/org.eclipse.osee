@@ -12,10 +12,16 @@ package org.eclipse.osee.ats.core.config;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -45,6 +51,23 @@ public class Versions {
          }
       }
       return "";
+   }
+
+   public static List<IAtsVersion> getParallelVersions(IAtsVersion version, IAtsServices services) {
+      List<IAtsVersion> parallelVersions = new ArrayList<>();
+      for (ArtifactId parallelVersion : services.getRelationResolver().getRelated(version.getStoreObject(),
+         AtsRelationTypes.ParallelVersion_Child)) {
+         IAtsVersion parallelVer = services.getConfigItemFactory().getVersion(parallelVersion);
+         parallelVersions.add(parallelVer);
+      }
+      return parallelVersions;
+   }
+
+   public static void getParallelVersions(IAtsVersion version, Set<ICommitConfigItem> configArts, IAtsServices services) {
+      configArts.add(version);
+      for (IAtsVersion childArt : getParallelVersions(version, services)) {
+         getParallelVersions(childArt, configArts, services);
+      }
    }
 
 }

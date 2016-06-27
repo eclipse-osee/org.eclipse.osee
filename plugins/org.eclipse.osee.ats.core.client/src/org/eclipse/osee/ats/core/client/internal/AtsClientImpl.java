@@ -12,9 +12,7 @@ package org.eclipse.osee.ats.core.client.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -52,7 +50,6 @@ import org.eclipse.osee.ats.api.util.IAtsEventService;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
-import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IVersionFactory;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
@@ -81,11 +78,8 @@ import org.eclipse.osee.ats.core.client.internal.config.VersionFactory;
 import org.eclipse.osee.ats.core.client.internal.ev.AtsEarnedValueImpl;
 import org.eclipse.osee.ats.core.client.internal.query.AtsQueryServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.review.AtsReviewServiceImpl;
-import org.eclipse.osee.ats.core.client.internal.store.AtsArtifactStore;
 import org.eclipse.osee.ats.core.client.internal.store.AtsVersionCache;
 import org.eclipse.osee.ats.core.client.internal.store.AtsVersionServiceImpl;
-import org.eclipse.osee.ats.core.client.internal.store.VersionArtifactReader;
-import org.eclipse.osee.ats.core.client.internal.store.VersionArtifactWriter;
 import org.eclipse.osee.ats.core.client.internal.user.AtsUserServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.workdef.ArtifactResolverImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsAttributeResolverServiceImpl;
@@ -97,9 +91,12 @@ import org.eclipse.osee.ats.core.client.util.IArtifactMembersCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionListeners;
+import org.eclipse.osee.ats.core.config.ActionableItem;
 import org.eclipse.osee.ats.core.config.AtsCache;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
+import org.eclipse.osee.ats.core.config.TeamDefinition;
+import org.eclipse.osee.ats.core.config.Version;
 import org.eclipse.osee.ats.core.program.AtsProgramService;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
@@ -142,7 +139,6 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    private IAtsWorkDefinitionService workDefService;
    private IArtifactResolver artifactResolver;
    private IAtsClientVersionService versionService;
-   private IAtsArtifactStore artifactStore;
    private IAtsCache atsCache;
    private IActionableItemFactory actionableItemFactory;
    private ITeamDefinitionFactory teamDefFactory;
@@ -207,18 +203,10 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
    public void start() throws OseeCoreException {
       Conditions.checkNotNull(workDefService, "IAtsWorkDefinitionService");
-      Map<Class<? extends IAtsConfigObject>, IAtsArtifactWriter<? extends IAtsConfigObject>> writers =
-         new HashMap<Class<? extends IAtsConfigObject>, IAtsArtifactWriter<? extends IAtsConfigObject>>();
-
-      Map<IArtifactType, IAtsArtifactReader<? extends IAtsConfigObject>> readers =
-         new HashMap<IArtifactType, IAtsArtifactReader<? extends IAtsConfigObject>>();
-
-      writers.put(IAtsVersion.class, new VersionArtifactWriter());
 
       userService = new AtsUserServiceImpl();
       userServiceClient = (IAtsUserServiceClient) userService;
 
-      artifactStore = new AtsArtifactStore(readers, writers);
       atsCache = new AtsCache(this);
       earnedValueService = new AtsEarnedValueImpl(logger, getServices());
 
@@ -229,9 +217,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       actionableItemFactory = new ActionableItemFactory();
       teamDefFactory = new TeamDefinitionFactory();
       workItemFactory = new WorkItemFactory(this);
-      versionFactory = new VersionFactory(versionService);
-
-      readers.put(AtsArtifactTypes.Version, new VersionArtifactReader(versionFactory));
+      versionFactory = new VersionFactory();
 
       workDefCache = new AtsWorkDefinitionCache();
       artifactResolver = new ArtifactResolverImpl(this);
@@ -289,21 +275,24 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       atsCache = null;
       workDefCache = null;
       versionService = null;
-      artifactStore = null;
       actionableItemFactory = null;
       teamDefFactory = null;
       versionFactory = null;
 
    }
 
-   @Override
-   public <T extends IAtsConfigObject> Artifact storeConfigObject(T configObject, IAtsChangeSet changes) throws OseeCoreException {
-      return artifactStore.store(atsCache, configObject, changes);
-   }
-
+   @SuppressWarnings("unchecked")
    @Override
    public <T extends IAtsConfigObject> T getConfigObject(Artifact artifact) throws OseeCoreException {
-      return artifactStore.load(atsCache, artifact);
+      if (artifact.isOfType(AtsArtifactTypes.Version)) {
+         return (T) new Version(logger, this, artifact);
+      } else if (artifact.isOfType(AtsArtifactTypes.TeamDefinition)) {
+         return (T) new TeamDefinition(logger, this, artifact);
+      } else if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {
+         return (T) new ActionableItem(logger, this, artifact);
+      }
+      throw new UnsupportedOperationException(String.format("Unhandled config object type %s object %s",
+         artifact.getArtifactTypeName(), artifact.toStringWithId()));
    }
 
    @Override
@@ -337,7 +326,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    @Override
    public void reloadConfigCache() {
       try {
-         new LoadAtsConfigCacheCallable(artifactStore, atsCache).run();
+         new LoadAtsConfigCacheCallable(atsCache).run();
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

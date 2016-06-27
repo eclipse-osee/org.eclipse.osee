@@ -17,20 +17,19 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.config.IAtsClientVersionService;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.version.AbstractAtsVersionServiceImpl;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -162,35 +161,15 @@ public class AtsVersionServiceImpl extends AbstractAtsVersionServiceImpl impleme
    }
 
    @Override
-   public IAtsVersion store(IAtsVersion version, IAtsTeamDefinition teamDef) {
-      Conditions.checkNotNull(version, "version");
-      Conditions.checkNotNull(teamDef, "teamDef");
-      Conditions.checkNotNull(teamDef.getStoreObject(), "teamDef storeObject");
-      IAtsVersion result = version;
-      if (version.getStoreObject() == null) {
-         Artifact verArt = cache.getArtifact(version.getUuid());
-         if (verArt == null) {
-            AtsChangeSet changes = new AtsChangeSet("Create " + version);
-            VersionArtifactWriter writer = new VersionArtifactWriter();
-            verArt = writer.store(version, cache, changes);
-            changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt);
-            version.setStoreObject(verArt);
-            changes.execute();
-         }
-      }
-      return result;
-   }
-
-   @Override
-   public IAtsVersion createVersion(String title, String guid, long uuid) throws OseeCoreException {
-      IAtsVersion item = atsClient.getVersionFactory().createVersion(title, guid, uuid);
+   public IAtsVersion createVersion(String title, String guid, long uuid, IAtsChangeSet changes) throws OseeCoreException {
+      IAtsVersion item = atsClient.getVersionFactory().createVersion(title, guid, uuid, changes, atsClient);
       cache.cacheAtsObject(item);
       return item;
    }
 
    @Override
-   public IAtsVersion createVersion(String name) throws OseeCoreException {
-      IAtsVersion item = atsClient.getVersionFactory().createVersion(name);
+   public IAtsVersion createVersion(String name, IAtsChangeSet changes) throws OseeCoreException {
+      IAtsVersion item = atsClient.getVersionFactory().createVersion(name, changes, atsClient);
       cache.cacheAtsObject(item);
       return item;
    }

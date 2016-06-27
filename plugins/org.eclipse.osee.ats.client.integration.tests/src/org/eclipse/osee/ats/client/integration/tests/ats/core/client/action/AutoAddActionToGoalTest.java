@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.core.client.action;
 
 import java.util.List;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -80,10 +79,8 @@ public class AutoAddActionToGoalTest {
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       GoalArtifact goalArt = GoalManager.createGoal("AutoAddActionToGoalTest - AddActionToGoalFromAI", changes);
       changes.execute();
-      IAtsActionableItem actionItem2 = AtsTestUtil.getTestAi2();
 
       changes.clear();
-      AtsClientService.get().storeConfigObject(actionItem2, changes);
       IAtsTeamDefinition teamDef = AtsTestUtil.getTestTeamDef();
 
       for (IAtsVersion version : teamDef.getVersions()) {
@@ -146,13 +143,10 @@ public class AutoAddActionToGoalTest {
       IAtsWorkDefinition workDef = AtsTestUtil.getWorkDef();
 
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
-      IAtsActionableItem testAI2 = AtsTestUtil.getTestAi2();
-      AtsClientService.get().storeConfigObject(testAI2, changes);
       IAtsTeamDefinition teamDef = AtsTestUtil.getTestTeamDef();
       for (IAtsVersion version : teamDef.getVersions()) {
          changes.deleteArtifact(version.getStoreObject());
       }
-      AtsClientService.get().storeConfigObject(teamDef, changes);
 
       Artifact testAI2Art = AtsClientService.get().getArtifact(AtsTestUtil.getTestAi2());
       Artifact teamDefArtifact = AtsClientService.get().getArtifact(AtsTestUtil.getTestTeamDef());
@@ -191,11 +185,7 @@ public class AutoAddActionToGoalTest {
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       GoalArtifact goalArt = GoalManager.createGoal("AutoAddActionToGoalTest - AddTwoActions", changes);
       GoalArtifact goalArt2 = GoalManager.createGoal("AutoAddActionToGoalTest - SecondGoal", changes);
-      IAtsActionableItem actionItem2 = AtsTestUtil.getTestAi2();
-      IAtsActionableItem actionItem3 = AtsTestUtil.getTestAi3();
 
-      AtsClientService.get().storeConfigObject(actionItem2, changes);
-      AtsClientService.get().storeConfigObject(actionItem3, changes);
       IAtsTeamDefinition teamDef = AtsTestUtil.getTestTeamDef();
       for (IAtsVersion version : teamDef.getVersions()) {
          changes.deleteArtifact(version.getStoreObject());

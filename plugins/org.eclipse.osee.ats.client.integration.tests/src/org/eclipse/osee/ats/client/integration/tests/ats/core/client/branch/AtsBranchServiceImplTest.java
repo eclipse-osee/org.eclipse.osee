@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.HashSet;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
@@ -30,6 +31,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -82,15 +84,17 @@ public class AtsBranchServiceImplTest {
          AtsBranchServiceImplTest.class.getSimpleName() + ".testGetCommitTransactionsAndConfigItemsForTeamWf_versions");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       //Test Version-based Team Arts
-      IAtsVersion verArt1 = AtsTestUtil.getVerArt1();
-      IAtsVersion verArt2 = AtsTestUtil.getVerArt2();
-      verArt1.getParallelVersions().add(verArt2);
-      AtsClientService.get().getVersionService().setTargetedVersion(teamArt, verArt1);
+      IAtsVersion version1 = AtsTestUtil.getVerArt1();
+      IAtsVersion version2 = AtsTestUtil.getVerArt2();
+      ((Artifact) version1.getStoreObject()).addRelation(AtsRelationTypes.ParallelVersion_Child,
+         (Artifact) version2.getStoreObject());
+      ((Artifact) version1.getStoreObject()).persist(getClass().getSimpleName());
+      AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamArt, version1);
       Collection<Object> commitObjs =
          AtsClientService.get().getBranchService().getCommitTransactionsAndConfigItemsForTeamWf(teamArt);
       assertTrue("commitObjs has wrong size", commitObjs.size() == 2);
-      assertTrue("commitObjs is missing verArt1", commitObjs.contains(verArt1));
-      assertTrue("commitObjs is missing verArt2", commitObjs.contains(verArt2));
+      assertTrue("commitObjs is missing verArt1", commitObjs.contains(version1));
+      assertTrue("commitObjs is missing verArt2", commitObjs.contains(version2));
    }
 
    @Test

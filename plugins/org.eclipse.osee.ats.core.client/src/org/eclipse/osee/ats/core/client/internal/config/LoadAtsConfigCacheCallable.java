@@ -15,7 +15,6 @@ import java.util.List;
 import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.internal.IAtsArtifactStore;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -27,11 +26,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.QueryBuilderArtifa
  */
 public class LoadAtsConfigCacheCallable {
 
-   private final IAtsArtifactStore artifactStore;
    private final IAtsCache cache;
 
-   public LoadAtsConfigCacheCallable(IAtsArtifactStore artifactStore, IAtsCache cache) {
-      this.artifactStore = artifactStore;
+   public LoadAtsConfigCacheCallable(IAtsCache cache) {
       this.cache = cache;
    }
 
@@ -43,7 +40,7 @@ public class LoadAtsConfigCacheCallable {
       List<Artifact> artifactListFromType = query.getResults().getList();
 
       for (Artifact artifact : artifactListFromType) {
-         artifactStore.load(cache, artifact);
+         cache.cacheArtifact(artifact);
       }
    }
 

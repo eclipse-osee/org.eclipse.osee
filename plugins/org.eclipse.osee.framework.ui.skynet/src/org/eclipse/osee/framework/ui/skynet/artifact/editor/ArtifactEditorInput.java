@@ -85,7 +85,7 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
    public <T> T getAdapter(Class<T> type) {
       if (type != null) {
          if (type.isAssignableFrom(getClass())) {
-            return (T) this;
+            return (T) getArtifact();
          } else if (type.isAssignableFrom(Artifact.class)) {
             return (T) artifact;
          }

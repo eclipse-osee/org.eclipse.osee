@@ -119,7 +119,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
       if (!resultData.isErrors()) {
          try {
             for (String newVer : newVersionNames) {
-               IAtsVersion version = AtsClientService.get().getVersionService().createVersion(newVer);
+               IAtsVersion version = AtsClientService.get().getVersionService().createVersion(newVer, changes);
                versions.add(version);
                changes.add(version);
                changes.add(
