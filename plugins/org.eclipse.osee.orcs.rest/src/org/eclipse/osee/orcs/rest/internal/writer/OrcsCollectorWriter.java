@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.rest.internal.writer;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -164,6 +165,18 @@ public class OrcsCollectorWriter {
                   logChange(artifact, attrType, currValue, newValue);
                   getTransaction().setSoleAttributeValue(artifact, attrType, newValue);
                }
+            } else if (owAttribute.getValues().size() > 1 && orcsApi.getOrcsTypes().getAttributeTypes().getMaxOccurrences(
+               attrType) > 1) {
+               if (orcsApi.getOrcsTypes().getAttributeTypes().isDateType(attrType)) {
+                  throw new OseeArgumentException(
+                     "Date attributes not supported for multi-value set for OwAttribute %s Exception %s", owAttribute);
+               }
+               List<String> values = new LinkedList<>();
+               for (Object obj : owAttribute.getValues()) {
+                  values.add(obj.toString());
+               }
+               getTransaction().setAttributesFromStrings(artifact, attrType, values);
+               logChange(artifact, attrType, artifact.getAttributeValues(attrType).toString(), values.toString());
             }
 
          }
