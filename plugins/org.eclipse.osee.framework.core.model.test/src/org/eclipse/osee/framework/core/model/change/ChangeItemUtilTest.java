@@ -16,6 +16,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.mocks.ChangeTestUtility;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -315,7 +316,7 @@ public class ChangeItemUtilTest {
 
    @Test
    public void testCopy() throws OseeCoreException {
-      ChangeVersion expected = new ChangeVersion(5679L, ModificationType.MERGED);
+      ChangeVersion expected = new ChangeVersion(5679L, ModificationType.MERGED, ApplicabilityId.valueOf(1L));
 
       ChangeVersion actual = new ChangeVersion();
       ChangeItemUtil.copy(expected, actual);

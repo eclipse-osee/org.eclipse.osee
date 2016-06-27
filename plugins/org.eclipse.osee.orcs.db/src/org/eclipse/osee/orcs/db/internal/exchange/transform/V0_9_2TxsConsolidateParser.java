@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.exchange.transform;
 
 import java.util.Map;
 import javax.xml.stream.XMLStreamException;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -80,7 +81,8 @@ public class V0_9_2TxsConsolidateParser extends SaxTransformer {
          int transactionId = Integer.parseInt(attributes.getValue("transaction_id"));
          TxChange txCurrent = TxChange.getChangeType(Integer.parseInt(attributes.getValue("tx_current")));
 
-         return new Address(false, targetBranchId, -1, transactionId, gammaId, modificationType, txCurrent);
+         return new Address(false, targetBranchId, -1, transactionId, gammaId, modificationType,
+            ApplicabilityId.valueOf(1L), txCurrent);
       } catch (OseeCoreException ex) {
          throw new XMLStreamException(ex);
       }

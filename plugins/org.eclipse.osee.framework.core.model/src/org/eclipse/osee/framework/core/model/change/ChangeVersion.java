@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.change;
 
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 
 /**
@@ -18,20 +19,22 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 public final class ChangeVersion {
    private Long gammaId;
    private ModificationType modType;
+   private ApplicabilityId appId;
    private String value;
 
    public ChangeVersion() {
-      this(null, null, null);
+      this(null, null, null, null);
    }
 
-   public ChangeVersion(Long gammaId, ModificationType modType) {
-      this(null, gammaId, modType);
+   public ChangeVersion(Long gammaId, ModificationType modType, ApplicabilityId appId) {
+      this(null, gammaId, modType, appId);
    }
 
-   public ChangeVersion(String value, Long gammaId, ModificationType modType) {
+   public ChangeVersion(String value, Long gammaId, ModificationType modType, ApplicabilityId appId) {
       this.value = value;
       this.gammaId = gammaId;
       this.modType = modType;
+      this.appId = appId;
    }
 
    public Long getGammaId() {
@@ -40,6 +43,10 @@ public final class ChangeVersion {
 
    public ModificationType getModType() {
       return modType;
+   }
+
+   public ApplicabilityId getApplicabilityId() {
+      return appId;
    }
 
    public String getValue() {
@@ -58,6 +65,10 @@ public final class ChangeVersion {
       this.modType = modType;
    }
 
+   public void setApplicabilityId(ApplicabilityId appId) {
+      this.appId = appId;
+   }
+
    public boolean isValid() {
       return getModType() != null && getGammaId() != null;// && getTransactionNumber() != null;
    }
@@ -66,11 +77,12 @@ public final class ChangeVersion {
       setGammaId(item.getGammaId());
       setModType(item.getModType());
       setValue(item.getValue());
+      setApplicabilityId(item.getApplicabilityId());
    }
 
    @Override
    public String toString() {
-      return String.format("[%s,%s]", getGammaId(), getModType());
+      return String.format("[%s,%s,%s]", getGammaId(), getModType(), getApplicabilityId());
    }
 
    @Override
@@ -80,6 +92,7 @@ public final class ChangeVersion {
       result = prime * result + (gammaId == null ? 0 : gammaId.hashCode());
       result = prime * result + (modType == null ? 0 : modType.hashCode());
       result = prime * result + (value == null ? 0 : value.hashCode());
+      result = prime * result + (appId == null ? 0 : appId.hashCode());
       return result;
    }
 
@@ -114,6 +127,13 @@ public final class ChangeVersion {
             return false;
          }
       } else if (!value.equals(other.value)) {
+         return false;
+      }
+      if (appId == null) {
+         if (other.appId != null) {
+            return false;
+         }
+      } else if (!appId.equals(other.appId)) {
          return false;
       }
       return true;

@@ -13,7 +13,7 @@ import org.eclipse.osee.jdbc.JdbcConnection;
 public class MoveBranchDatabaseCallable {
 
    private static final String INSERT_ADDRESSING =
-      "insert into %s (transaction_id, gamma_id, tx_current, mod_type, branch_id) select transaction_id, gamma_id, tx_current, mod_type, branch_id from %s where branch_id = ?";
+      "insert into %s (transaction_id, gamma_id, tx_current, mod_type, branch_id, app_id) select transaction_id, gamma_id, tx_current, mod_type, branch_id, app_id from %s where branch_id = ?";
 
    public static final String DELETE_ADDRESSING = "delete from %s where branch_id = ?";
    private final boolean archive;

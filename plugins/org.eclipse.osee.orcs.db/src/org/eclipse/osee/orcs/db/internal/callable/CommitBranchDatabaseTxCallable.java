@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.callable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -41,7 +42,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       "insert into osee_tx_details(tx_type, branch_id, transaction_id, osee_comment, time, author, commit_art_id) values(?,?,?,?,?,?,?)";
 
    private static final String INSERT_COMMIT_ADDRESSING =
-      "insert into osee_txs(transaction_id, branch_id, gamma_id, mod_type, tx_current) values(?,?,?,?,?)";
+      "insert into osee_txs(transaction_id, branch_id, gamma_id, mod_type, tx_current, app_id) values(?,?,?,?,?,?)";
 
    private static final String UPDATE_CONFLICT_STATUS =
       "update osee_conflict SET status = ? WHERE status = ? AND merge_branch_id = ?";
@@ -156,12 +157,14 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       List<Object[]> insertData = new ArrayList<>();
       for (ChangeItem change : changes) {
          ModificationType modType = change.getNetChange().getModType();
+         ApplicabilityId appId = change.getNetChange().getApplicabilityId();
          insertData.add(new Object[] {
             newTx,
             destinationBranch.getUuid(),
             change.getNetChange().getGammaId(),
             modType.getValue(),
-            TxChange.getCurrent(modType).getValue()});
+            TxChange.getCurrent(modType).getValue(),
+            appId.getId()});
       }
       getJdbcClient().runBatchUpdate(connection, INSERT_COMMIT_ADDRESSING, insertData);
    }

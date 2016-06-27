@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.change;
 
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -25,7 +26,7 @@ public final class ChangeItemUtil {
       // Utility Class
    }
 
-   public static ChangeItem newArtifactChange(int artId, long artTypeId, long currentSourceGammaId, ModificationType currentSourceModType) {
+   public static ChangeItem newArtifactChange(int artId, long artTypeId, long currentSourceGammaId, ModificationType currentSourceModType, ApplicabilityId appId) {
       ChangeItem item = new ChangeItem();
       item.setChangeType(ChangeType.ARTIFACT_CHANGE);
 
@@ -36,12 +37,13 @@ public final class ChangeItemUtil {
       ChangeVersion current = item.getCurrentVersion();
       current.setGammaId(currentSourceGammaId);
       current.setModType(currentSourceModType);
+      current.setApplicabilityId(appId);
 
       item.setArtId(artId);
       return item;
    }
 
-   public static ChangeItem newAttributeChange(int attrId, long attrTypeId, int artId, long currentSourceGammaId, ModificationType currentSourceModType, String value) {
+   public static ChangeItem newAttributeChange(int attrId, long attrTypeId, int artId, long currentSourceGammaId, ModificationType currentSourceModType, String value, ApplicabilityId appId) {
       ChangeItem item = new ChangeItem();
       item.setChangeType(ChangeType.ATTRIBUTE_CHANGE);
 
@@ -52,13 +54,14 @@ public final class ChangeItemUtil {
       ChangeVersion current = item.getCurrentVersion();
       current.setGammaId(currentSourceGammaId);
       current.setModType(currentSourceModType);
+      current.setApplicabilityId(appId);
 
       item.setArtId(artId);
       item.getCurrentVersion().setValue(value);
       return item;
    }
 
-   public static ChangeItem newRelationChange(int relLinkId, long relTypeId, long currentSourceGammaId, ModificationType currentSourceModType, int aArtId, int bArtId, String rationale) {
+   public static ChangeItem newRelationChange(int relLinkId, long relTypeId, long currentSourceGammaId, ModificationType currentSourceModType, int aArtId, int bArtId, String rationale, ApplicabilityId appId) {
       ChangeItem item = new ChangeItem();
       item.setChangeType(ChangeType.RELATION_CHANGE);
 
@@ -69,6 +72,7 @@ public final class ChangeItemUtil {
       ChangeVersion current = item.getCurrentVersion();
       current.setGammaId(currentSourceGammaId);
       current.setModType(currentSourceModType);
+      current.setApplicabilityId(appId);
 
       item.setArtId(aArtId);
       item.setArtIdB(bArtId);
@@ -96,10 +100,7 @@ public final class ChangeItemUtil {
    public static void copy(ChangeVersion source, ChangeVersion dest) throws OseeCoreException {
       Conditions.checkNotNull(source, "source");
       Conditions.checkNotNull(dest, "Dest");
-
-      dest.setGammaId(source.getGammaId());
-      dest.setModType(source.getModType());
-      dest.setValue(source.getValue());
+      dest.copy(source);
    }
 
    public static boolean isModType(ChangeVersion changeVersion, ModificationType matchModType) {
@@ -128,13 +129,14 @@ public final class ChangeItemUtil {
 
    public static boolean hasBeenReplacedWithVersion(ChangeItem changeItem) {
       boolean results = areGammasEqual(changeItem.getCurrentVersion(), changeItem.getBaselineVersion()) && //
-      isModType(changeItem.getCurrentVersion(), ModificationType.MODIFIED);
+         isModType(changeItem.getCurrentVersion(), ModificationType.MODIFIED);
       return results;
    }
 
    public static boolean isAlreadyOnDestination(ChangeItem changeItem) {
       return areGammasEqual(changeItem.getCurrentVersion(), changeItem.getDestinationVersion()) && //
-      areModTypesEqual(changeItem.getCurrentVersion(), changeItem.getDestinationVersion());
+         areModTypesEqual(changeItem.getCurrentVersion(), changeItem.getDestinationVersion()) && //
+         areApplicabilitiesEqual(changeItem.getCurrentVersion(), changeItem.getDestinationVersion());
    }
 
    public static boolean areModTypesEqual(ChangeVersion object1, ChangeVersion object2) {
@@ -160,6 +162,20 @@ public final class ChangeItemUtil {
             result = true;
          } else if (object1.getGammaId() != null) {
             result = object1.getGammaId().equals(object2.getGammaId());
+         }
+      }
+      return result;
+   }
+
+   public static boolean areApplicabilitiesEqual(ChangeVersion object1, ChangeVersion object2) {
+      boolean result = false;
+      if (object1 == null && object2 == null) {
+         result = true;
+      } else if (object1 != null && object2 != null) {
+         if (object1.getApplicabilityId() == object2.getApplicabilityId()) {
+            result = true;
+         } else if (object1.getApplicabilityId() != null) {
+            result = object1.getApplicabilityId().equals(object2.getApplicabilityId());
          }
       }
       return result;

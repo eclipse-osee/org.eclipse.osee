@@ -14,9 +14,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConstants;
@@ -40,9 +42,9 @@ import org.eclipse.osee.orcs.db.internal.sql.join.TransactionJoinQuery;
 public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallable<List<ChangeItem>> {
 
    private static final String SELECT_CHANGES_BETWEEN_TRANSACTIONS =
-      "select gamma_id, mod_type from osee_txs where branch_id = ? and transaction_id > ? and transaction_id <= ?";
+      "select gamma_id, mod_type, app_id from osee_txs where branch_id = ? and transaction_id > ? and transaction_id <= ?";
 
-   private final HashMap<Long, ModificationType> changeByGammaId = new HashMap<>();
+   private final HashMap<Long, Pair<ModificationType, ApplicabilityId>> changeByGammaId = new HashMap<>();
 
    private final SqlJoinFactory joinFactory;
    private final TransactionReadableDelta txDelta;
@@ -102,9 +104,10 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
             checkForCancelled();
             Long gammaId = chStmt.getLong("gamma_id");
             ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
+            ApplicabilityId appId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
 
             txJoin.add(gammaId, -1);
-            changeByGammaId.put(gammaId, modType);
+            changeByGammaId.put(gammaId, new Pair<ModificationType, ApplicabilityId>(modType, appId));
          }
          txJoin.store();
       } finally {
@@ -132,9 +135,9 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
    private void loadCurrentData(String tableName, String columnName, int queryId, HashMap<Integer, ChangeItem> changesByItemId, TransactionReadable transactionLimit) throws OseeCoreException {
       JdbcStatement chStmt = getJdbcClient().getStatement();
       try {
-         String query = "select txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
-         + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + columnName + //
-         " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?";
+         String query = "select txs.gamma_id, txs.mod_type, txs.app_id, item." + columnName + " from osee_join_id idj, " //
+            + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + columnName + //
+            " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?";
 
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, queryId, transactionLimit.getBranchId(),
             transactionLimit.getGuid());
@@ -144,11 +147,13 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
 
             Integer itemId = chStmt.getInt(columnName);
             Long gammaId = chStmt.getLong("gamma_id");
+            ApplicabilityId appId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
             ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
 
             ChangeItem change = changesByItemId.get(itemId);
             change.getDestinationVersion().setModType(modType);
             change.getDestinationVersion().setGammaId(gammaId);
+            change.getDestinationVersion().setApplicabilityId(appId);
             change.getBaselineVersion().copy(change.getDestinationVersion());
          }
       } finally {

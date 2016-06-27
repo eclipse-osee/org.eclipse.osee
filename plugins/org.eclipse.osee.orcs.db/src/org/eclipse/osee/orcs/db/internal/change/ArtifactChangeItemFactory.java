@@ -11,10 +11,12 @@
 package org.eclipse.osee.orcs.db.internal.change;
 
 import java.util.HashMap;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.db.internal.change.ChangeItemLoader.ChangeItemFactory;
 
@@ -22,9 +24,9 @@ public final class ArtifactChangeItemFactory implements ChangeItemFactory {
    private static final String SELECT_ARTIFACTS_BY_GAMMAS =
       "select art_id, art_type_id, txj.gamma_id from osee_artifact id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
 
-   private final HashMap<Long, ModificationType> changeByGammaId;
+   private final HashMap<Long, Pair<ModificationType, ApplicabilityId>> changeByGammaId;
 
-   public ArtifactChangeItemFactory(HashMap<Long, ModificationType> changeByGammaId) {
+   public ArtifactChangeItemFactory(HashMap<Long, Pair<ModificationType, ApplicabilityId>> changeByGammaId) {
       super();
       this.changeByGammaId = changeByGammaId;
    }
@@ -38,11 +40,11 @@ public final class ArtifactChangeItemFactory implements ChangeItemFactory {
    public ChangeItem createItem(JdbcStatement chStmt) throws OseeCoreException {
       int artId = chStmt.getInt("art_id");
       long artTypeId = chStmt.getLong("art_type_id");
-
       long gammaId = chStmt.getLong("gamma_id");
-      ModificationType modType = changeByGammaId.get(gammaId);
 
-      return ChangeItemUtil.newArtifactChange(artId, artTypeId, gammaId, modType);
+      ModificationType modType = changeByGammaId.get(gammaId).getFirst();
+      ApplicabilityId appId = changeByGammaId.get(gammaId).getSecond();
+      return ChangeItemUtil.newArtifactChange(artId, artTypeId, gammaId, modType, appId);
    }
 
    @Override

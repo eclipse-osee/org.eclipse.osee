@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.utility;
 
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 
@@ -22,18 +23,20 @@ public final class Address implements Comparable<Address> {
    private final int transactionId;
    private final long gammaId;
    private ModificationType modType;
+   private ApplicabilityId appId;
    private final TxChange txCurrent;
    private final boolean isBaseline;
    private TxChange correctedTxCurrent;
    private boolean purge;
 
-   public Address(boolean isBaseline, long branchUuid, int itemId, int transactionId, long gammaId, ModificationType modType, TxChange txCurrent) {
+   public Address(boolean isBaseline, long branchUuid, int itemId, int transactionId, long gammaId, ModificationType modType, ApplicabilityId appId, TxChange txCurrent) {
       super();
       this.branchUuid = branchUuid;
       this.itemId = itemId;
       this.transactionId = transactionId;
       this.gammaId = gammaId;
       this.modType = modType;
+      this.appId = appId;
       this.txCurrent = txCurrent;
       this.isBaseline = isBaseline;
    }
@@ -56,6 +59,10 @@ public final class Address implements Comparable<Address> {
 
    public boolean hasSameModType(Address other) {
       return modType == other.modType;
+   }
+
+   public boolean hasSameApplicability(Address other) {
+      return appId.equals(other.getBranchId());
    }
 
    public void ensureCorrectCurrent() {
@@ -113,6 +120,14 @@ public final class Address implements Comparable<Address> {
 
    public void setModType(ModificationType modType) {
       this.modType = modType;
+   }
+
+   public ApplicabilityId getApplicabilityId() {
+      return appId;
+   }
+
+   public void setApplicabilityId(ApplicabilityId appId) {
+      this.appId = appId;
    }
 
    public TxChange getTxCurrent() {

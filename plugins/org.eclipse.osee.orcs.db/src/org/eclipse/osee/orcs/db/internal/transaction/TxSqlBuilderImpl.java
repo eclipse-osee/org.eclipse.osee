@@ -188,9 +188,10 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    private void addTxs(SqlOrderEnum key, OrcsData orcsData) {
       VersionData data = orcsData.getVersion();
       ModificationType modType = orcsData.getModType();
+      //TODO Fix hack: need to modify orcsData, but setting to default 1 instead
 
       addRow(SqlOrderEnum.TXS, data.getTransactionId(), data.getGammaId(), modType.getValue(),
-         TxChange.getCurrent(modType).getValue(), data.getBranchId());
+         TxChange.getCurrent(modType).getValue(), data.getBranchId(), 1L);
 
       if (key.hasTxNotCurrentQuery()) {
          IdJoinQuery join = txNotCurrentsJoin.get(key);

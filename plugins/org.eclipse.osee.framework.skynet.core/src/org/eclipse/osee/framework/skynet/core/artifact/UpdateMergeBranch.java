@@ -39,13 +39,13 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 public class UpdateMergeBranch extends AbstractDbTxOperation {
 
    private static final String TX_CURRENT_SETTINGS = "CASE" + //
-   " WHEN txs1.mod_type = " + ModificationType.DELETED.getValue() + " THEN " + TxChange.DELETED.getValue() + //
-   " WHEN txs1.mod_type = " + ModificationType.ARTIFACT_DELETED.getValue() + " THEN " + TxChange.ARTIFACT_DELETED.getValue() + //
-   " ELSE " + TxChange.CURRENT.getValue() + //
-   " END";
+      " WHEN txs1.mod_type = " + ModificationType.DELETED.getValue() + " THEN " + TxChange.DELETED.getValue() + //
+      " WHEN txs1.mod_type = " + ModificationType.ARTIFACT_DELETED.getValue() + " THEN " + TxChange.ARTIFACT_DELETED.getValue() + //
+      " ELSE " + TxChange.CURRENT.getValue() + //
+      " END";
 
    private static final String UPDATE_ARTIFACTS =
-      "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) SELECT ?, txs1.gamma_id, txs1.mod_type, " + TX_CURRENT_SETTINGS + ", ? FROM osee_attribute attr1, osee_txs txs1 WHERE attr1.art_id = ? AND txs1.gamma_id = attr1.gamma_id AND txs1.branch_id = ? AND txs1.tx_current <> ? AND NOT EXISTS (SELECT 'x' FROM osee_txs txs2, osee_attribute attr2 WHERE txs2.branch_id = ? AND txs2.transaction_id = ? AND txs2.gamma_id = attr2.gamma_id AND attr2.attr_id = attr1.attr_id)";
+      "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id, app_id) SELECT ?, txs1.gamma_id, txs1.mod_type, " + TX_CURRENT_SETTINGS + ", ?, txs1.app_id FROM osee_attribute attr1, osee_txs txs1 WHERE attr1.art_id = ? AND txs1.gamma_id = attr1.gamma_id AND txs1.branch_id = ? AND txs1.tx_current <> ? AND NOT EXISTS (SELECT 'x' FROM osee_txs txs2, osee_attribute attr2 WHERE txs2.branch_id = ? AND txs2.transaction_id = ? AND txs2.gamma_id = attr2.gamma_id AND attr2.attr_id = attr1.attr_id)";
 
    private static final String PURGE_ATTRIBUTE_FROM_MERGE_BRANCH =
       "DELETE from osee_txs txs WHERE EXISTS (SELECT 'x' FROM osee_attribute attr WHERE txs.gamma_id = attr.gamma_id AND txs.branch_id = ? AND attr.art_id = ?)";
@@ -152,9 +152,9 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
    }
 
    private final static String INSERT_ATTRIBUTE_GAMMAS =
-      "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current, branch_id) SELECT ?, atr1.gamma_id, txs1.mod_type, ?, ? FROM osee_attribute atr1, osee_txs txs1, osee_join_artifact ald1 WHERE txs1.branch_id = ? AND txs1.tx_current in (1,2) AND txs1.gamma_id = atr1.gamma_id AND atr1.art_id = ald1.art_id and ald1.query_id = ?";
+      "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current, branch_id, app_id) SELECT ?, atr1.gamma_id, txs1.mod_type, ?, ?, txs1.app_id FROM osee_attribute atr1, osee_txs txs1, osee_join_artifact ald1 WHERE txs1.branch_id = ? AND txs1.tx_current in (1,2) AND txs1.gamma_id = atr1.gamma_id AND atr1.art_id = ald1.art_id and ald1.query_id = ?";
    private final static String INSERT_ARTIFACT_GAMMAS =
-      "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current, branch_id) SELECT ?, arv1.gamma_id, txs1.mod_type, ?, ? FROM osee_artifact arv1, osee_txs txs1, osee_join_artifact ald1 WHERE txs1.branch_id = ? AND txs1.tx_current in (1,2) AND txs1.gamma_id = arv1.gamma_id AND arv1.art_id = ald1.art_id and ald1.query_id = ?";
+      "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current, branch_id, app_id) SELECT ?, arv1.gamma_id, txs1.mod_type, ?, ?, txs1.app_id FROM osee_artifact arv1, osee_txs txs1, osee_join_artifact ald1 WHERE txs1.branch_id = ? AND txs1.tx_current in (1,2) AND txs1.gamma_id = arv1.gamma_id AND arv1.art_id = ald1.art_id and ald1.query_id = ?";
 
    private void addArtifactsToBranch(JdbcConnection connection, BranchId sourceBranch, BranchId destBranch, BranchId mergeBranch, Collection<Integer> artIds) throws OseeCoreException {
       if (artIds == null || artIds.isEmpty()) {

@@ -25,7 +25,7 @@ import org.eclipse.osee.orcs.data.ArchiveOperation;
 public class ArchiveUnarchiveBranchCallable extends AbstractDatastoreTxCallable<Void> {
 
    private static final String INSERT_ADDRESSING =
-      "insert into %s (transaction_id, gamma_id, tx_current, mod_type, branch_id) select transaction_id, gamma_id, tx_current, mod_type, branch_id from %s where branch_id = ?";
+      "insert into %s (transaction_id, gamma_id, tx_current, mod_type, branch_id, app_id) select transaction_id, gamma_id, tx_current, mod_type, branch_id, app_id from %s where branch_id = ?";
    private static final String DELETE_ADDRESSING = "delete from %s where branch_id = ?";
    private static final String UPDATE_BRANCH = "UPDATE osee_branch SET archived = ? WHERE branch_id = ?";
 

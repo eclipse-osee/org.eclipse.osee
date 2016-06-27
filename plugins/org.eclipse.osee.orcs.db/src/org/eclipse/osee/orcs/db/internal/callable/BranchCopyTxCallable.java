@@ -43,10 +43,10 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
       "INSERT INTO osee_tx_details (branch_id, transaction_id, osee_comment, time, author, tx_type) VALUES (?,?,?,?,?,?)";
 
    private static final String INSERT_ADDRESSING =
-      "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) VALUES (?,?,?,?,?)";
+      "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id, app_id) VALUES (?,?,?,?,?,?)";
 
    private static final String SELECT_ADDRESSING =
-      "SELECT gamma_id, mod_type FROM osee_txs txs WHERE txs.branch_id = ? AND txs.transaction_id = ?";
+      "SELECT gamma_id, mod_type, app_id FROM osee_txs txs WHERE txs.branch_id = ? AND txs.transaction_id = ?";
 
    private final JdbcClient jdbcClient;
    private final SqlJoinFactory joinFactory;
@@ -107,8 +107,15 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
             Integer gamma = chStmt.getInt("gamma_id");
             if (!gammas.contains(gamma)) {
                ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
+               Integer app_id = chStmt.getInt("app_id");
                TxChange txCurrent = TxChange.getCurrent(modType);
-               data.add(new Object[] {baseTxId, gamma, modType.getValue(), txCurrent.getValue(), branchData.getUuid()});
+               data.add(new Object[] {
+                  baseTxId,
+                  gamma,
+                  modType.getValue(),
+                  txCurrent.getValue(),
+                  branchData.getUuid(),
+                  app_id});
                gammas.add(gamma);
             }
          }

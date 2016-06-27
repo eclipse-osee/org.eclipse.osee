@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.change;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
@@ -26,7 +27,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * {@link ChangeItem}
- * 
+ *
  * <pre>
  *                                        SRC Art
  *                        Delete | Modified | Merged  | Introduce
@@ -36,7 +37,7 @@ import org.junit.runners.Parameterized.Parameters;
  *            Merged    |    9   |     10   |   11    |   12     |
  *            Introduce |    13  |     14   |   15    |   16     |
  *                      -----------------------------------------
- * 
+ *
  *                               SRC Attr
  *                        Delete | Modified | Merged
  *                      ------------------------------
@@ -45,7 +46,7 @@ import org.junit.runners.Parameterized.Parameters;
  *            Merged    |    7   |     8    |    9   |
  *                      ------------------------------
  * </pre>
- * 
+ *
  * @author Jeff C. Phillips
  * @author Karol M. Wilk
  * @author Ryan D. Brooks
@@ -88,9 +89,10 @@ public class ChangeItemConflictTest {
       // but since we don't seem to handle the mixed case of say artifact on src and attribute on destination
       ChangeItem item;
       if (itemType == ItemType.artifact) {
-         item = ChangeItemUtil.newArtifactChange(0, 0, GAMMA, ModificationType.MODIFIED);
+         item = ChangeItemUtil.newArtifactChange(0, 0, GAMMA, ModificationType.MODIFIED, ApplicabilityId.valueOf(1L));
       } else {
-         item = ChangeItemUtil.newAttributeChange(0, 0, 0, GAMMA, ModificationType.MODIFIED, "change");
+         item = ChangeItemUtil.newAttributeChange(0, 0, 0, GAMMA, ModificationType.MODIFIED, "change",
+            ApplicabilityId.valueOf(1L));
       }
 
       buildTestCase(GAMMA, item);

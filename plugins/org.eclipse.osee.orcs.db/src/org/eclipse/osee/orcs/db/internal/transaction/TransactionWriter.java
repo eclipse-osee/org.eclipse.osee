@@ -50,7 +50,7 @@ public class TransactionWriter {
       "INSERT INTO osee_tuple4 (tuple_type, e1, e2, e3, e4, gamma_id) VALUES (?,?,?,?,?,?)";
 
    private static final String INSERT_INTO_TRANSACTION_TABLE =
-      "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) VALUES (?, ?, ?, ?, ?)";
+      "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id, app_id) VALUES (?, ?, ?, ?, ?, ?)";
 
    private static final String INSERT_INTO_TRANSACTION_DETAIL =
       "INSERT INTO osee_tx_details (transaction_id, osee_comment, time, author, branch_id, tx_type) VALUES (?, ?, ?, ?, ?, ?)";

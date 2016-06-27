@@ -15,9 +15,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
+import org.eclipse.osee.framework.core.model.change.ChangeVersion;
 
 public class AddArtifactChangeDataCallable extends CancellableCallable<List<ChangeItem>> {
    private final List<ChangeItem> changeItems;
@@ -43,12 +45,17 @@ public class AddArtifactChangeDataCallable extends CancellableCallable<List<Chan
          if (item.getChangeType().isAttributeChange()) {
             ChangeItem attributeChange = item;
             Integer artIdToCheck = attributeChange.getArtId();
+            ApplicabilityId appId = ApplicabilityId.valueOf(1L);
+            ChangeVersion attributeCurrentVersion = attributeChange.getCurrentVersion();
+            if (attributeCurrentVersion != null) {
+               appId = attributeCurrentVersion.getApplicabilityId();
+            }
 
             ChangeItem artifactChange = artifactChanges.get(artIdToCheck);
             if (artifactChange == null) {
                artifactChange = syntheticArtifactChanges.get(artIdToCheck);
                if (artifactChange == null) {
-                  artifactChange = ChangeItemUtil.newArtifactChange(artIdToCheck, -1, -1, null);
+                  artifactChange = ChangeItemUtil.newArtifactChange(artIdToCheck, -1, -1, null, null);
                   syntheticArtifactChanges.put(artIdToCheck, artifactChange);
                   artifactChange.setSynthetic(true);
                }

@@ -11,9 +11,11 @@
 package org.eclipse.osee.orcs.db.internal.change;
 
 import java.util.HashMap;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -25,7 +27,7 @@ import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 public class ChangeItemLoader {
 
    private final JdbcClient jdbcClient;
-   private final HashMap<Long, ModificationType> changeByGammaId;
+   private final HashMap<Long, Pair<ModificationType, ApplicabilityId>> changeByGammaId;
 
    public static interface ChangeItemFactory {
 
@@ -40,7 +42,7 @@ public class ChangeItemLoader {
       ChangeItem createItem(JdbcStatement statement) throws OseeCoreException;
    }
 
-   public ChangeItemLoader(JdbcClient jdbcClient, HashMap<Long, ModificationType> changeByGammaId) {
+   public ChangeItemLoader(JdbcClient jdbcClient, HashMap<Long, Pair<ModificationType, ApplicabilityId>> changeByGammaId) {
       this.jdbcClient = jdbcClient;
       this.changeByGammaId = changeByGammaId;
    }

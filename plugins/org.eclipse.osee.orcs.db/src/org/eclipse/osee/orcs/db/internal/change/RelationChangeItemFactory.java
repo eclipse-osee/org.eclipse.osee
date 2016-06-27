@@ -11,10 +11,12 @@
 package org.eclipse.osee.orcs.db.internal.change;
 
 import java.util.HashMap;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.db.internal.change.ChangeItemLoader.ChangeItemFactory;
 
@@ -22,9 +24,9 @@ public final class RelationChangeItemFactory implements ChangeItemFactory {
    private static final String SELECT_RELATIONS_BY_GAMMAS =
       "select a_art_id, b_art_id, rel_link_id, rel_link_type_id, rationale, txj.gamma_id from osee_relation_link id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
 
-   private final HashMap<Long, ModificationType> changeByGammaId;
+   private final HashMap<Long, Pair<ModificationType, ApplicabilityId>> changeByGammaId;
 
-   public RelationChangeItemFactory(HashMap<Long, ModificationType> changeByGammaId) {
+   public RelationChangeItemFactory(HashMap<Long, Pair<ModificationType, ApplicabilityId>> changeByGammaId) {
       super();
       this.changeByGammaId = changeByGammaId;
    }
@@ -40,13 +42,14 @@ public final class RelationChangeItemFactory implements ChangeItemFactory {
       long relTypeId = chStmt.getLong("rel_link_type_id");
 
       long gammaId = chStmt.getLong("gamma_id");
-      ModificationType modType = changeByGammaId.get(gammaId);
+      ModificationType modType = changeByGammaId.get(gammaId).getFirst();
+      ApplicabilityId appId = changeByGammaId.get(gammaId).getSecond();
 
       int aArtId = chStmt.getInt("a_art_id");
       int bArtId = chStmt.getInt("b_art_id");
       String rationale = chStmt.getString("rationale");
 
-      return ChangeItemUtil.newRelationChange(relLinkId, relTypeId, gammaId, modType, aArtId, bArtId, rationale);
+      return ChangeItemUtil.newRelationChange(relLinkId, relTypeId, gammaId, modType, aArtId, bArtId, rationale, appId);
    }
 
    @Override

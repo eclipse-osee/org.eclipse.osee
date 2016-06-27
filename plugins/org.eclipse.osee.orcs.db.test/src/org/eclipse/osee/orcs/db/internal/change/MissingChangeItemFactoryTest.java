@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
@@ -180,8 +181,8 @@ public class MissingChangeItemFactoryTest {
       final long missingGamma = 9L;
       long artGamma = 7L;
 
-      ChangeItem ci1 =
-         ChangeItemUtil.newAttributeChange(ci1AttrId, 2, artId, 4L, ModificationType.MODIFIED, Strings.EMPTY_STRING);
+      ChangeItem ci1 = ChangeItemUtil.newAttributeChange(ci1AttrId, 2, artId, 4L, ModificationType.MODIFIED,
+         Strings.EMPTY_STRING, ApplicabilityId.valueOf(1L));
       changes.add(ci1);
 
       List<AttributeData> attrDatas = new LinkedList<>();
@@ -214,7 +215,8 @@ public class MissingChangeItemFactoryTest {
       int artA = 65;
       int artB = 2;
       long srcGamma = 7L;
-      ChangeItem ci1 = ChangeItemUtil.newRelationChange(relId, 0, srcGamma, ModificationType.NEW, artA, artB, "");
+      ChangeItem ci1 = ChangeItemUtil.newRelationChange(relId, 0, srcGamma, ModificationType.NEW, artA, artB, "",
+         ApplicabilityId.valueOf(1L));
       changes.add(ci1);
 
       List<AttributeData> attrDatas = new LinkedList<>();
@@ -251,8 +253,8 @@ public class MissingChangeItemFactoryTest {
       List<ChangeItem> changes = new LinkedList<>();
       final int artId = 3;
 
-      ChangeItem ci1 =
-         ChangeItemUtil.newAttributeChange(22, 2, artId, 4L, ModificationType.DELETED, Strings.EMPTY_STRING);
+      ChangeItem ci1 = ChangeItemUtil.newAttributeChange(22, 2, artId, 4L, ModificationType.DELETED,
+         Strings.EMPTY_STRING, ApplicabilityId.valueOf(1L));
       changes.add(ci1);
 
       List<AttributeData> attrDatas = new LinkedList<>();
@@ -280,8 +282,8 @@ public class MissingChangeItemFactoryTest {
       List<ChangeItem> changes = new LinkedList<>();
       final int artId = 3;
 
-      ChangeItem ci1 =
-         ChangeItemUtil.newAttributeChange(22, 2, artId, 4L, ModificationType.ARTIFACT_DELETED, Strings.EMPTY_STRING);
+      ChangeItem ci1 = ChangeItemUtil.newAttributeChange(22, 2, artId, 4L, ModificationType.ARTIFACT_DELETED,
+         Strings.EMPTY_STRING, ApplicabilityId.valueOf(1L));
       changes.add(ci1);
 
       List<AttributeData> attrDatas = new LinkedList<>();
@@ -312,24 +314,24 @@ public class MissingChangeItemFactoryTest {
 
    private static ChangeItem createExpected(RelationData data) {
       return ChangeItemUtil.newRelationChange(data.getLocalId(), 0, data.getVersion().getGammaId(),
-         determineModType(data), data.getArtIdA(), data.getArtIdB(), "");
+         determineModType(data), data.getArtIdA(), data.getArtIdB(), "", ApplicabilityId.valueOf(1L));
    }
 
    private static ChangeItem createExpected(AttributeData data) {
       return ChangeItemUtil.newAttributeChange(data.getLocalId(), 0, data.getArtifactId(),
-         data.getVersion().getGammaId(), determineModType(data), "");
+         data.getVersion().getGammaId(), determineModType(data), "", ApplicabilityId.valueOf(1L));
    }
 
    private static ChangeItem createExpected(ArtifactData data) {
       return ChangeItemUtil.newArtifactChange(data.getLocalId(), 0, data.getVersion().getGammaId(),
-         determineModType(data));
+         determineModType(data), ApplicabilityId.valueOf(1L));
    }
 
    private ChangeItem getMatchingChangeItem(ChangeItem item) {
       for (ChangeItem change : expectedMissingChanges) {
          if (change.getItemId() == item.getItemId() && //
-         change.getArtId() == item.getArtId() && //
-         change.getClass().getSimpleName().equals(item.getClass().getSimpleName())) {
+            change.getArtId() == item.getArtId() && //
+            change.getClass().getSimpleName().equals(item.getClass().getSimpleName())) {
             return change;
          }
       }

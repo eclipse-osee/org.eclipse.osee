@@ -19,6 +19,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -189,21 +190,21 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
 
    private ChangeItem createArtifactChangeItem(ArtifactData data) throws OseeCoreException {
       ChangeItem artChange = ChangeItemUtil.newArtifactChange(data.getLocalId(), data.getTypeUuid(),
-         data.getVersion().getGammaId(), determineModType(data));
+         data.getVersion().getGammaId(), determineModType(data), ApplicabilityId.valueOf(1L));
       return artChange;
    }
 
    private ChangeItem createAttributeChangeItem(AttributeData data) throws OseeCoreException {
-      ChangeItem attrChange =
-         ChangeItemUtil.newAttributeChange(data.getLocalId(), data.getTypeUuid(), data.getArtifactId(),
-            data.getVersion().getGammaId(), determineModType(data), data.getDataProxy().getDisplayableString());
+      ChangeItem attrChange = ChangeItemUtil.newAttributeChange(data.getLocalId(), data.getTypeUuid(),
+         data.getArtifactId(), data.getVersion().getGammaId(), determineModType(data),
+         data.getDataProxy().getDisplayableString(), ApplicabilityId.valueOf(1L));
       attrChange.getNetChange().copy(attrChange.getCurrentVersion());
       return attrChange;
    }
 
    private ChangeItem createRelationChangeItem(RelationData data) throws OseeCoreException {
       return ChangeItemUtil.newRelationChange(data.getLocalId(), data.getTypeUuid(), data.getVersion().getGammaId(),
-         determineModType(data), data.getArtIdA(), data.getArtIdB(), data.getRationale());
+         determineModType(data), data.getArtIdA(), data.getArtIdB(), data.getRationale(), ApplicabilityId.valueOf(1L));
    }
 
 }

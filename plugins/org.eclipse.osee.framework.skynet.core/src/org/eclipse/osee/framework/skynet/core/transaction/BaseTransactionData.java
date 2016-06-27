@@ -35,7 +35,7 @@ public abstract class BaseTransactionData {
 
    private static final String GAMMA_ID_SEQ = "SKYNET_GAMMA_ID_SEQ";
    private static final String INSERT_INTO_TRANSACTION_TABLE =
-      "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) VALUES (?, ?, ?, ?, ?)";
+      "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id, app_id) VALUES (?, ?, ?, ?, ?, ?)";
 
    private static final int PRIME_NUMBER = 37;
    private final int itemId;
@@ -66,7 +66,8 @@ public abstract class BaseTransactionData {
 
       internalAddInsertToBatch(collector, Integer.MAX_VALUE, INSERT_INTO_TRANSACTION_TABLE,
          collector.getTransactionNumber(), getGammaId(), modTypeToStore.getValue(),
-         TxChange.getCurrent(modTypeToStore).getValue(), collector.getBranchId());
+         TxChange.getCurrent(modTypeToStore).getValue(), collector.getBranchId(), 1);
+      //TODO: remove hack defaulting to 1
    }
 
    //Replaces the replace_with_version modtype with modification for storage.

@@ -14,11 +14,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeVersion;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConstants;
@@ -40,12 +42,12 @@ import org.eclipse.osee.orcs.db.internal.sql.join.TransactionJoinQuery;
  */
 public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<ChangeItem>> {
    private static final String SELECT_SOURCE_BRANCH_CHANGES =
-      "select gamma_id, mod_type from osee_txs txs where txs.branch_id = ? and txs.tx_current <> ? and txs.transaction_id <> ? AND NOT EXISTS (SELECT 1 FROM osee_txs txs1 WHERE txs1.branch_id = ? AND txs1.transaction_id = ? AND txs1.gamma_id = txs.gamma_id and txs1.mod_type = txs.mod_type)";
+      "select gamma_id, mod_type, app_id from osee_txs txs where txs.branch_id = ? and txs.tx_current <> ? and txs.transaction_id <> ? AND NOT EXISTS (SELECT 1 FROM osee_txs txs1 WHERE txs1.branch_id = ? AND txs1.transaction_id = ? AND txs1.gamma_id = txs.gamma_id and txs1.mod_type = txs.mod_type and txs1.app_id = txs.app_id)";
 
    private static final String SELECT_BASE_TRANSACTION =
       "select baseline_transaction_id from osee_branch where branch_id = ?";
 
-   private final HashMap<Long, ModificationType> changeByGammaId = new HashMap<>();
+   private final HashMap<Long, Pair<ModificationType, ApplicabilityId>> changeByGammaId = new HashMap<>();
 
    private final Long sourceBranchId, destinationBranchId, mergeBranchId;
    private final Integer destinationHeadTxId, mergeTxId;
@@ -108,9 +110,10 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
             checkForCancelled();
             Long gammaId = chStmt.getLong("gamma_id");
             ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
+            ApplicabilityId appId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
 
             txJoin.add(gammaId, -1);
-            changeByGammaId.put(gammaId, modType);
+            changeByGammaId.put(gammaId, new Pair<ModificationType, ApplicabilityId>(modType, appId));
          }
          txJoin.store();
       } finally {
@@ -147,9 +150,9 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
    private void loadCurrentData(String tableName, String columnName, IdJoinQuery idJoin, HashMap<Integer, ChangeItem> changesByItemId, Long txBranchId, Integer txId, boolean isMergeBranch) throws OseeCoreException {
       JdbcStatement chStmt = getJdbcClient().getStatement();
       try {
-         String query = "select txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
-         + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + columnName + //
-         " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?";
+         String query = "select txs.gamma_id, txs.mod_type, txs.app_id, item." + columnName + " from osee_join_id idj, " //
+            + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + columnName + //
+            " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?";
 
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, idJoin.getQueryId(),
             TxChange.NOT_CURRENT.getValue(), txBranchId, txId);
@@ -158,15 +161,18 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
             checkForCancelled();
 
             Integer itemId = chStmt.getInt(columnName);
+            ApplicabilityId appId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
             Long gammaId = chStmt.getLong("gamma_id");
             ChangeItem change = changesByItemId.get(itemId);
 
             if (isMergeBranch) {
                change.getNetChange().setGammaId(gammaId);
                change.getNetChange().setModType(ModificationType.MERGED);
+               change.getNetChange().setApplicabilityId(appId);
             } else {
                change.getDestinationVersion().setModType(ModificationType.getMod(chStmt.getInt("mod_type")));
                change.getDestinationVersion().setGammaId(gammaId);
+               change.getDestinationVersion().setApplicabilityId(appId);
             }
          }
       } finally {
@@ -181,9 +187,9 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
       try {
          String valueColumnName = columnValueName != null ? "item." + columnValueName + "," : "";
          query =
-            "select " + valueColumnName + "item." + idColumnName + ", txs.gamma_id, txs.mod_type, txs.transaction_id from osee_join_id idj, " //
-            + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + idColumnName + //
-            " and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? order by idj.id, txs.transaction_id asc";
+            "select " + valueColumnName + "item." + idColumnName + ", txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id from osee_join_id idj, " //
+               + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + idColumnName + //
+               " and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? order by idj.id, txs.transaction_id asc";
 
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, idJoin.getQueryId(),
             TxChange.NOT_CURRENT.getValue(), sourceBranchId);
@@ -194,6 +200,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
             checkForCancelled();
             int itemId = chStmt.getInt(idColumnName);
             Integer transactionId = chStmt.getInt("transaction_id");
+            ApplicabilityId appId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
             ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
             Long gammaId = chStmt.getLong("gamma_id");
 
@@ -207,9 +214,9 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
                isFirstSet = false;
             }
             if (sourceBaselineTxId == transactionId) {
-               setVersionData(change.getBaselineVersion(), gammaId, modType, value);
+               setVersionData(change.getBaselineVersion(), gammaId, modType, value, appId);
             } else if (!isFirstSet) {
-               setVersionData(change.getFirstNonCurrentChange(), gammaId, modType, value);
+               setVersionData(change.getFirstNonCurrentChange(), gammaId, modType, value, appId);
                isFirstSet = true;
             }
 
@@ -220,13 +227,14 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
       }
    }
 
-   private void setVersionData(ChangeVersion versionedChange, Long gammaId, ModificationType modType, String value) {
+   private void setVersionData(ChangeVersion versionedChange, Long gammaId, ModificationType modType, String value, ApplicabilityId appId) {
       // Tolerates the case of having more than one version of an item on a
       // baseline transaction by picking the most recent one
       if (versionedChange.getGammaId() == null || versionedChange.getGammaId().compareTo(gammaId) < 0) {
          versionedChange.setValue(value);
          versionedChange.setModType(modType);
          versionedChange.setGammaId(gammaId);
+         versionedChange.setApplicabilityId(appId);
       }
    }
 

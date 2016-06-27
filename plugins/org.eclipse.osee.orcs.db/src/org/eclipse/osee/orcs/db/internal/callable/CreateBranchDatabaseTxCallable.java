@@ -48,31 +48,31 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
 
    // @formatter:off
    private static final String SELECT_ADDRESSING = "with\n"+
-"txs as (select transaction_id, gamma_id, mod_type from osee_txs where branch_id = ? and transaction_id <= ?),\n\n"+
+"txs as (select transaction_id, gamma_id, mod_type, app_id from osee_txs where branch_id = ? and transaction_id <= ?),\n\n"+
 
 "txsI as (\n"+
-"   SELECT transaction_id, item.gamma_id, mod_type, 1 as item_type, attr_id as item_id FROM osee_attribute item, txs where txs.gamma_id = item.gamma_id\n"+
+"   SELECT transaction_id, item.gamma_id, mod_type, app_id, 1 as item_type, attr_id as item_id FROM osee_attribute item, txs where txs.gamma_id = item.gamma_id\n"+
 "UNION ALL\n"+
-"   SELECT transaction_id, item.gamma_id, mod_type, 2 as item_type, art_id as item_id FROM osee_artifact item, txs where txs.gamma_id = item.gamma_id\n"+
+"   SELECT transaction_id, item.gamma_id, mod_type, app_id, 2 as item_type, art_id as item_id FROM osee_artifact item, txs where txs.gamma_id = item.gamma_id\n"+
 "UNION ALL\n"+
-"   SELECT transaction_id, item.gamma_id, mod_type, 3 as item_type, rel_link_id as item_id FROM osee_relation_link item, txs where txs.gamma_id = item.gamma_id),\n\n"+
+"   SELECT transaction_id, item.gamma_id, mod_type, app_id, 3 as item_type, rel_link_id as item_id FROM osee_relation_link item, txs where txs.gamma_id = item.gamma_id),\n\n"+
 
 "txsM as (SELECT MAX(transaction_id) AS transaction_id, item_type, item_id FROM txsI GROUP BY item_type, item_id)\n\n"+
 
-"select gamma_id, mod_type from txsI, txsM where txsM.item_type = txsI.item_type and txsM.item_id = txsI.item_id and txsM.transaction_id = txsI.transaction_id order by txsM.transaction_id desc";
+"select gamma_id, mod_type, app_id from txsI, txsM where txsM.item_type = txsI.item_type and txsM.item_id = txsI.item_id and txsM.transaction_id = txsI.transaction_id order by txsM.transaction_id desc";
    // descending order is used so that the most recent entry will be used if there are multiple rows with the same gamma (an error case)
    // @formatter:on
 
    private static final String INSERT_ADDRESSING =
-      "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) VALUES (?,?,?,?,?)";
+      "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id, app_id) VALUES (?,?,?,?,?,?)";
 
    private static final String MERGE_BRANCH_INSERT =
       "INSERT INTO osee_merge (source_branch_id, dest_branch_id, merge_branch_id, commit_transaction_id) VALUES (?,?,?,?)";
 
    private final static String SELECT_ATTRIBUTE_ADDRESSING_FROM_JOIN =
-      "SELECT item.gamma_id, txs.mod_type FROM osee_attribute item, osee_txs txs, osee_join_artifact artjoin WHERE txs.branch_id = ? AND txs.tx_current <> ? AND txs.gamma_id = item.gamma_id AND item.art_id = artjoin.art_id and artjoin.query_id = ? ORDER BY txs.transaction_id DESC";
+      "SELECT item.gamma_id, txs.mod_type, txs.app_id FROM osee_attribute item, osee_txs txs, osee_join_artifact artjoin WHERE txs.branch_id = ? AND txs.tx_current <> ? AND txs.gamma_id = item.gamma_id AND item.art_id = artjoin.art_id and artjoin.query_id = ? ORDER BY txs.transaction_id DESC";
    private final static String SELECT_ARTIFACT_ADDRESSING_FROM_JOIN =
-      "SELECT item.gamma_id, txs.mod_type FROM osee_artifact item, osee_txs txs, osee_join_artifact artjoin WHERE txs.branch_id = ? AND txs.tx_current <> ? AND txs.gamma_id = item.gamma_id AND item.art_id = artjoin.art_id and artjoin.query_id = ? ORDER BY txs.transaction_id DESC";
+      "SELECT item.gamma_id, txs.mod_type, txs.app_id FROM osee_artifact item, osee_txs txs, osee_join_artifact artjoin WHERE txs.branch_id = ? AND txs.tx_current <> ? AND txs.gamma_id = item.gamma_id AND item.art_id = artjoin.art_id and artjoin.query_id = ? ORDER BY txs.transaction_id DESC";
 
    private static final String TEST_MERGE_BRANCH_EXISTENCE =
       "SELECT COUNT(1) FROM osee_merge WHERE source_branch_id = ? AND dest_branch_id = ?";
@@ -261,9 +261,10 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
             Integer gamma = chStmt.getInt("gamma_id");
             if (!gammas.contains(gamma)) {
                ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
+               Long appId = chStmt.getLong("app_id");
                TxChange txCurrent = TxChange.getCurrent(modType);
-               addressing.addToBatch(baseTxId, gamma, modType.getValue(), txCurrent.getValue(),
-                  newBranchData.getUuid());
+               addressing.addToBatch(baseTxId, gamma, modType.getValue(), txCurrent.getValue(), newBranchData.getUuid(),
+                  appId);
                gammas.add(gamma);
             }
          }
