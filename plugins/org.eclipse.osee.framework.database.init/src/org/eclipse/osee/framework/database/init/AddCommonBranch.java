@@ -12,13 +12,10 @@
 package org.eclipse.osee.framework.database.init;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.OrcsTypeSheet;
+import org.eclipse.osee.framework.core.data.OrcsTypesData;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -26,7 +23,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.database.init.internal.OseeTypesSetup;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.GlobalXViewerSettings;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
@@ -67,27 +63,10 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
          BranchManager.createTopLevelBranch(CoreBranches.COMMON);
 
          OseeTypesSetup types = new OseeTypesSetup();
-         Map<String, URL> typeMap = types.getOseeTypeExtensions();
-
-         SkynetTransaction transaction1 = TransactionManager.createTransaction(COMMON, "Add Types to Common Branch");
-
-         for (Entry<String, URL> entry : typeMap.entrySet()) {
-            Artifact artifact =
-               ArtifactTypeManager.addArtifact(CoreArtifactTypes.OseeTypeDefinition, COMMON, entry.getKey());
-            artifact.setSoleAttributeValue(CoreAttributeTypes.Active, true);
-            InputStream inputStream = null;
-            try {
-               inputStream = new BufferedInputStream(entry.getValue().openStream());
-               artifact.setSoleAttributeFromStream(CoreAttributeTypes.UriGeneralStringData, inputStream);
-            } catch (IOException ex) {
-               throw new OseeCoreException(ex, "Unable to find OSEE type file for [%s:%s]", entry.getKey(),
-                  entry.getValue());
-            } finally {
-               Lib.close(inputStream);
-            }
-            transaction1.addArtifact(artifact);
-         }
-         transaction1.execute();
+         List<OrcsTypeSheet> sheets = types.getOseeTypeExtensions();
+         OrcsTypesData typesData = new OrcsTypesData();
+         typesData.getSheets().addAll(sheets);
+         ArtifactTypeManager.importOrcsTypes(typesData);
 
          SkynetTransaction transaction = TransactionManager.createTransaction(COMMON, "Add Common Branch");
 

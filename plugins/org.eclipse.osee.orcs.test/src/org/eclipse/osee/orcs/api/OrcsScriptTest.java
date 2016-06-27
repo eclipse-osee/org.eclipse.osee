@@ -70,101 +70,159 @@ public class OrcsScriptTest {
 
       add(data, "start from branch 570 collect branches {*}", //
          "{\n" + //
-         "  'script' : 'start from branch 570 collect branches {*};',\n" + //
-         "  'results' : [ {\n" + //
-         "    'branches' : [ {\n" + //
-         "      'archived' : 'UNARCHIVED',\n" + //
-         "      'assoc-id' : -1,\n" + //
-         "      'baseline-tx-id' : 4,\n" + //
-         "      'id' : 570,\n" + //
-         "      'inherits-access-control' : 0,\n" + //
-         "      'name' : 'Common',\n" + //
-         "      'parent-id' : 1,\n" + //
-         "      'parent-tx-id' : 3,\n" + //
-         "      'state' : 'MODIFIED',\n" + //
-         "      'type' : 'BASELINE'\n" + //
-         "    } ]\n" + //
-         "  } ]\n" + //
-         "}");
+            "  'script' : 'start from branch 570 collect branches {*};',\n" + //
+            "  'results' : [ {\n" + //
+            "    'branches' : [ {\n" + //
+            "      'archived' : 'UNARCHIVED',\n" + //
+            "      'assoc-id' : -1,\n" + //
+            "      'baseline-tx-id' : 4,\n" + //
+            "      'id' : 570,\n" + //
+            "      'inherits-access-control' : 0,\n" + //
+            "      'name' : 'Common',\n" + //
+            "      'parent-id' : 1,\n" + //
+            "      'parent-tx-id' : 3,\n" + //
+            "      'state' : 'MODIFIED',\n" + //
+            "      'type' : 'BASELINE'\n" + //
+            "    } ]\n" + //
+            "  } ]\n" + //
+            "}");
 
       add(data, "start from branch where state = modified collect branches {name};", //
          "{\n" + //
-         "  'script' : 'start from branch where state = modified collect branches {name};',\n" + //
-         "  'results' : [ {\n" + //
-         "    'branches' : [ {\n" + //
-         "      'name' : 'System Root Branch'\n" + //
-         "    }, {\n" + //
-         "      'name' : 'SAW_Bld_1'\n" + //
-         "    }, {\n" + //
-         "      'name' : 'CIS_Bld_1'\n" + //
-         "    }, {\n" + //
-         "      'name' : 'Common'\n" + //
-         "    } ]\n" + //
-         "  } ]\n" + //
-         "}");
+            "  'script' : 'start from branch where state = modified collect branches {name};',\n" + //
+            "  'results' : [ {\n" + //
+            "    'branches' : [ {\n" + //
+            "      'name' : 'System Root Branch'\n" + //
+            "    }, {\n" + //
+            "      'name' : 'SAW_Bld_1'\n" + //
+            "    }, {\n" + //
+            "      'name' : 'CIS_Bld_1'\n" + //
+            "    }, {\n" + //
+            "      'name' : 'SAW_Bld_2'\n" + //
+            "    }, {\n" + //
+            "      'name' : 'Common'\n" + //
+            "    }, {\n" + //
+            "      'name' : 'ATS9 - SAW (uncommitted) More Reqt Changes for...'\n" + //
+            "    }, {\n" + //
+            "      'name' : 'ATS20 - SAW (uncommitted-conflicted) More Requi...'\n" + //
+            "    } ]\n" + //
+            "  } ]\n" + //
+            "}");
 
       add(data,
          "start from branch 570 find artifacts where art-type = 'Folder' collect artifacts {id, attributes { value } };", //
          "{\n" + //
-         "  'script' : 'start from branch 570 find artifacts where art-type = 'Folder' collect artifacts {id, attributes { value } };',\n" + //
-         "  'results' : [ {\n" + //
-         "    'artifacts' : [ {\n" + //
-         "      'id' : 7,\n" + //
-         "      'attributes' : {\n" + //
-         "        'Name' : {\n" + //
-         "          'value' : 'User Groups'\n" + //
-         "        }\n" + //
-         "      }\n" + //
-         "    }, {\n" + //
-         "      'id' : 22,\n" + //
-         "      'attributes' : {\n" + //
-         "        'Name' : {\n" + //
-         "          'value' : 'Document Templates'\n" + //
-         "        }\n" + //
-         "      }\n" + //
-         "    } ]\n" + //
-         "  } ]\n" + //
-         "}");
+            "  'script' : 'start from branch 570 find artifacts where art-type = 'Folder' collect artifacts {id, attributes { value } };',\n" + //
+            "  'results' : [ {\n" + //
+            "    'artifacts' : [ {\n" + //
+            "      'id' : 80920,\n" + //
+            "      'attributes' : {\n" + //
+            "        'Name' : {\n" + //
+            "          'value' : 'User Groups'\n" + //
+            "        }\n" + //
+            "      }\n" + //
+            "    }, {\n" + //
+            "      'id' : 113036,\n" + //
+            "      'attributes' : {\n" + //
+            "        'Name' : {\n" + //
+            "          'value' : 'Config'\n" + //
+            "        }\n" + //
+            "      }\n" + //
+            "    }, {\n" + //
+            "      'id' : 114713,\n" + //
+            "      'attributes' : {\n" + //
+            "        'Name' : {\n" + //
+            "          'value' : 'Action Tracking System'\n" + //
+            "        }\n" + //
+            "      }\n" + //
+            "    }, {\n" + //
+            "      'id' : 200005,\n" + //
+            "      'attributes' : {\n" + //
+            "        'Name' : {\n" + //
+            "          'value' : 'Document Templates'\n" + //
+            "        }\n" + //
+            "      }\n" + //
+            "    }, {\n" + //
+            "      'id' : 284655,\n" + //
+            "      'attributes' : {\n" + //
+            "        'Name' : {\n" + //
+            "          'value' : 'Work Definitions'\n" + //
+            "        }\n" + //
+            "      }\n" + //
+            "    }, {\n" + //
+            "      'id' : 6915493,\n" + //
+            "      'attributes' : {\n" + //
+            "        'Name' : {\n" + //
+            "          'value' : 'Agile'\n" + //
+            "        }\n" + //
+            "      }\n" + //
+            "    }, {\n" + //
+            "      'id' : 7968155,\n" + //
+            "      'attributes' : {\n" + //
+            "        'Name' : {\n" + //
+            "          'value' : 'Countries'\n" + //
+            "        }\n" + //
+            "      }\n" + //
+            "    }, {\n" + //
+            "      'id' : 545949432,\n" + //
+            "      'attributes' : {\n" + //
+            "        'Name' : {\n" + //
+            "          'value' : 'Sprints'\n" + //
+            "        }\n" + //
+            "      }\n" + //
+            "    }, {\n" + //
+            "      'id' : 849027577,\n" + //
+            "      'attributes' : {\n" + //
+            "        'Name' : {\n" + //
+            "          'value' : 'Feature Groups'\n" + //
+            "        }\n" + //
+            "      }\n" + //
+            "    } ]\n" + //
+            "  } ]\n" + //
+            "}");
 
       add(data,
          "start from branch 'SAW_Bld_1' find artifacts where attribute type = 'Name' match-order 'Read-only Robots' collect artifacts as 'Requirement' { id, attributes { value } };", //
          "{\n" + //
-         "  'script' : 'start from branch 'SAW_Bld_1' find artifacts where attribute type = 'Name' match-order 'Read-only Robots' collect artifacts as 'Requirement' { id, attributes { value } };',\n" + //
-         "  'results' : [ {\n" + //
-         "    'Requirement' : [ {\n" + //
-         "      'id' : 81,\n" + //
-         "      'attributes' : {\n" + //
-         "        'Name' : {\n" + //
-         "          'value' : 'Read-only Robots'\n" + //
-         "        },\n" + //
-         "        'Word Template Content' : {\n" + //
-         "          'value' : '<w:p wsp:rsidR=\\'006A3C0C\\' wsp:rsidRDefault=\\'006A3C0C\\' wsp:rsidP=\\'00E54E52\\'><w:r wsp:rsidRPr=\\'00EB2959\\'><w:t>Individual and collaborative robots can be “read-only” (i.e., provide only state information) or “read-write” (i.e., provide state inform</w:t></w:r><w:r><w:t>ation and allow state changes).</w:t></w:r></w:p>'\n" + //
-         "        },\n" + //
-         "        'Paragraph Number' : {\n" + //
-         "          'value' : '1.1.4'\n" + //
-         "        },\n" + //
-         "        'Partition' : {\n" + //
-         "          'value' : 'Unspecified'\n" + //
-         "        },\n" + //
-         "        'Subsystem' : {\n" + //
-         "          'value' : 'Unspecified'\n" + //
-         "        },\n" + //
-         "        'Qualification Method' : {\n" + //
-         "          'value' : 'Unspecified'\n" + //
-         "        },\n" + //
-         "        'Development Assurance Level' : {\n" + //
-         "          'value' : 'E'\n" + //
-         "        },\n" + //
-         "        'Technical Performance Parameter' : {\n" + //
-         "          'value' : 'false'\n" + //
-         "        },\n" + //
-         "        'CSCI' : {\n" + //
-         "          'value' : 'Unspecified'\n" + //
-         "        }\n" + //
-         "      }\n" + //
-         "    } ]\n" + //
-         "  } ]\n" + //
-         "}");
+            "  'script' : 'start from branch 'SAW_Bld_1' find artifacts where attribute type = 'Name' match-order 'Read-only Robots' collect artifacts as 'Requirement' { id, attributes { value } };',\n" + //
+            "  'results' : [ {\n" + //
+            "    'Requirement' : [ {\n" + //
+            "      'id' : 200077,\n" + //
+            "      'attributes' : {\n" + //
+            "        'Name' : {\n" + //
+            "          'value' : 'Read-only Robots'\n" + //
+            "        },\n" + //
+            "        'Word Template Content' : {\n" + //
+            "          'value' : '<w:p wsp:rsidR=\\'006A3C0C\\' wsp:rsidRDefault=\\'006A3C0C\\' wsp:rsidP=\\'00E54E52\\'><w:r wsp:rsidRPr=\\'00EB2959\\'><w:t>Individual and collaborative robots can be “read-only” (i.e., provide only state information) or “read-write” (i.e., provide state inform</w:t></w:r><w:r><w:t>ation and allow state changes).</w:t></w:r></w:p>'\n" + //
+            "        },\n" + //
+            "        'Paragraph Number' : {\n" + //
+            "          'value' : '1.1.4'\n" + //
+            "        },\n" + //
+            "        'Partition' : {\n" + //
+            "          'value' : 'Unspecified'\n" + //
+            "        },\n" + //
+            "        'Subsystem' : {\n" + //
+            "          'value' : 'Unspecified'\n" + //
+            "        },\n" + //
+            "        'Qualification Method' : {\n" + //
+            "          'value' : 'Unspecified'\n" + //
+            "        },\n" + //
+            "        'Technical Performance Parameter' : {\n" + //
+            "          'value' : 'false'\n" + //
+            "        },\n" + //
+            "        'CSCI' : {\n" + //
+            "          'value' : 'Unspecified'\n" + //
+            "        },\n" + //
+            "        'Software Control Category' : {\n" + //
+            "          'value' : 'Unspecified'\n" + //
+            "        },\n" + //
+            "        'IDAL' : {\n" + //
+            "          'value' : 'Unspecified'\n" + //
+            "        }\n" + //
+            "      }\n" + //
+            "    } ]\n" + //
+            "  } ]\n" + //
+            "}");
       return data;
    }
 

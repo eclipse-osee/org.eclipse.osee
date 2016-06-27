@@ -290,4 +290,14 @@ public class AccountClientImpl implements AccountClient {
          }
       };
    }
+
+   @Override
+   public boolean isLocalHost() {
+      return baseUri.toString().contains("localhost");
+   }
+
+   @Override
+   public String getBaseUri() {
+      return baseUri.toString();
+   }
 }

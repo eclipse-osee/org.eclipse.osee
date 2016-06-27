@@ -16,9 +16,7 @@ import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -27,6 +25,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -50,25 +49,16 @@ public class OrcsAttributeLoadingTest {
       query = orcsApi.getQueryFactory();
    }
 
+   @SuppressWarnings("unchecked")
    @Test
    public void testAttributeLoading() throws Exception {
-      QueryBuilder builder = query.fromBranch(COMMON_ID).andUuids(Arrays.asList(6L, 7L, 8L));
-      ResultSet<ArtifactReadable> resultSet = builder.getResults();
-
-      assertEquals(3, resultSet.size());
-      assertEquals(3, builder.getCount());
-
-      Map<Integer, ArtifactReadable> lookup = createLookup(resultSet);
-      lookup.get(6);
-      ArtifactReadable art7 = lookup.get(7);
-      ArtifactReadable art8 = lookup.get(8);
-
-      //Test loading name attributes
-      assertEquals(art7.getSoleAttributeAsString(CoreAttributeTypes.Name), "User Groups");
-      assertEquals(art8.getSoleAttributeAsString(CoreAttributeTypes.Name), "Everyone");
+      ArtifactReadable art =
+         query.fromBranch(COMMON_ID).andIds(CoreArtifactTokens.Everyone).getResults().getExactlyOne();
+      Assert.assertNotNull(art);
+      assertEquals("Everyone", art.getSoleAttributeAsString(CoreAttributeTypes.Name));
 
       //Test boolean attributes
-      assertEquals(art8.getSoleAttributeAsString(CoreAttributeTypes.DefaultGroup), "true");
+      assertEquals(art.getSoleAttributeAsString(CoreAttributeTypes.DefaultGroup), "true");
    }
 
    @Test
@@ -84,11 +74,4 @@ public class OrcsAttributeLoadingTest {
       assertEquals(resultSet.size(), builder.getCount());
    }
 
-   private Map<Integer, ArtifactReadable> createLookup(Iterable<ArtifactReadable> arts) {
-      Map<Integer, ArtifactReadable> lookup = new HashMap<>();
-      for (ArtifactReadable artifact : arts) {
-         lookup.put(artifact.getLocalId(), artifact);
-      }
-      return lookup;
-   }
 }

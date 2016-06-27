@@ -14,9 +14,10 @@ import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -33,7 +34,7 @@ import org.junit.rules.TestRule;
 
 /**
  * Test Case for {@link OrcsApi}
- * 
+ *
  * @author Andrew M. Finkbeiner
  */
 public class OrcsRelationLoadingTest {
@@ -51,17 +52,19 @@ public class OrcsRelationLoadingTest {
       checkRelationsForSawBranch(orcsApi, queryFactory);
    }
 
+   @SuppressWarnings("unchecked")
    private void checkRelationsForCommonBranch(OrcsApi oseeApi, QueryFactory queryFactory) throws OseeCoreException {
-      QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).andUuids(Arrays.asList(6L, 7L, 8L));
-      ResultSet<ArtifactReadable> resultSet = builder.getResults();
 
-      assertEquals(3, resultSet.size());
-      assertEquals(3, builder.getCount());
-
-      Map<Integer, ArtifactReadable> lookup = createLookup(resultSet);
-      ArtifactReadable art6 = lookup.get(6);
-      ArtifactReadable art7 = lookup.get(7);
-      ArtifactReadable art8 = lookup.get(8);
+      ArtifactReadable art6 =
+         queryFactory.fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.OseeTypeDefinition).andNameEquals(
+            "org.eclipse.osee.ats.client.demo.OseeTypes_Demo").getResults().getAtMostOneOrNull();
+      assertNotNull(art6);
+      ArtifactReadable art7 = queryFactory.fromBranch(CoreBranches.COMMON).andIds(
+         CoreArtifactTokens.UserGroups).getResults().getAtMostOneOrNull();
+      assertNotNull(art7);
+      ArtifactReadable art8 = queryFactory.fromBranch(CoreBranches.COMMON).andIds(
+         CoreArtifactTokens.Everyone).getResults().getAtMostOneOrNull();
+      assertNotNull(art8);
 
       //art 6 has no relations
       assertEquals(0, art6.getExistingRelationTypes().size());
@@ -71,7 +74,7 @@ public class OrcsRelationLoadingTest {
       //      3  219   7  15    54
       //      2  219   1  7     52
       assertEquals(1, art7.getExistingRelationTypes().size());
-      assertEquals(2, art7.getRelated(CoreRelationTypes.Default_Hierarchical__Child).size());
+      assertEquals(5, art7.getRelated(CoreRelationTypes.Default_Hierarchical__Child).size());
       assertEquals(1, art7.getRelated(CoreRelationTypes.Default_Hierarchical__Parent).size());
 
       //art8 has
@@ -84,7 +87,7 @@ public class OrcsRelationLoadingTest {
       //      1  219   7  8     53
       assertEquals(2, art8.getExistingRelationTypes().size());
       assertEquals(1, art8.getRelated(CoreRelationTypes.Default_Hierarchical__Parent).size());
-      assertEquals(5, art8.getRelated(CoreRelationTypes.Users_User).size());
+      assertEquals(19, art8.getRelated(CoreRelationTypes.Users_User).size());
 
    }
 

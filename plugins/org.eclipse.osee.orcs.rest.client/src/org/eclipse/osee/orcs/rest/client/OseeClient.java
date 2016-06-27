@@ -55,4 +55,9 @@ public interface OseeClient {
    OrcsWriterEndpoint getOrcsWriterEndpoint();
 
    ApplicabilityEndpoint getApplicabilityEndpoint(BranchId branch);
+
+   boolean isLocalHost();
+
+   String getBaseUri();
+
 }

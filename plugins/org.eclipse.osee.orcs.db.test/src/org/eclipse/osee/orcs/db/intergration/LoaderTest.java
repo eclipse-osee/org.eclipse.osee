@@ -27,6 +27,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.Iterator;
 import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -60,7 +61,6 @@ public class LoaderTest {
    public TestRule db = integrationRule(this);
 
    // @formatter:off
-// @OsgiService private JdbcClient jdbcClient;
    @OsgiService private OrcsDataStore dataStore;
    @Mock private LoadDataHandler builder;
    @Captor private ArgumentCaptor<LoadDescription> descriptorCaptor;
@@ -75,6 +75,12 @@ public class LoaderTest {
 
    private HasCancellation cancellation;
    private DataLoaderFactory loaderFactory;
+   private final int OseeTypesFrameworkId = 518481167;
+   private final String OseeTypesFrameworkGuid = "AQjoNk+tfwaBTmnl1IQA";
+   private final int OseeTypesDemoId = 466104557;
+   private final String OseeTypesDemoGuid = "AQjoNnwNdyjicTck2UwA";
+   private final int UserGroupsId = CoreArtifactTokens.UserGroups.getUuid().intValue();
+   private final String UserGroupsGuid = CoreArtifactTokens.UserGroups.getGuid();
 
    @Before
    public void setUp() throws OseeCoreException {
@@ -88,22 +94,28 @@ public class LoaderTest {
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);
 
-      when(artTypes.getByUuid(OseeTypeDefinition.getGuid())).thenReturn(OseeTypeDefinition);
-      when(artTypes.getByUuid(Folder.getGuid())).thenReturn(Folder);
+      when(artTypes.getByUuid(OseeTypeDefinition.getId())).thenReturn(OseeTypeDefinition);
+      when(artTypes.getByUuid(Folder.getId())).thenReturn(Folder);
 
-      when(attrTypes.getByUuid(Name.getGuid())).thenReturn(Name);
-      when(attrTypes.getByUuid(UriGeneralStringData.getGuid())).thenReturn(UriGeneralStringData);
-      when(attrTypes.getByUuid(Active.getGuid())).thenReturn(Active);
+      when(attrTypes.getByUuid(Name.getId())).thenReturn(Name);
+      when(attrTypes.getByUuid(UriGeneralStringData.getId())).thenReturn(UriGeneralStringData);
+      when(attrTypes.getByUuid(Active.getId())).thenReturn(Active);
 
       when(attrTypes.getAttributeProviderId(Name)).thenReturn("DefaultAttributeDataProvider");
       when(attrTypes.getAttributeProviderId(UriGeneralStringData)).thenReturn("DefaultAttributeDataProvider");
       when(attrTypes.getAttributeProviderId(Active)).thenReturn("DefaultAttributeDataProvider");
+
    }
 
    @org.junit.Test
    public void testLoad() throws OseeCoreException {
-      DataLoader loader = loaderFactory.newDataLoaderFromIds(session, COMMON_ID, 5, 6, 7);
+      DataLoader loader =
+         loaderFactory.newDataLoaderFromIds(session, COMMON_ID, OseeTypesFrameworkId, OseeTypesDemoId, UserGroupsId);
       loader.withLoadLevel(LoadLevel.ALL);
+      verifyArtsAttrAndRelData(loader);
+   }
+
+   private void verifyArtsAttrAndRelData(DataLoader loader) {
 
       loader.load(cancellation, builder);
 
@@ -116,44 +128,61 @@ public class LoaderTest {
 
       verify(builder, times(3)).onData(artifactCaptor.capture());
       verify(builder, times(7)).onData(attributeCaptor.capture());
-      verify(builder, times(3)).onData(relationCaptor.capture());
+      verify(builder, times(6)).onData(relationCaptor.capture());
 
       sort(artifactCaptor.getAllValues());
       Iterator<ArtifactData> arts = artifactCaptor.getAllValues().iterator();
 
-      // @formatter:off
-      verifyData(arts.next(), 5, "AkA10I4aUSDLuFNIaegA", NEW, OseeTypeDefinition.getGuid(), 570L,5, -1, 15L);
-      verifyData(arts.next(), 6, "AkA10LiAPEZLR4+jdFQA",  NEW, OseeTypeDefinition.getGuid(), 570L,5, -1, 16L);
-      verifyData(arts.next(), 7, "AkA2AcT6AXe6ivMFRhAA",  NEW, Folder.getGuid(), 570L,6, -1, 43L);
-      // @formatter:on
+      verifyArts(arts);
 
       sort(attributeCaptor.getAllValues());
       Iterator<AttributeData> attrs = attributeCaptor.getAllValues().iterator();
 
       // @formatter:off
-      verifyData(attrs.next(), 9, 5, NEW, Name.getGuid(), 570L,5, -1, 5L, "org.eclipse.osee.framework.skynet.core.OseeTypes_Framework", "");
-      verifyData(attrs.next(), 10, 5, NEW, UriGeneralStringData.getGuid(), 570L,5, -1, 6L, "", "attr://6/AkA10I4aUSDLuFNIaegA.zip");
-      verifyData(attrs.next(), 11, 5, NEW, Active.getGuid(), 570L,5, -1, 7L, "true", "");
+      verifyData(attrs.next(), 4, OseeTypesFrameworkId, NEW, Active.getId(), 570L,5, -1, 13L, "true", "");
+      verifyData(attrs.next(), 5, OseeTypesFrameworkId, NEW, Name.getId(), 570L,5, -1, 14L, "org.eclipse.osee.framework.skynet.core.OseeTypes_Framework", "");
+      verifyData(attrs.next(), 6, OseeTypesFrameworkId, NEW, UriGeneralStringData.getId(), 570L,5, -1, 15L, "", "attr://15/"+OseeTypesFrameworkGuid+".zip");
 
-      verifyData(attrs.next(), 12, 6, NEW, Name.getGuid(), 570L,5, -1, 8L, "org.eclipse.osee.coverage.OseeTypes_Coverage", "");
-      verifyData(attrs.next(), 13, 6, NEW, UriGeneralStringData.getGuid(), 570L,5, -1, 9L, "", "attr://9/AkA10LiAPEZLR4+jdFQA.zip");
-      verifyData(attrs.next(), 14, 6, NEW, Active.getGuid(), 570L,5, -1, 10L, "true", "");
-      verifyData(attrs.next(), 17, 7, NEW, Name.getGuid(), 570L,6, -1, 33L, "User Groups", "");
+      verifyData(attrs.next(), 10, OseeTypesDemoId, NEW, Active.getId(), 570L,5, -1, 19L, "true", "");
+      verifyData(attrs.next(), 11, OseeTypesDemoId, NEW, Name.getId(), 570L,5, -1, 20L, "org.eclipse.osee.ats.client.demo.OseeTypes_Demo", "");
+      verifyData(attrs.next(), 12, OseeTypesDemoId, NEW, UriGeneralStringData.getId(), 570L,5, -1, 21L, "", "attr://21/"+OseeTypesDemoGuid+".zip");
+
+      verifyData(attrs.next(), 20, UserGroupsId, NEW, Name.getId(), 570L, 7, -1, 46L, "User Groups", "");
       // @formatter:on
 
       sort(relationCaptor.getAllValues());
       Iterator<RelationData> rels = relationCaptor.getAllValues().iterator();
 
+      verifyRels(rels);
+   }
+
+   private void verifyRels(Iterator<RelationData> rels) {
+      verifyData(rels.next(), 1, UserGroupsId, 48656, "", NEW, Default_Hierarchical__Parent.getGuid(), 570L, 7, -1,
+         43L);
+      verifyData(rels.next(), 2, 197818, UserGroupsId, "", NEW, Default_Hierarchical__Parent.getGuid(), 570L, 7, -1,
+         39L);
+      verifyData(rels.next(), 3, UserGroupsId, 52247, "", NEW, Default_Hierarchical__Parent.getGuid(), 570L, 7, -1,
+         40L);
+      verifyData(rels.next(), 9, UserGroupsId, 8033605, "", NEW, Default_Hierarchical__Parent.getGuid(), 570L, 10, -1,
+         111L);
+      verifyData(rels.next(), 10, UserGroupsId, 136750, "", NEW, Default_Hierarchical__Parent.getGuid(), 570L, 10, -1,
+         109L);
+      verifyData(rels.next(), 11, UserGroupsId, 5367074, "", NEW, Default_Hierarchical__Parent.getGuid(), 570L, 10, -1,
+         110L);
+   }
+
+   private void verifyArts(Iterator<ArtifactData> arts) {
       // @formatter:off
-      verifyData(rels.next(), 1, 7, 8, "", NEW, Default_Hierarchical__Parent.getGuid(), 570L,6, -1, 53L);
-      verifyData(rels.next(), 2, 1, 7, "", NEW, Default_Hierarchical__Parent.getGuid(), 570L,6, -1, 52L);
-      verifyData(rels.next(), 3, 7, 15, "", NEW, Default_Hierarchical__Parent.getGuid(), 570L,6, -1, 54L);
+      verifyData(arts.next(), UserGroupsId, UserGroupsGuid, NEW, Folder.getId(), 570L, 7, -1, 71L);
+      verifyData(arts.next(), OseeTypesDemoId, OseeTypesDemoGuid, NEW, OseeTypeDefinition.getId(), 570L, 5, -1, 10L);
+      verifyData(arts.next(), OseeTypesFrameworkId, OseeTypesFrameworkGuid, NEW, OseeTypeDefinition.getId(), 570L, 5, -1, 8L);
       // @formatter:on
    }
 
    @org.junit.Test
    public void testLoadByTypes() throws OseeCoreException {
-      DataLoader loader = loaderFactory.newDataLoaderFromIds(session, COMMON_ID, 5, 6, 7);
+      DataLoader loader =
+         loaderFactory.newDataLoaderFromIds(session, COMMON_ID, OseeTypesFrameworkId, OseeTypesDemoId, UserGroupsId);
       loader.withLoadLevel(LoadLevel.ALL);
 
       loader.withAttributeTypes(Name);
@@ -170,42 +199,35 @@ public class LoaderTest {
 
       verify(builder, times(3)).onData(artifactCaptor.capture());
       verify(builder, times(3)).onData(attributeCaptor.capture());
-      verify(builder, times(3)).onData(relationCaptor.capture());
+      verify(builder, times(6)).onData(relationCaptor.capture());
 
       sort(artifactCaptor.getAllValues());
       Iterator<ArtifactData> arts = artifactCaptor.getAllValues().iterator();
 
-      // @formatter:off
-      verifyData(arts.next(), 5, "AkA10I4aUSDLuFNIaegA",  NEW, OseeTypeDefinition.getGuid(), 570L,5, -1, 15L);
-      verifyData(arts.next(), 6, "AkA10LiAPEZLR4+jdFQA",  NEW, OseeTypeDefinition.getGuid(), 570L,5, -1, 16L);
-      verifyData(arts.next(), 7, "AkA2AcT6AXe6ivMFRhAA",  NEW, Folder.getGuid(), 570L,6, -1, 43L);
-      // @formatter:on
+      verifyArts(arts);
 
       sort(attributeCaptor.getAllValues());
       Iterator<AttributeData> attrs = attributeCaptor.getAllValues().iterator();
 
       // @formatter:off
-      verifyData(attrs.next(), 9, 5, NEW, Name.getGuid(), 570L,5, -1, 5L, "org.eclipse.osee.framework.skynet.core.OseeTypes_Framework", "");
-      verifyData(attrs.next(), 12, 6, NEW, Name.getGuid(), 570L,5, -1, 8L, "org.eclipse.osee.coverage.OseeTypes_Coverage", "");
-      verifyData(attrs.next(), 17, 7, NEW, Name.getGuid(), 570L,6, -1, 33L, "User Groups", "");
+      verifyData(attrs.next(), 5, OseeTypesFrameworkId, NEW, Name.getId(), 570L,5, -1, 14L, "org.eclipse.osee.framework.skynet.core.OseeTypes_Framework", "");
+      verifyData(attrs.next(), 11, OseeTypesDemoId, NEW, Name.getId(), 570L,5, -1, 20L, "org.eclipse.osee.ats.client.demo.OseeTypes_Demo", "");
+      verifyData(attrs.next(), 20, UserGroupsId, NEW, Name.getId(), 570L, 7, -1, 46L, "User Groups", "");
       // @formatter:on
 
       sort(relationCaptor.getAllValues());
       Iterator<RelationData> rels = relationCaptor.getAllValues().iterator();
 
-      // @formatter:off
-      verifyData(rels.next(), 1, 7, 8, "", NEW, Default_Hierarchical__Parent.getGuid(), 570L,6, -1, 53L);
-      verifyData(rels.next(), 2, 1, 7, "", NEW, Default_Hierarchical__Parent.getGuid(), 570L,6, -1, 52L);
-      verifyData(rels.next(), 3, 7, 15, "", NEW, Default_Hierarchical__Parent.getGuid(), 570L,6, -1, 54L);
-      // @formatter:on
+      verifyRels(rels);
    }
 
    @org.junit.Test
    public void testLoadByIds() throws OseeCoreException {
-      DataLoader loader = loaderFactory.newDataLoaderFromIds(session, COMMON_ID, 5, 6, 7);
+      DataLoader loader =
+         loaderFactory.newDataLoaderFromIds(session, COMMON_ID, OseeTypesFrameworkId, OseeTypesDemoId, UserGroupsId);
       loader.withLoadLevel(LoadLevel.ALL);
 
-      loader.withAttributeIds(11, 14);
+      loader.withAttributeIds(4, 10);
       loader.withRelationIds(2, 3);
 
       loader.load(cancellation, builder);
@@ -224,78 +246,32 @@ public class LoaderTest {
       sort(artifactCaptor.getAllValues());
       Iterator<ArtifactData> arts = artifactCaptor.getAllValues().iterator();
 
-      // @formatter:off
-      verifyData(arts.next(), 5, "AkA10I4aUSDLuFNIaegA", NEW, OseeTypeDefinition.getGuid(), 570L,5, -1, 15L);
-      verifyData(arts.next(), 6, "AkA10LiAPEZLR4+jdFQA",  NEW, OseeTypeDefinition.getGuid(), 570L,5, -1, 16L);
-      verifyData(arts.next(), 7, "AkA2AcT6AXe6ivMFRhAA",  NEW, Folder.getGuid(), 570L,6, -1, 43L);
-      // @formatter:on
+      verifyArts(arts);
 
       sort(attributeCaptor.getAllValues());
       Iterator<AttributeData> attrs = attributeCaptor.getAllValues().iterator();
 
       // @formatter:off
-      verifyData(attrs.next(), 11, 5, NEW, Active.getGuid(), 570L,5, -1, 7L, "true", "");
-      verifyData(attrs.next(), 14, 6, NEW, Active.getGuid(), 570L,5, -1, 10L, "true", "");
+      verifyData(attrs.next(), 4, OseeTypesFrameworkId, NEW, Active.getId(), 570L,5, -1, 13L, "true", "");
+      verifyData(attrs.next(), 10, OseeTypesDemoId, NEW, Active.getId(), 570L,5, -1, 19L, "true", "");
       // @formatter:on
 
       sort(relationCaptor.getAllValues());
       Iterator<RelationData> rels = relationCaptor.getAllValues().iterator();
 
       // @formatter:off
-      verifyData(rels.next(), 2, 1, 7, "", NEW, Default_Hierarchical__Parent.getGuid(), 570L,6, -1, 52L);
-      verifyData(rels.next(), 3, 7, 15, "", NEW, Default_Hierarchical__Parent.getGuid(), 570L,6, -1, 54L);
+      verifyData(rels.next(), 2, 197818, UserGroupsId, "", NEW, Default_Hierarchical__Parent.getGuid(), 570L, 7, -1,
+         39L);
+      verifyData(rels.next(), 3, UserGroupsId, 52247, "", NEW, Default_Hierarchical__Parent.getGuid(), 570L, 7, -1,
+         40L);
       // @formatter:on
    }
 
    @org.junit.Test
    public void testLoadByGuids() throws OseeCoreException {
-      String[] ids = new String[] {"AkA10I4aUSDLuFNIaegA", "AkA10LiAPEZLR4+jdFQA", "AkA2AcT6AXe6ivMFRhAA"};
+      String[] ids = new String[] {OseeTypesFrameworkGuid, OseeTypesDemoGuid, UserGroupsGuid};
       DataLoader loader = loaderFactory.newDataLoaderFromGuids(session, COMMON_ID, ids);
       loader.withLoadLevel(LoadLevel.ALL);
-
-      loader.load(cancellation, builder);
-
-      verify(builder).onLoadStart();
-      verify(builder).onLoadDescription(descriptorCaptor.capture());
-      verify(builder).onLoadEnd();
-
-      LoadDescription descriptor = descriptorCaptor.getValue();
-      assertEquals(COMMON_ID, descriptor.getBranchId());
-
-      verify(builder, times(3)).onData(artifactCaptor.capture());
-      verify(builder, times(7)).onData(attributeCaptor.capture());
-      verify(builder, times(3)).onData(relationCaptor.capture());
-
-      sort(artifactCaptor.getAllValues());
-      Iterator<ArtifactData> arts = artifactCaptor.getAllValues().iterator();
-
-      // @formatter:off
-      verifyData(arts.next(), 5, "AkA10I4aUSDLuFNIaegA",  NEW, OseeTypeDefinition.getGuid(), 570L,5, -1, 15L);
-      verifyData(arts.next(), 6, "AkA10LiAPEZLR4+jdFQA",  NEW, OseeTypeDefinition.getGuid(), 570L,5, -1, 16L);
-      verifyData(arts.next(), 7, "AkA2AcT6AXe6ivMFRhAA",  NEW, Folder.getGuid(), 570L,6, -1, 43L);
-      // @formatter:on
-
-      sort(attributeCaptor.getAllValues());
-      Iterator<AttributeData> attrs = attributeCaptor.getAllValues().iterator();
-
-      // @formatter:off
-      verifyData(attrs.next(), 9, 5, NEW, Name.getGuid(), 570L,5, -1, 5L, "org.eclipse.osee.framework.skynet.core.OseeTypes_Framework", "");
-      verifyData(attrs.next(), 10, 5, NEW, UriGeneralStringData.getGuid(), 570L,5, -1, 6L, "", "attr://6/AkA10I4aUSDLuFNIaegA.zip");
-      verifyData(attrs.next(), 11, 5, NEW, Active.getGuid(), 570L,5, -1, 7L, "true", "");
-
-      verifyData(attrs.next(), 12, 6, NEW, Name.getGuid(), 570L,5, -1, 8L, "org.eclipse.osee.coverage.OseeTypes_Coverage", "");
-      verifyData(attrs.next(), 13, 6, NEW, UriGeneralStringData.getGuid(), 570L,5, -1, 9L, "", "attr://9/AkA10LiAPEZLR4+jdFQA.zip");
-      verifyData(attrs.next(), 14, 6, NEW, Active.getGuid(), 570L,5, -1, 10L, "true", "");
-      verifyData(attrs.next(), 17, 7, NEW, Name.getGuid(), 570L,6, -1, 33L, "User Groups", "");
-      // @formatter:on
-
-      sort(relationCaptor.getAllValues());
-      Iterator<RelationData> rels = relationCaptor.getAllValues().iterator();
-
-      // @formatter:off
-      verifyData(rels.next(), 1, 7, 8, "", NEW, Default_Hierarchical__Parent.getGuid(), 570L,6, -1, 53L);
-      verifyData(rels.next(), 2, 1, 7, "", NEW, Default_Hierarchical__Parent.getGuid(), 570L,6, -1, 52L);
-      verifyData(rels.next(), 3, 7, 15, "", NEW, Default_Hierarchical__Parent.getGuid(), 570L,6, -1, 54L);
-      // @formatter:on
+      verifyArtsAttrAndRelData(loader);
    }
 }

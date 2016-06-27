@@ -5,7 +5,7 @@ To do so:
 2) Do a normal AtsClient_Integration_TestSuite, stop before ClientResourceTest
 3) Zip up hsql dir to hsql.zip and copy to this directory
 4) Zip up attr to binary_data.zip and copy to this directory
-5) Re-run AtsServer_Integration_TestSuite and fix any errors
+5) Follow instructions in org.eclpise.osee.x.server.integration.test/README
 
 All canned-db test bundles should be updated with the same zip files, there are 
 - search for hsql.db for all locations

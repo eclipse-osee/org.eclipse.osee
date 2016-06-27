@@ -68,4 +68,8 @@ public interface AccountClient {
 
    AccountWebPreferences getAccountWebPreferencesByUniqueField(Long accountId);
 
+   boolean isLocalHost();
+
+   String getBaseUri();
+
 }

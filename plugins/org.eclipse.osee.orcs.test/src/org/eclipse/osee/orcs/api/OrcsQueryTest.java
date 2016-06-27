@@ -19,6 +19,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import com.google.common.collect.Ordering;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +31,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -38,6 +41,7 @@ import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -87,9 +91,9 @@ public class OrcsQueryTest {
    @Test
    public void testAllArtifactsFromBranch() throws OseeCoreException {
       QueryBuilder builder = factory.fromBranch(COMMON_ID);
-      assertEquals(26, builder.getCount());
+      assertEquals(252, builder.getCount());
 
-      assertEquals(26, builder.getResults().size());
+      assertEquals(252, builder.getResults().size());
    }
 
    @Test
@@ -103,32 +107,32 @@ public class OrcsQueryTest {
    public void testAttributeNotExists() {
       QueryBuilder builder = factory.fromBranch(COMMON_ID);
       builder.andNotExists(CoreAttributeTypes.Afha);
-      assertEquals(26, builder.getCount());
+      assertTrue(builder.getCount() >= 252);
    }
 
    @Test
    public void testQueryByIds() throws OseeCoreException {
-      QueryBuilder builder = factory.fromBranch(COMMON_ID).andGuid("AkA2AmNuEDDL4VolM9AA");
+      QueryBuilder builder = factory.fromBranch(COMMON_ID).andGuid(CoreArtifactTokens.UserGroups.getGuid());
       assertEquals(1, builder.getCount());
 
       ArtifactReadable artifact = builder.getResults().getExactlyOne();
-      assertEquals("AkA2AmNuEDDL4VolM9AA", artifact.getGuid());
+      assertEquals(CoreArtifactTokens.UserGroups.getGuid(), artifact.getGuid());
    }
 
    @Test
    public void testQueryArtifactType() throws OseeCoreException {
       QueryBuilder builder = factory.fromBranch(COMMON_ID).andIsOfType(CoreArtifactTypes.Folder);
 
-      assertEquals(2, builder.getCount());
+      assertTrue(builder.getCount() >= 6);
 
       ResultSet<ArtifactReadable> artifacts = builder.getResults();
-      assertEquals(2, artifacts.size());
+      assertTrue(artifacts.size() >= 6);
 
       checkContainsTypes(artifacts, CoreArtifactTypes.Folder);
 
-      Iterator<ArtifactReadable> iterator = sort(artifacts);
-      assertEquals("Document Templates", iterator.next().getName());
-      assertEquals("User Groups", iterator.next().getName());
+      Collection<String> names = Lib.getNames(artifacts.getList());
+      assertTrue(names.contains("Document Templates"));
+      assertTrue(names.contains("User Groups"));
 
       if (includeMatchLocationTests) {
          ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> matches = builder.getMatches();
@@ -164,21 +168,26 @@ public class OrcsQueryTest {
       QueryBuilder builder = factory.fromBranch(COMMON_ID);
       builder.andTypeEquals(CoreArtifactTypes.OseeTypeDefinition, CoreArtifactTypes.Folder);
 
-      assertEquals(6, builder.getCount());
+      assertTrue(builder.getCount() >= 14);
 
       ResultSet<ArtifactReadable> artifacts = builder.getResults();
-      assertEquals(6, artifacts.size());
+      assertTrue(artifacts.size() >= 14);
 
       checkContainsTypes(artifacts, CoreArtifactTypes.OseeTypeDefinition, CoreArtifactTypes.Folder);
 
-      Iterator<ArtifactReadable> iterator = sort(artifacts);
-      assertEquals("Document Templates", iterator.next().getName());
-      assertEquals("User Groups", iterator.next().getName());
+      Set<String> names = new HashSet<>();
+      for (ArtifactReadable art : artifacts) {
+         names.add(art.getName());
+      }
+      assertTrue("Missing \"Document Templates\"", names.contains("Document Templates"));
+      assertTrue("Missing \"User Groups\"", names.contains("User Groups"));
 
-      assertEquals("org.eclipse.osee.client.demo.OseeTypes_ClientDemo", iterator.next().getName());
-      assertEquals("org.eclipse.osee.coverage.OseeTypes_Coverage", iterator.next().getName());
-      assertEquals("org.eclipse.osee.framework.skynet.core.OseeTypes_Framework", iterator.next().getName());
-      assertEquals("org.eclipse.osee.ote.define.OseeTypesOTE", iterator.next().getName());
+      assertTrue("Missing \"org.eclipse.osee.client.demo.OseeTypes_ClientDemo\"",
+         names.contains("org.eclipse.osee.client.demo.OseeTypes_ClientDemo"));
+      assertTrue("Missing \"org.eclipse.osee.framework.skynet.core.OseeTypes_Framework\"",
+         names.contains("org.eclipse.osee.framework.skynet.core.OseeTypes_Framework"));
+      assertTrue("Missing \"org.eclipse.osee.ote.define.OseeTypesOTE\"",
+         names.contains("org.eclipse.osee.ote.define.OseeTypesOTE"));
    }
 
    @Test
@@ -243,38 +252,20 @@ public class OrcsQueryTest {
       List<IAttributeType> attributeTypes = Arrays.asList(CoreAttributeTypes.ContentUrl, CoreAttributeTypes.Name);
       builder.andNotExists(attributeTypes);
 
-      assertEquals(26, builder.getCount());
+      assertTrue(builder.getCount() >= 252);
       ResultSet<ArtifactReadable> artifacts = builder.getResults();
-      assertEquals(26, artifacts.size());
+      assertTrue(artifacts.size() >= 252);
 
-      Iterator<ArtifactReadable> iterator = sort(artifacts);
-      assertEquals("Alex Kay", iterator.next().getName());
-      assertEquals("Anonymous", iterator.next().getName());
-      assertEquals("Boot Strap", iterator.next().getName());
-      assertEquals("Default Hierarchy Root", iterator.next().getName());
-      assertEquals("Document Templates", iterator.next().getName());
-      assertEquals("Everyone", iterator.next().getName());
-      assertEquals("Framework Access Model", iterator.next().getName());
-      assertEquals("Global Preferences", iterator.next().getName());
-      assertEquals("Inactive Steve", iterator.next().getName());
-      assertEquals("Jason Michael", iterator.next().getName());
-      assertEquals("Joe Smith", iterator.next().getName());
-      assertEquals("Kay Jones", iterator.next().getName());
-      assertEquals("OSEE System", iterator.next().getName());
-      assertEquals("OseeAdmin", iterator.next().getName());
-      assertEquals("PREVIEW_ALL", iterator.next().getName());
-      assertEquals("PREVIEW_ALL_RECURSE", iterator.next().getName());
-      assertEquals("Root Artifact", iterator.next().getName());
-      assertEquals("UnAssigned", iterator.next().getName());
-      assertEquals("User Groups", iterator.next().getName());
-      assertEquals("Word Edit Template", iterator.next().getName());
-      assertEquals("Word Edit Template", iterator.next().getName());
-      assertEquals("XViewer Global Customization", iterator.next().getName());
+      Collection<String> names = Lib.getNames(artifacts.getList());
 
-      assertEquals("org.eclipse.osee.client.demo.OseeTypes_ClientDemo", iterator.next().getName());
-      assertEquals("org.eclipse.osee.coverage.OseeTypes_Coverage", iterator.next().getName());
-      assertEquals("org.eclipse.osee.framework.skynet.core.OseeTypes_Framework", iterator.next().getName());
-      assertEquals("org.eclipse.osee.ote.define.OseeTypesOTE", iterator.next().getName());
+      for (String name : Arrays.asList("Alex Kay", "Anonymous", "Boot Strap", "Default Hierarchy Root",
+         "Document Templates", "Everyone", "Framework Access Model", "Global Preferences", "Inactive Steve",
+         "Jason Michael", "Joe Smith", "Kay Jones", "OSEE System", "OseeAdmin", "PREVIEW_ALL", "PREVIEW_ALL_RECURSE",
+         "Root Artifact", "UnAssigned", "User Groups", "Word Edit Template", "Word Edit Template",
+         "XViewer Global Customization", "org.eclipse.osee.client.demo.OseeTypes_ClientDemo",
+         "org.eclipse.osee.framework.skynet.core.OseeTypes_Framework", "org.eclipse.osee.ote.define.OseeTypesOTE")) {
+         assertTrue("Missing expected artifact named [" + name + "]", names.contains(name));
+      }
    }
 
    @Test
@@ -409,8 +400,8 @@ public class OrcsQueryTest {
    @Test
    public void testFollowRelationType1() throws Exception {
       QueryBuilder builder = factory.fromBranch(SAW_Bld_1) //
-      .andIsOfType(CoreArtifactTypes.RootArtifact)//
-      .followRelation(CoreRelationTypes.Default_Hierarchical__Child);
+         .andIsOfType(CoreArtifactTypes.RootArtifact)//
+         .followRelation(CoreRelationTypes.Default_Hierarchical__Child);
 
       ResultSet<ArtifactReadable> results = builder.getResults();
       assertEquals(8, results.size());
@@ -429,9 +420,9 @@ public class OrcsQueryTest {
    @Test
    public void testFollowRelationType2() throws Exception {
       QueryBuilder builder = factory.fromBranch(SAW_Bld_1) //
-      .andIsOfType(CoreArtifactTypes.RootArtifact)//
-      .followRelation(CoreRelationTypes.Default_Hierarchical__Child)//
-      .andIsOfType(CoreArtifactTypes.Component);
+         .andIsOfType(CoreArtifactTypes.RootArtifact)//
+         .followRelation(CoreRelationTypes.Default_Hierarchical__Child)//
+         .andIsOfType(CoreArtifactTypes.Component);
 
       ResultSet<ArtifactReadable> results = builder.getResults();
       assertEquals(1, results.size());
@@ -442,9 +433,9 @@ public class OrcsQueryTest {
    @Test
    public void testFollowRelationType3() throws Exception {
       QueryBuilder builder = factory.fromBranch(SAW_Bld_1) //
-      .and(CoreAttributeTypes.Name, "collaboration", QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.CASE__IGNORE)//
-      .followRelation(CoreRelationTypes.Default_Hierarchical__Child)//
-      .and(CoreAttributeTypes.Name, "object", QueryOption.CONTAINS_MATCH_OPTIONS);
+         .and(CoreAttributeTypes.Name, "collaboration", QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.CASE__IGNORE)//
+         .followRelation(CoreRelationTypes.Default_Hierarchical__Child)//
+         .and(CoreAttributeTypes.Name, "object", QueryOption.CONTAINS_MATCH_OPTIONS);
 
       ResultSet<ArtifactReadable> results = builder.getResults();
       assertEquals(1, results.size());
@@ -455,10 +446,10 @@ public class OrcsQueryTest {
    @Test
    public void testFollowRelationTypeHistorical() throws Exception {
       QueryBuilder query = factory.fromBranch(SAW_Bld_2) //
-      .andNameEquals("Robot API") //
-      .andIsOfType(CoreArtifactTypes.SoftwareRequirement)//
-      .followRelation(CoreRelationTypes.Default_Hierarchical__Child)//
-      .and(CoreAttributeTypes.Name, "Robot", QueryOption.CONTAINS_MATCH_OPTIONS);
+         .andNameEquals("Robot API") //
+         .andIsOfType(CoreArtifactTypes.SoftwareRequirement)//
+         .followRelation(CoreRelationTypes.Default_Hierarchical__Child)//
+         .and(CoreAttributeTypes.Name, "Robot", QueryOption.CONTAINS_MATCH_OPTIONS);
 
       ResultSet<ArtifactReadable> results = query.getResults();
       assertEquals(2, results.size());
@@ -497,8 +488,8 @@ public class OrcsQueryTest {
    public void testRelatedTo() {
       // do a query on branch
       ArtifactReadable robotApi = factory.fromBranch(SAW_Bld_2) //
-      .andNameEquals("Robot API") //
-      .andIsOfType(CoreArtifactTypes.SoftwareRequirement).getResults().getExactlyOne();
+         .andNameEquals("Robot API") //
+         .andIsOfType(CoreArtifactTypes.SoftwareRequirement).getResults().getExactlyOne();
 
       // create a tx on branch
       ArtifactReadable author =
@@ -509,7 +500,7 @@ public class OrcsQueryTest {
 
       // do another query on branch
       ArtifactReadable robotInt = factory.fromBranch(SAW_Bld_2) //
-      .andNameEquals("Robot Interfaces").getResults().getExactlyOne();
+         .andNameEquals("Robot Interfaces").getResults().getExactlyOne();
 
       // see if artifact from query 1 is related to artifact from query 2
       Assert.assertTrue(robotApi.areRelated(CoreRelationTypes.Default_Hierarchical__Child, robotInt));
@@ -519,8 +510,8 @@ public class OrcsQueryTest {
    public void testMultipleTxs() {
       // do a query on branch
       ArtifactReadable robotApi = factory.fromBranch(SAW_Bld_2) //
-      .andNameEquals("Robot API") //
-      .andIsOfType(CoreArtifactTypes.SoftwareRequirement).getResults().getExactlyOne();
+         .andNameEquals("Robot API") //
+         .andIsOfType(CoreArtifactTypes.SoftwareRequirement).getResults().getExactlyOne();
 
       ArtifactReadable author =
          factory.fromBranch(COMMON_ID).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
@@ -537,10 +528,10 @@ public class OrcsQueryTest {
       tx2.commit();
 
       factory.fromBranch(SAW_Bld_2) //
-      .andNameEquals("Robot Interfaces").getResults().getExactlyOne();
+         .andNameEquals("Robot Interfaces").getResults().getExactlyOne();
 
       ArtifactReadable folderArt = factory.fromBranch(SAW_Bld_2) //
-      .andIds(folder).getResults().getExactlyOne();
+         .andIds(folder).getResults().getExactlyOne();
       // robotApi should be related to folder
       Assert.assertTrue(robotApi.areRelated(CoreRelationTypes.Default_Hierarchical__Child, folderArt));
    }

@@ -562,11 +562,6 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
             artifactTypes.add(workItemType.getArtifactType());
          }
       }
-      if (workItemTypes.contains(WorkItemType.WorkItem)) {
-         for (WorkItemType workItemType : WorkItemType.values()) {
-            artifactTypes.add(workItemType.getArtifactType());
-         }
-      }
       return artifactTypes;
    }
 

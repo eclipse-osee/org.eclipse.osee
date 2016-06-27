@@ -34,6 +34,8 @@
         name="OseeTypes_Framework"
         point="org.eclipse.osee.framework.skynet.core.OseeTypes">
      <OseeTypes
+           guid="AQjoNk+tfwaBTmnl1IQA"
+           id="518481167"
            resource="support/OseeTypes_Framework.osee">
      </OseeTypes>
   </extension>

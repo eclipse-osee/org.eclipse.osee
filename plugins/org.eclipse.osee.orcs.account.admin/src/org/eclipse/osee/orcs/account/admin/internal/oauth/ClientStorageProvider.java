@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import com.google.common.io.InputSupplier;
 import com.google.gson.GsonBuilder;
 import java.io.BufferedInputStream;
@@ -19,10 +20,16 @@ import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.OrcsTypesData;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * @author Roberto E. Escobar
@@ -53,8 +60,17 @@ public class ClientStorageProvider extends LazyObject<ClientStorage> {
             ClientStorage clientStorage = new ClientStorage(logger, builder, orcsApi, storageBranch);
 
             if (!clientStorage.typesExist()) {
-               clientStorage.storeTypes(newTypesSupplier());
+               InputSupplier<InputStream> newTypesSupplier = newTypesSupplier();
+               ArtifactReadable typeArt = (ArtifactReadable) clientStorage.storeTypes(newTypesSupplier);
+
+               TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(COMMON.getId(),
+                  SystemUser.OseeSystem, "Add OseeTypeDef OAuth Tuple to Common Branch");
+               tx.addTuple2(CoreTupleTypes.OseeTypeDef, OrcsTypesData.OSEE_TYPE_VERSION,
+                  typeArt.getAttributes(CoreAttributeTypes.UriGeneralStringData).iterator().next());
+
+               tx.commit();
             }
+
             return clientStorage;
          }
 

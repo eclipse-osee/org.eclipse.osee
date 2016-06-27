@@ -75,8 +75,8 @@ public class OrcsBranchTest {
 
    @Test
    public void testCreateBranch() throws Exception {
-      int SOURCE_TX_ID = 7; // Chosen starting transaction on Common Branch
-      int CHANGED_TX_ID = 8; // Transaction containing tested change
+      int SOURCE_TX_ID = 8; // Chosen starting transaction on Common Branch
+      int CHANGED_TX_ID = 9; // Transaction containing tested change
 
       // set up the initial branch
       IOseeBranch branch = TokenFactory.createBranch("PriorBranch");
@@ -89,19 +89,19 @@ public class OrcsBranchTest {
       assertNotNull(callable);
       BranchReadable priorBranch = callable.call();
 
-      // in the database, on the common branch, the users are all created in transaction 8
+      // in the database, on the common branch, the users are all created in transaction 9
       // the common branch will have one user named Joe Smith
 
       int coreResult = query.fromBranch(CoreBranches.COMMON).andNameEquals(ARTIFACT_NAME).getResults().size();
       assertEquals(1, coreResult);
 
-      // we copied the branch at transaction 7, so, on the copied branch there will not be any
+      // we copied the branch at transaction 8, so, on the copied branch there will not be any
       // user Joe Smith
 
       int priorResult = query.fromBranch(priorBranch).andNameEquals(ARTIFACT_NAME).getResults().size();
       assertEquals(0, priorResult);
 
-      // finally, we copy another branch at transaction id 8, this is the transaction that added the
+      // finally, we copy another branch at transaction id 9, this is the transaction that added the
       // user Joe Smith, so if the code is correct, and the copy includes the final
       // transaction, then this will produce the same result as the query of the common branch
       // create the branch with the copied transaction

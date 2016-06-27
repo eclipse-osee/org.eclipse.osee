@@ -97,7 +97,7 @@ public class OrcsAccountStorageTest {
    @Test
    public void testGetAllAccounts() {
       ResultSet<Account> result = storage.getAllAccounts();
-      assertEquals(10, result.size());
+      assertEquals(24, result.size());
    }
 
    @Test

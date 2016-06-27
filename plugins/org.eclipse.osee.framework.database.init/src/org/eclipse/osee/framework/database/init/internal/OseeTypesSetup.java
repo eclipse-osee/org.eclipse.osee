@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.database.init.internal;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -18,14 +19,13 @@ import java.io.Writer;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.data.OrcsTypeSheet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -39,7 +39,7 @@ import org.osgi.framework.Bundle;
  * This class provides necessary functionality for branches to be loaded with SkynetDbTypes through their extension
  * points. Creation, adding skynet types and initializing a new branch should be done through
  * BranchManager.createRootBranch.
- * 
+ *
  * @author Andrew M. Finkbeiner
  * @author Donald G. Dunne
  * @see BranchManager#createTopLevelBranch(String, String, String, Collection, boolean)
@@ -62,7 +62,7 @@ public class OseeTypesSetup {
    public void execute(Collection<String> uniqueIdsToImport) throws OseeCoreException {
       File combinedFile = null;
       try {
-         Map<String, URL> itemsToProcess = getOseeTypeExtensionsById(uniqueIdsToImport);
+         List<OrcsTypeSheet> itemsToProcess = getOseeTypeExtensionsById(uniqueIdsToImport);
          combinedFile = createCombinedFile(itemsToProcess);
          processOseeTypeData(combinedFile.toURI());
          // Only delete file if no problems processing
@@ -73,30 +73,38 @@ public class OseeTypesSetup {
       }
    }
 
-   public Map<String, URL> getOseeTypeExtensions() {
-      Map<String, URL> oseeTypes = new HashMap<>();
+   public List<OrcsTypeSheet> getOseeTypeExtensions() {
+      List<OrcsTypeSheet> oseeTypes = new LinkedList<>();
       for (IConfigurationElement element : ExtensionPoints.getExtensionElements(OSEE_TYPES_EXTENSION_ID, "OseeTypes")) {
+         OrcsTypeSheet sheet = new OrcsTypeSheet();
          String resourceName = element.getAttribute("resource");
          Bundle bundle = Platform.getBundle(element.getContributor().getName());
          URL url = bundle.getEntry(resourceName);
-         oseeTypes.put(element.getDeclaringExtension().getUniqueIdentifier(), url);
+         sheet.setName(element.getDeclaringExtension().getUniqueIdentifier());
+         sheet.setGuid(element.getAttribute("guid"));
+         sheet.setId(element.getAttribute("id"));
+         try {
+            sheet.setTypesSheet(Lib.inputStreamToString(new BufferedInputStream(url.openStream())));
+            oseeTypes.add(sheet);
+         } catch (IOException ex) {
+            OseeCoreException.wrapAndThrow(ex);
+         }
       }
       return oseeTypes;
    }
 
-   public File createCombinedFile(Map<String, URL> urls) throws IOException {
+   public File createCombinedFile(List<OrcsTypeSheet> sheets) throws IOException {
       String userHome = System.getProperty("user.home");
       File file = new File(userHome, "osee.types." + Lib.getDateTimeString() + ".osee");
       Writer writer = null;
       try {
          writer = new FileWriter(file);
-         for (Entry<String, URL> entry : urls.entrySet()) {
-            URL url = entry.getValue();
-            String oseeTypeFragment = Lib.inputStreamToString(url.openStream());
+         for (OrcsTypeSheet sheet : sheets) {
+            String oseeTypeFragment = sheet.getTypesSheet();
             oseeTypeFragment = oseeTypeFragment.replaceAll("import\\s+\"", "// import \"");
             writer.write("\n");
             writer.write("//////////////     ");
-            writer.write(entry.getKey());
+            writer.write(sheet.getName());
             writer.write("\n");
             writer.write("\n");
             writer.write(oseeTypeFragment);
@@ -109,20 +117,15 @@ public class OseeTypesSetup {
       return file;
    }
 
-   private Map<String, URL> getOseeTypeExtensionsById(Collection<String> uniqueIdsToImport) {
-      Map<String, URL> items = new LinkedHashMap<>();
-      Map<String, URL> extensions = getOseeTypeExtensions();
-      for (String idsToImport : uniqueIdsToImport) {
-         URL urlEntry = extensions.get(idsToImport);
-         if (urlEntry == null) {
-            OseeLog.logf(DatabaseInitActivator.class, Level.SEVERE, "ExtensionUniqueId [%s] was not found",
-               idsToImport);
-         } else {
-            items.put(idsToImport, urlEntry);
+   private List<OrcsTypeSheet> getOseeTypeExtensionsById(Collection<String> uniqueIdsToImport) {
+      List<OrcsTypeSheet> items = new LinkedList<>();
+      for (OrcsTypeSheet sheet : getOseeTypeExtensions()) {
+         if (uniqueIdsToImport.contains(sheet.getName())) {
+            items.add(sheet);
          }
       }
       OseeLog.logf(DatabaseInitActivator.class, Level.INFO, "Importing:\n\t%s",
-         items.keySet().toString().replaceAll(",", ",\n\t"));
+         items.toString().replaceAll(",", ",\n\t"));
       return items;
    }
 

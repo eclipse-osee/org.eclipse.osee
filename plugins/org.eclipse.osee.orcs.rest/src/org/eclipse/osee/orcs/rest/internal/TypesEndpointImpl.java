@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -19,13 +20,22 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.OrcsTypeSheet;
+import org.eclipse.osee.framework.core.data.OrcsTypesData;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HexUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -33,12 +43,17 @@ import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsTypes;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.data.EnumEntry;
 import org.eclipse.osee.orcs.data.EnumType;
 import org.eclipse.osee.orcs.data.JaxEnumAttribute;
 import org.eclipse.osee.orcs.data.JaxEnumEntry;
+import org.eclipse.osee.orcs.data.OrcsTopicEvents;
 import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
 
 /**
  * @author Roberto E. Escobar
@@ -46,9 +61,11 @@ import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
 public class TypesEndpointImpl implements TypesEndpoint {
 
    private final OrcsApi orcsApi;
+   private final EventAdmin eventAdmin;
 
-   public TypesEndpointImpl(OrcsApi orcsApi) {
+   public TypesEndpointImpl(OrcsApi orcsApi, EventAdmin eventAdmin) {
       this.orcsApi = orcsApi;
+      this.eventAdmin = eventAdmin;
    }
 
    private OrcsTypes getOrcsTypes() {
@@ -191,4 +208,42 @@ public class TypesEndpointImpl implements TypesEndpoint {
       JaxEnumAttribute jaxEnumAttribute = createJaxEnumAttribute(orcsApi.getOrcsTypes().getAttributeTypes(), attrType);
       return Response.ok().entity(jaxEnumAttribute.getEntries()).build();
    }
+
+   @Override
+   public Response importOrcsTypes(OrcsTypesData typesData) {
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(COMMON.getId(), SystemUser.OseeSystem,
+         "Add Types to Common Branch");
+      for (OrcsTypeSheet sheet : typesData.getSheets()) {
+         String guid = GUID.create();
+         if (Strings.isValid(sheet.getGuid())) {
+            guid = sheet.getGuid();
+         }
+         Long id = Lib.generateArtifactIdAsInt();
+         if (Strings.isNumeric(sheet.getId())) {
+            id = Long.valueOf(sheet.getId());
+         }
+         ArtifactId artifact = tx.createArtifact(CoreArtifactTypes.OseeTypeDefinition, sheet.getName(), guid, id);
+         tx.setSoleAttributeValue(artifact, CoreAttributeTypes.Active, true);
+         tx.setSoleAttributeFromString(artifact, CoreAttributeTypes.UriGeneralStringData, sheet.getTypesSheet());
+      }
+      tx.commit();
+
+      tx = orcsApi.getTransactionFactory().createTransaction(COMMON.getId(), SystemUser.OseeSystem,
+         "Add OseeTypeDef Tuples to Common Branch");
+      for (ArtifactReadable artifact : orcsApi.getQueryFactory().fromBranch(COMMON).andIsOfType(
+         CoreArtifactTypes.OseeTypeDefinition).getResults()) {
+         tx.addTuple2(CoreTupleTypes.OseeTypeDef, OrcsTypesData.OSEE_TYPE_VERSION,
+            artifact.getAttributes(CoreAttributeTypes.UriGeneralStringData).iterator().next());
+      }
+      tx.commit();
+      return Response.ok().entity("Success").build();
+   }
+
+   @Override
+   public Response dbInit() {
+      Event event = new Event(OrcsTopicEvents.DBINIT_IMPORT_TYPES, (Map<String, ?>) null);
+      eventAdmin.postEvent(event);
+      return Response.ok().entity("Success").build();
+   }
+
 }

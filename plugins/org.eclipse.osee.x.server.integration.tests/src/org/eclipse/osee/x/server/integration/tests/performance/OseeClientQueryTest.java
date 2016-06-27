@@ -21,14 +21,17 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Properties;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.IdeClientEndpoint;
 import org.eclipse.osee.orcs.rest.model.IdeVersion;
@@ -48,6 +51,10 @@ public class OseeClientQueryTest {
    @BeforeClass
    public static void testSetup() throws OseeCoreException {
       createClient = IntegrationUtil.createClient();
+      if (!createClient.isLocalHost()) {
+         throw new OseeStateException("This test should be run with local test server, not %s",
+            createClient.getBaseUri());
+      }
 
       // Establish initial connection to the db using this random query
       createClient.createQueryBuilder(COMMON).andIds(SystemUser.OseeSystem).getSearchResult(RequestType.IDS);
@@ -88,14 +95,17 @@ public class OseeClientQueryTest {
    @Test
    public void searchForArtifactByLocalId() throws OseeCoreException {
       final int EXPECTED_RESULTS = 1;
-      SearchResult results = createClient.createQueryBuilder(COMMON).andLocalId(9).getSearchResult(RequestType.IDS);
+      SearchResult results = createClient.createQueryBuilder(COMMON).andLocalId(
+         CoreArtifactTokens.UserGroups.getId().intValue()).getSearchResult(RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
    @Test
    public void searchForArtifactByLocalIds() throws OseeCoreException {
       final int EXPECTED_RESULTS = 2;
-      SearchResult results = createClient.createQueryBuilder(COMMON).andLocalId(19, 9).getSearchResult(RequestType.IDS);
+      SearchResult results =
+         createClient.createQueryBuilder(COMMON).andLocalId(CoreArtifactTokens.UserGroups.getId().intValue(),
+            CoreArtifactTokens.Everyone.getId().intValue()).getSearchResult(RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
@@ -109,7 +119,7 @@ public class OseeClientQueryTest {
 
    @Test
    public void searchForArtifactWithActionInName() throws OseeCoreException {
-      final int EXPECTED_RESULTS = 43;
+      final int EXPECTED_RESULTS = 45;
       SearchResult results = createClient.createQueryBuilder(COMMON).and(CoreAttributeTypes.Name, "SAW",
          QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_DELIMITER__ANY,
          QueryOption.TOKEN_COUNT__IGNORE).getSearchResult(RequestType.IDS);
@@ -172,60 +182,20 @@ public class OseeClientQueryTest {
       assertEquals(true, !supportedVersions.isEmpty());
    }
 
+   /**
+    * This test simply ensures that the client endpoint to run Orcs Script works. OrcsScriptTest is the more exhaustive
+    * test of Orcs Script.
+    */
    @Test
    public void orcsScript() {
       String script =
          "start from branch 570 find artifacts where art-type = 'Folder' collect artifacts {id, attributes { value } };";
-      String expected = "{\n" + //
-      "  'parameters' : {\n" + //
-      "    'output.debug' : 'false'\n" + //
-      "  },\n" + //
-      "  'script' : 'start from branch 570 find artifacts where art-type = 'Folder' collect artifacts {id, attributes { value } };',\n" + //
-      "  'results' : [ {\n" + //
-      "    'artifacts' : [ {\n" + //
-      "      'id' : 8,\n" + //
-      "      'attributes' : {\n" + //
-      "        'Name' : {\n" + //
-      "          'value' : 'User Groups'\n" + //
-      "        }\n" + //
-      "      }\n" + //
-      "    }, {\n" + //
-      "      'id' : 26,\n" + //
-      "      'attributes' : {\n" + //
-      "        'Name' : {\n" + //
-      "          'value' : 'Document Templates'\n" + //
-      "        }\n" + //
-      "      }\n" + //
-      "    }, {\n" + //
-      "      'id' : 31,\n" + //
-      "      'attributes' : {\n" + //
-      "        'Name' : {\n" + //
-      "          'value' : 'Action Tracking System'\n" + //
-      "        }\n" + //
-      "      }\n" + //
-      "    }, {\n" + //
-      "      'id' : 34,\n" + //
-      "      'attributes' : {\n" + //
-      "        'Name' : {\n" + //
-      "          'value' : 'Config'\n" + //
-      "        }\n" + //
-      "      }\n" + //
-      "    }, {\n" + //
-      "      'id' : 35,\n" + //
-      "      'attributes' : {\n" + //
-      "        'Name' : {\n" + //
-      "          'value' : 'Work Definitions'\n" + //
-      "        }\n" + //
-      "      }\n" + //
-      "    } ]\n" + //
-      "  } ]\n" + //
-      "}";
 
       StringWriter writer = new StringWriter();
       Properties properties = new Properties();
       createClient.executeScript(script, properties, false, MediaType.APPLICATION_JSON_TYPE, writer);
 
-      assertEquals(expected, normalize(writer.toString()));
+      assertTrue(normalize(writer.toString()).contains("'value' : 'User Groups'"));
    }
 
    private String normalize(String value) {

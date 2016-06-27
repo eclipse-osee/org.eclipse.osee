@@ -173,7 +173,7 @@ public class ClientStorage {
       return newQuery().andUuid(OAUTH_TYPES.getUuid()).andTypeEquals(OAUTH_TYPES.getArtifactType()).getResults();
    }
 
-   public void storeTypes(InputSupplier<? extends InputStream> resource) {
+   public ArtifactId storeTypes(InputSupplier<? extends InputStream> resource) {
       TransactionBuilder tx = newTransaction(null, "Initialize OAuth Type Definitions");
       ArtifactId artifactId = tx.createArtifact(OAUTH_TYPES);
       InputStream stream = null;
@@ -188,6 +188,7 @@ public class ClientStorage {
       tx.commit();
 
       reloadTypes();
+      return artifactId;
    }
 
    private void reloadTypes() {

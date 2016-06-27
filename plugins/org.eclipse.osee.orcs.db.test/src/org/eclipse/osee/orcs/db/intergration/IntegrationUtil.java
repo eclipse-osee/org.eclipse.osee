@@ -42,47 +42,47 @@ public class IntegrationUtil {
 
    public static void verifyData(ArtifactData data, Object... values) {
       int index = 0;
-      assertEquals(data.getLocalId(), values[index++]);
-      assertEquals(data.getGuid(), values[index++]);
-      assertEquals(data.getModType(), values[index++]);
-      assertEquals(data.getTypeUuid(), values[index++]);
+      assertEquals(values[index++], data.getLocalId());
+      assertEquals(values[index++], data.getGuid());
+      assertEquals(values[index++], data.getModType());
+      assertEquals(values[index++], data.getTypeUuid());
 
       verifyData(data.getVersion(), index, values);
    }
 
    public static void verifyData(AttributeData data, Object... values) throws OseeCoreException {
       int index = 0;
-      assertEquals(data.getLocalId(), values[index++]);
-      assertEquals(data.getArtifactId(), values[index++]);
-      assertEquals(data.getModType(), values[index++]);
-      assertEquals(data.getTypeUuid(), values[index++]);
+      assertEquals(values[index++], data.getLocalId());
+      assertEquals(values[index++], data.getArtifactId());
+      assertEquals(values[index++], data.getModType());
+      assertEquals(values[index++], data.getTypeUuid());
 
       index = verifyData(data.getVersion(), index, values);
 
       Object[] proxied = data.getDataProxy().getData();
-      assertEquals(proxied[0], values[index++]); // value
-      assertEquals(proxied[1], values[index++]); // uri
+      assertEquals(values[index++], proxied[0]); // value
+      assertEquals(values[index++], proxied[1]); // uri
    }
 
    public static void verifyData(RelationData data, Object... values) {
       int index = 0;
-      assertEquals(data.getLocalId(), values[index++]);
+      assertEquals(values[index++], data.getLocalId());
 
-      assertEquals(data.getArtIdA(), values[index++]);
-      assertEquals(data.getArtIdB(), values[index++]);
-      assertEquals(data.getRationale(), values[index++]);
+      assertEquals(values[index++], data.getArtIdA());
+      assertEquals(values[index++], data.getArtIdB());
+      assertEquals(values[index++], data.getRationale());
 
-      assertEquals(data.getModType(), values[index++]);
-      assertEquals(data.getTypeUuid(), values[index++]);
+      assertEquals(values[index++], data.getModType());
+      assertEquals(values[index++], data.getTypeUuid());
 
       verifyData(data.getVersion(), index, values);
    }
 
    public static int verifyData(VersionData version, int index, Object... values) {
-      assertEquals(version.getBranchId(), values[index++]);
-      assertEquals(version.getTransactionId(), values[index++]);
-      assertEquals(version.getStripeId(), values[index++]);
-      assertEquals(version.getGammaId(), values[index++]);
+      assertEquals(values[index++], version.getBranchId());
+      assertEquals(values[index++], version.getTransactionId());
+      assertEquals(values[index++], version.getStripeId());
+      assertEquals(values[index++], version.getGammaId());
       return index;
    }
 

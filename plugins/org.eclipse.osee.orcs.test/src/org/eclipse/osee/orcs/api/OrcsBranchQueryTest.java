@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.api;
 
-import static org.eclipse.osee.framework.core.enums.BranchState.CREATED;
 import static org.eclipse.osee.framework.core.enums.BranchState.MODIFIED;
 import static org.eclipse.osee.framework.core.enums.BranchType.BASELINE;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
@@ -21,7 +20,10 @@ import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -39,6 +41,7 @@ import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryFactory;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -71,22 +74,17 @@ public class OrcsBranchQueryTest {
       BranchQuery query = factory.branchQuery();
 
       ResultSet<BranchReadable> results = query.getResults();
-      assertEquals(5, results.size());
-      assertEquals(5, query.getCount());
+      assertEquals(8, results.size());
+      assertEquals(8, query.getCount());
 
-      Iterator<BranchReadable> iterator = results.iterator();
-      BranchReadable branch1 = iterator.next();
-      BranchReadable branch2 = iterator.next();
-      BranchReadable branch3 = iterator.next();
-      BranchReadable branch4 = iterator.next();
-      BranchReadable branch5 = iterator.next();
+      List<BranchReadable> list = results.getList();
 
-      // actual, IOseeBranch, BranchType, BranchState, isArchived, parentId, baseTx, sourceTx, assocArtId
-      assertBranch(branch1, SYSTEM_ROOT, BranchType.SYSTEM_ROOT, MODIFIED, false, -1, 1, 1, -1);
-      assertBranch(branch2, SAW_Bld_1, BASELINE, MODIFIED, false, 1, 15, 3, -1);
-      assertBranch(branch3, CIS_Bld_1, BASELINE, MODIFIED, false, 1, 17, 3, -1);
-      assertBranch(branch4, SAW_Bld_2, BASELINE, CREATED, false, 3, 23, 22, 9);
-      assertBranch(branch5, COMMON, BASELINE, MODIFIED, false, 1, 4, 3, -1);
+      // list, IOseeBranch, BranchType, BranchState, isArchived, parentId, baseTx, sourceTx, assocArtId
+      assertBranch(list, SYSTEM_ROOT, BranchType.SYSTEM_ROOT, MODIFIED, false, -1, -1);
+      assertBranch(list, SAW_Bld_1, BASELINE, MODIFIED, false, 1, -1);
+      assertBranch(list, CIS_Bld_1, BASELINE, MODIFIED, false, 1, -1);
+      assertBranch(list, SAW_Bld_2, BASELINE, MODIFIED, false, 3, 11);
+      assertBranch(list, COMMON, BASELINE, MODIFIED, false, 1, -1);
    }
 
    @Test
@@ -162,10 +160,9 @@ public class OrcsBranchQueryTest {
    @Test
    public void testGetByState() throws OseeCoreException {
       BranchQuery query = factory.branchQuery();
-      query.andStateIs(CREATED);
+      query.andStateIs(MODIFIED);
 
-      assertEquals(SAW_Bld_2, query.getResults().getExactlyOne());
-      assertEquals(1, query.getCount());
+      assertEquals(7, query.getCount());
    }
 
    @Test
@@ -173,26 +170,22 @@ public class OrcsBranchQueryTest {
       BranchQuery query = factory.branchQuery();
       query.andIsChildOf(SAW_Bld_1);
 
-      assertEquals(SAW_Bld_2, query.getResults().getExactlyOne());
-      assertEquals(1, query.getCount());
+      ResultSet<BranchReadable> children = query.getResults();
+      assertEquals(4, query.getCount());
+      assertEquals(SAW_Bld_2, children.iterator().next());
 
       query = factory.branchQuery();
       query.andIsChildOf(SYSTEM_ROOT);
 
       ResultSet<BranchReadable> results = query.getResults();
-      assertEquals(4, results.size());
-      assertEquals(4, query.getCount());
+      assertEquals(7, results.size());
+      assertEquals(7, query.getCount());
 
-      Iterator<BranchReadable> iterator = results.iterator();
-      BranchReadable branch1 = iterator.next();
-      BranchReadable branch2 = iterator.next();
-      BranchReadable branch3 = iterator.next();
-      BranchReadable branch4 = iterator.next();
+      List<BranchReadable> list = results.getList();
 
-      assertEquals(SAW_Bld_1, branch1);
-      assertEquals(CIS_Bld_1, branch2);
-      assertEquals(SAW_Bld_2, branch3);
-      assertEquals(COMMON, branch4);
+      for (IOseeBranch branch : Arrays.asList(SAW_Bld_1, CIS_Bld_1, SAW_Bld_2, COMMON)) {
+         assertTrue("Missing expected branch " + branch, list.contains(branch));
+      }
    }
 
    @Test
@@ -291,6 +284,7 @@ public class OrcsBranchQueryTest {
       return getBranchOps().createWorkingBranch(uuid, author, parent, null).call();
    }
 
+   @SuppressWarnings("unchecked")
    private ArtifactReadable getSystemUser() throws OseeCoreException {
       return factory.fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
    }
@@ -299,13 +293,19 @@ public class OrcsBranchQueryTest {
       return orcsApi.getBranchOps();
    }
 
-   private static void assertBranch(BranchReadable actual, IOseeBranch token, BranchType type, BranchState state, boolean isArchived, int parent, int baseTx, int sourceTx, int assocArtId) {
-      assertEquals(token, actual);
-      assertBranch(actual, token.getName(), token.getGuid(), type, state, isArchived, parent, baseTx, sourceTx,
-         assocArtId);
+   private static void assertBranch(List<BranchReadable> list, IOseeBranch token, BranchType type, BranchState state, boolean isArchived, int parent, int assocArtId) {
+      BranchReadable found = null;
+      for (BranchReadable branch : list) {
+         if (branch.getId().equals(token.getId())) {
+            found = branch;
+            break;
+         }
+      }
+      Assert.assertNotNull(found);
+      assertBranch(found, token.getName(), token.getGuid(), type, state, isArchived, parent, assocArtId);
    }
 
-   private static void assertBranch(BranchReadable actual, String name, Long localId, BranchType type, BranchState state, boolean isArchived, int parent, int baseTx, int sourceTx, int assocArtId) {
+   private static void assertBranch(BranchReadable actual, String name, Long localId, BranchType type, BranchState state, boolean isArchived, int parent, int assocArtId) {
       assertEquals(name, actual.getName());
       assertEquals(localId, actual.getUuid());
 
@@ -313,8 +313,6 @@ public class OrcsBranchQueryTest {
       assertEquals(state, actual.getBranchState());
       assertEquals(isArchived, actual.getArchiveState().isArchived());
       assertEquals(parent, actual.getParentBranch());
-      assertEquals(baseTx, actual.getBaseTransaction());
-      assertEquals(sourceTx, actual.getSourceTransaction());
       assertEquals(assocArtId, actual.getAssociatedArtifactId());
    }
 }

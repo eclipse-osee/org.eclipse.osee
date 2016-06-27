@@ -32,8 +32,10 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
  * @author Roberto E. Escobar
  */
 public final class OseeDslRenderer extends AbstractDslRenderer {
-   private static final IArtifactType[] MATCHING_ARTIFACT_TYPES =
-      {CoreArtifactTypes.AccessControlModel, CoreArtifactTypes.OseeTypeDefinition};
+   private static final IArtifactType[] MATCHING_ARTIFACT_TYPES = {
+      CoreArtifactTypes.AccessControlModel,
+      CoreArtifactTypes.OseeTypeDefinition,
+      CoreArtifactTypes.OseeTypeDefinitionTemp};
 
    private static final OseeDslSegmentParser parser = new OseeDslSegmentParser();
 
@@ -57,7 +59,8 @@ public final class OseeDslRenderer extends AbstractDslRenderer {
       Artifact artifact = artifacts.iterator().next();
 
       String data;
-      if (artifact.isOfType(CoreArtifactTypes.OseeTypeDefinition)) {
+      if (artifact.isOfType(CoreArtifactTypes.OseeTypeDefinition) || artifact.isOfType(
+         CoreArtifactTypes.OseeTypeDefinitionTemp)) {
          data = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.UriGeneralStringData, "");
       } else {
          StringBuilder builder = new StringBuilder();
@@ -80,7 +83,8 @@ public final class OseeDslRenderer extends AbstractDslRenderer {
    protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch, PresentationType presentationType) {
       IOperation op;
       Artifact artifact = artifacts.iterator().next();
-      if (artifact.isOfType(CoreArtifactTypes.OseeTypeDefinition)) {
+      if (artifact.isOfType(CoreArtifactTypes.OseeTypeDefinition) || artifact.isOfType(
+         CoreArtifactTypes.OseeTypeDefinitionTemp)) {
          OseeTypeModifier modifier = new OseeTypeModifier();
          op = new FileToAttributeUpdateOperation(file, artifacts.get(0), CoreAttributeTypes.UriGeneralStringData,
             modifier);

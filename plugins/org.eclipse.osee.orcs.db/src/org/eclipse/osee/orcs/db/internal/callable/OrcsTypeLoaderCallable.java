@@ -10,15 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.callable;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.data.OrcsTypesData;
+import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -38,8 +38,13 @@ import org.eclipse.osee.orcs.OrcsSession;
  */
 public class OrcsTypeLoaderCallable extends AbstractDatastoreCallable<IResource> {
 
+   /**
+    * e2 stores
+    */
    private static final String LOAD_OSEE_TYPE_DEF_URIS =
-      "select attr.uri from osee_branch br, osee_txs txs1, osee_artifact art, osee_attribute attr, osee_txs txs2 where br.branch_id = ? and txs1.branch_id = br.branch_id and txs1.tx_current = ? and txs1.gamma_id = art.gamma_id and txs2.branch_id = br.branch_id and txs2.tx_current = ? and txs2.gamma_id = attr.gamma_id and art.art_type_id = ? and art.art_id = attr.art_id and attr.attr_type_id = ?";
+      "select uri from osee_tuple2 t2, osee_txs txs1, osee_attribute attr, osee_txs txs2 where tuple_type = ? and " //
+         + "t2.gamma_id = txs1.gamma_id and txs1.branch_id = ? and txs1.tx_current = ? and e1 = ? and e2 = attr.attr_id and " //
+         + "attr.gamma_id = txs2.gamma_id and txs2.branch_id = txs1.branch_id and txs2.tx_current = ?";
 
    private final IResourceManager resourceManager;
 
@@ -61,15 +66,13 @@ public class OrcsTypeLoaderCallable extends AbstractDatastoreCallable<IResource>
    private Collection<String> findOseeTypeData() throws OseeCoreException {
       Collection<String> paths = new LinkedHashSet<>();
 
-      Long artifactTypeId = CoreArtifactTypes.OseeTypeDefinition.getGuid();
-      Long attributeTypeId = CoreAttributeTypes.UriGeneralStringData.getGuid();
-
       JdbcStatement chStmt = null;
       try {
          chStmt = getJdbcClient().getStatement();
 
-         chStmt.runPreparedQuery(LOAD_OSEE_TYPE_DEF_URIS, COMMON_ID, TxChange.CURRENT.getValue(),
-            TxChange.CURRENT.getValue(), artifactTypeId, attributeTypeId);
+         chStmt.runPreparedQuery(LOAD_OSEE_TYPE_DEF_URIS, CoreTupleTypes.OseeTypeDef, COMMON,
+            TxChange.CURRENT.getValue(), OrcsTypesData.OSEE_TYPE_VERSION, TxChange.CURRENT.getValue());
+
          while (chStmt.next()) {
             String uri = chStmt.getString("uri");
             paths.add(uri);

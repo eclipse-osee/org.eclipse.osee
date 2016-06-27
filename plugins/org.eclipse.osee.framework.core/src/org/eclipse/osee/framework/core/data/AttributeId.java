@@ -25,8 +25,8 @@ public interface AttributeId extends HasLocalId<Integer>, Id {
 
    @JsonCreator
    public static AttributeId valueOf(long id) {
-      final class AttributeIdImpl extends BaseId implements AttributeId {
-         public AttributeIdImpl(Long txId) {
+      final class AttributeToken extends BaseId implements AttributeId {
+         public AttributeToken(Long txId) {
             super(txId);
          }
 
@@ -35,6 +35,6 @@ public interface AttributeId extends HasLocalId<Integer>, Id {
             return getId().intValue();
          }
       }
-      return new AttributeIdImpl(id);
+      return new AttributeToken(id);
    }
 }

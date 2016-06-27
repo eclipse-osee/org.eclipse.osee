@@ -22,8 +22,10 @@ import org.eclipse.osee.account.rest.model.AccountDetailsData;
 import org.eclipse.osee.account.rest.model.AccountInfoData;
 import org.eclipse.osee.account.rest.model.AccountInput;
 import org.eclipse.osee.account.rest.model.AccountPreferencesData;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.x.server.integration.tests.util.IntegrationUtil;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
@@ -52,9 +54,18 @@ public class AccountClientTest {
    private String guid;
    private Map<String, String> prefs;
 
+   @After
+   public void cleanUp() {
+      client = IntegrationUtil.createAccountClient();
+      client.deleteAccount(accountId);
+   }
+
    @Before
    public void setUp() {
       client = IntegrationUtil.createAccountClient();
+      if (!client.isLocalHost()) {
+         throw new OseeStateException("This test should be run with local test server, not %s", client.getBaseUri());
+      }
 
       String methodName = testName.getMethodName();
 

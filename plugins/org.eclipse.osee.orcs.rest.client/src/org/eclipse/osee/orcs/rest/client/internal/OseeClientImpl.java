@@ -207,4 +207,15 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
       URI uri = UriBuilder.fromUri(baseUri).path("branch/{branch}").build(branch.getId());
       return client.targetProxy(uri, ApplicabilityEndpoint.class);
    }
+
+   @Override
+   public boolean isLocalHost() {
+      return baseUri.toString().contains("localhost");
+   }
+
+   @Override
+   public String getBaseUri() {
+      return baseUri.toString();
+   }
+
 }

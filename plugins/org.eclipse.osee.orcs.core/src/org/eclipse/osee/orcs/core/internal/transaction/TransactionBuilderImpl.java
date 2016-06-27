@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.KeyValueOps;
@@ -400,10 +401,10 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       if (element1 instanceof String) {
          e1 = insertValue((String) element1);
       } else {
-         if (element1 instanceof ArtifactId) {
-            e1 = ((ArtifactId) element1).getUuid();
+         if (element1 instanceof Id) {
+            e1 = ((Id) element1).getId();
          } else if (element1 instanceof AttributeId) {
-            e1 = new Long(((AttributeId) element1).getLocalId());
+            e1 = Long.valueOf(((AttributeId) element1).getLocalId());
          } else {
             e1 = (Long) element1;
          }
@@ -411,10 +412,10 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       if (element2 instanceof String) {
          e2 = insertValue((String) element2);
       } else {
-         if (element2 instanceof ArtifactId) {
-            e2 = ((ArtifactId) element2).getUuid();
+         if (element1 instanceof ArtifactId) {
+            e2 = ((Id) element2).getId();
          } else if (element2 instanceof AttributeId) {
-            e2 = new Long(((AttributeId) element2).getLocalId());
+            e2 = Long.valueOf(((AttributeId) element2).getLocalId());
          } else {
             e2 = (Long) element2;
          }

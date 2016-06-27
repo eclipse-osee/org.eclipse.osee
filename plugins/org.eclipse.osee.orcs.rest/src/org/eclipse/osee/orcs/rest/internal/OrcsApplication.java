@@ -22,6 +22,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.admin.LinkUpdateResource;
 import org.eclipse.osee.orcs.rest.internal.client.ClientResource;
 import org.eclipse.osee.orcs.rest.internal.writer.OrcsWriterEndpointImpl;
+import org.osgi.service.event.EventAdmin;
 
 /**
  * Get application.wadl at this context to get rest documentation
@@ -38,6 +39,7 @@ public class OrcsApplication extends Application {
    private IResourceManager resourceManager;
    private ActivityLog activityLog;
    private JdbcService jdbcService;
+   private EventAdmin eventAdmin;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       OrcsApplication.orcsApi = orcsApi;
@@ -49,6 +51,10 @@ public class OrcsApplication extends Application {
 
    public void setActivityLog(ActivityLog activityLog) {
       this.activityLog = activityLog;
+   }
+
+   public void setEventAdmin(EventAdmin eventAdmin) {
+      this.eventAdmin = eventAdmin;
    }
 
    public void setResourceManager(IResourceManager resourceManager) {
@@ -69,7 +75,7 @@ public class OrcsApplication extends Application {
       resources.add(new BranchEndpointImpl(orcsApi, resourceManager, activityLog));
       resources.add(new OrcsWriterEndpointImpl(orcsApi));
       resources.add(new TransactionEndpointImpl(orcsApi));
-      resources.add(new TypesEndpointImpl(orcsApi));
+      resources.add(new TypesEndpointImpl(orcsApi, eventAdmin));
 
       resources.add(new IndexerEndpointImpl(orcsApi));
       resources.add(new ResourcesEndpointImpl(resourceManager));

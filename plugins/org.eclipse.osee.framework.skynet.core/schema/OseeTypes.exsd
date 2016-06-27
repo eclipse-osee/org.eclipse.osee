@@ -18,7 +18,6 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="ExcelFile" minOccurs="0" maxOccurs="1"/>
             <element ref="OseeTypes"/>
          </sequence>
          <attribute name="point" type="string" use="required">
@@ -48,21 +47,6 @@
       </complexType>
    </element>
 
-   <element name="ExcelFile">
-      <complexType>
-         <attribute name="file" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appInfo>
-                  <meta.attribute kind="resource"/>
-               </appInfo>
-            </annotation>
-         </attribute>
-      </complexType>
-   </element>
-
    <element name="OseeTypes">
       <complexType>
          <attribute name="resource" type="string" use="required">
@@ -73,6 +57,20 @@
                <appInfo>
                   <meta.attribute kind="resource"/>
                </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="guid" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
             </annotation>
          </attribute>
       </complexType>

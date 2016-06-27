@@ -56,6 +56,8 @@
          name="OseeTypes_ClientDemo"
          point="org.eclipse.osee.framework.skynet.core.OseeTypes">
       <OseeTypes
+            guid="AQjoNnwNdyjicTck2UwA"
+            id="466104557"
             resource="support/OseeTypes_ClientDemo.osee">
       </OseeTypes>
    </extension>

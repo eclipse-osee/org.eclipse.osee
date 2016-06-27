@@ -67,6 +67,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.util.io.IOInputThread;
 import org.eclipse.osee.framework.jdk.core.util.io.IOOutputThread;
 import org.eclipse.osee.framework.jdk.core.util.io.InputBufferThread;
@@ -1761,6 +1762,14 @@ public final class Lib {
          }
       }
       return isWriteable;
+   }
+
+   public static Collection<String> getNames(Collection<? extends Named> objects) {
+      Collection<String> names = new LinkedList<>();
+      for (Object obj : objects) {
+         names.add(((Named) obj).getName());
+      }
+      return names;
    }
 
 }

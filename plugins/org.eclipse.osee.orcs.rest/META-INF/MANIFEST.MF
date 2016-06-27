@@ -46,7 +46,8 @@ Import-Package: com.google.common.base;version="15.0.0",
  org.eclipse.osee.orcs.utility,
  org.eclipse.osee.orcs.writer,
  org.eclipse.osee.orcs.writer.model.config,
- org.eclipse.osee.orcs.writer.model.reader
+ org.eclipse.osee.orcs.writer.model.reader,
+ org.osgi.service.event;version="1.3.1"
 Osee-JaxRs-Resource: OSEE-INF/web/script/*;path=/orcs/script/ui,
  OSEE-INF/web/example/*;path=/orcs/example/ui,
  OSEE-INF/web/writer/*;path=/orcs/writer/ui

@@ -52,6 +52,8 @@ public final class CoreArtifactTypes {
    public static final IArtifactType WholeWord = TokenFactory.createArtifactType(0x0000000000000012L, "MS Word Whole Document");
    public static final IArtifactType OseeApp = TokenFactory.createArtifactType(0x0000000000000059L, "OSEE App");
    public static final IArtifactType OseeTypeDefinition = TokenFactory.createArtifactType(0x000000000000003CL, "Osee Type Definition");
+   // Added to support OSEE types versioning between 23.1 and 24.  Remove after 24.0 release.
+   public static final IArtifactType OseeTypeDefinitionTemp = TokenFactory.createArtifactType(0x19F3D0F33D5ACC54L, "Osee Type Definition Temp");
    public static final IArtifactType OseeTypesEnum = TokenFactory.createArtifactType(0x4B9A7DCF0856C368L, "Osee Type Enum");
    public static final IArtifactType RendererTemplate = TokenFactory.createArtifactType(0x0000000000000009L, "Renderer Template");
    public static final IArtifactType Requirement = TokenFactory.createArtifactType(0x0000000000000015L, "Requirement");
