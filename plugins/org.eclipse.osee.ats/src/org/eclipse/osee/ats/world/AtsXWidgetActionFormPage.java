@@ -35,7 +35,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
@@ -75,7 +74,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       FormsUtil.addHeadingGradient(toolkit, scrolledForm, true);
 
       Composite body = scrolledForm.getBody();
-      body.setLayout(new GridLayout(1, true));
+      body.setLayout(ALayout.getZeroMarginLayout(1, true));
       body.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, false, false));
 
       xWidgetXml = getXWidgetsXml();
@@ -117,7 +116,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
    }
 
    private Section createParametersSection(IManagedForm managedForm, Composite body) throws OseeCoreException {
-      parameterSection = toolkit.createSection(body, ExpandableComposite.NO_TITLE);
+      parameterSection = toolkit.createSection(body, ExpandableComposite.TWISTIE);
       parameterSection.setText("Parameters");
       parameterSection.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
