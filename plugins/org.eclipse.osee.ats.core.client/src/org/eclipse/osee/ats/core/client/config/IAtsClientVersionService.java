@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsClientVersionService extends IAtsVersionService {
 
-   void removeTargetedVersion(IAtsTeamWorkflow teamWf, boolean store) throws OseeCoreException;
+   void removeTargetedVersion(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
    IAtsVersion setTargetedVersionAndStore(IAtsTeamWorkflow teamWf, IAtsVersion version) throws OseeCoreException;
 
@@ -36,9 +36,5 @@ public interface IAtsClientVersionService extends IAtsVersionService {
    IAtsVersion createVersion(String name, String guid, long uuid, IAtsChangeSet changes);
 
    IAtsVersion createVersion(String name, IAtsChangeSet changes);
-
-   void invalidateVersionCache();
-
-   void invalidateVersionCache(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
 }

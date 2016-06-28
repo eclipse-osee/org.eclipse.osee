@@ -78,7 +78,6 @@ import org.eclipse.osee.ats.core.client.internal.config.VersionFactory;
 import org.eclipse.osee.ats.core.client.internal.ev.AtsEarnedValueImpl;
 import org.eclipse.osee.ats.core.client.internal.query.AtsQueryServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.review.AtsReviewServiceImpl;
-import org.eclipse.osee.ats.core.client.internal.store.AtsVersionCache;
 import org.eclipse.osee.ats.core.client.internal.store.AtsVersionServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.user.AtsUserServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.workdef.ArtifactResolverImpl;
@@ -211,8 +210,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       earnedValueService = new AtsEarnedValueImpl(logger, getServices());
 
       configItemFactory = new ConfigItemFactory(logger, this);
-      AtsVersionCache versionCache = new AtsVersionCache(this);
-      versionService = new AtsVersionServiceImpl(this, atsCache, versionCache);
+      versionService = new AtsVersionServiceImpl(this, atsCache);
 
       actionableItemFactory = new ActionableItemFactory();
       teamDefFactory = new TeamDefinitionFactory();
@@ -336,7 +334,6 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    public void invalidateAllCaches() {
       invalidateCache();
       invalidateWorkDefinitionCache();
-      versionService.invalidateVersionCache();
       if (goalMembersCache != null) {
          goalMembersCache.invalidate();
       }

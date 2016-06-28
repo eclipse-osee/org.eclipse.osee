@@ -39,34 +39,26 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class AtsVersionServiceImpl extends AbstractAtsVersionServiceImpl implements IAtsClientVersionService {
 
    private final IAtsCache cache;
-   private final AtsVersionCache versionCache;
    private final IAtsClient atsClient;
 
-   public AtsVersionServiceImpl(IAtsClient atsClient, IAtsCache cache, AtsVersionCache versionCache) {
+   public AtsVersionServiceImpl(IAtsClient atsClient, IAtsCache cache) {
       super(atsClient.getServices());
       this.atsClient = atsClient;
       this.cache = cache;
-      this.versionCache = versionCache;
    }
 
    @Override
    public IAtsVersion getTargetedVersionByTeamWf(IAtsTeamWorkflow teamWf) throws OseeCoreException {
-      IAtsVersion version = versionCache.getVersion(teamWf);
-      if (version == null) {
-         if (getArtifact(teamWf).getRelatedArtifactsCount(
-            AtsRelationTypes.TeamWorkflowTargetedForVersion_Version) > 0) {
-            List<Artifact> verArts =
-               getArtifact(teamWf).getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
-            if (verArts.size() > 1) {
-               OseeLog.log(Activator.class, Level.SEVERE,
-                  "Multiple targeted versions for artifact " + teamWf.toStringWithId());
-               version = cache.getByUuid(verArts.iterator().next().getUuid(), IAtsVersion.class);
-            } else {
-               version = cache.getByUuid(verArts.iterator().next().getUuid(), IAtsVersion.class);
-            }
-            if (version != null) {
-               versionCache.cache(teamWf, version);
-            }
+      IAtsVersion version = null;
+      if (getArtifact(teamWf).getRelatedArtifactsCount(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version) > 0) {
+         List<Artifact> verArts =
+            getArtifact(teamWf).getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
+         if (verArts.size() > 1) {
+            OseeLog.log(Activator.class, Level.SEVERE,
+               "Multiple targeted versions for artifact " + teamWf.toStringWithId());
+            version = cache.getByUuid(verArts.iterator().next().getUuid(), IAtsVersion.class);
+         } else {
+            version = cache.getByUuid(verArts.iterator().next().getUuid(), IAtsVersion.class);
          }
       }
       return version;
@@ -77,36 +69,20 @@ public class AtsVersionServiceImpl extends AbstractAtsVersionServiceImpl impleme
    }
 
    @Override
-   public void removeTargetedVersion(IAtsTeamWorkflow teamWf, boolean store) throws OseeCoreException {
-      if (store) {
-         TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) teamWf.getStoreObject();
-         teamArt.deleteRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
-      }
-      versionCache.deCache(teamWf);
+   public void removeTargetedVersion(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) teamWf.getStoreObject();
+      teamArt.deleteRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
    }
 
    @Override
    public IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, IAtsVersion version) throws OseeCoreException {
-      return setTargetedVersion(teamWf, version, false);
+      setTargetedVersionLink(teamWf, version);
+      return version;
    }
 
    @Override
    public IAtsVersion setTargetedVersionAndStore(IAtsTeamWorkflow teamWf, IAtsVersion version) throws OseeCoreException {
-      return setTargetedVersion(teamWf, version, true);
-   }
-
-   private IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, IAtsVersion version, boolean store) throws OseeCoreException {
-      if (store) {
-         setTargetedVersionLink(teamWf, version);
-      }
-
-      IAtsVersion toReturn = null;
-      if (version == null) {
-         versionCache.deCache(teamWf);
-      } else {
-         toReturn = versionCache.cache(teamWf, version);
-      }
-      return toReturn;
+      return setTargetedVersion(teamWf, version);
    }
 
    private IAtsTeamWorkflow setTargetedVersionLink(IAtsTeamWorkflow teamWf, IAtsVersion version) throws OseeCoreException {
@@ -138,16 +114,6 @@ public class AtsVersionServiceImpl extends AbstractAtsVersionServiceImpl impleme
       if (!verArt.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition).contains(teamDefArt)) {
          verArt.addRelation(AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition, teamDefArt);
       }
-   }
-
-   @Override
-   public void invalidateVersionCache() {
-      versionCache.invalidateCache();
-   }
-
-   @Override
-   public void invalidateVersionCache(IAtsTeamWorkflow teamWf) throws OseeCoreException {
-      versionCache.deCache(teamWf);
    }
 
    @Override
