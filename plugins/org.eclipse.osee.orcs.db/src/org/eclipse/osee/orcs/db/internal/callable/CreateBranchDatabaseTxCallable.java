@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -83,8 +82,6 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
    private final String GET_BRANCH_ACCESS_CONTROL_LIST =
       "SELECT permission_id, privilege_entity_id FROM osee_branch_acl WHERE branch_id= ?";
 
-   private static final String INSERT_BRANCH_WITH_GUID =
-      "INSERT INTO osee_branch (branch_id, branch_guid, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state, baseline_transaction_id, inherit_access_control) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
    private static final String INSERT_BRANCH =
       "INSERT INTO osee_branch (branch_id, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state, baseline_transaction_id, inherit_access_control) VALUES (?,?,?,?,?,?,?,?,?,?)";
    protected static final int NULL_PARENT_BRANCH_ID = -1;
@@ -171,38 +168,20 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       }
 
       //write to branch table
-      boolean insertBranchGuid = isBranchGuidNeeded(connection);
       long parentBranchId = parentBranchUuid != null ? parentBranchUuid : NULL_PARENT_BRANCH_ID;
-      Object[] toInsert;
-      if (insertBranchGuid) {
-         toInsert = new Object[] {
-            uuid,
-            GUID.create(),
-            truncatedName,
-            parentBranchId,
-            sourceTx,
-            BranchArchivedState.UNARCHIVED.getValue(),
-            newBranchData.getAssociatedArtifactId(),
-            newBranchData.getBranchType().getValue(),
-            BranchState.CREATED.getValue(),
-            nextTransactionId,
-            inheritAccessControl};
-      } else {
-         toInsert = new Object[] {
-            uuid,
-            truncatedName,
-            parentBranchId,
-            sourceTx,
-            BranchArchivedState.UNARCHIVED.getValue(),
-            newBranchData.getAssociatedArtifactId(),
-            newBranchData.getBranchType().getValue(),
-            BranchState.CREATED.getValue(),
-            nextTransactionId,
-            inheritAccessControl};
-      }
+      Object[] toInsert = new Object[] {
+         uuid,
+         truncatedName,
+         parentBranchId,
+         sourceTx,
+         BranchArchivedState.UNARCHIVED.getValue(),
+         newBranchData.getAssociatedArtifactId(),
+         newBranchData.getBranchType().getValue(),
+         BranchState.CREATED.getValue(),
+         nextTransactionId,
+         inheritAccessControl};
 
-      String insertBranch = insertBranchGuid ? INSERT_BRANCH_WITH_GUID : INSERT_BRANCH;
-      jdbcClient.runPreparedUpdate(connection, insertBranch, toInsert);
+      jdbcClient.runPreparedUpdate(connection, INSERT_BRANCH, toInsert);
 
       if (inheritAccessControl != 0) {
          copyAccessRules(connection, newBranchData.getUserArtifactId(), parentBranchUuid, uuid);
@@ -215,11 +194,6 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       populateBaseTransaction(0.30, connection, nextTransactionId, sourceTx);
 
       addMergeBranchEntry(0.20, connection);
-   }
-
-   private boolean isBranchGuidNeeded(JdbcConnection connection) {
-      return jdbcClient.runPreparedQueryFetchObject(connection, false,
-         "select osee_value from osee_info where osee_key = ?", "osee.insert.branch.guid.on.create");
    }
 
    private void addMergeBranchEntry(double workAmount, JdbcConnection connection) {
