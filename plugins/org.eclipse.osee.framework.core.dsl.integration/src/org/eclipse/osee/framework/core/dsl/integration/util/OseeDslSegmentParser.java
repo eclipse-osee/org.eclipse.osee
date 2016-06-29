@@ -67,11 +67,11 @@ public class OseeDslSegmentParser {
    }
 
    private void processData(Collection<OseeDslSegment> segments, TagLocation startSeg, TagLocation stopSeg) {
-      Long branchGuid = startSeg.getBranchUuid();
+      Long branchUuid = startSeg.getBranchUuid();
       String artifactGuid = startSeg.getArtifactGuid();
       int startAt = startSeg.end();
       int endAt = stopSeg.start();
-      segments.add(new OseeDslSegment(branchGuid, artifactGuid, startAt, endAt));
+      segments.add(new OseeDslSegment(branchUuid, artifactGuid, startAt, endAt));
    }
 
    private boolean matches(TagLocation seg1, TagLocation seg2) {
@@ -227,7 +227,7 @@ public class OseeDslSegmentParser {
 
       @Override
       public String toString() {
-         return "OseeDslSegment [branchGuid=" + branchUuid + ", artifactUuid=" + artifactGuid + ", start=" + start + ", end=" + end + "]";
+         return "OseeDslSegment [branchUuid=" + branchUuid + ", artifactUuid=" + artifactGuid + ", start=" + start + ", end=" + end + "]";
       }
 
    }

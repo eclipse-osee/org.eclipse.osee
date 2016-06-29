@@ -219,28 +219,28 @@ public class ArtifactMatchInterpreterTest {
       Assert.assertEquals(2, compoundCondition.getConditions().size());
 
       String badArtGuid = "1BCDEFGHIJK123456789";
-      Long badBranchGuid = 333333333123456789L;
+      Long badBranchUuid = 333333333123456789L;
       String badBranchName = "xArtifact";
 
       String goodArtGuid = "ABCDEFGHIJK123456789";
-      Long goodBranchGuid = 3456789101112131415L;
+      Long goodBranchUuid = 3456789101112131415L;
       String goodBranchName = "myArtifact";
 
       Iterator<SimpleCondition> iterator2 = compoundCondition.getConditions().iterator();
       DslAsserts.assertEquals(iterator2.next(), MatchField.BRANCH_NAME, CompareOp.EQ, "myArtifact");
-      DslAsserts.assertEquals(iterator2.next(), MatchField.BRANCH_UUID, CompareOp.EQ, String.valueOf(goodBranchGuid));
+      DslAsserts.assertEquals(iterator2.next(), MatchField.BRANCH_UUID, CompareOp.EQ, String.valueOf(goodBranchUuid));
 
       Assert.assertEquals(1, compoundCondition.getOperators().size());
       Assert.assertEquals(XLogicOperator.OR, compoundCondition.getOperators().iterator().next());
 
-      ArtifactProxy proxy1 = createProxy(badArtGuid, "", badBranchGuid, badBranchName);
-      ArtifactProxy proxy2 = createProxy(badArtGuid, "", badBranchGuid, goodBranchName);
-      ArtifactProxy proxy3 = createProxy(badArtGuid, "", goodBranchGuid, badBranchName);
-      ArtifactProxy proxy4 = createProxy(badArtGuid, "", goodBranchGuid, goodBranchName);
-      ArtifactProxy proxy5 = createProxy(goodArtGuid, "", badBranchGuid, badBranchName);
-      ArtifactProxy proxy6 = createProxy(goodArtGuid, "", badBranchGuid, goodBranchName);
-      ArtifactProxy proxy7 = createProxy(goodArtGuid, "", goodBranchGuid, badBranchName);
-      ArtifactProxy proxy8 = createProxy(goodArtGuid, "", goodBranchGuid, goodBranchName);
+      ArtifactProxy proxy1 = createProxy(badArtGuid, "", badBranchUuid, badBranchName);
+      ArtifactProxy proxy2 = createProxy(badArtGuid, "", badBranchUuid, goodBranchName);
+      ArtifactProxy proxy3 = createProxy(badArtGuid, "", goodBranchUuid, badBranchName);
+      ArtifactProxy proxy4 = createProxy(badArtGuid, "", goodBranchUuid, goodBranchName);
+      ArtifactProxy proxy5 = createProxy(goodArtGuid, "", badBranchUuid, badBranchName);
+      ArtifactProxy proxy6 = createProxy(goodArtGuid, "", badBranchUuid, goodBranchName);
+      ArtifactProxy proxy7 = createProxy(goodArtGuid, "", goodBranchUuid, badBranchName);
+      ArtifactProxy proxy8 = createProxy(goodArtGuid, "", goodBranchUuid, goodBranchName);
 
       Assert.assertEquals(false, interpreter.matches(matcher, proxy1));
       Assert.assertEquals(false, interpreter.matches(matcher, proxy2));
@@ -257,7 +257,7 @@ public class ArtifactMatchInterpreterTest {
       return createProxy(artGuid, artifactName, Lib.generateUuid(), "dummy");
    }
 
-   private static ArtifactProxy createProxy(final String artGuid, final String artifactName, final long branchGuid, final String branchName) {
+   private static ArtifactProxy createProxy(final String artGuid, final String artifactName, final long branchUuid, final String branchName) {
       return new ArtifactProxy() {
 
          @Override
@@ -267,7 +267,7 @@ public class ArtifactMatchInterpreterTest {
 
          @Override
          public IOseeBranch getBranchToken() {
-            return TokenFactory.createBranch(branchGuid, branchName);
+            return TokenFactory.createBranch(branchUuid, branchName);
          }
 
          @Override

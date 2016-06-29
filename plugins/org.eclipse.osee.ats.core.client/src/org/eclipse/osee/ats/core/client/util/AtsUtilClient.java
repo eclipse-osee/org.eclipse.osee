@@ -50,7 +50,7 @@ public class AtsUtilClient {
       new ArtifactTypeEventFilter(AtsArtifactTypes.TeamWorkflow);
    private static List<IEventFilter> atsObjectEventFilter = new ArrayList<>(2);
    private static boolean emailEnabled = true;
-   private static BranchUuidEventFilter commonBranchGuidEventFilter;
+   private static BranchUuidEventFilter commonBranchUuidEventFilter;
    private static Boolean atsAdmin = null;
 
    public static boolean isEmailEnabled() {
@@ -75,10 +75,10 @@ public class AtsUtilClient {
    }
 
    public static BranchUuidEventFilter getAtsBranchFilter() {
-      if (commonBranchGuidEventFilter == null) {
-         commonBranchGuidEventFilter = new BranchUuidEventFilter(AtsUtilCore.getAtsBranch());
+      if (commonBranchUuidEventFilter == null) {
+         commonBranchUuidEventFilter = new BranchUuidEventFilter(AtsUtilCore.getAtsBranch());
       }
-      return commonBranchGuidEventFilter;
+      return commonBranchUuidEventFilter;
    }
 
    /**

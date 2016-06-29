@@ -47,7 +47,7 @@ public final class PublishLowHighReqTraceabilityResource {
    }
 
    /**
-    * @param branchGuid -- the GUID of the branch to apply the test to
+    * @param branchUuid -- the UUID of the branch to apply the test to
     * @param selectedTypes -- a list of the Low level Artifact types that will be used for the report
     * @return -- An Excel sheet (in XML format) containing the two reports
     */

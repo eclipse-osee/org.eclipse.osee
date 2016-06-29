@@ -27,7 +27,7 @@ import org.osgi.service.event.Event;
  * @author Roberto E. Escobar
  */
 public final class EventUtil {
-   private static BranchUuidEventFilter commonBranchGuidEvenFilter = new BranchUuidEventFilter(CoreBranches.COMMON);
+   private static BranchUuidEventFilter commonBranchUuidEvenFilter = new BranchUuidEventFilter(CoreBranches.COMMON);
    private static ObjectMapper mapper;
 
    private EventUtil() {
@@ -35,7 +35,7 @@ public final class EventUtil {
    }
 
    public static BranchUuidEventFilter getCommonBranchFilter() {
-      return EventUtil.commonBranchGuidEvenFilter;
+      return EventUtil.commonBranchUuidEvenFilter;
    }
 
    public static String getObjectSafeName(Object object) {

@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 
 /**
  * Allows for the conversion of ATS database from Build to Build
- * 
+ *
  * @author Donald G. Dunne
  */
 @Path("convert")
@@ -58,7 +58,7 @@ public final class ConvertResource {
       sb.append(AHTML.endMultiColumnTable());
 
       return new ViewModel("convert.html") //
-      .param("conversionTable", sb.toString());
+         .param("conversionTable", sb.toString());
    }
 
    private String getForm(String convertName, String operation, String buttonLabel) {
@@ -71,7 +71,7 @@ public final class ConvertResource {
    }
 
    /**
-    * @param convertName - conversion name to perform. eg: BaselineBranchGuidToUuid
+    * @param convertName - conversion name to perform. eg: ProgramGuidToUuid
     * @param operation - run if conversion should run, report for report without persist
     * @return Html results of conversion
     */
