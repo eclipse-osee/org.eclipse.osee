@@ -18,6 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -182,7 +183,7 @@ public class TxDataManager {
 
    private Artifact copyArtifactForWrite(TxData txData, Artifact source) throws OseeCoreException {
       Artifact artifact = artifactFactory.clone(txData.getSession(), source);
-      txData.getGraph().addNode(artifact, artifact.getOrcsData().isUseBackingData());
+      txData.getGraph().addNode(artifact, artifact.getOrcsData().isExistingVersionUsed());
       relationManager.cloneRelations(txData.getSession(), source, artifact);
       return artifact;
    }
@@ -333,7 +334,7 @@ public class TxDataManager {
       Conditions.checkExpressionFailOnTrue(isDifferent,
          "Another instance of writeable detected - writeable tracking would be inconsistent");
 
-      txData.getGraph().addNode(artifact, artifact.getOrcsData().isUseBackingData());
+      txData.getGraph().addNode(artifact, artifact.getOrcsData().isExistingVersionUsed());
    }
 
    public void deleteArtifact(TxData txData, ArtifactId sourceArtifact) throws OseeCoreException {
@@ -415,6 +416,12 @@ public class TxDataManager {
       relationManager.unrelateFromAll(txData.getSession(), type, asArtifactA, side);
    }
 
+   public void setRelationApplicabilityId(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB, ApplicabilityId applicId) {
+      Artifact asArtifactA = getForWrite(txData, artA);
+      Artifact asArtifactB = getForWrite(txData, artB);
+      relationManager.setApplicabilityId(txData.getSession(), asArtifactA, type, asArtifactB, applicId);
+   }
+
    public TransactionData createChangeData(TxData txData) throws OseeCoreException {
       OrcsSession session = txData.getSession();
       GraphData graph = txData.getGraph();
@@ -430,6 +437,11 @@ public class TxDataManager {
 
       OrcsChangeSet changeSet = builder.getChangeSet();
       return new TransactionDataImpl(txData.getBranchId(), txData.getAuthor(), txData.getComment(), changeSet);
+   }
+
+   public void setApplicabilityId(TxData txData, ArtifactId artId, ApplicabilityId applicId) {
+      Artifact asArtifactA = getForWrite(txData, artId);
+      asArtifactA.getOrcsData().setApplicabilityId(applicId);
    }
 
    private static final class TransactionDataImpl implements TransactionData {

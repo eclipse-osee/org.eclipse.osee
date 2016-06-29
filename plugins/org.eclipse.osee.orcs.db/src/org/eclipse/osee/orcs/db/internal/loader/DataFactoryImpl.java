@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -69,7 +70,7 @@ public class DataFactoryImpl implements DataFactory {
 
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
       ArtifactData artifactData =
-         objectFactory.createArtifactData(version, (int) artifactId, token, modType, guidToSet);
+         objectFactory.createArtifactData(version, (int) artifactId, token, modType, guidToSet, ApplicabilityId.BASE);
       return artifactData;
    }
 
@@ -96,7 +97,8 @@ public class DataFactoryImpl implements DataFactory {
       version.setBranchId(parent.getVersion().getBranchId());
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
       Integer attributeid = RelationalConstants.DEFAULT_ITEM_ID;
-      return objectFactory.createAttributeData(version, attributeid, attributeType, modType, parent.getLocalId());
+      return objectFactory.createAttributeData(version, attributeid, attributeType, modType, parent.getLocalId(),
+         ApplicabilityId.BASE);
    }
 
    @Override
@@ -122,7 +124,7 @@ public class DataFactoryImpl implements DataFactory {
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
       Integer relationId = RelationalConstants.DEFAULT_ITEM_ID;
       return objectFactory.createRelationData(version, relationId, relationType, modType, aArt.getLocalId(),
-         bArt.getLocalId(), rationale);
+         bArt.getLocalId(), rationale, ApplicabilityId.BASE);
    }
 
    @Override

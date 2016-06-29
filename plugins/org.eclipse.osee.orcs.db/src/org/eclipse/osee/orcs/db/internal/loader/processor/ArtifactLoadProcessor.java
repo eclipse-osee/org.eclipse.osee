@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.processor;
 
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -39,6 +40,7 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
       if (!onCreate.isSame(branchUuid, artifactId)) {
 
          ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
+         ApplicabilityId applicId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
          // assumption: SQL is returning unwanted deleted artifacts only in the historical case
          boolean historical = OptionsUtil.isHistorical(options);
          if (!historical || OptionsUtil.areDeletedArtifactsIncluded(options) || modType != ModificationType.DELETED) {
@@ -53,7 +55,7 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
 
             long typeId = chStmt.getLong("art_type_id");
             String guid = chStmt.getString("guid");
-            toReturn = factory.createArtifactData(version, artifactId, typeId, modType, guid);
+            toReturn = factory.createArtifactData(version, artifactId, typeId, modType, guid, applicId);
          }
          onCreate.saveConditions(branchUuid, artifactId);
       }

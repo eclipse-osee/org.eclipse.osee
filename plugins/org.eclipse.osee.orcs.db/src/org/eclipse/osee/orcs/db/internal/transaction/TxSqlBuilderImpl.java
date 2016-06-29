@@ -98,11 +98,15 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
 
    @Override
    public void visit(ArtifactData data) throws OseeCoreException {
+      boolean isOtherChange =
+         !data.getVersion().isInStorage() || data.hasTypeUuidChange() || data.hasModTypeChange() || data.isExistingVersionUsed();
+      boolean isApplicOnly = data.getDirtyState().isApplicOnly();
+
       if (!isNewAndDeleted(data)) {
-         if (!data.getVersion().isInStorage() || data.hasTypeUuidChange() || data.hasModTypeChange() || data.isUseBackingData()) {
-            boolean isRowAllowed = isGammaCreationAllowed(data);
+         if (isOtherChange || isApplicOnly) {
+            boolean reuseGamma = reuseGamma(data);
             updateTxValues(data);
-            if (isRowAllowed) {
+            if (!isApplicOnly && !reuseGamma) {
                updateGamma(data);
                addRow(SqlOrderEnum.ARTIFACTS, data.getLocalId(), data.getTypeUuid(), data.getVersion().getGammaId(),
                   data.getGuid());
@@ -115,13 +119,13 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    @Override
    public void visit(AttributeData data) throws OseeCoreException {
       if (!isNewAndDeleted(data)) {
-         boolean isRowAllowed = isGammaCreationAllowed(data);
+         boolean createNewGamma = !reuseGamma(data);
          updateTxValues(data);
-         if (isRowAllowed) {
+         if (createNewGamma && !data.getDirtyState().isApplicOnly()) {
             updateGamma(data);
 
             DataProxy dataProxy = data.getDataProxy();
-            DaoToSql daoToSql = new DaoToSql(data.getVersion().getGammaId(), dataProxy, isGammaCreationAllowed(data));
+            DaoToSql daoToSql = new DaoToSql(data.getVersion().getGammaId(), dataProxy, createNewGamma);
             addBinaryStore(daoToSql);
 
             if (RelationalConstants.DEFAULT_ITEM_ID == data.getLocalId()) {
@@ -170,9 +174,9 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    @Override
    public void visit(RelationData data) throws OseeCoreException {
       if (!isNewAndDeleted(data)) {
-         boolean isRowAllowed = isGammaCreationAllowed(data);
+         boolean reuseGamma = reuseGamma(data);
          updateTxValues(data);
-         if (isRowAllowed) {
+         if (!reuseGamma && !data.getDirtyState().isApplicOnly()) {
             updateGamma(data);
             if (RelationalConstants.DEFAULT_ITEM_ID == data.getLocalId()) {
                int localId = idManager.getNextRelationId();
@@ -188,10 +192,9 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    private void addTxs(SqlOrderEnum key, OrcsData orcsData) {
       VersionData data = orcsData.getVersion();
       ModificationType modType = orcsData.getModType();
-      //TODO Fix hack: need to modify orcsData, but setting to default 1 instead
 
       addRow(SqlOrderEnum.TXS, data.getTransactionId(), data.getGammaId(), modType.getValue(),
-         TxChange.getCurrent(modType).getValue(), data.getBranchId(), 1L);
+         TxChange.getCurrent(modType).getValue(), data.getBranchId(), orcsData.getApplicabilityId());
 
       if (key.hasTxNotCurrentQuery()) {
          IdJoinQuery join = txNotCurrentsJoin.get(key);
@@ -214,11 +217,8 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
 
    private void updateGamma(OrcsData data) throws OseeCoreException {
       VersionData version = data.getVersion();
-      long gammaId = version.getGammaId();
-      if (RelationalConstants.GAMMA_SENTINEL == gammaId || isGammaCreationAllowed(data)) {
-         long newGamma = idManager.getNextGammaId();
-         version.setGammaId(newGamma);
-      }
+      long newGamma = idManager.getNextGammaId();
+      version.setGammaId(newGamma);
    }
 
    private ModificationType computeModType(ModificationType original) {
@@ -233,8 +233,8 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
       return sqlJoinFactory.createIdJoinQuery();
    }
 
-   protected boolean isGammaCreationAllowed(OrcsData data) {
-      return !data.getModType().isExistingVersionUsed() && !data.isUseBackingData();
+   protected boolean reuseGamma(OrcsData data) {
+      return data.getModType().isExistingVersionUsed() || data.isExistingVersionUsed();
    }
 
    private void addRow(SqlOrderEnum sqlKey, Object... data) {

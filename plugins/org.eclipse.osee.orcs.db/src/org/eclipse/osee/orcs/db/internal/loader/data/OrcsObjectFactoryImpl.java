@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
 import java.util.Date;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -86,27 +87,27 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public ArtifactData createArtifactData(VersionData version, Integer localId, long typeUuid, ModificationType modType, String guid) throws OseeCoreException {
-      return createArtifactFromRow(version, localId, typeUuid, modType, typeUuid, modType, guid);
+   public ArtifactData createArtifactData(VersionData version, Integer localId, long typeUuid, ModificationType modType, String guid, ApplicabilityId applicId) throws OseeCoreException {
+      return createArtifactFromRow(version, localId, typeUuid, modType, typeUuid, modType, guid, applicId);
    }
 
    @Override
-   public ArtifactData createArtifactData(VersionData version, int localId, IArtifactType type, ModificationType modType, String guid) {
+   public ArtifactData createArtifactData(VersionData version, int localId, IArtifactType type, ModificationType modType, String guid, ApplicabilityId applicId) {
       long typeUuid = type.getGuid();
-      return createArtifactFromRow(version, localId, typeUuid, modType, typeUuid, modType, guid);
+      return createArtifactFromRow(version, localId, typeUuid, modType, typeUuid, modType, guid, applicId);
    }
 
    @Override
    public ArtifactData createCopy(ArtifactData source) {
       VersionData newVersion = createCopy(source.getVersion());
       return createArtifactFromRow(newVersion, source.getLocalId(), source.getTypeUuid(), source.getModType(),
-         source.getBaseTypeUuid(), source.getBaseModType(), source.getGuid());
+         source.getBaseTypeUuid(), source.getBaseModType(), source.getGuid(), source.getApplicabilityId());
    }
 
    @Override
-   public AttributeData createAttributeData(VersionData version, Integer localId, long typeId, ModificationType modType, int artifactId, String value, String uri) throws OseeCoreException {
+   public AttributeData createAttributeData(VersionData version, Integer localId, long typeId, ModificationType modType, int artifactId, String value, String uri, ApplicabilityId applicId) throws OseeCoreException {
       DataProxy proxy = proxyFactory.createProxy(typeId, value, uri);
-      return createAttributeFromRow(version, localId, typeId, modType, typeId, modType, artifactId, proxy);
+      return createAttributeFromRow(version, localId, typeId, modType, typeId, modType, artifactId, proxy, applicId);
    }
 
    @Override
@@ -116,28 +117,31 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       DataProxy sourceProxy = source.getDataProxy();
       DataProxy newProxy = proxyFactory.createProxy(typeId, sourceProxy.getData());
       return createAttributeFromRow(newVersion, source.getLocalId(), typeId, source.getModType(),
-         source.getBaseTypeUuid(), source.getBaseModType(), source.getArtifactId(), newProxy);
+         source.getBaseTypeUuid(), source.getBaseModType(), source.getArtifactId(), newProxy,
+         source.getApplicabilityId());
    }
 
    @Override
-   public AttributeData createAttributeData(VersionData version, Integer localId, IAttributeType type, ModificationType modType, int artId) throws OseeCoreException {
+   public AttributeData createAttributeData(VersionData version, Integer localId, IAttributeType type, ModificationType modType, int artId, ApplicabilityId applicId) throws OseeCoreException {
       long typeId = type.getGuid();
       DataProxy proxy = proxyFactory.createProxy(typeId, "", "");
-      return createAttributeFromRow(version, localId, typeId, modType, typeId, modType, artId, proxy);
+      return createAttributeFromRow(version, localId, typeId, modType, typeId, modType, artId, proxy, applicId);
    }
 
    @Override
-   public RelationData createRelationData(VersionData version, Integer localId, long typeId, ModificationType modType, int aArtId, int bArtId, String rationale) throws OseeCoreException {
-      return createRelationData(version, localId, typeId, modType, typeId, modType, aArtId, bArtId, rationale);
+   public RelationData createRelationData(VersionData version, Integer localId, long typeId, ModificationType modType, int aArtId, int bArtId, String rationale, ApplicabilityId applicId) throws OseeCoreException {
+      return createRelationData(version, localId, typeId, modType, typeId, modType, aArtId, bArtId, rationale,
+         applicId);
    }
 
    @Override
-   public RelationData createRelationData(VersionData version, Integer localId, IRelationType type, ModificationType modType, int aArtId, int bArtId, String rationale) {
+   public RelationData createRelationData(VersionData version, Integer localId, IRelationType type, ModificationType modType, int aArtId, int bArtId, String rationale, ApplicabilityId applicId) {
       long typeId = type.getGuid();
-      return createRelationData(version, localId, typeId, modType, typeId, modType, aArtId, bArtId, rationale);
+      return createRelationData(version, localId, typeId, modType, typeId, modType, aArtId, bArtId, rationale,
+         applicId);
    }
 
-   private ArtifactData createArtifactFromRow(VersionData version, int localId, long localTypeID, ModificationType modType, long baseLocalTypeID, ModificationType baseModType, String guid) {
+   private ArtifactData createArtifactFromRow(VersionData version, int localId, long localTypeID, ModificationType modType, long baseLocalTypeID, ModificationType baseModType, String guid, ApplicabilityId applicId) {
       ArtifactData data = new ArtifactDataImpl(version);
       data.setLocalId(localId);
       data.setTypeUuid(localTypeID);
@@ -145,10 +149,11 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       data.setModType(modType);
       data.setBaseModType(baseModType);
       data.setGuid(guid);
+      data.setApplicabilityId(applicId);
       return data;
    }
 
-   private AttributeData createAttributeFromRow(VersionData version, int localId, long localTypeID, ModificationType modType, long baseLocalTypeID, ModificationType baseModType, int artifactId, DataProxy proxy) {
+   private AttributeData createAttributeFromRow(VersionData version, int localId, long localTypeID, ModificationType modType, long baseLocalTypeID, ModificationType baseModType, int artifactId, DataProxy proxy, ApplicabilityId applicId) {
       AttributeData data = new AttributeDataImpl(version);
       data.setLocalId(localId);
       data.setTypeUuid(localTypeID);
@@ -157,10 +162,11 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       data.setBaseModType(baseModType);
       data.setArtifactId(artifactId);
       data.setDataProxy(proxy);
+      data.setApplicabilityId(applicId);
       return data;
    }
 
-   private RelationData createRelationData(VersionData version, int localId, long localTypeID, ModificationType modType, long baseLocalTypeID, ModificationType baseModType, int aArtId, int bArtId, String rationale) {
+   private RelationData createRelationData(VersionData version, int localId, long localTypeID, ModificationType modType, long baseLocalTypeID, ModificationType baseModType, int aArtId, int bArtId, String rationale, ApplicabilityId applicId) {
       RelationData data = new RelationDataImpl(version);
       data.setLocalId(localId);
       data.setTypeUuid(localTypeID);
@@ -170,6 +176,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       data.setArtIdA(aArtId);
       data.setArtIdB(bArtId);
       data.setRationale(rationale);
+      data.setApplicabilityId(applicId);
       return data;
    }
 
@@ -178,7 +185,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       VersionData newVersion = createCopy(source.getVersion());
       return createRelationData(newVersion, source.getLocalId(), source.getTypeUuid(), source.getModType(),
          source.getBaseTypeUuid(), source.getBaseModType(), source.getArtIdA(), source.getArtIdB(),
-         source.getRationale());
+         source.getRationale(), source.getApplicabilityId());
    }
 
    @Override
@@ -226,6 +233,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       TupleData data = new TupleDataImpl(version);
       data.setBaseModType(ModificationType.NEW);
       data.setModType(ModificationType.NEW);
+      data.setApplicabilityId(ApplicabilityId.BASE);
       data.setTupleType(tupleType);
       data.setElement1(element1);
       data.setElement2(element2);
@@ -239,6 +247,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       TupleData data = new TupleDataImpl(version);
       data.setBaseModType(ModificationType.NEW);
       data.setModType(ModificationType.NEW);
+      data.setApplicabilityId(ApplicabilityId.BASE);
       data.setTupleType(tupleType);
       data.setElement1(e1);
       data.setElement2(e2);
@@ -253,6 +262,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       TupleData data = new TupleDataImpl(version);
       data.setBaseModType(ModificationType.NEW);
       data.setModType(ModificationType.NEW);
+      data.setApplicabilityId(ApplicabilityId.BASE);
       data.setTupleType(tupleType);
       data.setElement1(e1);
       data.setElement2(e2);

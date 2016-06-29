@@ -86,7 +86,7 @@ public class TupleDataImpl extends OrcsVersionedObjectImpl implements TupleData 
    }
 
    @Override
-   public boolean isUseBackingData() {
+   public boolean isExistingVersionUsed() {
       return false;
    }
 

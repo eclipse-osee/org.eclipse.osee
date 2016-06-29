@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -33,6 +34,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
+import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.relation.RelationUtil;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -233,6 +235,13 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
+   public void setAttributeApplicability(ArtifactId art, AttributeId attrId, ApplicabilityId applicId) {
+      Artifact asArtifact = getForWrite(art);
+      Attribute<Object> attribute = asArtifact.getAttributeById(attrId.getLocalId());
+      attribute.getOrcsData().setApplicabilityId(applicId);
+   }
+
+   @Override
    public void deleteByAttributeId(ArtifactId sourceArtifact, AttributeId attrId) throws OseeCoreException {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.getAttributeById(attrId.getLocalId()).delete();
@@ -313,6 +322,11 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
+   public void setRelationApplicability(ArtifactId artA, IRelationType relType, ArtifactId artB, ApplicabilityId applicId) {
+      txManager.setRelationApplicabilityId(txData, artA, relType, artB, applicId);
+   }
+
+   @Override
    public void deleteArtifact(ArtifactId sourceArtifact) throws OseeCoreException {
       txManager.deleteArtifact(txData, sourceArtifact);
    }
@@ -341,6 +355,11 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    protected ArtifactReadable getArtifactReadable(OrcsSession session, QueryModule query, Long branch, ArtifactId id) {
       return query.createQueryFactory(session).fromBranch(branch).includeDeletedArtifacts().andGuid(
          id.getGuid()).getResults().getOneOrNull();
+   }
+
+   @Override
+   public void setApplicability(ArtifactId artId, ApplicabilityId applicId) {
+      txManager.setApplicabilityId(txData, artId, applicId);
    }
 
    private Long insertValue(String value) {
@@ -383,6 +402,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       } else {
          if (element1 instanceof ArtifactId) {
             e1 = ((ArtifactId) element1).getUuid();
+         } else if (element1 instanceof AttributeId) {
+            e1 = new Long(((AttributeId) element1).getLocalId());
          } else {
             e1 = (Long) element1;
          }
@@ -390,8 +411,10 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       if (element2 instanceof String) {
          e2 = insertValue((String) element2);
       } else {
-         if (element1 instanceof ArtifactId) {
+         if (element2 instanceof ArtifactId) {
             e2 = ((ArtifactId) element2).getUuid();
+         } else if (element2 instanceof AttributeId) {
+            e2 = new Long(((AttributeId) element2).getLocalId());
          } else {
             e2 = (Long) element2;
          }

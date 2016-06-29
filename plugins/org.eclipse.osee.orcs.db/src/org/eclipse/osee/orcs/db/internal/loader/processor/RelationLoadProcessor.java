@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.processor;
 
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -41,6 +42,7 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
       int bArtId = chStmt.getInt("b_art_id");
       long typeId = chStmt.getLong("rel_link_type_id");
       long gammaId = chStmt.getInt("gamma_id");
+      ApplicabilityId applicId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
 
       boolean historical = OptionsUtil.isHistorical(options);
 
@@ -60,7 +62,7 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
 
          String rationale = chStmt.getString("rationale");
 
-         toReturn = factory.createRelationData(version, localId, typeId, modType, aArtId, bArtId, rationale);
+         toReturn = factory.createRelationData(version, localId, typeId, modType, aArtId, bArtId, rationale, applicId);
 
       } else {
          if (!historical) {

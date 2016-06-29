@@ -14,9 +14,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.enums.DirtyState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -30,7 +32,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link Relation}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class RelationTest {
@@ -59,6 +61,7 @@ public class RelationTest {
       relation.delete();
 
       verify(data).setModType(ModificationType.DELETED);
+      when(data.isDirty()).thenReturn(true);
       assertTrue(relation.isDirty());
    }
 
@@ -76,6 +79,7 @@ public class RelationTest {
       relation.setRationale("new rationale");
       verify(data).setRationale("new rationale");
       verify(data).setModType(ModificationType.MODIFIED);
+      when(data.isDirty()).thenReturn(true);
       assertTrue(relation.isDirty());
    }
 
@@ -99,11 +103,17 @@ public class RelationTest {
 
    @Test
    public void testDirty() {
+      when(data.calculateDirtyState(true)).thenReturn(DirtyState.OTHER_CHANGES);
+      when(data.isDirty()).thenReturn(true);
       relation.setDirty();
       assertTrue(relation.isDirty());
+      verify(data, times(1)).calculateDirtyState(true);
 
+      when(data.calculateDirtyState(false)).thenReturn(DirtyState.CLEAN);
+      when(data.isDirty()).thenReturn(false);
       relation.clearDirty();
       assertFalse(relation.isDirty());
+      verify(data, times(1)).calculateDirtyState(false);
    }
 
    @Test

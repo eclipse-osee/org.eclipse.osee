@@ -89,7 +89,7 @@ public class AttributeDataImpl extends OrcsVersionedObjectImpl implements Attrib
    }
 
    @Override
-   public boolean isUseBackingData() {
+   public boolean isExistingVersionUsed() {
       return useBackingData;
    }
 

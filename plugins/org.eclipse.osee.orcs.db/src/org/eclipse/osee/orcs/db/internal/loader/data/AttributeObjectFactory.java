@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -21,9 +22,9 @@ import org.eclipse.osee.orcs.core.ds.VersionData;
  */
 public interface AttributeObjectFactory extends VersionObjectFactory {
 
-   AttributeData createAttributeData(VersionData version, Integer localId, long typeID, ModificationType modType, int artId, String value, String uri) throws OseeCoreException;
+   AttributeData createAttributeData(VersionData version, Integer localId, long typeID, ModificationType modType, int artId, String value, String uri, ApplicabilityId applicId) throws OseeCoreException;
 
-   AttributeData createAttributeData(VersionData version, Integer localId, IAttributeType type, ModificationType modType, int artId) throws OseeCoreException;
+   AttributeData createAttributeData(VersionData version, Integer localId, IAttributeType type, ModificationType modType, int artId, ApplicabilityId applicId) throws OseeCoreException;
 
    AttributeData createCopy(AttributeData source) throws OseeCoreException;
 }

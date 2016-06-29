@@ -42,7 +42,8 @@ public class LoadSqlWriter extends AbstractSqlWriter {
       String artJoinAlias = getLastAlias(TableEnum.ARTIFACT_JOIN_TABLE);
 
       write("SELECT%s ", getSqlHint());
-      write("%s.gamma_id, %s.mod_type, %s.branch_id, %s.transaction_id", txAlias, txAlias, txAlias, txAlias);
+      write("%s.gamma_id, %s.mod_type, %s.branch_id, %s.transaction_id, %s.app_id", txAlias, txAlias, txAlias, txAlias,
+         txAlias);
       if (OptionsUtil.isHistorical(getOptions())) {
          write(", %s.transaction_id as stripe_transaction_id", txAlias);
       }

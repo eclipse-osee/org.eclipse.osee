@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.HasLocalId;
+import org.eclipse.osee.framework.core.enums.DirtyState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 
 public interface OrcsData extends HasLocalId<Integer>, HasVersion {
@@ -39,7 +41,17 @@ public interface OrcsData extends HasLocalId<Integer>, HasVersion {
 
    boolean hasModTypeChange();
 
-   public boolean isUseBackingData();
+   public boolean isExistingVersionUsed();
 
    public void setUseBackingData(boolean useBackingData);
+
+   public void setApplicabilityId(ApplicabilityId applicId);
+
+   public ApplicabilityId getApplicabilityId();
+
+   public DirtyState getDirtyState();
+
+   public DirtyState calculateDirtyState(boolean dirty);
+
+   public boolean isDirty();
 }

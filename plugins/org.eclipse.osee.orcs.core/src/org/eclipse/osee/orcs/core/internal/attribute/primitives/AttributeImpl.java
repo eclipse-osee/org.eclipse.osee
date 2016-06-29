@@ -32,7 +32,6 @@ import org.eclipse.osee.orcs.data.AttributeTypes;
 public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, Attribute<T> {
    private AttributeTypes attributeTypeCache;
    private Reference<AttributeContainer> containerReference;
-   private boolean dirty;
    private String defaultValue;
    private Log logger;
    private AttributeData attributeData;
@@ -46,7 +45,7 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
       if (setDefaultValue) {
          setToDefaultValue();
       }
-      dirty = isDirty;
+      getOrcsData().calculateDirtyState(isDirty);
       uponInitialize();
    }
 
@@ -155,7 +154,7 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
     */
    @Override
    public boolean isDirty() {
-      return dirty;
+      return getOrcsData().isDirty();
    }
 
    protected void markAsChanged(ModificationType modificationType) {
@@ -169,7 +168,7 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
    }
 
    private void setDirtyFlag(boolean dirty) {
-      this.dirty = dirty;
+      getOrcsData().calculateDirtyState(dirty);
    }
 
    @Override

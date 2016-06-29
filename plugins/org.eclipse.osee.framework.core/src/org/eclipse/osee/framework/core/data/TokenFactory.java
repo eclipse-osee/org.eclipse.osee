@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
@@ -315,24 +314,6 @@ public final class TokenFactory {
       @Override
       public String toString() {
          return String.format("RelationTypeSide - uuid=[%s] type=[%s] side=[%s]", getGuid(), getName(), getSide());
-      }
-   }
-
-   private static class TupleTypeImpl extends BaseId implements TupleTypeToken {
-      private final TupleFamilyId family;
-
-      public TupleTypeImpl(Long tupleTypeId) {
-         this(CoreTupleFamilyTypes.DefaultFamily, tupleTypeId);
-      }
-
-      public TupleTypeImpl(TupleFamilyId family, Long tupleTypeId) {
-         super(tupleTypeId);
-         this.family = family;
-      }
-
-      @Override
-      public TupleFamilyId getFamily() {
-         return family;
       }
    }
 

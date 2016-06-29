@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.processor;
 
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -41,6 +42,7 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
       int attrId = chStmt.getInt("attr_id");
       long gammaId = chStmt.getInt("gamma_id");
       ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
+      ApplicabilityId applicId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
 
       boolean historical = OptionsUtil.isHistorical(options);
 
@@ -60,7 +62,7 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
          String value = chStmt.getString("value");
          String uri = chStmt.getString("uri");
 
-         toReturn = factory.createAttributeData(version, attrId, typeId, modType, artId, value, uri);
+         toReturn = factory.createAttributeData(version, attrId, typeId, modType, artId, value, uri, applicId);
 
       } else {
          if (!historical) {

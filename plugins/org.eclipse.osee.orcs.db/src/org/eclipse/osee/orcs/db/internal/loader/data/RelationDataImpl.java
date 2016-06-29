@@ -116,7 +116,7 @@ public class RelationDataImpl extends OrcsVersionedObjectImpl implements Relatio
    }
 
    @Override
-   public boolean isUseBackingData() {
+   public boolean isExistingVersionUsed() {
       return useBackingData;
    }
 

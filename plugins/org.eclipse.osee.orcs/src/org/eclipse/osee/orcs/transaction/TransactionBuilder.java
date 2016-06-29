@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.transaction;
 
 import java.io.InputStream;
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -101,6 +102,8 @@ public interface TransactionBuilder {
 
    void setAttributeById(ArtifactId art, AttributeId attrId, InputStream stream) throws OseeCoreException;
 
+   void setAttributeApplicability(ArtifactId art, AttributeId attrId, ApplicabilityId applicId);
+
    void deleteByAttributeId(ArtifactId art, AttributeId attrId) throws OseeCoreException;
 
    void deleteSoleAttribute(ArtifactId art, IAttributeType attributeType) throws OseeCoreException;
@@ -132,6 +135,11 @@ public interface TransactionBuilder {
    void unrelateFromAll(ArtifactId art) throws OseeCoreException;
 
    void unrelateFromAll(IRelationTypeSide typeSide, ArtifactId art) throws OseeCoreException;
+
+   void setRelationApplicability(ArtifactId artA, IRelationType relType, ArtifactId artB, ApplicabilityId applicId);
+
+   // Applic
+   void setApplicability(ArtifactId art, ApplicabilityId applicId);
 
    // Tuples
    <E1, E2> Long addTuple2(Tuple2Type<E1, E2> tupleType, E1 e1, E2 e2);

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.enums.DirtyState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
@@ -18,7 +20,7 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class OrcsVersionedObjectImpl extends OrcsObjectImpl<Integer>implements OrcsData {
+public abstract class OrcsVersionedObjectImpl extends OrcsObjectImpl<Integer> implements OrcsData {
 
    private long typeUuid = RelationalConstants.DEFAULT_TYPE_UUID;
    private long baseTypeUuid = RelationalConstants.DEFAULT_TYPE_UUID;
@@ -28,6 +30,10 @@ public abstract class OrcsVersionedObjectImpl extends OrcsObjectImpl<Integer>imp
    private ModificationType currentModType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
 
    private final VersionData version;
+
+   private ApplicabilityId applicId;
+   private boolean applicDirty;
+   private DirtyState dirtyState = DirtyState.CLEAN;
 
    protected OrcsVersionedObjectImpl(VersionData version) {
       super();
@@ -93,6 +99,47 @@ public abstract class OrcsVersionedObjectImpl extends OrcsObjectImpl<Integer>imp
    @Override
    public VersionData getVersion() {
       return version;
+   }
+
+   @Override
+   public void setApplicabilityId(ApplicabilityId applicId) {
+      if (this.applicId != null && !this.applicId.equals(applicId)) {
+         if (!dirtyState.isDirty()) {
+            applicDirty = true;
+            dirtyState = DirtyState.APPLICABILITY_ONLY;
+         }
+      }
+      this.applicId = applicId;
+   }
+
+   @Override
+   public ApplicabilityId getApplicabilityId() {
+      return applicId;
+   }
+
+   @Override
+   public DirtyState getDirtyState() {
+      return dirtyState;
+   }
+
+   @Override
+   public boolean isDirty() {
+      return dirtyState.isDirty();
+   }
+
+   @Override
+   public DirtyState calculateDirtyState(boolean dirty) {
+      if (!dirty) {
+         if (applicDirty) {
+            dirtyState = DirtyState.APPLICABILITY_ONLY;
+         } else {
+            dirtyState = DirtyState.CLEAN;
+         }
+      } else if (dirty) {
+         return dirtyState = DirtyState.OTHER_CHANGES;
+      }
+
+      return dirtyState;
    }
 
    @Override

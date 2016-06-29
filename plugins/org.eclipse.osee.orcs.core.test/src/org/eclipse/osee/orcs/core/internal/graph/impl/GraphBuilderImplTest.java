@@ -125,7 +125,7 @@ public class GraphBuilderImplTest {
       when(graphData.getNode(artifactData)).thenReturn(null);
       when(artifactFactory.createArtifact(session, artifactData)).thenReturn(artifact);
       when(artifact.getOrcsData()).thenReturn(artifactData);
-      when(artifactData.isUseBackingData()).thenReturn(false);
+      when(artifactData.isExistingVersionUsed()).thenReturn(false);
 
       when(graphData.getNode(60)).thenReturn(null);
       when(graphData.getNode(relationData)).thenReturn(null);

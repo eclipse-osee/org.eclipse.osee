@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.artifact;
 
+import static org.eclipse.osee.framework.core.enums.DirtyState.APPLICABILITY_ONLY;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -126,11 +127,11 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
    @Override
    public boolean isDirty() {
-      return areAttributesDirty() || hasDirtyArtifactType() || isReplaceWithVersion();
+      return areAttributesDirty() || hasDirtyArtifactType() || isReplaceWithVersion() || APPLICABILITY_ONLY == getOrcsData().getDirtyState();
    }
 
    private boolean isReplaceWithVersion() {
-      return getModificationType() == ModificationType.REPLACED_WITH_VERSION || artifactData.isUseBackingData();
+      return getModificationType() == ModificationType.REPLACED_WITH_VERSION || artifactData.isExistingVersionUsed();
    }
 
    private boolean hasDirtyArtifactType() {

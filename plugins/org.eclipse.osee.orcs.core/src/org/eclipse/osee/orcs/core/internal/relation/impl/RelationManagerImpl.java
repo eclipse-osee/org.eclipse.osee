@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -489,6 +490,13 @@ public class RelationManagerImpl implements RelationManager {
       if (!orderData.isEmpty()) {
          destination.storeOrderData(OrderChange.Forced, source.getOrderData());
       }
+   }
+
+   @Override
+   public void setApplicabilityId(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, ApplicabilityId applicId) {
+      ResultSet<Relation> result = getRelation(session, aNode, type, bNode, EXCLUDE_DELETED);
+      Relation relation = result.getExactlyOne();
+      relation.setApplicabilityId(applicId);
    }
 
    private ArtifactReadable doesRelatedArtifactExist(OrcsSession session, Relation rel, RelationNode destination, Long branch) {

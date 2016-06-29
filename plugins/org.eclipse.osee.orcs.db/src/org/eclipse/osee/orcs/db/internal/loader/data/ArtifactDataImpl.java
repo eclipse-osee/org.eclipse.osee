@@ -72,7 +72,7 @@ public class ArtifactDataImpl extends OrcsVersionedObjectImpl implements Artifac
    }
 
    @Override
-   public boolean isUseBackingData() {
+   public boolean isExistingVersionUsed() {
       return useBackingData;
    }
 

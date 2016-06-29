@@ -214,7 +214,7 @@ public class TxDataManagerTest {
 
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
-      when(data.isUseBackingData()).thenReturn(false);
+      when(data.isExistingVersionUsed()).thenReturn(false);
 
       Artifact actual = txDataManager.getForWrite(txData, artifactId1);
 
@@ -234,7 +234,7 @@ public class TxDataManagerTest {
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
       when(artifact2.getOrcsData()).thenReturn(data);
-      when(data.isUseBackingData()).thenReturn(false);
+      when(data.isExistingVersionUsed()).thenReturn(false);
       when(txData.isOnSameBranch(artifact1)).thenReturn(true);
 
       Artifact actual = txDataManager.getForWrite(txData, readable1);
@@ -255,7 +255,7 @@ public class TxDataManagerTest {
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
       when(artifact2.getOrcsData()).thenReturn(data);
-      when(data.isUseBackingData()).thenReturn(false);
+      when(data.isExistingVersionUsed()).thenReturn(false);
       when(txData.isOnSameBranch(artifact1)).thenReturn(true);
 
       Artifact actual = txDataManager.getForWrite(txData, readable1);
@@ -275,7 +275,7 @@ public class TxDataManagerTest {
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
       when(artifact2.getOrcsData()).thenReturn(data);
-      when(data.isUseBackingData()).thenReturn(false);
+      when(data.isExistingVersionUsed()).thenReturn(false);
       when(txData.isOnSameBranch(artifact1)).thenReturn(true);
 
       Artifact actual = txDataManager.getForWrite(txData, artifact1);
@@ -294,7 +294,7 @@ public class TxDataManagerTest {
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
       when(artifact2.getOrcsData()).thenReturn(data);
-      when(data.isUseBackingData()).thenReturn(false);
+      when(data.isExistingVersionUsed()).thenReturn(false);
 
       Artifact actual = txDataManager.getForWrite(txDataReal, artifact1);
 
@@ -319,7 +319,7 @@ public class TxDataManagerTest {
       when(artifact1.getOrcsData()).thenReturn(data);
       when(artifact2.getOrcsData()).thenReturn(data);
       when(artifact3.getOrcsData()).thenReturn(data);
-      when(data.isUseBackingData()).thenReturn(false);
+      when(data.isExistingVersionUsed()).thenReturn(false);
 
       Iterable<Artifact> actual = txDataManager.getForWrite(txData, ids);
 
@@ -341,7 +341,7 @@ public class TxDataManagerTest {
 
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
-      when(data.isUseBackingData()).thenReturn(false);
+      when(data.isExistingVersionUsed()).thenReturn(false);
       when(txData.isOnSameBranch(artifact1)).thenReturn(true);
 
       thrown.expect(OseeArgumentException.class);
@@ -384,7 +384,7 @@ public class TxDataManagerTest {
 
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
-      when(data.isUseBackingData()).thenReturn(false);
+      when(data.isExistingVersionUsed()).thenReturn(false);
 
       ArtifactReadable actual =
          txDataManager.createArtifact(txDataReal, DirectSoftwareRequirement, "Direct SW requirement", guid);
@@ -403,7 +403,7 @@ public class TxDataManagerTest {
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
       when(artifact2.getOrcsData()).thenReturn(data);
-      when(data.isUseBackingData()).thenReturn(false);
+      when(data.isExistingVersionUsed()).thenReturn(false);
 
       ArtifactReadable actual = txDataManager.copyArtifact(txDataReal, BRANCH_ID, readable1);
 
@@ -420,7 +420,7 @@ public class TxDataManagerTest {
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
       when(artifact2.getOrcsData()).thenReturn(data);
-      when(data.isUseBackingData()).thenReturn(false);
+      when(data.isExistingVersionUsed()).thenReturn(false);
 
       when(artifactFactory.copyArtifact(session, artifact1, types, BRANCH_ID)).thenReturn(artifact2);
       when(proxyManager.asExternalArtifact(session, artifact2)).thenReturn(readable2);
@@ -451,7 +451,7 @@ public class TxDataManagerTest {
       when(sourceArtifact.getExistingAttributeTypes()).thenAnswer(answerValue(copyTypes));
 
       when(artifact2.getOrcsData()).thenReturn(data);
-      when(data.isUseBackingData()).thenReturn(false);
+      when(data.isExistingVersionUsed()).thenReturn(false);
 
       when(artifactFactory.copyArtifact(session, sourceArtifact, copyTypes, BRANCH_ID)).thenReturn(artifact2);
       when(proxyManager.asExternalArtifact(session, artifact2)).thenReturn(readable2);
@@ -474,7 +474,7 @@ public class TxDataManagerTest {
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
       when(artifact2.getOrcsData()).thenReturn(data);
-      when(data.isUseBackingData()).thenReturn(false);
+      when(data.isExistingVersionUsed()).thenReturn(false);
 
       ArtifactReadable actual = txDataManager.copyArtifact(txDataReal, BRANCH_ID, artifactId1);
 
@@ -496,7 +496,7 @@ public class TxDataManagerTest {
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
       when(artifact2.getOrcsData()).thenReturn(data);
-      when(data.isUseBackingData()).thenReturn(false);
+      when(data.isExistingVersionUsed()).thenReturn(false);
 
       ArtifactReadable actual = txDataManager.introduceArtifact(txDataReal, COMMON_ID, readable1, readable2);
 
@@ -512,7 +512,7 @@ public class TxDataManagerTest {
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
       when(artifact2.getOrcsData()).thenReturn(data);
-      when(data.isUseBackingData()).thenReturn(false);
+      when(data.isExistingVersionUsed()).thenReturn(false);
       when(txData.isOnSameBranch(artifact1)).thenReturn(true);
 
       txDataManager.deleteArtifact(txData, artifact1);
@@ -531,7 +531,7 @@ public class TxDataManagerTest {
 
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
-      when(data.isUseBackingData()).thenReturn(false);
+      when(data.isExistingVersionUsed()).thenReturn(false);
 
       TransactionData changeData = txDataManager.createChangeData(txData);
       assertNotNull(changeData);
@@ -547,7 +547,7 @@ public class TxDataManagerTest {
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
       when(artifact3.getOrcsData()).thenReturn(data);
-      when(data.isUseBackingData()).thenReturn(false);
+      when(data.isExistingVersionUsed()).thenReturn(false);
 
       txDataManager.setRationale(txData, readable1, DEFAULT_HIERARCHY, readable2, rationale);
 
@@ -563,7 +563,7 @@ public class TxDataManagerTest {
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
       when(artifact2.getOrcsData()).thenReturn(data);
-      when(data.isUseBackingData()).thenReturn(false);
+      when(data.isExistingVersionUsed()).thenReturn(false);
 
       txDataManager.relate(txData, readable1, DEFAULT_HIERARCHY, readable2);
 
@@ -579,7 +579,7 @@ public class TxDataManagerTest {
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
       when(artifact2.getOrcsData()).thenReturn(data);
-      when(data.isUseBackingData()).thenReturn(false);
+      when(data.isExistingVersionUsed()).thenReturn(false);
 
       txDataManager.relate(txData, readable1, DEFAULT_HIERARCHY, readable2, LEXICOGRAPHICAL_DESC);
 
@@ -599,7 +599,7 @@ public class TxDataManagerTest {
       when(artifact1.getOrcsData()).thenReturn(data);
       when(artifact2.getOrcsData()).thenReturn(data);
       when(artifact3.getOrcsData()).thenReturn(data);
-      when(data.isUseBackingData()).thenReturn(false);
+      when(data.isExistingVersionUsed()).thenReturn(false);
 
       txDataManager.addChildren(txData, readable1, children);
 
@@ -621,7 +621,7 @@ public class TxDataManagerTest {
       when(artifact1.getOrcsData()).thenReturn(data);
       when(artifact2.getOrcsData()).thenReturn(data);
       when(artifact3.getOrcsData()).thenReturn(data);
-      when(data.isUseBackingData()).thenReturn(false);
+      when(data.isExistingVersionUsed()).thenReturn(false);
 
       ResultSet<Artifact> related = ResultSets.singleton(artifact3);
       when(relationManager.<Artifact> getRelated(session, DEFAULT_HIERARCHY, artifact1, SIDE_A)).thenReturn(related);
@@ -642,7 +642,7 @@ public class TxDataManagerTest {
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
       when(artifact2.getOrcsData()).thenReturn(data);
-      when(data.isUseBackingData()).thenReturn(false);
+      when(data.isExistingVersionUsed()).thenReturn(false);
 
       txDataManager.unrelate(txData, readable1, DEFAULT_HIERARCHY, readable2);
 
@@ -656,7 +656,7 @@ public class TxDataManagerTest {
 
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
-      when(data.isUseBackingData()).thenReturn(false);
+      when(data.isExistingVersionUsed()).thenReturn(false);
 
       txDataManager.unrelateFromAll(txData, DEFAULT_HIERARCHY, readable1, IS_CHILD);
 
@@ -670,7 +670,7 @@ public class TxDataManagerTest {
 
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
-      when(data.isUseBackingData()).thenReturn(false);
+      when(data.isExistingVersionUsed()).thenReturn(false);
 
       txDataManager.unrelateFromAll(txData, readable1);
 

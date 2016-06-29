@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation;
 
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -27,7 +28,6 @@ public class Relation implements HasOrcsData<RelationData>, OrcsWriteable {
    private final RelationTypes relationTypes;
 
    private RelationData relationData;
-   private boolean isDirty;
 
    public Relation(RelationTypes relationTypes, RelationData relationData) {
       super();
@@ -65,7 +65,7 @@ public class Relation implements HasOrcsData<RelationData>, OrcsWriteable {
 
    @Override
    public boolean isDirty() {
-      return isDirty;
+      return getOrcsData().isDirty();
    }
 
    public void clearDirty() {
@@ -77,7 +77,7 @@ public class Relation implements HasOrcsData<RelationData>, OrcsWriteable {
    }
 
    private void setDirtyFlag(boolean dirty) {
-      this.isDirty = dirty;
+      getOrcsData().calculateDirtyState(dirty);
    }
 
    public String getRationale() {
@@ -97,6 +97,10 @@ public class Relation implements HasOrcsData<RelationData>, OrcsWriteable {
          getOrcsData().setRationale(rationale);
          markAsChanged(ModificationType.MODIFIED);
       }
+   }
+
+   public void setApplicabilityId(ApplicabilityId applicId) {
+      getOrcsData().setApplicabilityId(applicId);
    }
 
    protected void markAsChanged(ModificationType modificationType) {
@@ -159,7 +163,7 @@ public class Relation implements HasOrcsData<RelationData>, OrcsWriteable {
 
    @Override
    public String toString() {
-      return "Relation [relationData=" + relationData + ", isDirty=" + isDirty + "]";
+      return "Relation [relationData=" + relationData + ", isDirty=" + getOrcsData().isDirty() + "]";
    }
 
 }
