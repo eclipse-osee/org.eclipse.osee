@@ -30,20 +30,6 @@ import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
  */
 public class ArtifactURL {
 
-   public static URL getExternalArtifactLink(final Artifact artifact) throws OseeCoreException {
-      Map<String, String> parameters = new HashMap<>();
-      parameters.put("guid", artifact.getGuid());
-      parameters.put("branchUuid", String.valueOf(artifact.getBranchId()));
-      String urlString = getPermanentLinkBaseUrl(OseeServerContext.ARTIFACT_CONTEXT, parameters);
-      URL url = null;
-      try {
-         url = new URL(urlString);
-      } catch (Exception ex) {
-         OseeCoreException.wrapAndThrow(ex);
-      }
-      return url;
-   }
-
    public static URL getOpenInOseeLink(final Artifact artifact, String cmd) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<>();
       parameters.put("sessionId", ClientSessionManager.getSessionId());

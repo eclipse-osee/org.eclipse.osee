@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
-import java.net.URL;
-import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
@@ -26,7 +24,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -34,14 +31,12 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.action.RevealInExplorerAction;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.action.CopyArtifactURLAction;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
@@ -63,14 +58,17 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
       manager.add(new Separator());
       manager.add(new OpenOutlineAction());
       manager.add(new OpenHistoryAction());
-      manager.add(new RevealInExplorerAction(editor.getArtifactFromEditorInput()));
+      Artifact artifact = editor.getArtifactFromEditorInput();
+      manager.add(new RevealInExplorerAction(artifact));
       manager.add(new RevealBranchAction());
       manager.add(new Separator());
       manager.add(new AccessControlAction());
       manager.add(new Separator());
-      manager.add(new CopyArtifactURLAction());
+      if (CopyArtifactURLAction.isApplicable(artifact)) {
+         manager.add(new CopyArtifactURLAction(artifact));
+      }
       manager.add(new Separator());
-      manager.add(new DirtyReportAction(editor.getArtifactFromEditorInput()));
+      manager.add(new DirtyReportAction(artifact));
    }
 
    private Artifact getSelectedArtifact() {
@@ -196,35 +194,6 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
             rString = RelationManager.reportHasDirtyLinks(artifact);
          }
          AWorkbench.popup("Dirty Report", !Strings.isValid(rString) ? "Not Dirty" : "Dirty -> " + rString);
-      }
-   }
-
-   private final class CopyArtifactURLAction extends Action {
-      public CopyArtifactURLAction() {
-         super();
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.COPYTOCLIPBOARD));
-         setToolTipText(
-            "Copy artifact url link to clipboard. NOTE: This is a link pointing to the latest version of the artifact.");
-      }
-
-      @Override
-      public void run() {
-         if (getSelectedArtifact() != null) {
-            Clipboard clipboard = null;
-            try {
-               URL url = ArtifactURL.getExternalArtifactLink(getSelectedArtifact());
-               clipboard = new Clipboard(null);
-               clipboard.setContents(new Object[] {url.toString()}, new Transfer[] {TextTransfer.getInstance()});
-            } catch (Exception ex) {
-               OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error obtaining url for - guid: [%s] branch:[%s]",
-                  getSelectedArtifact().getGuid(), getSelectedArtifact().getBranch());
-            } finally {
-               if (clipboard != null && !clipboard.isDisposed()) {
-                  clipboard.dispose();
-                  clipboard = null;
-               }
-            }
-         }
       }
    }
 
