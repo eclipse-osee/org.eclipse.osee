@@ -50,9 +50,29 @@ public class AttributesResource {
       return new AttributeResource(uriInfo, request, branchUuid, artifactUuid, attributeId);
    }
 
+   @GET
+   @Produces(MediaType.TEXT_HTML)
    @Path("{attributeId}/version/{transactionId}")
    public AttributeResource getAttributeWithGamma(@PathParam("attributeId") int attributeId, @PathParam("transactionId") int transactionId) {
       return new AttributeResource(uriInfo, request, branchUuid, artifactUuid, attributeId, transactionId);
+   }
+
+   @Path("type")
+   @Produces(MediaType.TEXT_HTML)
+   public AttributeTypeResource getAttributeTypes() {
+      return new AttributeTypeResource(uriInfo, request, branchUuid, artifactUuid);
+   }
+
+   @Path("type/{attributeTypeId}")
+   @Produces(MediaType.TEXT_HTML)
+   public AttributeTypeResource getAttributeTypeValues(@PathParam("attributeTypeId") Long attributeTypeId) {
+      return new AttributeTypeResource(uriInfo, request, branchUuid, artifactUuid, attributeTypeId);
+   }
+
+   @Path("type/{attributeTypeId}/version/{transactionId}")
+   @Produces(MediaType.TEXT_HTML)
+   public AttributeTypeResource getAttributeTypeValuesForTransaction(@PathParam("attributeTypeId") Long attributeTypeId, @PathParam("transactionId") int transactionId) {
+      return new AttributeTypeResource(uriInfo, request, branchUuid, artifactUuid, attributeTypeId, transactionId);
    }
 
    @GET

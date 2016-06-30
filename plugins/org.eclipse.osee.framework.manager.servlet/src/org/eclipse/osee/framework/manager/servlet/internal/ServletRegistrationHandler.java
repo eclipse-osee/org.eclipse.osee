@@ -19,15 +19,9 @@ import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.manager.servlet.AdminServlet;
-import org.eclipse.osee.framework.manager.servlet.ArtifactFileServlet;
-import org.eclipse.osee.framework.manager.servlet.DataServlet;
 import org.eclipse.osee.framework.manager.servlet.SessionClientLoopbackServlet;
 import org.eclipse.osee.framework.manager.servlet.SessionManagementServlet;
-import org.eclipse.osee.framework.resource.management.IResourceManager;
-import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.OrcsApi;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.http.HttpService;
 
@@ -41,9 +35,6 @@ public class ServletRegistrationHandler {
    private ISessionManager sessionManager;
    private IApplicationServerManager appServerManager;
    private IAuthenticationManager authenticationManager;
-   private IResourceManager resourceManager;
-   private OrcsApi orcsApi;
-   private JdbcService jdbcService;
    private ActivityLog activityLog;
 
    private final Set<String> contexts = new HashSet<>();
@@ -58,18 +49,6 @@ public class ServletRegistrationHandler {
 
    public void setAuthenticationManager(IAuthenticationManager authenticationManager) {
       this.authenticationManager = authenticationManager;
-   }
-
-   public void setResourceManager(IResourceManager resourceManager) {
-      this.resourceManager = resourceManager;
-   }
-
-   public void setOrcsApi(OrcsApi orcsApi) {
-      this.orcsApi = orcsApi;
-   }
-
-   public void setJdbcService(JdbcService jdbcService) {
-      this.jdbcService = jdbcService;
    }
 
    public void setLogger(Log logger) {
@@ -96,17 +75,10 @@ public class ServletRegistrationHandler {
 
    private void registerServices(BundleContext context) {
       contexts.clear();
-      JdbcClient jdbcClient = jdbcService.getClient();
-      register(new ArtifactFileServlet(logger, resourceManager, orcsApi, jdbcClient),
-         OseeServerContext.PROCESS_CONTEXT);
-      register(new ArtifactFileServlet(logger, resourceManager, orcsApi, jdbcClient),
-         OseeServerContext.ARTIFACT_CONTEXT);
-      register(new ArtifactFileServlet(logger, resourceManager, orcsApi, jdbcClient), "index");
       register(new SessionManagementServlet(logger, sessionManager, authenticationManager, activityLog),
          OseeServerContext.SESSION_CONTEXT);
       register(new SessionClientLoopbackServlet(logger, sessionManager), OseeServerContext.CLIENT_LOOPBACK_CONTEXT);
 
-      register(new DataServlet(logger, resourceManager, orcsApi, jdbcClient), "osee/data");
       register(new AdminServlet(logger, context), "osee/console");
    }
 
