@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.action.RevealInExplorerAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.action.CopyArtifactURLAction;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.action.OpenArtifactInBrowserAction;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
@@ -67,6 +68,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
       if (CopyArtifactURLAction.isApplicable(artifact)) {
          manager.add(new CopyArtifactURLAction(artifact));
       }
+      manager.add(new OpenArtifactInBrowserAction(artifact));
       manager.add(new Separator());
       manager.add(new DirtyReportAction(artifact));
    }
