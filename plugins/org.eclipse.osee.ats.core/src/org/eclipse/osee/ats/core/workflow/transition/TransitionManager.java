@@ -62,7 +62,6 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
    private final ITransitionHelper helper;
    private String completedCancellationReason = null;
    private Date transitionOnDate;
-   private List<IAtsUser> toAssignees;
    private final IAtsUserService userService;
    private final IAtsReviewService reviewService;
    private final IAtsWorkItemService workItemService;
@@ -553,25 +552,23 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
     */
    @Override
    public List<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem, IAtsStateDefinition toState) throws OseeCoreException {
-      if (toAssignees == null) {
-         toAssignees = new ArrayList<>();
-         if (toState.getStateType().isWorkingState()) {
-            Collection<? extends IAtsUser> requestedAssignees = helper.getToAssignees(workItem);
-            if (requestedAssignees != null) {
-               for (IAtsUser user : requestedAssignees) {
-                  toAssignees.add(user);
-               }
+      List<IAtsUser> toAssignees = new ArrayList<>();
+      if (toState.getStateType().isWorkingState()) {
+         Collection<? extends IAtsUser> requestedAssignees = helper.getToAssignees(workItem);
+         if (requestedAssignees != null) {
+            for (IAtsUser user : requestedAssignees) {
+               toAssignees.add(user);
             }
-            if (toAssignees.contains(AtsCoreUsers.UNASSIGNED_USER)) {
-               toAssignees.remove(AtsCoreUsers.UNASSIGNED_USER);
+         }
+         if (toAssignees.contains(AtsCoreUsers.UNASSIGNED_USER)) {
+            toAssignees.remove(AtsCoreUsers.UNASSIGNED_USER);
+            toAssignees.add(getTransitionAsUser());
+         }
+         if (toAssignees.isEmpty()) {
+            if (helper.isSystemUser()) {
+               toAssignees.add(AtsCoreUsers.UNASSIGNED_USER);
+            } else {
                toAssignees.add(getTransitionAsUser());
-            }
-            if (toAssignees.isEmpty()) {
-               if (helper.isSystemUser()) {
-                  toAssignees.add(AtsCoreUsers.UNASSIGNED_USER);
-               } else {
-                  toAssignees.add(getTransitionAsUser());
-               }
             }
          }
       }
