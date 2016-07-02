@@ -17,6 +17,7 @@ import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.db.internal.search.QueryCallableFactory;
+import org.eclipse.osee.orcs.search.ApplicabilityQuery;
 import org.eclipse.osee.orcs.search.TupleQuery;
 
 /**
@@ -81,5 +82,10 @@ public class QueryEngineImpl implements QueryEngine {
    @Override
    public TupleQuery createTupleQuery() {
       return new TupleQueryImpl(jdbcClient);
+   }
+
+   @Override
+   public ApplicabilityQuery createApplicabilityQuery() {
+      return new ApplicabilityQueryImpl(jdbcClient);
    }
 }

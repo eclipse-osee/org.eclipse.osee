@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.pages;
 
 import java.util.Collections;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -22,9 +23,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.orcs.rest.model.Applicabilities;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
-import org.eclipse.osee.orcs.rest.model.ArtifactIds;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -74,7 +73,6 @@ public class ArtifactFormPageViewApplicability {
                super.widgetSelected(e);
                ViewApplicabilityUtil.changeApplicability(Collections.singleton(artifact));
             }
-
          };
       }
       return changeableAdapter;
@@ -88,7 +86,6 @@ public class ArtifactFormPageViewApplicability {
                AWorkbench.popup("Permission Denied", ViewApplicabilityUtil.CHANGE_APPLICABILITY_INVAILD);
             }
          };
-
       }
       return nonChangeableAdapter;
    }
@@ -119,22 +116,16 @@ public class ArtifactFormPageViewApplicability {
 
    private String getArtifactViewApplicabiltyText() {
       String result = "";
-      try {
-         ApplicabilityEndpoint applEndpoint =
-            ServiceUtil.getOseeClient().getApplicabilityEndpoint(artifact.getBranch());
-         if (applEndpoint == null) {
-            result = "Error: Applicabilty Service not found";
-         } else {
-            ArtifactIds artifactIds = new ArtifactIds();
-            artifactIds.getArtifactIds().add(artifact.getUuid());
-            Applicabilities applicabilities = applEndpoint.getApplicabilities(artifactIds);
-            if (!applicabilities.getApplicabilities().isEmpty() && applicabilities.getApplicabilities().iterator().next().getApplicability() != null) {
-               result = applicabilities.getApplicabilities().iterator().next().getApplicability().getName();
-            }
+      ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint(artifact.getBranch());
+      if (applEndpoint == null) {
+         result = "Error: Applicabilty Service not found";
+      } else {
+         try {
+            result = applEndpoint.getApplicabilityToken(ArtifactId.valueOf(artifact.getArtId())).getName();
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            result = "Error retrieving applicability. (see log)";
          }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-         result = "Error retrieving applicability. (see log)";
       }
       return String.format("<form><p><b>View Applicability:</b> %s</p></form>", result);
    }

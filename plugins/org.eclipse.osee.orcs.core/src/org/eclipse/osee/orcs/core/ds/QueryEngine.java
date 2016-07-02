@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.search.ApplicabilityQuery;
 import org.eclipse.osee.orcs.search.TupleQuery;
 
 /**
@@ -29,6 +30,8 @@ public interface QueryEngine {
 
    TupleQuery createTupleQuery();
 
+
+   ApplicabilityQuery createApplicabilityQuery();
    CancellableCallable<Integer> createTxCount(OrcsSession session, QueryData queryData);
 
    CancellableCallable<Integer> createTxQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler);

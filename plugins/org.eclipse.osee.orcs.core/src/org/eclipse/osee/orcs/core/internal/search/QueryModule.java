@@ -19,6 +19,7 @@ import org.eclipse.osee.orcs.core.internal.graph.GraphProvider;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.search.ApplicabilityQuery;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.statistics.QueryStatistics;
@@ -39,6 +40,7 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
    private final TransactionCallableQueryFactory txQueryFactory;
    private final TransactionCriteriaFactory txCriteriaFactory;
    private final TupleQuery tupleQuery;
+   private final ApplicabilityQuery applicabilityQuery;
 
    public static interface QueryModuleProvider {
       QueryFactory getQueryFactory(OrcsSession session);
@@ -56,12 +58,12 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
       txQueryFactory = new TransactionCallableQueryFactory(logger, queryEngine, queryStatsCollector);
       txCriteriaFactory = new TransactionCriteriaFactory();
       tupleQuery = queryEngine.createTupleQuery();
-
+      applicabilityQuery = queryEngine.createApplicabilityQuery();
    }
 
    public QueryFactory createQueryFactory(OrcsSession session) {
       return new QueryFactoryImpl(session, criteriaFctry, artQueryFactory, branchCriteriaFactory, branchQueryFactory,
-         txQueryFactory, txCriteriaFactory, tupleQuery);
+         txQueryFactory, txCriteriaFactory, tupleQuery, applicabilityQuery);
    }
 
    @Override
@@ -73,5 +75,4 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
    public void clearStatistics(OrcsSession session) {
       statistics.clear();
    }
-
 }

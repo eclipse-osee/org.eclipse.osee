@@ -24,6 +24,7 @@ import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.search.ApplicabilityQuery;
 import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -42,9 +43,10 @@ public class QueryFactoryImpl implements QueryFactory {
    private final BranchCallableQueryFactory branchQueryFactory;
    private final TransactionCallableQueryFactory txQueryFactory;
    private final TransactionCriteriaFactory txCriteriaFactory;
+   private final ApplicabilityQuery applicabilityQuery;
    private final TupleQuery tupleQuery;
 
-   public QueryFactoryImpl(OrcsSession context, CriteriaFactory criteriaFctry, CallableQueryFactory queryFctry, BranchCriteriaFactory branchCriteriaFactory, BranchCallableQueryFactory branchQueryFactory, TransactionCallableQueryFactory txQueryFactory, TransactionCriteriaFactory txCriteriaFactory, TupleQuery tupleQuery) {
+   public QueryFactoryImpl(OrcsSession context, CriteriaFactory criteriaFctry, CallableQueryFactory queryFctry, BranchCriteriaFactory branchCriteriaFactory, BranchCallableQueryFactory branchQueryFactory, TransactionCallableQueryFactory txQueryFactory, TransactionCriteriaFactory txCriteriaFactory, TupleQuery tupleQuery, ApplicabilityQuery applicabilityQuery) {
       super();
       this.context = context;
       this.criteriaFctry = criteriaFctry;
@@ -53,6 +55,7 @@ public class QueryFactoryImpl implements QueryFactory {
       this.branchQueryFactory = branchQueryFactory;
       this.txQueryFactory = txQueryFactory;
       this.txCriteriaFactory = txCriteriaFactory;
+      this.applicabilityQuery = applicabilityQuery;
       this.tupleQuery = tupleQuery;
    }
 
@@ -117,5 +120,10 @@ public class QueryFactoryImpl implements QueryFactory {
    @Override
    public TupleQuery tupleQuery() {
       return tupleQuery;
+   }
+
+   @Override
+   public ApplicabilityQuery applicabilityQuery() {
+      return applicabilityQuery;
    }
 }

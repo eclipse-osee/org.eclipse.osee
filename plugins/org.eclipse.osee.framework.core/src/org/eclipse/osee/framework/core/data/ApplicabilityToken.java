@@ -12,15 +12,19 @@ package org.eclipse.osee.framework.core.data;
 
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdSerializer;
 
 /**
  * @author Angel Avila
  */
+@JsonSerialize(using = NamedIdSerializer.class)
 public class ApplicabilityToken extends NamedId implements ApplicabilityId {
    public static final ApplicabilityToken BASE = new ApplicabilityToken(ApplicabilityId.BASE.getId(), "Base");
 
    public ApplicabilityToken(long applId, String name) {
+
       super(applId, name);
    }
 

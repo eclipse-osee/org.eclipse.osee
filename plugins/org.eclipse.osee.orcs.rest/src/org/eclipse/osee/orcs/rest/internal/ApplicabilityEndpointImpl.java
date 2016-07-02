@@ -14,6 +14,7 @@ import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -83,6 +84,11 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       ids.getApplicabilityIds().add(new ApplicabilityId(368L, "UTF"));
       ids.getApplicabilityIds().add(new ApplicabilityId(466L, "MDR"));
       return ids;
+   }
+
+   @Override
+   public ApplicabilityToken getApplicabilityToken(ArtifactId artId) {
+      return orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(artId, branch);
    }
 
    @Override
