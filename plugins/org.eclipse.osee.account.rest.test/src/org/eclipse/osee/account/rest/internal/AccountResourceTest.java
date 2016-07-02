@@ -25,7 +25,6 @@ import org.eclipse.osee.account.rest.model.AccountDetailsData;
 import org.eclipse.osee.account.rest.model.AccountInfoData;
 import org.eclipse.osee.account.rest.model.AccountInput;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -37,7 +36,7 @@ import org.mockito.Mock;
  */
 public class AccountResourceTest {
 
-   private static final ArtifactId ACCOUNT_ID = TokenFactory.createArtifactId(93253L);
+   private static final ArtifactId ACCOUNT_ID = ArtifactId.valueOf(93253);
 
    //@formatter:off
    @Mock private AccountOps accountOps;

@@ -13,26 +13,26 @@ package org.eclipse.osee.orcs.account.admin.internal;
 import org.eclipse.osee.account.admin.SubscriptionGroup;
 import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AccountSubscriptionGroupImpl extends BaseIdentity<String> implements SubscriptionGroup {
+public class AccountSubscriptionGroupImpl extends NamedId implements SubscriptionGroup {
 
    private static final String NOT_AVAILABLE = "N/A";
    private final ArtifactReadable artifact;
    private final SubscriptionGroupId id;
 
    public AccountSubscriptionGroupImpl(ArtifactReadable artifact) {
-      super(artifact.getGuid());
+      super(artifact.getId(), artifact.getSoleAttributeValue(CoreAttributeTypes.Name, NOT_AVAILABLE));
       this.artifact = artifact;
-      this.id = new SubscriptionGroupId(artifact.getUuid());
+      this.id = new SubscriptionGroupId(artifact.getId());
    }
 
    @Override
-   public SubscriptionGroupId getId() {
+   public SubscriptionGroupId getGroupId() {
       return id;
    }
 
@@ -46,4 +46,8 @@ public class AccountSubscriptionGroupImpl extends BaseIdentity<String> implement
       return "AccountSubscriptionGroupImpl [artifact=" + artifact + "]";
    }
 
+   @Override
+   public String getGuid() {
+      return artifact.getGuid();
+   }
 }

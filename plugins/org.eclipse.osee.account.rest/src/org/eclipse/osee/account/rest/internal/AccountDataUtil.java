@@ -102,7 +102,7 @@ public final class AccountDataUtil {
       SubscriptionGroupData data = new SubscriptionGroupData();
       data.setGuid(src.getGuid());
       data.setName(src.getName());
-      data.setSubscriptionGroupId(src.getId());
+      data.setSubscriptionGroupId(src.getGroupId());
       return data;
    }
 

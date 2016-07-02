@@ -26,7 +26,6 @@ import org.eclipse.osee.account.rest.model.AccountContexts;
 import org.eclipse.osee.account.rest.model.AccountInfoData;
 import org.eclipse.osee.account.rest.model.AccountInput;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
 
 /**
@@ -60,7 +59,7 @@ public class AccountsResource {
    @PermitAll
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
    public Response getPreferences(@PathParam("id") Long id) {
-      ArtifactId artifactId = TokenFactory.createArtifactId(id);
+      ArtifactId artifactId = ArtifactId.valueOf(id);
       return Response.ok().entity(accountOps.getAccountWebPreferencesData(artifactId)).build();
    }
 
@@ -69,7 +68,7 @@ public class AccountsResource {
    @PermitAll
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
    public Response editPreferences(@PathParam("id") String userUuid, @QueryParam("key") String key, @QueryParam("itemId") String itemId, String newValue) {
-      ArtifactId artifactId = TokenFactory.createArtifactId(Long.valueOf(userUuid));
+      ArtifactId artifactId = ArtifactId.valueOf(userUuid);
       return Response.ok().entity(accountOps.editAccountWebPreferencesData(artifactId, key, itemId, newValue)).build();
    }
 
@@ -101,7 +100,7 @@ public class AccountsResource {
 
    @Path(AccountContexts.ACCOUNT_ID_TEMPLATE)
    public AccountResource getAccount(@PathParam(AccountContexts.ACCOUNT_ID_PARAM) Long accountId) {
-      ArtifactId artifactId = TokenFactory.createArtifactId(accountId);
+      ArtifactId artifactId = ArtifactId.valueOf(accountId);
       return new AccountResource(accountOps, artifactId);
    }
 }

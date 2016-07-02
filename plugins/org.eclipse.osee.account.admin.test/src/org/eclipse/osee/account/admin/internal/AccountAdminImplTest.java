@@ -42,7 +42,6 @@ import org.eclipse.osee.authentication.admin.AuthenticatedUser;
 import org.eclipse.osee.authentication.admin.AuthenticationAdmin;
 import org.eclipse.osee.authentication.admin.AuthenticationRequest;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
@@ -63,7 +62,6 @@ import org.mockito.Mockito;
  */
 public class AccountAdminImplTest {
 
-   private static final long ID = 123121412L;
    private static final String USERNAME = "atest";
    private static final String EMAIL = "atest@email.com";
    private static final String NAME = "myName";
@@ -86,7 +84,7 @@ public class AccountAdminImplTest {
    @Captor private ArgumentCaptor<AuthenticationRequest> authenticationRequestCaptor;
    // @formatter:on
 
-   private final ArtifactId newAccountId = TokenFactory.createArtifactId(123121412L);
+   private final ArtifactId newAccountId = ArtifactId.valueOf(123121412);
 
    private AccountAdminImpl accountAdmin;
 
@@ -390,12 +388,12 @@ public class AccountAdminImplTest {
       when(storage.getAccountByEmail(EMAIL)).thenReturn(resultSet);
 
       AccountLoginRequest request = AccountLoginRequestBuilder.newBuilder()//
-      .userName(userName)//
-      .password(password)//
-      .scheme(scheme)//
-      .remoteAddress(remoteAddress)//
-      .accessedBy(accessDetails)//
-      .build();
+         .userName(userName)//
+         .password(password)//
+         .scheme(scheme)//
+         .remoteAddress(remoteAddress)//
+         .accessedBy(accessDetails)//
+         .build();
 
       when(authenticationAdmin.authenticate(any(AuthenticationRequest.class))).thenReturn(authenticatedUser);
       when(authenticatedUser.getEmailAddress()).thenReturn(EMAIL);
@@ -431,12 +429,12 @@ public class AccountAdminImplTest {
       when(authenticatedUser.getEmailAddress()).thenReturn(EMAIL);
 
       AccountLoginRequest request = AccountLoginRequestBuilder.newBuilder()//
-      .userName(userName)//
-      .password(password)//
-      .scheme(scheme)//
-      .remoteAddress(remoteAddress)//
-      .accessedBy(accessDetails)//
-      .build();
+         .userName(userName)//
+         .password(password)//
+         .scheme(scheme)//
+         .remoteAddress(remoteAddress)//
+         .accessedBy(accessDetails)//
+         .build();
 
       AccountSession actual = accountAdmin.login(request);
       assertEquals(session, actual);

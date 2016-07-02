@@ -22,7 +22,7 @@ import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.account.rest.model.SubscriptionData;
 import org.eclipse.osee.account.rest.model.SubscriptionGroupData;
 import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -63,7 +63,7 @@ public class AccountDataUtilTest {
       when(subscription.getGuid()).thenReturn("ABCDE");
       when(subscription.getName()).thenReturn("group-1");
       when(subscription.getGroupId()).thenReturn(new SubscriptionGroupId(98765L));
-      when(subscription.getAccountId()).thenReturn(TokenFactory.createArtifactId(123145L));
+      when(subscription.getAccountId()).thenReturn(ArtifactId.valueOf(123145));
       when(subscription.getAccountName()).thenReturn("account-1");
       when(subscription.isActive()).thenReturn(true);
 
@@ -74,7 +74,6 @@ public class AccountDataUtilTest {
       assertEquals("account-1", actual.getAccountName());
       assertEquals(true, actual.isActive());
 
-      assertEquals(true, actual.matches(subscription));
       assertEquals(true, actual.equals(subscription));
    }
 
@@ -83,13 +82,13 @@ public class AccountDataUtilTest {
       SubscriptionGroup group = Mockito.mock(SubscriptionGroup.class);
       when(group.getGuid()).thenReturn("ABCDE");
       when(group.getName()).thenReturn("group-1");
-      when(group.getId()).thenReturn(new SubscriptionGroupId(98765L));
+      when(group.getGroupId()).thenReturn(new SubscriptionGroupId(98765L));
 
       SubscriptionGroupData actual = AccountDataUtil.asSubscriptionGroupData(group);
 
       assertEquals("ABCDE", actual.getGuid());
       assertEquals("group-1", actual.getName());
-      assertEquals((Long) 98765L, actual.getSubscriptionGroupId().getUuid());
+      assertEquals((Long) 98765L, actual.getSubscriptionGroupId().getId());
 
       assertEquals(true, actual.matches(group));
       assertEquals(true, actual.equals(group));

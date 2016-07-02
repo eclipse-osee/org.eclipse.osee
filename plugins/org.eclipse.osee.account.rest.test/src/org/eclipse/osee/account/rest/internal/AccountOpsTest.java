@@ -12,6 +12,7 @@ package org.eclipse.osee.account.rest.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -41,7 +42,6 @@ import org.eclipse.osee.account.rest.model.AccountPreferencesInput;
 import org.eclipse.osee.account.rest.model.AccountSessionData;
 import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -59,7 +59,7 @@ import org.mockito.MockitoAnnotations;
  */
 public class AccountOpsTest {
 
-   private static final ArtifactId ACCOUNT_UID = TokenFactory.createArtifactId(235622L);
+   private static final ArtifactId ACCOUNT_UID = ArtifactId.valueOf(235622);
 
    //@formatter:off
    @Mock private AccountAdmin accountAdmin;
@@ -96,7 +96,7 @@ public class AccountOpsTest {
 
       ArgumentCaptor<CreateAccountRequest> captor = ArgumentCaptor.forClass(CreateAccountRequest.class);
 
-      ArtifactId newAccountId = TokenFactory.createArtifactId(235151L);
+      ArtifactId newAccountId = ArtifactId.valueOf(235151);
 
       when(accountAdmin.createAccount(any(CreateAccountRequest.class))).thenReturn(newAccountId);
 
@@ -224,19 +224,21 @@ public class AccountOpsTest {
 
    @Test
    public void testGetAccountData() {
-      Account account = mockAccount(TokenFactory.createArtifactId(456L), "DEF", "acc2", "acc2@email.com", "u2", true);
+      ArtifactId artId = ArtifactId.valueOf(456);
+      Account account = mockAccount(artId, "DEF", "acc2", "acc2@email.com", "u2", true);
       ResultSet<Account> accounts = ResultSets.singleton(account);
       when(accountAdmin.getAccountById(ACCOUNT_UID)).thenReturn(accounts);
 
       AccountInfoData actual = ops.getAccountData(ACCOUNT_UID);
 
-      assertAccount(actual, TokenFactory.createArtifactId(456L), "DEF", "acc2", "acc2@email.com", "u2", true);
+      assertAccount(actual, artId, "DEF", "acc2", "acc2@email.com", "u2", true);
       verify(accountAdmin).getAccountById(ACCOUNT_UID);
    }
 
    @Test
    public void testGetAccountDetailsData() {
-      Account account = mockAccount(TokenFactory.createArtifactId(789L), "GHI", "acc3", "acc3@email.com", "u3", true);
+      ArtifactId artId = ArtifactId.valueOf(789);
+      Account account = mockAccount(artId, "GHI", "acc3", "acc3@email.com", "u3", true);
       Map<String, String> map = new HashMap<>();
       map.put("a", "1");
       map.put("b", "2");
@@ -244,7 +246,7 @@ public class AccountOpsTest {
 
       AccountPreferences preferences = mock(AccountPreferences.class);
       when(preferences.asMap()).thenReturn(map);
-      when(preferences.getId()).thenReturn(789L);
+      when(preferences.getId()).thenReturn(artId.getId());
       when(account.getPreferences()).thenReturn(preferences);
 
       ResultSet<Account> accounts = ResultSets.singleton(account);
@@ -252,7 +254,7 @@ public class AccountOpsTest {
 
       AccountDetailsData actual = ops.getAccountDetailsData(ACCOUNT_UID);
 
-      assertAccount(actual, TokenFactory.createArtifactId(789L), "GHI", "acc3", "acc3@email.com", "u3", true);
+      assertAccount(actual, artId, "GHI", "acc3", "acc3@email.com", "u3", true);
       AccountPreferencesData actualPrefs = actual.getPreferences();
       Map<String, String> actualMap = actualPrefs.getMap();
 
@@ -296,9 +298,13 @@ public class AccountOpsTest {
 
    @Test
    public void testGetAllAccounts() {
-      Account account1 = mockAccount(TokenFactory.createArtifactId(123L), "ABC", "acc1", "acc1@email.com", "u1", true);
-      Account account2 = mockAccount(TokenFactory.createArtifactId(456L), "DEF", "acc2", "acc2@email.com", "u2", false);
-      Account account3 = mockAccount(TokenFactory.createArtifactId(789L), "GHI", "acc3", "acc3@email.com", "u3", true);
+      ArtifactId artId1 = ArtifactId.valueOf(123);
+      ArtifactId artId2 = ArtifactId.valueOf(456);
+      ArtifactId artId3 = ArtifactId.valueOf(789);
+
+      Account account1 = mockAccount(artId1, "ABC", "acc1", "acc1@email.com", "u1", true);
+      Account account2 = mockAccount(artId2, "DEF", "acc2", "acc2@email.com", "u2", false);
+      Account account3 = mockAccount(artId3, "GHI", "acc3", "acc3@email.com", "u3", true);
 
       ResultSet<Account> accounts = ResultSets.newResultSet(account1, account2, account3);
 
@@ -309,9 +315,9 @@ public class AccountOpsTest {
       assertEquals(3, actual.size());
       Iterator<AccountInfoData> iterator = actual.iterator();
 
-      assertAccount(iterator.next(), TokenFactory.createArtifactId(123L), "ABC", "acc1", "acc1@email.com", "u1", true);
-      assertAccount(iterator.next(), TokenFactory.createArtifactId(456L), "DEF", "acc2", "acc2@email.com", "u2", false);
-      assertAccount(iterator.next(), TokenFactory.createArtifactId(789L), "GHI", "acc3", "acc3@email.com", "u3", true);
+      assertAccount(iterator.next(), artId1, "ABC", "acc1", "acc1@email.com", "u1", true);
+      assertAccount(iterator.next(), artId2, "DEF", "acc2", "acc2@email.com", "u2", false);
+      assertAccount(iterator.next(), artId3, "GHI", "acc3", "acc3@email.com", "u3", true);
 
       verify(accountAdmin).getAllAccounts();
    }
@@ -319,7 +325,7 @@ public class AccountOpsTest {
    @Test
    public void testIsActive() {
       String guid = GUID.create();
-      ArtifactId accountId = TokenFactory.createArtifactId(23127916023214L);
+      ArtifactId accountId = ArtifactId.valueOf(23127916023214L);
 
       Account account = mock(Account.class);
       ResultSet<Account> result = ResultSets.singleton(account);
@@ -358,9 +364,7 @@ public class AccountOpsTest {
       when(input.getMap()).thenReturn(map);
       when(accountAdmin.setAccountPreferences(ACCOUNT_UID, map)).thenReturn(true);
 
-      boolean actual = ops.setAccountPreferences(ACCOUNT_UID, input);
-
-      assertEquals(true, actual);
+      assertTrue(ops.setAccountPreferences(ACCOUNT_UID, input));
       verify(accountAdmin).setAccountPreferences(ACCOUNT_UID, map);
    }
 

@@ -20,12 +20,14 @@ import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAUT
 import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAUTH_CLIENT_PROPERTIES;
 import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAUTH_CLIENT_WEBSITE_URI;
 import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAUTH_TYPES;
+import com.google.common.io.InputSupplier;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -40,9 +42,6 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
-import com.google.common.io.InputSupplier;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 /**
  * @author Roberto E. Escobar
@@ -125,7 +124,7 @@ public class ClientStorage {
    }
 
    public void update(OseePrincipal principal, OAuthClient data) {
-      ArtifactId artId = TokenFactory.createArtifactId(data.getClientUuid());
+      ArtifactId artId = ArtifactId.valueOf(data.getClientUuid());
 
       TransactionBuilder tx = newTransaction(principal, "Update OAuth Client");
       tx.setName(artId, data.getApplicationName());
@@ -163,7 +162,7 @@ public class ClientStorage {
    }
 
    public void delete(OseePrincipal principal, OAuthClient data) {
-      ArtifactId artId = TokenFactory.createArtifactId(data.getClientUuid());
+      ArtifactId artId = ArtifactId.valueOf(data.getClientUuid());
 
       TransactionBuilder tx = newTransaction(principal, "Delete OAuth Client");
       tx.deleteArtifact(artId);

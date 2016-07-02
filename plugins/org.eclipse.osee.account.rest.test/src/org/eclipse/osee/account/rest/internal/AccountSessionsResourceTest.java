@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -30,7 +29,7 @@ import org.mockito.Mock;
  */
 public class AccountSessionsResourceTest {
 
-   private static final ArtifactId ACCOUNT_ID = TokenFactory.createArtifactId(823952L);
+   private static final ArtifactId ACCOUNT_ID = ArtifactId.valueOf(823952);
 
    //@formatter:off
    @Mock private AccountOps accountOps;

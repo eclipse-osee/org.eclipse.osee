@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
 import org.eclipse.osee.jaxrs.server.security.JaxRsOAuthStorage;
 import org.eclipse.osee.jaxrs.server.security.OAuthClient;
@@ -116,7 +115,7 @@ public class JdbcJaxRsOAuthStorage implements JaxRsOAuthStorage {
       boolean exists = clientStorage.exists(client.getClientUuid());
       if (exists) {
          clientStorage.update(principal, client);
-         clientArtId = TokenFactory.createArtifactId(client.getClientUuid());
+         clientArtId = ArtifactId.valueOf(client.getClientUuid());
       } else {
          clientArtId = clientStorage.insert(principal, client);
       }

@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -106,7 +106,7 @@ public final class ArtifactDataProviderImpl implements ArtifactDataProvider {
       }
 
       @Override
-      public boolean matches(Identity<?>... identities) {
+      public boolean matches(Id... identities) {
          return self.matches(identities);
       }
 

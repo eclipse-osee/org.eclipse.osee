@@ -30,7 +30,6 @@ import org.eclipse.osee.account.admin.ds.SubscriptionStorage;
 import org.eclipse.osee.account.admin.internal.validator.Validator;
 import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.logger.Log;
 import org.junit.Before;
 import org.junit.Rule;
@@ -47,7 +46,7 @@ public class SubscriptionAdminImplTest {
 
    private static final String GROUP_NAME = "group-name";
    private static final String ENCODED_UUID = "D1jfajgjoiasdajv32";
-   private static final ArtifactId ACCOUNT_ID = TokenFactory.createArtifactId(21231L);
+   private static final ArtifactId ACCOUNT_ID = ArtifactId.valueOf(21231);
    private static final SubscriptionGroupId GROUP_ID = new SubscriptionGroupId(7885741L);
 
    @Rule

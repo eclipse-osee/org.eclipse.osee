@@ -18,7 +18,6 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -98,7 +97,7 @@ public class AccountSessionDatabaseStore implements AccountSessionStorage {
                   Date lastAccessedOn = chStmt.getTimestamp("last_accessed_on");
                   String accessedFrom = chStmt.getString("accessed_from");
                   String accessDetails = chStmt.getString("access_details");
-                  ArtifactId artId = TokenFactory.createArtifactId(accountId);
+                  ArtifactId artId = ArtifactId.valueOf(accountId);
                   AccountSession session = factory.newAccountSession(artId, sessionToken, createdOn, lastAccessedOn,
                      accessedFrom, accessDetails);
                   list.add(session);

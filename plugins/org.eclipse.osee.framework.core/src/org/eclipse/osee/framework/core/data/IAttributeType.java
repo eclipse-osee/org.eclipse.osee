@@ -12,10 +12,16 @@ package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.jdk.core.type.FullyNamed;
 import org.eclipse.osee.framework.jdk.core.type.HasDescription;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 
 /**
  * @author Ryan D. Brooks
  */
-public interface IAttributeType extends Identifiable<Long>, FullyNamed, HasDescription {
+public interface IAttributeType extends Identifiable<Long>, FullyNamed, HasDescription, Id {
+
+   @Override
+   default Long getId() {
+      return getGuid();
+   }
 }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.account.admin.internal;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Map;
@@ -21,7 +23,6 @@ import org.eclipse.osee.account.admin.CreateAccountRequest;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
 import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -33,8 +34,6 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 
 /**
  * @author Roberto E. Escobar
@@ -184,7 +183,7 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
 
    @Override
    public AccountSession createAccountSession(String sessionToken, Account account, String remoteAddress, String accessDetails) {
-      ArtifactId artId = TokenFactory.createArtifactId(account.getId());
+      ArtifactId artId = ArtifactId.valueOf(account.getId());
       AccountSession session = getFactory().newAccountSession(artId, sessionToken, remoteAddress, accessDetails);
       try {
          sessionStore.createAccountSession(Collections.singleton(session)).call();

@@ -24,7 +24,6 @@ import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.account.admin.CreateAccountRequest;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.orcs.account.admin.internal.OrcsAccountStorage;
@@ -107,7 +106,7 @@ public class OrcsAccountStorageTest {
       Account account1 = result.getExactlyOne();
       assertAccount(account1, newAccountId, name, email, username, active, prefs);
 
-      ArtifactId artId = TokenFactory.createArtifactId(account1.getId());
+      ArtifactId artId = ArtifactId.valueOf(account1.getId());
       ResultSet<Account> result2 = storage.getAccountById(artId);
       Account account2 = result2.getExactlyOne();
       assertEquals(account1, account2);

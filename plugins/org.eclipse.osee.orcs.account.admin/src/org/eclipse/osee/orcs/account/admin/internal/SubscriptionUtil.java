@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.account.admin.internal;
 import org.eclipse.osee.account.admin.Subscription;
 import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
 import org.eclipse.osee.framework.jdk.core.util.EncryptUtility;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -40,7 +39,7 @@ public final class SubscriptionUtil {
       String[] data = decrypted.split(":");
       int index = 0;
       int accountId = Integer.parseInt(data[index++]);
-      ArtifactId artId = TokenFactory.createArtifactId(Long.valueOf(accountId));
+      ArtifactId artId = ArtifactId.valueOf(accountId);
 
       String accountDisplayName = data[index++];
       int groupId = Integer.parseInt(data[index++]);
@@ -57,7 +56,7 @@ public final class SubscriptionUtil {
 
    public static Subscription fromArtifactData(ArtifactReadable account, ArtifactReadable subscription, boolean isActive) {
       int accountId = account.getLocalId();
-      ArtifactId artId = TokenFactory.createArtifactId(Long.valueOf(accountId));
+      ArtifactId artId = ArtifactId.valueOf(accountId);
       String accountName = account.getName();
       int groupId = subscription.getLocalId();
       SubscriptionGroupId subcriptionId = new SubscriptionGroupId((long) groupId);
@@ -120,5 +119,9 @@ public final class SubscriptionUtil {
          return "SubscriptionImpl [accountId=" + accountId + ", accountDisplayName=" + accountDisplayName + ", groupId=" + groupId + ", active=" + isActive() + "]";
       }
 
+      @Override
+      public Long getId() {
+         return null;
+      }
    }
 }

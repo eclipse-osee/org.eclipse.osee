@@ -11,20 +11,18 @@
 package org.eclipse.osee.orcs.account.admin.integration;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.account.admin.Account;
-import org.eclipse.osee.account.admin.AccountPreferences;
 import org.eclipse.osee.account.admin.CreateAccountRequest;
+import org.eclipse.osee.account.admin.CreateAccountRequestBuilder;
 import org.eclipse.osee.account.admin.Subscription;
 import org.eclipse.osee.account.admin.SubscriptionGroup;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
 import org.eclipse.osee.account.admin.ds.SubscriptionStorage;
 import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.account.admin.internal.OrcsSubscriptionStorage;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
@@ -34,7 +32,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
-import org.mockito.Mock;
 
 /**
  * Test Case for {@link OrcsSubscriptionStorage}
@@ -60,11 +57,6 @@ public class OrcsSubscriptionStorageTest {
    @OsgiService
    private AccountStorage accountStorage;
 
-   // @formatter:off
-   @Mock private CreateAccountRequest request;
-   @Mock private AccountPreferences preferences;
-   // @formatter:on
-
    private String name;
    private String email;
    private String username;
@@ -89,12 +81,8 @@ public class OrcsSubscriptionStorageTest {
       prefs.put("b", "2");
       prefs.put("c", "true");
 
-      when(request.getDisplayName()).thenReturn(name);
-      when(request.getEmail()).thenReturn(email);
-      when(request.getUserName()).thenReturn(username);
-      when(request.getPreferences()).thenReturn(prefs);
-      when(request.isActive()).thenReturn(active);
-
+      CreateAccountRequest request =
+         new CreateAccountRequestBuilder.CreateAccountRequestImpl(active, username, email, name, prefs);
       newAccountId = accountStorage.createAccount(request);
    }
 
@@ -108,17 +96,17 @@ public class OrcsSubscriptionStorageTest {
       assertEquals(false, storage.subscriptionGroupNameExists(SUBSCRIPTION_GROUP_NAME));
 
       SubscriptionGroupId groupId = storage.createSubscriptionGroup(SUBSCRIPTION_GROUP_NAME);
-      assertEquals(true, groupId.getUuid() > 0);
+      assertEquals(true, groupId.getId() > 0);
 
       assertEquals(true, storage.subscriptionGroupNameExists(SUBSCRIPTION_GROUP_NAME));
 
       SubscriptionGroup group1Id = storage.getSubscriptionGroups().getExactlyOne();
-      assertEquals(groupId, group1Id.getId());
+      assertEquals(groupId, group1Id);
 
       ResultSet<Account> members = storage.getMembersOfSubscriptionGroupById(groupId);
       assertEquals(true, members.isEmpty());
 
-      ArtifactId artId = TokenFactory.createArtifactId(account.getId());
+      ArtifactId artId = ArtifactId.valueOf(account.getId());
       Subscription subscription = storage.getSubscriptionsByAccountId(artId).getExactlyOne();
       assertEquals(groupId, subscription.getGroupId());
       assertEquals(account.getId(), subscription.getAccountId().getUuid());

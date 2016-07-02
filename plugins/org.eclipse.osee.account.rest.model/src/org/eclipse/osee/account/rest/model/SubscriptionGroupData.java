@@ -11,6 +11,7 @@
 package org.eclipse.osee.account.rest.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 
@@ -18,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.Identity;
  * @author Roberto E. Escobar
  */
 @XmlRootElement
-public class SubscriptionGroupData implements Identifiable<String> {
+public class SubscriptionGroupData implements Identifiable<String>, Id {
 
    private String uuid;
    private String name;
@@ -53,6 +54,11 @@ public class SubscriptionGroupData implements Identifiable<String> {
    @Override
    public int hashCode() {
       return getGuid().hashCode();
+   }
+
+   @Override
+   public Long getId() {
+      return null;
    }
 
    @Override

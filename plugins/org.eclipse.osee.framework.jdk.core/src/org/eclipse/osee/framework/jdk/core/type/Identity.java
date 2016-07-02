@@ -15,16 +15,5 @@ package org.eclipse.osee.framework.jdk.core.type;
  * @author Ryan D. Brooks
  */
 public interface Identity<T> {
-
    T getGuid();
-
-   default boolean matches(Identity<?>... identities) {
-      for (Identity<?> identity : identities) {
-         if (equals(identity)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
 }

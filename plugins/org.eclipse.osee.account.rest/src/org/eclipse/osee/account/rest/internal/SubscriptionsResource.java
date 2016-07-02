@@ -30,7 +30,6 @@ import org.eclipse.osee.account.rest.model.SubscriptionData;
 import org.eclipse.osee.account.rest.model.SubscriptionGroupData;
 import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.SystemRoles;
 
@@ -56,7 +55,7 @@ public class SubscriptionsResource {
    @GET
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
    public SubscriptionData[] getSubscriptions(@PathParam("account-id") Long accountId) {
-      ArtifactId artId = TokenFactory.createArtifactId(accountId);
+      ArtifactId artId = ArtifactId.valueOf(accountId);
       ResultSet<Subscription> subscriptions = manager.getSubscriptionsByAccountId(artId);
       SubscriptionData[] toReturn = new SubscriptionData[subscriptions.size()];
       int index = 0;

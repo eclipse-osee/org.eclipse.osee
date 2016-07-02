@@ -42,8 +42,7 @@ public class BaseIdentity<T> implements Identity<T> {
          } else if (getGuid() != null) {
             equal = getGuid().equals(identity.getGuid());
          }
-      }
-      if (obj instanceof Id) {
+      } else if (obj instanceof Id) {
          equal = ((Id) obj).getId().equals(id);
       }
       return equal;

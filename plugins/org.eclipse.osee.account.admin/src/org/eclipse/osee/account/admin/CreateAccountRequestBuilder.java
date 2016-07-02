@@ -69,7 +69,7 @@ public final class CreateAccountRequestBuilder {
       return new CreateAccountRequestImpl(active, userName, email, displayName, prefs);
    }
 
-   private static final class CreateAccountRequestImpl implements CreateAccountRequest {
+   public static final class CreateAccountRequestImpl implements CreateAccountRequest {
 
       private final boolean active;
       private final String userName;

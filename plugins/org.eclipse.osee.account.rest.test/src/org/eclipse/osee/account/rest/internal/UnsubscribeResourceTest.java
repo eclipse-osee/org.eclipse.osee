@@ -26,7 +26,6 @@ import org.eclipse.osee.account.admin.Subscription;
 import org.eclipse.osee.account.admin.SubscriptionAdmin;
 import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +43,7 @@ public class UnsubscribeResourceTest {
    private static final String GROUP_UUID = "sadjha322";
    private static final SubscriptionGroupId GROUP_ID = new SubscriptionGroupId(37219891L);
    private static final String GROUP_NAME = "group-1";
-   private static final ArtifactId ACCOUNT_ID = TokenFactory.createArtifactId(3129303L);
+   private static final ArtifactId ACCOUNT_ID = ArtifactId.valueOf(3129303);
    private static final String ACCOUNT_NAME = "account-1";
 
    //@formatter:off

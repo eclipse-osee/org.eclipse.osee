@@ -25,7 +25,6 @@ import org.eclipse.osee.account.rest.model.SubscriptionData;
 import org.eclipse.osee.account.rest.model.SubscriptionGroupData;
 import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.junit.Before;
@@ -47,7 +46,7 @@ public class SubscriptionsResourceTest {
 
    private static final String ACCOUNT_UUID = "asdksa";
    private static final String ACCOUNT_NAME = "account-1";
-   private static final ArtifactId ACCOUNT_ID = TokenFactory.createArtifactId(3129303L);
+   private static final ArtifactId ACCOUNT_ID = ArtifactId.valueOf(3129303);
    private static final String ACCOUNT_USERNAME = "sadfaa";
    private static final String ACCOUNT_EMAIL = "hello@hello.com";
    private static final boolean ACCOUNT_IS_ACTIVE = true;
@@ -83,7 +82,7 @@ public class SubscriptionsResourceTest {
 
       when(group.getGuid()).thenReturn(GROUP_UUID);
       when(group.getName()).thenReturn(GROUP_NAME);
-      when(group.getId()).thenReturn(GROUP_ID);
+      when(group.getGroupId()).thenReturn(GROUP_ID);
 
       when(account.getGuid()).thenReturn(ACCOUNT_UUID);
       when(account.getName()).thenReturn(ACCOUNT_NAME);
@@ -199,7 +198,7 @@ public class SubscriptionsResourceTest {
    public void testDeleteSubscriptionGroup() {
       when(manager.deleteSubscriptionById(GROUP_ID)).thenReturn(true);
 
-      Response actual = resource.deleteSubscriptionGroup(GROUP_ID.getUuid());
+      Response actual = resource.deleteSubscriptionGroup(GROUP_ID.getId());
       assertEquals(Status.OK.getStatusCode(), actual.getStatus());
 
       verify(manager).deleteSubscriptionById(GROUP_ID);
@@ -210,7 +209,7 @@ public class SubscriptionsResourceTest {
       ResultSet<Account> results = ResultSets.singleton(account);
       when(manager.getSubscriptionMembersOfSubscriptionById(GROUP_ID)).thenReturn(results);
 
-      AccountInfoData[] actual = resource.getSubscriptionGroupMembers(GROUP_ID.getUuid());
+      AccountInfoData[] actual = resource.getSubscriptionGroupMembers(GROUP_ID.getId());
 
       assertEquals(1, actual.length);
       AccountInfoData data = actual[0];

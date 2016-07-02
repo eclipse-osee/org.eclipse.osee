@@ -11,13 +11,13 @@
 package org.eclipse.osee.account.admin;
 
 import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface SubscriptionGroup extends Identifiable<String> {
+public interface SubscriptionGroup extends Identifiable<String>, Id {
 
-   SubscriptionGroupId getId();
-
+   SubscriptionGroupId getGroupId();
 }

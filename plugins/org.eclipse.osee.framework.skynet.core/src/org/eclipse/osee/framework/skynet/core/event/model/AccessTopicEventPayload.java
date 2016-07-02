@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.ser.std.ToStringSerializer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 
 /**
  * Payload for the Access Topic Event
@@ -60,7 +61,7 @@ public class AccessTopicEventPayload implements ISerializeableTopicPayload {
    /**
     * @return true if this artifact matches event branch and contains artifact
     */
-   public boolean matches(ArtifactId artifact) {
+   public boolean matches(IArtifactToken artifact) {
       if (!artifactUuids.isEmpty()) {
          return artifact.getBranchId().equals(branchUuid) && artifactUuids.contains(String.valueOf(artifact.getUuid()));
       }

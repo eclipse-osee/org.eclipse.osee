@@ -21,7 +21,6 @@ import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.account.rest.model.AccountPreferencesData;
 import org.eclipse.osee.account.rest.model.AccountPreferencesInput;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -33,7 +32,7 @@ import org.mockito.Mock;
  */
 public class AccountPreferencesResourceTest {
 
-   private static final ArtifactId ACCOUNT_ID = TokenFactory.createArtifactId(134522L);
+   private static final ArtifactId ACCOUNT_ID = ArtifactId.valueOf(134522);
 
    //@formatter:off
    @Mock private AccountOps accountOps;

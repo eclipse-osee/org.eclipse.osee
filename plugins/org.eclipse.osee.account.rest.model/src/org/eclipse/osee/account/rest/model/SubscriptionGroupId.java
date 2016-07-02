@@ -10,48 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.account.rest.model;
 
-import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.jdk.core.type.Named;
-import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
 /**
  * @author Angel Avila
  */
-public class SubscriptionGroupId extends NamedIdentity<String> implements ArtifactId {
+public class SubscriptionGroupId extends NamedId {
 
-   private final Long uuid;
-
-   public SubscriptionGroupId(Long uuid) {
-      super(null, String.valueOf(uuid));
-      this.uuid = uuid;
-   }
-
-   @Override
-   public Long getUuid() {
-      return uuid;
-   }
-
-   @Override
-   public boolean equals(Object other) {
-      boolean toReturn = false;
-      if (other instanceof SubscriptionGroupId) {
-         toReturn = this.getUuid().equals(((SubscriptionGroupId) other).getUuid());
-      }
-      return toReturn;
-   }
-
-   @Override
-   public int hashCode() {
-      return getUuid().hashCode();
-   }
-
-   @Override
-   public int compareTo(Named arg0) {
-      return getName().compareTo(arg0.getName());
-   }
-
-   @Override
-   public String toStringWithId() {
-      return String.format("[%s][%s]", getName(), getUuid());
+   public SubscriptionGroupId(Long id) {
+      super(id, String.valueOf(id));
    }
 }
