@@ -10,22 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import org.codehaus.jackson.annotate.JsonCreator;
+import org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Ryan D. Brooks
  */
-public interface TupleFamilyId extends Id {
+class TupleTypeImpl extends BaseId implements TupleTypeToken {
+   private final TupleFamilyId family;
 
-   @JsonCreator
-   public static TupleFamilyId valueOf(long tupleFamilyTypeId) {
-      final class TupleFailyTypeImpl extends BaseId implements TupleFamilyId {
-         public TupleFailyTypeImpl(Long tupleFamilyTypeId) {
-            super(tupleFamilyTypeId);
-         }
-      }
-      return new TupleFailyTypeImpl(tupleFamilyTypeId);
+   public TupleTypeImpl(Long tupleTypeId) {
+      this(CoreTupleFamilyTypes.DefaultFamily, tupleTypeId);
+   }
+
+   public TupleTypeImpl(TupleFamilyId family, Long tupleTypeId) {
+      super(tupleTypeId);
+      this.family = family;
+   }
+
+   @Override
+   public TupleFamilyId getFamily() {
+      return family;
    }
 }

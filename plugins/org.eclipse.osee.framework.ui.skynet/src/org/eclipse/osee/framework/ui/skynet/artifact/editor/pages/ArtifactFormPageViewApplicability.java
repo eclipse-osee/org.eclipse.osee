@@ -120,7 +120,8 @@ public class ArtifactFormPageViewApplicability {
    private String getArtifactViewApplicabiltyText() {
       String result = "";
       try {
-         ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint();
+         ApplicabilityEndpoint applEndpoint =
+            ServiceUtil.getOseeClient().getApplicabilityEndpoint(artifact.getBranch());
          if (applEndpoint == null) {
             result = "Error: Applicabilty Service not found";
          } else {

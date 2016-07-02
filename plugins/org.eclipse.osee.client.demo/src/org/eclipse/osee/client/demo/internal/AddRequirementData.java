@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -46,6 +47,8 @@ import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationFactory;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationParameter;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactResolverFactory;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
+import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
@@ -62,6 +65,9 @@ public class AddRequirementData implements IDbInitializationTask {
       try {
          // Import all requirements on SAW_Bld_1 Branch
          BranchId branch = SAW_Bld_1;
+         ApplicabilityEndpoint applEndpoint =
+            OsgiUtil.getService(getClass(), OseeClient.class).getApplicabilityEndpoint(branch);
+         applEndpoint.createDemoApplicability();
 
          //@formatter:off
          importRequirements(branch, CoreArtifactTypes.SoftwareRequirement, "Software Requirements", "support/SAW-SoftwareRequirements.xml");

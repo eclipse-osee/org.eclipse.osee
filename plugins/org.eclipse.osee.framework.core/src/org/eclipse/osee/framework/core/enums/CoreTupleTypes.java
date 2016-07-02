@@ -11,7 +11,9 @@
 package org.eclipse.osee.framework.core.enums;
 
 import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.DefaultFamily;
-import org.eclipse.osee.framework.core.data.TokenFactory;
+import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.ProductLineFamily;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.TupleFamilyId;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
@@ -21,8 +23,9 @@ import org.eclipse.osee.framework.core.data.TupleTypeId;
  */
 public final class CoreTupleTypes {
 
-   public static final Tuple2Type<TupleFamilyId, TupleTypeId> TupleMetaType =
-      TokenFactory.createTuple2Type(DefaultFamily, 1L);
+   public static final Tuple2Type<TupleFamilyId, TupleTypeId> TupleMetaType = Tuple2Type.valueOf(DefaultFamily, 1L);
+   public static final Tuple2Type<ArtifactId, String> ViewApplicability = Tuple2Type.valueOf(ProductLineFamily, 2L);
+   public static final Tuple2Type<Long, AttributeId> OseeTypeDef = Tuple2Type.valueOf(DefaultFamily, 4L);
 
    private CoreTupleTypes() {
       // Constants

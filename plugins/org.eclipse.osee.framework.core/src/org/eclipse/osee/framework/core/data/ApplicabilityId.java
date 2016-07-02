@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
  * @author Ryan D. Brooks
  */
 public interface ApplicabilityId extends Id {
+   public static final ApplicabilityId BASE = ApplicabilityId.valueOf(1L);
 
    default Long getUuid() {
       return getId();

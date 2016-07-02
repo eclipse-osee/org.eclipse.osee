@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.enums;
 
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TupleFamilyId;
 
 /**
@@ -18,10 +17,11 @@ import org.eclipse.osee.framework.core.data.TupleFamilyId;
  */
 public final class CoreTupleFamilyTypes {
 
-   public static final TupleFamilyId DefaultFamily = TokenFactory.createTupleFamilyType(1L);
-   public static final TupleFamilyId ArtifatFamily = TokenFactory.createTupleFamilyType(2L);
-   public static final TupleFamilyId AttribueFamily = TokenFactory.createTupleFamilyType(3L);
-   public static final TupleFamilyId RelationFamily = TokenFactory.createTupleFamilyType(4L);
+   public static final TupleFamilyId DefaultFamily = TupleFamilyId.valueOf(1L);
+   public static final TupleFamilyId ArtifatFamily = TupleFamilyId.valueOf(2L);
+   public static final TupleFamilyId AttribueFamily = TupleFamilyId.valueOf(3L);
+   public static final TupleFamilyId RelationFamily = TupleFamilyId.valueOf(4L);
+   public static final TupleFamilyId ProductLineFamily = TupleFamilyId.valueOf(5L);
 
    private CoreTupleFamilyTypes() {
       // Constants

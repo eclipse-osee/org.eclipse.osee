@@ -10,9 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
+import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.Applicabilities;
 import org.eclipse.osee.orcs.rest.model.Applicability;
@@ -20,6 +26,7 @@ import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityId;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityIds;
 import org.eclipse.osee.orcs.rest.model.ArtifactIds;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -27,6 +34,7 @@ import org.eclipse.osee.orcs.rest.model.ArtifactIds;
 public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
    private final OrcsApi orcsApi;
+   private final BranchId branch;
 
    @Context
    private UriInfo uriInfo;
@@ -34,8 +42,35 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    @Context
    private HttpHeaders httpHeaders;
 
-   public ApplicabilityEndpointImpl(OrcsApi orcsApi) {
+   public ApplicabilityEndpointImpl(OrcsApi orcsApi, BranchId branch) {
       this.orcsApi = orcsApi;
+      this.branch = branch;
+   }
+
+   @Override
+   public void createDemoApplicability() {
+      TransactionBuilder tx =
+         orcsApi.getTransactionFactory().createTransaction(branch, SystemUser.OseeSystem, "Create Demo Applicability");
+
+      ArtifactId config1 = tx.createArtifact(CoreArtifactTypes.BranchView, "PL Config 1");
+      ArtifactId config2 = tx.createArtifact(CoreArtifactTypes.BranchView, "PL Config 2");
+
+      orcsApi.getKeyValueOps().putByKey(BASE.getId(), BASE.getName());
+
+      tx.addTuple2(CoreTupleTypes.ViewApplicability, config1, "Base");
+      tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "Base");
+
+      tx.addTuple2(CoreTupleTypes.ViewApplicability, config1, "Feature A = Included");
+      tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "Feature A = Excluded");
+
+      tx.addTuple2(CoreTupleTypes.ViewApplicability, config1, "Feature B = Choice 1");
+      tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "Feature B = Choice 2");
+      tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "Feature B = Choice 3");
+
+      tx.addTuple2(CoreTupleTypes.ViewApplicability, config1, "Feature C = Included");
+      tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "Feature C = Excluded");
+
+      tx.commit();
    }
 
    @Override
@@ -76,5 +111,4 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    public void setApplicabilities(Applicabilities applicabilities) {
       // TBD - Implement this with call to IApplicabilityService
    }
-
 }

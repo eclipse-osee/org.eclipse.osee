@@ -21,6 +21,7 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -68,12 +69,14 @@ public class ViewApplicabilityColumn extends XViewerColumn implements IXViewerPr
 
    @Override
    public void populateCachedValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
+      BranchId branch = null;
       ArtifactIds artIds = new ArtifactIds();
       for (Object obj : objects) {
          Artifact artifact = getArtifact(obj);
          artIds.getArtifactIds().add(artifact.getUuid());
+         branch = artifact.getBranch();
       }
-      ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint();
+      ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint(branch);
       Applicabilities applicabilities = applEndpoint.getApplicabilities(artIds);
       for (Applicability appl : applicabilities.getApplicabilities()) {
          preComputedValueMap.put(appl.getArtId(), appl.getApplicability().getName());

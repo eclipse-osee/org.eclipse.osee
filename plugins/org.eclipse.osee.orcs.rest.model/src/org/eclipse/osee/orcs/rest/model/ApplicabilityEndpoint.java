@@ -20,7 +20,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * @author Donald G. Dunne
  */
-@Path("appl")
+@Path("applic")
 public interface ApplicabilityEndpoint {
 
    @GET
@@ -43,4 +43,6 @@ public interface ApplicabilityEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    void setApplicabilities(Applicabilities applicabilities);
 
+   @POST
+   void createDemoApplicability();
 }

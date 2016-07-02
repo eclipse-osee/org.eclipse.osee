@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -38,7 +39,8 @@ public class ViewApplicabilityUtil {
    private static AccessPolicy policy;
 
    public static boolean changeApplicability(Collection<Artifact> artifacts) {
-      ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint();
+      BranchId branch = artifacts.iterator().next().getBranch();
+      ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint(branch);
       List<ApplicabilityId> applicabilityIds = applEndpoint.getApplicabilityIds().getApplicabilityIds();
       ViewApplicabilityFilterTreeDialog dialog =
          new ViewApplicabilityFilterTreeDialog("Select View Applicability", "Select View Applicability");

@@ -11,9 +11,12 @@
 
 package org.eclipse.osee.framework.jdk.core.type;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 /**
  * @author Ryan D. Brooks
  */
+@JsonSerialize(using = NamedIdSerializer.class)
 public class NamedId extends BaseId implements Named {
    private String name;
 

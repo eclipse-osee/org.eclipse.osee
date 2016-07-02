@@ -23,7 +23,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * Purge artifact, attribute, and relation versions that are not addressed or nonexistent and purge empty transactions
- * 
+ *
  * @author Ryan D. Brooks
  */
 public class PurgeUnusedBackingDataAndTransactions extends AbstractDbTxOperation {
@@ -35,9 +35,12 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractDbTxOperation
       "select branch_id, transaction_id from osee_tx_details txd where not exists (select 1 from osee_txs txs1 where txs1.branch_id = txd.branch_id and txs1.transaction_id = txd.transaction_id) and not exists (select 1 from osee_txs_archived txs2 where txs2.branch_id = txd.branch_id and txs2.transaction_id = txd.transaction_id)";
 
    private static final String NONEXISTENT_GAMMAS = "SELECT gamma_id FROM %s txs WHERE " + //
-   "NOT EXISTS (SELECT 1 FROM osee_attribute att WHERE txs.gamma_id = att.gamma_id) " + //
-   "AND NOT EXISTS (SELECT 1 FROM osee_artifact art WHERE txs.gamma_id = art.gamma_id) " + //
-   "AND NOT EXISTS (SELECT 1 FROM osee_relation_link rel WHERE txs.gamma_id = rel.gamma_id)";
+      "NOT EXISTS (SELECT 1 FROM osee_attribute att WHERE txs.gamma_id = att.gamma_id) " + //
+      "AND NOT EXISTS (SELECT 1 FROM osee_artifact art WHERE txs.gamma_id = art.gamma_id) " + //
+      "AND NOT EXISTS (SELECT 1 FROM osee_relation_link rel WHERE txs.gamma_id = rel.gamma_id) " + //
+      "AND NOT EXISTS (SELECT 1 FROM osee_tuple2 t WHERE txs.gamma_id = t.gamma_id) " + //
+      "AND NOT EXISTS (SELECT 1 FROM osee_tuple3 t WHERE txs.gamma_id = t.gamma_id) " + //
+      "AND NOT EXISTS (SELECT 1 FROM osee_tuple4 t WHERE txs.gamma_id = t.gamma_id)";
 
    private static final String DELETE_GAMMAS = "DELETE FROM %s WHERE gamma_id = ?";
    private static final String DELETE_EMPTY_TRANSACTIONS =
@@ -80,8 +83,9 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractDbTxOperation
 
          chStmt.runPreparedQuery(sql);
          while (chStmt.next()) {
-            nonexistentGammas.add(new Object[] {chStmt.getInt("gamma_id")});
-            log(String.valueOf(chStmt.getInt("gamma_id")));
+            Long gammaId = chStmt.getLong("gamma_id");
+            nonexistentGammas.add(new Object[] {gammaId});
+            log(String.valueOf(gammaId));
          }
       } finally {
          chStmt.close();

@@ -54,6 +54,5 @@ public interface OseeClient {
 
    OrcsWriterEndpoint getOrcsWriterEndpoint();
 
-   ApplicabilityEndpoint getApplicabilityEndpoint();
-
+   ApplicabilityEndpoint getApplicabilityEndpoint(BranchId branch);
 }

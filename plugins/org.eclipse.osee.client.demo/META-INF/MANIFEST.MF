@@ -27,7 +27,9 @@ Import-Package: org.eclipse.core.filesystem,
  org.eclipse.osee.framework.skynet.core.transaction,
  org.eclipse.osee.framework.skynet.core.utility,
  org.eclipse.osee.framework.ui.skynet.Import,
- org.eclipse.osee.jdbc
+ org.eclipse.osee.jdbc,
+ org.eclipse.osee.orcs.rest.client,
+ org.eclipse.osee.orcs.rest.model
 Export-Package: org.eclipse.osee.client.demo
 Require-Bundle: org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy

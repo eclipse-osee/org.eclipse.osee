@@ -203,8 +203,8 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
    }
 
    @Override
-   public ApplicabilityEndpoint getApplicabilityEndpoint() {
-      return client.targetProxy(baseUri, ApplicabilityEndpoint.class);
+   public ApplicabilityEndpoint getApplicabilityEndpoint(BranchId branch) {
+      URI uri = UriBuilder.fromUri(baseUri).path("branch/{branch}").build(branch.getId());
+      return client.targetProxy(uri, ApplicabilityEndpoint.class);
    }
-
 }
