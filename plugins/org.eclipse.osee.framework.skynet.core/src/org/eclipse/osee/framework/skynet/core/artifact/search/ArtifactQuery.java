@@ -577,21 +577,21 @@ public class ArtifactQuery {
       return artifact;
    }
 
-   public static Collection<? extends Artifact> reloadArtifacts(Collection<? extends Artifact> artifacts) throws OseeCoreException {
-      Collection<Artifact> reloadedArts = new ArrayList<Artifact>(artifacts.size());
-      HashCollection<BranchId, Artifact> branchMap = new HashCollection<BranchId, Artifact>();
+   public static Collection<? extends Artifact> reloadArtifacts(Collection<? extends IArtifactToken> artifacts) throws OseeCoreException {
+      Collection<Artifact> reloadedArts = new ArrayList<>(artifacts.size());
+      HashCollection<BranchId, IArtifactToken> branchMap = new HashCollection<>();
       if (artifacts.isEmpty()) {
-         return artifacts;
+         return reloadedArts;
       }
-      for (Artifact artifact : artifacts) {
+      for (IArtifactToken artifact : artifacts) {
          // separate/group artifacts by branch since ArtifactQueryBuilder only supports a single branch
          branchMap.put(artifact.getBranch(), artifact);
       }
       Set<Integer> artIds = new HashSet<>();
-      for (Entry<BranchId, Collection<Artifact>> entrySet : branchMap.entrySet()) {
+      for (Entry<BranchId, Collection<IArtifactToken>> entrySet : branchMap.entrySet()) {
 
-         for (Artifact artifact : entrySet.getValue()) {
-            artIds.add(artifact.getArtId());
+         for (IArtifactToken artifact : entrySet.getValue()) {
+            artIds.add(artifact.getUuid().intValue());
          }
 
          ArtifactQueryBuilder query = new ArtifactQueryBuilder(artIds, entrySet.getKey(), INCLUDE_DELETED, ALL);
