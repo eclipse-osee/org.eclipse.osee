@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.tuple;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.orcs.core.internal.transaction.TxData;
 
 /**
@@ -17,10 +18,10 @@ import org.eclipse.osee.orcs.core.internal.transaction.TxData;
  */
 public interface TupleManager {
 
-   Long addTupple2(TxData txData, Long branchId, Long tupleTypeId, Long e1, Long e2);
+   Long addTupple2(TxData txData, BranchId branch, Long tupleTypeId, Long e1, Long e2);
 
-   Long addTupple3(TxData txData, Long branchId, Long tupleTypeId, Long e1, Long e2, Long e3);
+   Long addTupple3(TxData txData, BranchId branch, Long tupleTypeId, Long e1, Long e2, Long e3);
 
-   Long addTupple4(TxData txData, Long branchId, Long tupleTypeId, Long e1, Long e2, Long e3, Long e4);
+   Long addTupple4(TxData txData, BranchId branch, Long tupleTypeId, Long e1, Long e2, Long e3, Long e4);
 
 }

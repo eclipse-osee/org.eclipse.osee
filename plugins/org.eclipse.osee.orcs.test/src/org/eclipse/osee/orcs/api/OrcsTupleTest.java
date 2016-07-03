@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.api;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -46,7 +47,7 @@ public class OrcsTupleTest {
 
    private KeyValueOps keyValueOps;
    private ArtifactReadable userArtifact;
-   private final Long branchId = 24252L;
+   private final BranchId branch = BranchId.valueOf(24252);
 
    @Before
    public void setUp() throws Exception {
@@ -75,12 +76,12 @@ public class OrcsTupleTest {
       TupleTypeId createTuple2Type = TokenFactory.createTupleType(24L);
       TransactionBuilder transaction =
          orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON_ID, userArtifact, "Add Tuple2 Test");
-      Long gamma_id = transaction.addTuple(createTuple2Type, branchId, 234L, "t");
+      Long gamma_id = transaction.addTuple(createTuple2Type, branch, 234L, "t");
       transaction.commit();
 
       Assert.assertTrue(gamma_id > 0L);
 
-      gamma_id = transaction.addTuple(createTuple2Type, branchId, 234L, "t");
+      gamma_id = transaction.addTuple(createTuple2Type, branch, 234L, "t");
       transaction.commit();
    }
 
@@ -89,12 +90,12 @@ public class OrcsTupleTest {
       TupleTypeId createTuple3Type = TokenFactory.createTupleType(44L);
       TransactionBuilder transaction =
          orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON_ID, userArtifact, "Add Tuple3 Test");
-      Long gamma_id = transaction.addTuple(createTuple3Type, branchId, 244L, 12L, "three");
+      Long gamma_id = transaction.addTuple(createTuple3Type, branch, 244L, 12L, "three");
       transaction.commit();
 
       Assert.assertTrue(gamma_id > 0L);
 
-      gamma_id = transaction.addTuple(createTuple3Type, branchId, 244L, 12L, "three");
+      gamma_id = transaction.addTuple(createTuple3Type, branch, 244L, 12L, "three");
       transaction.commit();
    }
 
@@ -103,12 +104,12 @@ public class OrcsTupleTest {
       TupleTypeId createTuple4Type = TokenFactory.createTupleType(44L);
       TransactionBuilder transaction =
          orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON_ID, userArtifact, "Add Tuple4 Test");
-      Long gamma_id = transaction.addTuple(createTuple4Type, branchId, 244L, 12L, "four", "four2");
+      Long gamma_id = transaction.addTuple(createTuple4Type, branch, 244L, 12L, "four", "four2");
       transaction.commit();
 
       Assert.assertTrue(gamma_id > 0L);
 
-      gamma_id = transaction.addTuple(createTuple4Type, branchId, 244L, 12L, "four", "four2");
+      gamma_id = transaction.addTuple(createTuple4Type, branch, 244L, 12L, "four", "four2");
       transaction.commit();
    }
 }

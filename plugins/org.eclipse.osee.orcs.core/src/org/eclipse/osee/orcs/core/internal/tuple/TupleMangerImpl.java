@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.tuple;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.orcs.core.ds.TupleData;
 import org.eclipse.osee.orcs.core.internal.transaction.TxData;
 
@@ -25,22 +26,22 @@ public class TupleMangerImpl implements TupleManager {
    }
 
    @Override
-   public Long addTupple2(TxData txData, Long branchId, Long tupleTypeId, Long e1, Long e2) {
-      TupleData tuple = tupleFactory.createTuple2(tupleTypeId, branchId, e1, e2);
+   public Long addTupple2(TxData txData, BranchId branch, Long tupleTypeId, Long e1, Long e2) {
+      TupleData tuple = tupleFactory.createTuple2(tupleTypeId, branch, e1, e2);
       txData.add(tuple);
       return tuple.getVersion().getGammaId();
    }
 
    @Override
-   public Long addTupple3(TxData txData, Long branchId, Long tupleTypeId, Long e1, Long e2, Long e3) {
-      TupleData tuple = tupleFactory.createTuple3(tupleTypeId, branchId, e1, e2, e3);
+   public Long addTupple3(TxData txData, BranchId branch, Long tupleTypeId, Long e1, Long e2, Long e3) {
+      TupleData tuple = tupleFactory.createTuple3(tupleTypeId, branch, e1, e2, e3);
       txData.add(tuple);
       return tuple.getVersion().getGammaId();
    }
 
    @Override
-   public Long addTupple4(TxData txData, Long tupleTypeId, Long branchId, Long e1, Long e2, Long e3, Long e4) {
-      TupleData tuple = tupleFactory.createTuple4(tupleTypeId, branchId, e1, e2, e3, e4);
+   public Long addTupple4(TxData txData, BranchId branch, Long tupleTypeId, Long e1, Long e2, Long e3, Long e4) {
+      TupleData tuple = tupleFactory.createTuple4(tupleTypeId, branch, e1, e2, e3, e4);
       txData.add(tuple);
       return tuple.getVersion().getGammaId();
    }

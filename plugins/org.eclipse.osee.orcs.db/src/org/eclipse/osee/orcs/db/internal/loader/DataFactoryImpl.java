@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -125,23 +126,23 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public TupleData createTuple2Data(Long tupleTypeId, Long branchId, Long e1, Long e2) {
+   public TupleData createTuple2Data(Long tupleTypeId, BranchId branch, Long e1, Long e2) {
       VersionData version = objectFactory.createDefaultVersionData();
-      TupleData tupleData = objectFactory.createTuple2Data(version, branchId, tupleTypeId, e1, e2);
+      TupleData tupleData = objectFactory.createTuple2Data(version, branch, tupleTypeId, e1, e2);
       return tupleData;
    }
 
    @Override
-   public TupleData createTuple3Data(Long tupleTypeId, Long branchId, Long e1, Long e2, Long e3) {
+   public TupleData createTuple3Data(Long tupleTypeId, BranchId branch, Long e1, Long e2, Long e3) {
       VersionData version = objectFactory.createDefaultVersionData();
-      TupleData tupleData = objectFactory.createTuple3Data(version, branchId, tupleTypeId, e1, e2, e3);
+      TupleData tupleData = objectFactory.createTuple3Data(version, branch, tupleTypeId, e1, e2, e3);
       return tupleData;
    }
 
    @Override
-   public TupleData createTuple4Data(Long tupleTypeId, Long branchId, Long e1, Long e2, Long e3, Long e4) {
+   public TupleData createTuple4Data(Long tupleTypeId, BranchId branch, Long e1, Long e2, Long e3, Long e4) {
       VersionData version = objectFactory.createDefaultVersionData();
-      TupleData tupleData = objectFactory.createTuple4Data(version, branchId, tupleTypeId, e1, e2, e3, e4);
+      TupleData tupleData = objectFactory.createTuple4Data(version, branch, tupleTypeId, e1, e2, e3, e4);
       return tupleData;
    }
 

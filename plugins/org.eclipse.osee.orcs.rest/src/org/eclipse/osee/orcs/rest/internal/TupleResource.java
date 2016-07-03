@@ -35,11 +35,11 @@ public class TupleResource {
 
    @Context
    private UriInfo uriInfo;
-   private final Long branchUuid;
+   private final BranchId branch;
 
-   public TupleResource(OrcsApi orcsApi, Long branchUuid) {
+   public TupleResource(OrcsApi orcsApi, BranchId branch) {
       this.orcsApi = orcsApi;
-      this.branchUuid = branchUuid;
+      this.branch = branch;
    }
 
    @Path("/tuple2")
@@ -57,8 +57,8 @@ public class TupleResource {
 
       TupleTypeId typleTypeId = TokenFactory.createTupleType(tupleType);
 
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branchUuid, getUser(), "Add Tuple 2");
-      toReturn = tx.addTuple(typleTypeId, branchUuid, element1, element2);
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, getUser(), "Add Tuple 2");
+      toReturn = tx.addTuple(typleTypeId, branch, element1, element2);
       tx.commit();
       return toReturn;
    }
@@ -81,8 +81,8 @@ public class TupleResource {
       }
       TupleTypeId typleTypeId = TokenFactory.createTupleType(tupleType);
 
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branchUuid, getUser(), "Add Tuple 3");
-      toReturn = tx.addTuple(typleTypeId, branchUuid, element1, element2, element3);
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, getUser(), "Add Tuple 3");
+      toReturn = tx.addTuple(typleTypeId, branch, element1, element2, element3);
       tx.commit();
       return toReturn;
    }
@@ -109,8 +109,8 @@ public class TupleResource {
       }
       TupleTypeId typleTypeId = TokenFactory.createTupleType(tupleType);
 
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branchUuid, getUser(), "Add Tuple 4");
-      toReturn = tx.addTuple(typleTypeId, branchUuid, element1, element2, element3, element4);
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, getUser(), "Add Tuple 4");
+      toReturn = tx.addTuple(typleTypeId, branch, element1, element2, element3, element4);
       tx.commit();
       return toReturn;
    }

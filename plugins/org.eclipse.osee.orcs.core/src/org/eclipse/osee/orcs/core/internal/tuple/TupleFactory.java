@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.tuple;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.TupleData;
 import org.eclipse.osee.orcs.core.ds.TupleDataFactory;
@@ -25,16 +26,16 @@ public class TupleFactory {
       this.tupleDataFactory = tupleDataFactory;
    }
 
-   public TupleData createTuple2(Long tupleTypeId, Long branchId, Long e1, Long e2) throws OseeCoreException {
-      return tupleDataFactory.createTuple2Data(tupleTypeId, branchId, e1, e2);
+   public TupleData createTuple2(Long tupleTypeId, BranchId branch, Long e1, Long e2) throws OseeCoreException {
+      return tupleDataFactory.createTuple2Data(tupleTypeId, branch, e1, e2);
    }
 
-   public TupleData createTuple3(Long tupleTypeId, Long branchId, Long e1, Long e2, Long e3) throws OseeCoreException {
-      return tupleDataFactory.createTuple3Data(tupleTypeId, branchId, e1, e2, e3);
+   public TupleData createTuple3(Long tupleTypeId, BranchId branch, Long e1, Long e2, Long e3) throws OseeCoreException {
+      return tupleDataFactory.createTuple3Data(tupleTypeId, branch, e1, e2, e3);
    }
 
-   public TupleData createTuple4(Long tupleTypeId, Long e1, Long branchId, Long e2, Long e3, Long e4) throws OseeCoreException {
-      return tupleDataFactory.createTuple4Data(tupleTypeId, branchId, e1, e2, e3, e4);
+   public TupleData createTuple4(Long tupleTypeId, BranchId branch, Long e1, Long e2, Long e3, Long e4) throws OseeCoreException {
+      return tupleDataFactory.createTuple4Data(tupleTypeId, branch, e1, e2, e3, e4);
    }
 
 }

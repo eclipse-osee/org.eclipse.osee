@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.TupleData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
@@ -19,10 +20,10 @@ import org.eclipse.osee.orcs.core.ds.VersionData;
  */
 public interface TupleObjectFactory extends VersionObjectFactory {
 
-   TupleData createTuple2Data(VersionData version, Long branchUuid, Long tupleType, Long e1, Long e2) throws OseeCoreException;
+   TupleData createTuple2Data(VersionData version, BranchId branch, Long tupleType, Long e1, Long e2) throws OseeCoreException;
 
-   TupleData createTuple3Data(VersionData version, Long branchUuid, Long tupleType, Long e1, Long e2, Long e3) throws OseeCoreException;
+   TupleData createTuple3Data(VersionData version, BranchId branch, Long tupleType, Long e1, Long e2, Long e3) throws OseeCoreException;
 
-   TupleData createTuple4Data(VersionData version, Long branchUuid, Long tupleType, Long e1, Long e2, Long e3, Long e4) throws OseeCoreException;
+   TupleData createTuple4Data(VersionData version, BranchId branch, Long tupleType, Long e1, Long e2, Long e3, Long e4) throws OseeCoreException;
 
 }

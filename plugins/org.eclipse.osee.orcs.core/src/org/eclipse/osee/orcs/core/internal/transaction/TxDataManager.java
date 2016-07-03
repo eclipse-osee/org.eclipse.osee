@@ -11,12 +11,15 @@
 package org.eclipse.osee.orcs.core.internal.transaction;
 
 import static java.util.Collections.singleton;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
@@ -42,8 +45,6 @@ import org.eclipse.osee.orcs.core.internal.relation.impl.RelationNodeAdjacencies
 import org.eclipse.osee.orcs.core.internal.transaction.TxData.TxState;
 import org.eclipse.osee.orcs.core.internal.tuple.TupleManager;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 /**
  * @author Roberto E. Escobar
@@ -238,16 +239,16 @@ public class TxDataManager {
       txData.setAuthor(author);
    }
 
-   public Long createTuple2(TxData txData, Long branchId, Long tupleTypeId, Long element1, Long element2) {
-      return tupleManager.addTupple2(txData, branchId, tupleTypeId, element1, element2);
+   public Long createTuple2(TxData txData, BranchId branch, Long tupleTypeId, Long element1, Long element2) {
+      return tupleManager.addTupple2(txData, branch, tupleTypeId, element1, element2);
    }
 
-   public Long createTuple3(TxData txData, Long branchId, Long tupleTypeId, Long e1, Long e2, Long e3) {
-      return tupleManager.addTupple3(txData, branchId, tupleTypeId, e1, e2, e3);
+   public Long createTuple3(TxData txData, BranchId branch, Long tupleTypeId, Long e1, Long e2, Long e3) {
+      return tupleManager.addTupple3(txData, branch, tupleTypeId, e1, e2, e3);
    }
 
-   public Long createTuple4(TxData txData, Long branchId, Long tupleTypeId, Long e1, Long e2, Long e3, Long e4) {
-      return tupleManager.addTupple4(txData, branchId, tupleTypeId, e1, e2, e3, e4);
+   public Long createTuple4(TxData txData, BranchId branch, Long tupleTypeId, Long e1, Long e2, Long e3, Long e4) {
+      return tupleManager.addTupple4(txData, branch, tupleTypeId, e1, e2, e3, e4);
    }
 
    public ArtifactReadable createArtifact(TxData txData, IArtifactType artifactType, String name, String guid) throws OseeCoreException {

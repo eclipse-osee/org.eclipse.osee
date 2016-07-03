@@ -18,6 +18,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -52,8 +53,8 @@ public class BranchesResource {
       return writer.toHtml(results);
    }
 
-   @Path("{uuid}/tuples")
-   public TupleResource getTuples(@PathParam("uuid") Long uuid) {
-      return new TupleResource(OrcsApplication.getOrcsApi(), uuid);
+   @Path("{branch}/tuples")
+   public TupleResource getTuples(@PathParam("branch") BranchId branch) {
+      return new TupleResource(OrcsApplication.getOrcsApi(), branch);
    }
 }

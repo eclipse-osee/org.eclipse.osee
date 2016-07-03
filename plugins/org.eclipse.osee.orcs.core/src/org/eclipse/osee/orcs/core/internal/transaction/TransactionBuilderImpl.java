@@ -353,34 +353,34 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public <E1, E2> Long addTuple2(Tuple2Type<E1, E2> tupleType, Long branchId, E1 element1, E2 element2) {
-      return addTuple(tupleType, branchId, element1, element2);
+   public <E1, E2> Long addTuple2(Tuple2Type<E1, E2> tupleType, BranchId branch, E1 element1, E2 element2) {
+      return addTuple(tupleType, branch, element1, element2);
    }
 
    @Override
-   public <E1, E2, E3> Long addTuple3(Tuple3Type<E1, E2, E3> tupleType, Long branchId, E1 element1, E2 element2, E3 element3) {
-      return addTuple(tupleType, branchId, element1, element2, element3);
+   public <E1, E2, E3> Long addTuple3(Tuple3Type<E1, E2, E3> tupleType, BranchId branch, E1 element1, E2 element2, E3 element3) {
+      return addTuple(tupleType, branch, element1, element2, element3);
    }
 
    @Override
-   public <E1, E2, E3, E4> Long addTuple4(Tuple4Type<E1, E2, E3, E4> tupleType, Long branchId, E1 element1, E2 element2, E3 element3, E4 element4) {
-      return addTuple(tupleType, branchId, element1, element2, element3, element4);
+   public <E1, E2, E3, E4> Long addTuple4(Tuple4Type<E1, E2, E3, E4> tupleType, BranchId branch, E1 element1, E2 element2, E3 element3, E4 element4) {
+      return addTuple(tupleType, branch, element1, element2, element3, element4);
    }
 
    @Override
-   public Long addTuple(TupleTypeId tupleType, Long branchId, Object... elements) {
+   public Long addTuple(TupleTypeId tupleType, BranchId branch, Object... elements) {
       int length = elements.length;
 
       if (length == 2) {
-         return addTuple2(tupleType, branchId, elements[0], elements[1]);
+         return addTuple2(tupleType, branch, elements[0], elements[1]);
       } else if (length == 3) {
-         return addTuple3(tupleType, branchId, elements[0], elements[1], elements[2]);
+         return addTuple3(tupleType, branch, elements[0], elements[1], elements[2]);
       } else {
-         return addTuple4(tupleType, branchId, elements[0], elements[1], elements[2], elements[3]);
+         return addTuple4(tupleType, branch, elements[0], elements[1], elements[2], elements[3]);
       }
    }
 
-   private Long addTuple2(TupleTypeId tupleTypeId, Long branchId, Object element1, Object element2) {
+   private Long addTuple2(TupleTypeId tupleTypeId, BranchId branch, Object element1, Object element2) {
       Long e1;
       Long e2;
       if (element1 instanceof String) {
@@ -402,10 +402,10 @@ public class TransactionBuilderImpl implements TransactionBuilder {
          }
       }
 
-      return txManager.createTuple2(txData, branchId, tupleTypeId.getId(), e1, e2);
+      return txManager.createTuple2(txData, branch, tupleTypeId.getId(), e1, e2);
    }
 
-   private Long addTuple3(TupleTypeId tupleTypeId, Long branchId, Object element1, Object element2, Object element3) {
+   private Long addTuple3(TupleTypeId tupleTypeId, BranchId branch, Object element1, Object element2, Object element3) {
       Long e1;
       Long e2;
       Long e3;
@@ -425,10 +425,10 @@ public class TransactionBuilderImpl implements TransactionBuilder {
          e3 = (Long) element3;
       }
 
-      return txManager.createTuple3(txData, branchId, tupleTypeId.getId(), e1, e2, e3);
+      return txManager.createTuple3(txData, branch, tupleTypeId.getId(), e1, e2, e3);
    }
 
-   private Long addTuple4(TupleTypeId tupleTypeId, Long branchId, Object element1, Object element2, Object element3, Object element4) {
+   private Long addTuple4(TupleTypeId tupleTypeId, BranchId branch, Object element1, Object element2, Object element3, Object element4) {
       Long e1;
       Long e2;
       Long e3;
@@ -454,7 +454,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
          e4 = (Long) element4;
       }
 
-      return txManager.createTuple4(txData, branchId, tupleTypeId.getId(), e1, e2, e3, e4);
+      return txManager.createTuple4(txData, branch, tupleTypeId.getId(), e1, e2, e3, e4);
    }
 
    @Override

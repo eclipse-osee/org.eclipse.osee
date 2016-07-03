@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
 import java.util.Date;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -221,7 +222,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public TupleData createTuple2Data(VersionData version, Long branchId, Long tupleType, Long element1, Long element2) throws OseeCoreException {
+   public TupleData createTuple2Data(VersionData version, BranchId branchId, Long tupleType, Long element1, Long element2) throws OseeCoreException {
       TupleData data = new TupleDataImpl(version);
       data.setBaseModType(ModificationType.NEW);
       data.setModType(ModificationType.NEW);
@@ -229,12 +230,12 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       data.setElement1(element1);
       data.setElement2(element2);
       data.getVersion().setGammaId(Lib.generateUuid());
-      data.getVersion().setBranchId(branchId);
+      data.getVersion().setBranchId(branchId.getId());
       return data;
    }
 
    @Override
-   public TupleData createTuple3Data(VersionData version, Long branchId, Long tupleType, Long e1, Long e2, Long e3) throws OseeCoreException {
+   public TupleData createTuple3Data(VersionData version, BranchId branchId, Long tupleType, Long e1, Long e2, Long e3) throws OseeCoreException {
       TupleData data = new TupleDataImpl(version);
       data.setBaseModType(ModificationType.NEW);
       data.setModType(ModificationType.NEW);
@@ -243,12 +244,12 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       data.setElement2(e2);
       data.setElement3(e3);
       data.getVersion().setGammaId(Lib.generateUuid());
-      data.getVersion().setBranchId(branchId);
+      data.getVersion().setBranchId(branchId.getId());
       return data;
    }
 
    @Override
-   public TupleData createTuple4Data(VersionData version, Long branchId, Long tupleType, Long e1, Long e2, Long e3, Long e4) throws OseeCoreException {
+   public TupleData createTuple4Data(VersionData version, BranchId branchId, Long tupleType, Long e1, Long e2, Long e3, Long e4) throws OseeCoreException {
       TupleData data = new TupleDataImpl(version);
       data.setBaseModType(ModificationType.NEW);
       data.setModType(ModificationType.NEW);
@@ -258,7 +259,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       data.setElement3(e3);
       data.setElement4(e4);
       data.getVersion().setGammaId(Lib.generateUuid());
-      data.getVersion().setBranchId(branchId);
+      data.getVersion().setBranchId(branchId.getId());
       return data;
    }
 

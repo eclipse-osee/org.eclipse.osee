@@ -10,15 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.framework.core.data.BranchId;
+
 /**
  * @author Angel Avila
  */
 public interface TupleDataFactory {
 
-   TupleData createTuple2Data(Long tupleTypeId, Long branchId, Long e1, Long e2);
+   TupleData createTuple2Data(Long tupleTypeId, BranchId branch, Long e1, Long e2);
 
-   TupleData createTuple3Data(Long tupleTypeId, Long branchId, Long e1, Long e2, Long e3);
+   TupleData createTuple3Data(Long tupleTypeId, BranchId branch, Long e1, Long e2, Long e3);
 
-   TupleData createTuple4Data(Long tupleTypeId, Long branchId, Long e1, Long e2, Long e3, Long e4);
+   TupleData createTuple4Data(Long tupleTypeId, BranchId branch, Long e1, Long e2, Long e3, Long e4);
 
 }
