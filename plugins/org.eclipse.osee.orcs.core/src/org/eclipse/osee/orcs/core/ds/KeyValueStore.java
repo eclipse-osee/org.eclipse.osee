@@ -21,4 +21,5 @@ public interface KeyValueStore {
 
    String getByKey(Long key);
 
+   boolean putByKey(Long key, String value);
 }

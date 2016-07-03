@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.branch;
 
 import org.apache.commons.lang.mutable.MutableLong;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcProcessor;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -74,6 +75,17 @@ public class KeyValueModule {
 
             }, SELECT_KEY_WITH_VALUE, value);
             return (Long) toReturn.getValue();
+         }
+
+         @Override
+         public boolean putByKey(Long key, String value) {
+            String existingValue = getByKey(key);
+            if (!Strings.isValid(existingValue)) {
+               jdbcClient.runPreparedUpdate(INSERT_INTO_KEY_VALUE, key, value);
+               return true;
+            }
+
+            return false;
          }
       };
 

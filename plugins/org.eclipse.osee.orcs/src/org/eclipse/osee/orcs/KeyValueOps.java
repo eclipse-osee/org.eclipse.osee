@@ -20,4 +20,7 @@ public interface KeyValueOps {
    String getByKey(Long key);
 
    Long getByValue(String value);
+
+   boolean putByKey(Long key, String value);
+
 }

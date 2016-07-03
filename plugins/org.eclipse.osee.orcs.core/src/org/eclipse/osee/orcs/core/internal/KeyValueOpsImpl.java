@@ -39,4 +39,8 @@ public class KeyValueOpsImpl implements KeyValueOps {
       return keyValueStore.getByKey(key);
    }
 
+   @Override
+   public boolean putByKey(Long key, String value) {
+      return keyValueStore.putByKey(key, value);
+   }
 }
