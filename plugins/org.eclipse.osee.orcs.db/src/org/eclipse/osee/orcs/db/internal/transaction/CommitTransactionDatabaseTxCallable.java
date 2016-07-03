@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.transaction;
 
 import java.util.Date;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -23,7 +24,6 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
@@ -75,7 +75,7 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
       // 1. Make this whole method a critical region on a per branch basis - can only write to a branch on one thread at time
       String comment = transactionData.getComment();
       Long branchId = transactionData.getBranchId();
-      ArtifactReadable author = transactionData.getAuthor();
+      ArtifactId author = transactionData.getAuthor();
       OrcsChangeSet changeSet = transactionData.getChangeSet();
 
       Conditions.checkNotNull(branchId, "branch");
@@ -109,13 +109,12 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
       process(TxWritePhaseEnum.AFTER_TX_WRITE);
    }
 
-   private TransactionReadable createTransactionRecord(Long branchId, ArtifactReadable author, String comment, int transactionNumber) throws OseeCoreException {
-      int authorArtId = author.getLocalId();
+   private TransactionReadable createTransactionRecord(Long branchId, ArtifactId author, String comment, int transactionNumber) throws OseeCoreException {
       TransactionDetailsType txType = TransactionDetailsType.NonBaselined;
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();
 
       TransactionDataImpl created = new TransactionDataImpl();
-      created.setAuthorId(authorArtId);
+      created.setAuthorId(author.getUuid().intValue());
       created.setBranchId(branchId);
       created.setComment(comment);
       created.setCommit(RelationalConstants.ART_ID_SENTINEL);

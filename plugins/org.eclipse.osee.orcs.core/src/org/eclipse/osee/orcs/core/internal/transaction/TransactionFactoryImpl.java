@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -69,13 +70,13 @@ public class TransactionFactoryImpl implements TransactionFactory {
    }
 
    @Override
-   public TransactionBuilder createTransaction(Long branchId, ArtifactReadable userArtifact, String comment) throws OseeCoreException {
+   public TransactionBuilder createTransaction(Long branchId, ArtifactId userArtifact, String comment) throws OseeCoreException {
       BranchId branch = TokenFactory.createBranch(branchId);
       return createTransaction(branch, userArtifact, comment);
    }
 
    @Override
-   public TransactionBuilder createTransaction(BranchId branch, ArtifactReadable author, String comment) throws OseeCoreException {
+   public TransactionBuilder createTransaction(BranchId branch, ArtifactId author, String comment) throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
       Conditions.checkNotNull(author, "author");
       Conditions.checkNotNullOrEmpty(comment, "comment");

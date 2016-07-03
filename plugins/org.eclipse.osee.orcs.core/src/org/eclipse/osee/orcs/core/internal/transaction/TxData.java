@@ -42,7 +42,7 @@ public class TxData implements HasSession, HasBranch {
    private final Map<String, Artifact> writeables = new HashMap<>();
    private final Map<String, ArtifactReadable> readables = new HashMap<>();
 
-   private ArtifactReadable author;
+   private ArtifactId author;
    private String comment;
 
    private volatile boolean isCommitInProgress;
@@ -74,7 +74,7 @@ public class TxData implements HasSession, HasBranch {
       return graph;
    }
 
-   public ArtifactReadable getAuthor() {
+   public ArtifactId getAuthor() {
       return author;
    }
 
@@ -90,7 +90,7 @@ public class TxData implements HasSession, HasBranch {
       return isCommitInProgress;
    }
 
-   public void setAuthor(ArtifactReadable author) {
+   public void setAuthor(ArtifactId author) {
       this.author = author;
    }
 

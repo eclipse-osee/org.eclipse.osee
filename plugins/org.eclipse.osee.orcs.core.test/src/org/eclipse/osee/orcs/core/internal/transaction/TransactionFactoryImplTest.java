@@ -62,7 +62,8 @@ public class TransactionFactoryImplTest {
    @Before
    public void init() {
       initMocks(this);
-      factory = new TransactionFactoryImpl(session, txDataManager, txCallableFactory, query, queryFactory, orcsBranch, keyValueOps);
+      factory = new TransactionFactoryImpl(session, txDataManager, txCallableFactory, query, queryFactory, orcsBranch,
+         keyValueOps);
 
    }
 
@@ -99,7 +100,6 @@ public class TransactionFactoryImplTest {
       TransactionBuilder tx = factory.createTransaction(expectedBranch, expectedAuthor, expectedComment);
       assertNotNull(tx);
       assertEquals(expectedBranch.getUuid(), tx.getBranchId());
-      assertEquals(expectedAuthor, tx.getAuthor());
       assertEquals(expectedComment, tx.getComment());
    }
 }

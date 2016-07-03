@@ -70,11 +70,6 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public ArtifactReadable getAuthor() {
-      return txData.getAuthor();
-   }
-
-   @Override
    public String getComment() {
       return txData.getComment();
    }
@@ -84,7 +79,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       txManager.setComment(txData, comment);
    }
 
-   public void setAuthor(ArtifactReadable author) throws OseeCoreException {
+   public void setAuthor(ArtifactId author) throws OseeCoreException {
       txManager.setAuthor(txData, author);
    }
 

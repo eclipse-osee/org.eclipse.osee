@@ -234,7 +234,7 @@ public class TxDataManager {
       txData.setComment(comment);
    }
 
-   public void setAuthor(TxData txData, ArtifactReadable author) throws OseeCoreException {
+   public void setAuthor(TxData txData, ArtifactId author) throws OseeCoreException {
       checkChangesAllowed(txData);
       txData.setAuthor(author);
    }
@@ -435,11 +435,11 @@ public class TxDataManager {
    private static final class TransactionDataImpl implements TransactionData {
 
       private final Long branchId;
-      private final ArtifactReadable author;
+      private final ArtifactId author;
       private final String comment;
       private final OrcsChangeSet changeSet;
 
-      public TransactionDataImpl(Long branchId, ArtifactReadable author, String comment, OrcsChangeSet changeSet) {
+      public TransactionDataImpl(Long branchId, ArtifactId author, String comment, OrcsChangeSet changeSet) {
          super();
          this.branchId = branchId;
          this.author = author;
@@ -453,7 +453,7 @@ public class TxDataManager {
       }
 
       @Override
-      public ArtifactReadable getAuthor() {
+      public ArtifactId getAuthor() {
          return author;
       }
 

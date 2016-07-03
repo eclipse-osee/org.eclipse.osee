@@ -128,16 +128,6 @@ public class TransactionBuilderImplTest {
    }
 
    @Test
-   public void testGetAuthor() {
-      when(factory.getAuthor()).thenReturn(expectedAuthor);
-
-      ArtifactReadable author = factory.getAuthor();
-
-      assertEquals(expectedAuthor, author);
-      verify(txData).getAuthor();
-   }
-
-   @Test
    public void testGetComment() {
       when(factory.getComment()).thenReturn("This is a comment");
 
