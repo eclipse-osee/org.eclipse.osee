@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.Hierar
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedByColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedDateColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedTransactionColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedTransactionCommentColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ViewApplicabilityColumn;
 
 /**
@@ -58,6 +59,7 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
       registerColumns(new LastModifiedDateColumn(false));
       registerColumns(new LastModifiedByColumn(false));
       registerColumns(new LastModifiedTransactionColumn(false));
+      registerColumns(new LastModifiedTransactionCommentColumn(false));
       registerAllAttributeColumns();
    }
 

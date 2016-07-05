@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2016 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,13 +22,14 @@ import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 /**
  * @author Donald G. Dunne
  */
-public class LastModifiedTransactionColumn extends XViewerValueColumn {
+public class LastModifiedTransactionCommentColumn extends XViewerValueColumn {
 
-   public static final String FRAMEWORK_LAST_MOD_TRANS = "framework.lastModTransaction";
+   public static final String FRAMEWORK_LAST_MOD_TRANS = "framework.lastModTransactionComment";
 
-   public LastModifiedTransactionColumn(boolean show) {
-      super(FRAMEWORK_LAST_MOD_TRANS, "Last Modified Transaction", 50, XViewerAlign.Left, show, SortDataType.Integer,
-         false, "Retrieves user of last transaction that modified this artifact.");
+   public LastModifiedTransactionCommentColumn(boolean show) {
+      super(FRAMEWORK_LAST_MOD_TRANS, "Last Modified Transaction Comment", 100, XViewerAlign.Left, show,
+         SortDataType.String, false,
+         "Retrieves user of last transaction that modified this artifact and shows the comment.");
    }
 
    /**
@@ -36,8 +37,8 @@ public class LastModifiedTransactionColumn extends XViewerValueColumn {
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public LastModifiedTransactionColumn copy() {
-      LastModifiedTransactionColumn newXCol = new LastModifiedTransactionColumn(isShow());
+   public LastModifiedTransactionCommentColumn copy() {
+      LastModifiedTransactionCommentColumn newXCol = new LastModifiedTransactionCommentColumn(isShow());
       super.copy(this, newXCol);
       return newXCol;
    }
@@ -46,9 +47,9 @@ public class LastModifiedTransactionColumn extends XViewerValueColumn {
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof Artifact) {
-            return String.valueOf(((Artifact) element).getTransactionRecord().getId());
+            return String.valueOf(((Artifact) element).getTransactionRecord().getComment());
          } else if (element instanceof Change) {
-            return String.valueOf(((Change) element).getChangeArtifact().getId());
+            return String.valueOf(((Change) element).getChangeArtifact().getTransactionRecord().getComment());
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);

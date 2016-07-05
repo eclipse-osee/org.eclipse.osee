@@ -130,6 +130,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastMo
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedCommentColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedDateColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedTransactionColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedTransactionCommentColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.UuidColumn;
 
 //import org.eclipse.osee.ats.column.ActivityIdColumn;
@@ -228,6 +229,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          new LastModifiedByColumn(false),
          new LastModifiedDateColumn(false),
          new LastModifiedTransactionColumn(false),
+         new LastModifiedTransactionCommentColumn(false),
          LastModifiedCommentColumn.getInstance(),
          LastStatusedColumn.getInstance(),
          ValidationRequiredColumn.getInstance(),
