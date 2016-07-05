@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -144,7 +145,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    public IAtsUser getAsUser() {
       return asUser;
    }
-   
+
    @Override
    public void unrelate(IAtsObject atsObject, IRelationTypeSide relationSide, IAtsObject atsObjec2) {
       unrelate(atsObject.getStoreObject(), relationSide, atsObjec2.getStoreObject());
@@ -158,6 +159,11 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    @Override
    public void unrelate(IAtsObject atsObject, IRelationTypeSide relationSide, ArtifactId artifact) {
       unrelate(atsObject.getStoreObject(), relationSide, artifact);
+   }
+
+   @Override
+   public void setSoleAttributeFromString(IAtsObject atsObject, IAttributeType attributeType, String value) {
+      setSoleAttributeFromString(atsObject.getStoreObject(), attributeType, value);
    }
 
 }

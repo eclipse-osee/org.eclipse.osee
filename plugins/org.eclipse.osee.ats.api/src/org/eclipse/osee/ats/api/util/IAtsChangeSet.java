@@ -128,4 +128,6 @@ public interface IAtsChangeSet {
 
    void setSoleAttributeFromString(ArtifactId artifact, IAttributeType attrType, String value);
 
+   void setSoleAttributeFromString(IAtsObject atsObject, IAttributeType attributeType, String value);
+
 }
