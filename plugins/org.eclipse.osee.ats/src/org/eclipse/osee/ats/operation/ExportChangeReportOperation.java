@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.operation;
 
 import static org.eclipse.osee.framework.ui.skynet.render.IRenderer.NO_DISPLAY;
 import static org.eclipse.osee.framework.ui.skynet.render.IRenderer.SKIP_DIALOGS;
+import static org.eclipse.osee.framework.ui.skynet.render.IRenderer.OVERRIDE_DATA_RIGHTS_OPTION;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
+import org.eclipse.osee.framework.ui.skynet.render.IRenderer.DataRightsClassification;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.compare.CompareData;
 import org.eclipse.osee.framework.ui.skynet.render.compare.CompareDataCollector;
@@ -65,12 +67,14 @@ public final class ExportChangeReportOperation extends AbstractOperation {
       CoreArtifactTypes.InterfaceRequirement,
       CoreArtifactTypes.HeadingMSWord};
    private final IArtifactType[] DISALLOW_TYPES = {CoreArtifactTypes.ImplementationDetails};
+   private final String overrideDataRightsClassification;
 
-   public ExportChangeReportOperation(List<TeamWorkFlowArtifact> workflows, boolean reverse, boolean writeChangeReports, Appendable resultFolder, OperationLogger logger) {
+   public ExportChangeReportOperation(List<TeamWorkFlowArtifact> workflows, boolean reverse, boolean writeChangeReports, String overrideDataRightsClassification, Appendable resultFolder, OperationLogger logger) {
       super("Exporting Change Report(s)", Activator.PLUGIN_ID, logger);
       this.workflows = workflows;
       this.reverse = reverse;
       this.writeChangeReports = writeChangeReports;
+      this.overrideDataRightsClassification = overrideDataRightsClassification;
       this.resultFolder = resultFolder;
    }
 
@@ -127,7 +131,8 @@ public final class ExportChangeReportOperation extends AbstractOperation {
                   continue;
                }
 
-               RendererManager.diff(collector, artifactDeltas, prefix, NO_DISPLAY, true, SKIP_DIALOGS, true);
+               RendererManager.diff(collector, artifactDeltas, prefix, NO_DISPLAY, true, SKIP_DIALOGS, true,
+                  OVERRIDE_DATA_RIGHTS_OPTION, overrideDataRightsClassification);
             }
             String artIdsAsString = org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", artIds);
             try {
