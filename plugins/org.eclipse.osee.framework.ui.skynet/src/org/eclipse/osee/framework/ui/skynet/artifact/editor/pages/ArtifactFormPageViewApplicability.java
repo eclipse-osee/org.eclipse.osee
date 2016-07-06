@@ -11,10 +11,13 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.pages;
 
 import java.util.Collections;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -107,16 +110,21 @@ public class ArtifactFormPageViewApplicability {
 
    private String getArtifactViewApplicabiltyText() {
       String result = "";
-      ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint();
-      if (applEndpoint == null) {
-         result = "Error: Applicabilty Service not found";
-      } else {
-         ArtifactIds artifactIds = new ArtifactIds();
-         artifactIds.getArtifactIds().add(artifact.getUuid());
-         Applicabilities applicabilities = applEndpoint.getApplicabilities(artifactIds);
-         if (!applicabilities.getApplicabilities().isEmpty() && applicabilities.getApplicabilities().iterator().next().getApplicability() != null) {
-            result = applicabilities.getApplicabilities().iterator().next().getApplicability().getName();
+      try {
+         ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint();
+         if (applEndpoint == null) {
+            result = "Error: Applicabilty Service not found";
+         } else {
+            ArtifactIds artifactIds = new ArtifactIds();
+            artifactIds.getArtifactIds().add(artifact.getUuid());
+            Applicabilities applicabilities = applEndpoint.getApplicabilities(artifactIds);
+            if (!applicabilities.getApplicabilities().isEmpty() && applicabilities.getApplicabilities().iterator().next().getApplicability() != null) {
+               result = applicabilities.getApplicabilities().iterator().next().getApplicability().getName();
+            }
          }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         result = "Error retrieving applicability. (see log)";
       }
       return String.format("<form><p><b>View Applicability:</b> %s</p></form>", result);
    }
