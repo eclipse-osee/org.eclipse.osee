@@ -91,12 +91,15 @@ public class WorldComposite extends Composite implements ISelectedAtsArtifacts, 
       this.iWorldEditor = worldEditor;
 
       setLayout(new GridLayout(1, true));
-      setLayoutData(new GridData(GridData.FILL_BOTH));
+      GridData layoutData = new GridData(GridData.FILL_BOTH);
+      layoutData.heightHint = 100;
+      layoutData.widthHint = 100;
+      setLayoutData(layoutData);
 
       if (DbConnectionExceptionComposite.dbConnectionIsOk(this)) {
 
          worldXViewer = createXViewer(xViewerFactory, this);
-         worldXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+         worldXViewer.getTree().setLayoutData(layoutData);
 
          worldXViewer.setContentProvider(new WorldContentProvider(worldXViewer));
          worldXViewer.setLabelProvider(new WorldLabelProvider(worldXViewer));
@@ -116,7 +119,7 @@ public class WorldComposite extends Composite implements ISelectedAtsArtifacts, 
    }
 
    protected WorldXViewer createXViewer(IXViewerFactory xViewerFactory, Composite mainComp) {
-      return new WorldXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
+      return new WorldXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION | SWT.NO_SCROLL,
          xViewerFactory != null ? xViewerFactory : new WorldXViewerFactory(), null);
    }
 
