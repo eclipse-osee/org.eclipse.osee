@@ -404,4 +404,12 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
       return parent == null || parent.isDisposed();
    }
 
+   @Override
+   public void refresh() {
+      if (isDisposed()) {
+         return;
+      }
+      super.refreshColumnsWithPreCompute(getInput());
+   }
+
 }
