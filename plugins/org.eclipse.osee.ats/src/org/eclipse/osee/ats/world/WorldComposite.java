@@ -63,11 +63,9 @@ import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionH
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
-import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -77,7 +75,7 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
-public class WorldComposite extends ScrolledComposite implements ISelectedAtsArtifacts, IWorldViewerEventHandler, IOpenNewAtsWorldEditorHandler, IOpenNewAtsWorldEditorSelectedHandler, IOpenNewAtsTaskEditorHandler, IOpenNewAtsTaskEditorSelectedHandler, IRefreshActionHandler, ITaskAddActionHandler {
+public class WorldComposite extends Composite implements ISelectedAtsArtifacts, IWorldViewerEventHandler, IOpenNewAtsWorldEditorHandler, IOpenNewAtsWorldEditorSelectedHandler, IOpenNewAtsTaskEditorHandler, IOpenNewAtsTaskEditorSelectedHandler, IRefreshActionHandler, ITaskAddActionHandler {
 
    private final WorldXViewer worldXViewer;
    private final Set<Artifact> worldArts = new HashSet<>(200);
@@ -95,24 +93,15 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
       setLayout(new GridLayout(1, true));
       setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      Composite mainComp = new Composite(this, SWT.NONE);
-      mainComp.setLayout(ALayout.getZeroMarginLayout());
-      mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
       if (DbConnectionExceptionComposite.dbConnectionIsOk(this)) {
 
-         worldXViewer = createXViewer(xViewerFactory, mainComp);
+         worldXViewer = createXViewer(xViewerFactory, this);
          worldXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
          worldXViewer.setContentProvider(new WorldContentProvider(worldXViewer));
          worldXViewer.setLabelProvider(new WorldLabelProvider(worldXViewer));
 
          setupDragAndDropSupport(createDragAndDrop);
-
-         setContent(mainComp);
-         setExpandHorizontal(true);
-         setExpandVertical(true);
-         layout();
 
          WorldXViewerEventManager.add(this);
       } else {
