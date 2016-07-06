@@ -507,11 +507,11 @@ public class WordTemplateProcessor {
                   }
                }
                PageOrientation orientation = WordRendererUtil.getPageOrientation(artifact);
-
                String footer = data.getContent(artifact.getGuid(), orientation);
-               processAttributes(artifact, wordMl, presentationType, publishInline, footer);
 
+               processAttributes(artifact, wordMl, presentationType, publishInline, footer);
             }
+
             // Check for option that may have been set from Publish with Diff BLAM to recurse
             if (recurseChildren && !renderer.getBooleanOption(RECURSE_ON_LOAD) || renderer.getBooleanOption(
                RECURSE_ON_LOAD) && !renderer.getBooleanOption("Orig Publish As Diff")) {
@@ -545,17 +545,21 @@ public class WordTemplateProcessor {
          }
 
          int index = 0;
+         String overrideClassification = (String) renderer.getOption(ITemplateRenderer.OVERRIDE_DATA_RIGHTS_OPTION);
          for (Artifact artifact : allArtifacts) {
-            String classification =
-               artifact.getSoleAttributeValueAsString(CoreAttributeTypes.DataRightsClassification, "");
+
+            String classification = null;
+            if (overrideClassification != null && ITemplateRenderer.DataRightsClassification.isValid(overrideClassification)) {
+               classification = overrideClassification;
+            } else {
+               classification = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.DataRightsClassification, "");
+            }
 
             PageOrientation orientation = WordRendererUtil.getPageOrientation(artifact);
             request.addData(artifact.getGuid(), classification, orientation, index);
             index++;
-
          }
       }
-
    }
 
    private void processAttributes(Artifact artifact, WordMLProducer wordMl, PresentationType presentationType, boolean publishInLine, String footer) throws OseeCoreException {

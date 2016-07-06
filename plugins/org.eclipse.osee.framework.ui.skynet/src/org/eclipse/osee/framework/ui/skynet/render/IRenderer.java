@@ -45,8 +45,35 @@ public interface IRenderer {
    public static final String SKIP_ERRORS = "skipErrors";
    public static final String SKIP_DIALOGS = "skipDialogs";
    public static final String OPEN_OPTION = "open.option";
-
    public static final String EXECUTE_VB_SCRIPT = "execute.vb.script";
+   public static final String OVERRIDE_DATA_RIGHTS_OPTION = "overrideDataRights";
+
+   public static enum DataRightsClassification {
+      governmentPurposeRights("Government Purpose Rights"),
+      limitedRights("Limited Rights"),
+      proprietary("Proprietary"),
+      restrictedRights("Restricted Rights"),
+      Unspecified("Unspecified");
+
+      String dataRightsClassification;
+
+      DataRightsClassification(String dataRightsClassification) {
+         this.dataRightsClassification = dataRightsClassification;
+      }
+
+      public String getDataRightsClassification() {
+         return dataRightsClassification;
+      }
+
+      public static boolean isValid(String check) {
+         for (DataRightsClassification classification : DataRightsClassification.values()) {
+            if (classification.getDataRightsClassification().equals(check)) {
+               return true;
+            }
+         }
+         return false;
+      }
+   }
 
    public static enum CommandGroup {
       PREVIEW(PresentationType.PREVIEW),
