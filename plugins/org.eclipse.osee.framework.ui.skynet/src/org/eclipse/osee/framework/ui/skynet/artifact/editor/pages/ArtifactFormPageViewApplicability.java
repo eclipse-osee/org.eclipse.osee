@@ -47,6 +47,8 @@ public class ArtifactFormPageViewApplicability {
    private final FormToolkit toolkit;
    private final ScrolledForm form;
    private final Artifact artifact;
+   private SelectionAdapter changeableAdapter;
+   private SelectionAdapter nonChangeableAdapter;
 
    public ArtifactFormPageViewApplicability(Artifact artifact, FormToolkit toolkit, ScrolledForm form) {
       this.artifact = artifact;
@@ -54,33 +56,41 @@ public class ArtifactFormPageViewApplicability {
       this.form = form;
    }
 
-   private void refreshButton() {
+   private void setButtonChangeable() {
       if (ViewApplicabilityUtil.isChangeApplicabilityValid(Collections.singleton(artifact))) {
          button.setText("Change");
-         button.addSelectionListener(new SelectionAdapter() {
+         button.addSelectionListener(getChangeableAdapter());
+      } else {
+         button.setImage(getLockImage());
+         button.addSelectionListener(getNonChangeableAdapter());
+      }
+   }
 
+   private SelectionAdapter getChangeableAdapter() {
+      if (changeableAdapter == null) {
+         changeableAdapter = new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                super.widgetSelected(e);
-               boolean changed = ViewApplicabilityUtil.changeApplicability(Collections.singleton(artifact));
-               if (changed) {
-                  refresh();
-               }
+               ViewApplicabilityUtil.changeApplicability(Collections.singleton(artifact));
             }
 
-         });
-      } else {
-         button.setImage(getLockImage());
-         button.addSelectionListener(new SelectionAdapter() {
+         };
+      }
+      return changeableAdapter;
+   }
 
+   private SelectionAdapter getNonChangeableAdapter() {
+      if (nonChangeableAdapter == null) {
+         nonChangeableAdapter = new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                AWorkbench.popup("Permission Denied", ViewApplicabilityUtil.CHANGE_APPLICABILITY_INVAILD);
             }
-
-         });
+         };
 
       }
+      return nonChangeableAdapter;
    }
 
    private Image getLockImage() {
@@ -100,12 +110,11 @@ public class ArtifactFormPageViewApplicability {
       text.setForeground(Displays.getSystemColor(SWT.COLOR_DARK_GRAY));
 
       button = toolkit.createButton(applicabilityComp, "", SWT.PUSH);
-      refreshButton();
+      setButtonChangeable();
    }
 
    public void refresh() {
       text.setText(getArtifactViewApplicabiltyText(), true, false);
-      refreshButton();
    }
 
    private String getArtifactViewApplicabiltyText() {
@@ -128,5 +137,4 @@ public class ArtifactFormPageViewApplicability {
       }
       return String.format("<form><p><b>View Applicability:</b> %s</p></form>", result);
    }
-
 }
