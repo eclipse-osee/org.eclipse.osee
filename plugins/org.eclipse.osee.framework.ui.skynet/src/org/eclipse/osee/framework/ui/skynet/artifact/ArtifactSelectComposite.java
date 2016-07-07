@@ -45,7 +45,7 @@ public class ArtifactSelectComposite extends Composite {
    private final ArtifactProvider artifactProvider;
 
    public static interface ArtifactProvider {
-      Collection<Artifact> getArtifacts();
+      Collection<Artifact> getSelectableArtifacts();
    }
 
    public ArtifactSelectComposite(Composite parent, int style, ArtifactProvider getSelectableArtifacts, String itemName) {
@@ -102,7 +102,7 @@ public class ArtifactSelectComposite extends Composite {
          FilteredTreeDialog dialog = new FilteredTreeDialog("Select " + itemName, "Select A " + itemName,
             new ArrayTreeContentProvider(), new StringLabelProvider(), new ToStringViewerSorter());
          dialog.setMultiSelect(false);
-         dialog.setInput(artifactProvider.getArtifacts());
+         dialog.setInput(artifactProvider.getSelectableArtifacts());
          if (dialog.open() == 0 && !dialog.getSelected().isEmpty()) {
             setSelected((Artifact) dialog.getSelected().iterator().next());
          }

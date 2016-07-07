@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * Widget providing attribute label, select button with filterable list and readonly name of selected artifact and saves
@@ -33,7 +34,13 @@ public class XArtifactSelectWidgetWithSave extends XArtifactSelectWidget impleme
    }
 
    public Artifact getStored() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(attributeType, null);
+      Object obj = artifact.getSoleAttributeValue(attributeType, null);
+      if (obj instanceof Integer) {
+         return ArtifactQuery.getArtifactFromId((Integer) obj, artifact.getBranch());
+      } else if (obj instanceof Artifact) {
+         return (Artifact) obj;
+      }
+      return null;
    }
 
    @Override
@@ -96,7 +103,7 @@ public class XArtifactSelectWidgetWithSave extends XArtifactSelectWidget impleme
    }
 
    @Override
-   public Collection<Artifact> getArtifacts() {
+   public Collection<Artifact> getSelectableArtifacts() {
       return java.util.Collections.emptyList();
    }
 

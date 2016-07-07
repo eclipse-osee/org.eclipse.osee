@@ -32,7 +32,7 @@ public class XProgramSelectionWidget extends XArtifactSelectWidgetWithSave {
    }
 
    @Override
-   public Collection<Artifact> getArtifacts() {
+   public Collection<Artifact> getSelectableArtifacts() {
       List<ArtifactId> programArts =
          AtsClientService.get().getQueryService().createQuery(AtsArtifactTypes.Program).andAttr(
             AtsAttributeTypes.Active, "true").getResultArtifacts().getList();

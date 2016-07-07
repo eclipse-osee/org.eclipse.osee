@@ -83,7 +83,7 @@ public class XArtifactSelectWidget extends GenericXWidget implements Listener, A
    }
 
    @Override
-   public Collection<Artifact> getArtifacts() {
+   public Collection<Artifact> getSelectableArtifacts() {
       return Collections.emptyList();
    }
 
