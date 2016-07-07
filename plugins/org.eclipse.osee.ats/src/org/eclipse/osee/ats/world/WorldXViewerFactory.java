@@ -16,6 +16,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.agile.AgileFeatureGroupColumn;
 import org.eclipse.osee.ats.agile.SprintColumn;
 import org.eclipse.osee.ats.agile.SprintOrderColumn;
+import org.eclipse.osee.ats.api.column.AtsColumnIdValueColumn;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.column.ActionableItemOwner;
@@ -147,22 +148,22 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
 
    public static final XViewerColumn[] getWorldViewColumns() {
       return new XViewerColumn[] {
-         new AtsColumnIdUI(AtsColumnToken.TypeColumn, AtsClientService.get().getServices()),
-         new AtsColumnIdUI(AtsColumnToken.StateColumn, AtsClientService.get().getServices()),
+         getColumnServiceColumn(AtsColumnToken.TypeColumn),
+         getColumnServiceColumn(AtsColumnToken.StateColumn),
          PriorityColumnUI.getInstance(),
          ChangeTypeColumnUI.getInstance(),
          AssigneeColumnUI.getInstance(),
-         getConfigColumn(AtsColumnToken.TitleColumn),
-         new AtsColumnIdUI(AtsColumnToken.ActionableItemsColumn, AtsClientService.get().getServices()),
-         new AtsColumnIdUI(AtsColumnToken.AtsIdColumnShow, AtsClientService.get().getServices()),
+         getAttriubuteConfigColumn(AtsColumnToken.TitleColumn),
+         getColumnServiceColumn(AtsColumnToken.ActionableItemsColumn),
+         getColumnServiceColumn(AtsColumnToken.AtsIdColumnShow),
          CreatedDateColumnUI.getInstance(),
          TargetedVersionColumnUI.getInstance(),
-         new AtsColumnIdUI(AtsColumnToken.TeamColumn, AtsClientService.get().getServices()),
-         getConfigColumn(AtsColumnToken.NotesColumn),
+         getColumnServiceColumn(AtsColumnToken.TeamColumn),
+         getAttriubuteConfigColumn(AtsColumnToken.NotesColumn),
          DeadlineColumn.getInstance(),
          AnnualCostAvoidanceColumn.getInstance(),
          DescriptionColumn.getInstance(),
-         getConfigColumn(AtsColumnToken.LegacyPcrIdColumn),
+         getAttriubuteConfigColumn(AtsColumnToken.LegacyPcrIdColumn),
          DecisionColumn.getInstance(),
          ResolutionColumn.getInstance(),
          GroupsColumn.getInstance(),
@@ -196,7 +197,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          PercentCompleteStateTasksColumn.getInstance(),
          PercentCompleteStateReviewColumn.getInstance(),
          PercentCompleteTotalColumn.getInstance(),
-         getConfigColumn(AtsColumnToken.PercentCompleteWorkflowColumn),
+         getAttriubuteConfigColumn(AtsColumnToken.PercentCompleteWorkflowColumn),
          HoursSpentSMAStateColumn.getInstance(),
          HoursSpentStateTasksColumn.getInstance(),
          HoursSpentStateReviewColumn.getInstance(),
@@ -254,7 +255,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          new GuidColumn(false),
          ParentTopTeamColumnUI.getInstance(),
          ActionableItemOwner.getInstance(),
-         new AtsColumnIdUI(AtsColumnToken.AtsIdColumn, AtsClientService.get().getServices()),
+         getColumnServiceColumn(AtsColumnToken.AtsIdColumn),
          AgileFeatureGroupColumn.getInstance(),
          SprintOrderColumn.getInstance(),
          RemainingPointsNumericWorkflowColumn.getInstance(),
@@ -266,8 +267,8 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          PercentCompleteTasksReviewsColumn.getInstance(),
          CountryColumnUI.getInstance(),
          ProgramColumnUI.getInstance(),
-         new AtsColumnIdUI(AtsColumnToken.InsertionColumn, AtsClientService.get().getServices()),
-         new AtsColumnIdUI(AtsColumnToken.InsertionActivityColumn, AtsClientService.get().getServices()),
+         getColumnServiceColumn(AtsColumnToken.InsertionColumn),
+         getColumnServiceColumn(AtsColumnToken.InsertionActivityColumn),
          ColorTeamColumnUI.getInstance(),
          RelatedArtifactChangedColumn.getInstance(),
          RelatedArtifactLastModifiedByColumn.getInstance(),
@@ -275,7 +276,18 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          new UuidColumn(false)};
    }
 
-   private static XViewerColumn getConfigColumn(AtsAttributeValueColumn attrValueColumn) {
+   /**
+    * Provides XViewerColumn for non-attribute based columns like Type and State
+    */
+   public static XViewerColumn getColumnServiceColumn(AtsColumnIdValueColumn columnToken) {
+      return new AtsColumnIdUI(columnToken, AtsClientService.get().getServices());
+   }
+
+   /**
+    * Provides XViewerColumn for attribute based columns like Legacy PCR Id and Change Type. These columns can be
+    * overridden (or defined) by entries in the AtsConfig views.attrColumns entry.
+    */
+   private static XViewerColumn getAttriubuteConfigColumn(AtsAttributeValueColumn attrValueColumn) {
       XViewerColumn result = null;
       if (atsConfigurations == null) {
          atsConfigurations = AtsClientService.getConfigEndpoint().get();

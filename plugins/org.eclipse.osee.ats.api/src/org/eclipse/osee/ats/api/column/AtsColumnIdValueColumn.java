@@ -20,16 +20,12 @@ public class AtsColumnIdValueColumn extends AtsValueColumn {
    private IAtsColumnId columnId;
 
    public AtsColumnIdValueColumn() {
-      // For JaxRs Instantitaion
+      // For JaxRs Instantiation
    }
 
-   public AtsColumnIdValueColumn(IAtsColumnId columnId, String name, int width, String align, boolean show, ColumnType sortDataType, boolean multiColumnEditable, String description, boolean actionRollup) {
-      super(columnId.getId(), name, width, align, show, sortDataType, multiColumnEditable, description, actionRollup);
-      this.columnId = columnId;
-   }
-
-   public AtsColumnIdValueColumn(IAtsColumnId columnId, String name, int width, String align, boolean show, ColumnType sortDataType, boolean multiColumnEditable, String description) {
-      super(columnId.getId(), name, width, align, show, sortDataType, multiColumnEditable, description);
+   public AtsColumnIdValueColumn(IAtsColumnId columnId, String name, int width, String align, boolean show, ColumnType sortDataType, boolean multiColumnEditable, String description, Boolean actionRollup, Boolean inheritParent) {
+      super(columnId.getId(), name, width, align, show, sortDataType, multiColumnEditable, description, actionRollup,
+         inheritParent);
       this.columnId = columnId;
    }
 

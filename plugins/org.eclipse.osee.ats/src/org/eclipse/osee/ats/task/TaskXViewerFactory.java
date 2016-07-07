@@ -17,7 +17,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.column.AssigneeColumnUI;
-import org.eclipse.osee.ats.column.AtsColumnIdUI;
 import org.eclipse.osee.ats.column.EstimatedHoursColumn;
 import org.eclipse.osee.ats.column.HoursSpentTotalColumn;
 import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
@@ -26,9 +25,7 @@ import org.eclipse.osee.ats.column.RemainingHoursColumn;
 import org.eclipse.osee.ats.column.ResolutionColumn;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
-import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.world.IAtsWorldEditorItem;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -42,13 +39,12 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
  */
 public class TaskXViewerFactory extends SkynetXViewerFactory {
 
-   public static final List<? extends XViewerAtsColumn> TaskViewerVisibleColumns =
+   public static final List<XViewerColumn> TaskViewerVisibleColumns =
       Arrays.asList(new XViewerAtsAttributeValueColumn(AtsColumnToken.TitleColumn),
-         new AtsColumnIdUI(AtsColumnToken.StateColumn, AtsClientService.get().getServices()),
-         AssigneeColumnUI.getInstance(), PercentCompleteTotalColumn.getInstance(), HoursSpentTotalColumn.getInstance(),
-         ResolutionColumn.getInstance(), EstimatedHoursColumn.getInstance(), RemainingHoursColumn.getInstance(),
-         RelatedToStateColumn.getInstance(),
-         new AtsColumnIdUI(AtsColumnToken.StateColumn, AtsClientService.get().getServices()));
+         WorldXViewerFactory.getColumnServiceColumn(AtsColumnToken.StateColumn), AssigneeColumnUI.getInstance(),
+         PercentCompleteTotalColumn.getInstance(), HoursSpentTotalColumn.getInstance(), ResolutionColumn.getInstance(),
+         EstimatedHoursColumn.getInstance(), RemainingHoursColumn.getInstance(), RelatedToStateColumn.getInstance(),
+         WorldXViewerFactory.getColumnServiceColumn(AtsColumnToken.StateColumn));
    public static Integer[] widths = new Integer[] {450, 60, 150, 40, 40, 100, 50, 50, 50, 80, 80};
 
    public TaskXViewerFactory() {

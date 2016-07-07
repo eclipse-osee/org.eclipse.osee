@@ -42,6 +42,8 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
    private Map<String, Color> hexColorToColor;
    private Boolean hasColorColumn = null;
    private ColorColumn colorColumn;
+   private Boolean actionRollup = null;
+   private Boolean inheritParent = null;
 
    protected XViewerAtsColumn() {
       // do nothing
@@ -53,6 +55,15 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
 
    public XViewerAtsColumn(XViewer xViewer, String xml) {
       super(xViewer, xml);
+   }
+
+   @Override
+   protected void copy(XViewerColumn fromXCol, XViewerColumn toXCol) {
+      super.copy(fromXCol, toXCol);
+      if (fromXCol instanceof XViewerAtsColumn && toXCol instanceof XViewerAtsColumn) {
+         ((XViewerAtsColumn) toXCol).setActionRollup(actionRollup);
+         ((XViewerAtsColumn) toXCol).setInheritParent(inheritParent);
+      }
    }
 
    protected boolean isPersistViewer() {
@@ -167,6 +178,22 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
          }
       }
       return hasColorColumn;
+   }
+
+   public Boolean isActionRollup() {
+      return actionRollup;
+   }
+
+   public void setActionRollup(Boolean actionRollup) {
+      this.actionRollup = actionRollup;
+   }
+
+   public Boolean isInheritParent() {
+      return inheritParent;
+   }
+
+   public void setInheritParent(Boolean inheritParent) {
+      this.inheritParent = inheritParent;
    }
 
 }

@@ -86,6 +86,8 @@ public class WorldXViewerUtil {
             valueColumn.setBooleanNotSetShow(column.getBooleanNotSetShow());
             valueColumn.setBooleanOnFalseShow(column.getBooleanOnFalseShow());
             valueColumn.setBooleanOnTrueShow(column.getBooleanOnTrueShow());
+            valueColumn.setActionRollup(column.isActionRollup());
+            valueColumn.setInheritParent(column.isInheritParent());
             configColumns.add(valueColumn);
 
          } catch (Exception ex) {

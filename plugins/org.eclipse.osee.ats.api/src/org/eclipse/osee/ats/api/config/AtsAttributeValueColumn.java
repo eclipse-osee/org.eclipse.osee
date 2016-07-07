@@ -25,17 +25,13 @@ public class AtsAttributeValueColumn extends AtsValueColumn {
    private String attrTypeName;
 
    public AtsAttributeValueColumn() {
-      // For JaxRs Instantitaion
+      // For JaxRs Instantiation
    }
 
-   public AtsAttributeValueColumn(IAttributeType attributeType, String id, String name, int width, String align, boolean show, ColumnType sortDataType, boolean multiColumnEditable, String description, boolean actionRollup) {
-      super(id, name, width, align, show, sortDataType, multiColumnEditable, description, actionRollup);
+   public AtsAttributeValueColumn(IAttributeType attributeType, String id, String name, int width, String align, boolean show, ColumnType sortDataType, boolean multiColumnEditable, String description, Boolean actionRollup, Boolean inheritParent) {
+      super(id, name, width, align, show, sortDataType, multiColumnEditable, description, actionRollup, inheritParent);
       this.attrTypeId = attributeType.getGuid();
       this.attrTypeName = attributeType.getName();
-   }
-
-   public AtsAttributeValueColumn(IAttributeType attributeType, String id, String name, int width, String align, boolean show, ColumnType sortDataType, boolean multiColumnEditable, String description) {
-      this(attributeType, id, name, width, align, show, sortDataType, multiColumnEditable, description, false);
    }
 
    public long getAttrTypeId() {

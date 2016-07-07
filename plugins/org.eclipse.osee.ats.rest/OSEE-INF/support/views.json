@@ -13,7 +13,8 @@
 		"columnMultiEdit": false,
 		"description": "Field to register problem change report id from legacy items imported into ATS.",
 		"color": null,
-		"actionRollup": false
+		"actionRollup": false,
+		"inheritParent": true
 	},
 	{
 		"name": "Points Numeric",
@@ -63,7 +64,8 @@
 		"namespace": "org.eclipse.osee.ats.WorldXViewer",
 		"sortDataType": "String",
 		"visible": false,
-		"width": 60
+		"width": 60,
+		"inheritParent": true
 	}, {
 		"align": "Left",
 		"attrTypeId": 1152922093379125418,

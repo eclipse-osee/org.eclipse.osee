@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 
@@ -28,6 +28,7 @@ public class DescriptionColumn extends XViewerAtsAttributeValueColumn {
 
    private DescriptionColumn() {
       super(AtsAttributeTypes.Description, 150, XViewerAlign.Left, false, SortDataType.String, true, "");
+      setActionRollup(true);
    }
 
    /**

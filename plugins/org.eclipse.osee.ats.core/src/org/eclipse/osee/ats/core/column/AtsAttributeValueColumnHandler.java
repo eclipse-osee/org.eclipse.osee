@@ -42,24 +42,36 @@ public class AtsAttributeValueColumnHandler implements IAtsColumn {
 
    @Override
    public String getColumnText(IAtsObject atsObject) {
-      return getColumnText(atsObject, column.getAttrTypeId(), column.isActionRollup(), services);
+      return getColumnText(atsObject, column.getAttrTypeId(), column.isActionRollup(), column.isInheritParent(),
+         services);
    }
 
-   public static String getColumnText(IAtsObject atsObject, long attrTypeId, boolean isActionRollup, IAtsServices services) {
+   public static String getColumnText(IAtsObject atsObject, long attrTypeId, boolean isActionRollup, boolean isInheritParent, IAtsServices services) {
       try {
          if (services.getStoreService().isDeleted(atsObject)) {
             return "<deleted>";
          }
          if (atsObject instanceof IAtsWorkItem) {
-            return services.getAttributeResolver().getAttributesToStringUniqueList(atsObject,
-               services.getStoreService().getAttributeType(attrTypeId), ";");
+            IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
+            IAttributeType attributeType = services.getStoreService().getAttributeType(attrTypeId);
+            String result =
+               services.getAttributeResolver().getAttributesToStringUniqueList(workItem, attributeType, ";");
+            if (Strings.isValid(result)) {
+               return result;
+            } else if (isInheritParent && !workItem.isTeamWorkflow() && workItem.getParentTeamWorkflow() != null) {
+               result = Collections.toString("; ", services.getAttributeResolver().getAttributesToStringUniqueList(
+                  workItem.getParentTeamWorkflow(), attributeType, ";"));
+               if (Strings.isValid(result)) {
+                  return result;
+               }
+            }
          }
-         if (isActionRollup && (atsObject instanceof IAtsAction)) {
+         if (atsObject instanceof IAtsAction && isActionRollup) {
             Collection<IAtsTeamWorkflow> teams = ((IAtsAction) atsObject).getTeamWorkflows();
             Set<String> strs = new HashSet<>();
             strs.add(atsObject.getName());
             for (IAtsTeamWorkflow team : teams) {
-               String str = getColumnText(team, attrTypeId, isActionRollup, services);
+               String str = getColumnText(team, attrTypeId, isActionRollup, isInheritParent, services);
                if (Strings.isValid(str)) {
                   strs.add(str);
                }
@@ -72,8 +84,8 @@ public class AtsAttributeValueColumnHandler implements IAtsColumn {
       return "";
    }
 
-   public static String getColumnText(IAtsObject atsObject, IAttributeType attributeType, boolean isActionRollup, IAtsServices services) {
-      return getColumnText(atsObject, attributeType.getGuid(), isActionRollup, services);
+   public static String getColumnText(IAtsObject atsObject, IAttributeType attributeType, boolean isActionRollup, boolean inheritParent, IAtsServices services) {
+      return getColumnText(atsObject, attributeType.getGuid(), isActionRollup, inheritParent, services);
    }
 
 }

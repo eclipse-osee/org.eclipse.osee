@@ -34,18 +34,14 @@ public class AtsValueColumn {
    private boolean columnMultiEdit;
    private String description;
    private ColorColumn color;
-   private boolean actionRollup;
+   private Boolean actionRollup;
+   private Boolean inheritParent;
 
    public AtsValueColumn() {
-      // For JaxRs Instantitaion
+      // For JaxRs Instantiation
    }
 
-   public AtsValueColumn(String id, String name, int width, String align, boolean show, ColumnType sortDataType, boolean multiColumnEditable, String description, boolean actionRollup) {
-      this(id, name, width, align, show, sortDataType, multiColumnEditable, description);
-      this.actionRollup = actionRollup;
-   }
-
-   public AtsValueColumn(String id, String name, int width, String align, boolean show, ColumnType sortDataType, boolean multiColumnEditable, String description) {
+   public AtsValueColumn(String id, String name, int width, String align, boolean show, ColumnType sortDataType, boolean multiColumnEditable, String description, Boolean actionRollup, Boolean inheritParent) {
       this.id = id;
       this.name = name;
       this.width = width;
@@ -56,7 +52,8 @@ public class AtsValueColumn {
       if (Strings.isValid(description)) {
          this.description = description;
       }
-      this.actionRollup = false;
+      this.actionRollup = actionRollup;
+      this.inheritParent = inheritParent;
    }
 
    public int getWidth() {
@@ -160,11 +157,11 @@ public class AtsValueColumn {
       this.color = color;
    }
 
-   public boolean isActionRollup() {
+   public Boolean isActionRollup() {
       return actionRollup;
    }
 
-   public void setActionRollup(boolean actionRollup) {
+   public void setActionRollup(Boolean actionRollup) {
       this.actionRollup = actionRollup;
    }
 
@@ -178,6 +175,14 @@ public class AtsValueColumn {
 
    public void setId(String id) {
       this.id = id;
+   }
+
+   public Boolean isInheritParent() {
+      return inheritParent;
+   }
+
+   public void setInheritParent(Boolean inheritParent) {
+      this.inheritParent = inheritParent;
    }
 
 }

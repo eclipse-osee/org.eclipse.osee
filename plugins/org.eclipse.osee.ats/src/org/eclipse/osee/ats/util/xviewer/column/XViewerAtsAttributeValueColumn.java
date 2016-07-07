@@ -72,6 +72,8 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
       super(AttributeTypeManager.getTypeByGuid(column.getAttrTypeId()), column.getId(), column.getName(),
          column.getWidth(), AtsUtil.getXViewerAlign(column.getAlign()), column.isVisible(), getSortDataType(column),
          column.isColumnMultiEdit(), column.getDescription());
+      setInheritParent(column.isInheritParent());
+      setActionRollup(column.isActionRollup());
    }
 
    private static SortDataType getSortDataType(AtsAttributeValueColumn column) {
@@ -122,9 +124,20 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
             }
          }
          if (element instanceof AbstractWorkflowArtifact) {
-            return ((AbstractWorkflowArtifact) element).getAttributesToStringUnique(getAttributeType(), ";");
+            AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) element;
+            String result = awa.getAttributesToStringUnique(getAttributeType(), ";");
+            if (Strings.isValid(result)) {
+               return result;
+            }
+            if (isInheritParentWithDefault() && !awa.isTeamWorkflow() && awa.getParentTeamWorkflow() != null) {
+               result =
+                  Collections.toString("; ", awa.getParentTeamWorkflow().getAttributesToStringList(getAttributeType()));
+               if (Strings.isValid(result)) {
+                  return result;
+               }
+            }
          }
-         if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
+         if (Artifacts.isOfType(element, AtsArtifactTypes.Action) && (isActionRollupWithDefault())) {
             Set<String> strs = new LinkedHashSet<>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                String str = getColumnText(team, column, columnIndex);
@@ -137,7 +150,21 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
       } catch (Exception ex) {
          return LogUtil.getCellExceptionString(ex);
       }
-      return null;
+      return "";
+   }
+
+   private boolean isActionRollupWithDefault() {
+      if (isActionRollup() == null) {
+         return false;
+      }
+      return isActionRollup();
+   }
+
+   private boolean isInheritParentWithDefault() {
+      if (isInheritParent() == null) {
+         return false;
+      }
+      return isInheritParent();
    }
 
    private boolean isBooleanShow() {
@@ -194,6 +221,8 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
       newXCol.setBooleanNotSetShow(getBooleanNotSetShow());
       newXCol.setBooleanOnFalseShow(getBooleanOnFalseShow());
       newXCol.setBooleanOnTrueShow(getBooleanOnTrueShow());
+      newXCol.setInheritParent(isInheritParent());
+      newXCol.setActionRollup(isActionRollup());
       return newXCol;
    }
 

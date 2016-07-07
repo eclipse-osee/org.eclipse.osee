@@ -21,6 +21,8 @@ import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 
 /**
+ * XViewerAtsColumn for columns that provide their text through AtsColumnService and are not strictly attribute based.
+ *
  * @author Donald G. Dunne
  */
 public class AtsColumnIdUI extends XViewerAtsColumn implements IXViewerValueColumn {
@@ -35,6 +37,8 @@ public class AtsColumnIdUI extends XViewerAtsColumn implements IXViewerValueColu
          columnIdColumn.getDescription());
       this.columnIdColumn = columnIdColumn;
       this.services = services;
+      setInheritParent(columnIdColumn.isInheritParent());
+      setActionRollup(columnIdColumn.isActionRollup());
    }
 
    /**

@@ -17,7 +17,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.column.AssigneeColumnUI;
-import org.eclipse.osee.ats.column.AtsColumnIdUI;
 import org.eclipse.osee.ats.column.ChangeTypeColumnUI;
 import org.eclipse.osee.ats.column.CreatedDateColumnUI;
 import org.eclipse.osee.ats.column.GoalOrderColumn;
@@ -26,7 +25,6 @@ import org.eclipse.osee.ats.column.PriorityColumnUI;
 import org.eclipse.osee.ats.column.TargetedVersionColumnUI;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
-import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.ats.world.WorldXViewerSorter;
@@ -43,12 +41,11 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
    private List<? extends XViewerColumn> getGoalViewerVisibleColumns() {
       List<XViewerColumn> columns = Arrays.asList(GoalOrderColumn.getInstance(), GoalOrderVoteColumn.getInstance(),
          new XViewerAtsAttributeValueColumn(AtsColumnToken.TitleColumn),
-         new AtsColumnIdUI(AtsColumnToken.TypeColumn, AtsClientService.get().getServices()),
-         new AtsColumnIdUI(AtsColumnToken.StateColumn, AtsClientService.get().getServices()),
-         PriorityColumnUI.getInstance(), ChangeTypeColumnUI.getInstance(), AssigneeColumnUI.getInstance(),
-         new AtsColumnIdUI(AtsColumnToken.AtsIdColumnShow, AtsClientService.get().getServices()),
-         new CreatedDateColumnUI(), TargetedVersionColumnUI.getInstance(),
-         new AtsColumnIdUI(AtsColumnToken.StateColumn, AtsClientService.get().getServices()));
+         WorldXViewerFactory.getColumnServiceColumn(AtsColumnToken.TypeColumn),
+         WorldXViewerFactory.getColumnServiceColumn(AtsColumnToken.StateColumn), PriorityColumnUI.getInstance(),
+         ChangeTypeColumnUI.getInstance(), AssigneeColumnUI.getInstance(),
+         WorldXViewerFactory.getColumnServiceColumn(AtsColumnToken.AtsIdColumnShow), new CreatedDateColumnUI(),
+         TargetedVersionColumnUI.getInstance(), WorldXViewerFactory.getColumnServiceColumn(AtsColumnToken.StateColumn));
       return columns;
    }
    private final Integer[] widths = new Integer[] {

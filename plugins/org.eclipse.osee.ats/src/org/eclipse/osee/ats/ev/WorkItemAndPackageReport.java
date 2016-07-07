@@ -103,7 +103,7 @@ public class WorkItemAndPackageReport extends XNavigateItemAction {
                   workItemArt.getSoleAttributeValue(AtsAttributeTypes.AtsId, ""),
                   item.getParentTeamWorkflow().getTeamDefinition().getName(),
                   item.getStateMgr().getCurrentStateName(),
-                  AtsAttributeValueColumnHandler.getColumnText(item, AtsAttributeTypes.PercentComplete, false,
+                  AtsAttributeValueColumnHandler.getColumnText(item, AtsAttributeTypes.PercentComplete, false, false,
                      AtsClientService.get().getServices()),
                   PercentCompleteTotalColumn.getInstance().getColumnText(workItemArt, null, 0),
                   item.getStateMgr().getAssigneesStr(),
