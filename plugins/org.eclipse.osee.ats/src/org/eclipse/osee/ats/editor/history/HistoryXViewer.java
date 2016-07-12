@@ -32,8 +32,4 @@ public class HistoryXViewer extends XViewer {
       getLabelProvider().dispose();
    }
 
-   public XHistoryViewer getXUserRoleViewer() {
-      return xUserRoleViewer;
-   }
-
 }

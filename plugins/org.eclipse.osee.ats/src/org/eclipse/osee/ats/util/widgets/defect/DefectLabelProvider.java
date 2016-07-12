@@ -115,7 +115,4 @@ public class DefectLabelProvider extends XViewerLabelProvider {
       // do nothing
    }
 
-   public DefectXViewer getTreeViewer() {
-      return xViewer;
-   }
 }

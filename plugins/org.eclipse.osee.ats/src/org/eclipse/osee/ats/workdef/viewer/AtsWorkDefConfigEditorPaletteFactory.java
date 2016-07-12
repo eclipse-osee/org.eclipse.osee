@@ -19,7 +19,7 @@ import org.eclipse.gef.palette.ToolEntry;
 
 /**
  * Utility class that can create a GEF Palette.
- * 
+ *
  * @see #createPalette()
  * @author Donald G. Dunne
  */
@@ -28,7 +28,7 @@ final class AtsWorkDefConfigEditorPaletteFactory {
    /**
     * Creates the PaletteRoot and adds all palette elements. Use this factory method to create a new palette for your
     * graphical editor.
-    * 
+    *
     * @return a new PaletteRoot
     */
    static PaletteRoot createPalette(AtsWorkDefConfigEditor editor) {
@@ -51,7 +51,6 @@ final class AtsWorkDefConfigEditorPaletteFactory {
       return toolbar;
    }
 
-   /** Utility class. */
    private AtsWorkDefConfigEditorPaletteFactory() {
       // Utility class
    }

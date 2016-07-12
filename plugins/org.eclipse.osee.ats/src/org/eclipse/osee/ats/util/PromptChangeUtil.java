@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 
 /**
@@ -29,27 +28,8 @@ public final class PromptChangeUtil {
       // Utility class
    }
 
-   public static boolean promptChangePercentAttribute(AbstractWorkflowArtifact sma, IAttributeType attributeType, boolean persist) {
-      try {
-         return ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(new Artifact[] {sma}), persist);
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      return false;
-   }
-
    public static boolean promptChangeAttribute(final Collection<? extends AbstractWorkflowArtifact> awas, IAttributeType attributeType, boolean persist, boolean multiLine) {
       return ArtifactPromptChange.promptChangeAttribute(attributeType, awas, persist, multiLine);
-   }
-
-   public static boolean promptChangeAttribute(final Artifact sma, IAttributeType attributeType, boolean persist, boolean multiLine) {
-      try {
-         return ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(new Artifact[] {sma}), persist,
-            multiLine);
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      return false;
    }
 
    public static boolean promptChangeAttribute(AbstractWorkflowArtifact sma, IAttributeType attributeType, final boolean persist, boolean multiLine) {
@@ -57,17 +37,6 @@ public final class PromptChangeUtil {
          return ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(sma), persist, multiLine);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      return false;
-   }
-
-   public static boolean promptChangeDate(AbstractWorkflowArtifact sma, IAttributeType attributeType, boolean persist) {
-      try {
-         return ArtifactPromptChange.promptChangeAttribute(attributeType, java.util.Collections.singleton(sma),
-            persist);
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
-            "Can't save " + attributeType.getUnqualifiedName() + " date to artifact " + sma.getAtsId(), ex);
       }
       return false;
    }

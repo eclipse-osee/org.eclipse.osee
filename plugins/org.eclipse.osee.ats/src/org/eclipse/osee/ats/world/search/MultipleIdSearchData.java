@@ -23,12 +23,12 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class MultipleIdSearchData implements IWorldEditorConsumer {
    private String enteredIds = "";
-   private List<String> ids = new ArrayList<>();
+   private final List<String> ids = new ArrayList<>();
    private boolean includeArtIds;
    private BranchId branch;
    private String name;
    private WorldEditor worldEditor;
-   private AtsEditor atsEditor;
+   private final AtsEditor atsEditor;
 
    public MultipleIdSearchData(String name, AtsEditor atsEditor) {
       this.name = name;
@@ -90,10 +90,6 @@ public class MultipleIdSearchData implements IWorldEditorConsumer {
       this.enteredIds = enteredIds;
    }
 
-   public void setIds(List<String> ids) {
-      this.ids = ids;
-   }
-
    public void setIncludeArtIds(boolean includeArtIds) {
       this.includeArtIds = includeArtIds;
    }
@@ -108,10 +104,6 @@ public class MultipleIdSearchData implements IWorldEditorConsumer {
 
    public AtsEditor getAtsEditor() {
       return atsEditor;
-   }
-
-   public void setAtsEditor(AtsEditor atsEditor) {
-      this.atsEditor = atsEditor;
    }
 
 }

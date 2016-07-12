@@ -91,8 +91,4 @@ public class TaskWrapper implements IActionWalkerItem {
       }
    }
 
-   public TeamWorkFlowArtifact getTeamArt() {
-      return teamArt;
-   }
-
 }

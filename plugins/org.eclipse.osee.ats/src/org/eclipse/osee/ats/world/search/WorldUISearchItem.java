@@ -33,10 +33,6 @@ public abstract class WorldUISearchItem extends WorldSearchItem {
       this(name, LoadView.WorldEditor, oseeImage);
    }
 
-   public WorldUISearchItem(String name, LoadView loadView) {
-      this(name, loadView, null);
-   }
-
    public WorldUISearchItem(String name, LoadView loadView, KeyedImage oseeImage) {
       super(name, loadView, oseeImage);
    }

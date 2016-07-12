@@ -23,14 +23,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class MyFavoritesSearchItem extends UserSearchItem {
 
-   public MyFavoritesSearchItem(String name) {
-      this(name, null);
-   }
-
-   public MyFavoritesSearchItem() {
-      this("My Favorites", null);
-   }
-
    public MyFavoritesSearchItem(String name, IAtsUser user) {
       super(name, user, AtsImage.FAVORITE);
    }

@@ -253,10 +253,6 @@ public class ReviewInfoXWidget extends XLabelValueBase {
       return html.toString();
    }
 
-   public String toHTML() throws OseeCoreException {
-      return ReviewInfoXWidget.toHTML(teamArt, forState);
-   }
-
    private void createReviewHyperlink(Composite comp, IManagedForm managedForm, XFormToolkit toolkit, final AbstractReviewArtifact revArt, IStateToken forState) throws OseeCoreException {
 
       Composite workComp = toolkit.createContainer(comp, 1);

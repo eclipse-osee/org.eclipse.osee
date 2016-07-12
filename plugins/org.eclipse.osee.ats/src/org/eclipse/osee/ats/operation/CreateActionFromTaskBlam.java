@@ -167,19 +167,19 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
    public String getXWidgetsXml() throws OseeCoreException {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + TASKS + "\" />" +
       //
-      "<XWidget xwidgetType=\"XHyperlabelActionableItemSelection\" displayName=\"" + ACTIONABLE_ITEMS + "\" horizontalLabel=\"true\"/>" +
-      //
-      "<XWidget xwidgetType=\"XText\" displayName=\"" + TITLE + "\" horizontalLabel=\"true\" defaultValue=\"" + getDefaultTitle() + "\"/>" +
-      //
-      "<XWidget displayName=\"" + CHANGE_TYPE + "\" xwidgetType=\"XCombo(" + Collections.toString(",",
-         AttributeTypeManager.getEnumerationValues(
-            AtsAttributeTypes.ChangeType)) + ")\" required=\"true\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.ChangeType.getDescription() + "\"/>" +
-            //
-            "<XWidget displayName=\"" + PRIORITY + "\" xwidgetType=\"XCombo(" + Collections.toString(",",
-               AttributeTypeManager.getEnumerationValues(
-                  AtsAttributeTypes.PriorityType)) + ")\" required=\"true\" horizontalLabel=\"true\"/>" +
-                  //
-                  "</xWidgets>";
+         "<XWidget xwidgetType=\"XHyperlabelActionableItemSelection\" displayName=\"" + ACTIONABLE_ITEMS + "\" horizontalLabel=\"true\"/>" +
+         //
+         "<XWidget xwidgetType=\"XText\" displayName=\"" + TITLE + "\" horizontalLabel=\"true\" defaultValue=\"" + getDefaultTitle() + "\"/>" +
+         //
+         "<XWidget displayName=\"" + CHANGE_TYPE + "\" xwidgetType=\"XCombo(" + Collections.toString(",",
+            AttributeTypeManager.getEnumerationValues(
+               AtsAttributeTypes.ChangeType)) + ")\" required=\"true\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.ChangeType.getDescription() + "\"/>" +
+         //
+         "<XWidget displayName=\"" + PRIORITY + "\" xwidgetType=\"XCombo(" + Collections.toString(",",
+            AttributeTypeManager.getEnumerationValues(
+               AtsAttributeTypes.PriorityType)) + ")\" required=\"true\" horizontalLabel=\"true\"/>" +
+         //
+         "</xWidgets>";
    }
 
    /**
@@ -204,16 +204,6 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
       return "Create Action from task and relate using supporting information relation.";
    }
 
-   /**
-    * @return the defaultTeamWorkflows
-    */
-   public Collection<TaskArtifact> getDefaultTeamWorkflows() {
-      return taskArtifacts;
-   }
-
-   /**
-    * @param taskArtifacts the defaultTeamWorkflows to set
-    */
    public void setDefaultTeamWorkflows(Collection<? extends TaskArtifact> taskArtifacts) {
       this.taskArtifacts = new LinkedList<>();
       this.taskArtifacts.addAll(taskArtifacts);

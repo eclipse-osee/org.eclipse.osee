@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.IAttributeColumn;
-import org.eclipse.swt.widgets.TreeColumn;
 
 /**
  * @author Donald G. Dunne
@@ -66,14 +65,10 @@ public class AtsAttributeColumnUtility {
       return false;
    }
 
-   public static boolean isPersistViewer(TreeColumn treeColumn) {
-      return isPersistViewer((XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer());
-   }
-
    public static boolean isPersistViewer(XViewer xViewer) {
       return xViewer != null && //
-      xViewer instanceof IPersistAltLeftClickProvider //
-      && ((IPersistAltLeftClickProvider) xViewer).isAltLeftClickPersist();
+         xViewer instanceof IPersistAltLeftClickProvider //
+         && ((IPersistAltLeftClickProvider) xViewer).isAltLeftClickPersist();
    }
 
 }

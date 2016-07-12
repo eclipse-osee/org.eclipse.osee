@@ -17,7 +17,6 @@ import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -34,10 +33,6 @@ public class ListAndBulletRule extends AbstractValidationRule {
 
    public ListAndBulletRule(IArtifactType artifactType) {
       this.artifactType = artifactType;
-   }
-
-   public boolean hasArtifactType(ArtifactType artType) {
-      return artType.inheritsFrom(artifactType);
    }
 
    @Override

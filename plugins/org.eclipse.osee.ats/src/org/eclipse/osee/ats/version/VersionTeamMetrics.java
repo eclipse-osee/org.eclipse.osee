@@ -95,31 +95,8 @@ public class VersionTeamMetrics {
       }
    }
 
-   /**
-    * @return the verTeamDef
-    */
-   public IAtsTeamDefinition getVerTeamDef() {
-      return verTeamDef;
-   }
-
-   /**
-    * @return the releasedOrderedVersions
-    */
    public List<VersionMetrics> getReleasedOrderedVersions() {
       return releasedOrderedVersions;
    }
 
-   /**
-    * @return the verMets
-    */
-   public Set<VersionMetrics> getVerMets() {
-      return verMets;
-   }
-
-   /**
-    * @return the relDateToVerMet
-    */
-   public Map<Date, VersionMetrics> getRelDateToVerMet() {
-      return relDateToVerMet;
-   }
 }

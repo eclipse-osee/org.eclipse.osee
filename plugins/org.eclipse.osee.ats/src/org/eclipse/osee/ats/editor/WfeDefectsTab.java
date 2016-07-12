@@ -109,7 +109,7 @@ public class WfeDefectsTab extends FormPage implements IRefreshActionHandler, De
          messageLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
          managedForm.getToolkit().adapt(messageLabel, true, true);
 
-         xViewer = new DefectXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, review);
+         xViewer = new DefectXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, null, review);
          xViewer.setContentProvider(new DefectContentProvider(xViewer));
          xViewer.setLabelProvider(new DefectLabelProvider(xViewer));
          xViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));

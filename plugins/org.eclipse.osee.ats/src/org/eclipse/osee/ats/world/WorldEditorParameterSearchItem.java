@@ -146,15 +146,6 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       this.tableLoadOptions = tableLoadOptions;
    }
 
-   public CustomizeData getCustomizeData() {
-      return customizeData;
-   }
-
-   @Override
-   public TableLoadOption[] getTableLoadOptions() {
-      return tableLoadOptions;
-   }
-
    /**
     * Called in the display thread to allow parameters to be retrieved or other setup prior to searching in background
     * thread.

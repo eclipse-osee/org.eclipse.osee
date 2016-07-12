@@ -134,8 +134,4 @@ public class VersionMetrics {
       return verArt;
    }
 
-   public VersionTeamMetrics getVerTeamMet() {
-      return verTeamMet;
-   }
-
 }

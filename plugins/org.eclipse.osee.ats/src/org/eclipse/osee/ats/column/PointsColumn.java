@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
@@ -41,10 +39,6 @@ public class PointsColumn extends XViewerAtsAttributeValueColumn {
       PointsColumn newXCol = new PointsColumn();
       super.copy(this, newXCol);
       return newXCol;
-   }
-
-   public static String getPoints(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      return teamArt.getSoleAttributeValue(AtsAttributeTypes.Points, "");
    }
 
 }

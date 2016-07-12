@@ -129,10 +129,6 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
       return new Object[] {};
    }
 
-   public double getWeight(Object entity1, Object entity2) {
-      return 0;
-   }
-
    @Override
    public void dispose() {
       // do nothing

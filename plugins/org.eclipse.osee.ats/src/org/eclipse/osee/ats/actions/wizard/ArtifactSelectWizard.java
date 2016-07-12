@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.actions.wizard;
 
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
@@ -34,10 +33,6 @@ public class ArtifactSelectWizard extends Wizard {
    @Override
    public boolean canFinish() {
       return wizardPage.isPageComplete();
-   }
-
-   public Artifact getSelectedArtifact() {
-      return wizardPage.getSelectedArtifact();
    }
 
 }

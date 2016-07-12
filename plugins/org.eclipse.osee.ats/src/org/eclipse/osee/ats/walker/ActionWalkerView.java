@@ -246,10 +246,6 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
       }
    }
 
-   public void processWindowDeActivated(IWorkbenchPart part) {
-      processWindowActivated();
-   }
-
    @Override
    public void partActivated(IWorkbenchPart part) {
       processWindowActivated();
@@ -309,7 +305,7 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
       }
       if (artifactEvent.isModifiedReloaded(activeAwa) ||
       //
-      artifactEvent.isRelAddedChangedDeleted(activeAwa)) {
+         artifactEvent.isRelAddedChangedDeleted(activeAwa)) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
@@ -402,10 +398,6 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
 
    public void setActiveGraphItem(IActionWalkerItem activeGraphItem) {
       this.activeGraphItem = activeGraphItem;
-   }
-
-   public IActionWalkerItem getActiveGraphItem() {
-      return activeGraphItem;
    }
 
    public AbstractWorkflowArtifact getActiveAwa() {

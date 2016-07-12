@@ -48,11 +48,6 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
       this.teamDef = null;
    }
 
-   public GenerateFullVersionReportItem(XNavigateItem parent, IAtsTeamDefinition teamDef) {
-      super(parent, "Generate Full Version Report", FrameworkImage.VERSION);
-      this.teamDef = teamDef;
-   }
-
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       IAtsTeamDefinition teamDef = getTeamDefinition();

@@ -92,8 +92,4 @@ public class GoalMemberWrapper implements IActionWalkerItem {
       }
    }
 
-   public GoalArtifact getGoal() {
-      return goal;
-   }
-
 }

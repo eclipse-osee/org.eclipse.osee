@@ -14,12 +14,10 @@ import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.goal.AbstractMemberProvider;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -74,11 +72,6 @@ public class SprintMemberProvider extends AbstractMemberProvider {
    @Override
    public IXViewerFactory getXViewerFactory(Artifact awa) {
       return new SprintXViewerFactory((SprintArtifact) awa, this);
-   }
-
-   @Override
-   public IArtifactType getArtifactType() {
-      return AtsArtifactTypes.AgileSprint;
    }
 
    @Override

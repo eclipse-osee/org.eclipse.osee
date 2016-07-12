@@ -120,10 +120,6 @@ public class EstimatedCompletionDateColumn extends XViewerAtsAttributeValueColum
       return null;
    }
 
-   public static String getDateStr(AbstractWorkflowArtifact artifact) throws OseeCoreException {
-      return DateUtil.getMMDDYY(getDate(artifact));
-   }
-
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {

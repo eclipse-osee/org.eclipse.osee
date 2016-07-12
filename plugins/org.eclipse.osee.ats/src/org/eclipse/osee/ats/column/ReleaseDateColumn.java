@@ -10,11 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
-import java.util.Date;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
@@ -42,23 +39,4 @@ public class ReleaseDateColumn extends AbstractWorkflowVersionDateColumn {
       return newXCol;
    }
 
-   public static Date getDateFromWorkflow(Object object) throws OseeCoreException {
-      return AbstractWorkflowVersionDateColumn.getDateFromWorkflow(AtsAttributeTypes.ReleaseDate, object);
-   }
-
-   public static Date getDateFromTargetedVersion(Object object) throws OseeCoreException {
-      return AbstractWorkflowVersionDateColumn.getDateFromTargetedVersion(AtsAttributeTypes.ReleaseDate, object);
-   }
-
-   public static String getDateStrFromWorkflow(AbstractWorkflowArtifact artifact) throws OseeCoreException {
-      return AbstractWorkflowVersionDateColumn.getDateStrFromWorkflow(AtsAttributeTypes.ReleaseDate, artifact);
-   }
-
-   public static String getDateStrFromTargetedVersion(AbstractWorkflowArtifact artifact) throws OseeCoreException {
-      return AbstractWorkflowVersionDateColumn.getDateStrFromTargetedVersion(AtsAttributeTypes.ReleaseDate, artifact);
-   }
-
-   public static String getDateStr(AbstractWorkflowArtifact artifact) throws OseeCoreException {
-      return AbstractWorkflowVersionDateColumn.getDateStr(AtsAttributeTypes.ReleaseDate, artifact);
-   }
 }

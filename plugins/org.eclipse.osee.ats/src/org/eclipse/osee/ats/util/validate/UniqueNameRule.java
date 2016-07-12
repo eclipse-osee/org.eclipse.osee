@@ -40,10 +40,6 @@ public class UniqueNameRule extends AbstractValidationRule {
       return artType.inheritsFrom(artifactType);
    }
 
-   public IArtifactType getArtifactType() {
-      return artifactType;
-   }
-
    @Override
    protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor) throws OseeCoreException {
       Collection<String> errorMessages = new ArrayList<>();
@@ -86,8 +82,8 @@ public class UniqueNameRule extends AbstractValidationRule {
 
    private boolean isImplementationDetailsChild(Artifact childArtifact, Artifact parentArtifact) {
       return parentArtifact.getArtifactType().equals(CoreArtifactTypes.SoftwareRequirement) && //
-      (childArtifact.isOfType(CoreArtifactTypes.ImplementationDetails) && //
-      childArtifact.getParent().equals(parentArtifact));
+         (childArtifact.isOfType(CoreArtifactTypes.ImplementationDetails) && //
+            childArtifact.getParent().equals(parentArtifact));
    }
 
    private void addGuidPair(String guidA, String guidB) {

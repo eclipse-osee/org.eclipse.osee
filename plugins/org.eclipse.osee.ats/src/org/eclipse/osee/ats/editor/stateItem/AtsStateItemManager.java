@@ -73,7 +73,4 @@ public class AtsStateItemManager {
       }
    }
 
-   public static List<IAtsStateItem> getAllStateItems() {
-      return stateItems;
-   }
 }

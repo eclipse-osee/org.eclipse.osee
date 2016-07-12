@@ -25,7 +25,6 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
@@ -57,9 +56,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.notify.ArtifactEmailWizard;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.XWorldTextFilter;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
@@ -82,7 +79,6 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.IAttributeColumn;
-import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -324,35 +320,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       return true;
    }
 
-   public void handleEmailSelectedAtsObject() throws OseeCoreException {
-      Artifact art = getSelectedArtifacts().iterator().next();
-      if (art.isOfType(AtsArtifactTypes.Action)) {
-         if (ActionManager.getTeams(art).size() > 1) {
-            art = AtsUtil.promptSelectTeamWorkflow(art);
-            if (art == null) {
-               return;
-            }
-         } else {
-            art = ActionManager.getFirstTeam(art);
-         }
-      }
-      if (art != null) {
-         ArtifactEmailWizard ew = new ArtifactEmailWizard((AbstractWorkflowArtifact) art);
-         WizardDialog dialog = new WizardDialog(Displays.getActiveShell(), ew);
-         dialog.create();
-         dialog.open();
-      }
-   }
-
-   public AbstractWorkflowArtifact getSelectedSMA() {
-      Object obj = null;
-      if (getSelectedArtifactItems().isEmpty()) {
-         return null;
-      }
-      obj = getTree().getSelection()[0].getData();
-      return obj != null && obj instanceof AbstractWorkflowArtifact ? (AbstractWorkflowArtifact) obj : null;
-   }
-
    /**
     * Create Edit menu at top to make easier for users to see and eventually enable menu to get rid of all separate edit
     * items
@@ -496,29 +463,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    }
 
    /**
-    * @return true if all selected are Workflow OR are Actions with single workflow
-    */
-   public boolean isSelectedTeamWorkflowArtifacts() {
-      TreeItem items[] = getTree().getSelection();
-      if (items.length > 0) {
-         for (TreeItem item : items) {
-            if (Artifacts.isOfType(item.getData(), AtsArtifactTypes.Action)) {
-               try {
-                  if (ActionManager.getTeams(item.getData()).size() != 1) {
-                     return false;
-                  }
-               } catch (OseeCoreException ex) {
-                  // Do Nothing
-               }
-            } else if (!Artifacts.isOfType(item.getData(), AtsArtifactTypes.TeamWorkflow)) {
-               return false;
-            }
-         }
-      }
-      return true;
-   }
-
-   /**
     * @return all selected Workflow and any workflow that have Actions with single workflow
     */
    @Override
@@ -579,26 +523,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       return actionArts;
    }
 
-   public void setCancelledNotification() {
-      TreeItem item = getTree().getItem(0);
-      if (item.getData() instanceof String) {
-         item.setData(TeamState.Cancelled.getName());
-      }
-      refresh(item.getData());
-   }
-
-   /**
-    * @param title string to be used in reporting
-    */
    public void setReportingTitle(String title) {
       this.title = title;
-   }
-
-   /**
-    * @return Returns the title.
-    */
-   public String getTitle() {
-      return title;
    }
 
    public List<Artifact> getSelectedArtifactItems() {
@@ -614,10 +540,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
 
    @Override
    public String getStatusString() {
-      return extendedStatusString;
-   }
-
-   public String getExtendedStatusString() {
       return extendedStatusString;
    }
 

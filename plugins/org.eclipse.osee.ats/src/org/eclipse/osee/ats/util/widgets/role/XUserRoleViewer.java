@@ -447,13 +447,6 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
       return html.toString();
    }
 
-   /**
-    * @return Returns the xViewer.
-    */
-   public UserRoleXViewer getXViewer() {
-      return xViewer;
-   }
-
    @Override
    public Object getData() {
       return xViewer.getInput();
@@ -461,10 +454,6 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
 
    public IDirtiableEditor getEditor() {
       return editor;
-   }
-
-   public void setEditor(IDirtiableEditor editor) {
-      this.editor = editor;
    }
 
    public PeerToPeerReviewArtifact getReviewArt() {

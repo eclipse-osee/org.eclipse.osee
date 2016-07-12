@@ -37,10 +37,6 @@ public class SubscribeManagerUI {
       this.awas = awas;
    }
 
-   public void toggleSubscribe() {
-      toggleSubscribe(true);
-   }
-
    public void toggleSubscribe(boolean prompt) {
       try {
          if (SubscribeManager.amISubscribed(awas.iterator().next())) {

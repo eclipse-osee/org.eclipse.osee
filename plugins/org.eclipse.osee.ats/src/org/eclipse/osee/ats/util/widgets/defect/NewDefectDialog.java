@@ -117,17 +117,6 @@ public class NewDefectDialog extends EntryDialog {
       return entryText2;
    }
 
-   public void setEntry2(String entry2) {
-      if (text2 != null) {
-         text2.set(entry2);
-      }
-      this.entryText2 = entry2;
-   }
-
-   public void setOkListener(Listener okListener) {
-      this.okListener = okListener;
-   }
-
    @Override
    protected void buttonPressed(int buttonId) {
       super.buttonPressed(buttonId);

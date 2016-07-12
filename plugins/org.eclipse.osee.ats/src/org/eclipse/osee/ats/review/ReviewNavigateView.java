@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.actions.OpenWorkflowByIdAction;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
@@ -51,9 +50,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.UIJob;
 
@@ -206,17 +203,6 @@ public class ReviewNavigateView extends ViewPart implements IXNavigateEventListe
       toolbarManager.add(new OpenWorkflowByIdAction("Open Review by ID"));
       getViewSite().getActionBars().updateActionBars();
       toolbarManager.update(true);
-   }
-
-   public static ReviewNavigateView getNavigateView() {
-      IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-      try {
-         return (ReviewNavigateView) page.showView(ReviewNavigateView.VIEW_ID);
-      } catch (PartInitException e1) {
-         MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Launch Error",
-            "Couldn't Launch OSEE Review NavigateView " + e1.getMessage());
-      }
-      return null;
    }
 
    @Override

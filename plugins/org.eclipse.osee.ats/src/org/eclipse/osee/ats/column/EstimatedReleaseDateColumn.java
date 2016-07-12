@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.column;
 
 import java.util.Date;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -51,16 +50,4 @@ public class EstimatedReleaseDateColumn extends AbstractWorkflowVersionDateColum
          object);
    }
 
-   public static String getDateStrFromWorkflow(AbstractWorkflowArtifact artifact) throws OseeCoreException {
-      return AbstractWorkflowVersionDateColumn.getDateStrFromWorkflow(AtsAttributeTypes.EstimatedReleaseDate, artifact);
-   }
-
-   public static String getDateStrFromTargetedVersion(AbstractWorkflowArtifact artifact) throws OseeCoreException {
-      return AbstractWorkflowVersionDateColumn.getDateStrFromTargetedVersion(AtsAttributeTypes.EstimatedReleaseDate,
-         artifact);
-   }
-
-   public static String getDateStr(AbstractWorkflowArtifact artifact) throws OseeCoreException {
-      return AbstractWorkflowVersionDateColumn.getDateStr(AtsAttributeTypes.EstimatedReleaseDate, artifact);
-   }
 }

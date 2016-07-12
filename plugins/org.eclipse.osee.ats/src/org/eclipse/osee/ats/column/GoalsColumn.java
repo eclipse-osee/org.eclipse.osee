@@ -101,10 +101,6 @@ public class GoalsColumn extends XViewerAtsColumn implements IXViewerValueColumn
       return false;
    }
 
-   public static boolean promptChangeGoals(Artifact sma, boolean persist) throws OseeCoreException {
-      return promptChangeGoals(Arrays.asList(sma), persist);
-   }
-
    public static boolean promptChangeGoals(final Collection<? extends Artifact> awas, boolean persist) throws OseeCoreException {
       Set<Artifact> selected = new HashSet<>();
       for (Artifact awa : awas) {

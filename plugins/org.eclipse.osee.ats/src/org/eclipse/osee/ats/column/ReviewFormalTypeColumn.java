@@ -10,17 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
-import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.review.ReviewFormalType;
-import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
@@ -48,15 +41,4 @@ public class ReviewFormalTypeColumn extends XViewerAtsAttributeValueColumn {
       return newXCol;
    }
 
-   public static ReviewFormalType getReviewFormalType(Artifact artifact) throws OseeCoreException {
-      String value = artifact.getSoleAttributeValue(AtsAttributeTypes.ReviewFormalType, "");
-      if (Strings.isValid(value)) {
-         try {
-            return ReviewFormalType.valueOf(value);
-         } catch (IllegalArgumentException ex) {
-            OseeLog.logf(Activator.class, Level.SEVERE, ex, "Unexpected formal type [%s]", value);
-         }
-      }
-      return null;
-   }
 }

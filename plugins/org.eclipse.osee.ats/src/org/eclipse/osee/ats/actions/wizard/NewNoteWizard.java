@@ -11,9 +11,7 @@
 package org.eclipse.osee.ats.actions.wizard;
 
 import java.util.Collection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.ui.IWorkbench;
 
 /**
  * @author Donald G. Dunne
@@ -31,10 +29,6 @@ public class NewNoteWizard extends Wizard {
    @Override
    public boolean performFinish() {
       return true;
-   }
-
-   public void init(IWorkbench workbench, IStructuredSelection selection) {
-      // do nothing
    }
 
    @Override

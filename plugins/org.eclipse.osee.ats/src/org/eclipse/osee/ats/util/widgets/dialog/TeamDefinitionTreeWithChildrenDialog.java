@@ -84,12 +84,4 @@ public class TeamDefinitionTreeWithChildrenDialog extends FilteredCheckboxTreeDi
       return container;
    }
 
-   public boolean isRecurseChildren() {
-      return recurseChildren;
-   }
-
-   public void setRecurseChildren(boolean recurseChildren) {
-      this.recurseChildren = recurseChildren;
-   }
-
 }

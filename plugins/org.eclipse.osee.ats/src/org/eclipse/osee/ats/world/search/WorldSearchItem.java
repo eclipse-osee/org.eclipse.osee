@@ -31,7 +31,7 @@ public abstract class WorldSearchItem {
    protected static final Set<Artifact> EMPTY_SET = new HashSet<>();
    protected boolean cancelled = false;
    private LoadView loadView;
-   private KeyedImage oseeImage;
+   private final KeyedImage oseeImage;
    public static enum LoadView {
       TaskEditor,
       WorldEditor,
@@ -41,10 +41,6 @@ public abstract class WorldSearchItem {
       Search,
       ReSearch
    };
-
-   public WorldSearchItem(String name, LoadView loadView) {
-      this(name, loadView, null);
-   }
 
    public WorldSearchItem(String name, LoadView loadView, boolean cancelled, KeyedImage oseeImage) {
       super();
@@ -80,10 +76,6 @@ public abstract class WorldSearchItem {
       return cancelled;
    }
 
-   public void setCancelled(boolean cancelled) {
-      this.cancelled = cancelled;
-   }
-
    public LoadView getLoadView() {
       return loadView;
    }
@@ -108,10 +100,6 @@ public abstract class WorldSearchItem {
 
    public KeyedImage getOseeImage() {
       return oseeImage;
-   }
-
-   public void setOseeImage(KeyedImage oseeImage) {
-      this.oseeImage = oseeImage;
    }
 
 }

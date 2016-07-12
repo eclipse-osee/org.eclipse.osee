@@ -20,9 +20,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
  */
 public class OpenReviewPerspectiveHandler extends AbstractHandler {
 
-   public OpenReviewPerspectiveHandler() {
-   }
-
    @Override
    public Object execute(ExecutionEvent event) {
       AWorkbench.openPerspective(ReviewPerspective.ID);

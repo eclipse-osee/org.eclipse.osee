@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.Import;
 
-import java.io.FileFilter;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
@@ -308,10 +307,6 @@ public class ExcelAtsActionArtifactExtractor {
     */
    public Set<Artifact> getActionArts() {
       return actionArts;
-   }
-
-   public FileFilter getFileFilter() {
-      return null;
    }
 
    public String getName() {

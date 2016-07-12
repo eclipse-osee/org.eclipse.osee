@@ -59,15 +59,6 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
    }
 
    @Override
-   public TableLoadOption[] getTableLoadOptions() {
-      return tableLoadOptions;
-   }
-
-   public CustomizeData getCustomizeData() {
-      return customizeData;
-   }
-
-   @Override
    public void setTableLoadOptions(TableLoadOption... tableLoadOptions) {
       this.tableLoadOptions = tableLoadOptions;
    }
@@ -205,10 +196,6 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
       ArtifactQuery.reloadArtifacts(artifacts);
       worldEditor.getWorldComposite().load(name != null ? name : "", artifacts, customizeData);
 
-   }
-
-   public boolean isLoading() {
-      return loading;
    }
 
    public void setLoading(final boolean loading) {

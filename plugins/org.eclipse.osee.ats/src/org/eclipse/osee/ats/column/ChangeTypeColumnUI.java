@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.internal.Activator;
@@ -66,13 +65,6 @@ public class ChangeTypeColumnUI extends XViewerAtsAttributeValueColumn {
       ChangeTypeColumnUI newXCol = new ChangeTypeColumnUI();
       super.copy(this, newXCol);
       return newXCol;
-   }
-
-   public static boolean promptChangeType(AbstractWorkflowArtifact sma, boolean persist) {
-      if (sma.isTeamWorkflow()) {
-         return promptChangeType(Arrays.asList((TeamWorkFlowArtifact) sma), persist);
-      }
-      return false;
    }
 
    public static boolean promptChangeType(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist) {

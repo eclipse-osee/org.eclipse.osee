@@ -25,11 +25,6 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
 
    private final Active active;
 
-   public TeamDefinitionTreeContentProvider() {
-      super();
-      this.active = null;
-   }
-
    public TeamDefinitionTreeContentProvider(Active active) {
       super();
       this.active = active;

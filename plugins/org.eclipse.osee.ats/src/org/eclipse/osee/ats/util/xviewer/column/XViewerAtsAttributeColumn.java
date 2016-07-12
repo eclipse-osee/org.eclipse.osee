@@ -55,11 +55,6 @@ public class XViewerAtsAttributeColumn extends XViewerAtsColumn implements IAttr
       this.attributeType = attributeType;
    }
 
-   public XViewerAtsAttributeColumn(IAttributeType attributeType, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      this(attributeType, generateId(attributeType.getUnqualifiedName()), attributeType.getUnqualifiedName(), width,
-         align, show, sortDataType, multiColumnEditable, description);
-   }
-
    private static final String generateId(String unqualifiedName) {
       return WorldXViewerFactory.COLUMN_NAMESPACE + "." + unqualifiedName.replaceAll(" ", "").toLowerCase();
    }

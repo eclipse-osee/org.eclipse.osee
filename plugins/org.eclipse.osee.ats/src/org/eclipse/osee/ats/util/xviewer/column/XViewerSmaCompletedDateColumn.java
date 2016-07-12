@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.util.xviewer.column;
 
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -24,10 +24,6 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
  * @author Donald G. Dunne
  */
 public class XViewerSmaCompletedDateColumn extends XViewerValueColumn {
-
-   public XViewerSmaCompletedDateColumn() {
-      this("Completed");
-   }
 
    public XViewerSmaCompletedDateColumn(String name) {
       super(WorldXViewerFactory.COLUMN_NAMESPACE + "completeDate", name, 80, XViewerAlign.Left, true, SortDataType.Date,

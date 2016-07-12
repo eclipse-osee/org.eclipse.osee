@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
-import org.eclipse.swt.SWT;
 
 public class AtsAttributeValueColumnFactory {
 
@@ -39,14 +37,4 @@ public class AtsAttributeValueColumnFactory {
       return col;
    }
 
-   public static XViewerAlign getColumnAlign(int colNum) {
-      if (colNum == SWT.LEFT) {
-         return XViewerAlign.Left;
-      } else if (colNum == SWT.CENTER) {
-         return XViewerAlign.Center;
-      } else if (colNum == SWT.RIGHT) {
-         return XViewerAlign.Right;
-      }
-      return null;
-   }
 }

@@ -38,12 +38,6 @@ public class WorldEditorInputFactory implements IElementFactory {
    public final static String ATS_SEARCH_UUID = "org.eclipse.osee.ats.WorldEditorInputFactory.atsSearchUuid"; //$NON-NLS-1$
    private static final String ATS_SEARCH_NAMESPACE = "org.eclipse.osee.ats.WorldEditorInputFactory.atsSearchNamespace"; //$NON-NLS-1$;
 
-   public WorldEditorInputFactory() {
-   }
-
-   /*
-    * @see org.eclipse.ui.IElementFactory#createElement(org.eclipse.ui.IMemento)
-    */
    @Override
    public IAdaptable createElement(IMemento memento) {
       long atsSearchUuid = 0L;

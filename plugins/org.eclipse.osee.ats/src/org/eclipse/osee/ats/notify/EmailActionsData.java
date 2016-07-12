@@ -48,10 +48,6 @@ public class EmailActionsData {
       this.body = body;
    }
 
-   public Set<Artifact> getGroups() {
-      return workflows;
-   }
-
    public Result isValid() {
       if (!Strings.isValid(getSubject())) {
          return new Result("Must enter subject");
@@ -71,16 +67,6 @@ public class EmailActionsData {
          }
       }
       return Result.TrueResult;
-   }
-
-   public String getHtmlResult() {
-      StringBuilder html = new StringBuilder();
-
-      html.append("<pre>");
-      html.append(body);
-      html.append("</pre>");
-
-      return html.toString();
    }
 
    public Set<Artifact> getWorkflows() {

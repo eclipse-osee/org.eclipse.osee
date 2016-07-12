@@ -44,7 +44,6 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.osgi.framework.Bundle;
 
 /**
@@ -57,7 +56,7 @@ public final class AtsWorkDefinitionSheetProviders {
    private static List<String> allValidStateNames = null;
 
    private AtsWorkDefinitionSheetProviders() {
-      // private constructor
+      // Utility Class
    }
 
    public static void initializeDatabase(XResultData resultData) throws OseeCoreException {
@@ -108,22 +107,6 @@ public final class AtsWorkDefinitionSheetProviders {
          }
       }
       return allValidStateNames;
-   }
-
-   public static void updateStateNameArtifact(Set<String> stateNames, Artifact folder, SkynetTransaction trans) throws OseeCoreException {
-      Artifact stateNameArt = ArtifactQuery.getArtifactFromToken(
-         org.eclipse.osee.ats.api.data.AtsArtifactToken.WorkDef_State_Names, AtsUtilCore.getAtsBranch());
-      Collection<? extends String> currentStateNames = getAllValidStateNames();
-      Set<String> newStateNames = new HashSet<>();
-      newStateNames.addAll(currentStateNames);
-      for (String name : stateNames) {
-         if (!currentStateNames.contains(name)) {
-            newStateNames.add(name);
-         }
-      }
-      stateNameArt.setSoleAttributeValue(CoreAttributeTypes.GeneralStringData,
-         org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", stateNames));
-      trans.addArtifact(stateNameArt);
    }
 
    private static Artifact createStateNameArtifact(Set<String> stateNames, Artifact folder, IAtsChangeSet changes) throws OseeCoreException {

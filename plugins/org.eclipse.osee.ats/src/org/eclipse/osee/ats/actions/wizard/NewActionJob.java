@@ -35,8 +35,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  * @author Donald G. Dunne
  */
 public class NewActionJob extends Job {
-   private boolean saveIt = false;
-   private String identifyStateDescription = null;
    private String title;
    private final String desc;
    private final ChangeType changeType;
@@ -97,22 +95,6 @@ public class NewActionJob extends Job {
          }
       }
       return Status.OK_STATUS;
-   }
-
-   public String getIdentifyStateDescription() {
-      return identifyStateDescription;
-   }
-
-   public void setIdentifyStateDescription(String identifyStateDescription) {
-      this.identifyStateDescription = identifyStateDescription;
-   }
-
-   public boolean isSaveIt() {
-      return saveIt;
-   }
-
-   public void setSaveIt(boolean saveIt) {
-      this.saveIt = saveIt;
    }
 
    public Artifact getActionArt() {

@@ -80,16 +80,6 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
       return "Import tasks from spreadsheet into given Team Workflow";
    }
 
-   /**
-    * @return the TaskableStateMachineArtifact
-    */
-   public TeamWorkFlowArtifact getTaskableStateMachineArtifact() {
-      return taskableStateMachineArtifact;
-   }
-
-   /**
-    * @param taskableStateMachineArtifact the TaskableStateMachineArtifact to set
-    */
    public void setTaskableStateMachineArtifact(TeamWorkFlowArtifact taskableStateMachineArtifact) {
       this.taskableStateMachineArtifact = taskableStateMachineArtifact;
    }

@@ -124,21 +124,11 @@ public class NextVersionSearchItem extends WorldUISearchItem {
       cancelled = true;
    }
 
-   /**
-    * @param selectedTeamDef the selectedTeamDef to set
-    */
-   public void setSelectedTeamDef(IAtsTeamDefinition selectedTeamDef) {
-      this.selectedTeamDef = selectedTeamDef;
-   }
-
    @Override
    public WorldUISearchItem copy() {
       return new NextVersionSearchItem(this);
    }
 
-   /**
-    * @return the selectedVersionArt
-    */
    public IAtsVersion getSelectedVersionArt() {
       return selectedVersionArt;
    }

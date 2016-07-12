@@ -77,11 +77,6 @@ public class OpenNewAtsTaskEditorActionTest extends AbstractAtsActionRunTest {
                }
 
                @Override
-               public TableLoadOption[] getTableLoadOptions() throws OseeCoreException {
-                  return null;
-               }
-
-               @Override
                public Collection<? extends Artifact> getTaskEditorTaskArtifacts() throws OseeCoreException {
                   return null;
                }

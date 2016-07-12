@@ -31,10 +31,6 @@ public class TeamDefinitionSearchWidget {
       this.searchItem = searchItem;
    }
 
-   public void addWidget() {
-      addWidget(0);
-   }
-
    public void addWidget(int beginComposite) {
       searchItem.addWidgetXml(String.format(
          "<XWidget displayName=\"%s\" xwidgetType=\"XHyperlabelTeamDefinitionSelection\" horizontalLabel=\"true\" %s />",

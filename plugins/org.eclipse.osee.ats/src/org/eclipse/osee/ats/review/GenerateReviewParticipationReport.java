@@ -167,10 +167,6 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
 
    }
 
-   public IAtsUser getSelectedUser() {
-      return selectedUser;
-   }
-
    public void setSelectedUser(IAtsUser selectedUser) {
       this.selectedUser = selectedUser;
    }

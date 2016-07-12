@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -24,8 +22,6 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.ui.PlatformUI;
@@ -44,10 +40,6 @@ public class FavoritesManager {
    public FavoritesManager(Collection<AbstractWorkflowArtifact> awas) {
       super();
       this.awas = awas;
-   }
-
-   public void toggleFavorite() {
-      toggleFavorite(true);
    }
 
    public void toggleFavorite(boolean prompt) {
@@ -112,11 +104,4 @@ public class FavoritesManager {
       return workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.FavoriteUser_User).contains(user);
    }
 
-   public static List<User> getFavorites(AbstractWorkflowArtifact workflow) throws OseeCoreException {
-      ArrayList<User> arts = new ArrayList<>();
-      for (Artifact art : workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.FavoriteUser_User)) {
-         arts.add((User) art);
-      }
-      return arts;
-   }
 }

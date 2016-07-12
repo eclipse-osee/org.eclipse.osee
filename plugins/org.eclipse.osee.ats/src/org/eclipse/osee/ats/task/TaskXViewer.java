@@ -119,10 +119,6 @@ public class TaskXViewer extends WorldXViewer {
       this.tasksEditable = tasksEditable;
    }
 
-   public boolean isNewTaskSelectionEnabled() {
-      return newTaskSelectionEnabled;
-   }
-
    public void setNewTaskSelectionEnabled(boolean newTaskSelectionEnabled) {
       this.newTaskSelectionEnabled = newTaskSelectionEnabled;
    }

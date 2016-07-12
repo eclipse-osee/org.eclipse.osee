@@ -49,7 +49,7 @@ public class WorldXViewerEventManager {
    private static final NotificationHandler notificationHandler = new NotificationHandler();
 
    private WorldXViewerEventManager() {
-      // Static API Class
+      // Utility Class
    }
 
    public static void add(IWorldViewerEventHandler iWorldEventHandler) {

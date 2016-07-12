@@ -57,16 +57,12 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public class TaskMetrics extends AbstractBlam {
    private static final int IN_WORK_PERCENT = 5;
    private static final int COMPLETED_CANCELLED_PERCENT = 100;
-   private final CountingMap<IAtsUser> metrics;
+   private final CountingMap<IAtsUser> metrics = new CountingMap<>();
    private CharBackedInputStream charBak;
    private ISheetWriter excelWriter;
 
    private XHyperlabelTeamDefinitionSelection teamCombo;
    private AtsObjectMultiChoiceSelect versionsWidget;
-
-   public TaskMetrics() {
-      metrics = new CountingMap<>();
-   }
 
    @Override
    public String getName() {

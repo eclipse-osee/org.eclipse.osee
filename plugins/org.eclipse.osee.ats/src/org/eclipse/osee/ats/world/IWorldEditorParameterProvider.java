@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.world;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 
@@ -25,8 +24,6 @@ public interface IWorldEditorParameterProvider extends IWorldEditorProvider {
    public String getParameterXWidgetXml() throws OseeCoreException;
 
    public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener();
-
-   public String[] getWidgetOptions(XWidgetRendererItem xWidgetData);
 
    /**
     * Create extra controls and return title if it changed

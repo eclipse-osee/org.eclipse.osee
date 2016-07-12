@@ -147,8 +147,4 @@ public class WorldLabelProvider extends XViewerLabelProvider {
       // do nothing
    }
 
-   public WorldXViewer getWorldXViewer() {
-      return worldXViewer;
-   }
-
 }

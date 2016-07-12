@@ -15,7 +15,6 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
-import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.ats.world.search.WorldUISearchItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -31,10 +30,6 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
 
    private final WorldUISearchItem worldUISearchItem;
 
-   public WorldEditorUISearchItemProvider(WorldUISearchItem worldUISearchItem) {
-      this(worldUISearchItem, null, TableLoadOption.None);
-   }
-
    public WorldEditorUISearchItemProvider(WorldUISearchItem worldUISearchItem, CustomizeData customizeData, TableLoadOption... tableLoadOptions) {
       super(customizeData, tableLoadOptions);
       this.worldUISearchItem = worldUISearchItem;
@@ -44,13 +39,6 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
    public IWorldEditorProvider copyProvider() throws OseeCoreException {
       return new WorldEditorUISearchItemProvider((WorldUISearchItem) worldUISearchItem.copy(), customizeData,
          tableLoadOptions);
-   }
-
-   /**
-    * @return the worldSearchItem
-    */
-   public WorldSearchItem getWorldSearchItem() {
-      return worldUISearchItem;
    }
 
    @Override

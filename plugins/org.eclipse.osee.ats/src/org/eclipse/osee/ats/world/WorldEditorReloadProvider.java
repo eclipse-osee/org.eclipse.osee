@@ -58,10 +58,6 @@ public class WorldEditorReloadProvider extends WorldEditorProvider {
       return name;
    }
 
-   public Collection<Artifact> getArtifacts() {
-      return artifacts;
-   }
-
    public boolean isReload() {
       return reload;
    }

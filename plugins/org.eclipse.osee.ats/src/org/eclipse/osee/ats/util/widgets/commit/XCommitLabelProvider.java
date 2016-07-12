@@ -259,8 +259,4 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       // do nothing
    }
 
-   public CommitXManager getTreeViewer() {
-      return commitXManager;
-   }
-
 }

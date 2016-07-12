@@ -11,10 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.cm;
 
 import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
@@ -32,35 +29,15 @@ public interface IOseeCmService {
 
    KeyedImage getImage(ImageType imageType);
 
-   boolean isCmAdmin();
-
-   public BranchId getCmBranchToken();
-
    void openArtifact(Artifact artifact, OseeCmEditor oseeCmEditor);
 
    void openArtifact(String guid, OseeCmEditor oseeCmEditor);
 
    void openArtifacts(String name, Collection<Artifact> artifacts, OseeCmEditor oseeCmEditor);
 
-   void openArtifactsByGuid(String name, List<String> guids, OseeCmEditor oseeCmEditor);
-
    boolean isPcrArtifact(Artifact artifact);
 
-   boolean isCompleted(Artifact artifact);
-
-   List<Artifact> getTaskArtifacts(Artifact pcrArtifact);
-
-   KeyedImage getOpenImage(OseeCmEditor oseeCmEditor);
-
-   Artifact createWorkTask(String name, String parentPcrGuid);
-
-   Artifact createPcr(String title, String description, String changeType, String priority, Date needByDate, Collection<String> productNames);
-
-   IArtifactType getPcrArtifactType();
-
    boolean isBranchesAllCommittedExcept(Artifact art, BranchId branch);
-
-   IArtifactType getPcrTaskArtifactType();
 
    boolean isWorkFlowBranch(BranchId branch);
 

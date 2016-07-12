@@ -93,8 +93,4 @@ public class ReviewWrapper implements IActionWalkerItem {
       }
    }
 
-   public TeamWorkFlowArtifact getTeamArt() {
-      return teamArt;
-   }
-
 }

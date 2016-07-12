@@ -116,8 +116,4 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
       // do nothing
    }
 
-   public UserRoleXViewer getTreeViewer() {
-      return xViewer;
-   }
-
 }

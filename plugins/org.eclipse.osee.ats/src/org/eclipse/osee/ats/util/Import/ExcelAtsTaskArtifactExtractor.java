@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.util.Import;
 
-import java.io.FileFilter;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.Date;
@@ -75,10 +74,6 @@ public class ExcelAtsTaskArtifactExtractor {
 
    public void setMonitor(IProgressMonitor monitor) {
       this.monitor = monitor;
-   }
-
-   public FileFilter getFileFilter() {
-      return null;
    }
 
    public String getName() {

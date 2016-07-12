@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.dsl.atsDsl.WorkDef;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.AtsDslUtil;
-import org.eclipse.osee.ats.workdef.config.ImportAIsAndTeamDefinitionsToDb;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -56,13 +55,6 @@ public class AtsWorkDefinitionImporter {
 
    public static AtsWorkDefinitionImporter get() {
       return provider;
-   }
-
-   public void importAIsAndTeamsToDb(WorkDefinitionSheet sheet, IAtsChangeSet changes) throws OseeCoreException {
-      String modelName = sheet.getFile().getName();
-      AtsDsl atsDsl = AtsDslUtil.getFromSheet(modelName, sheet);
-      ImportAIsAndTeamDefinitionsToDb importer = new ImportAIsAndTeamDefinitionsToDb(modelName, atsDsl, changes);
-      importer.execute();
    }
 
    /**

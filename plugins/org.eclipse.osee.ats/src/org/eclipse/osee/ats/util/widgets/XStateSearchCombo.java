@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * Provides combo box to choose from all valid states in ATS configured items. Used for generic searching windows where
  * set states are not known.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class XStateSearchCombo extends XComboViewer {
@@ -64,10 +64,6 @@ public class XStateSearchCombo extends XComboViewer {
             }
          }
       });
-   }
-
-   public String getSelectedState() {
-      return selectedState;
    }
 
    @Override

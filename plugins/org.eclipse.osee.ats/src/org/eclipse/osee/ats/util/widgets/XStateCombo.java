@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 /**
  * Provides combo of all valid states for a certain Task or Team Workflow. Valid states will be determined off
  * WorkDefinition of parent team workflow when Widget setArtifact is called.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class XStateCombo extends XComboDam {
@@ -57,10 +57,6 @@ public class XStateCombo extends XComboDam {
       }
       Collections.sort(validStates);
       return validStates.toArray(new String[validStates.size()]);
-   }
-
-   public String getSelectedState() {
-      return (String) getData();
    }
 
    @Override

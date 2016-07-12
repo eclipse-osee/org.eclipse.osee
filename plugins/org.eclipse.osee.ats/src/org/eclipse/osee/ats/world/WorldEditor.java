@@ -45,7 +45,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
-import org.eclipse.ui.part.MultiPageEditorPart;
 
 /**
  * @author Donald G. Dunne
@@ -70,16 +69,6 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
             } catch (PartInitException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
-         }
-      });
-   }
-
-   public void closeEditor() {
-      final MultiPageEditorPart editor = this;
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            AWorkbench.getActivePage().closeEditor(editor, false);
          }
       });
    }
@@ -111,10 +100,6 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
    @Override
    public boolean isSaveOnCloseNeeded() {
       return isDirty();
-   }
-
-   public void refreshTitle() {
-      firePropertyChange(IWorkbenchPart.PROP_TITLE);
    }
 
    @Override

@@ -90,10 +90,6 @@ public class UserRoleXViewer extends XViewer {
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
    }
 
-   public Collection<UserRole> getLoadedUserRoleItems() {
-      return ((UserRoleContentProvider) getContentProvider()).getRootSet();
-   }
-
    public void add(Collection<UserRole> userRoles) {
       ((UserRoleContentProvider) getContentProvider()).add(userRoles);
    }
@@ -116,17 +112,6 @@ public class UserRoleXViewer extends XViewer {
       // Dispose of the table objects is done through separate dispose listener off tree
       // Tell the label provider to release its resources
       getLabelProvider().dispose();
-   }
-
-   public List<UserRole> getSelectedUserRoleItems() {
-      List<UserRole> arts = new ArrayList<>();
-      TreeItem items[] = getTree().getSelection();
-      if (items.length > 0) {
-         for (TreeItem item : items) {
-            arts.add((UserRole) item.getData());
-         }
-      }
-      return arts;
    }
 
    @Override
@@ -166,8 +151,8 @@ public class UserRoleXViewer extends XViewer {
          if (aCol.equals(UserRoleXViewerFactory.Completed_Col) || aCol.equals(
             UserRoleXViewerFactory.Hours_Spent_Col) || aCol.equals(UserRoleXViewerFactory.Num_Minor_Col) || aCol.equals(
                UserRoleXViewerFactory.Num_Major_Col) || aCol.equals(
-                  UserRoleXViewerFactory.Num_Issues_Col) || aCol.equals(UserRoleXViewerFactory.User_Col) || aCol.equals(
-                     UserRoleXViewerFactory.Role_Col)) {
+                  UserRoleXViewerFactory.Num_Issues_Col) || aCol.equals(
+                     UserRoleXViewerFactory.User_Col) || aCol.equals(UserRoleXViewerFactory.Role_Col)) {
             promptChangeDate(aCol, userRoles, false);
          } else {
             throw new OseeStateException("Unhandled user role column");

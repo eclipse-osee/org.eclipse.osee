@@ -38,10 +38,6 @@ public class XAtsProgramComboWidget extends XComboViewer {
       setSorter(new StringNameSorter());
    }
 
-   public XAtsProgramComboWidget(IAtsProgramManager atsProgramManager) throws OseeCoreException {
-      this(atsProgramManager.getName() + " Program", atsProgramManager.getPrograms());
-   }
-
    public XAtsProgramComboWidget(Collection<? extends IAtsProgram> atsPrograms) throws OseeCoreException {
       this("ATS Program", atsPrograms);
    }

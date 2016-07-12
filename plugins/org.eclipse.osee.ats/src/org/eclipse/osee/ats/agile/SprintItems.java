@@ -33,7 +33,6 @@ public class SprintItems {
    private boolean noBacklogDetected;
    private boolean multipleBacklogsDetected;
    private Artifact commonBacklog;
-   private Artifact commonSprint;
    private Set<Artifact> multipleSprints;
 
    public SprintItems(final Collection<? extends Artifact> awas) {
@@ -98,24 +97,12 @@ public class SprintItems {
       return multipleBacklogsDetected;
    }
 
-   public Collection<? extends Artifact> getAwas() {
-      return awas;
-   }
-
    public IAgileBacklog getCommonBacklog() {
       IAgileBacklog backlog = null;
       if (commonBacklog != null) {
          backlog = AtsClientService.get().getWorkItemFactory().getAgileBacklog(commonBacklog);
       }
       return backlog;
-   }
-
-   public IAgileSprint getCommonSprint() {
-      IAgileSprint sprint = null;
-      if (isCommonSelectedSprint()) {
-         sprint = AtsClientService.get().getWorkItemFactory().getAgileSprint(commonSprint);
-      }
-      return sprint;
    }
 
    public Set<IAgileSprint> getMultipleSprints() {

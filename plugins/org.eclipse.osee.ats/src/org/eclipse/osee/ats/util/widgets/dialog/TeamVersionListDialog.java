@@ -54,14 +54,6 @@ public class TeamVersionListDialog extends SelectionDialog {
       setMessage("Select Version");
    }
 
-   public TeamVersionListDialog(IAtsTeamDefinition teamDef, Active active) {
-      super(Displays.getActiveShell());
-      this.teamDef = teamDef;
-      this.active = active;
-      setTitle("Select Version");
-      setMessage("Select Version");
-   }
-
    @Override
    protected Control createDialogArea(Composite container) {
 

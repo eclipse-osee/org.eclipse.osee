@@ -133,10 +133,6 @@ public class DefectXViewer extends XViewer {
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
    }
 
-   public Collection<ReviewDefectItem> getLoadedDefectItems() {
-      return ((DefectContentProvider) getContentProvider()).getRootSet();
-   }
-
    public void add(Collection<ReviewDefectItem> defectItems) {
       if ((DefectContentProvider) getContentProvider() != null) {
          ((DefectContentProvider) getContentProvider()).add(defectItems);

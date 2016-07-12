@@ -40,6 +40,4 @@ public interface IWorldEditorProvider {
 
    Collection<Artifact> performSearch(SearchType searchType);
 
-   public TableLoadOption[] getTableLoadOptions() throws OseeCoreException;
-
 }

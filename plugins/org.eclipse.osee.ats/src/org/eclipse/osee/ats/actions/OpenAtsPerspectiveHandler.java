@@ -20,9 +20,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
  */
 public class OpenAtsPerspectiveHandler extends AbstractHandler {
 
-   public OpenAtsPerspectiveHandler() {
-   }
-
    @Override
    public Object execute(ExecutionEvent event) {
       AWorkbench.openPerspective(ATSPerspective.ID);

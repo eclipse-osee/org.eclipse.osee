@@ -12,27 +12,18 @@ package org.eclipse.osee.ats.artifact;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
-import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
-import org.eclipse.osee.ats.column.CancelledDateColumn;
-import org.eclipse.osee.ats.column.CompletedDateColumn;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
-import org.eclipse.osee.ats.core.client.workflow.PriorityUtil;
-import org.eclipse.osee.ats.core.column.CreatedDateColumn;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -55,16 +46,16 @@ public class WorkflowManager {
    public static boolean isAssigneeEditable(AbstractWorkflowArtifact awa, boolean privilegedEditEnabled) throws OseeCoreException {
       return !awa.isCompletedOrCancelled() && !awa.isReadOnly() &&
       // and access control writeable
-      awa.isAccessControlWrite() && //
+         awa.isAccessControlWrite() && //
 
-      (WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(), awa,
-         awa.getStateDefinition(), privilegedEditEnabled, AtsClientService.get().getUserService()) || //
-      // page is define to allow anyone to edit
-      awa.getStateDefinition().hasRule(RuleDefinitionOption.AllowAssigneeToAll.name()) ||
-      // awa is child of TeamWorkflow that has AllowAssigneeToAll rule
-      isParentTeamWorklfowCurrentStateAllowAssigneeToAll(awa) ||
-      // team definition has allowed anyone to edit
-      awa.teamDefHasRule(RuleDefinitionOption.AllowAssigneeToAll));
+         (WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(), awa,
+            awa.getStateDefinition(), privilegedEditEnabled, AtsClientService.get().getUserService()) || //
+         // page is define to allow anyone to edit
+            awa.getStateDefinition().hasRule(RuleDefinitionOption.AllowAssigneeToAll.name()) ||
+            // awa is child of TeamWorkflow that has AllowAssigneeToAll rule
+            isParentTeamWorklfowCurrentStateAllowAssigneeToAll(awa) ||
+            // team definition has allowed anyone to edit
+            awa.teamDefHasRule(RuleDefinitionOption.AllowAssigneeToAll));
    }
 
    private static boolean isParentTeamWorklfowCurrentStateAllowAssigneeToAll(AbstractWorkflowArtifact awa) throws OseeCoreException {
@@ -81,26 +72,6 @@ public class WorkflowManager {
          result.addAll(teamArts);
       }
       return result;
-   }
-
-   public static Collection<AbstractWorkflowArtifact> getCompletedCancelled(Collection<AbstractWorkflowArtifact> awas) throws OseeCoreException {
-      List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<>(awas.size());
-      for (AbstractWorkflowArtifact awa : awas) {
-         if (awa.isCompletedOrCancelled()) {
-            artifactsToReturn.add(awa);
-         }
-      }
-      return artifactsToReturn;
-   }
-
-   public static Collection<AbstractWorkflowArtifact> getInWork(Collection<AbstractWorkflowArtifact> awas) throws OseeCoreException {
-      List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<>(awas.size());
-      for (AbstractWorkflowArtifact awa : awas) {
-         if (!awa.isCompletedOrCancelled()) {
-            artifactsToReturn.add(awa);
-         }
-      }
-      return artifactsToReturn;
    }
 
    public static Collection<AbstractWorkflowArtifact> filterOutState(Collection<AbstractWorkflowArtifact> awas, Collection<String> stateNames) {
@@ -162,105 +133,6 @@ public class WorkflowManager {
          }
       }
       return artifactsToReturn;
-   }
-
-   public static Collection<AbstractWorkflowArtifact> getOpenAtDate(Date date, Collection<AbstractWorkflowArtifact> artifacts) throws OseeCoreException {
-      List<AbstractWorkflowArtifact> awas = new ArrayList<>();
-      for (AbstractWorkflowArtifact awa : artifacts) {
-         Date createDate = CreatedDateColumn.getDate(awa);
-         Date completedCancelDate = null;
-         if (awa.isCompletedOrCancelled()) {
-            if (awa.isCancelled()) {
-               completedCancelDate = CancelledDateColumn.getDate(awa);
-            } else {
-               completedCancelDate = CompletedDateColumn.getDate(awa);
-            }
-         }
-         if (createDate.before(date) && (completedCancelDate == null || completedCancelDate.after(date))) {
-            awas.add(awa);
-         }
-      }
-      return awas;
-   }
-
-   public static Collection<AbstractWorkflowArtifact> getCompletedCancelledBetweenDate(Date startDate, Date endDate, Collection<AbstractWorkflowArtifact> artifacts) throws OseeCoreException {
-      List<AbstractWorkflowArtifact> awas = new ArrayList<>();
-      for (AbstractWorkflowArtifact awa : artifacts) {
-         Date completedCancelDate = null;
-         if (awa.isCompletedOrCancelled()) {
-            if (awa.isCancelled()) {
-               completedCancelDate = CancelledDateColumn.getDate(awa);
-            } else {
-               completedCancelDate = CompletedDateColumn.getDate(awa);
-            }
-         }
-         if (completedCancelDate == null) {
-            continue;
-         }
-         if (completedCancelDate.after(startDate) && completedCancelDate.before(endDate)) {
-            awas.add(awa);
-         }
-      }
-      return awas;
-   }
-
-   public static Double getHoursSpent(Collection<AbstractWorkflowArtifact> artifacts) throws OseeCoreException {
-      Double hoursSpent = 0.0;
-      for (AbstractWorkflowArtifact awa : artifacts) {
-         hoursSpent += HoursSpentUtil.getHoursSpentTotal(awa, AtsClientService.get().getServices());
-      }
-      return hoursSpent;
-   }
-
-   public static Collection<AbstractWorkflowArtifact> getStateAtDate(Date date, Collection<String> states, Collection<AbstractWorkflowArtifact> artifacts) throws OseeCoreException {
-      List<AbstractWorkflowArtifact> awas = new ArrayList<>();
-      for (AbstractWorkflowArtifact awa : artifacts) {
-         Date createDate = CreatedDateColumn.getDate(awa);
-         if (createDate.after(date)) {
-            continue;
-         }
-         // Find state at date
-         String currentState = awa.getStateMgr().getCurrentStateName();
-         for (IAtsLogItem item : awa.getLog().getLogItems()) {
-            if (item.getDate().before(date)) {
-               currentState = item.getState();
-            }
-         }
-         if (states.contains(currentState)) {
-            awas.add(awa);
-         }
-      }
-      return awas;
-   }
-
-   /**
-    * Returns awa if change type, or parent team workflow's change type is in specified set
-    */
-   public static Collection<AbstractWorkflowArtifact> getChangeType(Collection<ChangeType> changeTypes, Collection<AbstractWorkflowArtifact> artifacts) throws OseeCoreException {
-      List<AbstractWorkflowArtifact> awas = new ArrayList<>();
-      for (AbstractWorkflowArtifact awa : artifacts) {
-         TeamWorkFlowArtifact teamArt = awa.getParentTeamWorkflow();
-         if (changeTypes.contains(ChangeTypeUtil.getChangeType(teamArt))) {
-            awas.add(awa);
-         }
-      }
-      return awas;
-
-   }
-
-   /**
-    * Returns awa if priority type, or parent team workflow's priority type is in specified set
-    */
-   public static Collection<AbstractWorkflowArtifact> getPriorityType(Collection<String> priorityTypes, Collection<AbstractWorkflowArtifact> artifacts) throws OseeCoreException {
-      List<AbstractWorkflowArtifact> awas = new ArrayList<>();
-      for (AbstractWorkflowArtifact awa : artifacts) {
-         TeamWorkFlowArtifact teamArt = awa.getParentTeamWorkflow();
-         if (priorityTypes.contains(PriorityUtil.getPriorityStr(teamArt))) {
-            awas.add(awa);
-         }
-      }
-      return awas;
-
    }
 
    public static Collection<AbstractWorkflowArtifact> getTeamDefinitionWorkflows(Collection<? extends Artifact> artifacts, Collection<IAtsTeamDefinition> teamDefs) throws OseeCoreException {

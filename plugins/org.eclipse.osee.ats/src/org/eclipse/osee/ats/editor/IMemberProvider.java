@@ -38,8 +38,6 @@ public interface IMemberProvider {
 
    IXViewerFactory getXViewerFactory(Artifact awa);
 
-   IArtifactType getArtifactType();
-
    String getColumnName();
 
    IRelationTypeSide getMemberRelationTypeSide();

@@ -83,10 +83,6 @@ public class AITreeContentProvider implements ITreeContentProvider {
       // do nothing
    }
 
-   public boolean isShowChildren() {
-      return showChildren;
-   }
-
    public void setShowChildren(boolean showChildren) {
       this.showChildren = showChildren;
    }

@@ -89,13 +89,6 @@ public class XHyperlabelActionableItemSelection extends XHyperlinkLabelCmdValueS
       return false;
    }
 
-   public void setTeamDefs(Collection<IAtsActionableItem> teamDefs) {
-      this.teamDefs = teamDefs;
-      if (dialog != null) {
-         dialog.setInput(teamDefs);
-      }
-   }
-
    @Override
    public boolean isEmpty() {
       return selectedAis.isEmpty();

@@ -51,10 +51,6 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
       this.publishToFilename = publishToFilename;
    }
 
-   public PublishFullVersionReportItem(XNavigateItem parent) {
-      this(parent, "Publish Full Version Report", null, null);
-   }
-
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       String usePublishToFilename = publishToFilename;

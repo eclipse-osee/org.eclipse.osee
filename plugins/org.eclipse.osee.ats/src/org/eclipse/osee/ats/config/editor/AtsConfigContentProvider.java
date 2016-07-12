@@ -108,11 +108,4 @@ public class AtsConfigContentProvider implements ITreeContentProvider {
       // do nothing
    }
 
-   /**
-    * @return the rootSet
-    */
-   public Collection<IResultsXViewerRow> getRootSet() {
-      return rootSet;
-   }
-
 }

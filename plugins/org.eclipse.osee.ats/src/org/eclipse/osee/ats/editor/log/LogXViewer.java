@@ -39,10 +39,6 @@ public class LogXViewer extends XViewer {
       getLabelProvider().dispose();
    }
 
-   public XLogViewer getXUserRoleViewer() {
-      return xLogViewer;
-   }
-
    public void reload() {
       try {
          xLogViewer.getXViewer().setInput(awa.getLog().getLogItems());

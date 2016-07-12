@@ -15,14 +15,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
@@ -269,23 +267,6 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
       }
    }
 
-   @SuppressWarnings("rawtypes")
-   public List<Branch> getSelectedBranches() {
-      List<Branch> items = new ArrayList<>();
-      if (xCommitManager == null) {
-         return items;
-      }
-      if (xCommitManager.getSelection().isEmpty()) {
-         return items;
-      }
-      Iterator i = ((IStructuredSelection) xCommitManager.getSelection()).iterator();
-      while (i.hasNext()) {
-         Object obj = i.next();
-         items.add((Branch) obj);
-      }
-      return items;
-   }
-
    @Override
    public Control getControl() {
       if (xCommitManager == null) {
@@ -362,10 +343,6 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
 
    public IDirtiableEditor getEditor() {
       return editor;
-   }
-
-   public void setEditor(IDirtiableEditor editor) {
-      this.editor = editor;
    }
 
    @Override

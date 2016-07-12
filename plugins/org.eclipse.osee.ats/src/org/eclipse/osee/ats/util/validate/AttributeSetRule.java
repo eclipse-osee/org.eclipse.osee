@@ -41,18 +41,6 @@ public final class AttributeSetRule extends AbstractValidationRule {
       return artifactType.inheritsFrom(baseArtifactType);
    }
 
-   public IAttributeType getAttributeName() {
-      return attributeType;
-   }
-
-   public Integer getMinimumValues() {
-      return minimumValues;
-   }
-
-   public String getInvalidValue() {
-      return invalidValue;
-   }
-
    @Override
    protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor) throws OseeCoreException {
       Collection<String> errorMessages = new ArrayList<>();

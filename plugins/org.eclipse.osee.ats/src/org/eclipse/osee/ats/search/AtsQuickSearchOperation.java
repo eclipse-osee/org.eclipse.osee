@@ -99,10 +99,6 @@ class AtsQuickSearchOperation extends AbstractOperation implements WorldEditorOp
       return data.toString();
    }
 
-   public Set<Artifact> getAllArtifacts() {
-      return allArtifacts;
-   }
-
    @Override
    public WorldEditor getWorldEditor() {
       return worldEditor;

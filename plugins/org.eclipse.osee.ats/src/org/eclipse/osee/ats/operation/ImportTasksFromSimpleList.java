@@ -174,16 +174,6 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
       return "Import tasks from spreadsheet into given Team Workflow.  Assignee for tasks will be current user unless otherwise specified.";
    }
 
-   /**
-    * @return the TaskableStateMachineArtifact
-    */
-   public TeamWorkFlowArtifact getTaskableStateMachineArtifact() {
-      return taskableStateMachineArtifact;
-   }
-
-   /**
-    * @param defaultTeamWorkflowArtifact the defaultTeamWorkflowArtifact to set
-    */
    public void setTaskableStateMachineArtifact(TeamWorkFlowArtifact taskableStateMachineArtifact) {
       this.taskableStateMachineArtifact = taskableStateMachineArtifact;
    }

@@ -137,13 +137,6 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
       cancelled = true;
    }
 
-   /**
-    * @param selectedVersionArt the selectedVersionArt to set
-    */
-   public void setSelectedVersionArt(IAtsVersion selectedVersionArt) {
-      this.selectedVersionArt = selectedVersionArt;
-   }
-
    @Override
    public WorldUISearchItem copy() {
       return new VersionTargetedForTeamSearchItem(this);

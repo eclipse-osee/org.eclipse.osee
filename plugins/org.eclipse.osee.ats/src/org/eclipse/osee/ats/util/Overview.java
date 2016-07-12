@@ -87,7 +87,7 @@ public class Overview {
 
    /**
     * Return label with value converted to show html reserved characters
-    * 
+    *
     * @return string to embed into html
     */
    public String getLabelValue(String label, String value) {
@@ -95,21 +95,8 @@ public class Overview {
       return getLabel(label) + valueStr;
    }
 
-   /**
-    * Return label and value WITHOUT conversion to handle html reserved characters. Value will be as-is
-    * 
-    * @return string to embed into html
-    */
-   public String getLabelValueNoConvert(String label, String value) {
-      return getLabel(label) + value;
-   }
-
    public static String getLabel(String label) {
       return AHTML.getLabelStr(labelFont, label + ": ");
-   }
-
-   public void addHtml(String html) {
-      this.html.append(html);
    }
 
    public void addTable(String... strs) {

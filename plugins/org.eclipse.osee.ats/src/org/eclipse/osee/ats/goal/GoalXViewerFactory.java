@@ -110,8 +110,4 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
       return soleGoalArtifact;
    }
 
-   public void setSoleGoalArtifact(GoalArtifact soleGoalArtifact) {
-      this.soleGoalArtifact = soleGoalArtifact;
-   }
-
 }

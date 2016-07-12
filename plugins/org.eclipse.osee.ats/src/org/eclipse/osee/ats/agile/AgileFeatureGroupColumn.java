@@ -105,14 +105,6 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IXViewe
       return false;
    }
 
-   public static boolean promptChangeFeatureGroup(AbstractWorkflowArtifact sma) throws OseeCoreException {
-      if (AtsUtilClient.isAtsAdmin() && !sma.isTeamWorkflow()) {
-         AWorkbench.popup("ERROR ", "Cannot set Feature Group for: \n\n" + sma.getName());
-         return false;
-      }
-      return promptChangeFeatureGroup(Arrays.asList((TeamWorkFlowArtifact) sma));
-   }
-
    public static boolean promptChangeFeatureGroup(final Collection<? extends AbstractWorkflowArtifact> awas) throws OseeCoreException {
       SprintItems items = new SprintItems(awas);
 

@@ -26,7 +26,6 @@ import org.eclipse.ui.PlatformUI;
 public class NewAction extends AbstractAtsAction {
 
    private final String actionableItem;
-   private String initialDescription;
 
    public NewAction() {
       this(null);
@@ -46,19 +45,9 @@ public class NewAction extends AbstractAtsAction {
          wizard.setInitialAias(
             ActionableItems.getActionableItems(Arrays.asList(actionableItem), AtsClientService.get()));
       }
-      if (initialDescription != null) {
-         wizard.setInitialDescription(initialDescription);
-      }
       WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
       dialog.create();
       dialog.open();
-   }
-
-   /**
-    * @param initialDescription the initialDescription to set
-    */
-   public void setInitialDescription(String initialDescription) {
-      this.initialDescription = initialDescription;
    }
 
 }

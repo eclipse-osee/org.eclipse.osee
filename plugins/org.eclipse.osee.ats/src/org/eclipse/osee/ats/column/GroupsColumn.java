@@ -100,10 +100,6 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
       return false;
    }
 
-   public static boolean promptChangeGroups(AbstractWorkflowArtifact sma, boolean persist) throws OseeCoreException {
-      return promptChangeGroups(Arrays.asList(sma), persist);
-   }
-
    public static boolean promptChangeGroups(final Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) throws OseeCoreException {
       Set<Artifact> selected = new HashSet<>();
       for (AbstractWorkflowArtifact awa : awas) {

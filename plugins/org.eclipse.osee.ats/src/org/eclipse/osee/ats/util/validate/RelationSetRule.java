@@ -37,16 +37,8 @@ public final class RelationSetRule extends AbstractValidationRule {
          ignoreArtifactTypes.length == 0 ? new ArrayList<IArtifactType>() : Arrays.asList(ignoreArtifactTypes);
    }
 
-   public Integer getMinimumRelations() {
-      return minimumRelations;
-   }
-
    public boolean hasArtifactType(ArtifactType artType) {
       return artType.inheritsFrom(artifactType);
-   }
-
-   public IRelationTypeSide getRelationEnum() {
-      return relationEnum;
    }
 
    @Override

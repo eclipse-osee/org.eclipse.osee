@@ -295,10 +295,6 @@ public final class AtsUtil {
       return null;
    }
 
-   public static void openInAtsWorldEditorItems(String name, Collection<IAtsWorkItem> items) {
-      openInAtsWorldEditor(name, AtsObjects.getArtifacts(items));
-   }
-
    public static void openInAtsWorldEditor(Collection<? extends IAtsWorkItem> workItems, String name) {
       openInAtsWorldEditor(name, AtsObjects.getArtifacts(workItems));
    }

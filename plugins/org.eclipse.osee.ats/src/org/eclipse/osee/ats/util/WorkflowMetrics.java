@@ -196,17 +196,6 @@ public class WorkflowMetrics {
       return completed;
    }
 
-   public double getPercentCompleteByTeamWorkflow() throws OseeCoreException {
-      if (getTeamArts().isEmpty()) {
-         return 0;
-      }
-      double completed = getCompletedTeamWorkflows().size();
-      if (completed == 0) {
-         return 0;
-      }
-      return completed / getTeamArts().size() * 100;
-   }
-
    public double getPercentCompleteByWorkflow() throws OseeCoreException {
       if (awas.isEmpty()) {
          return 0;
@@ -228,17 +217,6 @@ public class WorkflowMetrics {
       return tasks;
    }
 
-   public double getPercentCompleteByTaskWorkflow() throws OseeCoreException {
-      if (getTaskArts().isEmpty()) {
-         return 0;
-      }
-      double completed = getCompletedTaskWorkflows().size();
-      if (completed == 0) {
-         return 0;
-      }
-      return completed / getTaskArts().size() * 100;
-   }
-
    @Override
    public String toString() {
       return str;
@@ -258,25 +236,8 @@ public class WorkflowMetrics {
          getNumActions(), getNumTeamWfs(), getNumTasks(), getNumReviews(), getGoals());
    }
 
-   public String toStringLong() {
-      return String.format(
-         "%s\nEstimated Hours: %5.2f  Percent Complete: %5.2f  Remaining Hours: %5.2f  ManDaysNeeded: %5.2f \nHours Spent: %5.2f  %s",
-         toStringObjectBreakout(), estHours, percentCompleteByWorkflowPercents, hrsRemainFromEstimates, manDaysNeeded,
-         hrsSpent,
-         version != null ? String.format("\nVersion: %s  Estimated Release Date: %s Days Left: %d ", version.getName(),
-            estimatedReleaseDate == null ? "Not Set" : DateUtil.getMMDDYY(estimatedReleaseDate), daysTillRel) : "");
-   }
-
    public Date getEstRelDate() {
       return estimatedReleaseDate;
-   }
-
-   public void setEstRelDate(Date estRelDate) {
-      this.estimatedReleaseDate = estRelDate;
-   }
-
-   public long getDaysTillRel() {
-      return daysTillRel;
    }
 
    public double getHoursTillRel() {
@@ -290,21 +251,6 @@ public class WorkflowMetrics {
 
    public String getDaysTillRelStr() {
       return String.format("%d workdays (M-F) till release", daysTillRel);
-   }
-
-   /**
-    * @param daysTillRel the daysTillRel to set
-    */
-   public void setDaysTillRel(int daysTillRel) {
-      this.daysTillRel = daysTillRel;
-   }
-
-   public IAtsVersion getVersionArtifact() {
-      return version;
-   }
-
-   public void setVersionArtifact(IAtsVersion versionArtifact) {
-      this.version = versionArtifact;
    }
 
    public int getNumTeamWfs() {
@@ -345,10 +291,6 @@ public class WorkflowMetrics {
       return estHours;
    }
 
-   public void setEstHours(double estHours) {
-      this.estHours = estHours;
-   }
-
    public double getHrsRemainFromEstimates() {
       return hrsRemainFromEstimates;
    }
@@ -377,21 +319,10 @@ public class WorkflowMetrics {
       return teamArts;
    }
 
-   public Set<Artifact> getActionArts() {
-      return actionArts;
-   }
-
    public Set<TaskArtifact> getTaskArts() {
       return taskArts;
    }
 
-   public Set<AbstractReviewArtifact> getReviewArts() {
-      return reviewArts;
-   }
-
-   /**
-    * Return all SMAs including Review and Tasks
-    */
    public HashCollection<IAtsUser, Artifact> getUserToAssignedSmas() {
       return userToAssignedSmas;
    }

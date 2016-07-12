@@ -29,10 +29,6 @@ public class WorkItemTypeSearchWidget {
       this.searchItem = searchItem;
    }
 
-   public void addWidget() {
-      addWidget(0);
-   }
-
    public void addWidget(int beginComposite) {
       searchItem.addWidgetXml(String.format(
          "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Team Workflow\" defaultValue=\"true\" labelAfter=\"true\" horizontalLabel=\"true\" %s />",

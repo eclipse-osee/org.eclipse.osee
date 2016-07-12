@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 
@@ -113,11 +112,6 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    @Override
    public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() {
       return worldParameterSearchItem;
-   }
-
-   @Override
-   public String[] getWidgetOptions(XWidgetRendererItem widgetData) {
-      return null;
    }
 
    /**

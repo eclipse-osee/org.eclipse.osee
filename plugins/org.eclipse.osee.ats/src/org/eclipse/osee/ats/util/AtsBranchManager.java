@@ -52,7 +52,6 @@ import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.util.TransactionIdLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeBranchDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.ui.PlatformUI;
 
@@ -128,21 +127,6 @@ public final class AtsBranchManager {
                MergeView.openView(transactionId);
             }
          }
-      }
-   }
-
-   /**
-    * Opens the branch currently associated with this state machine artifact.
-    */
-   public static void showWorkingBranch(TeamWorkFlowArtifact teamArt) {
-      try {
-         if (!AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt)) {
-            AWorkbench.popup("ERROR", "No Current Working Branch");
-            return;
-         }
-         BranchView.revealBranch(AtsClientService.get().getBranchService().getWorkingBranch(teamArt));
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

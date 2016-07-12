@@ -40,10 +40,6 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
       this.returnActions = returnActions;
    }
 
-   public LegacyPCRActionsWorldSearchItem(Collection<IAtsTeamDefinition> teamDefs, boolean returnActions) {
-      this(null, teamDefs, returnActions);
-   }
-
    public LegacyPCRActionsWorldSearchItem(LegacyPCRActionsWorldSearchItem legacyPCRActionsWorldSearchItem) {
       super(legacyPCRActionsWorldSearchItem);
       this.returnActions = legacyPCRActionsWorldSearchItem.returnActions;

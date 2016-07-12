@@ -31,10 +31,6 @@ public class MyWorldSearchItem extends UserSearchItem {
       this(name, null);
    }
 
-   public MyWorldSearchItem() {
-      this("My World", null);
-   }
-
    public MyWorldSearchItem(String name, IAtsUser user) {
       super(name, user, AtsImage.GLOBE);
    }

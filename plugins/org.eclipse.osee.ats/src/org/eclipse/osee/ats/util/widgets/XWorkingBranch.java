@@ -42,8 +42,8 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventPayload;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventPayload;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
@@ -378,10 +378,6 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
       deleteBranchButton.setEnabled(enablement.isDeleteBranchButtonEnabled());
       favoriteBranchButton.setEnabled(enablement.isFavoriteBranchButtonEnabled());
       lockBranchButton.setEnabled(enablement.isDeleteBranchButtonEnabled());
-   }
-
-   public static boolean isPurgeBranchButtonEnabled(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      return AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt);
    }
 
    @Override

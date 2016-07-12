@@ -136,10 +136,6 @@ public class AtsExportAction extends Action {
       }
    }
 
-   public boolean isPopup() {
-      return popup;
-   }
-
    public void setPopup(boolean popup) {
       this.popup = popup;
    }

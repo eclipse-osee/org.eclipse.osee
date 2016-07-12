@@ -91,11 +91,6 @@ public class GoalMemberProvider extends AbstractMemberProvider {
    }
 
    @Override
-   public IArtifactType getArtifactType() {
-      return AtsArtifactTypes.Goal;
-   }
-
-   @Override
    public String getColumnName() {
       if (isBacklog()) {
          return "ats.column.backlogOrder";

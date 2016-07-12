@@ -103,8 +103,4 @@ public class SprintXViewerFactory extends SkynetXViewerFactory {
       return soleSprintArtifact;
    }
 
-   public void setSoleSprintArtifact(SprintArtifact soleSprintArtifact) {
-      this.soleSprintArtifact = soleSprintArtifact;
-   }
-
 }

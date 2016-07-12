@@ -88,40 +88,4 @@ public class ActionActionableItemListDialog extends FilteredCheckboxTreeDialog {
       return container;
    }
 
-   public boolean isShowFinished() {
-      return showFinished;
-   }
-
-   public boolean isShowAction() {
-      return showAction;
-   }
-
-   /**
-    * @return the recurseChildren
-    */
-   public boolean isRecurseChildren() {
-      return recurseChildren;
-   }
-
-   /**
-    * @param recurseChildren the recurseChildren to set
-    */
-   public void setRecurseChildren(boolean recurseChildren) {
-      this.recurseChildren = recurseChildren;
-   }
-
-   /**
-    * @param showFinished the showFinished to set
-    */
-   public void setShowFinished(boolean showFinished) {
-      this.showFinished = showFinished;
-   }
-
-   /**
-    * @param showAction the showAction to set
-    */
-   public void setShowAction(boolean showAction) {
-      this.showAction = showAction;
-   }
-
 }

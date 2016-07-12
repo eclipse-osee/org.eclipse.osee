@@ -28,10 +28,6 @@ class AtsQuickSearchData {
       return includeCompleteCancelled;
    }
 
-   public void setIncludeCompleteCancelled(boolean includeCompleteCancelled) {
-      this.includeCompleteCancelled = includeCompleteCancelled;
-   }
-
    public String getSearchStr() {
       return searchStr;
    }

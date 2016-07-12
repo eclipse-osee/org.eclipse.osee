@@ -86,12 +86,4 @@ public class ActionableItemTreeWithChildrenDialog extends FilteredCheckboxTreeDi
       return container;
    }
 
-   public boolean isRecurseChildren() {
-      return recurseChildren;
-   }
-
-   public void setRecurseChildren(boolean recurseChildren) {
-      this.recurseChildren = recurseChildren;
-   }
-
 }

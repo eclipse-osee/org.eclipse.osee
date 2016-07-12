@@ -115,14 +115,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       Jobs.startJob(new Report(getName()), true);
    }
 
-   public void performTaskAndPend() throws InterruptedException {
-      Report job = new Report(getName());
-      job.setUser(true);
-      job.setPriority(Job.LONG);
-      job.schedule();
-      job.join();
-   }
-
    public class Report extends Job {
 
       public Report(String name) {

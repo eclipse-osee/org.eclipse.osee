@@ -23,14 +23,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class MySubscribedSearchItem extends UserSearchItem {
 
-   public MySubscribedSearchItem(String name) {
-      this(name, null);
-   }
-
-   public MySubscribedSearchItem() {
-      this("My Subscribed", null);
-   }
-
    public MySubscribedSearchItem(String name, IAtsUser user) {
       super(name, user, AtsImage.SUBSCRIBED);
    }

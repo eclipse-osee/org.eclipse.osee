@@ -60,12 +60,11 @@ import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.w3c.dom.Element;
 
 /**
  * Instantiation of a StateXWidgetPage for a given StateDefinition to provide for automatic creation and management of
  * the XWidgets
- * 
+ *
  * @author Donald G. Dunne
  */
 public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateToken {
@@ -109,22 +108,6 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
       dynamicXWidgetLayout.setLayoutDatas(datas);
    }
 
-   public StateXWidgetPage(List<XWidgetRendererItem> datas, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
-      this(null, null, datas, optionResolver, dynamicWidgetLayoutListener);
-   }
-
-   public StateXWidgetPage(List<XWidgetRendererItem> datas, IXWidgetOptionResolver optionResolver) {
-      this(null, null, datas, optionResolver, null);
-   }
-
-   public StateXWidgetPage(String xWidgetsXml, IXWidgetOptionResolver optionResolver) {
-      this(null, null, xWidgetsXml, optionResolver, null);
-   }
-
-   public StateXWidgetPage(IXWidgetOptionResolver optionResolver) {
-      this(null, null, (String) null, optionResolver, null);
-   }
-
    @Override
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       widgetCreated(xWidget, toolkit, art, stateDefinition, xModListener, isEditable);
@@ -156,28 +139,6 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
    public SwtXWidgetRenderer createBody(IManagedForm managedForm, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       dynamicXWidgetLayout.createBody(managedForm, parent, artifact, xModListener, isEditable);
       return dynamicXWidgetLayout;
-   }
-
-   public Pair<IStatus, XWidget> isPageComplete() {
-      try {
-         for (XWidgetRendererItem layoutData : dynamicXWidgetLayout.getLayoutDatas()) {
-            if (!layoutData.getXWidget().isValid().isOK()) {
-               // Check to see if widget is part of a completed OR or XOR group
-               if (!dynamicXWidgetLayout.isOrGroupFromAttrNameComplete(
-                  layoutData.getStoreName()) && !dynamicXWidgetLayout.isXOrGroupFromAttrNameComplete(
-                     layoutData.getStoreName())) {
-                  return new Pair<IStatus, XWidget>(layoutData.getXWidget().isValid(), layoutData.getXWidget());
-               }
-            }
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      return OK_PAIR;
-   }
-
-   public String getHtml(String backgroundColor) throws OseeCoreException {
-      return getHtml(backgroundColor, "", "");
    }
 
    public String getHtml(String backgroundColor, String preHtml, String postHtml) throws OseeCoreException {
@@ -232,10 +193,6 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
       dynamicXWidgetLayout.processlayoutDatas(xWidgetXml);
    }
 
-   protected void processLayoutDatas(Element element) throws OseeCoreException {
-      dynamicXWidgetLayout.processLayoutDatas(element);
-   }
-
    @Override
    public String getName() {
       return stateDefinition.getName();
@@ -244,14 +201,6 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
    @Override
    public StateType getStateType() {
       return stateDefinition.getStateType();
-   }
-
-   public String getFullName() {
-      return stateDefinition.getFullName();
-   }
-
-   public List<IAtsStateDefinition> getToPages() {
-      return stateDefinition.getToStates();
    }
 
    public IAtsStateDefinition getDefaultToPage() {
@@ -263,10 +212,6 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
 
    public IAtsStateDefinition getStateDefinition() {
       return stateDefinition;
-   }
-
-   public IAtsWorkDefinition getWorkDefinition() {
-      return workDefinition;
    }
 
    public SwtXWidgetRenderer getDynamicXWidgetLayout() {
@@ -285,10 +230,6 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
 
    public AbstractWorkflowArtifact getSma() {
       return sma;
-   }
-
-   public void setsma(AbstractWorkflowArtifact sma) {
-      this.sma = sma;
    }
 
    public boolean isCurrentState(AbstractWorkflowArtifact sma) {

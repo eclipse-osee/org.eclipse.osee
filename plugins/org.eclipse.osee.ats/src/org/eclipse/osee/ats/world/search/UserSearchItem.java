@@ -66,13 +66,6 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       return "";
    }
 
-   public IAtsUser getSearchUser() {
-      if (user != null) {
-         return user;
-      }
-      return selectedUser;
-   }
-
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       if (isCancelled()) {
@@ -118,16 +111,10 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       cancelled = true;
    }
 
-   /**
-    * @param selectedUser the selectedUser to set
-    */
    public void setSelectedUser(IAtsUser selectedUser) {
       this.selectedUser = selectedUser;
    }
 
-   /**
-    * @return the user
-    */
    public IAtsUser getDefaultUser() {
       return user;
    }
@@ -174,10 +161,6 @@ public abstract class UserSearchItem extends WorldUISearchItem {
          return image;
       }
       return ImageManager.getImage(FrameworkImage.USER);
-   }
-
-   public Active getActive() {
-      return active;
    }
 
    public void setActive(Active active) {
