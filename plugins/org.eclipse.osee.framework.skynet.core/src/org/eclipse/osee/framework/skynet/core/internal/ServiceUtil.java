@@ -17,19 +17,16 @@ import org.eclipse.osee.cache.admin.CacheAdmin;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.sql.OseeSql;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.attribute.service.AttributeAdapterService;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 
 public final class ServiceUtil {
 
@@ -37,20 +34,8 @@ public final class ServiceUtil {
       // Utility class
    }
 
-   private static BundleContext getBundleContext() throws OseeCoreException {
-      Bundle bundle = FrameworkUtil.getBundle(ServiceUtil.class);
-      Conditions.checkNotNull(bundle, "bundle");
-      return bundle.getBundleContext();
-   }
-
    private static <T> T getService(Class<T> clazz) throws OseeCoreException {
-      BundleContext context = getBundleContext();
-      Conditions.checkNotNull(context, "bundleContext");
-      ServiceReference<T> reference = context.getServiceReference(clazz);
-      Conditions.checkNotNull(reference, "serviceReference");
-      T service = context.getService(reference);
-      Conditions.checkNotNull(service, "service");
-      return service;
+      return OsgiUtil.getService(ServiceUtil.class, clazz);
    }
 
    public static CacheAdmin getCacheAdmin() throws OseeCoreException {

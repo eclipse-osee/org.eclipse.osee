@@ -14,17 +14,14 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.account.rest.client.AccountClient;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.packageadmin.PackageAdmin;
 
 public final class ServiceUtil {
@@ -34,15 +31,7 @@ public final class ServiceUtil {
    }
 
    private static <T> T getService(Class<T> clazz) throws OseeCoreException {
-      Bundle bundle = FrameworkUtil.getBundle(ServiceUtil.class);
-      Conditions.checkNotNull(bundle, "bundle");
-      BundleContext context = bundle.getBundleContext();
-      Conditions.checkNotNull(context, "bundleContext");
-      ServiceReference<T> reference = context.getServiceReference(clazz);
-      Conditions.checkNotNull(reference, "serviceReference");
-      T service = context.getService(reference);
-      Conditions.checkNotNull(service, "service");
-      return service;
+      return OsgiUtil.getService(ServiceUtil.class, clazz);
    }
 
    public static AccountClient getAccountClient() throws OseeCoreException {

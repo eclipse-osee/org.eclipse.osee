@@ -30,19 +30,7 @@ public final class OsgiUtil {
    }
 
    public static <T> T getService(Class<T> clazz) throws OseeCoreException {
-      Bundle bundle = FrameworkUtil.getBundle(OsgiUtil.class);
-      checkStarted(bundle);
-
-      BundleContext context = bundle.getBundleContext();
-      Assert.assertNotNull(context);
-
-      ServiceReference<T> reference = context.getServiceReference(clazz);
-      Assert.assertNotNull(String.format("Unable to find service [%s]", clazz), reference);
-
-      T service = context.getService(reference);
-      Assert.assertNotNull(String.format("Unable to find service instance for [%s]", clazz), service);
-
-      return service;
+      return org.eclipse.osee.framework.core.util.OsgiUtil.getService(OsgiUtil.class, clazz);
    }
 
    public static <T> T getService(Class<T> clazz, String filter, long waitTimeMillis) throws OseeCoreException {

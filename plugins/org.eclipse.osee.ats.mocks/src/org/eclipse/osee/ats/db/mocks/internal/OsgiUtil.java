@@ -29,22 +29,6 @@ public final class OsgiUtil {
       // Utility class
    }
 
-   public static <T> T getService(Class<T> clazz) throws OseeCoreException {
-      Bundle bundle = FrameworkUtil.getBundle(OsgiUtil.class);
-      checkStarted(bundle);
-
-      BundleContext context = bundle.getBundleContext();
-      Assert.assertNotNull(context);
-
-      ServiceReference<T> reference = context.getServiceReference(clazz);
-      Assert.assertNotNull(String.format("Unable to find service [%s]", clazz), reference);
-
-      T service = context.getService(reference);
-      Assert.assertNotNull(String.format("Unable to find service instance for [%s]", clazz), service);
-
-      return service;
-   }
-
    public static <T> T getService(Class<T> clazz, String filter, long waitTimeMillis) throws OseeCoreException {
       Bundle bundle = FrameworkUtil.getBundle(OsgiUtil.class);
       checkStarted(bundle);
@@ -98,11 +82,7 @@ public final class OsgiUtil {
    public static ConfigurationAdmin getConfigAdmin() {
       Bundle cmBundle = getBundleByName("org.eclipse.equinox.cm");
       checkStarted(cmBundle);
-      try {
-         return getService(ConfigurationAdmin.class);
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex.getCause(), "Error acquiring configuration admin");
-      }
+      return org.eclipse.osee.framework.core.util.OsgiUtil.getService(OsgiUtil.class, ConfigurationAdmin.class);
    }
 
    private static void checkStarted(Bundle bundle) {

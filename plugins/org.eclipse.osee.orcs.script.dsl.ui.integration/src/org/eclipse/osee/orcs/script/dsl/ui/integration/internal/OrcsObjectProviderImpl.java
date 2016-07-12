@@ -12,13 +12,10 @@ package org.eclipse.osee.orcs.script.dsl.ui.integration.internal;
 
 import java.util.Collections;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.orcs.script.dsl.ui.IOrcsObjectProvider;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 
 /**
  * @author Roberto E. Escobar
@@ -26,7 +23,7 @@ import org.osgi.framework.ServiceReference;
 public class OrcsObjectProviderImpl implements IOrcsObjectProvider {
 
    private IOseeCachingService getCache() {
-      return getService(IOseeCachingService.class);
+      return OsgiUtil.getService(getClass(), IOseeCachingService.class);
    }
 
    @Override
@@ -52,20 +49,4 @@ public class OrcsObjectProviderImpl implements IOrcsObjectProvider {
       IOseeCachingService caches = getCache();
       return caches != null ? caches.getRelationTypeCache().getAll() : Collections.<Identifiable<Long>> emptyList();
    }
-
-   private <T> T getService(Class<T> clazz) {
-      T service = null;
-      Bundle bundle = FrameworkUtil.getBundle(getClass());
-      if (bundle != null) {
-         BundleContext context = bundle.getBundleContext();
-         if (context != null) {
-            ServiceReference<T> reference = context.getServiceReference(clazz);
-            if (reference != null) {
-               service = context.getService(reference);
-            }
-         }
-      }
-      return service;
-   }
-
 }

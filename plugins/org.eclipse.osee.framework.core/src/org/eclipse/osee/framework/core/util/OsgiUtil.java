@@ -12,13 +12,16 @@ package org.eclipse.osee.framework.core.util;
 
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.internal.Activator;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Roberto E. Escobar
+ * @author Ryan D. Brooks
  */
 public final class OsgiUtil {
 
@@ -36,17 +39,19 @@ public final class OsgiUtil {
       }
    }
 
-   public static void close(ServiceRegistration<?> registration) {
-      if (registration != null) {
-         try {
-            registration.unregister();
-         } catch (Exception ex) {
-            //            OseeLog.log(Activator.class, Level.WARNING, ex);
-         }
+   public static <T> T getService(Class<?> classFromBundle, Class<T> clazz) {
+      BundleContext context = FrameworkUtil.getBundle(classFromBundle).getBundleContext();
+      if (context == null) {
+         throw new OseeCoreException("BundleContext is null for " + classFromBundle);
       }
-   }
-
-   public static void close(ServiceDependencyTracker tracker) {
-      Lib.close(tracker);
+      ServiceReference<T> serviceReference = context.getServiceReference(clazz);
+      if (serviceReference == null) {
+         throw new OseeCoreException("ServiceReference is null for class" + clazz);
+      }
+      T service = context.getService(serviceReference);
+      if (service == null) {
+         throw new OseeCoreException("getService is null for class" + clazz);
+      }
+      return service;
    }
 }
