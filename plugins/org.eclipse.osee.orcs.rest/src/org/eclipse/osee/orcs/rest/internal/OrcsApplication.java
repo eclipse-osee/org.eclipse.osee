@@ -17,8 +17,10 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.admin.LinkUpdateResource;
+import org.eclipse.osee.orcs.rest.internal.client.ClientResource;
 import org.eclipse.osee.orcs.rest.internal.writer.OrcsWriterEndpointImpl;
 
 /**
@@ -35,9 +37,14 @@ public class OrcsApplication extends Application {
 
    private IResourceManager resourceManager;
    private ActivityLog activityLog;
+   private JdbcService jdbcService;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       OrcsApplication.orcsApi = orcsApi;
+   }
+
+   public void setJdbcService(JdbcService jdbcService) {
+      this.jdbcService = jdbcService;
    }
 
    public void setActivityLog(ActivityLog activityLog) {
@@ -68,6 +75,7 @@ public class OrcsApplication extends Application {
       resources.add(new ResourcesEndpointImpl(resourceManager));
       resources.add(new DatastoreEndpointImpl(orcsApi, activityLog));
       resources.add(new KeyValueResource(orcsApi));
+      resources.add(new ClientResource(jdbcService, orcsApi));
 
       resources.add(new LinkUpdateResource(orcsApi));
    }

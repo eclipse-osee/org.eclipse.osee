@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.account.rest.internal.client.model;
+package org.eclipse.osee.orcs.rest.internal.client.model;
 
 import java.util.Date;
 import java.util.regex.Matcher;

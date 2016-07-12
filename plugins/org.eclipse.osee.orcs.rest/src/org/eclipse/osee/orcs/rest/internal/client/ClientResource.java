@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.account.rest.internal.client;
+package org.eclipse.osee.orcs.rest.internal.client;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URL;
@@ -25,16 +25,22 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.eclipse.osee.account.rest.internal.client.model.ClientDetails;
-import org.eclipse.osee.account.rest.internal.client.model.ClientInfo;
-import org.eclipse.osee.account.rest.internal.client.model.ClientSession;
-import org.eclipse.osee.account.rest.internal.client.model.Sessions;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.jdk.core.type.IVariantData;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcService;
+import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.rest.internal.client.model.ClientDetails;
+import org.eclipse.osee.orcs.rest.internal.client.model.ClientInfo;
+import org.eclipse.osee.orcs.rest.internal.client.model.ClientSession;
+import org.eclipse.osee.orcs.rest.internal.client.model.Sessions;
 
 /**
  * @author Donald G. Dunne
@@ -42,9 +48,11 @@ import org.eclipse.osee.jdbc.JdbcService;
 public class ClientResource {
 
    private final JdbcService jdbcService;
+   private final OrcsApi orcsApi;
 
-   public ClientResource(JdbcService jdbcService) {
+   public ClientResource(JdbcService jdbcService, OrcsApi orcsApi) {
       this.jdbcService = jdbcService;
+      this.orcsApi = orcsApi;
    }
 
    @GET
@@ -81,7 +89,11 @@ public class ClientResource {
    public Response getClientsForUser(@PathParam("userId") String userId) {
       Sessions sessions = new Sessions();
       Map<String, Boolean> portToAlive = new HashMap<>();
-      String queryStr = "select * from osee_session where user_id = '" + userId + "' order by created_on desc";
+      String uId = getUserId(userId);
+      if (!Strings.isValid(uId)) {
+         throw new OseeArgumentException("User with id or name of [%s] not found", userId);
+      }
+      String queryStr = "select * from osee_session where user_id = '" + uId + "' order by created_on desc";
       int x = 0;
       for (IVariantData data : jdbcService.getClient().runQuery(queryStr)) {
          ClientSession session = new ClientSession(data);
@@ -102,10 +114,24 @@ public class ClientResource {
       return Response.ok(sessions).build();
    }
 
+   private String getUserId(String userId) {
+      if (Strings.isNumeric(userId)) {
+         return userId;
+      } else {
+         ArtifactReadable userArt =
+            orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.User).andNameEquals(
+               userId).getResults().getAtMostOneOrNull();
+         if (userArt != null) {
+            return userArt.getSoleAttributeValue(CoreAttributeTypes.UserId, null);
+         }
+      }
+      return null;
+   }
+
    @GET
    @Path("client/{userId}/session/{sessionId}")
    @Produces({MediaType.TEXT_PLAIN})
-   public String getClientInfo(@PathParam("userId") Integer userId, @PathParam("sessionId") String sessionId) {
+   public String getClientInfo(@PathParam("userId") String userId, @PathParam("sessionId") String sessionId) {
       ClientSession session = getClientSession(sessionId);
       String infoStr = getInfoStr(session, true);
       return infoStr;

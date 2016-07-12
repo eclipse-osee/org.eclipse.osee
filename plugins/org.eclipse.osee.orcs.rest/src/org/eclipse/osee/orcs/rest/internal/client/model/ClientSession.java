@@ -8,7 +8,7 @@
  * Contributors:
  * Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.account.rest.internal.client.model;
+package org.eclipse.osee.orcs.rest.internal.client.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.framework.jdk.core.type.IVariantData;

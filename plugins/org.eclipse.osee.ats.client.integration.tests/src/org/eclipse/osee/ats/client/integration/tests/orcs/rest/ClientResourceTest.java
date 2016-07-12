@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.client.integration.tests.framework;
+package org.eclipse.osee.ats.client.integration.tests.orcs.rest;
 
 import java.net.URI;
 import javax.ws.rs.core.MediaType;
@@ -29,7 +29,7 @@ public class ClientResourceTest {
    @Test
    public void testGetAll() {
       String appServer = OseeClientProperties.getOseeApplicationServer();
-      URI uri = UriBuilder.fromUri(appServer).path("client").build();
+      URI uri = UriBuilder.fromUri(appServer).path("orcs").path("client").build();
 
       String results = callAndGetResults(uri);
       getExpected("sessions", results);
@@ -38,7 +38,7 @@ public class ClientResourceTest {
    @Test
    public void testGetAllDetails() {
       String appServer = OseeClientProperties.getOseeApplicationServer();
-      URI uri = UriBuilder.fromUri(appServer).path("client").path("details").build();
+      URI uri = UriBuilder.fromUri(appServer).path("orcs").path("client").path("details").build();
 
       String results = callAndGetResults(uri);
       getExpected("sessions", results);
@@ -47,7 +47,7 @@ public class ClientResourceTest {
    @Test
    public void testGetClientsForUser() {
       String appServer = OseeClientProperties.getOseeApplicationServer();
-      URI uri = UriBuilder.fromUri(appServer).path("client").path("3333").build();
+      URI uri = UriBuilder.fromUri(appServer).path("orcs").path("client").path("3333").build();
 
       String results = callAndGetResults(uri);
       getExpected("sessions", results);
