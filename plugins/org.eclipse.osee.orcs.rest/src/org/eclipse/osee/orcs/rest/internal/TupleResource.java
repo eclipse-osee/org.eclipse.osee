@@ -58,7 +58,7 @@ public class TupleResource {
       TupleTypeId typleTypeId = TokenFactory.createTupleType(tupleType);
 
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, getUser(), "Add Tuple 2");
-      toReturn = tx.addTuple(typleTypeId, branch, element1, element2);
+      toReturn = tx.addTuple(typleTypeId, element1, element2);
       tx.commit();
       return toReturn;
    }
@@ -82,7 +82,7 @@ public class TupleResource {
       TupleTypeId typleTypeId = TokenFactory.createTupleType(tupleType);
 
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, getUser(), "Add Tuple 3");
-      toReturn = tx.addTuple(typleTypeId, branch, element1, element2, element3);
+      toReturn = tx.addTuple(typleTypeId, element1, element2, element3);
       tx.commit();
       return toReturn;
    }
@@ -110,7 +110,7 @@ public class TupleResource {
       TupleTypeId typleTypeId = TokenFactory.createTupleType(tupleType);
 
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, getUser(), "Add Tuple 4");
-      toReturn = tx.addTuple(typleTypeId, branch, element1, element2, element3, element4);
+      toReturn = tx.addTuple(typleTypeId, element1, element2, element3, element4);
       tx.commit();
       return toReturn;
    }

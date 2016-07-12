@@ -134,13 +134,13 @@ public interface TransactionBuilder {
    void unrelateFromAll(IRelationTypeSide typeSide, ArtifactId art) throws OseeCoreException;
 
    // Tuples
-   <E1, E2> Long addTuple2(Tuple2Type<E1, E2> tupleType, BranchId branch, E1 e1, E2 e2);
+   <E1, E2> Long addTuple2(Tuple2Type<E1, E2> tupleType, E1 e1, E2 e2);
 
-   <E1, E2, E3> Long addTuple3(Tuple3Type<E1, E2, E3> tupleType, BranchId branch, E1 e1, E2 e2, E3 e3);
+   <E1, E2, E3> Long addTuple3(Tuple3Type<E1, E2, E3> tupleType, E1 e1, E2 e2, E3 e3);
 
-   <E1, E2, E3, E4> Long addTuple4(Tuple4Type<E1, E2, E3, E4> tupleType, BranchId branch, E1 e1, E2 e2, E3 e3, E4 e4);
+   <E1, E2, E3, E4> Long addTuple4(Tuple4Type<E1, E2, E3, E4> tupleType, E1 e1, E2 e2, E3 e3, E4 e4);
 
-   Long addTuple(TupleTypeId tupleTypeId, BranchId branch, Object... elements);
+   Long addTuple(TupleTypeId tupleTypeId, Object... elements);
 
    boolean deleteTuple(Long gammaId);
 

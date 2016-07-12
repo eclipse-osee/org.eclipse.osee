@@ -348,30 +348,30 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public <E1, E2> Long addTuple2(Tuple2Type<E1, E2> tupleType, BranchId branch, E1 element1, E2 element2) {
-      return addTuple(tupleType, branch, element1, element2);
+   public <E1, E2> Long addTuple2(Tuple2Type<E1, E2> tupleType, E1 element1, E2 element2) {
+      return addTuple(tupleType, element1, element2);
    }
 
    @Override
-   public <E1, E2, E3> Long addTuple3(Tuple3Type<E1, E2, E3> tupleType, BranchId branch, E1 element1, E2 element2, E3 element3) {
-      return addTuple(tupleType, branch, element1, element2, element3);
+   public <E1, E2, E3> Long addTuple3(Tuple3Type<E1, E2, E3> tupleType, E1 element1, E2 element2, E3 element3) {
+      return addTuple(tupleType, element1, element2, element3);
    }
 
    @Override
-   public <E1, E2, E3, E4> Long addTuple4(Tuple4Type<E1, E2, E3, E4> tupleType, BranchId branch, E1 element1, E2 element2, E3 element3, E4 element4) {
-      return addTuple(tupleType, branch, element1, element2, element3, element4);
+   public <E1, E2, E3, E4> Long addTuple4(Tuple4Type<E1, E2, E3, E4> tupleType, E1 element1, E2 element2, E3 element3, E4 element4) {
+      return addTuple(tupleType, element1, element2, element3, element4);
    }
 
    @Override
-   public Long addTuple(TupleTypeId tupleType, BranchId branch, Object... elements) {
+   public Long addTuple(TupleTypeId tupleType, Object... elements) {
       int length = elements.length;
 
       if (length == 2) {
-         return addTuple2(tupleType, branch, elements[0], elements[1]);
+         return addTuple2(tupleType, txData.getBranch(), elements[0], elements[1]);
       } else if (length == 3) {
-         return addTuple3(tupleType, branch, elements[0], elements[1], elements[2]);
+         return addTuple3(tupleType, txData.getBranch(), elements[0], elements[1], elements[2]);
       } else {
-         return addTuple4(tupleType, branch, elements[0], elements[1], elements[2], elements[3]);
+         return addTuple4(tupleType, txData.getBranch(), elements[0], elements[1], elements[2], elements[3]);
       }
    }
 
