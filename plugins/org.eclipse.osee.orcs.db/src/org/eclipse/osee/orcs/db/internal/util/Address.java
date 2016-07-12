@@ -46,7 +46,7 @@ public final class Address implements Comparable<Address> {
    }
 
    public boolean isSimilar(Address other) {
-      return other != null && other.itemId == itemId && other.branchId == branchId;
+      return other != null && other.itemId == itemId && other.branchId.equals(branchId);
    }
 
    public boolean isSameTransaction(Address other) {
@@ -62,7 +62,7 @@ public final class Address implements Comparable<Address> {
    }
 
    public boolean hasSameApplicability(Address other) {
-      return appId.equals(other.getBranchId());
+      return appId.equals(other.getApplicabilityId());
    }
 
    public void ensureCorrectCurrent() {

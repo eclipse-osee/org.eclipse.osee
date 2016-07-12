@@ -30,7 +30,7 @@ import org.eclipse.osee.orcs.db.internal.util.Address;
  */
 public class InvalidTxCurrentsAndModTypesCallable extends AbstractDatastoreTxCallable<Void> {
    private static final String SELECT_ADDRESSES =
-      "select %s, txs.branch_id, txs.transaction_id, txs.gamma_id, txs.mod_type, tsx.app_id, txs.tx_current, txd.tx_type from %s t1, osee_txs%s txs, osee_tx_details txd where t1.gamma_id = txs.gamma_id and txd.transaction_id = txs.transaction_id and txs.branch_id = txd.branch_id order by txs.branch_id, %s, txs.transaction_id desc, txs.gamma_id desc";
+      "select %s, txs.branch_id, txs.transaction_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.tx_current, txd.tx_type from %s t1, osee_txs%s txs, osee_tx_details txd where t1.gamma_id = txs.gamma_id and txd.transaction_id = txs.transaction_id and txs.branch_id = txd.branch_id order by txs.branch_id, %s, txs.transaction_id desc, txs.gamma_id desc";
 
    private static final String DELETE_ADDRESS =
       "delete from osee_txs%s where transaction_id = ? and gamma_id = ? and branch_id = ?";
