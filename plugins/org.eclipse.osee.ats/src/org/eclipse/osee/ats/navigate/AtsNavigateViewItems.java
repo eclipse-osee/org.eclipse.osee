@@ -275,7 +275,6 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
    private void createExampleItems(XNavigateItem parent, List<XNavigateItem> items) {
       XNavigateItem exampleItems = new XNavigateItem(parent, "Examples", AtsImage.REPORT);
 
-      new BarChartExample(exampleItems);
       new ResultsEditorExample(exampleItems);
       new CompareEditorExample(exampleItems);
       new XViewerExample(exampleItems);

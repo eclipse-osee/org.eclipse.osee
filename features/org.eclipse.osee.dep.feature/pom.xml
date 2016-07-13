@@ -67,7 +67,6 @@
 								<feature id="org.eclipse.equinox.sdk" />
 								<feature id="org.eclipse.equinox.core.feature" />
 								<feature id="org.eclipse.equinox.compendium.sdk" />
-								<feature id="org.eclipse.birt.osgi.runtime.sdk" />
 								<feature id="org.eclipse.ecf.core.feature" />
 								<feature id="org.eclipse.m2e.feature" />
 								<feature id="org.eclipse.ecf.core.source.feature" />

@@ -35,7 +35,6 @@
       <import plugin="org.eclipse.osee.framework.ui.swt"/>
       <import plugin="org.eclipse.ui.intro"/>
       <import plugin="javax.mail.glassfish"/>
-      <import plugin="org.eclipse.birt.chart.engine"/>
       <import plugin="org.eclipse.compare"/>
       <import plugin="org.eclipse.core.expressions"/>
       <import plugin="org.eclipse.core.resources"/>

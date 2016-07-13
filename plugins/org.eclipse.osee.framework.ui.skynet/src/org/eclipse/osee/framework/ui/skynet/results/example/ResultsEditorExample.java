@@ -14,34 +14,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.birt.chart.model.Chart;
-import org.eclipse.birt.chart.model.ChartWithAxes;
-import org.eclipse.birt.chart.model.attribute.AxisType;
-import org.eclipse.birt.chart.model.attribute.IntersectionType;
-import org.eclipse.birt.chart.model.attribute.LegendItemType;
-import org.eclipse.birt.chart.model.attribute.MarkerType;
-import org.eclipse.birt.chart.model.attribute.TickStyle;
-import org.eclipse.birt.chart.model.attribute.impl.ColorDefinitionImpl;
-import org.eclipse.birt.chart.model.component.Axis;
-import org.eclipse.birt.chart.model.component.Series;
-import org.eclipse.birt.chart.model.component.impl.SeriesImpl;
-import org.eclipse.birt.chart.model.data.BaseSampleData;
-import org.eclipse.birt.chart.model.data.DataFactory;
-import org.eclipse.birt.chart.model.data.NumberDataSet;
-import org.eclipse.birt.chart.model.data.OrthogonalSampleData;
-import org.eclipse.birt.chart.model.data.SampleData;
-import org.eclipse.birt.chart.model.data.SeriesDefinition;
-import org.eclipse.birt.chart.model.data.TextDataSet;
-import org.eclipse.birt.chart.model.data.impl.NumberDataSetImpl;
-import org.eclipse.birt.chart.model.data.impl.SeriesDefinitionImpl;
-import org.eclipse.birt.chart.model.data.impl.TextDataSetImpl;
-import org.eclipse.birt.chart.model.impl.ChartWithAxesImpl;
-import org.eclipse.birt.chart.model.layout.Legend;
-import org.eclipse.birt.chart.model.layout.Plot;
-import org.eclipse.birt.chart.model.type.LineSeries;
-import org.eclipse.birt.chart.model.type.impl.LineSeriesImpl;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -56,7 +30,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
-import org.eclipse.osee.framework.ui.skynet.results.chart.ResultsEditorChartTab;
 import org.eclipse.osee.framework.ui.skynet.results.html.ResultsEditorHtmlTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
@@ -100,7 +73,6 @@ public class ResultsEditorExample extends XNavigateItemAction {
          public List<IResultsEditorTab> getResultsEditorTabs() {
             if (tabs == null) {
                tabs = new LinkedList<>();
-               tabs.add(createChartTab());
                tabs.add(createDataTab());
                tabs.add(createHtmlTab());
                tabs.add(createArtifactTab());
@@ -108,10 +80,6 @@ public class ResultsEditorExample extends XNavigateItemAction {
             return tabs;
          }
       });
-   }
-
-   private IResultsEditorTab createChartTab() {
-      return new ResultsEditorChartTab("Chart", createChart());
    }
 
    private IResultsEditorTab createDataTab() {
@@ -173,93 +141,6 @@ public class ResultsEditorExample extends XNavigateItemAction {
       }
       sb.append(AHTML.endMultiColumnTable());
       return sb.toString();
-   }
-
-   public Chart createChart() {
-      ChartWithAxes cwaLine = ChartWithAxesImpl.create();
-      cwaLine.setType("Line Chart"); //$NON-NLS-1$
-      cwaLine.setSubType("Overlay"); //$NON-NLS-1$
-
-      // Plot
-      cwaLine.getBlock().setBackground(ColorDefinitionImpl.WHITE());
-      Plot p = cwaLine.getPlot();
-      p.getClientArea().setBackground(ColorDefinitionImpl.create(255, 255, 225));
-
-      // Title
-      cwaLine.getTitle().getLabel().getCaption().setValue(
-         "Action Item Backlog - Priority 1-3 Bugs\nGoal: 50% Reduction - Baseline: YE 2008");//$NON-NLS-1$
-
-      // Legend
-      Legend lg = cwaLine.getLegend();
-      lg.setItemType(LegendItemType.SERIES_LITERAL);
-
-      // X-Axis
-      Axis xAxisPrimary = cwaLine.getPrimaryBaseAxes()[0];
-      xAxisPrimary.setType(AxisType.TEXT_LITERAL);
-      xAxisPrimary.getMajorGrid().setTickStyle(TickStyle.BELOW_LITERAL);
-      xAxisPrimary.getOrigin().setType(IntersectionType.MIN_LITERAL);
-
-      // Y-Axis
-      Axis yAxisPrimary = cwaLine.getPrimaryOrthogonalAxis(xAxisPrimary);
-      yAxisPrimary.getMajorGrid().setTickStyle(TickStyle.LEFT_LITERAL);
-
-      // Data Set
-      TextDataSet categoryValues = TextDataSetImpl.create(chartDateStrs.toArray(new String[chartDateStrs.size()]));
-      NumberDataSet orthoValues1 = NumberDataSetImpl.create(chartValueStrs.toArray(new Double[chartValueStrs.size()]));
-      NumberDataSet orthoValuesGoal =
-         NumberDataSetImpl.create(chartValueStrsGoal.toArray(new Double[chartValueStrsGoal.size()]));
-
-      SampleData sd = DataFactory.eINSTANCE.createSampleData();
-      BaseSampleData sdBase = DataFactory.eINSTANCE.createBaseSampleData();
-      sdBase.setDataSetRepresentation("");//$NON-NLS-1$
-      sd.getBaseSampleData().add(sdBase);
-
-      OrthogonalSampleData sdOrthogonal1 = DataFactory.eINSTANCE.createOrthogonalSampleData();
-      sdOrthogonal1.setDataSetRepresentation("");//$NON-NLS-1$
-      sdOrthogonal1.setSeriesDefinitionIndex(0);
-      sd.getOrthogonalSampleData().add(sdOrthogonal1);
-
-      OrthogonalSampleData sdOrthogonal2 = DataFactory.eINSTANCE.createOrthogonalSampleData();
-      sdOrthogonal2.setDataSetRepresentation("");//$NON-NLS-1$
-      sdOrthogonal2.setSeriesDefinitionIndex(1);
-      sd.getOrthogonalSampleData().add(sdOrthogonal2);
-
-      cwaLine.setSampleData(sd);
-
-      // X-Series
-      Series seCategory = SeriesImpl.create();
-      seCategory.setDataSet(categoryValues);
-      SeriesDefinition sdX = SeriesDefinitionImpl.create();
-
-      xAxisPrimary.getSeriesDefinitions().add(sdX);
-      sdX.getSeries().add(seCategory);
-
-      // Y-Series
-      LineSeries ls1 = (LineSeries) LineSeriesImpl.create();
-      ls1.setDataSet(orthoValues1);
-      ls1.setSeriesIdentifier("Count");
-      ls1.getLineAttributes().setColor(ColorDefinitionImpl.BLUE());
-      for (int i = 0; i < ls1.getMarkers().size(); i++) {
-         ls1.getMarkers().get(i).setType(MarkerType.TRIANGLE_LITERAL);
-      }
-      ls1.getLabel().setVisible(true);
-
-      LineSeries ls2 = (LineSeries) LineSeriesImpl.create();
-      ls2.setDataSet(orthoValuesGoal);
-      ls2.setSeriesIdentifier("Goal (100)");
-      ls2.getLineAttributes().setColor(ColorDefinitionImpl.GREEN());
-      for (int i = 0; i < ls2.getMarkers().size(); i++) {
-         ls2.getMarkers().get(i).setType(MarkerType.TRIANGLE_LITERAL);
-      }
-      ls2.getLabel().setVisible(true);
-
-      SeriesDefinition sdY = SeriesDefinitionImpl.create();
-      sdY.getSeriesPalette().shift(-2);
-      yAxisPrimary.getSeriesDefinitions().add(sdY);
-      sdY.getSeries().add(ls2);
-      sdY.getSeries().add(ls1);
-
-      return cwaLine;
    }
 
 }
