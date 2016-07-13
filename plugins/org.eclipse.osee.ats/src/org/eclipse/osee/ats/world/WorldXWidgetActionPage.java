@@ -153,7 +153,7 @@ public class WorldXWidgetActionPage extends FormPage {
 
       Composite body = scrolledForm.getBody();
       body.setLayout(ALayout.getZeroMarginLayout(1, true));
-      body.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, true, true));
+      body.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, false, false));
 
       xWidgetXml = getXWidgetsXml();
       try {
@@ -313,6 +313,8 @@ public class WorldXWidgetActionPage extends FormPage {
 
       worldComposite = new WorldComposite(worldEditor, resultsContainer, SWT.BORDER | SWT.NO_SCROLL);
       GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+      gd.widthHint = 100;
+      gd.heightHint = 100;
       worldComposite.setLayoutData(gd);
 
       toolkit.adapt(worldComposite);
