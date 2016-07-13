@@ -11,9 +11,9 @@
 package org.eclipse.osee.framework.ui.skynet.branch;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ViewApplicabilityFilt
 import org.eclipse.osee.orcs.rest.model.Applicabilities;
 import org.eclipse.osee.orcs.rest.model.Applicability;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
-import org.eclipse.osee.orcs.rest.model.ApplicabilityId;
 
 /**
  * @author Donald G. Dunne
@@ -41,10 +40,11 @@ public class ViewApplicabilityUtil {
    public static boolean changeApplicability(Collection<Artifact> artifacts) {
       BranchId branch = artifacts.iterator().next().getBranch();
       ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint(branch);
-      List<ApplicabilityId> applicabilityIds = applEndpoint.getApplicabilityIds().getApplicabilityIds();
+      Iterable<ApplicabilityToken> applicabilityTokens = applEndpoint.getApplicabilityTokens();
+
       ViewApplicabilityFilterTreeDialog dialog =
          new ViewApplicabilityFilterTreeDialog("Select View Applicability", "Select View Applicability");
-      dialog.setInput(applicabilityIds);
+      dialog.setInput(applicabilityTokens);
       dialog.setMultiSelect(false);
       int result = dialog.open();
       if (result == Window.OK) {

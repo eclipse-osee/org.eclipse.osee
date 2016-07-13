@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -21,7 +22,6 @@ import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.StringNameSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
-import org.eclipse.osee.orcs.rest.model.ApplicabilityId;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Control;
  * @author Donald G. Dunne
  */
 public class ViewApplicabilityFilterTreeDialog extends FilteredTreeDialog {
-   private ApplicabilityId selection;
+   private ApplicabilityToken selection;
    XCheckBox showAll = new XCheckBox("Show All View Applicabilities");
 
    public ViewApplicabilityFilterTreeDialog(String title, String message) {
@@ -52,7 +52,7 @@ public class ViewApplicabilityFilterTreeDialog extends FilteredTreeDialog {
                if (sel.isEmpty()) {
                   selection = null;
                } else {
-                  selection = (ApplicabilityId) sel.getFirstElement();
+                  selection = (ApplicabilityToken) sel.getFirstElement();
                }
                updateStatusLabel();
             }
@@ -79,7 +79,7 @@ public class ViewApplicabilityFilterTreeDialog extends FilteredTreeDialog {
       return Result.TrueResult;
    }
 
-   public ApplicabilityId getSelection() {
+   public ApplicabilityToken getSelection() {
       return selection;
    }
 

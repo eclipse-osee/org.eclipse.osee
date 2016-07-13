@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.rest.model;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.ser.std.ToStringSerializer;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 
 /**
  * @author Donald G. Dunne
@@ -22,13 +23,13 @@ public class Applicability {
 
    @JsonSerialize(using = ToStringSerializer.class)
    private long artId;
-   private ApplicabilityId applicability;
+   private ApplicabilityToken applicability;
 
    public Applicability() {
       // For Jax-RS instantiation
    }
 
-   public Applicability(long artId, ApplicabilityId applId) {
+   public Applicability(long artId, ApplicabilityToken applId) {
       this.artId = artId;
       this.applicability = applId;
    }
@@ -41,11 +42,11 @@ public class Applicability {
       this.artId = artId;
    }
 
-   public ApplicabilityId getApplicability() {
+   public ApplicabilityToken getApplicability() {
       return applicability;
    }
 
-   public void setApplicability(ApplicabilityId applicability) {
+   public void setApplicability(ApplicabilityToken applicability) {
       this.applicability = applicability;
    }
 

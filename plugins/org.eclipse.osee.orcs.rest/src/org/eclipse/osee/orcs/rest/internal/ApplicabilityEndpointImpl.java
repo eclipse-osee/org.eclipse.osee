@@ -11,6 +11,8 @@
 package org.eclipse.osee.orcs.rest.internal;
 
 import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
+import java.util.LinkedList;
+import java.util.List;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.UriInfo;
@@ -24,9 +26,8 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.Applicabilities;
 import org.eclipse.osee.orcs.rest.model.Applicability;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
-import org.eclipse.osee.orcs.rest.model.ApplicabilityId;
-import org.eclipse.osee.orcs.rest.model.ApplicabilityIds;
 import org.eclipse.osee.orcs.rest.model.ArtifactIds;
+import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -36,6 +37,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
    private final OrcsApi orcsApi;
    private final BranchId branch;
+   private final TupleQuery tupleQuery;
 
    @Context
    private UriInfo uriInfo;
@@ -46,6 +48,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    public ApplicabilityEndpointImpl(OrcsApi orcsApi, BranchId branch) {
       this.orcsApi = orcsApi;
       this.branch = branch;
+      this.tupleQuery = orcsApi.getQueryFactory().tupleQuery();
    }
 
    @Override
@@ -75,15 +78,11 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public ApplicabilityIds getApplicabilityIds() {
-      // TBD - Replace with call to IApplicabilityService calls once implemented
-      ApplicabilityIds ids = new ApplicabilityIds();
-      ids.getApplicabilityIds().add(new ApplicabilityId(345L, "ARC-210"));
-      ids.getApplicabilityIds().add(new ApplicabilityId(366L, "COMM"));
-      ids.getApplicabilityIds().add(new ApplicabilityId(376L, "ASM"));
-      ids.getApplicabilityIds().add(new ApplicabilityId(368L, "UTF"));
-      ids.getApplicabilityIds().add(new ApplicabilityId(466L, "MDR"));
-      return ids;
+   public List<ApplicabilityToken> getApplicabilityTokens() {
+      List<ApplicabilityToken> toReturn = new LinkedList<>();
+      tupleQuery.getTuple2UniqueE2Pair(CoreTupleTypes.ViewApplicability, branch,
+         (id, name) -> toReturn.add(new ApplicabilityToken(id, name)));
+      return toReturn;
    }
 
    @Override
@@ -94,8 +93,8 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    @Override
    public Applicabilities getApplicabilities(ArtifactIds artifactIds) {
       // TBD - Replace with call to IApplicabilityService calls once implemented
-      ApplicabilityId arc210 = new ApplicabilityId(345L, "ARC-210");
-      ApplicabilityId comm = new ApplicabilityId(366L, "COMM");
+      ApplicabilityToken arc210 = new ApplicabilityToken(345L, "ARC-210");
+      ApplicabilityToken comm = new ApplicabilityToken(366L, "COMM");
 
       Applicabilities results = new Applicabilities();
       results.getApplicabilities().add(new Applicability(12L, arc210));
