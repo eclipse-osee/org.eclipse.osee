@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.search.TupleQuery;
 
 /**
  * @author Roberto E. Escobar
@@ -25,6 +26,8 @@ public interface QueryEngine {
    CancellableCallable<Integer> createBranchCount(OrcsSession session, QueryData queryData);
 
    CancellableCallable<Integer> createBranchQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler);
+
+   TupleQuery createTupleQuery();
 
    CancellableCallable<Integer> createTxCount(OrcsSession session, QueryData queryData);
 

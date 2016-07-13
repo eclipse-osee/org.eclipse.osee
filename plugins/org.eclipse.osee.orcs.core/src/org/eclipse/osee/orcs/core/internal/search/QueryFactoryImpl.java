@@ -13,8 +13,8 @@ package org.eclipse.osee.orcs.core.internal.search;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -28,6 +28,7 @@ import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TransactionQuery;
+import org.eclipse.osee.orcs.search.TupleQuery;
 
 /**
  * @author Roberto E. Escobar
@@ -41,8 +42,9 @@ public class QueryFactoryImpl implements QueryFactory {
    private final BranchCallableQueryFactory branchQueryFactory;
    private final TransactionCallableQueryFactory txQueryFactory;
    private final TransactionCriteriaFactory txCriteriaFactory;
+   private final TupleQuery tupleQuery;
 
-   public QueryFactoryImpl(OrcsSession context, CriteriaFactory criteriaFctry, CallableQueryFactory queryFctry, BranchCriteriaFactory branchCriteriaFactory, BranchCallableQueryFactory branchQueryFactory, TransactionCallableQueryFactory txQueryFactory, TransactionCriteriaFactory txCriteriaFactory) {
+   public QueryFactoryImpl(OrcsSession context, CriteriaFactory criteriaFctry, CallableQueryFactory queryFctry, BranchCriteriaFactory branchCriteriaFactory, BranchCallableQueryFactory branchQueryFactory, TransactionCallableQueryFactory txQueryFactory, TransactionCriteriaFactory txCriteriaFactory, TupleQuery tupleQuery) {
       super();
       this.context = context;
       this.criteriaFctry = criteriaFctry;
@@ -51,6 +53,7 @@ public class QueryFactoryImpl implements QueryFactory {
       this.branchQueryFactory = branchQueryFactory;
       this.txQueryFactory = txQueryFactory;
       this.txCriteriaFactory = txCriteriaFactory;
+      this.tupleQuery = tupleQuery;
    }
 
    private QueryBuilder createBuilder(Long branchId) {
@@ -109,5 +112,10 @@ public class QueryFactoryImpl implements QueryFactory {
       QueryData queryData = new QueryData(criteriaSet, options);
       TransactionQueryImpl query = new TransactionQueryImpl(txQueryFactory, txCriteriaFactory, context, queryData);
       return query;
+   }
+
+   @Override
+   public TupleQuery tupleQuery() {
+      return tupleQuery;
    }
 }

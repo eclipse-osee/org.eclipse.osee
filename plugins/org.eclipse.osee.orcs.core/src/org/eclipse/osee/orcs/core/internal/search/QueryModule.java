@@ -20,6 +20,7 @@ import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.statistics.QueryStatistics;
 
 /**
@@ -37,6 +38,7 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
 
    private final TransactionCallableQueryFactory txQueryFactory;
    private final TransactionCriteriaFactory txCriteriaFactory;
+   private final TupleQuery tupleQuery;
 
    public static interface QueryModuleProvider {
       QueryFactory getQueryFactory(OrcsSession session);
@@ -53,11 +55,13 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
 
       txQueryFactory = new TransactionCallableQueryFactory(logger, queryEngine, queryStatsCollector);
       txCriteriaFactory = new TransactionCriteriaFactory();
+      tupleQuery = queryEngine.createTupleQuery();
+
    }
 
    public QueryFactory createQueryFactory(OrcsSession session) {
       return new QueryFactoryImpl(session, criteriaFctry, artQueryFactory, branchCriteriaFactory, branchQueryFactory,
-         txQueryFactory, txCriteriaFactory);
+         txQueryFactory, txCriteriaFactory, tupleQuery);
    }
 
    @Override
