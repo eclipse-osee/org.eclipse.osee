@@ -254,6 +254,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor {
       setPageText(artifactsPageIndex, "Artifacts");
 
       new ActionContributionItem(xViewer.getCustomizeAction()).fill(toolBar, -1);
+      comp.layout();
 
       Tree tree = xViewer.getTree();
       GridData gridData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL | GridData.GRAB_HORIZONTAL);
@@ -269,6 +270,8 @@ public class MassArtifactEditor extends AbstractArtifactEditor {
       }
       bindMenu();
       getSite().setSelectionProvider(xViewer);
+
+      comp.redraw();
    }
 
    private void bindMenu() {
