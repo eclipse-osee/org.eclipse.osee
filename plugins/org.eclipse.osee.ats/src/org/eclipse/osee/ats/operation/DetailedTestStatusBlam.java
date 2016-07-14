@@ -246,6 +246,8 @@ public class DetailedTestStatusBlam extends AbstractBlam {
 
       List<Artifact> allSwReqs = ArtifactQuery.getArtifactListFromTypeWithInheritence(
          CoreArtifactTypes.AbstractSoftwareRequirement, reportBranch, DeletionFlag.EXCLUDE_DELETED);
+      allSwReqs.addAll(ArtifactQuery.getArtifactListFromTypeWithInheritence(CoreArtifactTypes.ImplementationDetails,
+         reportBranch, DeletionFlag.EXCLUDE_DELETED));
 
       //100
       writeStatusSheet(allSwReqs, monitor);
@@ -426,7 +428,8 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    private void processTestScriptsAndProcedures(Artifact requirement, String[] statusLine) throws OseeCoreException {
       Collection<Artifact> scripts = requirement.getRelatedArtifacts(CoreRelationTypes.Verification__Verifier);
       if (scripts.isEmpty()) {
-         if (requirement.isOfType(CoreArtifactTypes.IndirectSoftwareRequirement)) {
+         if (requirement.isOfType(CoreArtifactTypes.IndirectSoftwareRequirement) || requirement.isOfType(
+            CoreArtifactTypes.ImplementationDetails)) {
             statusLine[Index.TEST_SCRIPT.ordinal()] = requirement.getArtifactTypeName();
             sumFormula.insert(0, "=sum(0");
             statusLine[Index.HOURS_REMAINING.ordinal()] = sumFormula.toString();
@@ -493,7 +496,8 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       processRpcrStatuses(requirement, statusLine);
 
       statusLine[Index.Category.ordinal()] = requirement.getSoleAttributeValue(CoreAttributeTypes.Category, "");
-      if (requirement.isOfType(CoreArtifactTypes.IndirectSoftwareRequirement)) {
+      if (requirement.isOfType(CoreArtifactTypes.IndirectSoftwareRequirement) || requirement.isOfType(
+         CoreArtifactTypes.ImplementationDetails)) {
          statusLine[Index.Category.ordinal()] = "I";
       }
 

@@ -406,7 +406,8 @@ public class DetailedTestStatusOld extends AbstractBlam {
    private void processTestScriptsAndProcedures(Artifact requirement, String[] statusLine) throws OseeCoreException {
       Collection<String> scripts = requirementToCodeUnitsMap.getValues(requirement);
       if (scripts == null) {
-         if (requirement.isOfType(CoreArtifactTypes.IndirectSoftwareRequirement)) {
+         if (requirement.isOfType(CoreArtifactTypes.IndirectSoftwareRequirement) || requirement.isOfType(
+            CoreArtifactTypes.ImplementationDetails)) {
             statusLine[Index.TEST_SCRIPT.ordinal()] = requirement.getArtifactTypeName();
             sumFormula.insert(0, "=sum(0");
             statusLine[Index.HOURS_REMAINING.ordinal()] = sumFormula.toString();
@@ -472,7 +473,8 @@ public class DetailedTestStatusOld extends AbstractBlam {
       processRpcrStatuses(requirement, statusLine);
 
       statusLine[Index.Category.ordinal()] = requirement.getSoleAttributeValue(CoreAttributeTypes.Category, "");
-      if (requirement.isOfType(CoreArtifactTypes.IndirectSoftwareRequirement)) {
+      if (requirement.isOfType(CoreArtifactTypes.IndirectSoftwareRequirement) || requirement.isOfType(
+         CoreArtifactTypes.ImplementationDetails)) {
          statusLine[Index.Category.ordinal()] = "I";
       }
 
