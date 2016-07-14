@@ -25,7 +25,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.orcs.transaction.CompareResults;
+import org.eclipse.osee.framework.core.model.change.CompareResults;
 
 /**
  * @author Roberto E. Escobar

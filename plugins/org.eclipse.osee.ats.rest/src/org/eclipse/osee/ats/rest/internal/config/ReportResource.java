@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
+import org.eclipse.osee.framework.core.model.change.CompareResults;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -40,7 +41,6 @@ import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.TransactionQuery;
-import org.eclipse.osee.orcs.transaction.CompareResults;
 
 /**
  * @author Angel Avila

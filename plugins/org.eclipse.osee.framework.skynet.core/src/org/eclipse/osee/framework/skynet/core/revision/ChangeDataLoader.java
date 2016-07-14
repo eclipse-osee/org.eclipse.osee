@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.model.change.ChangeIgnoreType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.core.model.change.ChangeVersion;
+import org.eclipse.osee.framework.core.model.change.CompareResults;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -49,7 +50,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
-import org.eclipse.osee.orcs.transaction.CompareResults;
 
 /**
  * @author Jeff C. Phillips

@@ -8,12 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.transaction;
+package org.eclipse.osee.framework.core.model.change;
 
 import java.util.Collections;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.eclipse.osee.framework.core.model.change.ChangeItem;
 
 /**
  * @author Roberto E. Escobar

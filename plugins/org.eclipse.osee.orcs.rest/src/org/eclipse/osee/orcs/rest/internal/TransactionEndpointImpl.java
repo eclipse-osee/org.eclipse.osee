@@ -16,10 +16,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.model.change.CompareResults;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.Transaction;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
-import org.eclipse.osee.orcs.transaction.CompareResults;
 
 /**
  * @author Roberto E. Escobar
