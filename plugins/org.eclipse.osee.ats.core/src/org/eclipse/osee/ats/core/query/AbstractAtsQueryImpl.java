@@ -432,17 +432,15 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    /**
     * Return team workflow ids based on teamdef, ai and version criteria to use in relatedTo criteria.
-    *
-    * @param teamWorkflowAttr TODO
     */
    public abstract List<Integer> getRelatedTeamWorkflowUuidsBasedOnTeamDefsAisAndVersions(List<AtsAttributeQuery> teamWorkflowAttr);
 
    private Set<IArtifactType> getAllArtTypes() {
-      Set<IArtifactType> allArtTypes = getArtifactTypesFromWorkItemTypes();
-      if (artifactTypes != null) {
-         for (IArtifactType artType : artifactTypes) {
-            allArtTypes.add(artType);
-         }
+      Set<IArtifactType> allArtTypes = new HashSet<>();
+      if (artifactTypes != null && !artifactTypes.isEmpty()) {
+         allArtTypes.addAll(artifactTypes);
+      } else {
+         allArtTypes = getArtifactTypesFromWorkItemTypes();
       }
       return allArtTypes;
    }
@@ -450,7 +448,9 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    private List<IArtifactType> getTeamWorkflowArtTypes(Set<IArtifactType> allArtTypes) {
       List<IArtifactType> teamWorkflowArtTypes = new LinkedList<>();
       for (IArtifactType artType : allArtTypes) {
-         if (services.getArtifactResolver().inheritsFrom(artType, AtsArtifactTypes.TeamWorkflow)) {
+         if (services.getArtifactResolver().inheritsFrom(artType,
+            AtsArtifactTypes.TeamWorkflow) || services.getArtifactResolver().inheritsFrom(artType,
+               AtsArtifactTypes.AbstractWorkflowArtifact)) {
             teamWorkflowArtTypes.add(artType);
          }
       }

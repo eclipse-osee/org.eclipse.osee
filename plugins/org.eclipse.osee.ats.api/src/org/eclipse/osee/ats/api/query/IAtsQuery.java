@@ -115,4 +115,6 @@ public interface IAtsQuery {
     */
    boolean exists();
 
+   IAtsQuery andNotExists(IAttributeType attributeType);
+
 }

@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryImpl;
 import org.eclipse.osee.ats.core.query.AtsAttributeQuery;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -152,6 +153,12 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
          search.andVersion(versionUuid);
       }
       return new ArrayList<>(search.getItemIds());
+   }
+
+   @Override
+   public IAtsQuery andNotExists(IAttributeType attributeType) {
+      query.andNotExists(attributeType);
+      return this;
    }
 
 }
