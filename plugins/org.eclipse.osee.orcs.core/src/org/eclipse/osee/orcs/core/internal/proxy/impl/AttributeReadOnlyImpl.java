@@ -21,7 +21,7 @@ import org.eclipse.osee.orcs.data.AttributeReadable;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeReadOnlyImpl<T> extends AbstractProxied<Attribute<T>>implements AttributeReadable<T> {
+public class AttributeReadOnlyImpl<T> extends AbstractProxied<Attribute<T>> implements AttributeReadable<T> {
 
    public AttributeReadOnlyImpl(ExternalArtifactManager proxyManager, OrcsSession session, Attribute<T> proxiedObject) {
       super(proxyManager, session, proxiedObject);
@@ -30,6 +30,11 @@ public class AttributeReadOnlyImpl<T> extends AbstractProxied<Attribute<T>>imple
    @Override
    public Integer getLocalId() {
       return getProxiedObject().getLocalId();
+   }
+
+   @Override
+   public Long getId() {
+      return getProxiedObject().getId();
    }
 
    @Override

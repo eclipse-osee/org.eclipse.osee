@@ -29,4 +29,8 @@ public class AttributeIdWrapper implements AttributeId {
       return attribute.getId();
    }
 
+   @Override
+   public Long getId() {
+      return Long.valueOf(attribute.getId());
+   }
 }

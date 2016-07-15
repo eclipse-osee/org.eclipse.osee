@@ -10,9 +10,31 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.eclipse.osee.framework.jdk.core.type.BaseId;
+import org.eclipse.osee.framework.jdk.core.type.Id;
+
 /**
  * @author Megumi Telles
  */
-public interface AttributeId extends HasLocalId<Integer> {
-   //
+public interface AttributeId extends HasLocalId<Integer>, Id {
+
+   public static AttributeId valueOf(String id) {
+      return valueOf(Long.valueOf(id));
+   }
+
+   @JsonCreator
+   public static AttributeId valueOf(long id) {
+      final class AttributeIdImpl extends BaseId implements AttributeId {
+         public AttributeIdImpl(Long txId) {
+            super(txId);
+         }
+
+         @Override
+         public Integer getLocalId() {
+            return getId().intValue();
+         }
+      }
+      return new AttributeIdImpl(id);
+   }
 }

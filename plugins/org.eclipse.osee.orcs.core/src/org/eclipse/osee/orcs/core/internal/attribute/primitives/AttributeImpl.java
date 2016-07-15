@@ -195,7 +195,7 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
 
    /**
     * Currently this method provides support for quasi attribute type inheritance
-    * 
+    *
     * @return whether this attribute's type or any of its super-types are the specified type
     * @throws OseeCoreException
     */
@@ -219,7 +219,7 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
 
    /**
     * Deletes the attribute
-    * 
+    *
     * @throws OseeStateException
     */
    @Override
@@ -294,7 +294,7 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
    /**
     * artifact.persist(); artifact.reloadAttributesAndRelations(); Will need to be called afterwards to see replaced
     * data in memory
-    * 
+    *
     * @throws OseeCoreException
     */
    public void replaceWithVersion(int gammaId) throws OseeCoreException {
@@ -319,5 +319,10 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
    @Override
    public int compareTo(AttributeImpl<T> other) {
       return toString().compareTo(other.toString());
+   }
+
+   @Override
+   public Long getId() {
+      return getOrcsData().getLocalId().longValue();
    }
 }

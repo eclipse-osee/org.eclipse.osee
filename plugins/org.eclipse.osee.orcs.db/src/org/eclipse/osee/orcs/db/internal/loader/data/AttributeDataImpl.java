@@ -97,4 +97,9 @@ public class AttributeDataImpl extends OrcsVersionedObjectImpl implements Attrib
    public void setUseBackingData(boolean useBackingData) {
       this.useBackingData = useBackingData;
    }
+
+   @Override
+   public Long getId() {
+      return getLocalId().longValue();
+   }
 }
