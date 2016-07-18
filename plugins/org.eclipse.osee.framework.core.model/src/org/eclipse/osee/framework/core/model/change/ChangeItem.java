@@ -170,6 +170,57 @@ public class ChangeItem implements Comparable<ChangeItem> {
       return true;
    }
 
+   public boolean totalEquals(ChangeItem other) {
+      if (!this.equals(other)) {
+         return false;
+      }
+      if (!this.ignoreType.equals(other.ignoreType)) {
+         return false;
+      }
+      if (!this.changeType.equals(other.changeType)) {
+         return false;
+      }
+      if (!(this.synthetic == other.synthetic)) {
+         return false;
+      }
+      if (this.getArtIdB() != other.getArtIdB()) {
+         return false;
+      }
+      if (baselineVersion == null) {
+         if (other.baselineVersion != null) {
+            return false;
+         }
+      }
+      if (!baselineVersion.equals(other.baselineVersion)) {
+         return false;
+      }
+      if (destinationVersion == null) {
+         if (other.destinationVersion != null) {
+            return false;
+         }
+      }
+      if (!destinationVersion.equals(other.destinationVersion)) {
+         return false;
+      }
+      if (netChange == null) {
+         if (other.netChange != null) {
+            return false;
+         }
+      }
+      if (!netChange.equals(other.netChange)) {
+         return false;
+      }
+      if (firstNonCurrentChange == null) {
+         if (other.firstNonCurrentChange != null) {
+            return false;
+         }
+      }
+      if (!firstNonCurrentChange.equals(other.firstNonCurrentChange)) {
+         return false;
+      }
+      return true;
+   }
+
    @Override
    public int compareTo(ChangeItem obj) {
       return itemId - obj.itemId;

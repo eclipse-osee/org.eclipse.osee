@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcClientConfig;
@@ -364,11 +365,11 @@ public final class JdbcClientImpl implements JdbcClient {
    }
 
    private static <R> R fetch(JdbcStatement stmt, R defaultValue) {
+      return fetch(stmt, defaultValue, (Class<R>) defaultValue.getClass());
+   }
+
+   private static <R> R fetch(JdbcStatement stmt, R defaultValue, Class<R> clazz) {
       Object toReturn = null;
-      if (defaultValue == null) {
-         return (R) stmt.getObject(1);
-      }
-      Class<?> clazz = defaultValue.getClass();
       if (Integer.class.isAssignableFrom(clazz)) {
          toReturn = stmt.getInt(1);
       } else if (Long.class.isAssignableFrom(clazz)) {
@@ -381,14 +382,14 @@ public final class JdbcClientImpl implements JdbcClient {
       } else if (BaseId.class.isAssignableFrom(clazz)) {
          toReturn = ((BaseId) defaultValue).clone(stmt.getLong(1));
       } else {
-         toReturn = stmt.getObject(1);
+         throw new OseeArgumentException("Unsupported type: %s", clazz.getName());
       }
       return (R) toReturn;
    }
 
    @Override
-   public <R> R fetchOrException(Supplier<OseeCoreException> exSupplier, String query, Object... data) {
-      return fetchOrException(null, exSupplier, stmt -> fetch(stmt, null), query, data);
+   public <R> R fetchOrException(Class<R> clazz, Supplier<OseeCoreException> exSupplier, String query, Object... data) {
+      return fetchOrException(null, exSupplier, stmt -> fetch(stmt, null, clazz), query, data);
    }
 
    @Override

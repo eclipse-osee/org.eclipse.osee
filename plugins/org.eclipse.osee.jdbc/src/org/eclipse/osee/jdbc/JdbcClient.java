@@ -47,7 +47,7 @@ public interface JdbcClient {
 
    <R> R fetchOrException(JdbcConnection connection, Supplier<OseeCoreException> exSupplier, Function<JdbcStatement, R> function, String query, Object... data);
 
-   <R> R fetchOrException(Supplier<OseeCoreException> exSupplier, String query, Object... data);
+   <R> R fetchOrException(Class<R> clazz, Supplier<OseeCoreException> exSupplier, String query, Object... data);
 
    int runBatchUpdate(String query, Iterable<Object[]> dataList);
 
