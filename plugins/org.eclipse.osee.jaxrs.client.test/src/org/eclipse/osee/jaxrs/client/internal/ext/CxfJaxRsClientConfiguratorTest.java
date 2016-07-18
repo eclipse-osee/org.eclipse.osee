@@ -236,7 +236,7 @@ public class CxfJaxRsClientConfiguratorTest {
       assertEquals(JsonMappingExceptionMapper.class, iterator.next());
       assertEquals(OAuthJSONProvider.class, iterator.next().getClass());
       assertEquals(OAuthContextProvider.class, iterator.next().getClass());
-
+      assertEquals(OrcsParamConverterProvider.class, iterator.next().getClass());
       assertEquals(OseeAccountClientRequestFilter.class, iterator.next().getClass());
       assertEquals(LoggingFeature.class, iterator.next().getClass());
       assertEquals(GZIPFeature.class, iterator.next().getClass());

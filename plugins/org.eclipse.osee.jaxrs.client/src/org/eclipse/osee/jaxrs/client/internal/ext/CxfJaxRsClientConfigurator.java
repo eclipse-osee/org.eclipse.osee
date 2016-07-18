@@ -94,6 +94,7 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
       providers.add(new GenericResponseExceptionMapper());
       providers.addAll(JacksonFeature.getProviders());
       providers.addAll(OAuth2Util.getOAuthProviders());
+      providers.add(new OrcsParamConverterProvider());
       providers.add(new OseeAccountClientRequestFilter());
       this.providers = providers;
 
@@ -115,7 +116,6 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
       bean.setFeatures(getFeatures());
       bean.setProperties(getProperties());
       bean.setProviders(getOAuthProviders(config));
-      bean.setProvider(new OseeAccountClientRequestFilter());
 
       /**
        * If threadSafe is true then multiple threads can invoke on the same proxy or WebClient instance.
@@ -139,7 +139,6 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
       register(builder, getFeatures());
       register(builder, getProperties());
       register(builder, getOAuthProviders(config));
-      builder.register(new OseeAccountClientRequestFilter());
    }
 
    @Override
