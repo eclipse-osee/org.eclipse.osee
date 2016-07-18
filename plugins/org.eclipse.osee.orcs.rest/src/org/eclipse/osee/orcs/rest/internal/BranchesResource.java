@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.rest.internal;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -18,6 +19,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -60,7 +62,7 @@ public class BranchesResource {
    }
 
    @Path("{branch}/applic")
-   public ApplicabilityEndpoint getApplicability(@PathParam("branch") BranchId branch) {
-      return new ApplicabilityEndpointImpl(OrcsApplication.getOrcsApi(), branch);
+   public ApplicabilityEndpoint getApplicability(@PathParam("branch") BranchId branch, @HeaderParam("osee.account.id") String accountId) {
+      return new ApplicabilityEndpointImpl(OrcsApplication.getOrcsApi(), branch, ArtifactId.valueOf(accountId));
    }
 }

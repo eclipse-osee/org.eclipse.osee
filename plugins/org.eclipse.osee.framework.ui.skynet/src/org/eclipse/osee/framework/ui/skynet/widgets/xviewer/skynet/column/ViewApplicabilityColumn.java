@@ -129,7 +129,7 @@ public class ViewApplicabilityColumn extends XViewerColumn implements IXViewerPr
             AWorkbench.popup(ViewApplicabilityUtil.CHANGE_APPLICABILITY_INVAILD);
             return false;
          }
-         return ViewApplicabilityUtil.changeApplicability(Collections.singleton(artifact));
+         return ViewApplicabilityUtil.changeApplicability(Collections.singletonList(artifact));
       } else {
          AWorkbench.popup("No Artifact Selected");
          return false;

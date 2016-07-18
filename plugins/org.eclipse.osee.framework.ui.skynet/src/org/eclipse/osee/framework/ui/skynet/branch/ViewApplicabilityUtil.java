@@ -11,10 +11,13 @@
 package org.eclipse.osee.framework.ui.skynet.branch;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -25,8 +28,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ViewApplicabilityFilterTreeDialog;
-import org.eclipse.osee.orcs.rest.model.Applicabilities;
-import org.eclipse.osee.orcs.rest.model.Applicability;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 
 /**
@@ -37,7 +38,7 @@ public class ViewApplicabilityUtil {
    public static String CHANGE_APPLICABILITY_INVAILD = "User does not have permissions to change View Applicability";
    private static AccessPolicy policy;
 
-   public static boolean changeApplicability(Collection<Artifact> artifacts) {
+   public static boolean changeApplicability(List<? extends IArtifactToken> artifacts) {
       BranchId branch = artifacts.iterator().next().getBranch();
       ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint(branch);
       Iterable<ApplicabilityToken> applicabilityTokens = applEndpoint.getApplicabilityTokens();
@@ -48,13 +49,7 @@ public class ViewApplicabilityUtil {
       dialog.setMultiSelect(false);
       int result = dialog.open();
       if (result == Window.OK) {
-         Applicabilities applicabilities = new Applicabilities();
-         for (Artifact artifact : artifacts) {
-            Applicability appl = new Applicability();
-            appl.setArtId(artifact.getUuid());
-            appl.setApplicability(dialog.getSelection());
-            applEndpoint.setApplicabilities(applicabilities);
-         }
+         applEndpoint.setApplicability(ApplicabilityId.valueOf(dialog.getSelection().getId()), artifacts);
          ArtifactQuery.reloadArtifacts(artifacts);
          return true;
       }

@@ -13,9 +13,8 @@ package org.eclipse.osee.orcs.rest.internal;
 import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
 import java.util.LinkedList;
 import java.util.List;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.Response;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -38,17 +37,13 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    private final OrcsApi orcsApi;
    private final BranchId branch;
    private final TupleQuery tupleQuery;
+   private final ArtifactId account;
 
-   @Context
-   private UriInfo uriInfo;
-
-   @Context
-   private HttpHeaders httpHeaders;
-
-   public ApplicabilityEndpointImpl(OrcsApi orcsApi, BranchId branch) {
+   public ApplicabilityEndpointImpl(OrcsApi orcsApi, BranchId branch, ArtifactId account) {
       this.orcsApi = orcsApi;
       this.branch = branch;
       this.tupleQuery = orcsApi.getQueryFactory().tupleQuery();
+      this.account = account;
    }
 
    @Override
@@ -108,12 +103,14 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public void setApplicability(Applicability appl) {
-      // TBD - Implement this with call to IApplicabilityService
-   }
+   public Response setApplicability(ApplicabilityId applicId, List<? extends ArtifactId> artifacts) {
 
-   @Override
-   public void setApplicabilities(Applicabilities applicabilities) {
-      // TBD - Implement this with call to IApplicabilityService
+      TransactionBuilder tx =
+         orcsApi.getTransactionFactory().createTransaction(branch, account, "Set Applicability Ids for Artifacts");
+      for (ArtifactId artId : artifacts) {
+         tx.setApplicability(artId, applicId);
+      }
+      tx.commit();
+      return Response.ok().build();
    }
 }

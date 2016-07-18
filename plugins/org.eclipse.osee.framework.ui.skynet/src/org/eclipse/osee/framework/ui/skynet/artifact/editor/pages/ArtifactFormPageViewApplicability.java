@@ -71,7 +71,7 @@ public class ArtifactFormPageViewApplicability {
             @Override
             public void widgetSelected(SelectionEvent e) {
                super.widgetSelected(e);
-               ViewApplicabilityUtil.changeApplicability(Collections.singleton(artifact));
+               ViewApplicabilityUtil.changeApplicability(Collections.singletonList(artifact));
             }
          };
       }
