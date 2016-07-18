@@ -17,6 +17,7 @@ import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.db.internal.search.QueryCallableFactory;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;
 import org.eclipse.osee.orcs.search.TupleQuery;
 
@@ -29,14 +30,16 @@ public class QueryEngineImpl implements QueryEngine {
    private final QueryCallableFactory txQueryEngineFactory;
    private final QueryCallableFactory allQueryEngineFactory;
    private final JdbcClient jdbcClient;
+   private final SqlJoinFactory sqlJoinFactory;
 
-   public QueryEngineImpl(QueryCallableFactory artifactQueryEngineFactory, QueryCallableFactory branchQueryEngineFactory, QueryCallableFactory txQueryEngineFactory, QueryCallableFactory allQueryEngineFactory, JdbcClient jdbcClient) {
+   public QueryEngineImpl(QueryCallableFactory artifactQueryEngineFactory, QueryCallableFactory branchQueryEngineFactory, QueryCallableFactory txQueryEngineFactory, QueryCallableFactory allQueryEngineFactory, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory) {
       super();
       this.artifactQueryEngineFactory = artifactQueryEngineFactory;
       this.branchQueryEngineFactory = branchQueryEngineFactory;
       this.txQueryEngineFactory = txQueryEngineFactory;
       this.allQueryEngineFactory = allQueryEngineFactory;
       this.jdbcClient = jdbcClient;
+      this.sqlJoinFactory = sqlJoinFactory;
    }
 
    @Override
@@ -86,6 +89,6 @@ public class QueryEngineImpl implements QueryEngine {
 
    @Override
    public ApplicabilityQuery createApplicabilityQuery() {
-      return new ApplicabilityQueryImpl(jdbcClient);
+      return new ApplicabilityQueryImpl(jdbcClient, sqlJoinFactory);
    }
 }

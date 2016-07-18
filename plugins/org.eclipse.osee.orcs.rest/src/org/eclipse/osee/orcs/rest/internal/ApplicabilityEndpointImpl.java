@@ -22,10 +22,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.rest.model.Applicabilities;
-import org.eclipse.osee.orcs.rest.model.Applicability;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
-import org.eclipse.osee.orcs.rest.model.ArtifactIds;
 import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -86,23 +83,6 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public Applicabilities getApplicabilities(ArtifactIds artifactIds) {
-      // TBD - Replace with call to IApplicabilityService calls once implemented
-      ApplicabilityToken arc210 = new ApplicabilityToken(345L, "ARC-210");
-      ApplicabilityToken comm = new ApplicabilityToken(366L, "COMM");
-
-      Applicabilities results = new Applicabilities();
-      results.getApplicabilities().add(new Applicability(12L, arc210));
-      results.getApplicabilities().add(new Applicability(13L, arc210));
-      results.getApplicabilities().add(new Applicability(23L, comm));
-      results.getApplicabilities().add(new Applicability(24L, comm));
-      for (Long artId : artifactIds.getArtifactIds()) {
-         results.getApplicabilities().add(new Applicability(artId, comm));
-      }
-      return results;
-   }
-
-   @Override
    public Response setApplicability(ApplicabilityId applicId, List<? extends ArtifactId> artifacts) {
 
       TransactionBuilder tx =
@@ -112,5 +92,10 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       }
       tx.commit();
       return Response.ok().build();
+   }
+
+   @Override
+   public List<ApplicabilityToken> getApplicabilityTokensForArts(List<ArtifactId> artIds) {
+      return orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityTokens(artIds, branch);
    }
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -21,6 +22,8 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -28,10 +31,7 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
-import org.eclipse.osee.orcs.rest.model.Applicabilities;
-import org.eclipse.osee.orcs.rest.model.Applicability;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
-import org.eclipse.osee.orcs.rest.model.ArtifactIds;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -62,7 +62,7 @@ public class ViewApplicabilityColumn extends XViewerColumn implements IXViewerPr
    public Long getKey(Object obj) {
       Artifact artifact = getArtifact(obj);
       if (artifact != null) {
-         return artifact.getUuid();
+         return artifact.getId();
       }
       return null;
    }
@@ -70,16 +70,18 @@ public class ViewApplicabilityColumn extends XViewerColumn implements IXViewerPr
    @Override
    public void populateCachedValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
       BranchId branch = null;
-      ArtifactIds artIds = new ArtifactIds();
+      List<ArtifactId> artifacts = new ArrayList<>();
       for (Object obj : objects) {
          Artifact artifact = getArtifact(obj);
-         artIds.getArtifactIds().add(artifact.getUuid());
+         artifacts.add(artifact);
          branch = artifact.getBranch();
       }
       ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint(branch);
-      Applicabilities applicabilities = applEndpoint.getApplicabilities(artIds);
-      for (Applicability appl : applicabilities.getApplicabilities()) {
-         preComputedValueMap.put(appl.getArtId(), appl.getApplicability().getName());
+
+      List<ApplicabilityToken> applicabilities = applEndpoint.getApplicabilityTokensForArts(artifacts);
+      for (int i = 0; i < applicabilities.size(); i++) {
+         ApplicabilityToken applic = applicabilities.get(i);
+         preComputedValueMap.put(artifacts.get(i).getId(), applic.getName());
       }
    }
 

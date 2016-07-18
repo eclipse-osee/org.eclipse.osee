@@ -34,12 +34,6 @@ public interface ApplicabilityEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    List<ApplicabilityToken> getApplicabilityTokens();
 
-   @POST
-   @Path("ids")
-   @Consumes({MediaType.APPLICATION_JSON})
-   @Produces({MediaType.APPLICATION_JSON})
-   Applicabilities getApplicabilities(ArtifactIds artifactIds);
-
    @PUT
    @Path("{applicId}")
    @Consumes({MediaType.APPLICATION_JSON})
@@ -53,5 +47,10 @@ public interface ApplicabilityEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    ApplicabilityToken getApplicabilityToken(@PathParam("artId") ArtifactId artId);
+
+   @PUT
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces(MediaType.APPLICATION_JSON)
+   List<ApplicabilityToken> getApplicabilityTokensForArts(List<ArtifactId> artIds);
 
 }
