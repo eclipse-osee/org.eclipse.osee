@@ -12,9 +12,10 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 
 /**
@@ -49,8 +50,8 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
 
    public final static String NAMESPACE = "osee.skynet.gui.BranchXViewer";
 
-   public BranchXViewerFactory() {
-      super(NAMESPACE);
+   public BranchXViewerFactory(IOseeTreeReportProvider reportProvider) {
+      super(NAMESPACE, reportProvider);
       registerColumns(branchName, branchType, branchState, timeStamp, author, comment, associatedArtifact, parentBranch,
          branchUuid, branchUuid, archivedState, inheritAccessControl);
    }

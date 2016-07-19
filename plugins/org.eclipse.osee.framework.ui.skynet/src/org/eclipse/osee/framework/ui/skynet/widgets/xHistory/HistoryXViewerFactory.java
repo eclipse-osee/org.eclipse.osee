@@ -12,10 +12,11 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xHistory;
 
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 
 /**
@@ -24,8 +25,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
 public class HistoryXViewerFactory extends SkynetXViewerFactory {
    public final static XViewerColumn transaction = new XViewerColumn("framework.history.transaction", "Transaction", 90,
       XViewerAlign.Left, true, SortDataType.Integer, false, null);
-   public final static XViewerColumn gamma = new XViewerColumn("framework.history.gamma", "Gamma", 60, XViewerAlign.Left,
-      false, SortDataType.Integer, false, null);
+   public final static XViewerColumn gamma = new XViewerColumn("framework.history.gamma", "Gamma", 60,
+      XViewerAlign.Left, false, SortDataType.Integer, false, null);
    public final static XViewerColumn itemType = new XViewerColumn("framework.history.itemType", "Item Type", 150,
       XViewerAlign.Left, true, SortDataType.String, false, null);
    public final static XViewerColumn itemChange = new XViewerColumn("framework.history.itemChange", "Item Kind", 100,
@@ -47,8 +48,8 @@ public class HistoryXViewerFactory extends SkynetXViewerFactory {
 
    public final static String NAMESPACE = "osee.skynet.gui.HisotryXViewer";
 
-   public HistoryXViewerFactory() {
-      super(NAMESPACE);
+   public HistoryXViewerFactory(IOseeTreeReportProvider reportProvider) {
+      super(NAMESPACE, reportProvider);
       registerColumns(transaction, gamma, itemType, itemChange, modType, itemId, was, is, timeStamp, author, comment);
       registerAllAttributeColumns();
    }

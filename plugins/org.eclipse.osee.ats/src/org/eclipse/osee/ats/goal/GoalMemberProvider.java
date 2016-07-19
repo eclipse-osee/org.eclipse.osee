@@ -85,9 +85,9 @@ public class GoalMemberProvider extends AbstractMemberProvider {
    @Override
    public IXViewerFactory getXViewerFactory(Artifact awa) {
       if (isBacklog()) {
-         return new BacklogXViewerFactory((GoalArtifact) awa);
+         return new BacklogXViewerFactory((GoalArtifact) awa, this);
       }
-      return new GoalXViewerFactory((GoalArtifact) awa);
+      return new GoalXViewerFactory((GoalArtifact) awa, this);
    }
 
    @Override

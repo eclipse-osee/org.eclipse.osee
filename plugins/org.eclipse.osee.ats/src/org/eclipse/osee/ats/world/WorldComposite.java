@@ -63,6 +63,7 @@ import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionH
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -75,7 +76,7 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
-public class WorldComposite extends Composite implements ISelectedAtsArtifacts, IWorldViewerEventHandler, IOpenNewAtsWorldEditorHandler, IOpenNewAtsWorldEditorSelectedHandler, IOpenNewAtsTaskEditorHandler, IOpenNewAtsTaskEditorSelectedHandler, IRefreshActionHandler, ITaskAddActionHandler {
+public class WorldComposite extends Composite implements IOseeTreeReportProvider, ISelectedAtsArtifacts, IWorldViewerEventHandler, IOpenNewAtsWorldEditorHandler, IOpenNewAtsWorldEditorSelectedHandler, IOpenNewAtsTaskEditorHandler, IOpenNewAtsTaskEditorSelectedHandler, IRefreshActionHandler, ITaskAddActionHandler {
 
    private final WorldXViewer worldXViewer;
    private final Set<Artifact> worldArts = new HashSet<>(200);
@@ -117,7 +118,7 @@ public class WorldComposite extends Composite implements ISelectedAtsArtifacts, 
 
    protected WorldXViewer createXViewer(IXViewerFactory xViewerFactory, Composite mainComp) {
       return new WorldXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
-         xViewerFactory != null ? xViewerFactory : new WorldXViewerFactory(), null);
+         xViewerFactory != null ? xViewerFactory : new WorldXViewerFactory(this), null);
    }
 
    public double getManHoursPerDayPreference() throws OseeCoreException {
@@ -414,6 +415,21 @@ public class WorldComposite extends Composite implements ISelectedAtsArtifacts, 
    @Override
    public void taskAddActionHandler() {
       ((TaskXViewer) worldXViewer).handleNewTask();
+   }
+
+   @Override
+   public String getEditorTitle() {
+      try {
+         return String.format("Table Report - %s", iWorldEditor.getCurrentTitleLabel());
+      } catch (Exception ex) {
+         // do nothing
+      }
+      return "Table Report - World Editor";
+   }
+
+   @Override
+   public String getReportTitle() {
+      return iWorldEditor.getCurrentTitleLabel();
    }
 
 }

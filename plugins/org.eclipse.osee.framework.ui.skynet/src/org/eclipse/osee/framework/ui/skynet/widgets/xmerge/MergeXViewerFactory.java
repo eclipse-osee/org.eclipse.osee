@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 
 /**
@@ -38,8 +39,8 @@ public class MergeXViewerFactory extends SkynetXViewerFactory {
    public final static XViewerColumn Art_Id = new XViewerColumn("framework.merge.artId", "Artifact Id", 75,
       XViewerAlign.Left, true, SortDataType.String, false, null);
 
-   public MergeXViewerFactory() {
-      super("osee.skynet.gui.MergeXViewer");
+   public MergeXViewerFactory(IOseeTreeReportProvider reportProvider) {
+      super("osee.skynet.gui.MergeXViewer", reportProvider);
       registerColumns(Conflict_Resolved, Artifact_Name, Type, Change_Item, Source, Destination, Merged, Art_Id);
       registerAllAttributeColumns();
    }

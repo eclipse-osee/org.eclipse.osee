@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.change.BranchTransactionUiData;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
@@ -58,7 +59,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Karol M. Wilk
  * @author Jeff C. Phillips
  */
-public class XBranchWidget extends GenericXWidget {
+public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProvider {
    private BranchXViewer branchXViewer;
    public final static String normalColor = "#EEEEEE";
    private static final String LOADING = "Loading ...";
@@ -86,7 +87,7 @@ public class XBranchWidget extends GenericXWidget {
       this.selectedBranch = selectedBranch;
       this.menuListener = menuListener;
       branchSelectedListeners = new CopyOnWriteArrayList<>();
-      branchXViewerFactory = new BranchXViewerFactory();
+      branchXViewerFactory = new BranchXViewerFactory(this);
    }
 
    public XBranchWidget(BranchXViewerFactory branchXViewerFactory, IBranchWidgetMenuListener menuListener) {
@@ -362,6 +363,20 @@ public class XBranchWidget extends GenericXWidget {
    public interface IBranchWidgetMenuListener {
       public void updateMenuActionsForTable(MenuManager mm);
 
+   }
+
+   @Override
+   public String getEditorTitle() {
+      if (selectedBranch != null) {
+         Branch branch = BranchManager.getBranch(selectedBranch);
+         return String.format("Table Report - Branch View %s", branch.getName());
+      }
+      return "Table Report - Branch View";
+   }
+
+   @Override
+   public String getReportTitle() {
+      return getEditorTitle();
    }
 
 }

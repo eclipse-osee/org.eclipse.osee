@@ -18,11 +18,12 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.editor.IMemberProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 
 /**
  * @author Donald G. Dunne
  */
-public abstract class AbstractMemberProvider implements IMemberProvider {
+public abstract class AbstractMemberProvider implements IMemberProvider, IOseeTreeReportProvider {
 
    @Override
    public void deCacheAndReload(boolean forcePend, IJobChangeListener listener) {
@@ -54,6 +55,21 @@ public abstract class AbstractMemberProvider implements IMemberProvider {
       }
       deCacheArtifact();
       getArtifact().reloadAttributesAndRelations();
+   }
+
+   @Override
+   public String getEditorTitle() {
+      try {
+         return String.format("Table Report - %s - %s", getMembersName(), getCollectorName());
+      } catch (Exception ex) {
+         // do nothing
+      }
+      return "Table Report - " + getMembersName();
+   }
+
+   @Override
+   public String getReportTitle() {
+      return getEditorTitle();
    }
 
 }

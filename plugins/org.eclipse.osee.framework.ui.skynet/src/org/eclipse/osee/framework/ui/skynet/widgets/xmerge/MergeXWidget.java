@@ -61,6 +61,7 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CheckBoxDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -79,7 +80,7 @@ import org.eclipse.ui.PlatformUI;
  * @author Donald G. Dunne
  * @author Theron Virgin
  */
-public class MergeXWidget extends GenericXWidget {
+public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvider {
    private static final String COMPLETE_COMMIT_ACTION_ID = "complete.commit.action.id";
    private static final String REFRESH_ACTION_ID = "refresh.action.id";
    private MergeXViewer mergeXViewer;
@@ -112,7 +113,7 @@ public class MergeXWidget extends GenericXWidget {
       taskComp.setLayout(ALayout.getZeroMarginLayout());
       createTextWidgets(parent);
       createMainComposite(mainComp);
-      mergeXViewer = new MergeXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
+      mergeXViewer = new MergeXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this, this);
       createMergeXViewer();
       createTaskActionBar(taskComp);
       if (toolkit != null) {
@@ -722,4 +723,20 @@ public class MergeXWidget extends GenericXWidget {
          }
       }
    }
+
+   @Override
+   public String getEditorTitle() {
+      try {
+         return String.format("Table Report - Merge View [%s]", getEditorTitle());
+      } catch (Exception ex) {
+         // do nothing
+      }
+      return "Table Report - Merge View";
+   }
+
+   @Override
+   public String getReportTitle() {
+      return getEditorTitle();
+   }
+
 }

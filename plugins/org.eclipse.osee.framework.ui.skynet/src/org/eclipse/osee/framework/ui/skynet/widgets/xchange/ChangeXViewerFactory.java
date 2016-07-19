@@ -16,6 +16,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTypeColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.GuidColumn;
@@ -49,8 +50,8 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
 
    public final static String NAMESPACE = "osee.skynet.gui.ChangeXViewer";
 
-   public ChangeXViewerFactory() {
-      super(NAMESPACE);
+   public ChangeXViewerFactory(IOseeTreeReportProvider reportProvider) {
+      super(NAMESPACE, reportProvider);
       registerColumns(Name, Item_Type, Item_Kind, Change_Type, Is_Value, Was_Value, paraNumber);
       registerColumns(HierarchyIndexColumn.getInstance());
       registerColumns(new GuidColumn(false));
@@ -67,5 +68,4 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
    public XViewerSorter createNewXSorter(XViewer xViewer) {
       return new XViewerSorter(xViewer);
    }
-
 }

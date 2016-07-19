@@ -73,7 +73,7 @@ public class SprintMemberProvider extends AbstractMemberProvider {
 
    @Override
    public IXViewerFactory getXViewerFactory(Artifact awa) {
-      return new SprintXViewerFactory((SprintArtifact) awa);
+      return new SprintXViewerFactory((SprintArtifact) awa, this);
    }
 
    @Override

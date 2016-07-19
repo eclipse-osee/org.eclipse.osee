@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.massEditor;
 import java.util.Collection;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.OseeTreeReportAdapter;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactNameColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTokenColumn;
@@ -34,7 +35,7 @@ public class MassXViewerFactory extends SkynetXViewerFactory {
    private static ArtifactNameColumn nameCol = new ArtifactNameColumn(true, true);
 
    public MassXViewerFactory(Collection<? extends Artifact> artifacts) {
-      super(NAMESPACE);
+      super(NAMESPACE, new OseeTreeReportAdapter("Table Report - Mass Editor"));
       registerColumns(nameCol);
       registerColumns(ArtifactTypeColumn.getInstance());
       registerColumns(new GuidColumn(true));

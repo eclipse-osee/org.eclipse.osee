@@ -85,6 +85,7 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -109,7 +110,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Donald G. Dunne
  */
-public class SMATasksTab extends FormPage implements IWorldEditor, ISelectedAtsArtifacts, IWorldViewerEventHandler, IMenuActionProvider, IXTaskViewer {
+public class SMATasksTab extends FormPage implements IWorldEditor, ISelectedAtsArtifacts, IWorldViewerEventHandler, IMenuActionProvider, IXTaskViewer, IOseeTreeReportProvider {
    private IManagedForm managedForm;
    private Composite bodyComp;
    private ScrolledForm scrolledForm;
@@ -260,7 +261,7 @@ public class SMATasksTab extends FormPage implements IWorldEditor, ISelectedAtsA
     */
    private boolean createMembersBody() {
       if (!Widgets.isAccessible(taskComposite)) {
-         taskComposite = new TaskComposite(this, this, new TaskXViewerFactory(), bodyComp, SWT.BORDER, editor,
+         taskComposite = new TaskComposite(this, this, new TaskXViewerFactory(this), bodyComp, SWT.BORDER, editor,
             teamWf.isInWork(), teamWf);
          taskComposite.getWorldXViewer().addMenuActionProvider(this);
          getSite().setSelectionProvider(taskComposite.getWorldXViewer());
@@ -736,6 +737,21 @@ public class SMATasksTab extends FormPage implements IWorldEditor, ISelectedAtsA
    @Override
    public boolean isTasksEditable() {
       return editor.isTasksEditable();
+   }
+
+   @Override
+   public String getEditorTitle() {
+      try {
+         return String.format("Table Report - Tasks for [%s]", getTeamWf());
+      } catch (Exception ex) {
+         // do nothing
+      }
+      return "Table Report - Tasks";
+   }
+
+   @Override
+   public String getReportTitle() {
+      return getEditorTitle();
    }
 
 }

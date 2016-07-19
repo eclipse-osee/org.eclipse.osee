@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.role;
 
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.OseeTreeReportAdapter;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 
 /**
@@ -29,15 +30,15 @@ public class UserRoleXViewerFactory extends SkynetXViewerFactory {
       XViewerAlign.Left, true, SortDataType.Float, false, null);
    public static XViewerColumn Completed_Col = new XViewerColumn("osee.userRole.completed", "Completed", 80,
       XViewerAlign.Left, true, SortDataType.String, false, null);
-   public static XViewerColumn Num_Major_Col = new XViewerColumn("osee.userRole.major", "Major", 60, XViewerAlign.Center,
-      true, SortDataType.Integer, false, null);
-   public static XViewerColumn Num_Minor_Col = new XViewerColumn("osee.userRole.minor", "Minor", 60, XViewerAlign.Center,
-      true, SortDataType.Integer, false, null);
+   public static XViewerColumn Num_Major_Col = new XViewerColumn("osee.userRole.major", "Major", 60,
+      XViewerAlign.Center, true, SortDataType.Integer, false, null);
+   public static XViewerColumn Num_Minor_Col = new XViewerColumn("osee.userRole.minor", "Minor", 60,
+      XViewerAlign.Center, true, SortDataType.Integer, false, null);
    public static XViewerColumn Num_Issues_Col = new XViewerColumn("osee.userRole.issues", "Issues", 60,
       XViewerAlign.Center, true, SortDataType.Integer, false, null);
 
    public UserRoleXViewerFactory() {
-      super(NAMESPACE);
+      super(NAMESPACE, new OseeTreeReportAdapter("Table Report - User Roles"));
       registerColumns(Role_Col, User_Col, Hours_Spent_Col, Completed_Col, Num_Major_Col, Num_Minor_Col, Num_Issues_Col);
    }
 

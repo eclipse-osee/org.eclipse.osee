@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.ats.world.WorldXViewerSorter;
 import org.eclipse.osee.ats.world.WorldXViewerUtil;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 
 /**
@@ -62,8 +63,8 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
       50,
       80};
 
-   public GoalXViewerFactory(GoalArtifact soleGoalArtifact) {
-      super("org.eclipse.osee.ats.GoalXViewer");
+   public GoalXViewerFactory(GoalArtifact soleGoalArtifact, IOseeTreeReportProvider reportProvider) {
+      super("org.eclipse.osee.ats.GoalXViewer", reportProvider);
       this.soleGoalArtifact = soleGoalArtifact;
       int widthIndex = 0;
       // Create new column from world columns but set show and width for task

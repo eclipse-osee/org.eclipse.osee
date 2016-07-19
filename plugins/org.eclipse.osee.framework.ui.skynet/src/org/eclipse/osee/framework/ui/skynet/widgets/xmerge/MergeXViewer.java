@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.ui.skynet.compare.CompareHandler;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.mergeWizard.ConflictResolutionWizard;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.graphics.Image;
@@ -55,8 +56,8 @@ public class MergeXViewer extends XViewer {
    private ConflictResolutionWizard conWizard;
    private XMergeLabelProvider labelProvider;
 
-   public MergeXViewer(Composite parent, int style, MergeXWidget xMergeViewer) {
-      super(parent, style, new MergeXViewerFactory());
+   public MergeXViewer(Composite parent, int style, MergeXWidget xMergeViewer, IOseeTreeReportProvider reportProvider) {
+      super(parent, style, new MergeXViewerFactory(reportProvider));
       this.mergeXWidget = xMergeViewer;
    }
 
@@ -108,9 +109,9 @@ public class MergeXViewer extends XViewer {
 
    private boolean hasInteractiveIcon(TreeColumn treeColumn) {
       return isXViewerColumn(treeColumn, MergeXViewerFactory.Source) //
-      || isXViewerColumn(treeColumn, MergeXViewerFactory.Destination) //
-      || isXViewerColumn(treeColumn, MergeXViewerFactory.Conflict_Resolved) //
-      || isXViewerColumn(treeColumn, MergeXViewerFactory.Merged);
+         || isXViewerColumn(treeColumn, MergeXViewerFactory.Destination) //
+         || isXViewerColumn(treeColumn, MergeXViewerFactory.Conflict_Resolved) //
+         || isXViewerColumn(treeColumn, MergeXViewerFactory.Merged);
    }
 
    private boolean isXViewerColumn(TreeColumn treeColumn, XViewerColumn expected) {

@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.ats.world.WorldXViewerSorter;
 import org.eclipse.osee.ats.world.WorldXViewerUtil;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 
 /**
@@ -36,8 +37,8 @@ public class SprintXViewerFactory extends SkynetXViewerFactory {
 
    private SprintArtifact soleSprintArtifact;
 
-   public SprintXViewerFactory(SprintArtifact soleSprintArtifact) {
-      super("org.eclipse.osee.ats.SprintXViewer");
+   public SprintXViewerFactory(SprintArtifact soleSprintArtifact, IOseeTreeReportProvider reportProvider) {
+      super("org.eclipse.osee.ats.SprintXViewer", reportProvider);
       this.soleSprintArtifact = soleSprintArtifact;
 
       List<XViewerAtsAttributeValueColumn> configCols = WorldXViewerUtil.getConfigurationColumns();

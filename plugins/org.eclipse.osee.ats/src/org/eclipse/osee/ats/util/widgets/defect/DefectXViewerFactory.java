@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.defect;
 
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 
 /**
@@ -41,8 +42,8 @@ public class DefectXViewerFactory extends SkynetXViewerFactory {
 
    private final static String NAMESPACE = "osee.ats.DefectXViewer";
 
-   public DefectXViewerFactory() {
-      super(NAMESPACE);
+   public DefectXViewerFactory(IOseeTreeReportProvider reportProvider) {
+      super(NAMESPACE, reportProvider);
       registerColumns(Severity_Col, Disposition_Col, Closed_Col, User_Col, Created_Date_Col, Injection_Activity_Col,
          Description_Col, Location_Col, Resolution_Col);
    }

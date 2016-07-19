@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.change.view;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchXViewerFactory;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 
 /**
  * @author Donald G. Dunne
@@ -21,7 +22,8 @@ public class BranchTransactionXViewerFactory extends BranchXViewerFactory {
 
    public final static String NAMESPACE = "osee.skynet.gui.BranchTransactionXViewer";
 
-   public BranchTransactionXViewerFactory() {
+   public BranchTransactionXViewerFactory(IOseeTreeReportProvider reportProvider) {
+      super(reportProvider);
       setNamespace(NAMESPACE);
       this.clearColumnRegistration();
       registerColumns(transaction, timeStamp, author, comment);

@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.RebaselineInProgressHandler;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.OseeTreeReportAdapter;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeItem;
@@ -45,7 +46,7 @@ public class CommitXManager extends XViewer {
    private final XCommitManager xCommitManager;
 
    public CommitXManager(Composite parent, int style, XCommitManager xRoleViewer) {
-      super(parent, style, new CommitXManagerFactory());
+      super(parent, style, new CommitXManagerFactory(new OseeTreeReportAdapter("Table Report - Commit Manager")));
       this.xCommitManager = xRoleViewer;
    }
 

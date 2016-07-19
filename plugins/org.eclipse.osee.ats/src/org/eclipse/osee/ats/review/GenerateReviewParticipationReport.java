@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.OseeTreeReportAdapter;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactNameColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTypeColumn;
@@ -150,7 +151,8 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
    public class ReviewParticipationXViewerFactory extends SkynetXViewerFactory {
 
       public ReviewParticipationXViewerFactory(IAtsUser user) {
-         super(MASS_XVIEWER_CUSTOMIZE_NAMESPACE);
+         super(MASS_XVIEWER_CUSTOMIZE_NAMESPACE,
+            new OseeTreeReportAdapter("Table Report - Review Participation Report"));
          registerColumns(ArtifactTypeColumn.getInstance());
          registerColumns(WorldXViewerFactory.getColumnServiceColumn(AtsColumnToken.AtsIdColumnShow));
          registerColumns(new XViewerAtsAttributeValueColumn(AtsColumnToken.LegacyPcrIdColumn));

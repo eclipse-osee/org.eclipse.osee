@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.OseeXViewerTreeReport;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactNameColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.AttributeColumn;
@@ -41,8 +42,11 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.Attrib
  */
 public class SkynetXViewerFactory extends XViewerFactory {
 
-   public SkynetXViewerFactory(String namespace) {
+   private IOseeTreeReportProvider reportProvider;
+
+   public SkynetXViewerFactory(String namespace, IOseeTreeReportProvider reportProvider) {
       super(namespace);
+      this.reportProvider = reportProvider;
    }
 
    private IXViewerCustomizations xViewerCustomizations;
@@ -148,7 +152,11 @@ public class SkynetXViewerFactory extends XViewerFactory {
 
    @Override
    public XViewerTreeReport getXViewerTreeReport(XViewer viewer) {
-      return new OseeXViewerTreeReport(viewer);
+      return new OseeXViewerTreeReport(viewer, reportProvider);
+   }
+
+   public void setReportProvider(IOseeTreeReportProvider reportProvider) {
+      this.reportProvider = reportProvider;
    }
 
 }

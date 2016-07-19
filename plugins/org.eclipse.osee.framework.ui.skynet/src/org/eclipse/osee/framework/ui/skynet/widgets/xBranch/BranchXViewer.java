@@ -45,10 +45,6 @@ public class BranchXViewer extends XViewer {
       this.xBranchViewer = xBranchViewer;
    }
 
-   public BranchXViewer(Composite parent, int style, XBranchWidget xBranchViewer, boolean filterRealTime, boolean searchRealTime) {
-      this(parent, style, new BranchXViewerFactory(), xBranchViewer, filterRealTime, searchRealTime);
-   }
-
    @Override
    public void handleDoubleClick() {
       ArrayList<IOseeBranch> branches = xBranchViewer.getSelectedBranches();
@@ -103,9 +99,6 @@ public class BranchXViewer extends XViewer {
       }
    }
 
-   /**
-    * Release resources
-    */
    @Override
    public void dispose() {
       if (getLabelProvider() != null) {
@@ -113,9 +106,6 @@ public class BranchXViewer extends XViewer {
       }
    }
 
-   /**
-    * @return the xHistoryViewer
-    */
    public XBranchWidget getXBranchViewer() {
       return xBranchViewer;
    }

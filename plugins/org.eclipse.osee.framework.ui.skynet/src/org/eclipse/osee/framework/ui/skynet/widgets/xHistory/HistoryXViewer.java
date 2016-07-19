@@ -21,6 +21,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.OseeTreeReportAdapter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -31,7 +32,7 @@ public class HistoryXViewer extends XViewer {
    private final XHistoryWidget xHistoryViewer;
 
    public HistoryXViewer(Composite parent, int style, XHistoryWidget xRoleViewer) {
-      super(parent, style, new HistoryXViewerFactory());
+      super(parent, style, new HistoryXViewerFactory(new OseeTreeReportAdapter("Table Report - History View")));
       this.xHistoryViewer = xRoleViewer;
    }
 

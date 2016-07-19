@@ -181,6 +181,7 @@ public class HtmlExportTable {
                      if (writer == null) {
                         writer = new ExcelXmlWriter(file);
                         writer.startSheet(title, cells.size());
+                        writer.writeRow(title);
                      }
                      for (String cell : cells) {
                         writer.writeCell(cell);

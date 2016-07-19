@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.ats.world.WorldXViewerSorter;
 import org.eclipse.osee.ats.world.WorldXViewerUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 
 /**
@@ -47,8 +48,8 @@ public class TaskXViewerFactory extends SkynetXViewerFactory {
          WorldXViewerFactory.getColumnServiceColumn(AtsColumnToken.StateColumn));
    public static Integer[] widths = new Integer[] {450, 60, 150, 40, 40, 100, 50, 50, 50, 80, 80};
 
-   public TaskXViewerFactory() {
-      super("org.eclipse.osee.ats.TaskXViewer");
+   public TaskXViewerFactory(IOseeTreeReportProvider reportProvider) {
+      super("org.eclipse.osee.ats.TaskXViewer", reportProvider);
       int widthIndex = 0;
       // Create new column from world columns but set show and width for task
       for (XViewerColumn taskCol : TaskViewerVisibleColumns) {

@@ -15,7 +15,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
@@ -23,6 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeXViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.XChangeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.XChangeLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -37,7 +41,7 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
-public class ChangeReportTable implements EditorSection.IWidget {
+public class ChangeReportTable implements EditorSection.IWidget, IOseeTreeReportProvider {
 
    private ChangeXViewer xChangeViewer;
    private final ChangeUiData changeData;
@@ -73,7 +77,7 @@ public class ChangeReportTable implements EditorSection.IWidget {
          toolkit.paintBordersFor(composite);
 
          int viewerStyle = SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION;
-         xChangeViewer = new ChangeXViewer(composite, viewerStyle, new ChangeXViewerFactory());
+         xChangeViewer = new ChangeXViewer(composite, viewerStyle, new ChangeXViewerFactory(this));
          xChangeViewer.setContentProvider(new XChangeContentProvider());
          xChangeViewer.setLabelProvider(new XChangeLabelProvider(xChangeViewer));
 
@@ -150,6 +154,29 @@ public class ChangeReportTable implements EditorSection.IWidget {
          }
          return artifacts.toArray(new Artifact[artifacts.size()]);
       }
+   }
+
+   @Override
+   public String getEditorTitle() {
+      try {
+         if (changeData.getAssociatedArtifact() != null) {
+            return String.format("Table Report - Change Report - %s", changeData.getAssociatedArtifact());
+         } else if (!changeData.getChanges().isEmpty()) {
+            BranchId branchId = changeData.getChanges().iterator().next().getBranch();
+            if (branchId != null) {
+               Branch branch = BranchManager.getBranch(branchId);
+               return String.format("Table Report - Change Report - %s", branch.getName());
+            }
+         }
+      } catch (Exception ex) {
+         // do nothing
+      }
+      return "Table Report - Change Report";
+   }
+
+   @Override
+   public String getReportTitle() {
+      return getEditorTitle();
    }
 
 }

@@ -14,6 +14,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.OseeTreeReportAdapter;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.ote.ui.define.views.TestRunView;
 
@@ -26,7 +27,7 @@ public class TestRunXViewerFactory extends SkynetXViewerFactory {
       300, XViewerAlign.Left, true, SortDataType.String, true, null);
 
    public TestRunXViewerFactory() {
-      super(TestRunView.VIEW_ID);
+      super(TestRunView.VIEW_ID, new OseeTreeReportAdapter("Test Run View"));
       registerAllAttributeColumns();
       registerColumns(new XViewerColumn("ote.test.run.view.Name", "Name", 150, XViewerAlign.Left, true,
          SortDataType.String, false, null));

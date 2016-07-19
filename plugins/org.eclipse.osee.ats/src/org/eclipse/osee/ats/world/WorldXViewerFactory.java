@@ -123,6 +123,7 @@ import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTokenColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTypeColumn;
@@ -145,6 +146,16 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final String COLUMN_NAMESPACE = "ats.column";
    public final static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
    private static AtsConfigurations atsConfigurations;
+
+   public WorldXViewerFactory() {
+      this(null);
+   }
+
+   public WorldXViewerFactory(IOseeTreeReportProvider reportProvider) {
+      super(NAMESPACE, reportProvider);
+      registerColumns(getWorldViewColumns());
+      WorldXViewerUtil.registerOtherColumns(this);
+   }
 
    public static final XViewerColumn[] getWorldViewColumns() {
       return new XViewerColumn[] {
@@ -302,12 +313,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          result = new XViewerAtsAttributeValueColumn(attrValueColumn);
       }
       return result;
-   }
-
-   public WorldXViewerFactory() {
-      super(NAMESPACE);
-      registerColumns(getWorldViewColumns());
-      WorldXViewerUtil.registerOtherColumns(this);
    }
 
    @Override

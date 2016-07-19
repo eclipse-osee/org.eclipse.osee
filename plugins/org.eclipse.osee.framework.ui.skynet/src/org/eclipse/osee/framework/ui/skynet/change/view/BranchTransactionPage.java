@@ -51,6 +51,7 @@ import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchContentProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget.IBranchWidgetMenuListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.layout.GridData;
@@ -66,7 +67,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Donald G. Dunne
  */
-public class BranchTransactionPage extends FormPage implements IBranchWidgetMenuListener, ITransactionEventListener, ITransactionRecordSelectionProvider {
+public class BranchTransactionPage extends FormPage implements IBranchWidgetMenuListener, ITransactionEventListener, ITransactionRecordSelectionProvider, IOseeTreeReportProvider {
 
    private XBranchWidget xBranchWidget;
    private final BranchId branch;
@@ -106,7 +107,7 @@ public class BranchTransactionPage extends FormPage implements IBranchWidgetMenu
 
       if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
 
-         xBranchWidget = new XBranchWidget(new BranchTransactionXViewerFactory(), this);
+         xBranchWidget = new XBranchWidget(new BranchTransactionXViewerFactory(this), this);
          xBranchWidget.setDisplayLabel(false);
          xBranchWidget.createWidgets(parent, 1);
          xBranchWidget.adaptControls(toolkit);
@@ -268,6 +269,21 @@ public class BranchTransactionPage extends FormPage implements IBranchWidgetMenu
 
    public void setSelectionProvider() {
       getSite().setSelectionProvider(xBranchWidget.getXViewer());
+   }
+
+   @Override
+   public String getEditorTitle() {
+      try {
+         return String.format("Branch Transactions - %s", branch);
+      } catch (Exception ex) {
+         // do nothing
+      }
+      return "Table Report - Branch Transactions";
+   }
+
+   @Override
+   public String getReportTitle() {
+      return getEditorTitle();
    }
 
 }

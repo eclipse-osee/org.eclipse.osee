@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.ats.world.WorldXViewerSorter;
 import org.eclipse.osee.ats.world.WorldXViewerUtil;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 
 /**
@@ -39,8 +40,8 @@ public class BacklogXViewerFactory extends SkynetXViewerFactory {
 
    private GoalArtifact soleBacklogArtifact;
 
-   public BacklogXViewerFactory(GoalArtifact soleBacklogArtifact) {
-      super("org.eclipse.osee.ats.BacklogXViewer");
+   public BacklogXViewerFactory(GoalArtifact soleBacklogArtifact, IOseeTreeReportProvider reportProvider) {
+      super("org.eclipse.osee.ats.BacklogXViewer", reportProvider);
       this.soleBacklogArtifact = soleBacklogArtifact;
 
       List<XViewerAtsAttributeValueColumn> configCols = WorldXViewerUtil.getConfigurationColumns();

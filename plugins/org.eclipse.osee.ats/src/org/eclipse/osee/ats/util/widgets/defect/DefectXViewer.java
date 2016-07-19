@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -61,8 +62,8 @@ public class DefectXViewer extends XViewer {
    private Action editLocationAction;
    private Action editResolutionAction;
 
-   DefectXViewer(Composite parent, int style, XDefectViewer xDefectViewer) {
-      this(parent, style, new DefectXViewerFactory(), xDefectViewer);
+   DefectXViewer(Composite parent, int style, XDefectViewer xDefectViewer, IOseeTreeReportProvider reportProvider) {
+      this(parent, style, new DefectXViewerFactory(reportProvider), xDefectViewer);
    }
 
    public DefectXViewer(Composite parent, int style, IXViewerFactory xViewerFactory, XDefectViewer xDefectViewer) {
@@ -300,8 +301,8 @@ public class DefectXViewer extends XViewer {
       XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
       if (xCol.equals(DefectXViewerFactory.User_Col) || xCol.equals(
          DefectXViewerFactory.Disposition_Col) || xCol.equals(
-            DefectXViewerFactory.Injection_Activity_Col) || xCol.equals(DefectXViewerFactory.Closed_Col) || xCol.equals(
-               DefectXViewerFactory.Severity_Col)) {
+            DefectXViewerFactory.Injection_Activity_Col) || xCol.equals(
+               DefectXViewerFactory.Closed_Col) || xCol.equals(DefectXViewerFactory.Severity_Col)) {
          return handleAltLeftClick(treeColumn, treeItem);
       }
       return false;

@@ -53,6 +53,7 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -81,7 +82,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 /**
  * @author Donald G. Dunne
  */
-public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IArtifactEventListener {
+public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IArtifactEventListener, IOseeTreeReportProvider {
 
    private DefectXViewer xViewer;
    private IDirtiableEditor editor;
@@ -126,7 +127,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
 
       createTaskActionBar(mainComp);
 
-      xViewer = new DefectXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
+      xViewer = new DefectXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this, this);
       xViewer.setContentProvider(new DefectContentProvider(xViewer));
       xViewer.setLabelProvider(new DefectLabelProvider(xViewer));
       xViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -602,6 +603,21 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
 
    public ReviewDefectManager getDefectManager() {
       return defectManager;
+   }
+
+   @Override
+   public String getEditorTitle() {
+      try {
+         return String.format("Table Report - Defects for [%s]", getReviewArt());
+      } catch (Exception ex) {
+         // do nothing
+      }
+      return "Table Report - Defects";
+   }
+
+   @Override
+   public String getReportTitle() {
+      return getEditorTitle();
    }
 
 }

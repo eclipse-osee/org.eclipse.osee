@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyTableColumns;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.OseeTreeReportAdapter;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 
 /**
@@ -21,7 +22,7 @@ public class PolicyTableXViewerFactory extends SkynetXViewerFactory {
    public static final String namespace = "osee.skynet.gui.branchAccessViewer";
 
    public PolicyTableXViewerFactory() {
-      super(namespace);
+      super(namespace, new OseeTreeReportAdapter("Table Report - Policy View"));
       PolicyTableColumns[] columns = PolicyTableColumns.values();
       XViewerColumn[] xColumns = new XViewerColumn[columns.length];
       for (int i = 0; i < columns.length; i++) {
