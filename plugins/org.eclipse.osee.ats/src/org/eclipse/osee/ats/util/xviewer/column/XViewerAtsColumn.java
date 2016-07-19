@@ -63,6 +63,7 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
       if (fromXCol instanceof XViewerAtsColumn && toXCol instanceof XViewerAtsColumn) {
          ((XViewerAtsColumn) toXCol).setActionRollup(actionRollup);
          ((XViewerAtsColumn) toXCol).setInheritParent(inheritParent);
+         ((XViewerAtsColumn) toXCol).setHasColorColumn(hasColorColumn, colorColumn);
       }
    }
 
@@ -169,7 +170,7 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
 
    public boolean isColorColumn() {
       if (hasColorColumn == null) {
-         colorColumn = AtsClientService.getConfigEndpoint().get().getColorColumns().getColumnById(getId());
+         colorColumn = AtsClientService.get().getConfigurations().getColorColumns().getColumnById(getId());
          hasColorColumn = colorColumn != null;
          if (hasColorColumn) {
             elementToForegroundColor = new HashMap<>(100);
@@ -182,6 +183,11 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
 
    public Boolean isActionRollup() {
       return actionRollup;
+   }
+   
+   public void setHasColorColumn(Boolean hasColorColumn, ColorColumn colorColumn) {
+      this.hasColorColumn = hasColorColumn;
+      this.colorColumn = colorColumn;
    }
 
    public void setActionRollup(Boolean actionRollup) {

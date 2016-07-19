@@ -69,7 +69,7 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
 
    Iterable<IAtsDatabaseConversion> getDatabaseConversions();
 
-   IAtsUtilService getUtilService();
+   IAtsUtilService getUtilService(); 
 
    ISequenceProvider getSequenceProvider();
 

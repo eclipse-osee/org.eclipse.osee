@@ -613,9 +613,8 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    }
 
    @Override
-   public AtsConfigurations getConfigurations() {
-      AtsConfigEndpointImpl configEp = new AtsConfigEndpointImpl(this, orcsApi, logger);
-      return configEp.get();
+   protected AtsConfigurations loadConfigurations() {
+      return new AtsConfigEndpointImpl(this, orcsApi, logger).get();
    }
 
    @Override

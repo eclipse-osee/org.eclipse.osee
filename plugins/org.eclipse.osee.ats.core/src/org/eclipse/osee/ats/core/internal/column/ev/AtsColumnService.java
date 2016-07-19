@@ -10,11 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.internal.column.ev;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.column.IAtsColumn;
@@ -69,7 +66,7 @@ public class AtsColumnService implements IAtsColumnService {
       }
 
       // Add from database configurations
-      for (AtsAttributeValueColumn attrCol : getConfigurations().getViews().getAttrColumns()) {
+      for (AtsAttributeValueColumn attrCol : services.getConfigurations().getViews().getAttrColumns()) {
          if (id.equals(attrCol.getId())) {
             column = new AtsAttributeValueColumnHandler(attrCol, services);
             break;
@@ -159,22 +156,6 @@ public class AtsColumnService implements IAtsColumnService {
       // Add to cache even if not found so don't need to look again
       add(id, column);
       return column;
-   }
-
-   private AtsConfigurations getConfigurations() {
-      return configurationsCache.get();
-   }
-
-   private final Supplier<AtsConfigurations> configurationsCache =
-      Suppliers.memoizeWithExpiration(getConfigurationsSupplier(), 5, TimeUnit.MINUTES);
-
-   private Supplier<AtsConfigurations> getConfigurationsSupplier() {
-      return new Supplier<AtsConfigurations>() {
-         @Override
-         public AtsConfigurations get() {
-            return services.getConfigurations();
-         }
-      };
    }
 
    @Override

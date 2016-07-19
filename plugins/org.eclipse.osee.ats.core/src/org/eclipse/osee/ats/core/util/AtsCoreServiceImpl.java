@@ -10,8 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.util;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
+import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -50,6 +54,28 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
 
    public IAtsWorkDefinitionAdmin getWorkDefAdmin() {
       return workDefAdmin;
+	  }
+	  
+   @Override
+   public AtsConfigurations getConfigurations() {
+      return configurationsCache.get();
    }
+
+   private final Supplier<AtsConfigurations> configurationsCache =
+      Suppliers.memoizeWithExpiration(getConfigurationsSupplier(), 5, TimeUnit.MINUTES);
+
+   private Supplier<AtsConfigurations> getConfigurationsSupplier() {
+      return new Supplier<AtsConfigurations>() {
+         @Override
+         public AtsConfigurations get() {
+            return loadConfigurations();
+         }
+      };
+   }
+
+   /**
+    * Provided loader for configurations. Should be called infrequently only by AtsClientImpl or AtsServerImpl
+    */
+   abstract protected AtsConfigurations loadConfigurations();
 
 }

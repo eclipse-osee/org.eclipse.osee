@@ -7,7 +7,8 @@ Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.eclipse.osee.ats.core.client.internal.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: com.google.common.cache,
+Import-Package: com.google.common.base,
+ com.google.common.cache,
  com.google.inject,
  javax.ws.rs,
  javax.ws.rs.client,

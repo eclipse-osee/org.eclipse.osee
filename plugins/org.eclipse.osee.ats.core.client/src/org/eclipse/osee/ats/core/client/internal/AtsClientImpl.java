@@ -729,11 +729,6 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public AtsConfigurations getConfigurations() {
-      return AtsClientService.getConfigEndpoint().get();
-   }
-
-   @Override
    public IAtsEarnedValueServiceProvider getEarnedValueServiceProvider() {
       return this;
    }
@@ -745,10 +740,15 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       }
       return implementerService;
    }
-
+   
    @Override
    public IAtsCache getCache() {
       return atsCache;
+   }
+
+   @Override
+   protected AtsConfigurations loadConfigurations() {
+      return AtsClientService.getConfigEndpoint().get();
    }
 
 }

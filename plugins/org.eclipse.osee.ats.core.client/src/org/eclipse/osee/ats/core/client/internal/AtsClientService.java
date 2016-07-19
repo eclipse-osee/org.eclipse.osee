@@ -80,6 +80,9 @@ public class AtsClientService {
       return workPackageEp;
    }
 
+   /**
+    * This should not be used unless configurations are being updated. Use IAtsServices.getConfigurations
+    */
    public static AtsConfigEndpointApi getConfigEndpoint() {
       if (configEp == null) {
          configEp = getAtsTarget().newProxy(AtsConfigEndpointApi.class);

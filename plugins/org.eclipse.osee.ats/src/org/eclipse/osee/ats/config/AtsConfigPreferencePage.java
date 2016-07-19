@@ -63,7 +63,7 @@ public class AtsConfigPreferencePage extends PreferencePage implements IWorkbenc
          public void widgetSelected(SelectionEvent e) {
             try {
                AtsConfigurationDialog dialog =
-                  new AtsConfigurationDialog(AtsClientService.getConfigEndpoint().get().getConfigs());
+                  new AtsConfigurationDialog(AtsClientService.get().getConfigurations().getConfigs());
 
                if (dialog.open() == 0) {
                   AtsConfiguration config = (AtsConfiguration) dialog.getResult()[0];

@@ -305,4 +305,5 @@ public final class TokenFactory {
    public static String createArtifactTypeTokenString(IArtifactType artifactType) {
       return String.format("[%s]-[%d]", artifactType.getName(), artifactType.getGuid());
    }
+
 }

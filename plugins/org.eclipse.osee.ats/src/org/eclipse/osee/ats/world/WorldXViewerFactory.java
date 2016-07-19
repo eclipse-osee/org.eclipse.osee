@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.agile.SprintColumn;
 import org.eclipse.osee.ats.agile.SprintOrderColumn;
 import org.eclipse.osee.ats.api.column.AtsColumnIdValueColumn;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
-import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.column.ActionableItemOwner;
 import org.eclipse.osee.ats.column.AnnualCostAvoidanceColumn;
 import org.eclipse.osee.ats.column.AssigneeColumnUI;
@@ -145,7 +144,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public GoalArtifact soleGoalArtifact;
    public static final String COLUMN_NAMESPACE = "ats.column";
    public final static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
-   private static AtsConfigurations atsConfigurations;
 
    public WorldXViewerFactory() {
       this(null);
@@ -300,10 +298,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
     */
    private static XViewerColumn getAttriubuteConfigColumn(AtsAttributeValueColumn attrValueColumn) {
       XViewerColumn result = null;
-      if (atsConfigurations == null) {
-         atsConfigurations = AtsClientService.getConfigEndpoint().get();
-      }
-      for (AtsAttributeValueColumn column : atsConfigurations.getViews().getAttrColumns()) {
+      for (AtsAttributeValueColumn column : AtsClientService.get().getConfigurations().getViews().getAttrColumns()) {
          if (column.getNamespace().equals(NAMESPACE) && column.getId().equals(attrValueColumn.getId())) {
             result = new XViewerAtsAttributeValueColumn(column);
             break;
