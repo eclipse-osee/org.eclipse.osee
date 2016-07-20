@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -35,15 +36,12 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
       Set<IAtsActionableItem> ais = new HashSet<>();
       for (Object aiGuidObj : artifact.getAttributeValues(AtsAttributeTypes.ActionableItem)) {
          String aiGuid = (String) aiGuidObj;
-         Long uuid = getAtsServer().getStoreService().getUuidFromGuid(aiGuid);
-         if (uuid != null) {
-            IAtsActionableItem ai = getAtsServer().getCache().getByUuid(uuid, IAtsActionableItem.class);
-            if (ai == null) {
-               ArtifactReadable aiArt = getAtsServer().getArtifactByGuid(aiGuid);
-               ai = getAtsServer().getConfigItemFactory().getActionableItem(aiArt);
-            }
-            ais.add(ai);
+         IAtsActionableItem ai = getAtsServer().getConfigItem(aiGuid);
+         if (ai == null) {
+            ArtifactReadable aiArt = getAtsServer().getArtifactByGuid(aiGuid);
+            ai = getAtsServer().getConfigItemFactory().getActionableItem(aiArt);
          }
+         ais.add(ai);
       }
       return ais;
    }
@@ -52,13 +50,8 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
    public IAtsTeamDefinition getTeamDefinition() throws OseeCoreException {
       IAtsTeamDefinition teamDef = null;
       String teamDefGuid = artifact.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition);
-      Long uuid = getAtsServer().getStoreService().getUuidFromGuid(teamDefGuid);
-      if (uuid != null) {
-         teamDef = getAtsServer().getCache().getByUuid(uuid, IAtsTeamDefinition.class);
-         if (teamDef == null) {
-            ArtifactReadable teamDefArt = getAtsServer().getArtifactByGuid(teamDefGuid);
-            teamDef = getAtsServer().getConfigItemFactory().getTeamDef(teamDefArt);
-         }
+      if (Strings.isValid(teamDefGuid)) {
+         teamDef = getAtsServer().getConfigItem(teamDefGuid);
       }
       return teamDef;
    }

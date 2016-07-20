@@ -189,4 +189,5 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
    IAtsCache getCache();
 
    void reloadConfigCache();
+
 }

@@ -234,7 +234,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       atsStoreService = new AtsStoreService(workItemFactory);
 
       atsQueryService = new AtsQueryServiceImpl(this);
-      actionableItemManager = new ActionableItemManager(atsQueryService, attributeResolverService, atsStoreService);
+      actionableItemManager = new ActionableItemManager(attributeResolverService, atsStoreService, this);
       sequenceProvider = new ISequenceProvider() {
 
          @Override
@@ -740,7 +740,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       }
       return implementerService;
    }
-   
+
    @Override
    public IAtsCache getCache() {
       return atsCache;

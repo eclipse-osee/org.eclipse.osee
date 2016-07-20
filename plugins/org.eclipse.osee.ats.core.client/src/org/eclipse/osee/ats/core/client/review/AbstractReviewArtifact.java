@@ -29,8 +29,8 @@ import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -41,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact implements IAtsAbstractReview {
 
    private ActionableItemManager actionableItemsDam;
-   private Boolean standAlone = null;
 
    public AbstractReviewArtifact(String guid, BranchId branch, IArtifactType artifactType) throws OseeCoreException {
       super(guid, branch, artifactType);
@@ -161,10 +160,7 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
    }
 
    public boolean isStandAloneReview() throws OseeCoreException {
-      if (standAlone == null) {
-         standAlone = getActionableItemsDam().getActionableItemUuids().size() > 0;
-      }
-      return standAlone;
+      return getActionableItemsDam().hasActionableItems();
    }
 
    @Override

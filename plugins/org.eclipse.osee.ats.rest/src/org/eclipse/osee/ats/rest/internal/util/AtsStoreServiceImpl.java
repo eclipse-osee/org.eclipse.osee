@@ -12,11 +12,9 @@ package org.eclipse.osee.ats.rest.internal.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -47,7 +45,6 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    private final IAtsLogFactory logFactory;
    private final IAtsNotifier notifier;
    private final IAtsServer atsServer;
-   private static Map<String, Long> guidToUuid;
 
    public AtsStoreServiceImpl(IAttributeResolver attributeResolver, IAtsServer atsServer, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, IAtsNotifier notifier) {
       this.atsServer = atsServer;
@@ -79,24 +76,6 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    @Override
    public boolean isDeleted(IAtsObject atsObject) {
       return ((ArtifactReadable) atsObject.getStoreObject()).isDeleted();
-   }
-
-   @Override
-   public Long getUuidFromGuid(String guid) {
-      if (guidToUuid == null) {
-         guidToUuid = new HashMap<>(200);
-      }
-      Long result = null;
-      if (guidToUuid.containsKey(guid)) {
-         result = guidToUuid.get(guid);
-      } else {
-         ArtifactReadable art = atsServer.getArtifactByGuid(guid);
-         if (art != null) {
-            result = art.getUuid();
-            guidToUuid.put(guid, result);
-         }
-      }
-      return result;
    }
 
    @Override
@@ -144,7 +123,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    public IArtifactType getArtifactType(ArtifactId artifact) {
       return ((ArtifactReadable) artifact).getArtifactType();
    }
-   
+
    @Override
    public boolean isDateType(IAttributeType attributeType) {
       return atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().isDateType(attributeType);

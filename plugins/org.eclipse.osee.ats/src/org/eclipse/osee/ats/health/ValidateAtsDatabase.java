@@ -47,6 +47,7 @@ import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.config.Versions;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.internal.Activator;
@@ -698,7 +699,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   results.log(artifact, "testTeamWorkflows",
                      "Error: TeamWorkflow " + XResultDataUI.getHyperlink(teamArt) + " has no TeamDefinition");
                }
-               List<Long> badUuids = getInvalidUuids(teamArt.getActionableItemsDam().getActionableItemUuids());
+               List<Long> badUuids =
+                  getInvalidUuids(AtsObjects.toUuids(teamArt.getActionableItemsDam().getActionableItems()));
                if (!badUuids.isEmpty()) {
                   results.log(artifact, "testTeamWorkflows", "Error: TeamWorkflow " + XResultDataUI.getHyperlink(
                      teamArt) + " has AI uuids that don't exisit " + badUuids);
@@ -1023,7 +1025,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             if (artifact instanceof AbstractReviewArtifact) {
                AbstractReviewArtifact reviewArtifact = (AbstractReviewArtifact) artifact;
                if (reviewArtifact.getRelatedArtifactsCount(
-                  AtsRelationTypes.TeamWorkflowToReview_Team) == 0 && reviewArtifact.getActionableItemsDam().getActionableItemUuids().isEmpty()) {
+                  AtsRelationTypes.TeamWorkflowToReview_Team) == 0 && !reviewArtifact.getActionableItemsDam().hasActionableItems()) {
                   results.log(artifact, "testReviewsHaveParentWorkflowOrActionableItems",
                      "Error: Review " + XResultDataUI.getHyperlink(
                         reviewArtifact) + " has 0 related parents and 0 actionable items.");

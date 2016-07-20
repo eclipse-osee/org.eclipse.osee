@@ -48,7 +48,7 @@ import org.junit.BeforeClass;
 
 /**
  * Test unit for {@link PopulateDemoActions}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class PopulateDemoActionsTest {
@@ -76,7 +76,6 @@ public class PopulateDemoActionsTest {
       TeamWorkFlowArtifact codeTeamArt = null;
       int numTested = 0;
       for (TeamWorkFlowArtifact teamArt : action.getTeams()) {
-         teamArt.getActionableItemsDam().getActionableItemUuids();
          if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Code")) {
             numTested++;
             codeTeamArt = teamArt;

@@ -233,8 +233,7 @@ public class AtsProgramService implements IAtsProgramService {
       String guid =
          services.getAttributeResolver().getSoleAttributeValue(program, AtsAttributeTypes.TeamDefinition, "");
       if (Strings.isValid(guid)) {
-         Long uuid = services.getStoreService().getUuidFromGuid(guid);
-         teamDefinition = services.getSoleByUuid(uuid, IAtsTeamDefinition.class);
+         teamDefinition = services.getConfigItem(guid);
       }
       return teamDefinition;
    }

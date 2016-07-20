@@ -135,8 +135,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
       if (!Strings.isValid(guid)) {
          throw new OseeArgumentException("TeamWorkflow [%s] has no Team Definition associated.", getAtsId());
       }
-      Long uuid = AtsClientService.get().getStoreService().getUuidFromGuid(guid);
-      IAtsTeamDefinition teamDef = AtsClientService.get().getCache().getByUuid(uuid, IAtsTeamDefinition.class);
+      IAtsTeamDefinition teamDef = AtsClientService.get().getConfigItem(guid);
       Conditions.checkNotNull(teamDef, String.format("TeamDef null for Team WF %s", toStringWithId()));
       return teamDef;
    }

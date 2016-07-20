@@ -28,8 +28,6 @@ public interface IAtsStoreService {
 
    boolean isDeleted(IAtsObject atsObject);
 
-   Long getUuidFromGuid(String guid);
-
    String getTypeName(ArtifactId artifact);
 
    String getGuid(IAtsObject atsObject);
@@ -48,7 +46,7 @@ public interface IAtsStoreService {
    IAttributeType getAttributeType(String attrTypeName);
 
    IArtifactType getArtifactType(ArtifactId artifact);
-   
+
    boolean isDateType(IAttributeType attributeType);
 
 }

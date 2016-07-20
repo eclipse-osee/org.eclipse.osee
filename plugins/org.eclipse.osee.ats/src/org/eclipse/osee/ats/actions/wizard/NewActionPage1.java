@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.config.ActionableItems;
@@ -69,7 +70,6 @@ public class NewActionPage1 extends WizardPage {
    private Text descriptionLabel;
    private boolean debugPopulated = false;
    private static IAtsActionableItem atsAi;
-   private static final String ATS_Actionable_Item_Guid_For_Training_And_Demos = "AAABER+4zV8A8O7WAtxxaA";
    protected static final String TITLE = "Title";
 
    protected NewActionPage1(NewActionWizard actionWizard) {
@@ -190,9 +190,7 @@ public class NewActionPage1 extends WizardPage {
       try {
          ((XText) getXWidget(TITLE)).set("tt");
          if (atsAi == null) {
-            Long uuid = AtsClientService.get().getStoreService().getUuidFromGuid(
-               ATS_Actionable_Item_Guid_For_Training_And_Demos);
-            atsAi = AtsClientService.get().getCache().getByUuid(uuid, IAtsActionableItem.class);
+            atsAi = AtsClientService.get().getConfigItem(AtsArtifactToken.TopActionableItem);
             if (atsAi != null) {
                treeViewer.getViewer().setSelection(new StructuredSelection(Arrays.asList(atsAi)));
                treeViewer.setInitalChecked(Arrays.asList(atsAi));

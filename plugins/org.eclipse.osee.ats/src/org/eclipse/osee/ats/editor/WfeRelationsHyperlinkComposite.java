@@ -97,7 +97,7 @@ public class WfeRelationsHyperlinkComposite extends Composite {
             return true;
          }
       }
-      if (smaArt instanceof AbstractReviewArtifact && ((AbstractReviewArtifact) smaArt).getActionableItemsDam().getActionableItemUuids().size() > 0) {
+      if (smaArt instanceof AbstractReviewArtifact && ((AbstractReviewArtifact) smaArt).getActionableItemsDam().hasActionableItems()) {
          return true;
       }
       return false;
@@ -158,7 +158,7 @@ public class WfeRelationsHyperlinkComposite extends Composite {
    }
 
    private void processReviewArtifact(final AbstractReviewArtifact reviewArt) throws OseeCoreException {
-      if (reviewArt.getActionableItemsDam().getActionableItemUuids().isEmpty()) {
+      if (!reviewArt.getActionableItemsDam().hasActionableItems()) {
          return;
       }
       actionableItemsLabel = editor.getToolkit().createLabel(this, "");
@@ -187,9 +187,9 @@ public class WfeRelationsHyperlinkComposite extends Composite {
       if (actionableItemsLabel != null && awa instanceof AbstractReviewArtifact) {
          actionableItemsLabel.setText("This \"" + ((AbstractReviewArtifact) awa).getArtifactTypeName() +
          //
-         "\" is review of Actionable Items  \"" +
-         //
-         ((AbstractReviewArtifact) awa).getActionableItemsDam().getActionableItemsStr() + "\" ");
+            "\" is review of Actionable Items  \"" +
+            //
+            ((AbstractReviewArtifact) awa).getActionableItemsDam().getActionableItemsStr() + "\" ");
       }
    }
 

@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.util;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import java.util.concurrent.TimeUnit;
+import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
@@ -20,6 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
@@ -54,8 +56,8 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
 
    public IAtsWorkDefinitionAdmin getWorkDefAdmin() {
       return workDefAdmin;
-	  }
-	  
+   }
+
    @Override
    public AtsConfigurations getConfigurations() {
       return configurationsCache.get();
@@ -77,5 +79,36 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
     * Provided loader for configurations. Should be called infrequently only by AtsClientImpl or AtsServerImpl
     */
    abstract protected AtsConfigurations loadConfigurations();
+
+   @Override
+   public <T> T getConfigItem(IArtifactToken artifactToken) {
+      return getConfigItem(artifactToken.getUuid());
+   }
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public <T> T getConfigItem(String guid) {
+      T atsObject = getCache().getAtsObjectByGuid(guid);
+      if (atsObject == null) {
+         ArtifactId artifact = getArtifactByGuid(guid);
+         if (artifact != null && artifact instanceof IAtsConfigObject) {
+            atsObject = (T) getConfigItemFactory().getConfigObject(artifact);
+         }
+      }
+      return atsObject;
+   }
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public <T> T getConfigItem(Long uuid) {
+      T atsObject = getCache().getAtsObject(uuid);
+      if (atsObject == null) {
+         ArtifactId artifact = getArtifact(uuid);
+         if (artifact != null && artifact instanceof IAtsConfigObject) {
+            atsObject = (T) getConfigItemFactory().getConfigObject(artifact);
+         }
+      }
+      return atsObject;
+   }
 
 }

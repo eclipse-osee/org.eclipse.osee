@@ -105,7 +105,7 @@ public interface IAtsServices {
 
    ArtifactId getArtifactByName(IArtifactType artifactType, String name);
 
-   ArtifactId getArtifactByGuid(String workPackageGuid);
+   ArtifactId getArtifactByGuid(String guid);
 
    IAtsProgramService getProgramService();
 
@@ -120,9 +120,9 @@ public interface IAtsServices {
    IAtsImplementerService getImplementerService();
 
    IAtsColumnService getColumnService();
-   
+
    IAtsWorkDefinitionAdmin getWorkDefinitionAdmin();
-   
+
    IAtsCache getCache();
 
    IAtsUtilService getUtilService();
@@ -134,5 +134,11 @@ public interface IAtsServices {
    String getConfigValue(String key);
 
    Log getLogger();
+
+   <T> T getConfigItem(IArtifactToken artifactToken);
+
+   <T> T getConfigItem(String guid);
+
+   <T> T getConfigItem(Long uuid);
 
 }

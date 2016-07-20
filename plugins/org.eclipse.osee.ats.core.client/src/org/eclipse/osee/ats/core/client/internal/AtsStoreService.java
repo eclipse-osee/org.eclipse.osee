@@ -12,11 +12,9 @@ package org.eclipse.osee.ats.core.client.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -26,7 +24,6 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -42,7 +39,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
  * @author Donald G. Dunne
  */
 public class AtsStoreService implements IAtsStoreService {
-   private static Map<String, Long> guidToUuid;
    private final IAtsWorkItemFactory workItemFactory;
 
    public AtsStoreService(IAtsWorkItemFactory workItemFactory) {
@@ -81,26 +77,6 @@ public class AtsStoreService implements IAtsStoreService {
    @Override
    public boolean isDeleted(IAtsObject atsObject) {
       return ((Artifact) atsObject.getStoreObject()).isDeleted();
-   }
-
-   @Override
-   public Long getUuidFromGuid(String guid) {
-      Long result = AtsUtilCore.getUuidFromGuid(guid);
-      if (result == null) {
-         if (guidToUuid == null) {
-            guidToUuid = new HashMap<>(200);
-         }
-         if (guidToUuid.containsKey(guid)) {
-            result = guidToUuid.get(guid);
-         } else {
-            Artifact art = AtsClientService.get().getArtifactByGuid(guid);
-            if (art != null) {
-               result = art.getUuid();
-               guidToUuid.put(guid, result);
-            }
-         }
-      }
-      return result;
    }
 
    @Override
@@ -154,7 +130,7 @@ public class AtsStoreService implements IAtsStoreService {
    public IArtifactType getArtifactType(ArtifactId artifact) {
       return ((Artifact) artifact).getArtifactType();
    }
-   
+
    @Override
    public boolean isDateType(IAttributeType attributeType) {
       return AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType);
