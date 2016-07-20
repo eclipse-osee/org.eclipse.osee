@@ -19,17 +19,11 @@ import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
-import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactoryProvider;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
-import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
-import org.eclipse.osee.ats.api.util.IAtsStoreService;
-import org.eclipse.osee.ats.api.util.IAtsUtilService;
-import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionServiceProvider;
-import org.eclipse.osee.ats.api.workflow.IAtsActionFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
@@ -49,19 +43,10 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
 
    OrcsApi getOrcsApi() throws OseeCoreException;
 
-   @Override
-   IAtsWorkItemFactory getWorkItemFactory() throws OseeCoreException;
-
    IAtsWorkDefinitionAdmin getWorkDefAdmin();
 
    @Override
    ArtifactReadable getArtifactByGuid(String guid);
-
-   @Override
-   IAtsStoreService getStoreService();
-
-   @Override
-   IAtsConfigItemFactory getConfigItemFactory();
 
    IAtsStateFactory getStateFactory();
 
@@ -69,19 +54,11 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
 
    Iterable<IAtsDatabaseConversion> getDatabaseConversions();
 
-   IAtsUtilService getUtilService(); 
-
-   ISequenceProvider getSequenceProvider();
-
-   IAtsActionFactory getActionFactory();
-
    ArtifactReadable getArtifactByAtsId(String id);
 
    QueryBuilder getQuery();
 
    boolean isProduction();
-
-   String getConfigValue(String key);
 
    IAtsServices getServices();
 

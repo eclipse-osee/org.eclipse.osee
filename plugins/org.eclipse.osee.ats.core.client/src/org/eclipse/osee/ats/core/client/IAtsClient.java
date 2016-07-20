@@ -15,32 +15,18 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
-import org.eclipse.osee.ats.api.config.IAtsCache;
-import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
-import org.eclipse.osee.ats.api.program.IAtsProgramService;
-import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
-import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
-import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
-import org.eclipse.osee.ats.api.user.IAtsUserService;
-import org.eclipse.osee.ats.api.util.IArtifactResolver;
 import org.eclipse.osee.ats.api.util.IAtsEventService;
-import org.eclipse.osee.ats.api.util.IAtsStoreService;
-import org.eclipse.osee.ats.api.util.IAtsUtilService;
-import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionServiceProvider;
 import org.eclipse.osee.ats.api.version.IVersionFactory;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolverProvider;
-import org.eclipse.osee.ats.api.workflow.IAtsActionFactory;
-import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
-import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
@@ -59,9 +45,7 @@ import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.logger.Log;
 
 /**
  * @author Donald G. Dunne
@@ -98,25 +82,7 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    void invalidateAllCaches();
 
-   @Override
-   IAtsUserService getUserService() throws OseeStateException;
-
-   @Override
-   IAtsWorkItemService getWorkItemService() throws OseeStateException;
-
-   @Override
-   IAtsEarnedValueService getEarnedValueService() throws OseeStateException;
-
-   @Override
-   IAtsBranchService getBranchService() throws OseeCoreException;
-
-   @Override
-   IAtsReviewService getReviewService() throws OseeCoreException;
-
    IAtsUserServiceClient getUserServiceClient();
-
-   @Override
-   ISequenceProvider getSequenceProvider();
 
    IAtsStateFactory getStateFactory();
 
@@ -124,16 +90,7 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    IAtsLogFactory getLogFactory();
 
-   @Override
-   IAtsUtilService getUtilService();
-
    IAtsServices getServices();
-
-   @Override
-   IAtsActionFactory getActionFactory();
-
-   @Override
-   IAtsProgramService getProgramService();
 
    IAtsTeamDefinitionService getTeamDefinitionService();
 
@@ -156,37 +113,19 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    Artifact getArtifactByAtsId(String id);
 
-   @Override
-   IAtsQueryService getQueryService();
-
    IArtifactMembersCache<GoalArtifact> getGoalMembersCache();
 
    IArtifactMembersCache<SprintArtifact> getSprintItemsCache();
 
    Artifact checkArtifactFromId(long uuid, BranchId atsBranch);
 
-   @Override
-   IAtsStoreService getStoreService();
-
    TeamWorkflowProviders getTeamWorkflowProviders();
 
    void setConfigValue(String key, String value);
 
-   @Override
-   IArtifactResolver getArtifactResolver();
-
-   @Override
-   IAtsTaskService getTaskService();
-
    List<IAtsSearchDataProvider> getSearchDataProviders();
 
-   @Override
-   Log getLogger();
-
    IAtsEventService getEventService();
-
-   @Override
-   IAtsCache getCache();
 
    void reloadConfigCache();
 
