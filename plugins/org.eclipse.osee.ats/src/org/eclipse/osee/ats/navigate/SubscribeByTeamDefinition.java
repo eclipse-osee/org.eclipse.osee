@@ -49,7 +49,7 @@ public class SubscribeByTeamDefinition extends XNavigateItemAction {
          for (Artifact art : AtsClientService.get().getUserServiceClient().getCurrentOseeUser().getRelatedArtifacts(
             AtsRelationTypes.SubscribedUser_Artifact)) {
             if (art.isOfType(AtsArtifactTypes.TeamDefinition)) {
-               objs.add((IAtsTeamDefinition) AtsClientService.get().getConfigObject(art));
+               objs.add((IAtsTeamDefinition) AtsClientService.get().getConfigItem(art));
             }
          }
          diag.setInitialTeamDefs(objs);

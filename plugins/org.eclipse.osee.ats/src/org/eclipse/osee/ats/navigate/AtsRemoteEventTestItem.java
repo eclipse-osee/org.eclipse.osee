@@ -107,7 +107,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
          Artifact aiArt = ArtifactQuery.getArtifactFromId(token.getGuid(), AtsUtilCore.getAtsBranch());
 
          if (aiArt != null) {
-            IAtsActionableItem item = AtsClientService.get().getConfigObject(aiArt);
+            IAtsActionableItem item = AtsClientService.get().getConfigItem(aiArt);
             aias.add(item);
          }
       }

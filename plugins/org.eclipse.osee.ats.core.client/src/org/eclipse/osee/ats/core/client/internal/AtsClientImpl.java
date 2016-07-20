@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
@@ -90,12 +89,9 @@ import org.eclipse.osee.ats.core.client.util.IArtifactMembersCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionListeners;
-import org.eclipse.osee.ats.core.config.ActionableItem;
 import org.eclipse.osee.ats.core.config.AtsCache;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
-import org.eclipse.osee.ats.core.config.TeamDefinition;
-import org.eclipse.osee.ats.core.config.Version;
 import org.eclipse.osee.ats.core.program.AtsProgramService;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
@@ -277,20 +273,6 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       teamDefFactory = null;
       versionFactory = null;
 
-   }
-
-   @SuppressWarnings("unchecked")
-   @Override
-   public <T extends IAtsConfigObject> T getConfigObject(Artifact artifact) throws OseeCoreException {
-      if (artifact.isOfType(AtsArtifactTypes.Version)) {
-         return (T) new Version(logger, this, artifact);
-      } else if (artifact.isOfType(AtsArtifactTypes.TeamDefinition)) {
-         return (T) new TeamDefinition(logger, this, artifact);
-      } else if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {
-         return (T) new ActionableItem(logger, this, artifact);
-      }
-      throw new UnsupportedOperationException(String.format("Unhandled config object type %s object %s",
-         artifact.getArtifactTypeName(), artifact.toStringWithId()));
    }
 
    @Override

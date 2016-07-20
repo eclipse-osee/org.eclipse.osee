@@ -28,8 +28,11 @@ import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.agile.AgileFeatureGroup;
 import org.eclipse.osee.ats.core.client.agile.AgileTeam;
 import org.eclipse.osee.ats.core.config.AbstractConfigItemFactory;
+import org.eclipse.osee.ats.core.config.ActionableItem;
 import org.eclipse.osee.ats.core.config.Country;
 import org.eclipse.osee.ats.core.config.Program;
+import org.eclipse.osee.ats.core.config.TeamDefinition;
+import org.eclipse.osee.ats.core.config.Version;
 import org.eclipse.osee.ats.core.insertion.Insertion;
 import org.eclipse.osee.ats.core.insertion.InsertionActivity;
 import org.eclipse.osee.ats.core.model.WorkPackage;
@@ -96,7 +99,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    public IAtsVersion getVersion(ArtifactId artifact) {
       IAtsVersion version = null;
       if (artifact instanceof Artifact && ((Artifact) artifact).isOfType(AtsArtifactTypes.Version)) {
-         version = (IAtsVersion) atsClient.getConfigObject((Artifact) artifact);
+         version = new Version(logger, atsClient, artifact);
       }
       return version;
    }
@@ -105,7 +108,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    public IAtsTeamDefinition getTeamDef(ArtifactId artifact) throws OseeCoreException {
       IAtsTeamDefinition teamDef = null;
       if (artifact instanceof Artifact && ((Artifact) artifact).isOfType(AtsArtifactTypes.TeamDefinition)) {
-         teamDef = (IAtsTeamDefinition) atsClient.getConfigObject((Artifact) artifact);
+         teamDef = new TeamDefinition(logger, atsClient, artifact);
       }
       return teamDef;
    }
@@ -114,7 +117,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    public IAtsActionableItem getActionableItem(ArtifactId artifact) throws OseeCoreException {
       IAtsActionableItem ai = null;
       if (artifact instanceof Artifact && ((Artifact) artifact).isOfType(AtsArtifactTypes.ActionableItem)) {
-         ai = (IAtsActionableItem) atsClient.getConfigObject((Artifact) artifact);
+         ai = new ActionableItem(logger, atsClient, artifact);
       }
       return ai;
    }

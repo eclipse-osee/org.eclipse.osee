@@ -52,8 +52,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolverProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsWorkItemArtifactServiceProvider, IAtsWorkItemServiceProvider, IAtsCacheProvider, ITeamDefinitionFactory, IActionableItemFactory, IArtifactProvider, IAtsVersionServiceProvider, IAtsEarnedValueServiceProvider {
 
-   <T extends IAtsConfigObject> T getConfigObject(Artifact artifact) throws OseeCoreException;
-
    Artifact getConfigArtifact(IAtsConfigObject atsConfigObject) throws OseeCoreException;
 
    /**
