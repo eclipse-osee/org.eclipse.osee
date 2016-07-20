@@ -75,7 +75,7 @@ public class ArtifactQuery {
    private static Map<Long, String> uuidToGuid;
 
    public static Artifact getArtifactFromToken(IArtifactToken artifactToken, BranchId branch) throws OseeCoreException {
-      return getArtifactFromId(artifactToken.getGuid(), branch);
+      return getArtifactFromId(artifactToken.getUuid(), branch);
    }
 
    public static Artifact getArtifactFromToken(EventBasicGuidArtifact guidArt) throws OseeCoreException {
