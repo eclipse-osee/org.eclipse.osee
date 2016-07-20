@@ -625,7 +625,7 @@ public final class BranchManager {
       Artifact associatedArtifact = null;
       if (txDelta.areOnTheSameBranch()) {
          Long commitArtId = TransactionManager.getCommitArtId(txDelta.getEndTx());
-         if (!commitArtId.equals(0)) {
+         if (!commitArtId.equals(0L)) {
             associatedArtifact = ArtifactQuery.getArtifactFromId(commitArtId, COMMON);
          }
       } else {

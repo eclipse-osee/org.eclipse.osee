@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
@@ -118,6 +119,9 @@ public class ArtifactQuery {
    }
 
    private static Artifact getOrCheckArtifactFromId(int artId, BranchId branch, DeletionFlag allowDeleted, QueryType queryType) throws OseeCoreException {
+      if (artId < 1) {
+         throw new OseeArgumentException("Invalid Artifact Id: [%d]", artId);
+      }
       Artifact artifact = ArtifactCache.getActive(artId, branch);
       if (artifact != null) {
          if (artifact.isDeleted() && allowDeleted == EXCLUDE_DELETED) {

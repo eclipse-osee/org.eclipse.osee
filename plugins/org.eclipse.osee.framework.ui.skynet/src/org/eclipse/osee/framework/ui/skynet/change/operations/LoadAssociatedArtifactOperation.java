@@ -37,7 +37,7 @@ public class LoadAssociatedArtifactOperation extends AbstractOperation {
       if (changeData.getCompareType().areSpecificTxs()) {
 
          Long commitId = TransactionManager.getCommitArtId(txDelta.getEndTx());
-         if (!commitId.equals(0)) {
+         if (!commitId.equals(0L)) {
             associatedArtifact = ArtifactQuery.getArtifactFromId(commitId, COMMON);
          }
       } else {
