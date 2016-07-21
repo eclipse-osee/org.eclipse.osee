@@ -11,6 +11,7 @@
 package org.eclipse.osee.activity.internal;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.function.Consumer;
 import org.eclipse.osee.activity.ActivityStorage;
 import org.eclipse.osee.activity.api.ActivityLog.ActivityDataHandler;
@@ -40,6 +41,8 @@ public class DatabaseActivityStorage implements ActivityStorage {
       "INSERT INTO osee_activity_type (type_id, log_level, module, msg_format) VALUES (?,?,?,?)";
 
    private static final String COUNT_TYPE = "SELECT count(1) FROM osee_activity_type WHERE type_id = ?";
+
+   private static final String DELETE_ENTRIES = "DELETE FROM osee_activity WHERE start_time <= ?";
 
    private static class ActivityEntryProcessor implements Consumer<JdbcStatement> {
 
@@ -144,6 +147,16 @@ public class DatabaseActivityStorage implements ActivityStorage {
    @Override
    public boolean typeExists(Long typeId) {
       return getJdbcClient().fetch(-1L, COUNT_TYPE, typeId) > 0;
+   }
+
+   @Override
+   public void cleanEntries(int daysToKeep) {
+      Calendar cal = Calendar.getInstance();
+      if (daysToKeep > 0) {
+         daysToKeep = -daysToKeep;
+      }
+      cal.add(Calendar.DATE, daysToKeep);
+      getJdbcClient().runPreparedUpdate(DELETE_ENTRIES, cal.getTimeInMillis());
    }
 
 }

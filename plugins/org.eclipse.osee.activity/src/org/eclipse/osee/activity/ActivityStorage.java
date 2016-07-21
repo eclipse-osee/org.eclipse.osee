@@ -35,4 +35,6 @@ public interface ActivityStorage {
 
    boolean typeExists(Long typeId);
 
+   void cleanEntries(int daysToKeep);
+
 }

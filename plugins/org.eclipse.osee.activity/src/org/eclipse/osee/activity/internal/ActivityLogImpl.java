@@ -10,20 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.activity.internal;
 
+import static org.eclipse.osee.activity.ActivityConstants.ACTIVITY_LOGGER__CLEANER_EXECUTOR_ID;
+import static org.eclipse.osee.activity.ActivityConstants.ACTIVITY_LOGGER__CLEANER_KEEP_DAYS;
 import static org.eclipse.osee.activity.ActivityConstants.ACTIVITY_LOGGER__ENABLED;
 import static org.eclipse.osee.activity.ActivityConstants.ACTIVITY_LOGGER__EXECUTOR_ID;
 import static org.eclipse.osee.activity.ActivityConstants.ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE;
 import static org.eclipse.osee.activity.ActivityConstants.ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT;
 import static org.eclipse.osee.activity.ActivityConstants.ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS;
+import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGER__CLEANER_KEEP_DAYS;
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE;
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT;
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS;
 import static org.eclipse.osee.activity.internal.ActivityUtil.captureStackTrace;
 import static org.eclipse.osee.activity.internal.ActivityUtil.get;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.osee.activity.ActivityConstants;
 import org.eclipse.osee.activity.ActivityStorage;
@@ -79,6 +85,7 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    private volatile int exceptionLineCount;
    private volatile int executorPoolSize;
    private volatile long lastFlushTime;
+   private volatile int cleanerKeepDays;
    private volatile boolean enabled = ActivityConstants.DEFAULT_ACTIVITY_LOGGER__ENABLED;
 
    public void setLogger(Log logger) {
@@ -118,6 +125,7 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
       exceptionLineCount = get(properties, ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT, DEFAULT_ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT);
       int newExecutorPoolSize = get(properties, ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE, DEFAULT_ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE);
       String value = (String)properties.get(ACTIVITY_LOGGER__ENABLED);
+      int newCleanerKeepDays = get(properties, ACTIVITY_LOGGER__CLEANER_KEEP_DAYS, DEFAULT_ACTIVITY_LOGGER__CLEANER_KEEP_DAYS);
       if (Strings.isValid(value)) {
          enabled = Boolean.valueOf(value);
       }
@@ -137,6 +145,38 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
             }
          }
       }
+      if (newCleanerKeepDays != cleanerKeepDays) {
+         cleanerKeepDays = newCleanerKeepDays;
+         setupCleaner();
+      }
+   }
+
+   private void setupCleaner() {
+      Callable<Void> cleaner = new Callable<Void>() {
+
+         @Override
+         public Void call() throws Exception {
+            storage.cleanEntries(cleanerKeepDays);
+            return null;
+         }
+      };
+
+      // randomly pick a start time around midnight
+      Random random = new Random();
+      Calendar start = Calendar.getInstance();
+      start.set(Calendar.HOUR_OF_DAY, random.nextInt(4));
+      start.set(Calendar.MINUTE, random.nextInt(180));
+      int day = start.get(Calendar.DAY_OF_YEAR);
+      start.set(Calendar.DAY_OF_YEAR, day + 1);
+
+      long startMil = start.getTimeInMillis();
+      long curMil = System.currentTimeMillis();
+      long startAfter = TimeUnit.MILLISECONDS.toMinutes(startMil - curMil);
+
+      // run once a day
+      executorAdmin.shutdown(ACTIVITY_LOGGER__CLEANER_EXECUTOR_ID);
+      executorAdmin.scheduleAtFixedRate(ACTIVITY_LOGGER__CLEANER_EXECUTOR_ID, cleaner, startAfter, 60 * 24,
+         TimeUnit.MINUTES);
    }
 
    @Override
