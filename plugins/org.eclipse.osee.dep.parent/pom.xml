@@ -36,7 +36,7 @@
 		<maven-clean-version>2.5</maven-clean-version>
 		<platform-version-name>mars</platform-version-name>
 <!-- 		<orbit-version>R20150124073747</orbit-version> -->
-		<orbit-version>R20130517111416</orbit-version>
+		<orbit-version>R20160520211859</orbit-version>
 		<subversive-version>1.0</subversive-version>
 		<polarion-version>3.0</polarion-version>
 
