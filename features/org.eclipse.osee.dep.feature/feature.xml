@@ -346,6 +346,7 @@
       <import feature="org.eclipse.xtext.runtime" version="2.8.3" match="equivalent"/>
       <import plugin="org.eclipse.xtext.util" version="2.8.3" match="equivalent"/>
       <import plugin="com.lowagie.text" version="2.0.0" match="compatible"/>
+      <import plugin="org.antlr.runtime" version="4.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -1142,6 +1143,13 @@
          
    <plugin
          id="org.mozilla.javascript"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+    <plugin
+         id="org.antlr.runtime"
          download-size="0"
          install-size="0"
          version="0.0.0"
