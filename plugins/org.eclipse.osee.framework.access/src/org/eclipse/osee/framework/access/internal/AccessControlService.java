@@ -40,14 +40,12 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessData;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.services.IAccessControlService;
@@ -172,10 +170,6 @@ public class AccessControlService implements IAccessControlService {
 
    private ArtifactTypeCache getArtifactTypeCache() {
       return cachingService.getArtifactTypeCache();
-   }
-
-   private BranchCache getBranchCache() {
-      return cachingService.getBranchCache();
    }
 
    private JdbcClient getJdbcClient() {
@@ -757,9 +751,8 @@ public class AccessControlService implements IAccessControlService {
 
    @Override
    public void removePermissions(BranchId branch) throws OseeCoreException {
-      Branch theBranch = getBranchCache().get(branch);
-      getJdbcClient().runPreparedUpdate(DELETE_ARTIFACT_ACL_FROM_BRANCH, theBranch.getUuid());
-      getJdbcClient().runPreparedUpdate(DELETE_BRANCH_ACL_FROM_BRANCH, theBranch.getUuid());
+      getJdbcClient().runPreparedUpdate(DELETE_ARTIFACT_ACL_FROM_BRANCH, branch);
+      getJdbcClient().runPreparedUpdate(DELETE_BRANCH_ACL_FROM_BRANCH, branch);
 
       try {
          AccessTopicEventPayload event = new AccessTopicEventPayload();

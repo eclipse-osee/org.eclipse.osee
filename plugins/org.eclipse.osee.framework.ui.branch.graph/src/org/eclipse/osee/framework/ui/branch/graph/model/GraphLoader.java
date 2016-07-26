@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -49,7 +48,7 @@ public class GraphLoader {
    }
 
    protected static void loadBranches(GraphCache graphCache, BranchModel current, boolean recurse, IProgressListener listener) throws OseeCoreException {
-      for (Branch child : BranchManager.getChildBranches(current.getBranch(), false)) {
+      for (BranchId child : BranchManager.getChildBranches(current.getBranch(), false)) {
          BranchModel childModel = graphCache.getOrCreateBranchModel(child);
          childModel.setDepth(current.getDepth() + 1);
          if (recurse) {

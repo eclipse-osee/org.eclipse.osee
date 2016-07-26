@@ -19,15 +19,14 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -88,9 +87,8 @@ public class ArtifactTest {
       artifact = new ArtifactImpl(types, artifactData, attributeFactory);
       artifact.setGraph(graph);
 
-      when(
-         types.isValidAttributeType(any(IArtifactType.class), any(Branch.class), any(IAttributeType.class))).thenReturn(
-            true);
+      when(types.isValidAttributeType(any(IArtifactType.class), any(BranchId.class),
+         any(IAttributeType.class))).thenReturn(true);
       when(attributeFactory.getMaxOccurrenceLimit(any(IAttributeType.class))).thenReturn(1);
 
       when(attributeFactory.createAttribute(any(AttributeManager.class), any(AttributeData.class))).thenReturn(

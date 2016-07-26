@@ -24,10 +24,10 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -76,7 +76,7 @@ public class ConflictTest {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchManager#getMergeBranch(Branch, Branch)} .
+    * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchManager#getMergeBranch(BranchId, BranchId)} .
     */
    @org.junit.Test
    public void test01GetMergeBranchNotCreated() throws Exception {
@@ -96,7 +96,7 @@ public class ConflictTest {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal#getConflictsPerBranch(org.eclipse.osee.framework.core.model.Branch, org.eclipse.osee.framework.core.model.Branch, org.eclipse.osee.framework.skynet.core.transaction.TransactionId)}
+    * {@link org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal#getConflictsPerBranch(BranchId, BranchId, TransactionId)}
     * .
     */
    @org.junit.Test
@@ -109,7 +109,7 @@ public class ConflictTest {
             ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBaseTransaction(),
             new NullProgressMonitor());
          int expectedNumber = ConflictTestManager.numberOfConflicts();
-      Assert.assertNotNull(conflicts);
+         Assert.assertNotNull(conflicts);
          int actualNumber = conflicts.size();
          assertTrue(
             "(Intermittent failures - needs re-write) - Number of conflicts found is not equal to the number of conflicts expected",
@@ -123,7 +123,7 @@ public class ConflictTest {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchManager#getMergeBranch(Branch, Branch)} .
+    * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchManager#getMergeBranch(BranchId, BranchId)} .
     */
    @org.junit.Test
    public void test03GetMergeBranchCreated() throws Exception {

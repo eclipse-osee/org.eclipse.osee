@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.branch.graph.parts;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
 import org.eclipse.gef.GraphicalViewer;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.ui.branch.graph.model.BranchModel;
 import org.eclipse.osee.framework.ui.branch.graph.model.GraphCache;
 import org.eclipse.osee.framework.ui.branch.graph.model.TxModel;
@@ -38,7 +38,7 @@ public class GraphEditPartFactory implements EditPartFactory {
          editPart = new GraphEditPart(viewer);
       } else if (model instanceof BranchModel) {
          editPart = new BranchEditPart();
-      } else if (model instanceof Branch) {
+      } else if (model instanceof BranchId) {
          editPart = new BranchDataEditPart();
       } else if (model instanceof TxModel) {
          editPart = new TxEditPart();

@@ -18,7 +18,7 @@ import org.eclipse.draw2d.GridLayout;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Panel;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.ui.branch.graph.figure.BranchFigure;
 import org.eclipse.osee.framework.ui.branch.graph.figure.PlusMinus;
 import org.eclipse.osee.framework.ui.branch.graph.model.GraphCache;
@@ -31,7 +31,7 @@ public class BranchDataEditPart extends AbstractGraphicalEditPart {
 
    @Override
    protected IFigure createFigure() {
-      Branch branch = (Branch) getModel();
+      BranchId branch = (BranchId) getModel();
       GraphEditPart graphEditPart = (GraphEditPart) getParent().getParent();
       BranchFigure branchFigure = graphEditPart.getFigure(branch);
 
@@ -69,7 +69,7 @@ public class BranchDataEditPart extends AbstractGraphicalEditPart {
    private final class PlusMinusFigureMouseListener implements ActionListener {
       @Override
       public void actionPerformed(ActionEvent event) {
-         Branch branch = (Branch) getModel();
+         BranchId branch = (BranchId) getModel();
          GraphEditPart graphEditPart = (GraphEditPart) getParent().getParent();
          GraphCache graphCache = (GraphCache) graphEditPart.getModel();
          //BranchModel model =

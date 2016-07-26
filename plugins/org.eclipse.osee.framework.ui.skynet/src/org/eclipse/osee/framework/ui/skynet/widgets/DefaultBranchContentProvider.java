@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.List;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
@@ -25,9 +25,9 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
  */
 public class DefaultBranchContentProvider implements ITreeContentProvider, IBranchEventListener {
    private final ITreeContentProvider provider;
-   private final Branch branch;
+   private final BranchId branch;
 
-   public DefaultBranchContentProvider(final ITreeContentProvider provider, Branch branch) {
+   public DefaultBranchContentProvider(final ITreeContentProvider provider, BranchId branch) {
       if (provider == null) {
          throw new IllegalArgumentException("provider can not be null");
       }

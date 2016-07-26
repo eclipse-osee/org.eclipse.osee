@@ -12,9 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.renderer;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.junit.Assert;
@@ -25,11 +24,11 @@ import org.junit.Test;
  * @author Roberto E. Escobar
  */
 public class RenderingUtilTest {
-   private static Branch branch;
+   private static BranchTokenImpl branch;
 
    @BeforeClass
    public static void setUpOnce() throws OseeCoreException {
-      branch = new Branch(1L, "Test 1", BranchType.WORKING, BranchState.MODIFIED, false, false);
+      branch = new BranchTokenImpl(1L, "Test 1");
    }
 
    @Test
@@ -89,5 +88,11 @@ public class RenderingUtilTest {
 
    private String encode(String guid) throws UnsupportedEncodingException {
       return URLEncoder.encode(guid, "UTF-8");
+   }
+
+   public static final class BranchTokenImpl extends NamedId implements IOseeBranch {
+      public BranchTokenImpl(Long id, String name) {
+         super(id, name);
+      }
    }
 }

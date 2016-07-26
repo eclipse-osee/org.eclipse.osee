@@ -15,7 +15,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.access.IAccessProvider;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessData;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
@@ -61,8 +60,8 @@ public final class ObjectAccessProviderProxy implements IAccessProvider {
       for (Object object : objToCheck) {
          if (object instanceof Artifact) {
             setArtifactAccessData(userArtifact, (Artifact) object, accessData);
-         } else if (object instanceof Branch) {
-            setBranchAccessData(userArtifact, (Branch) object, accessData);
+         } else if (object instanceof BranchId) {
+            setBranchAccessData(userArtifact, (BranchId) object, accessData);
          } else if (object instanceof RelationLink) {
             RelationLink relation = (RelationLink) object;
             Artifact artifactA = relation.getArtifactA();

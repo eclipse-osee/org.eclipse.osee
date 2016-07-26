@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.branch;
 
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchViewImageHandler;
 import org.eclipse.swt.graphics.Image;
 
@@ -21,7 +21,7 @@ import org.eclipse.swt.graphics.Image;
 public class BranchLabelProvider extends LabelProvider {
    @Override
    public Image getImage(Object element) {
-      if (element instanceof Branch) {
+      if (element instanceof BranchId) {
          return BranchViewImageHandler.getImage(element, 0);
       }
       return null;

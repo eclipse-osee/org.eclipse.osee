@@ -16,14 +16,11 @@ import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
@@ -37,7 +34,6 @@ import org.eclipse.osee.framework.core.model.type.OseeEnumTypeFactory;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Assert;
 
 /**
@@ -78,17 +74,6 @@ public final class MockDataFactory {
          1, 1, "description", "tagger", "mediaType");
       attributeType.setOseeEnumType(oseeEnumTypeFactory.createEnumType(0x01L, "enum type name"));
       return attributeType;
-   }
-
-   public static Branch createBranch(int index) {
-      return createBranch(Lib.generateUuid(), index);
-   }
-
-   public static Branch createBranch(long uuid, int index) {
-      BranchState branchState = BranchState.values()[Math.abs(index % BranchState.values().length)];
-      BranchType branchType = BranchType.values()[Math.abs(index % BranchType.values().length)];
-      boolean isArchived = index % 2 == 0 ? true : false;
-      return new Branch(uuid, "branch_" + index, branchType, branchState, isArchived, false);
    }
 
    public static TransactionRecord createTransaction(int index, long branchUuid) {

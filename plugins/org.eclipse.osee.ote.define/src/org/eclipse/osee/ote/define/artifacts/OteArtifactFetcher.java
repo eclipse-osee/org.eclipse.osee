@@ -19,7 +19,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -93,7 +92,7 @@ public class OteArtifactFetcher<T extends Artifact> {
     * @param branch to search in
     * @return artifact instances indexed by descriptive name
     */
-   public Map<String, T> getAllArtifactsIndexedByName(Branch branch) throws OseeArgumentException {
+   public Map<String, T> getAllArtifactsIndexedByName(BranchId branch) {
       Map<String, T> toReturn = new HashMap<>();
       Set<T> testScripts = getAllArtifacts(branch);
       for (T artifact : testScripts) {

@@ -26,7 +26,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -129,7 +128,7 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
       refresh();
    }
 
-   public void setSelectedBranch(Branch branch) {
+   public void setSelectedBranch(BranchId branch) {
       branchXViewer.reveal(branch);
       branchXViewer.setSelection(new StructuredSelection(branch), true);
    }
@@ -229,8 +228,8 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
       while (i.hasNext()) {
          Object obj = i.next();
 
-         if (obj instanceof Branch) {
-            items.add((Branch) obj);
+         if (obj instanceof IOseeBranch) {
+            items.add((IOseeBranch) obj);
          }
       }
       return items;
@@ -368,7 +367,7 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
    @Override
    public String getEditorTitle() {
       if (selectedBranch != null) {
-         Branch branch = BranchManager.getBranch(selectedBranch);
+         IOseeBranch branch = BranchManager.getBranch(selectedBranch);
          return String.format("Table Report - Branch View %s", branch.getName());
       }
       return "Table Report - Branch View";

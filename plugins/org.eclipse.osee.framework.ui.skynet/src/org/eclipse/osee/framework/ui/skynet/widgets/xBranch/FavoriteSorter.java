@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -36,11 +36,11 @@ public class FavoriteSorter extends XViewerSorter {
    public int compare(Viewer viewer, Object o1, Object o2) {
 
       if (favoritesFirst) {
-         if (o1 instanceof Branch && o2 instanceof Branch) {
+         if (o1 instanceof BranchId && o2 instanceof BranchId) {
             try {
                User user = UserManager.getUser();
-               boolean fav1 = user.isFavoriteBranch((Branch) o1);
-               boolean fav2 = user.isFavoriteBranch((Branch) o2);
+               boolean fav1 = user.isFavoriteBranch((BranchId) o1);
+               boolean fav2 = user.isFavoriteBranch((BranchId) o2);
 
                if (fav1 ^ fav2) {
                   return fav1 ? -1 : 1;
@@ -48,9 +48,9 @@ public class FavoriteSorter extends XViewerSorter {
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
-         } else if (o1 instanceof Branch && !(o2 instanceof Branch)) {
+         } else if (o1 instanceof BranchId && !(o2 instanceof BranchId)) {
             return -1;
-         } else if (!(o1 instanceof Branch) && o2 instanceof Branch) {
+         } else if (!(o1 instanceof BranchId) && o2 instanceof BranchId) {
             return 1;
          }
       }

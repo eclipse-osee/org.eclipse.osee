@@ -12,8 +12,9 @@ package org.eclipse.osee.framework.core.model.cache;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.model.mocks.MockOseeDataAccessor;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -60,10 +61,17 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
          super.load(cache);
          int typeId = 100;
          for (int index = 0; index < 10; index++) {
-            Branch item = MockDataFactory.createBranch(typeId++, index);
+            Branch item = createBranch(typeId++, index);
             data.add(item);
             cache.cache(item);
          }
+      }
+
+      private static Branch createBranch(long uuid, int index) {
+         BranchState branchState = BranchState.values()[Math.abs(index % BranchState.values().length)];
+         BranchType branchType = BranchType.values()[Math.abs(index % BranchType.values().length)];
+         boolean isArchived = index % 2 == 0 ? true : false;
+         return new Branch(uuid, "branch_" + index, branchType, branchState, isArchived, false);
       }
    }
 

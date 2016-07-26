@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -271,7 +270,7 @@ public class MergeManagerTest {
 
       assertTrue("Branch is not updating", BranchManager.getState(workingBranch).isRebaselineInProgress());
 
-      Branch branchForUpdate = BranchManager.getFirstMergeBranch(workingBranch);
+      BranchId branchForUpdate = BranchManager.getFirstMergeBranch(workingBranch);
 
       FinishUpdateBranchOperation finishUpdateOperation =
          new FinishUpdateBranchOperation(resolverOperation.getConflictManager(), true, true);

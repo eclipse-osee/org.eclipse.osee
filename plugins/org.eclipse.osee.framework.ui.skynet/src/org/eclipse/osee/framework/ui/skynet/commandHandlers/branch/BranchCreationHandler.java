@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
@@ -47,9 +46,8 @@ public class BranchCreationHandler extends CommandHandler {
       Object backingData = selection.getFirstElement();
 
       final TransactionToken parentTransactionId;
-      if (backingData instanceof Branch) {
-         Branch branch = (Branch) backingData;
-         parentTransactionId = TransactionManager.getHeadTransaction(branch);
+      if (backingData instanceof BranchId) {
+         parentTransactionId = TransactionManager.getHeadTransaction((BranchId) backingData);
       } else if (backingData instanceof TransactionToken) {
          parentTransactionId = (TransactionToken) backingData;
       } else {

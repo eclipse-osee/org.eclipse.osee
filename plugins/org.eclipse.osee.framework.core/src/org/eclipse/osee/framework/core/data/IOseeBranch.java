@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.jdk.core.type.Named;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -25,5 +26,15 @@ public interface IOseeBranch extends BranchId, Named {
 
    default String getShortName(int length) {
       return Strings.truncate(getName(), length);
+   }
+
+   public static IOseeBranch valueOf(Long id, String name) {
+      final class BranchTokenImpl extends NamedId implements IOseeBranch {
+
+         public BranchTokenImpl(Long id, String name) {
+            super(id, name);
+         }
+      }
+      return new BranchTokenImpl(id, name);
    }
 }

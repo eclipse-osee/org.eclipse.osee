@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ChangeBranchArchivedStateDialog;
@@ -35,7 +34,7 @@ public class PromptChangeUtil {
       if (result == 0) {
          BranchType type = ld.getSelection();
          for (TreeItem item : branches) {
-            Branch branch = (Branch) item.getData();
+            BranchId branch = (BranchId) item.getData();
             BranchManager.setType(branch, type);
          }
          return true;

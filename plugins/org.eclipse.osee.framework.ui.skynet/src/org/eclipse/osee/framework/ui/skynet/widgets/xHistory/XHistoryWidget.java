@@ -27,7 +27,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -199,8 +198,8 @@ public class XHistoryWidget extends GenericXWidget {
       refresh();
    }
 
-   public ArrayList<Branch> getSelectedBranches() {
-      ArrayList<Branch> items = new ArrayList<>();
+   public ArrayList<BranchId> getSelectedBranches() {
+      ArrayList<BranchId> items = new ArrayList<>();
       if (xHistoryViewer == null) {
          return items;
       }
@@ -210,7 +209,7 @@ public class XHistoryWidget extends GenericXWidget {
       Iterator<?> i = ((IStructuredSelection) xHistoryViewer.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
-         items.add((Branch) obj);
+         items.add((BranchId) obj);
       }
       return items;
    }

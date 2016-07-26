@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.internal.fields.ArtifactTypeAttributesField;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -28,7 +28,7 @@ import org.junit.Test;
 
 /**
  * Test Case For {@link ArtifactTypeAttributesField}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class ArtifactTypeAttributesFieldTest {
@@ -37,8 +37,8 @@ public class ArtifactTypeAttributesFieldTest {
    private static AttributeType attr2;
    private static AttributeType attr3;
    private static AttributeType attr4;
-   private static Branch br1;
-   private static Branch br2;
+   private static BranchId br1;
+   private static BranchId br2;
 
    @BeforeClass
    public static void prepareTest() throws OseeCoreException {
@@ -47,8 +47,8 @@ public class ArtifactTypeAttributesFieldTest {
       attr3 = MockDataFactory.createAttributeType(3, null);
       attr4 = MockDataFactory.createAttributeType(4, null);
 
-      br1 = MockDataFactory.createBranch(1);
-      br2 = MockDataFactory.createBranch(2);
+      br1 = CoreBranches.SYSTEM_ROOT;
+      br2 = CoreBranches.COMMON;
    }
 
    @Test

@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -30,9 +30,9 @@ public class ArtifactTypeContentProvider implements ITreeContentProvider {
 
    @Override
    public Object[] getChildren(Object parentElement) {
-      if (parentElement instanceof Branch) {
+      if (parentElement instanceof BranchId) {
          try {
-            return ArtifactTypeManager.getValidArtifactTypes((Branch) parentElement).toArray();
+            return ArtifactTypeManager.getValidArtifactTypes((BranchId) parentElement).toArray();
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }

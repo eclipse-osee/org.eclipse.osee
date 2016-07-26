@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -32,10 +32,10 @@ public class RelationTypeContentProvider implements ITreeContentProvider {
 
    @Override
    public Object[] getChildren(Object parentElement) {
-      if (parentElement instanceof Branch) {
+      if (parentElement instanceof BranchId) {
          ArrayList<Object> descriptors = new ArrayList<>();
          try {
-            for (RelationType descriptor : RelationTypeManager.getValidTypes((Branch) parentElement)) {
+            for (RelationType descriptor : RelationTypeManager.getValidTypes((BranchId) parentElement)) {
                descriptors.add(descriptor);
             }
             return descriptors.toArray();

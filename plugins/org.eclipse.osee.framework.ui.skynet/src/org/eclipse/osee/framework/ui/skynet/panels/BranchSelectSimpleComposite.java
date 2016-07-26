@@ -17,8 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -106,7 +106,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
       if (branchSelectCombo != null && branchSelectCombo.isDisposed() != true) {
          String branchName = branchSelectCombo.getText();
          if (Strings.isValid(branchName)) {
-            toReturn = (Branch) branchSelectCombo.getData(branchName);
+            toReturn = (IOseeBranch) branchSelectCombo.getData(branchName);
             if (toReturn == null) {
                try {
                   toReturn = BranchManager.getBranch(branchName);
@@ -204,9 +204,9 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
       String[] items = branchSelectCombo.getItems();
       List<String> toReturn = new ArrayList<>();
       for (String item : items) {
-         Branch branch = (Branch) branchSelectCombo.getData(item);
+         BranchId branch = (BranchId) branchSelectCombo.getData(item);
          if (branch != null) {
-            toReturn.add(String.valueOf(branch.getUuid()));
+            toReturn.add(String.valueOf(branch.getId()));
          }
       }
       return toReturn.toArray(new String[toReturn.size()]);
