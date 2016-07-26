@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.internal;
 
+import org.eclipse.osee.ats.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.workflow.AtsWorkItemEventHandler;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.event.EventConstants;
@@ -28,6 +30,8 @@ public class Activator implements BundleActivator {
    public void start(final BundleContext context) {
       context.registerService(EventHandler.class.getName(), new AtsWorkItemEventHandler(),
          AtsUtilCore.hashTable(EventConstants.EVENT_TOPIC, AtsTopicEvent.WORK_ITEM_MODIFIED.getTopic()));
+      context.registerService(EventHandler.class.getName(), new AtsBranchAccessManager(),
+         AtsUtilCore.hashTable(EventConstants.EVENT_TOPIC, AccessTopicEvent.ACCESS_BRANCH_MODIFIED.getTopic()));
    }
 
    @Override
