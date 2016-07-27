@@ -16,12 +16,17 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOperation;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
@@ -49,7 +54,7 @@ public class XWorkingBranchUpdate extends XWorkingBranchButtonAbstract {
 
    @Override
    protected void initButton(final Button button) {
-      button.setToolTipText("Update Working Branch From Parent");
+      button.setToolTipText("Update Working Branch From Targeted Version or Team Configured Branch");
       button.setImage(ImageManager.getImage(FrameworkImage.BRANCH_SYNCH));
       button.addListener(SWT.Selection, new Listener() {
          @Override
@@ -57,22 +62,34 @@ public class XWorkingBranchUpdate extends XWorkingBranchButtonAbstract {
             try {
                Branch branchToUpdate = getWorkingBranch();
                if (branchToUpdate != null) {
+                  Artifact associatedArtifact = BranchManager.getAssociatedArtifact(branchToUpdate);
+                  IAtsWorkItem workItem = AtsClientService.get().getWorkItemFactory().getWorkItem(associatedArtifact);
+                  if (workItem == null || !workItem.isTeamWorkflow()) {
+                     AWorkbench.popup("Working Branch must have associated Team Workflow");
+                     return;
+                  }
+                  IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
+                  IOseeBranch targetedBranch =
+                     AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamWf);
                   if (BranchManager.isUpdatable(branchToUpdate)) {
                      if (BranchManager.getState(branchToUpdate).isRebaselineInProgress()) {
                         RebaselineInProgressHandler.handleRebaselineInProgress(branchToUpdate);
                      } else {
                         boolean isUserSure = MessageDialog.openQuestion(
                            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Update Branch",
-                           String.format("Are you sure you want to update [%s] branch", branchToUpdate.getName()));
+                           String.format(
+                              "Are you sure you want to update [%s] branch from Targeted Version or Team Configured branch [%s]",
+                              branchToUpdate.getName(), targetedBranch.getName()));
                         if (isUserSure) {
-                           BranchManager.updateBranch(branchToUpdate, new UserConflictResolver());
+                           BranchManager.updateBranch(branchToUpdate, targetedBranch, new UserConflictResolver());
                         }
                      }
                   } else {
                      MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                         "Can't Update Branch",
                         String.format(
-                           "Couldn't update [%s] because it currently has merge branches from commits.  To perform an update please delete all the merge branches for this branch.",
+                           "Couldn't update [%s] because it currently has merge branches from commits.  " //
+                              + "To perform an update please delete all the merge branches for this branch.",
                            branchToUpdate.getName()));
                   }
                }

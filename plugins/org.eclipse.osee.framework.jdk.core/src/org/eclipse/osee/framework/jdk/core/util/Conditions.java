@@ -185,4 +185,10 @@ public final class Conditions {
          throw new OseeArgumentException(message, data);
       }
    }
+
+   public static void assertNotNull(Object obj, String message, Object... data) {
+      if (obj == null) {
+         throw new OseeArgumentException(message, data);
+      }
+   }
 }

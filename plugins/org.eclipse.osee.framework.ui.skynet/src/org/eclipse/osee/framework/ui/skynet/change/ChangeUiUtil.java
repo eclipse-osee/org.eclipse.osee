@@ -40,7 +40,7 @@ public final class ChangeUiUtil {
       if (BranchManager.getType(branch).isBaselineBranch()) {
          if (!MessageDialog.openConfirm(AWorkbench.getActiveShell(), "Show Change Report",
             "You have chosen to show a " + (showTransactionTab ? "transaction report" : "change report") + " for a BASLINE branch.\n\n" + //
-            "This could be a very long running task and consume large resources.\n\nAre you sure?")) {
+               "This could be a very long running task and consume large resources.\n\nAre you sure?")) {
             return;
          }
       }
@@ -73,6 +73,10 @@ public final class ChangeUiUtil {
 
    public static ChangeReportEditorInput createInput(BranchId branch, boolean loadOnOpen) throws OseeCoreException {
       BranchId parentBranch = BranchManager.getParentBranchId(branch);
+      return createInput(branch, parentBranch, loadOnOpen);
+   }
+
+   public static ChangeReportEditorInput createInput(BranchId branch, BranchId parentBranch, boolean loadOnOpen) throws OseeCoreException {
       TransactionRecord startTx = TransactionManager.getHeadTransaction(branch);
       TransactionRecord endTx = TransactionManager.getHeadTransaction(parentBranch);
       TransactionDelta txDelta = new TransactionDelta(startTx, endTx);

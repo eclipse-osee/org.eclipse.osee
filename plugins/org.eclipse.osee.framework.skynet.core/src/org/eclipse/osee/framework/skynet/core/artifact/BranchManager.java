@@ -270,6 +270,11 @@ public final class BranchManager {
       return Operations.executeAsJob(operation, true);
    }
 
+   public static Job updateBranch(Branch branch, IOseeBranch fromBranch, ConflictResolverOperation resolver) {
+      IOperation operation = new UpdateBranchOperation(branch, fromBranch, resolver);
+      return Operations.executeAsJob(operation, true);
+   }
+
    public static void purgeBranch(final BranchId branch) throws OseeCoreException {
       Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(branch, false));
    }
@@ -704,4 +709,5 @@ public final class BranchManager {
          throw ex;
       }
    }
+
 }

@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -45,6 +46,7 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
+import org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditorInput;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.util.TransactionIdLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeBranchDialog;
@@ -235,7 +237,13 @@ public final class AtsBranchManager {
    public static void showChangeReport(TeamWorkFlowArtifact teamArt) {
       try {
          if (AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt)) {
-            ChangeUiUtil.open(AtsClientService.get().getBranchService().getWorkingBranch(teamArt));
+            IOseeBranch parentBranch =
+               AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamArt);
+            Conditions.assertNotNull(parentBranch,
+               "Parent Branch can not be null. Set Targeted Version or configure Team for Parent Branch");
+            IOseeBranch workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
+            ChangeReportEditorInput input = ChangeUiUtil.createInput(workingBranch, parentBranch, true);
+            ChangeUiUtil.open(input);
          } else if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt)) {
             TransactionRecord transactionId = getTransactionIdOrPopupChoose(teamArt, "Show Change Report", false);
             if (transactionId == null) {
