@@ -14,7 +14,6 @@ import static org.eclipse.osee.framework.core.enums.DemoBranches.CIS_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.TransactionDetailsType.Baselined;
 import static org.eclipse.osee.framework.core.enums.TransactionDetailsType.NonBaselined;
-import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -33,13 +32,16 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.OrcsIntegrationByClassRule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.TransactionReadable;
+import org.eclipse.osee.orcs.db.mock.OseeClassDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.Operator;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TransactionQuery;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -53,7 +55,7 @@ import org.junit.rules.TestRule;
 public class OrcsTxQueryTest {
 
    @Rule
-   public TestRule osgi = integrationRule(this);
+   public TestRule db = OrcsIntegrationByClassRule.integrationRule(this);
 
    @Rule
    public TestName testName = new TestName();
@@ -72,6 +74,11 @@ public class OrcsTxQueryTest {
    @Before
    public void setup() {
       factory = orcsApi.getQueryFactory();
+   }
+
+   @AfterClass
+   public static void cleanup() throws Exception {
+      OseeClassDatabase.cleanup();
    }
 
    @Test

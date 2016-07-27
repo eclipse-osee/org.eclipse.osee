@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.api;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
-import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -21,10 +20,13 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.OrcsIntegrationByClassRule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.db.mock.OseeClassDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -37,7 +39,7 @@ import org.junit.rules.TestRule;
 public class OrcsAttributeLoadingTest {
 
    @Rule
-   public TestRule osgi = integrationRule(this);
+   public TestRule db = OrcsIntegrationByClassRule.integrationRule(this);
 
    @OsgiService
    private OrcsApi orcsApi;
@@ -47,6 +49,11 @@ public class OrcsAttributeLoadingTest {
    @Before
    public void setUp() throws Exception {
       query = orcsApi.getQueryFactory();
+   }
+
+   @AfterClass
+   public static void cleanup() throws Exception {
+      OseeClassDatabase.cleanup();
    }
 
    @SuppressWarnings("unchecked")

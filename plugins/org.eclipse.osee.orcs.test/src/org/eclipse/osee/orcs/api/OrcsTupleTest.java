@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.api;
 
 import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
-import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -19,8 +18,11 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcException;
 import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.OrcsIntegrationByClassRule;
+import org.eclipse.osee.orcs.db.mock.OseeClassDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -34,7 +36,7 @@ import org.junit.rules.TestRule;
 public class OrcsTupleTest {
 
    @Rule
-   public TestRule osgi = integrationRule(this);
+   public TestRule db = OrcsIntegrationByClassRule.integrationRule(this);
 
    @Rule
    public final ExpectedException exception = ExpectedException.none();
@@ -47,6 +49,11 @@ public class OrcsTupleTest {
    @Before
    public void setUp() throws Exception {
       keyValueOps = orcsApi.getKeyValueOps();
+   }
+
+   @AfterClass
+   public static void cleanup() throws Exception {
+      OseeClassDatabase.cleanup();
    }
 
    @Test

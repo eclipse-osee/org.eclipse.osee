@@ -17,7 +17,6 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.CIS_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
-import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -35,26 +34,32 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
+import org.eclipse.osee.orcs.OrcsIntegrationByClassRule;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
+import org.eclipse.osee.orcs.db.mock.OseeClassDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryFactory;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
+import org.junit.runners.MethodSorters;
 
 /**
  * @author Roberto E. Escobar
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class OrcsBranchQueryTest {
 
    @Rule
-   public TestRule osgi = integrationRule(this);
+   public TestRule db = OrcsIntegrationByClassRule.integrationRule(this);
 
    @Rule
    public TestName testName = new TestName();
@@ -67,6 +72,11 @@ public class OrcsBranchQueryTest {
    @Before
    public void setup() {
       factory = orcsApi.getQueryFactory();
+   }
+
+   @AfterClass
+   public static void cleanup() throws Exception {
+      OseeClassDatabase.cleanup();
    }
 
    @Test
@@ -218,7 +228,7 @@ public class OrcsBranchQueryTest {
    }
 
    @Test
-   public void testGetIncludeArchived() throws Exception {
+   public void zTestGetIncludeArchived() throws Exception {
       IOseeBranch child = TokenFactory.createBranch(testName.getMethodName());
 
       BranchQuery query = factory.branchQuery();
@@ -239,8 +249,10 @@ public class OrcsBranchQueryTest {
       assertEquals(child, query.getResults().getExactlyOne());
    }
 
+   // Do remaining tests last cause they create branches which changes query counts
+
    @Test
-   public void testGetIncludeDeleted() throws Exception {
+   public void zTestGetIncludeDeleted() throws Exception {
       IOseeBranch child = TokenFactory.createBranch(testName.getMethodName());
 
       BranchQuery query = factory.branchQuery();
@@ -263,10 +275,11 @@ public class OrcsBranchQueryTest {
 
       query.includeDeleted();
       assertEquals(child, query.getResults().getExactlyOne());
+
    }
 
    @Test
-   public void testGetWithMultipleConditions1() throws Exception {
+   public void zTestGetWithMultipleConditions1() throws Exception {
       IOseeBranch child = TokenFactory.createBranch(testName.getMethodName());
 
       BranchId actual = createBranch(SAW_Bld_2, child);
@@ -277,6 +290,7 @@ public class OrcsBranchQueryTest {
       ResultSet<BranchReadable> results = query.getResults();
       assertEquals(actual, results.getExactlyOne());
       assertEquals(1, query.getCount());
+
    }
 
    private IOseeBranch createBranch(IOseeBranch parent, IOseeBranch uuid) throws Exception {

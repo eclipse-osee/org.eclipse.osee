@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.api;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
-import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -44,10 +43,12 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
+import org.eclipse.osee.orcs.OrcsIntegrationByClassRule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.data.TransactionReadable;
+import org.eclipse.osee.orcs.db.mock.OseeClassDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -57,6 +58,7 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
 import org.eclipse.osee.orcs.utility.MatchComparator;
 import org.eclipse.osee.orcs.utility.NameComparator;
 import org.eclipse.osee.orcs.utility.SortOrder;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -69,7 +71,7 @@ import org.junit.rules.TestRule;
 public class OrcsQueryTest {
 
    @Rule
-   public TestRule osgi = integrationRule(this);
+   public TestRule db = OrcsIntegrationByClassRule.integrationRule(this);
 
    private final boolean includeMatchLocationTests = false;
 
@@ -79,13 +81,18 @@ public class OrcsQueryTest {
    private OrcsBranch branchApi;
    private TransactionFactory txFactory;
    private QueryFactory factory;
-   private ArtifactReadable author;
+   private static ArtifactReadable author;
 
    @Before
    public void setup() {
       factory = orcsApi.getQueryFactory();
       branchApi = orcsApi.getBranchOps();
       txFactory = orcsApi.getTransactionFactory();
+   }
+
+   @AfterClass
+   public static void cleanup() throws Exception {
+      OseeClassDatabase.cleanup();
    }
 
    @Test
@@ -460,8 +467,7 @@ public class OrcsQueryTest {
 
       // Add a child
       ArtifactReadable parent = results.iterator().next().getParent();
-      author = factory.fromBranch(COMMON_ID).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(SAW_Bld_2, author, "FollowTest");
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(SAW_Bld_2, getAuthor(), "FollowTest");
       ArtifactId child = tx.createArtifact(CoreArtifactTypes.SoftwareRequirement, "Dummy Robot");
       tx.relate(parent, CoreRelationTypes.Default_Hierarchical__Child, child);
       TransactionReadable commitTx = tx.commit();
@@ -484,6 +490,13 @@ public class OrcsQueryTest {
       assertEquals("Robot collaboration", iterator.next());
    }
 
+   private ArtifactReadable getAuthor() {
+      if (author == null) {
+         author = factory.fromBranch(COMMON_ID).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+      }
+      return author;
+   }
+
    @Test
    public void testRelatedTo() {
       // do a query on branch
@@ -492,9 +505,7 @@ public class OrcsQueryTest {
          .andIsOfType(CoreArtifactTypes.SoftwareRequirement).getResults().getExactlyOne();
 
       // create a tx on branch
-      ArtifactReadable author =
-         factory.fromBranch(COMMON_ID).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
-      TransactionBuilder tx = txFactory.createTransaction(SAW_Bld_2, author, "Simple Tx");
+      TransactionBuilder tx = txFactory.createTransaction(SAW_Bld_2, getAuthor(), "Simple Tx");
       tx.createArtifact(CoreArtifactTypes.Folder, "Just a Folder");
       tx.commit();
 
@@ -513,12 +524,9 @@ public class OrcsQueryTest {
          .andNameEquals("Robot API") //
          .andIsOfType(CoreArtifactTypes.SoftwareRequirement).getResults().getExactlyOne();
 
-      ArtifactReadable author =
-         factory.fromBranch(COMMON_ID).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
-
       // create a tx on branch
-      TransactionBuilder tx1 = txFactory.createTransaction(SAW_Bld_2, author, "Simple Tx1");
-      TransactionBuilder tx2 = txFactory.createTransaction(SAW_Bld_2, author, "Simple Tx2");
+      TransactionBuilder tx1 = txFactory.createTransaction(SAW_Bld_2, getAuthor(), "Simple Tx1");
+      TransactionBuilder tx2 = txFactory.createTransaction(SAW_Bld_2, getAuthor(), "Simple Tx2");
 
       ArtifactId folder = tx1.createArtifact(CoreArtifactTypes.Folder, "Just a Folder");
       tx1.commit();
@@ -545,7 +553,7 @@ public class OrcsQueryTest {
    }
 
    private BranchReadable setupNameEqualsArtifacts() throws Exception {
-      author = factory.fromBranch(COMMON_ID).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+      getAuthor();
       IOseeBranch branchToken = TokenFactory.createBranch("TestAndNameEquals");
       BranchReadable branch = branchApi.createTopLevelBranch(branchToken, author).call();
       TransactionBuilder tx = txFactory.createTransaction(branch, author, "add folders");

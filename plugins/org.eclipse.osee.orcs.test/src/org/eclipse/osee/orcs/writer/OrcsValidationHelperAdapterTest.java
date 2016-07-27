@@ -11,14 +11,16 @@
 package org.eclipse.osee.orcs.writer;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
-import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.OrcsIntegrationByClassRule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.db.mock.OseeClassDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -33,7 +35,7 @@ import org.junit.rules.TestRule;
 public class OrcsValidationHelperAdapterTest {
 
    @Rule
-   public TestRule osgi = integrationRule(this);
+   public TestRule db = OrcsIntegrationByClassRule.integrationRule(this);
 
    @OsgiService
    private OrcsApi orcsApi;
@@ -43,6 +45,11 @@ public class OrcsValidationHelperAdapterTest {
    @Before
    public void setUp() throws Exception {
       helper = new OrcsValidationHelperAdapter(orcsApi);
+   }
+
+   @AfterClass
+   public static void cleanup() throws Exception {
+      OseeClassDatabase.cleanup();
    }
 
    @Test

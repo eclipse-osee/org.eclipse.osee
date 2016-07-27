@@ -19,7 +19,6 @@ import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hi
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Dependency__Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Dependency__Dependency;
 import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
-import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -49,16 +48,19 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
+import org.eclipse.osee.orcs.OrcsIntegrationByClassRule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.data.TransactionReadable;
+import org.eclipse.osee.orcs.db.mock.OseeClassDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TransactionQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -75,7 +77,7 @@ public class OrcsTransactionTest {
    public ExpectedException thrown = ExpectedException.none();
 
    @Rule
-   public TestRule osgi = integrationRule(this);
+   public TestRule db = OrcsIntegrationByClassRule.integrationRule(this);
 
    @Rule
    public TestName testName = new TestName();
@@ -88,12 +90,22 @@ public class OrcsTransactionTest {
    private OrcsBranch orcsBranch;
    private QueryFactory query;
 
+   private static ArtifactId artifactsZero;
+   private static ArtifactId artifactsOne;
+   private static boolean historySetup = false;
+   public static Integer[] toReturn;
+
    @Before
    public void setUp() throws Exception {
       txFactory = orcsApi.getTransactionFactory();
       orcsBranch = orcsApi.getBranchOps();
       query = orcsApi.getQueryFactory();
       userArtifact = getSystemUser();
+   }
+
+   @AfterClass
+   public static void cleanup() throws Exception {
+      OseeClassDatabase.cleanup();
    }
 
    @Test
@@ -253,17 +265,17 @@ public class OrcsTransactionTest {
 
    @Test
    public void testReadAfterWrite() throws OseeCoreException {
-      QueryBuilder queryBuilder = query.fromBranch(COMMON_ID).andIds(SystemUser.Anonymous);
+      QueryBuilder queryBuilder = query.fromBranch(COMMON_ID).andIds(SystemUser.OseeSystem);
 
-      ArtifactReadable originalGuest = queryBuilder.getResults().getExactlyOne();
+      ArtifactReadable oseeSystem = queryBuilder.getResults().getExactlyOne();
 
       TransactionBuilder tx = createTx();
-      tx.setSoleAttributeFromString(originalGuest, CoreAttributeTypes.Name, "Test");
+      tx.setSoleAttributeFromString(oseeSystem, CoreAttributeTypes.Name, "Test");
       tx.commit();
 
       ArtifactReadable newGuest = queryBuilder.getResults().getExactlyOne();
 
-      assertEquals(SystemUser.Anonymous.getName(), originalGuest.getName());
+      assertEquals(SystemUser.OseeSystem.getName(), oseeSystem.getName());
       assertEquals("Test", newGuest.getName());
    }
 
@@ -326,40 +338,45 @@ public class OrcsTransactionTest {
 
    }
 
-   private int[] setupHistory(ArtifactId[] artifacts) {
-      TransactionBuilder tx = createTx();
-      ArtifactId artifact1 = tx.createArtifact(CoreArtifactTypes.AccessControlModel, "deleteThis");
-      tx.createAttribute(artifact1, CoreAttributeTypes.GeneralStringData, "deleted Name");
-      tx.createAttribute(artifact1, CoreAttributeTypes.PublishInline, true);
-      ArtifactId artifact2 = tx.createArtifact(CoreArtifactTypes.Folder, "deleteThisFolder");
-      tx.createAttribute(artifact2, CoreAttributeTypes.Annotation, "annotation");
-      tx.relate(artifact2, Default_Hierarchical__Parent, artifact1);
-      TransactionReadable tx1 = tx.commit();
-      artifacts[0] = artifact1;
-      artifacts[1] = artifact2;
+   private Integer[] setupHistory(ArtifactId[] artifacts) {
+      if (!historySetup) {
+         TransactionBuilder tx = createTx();
+         ArtifactId artifact1 = tx.createArtifact(CoreArtifactTypes.AccessControlModel, "deleteThis");
+         tx.createAttribute(artifact1, CoreAttributeTypes.GeneralStringData, "deleted Name");
+         tx.createAttribute(artifact1, CoreAttributeTypes.PublishInline, true);
+         ArtifactId artifact2 = tx.createArtifact(CoreArtifactTypes.Folder, "deleteThisFolder");
+         tx.createAttribute(artifact2, CoreAttributeTypes.Annotation, "annotation");
+         tx.relate(artifact2, Default_Hierarchical__Parent, artifact1);
+         TransactionReadable tx1 = tx.commit();
+         artifactsZero = artifact1;
+         artifactsOne = artifact2;
 
-      tx = createTx();
-      tx.deleteAttributes(artifact1, CoreAttributeTypes.GeneralStringData);
-      TransactionReadable tx2 = tx.commit();
+         tx = createTx();
+         tx.deleteAttributes(artifact1, CoreAttributeTypes.GeneralStringData);
+         TransactionReadable tx2 = tx.commit();
 
-      ArtifactReadable toDelete = query.fromBranch(COMMON_ID).andIds(artifact1).getResults().getExactlyOne();
+         ArtifactReadable toDelete = query.fromBranch(COMMON_ID).andIds(artifact1).getResults().getExactlyOne();
 
-      tx = createTx();
-      tx.deleteArtifact(toDelete);
-      tx.deleteAttributes(artifact2, CoreAttributeTypes.Annotation);
-      tx.unrelate(artifact2, Default_Hierarchical__Parent, artifact1);
-      TransactionReadable tx3 = tx.commit();
+         tx = createTx();
+         tx.deleteArtifact(toDelete);
+         tx.deleteAttributes(artifact2, CoreAttributeTypes.Annotation);
+         tx.unrelate(artifact2, Default_Hierarchical__Parent, artifact1);
+         TransactionReadable tx3 = tx.commit();
 
-      toDelete = query.fromBranch(COMMON_ID).andIds(artifact2).getResults().getExactlyOne();
+         toDelete = query.fromBranch(COMMON_ID).andIds(artifact2).getResults().getExactlyOne();
 
-      tx = createTx();
-      tx.deleteArtifact(toDelete);
-      TransactionReadable tx4 = tx.commit();
+         tx = createTx();
+         tx.deleteArtifact(toDelete);
+         TransactionReadable tx4 = tx.commit();
 
-      toDelete = query.fromBranch(COMMON_ID).andIds(artifact1).includeDeletedArtifacts().getResults().getOneOrNull();
-      assertNotNull(toDelete);
-      assertTrue(toDelete.isDeleted());
-      int[] toReturn = {tx1.getGuid(), tx2.getGuid(), tx3.getGuid(), tx4.getGuid()};
+         toDelete = query.fromBranch(COMMON_ID).andIds(artifact1).includeDeletedArtifacts().getResults().getOneOrNull();
+         assertNotNull(toDelete);
+         assertTrue(toDelete.isDeleted());
+         toReturn = (Integer[]) Arrays.asList(tx1.getGuid(), tx2.getGuid(), tx3.getGuid(), tx4.getGuid()).toArray();
+         historySetup = true;
+      }
+      artifacts[0] = artifactsZero;
+      artifacts[1] = artifactsOne;
       return toReturn;
    }
 
@@ -367,7 +384,7 @@ public class OrcsTransactionTest {
    public void testHistoricalArtifactsCreated() throws OseeCoreException {
 
       ArtifactId[] theArtifacts = {null, null};
-      int[] transactions = setupHistory(theArtifacts);
+      Integer[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
       ArtifactId artifact2 = theArtifacts[1];
       QueryBuilder builder = query.fromBranch(COMMON_ID);
@@ -382,7 +399,7 @@ public class OrcsTransactionTest {
    public void testHistoricalOneArtifactDeleted() throws OseeCoreException {
 
       ArtifactId[] theArtifacts = {null, null};
-      int[] transactions = setupHistory(theArtifacts);
+      Integer[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
       ArtifactId artifact2 = theArtifacts[1];
       QueryBuilder builder = query.fromBranch(COMMON_ID);
@@ -396,7 +413,7 @@ public class OrcsTransactionTest {
    public void testHistoricalDeletedAttribute() throws OseeCoreException {
 
       ArtifactId[] theArtifacts = {null, null};
-      int[] transactions = setupHistory(theArtifacts);
+      Integer[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
       ArtifactId artifact2 = theArtifacts[1];
       QueryBuilder builder = query.fromBranch(COMMON_ID);
@@ -414,7 +431,7 @@ public class OrcsTransactionTest {
    public void testHistoricalOneArtifactDeletedAttribute() throws OseeCoreException {
 
       ArtifactId[] theArtifacts = {null, null};
-      int[] transactions = setupHistory(theArtifacts);
+      Integer[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
       QueryBuilder builder = query.fromBranch(COMMON_ID);
       builder.fromTransaction(transactions[1]);
@@ -428,7 +445,7 @@ public class OrcsTransactionTest {
    public void testHistoricalIncludeDeletedAttribute() throws OseeCoreException {
 
       ArtifactId[] theArtifacts = {null, null};
-      int[] transactions = setupHistory(theArtifacts);
+      Integer[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
       QueryBuilder builder = query.fromBranch(COMMON_ID);
       builder.fromTransaction(transactions[1]);
@@ -443,7 +460,7 @@ public class OrcsTransactionTest {
    public void testHistoricalTwoArtifactsIncludeDeletedAttribute() throws OseeCoreException {
 
       ArtifactId[] theArtifacts = {null, null};
-      int[] transactions = setupHistory(theArtifacts);
+      Integer[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
       ArtifactId artifact2 = theArtifacts[1];
       QueryBuilder builder = query.fromBranch(COMMON_ID);
@@ -459,7 +476,7 @@ public class OrcsTransactionTest {
    public void testHistoricalDeletedArtifacts() throws OseeCoreException {
 
       ArtifactId[] theArtifacts = {null, null};
-      int[] transactions = setupHistory(theArtifacts);
+      Integer[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
       ArtifactId artifact2 = theArtifacts[1];
       QueryBuilder builder = query.fromBranch(COMMON_ID);
@@ -473,7 +490,7 @@ public class OrcsTransactionTest {
    public void testHistoricalAllowDeletedArtifactsDeletedAttributes() throws OseeCoreException {
 
       ArtifactId[] theArtifacts = {null, null};
-      int[] transactions = setupHistory(theArtifacts);
+      Integer[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
       ArtifactId artifact2 = theArtifacts[1];
       QueryBuilder builder = query.fromBranch(COMMON_ID);
@@ -489,7 +506,7 @@ public class OrcsTransactionTest {
    public void testHistoricalAllowDeletedArtifactsNondeletedAttribute() throws OseeCoreException {
 
       ArtifactId[] theArtifacts = {null, null};
-      int[] transactions = setupHistory(theArtifacts);
+      Integer[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
       ArtifactId artifact2 = theArtifacts[1];
       QueryBuilder builder = query.fromBranch(COMMON_ID);
@@ -505,7 +522,7 @@ public class OrcsTransactionTest {
    public void testHistoricalRelation() throws OseeCoreException {
 
       ArtifactId[] theArtifacts = {null, null};
-      int[] transactions = setupHistory(theArtifacts);
+      Integer[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
       ArtifactId artifact2 = theArtifacts[1];
       QueryBuilder builder = query.fromBranch(COMMON_ID);
@@ -535,7 +552,7 @@ public class OrcsTransactionTest {
    public void testHistoricalDeletedRelation() throws OseeCoreException {
 
       ArtifactId[] theArtifacts = {null, null};
-      int[] transactions = setupHistory(theArtifacts);
+      Integer[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
       ArtifactId artifact2 = theArtifacts[1];
       QueryBuilder builder = query.fromBranch(COMMON_ID);
@@ -565,7 +582,7 @@ public class OrcsTransactionTest {
    public void testHistoricalAllowDeletedRelation() throws OseeCoreException {
 
       ArtifactId[] theArtifacts = {null, null};
-      int[] transactions = setupHistory(theArtifacts);
+      Integer[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
       ArtifactId artifact2 = theArtifacts[1];
       QueryBuilder builder = query.fromBranch(COMMON_ID);
