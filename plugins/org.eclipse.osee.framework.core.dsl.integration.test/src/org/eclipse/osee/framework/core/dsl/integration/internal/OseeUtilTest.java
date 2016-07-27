@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.HexUtil;
@@ -39,7 +39,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link OseeUtil}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class OseeUtilTest {
@@ -181,14 +181,14 @@ public class OseeUtilTest {
       }
    }
 
-   private static void setupToToken(OseeType typeToCheck, Identity<Long> expected) throws OseeCoreException {
+   private static void setupToToken(OseeType typeToCheck, Id expected) throws OseeCoreException {
       String name = "bogus name"; // This should not affect equality
       typeToCheck.setName(name);
-      String uuid = HexUtil.toString(expected.getGuid());
+      String uuid = HexUtil.toString(expected.getId());
       typeToCheck.setUuid(uuid);
 
       Assert.assertEquals(name, typeToCheck.getName());
-      Assert.assertEquals(expected.getGuid().longValue(), HexUtil.toLong(typeToCheck.getUuid()));
+      Assert.assertEquals(expected.getId().longValue(), HexUtil.toLong(typeToCheck.getUuid()));
       Assert.assertEquals(uuid, typeToCheck.getUuid());
    }
 

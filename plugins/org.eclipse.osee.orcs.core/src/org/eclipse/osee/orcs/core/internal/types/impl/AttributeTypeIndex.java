@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeTypeIndex extends TokenTypeIndex<Long, IAttributeType, XAttributeType> {
+public class AttributeTypeIndex extends TokenTypeIndex<IAttributeType, XAttributeType> {
 
    private final Set<IAttributeType> taggables = new HashSet<>();
 

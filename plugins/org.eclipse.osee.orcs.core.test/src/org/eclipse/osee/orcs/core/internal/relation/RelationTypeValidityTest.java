@@ -42,7 +42,7 @@ import org.mockito.stubbing.Answer;
 
 /**
  * Test Case for {@link RelationTypeValidity}
- * 
+ *
  * @author Roberto E. Escobar
  * @author Megumi Telles
  */
@@ -58,7 +58,7 @@ public class RelationTypeValidityTest {
    @Mock private RelationNode node;
    @Mock private IArtifactType artifactType;
    @Mock private IArtifactType artifactType2;
-   
+
    @Mock private IRelationType relationType1;
    @Mock private IRelationType relationType2;
    @Mock private IRelationType relationType3;
@@ -70,14 +70,8 @@ public class RelationTypeValidityTest {
    @Before
    public void init() throws OseeCoreException {
       initMocks(this);
-
       validity = new RelationTypeValidity(relTypes);
-
       when(relTypes.exists(TYPE_1)).thenReturn(true);
-      when(relTypes.exists(relationType1)).thenReturn(true);
-      when(relTypes.exists(relationType2)).thenReturn(true);
-      when(relTypes.exists(relationType3)).thenReturn(true);
-      when(relTypes.exists(relationType4)).thenReturn(true);
    }
 
    @Test

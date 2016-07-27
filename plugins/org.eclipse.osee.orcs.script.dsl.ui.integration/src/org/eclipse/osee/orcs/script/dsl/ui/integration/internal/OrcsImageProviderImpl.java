@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.script.dsl.ui.integration.internal;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -51,18 +51,18 @@ public class OrcsImageProviderImpl implements IOrcsImageProvider {
    }
 
    @Override
-   public Image getArtifactTypeImage(Identifiable<Long> type) {
+   public Image getArtifactTypeImage(Id type) {
       IArtifactType artType = (IArtifactType) type;
       return ArtifactImageManager.getImage(artType);
    }
 
    @Override
-   public Image getAttributeTypeImage(Identifiable<Long> type) {
+   public Image getAttributeTypeImage(Id type) {
       return getAttributeImage();
    }
 
    @Override
-   public Image getRelationTypeImage(Identifiable<Long> type) {
+   public Image getRelationTypeImage(Id type) {
       return getRelationImage();
    }
 

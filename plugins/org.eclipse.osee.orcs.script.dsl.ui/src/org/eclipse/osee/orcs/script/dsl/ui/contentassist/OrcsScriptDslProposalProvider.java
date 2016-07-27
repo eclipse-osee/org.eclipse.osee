@@ -16,7 +16,6 @@ import java.util.Set;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.viewers.StyledString;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.orcs.script.dsl.IFieldResolver;
 import org.eclipse.osee.orcs.script.dsl.IFieldResolver.OsField;
@@ -65,7 +64,7 @@ public class OrcsScriptDslProposalProvider extends AbstractOrcsScriptDslProposal
    public void complete_OsMetaTypeId(EObject model, RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
       super.complete_OsMetaTypeId(model, ruleCall, context, acceptor);
       String name = model.getClass().getName().toLowerCase();
-      Iterable<? extends Identifiable<Long>> entries;
+      Iterable<? extends NamedId> entries;
       if (name.contains("artifact")) {
          entries = provider.getArtifactTypes();
       } else if (name.contains("attribute")) {
@@ -75,7 +74,7 @@ public class OrcsScriptDslProposalProvider extends AbstractOrcsScriptDslProposal
       } else {
          entries = Collections.emptyList();
       }
-      for (Identifiable<Long> entry : entries) {
+      for (NamedId entry : entries) {
          Image image = null;
          if (name.contains("artifact")) {
             image = imageProvider.getArtifactTypeImage(entry);

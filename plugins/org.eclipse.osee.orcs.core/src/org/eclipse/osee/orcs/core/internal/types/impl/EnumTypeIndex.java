@@ -16,6 +16,6 @@ import org.eclipse.osee.orcs.data.EnumType;
 /**
  * @author Roberto E. Escobar
  */
-public class EnumTypeIndex extends TokenTypeIndex<Long, EnumType, XOseeEnumType> {
+public class EnumTypeIndex extends TokenTypeIndex<EnumType, XOseeEnumType> {
    //
 }

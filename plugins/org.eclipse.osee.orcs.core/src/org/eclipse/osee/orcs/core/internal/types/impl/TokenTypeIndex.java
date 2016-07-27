@@ -15,14 +15,14 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Maps;
 import java.util.Collection;
 import java.util.Map;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Roberto E. Escobar
  */
-public class TokenTypeIndex<UUID_TYPE, TOKEN extends Identity<UUID_TYPE>, DSLTYPE> {
+public class TokenTypeIndex<TOKEN extends Id, DSLTYPE> {
 
-   private final Map<UUID_TYPE, TOKEN> uuidToToken;
+   private final Map<Long, TOKEN> uuidToToken;
    private final BiMap<TOKEN, DSLTYPE> tokenToType;
 
    public TokenTypeIndex() {
@@ -34,14 +34,14 @@ public class TokenTypeIndex<UUID_TYPE, TOKEN extends Identity<UUID_TYPE>, DSLTYP
       return tokenToType.keySet();
    }
 
-   public TOKEN getTokenByUuid(UUID_TYPE uuid) {
+   public TOKEN getTokenByUuid(Long uuid) {
       return uuidToToken.get(uuid);
    }
 
    public DSLTYPE getDslTypeByToken(TOKEN key) {
       DSLTYPE type = tokenToType.get(key);
       if (type == null) {
-         TOKEN tokenByUuid = getTokenByUuid(key.getGuid());
+         TOKEN tokenByUuid = getTokenByUuid(key.getId());
          if (tokenByUuid != null) {
             type = tokenToType.get(tokenByUuid);
          }
@@ -53,12 +53,12 @@ public class TokenTypeIndex<UUID_TYPE, TOKEN extends Identity<UUID_TYPE>, DSLTYP
       return tokenToType.inverse().get(value);
    }
 
-   public boolean existsByUuid(UUID_TYPE uuid) {
+   public boolean existsByUuid(Long uuid) {
       return uuidToToken.containsKey(uuid);
    }
 
    public void put(TOKEN token, DSLTYPE dslType) {
-      uuidToToken.put(token.getGuid(), token);
+      uuidToToken.put(token.getId(), token);
       tokenToType.put(token, dslType);
    }
 

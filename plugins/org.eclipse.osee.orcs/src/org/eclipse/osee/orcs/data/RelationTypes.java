@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Roberto E. Escobar
  */
-public interface RelationTypes extends IdentityCollection<Long, IRelationType> {
+public interface RelationTypes extends IdCollection<IRelationType> {
 
    RelationTypeMultiplicity getMultiplicity(IRelationType relation) throws OseeCoreException;
 

@@ -14,12 +14,12 @@ package org.eclipse.osee.framework.core.model;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
 /**
  * @author Andrew M. Finkbeiner
  */
-public class RelationTypeSide extends FullyNamedIdentity<Long>implements IRelationTypeSide {
+public class RelationTypeSide extends NamedId implements IRelationTypeSide {
 
    private final IRelationType type;
    private final RelationSide side;

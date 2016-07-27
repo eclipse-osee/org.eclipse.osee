@@ -10,11 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.Named;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
 /**
  * @author Ryan D. Brooks
  */
-public interface IRelationType extends Identifiable<Long> {
+public interface IRelationType extends Named, Id {
+   default Long getGuid() {
+      return getId();
+   }
 
+   public static IRelationType valueOf(long id, String name) {
+      final class RelationTypeImpl extends NamedId implements IRelationType {
+
+         public RelationTypeImpl(Long txId, String name) {
+            super(txId, name);
+         }
+      }
+      return new RelationTypeImpl(id, name);
+   }
 }

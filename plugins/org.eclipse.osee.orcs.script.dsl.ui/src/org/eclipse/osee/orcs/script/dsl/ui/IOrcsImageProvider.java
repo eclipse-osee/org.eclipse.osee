@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.script.dsl.ui;
 
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -28,10 +28,10 @@ public interface IOrcsImageProvider {
 
    Image getRelationImage();
 
-   Image getArtifactTypeImage(Identifiable<Long> type);
+   Image getArtifactTypeImage(Id type);
 
-   Image getAttributeTypeImage(Identifiable<Long> type);
+   Image getAttributeTypeImage(Id type);
 
-   Image getRelationTypeImage(Identifiable<Long> type);
+   Image getRelationTypeImage(Id type);
 
 }

@@ -53,8 +53,8 @@ public final class TokenFactory {
       return new AttributeTypeToken(guid, name, description);
    }
 
-   public static IRelationType createRelationType(long guid, String name) {
-      return new RelationTypeToken(guid, name);
+   public static IRelationType createRelationType(long id, String name) {
+      return IRelationType.valueOf(id, name);
    }
 
    public static IRelationTypeSide createRelationTypeSide(RelationSide relationSide, long guid, String name) {
@@ -146,12 +146,6 @@ public final class TokenFactory {
 
       public AttributeTypeToken(Long guid, String name, String description) {
          super(guid, name, description);
-      }
-   }
-
-   private final static class RelationTypeToken extends FullyNamedIdentity<Long> implements IRelationType {
-      public RelationTypeToken(Long guid, String name) {
-         super(guid, name);
       }
    }
 
@@ -248,13 +242,13 @@ public final class TokenFactory {
       }
    }
 
-   private final static class RelationTypeSideToken extends FullyNamedIdentity<Long> implements IRelationTypeSide {
+   private final static class RelationTypeSideToken extends NamedId implements IRelationTypeSide {
 
       private final RelationSide relationSide;
       private RelationTypeSideToken opposite;
 
-      private RelationTypeSideToken(Long guid, String name, RelationSide relationSide) {
-         super(guid, name);
+      private RelationTypeSideToken(Long id, String name, RelationSide relationSide) {
+         super(id, name);
          this.relationSide = relationSide;
       }
 
@@ -265,7 +259,7 @@ public final class TokenFactory {
 
       @Override
       public boolean isOfType(IRelationType type) {
-         return type.getGuid() == getGuid();
+         return equals(type);
       }
 
       @Override

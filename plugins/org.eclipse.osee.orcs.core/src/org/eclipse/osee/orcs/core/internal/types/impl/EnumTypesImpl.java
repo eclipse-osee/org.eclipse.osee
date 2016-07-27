@@ -39,7 +39,7 @@ public class EnumTypesImpl implements EnumTypes {
 
    @Override
    public boolean exists(EnumType item) throws OseeCoreException {
-      return getIndex().existsByUuid(item.getGuid());
+      return getIndex().existsByUuid(item.getId());
    }
 
    @Override

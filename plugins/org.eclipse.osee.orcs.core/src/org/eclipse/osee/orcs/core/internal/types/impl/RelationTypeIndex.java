@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 /**
  * @author Roberto E. Escobar
  */
-public class RelationTypeIndex extends TokenTypeIndex<Long, IRelationType, XRelationType> {
+public class RelationTypeIndex extends TokenTypeIndex<IRelationType, XRelationType> {
 
    private final ArtifactTypeIndex artifactTypeIndex;
 

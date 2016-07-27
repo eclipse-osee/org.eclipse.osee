@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.db.internal.loader.handlers;
 
 import java.util.Collection;
 import java.util.HashSet;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaRelation;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
@@ -70,8 +70,8 @@ public class RelationSqlHandler extends SqlHandler<CriteriaRelation> {
 
    private Collection<Long> getLocalTypeIds() throws OseeCoreException {
       Collection<Long> toReturn = new HashSet<>();
-      for (Identity<Long> type : criteria.getTypes()) {
-         toReturn.add(type.getGuid());
+      for (Id type : criteria.getTypes()) {
+         toReturn.add(type.getId());
       }
       return toReturn;
    }

@@ -13,6 +13,6 @@ package org.eclipse.osee.orcs.data;
 /**
  * @author John Misinco
  */
-public interface EnumTypes extends IdentityCollection<Long, EnumType> {
+public interface EnumTypes extends IdCollection<EnumType> {
    // add additional methods here
 }

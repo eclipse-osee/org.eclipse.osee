@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -98,7 +97,6 @@ public class RelationManagerTest {
    @Mock private Relation relation2;
    @Mock private Relation relation3;
    @Mock private Relation relation4;
-   @Mock private IRelationType relationType;
 
    @Mock private RelationData data1;
    @Mock private RelationData data2;
@@ -198,9 +196,7 @@ public class RelationManagerTest {
       setupAdjacencies(node5, relation4);
       setupAdjacencies(node6);
 
-      when(types.getByUuid(DEFAULT_HIERARCHY.getGuid())).thenReturn(relationType);
       when(types.getDefaultOrderTypeGuid(DEFAULT_HIERARCHY)).thenReturn(LEXICOGRAPHICAL_DESC.getGuid());
-      when(types.getDefaultOrderTypeGuid(relationType)).thenReturn(LEXICOGRAPHICAL_DESC.getGuid());
       when(types.getAll()).thenReturn(new ArrayList(
          Arrays.asList(CoreRelationTypes.Default_Hierarchical__Child, CoreRelationTypes.Default_Hierarchical__Parent)));
    }

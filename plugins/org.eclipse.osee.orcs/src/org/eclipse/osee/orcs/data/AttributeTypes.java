@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Roberto E. Escobar
  */
-public interface AttributeTypes extends IdentityCollection<Long, IAttributeType> {
+public interface AttributeTypes extends IdCollection<IAttributeType> {
 
    Collection<? extends IAttributeType> getAllTaggable() throws OseeCoreException;
 

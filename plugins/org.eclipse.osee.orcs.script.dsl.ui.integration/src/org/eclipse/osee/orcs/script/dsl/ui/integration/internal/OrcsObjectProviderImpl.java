@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.script.dsl.ui.integration.internal;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.orcs.script.dsl.ui.IOrcsObjectProvider;
 
@@ -33,20 +32,20 @@ public class OrcsObjectProviderImpl implements IOrcsObjectProvider {
    }
 
    @Override
-   public Iterable<? extends Identifiable<Long>> getArtifactTypes() {
+   public Iterable<? extends NamedId> getArtifactTypes() {
       IOseeCachingService caches = getCache();
-      return caches != null ? caches.getArtifactTypeCache().getAll() : Collections.<Identifiable<Long>> emptyList();
+      return caches != null ? caches.getArtifactTypeCache().getAll() : Collections.<NamedId> emptyList();
    }
 
    @Override
-   public Iterable<? extends Identifiable<Long>> getAttributeTypes() {
+   public Iterable<? extends NamedId> getAttributeTypes() {
       IOseeCachingService caches = getCache();
-      return caches != null ? caches.getAttributeTypeCache().getAll() : Collections.<Identifiable<Long>> emptyList();
+      return caches != null ? caches.getAttributeTypeCache().getAll() : Collections.<NamedId> emptyList();
    }
 
    @Override
-   public Iterable<? extends Identifiable<Long>> getRelationTypes() {
+   public Iterable<? extends NamedId> getRelationTypes() {
       IOseeCachingService caches = getCache();
-      return caches != null ? caches.getRelationTypeCache().getAll() : Collections.<Identifiable<Long>> emptyList();
+      return caches != null ? caches.getRelationTypeCache().getAll() : Collections.<NamedId> emptyList();
    }
 }

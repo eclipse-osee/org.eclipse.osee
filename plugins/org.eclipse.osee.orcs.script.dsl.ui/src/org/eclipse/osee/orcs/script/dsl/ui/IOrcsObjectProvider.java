@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.script.dsl.ui;
 
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
 /**
@@ -20,10 +19,10 @@ public interface IOrcsObjectProvider {
 
    Iterable<? extends NamedId> getBranches();
 
-   Iterable<? extends Identifiable<Long>> getArtifactTypes();
+   Iterable<? extends NamedId> getArtifactTypes();
 
-   Iterable<? extends Identifiable<Long>> getAttributeTypes();
+   Iterable<? extends NamedId> getAttributeTypes();
 
-   Iterable<? extends Identifiable<Long>> getRelationTypes();
+   Iterable<? extends NamedId> getRelationTypes();
 
 }

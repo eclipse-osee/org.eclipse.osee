@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
@@ -141,16 +142,16 @@ public class PredicateFactoryImpl implements PredicateFactory {
          values);
    }
 
-   private List<String> getLongIds(Collection<? extends Identity<Long>> types) {
+   private List<String> getLongIds(Collection<? extends Id> types) {
       List<String> toReturn = new LinkedList<>();
-      for (Identity<Long> type : types) {
-         Long value = type.getGuid();
+      for (Id type : types) {
+         Long value = type.getId();
          toReturn.add(String.valueOf(value));
       }
       return toReturn;
    }
 
-   private List<String> getLongIds(Identity<Long> type) {
+   private List<String> getLongIds(Id type) {
       return getLongIds(Collections.singletonList(type));
    }
 

@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.script.dsl.ui.internal;
 
 import java.util.List;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.orcs.script.dsl.ui.IOrcsImageProvider;
 import org.eclipse.swt.graphics.Image;
@@ -93,7 +93,7 @@ public class DefaultOrcsImageProvider implements IOrcsImageProvider {
    }
 
    @Override
-   public Image getArtifactTypeImage(Identifiable<Long> type) {
+   public Image getArtifactTypeImage(Id type) {
       Image image = null;
       for (IOrcsImageProvider provider : getProviders()) {
          image = provider.getArtifactTypeImage(type);
@@ -105,7 +105,7 @@ public class DefaultOrcsImageProvider implements IOrcsImageProvider {
    }
 
    @Override
-   public Image getAttributeTypeImage(Identifiable<Long> type) {
+   public Image getAttributeTypeImage(Id type) {
       Image image = null;
       for (IOrcsImageProvider provider : getProviders()) {
          image = provider.getAttributeTypeImage(type);
@@ -117,7 +117,7 @@ public class DefaultOrcsImageProvider implements IOrcsImageProvider {
    }
 
    @Override
-   public Image getRelationTypeImage(Identifiable<Long> type) {
+   public Image getRelationTypeImage(Id type) {
       Image image = null;
       for (IOrcsImageProvider provider : getProviders()) {
          image = provider.getRelationTypeImage(type);

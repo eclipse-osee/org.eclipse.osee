@@ -12,15 +12,15 @@ package org.eclipse.osee.orcs.data;
 
 import java.util.Collection;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface ArtifactTypes extends IdentityCollection<Long, IArtifactType> {
+public interface ArtifactTypes extends IdCollection<IArtifactType> {
 
    boolean hasSuperArtifactTypes(IArtifactType artType) throws OseeCoreException;
 

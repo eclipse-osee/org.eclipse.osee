@@ -16,9 +16,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.internal.types.BranchHierarchyProvider;
@@ -26,7 +26,7 @@ import org.eclipse.osee.orcs.core.internal.types.BranchHierarchyProvider;
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactTypeIndex extends TokenTypeIndex<Long, IArtifactType, XArtifactType> {
+public class ArtifactTypeIndex extends TokenTypeIndex<IArtifactType, XArtifactType> {
 
    private final Map<IArtifactType, ArtifactTypeMetaData> tokenToTypeData;
    private final BranchHierarchyProvider hierarchyProvider;

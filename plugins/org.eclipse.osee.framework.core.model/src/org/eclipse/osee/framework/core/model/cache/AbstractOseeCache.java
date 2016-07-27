@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -164,9 +164,9 @@ public abstract class AbstractOseeCache<T extends NamedId> implements IOseeCache
       return idToTypeMap.get(id);
    }
 
-   public T get(Identity<Long> token) throws OseeCoreException {
+   public T get(Id token) throws OseeCoreException {
       ensurePopulated();
-      return getByGuid(token.getGuid());
+      return getByGuid(token.getId());
    }
 
    public void cacheFrom(AbstractOseeCache<T> source) throws OseeCoreException {

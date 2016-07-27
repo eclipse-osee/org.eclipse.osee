@@ -31,15 +31,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.logger.Log;
@@ -62,16 +62,16 @@ import org.mockito.stubbing.Answer;
 
 /**
  * Test Case for {@link OrcsTypesImpl}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class OrcsTypesTest {
 
    //@formatter:off
    private static final String SESSION_ID = "Test Session";
-   
+
    private static final String TEST_TYPE_MODEL = "testTypeModel.osee";
-   
+
    private static final IArtifactType ARTIFACT = TokenFactory.createArtifactType(0x0000000000000001L, "Artifact");
    private static final IArtifactType REQUIREMENT = TokenFactory.createArtifactType(0x0000000000000015L, "Requirement");
    private static final IArtifactType SOFTWARE_REQUIREMENT = TokenFactory.createArtifactType(0x0000000000000018L, "Software Requirement");
@@ -79,13 +79,13 @@ public class OrcsTypesTest {
    private static final IArtifactType SUBSYSTEM_REQUIREMENT = TokenFactory.createArtifactType(0x000000000000001DL, "SubSystem Requirement");
    private static final IArtifactType OTHER_ARTIFACT = TokenFactory.createArtifactType(0x0000000000000020L, "Other Artifact");
    private static final IArtifactType LAST_ARTIFACT = TokenFactory.createArtifactType(0x0000000000000021L, "Last Artifact");
-   
+
    private static final IAttributeType NAME = TokenFactory.createAttributeType(0x1000000000000070L, "Name");
    private static final IAttributeType ANNOTATION = TokenFactory.createAttributeType(0x1000000000000076L, "Annotation");
    private static final IAttributeType WORDML = TokenFactory.createAttributeType(0x100000000000007AL, "WordML");
    private static final IAttributeType FIELD_1 = TokenFactory.createAttributeType(0x1000000000000080L, "Field 1");
    private static final IAttributeType FIELD_2 = TokenFactory.createAttributeType(0x1000000000000081L, "Field 2");
-   
+
    private static final IRelationType REQUIREMENT_REL = TokenFactory.createRelationType(0x2000000000000157L, "Requirement Relation");
    private static final IRelationType ANOTHER_REL = TokenFactory.createRelationType(0x2000000000000158L, "Another Relation");
 
@@ -96,7 +96,7 @@ public class OrcsTypesTest {
    private static final BranchId BRANCH_C = TokenFactory.createBranch("Branch C");
    private static final BranchId BRANCH_D = TokenFactory.createBranch("Branch D");
    private static final BranchId BRANCH_E = TokenFactory.createBranch("Branch E");
-   
+
    @Mock private Log logger;
    @Mock private OrcsTypesDataStore dataStore;
    @Mock private BranchHierarchyProvider hierarchyProvider;
@@ -352,7 +352,7 @@ public class OrcsTypesTest {
       assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, BRANCH_C), NAME, ANNOTATION, WORDML);
       assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, BRANCH_D), NAME, ANNOTATION, WORDML, FIELD_1);
       assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, BRANCH_E), NAME, ANNOTATION, WORDML);
-      
+
       assertContains(artTypes.getAttributeTypes(LAST_ARTIFACT, CoreBranches.SYSTEM_ROOT), NAME, ANNOTATION, WORDML);
       assertContains(artTypes.getAttributeTypes(LAST_ARTIFACT, BRANCH_A), NAME, ANNOTATION, WORDML, FIELD_1);
       assertContains(artTypes.getAttributeTypes(LAST_ARTIFACT, BRANCH_B), NAME, ANNOTATION, WORDML, FIELD_2);
@@ -365,9 +365,9 @@ public class OrcsTypesTest {
    @Test
    public void testReloadAddArtifactType() throws OseeCoreException {
       String addTypeDef = "artifactType \"Added Artifact Type\" extends \"Other Artifact\" {\n" + //
-      "guid \"AUsuRi68hVhYLH76ENgA\" \n" + //
-      "uuid 0x0000000000000023 \n" + //
-      "}";
+         "guid \"AUsuRi68hVhYLH76ENgA\" \n" + //
+         "uuid 0x0000000000000023 \n" + //
+         "}";
 
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 
@@ -612,7 +612,7 @@ public class OrcsTypesTest {
       EnumType enumType = attrTypes.getEnumType(FIELD_1);
 
       assertEquals("enum.test.proc.status", enumType.getName());
-      assertEquals(Long.valueOf(0x3000000000000178L), enumType.getGuid());
+      assertEquals(Long.valueOf(0x3000000000000178L), enumType.getId());
 
       EnumEntry[] values = enumType.values();
 
@@ -672,7 +672,7 @@ public class OrcsTypesTest {
       EnumType enumType = attrTypes.getEnumType(FIELD_1);
 
       assertEquals("enum.test.proc.status", enumType.getName());
-      assertEquals(Long.valueOf(0x3000000000000178L), enumType.getGuid());
+      assertEquals(Long.valueOf(0x3000000000000178L), enumType.getId());
 
       Iterator<String> iterator = enumType.valuesAsOrderedStringSet().iterator();
       assertEquals("Completed -- Analysis in Work", iterator.next());
@@ -734,7 +734,7 @@ public class OrcsTypesTest {
       assertEquals(null, attrTypes.getEnumType(attrType));
       assertEquals(false, attrTypes.isEnumerated(attrType));
       assertEquals(true, attrTypes.isTaggable(attrType));
-      
+
       assertEquals(true, attrTypes.exists(attrType));
       //@formatter:on
    }
@@ -945,7 +945,7 @@ public class OrcsTypesTest {
       assertEquals(true, relTypes.exists(relation));
    }
 
-   private static void assertContains(Collection<?> actual, Identity<?>... expected) {
+   private static void assertContains(Collection<?> actual, Id... expected) {
       List<?> asList = Arrays.asList(expected);
 
       String message = String.format("Actual: [%s] Expected: [%s]", actual, Arrays.deepToString(expected));

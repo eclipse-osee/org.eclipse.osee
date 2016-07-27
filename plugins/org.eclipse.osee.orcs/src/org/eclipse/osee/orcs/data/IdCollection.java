@@ -11,17 +11,17 @@
 package org.eclipse.osee.orcs.data;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface IdentityCollection<K, T extends Identity<K>> {
+public interface IdCollection<T extends Id> {
 
    Collection<? extends T> getAll() throws OseeCoreException;
 
-   T getByUuid(K typeId) throws OseeCoreException;
+   T getByUuid(Long typeId) throws OseeCoreException;
 
    boolean exists(T item) throws OseeCoreException;
 

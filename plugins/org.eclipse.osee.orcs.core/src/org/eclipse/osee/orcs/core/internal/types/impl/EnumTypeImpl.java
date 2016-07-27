@@ -13,17 +13,16 @@ package org.eclipse.osee.orcs.core.internal.types.impl;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.EnumEntry;
 import org.eclipse.osee.orcs.data.EnumType;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class EnumTypeImpl extends FullyNamedIdentity<Long>implements EnumType {
+public final class EnumTypeImpl extends NamedId implements EnumType {
 
    private final List<EnumEntry> entries;
 
@@ -34,11 +33,6 @@ public final class EnumTypeImpl extends FullyNamedIdentity<Long>implements EnumT
 
    private List<EnumEntry> getValues() {
       return entries;
-   }
-
-   @Override
-   public String getDescription() {
-      return Strings.emptyString();
    }
 
    @Override
