@@ -11,12 +11,13 @@
 package org.eclipse.osee.ats.search.widget;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
-import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.ToStringViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -97,8 +98,18 @@ public abstract class AbstractXComboViewerSearchWidget<ObjectType extends Object
    }
 
    public void handleRightClickLabel() {
-      AtsSearchData searchData = AtsClientService.get().getQueryService().createSearchData("", "");
-      set(searchData);
+      clear();
+   }
+
+   protected void clear() {
+      if (getWidget() != null) {
+         setup(getWidget());
+         XComboViewer combo = getWidget();
+         combo.setSelected(Arrays.asList(""));
+         if (Strings.isValid(getInitialText())) {
+            combo.getCombo().setText(getInitialText());
+         }
+      }
    }
 
    public String getInitialText() {
