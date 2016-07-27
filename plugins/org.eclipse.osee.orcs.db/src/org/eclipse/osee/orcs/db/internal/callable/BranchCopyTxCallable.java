@@ -86,7 +86,7 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
 
    private void populateTransaction(double workAmount, JdbcConnection connection, int intoTx, Long parentBranch, int copyTxId) throws OseeCoreException {
       List<Object[]> data = new ArrayList<>();
-      HashSet<Integer> gammas = new HashSet<>(100000);
+      HashSet<Long> gammas = new HashSet<>(100000);
       long parentBranchId = RelationalConstants.BRANCH_SENTINEL;
       if (parentBranch != null) {
          parentBranchId = parentBranch;
@@ -99,15 +99,15 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
       }
    }
 
-   private void populateAddressingToCopy(JdbcConnection connection, List<Object[]> data, int baseTxId, HashSet<Integer> gammas, String query, Object... parameters) throws OseeCoreException {
+   private void populateAddressingToCopy(JdbcConnection connection, List<Object[]> data, int baseTxId, HashSet<Long> gammas, String query, Object... parameters) throws OseeCoreException {
       JdbcStatement chStmt = jdbcClient.getStatement(connection);
       try {
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, parameters);
          while (chStmt.next()) {
-            Integer gamma = chStmt.getInt("gamma_id");
+            Long gamma = chStmt.getLong("gamma_id");
             if (!gammas.contains(gamma)) {
                ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
-               Integer app_id = chStmt.getInt("app_id");
+               Long app_id = chStmt.getLong("app_id");
                TxChange txCurrent = TxChange.getCurrent(modType);
                data.add(new Object[] {
                   baseTxId,

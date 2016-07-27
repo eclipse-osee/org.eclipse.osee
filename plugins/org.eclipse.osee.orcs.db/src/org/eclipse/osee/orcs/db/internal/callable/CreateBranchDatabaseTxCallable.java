@@ -50,15 +50,21 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
 "txs as (select transaction_id, gamma_id, mod_type, app_id from osee_txs where branch_id = ? and transaction_id <= ?),\n\n"+
 
 "txsI as (\n"+
-"   SELECT transaction_id, item.gamma_id, mod_type, app_id, 1 as item_type, attr_id as item_id FROM osee_attribute item, txs where txs.gamma_id = item.gamma_id\n"+
+"   SELECT transaction_id, item.gamma_id, mod_type, app_id, 1 as item_type, attr_id as group_id FROM osee_attribute item, txs where txs.gamma_id = item.gamma_id\n"+
 "UNION ALL\n"+
-"   SELECT transaction_id, item.gamma_id, mod_type, app_id, 2 as item_type, art_id as item_id FROM osee_artifact item, txs where txs.gamma_id = item.gamma_id\n"+
+"   SELECT transaction_id, item.gamma_id, mod_type, app_id, 2 as item_type, art_id as group_id FROM osee_artifact item, txs where txs.gamma_id = item.gamma_id\n"+
 "UNION ALL\n"+
-"   SELECT transaction_id, item.gamma_id, mod_type, app_id, 3 as item_type, rel_link_id as item_id FROM osee_relation_link item, txs where txs.gamma_id = item.gamma_id),\n\n"+
+"   SELECT transaction_id, item.gamma_id, mod_type, app_id, 4 as item_type, item.gamma_id as group_id FROM osee_tuple2 item, txs where txs.gamma_id = item.gamma_id\n"+
+"UNION ALL\n"+
+"   SELECT transaction_id, item.gamma_id, mod_type, app_id, 5 as item_type, item.gamma_id as group_id FROM osee_tuple3 item, txs where txs.gamma_id = item.gamma_id\n"+
+"UNION ALL\n"+
+"   SELECT transaction_id, item.gamma_id, mod_type, app_id, 6 as item_type, item.gamma_id as group_id FROM osee_tuple4 item, txs where txs.gamma_id = item.gamma_id\n"+
+"UNION ALL\n"+
+"   SELECT transaction_id, item.gamma_id, mod_type, app_id, 3 as item_type, rel_link_id as group_id FROM osee_relation_link item, txs where txs.gamma_id = item.gamma_id),\n\n"+
 
-"txsM as (SELECT MAX(transaction_id) AS transaction_id, item_type, item_id FROM txsI GROUP BY item_type, item_id)\n\n"+
+"txsM as (SELECT MAX(transaction_id) AS transaction_id, item_type, group_id FROM txsI GROUP BY item_type, group_id)\n\n"+
 
-"select gamma_id, mod_type, app_id from txsI, txsM where txsM.item_type = txsI.item_type and txsM.item_id = txsI.item_id and txsM.transaction_id = txsI.transaction_id order by txsM.transaction_id desc";
+"select gamma_id, mod_type, app_id from txsI, txsM where txsM.item_type = txsI.item_type and txsM.group_id = txsI.group_id and txsM.transaction_id = txsI.transaction_id order by txsM.transaction_id desc";
    // descending order is used so that the most recent entry will be used if there are multiple rows with the same gamma (an error case)
    // @formatter:on
 
@@ -206,7 +212,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
 
    private void populateBaseTransaction(double workAmount, JdbcConnection connection, int baseTxId, int sourceTxId) throws OseeCoreException {
       if (newBranchData.getBranchType() != BranchType.SYSTEM_ROOT) {
-         HashSet<Integer> gammas = new HashSet<>(100000);
+         HashSet<Long> gammas = new HashSet<>(100000);
          long parentBranchId = -1;
 
          OseePreparedStatement addressing = jdbcClient.getBatchStatement(connection, INSERT_ADDRESSING);
@@ -227,18 +233,18 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       }
    }
 
-   private void populateAddressingToCopy(JdbcConnection connection, OseePreparedStatement addressing, int baseTxId, HashSet<Integer> gammas, String query, Object... parameters) throws OseeCoreException {
+   private void populateAddressingToCopy(JdbcConnection connection, OseePreparedStatement addressing, int baseTxId, HashSet<Long> gammas, String query, Object... parameters) throws OseeCoreException {
       JdbcStatement chStmt = jdbcClient.getStatement(connection);
       try {
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, parameters);
+         Long branchId = newBranchData.getUuid();
          while (chStmt.next()) {
-            Integer gamma = chStmt.getInt("gamma_id");
+            Long gamma = chStmt.getLong("gamma_id");
             if (!gammas.contains(gamma)) {
                ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
                Long appId = chStmt.getLong("app_id");
                TxChange txCurrent = TxChange.getCurrent(modType);
-               addressing.addToBatch(baseTxId, gamma, modType.getValue(), txCurrent.getValue(), newBranchData.getUuid(),
-                  appId);
+               addressing.addToBatch(baseTxId, gamma, modType.getValue(), txCurrent.getValue(), branchId, appId);
                gammas.add(gamma);
             }
          }
