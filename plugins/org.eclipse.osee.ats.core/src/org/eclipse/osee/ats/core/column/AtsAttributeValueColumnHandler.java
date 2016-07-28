@@ -42,8 +42,17 @@ public class AtsAttributeValueColumnHandler implements IAtsColumn {
 
    @Override
    public String getColumnText(IAtsObject atsObject) {
-      return getColumnText(atsObject, column.getAttrTypeId(), column.isActionRollup(), column.isInheritParent(),
-         services);
+      return getColumnText(atsObject, column.getAttrTypeId(), isActionRollup(), isInheritParent(), services);
+   }
+
+   private Boolean isInheritParent() {
+      Boolean inheritParent = column.isInheritParent();
+      return inheritParent == null ? false : inheritParent;
+   }
+
+   private Boolean isActionRollup() {
+      Boolean actionRollup = column.isActionRollup();
+      return actionRollup == null ? false : actionRollup;
    }
 
    public static String getColumnText(IAtsObject atsObject, long attrTypeId, boolean isActionRollup, boolean isInheritParent, IAtsServices services) {
