@@ -32,15 +32,15 @@
    <includes
          id="org.eclipse.equinox.server.jetty"
          version="0.0.0"/>
-         
+
    <includes
          id="org.eclipse.equinox.sdk"
          version="0.0.0"/>
-         
+
    <includes
          id="org.eclipse.egit"
          version="0.0.0"/>
-         
+
    <includes
          id="org.eclipse.m2e.feature"
          version="0.0.0"/>
@@ -256,63 +256,62 @@
    <includes
          id="org.eclipse.ip.feature"
          version="0.0.0"/>
-         
+
    <includes
          id="org.eclipse.sdk"
          version="0.0.0"/>
-        
+
    <includes
          id="org.eclipse.ecf.core.feature"
          version="0.0.0"/>
-         
+
    <includes
          id="org.eclipse.ecf.core.source.feature"
          version="0.0.0"/>
-         
+
    <includes
          id="org.eclipse.ecf.core.ssl.feature"
          version="0.0.0"/>
-         
+
    <includes
          id="org.eclipse.ecf.core.ssl.source.feature"
          version="0.0.0"/>
-         
+
    <includes
          id="org.eclipse.ecf.filetransfer.feature"
          version="0.0.0"/>
-         
+
    <includes
          id="org.eclipse.ecf.filetransfer.source.feature"
          version="0.0.0"/>
-         
+
    <includes
          id="org.eclipse.ecf.filetransfer.ssl.feature"
          version="0.0.0"/>
-         
+
    <includes
          id="org.eclipse.ecf.filetransfer.ssl.source.feature"
          version="0.0.0"/>
-         
+
    <includes
          id="org.eclipse.ecf.filetransfer.httpclient4.feature"
          version="0.0.0"/>
-         
+
    <includes
          id="org.eclipse.ecf.filetransfer.httpclient4.source.feature"
          version="0.0.0"/>
-         
+
    <includes
          id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature"
          version="0.0.0"/>
-         
+
    <includes
          id="org.eclipse.ecf.filetransfer.httpclient4.ssl.source.feature"
          version="0.0.0"/>
-         
-    <includes
+
+   <includes
          id="org.eclipse.datatools.connectivity.oda.feature"
          version="0.0.0"/>
-         
 
    <requires>
       <import plugin="org.eclipse.osgi.services"/>
@@ -1140,18 +1139,12 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.mozilla.javascript"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
-    <plugin
-         id="org.antlr.runtime"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+
 </feature>
