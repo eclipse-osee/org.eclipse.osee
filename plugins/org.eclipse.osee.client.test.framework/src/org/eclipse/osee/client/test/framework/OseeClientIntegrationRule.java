@@ -26,13 +26,13 @@ import org.junit.runners.model.FrameworkMethod;
  * The OseeClientIntegration Rule initializes an OSEE database instance using the configuration specified. This rule
  * should be added to all OSEE integration tests. The database will only be initialized for the first test in the test
  * suite. Finally, the rule also guards against writing to production databases.
- * 
+ *
  * <pre>
  * public class TestA {
- * 
+ *
  *    &#064;Rule
  *    public OseeClientIntegrationRule rule = new OseeClientIntegrationRule(DemoChoice.OSEE_CLIENT_DEMO);
- * 
+ *
  *    &#064;Test
  *    public void testA() {
  *       Artifact artifact =
@@ -41,7 +41,7 @@ import org.junit.runners.model.FrameworkMethod;
  *    }
  * }
  * </pre>
- * 
+ *
  * @author Roberto E. Escobar
  */
 public final class OseeClientIntegrationRule extends AbstractTestRule {
@@ -72,7 +72,7 @@ public final class OseeClientIntegrationRule extends AbstractTestRule {
 
    /**
     * Invoked when a test method is about to start
-    * 
+    *
     * @param method
     */
    @Override
@@ -93,7 +93,7 @@ public final class OseeClientIntegrationRule extends AbstractTestRule {
 
    /**
     * Invoked when a test method finishes (whether passing or failing)
-    * 
+    *
     * @param method
     */
    @Override
@@ -108,7 +108,6 @@ public final class OseeClientIntegrationRule extends AbstractTestRule {
    }
 
    private static void checkNotProductionDataStore() throws OseeCoreException {
-      //         assertTrue("Should be run on demo database.", TestUtil.isDemoDb());
       assertFalse("Not to be run on a production database.", isProductionDataStore());
    }
 
