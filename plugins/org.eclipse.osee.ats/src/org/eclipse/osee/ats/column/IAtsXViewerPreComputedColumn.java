@@ -28,9 +28,7 @@ public interface IAtsXViewerPreComputedColumn extends IXViewerPreComputedColumn 
    default public Long getKey(Object obj) {
       Long result = 0L;
       if (obj instanceof IAtsObject) {
-         result = ((IAtsObject) obj).getUuid();
-      } else if (obj instanceof Id) {
-         return ((Id) obj).getId();
+         result = ((IAtsObject) obj).getId();
       }
       return result;
    }

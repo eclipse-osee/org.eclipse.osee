@@ -39,7 +39,7 @@ public class AgileFeatureGroup extends AtsConfigObject implements IAgileFeatureG
          ArtifactReadable agileTeam =
             ((ArtifactReadable) artifact).getRelated(AtsRelationTypes.AgileTeamToFeatureGroup_AgileTeam).getOneOrNull();
          if (agileTeam != null) {
-            result = agileTeam.getUuid();
+            result = agileTeam.getId();
          }
       } catch (ArtifactDoesNotExist ex) {
          // do nothing

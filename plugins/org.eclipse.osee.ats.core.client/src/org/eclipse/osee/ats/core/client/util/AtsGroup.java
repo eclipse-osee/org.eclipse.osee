@@ -13,9 +13,9 @@ package org.eclipse.osee.ats.core.client.util;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 import org.eclipse.osee.framework.skynet.core.OseeGroup;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -75,9 +75,9 @@ public enum AtsGroup {
       return false;
    }
 
-   public boolean isMember(UuidIdentity user) {
+   public boolean isMember(Id user) {
       for (Artifact art : group.getGroupArtifact().getRelatedArtifacts(CoreRelationTypes.Users_User)) {
-         if (art.getUuid().equals(user.getUuid())) {
+         if (art.equals(user)) {
             return true;
          }
       }

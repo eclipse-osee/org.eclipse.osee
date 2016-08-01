@@ -35,7 +35,7 @@ public class AtsObjects {
    public static List<Long> toUuids(Collection<? extends IAtsObject> atsObjects) {
       List<Long> uuids = new ArrayList<>(atsObjects.size());
       for (IAtsObject atsObject : atsObjects) {
-         uuids.add(atsObject.getUuid());
+         uuids.add(atsObject.getId());
       }
       return uuids;
    }

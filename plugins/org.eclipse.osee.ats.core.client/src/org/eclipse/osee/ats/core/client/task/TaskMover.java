@@ -62,7 +62,7 @@ public class TaskMover {
    public Result validate() {
       for (IAtsTask task : tasks) {
          // task dropped on same awa as current parent; do nothing
-         if (task.getParentTeamWorkflow().getUuid().equals(newParent.getUuid())) {
+         if (task.getParentTeamWorkflow().getId().equals(newParent.getId())) {
             return new Result("Source and Destination workflows are the same; Move Aborted");
          }
 

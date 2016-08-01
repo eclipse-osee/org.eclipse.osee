@@ -37,32 +37,32 @@ public class AtsWorkPackageEndpointImplTest {
    @Test
    public void testGetWorkItems() {
       Collection<IAtsWorkItem> workItems =
-         workPackageEp.getWorkItems(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getUuid());
+         workPackageEp.getWorkItems(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getId());
       assertEquals(2, workItems.size());
    }
 
    @Test
    public void testGetEmptyWorkItems() {
       Collection<IAtsWorkItem> workItems =
-         workPackageEp.getWorkItems(DemoArtifactToken.SAW_Test_AI_WorkPackage_0C.getUuid());
+         workPackageEp.getWorkItems(DemoArtifactToken.SAW_Test_AI_WorkPackage_0C.getId());
       assertEquals(0, workItems.size());
    }
 
    @Test
    public void testSetRemoveWorkPackageItems() {
       Collection<IAtsWorkItem> workItems =
-         workPackageEp.getWorkItems(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getUuid());
+         workPackageEp.getWorkItems(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getId());
       assertEquals(2, workItems.size());
       IAtsWorkItem workItem = workItems.iterator().next();
       JaxWorkPackageData data = new JaxWorkPackageData();
       data.setAsUserId(AtsClientService.get().getUserService().getCurrentUserId());
-      data.getWorkItemUuids().add(workItem.getUuid());
+      data.getWorkItemUuids().add(workItem.getId());
 
       workPackageEp.deleteWorkPackageItems(0L, data);
-      assertEquals(1, workPackageEp.getWorkItems(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getUuid()).size());
+      assertEquals(1, workPackageEp.getWorkItems(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getId()).size());
 
-      workPackageEp.setWorkPackage(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getUuid(), data);
-      assertEquals(2, workPackageEp.getWorkItems(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getUuid()).size());
+      workPackageEp.setWorkPackage(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getId(), data);
+      assertEquals(2, workPackageEp.getWorkItems(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getId()).size());
    }
 
 }

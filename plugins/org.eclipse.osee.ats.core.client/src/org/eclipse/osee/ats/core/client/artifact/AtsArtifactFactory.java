@@ -71,7 +71,7 @@ public class AtsArtifactFactory extends ArtifactFactory {
       } else if (artifactType.equals(AtsArtifactTypes.AgileSprint)) {
          toReturn = new SprintArtifact(guid, branch, artifactType);
       } else if (artifactType.equals(AtsArtifactTypes.Action)) {
-         toReturn = new ActionArtifact(guid, branch, artifactType);
+         toReturn = new ActionArtifact(branch);
       } else {
          throw new OseeArgumentException("AtsArtifactFactory did not recognize the artifact type [%s]", artifactType);
       }

@@ -89,7 +89,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
                AtsConfiguration config = new AtsConfiguration();
                configs.getConfigs().add(config);
                config.setName(art.getName());
-               config.setUuid(art.getUuid());
+         config.setUuid(art.getId());
                config.setBranchUuid(
                   Long.valueOf(art.getSoleAttributeValue(AtsAttributeTypes.AtsConfiguredBranch, "0L")));
                config.setIsDefault(art.getSoleAttributeValue(AtsAttributeTypes.Default, false));
@@ -247,7 +247,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       config.setBranchUuid(newBranchUuid);
       config.setIsDefault(false);
       ArtifactId configArt = tx.createArtifact(AtsArtifactTypes.Configuration, branchName);
-      config.setUuid(((ArtifactReadable) configArt).getUuid());
+      config.setUuid(((ArtifactReadable) configArt).getId());
       tx.createAttribute(configArt, AtsAttributeTypes.AtsConfiguredBranch, String.valueOf(newBranchUuid));
       XResultData rd = new XResultData();
       UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsServer);
@@ -280,7 +280,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    @Override
    public Response storeWorkDef(JaxAtsWorkDef jaxWorkDef) {
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON,
-         atsServer.getArtifact(AtsCoreUsers.SYSTEM_USER.getUuid()), "Store Work Definition " + jaxWorkDef.getName());
+         atsServer.getArtifact(AtsCoreUsers.SYSTEM_USER.getId()), "Store Work Definition " + jaxWorkDef.getName());
       ArtifactReadable workDefArt = orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
          AtsArtifactTypes.WorkDefinition).andNameEquals(jaxWorkDef.getName()).getResults().getAtMostOneOrNull();
       if (workDefArt == null) {

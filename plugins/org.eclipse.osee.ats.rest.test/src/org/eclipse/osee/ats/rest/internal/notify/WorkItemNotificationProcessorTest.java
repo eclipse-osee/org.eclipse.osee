@@ -92,7 +92,7 @@ public class WorkItemNotificationProcessorTest {
       when(workItemFactory.getWorkItemByAtsId(atsId)).thenReturn(teamWf);
       when(attrResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.LegacyPcrId, "")).thenReturn(atsId);
       when(atsServer.getConfigValue(eq("ActionUrl"))).thenReturn("http://ats/action/UUID/");
-      when(teamWf.getUuid()).thenReturn(98L);
+      when(teamWf.getId()).thenReturn(98L);
       when(teamWf.getArtifactTypeName()).thenReturn("Team Workflow");
       when(teamWf.getStateMgr()).thenReturn(stateMgr);
       when(stateMgr.getCurrentStateName()).thenReturn("Analyze");
@@ -335,7 +335,7 @@ public class WorkItemNotificationProcessorTest {
    }
 
    private void setupUser(IAtsUser user, long uuid, String name, String email, String userId, boolean active, boolean admin) {
-      when(user.getUuid()).thenReturn(uuid);
+      when(user.getId()).thenReturn(uuid);
       when(user.getName()).thenReturn(name);
       when(user.getEmail()).thenReturn(email);
       when(user.isActive()).thenReturn(active);

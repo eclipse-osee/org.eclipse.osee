@@ -62,7 +62,7 @@ public class CountryEndpointImpl extends BaseConfigEndpointImpl<JaxCountry>imple
       JaxCountry jaxCountry = new JaxCountry();
       IAtsCountry country = atsServer.getConfigItemFactory().getCountry(artifact);
       jaxCountry.setName(country.getName());
-      jaxCountry.setUuid(country.getUuid());
+      jaxCountry.setUuid(country.getId());
       jaxCountry.setActive(country.isActive());
       jaxCountry.setDescription(country.getDescription());
       return jaxCountry;

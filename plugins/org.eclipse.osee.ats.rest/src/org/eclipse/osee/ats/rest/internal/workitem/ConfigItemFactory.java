@@ -187,7 +187,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
             ArtifactReadable programArt =
                ((ArtifactReadable) artifact).getRelated(AtsRelationTypes.ProgramToInsertion_Program).getOneOrNull();
             if (programArt != null) {
-               insertion.setProgramUuid(programArt.getUuid());
+               insertion.setProgramUuid(programArt.getId());
             }
          } else {
             throw new OseeCoreException("Requested uuid not Insertion");
@@ -206,7 +206,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
             ArtifactReadable insertionArt = ((ArtifactReadable) artifact).getRelated(
                AtsRelationTypes.InsertionToInsertionActivity_Insertion).getOneOrNull();
             if (insertionArt != null) {
-               insertionActivity.setInsertionUuid(insertionArt.getUuid());
+               insertionActivity.setInsertionUuid(insertionArt.getId());
             }
          } else {
             throw new OseeCoreException("Requested uuid not Insertion Activity");
@@ -244,7 +244,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
 
    @Override
    public void deleteInsertion(ArtifactId artifact) {
-      deleteConfigObject(artifact.getUuid(), "Delete Insertion", AtsArtifactTypes.Insertion);
+      deleteConfigObject(artifact.getId(), "Delete Insertion", AtsArtifactTypes.Insertion);
    }
 
    @Override
@@ -282,7 +282,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
 
    @Override
    public void deleteInsertionActivity(ArtifactId artifact) {
-      deleteConfigObject(artifact.getUuid(), "Delete Insertion Activity", AtsArtifactTypes.InsertionActivity);
+      deleteConfigObject(artifact.getId(), "Delete Insertion Activity", AtsArtifactTypes.InsertionActivity);
    }
 
    private void deleteConfigObject(long uuid, String comment, IArtifactType type) {

@@ -240,7 +240,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
 
    @Override
    public IAtsConfigQuery andProgram(IAtsProgram program) {
-      return andProgram(program.getUuid());
+      return andProgram(program.getId());
    }
 
    @Override

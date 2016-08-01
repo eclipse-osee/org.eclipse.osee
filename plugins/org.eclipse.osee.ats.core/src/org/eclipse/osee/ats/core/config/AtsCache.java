@@ -93,9 +93,9 @@ public class AtsCache implements IAtsCache {
       if (atsObject.getStoreObject() != null) {
          tagToAtsObjectCache.put(atsObject.getStoreObject().getGuid(), atsObject);
          tagToArtifactIdCache.put(atsObject.getStoreObject().getGuid(), atsObject.getStoreObject());
-         uuidToArtifactIdCache.put(atsObject.getUuid(), atsObject.getStoreObject());
+         uuidToArtifactIdCache.put(atsObject.getId(), atsObject.getStoreObject());
       }
-      uuidToAtsObjectCache.put(atsObject.getUuid(), atsObject);
+      uuidToAtsObjectCache.put(atsObject.getId(), atsObject);
    }
 
    @Override
@@ -149,7 +149,7 @@ public class AtsCache implements IAtsCache {
    public void cacheArtifact(ArtifactId artifact) {
       Conditions.checkNotNull(artifact, "artifact");
       tagToArtifactIdCache.put(artifact.getGuid(), artifact);
-      uuidToArtifactIdCache.put(artifact.getUuid(), artifact);
+      uuidToArtifactIdCache.put(artifact.getId(), artifact);
    }
 
    static CacheLoader<Long, IAtsObject> uuidToAtsObjectCacheLoader = new CacheLoader<Long, IAtsObject>() {
@@ -207,8 +207,8 @@ public class AtsCache implements IAtsCache {
          tagToAtsObjectCache.invalidate(atsObject.getStoreObject().getGuid());
          tagToArtifactIdCache.invalidate(atsObject.getStoreObject().getGuid());
       }
-      uuidToAtsObjectCache.invalidate(atsObject.getUuid());
-      uuidToArtifactIdCache.invalidate(atsObject.getUuid());
+      uuidToAtsObjectCache.invalidate(atsObject.getId());
+      uuidToArtifactIdCache.invalidate(atsObject.getId());
    }
 
    @Override
@@ -216,13 +216,13 @@ public class AtsCache implements IAtsCache {
       if (atsObject.getStoreObject() != null) {
          return atsObject.getStoreObject();
       }
-      return getArtifact(atsObject.getUuid());
+      return getArtifact(atsObject.getId());
    }
 
    @Override
    public <T extends IAtsObject> T getAtsObjectByToken(IArtifactToken token, Class<T> clazz) {
       Conditions.checkNotNull(token, "token");
-      return getAtsObject(token.getUuid());
+      return getAtsObject(token.getId());
    }
 
 }

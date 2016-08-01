@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.core.util.AtsUserGroup;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 
 /**
  * @author Donald G. Dunne
@@ -89,16 +88,6 @@ public class MockWorkItem implements IAtsWorkItem {
 
    public void addImplementer(IAtsUser joe) {
       implementers.addUser(joe);
-   }
-
-   @Override
-   public boolean matches(UuidIdentity... identities) {
-      for (UuidIdentity identity : identities) {
-         if (equals(identity)) {
-            return true;
-         }
-      }
-      return false;
    }
 
    @Override
@@ -228,7 +217,7 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public Long getUuid() {
+   public Long getId() {
       return Long.valueOf(456);
    }
 

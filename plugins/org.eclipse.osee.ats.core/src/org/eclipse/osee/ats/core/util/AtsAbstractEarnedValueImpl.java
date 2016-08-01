@@ -123,7 +123,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
    public Collection<IAtsWorkPackage> getWorkPackages(IAtsInsertionActivity insertionActivity) {
       List<IAtsWorkPackage> workPackages = new ArrayList<>();
       for (ArtifactId artifact : services.getRelationResolver().getRelated(
-         services.getArtifact(insertionActivity.getUuid()),
+         services.getArtifact(insertionActivity.getId()),
          AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
          workPackages.add(new WorkPackage(logger, artifact, services));
       }

@@ -38,7 +38,7 @@ public class AgileBacklog extends WorkItem implements IAgileBacklog {
       try {
          ArtifactReadable agileTeam = artifact.getRelated(AtsRelationTypes.AgileTeamToBacklog_AgileTeam).getOneOrNull();
          if (agileTeam != null) {
-            result = agileTeam.getUuid();
+            result = agileTeam.getId();
          }
       } catch (ArtifactDoesNotExist ex) {
          // do nothing

@@ -328,7 +328,7 @@ public class CreateTasksOperation {
          JaxAtsTask newJaxTask = new JaxAtsTask();
          newJaxTask.setName(taskArt.getName());
          newJaxTask.setDescription(taskArt.getSoleAttributeValue(AtsAttributeTypes.Description, ""));
-         newJaxTask.setUuid(taskArt.getUuid());
+         newJaxTask.setUuid(taskArt.getId());
          newJaxTask.setActive(true);
          String createdByUserId = taskArt.getSoleAttributeValue(AtsAttributeTypes.CreatedBy, null);
          newJaxTask.setCreatedByUserId(createdByUserId);

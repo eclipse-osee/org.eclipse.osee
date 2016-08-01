@@ -55,8 +55,8 @@ public class AtsProgramServiceTest {
       Collection<IAtsProgram> programs = programService.getPrograms();
       assertEquals(5, programs.size());
 
-      IAtsProgram program = programService.getProgram(programs.iterator().next().getUuid());
-      assertEquals(program.getUuid(), program.getUuid());
+      IAtsProgram program = programService.getProgram(programs.iterator().next().getId());
+      assertEquals(program.getId(), program.getId());
 
       Collection<IAtsProgram> programs2 = programService.getPrograms(AtsArtifactTypes.Program);
       assertEquals(5, programs2.size());
@@ -67,10 +67,10 @@ public class AtsProgramServiceTest {
 
       Collection<IAtsInsertion> insertions = programService.getInsertions(program);
       IAtsProgram program4 = programService.getProgram(insertions.iterator().next());
-      assertEquals(program.getUuid(), program4.getUuid());
+      assertEquals(program.getId(), program4.getId());
 
       program4 = programService.getProgramByGuid(program.getStoreObject().getGuid());
-      assertEquals(program.getUuid(), program4.getUuid());
+      assertEquals(program.getId(), program4.getId());
    }
 
    @Test
@@ -87,11 +87,11 @@ public class AtsProgramServiceTest {
       assertEquals(4, insertions.size());
 
       IAtsProgram program = programService.getProgram(insertions.iterator().next());
-      assertEquals(sawProgram.getUuid(), program.getUuid());
+      assertEquals(sawProgram.getId(), program.getId());
 
-      Long uuid = insertions.iterator().next().getUuid();
+      Long uuid = insertions.iterator().next().getId();
       IAtsInsertion insertion2 = programService.getInsertion(uuid);
-      assertEquals(insertion2.getUuid(), uuid);
+      assertEquals(insertion2.getId(), uuid);
    }
 
    @Test
@@ -109,11 +109,11 @@ public class AtsProgramServiceTest {
 
       IAtsInsertion insertion = programService.getInsertion(activities.iterator().next());
 
-      assertEquals(commInsertion.getUuid(), insertion.getUuid());
+      assertEquals(commInsertion.getId(), insertion.getId());
 
-      Long uuid = activities.iterator().next().getUuid();
+      Long uuid = activities.iterator().next().getId();
       IAtsInsertionActivity activity2 = programService.getInsertionActivity(uuid);
-      assertEquals(activity2.getUuid(), uuid);
+      assertEquals(activity2.getId(), uuid);
    }
 
    @Test

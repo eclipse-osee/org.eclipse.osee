@@ -79,12 +79,12 @@ public class ActionableItems {
    }
 
    public static String getNotActionableItemError(IAtsConfigObject configObject) {
-      return "Action can not be written against " + configObject.getName() + " \"" + configObject + "\" (" + configObject.getUuid() + ").\n\nChoose another item.";
+      return "Action can not be written against " + configObject.getName() + " \"" + configObject + "\" (" + configObject.getId() + ").\n\nChoose another item.";
    }
 
    public static IAtsActionableItem getTopActionableItem(IAtsQueryService queryService) throws OseeCoreException {
       return queryService.createQuery(AtsArtifactTypes.ActionableItem).andUuids(
-         AtsArtifactToken.TopActionableItem.getUuid()).getItems(IAtsActionableItem.class).iterator().next();
+         AtsArtifactToken.TopActionableItem.getId()).getItems(IAtsActionableItem.class).iterator().next();
    }
 
    public static List<IAtsActionableItem> getActionableItemsAll(IAtsQueryService queryService) throws OseeCoreException {

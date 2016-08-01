@@ -193,7 +193,7 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
    public Long getKey(Object obj) {
       Long result = 0L;
       if (obj instanceof IAtsObject) {
-         result = ((IAtsObject) obj).getUuid();
+         result = ((IAtsObject) obj).getId();
       } else if (obj instanceof ArtifactId) {
          result = ((ArtifactId) obj).getId();
       }

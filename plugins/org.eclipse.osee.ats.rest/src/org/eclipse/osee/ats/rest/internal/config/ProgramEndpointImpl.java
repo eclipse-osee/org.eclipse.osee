@@ -71,7 +71,7 @@ public class ProgramEndpointImpl extends BaseConfigEndpointImpl<JaxProgram>imple
       JaxProgram jaxProgram = new JaxProgram();
       IAtsProgram program = atsServer.getConfigItemFactory().getProgram(artifact);
       jaxProgram.setName(program.getName());
-      jaxProgram.setUuid(program.getUuid());
+      jaxProgram.setUuid(program.getId());
       jaxProgram.setActive(program.isActive());
       jaxProgram.setDescription(program.getDescription());
       return jaxProgram;

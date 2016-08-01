@@ -297,7 +297,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
             result = (ArtifactReadable) atsObject.getStoreObject();
          } else {
             result = orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(
-               atsObject.getUuid()).getResults().getAtMostOneOrNull();
+               atsObject.getId()).getResults().getAtMostOneOrNull();
          }
       }
       return result;
@@ -310,7 +310,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
          result = (ArtifactReadable) atsObject.getStoreObject();
       } else {
          result = orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(
-            atsObject.getUuid()).getResults().getAtMostOneOrNull();
+            atsObject.getId()).getResults().getAtMostOneOrNull();
       }
       return result;
    }
@@ -576,7 +576,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
 
    @Override
    public ArtifactReadable getArtifact(IArtifactToken token) {
-      return getArtifact(token.getUuid());
+      return getArtifact(token.getId());
    }
 
    @Override

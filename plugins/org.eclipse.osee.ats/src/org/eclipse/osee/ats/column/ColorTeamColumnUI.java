@@ -58,7 +58,7 @@ public class ColorTeamColumnUI extends XViewerAtsColumn implements IXViewerPreCo
    public Long getKey(Object obj) {
       Long result = 0L;
       if (obj instanceof IAtsObject) {
-         result = ((IAtsObject) obj).getUuid();
+         result = ((IAtsObject) obj).getId();
       }
       return result;
    }
@@ -76,7 +76,7 @@ public class ColorTeamColumnUI extends XViewerAtsColumn implements IXViewerPreCo
                IAtsWorkItem workItem = (IAtsWorkItem) element;
                Pair<String, Boolean> result =
                   ColorTeamColumn.getWorkItemColorTeam(workItem, AtsClientService.get().getServices());
-               preComputedValueMap.put(workItem.getUuid(), result.getFirst());
+               preComputedValueMap.put(workItem.getId(), result.getFirst());
             }
          } catch (OseeCoreException ex) {
             LogUtil.getCellExceptionString(ex);

@@ -351,10 +351,10 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
          List<Long> taskReviewUuids = new ArrayList<>();
          for (T teamWf : teamWfs) {
             for (IAtsTask task : services.getTaskService().getTasks((IAtsTeamWorkflow) teamWf)) {
-               taskReviewUuids.add(task.getUuid());
+               taskReviewUuids.add(task.getId());
             }
             for (IAtsAbstractReview review : services.getReviewService().getReviews((IAtsTeamWorkflow) teamWf)) {
-               taskReviewUuids.add(review.getUuid());
+               taskReviewUuids.add(review.getId());
             }
          }
          getBaseSearchCriteria(artTypes, false, allArtTypes);
@@ -503,7 +503,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    @Override
    public IAtsQuery andTeam(IAtsTeamDefinition teamDef) throws OseeCoreException {
-      teamDefUuids.add(teamDef.getUuid());
+      teamDefUuids.add(teamDef.getId());
       return this;
    }
 
@@ -656,7 +656,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    @Override
    public IAtsQuery andActionableItem(IAtsActionableItem actionableItem) {
-      this.aiUuids.add(actionableItem.getUuid());
+      this.aiUuids.add(actionableItem.getId());
       return this;
    }
 
@@ -831,7 +831,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
          for (Entry<IRelationTypeSide, List<IAtsObject>> entry : andRels.entrySet()) {
             List<Integer> artIds = new LinkedList<>();
             for (IAtsObject object : entry.getValue()) {
-               artIds.add(new Long(object.getUuid()).intValue());
+               artIds.add(new Long(object.getId()).intValue());
             }
             queryAndRelatedToLocalIds(entry.getKey(), artIds);
          }

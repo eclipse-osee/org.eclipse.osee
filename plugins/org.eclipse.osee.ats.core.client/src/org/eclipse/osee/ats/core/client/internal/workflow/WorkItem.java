@@ -83,7 +83,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    @Override
    public String getAtsId() {
       try {
-         return artifact.getSoleAttributeValue(AtsAttributeTypes.AtsId, String.valueOf(getUuid()));
+         return artifact.getSoleAttributeValue(AtsAttributeTypes.AtsId, String.valueOf(getId()));
       } catch (OseeCoreException ex) {
          return null;
       }

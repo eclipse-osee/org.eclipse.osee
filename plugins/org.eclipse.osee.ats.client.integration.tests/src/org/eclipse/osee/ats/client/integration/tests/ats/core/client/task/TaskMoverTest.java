@@ -91,8 +91,8 @@ public class TaskMoverTest {
    public void testMoveTasks_differentWorkDefinitions() throws OseeCoreException {
       List<IAtsTask> tasks = new ArrayList<>();
       tasks.add(task1);
-      when(teamWf.getUuid()).thenReturn(34534L);
-      when(teamWf2.getUuid()).thenReturn(9999L);
+      when(teamWf.getId()).thenReturn(34534L);
+      when(teamWf2.getId()).thenReturn(9999L);
       when(task1.getParentTeamWorkflow()).thenReturn(teamWf);
 
       // fail when moving to same workflow as is already parent

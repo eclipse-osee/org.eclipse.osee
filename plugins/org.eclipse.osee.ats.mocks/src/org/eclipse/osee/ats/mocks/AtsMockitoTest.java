@@ -92,7 +92,7 @@ public class AtsMockitoTest {
       when(atsServices.getWorkItemService()).thenReturn(workItemService);
 
       when(currentUser.getName()).thenReturn("User1");
-      when(currentUser.getUuid()).thenReturn(Lib.generateUuid());
+      when(currentUser.getId()).thenReturn(Lib.generateUuid());
       when(currentUser.getUserId()).thenReturn("1324");
       when(currentUser.isActive()).thenReturn(true);
 
@@ -124,7 +124,7 @@ public class AtsMockitoTest {
       aias.add(testAi2);
 
       when(teamDef.getName()).thenReturn(getTitle("Test Team Def"));
-      when(teamDef.getUuid()).thenReturn(Lib.generateUuid());
+      when(teamDef.getId()).thenReturn(Lib.generateUuid());
       when(teamDef.getWorkflowDefinition()).thenReturn(WORK_DEF_NAME);
       when(teamDef.isActive()).thenReturn(true);
       when(teamDef.getLeads()).thenReturn(Arrays.asList(currentUser));
@@ -138,7 +138,7 @@ public class AtsMockitoTest {
       when(teamDef.getVersions()).thenReturn(Arrays.asList(ver1, ver2, ver3, ver4));
 
       when(action.getTeamWorkflows()).thenReturn(Arrays.asList(teamWf));
-      when(action.getUuid()).thenReturn(45L);
+      when(action.getId()).thenReturn(45L);
       when(action.getName()).thenReturn(getTitle("Action"));
 
       when(teamWf.getName()).thenReturn("Test Team Wf");
@@ -161,13 +161,13 @@ public class AtsMockitoTest {
 
    private void inializeTask(IAtsTask task, String name) {
       when(task.getName()).thenReturn(getTitle(name));
-      when(task.getUuid()).thenReturn(Lib.generateUuid());
+      when(task.getId()).thenReturn(Lib.generateUuid());
       when(task.getParentTeamWorkflow()).thenReturn(teamWf);
    }
 
    private void inializeVersion(IAtsVersion version, String name) {
       when(version.getName()).thenReturn(name);
-      when(version.getUuid()).thenReturn(Lib.generateUuid());
+      when(version.getId()).thenReturn(Lib.generateUuid());
    }
 
    private void initializeState(IAtsStateDefinition state, String name, StateType type, int ordinal, IAtsStateDefinition defaultToState, List<IAtsStateDefinition> toStates, List<IAtsStateDefinition> overrideValidationStates) {
@@ -183,7 +183,7 @@ public class AtsMockitoTest {
    }
 
    private void initializeAi(IAtsActionableItem ai, String name, boolean active, boolean actionable) {
-      when(ai.getUuid()).thenReturn(Lib.generateUuid());
+      when(ai.getId()).thenReturn(Lib.generateUuid());
       when(ai.getName()).thenReturn(name);
       when(ai.isActionable()).thenReturn(actionable);
       when(ai.isActive()).thenReturn(active);

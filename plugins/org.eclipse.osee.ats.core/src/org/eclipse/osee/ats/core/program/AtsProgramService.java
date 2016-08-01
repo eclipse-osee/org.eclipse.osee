@@ -77,7 +77,7 @@ public class AtsProgramService implements IAtsProgramService {
    @Override
    public Collection<IAtsInsertionActivity> getInsertionActivities(IAtsInsertion insertion) {
       List<IAtsInsertionActivity> insertionActivitys = new ArrayList<>();
-      for (ArtifactId artifact : services.getRelationResolver().getRelated(services.getArtifact(insertion.getUuid()),
+      for (ArtifactId artifact : services.getRelationResolver().getRelated(services.getArtifact(insertion.getId()),
          AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity)) {
          insertionActivitys.add(services.getConfigItemFactory().getInsertionActivity(artifact));
       }
@@ -96,7 +96,7 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public IAtsInsertionActivity getInsertionActivity(IAtsWorkPackage workPackage) {
-      ArtifactId wpArt = services.getArtifact(workPackage.getUuid());
+      ArtifactId wpArt = services.getArtifact(workPackage.getId());
       Collection<ArtifactId> related = services.getRelationResolver().getRelated(wpArt,
          AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity);
       if (related.size() > 0) {
@@ -148,7 +148,7 @@ public class AtsProgramService implements IAtsProgramService {
    @Override
    public Collection<IAtsInsertion> getInsertions(IAtsProgram program) {
       List<IAtsInsertion> insertions = new ArrayList<>();
-      for (ArtifactId artifact : services.getRelationResolver().getRelated(services.getArtifact(program.getUuid()),
+      for (ArtifactId artifact : services.getRelationResolver().getRelated(services.getArtifact(program.getId()),
          AtsRelationTypes.ProgramToInsertion_Insertion)) {
          insertions.add(services.getConfigItemFactory().getInsertion(artifact));
       }
@@ -266,7 +266,7 @@ public class AtsProgramService implements IAtsProgramService {
    public Collection<IAtsActionableItem> getAis(IAtsProgram program) {
       return Collections.castAll(services.getQueryService() //
          .createQuery(AtsArtifactTypes.ActionableItem) //
-         .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getUuid())) //
+         .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getId())) //
          .getResults().getList());
    }
 
@@ -274,7 +274,7 @@ public class AtsProgramService implements IAtsProgramService {
    public Collection<IAtsTeamDefinition> getTeamDefs(IAtsProgram program) {
       return Collections.castAll(services.getQueryService() //
          .createQuery(AtsArtifactTypes.TeamDefinition) //
-         .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getUuid())) //
+         .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getId())) //
          .getResults().getList());
    }
 
@@ -298,7 +298,7 @@ public class AtsProgramService implements IAtsProgramService {
    public Collection<IAtsActionableItem> getAis(IAtsProgram program, Collection<WorkType> workTypes) throws OseeCoreException {
       IAtsConfigQuery query = services.getQueryService() //
          .createQuery(AtsArtifactTypes.ActionableItem) //
-         .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getUuid()));
+         .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getId()));
       List<String> types = new LinkedList<>();
       for (WorkType type : workTypes) {
          types.add(type.name());
@@ -311,7 +311,7 @@ public class AtsProgramService implements IAtsProgramService {
    public Collection<IAtsTeamDefinition> getTeamDefs(IAtsProgram program, Collection<WorkType> workTypes) throws OseeCoreException {
       IAtsConfigQuery query = services.getQueryService() //
          .createQuery(AtsArtifactTypes.TeamDefinition) //
-         .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getUuid()));
+         .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getId()));
       List<String> types = new LinkedList<>();
       for (WorkType type : workTypes) {
          types.add(type.name());
@@ -356,7 +356,7 @@ public class AtsProgramService implements IAtsProgramService {
       ArtifactId countryArt =
          services.getRelationResolver().getRelatedOrNull(program, AtsRelationTypes.CountryToProgram_Country);
       if (countryArt != null) {
-         countryUuid = countryArt.getUuid();
+         countryUuid = countryArt.getId();
       }
       return countryUuid;
    }

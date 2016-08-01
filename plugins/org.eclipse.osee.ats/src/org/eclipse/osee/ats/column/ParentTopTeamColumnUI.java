@@ -55,7 +55,7 @@ public class ParentTopTeamColumnUI extends XViewerAtsColumn implements IXViewerP
    public Long getKey(Object obj) {
       Long result = 0L;
       if (obj instanceof IAtsObject) {
-         result = ((IAtsObject) obj).getUuid();
+         result = ((IAtsObject) obj).getId();
       }
       return result;
    }

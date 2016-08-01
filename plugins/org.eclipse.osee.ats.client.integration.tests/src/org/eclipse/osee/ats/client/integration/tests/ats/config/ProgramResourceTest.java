@@ -46,7 +46,7 @@ public class ProgramResourceTest extends AbstractConfigurationRestTest {
 
    @Test
    public void testAtsProgramRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/program/" + getSawProgram().getUuid());
+      JsonArray array = getAndCheck("/ats/program/" + getSawProgram().getId());
       Assert.assertEquals(1, array.size());
       JsonObject obj = getObjectNamed("SAW Program", array);
       Assert.assertNotNull("Did not find value SAW Program", obj);
@@ -55,7 +55,7 @@ public class ProgramResourceTest extends AbstractConfigurationRestTest {
 
    @Test
    public void testAtsProgramDetailsRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/program/" + getSawProgram().getUuid() + "/details");
+      JsonArray array = getAndCheck("/ats/program/" + getSawProgram().getId() + "/details");
       Assert.assertEquals(1, array.size());
       JsonObject obj = getObjectNamed("SAW Program", array);
       Assert.assertNotNull("Did not find value SAW Program", obj);

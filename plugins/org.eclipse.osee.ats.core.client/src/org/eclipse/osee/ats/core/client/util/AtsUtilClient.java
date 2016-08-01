@@ -124,7 +124,7 @@ public class AtsUtilClient {
       if (atsAdmin == null) {
          try {
             atsAdmin = AtsClientService.get().getConfigurations().getAtsAdmins().contains(
-               AtsClientService.get().getUserService().getCurrentUser().getUuid());
+               AtsClientService.get().getUserService().getCurrentUser().getId());
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             atsAdmin = false;

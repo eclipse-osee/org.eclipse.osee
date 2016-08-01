@@ -73,7 +73,7 @@ public class XRunSprintSummaryButton extends XButton implements IArtifactWidget 
          return;
       }
 
-      Response response = AtsClientService.getAgileEndpoint().getSprintSummary(sprint.getTeamUuid(), sprint.getUuid());
+      Response response = AtsClientService.getAgileEndpoint().getSprintSummary(sprint.getTeamUuid(), sprint.getId());
       String reportHtml = response.readEntity(String.class);
       String appServer = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER);
       if (Strings.isValid(appServer)) {

@@ -38,9 +38,9 @@ public class VisitedItemCache {
    }
 
    public void addVisited(IAtsWorkItem workItem) {
-      if (!visitedUuids.contains(workItem.getUuid())) {
-         visitedUuids.add(workItem.getUuid());
-         uuidtoWorkItem.put(workItem.getUuid(), workItem);
+      if (!visitedUuids.contains(workItem.getId())) {
+         visitedUuids.add(workItem.getId());
+         uuidtoWorkItem.put(workItem.getId(), workItem);
       }
    }
 

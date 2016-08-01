@@ -40,7 +40,7 @@ public class ActionableItemSearchWidget {
       List<Long> uuids = new LinkedList<>();
       if (get() != null) {
          for (IAtsActionableItem ai : get()) {
-            uuids.add(ai.getUuid());
+            uuids.add(ai.getId());
          }
       }
       return uuids;

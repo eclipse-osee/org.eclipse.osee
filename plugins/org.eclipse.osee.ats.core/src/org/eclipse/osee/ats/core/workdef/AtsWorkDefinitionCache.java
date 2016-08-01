@@ -38,11 +38,11 @@ public class AtsWorkDefinitionCache {
    }
 
    public void cache(IAtsWorkItem workItem, IWorkDefinitionMatch match) {
-      awaUuidToWorkDefinition.put(workItem.getUuid(), match);
+      awaUuidToWorkDefinition.put(workItem.getId(), match);
    }
 
    public IWorkDefinitionMatch getWorkDefinition(IAtsWorkItem workItem) {
-      return awaUuidToWorkDefinition.get(workItem.getUuid());
+      return awaUuidToWorkDefinition.get(workItem.getId());
    }
 
    //IAtsWorkDefinition

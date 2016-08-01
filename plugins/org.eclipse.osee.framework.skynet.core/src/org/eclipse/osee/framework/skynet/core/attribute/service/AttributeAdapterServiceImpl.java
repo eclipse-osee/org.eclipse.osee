@@ -17,9 +17,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -120,7 +120,7 @@ public class AttributeAdapterServiceImpl implements AttributeAdapterService {
    }
 
    @Override
-   public <T> T adapt(Attribute<?> attribute, UuidIdentity identity) throws OseeCoreException {
+   public <T> T adapt(Attribute<?> attribute, Id identity) throws OseeCoreException {
       IAttributeType type = attribute.getAttributeType();
       AttributeAdapter<T> adapter = getAdapter(type);
       Conditions.checkNotNull(adapter, "adapter");

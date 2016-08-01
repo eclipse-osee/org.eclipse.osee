@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -54,8 +53,8 @@ public class CoreAtsUsersTest {
 
    @Test
    public void testGetUuid() {
-      Assert.assertEquals(SystemUser.OseeSystem.getUuid(), AtsCoreUsers.SYSTEM_USER.getUuid());
-      Assert.assertEquals(SystemUser.Anonymous.getUuid(), AtsCoreUsers.ANONYMOUS_USER.getUuid());
+      Assert.assertEquals(SystemUser.OseeSystem.getId(), AtsCoreUsers.SYSTEM_USER.getId());
+      Assert.assertEquals(SystemUser.Anonymous.getId(), AtsCoreUsers.ANONYMOUS_USER.getId());
    }
 
    @Test
@@ -170,7 +169,7 @@ public class CoreAtsUsersTest {
       }
 
       @Override
-      public Long getUuid() {
+      public Long getId() {
          return 999994L;
       }
    };
@@ -203,18 +202,8 @@ public class CoreAtsUsersTest {
       }
 
       @Override
-      public boolean matches(UuidIdentity... identities) {
-         for (UuidIdentity identity : identities) {
-            if (equals(identity)) {
-               return true;
-            }
-         }
-         return false;
-      }
-
-      @Override
       public String toStringWithId() {
-         return String.format("[%s][%d]", getName(), getUuid());
+         return String.format("[%s][%d]", getName(), getId());
       }
 
       @Override
@@ -228,7 +217,7 @@ public class CoreAtsUsersTest {
       }
 
       @Override
-      public Long getUuid() {
+      public Long getId() {
          return new Long(0);
       }
    };

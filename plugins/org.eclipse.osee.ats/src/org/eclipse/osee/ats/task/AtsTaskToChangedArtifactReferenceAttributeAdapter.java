@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -45,10 +45,10 @@ public class AtsTaskToChangedArtifactReferenceAttributeAdapter implements Attrib
    }
 
    @Override
-   public Artifact adapt(Attribute<?> attribute, UuidIdentity identity) throws OseeCoreException {
+   public Artifact adapt(Attribute<?> attribute, Id identity) throws OseeCoreException {
       Artifact retArt = null;
 
-      int uuid = identity.getUuid() <= 0 ? 0 : identity.getUuid().intValue();
+      int uuid = identity.getId() <= 0 ? 0 : identity.getId().intValue();
       if (uuid > 0) {
          Artifact artifact = attribute.getArtifact();
          if (artifact instanceof TaskArtifact) {

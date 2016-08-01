@@ -34,7 +34,7 @@ public class NewTaskDataFactory {
       NewTaskData newTaskData = new NewTaskData();
       newTaskData.setAsUserId(atsUser.getUserId());
       newTaskData.setCommitComment(comment);
-      newTaskData.setTeamWfUuid(teamWf.getUuid());
+      newTaskData.setTeamWfUuid(teamWf.getId());
       return newTaskData;
    }
 }

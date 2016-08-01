@@ -57,7 +57,7 @@ public class ArtifactCollectorsCache<T extends CollectorArtifact> implements IAr
    }
 
    private void registerForEvents(final T collectorArt) {
-      if (!registered.contains(collectorArt.getUuid())) {
+      if (!registered.contains(collectorArt.getId())) {
          IArtifactEventListener eventListener = new IArtifactEventListener() {
 
             @Override
@@ -68,25 +68,25 @@ public class ArtifactCollectorsCache<T extends CollectorArtifact> implements IAr
             @Override
             public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
                synchronized (cache) {
-                  cache.remove(collectorArt.getUuid());
+                  cache.remove(collectorArt.getId());
                }
                synchronized (collectorMemberOrderMap) {
-                  Map<Long, String> subHash = collectorMemberOrderMap.getSubHash(collectorArt.getUuid());
+                  Map<Long, String> subHash = collectorMemberOrderMap.getSubHash(collectorArt.getId());
                   if (subHash != null) {
                      List<Long> keys = new ArrayList<>(subHash.keySet());
                      for (Long key1 : keys) {
-                        collectorMemberOrderMap.remove(collectorArt.getUuid(), key1);
+                        collectorMemberOrderMap.remove(collectorArt.getId(), key1);
                      }
                   }
                }
                synchronized (registered) {
-                  registered.remove(collectorArt.getUuid());
+                  registered.remove(collectorArt.getId());
                }
             }
          };
          OseeEventManager.addListener(eventListener);
          synchronized (registered) {
-            registered.add(collectorArt.getUuid());
+            registered.add(collectorArt.getId());
          }
       }
    }
@@ -95,11 +95,11 @@ public class ArtifactCollectorsCache<T extends CollectorArtifact> implements IAr
    public List<Artifact> getMembers(T collector) throws OseeCoreException {
       initializeStructures();
       registerForEvents(collector);
-      List<Artifact> members = cache.get(collector.getUuid());
+      List<Artifact> members = cache.get(collector.getId());
       if (members == null) {
          members = collector.getRelatedArtifacts(memberRelationType, DeletionFlag.EXCLUDE_DELETED);
          synchronized (cache) {
-            cache.put(collector.getUuid(), members);
+            cache.put(collector.getId(), members);
             fillOrderCache(collector, members);
          }
       }
@@ -111,7 +111,7 @@ public class ArtifactCollectorsCache<T extends CollectorArtifact> implements IAr
    public void decache(T collectorArt) {
       if (initialized) {
          synchronized (cache) {
-            cache.remove(collectorArt.getUuid());
+            cache.remove(collectorArt.getId());
          }
          synchronized (collectorMemberOrderMap) {
             clearOrderCache(collectorArt);
@@ -134,10 +134,10 @@ public class ArtifactCollectorsCache<T extends CollectorArtifact> implements IAr
    @Override
    public String getMemberOrder(T collectorArt, Artifact member) throws OseeCoreException {
       initializeStructures();
-      if (collectorMemberOrderMap.getSubHash(collectorArt.getUuid()) == null) {
+      if (collectorMemberOrderMap.getSubHash(collectorArt.getId()) == null) {
          fillOrderCache(collectorArt, getMembers(collectorArt));
       }
-      String order = collectorMemberOrderMap.get(collectorArt.getUuid(), member.getUuid());
+      String order = collectorMemberOrderMap.get(collectorArt.getId(), member.getId());
       return order == null ? "" : order;
    }
 
@@ -147,7 +147,7 @@ public class ArtifactCollectorsCache<T extends CollectorArtifact> implements IAr
          clearOrderCache(collectorArt);
          int x = 1;
          for (Artifact artifact : members) {
-            collectorMemberOrderMap.put(collectorArt.getUuid(), artifact.getUuid(), String.valueOf(x++));
+            collectorMemberOrderMap.put(collectorArt.getId(), artifact.getId(), String.valueOf(x++));
          }
       }
    }
@@ -155,11 +155,11 @@ public class ArtifactCollectorsCache<T extends CollectorArtifact> implements IAr
    private void clearOrderCache(T collectorArt) {
       if (initialized) {
          List<Long> memberIds = new ArrayList<>();
-         Map<Long, String> subHash = collectorMemberOrderMap.getSubHash(collectorArt.getUuid());
+         Map<Long, String> subHash = collectorMemberOrderMap.getSubHash(collectorArt.getId());
          if (subHash != null) {
             memberIds.addAll(subHash.keySet());
             for (Long memberId : memberIds) {
-               collectorMemberOrderMap.remove(collectorArt.getUuid(), memberId);
+               collectorMemberOrderMap.remove(collectorArt.getId(), memberId);
             }
          }
       }

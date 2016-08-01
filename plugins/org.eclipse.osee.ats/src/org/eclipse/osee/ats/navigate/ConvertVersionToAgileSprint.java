@@ -100,7 +100,7 @@ public class ConvertVersionToAgileSprint extends XNavigateItemAction {
       try {
          AgileEndpointApi ageilEp = AtsClientService.getAgileEndpoint();
          JaxNewAgileSprint newSprint = new JaxNewAgileSprint();
-         long teamUuid = agileTeam.getUuid();
+         long teamUuid = agileTeam.getId();
 
          List<IAgileSprint> sprints = new LinkedList<>();
          for (IAtsVersion version : selectedVersions) {

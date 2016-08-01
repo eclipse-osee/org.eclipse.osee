@@ -56,7 +56,7 @@ public abstract class AbstractMembersOrderColumn extends XViewerAtsColumn implem
                   result = cachedValue;
                }
             } else {
-               String cachedObjectValue = multiMembersValueMap.get(((Artifact) obj).getUuid());
+               String cachedObjectValue = multiMembersValueMap.get(((Artifact) obj).getId());
                if (Strings.isValid(cachedObjectValue)) {
                   result = cachedObjectValue;
                }

@@ -61,36 +61,36 @@ public class SearchWorkPackageOperationTest {
    public static Collection<Object[]> data() {
       List<Object[]> data = new ArrayList<>();
       List<Long> EMPYT_RESULTS = new ArrayList<>();
-      Long WP_01 = DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getUuid();
-      Long WP_02 = DemoArtifactToken.SAW_Code_Team_WorkPackage_02.getUuid();
-      Long WP_03 = DemoArtifactToken.SAW_Code_Team_WorkPackage_03.getUuid();
-      Long WP_0A = DemoArtifactToken.SAW_Test_AI_WorkPackage_0A.getUuid();
-      Long WP_0B = DemoArtifactToken.SAW_Test_AI_WorkPackage_0B.getUuid();
-      Long WP_0C = DemoArtifactToken.SAW_Test_AI_WorkPackage_0C.getUuid();
+      Long WP_01 = DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getId();
+      Long WP_02 = DemoArtifactToken.SAW_Code_Team_WorkPackage_02.getId();
+      Long WP_03 = DemoArtifactToken.SAW_Code_Team_WorkPackage_03.getId();
+      Long WP_0A = DemoArtifactToken.SAW_Test_AI_WorkPackage_0A.getId();
+      Long WP_0B = DemoArtifactToken.SAW_Test_AI_WorkPackage_0B.getId();
+      Long WP_0C = DemoArtifactToken.SAW_Test_AI_WorkPackage_0C.getId();
 
       // Test Work Packages configured by Team Def
-      addTest(data, "no work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getUuid()), false,
+      addTest(data, "no work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getId()), false,
          new ArrayList<Long>(), false, Active.Both, EMPYT_RESULTS);
-      addTest(data, "3 work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getUuid()), true,
+      addTest(data, "3 work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getId()), true,
          new ArrayList<Long>(), false, Active.Both, Arrays.asList(WP_01, WP_02, WP_03));
-      addTest(data, "2 active work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getUuid()),
+      addTest(data, "2 active work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getId()),
          true, new ArrayList<Long>(), false, Active.Active, Arrays.asList(WP_01, WP_02));
-      addTest(data, "1 in-active work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getUuid()),
+      addTest(data, "1 in-active work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getId()),
          true, new ArrayList<Long>(), false, Active.InActive, Arrays.asList(WP_03));
 
       // Test Work Packages configured by AI
       addTest(data, "no work packages should be returned", new ArrayList<Long>(), false,
-         Arrays.asList(DemoArtifactToken.SAW_CSCI_AI.getUuid()), false, Active.Both, EMPYT_RESULTS);
+         Arrays.asList(DemoArtifactToken.SAW_CSCI_AI.getId()), false, Active.Both, EMPYT_RESULTS);
       addTest(data, "3 work packages should be returned", new ArrayList<Long>(), false,
-         Arrays.asList(DemoArtifactToken.SAW_CSCI_AI.getUuid()), true, Active.Both, Arrays.asList(WP_0A, WP_0B, WP_0C));
+         Arrays.asList(DemoArtifactToken.SAW_CSCI_AI.getId()), true, Active.Both, Arrays.asList(WP_0A, WP_0B, WP_0C));
       addTest(data, "2 active work packages should be returned", new ArrayList<Long>(), false,
-         Arrays.asList(DemoArtifactToken.SAW_CSCI_AI.getUuid()), true, Active.Active, Arrays.asList(WP_0A, WP_0B));
+         Arrays.asList(DemoArtifactToken.SAW_CSCI_AI.getId()), true, Active.Active, Arrays.asList(WP_0A, WP_0B));
       addTest(data, "1 in-active work packages should be returned", new ArrayList<Long>(), false,
-         Arrays.asList(DemoArtifactToken.SAW_CSCI_AI.getUuid()), true, Active.InActive, Arrays.asList(WP_0C));
+         Arrays.asList(DemoArtifactToken.SAW_CSCI_AI.getId()), true, Active.InActive, Arrays.asList(WP_0C));
 
       // Test configured by both
-      addTest(data, "4 active work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getUuid()),
-         true, Arrays.asList(DemoArtifactToken.SAW_Test_AI.getUuid()), true, Active.Active,
+      addTest(data, "4 active work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getId()),
+         true, Arrays.asList(DemoArtifactToken.SAW_Test_AI.getId()), true, Active.Active,
          Arrays.asList(WP_01, WP_02, WP_0A, WP_0B));
 
       return data;

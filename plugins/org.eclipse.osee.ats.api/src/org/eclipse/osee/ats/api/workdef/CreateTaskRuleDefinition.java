@@ -76,9 +76,9 @@ public class CreateTaskRuleDefinition extends RuleDefinition implements IAtsCrea
             Collection<IAtsTask> createdTasks = atsServices.getTaskService().createTasks((IAtsTeamWorkflow) workItem,
                titles, this.assignees, new Date(), atsServices.getUserService().getCurrentUser(), this.relatedState,
                this.taskWorkDef, attributes, changes);
-            ruleResults.addChange(workItem.getUuid(), RuleResultsEnum.CREATE_TASK);
+            ruleResults.addChange(workItem.getId(), RuleResultsEnum.CREATE_TASK);
             for (IAtsTask task : createdTasks) {
-               ruleResults.addChange(task.getUuid(), RuleResultsEnum.NEW_TASK);
+               ruleResults.addChange(task.getId(), RuleResultsEnum.NEW_TASK);
             }
          }
       }

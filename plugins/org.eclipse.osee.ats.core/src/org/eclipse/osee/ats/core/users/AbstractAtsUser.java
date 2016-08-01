@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.core.users;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 
 /**
  * @author Donald G. Dunne
@@ -83,18 +82,8 @@ public abstract class AbstractAtsUser implements IAtsUser {
    }
 
    @Override
-   public boolean matches(UuidIdentity... identities) {
-      for (UuidIdentity identity : identities) {
-         if (equals(identity)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   @Override
    public String toStringWithId() {
-      return String.format("[%s][%s]", getName(), getUuid());
+      return String.format("[%s][%s]", getName(), getId());
    }
 
    @Override

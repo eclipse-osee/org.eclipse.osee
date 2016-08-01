@@ -164,9 +164,9 @@ public class WorldXViewerEventManager {
                    * Only process parent artifacts once to reduce the amount of refresh. This is especially important
                    * for tasks and reviews where the parents of 2 or more can be the same.
                    */
-                  if (smaParent != null && !processed.contains(smaParent.getUuid())) {
+                  if (smaParent != null && !processed.contains(smaParent.getId())) {
                      worldViewer.refresh(smaParent);
-                     processed.add(smaParent.getUuid());
+                     processed.add(smaParent.getId());
                   }
                }
             }

@@ -69,7 +69,7 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
       if (task == null) {
          throw new OseeArgumentException("No Task found with id %d", taskUuid);
       }
-      JaxAtsTask jaxAtsTask = CreateTasksOperation.createNewJaxTask(task.getUuid(), atsServer);
+      JaxAtsTask jaxAtsTask = CreateTasksOperation.createNewJaxTask(task.getId(), atsServer);
       return Response.ok().entity(jaxAtsTask).build();
    }
 

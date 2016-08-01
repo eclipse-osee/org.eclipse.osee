@@ -144,7 +144,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
 
    @Override
    public boolean isAtsAdmin(IAtsUser user) {
-      return configurationProvider.getConfigurations().getAtsAdmins().contains(user.getUuid());
+      return configurationProvider.getConfigurations().getAtsAdmins().contains(user.getId());
    }
 
    @Override

@@ -12,18 +12,17 @@ package org.eclipse.osee.ats.api;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.HasDescription;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Named;
-import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsObject extends Named, UuidIdentity, HasDescription {
+public interface IAtsObject extends Named, Id, HasDescription {
 
    String toStringWithId();
 
    ArtifactId getStoreObject();
 
    void setStoreObject(ArtifactId artifact);
-
 }

@@ -116,7 +116,7 @@ public class PopulateDemoAgile {
       item.setBacklogUuid(backlog.getUuid());
       item.setSetBacklog(true);
       for (IAtsWorkItem workItem : items) {
-         item.getUuids().add(workItem.getUuid());
+         item.getUuids().add(workItem.getId());
       }
       response = agile.updateItems(item);
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
@@ -146,9 +146,9 @@ public class PopulateDemoAgile {
 
       for (IAtsWorkItem workItem : items) {
          if (workItem.getStateMgr().getStateType().isCompleted()) {
-            completedItems.getUuids().add(workItem.getUuid());
+            completedItems.getUuids().add(workItem.getId());
          } else {
-            inworkItems.getUuids().add(workItem.getUuid());
+            inworkItems.getUuids().add(workItem.getId());
          }
       }
       response = agile.updateItems(inworkItems);

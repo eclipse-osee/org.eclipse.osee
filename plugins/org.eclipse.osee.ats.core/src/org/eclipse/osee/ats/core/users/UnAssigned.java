@@ -25,8 +25,8 @@ public final class UnAssigned extends AbstractAtsUser {
    }
 
    @Override
-   public Long getUuid() {
-      return org.eclipse.osee.framework.core.enums.SystemUser.UnAssigned.getUuid();
+   public Long getId() {
+      return org.eclipse.osee.framework.core.enums.SystemUser.UnAssigned.getId();
    }
 
 }

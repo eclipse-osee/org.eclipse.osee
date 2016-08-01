@@ -609,7 +609,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             continue;
          }
          if (artifact.isOfType(AtsArtifactTypes.Version)) {
-            IAtsVersion version = AtsClientService.get().getCache().getByUuid(artifact.getUuid(), IAtsVersion.class);
+            IAtsVersion version = AtsClientService.get().getCache().getByUuid(artifact.getId(), IAtsVersion.class);
             if (version != null) {
                try {
                   long parentBranchUuid = version.getBaselineBranchUuid();
@@ -638,7 +638,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             continue;
          }
          if (artifact.isOfType(AtsArtifactTypes.Version)) {
-            IAtsVersion version = AtsClientService.get().getCache().getByUuid(artifact.getUuid(), IAtsVersion.class);
+            IAtsVersion version = AtsClientService.get().getCache().getByUuid(artifact.getId(), IAtsVersion.class);
             if (version != null) {
                for (IAtsVersion parallelVersion : Versions.getParallelVersions(version, AtsClientService.get())) {
                   if (parallelVersion != null) {
@@ -667,7 +667,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
          if (art.isOfType(AtsArtifactTypes.TeamDefinition)) {
             IAtsTeamDefinition teamDef =
-               AtsClientService.get().getCache().getByUuid(art.getUuid(), IAtsTeamDefinition.class);
+               AtsClientService.get().getCache().getByUuid(art.getId(), IAtsTeamDefinition.class);
             try {
                long parentBranchUuid = teamDef.getBaselineBranchUuid();
                if (parentBranchUuid > 0) {
@@ -771,16 +771,16 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             results.log("validateBranchUuid",
                String.format(
                   "Error: [%s][%d][%s] has Parent Branch Uuid attribute set to Archived Branch [%s] named [%s]",
-                  name.getName(), name.getUuid(), name, parentBranchUuid, branch));
+                  name.getName(), name.getId(), name, parentBranchUuid, branch));
          } else if (!BranchManager.getType(branch).isBaselineBranch()) {
             results.log("validateBranchUuid", String.format(
                "Error: [%s][%d][%s] has Parent Branch Uuid attribute [%s][%s] that is a [%s] branch; should be a BASELINE branch",
-               name.getName(), name.getUuid(), name, BranchManager.getType(branch).name(), parentBranchUuid, branch));
+               name.getName(), name.getId(), name, BranchManager.getType(branch).name(), parentBranchUuid, branch));
          }
       } catch (BranchDoesNotExist ex) {
          results.log("validateBranchUuid",
             String.format("Error: [%s][%d][%s] has Parent Branch Uuid attribute [%s] that references a non-existant",
-               name.getName(), name.getUuid(), name, parentBranchUuid));
+               name.getName(), name.getId(), name, parentBranchUuid));
       } catch (Exception ex) {
          results.log("validateBranchUuid",
             "Error: " + name.getName() + " [" + name.toStringWithId() + "] exception: " + ex.getLocalizedMessage());
@@ -999,7 +999,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          try {
             if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {
                IAtsActionableItem aia =
-                  AtsClientService.get().getCache().getByUuid(artifact.getUuid(), IAtsActionableItem.class);
+                  AtsClientService.get().getCache().getByUuid(artifact.getId(), IAtsActionableItem.class);
                if (aia.isActionable() && TeamDefinitions.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
                   results.log(artifact, "testActionableItemToTeamDefinition",
                      "Error: ActionableItem " + XResultDataUI.getHyperlink(artifact.getName(),

@@ -100,7 +100,7 @@ public class AtsConfigQueryImplTest {
    @Test
    public void testProgram() {
       IAtsConfigQuery query =
-         queryService.createQuery(AtsArtifactTypes.TeamDefinition).andProgram(DemoArtifactToken.SAW_Program.getUuid());
+         queryService.createQuery(AtsArtifactTypes.TeamDefinition).andProgram(DemoArtifactToken.SAW_Program.getId());
       ResultSet<IAtsTeamDefinition> teamDefs = query.getResults();
       assertEquals(5, teamDefs.size());
 

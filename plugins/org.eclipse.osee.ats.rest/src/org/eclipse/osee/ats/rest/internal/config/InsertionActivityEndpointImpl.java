@@ -70,7 +70,7 @@ public class InsertionActivityEndpointImpl extends BaseConfigEndpointImpl<JaxIns
       JaxInsertionActivity jaxInsertion = new JaxInsertionActivity();
       IAtsInsertionActivity insertion = atsServer.getConfigItemFactory().getInsertionActivity(artifact);
       jaxInsertion.setName(insertion.getName());
-      jaxInsertion.setUuid(insertion.getUuid());
+      jaxInsertion.setUuid(insertion.getId());
       jaxInsertion.setActive(insertion.isActive());
       jaxInsertion.setDescription(insertion.getDescription());
       return jaxInsertion;

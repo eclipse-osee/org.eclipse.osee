@@ -142,22 +142,22 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
          data.getAiUuids().addAll(getAi().getUuids());
       }
       if (getVersion().get() != null) {
-         data.setVersionUuid(getVersion().get().getUuid());
+         data.setVersionUuid(getVersion().get().getId());
       }
       if (getStateName() != null && Strings.isValid(getStateName().get())) {
          data.setState(getStateName().get());
       }
       if (showWorkPackageWidgets() && getProgram() != null && getProgram().get() != null) {
-         data.setProgramUuid(getProgram().get().getUuid());
+         data.setProgramUuid(getProgram().get().getId());
       }
       if (showWorkPackageWidgets() && getInsertion() != null && getInsertion().get() != null) {
-         data.setInsertionUuid(getInsertion().get().getUuid());
+         data.setInsertionUuid(getInsertion().get().getId());
       }
       if (showWorkPackageWidgets() && getInsertionActivity() != null && getInsertionActivity().get() != null) {
-         data.setInsertionActivityUuid(getInsertionActivity().get().getUuid());
+         data.setInsertionActivityUuid(getInsertionActivity().get().getId());
       }
       if (showWorkPackageWidgets() && getWorkPackage() != null && getWorkPackage().get() != null) {
-         data.setWorkPackageUuid(getWorkPackage().get().getUuid());
+         data.setWorkPackageUuid(getWorkPackage().get().getId());
       }
       if (getColorTeam() != null && Strings.isValid(getColorTeam().get())) {
          data.setColorTeam(getColorTeam().get());

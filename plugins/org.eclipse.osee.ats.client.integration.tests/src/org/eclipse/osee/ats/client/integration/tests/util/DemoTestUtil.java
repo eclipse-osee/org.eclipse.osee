@@ -232,7 +232,7 @@ public class DemoTestUtil {
       // Add check to keep exception from occurring for OSEE developers running against production
       if (!ClientSessionManager.isProductionDataStore()) {
          try {
-            results = AtsClientService.get().getCache().getByUuid(team.getTeamDefToken().getUuid(),
+            results = AtsClientService.get().getCache().getByUuid(team.getTeamDefToken().getId(),
                IAtsTeamDefinition.class);
          } catch (Exception ex) {
             OseeLog.log(DemoTestUtil.class, Level.SEVERE, ex);

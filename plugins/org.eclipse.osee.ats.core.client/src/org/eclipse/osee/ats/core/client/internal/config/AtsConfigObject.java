@@ -126,7 +126,7 @@ public abstract class AtsConfigObject extends AtsObject implements IAtsConfigObj
    }
 
    @Override
-   public Long getUuid() {
+   public Long getId() {
       return Long.valueOf(artifact.getArtId());
    }
 

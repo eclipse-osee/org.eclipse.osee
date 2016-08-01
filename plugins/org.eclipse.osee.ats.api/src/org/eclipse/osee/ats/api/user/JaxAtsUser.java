@@ -59,11 +59,6 @@ public class JaxAtsUser extends JaxAtsObject implements IAtsUser {
    }
 
    @Override
-   public Long getUuid() {
-      return super.getUuid();
-   }
-
-   @Override
    public void setStoreObject(ArtifactId artifact) {
       this.storeObject = artifact;
    }
@@ -73,4 +68,8 @@ public class JaxAtsUser extends JaxAtsObject implements IAtsUser {
       this.userArtLoader = userArtLoader;
    }
 
+   @Override
+   public Long getId() {
+      return getUuid();
+   }
 }

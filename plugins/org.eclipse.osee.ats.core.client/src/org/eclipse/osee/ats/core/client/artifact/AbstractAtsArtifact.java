@@ -12,10 +12,9 @@ package org.eclipse.osee.ats.core.client.artifact;
 
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -40,20 +39,4 @@ public abstract class AbstractAtsArtifact extends Artifact implements IAtsObject
    public void setStoreObject(ArtifactId artifact) {
       // do nothing
    }
-
-   @Override
-   public Long getUuid() {
-      return Long.valueOf(getArtId());
-   }
-
-   @Override
-   public boolean matches(UuidIdentity... identities) {
-      for (UuidIdentity identity : identities) {
-         if (equals(identity)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
 }

@@ -131,11 +131,11 @@ public class AtsUtilCore {
 
    public static String toStringWithId(IAtsObject obj) {
       Conditions.checkNotNull(obj, "object");
-      return String.format("[%s][%s]", obj.getUuid(), obj.getName());
+      return String.format("[%s][%s]", obj.getId(), obj.getName());
    }
 
    public static String getGuid(IAtsObject atsObject) {
-      String guid = uuidToGuidMap.get(atsObject.getUuid());
+      String guid = uuidToGuidMap.get(atsObject.getId());
       if (!Strings.isValid(guid) && atsObject.getStoreObject() != null) {
          guid = atsObject.getStoreObject().getGuid();
       }
@@ -147,8 +147,8 @@ public class AtsUtilCore {
    }
 
    public static void putUuidToGuid(String guid, IAtsObject atsObject) {
-      uuidToGuidMap.put(atsObject.getUuid(), guid);
-      guidToUuidMap.put(guid, atsObject.getUuid());
+      uuidToGuidMap.put(atsObject.getId(), guid);
+      guidToUuidMap.put(guid, atsObject.getId());
    }
 
    public static Long getUuidFromGuid(String guid) {

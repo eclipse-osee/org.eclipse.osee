@@ -32,8 +32,8 @@ public class CpaFactory {
    }
 
    public static CpaProgram getProgram(IAtsProgram program, Object storeObject) {
-      CpaProgram prog = new CpaProgram(program.getUuid(), program.getName());
-      setStoreObject(String.valueOf(program.getUuid()), storeObject);
+      CpaProgram prog = new CpaProgram(program.getId(), program.getName());
+      setStoreObject(String.valueOf(program.getId()), storeObject);
       return prog;
    }
 
@@ -52,7 +52,7 @@ public class CpaFactory {
    }
 
    public static CpaBuild getVersion(IAtsVersion version, Object storeObject) {
-      Long uuid = version.getUuid();
+      Long uuid = version.getId();
       CpaBuild build = new CpaBuild(uuid, version.getName());
       setStoreObject(String.valueOf(uuid), storeObject);
       return build;

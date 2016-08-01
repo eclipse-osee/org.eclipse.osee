@@ -16,8 +16,8 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -29,8 +29,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeAdapter;
 public class ArtifactAttributeAdapter implements AttributeAdapter<Artifact> {
 
    @Override
-   public Artifact adapt(Attribute<?> attribute, UuidIdentity identity) throws OseeCoreException {
-      Long uuid = identity.getUuid();
+   public Artifact adapt(Attribute<?> attribute, Id identity) throws OseeCoreException {
+      Long uuid = identity.getId();
       if (uuid <= 0L) {
          return null;
       }

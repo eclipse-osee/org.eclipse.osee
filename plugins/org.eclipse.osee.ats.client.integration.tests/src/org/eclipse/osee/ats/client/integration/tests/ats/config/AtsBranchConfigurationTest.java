@@ -137,9 +137,9 @@ public class AtsBranchConfigurationTest {
       for (IAtsVersion vArt : teamDef.getVersions()) {
          if (vArt.getName().contains("Ver1")) {
             versionToTarget = vArt;
-            version1Uuid = vArt.getUuid();
+            version1Uuid = vArt.getId();
          } else {
-            version2Uuid = vArt.getUuid();
+            version2Uuid = vArt.getId();
          }
       }
 
@@ -356,7 +356,7 @@ public class AtsBranchConfigurationTest {
          branch.getName(), AtsUtilCore.getAtsBranch())) {
          teamDefArt.deleteAndPersist(transaction, false);
          IAtsTeamDefinition soleByUuid =
-            AtsClientService.get().getCache().getByUuid(teamDefArt.getUuid(), IAtsTeamDefinition.class);
+            AtsClientService.get().getCache().getByUuid(teamDefArt.getId(), IAtsTeamDefinition.class);
          if (soleByUuid != null) {
             AtsClientService.get().getCache().deCacheAtsObject(soleByUuid);
          }
@@ -370,7 +370,7 @@ public class AtsBranchConfigurationTest {
          for (Artifact childArt : aiaArt.getChildren()) {
             childArt.deleteAndPersist(transaction, false);
             IAtsActionableItem soleByUuid =
-               AtsClientService.get().getCache().getByUuid(childArt.getUuid(), IAtsActionableItem.class);
+               AtsClientService.get().getCache().getByUuid(childArt.getId(), IAtsActionableItem.class);
             if (soleByUuid != null) {
                AtsClientService.get().getCache().deCacheAtsObject(soleByUuid);
             }
@@ -379,7 +379,7 @@ public class AtsBranchConfigurationTest {
          aiaArt.deleteAndPersist(transaction, false);
 
          IAtsActionableItem ai =
-            AtsClientService.get().getCache().getByUuid(aiaArt.getUuid(), IAtsActionableItem.class);
+            AtsClientService.get().getCache().getByUuid(aiaArt.getId(), IAtsActionableItem.class);
          if (ai != null) {
             AtsClientService.get().getCache().deCacheAtsObject(ai);
          }

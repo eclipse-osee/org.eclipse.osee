@@ -62,7 +62,7 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
 
    @Override
    public <T> T getConfigItem(IArtifactToken artifactToken) {
-      return getConfigItem(artifactToken.getUuid());
+      return getConfigItem(artifactToken.getId());
    }
 
    @SuppressWarnings("unchecked")

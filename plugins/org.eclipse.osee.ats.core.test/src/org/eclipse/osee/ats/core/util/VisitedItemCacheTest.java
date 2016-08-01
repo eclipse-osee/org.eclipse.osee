@@ -31,9 +31,9 @@ public class VisitedItemCacheTest {
    @Before
    public void setup() {
       MockitoAnnotations.initMocks(this);
-      when(workItem1.getUuid()).thenReturn(12L);
-      when(workItem2.getUuid()).thenReturn(13L);
-      when(workItem3.getUuid()).thenReturn(14L);
+      when(workItem1.getId()).thenReturn(12L);
+      when(workItem2.getId()).thenReturn(13L);
+      when(workItem3.getId()).thenReturn(14L);
    }
 
    @Test
@@ -43,15 +43,15 @@ public class VisitedItemCacheTest {
 
       cache.addVisited(workItem1);
       assertEquals(1, cache.getReverseVisited().size());
-      assertEquals(workItem1.getUuid(), cache.getReverseVisited().iterator().next().getUuid());
+      assertEquals(workItem1.getId(), cache.getReverseVisited().iterator().next().getId());
 
       cache.addVisited(workItem2);
       cache.addVisited(workItem3);
       assertEquals(3, cache.getReverseVisited().size());
       Iterator<IAtsWorkItem> iterator = cache.getReverseVisited().iterator();
-      assertEquals(workItem3.getUuid(), iterator.next().getUuid());
-      assertEquals(workItem2.getUuid(), iterator.next().getUuid());
-      assertEquals(workItem1.getUuid(), iterator.next().getUuid());
+      assertEquals(workItem3.getId(), iterator.next().getId());
+      assertEquals(workItem2.getId(), iterator.next().getId());
+      assertEquals(workItem1.getId(), iterator.next().getId());
 
       cache.clearVisited();
       assertEquals(0, cache.getReverseVisited().size());

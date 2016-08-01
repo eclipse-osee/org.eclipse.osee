@@ -696,7 +696,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
    @Override
    public Artifact getArtifact(IArtifactToken token) throws OseeCoreException {
-      return getArtifact(token.getUuid());
+      return getArtifact(token.getId());
    }
 
    @Override

@@ -255,7 +255,7 @@ public class AgileService implements IAgileService {
 
    @Override
    public IAgileBacklog getAgileBacklog(IAgileTeam team) {
-      ArtifactReadable teamFolder = AgileFolders.getTeamFolder(atsServer, team.getUuid());
+      ArtifactReadable teamFolder = AgileFolders.getTeamFolder(atsServer, team.getId());
       if (teamFolder == null) {
          return null;
       }

@@ -16,8 +16,8 @@ import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -36,10 +36,10 @@ public class ProgramArtifactReferenceAttributeAdapter implements AttributeAdapte
    }
 
    @Override
-   public Artifact adapt(Attribute<?> attribute, UuidIdentity identity) throws OseeCoreException {
+   public Artifact adapt(Attribute<?> attribute, Id identity) throws OseeCoreException {
       Artifact resultProgramArt = null;
 
-      int uuid = identity.getUuid() <= 0 ? 0 : identity.getUuid().intValue();
+      int uuid = identity.getId() <= 0 ? 0 : identity.getId().intValue();
       if (uuid > 0) {
          resultProgramArt = ArtifactQuery.getArtifactFromId(uuid, AtsUtilCore.getAtsBranch());
       }

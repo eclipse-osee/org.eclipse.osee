@@ -77,7 +77,7 @@ public class WordUpdateEndpointImplTest extends AbstractRestTest {
       String wordData = getResource();
 
       List<Long> transferArts = Lists.newLinkedList();
-      transferArts.add(artReqt.getUuid());
+      transferArts.add(artReqt.getId());
       wordData = wordData.replaceAll("ABCgi5iUkGgj2zhlrOgA", artReqt.getGuid());
 
       WordUpdateChange change = makeRequest(branch, transferArts, wordData, "Testing word update one artifact");
@@ -93,7 +93,7 @@ public class WordUpdateEndpointImplTest extends AbstractRestTest {
       wordData = wordData.replaceAll("A0UNsNvCigV4SyvaCCAA", artReqt.getGuid());
 
       List<Long> transferArts = Lists.newLinkedList();
-      transferArts.add(artReqt.getUuid());
+      transferArts.add(artReqt.getId());
 
       WordUpdateChange change = makeRequest(branch, transferArts, wordData, "Testing word update one artifact");
       validateWordUpdateChange(change);
@@ -103,7 +103,7 @@ public class WordUpdateEndpointImplTest extends AbstractRestTest {
       List<WordArtifactChange> changes = change.getChangedArts();
       Assert.assertTrue(changes.size() == 1);
       WordArtifactChange wac = changes.get(0);
-      Assert.assertEquals(wac.getArtId(), artReqt.getUuid().longValue());
+      Assert.assertEquals(wac.getArtId(), artReqt.getId().longValue());
    }
 
    private void validateSafetyTeamWFExists() {

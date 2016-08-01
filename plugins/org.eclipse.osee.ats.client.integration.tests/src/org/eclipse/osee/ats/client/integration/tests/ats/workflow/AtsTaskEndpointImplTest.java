@@ -61,7 +61,7 @@ public class AtsTaskEndpointImplTest {
       taskUuid2 = Lib.generateArtifactIdAsInt();
       taskUuid3 = Lib.generateArtifactIdAsInt();
       taskUuid4 = Lib.generateArtifactIdAsInt();
-      codeTeamWfUuid = DemoUtil.getSawCodeUnCommittedWf().getUuid();
+      codeTeamWfUuid = DemoUtil.getSawCodeUnCommittedWf().getId();
    }
 
    @After
@@ -94,7 +94,7 @@ public class AtsTaskEndpointImplTest {
       Collection<IAtsWorkItem> workItems = client.getRelationResolver().getRelated(task,
          CoreRelationTypes.SupportingInfo_SupportedBy, IAtsWorkItem.class);
       Assert.assertEquals(1, workItems.size());
-      Assert.assertEquals(codeTeamWfUuid, workItems.iterator().next().getUuid().longValue());
+      Assert.assertEquals(codeTeamWfUuid, workItems.iterator().next().getId().longValue());
 
       IAtsChangeSet changes = client.getStoreService().createAtsChangeSet(getClass().getSimpleName() + " - cleanup",
          AtsCoreUsers.SYSTEM_USER);
@@ -121,7 +121,7 @@ public class AtsTaskEndpointImplTest {
       workItems = client.getRelationResolver().getRelated(task, CoreRelationTypes.SupportingInfo_SupportingInfo,
          IAtsWorkItem.class);
       Assert.assertEquals(1, workItems.size());
-      Assert.assertEquals(codeTeamWfUuid, workItems.iterator().next().getUuid().longValue());
+      Assert.assertEquals(codeTeamWfUuid, workItems.iterator().next().getId().longValue());
 
       changes = client.getStoreService().createAtsChangeSet(getClass().getSimpleName() + " - cleanup",
          AtsCoreUsers.SYSTEM_USER);

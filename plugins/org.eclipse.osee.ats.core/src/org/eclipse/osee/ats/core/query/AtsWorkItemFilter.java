@@ -77,7 +77,7 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
    public IAtsWorkItemFilter fromTeam(IAtsTeamDefinition teamDef) throws OseeCoreException {
       for (IAtsWorkItem workItem : new CopyOnWriteArrayList<IAtsWorkItem>(items)) {
          IAtsTeamDefinition itemTeamDef = workItem.getParentTeamWorkflow().getTeamDefinition();
-         if (!itemTeamDef.getUuid().equals(teamDef.getUuid())) {
+         if (!itemTeamDef.getId().equals(teamDef.getId())) {
             items.remove(workItem);
          }
       }

@@ -16,16 +16,16 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeAdapter;
 
 public class BranchAttributeAdapter implements AttributeAdapter<BranchId> {
 
    @Override
-   public BranchId adapt(Attribute<?> attribute, UuidIdentity identity) throws OseeCoreException {
-      return TokenFactory.createBranch(identity.getUuid());
+   public BranchId adapt(Attribute<?> attribute, Id identity) throws OseeCoreException {
+      return TokenFactory.createBranch(identity.getId());
    }
 
    @Override

@@ -25,7 +25,7 @@ public class AtsObjectTest {
    public void testGetNameGuidId() {
       AtsObject obj = new AtsObject("hello", 456);
       Assert.assertEquals("hello", obj.getName());
-      Assert.assertEquals(456, obj.getUuid().longValue());
+      Assert.assertEquals(456, obj.getId().longValue());
 
       obj = new AtsObject("hello", Lib.generateUuid());
       Assert.assertEquals("hello", obj.getName());
@@ -56,14 +56,4 @@ public class AtsObjectTest {
       Assert.assertFalse(obj3.equals(obj));
 
    }
-
-   @Test
-   public void testHashCode() {
-      AtsObject obj = new AtsObject("hello", 465);
-      Assert.assertEquals(496, obj.hashCode());
-
-      obj = new AtsObject("hello", 456);
-      Assert.assertEquals(487, obj.hashCode());
-   }
-
 }

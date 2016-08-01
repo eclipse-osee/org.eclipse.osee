@@ -117,7 +117,7 @@ public class SafetyWorkflowEventHandler implements EventHandler {
    private IAtsTeamWorkflow getSafetyWorkflow(ArtifactReadable workflowArt) {
       Conditions.checkNotNull(workflowArt, "work flow artifact");
       IAtsTeamWorkflow safetyWorkflow = null;
-      ArtifactReadable safetyActionableItemArt = atsServer.getArtifact(AtsArtifactToken.SafetyActionableItem.getUuid());
+      ArtifactReadable safetyActionableItemArt = atsServer.getArtifact(AtsArtifactToken.SafetyActionableItem.getId());
       IAtsTeamWorkflow teamWf = atsServer.getWorkItemFactory().getTeamWf(workflowArt);
       IAtsActionableItem actionableItem = atsServer.getConfigItemFactory().getActionableItem(safetyActionableItemArt);
       for (IAtsTeamWorkflow sibling : atsServer.getActionFactory().getSiblingTeamWorkflows(teamWf)) {
@@ -132,13 +132,13 @@ public class SafetyWorkflowEventHandler implements EventHandler {
    private IAtsTeamWorkflow createSafetyAction(IAtsTeamWorkflow teamWf, ArtifactReadable userArt) {
       IAtsTeamWorkflow teamWorkflow = null;
       try {
-         IAtsActionableItem ai =
-            atsServer.getCache().getByUuid(AtsArtifactToken.SafetyActionableItem.getUuid(), IAtsActionableItem.class);
+         IAtsActionableItem ai = atsServer.getCache().getByUuid(AtsArtifactToken.SafetyActionableItem.getId(),
+            IAtsActionableItem.class);
          if (ai == null) {
             throw new OseeCoreException("Safety Actionable Item not configured");
          }
-         IAtsTeamDefinition teamDef =
-            atsServer.getCache().getByUuid(AtsArtifactToken.SafetyTeamDefinition.getUuid(), IAtsTeamDefinition.class);
+         IAtsTeamDefinition teamDef = atsServer.getCache().getByUuid(
+            AtsArtifactToken.SafetyTeamDefinition.getId(), IAtsTeamDefinition.class);
          if (teamDef == null) {
             throw new OseeCoreException("Safety Team Definition not configured");
          }

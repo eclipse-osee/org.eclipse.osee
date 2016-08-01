@@ -34,7 +34,7 @@ public class AtsIdColumn extends AbstractServicesColumn {
       } else if (atsObject instanceof IAtsAction) {
          result = ((IAtsAction) atsObject).getAtsId();
       } else {
-         result = String.valueOf(atsObject.getUuid());
+         result = String.valueOf(atsObject.getId());
       }
       return result;
    }

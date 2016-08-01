@@ -50,7 +50,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    private final Log logger;
 
    public WorkItem(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
-      super(artifact.getName(), artifact.getUuid());
+      super(artifact.getName(), artifact.getId());
       this.logger = logger;
       this.atsServer = atsServer;
       this.artifact = artifact;
@@ -78,7 +78,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    @Override
    public String getAtsId() {
       try {
-         return artifact.getSoleAttributeAsString(AtsAttributeTypes.AtsId, String.valueOf(getUuid()));
+         return artifact.getSoleAttributeAsString(AtsAttributeTypes.AtsId, String.valueOf(getId()));
       } catch (OseeCoreException ex) {
          return null;
       }

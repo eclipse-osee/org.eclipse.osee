@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -26,7 +27,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -36,8 +36,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class ActionArtifact extends Artifact implements IAtsAction {
 
-   public ActionArtifact(String guid, BranchId branch, IArtifactType artifactType) throws OseeCoreException {
-      super(guid, branch, artifactType);
+   public ActionArtifact(BranchId branch) {
+      super(branch, AtsArtifactTypes.Action);
    }
 
    public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
@@ -89,20 +89,4 @@ public class ActionArtifact extends Artifact implements IAtsAction {
    public void setStoreObject(ArtifactId artifact) {
       // do nothing
    }
-
-   @Override
-   public Long getUuid() {
-      return Long.valueOf(getArtId());
-   }
-
-   @Override
-   public boolean matches(UuidIdentity... identities) {
-      for (UuidIdentity identity : identities) {
-         if (equals(identity)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
 }

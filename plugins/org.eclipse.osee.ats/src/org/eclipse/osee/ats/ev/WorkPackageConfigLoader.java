@@ -49,7 +49,7 @@ public class WorkPackageConfigLoader {
 
          workPackageGuidToWorkPackageArt.put(workPackageArt.getGuid(), workPackageArt);
 
-         WorkPackageData data = new WorkPackageData(workPackageArt.getName(), workPackageArt.getUuid());
+         WorkPackageData data = new WorkPackageData(workPackageArt.getName(), workPackageArt.getId());
 
          Artifact insertionActivityArt = workPackageArtToActivityArt.get(workPackageArt);
          if (insertionActivityArt != null) {

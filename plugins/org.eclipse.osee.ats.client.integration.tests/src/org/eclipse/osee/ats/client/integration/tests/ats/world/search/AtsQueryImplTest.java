@@ -99,13 +99,13 @@ public class AtsQueryImplTest {
       // ai
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       ArtifactId ai = services.getArtifactByName(AtsArtifactTypes.ActionableItem, "SAW Requirements");
-      query.andActionableItem(Arrays.asList(ai.getUuid()));
+      query.andActionableItem(Arrays.asList(ai.getId()));
       assertEquals(4, query.getResults().size());
 
       // by uuids (hijack two workflows from previous search)
       List<Long> uuids = new LinkedList<>();
       for (IAtsWorkItem workItem : query.getResults()) {
-         uuids.add(workItem.getUuid());
+         uuids.add(workItem.getId());
       }
       query = queryService.createQuery(WorkItemType.WorkItem);
       Iterator<Long> iterator = uuids.iterator();
@@ -138,7 +138,7 @@ public class AtsQueryImplTest {
       // by version
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       ArtifactId version = services.getArtifactByName(AtsArtifactTypes.Version, "SAW_Bld_2");
-      query.andVersion(version.getUuid());
+      query.andVersion(version.getId());
       assertEquals(14, query.getResults().size());
 
       // by assignee
@@ -168,7 +168,7 @@ public class AtsQueryImplTest {
       IAtsProgramService programService = services.getProgramService();
 
       IAtsWorkPackage wp =
-         services.getProgramService().getWorkPackage(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getUuid()); // Work Pkg 01
+         services.getProgramService().getWorkPackage(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getId()); // Work Pkg 01
       IAtsInsertionActivity activity = programService.getInsertionActivity(wp); // COMM Page
       IAtsInsertion insertion = programService.getInsertion(activity); // COMM
       IAtsProgram program = programService.getProgram(insertion); // SAW Program
@@ -185,30 +185,30 @@ public class AtsQueryImplTest {
 
       // by program
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
-      query.andProgram(program.getUuid());
+      query.andProgram(program.getId());
       assertEquals(2, query.getResults().size());
 
       query = queryService.createQuery(WorkItemType.Task);
-      query.andProgram(program.getUuid());
+      query.andProgram(program.getId());
       assertEquals(1, query.getResults().size());
 
       query = queryService.createQuery(WorkItemType.TeamWorkflow, WorkItemType.Task);
-      query.andProgram(program.getUuid());
+      query.andProgram(program.getId());
       assertEquals(3, query.getResults().size());
 
       // by insertion
       query = queryService.createQuery(WorkItemType.TeamWorkflow, WorkItemType.Task);
-      query.andInsertion(insertion.getUuid());
+      query.andInsertion(insertion.getId());
       assertEquals(3, query.getResults().size());
 
       // by insertion activity
       query = queryService.createQuery(WorkItemType.TeamWorkflow, WorkItemType.Task);
-      query.andInsertionActivity(activity.getUuid());
+      query.andInsertionActivity(activity.getId());
       assertEquals(2, query.getResults().size());
 
       // by work package
       query = queryService.createQuery(WorkItemType.TeamWorkflow, WorkItemType.Task);
-      query.andWorkPackage(wp.getUuid());
+      query.andWorkPackage(wp.getId());
       assertEquals(2, query.getResults().size());
    }
 

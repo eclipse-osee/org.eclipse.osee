@@ -41,7 +41,7 @@ public class TeamDefinitionSearchWidget {
       List<Long> uuids = new LinkedList<>();
       if (get() != null) {
          for (IAtsTeamDefinition teamDef : get()) {
-            uuids.add(teamDef.getUuid());
+            uuids.add(teamDef.getId());
          }
       }
       return uuids;

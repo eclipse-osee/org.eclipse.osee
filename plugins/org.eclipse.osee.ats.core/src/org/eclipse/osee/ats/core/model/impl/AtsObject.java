@@ -11,14 +11,13 @@
 package org.eclipse.osee.ats.core.model.impl;
 
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.jdk.core.type.UuidNamedIdentity;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsObject extends UuidNamedIdentity implements IAtsObject {
+public class AtsObject extends NamedId implements IAtsObject {
 
    private String desc;
    private ArtifactId object;
@@ -37,13 +36,8 @@ public class AtsObject extends UuidNamedIdentity implements IAtsObject {
    }
 
    @Override
-   public String toString() {
-      return getName();
-   }
-
-   @Override
    public final String toStringWithId() {
-      return String.format("[%d][%s]", getUuid(), getName());
+      return String.format("[%d][%s]", getId(), getName());
    }
 
    @Override
@@ -55,25 +49,4 @@ public class AtsObject extends UuidNamedIdentity implements IAtsObject {
    public void setStoreObject(ArtifactId artifact) {
       this.object = artifact;
    }
-
-   @Override
-   public boolean equals(Object obj) {
-      if (this == obj) {
-         return true;
-      }
-      if (obj instanceof IAtsObject) {
-         IAtsObject other = (IAtsObject) obj;
-         if (getUuid().equals(other.getUuid())) {
-            return true;
-         }
-      }
-      if (obj instanceof JaxAtsObject) {
-         JaxAtsObject other = (JaxAtsObject) obj;
-         if (getUuid().equals(other.getUuid())) {
-            return true;
-         }
-      }
-      return super.equals(obj);
-   }
-
 }

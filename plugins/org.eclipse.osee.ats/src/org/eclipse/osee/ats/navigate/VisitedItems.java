@@ -41,7 +41,7 @@ public class VisitedItems extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       List<Integer> artIds = new ArrayList<>();
       for (IAtsWorkItem workItem : getCache().getReverseVisited()) {
-         artIds.add(new Long(workItem.getUuid()).intValue());
+         artIds.add(new Long(workItem.getId()).intValue());
       }
       Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(artIds, AtsUtilCore.getAtsBranch());
       WorldEditor.open(new WorldEditorSimpleProvider(getName(), artifacts, null, tableLoadOptions));

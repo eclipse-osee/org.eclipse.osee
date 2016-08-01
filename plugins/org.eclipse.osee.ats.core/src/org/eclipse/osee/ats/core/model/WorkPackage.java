@@ -158,8 +158,8 @@ public class WorkPackage extends AtsConfigObject implements IAtsWorkPackage {
    }
 
    @Override
-   public Long getUuid() {
-      return artifact.getUuid();
+   public Long getId() {
+      return artifact.getId();
    }
 
    @Override

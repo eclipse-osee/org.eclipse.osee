@@ -41,7 +41,7 @@ public class ArtifactResolverImpl implements IArtifactResolver {
       if (atsObject instanceof Artifact) {
          return (Artifact) atsObject;
       }
-      Artifact artifact = AtsArtifactQuery.getArtifactFromId(atsObject.getUuid());
+      Artifact artifact = AtsArtifactQuery.getArtifactFromId(atsObject.getId());
       return artifact;
    }
 

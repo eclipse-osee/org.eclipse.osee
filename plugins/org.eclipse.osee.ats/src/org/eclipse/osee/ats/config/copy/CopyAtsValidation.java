@@ -73,7 +73,7 @@ public class CopyAtsValidation {
          resultData.errorf("Could not get new name from name conversion for Team Definition [%s]", teamDef.getName());
       }
       for (IAtsTeamDefinition childTeamDef : TeamDefinitions.getTeamsFromItemAndChildren(teamDef)) {
-         if (!teamDef.getUuid().equals(childTeamDef.getUuid())) {
+         if (!teamDef.getId().equals(childTeamDef.getId())) {
             validateTeamDefinition(childTeamDef);
          }
       }

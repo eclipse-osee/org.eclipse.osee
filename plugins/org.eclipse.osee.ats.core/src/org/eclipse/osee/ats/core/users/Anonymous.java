@@ -25,8 +25,8 @@ public final class Anonymous extends AbstractAtsUser {
    }
 
    @Override
-   public Long getUuid() {
-      return org.eclipse.osee.framework.core.enums.SystemUser.Anonymous.getUuid();
+   public Long getId() {
+      return org.eclipse.osee.framework.core.enums.SystemUser.Anonymous.getId();
    }
 
 }

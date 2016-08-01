@@ -133,7 +133,7 @@ public class TaskXViewer extends WorldXViewer {
          ed.setOptions(validStates);
          if (ed.open() == 0) {
             NewTaskData newTaskData = NewTaskDataFactory.get("Create New Task",
-               AtsClientService.get().getUserService().getCurrentUser().getUserId(), teamWf.getUuid());
+               AtsClientService.get().getUserService().getCurrentUser().getUserId(), teamWf.getId());
             JaxAtsTask task = JaxAtsTaskFactory.get(newTaskData, ed.getEntry(),
                AtsClientService.get().getUserService().getCurrentUser(), new Date());
             task.setUuid(Lib.generateArtifactIdAsInt());

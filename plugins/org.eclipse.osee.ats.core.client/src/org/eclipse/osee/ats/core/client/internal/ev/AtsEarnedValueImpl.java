@@ -64,14 +64,14 @@ public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
       JaxWorkPackageData data = new JaxWorkPackageData();
       data.setAsUserId(services.getUserService().getCurrentUserId());
       for (IAtsWorkItem workItem : workItems) {
-         data.getWorkItemUuids().add(workItem.getUuid());
+         data.getWorkItemUuids().add(workItem.getId());
       }
 
       AtsWorkPackageEndpointApi workPackageEp = AtsClientService.getWorkPackageEndpoint();
       if (remove) {
-         workPackageEp.deleteWorkPackageItems(workPackage == null ? 0L : workPackage.getUuid(), data);
+         workPackageEp.deleteWorkPackageItems(workPackage == null ? 0L : workPackage.getId(), data);
       } else {
-         workPackageEp.setWorkPackage(workPackage.getUuid(), data);
+         workPackageEp.setWorkPackage(workPackage.getId(), data);
       }
 
       TopicEvent event = new TopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED, AtsTopicEvent.WORK_ITEM_UUDS_KEY,

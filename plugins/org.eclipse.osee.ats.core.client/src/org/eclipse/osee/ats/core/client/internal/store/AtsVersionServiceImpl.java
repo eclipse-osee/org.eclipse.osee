@@ -57,9 +57,9 @@ public class AtsVersionServiceImpl extends AbstractAtsVersionServiceImpl impleme
          if (verArts.size() > 1) {
             OseeLog.log(Activator.class, Level.SEVERE,
                "Multiple targeted versions for artifact " + teamWf.toStringWithId());
-            version = cache.getByUuid(verArts.iterator().next().getUuid(), IAtsVersion.class);
+            version = cache.getByUuid(verArts.iterator().next().getId(), IAtsVersion.class);
          } else {
-            version = cache.getByUuid(verArts.iterator().next().getUuid(), IAtsVersion.class);
+            version = cache.getByUuid(verArts.iterator().next().getId(), IAtsVersion.class);
          }
       }
       return version;
@@ -87,7 +87,7 @@ public class AtsVersionServiceImpl extends AbstractAtsVersionServiceImpl impleme
    }
 
    private IAtsTeamWorkflow setTargetedVersionLink(IAtsTeamWorkflow teamWf, IAtsVersion version) throws OseeCoreException {
-      Artifact versionArt = atsClient.checkArtifactFromId(version.getUuid(), AtsUtilCore.getAtsBranch());
+      Artifact versionArt = atsClient.checkArtifactFromId(version.getId(), AtsUtilCore.getAtsBranch());
       if (versionArt != null) {
          TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) teamWf.getStoreObject();
          if (teamArt != null) {

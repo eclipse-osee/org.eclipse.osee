@@ -114,7 +114,7 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
          getClass().getSimpleName());
       artifact.persist(getClass().getSimpleName());
 
-      Artifact artifactFromId1 = ArtifactQuery.getArtifactFromId(artifact.getUuid(), CoreBranches.COMMON);
+      Artifact artifactFromId1 = ArtifactQuery.getArtifactFromId(artifact.getId(), CoreBranches.COMMON);
       assertNotNull(artifactFromId1);
 
       OwCollector collector = getDefaultOwCollector();
@@ -123,7 +123,7 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
       OwArtifactToken owToken = new OwArtifactToken();
       owToken.setUuid(artifact.getUuid());
       owToken.setName(artifact.getName());
-      String tokenStr = String.format("[%s]-[%d]", artifact.getName(), artifact.getUuid());
+      String tokenStr = String.format("[%s]-[%d]", artifact.getName(), artifact.getId());
       owToken.setData(tokenStr);
       collector.getDelete().add(owToken);
 
@@ -136,7 +136,7 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
       ArtifactCache.deCache(artifactFromId1);
 
       List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(
-         Collections.singleton(artifact.getUuid().intValue()), CoreBranches.COMMON);
+         Collections.singleton(artifact.getId().intValue()), CoreBranches.COMMON);
       assertTrue(artifacts.iterator().next().isDeleted());
    }
 }

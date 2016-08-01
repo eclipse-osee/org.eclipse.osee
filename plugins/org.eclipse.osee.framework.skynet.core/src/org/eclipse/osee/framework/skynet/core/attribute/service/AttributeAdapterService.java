@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute.service;
 
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 
 public interface AttributeAdapterService {
 
-   <T> T adapt(Attribute<?> attribute, UuidIdentity identity) throws OseeCoreException;
+   <T> T adapt(Attribute<?> attribute, Id identity) throws OseeCoreException;
 
 }
