@@ -18,10 +18,9 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
  */
 public final class AtsCoreUsers {
 
-   public static final org.eclipse.osee.ats.core.users.SystemUser SYSTEM_USER =
-      new org.eclipse.osee.ats.core.users.SystemUser();
-   public static final Anonymous ANONYMOUS_USER = new Anonymous();
-   public static final UnAssigned UNASSIGNED_USER = new UnAssigned();
+   public static final IAtsUser SYSTEM_USER = new AtsUser(SystemUser.OseeSystem);
+   public static final IAtsUser ANONYMOUS_USER = new AtsUser(SystemUser.Anonymous);
+   public static final IAtsUser UNASSIGNED_USER = new AtsUser(SystemUser.UnAssigned);
 
    private AtsCoreUsers() {
       // UtilityClass

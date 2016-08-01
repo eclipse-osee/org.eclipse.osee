@@ -22,7 +22,7 @@ import org.junit.Test;
  * Test case for {@link SystemUser}<br/>
  * Test case for {@link Anonymous}<br/>
  * Test case for {@link UnAssigned}<br/>
- * Test case for {@link AbstractAtsUser}
+ * Test case for {@link AtsUser}
  *
  * @author Donald G. Dunne
  */
@@ -144,55 +144,24 @@ public class CoreAtsUsersTest {
    public void testEqualsObjectWithException() {
       TestUser user2 = new TestUser();
       user2.setUserId(null);
-
       ExceptionUser exceptionUser = new ExceptionUser();
       Assert.assertFalse(user2.equals(exceptionUser));
    }
 
-   private class TestUser extends AbstractAtsUser {
-
-      private final String name = "Test User";
-
+   private class TestUser extends AtsUser {
       public TestUser() {
-         super("999994");
-      }
-
-      @Override
-      public String getName() {
-         return name;
-      }
-
-      @Override
-      public Long getId() {
-         return 999994L;
+         super(999994L, "Test User", "999994");
       }
    };
 
-   private class ExceptionUser implements IAtsUser {
+   private class ExceptionUser extends AtsUser {
+      public ExceptionUser() {
+         super(0L, "Exception User", null);
+      }
 
       @Override
       public String getUserId() throws OseeCoreException {
          throw new OseeStateException("this is the exception under test");
-      }
-
-      @Override
-      public String getName() {
-         return "Exception User";
-      }
-
-      @Override
-      public String getEmail() {
-         return getName();
-      }
-
-      @Override
-      public boolean isActive() {
-         return true;
-      }
-
-      @Override
-      public Long getId() {
-         return new Long(0);
       }
    };
 }

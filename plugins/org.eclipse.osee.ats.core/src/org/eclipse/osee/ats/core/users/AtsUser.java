@@ -11,16 +11,23 @@
 package org.eclipse.osee.ats.core.users;
 
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
  */
-public abstract class AbstractAtsUser implements IAtsUser {
+public class AtsUser extends NamedId implements IAtsUser {
 
    private String userId;
 
-   protected AbstractAtsUser(String userId) {
+   public AtsUser(IUserToken user) {
+      this(user.getId(), user.getName(), user.getUserId());
+   }
+
+   public AtsUser(Long id, String name, String userId) {
+      super(id, name);
       this.userId = userId;
    }
 
