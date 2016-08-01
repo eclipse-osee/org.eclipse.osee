@@ -88,7 +88,7 @@ public class QueryEngineImpl implements QueryEngine {
    }
 
    @Override
-   public ApplicabilityQuery createApplicabilityQuery() {
-      return new ApplicabilityQueryImpl(jdbcClient, sqlJoinFactory);
+   public ApplicabilityQuery createApplicabilityQuery(TupleQuery tupleQuery) {
+      return new ApplicabilityQueryImpl(jdbcClient, sqlJoinFactory, tupleQuery);
    }
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.search;
 
+import java.util.HashMap;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -24,4 +25,7 @@ public interface ApplicabilityQuery {
 
    List<ApplicabilityToken> getApplicabilityTokens(List<ArtifactId> artIds, BranchId branch);
 
+   HashMap<Long, ApplicabilityToken> getApplicabilityTokens(BranchId branch1, BranchId branch2);
+
+   HashMap<Long, ApplicabilityToken> getApplicabilityTokens(BranchId branch);
 }
