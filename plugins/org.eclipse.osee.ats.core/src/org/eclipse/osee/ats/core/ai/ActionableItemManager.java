@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
@@ -30,7 +31,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Donald G. Dunne
  */
-public class ActionableItemManager {
+public class ActionableItemManager implements IAtsActionableItemService {
 
    private final IAttributeResolver attrResolver;
    private final IAtsStoreService atsStoreService;
@@ -42,6 +43,7 @@ public class ActionableItemManager {
       this.services = services;
    }
 
+   @Override
    public Set<IAtsActionableItem> getActionableItems(IAtsObject atsObject) throws OseeCoreException {
       Set<IAtsActionableItem> ais = new HashSet<>();
       if (!atsStoreService.isDeleted(atsObject)) {
@@ -59,14 +61,17 @@ public class ActionableItemManager {
       return ais;
    }
 
+   @Override
    public String getActionableItemsStr(IAtsObject atsObject) throws OseeCoreException {
       return AtsObjects.toString("; ", getActionableItems(atsObject));
    }
 
+   @Override
    public Collection<String> getActionableItemGuids(IAtsObject atsObject) throws OseeCoreException {
       return attrResolver.getAttributesToStringList(atsObject, AtsAttributeTypes.ActionableItem);
    }
 
+   @Override
    public void addActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes) throws OseeCoreException {
       String guid = AtsUtilCore.getGuid(aia);
       if (!getActionableItemGuids(atsObject).contains(guid)) {
@@ -74,11 +79,13 @@ public class ActionableItemManager {
       }
    }
 
+   @Override
    public void removeActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes) throws OseeCoreException {
       String guid = AtsUtilCore.getGuid(aia);
       changes.deleteAttribute(atsObject, AtsAttributeTypes.ActionableItem, guid);
    }
 
+   @Override
    public Result setActionableItems(IAtsObject atsObject, Collection<IAtsActionableItem> newItems, IAtsChangeSet changes) throws OseeCoreException {
       Set<IAtsActionableItem> existingAias = getActionableItems(atsObject);
 

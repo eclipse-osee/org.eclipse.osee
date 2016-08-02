@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.IAtsCache;
@@ -140,7 +141,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    private IAtsUtilService utilService;
    private ISequenceProvider sequenceProvider;
    private IAtsActionFactory actionFactory;
-   private ActionableItemManager actionableItemManager;
+   private IAtsActionableItemService actionableItemManager;
    private JdbcService jdbcService;
    private WorkItemNotificationProcessor workItemNotificationProcessor;
    private AtsNotificationEventProcessor notificationEventProcessor;

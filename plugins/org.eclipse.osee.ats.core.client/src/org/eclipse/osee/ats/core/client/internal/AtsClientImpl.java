@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.IAtsCache;
@@ -157,7 +158,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    private JdbcService jdbcService;
    private IAtsWorkItemFactory workItemFactory;
    private IAtsConfigItemFactory configItemFactory;
-   private ActionableItemManager actionableItemManager;
+   private IAtsActionableItemService actionableItemManager;
    private IRelationResolver relationResolver;
    private IAtsProgramService programService;
    private IAtsTeamDefinitionService teamDefinitionService;
