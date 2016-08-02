@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.ev;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -19,6 +20,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.core.column.AtsAttributeValueColumnHandler;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -99,14 +101,17 @@ public class WorkItemAndPackageReport extends XNavigateItemAction {
                   workPackageGuid, item.toStringWithId());
             } else {
                rows.add(new ResultsXViewerRow(new String[] {
+                  workItemArt.getArtifactTypeName(),
                   workItemArt.getName(),
                   workItemArt.getSoleAttributeValue(AtsAttributeTypes.AtsId, ""),
-                  item.getParentTeamWorkflow().getTeamDefinition().getName(),
+                  getTeamDefName(item),
                   item.getStateMgr().getCurrentStateName(),
                   AtsAttributeValueColumnHandler.getColumnText(item, AtsAttributeTypes.PercentComplete, false, false,
                      AtsClientService.get().getServices()),
                   PercentCompleteTotalColumn.getInstance().getColumnText(workItemArt, null, 0),
                   item.getStateMgr().getAssigneesStr(),
+                  workItemArt.getSoleAttributeValue(AtsAttributeTypes.Points, ""),
+                  workItemArt.getSoleAttributeValue(AtsAttributeTypes.PointsNumeric, ""),
                   data.getCountryName(),
                   data.getProgramName(),
                   data.getInsertionName(),
@@ -133,14 +138,28 @@ public class WorkItemAndPackageReport extends XNavigateItemAction {
       tabs.add(new ResultsEditorTableTab(TITLE + " Report", columns, rows));
    }
 
+   private String getTeamDefName(IAtsWorkItem item) {
+      if (item.getParentTeamWorkflow() != null) {
+         return item.getParentTeamWorkflow().getTeamDefinition().getName();
+      }
+      Collection<IAtsTeamDefinition> teamDefs =
+         AtsClientService.get().getWorkItemService().getActionableItemService().getCorrespondingTeamDefinitions(item);
+      if (!teamDefs.isEmpty()) {
+         return org.eclipse.osee.framework.jdk.core.util.Collections.toString(", ", teamDefs);
+      }
+      return "unknown";
+   }
+
    private List<XViewerColumn> getColumns() {
       List<XViewerColumn> columns = Arrays.asList( //
-         WorkPackageReportColumns.getDefaultColumn("Title", 160),
+         WorkPackageReportColumns.getDefaultColumn("Type", 40), WorkPackageReportColumns.getDefaultColumn("Title", 160),
          WorkPackageReportColumns.getDefaultColumn("ATS ID", 40), WorkPackageReportColumns.getDefaultColumn("Team", 40),
          WorkPackageReportColumns.getDefaultColumn("State", 40),
          WorkPackageReportColumns.getDefaultColumn("Workflow Percent Complete", 40),
          WorkPackageReportColumns.getDefaultColumn("Total Percent Complete", 40),
-         WorkPackageReportColumns.getDefaultColumn("Assignees", 40), WorkPackageReportColumns.countryColumn,
+         WorkPackageReportColumns.getDefaultColumn("Assignees", 40),
+         WorkPackageReportColumns.getDefaultColumn("Points", 40),
+         WorkPackageReportColumns.getDefaultColumn("Points Numeric", 40), WorkPackageReportColumns.countryColumn,
          WorkPackageReportColumns.programColumn, WorkPackageReportColumns.insertionColumn,
          WorkPackageReportColumns.insertionActivityColumn, WorkPackageReportColumns.workPackageNameColumn,
          WorkPackageReportColumns.wpColorTeamColumn, WorkPackageReportColumns.wpProgramColumn,

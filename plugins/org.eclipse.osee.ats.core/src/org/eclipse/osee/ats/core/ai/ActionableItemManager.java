@@ -19,9 +19,11 @@ import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.util.Result;
@@ -109,6 +111,15 @@ public class ActionableItemManager implements IAtsActionableItemService {
    @Override
    public boolean hasActionableItems(IAtsObject atsObject) {
       return attrResolver.getAttributeCount(atsObject, AtsAttributeTypes.ActionableItem) > 0;
+   }
+
+   @Override
+   public Collection<IAtsTeamDefinition> getCorrespondingTeamDefinitions(IAtsObject atsObject) {
+      Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
+      if (getActionableItems(atsObject).size() > 0) {
+         teamDefs.addAll(ActionableItems.getImpactedTeamDefs(getActionableItems(atsObject)));
+      }
+      return teamDefs;
    }
 
 }

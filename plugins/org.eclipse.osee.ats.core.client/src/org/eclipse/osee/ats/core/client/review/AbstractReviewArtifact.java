@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.core.client.review;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -19,7 +18,6 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
@@ -28,7 +26,6 @@ import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -79,18 +76,6 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
          return ReviewBlockType.None;
       }
       return ReviewBlockType.valueOf(typeStr);
-   }
-
-   public Set<IAtsTeamDefinition> getCorrespondingTeamDefinition() throws OseeCoreException {
-      Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
-      if (getParentTeamWorkflow() != null) {
-         teamDefs.add(getParentTeamWorkflow().getTeamDefinition());
-      }
-      if (AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(this).size() > 0) {
-         teamDefs.addAll(ActionableItems.getImpactedTeamDefs(
-            AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(this)));
-      }
-      return teamDefs;
    }
 
    @Override

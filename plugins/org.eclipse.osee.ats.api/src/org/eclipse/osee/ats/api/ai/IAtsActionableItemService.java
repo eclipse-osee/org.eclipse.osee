@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.api.ai;
 import java.util.Collection;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -35,5 +36,7 @@ public interface IAtsActionableItemService {
    Result setActionableItems(IAtsObject atsObject, Collection<IAtsActionableItem> newItems, IAtsChangeSet changes) throws OseeCoreException;
 
    boolean hasActionableItems(IAtsObject atsObject);
+
+   Collection<IAtsTeamDefinition> getCorrespondingTeamDefinitions(IAtsObject atsObject);
 
 }
