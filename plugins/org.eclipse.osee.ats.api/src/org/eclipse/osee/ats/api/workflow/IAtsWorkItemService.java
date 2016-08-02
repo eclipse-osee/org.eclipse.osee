@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api.workflow;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
@@ -44,5 +45,7 @@ public interface IAtsWorkItemService {
    String getArtifactTypeShortName(IAtsTeamWorkflow teamWf);
 
    Collection<IAtsTeamWorkflow> getTeams(IAtsAction action);
+
+   IAtsActionableItemService getActionableItemService();
 
 }

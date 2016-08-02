@@ -84,8 +84,11 @@ public class AtsTestUtilTest extends AtsTestUtil {
       Assert.assertNotNull(AtsTestUtil.getTeamWf2().getTeamDefinition());
       Assert.assertNotSame(AtsTestUtil.getTeamWf(), AtsTestUtil.getTeamWf2());
       Assert.assertNotSame(AtsTestUtil.getActionArt(), AtsTestUtil.getActionArt2());
-      Assert.assertNotSame(AtsTestUtil.getTeamWf().getActionableItemsDam().getActionableItems().iterator().next(),
-         AtsTestUtil.getTeamWf2().getActionableItemsDam().getActionableItems().iterator().next());
+      Assert.assertNotSame(
+         AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(
+            AtsTestUtil.getTeamWf()).iterator().next(),
+         AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(
+            AtsTestUtil.getTeamWf2()).iterator().next());
 
       AtsTestUtil.cleanup();
 
@@ -103,8 +106,11 @@ public class AtsTestUtilTest extends AtsTestUtil {
       Assert.assertNotNull(AtsTestUtil.getTeamWf4().getTeamDefinition());
       Assert.assertNotSame(AtsTestUtil.getTeamWf(), AtsTestUtil.getTeamWf4());
       Assert.assertNotSame(AtsTestUtil.getActionArt(), AtsTestUtil.getActionArt4());
-      Assert.assertNotSame(AtsTestUtil.getTeamWf().getActionableItemsDam().getActionableItems().iterator().next(),
-         AtsTestUtil.getTeamWf4().getActionableItemsDam().getActionableItems().iterator().next());
+      Assert.assertNotSame(
+         AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(
+            AtsTestUtil.getTeamWf()).iterator().next(),
+         AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(
+            AtsTestUtil.getTeamWf4()).iterator().next());
       Assert.assertEquals(AtsClientService.get().getVersionService().getTargetedVersion(AtsTestUtil.getTeamWf4()),
          AtsTestUtil.getVerArt4());
 

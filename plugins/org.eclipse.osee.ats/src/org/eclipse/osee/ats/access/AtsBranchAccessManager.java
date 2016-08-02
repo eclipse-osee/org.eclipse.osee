@@ -29,8 +29,8 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.integration.RoleContextProvider;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -142,7 +142,8 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
       try {
          contextIds.addAll(getFromArtifact(teamArt));
          if (contextIds.isEmpty()) {
-            for (IAtsActionableItem aia : teamArt.getActionableItemsDam().getActionableItems()) {
+            for (IAtsActionableItem aia : AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(
+               teamArt)) {
                Artifact artifact = AtsClientService.get().getConfigArtifact(aia);
                if (artifact != null) {
                   contextIds.addAll(getFromArtifact(artifact));

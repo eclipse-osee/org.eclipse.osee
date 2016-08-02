@@ -62,8 +62,8 @@ public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
       // new workflow
       AtsChangeSet changes = new AtsChangeSet("Duplicate Workflow");
       newTeamArt = ActionManager.createTeamWorkflow(teamWf.getParentActionArtifact(), teamWf.getTeamDefinition(),
-         teamWf.getActionableItemsDam().getActionableItems(), assignees, changes, new Date(), originator, null,
-         CreateTeamOption.Duplicate_If_Exists);
+         AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(teamWf), assignees,
+         changes, new Date(), originator, null, CreateTeamOption.Duplicate_If_Exists);
 
       assertEquals("invalid number of assignees", 2, newTeamArt.getAssignees().size());
       assertEquals("invalid number of notifications", 2,

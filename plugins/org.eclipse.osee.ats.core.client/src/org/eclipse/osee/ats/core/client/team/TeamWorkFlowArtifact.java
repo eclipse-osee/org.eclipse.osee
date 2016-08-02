@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionArtifactRollup;
-import org.eclipse.osee.ats.core.client.config.ActionableItemManager;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
@@ -58,13 +57,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IAtsTeamWorkflow, IATSStateMachineArtifact {
 
    private static final Set<Integer> teamArtsWithNoAction = new HashSet<>();
-   private final ActionableItemManager actionableItemsDam;
    private boolean creatingWorkingBranch = false;
    private boolean committingWorkingBranch = false;
 
    public TeamWorkFlowArtifact(String guid, BranchId branch, IArtifactType artifactType) throws OseeCoreException {
       super(guid, branch, artifactType);
-      actionableItemsDam = new ActionableItemManager(this);
    }
 
    @Override
@@ -119,10 +116,6 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return super.getEditorTitle();
-   }
-
-   public ActionableItemManager getActionableItemsDam() {
-      return actionableItemsDam;
    }
 
    public void setTeamDefinition(IAtsTeamDefinition tda) throws OseeCoreException {
@@ -273,7 +266,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
 
    @Override
    public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
-      return getActionableItemsDam().getActionableItems();
+      return AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(this);
    }
 
    public Collection<TaskArtifact> getTaskArtifacts() throws OseeCoreException {

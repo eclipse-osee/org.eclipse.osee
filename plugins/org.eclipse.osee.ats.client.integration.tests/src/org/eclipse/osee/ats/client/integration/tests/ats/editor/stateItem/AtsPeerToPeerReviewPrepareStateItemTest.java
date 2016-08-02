@@ -13,7 +13,9 @@ package org.eclipse.osee.ats.client.integration.tests.ats.editor.stateItem;
 import static org.junit.Assert.assertFalse;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
@@ -37,7 +39,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link AtsPeerToPeerReviewPrepareStateItem}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsPeerToPeerReviewPrepareStateItemTest {
@@ -55,8 +57,11 @@ public class AtsPeerToPeerReviewPrepareStateItemTest {
             AtsUtilCore.getAtsBranch());
          peerRevArt.setName(getClass().getSimpleName());
          // Setup actionable item so don't get error that there is no parent team workflow
-         peerRevArt.getActionableItemsDam().addActionableItem(
-            DemoTestUtil.getActionableItem(DemoActionableItems.CIS_Code));
+         IAtsChangeSet changes = AtsClientService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName(),
+            AtsClientService.get().getUserService().getCurrentUser());
+         AtsClientService.get().getWorkItemService().getActionableItemService().addActionableItem(peerRevArt,
+            DemoTestUtil.getActionableItem(DemoActionableItems.CIS_Code), changes);
+         changes.execute();
          peerRevArt.persist(getClass().getSimpleName());
       }
    }

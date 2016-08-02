@@ -16,11 +16,13 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -97,7 +99,8 @@ public class WfeRelationsHyperlinkComposite extends Composite {
             return true;
          }
       }
-      if (smaArt instanceof AbstractReviewArtifact && ((AbstractReviewArtifact) smaArt).getActionableItemsDam().hasActionableItems()) {
+      if (smaArt instanceof AbstractReviewArtifact && AtsClientService.get().getWorkItemService().getActionableItemService().hasActionableItems(
+         smaArt)) {
          return true;
       }
       return false;
@@ -158,7 +161,7 @@ public class WfeRelationsHyperlinkComposite extends Composite {
    }
 
    private void processReviewArtifact(final AbstractReviewArtifact reviewArt) throws OseeCoreException {
-      if (!reviewArt.getActionableItemsDam().hasActionableItems()) {
+      if (!AtsClientService.get().getWorkItemService().getActionableItemService().hasActionableItems(reviewArt)) {
          return;
       }
       actionableItemsLabel = editor.getToolkit().createLabel(this, "");
@@ -189,7 +192,7 @@ public class WfeRelationsHyperlinkComposite extends Composite {
          //
             "\" is review of Actionable Items  \"" +
             //
-            ((AbstractReviewArtifact) awa).getActionableItemsDam().getActionableItemsStr() + "\" ");
+            AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItemsStr(awa) + "\" ");
       }
    }
 
@@ -201,15 +204,18 @@ public class WfeRelationsHyperlinkComposite extends Composite {
       final AICheckTreeDialog diag =
          new AICheckTreeDialog("Edit Actionable Items", "Select Actionable Items for this review", Active.Active);
       try {
-         Collection<IAtsActionableItem> actionableItems =
-            ActionableItems.getUserEditableActionableItems(reviewArt.getActionableItemsDam().getActionableItems());
-         reviewArt.getActionableItemsDam().getActionableItems();
+         Collection<IAtsActionableItem> actionableItems = ActionableItems.getUserEditableActionableItems(
+            AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(reviewArt));
 
          diag.setInitialSelections(actionableItems);
          if (diag.open() != 0) {
             return;
          }
-         reviewArt.getActionableItemsDam().setActionableItems(diag.getChecked());
+         IAtsChangeSet changes = AtsClientService.get().getStoreService().createAtsChangeSet("Edit Actionable Items",
+            AtsClientService.get().getUserService().getCurrentUser());
+         AtsClientService.get().getWorkItemService().getActionableItemService().setActionableItems(reviewArt,
+            actionableItems, changes);
+         changes.execute();
          editor.onDirtied();
          refreshActionableItemsLabel();
       } catch (Exception ex) {

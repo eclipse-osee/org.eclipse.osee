@@ -45,7 +45,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 /**
  * Methods in support of programatically transitioning the Peer Review Workflow through it's states. Only to be used for
  * the DefaultReviewWorkflow of Prepare->Review->Complete
- * 
+ *
  * @author Donald G. Dunne
  */
 public class PeerToPeerReviewManager {
@@ -61,7 +61,7 @@ public class PeerToPeerReviewManager {
    /**
     * Quickly transition to a state with minimal metrics and data entered. Should only be used for automated transition
     * for things such as developmental testing and demos.
-    * 
+    *
     * @param user User to transition to OR null if should use user of current state
     */
    public static Result transitionTo(PeerToPeerReviewArtifact reviewArt, PeerToPeerReviewState toState, Collection<UserRole> roles, Collection<ReviewDefectItem> defects, IAtsUser user, boolean popup, IAtsChangeSet changes) throws OseeCoreException {
@@ -168,8 +168,8 @@ public class PeerToPeerReviewManager {
          AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(
             actionableItem).getWorkDefinition(),
          null, teamDef, reviewTitle, againstState, createdDate, createdBy, changes);
-      peerArt.getActionableItemsDam().addActionableItem(actionableItem);
-      changes.add(peerArt);
+      AtsClientService.get().getWorkItemService().getActionableItemService().addActionableItem(peerArt, actionableItem,
+         changes);
       return peerArt;
    }
 

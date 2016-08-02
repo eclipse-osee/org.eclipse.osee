@@ -36,7 +36,8 @@ public class PrivilegedUserManager {
       if (workflow.getParentTeamWorkflow() != null) {
          users.addAll(getPrivilegedUsers(workflow.getParentTeamWorkflow()));
       } else {
-         for (IAtsActionableItem aia : workflow.getParentTeamWorkflow().getActionableItemsDam().getActionableItems()) {
+         for (IAtsActionableItem aia : AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(
+            workflow)) {
             addPrivilegedUsersUpTeamDefinitionTree(aia.getTeamDefinitionInherited(), users);
          }
       }

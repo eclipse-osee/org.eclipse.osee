@@ -20,10 +20,11 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -42,7 +43,7 @@ public class ActionArtifact extends Artifact implements IAtsAction {
    public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
       Set<IAtsActionableItem> aias = new HashSet<>();
       for (TeamWorkFlowArtifact team : getTeams()) {
-         aias.addAll(team.getActionableItemsDam().getActionableItems());
+         aias.addAll(AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(team));
       }
       return aias;
    }

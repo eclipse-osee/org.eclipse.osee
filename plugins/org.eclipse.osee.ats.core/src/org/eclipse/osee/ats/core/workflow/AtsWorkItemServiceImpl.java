@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
@@ -27,6 +28,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
+import org.eclipse.osee.ats.core.ai.ActionableItemManager;
 import org.eclipse.osee.ats.core.validator.AtsXWidgetValidateManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -41,6 +43,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
    private final IAtsServices services;
+   private IAtsActionableItemService actionableItemService;
 
    public AtsWorkItemServiceImpl(IAtsServices services, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       this.services = services;
@@ -125,6 +128,15 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          }
       }
       return null;
+   }
+
+   @Override
+   public IAtsActionableItemService getActionableItemService() {
+      if (actionableItemService == null) {
+         actionableItemService =
+            new ActionableItemManager(services.getAttributeResolver(), services.getStoreService(), services);
+      }
+      return actionableItemService;
    }
 
 }

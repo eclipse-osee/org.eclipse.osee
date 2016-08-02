@@ -362,12 +362,13 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
 
          for (IAtsActionableItem checkedAi : job.getAddAis()) {
             results.logf("Actionable Item [%s] will be added to this workflow\n", checkedAi);
-            teamWf.getActionableItemsDam().addActionableItem(checkedAi);
-            changes.add(teamWf);
+            AtsClientService.get().getWorkItemService().getActionableItemService().addActionableItem(teamWf, checkedAi,
+               changes);
          }
          for (IAtsActionableItem currAi : job.getRemoveAis()) {
             results.logf("Actionable Item [%s] will be removed from this workflow\n", currAi);
-            teamWf.getActionableItemsDam().removeActionableItem(currAi);
+            AtsClientService.get().getWorkItemService().getActionableItemService().removeActionableItem(teamWf, currAi,
+               changes);
             changes.add(teamWf);
          }
          if (!changes.isEmpty()) {

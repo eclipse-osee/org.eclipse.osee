@@ -76,16 +76,18 @@ public class PopulateDemoActionsTest {
       TeamWorkFlowArtifact codeTeamArt = null;
       int numTested = 0;
       for (TeamWorkFlowArtifact teamArt : action.getTeams()) {
-         if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Code")) {
+         String aiStr =
+            AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItemsStr(teamArt);
+         if (aiStr.contains("Code")) {
             numTested++;
             codeTeamArt = teamArt;
             testTeamContents(teamArt, title, "1", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Code",
                "Joe Smith", DemoArtifactTypes.DemoCodeTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_Code));
-         } else if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Test")) {
+         } else if (aiStr.contains("Test")) {
             numTested++;
             testTeamContents(teamArt, title, "1", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Test",
                "Kay Jones", DemoArtifactTypes.DemoTestTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_Test));
-         } else if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Req")) {
+         } else if (aiStr.contains("Req")) {
             numTested++;
             testTeamContents(teamArt, title, "1", SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW Requirements", "Joe Smith", DemoArtifactTypes.DemoReqTeamWorkflow,
@@ -137,24 +139,26 @@ public class PopulateDemoActionsTest {
       TeamWorkFlowArtifact codeTeam = null, designTeam = null;
       int numTested = 0;
       for (TeamWorkFlowArtifact teamArt : action.getTeams()) {
-         if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Code")) {
+         String aiStr =
+            AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItemsStr(teamArt);
+         if (aiStr.contains("Code")) {
             numTested++;
 
             codeTeam = teamArt;
             testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Code",
                "Joe Smith", DemoArtifactTypes.DemoCodeTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_Code));
-         } else if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Test")) {
+         } else if (aiStr.contains("Test")) {
             numTested++;
 
             testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Test",
                "Kay Jones", DemoArtifactTypes.DemoTestTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_Test));
-         } else if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Req")) {
+         } else if (aiStr.contains("Req")) {
             numTested++;
 
             testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW Requirements", "Joe Smith", DemoArtifactTypes.DemoReqTeamWorkflow,
                DemoTestUtil.getTeamDef(DemoTeam.SAW_Requirements));
-         } else if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Design")) {
+         } else if (aiStr.contains("Design")) {
             numTested++;
 
             designTeam = teamArt;
@@ -200,23 +204,25 @@ public class PopulateDemoActionsTest {
       TeamWorkFlowArtifact designTeam = null;
       int numTested = 0;
       for (TeamWorkFlowArtifact teamArt : action.getTeams()) {
-         if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Code")) {
+         String aiStr =
+            AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItemsStr(teamArt);
+         if (aiStr.contains("Code")) {
             numTested++;
 
             testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Code",
                "Joe Smith", DemoArtifactTypes.DemoCodeTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_Code));
-         } else if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Test")) {
+         } else if (aiStr.contains("Test")) {
             numTested++;
 
             testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Test",
                "Kay Jones", DemoArtifactTypes.DemoTestTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_Test));
-         } else if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Req")) {
+         } else if (aiStr.contains("Req")) {
             numTested++;
 
             testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW Requirements", "Joe Smith", DemoArtifactTypes.DemoReqTeamWorkflow,
                DemoTestUtil.getTeamDef(DemoTeam.SAW_Requirements));
-         } else if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Design")) {
+         } else if (aiStr.contains("Design")) {
             numTested++;
 
             designTeam = teamArt;
@@ -460,7 +466,8 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(artifactType, teamArt.getArtifactType());
       Assert.assertEquals(teamDef, teamArt.getTeamDefinition());
       Assert.assertEquals(assigneeStr, teamArt.getStateMgr().getAssigneesStr());
-      Assert.assertEquals(actionableItemStr, teamArt.getActionableItemsDam().getActionableItemsStr());
+      Assert.assertEquals(actionableItemStr,
+         AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItemsStr(teamArt));
    }
 
    private void testTaskContents(TaskArtifact task, String currentStateName, String relatedToState) throws OseeCoreException {

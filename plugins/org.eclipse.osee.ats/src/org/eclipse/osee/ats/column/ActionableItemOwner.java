@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.column;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -77,7 +77,8 @@ public class ActionableItemOwner extends XViewerAtsColumn implements IXViewerVal
       if (element instanceof AbstractWorkflowArtifact) {
          TeamWorkFlowArtifact teamArt = ((AbstractWorkflowArtifact) element).getParentTeamWorkflow();
          if (teamArt != null) {
-            for (IAtsActionableItem aia : teamArt.getActionableItemsDam().getActionableItems()) {
+            for (IAtsActionableItem aia : AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(
+               teamArt)) {
                users.addAll(AtsClientService.get().getConfigArtifact(aia).getRelatedArtifacts(
                   AtsRelationTypes.ActionableItem_User, User.class));
             }

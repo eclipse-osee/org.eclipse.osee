@@ -106,4 +106,9 @@ public class ActionableItemManager implements IAtsActionableItemService {
       return Result.TrueResult;
    }
 
+   @Override
+   public boolean hasActionableItems(IAtsObject atsObject) {
+      return attrResolver.getAttributeCount(atsObject, AtsAttributeTypes.ActionableItem) > 0;
+   }
+
 }

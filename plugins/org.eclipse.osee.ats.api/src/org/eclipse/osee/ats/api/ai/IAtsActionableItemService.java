@@ -34,4 +34,6 @@ public interface IAtsActionableItemService {
 
    Result setActionableItems(IAtsObject atsObject, Collection<IAtsActionableItem> newItems, IAtsChangeSet changes) throws OseeCoreException;
 
+   boolean hasActionableItems(IAtsObject atsObject);
+
 }

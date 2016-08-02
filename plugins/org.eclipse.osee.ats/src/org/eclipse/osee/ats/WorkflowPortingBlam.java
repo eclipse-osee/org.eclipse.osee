@@ -93,8 +93,9 @@ public class WorkflowPortingBlam extends AbstractBlam {
    private List<IAtsActionableItem> getActionableItems(IAtsActionableItem actionableItem) throws OseeCoreException {
       List<IAtsActionableItem> actionableItems;
       if (actionableItem == null) {
-         actionableItems =
-            new ArrayList<IAtsActionableItem>(sourceWorkflows.get(0).getActionableItemsDam().getActionableItems());
+         actionableItems = new ArrayList<IAtsActionableItem>(
+            AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(
+               sourceWorkflows.get(0)));
       } else {
          actionableItems = java.util.Collections.singletonList(actionableItem);
       }

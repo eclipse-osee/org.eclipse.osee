@@ -24,8 +24,8 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
-import org.eclipse.osee.ats.core.client.config.ActionableItemManager;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
@@ -40,11 +40,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact implements IAtsAbstractReview {
 
-   private ActionableItemManager actionableItemsDam;
-
    public AbstractReviewArtifact(String guid, BranchId branch, IArtifactType artifactType) throws OseeCoreException {
       super(guid, branch, artifactType);
-      actionableItemsDam = new ActionableItemManager(this);
    }
 
    public static List<IAtsUser> getImplementersByState(AbstractWorkflowArtifact workflow, IStateToken state) throws OseeCoreException {
@@ -89,17 +86,11 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
       if (getParentTeamWorkflow() != null) {
          teamDefs.add(getParentTeamWorkflow().getTeamDefinition());
       }
-      if (getActionableItemsDam().getActionableItems().size() > 0) {
-         teamDefs.addAll(ActionableItems.getImpactedTeamDefs(getActionableItemsDam().getActionableItems()));
+      if (AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(this).size() > 0) {
+         teamDefs.addAll(ActionableItems.getImpactedTeamDefs(
+            AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(this)));
       }
       return teamDefs;
-   }
-
-   public ActionableItemManager getActionableItemsDam() {
-      if (actionableItemsDam == null) {
-         actionableItemsDam = new ActionableItemManager(this);
-      }
-      return actionableItemsDam;
    }
 
    @Override
@@ -160,7 +151,7 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
    }
 
    public boolean isStandAloneReview() throws OseeCoreException {
-      return getActionableItemsDam().hasActionableItems();
+      return AtsClientService.get().getWorkItemService().getActionableItemService().hasActionableItems(this);
    }
 
    @Override
@@ -181,7 +172,7 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
 
    @Override
    public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
-      return getActionableItemsDam().getActionableItems();
+      return AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(this);
    }
 
    @Override

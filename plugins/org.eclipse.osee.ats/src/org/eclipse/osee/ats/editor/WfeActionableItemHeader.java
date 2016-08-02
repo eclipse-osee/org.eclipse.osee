@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -99,12 +100,15 @@ public class WfeActionableItemHeader extends Composite {
          label.setText(" " + "Error: No Actionable Items identified.");
          label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
       } else {
-         StringBuffer sb = new StringBuffer(teamWf.getActionableItemsDam().getActionableItemsStr());
+         StringBuffer sb = new StringBuffer(
+            AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItemsStr(teamWf));
          if (ActionManager.getTeams(parentAction).size() > 1) {
             sb.append("         Other: ");
             for (TeamWorkFlowArtifact workflow : ActionManager.getTeams(parentAction)) {
                if (!workflow.equals(teamWf)) {
-                  sb.append(workflow.getActionableItemsDam().getActionableItemsStr());
+                  sb.append(
+                     AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItemsStr(
+                        workflow));
                   sb.append(", ");
                }
             }
