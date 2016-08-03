@@ -198,7 +198,7 @@
          name="ImportTasksFromSpreadsheet"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation
-            className="org.eclipse.osee.ats.operation.ImportTasksFromSpreadsheet">
+            className="org.eclipse.osee.ats.util.Import.ImportTasksFromSpreadsheet">
       </Operation>
    </extension>
    <extension
@@ -206,7 +206,7 @@
          name="ImportTasksFromSimpleList"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation
-            className="org.eclipse.osee.ats.operation.ImportTasksFromSimpleList">
+            className="org.eclipse.osee.ats.util.Import.ImportTasksFromSimpleList">
       </Operation>
    </extension>
    <extension

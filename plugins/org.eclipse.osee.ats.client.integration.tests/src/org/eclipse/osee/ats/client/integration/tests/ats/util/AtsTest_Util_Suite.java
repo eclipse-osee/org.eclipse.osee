@@ -26,7 +26,8 @@ import org.junit.runners.Suite;
    AtsImageTest.class,
    AtsXWidgetsExampleBlamTest.class,
    CreateActionUsingAllActionableItemsTest.class,
-   ImportActionsViaSpreadsheetTest.class})
+   ImportActionsViaSpreadsheetTest.class,
+   ImportTasksFromSpreadsheetTest.class})
 /**
  * @author Donald G. Dunne
  */

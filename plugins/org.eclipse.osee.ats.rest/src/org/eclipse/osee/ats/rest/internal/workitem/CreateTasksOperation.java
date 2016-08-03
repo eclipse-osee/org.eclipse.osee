@@ -282,7 +282,8 @@ public class CreateTasksOperation {
             if (Strings.isValid(jaxTask.getDescription())) {
                changes.setSoleAttributeValue(task, AtsAttributeTypes.Description, jaxTask.getDescription());
             }
-            atsServer.getActionFactory().initializeNewStateMachine(task, assignees, createdByDate, asUser,
+            IAtsUser createdBy = atsServer.getUserService().getUserById(jaxTask.getCreatedByUserId());
+            atsServer.getActionFactory().initializeNewStateMachine(task, assignees, createdByDate, createdBy,
                workDefinition, changes);
 
             // Set parent state task is related to if set

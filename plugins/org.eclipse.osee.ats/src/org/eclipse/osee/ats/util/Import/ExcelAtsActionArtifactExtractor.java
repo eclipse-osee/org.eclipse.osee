@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
+import org.eclipse.osee.ats.api.task.JaxAttribute;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -47,7 +48,9 @@ import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
+import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -57,7 +60,9 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.xml.sax.InputSource;
@@ -102,8 +107,7 @@ public class ExcelAtsActionArtifactExtractor {
                   Collection<IAtsActionableItem> aias = new ArrayList<>();
                   for (Artifact aiaArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.ActionableItem,
                      actionableItemName, AtsUtilCore.getAtsBranch())) {
-                     IAtsActionableItem ai =
-                        AtsClientService.get().getCache().getByUuid(aiaArt.getUuid(), IAtsActionableItem.class);
+                     IAtsActionableItem ai = AtsClientService.get().getConfigItemFactory().getActionableItem(aiaArt);
                      if (ai != null) {
                         aias.add(ai);
                      }
@@ -187,8 +191,16 @@ public class ExcelAtsActionArtifactExtractor {
                actionNameToAction.put(aData.title, actionArt);
                actionArts.add(actionArt);
             } else {
-               Set<IAtsActionableItem> aias =
-                  ActionableItems.getActionableItems(aData.actionableItems, AtsClientService.get());
+               Set<IAtsActionableItem> aias = new HashSet<>();
+               for (String actionableItemName : aData.actionableItems) {
+                  for (Artifact aiaArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.ActionableItem,
+                     actionableItemName, AtsUtilCore.getAtsBranch())) {
+                     IAtsActionableItem ai = AtsClientService.get().getConfigItemFactory().getActionableItem(aiaArt);
+                     if (ai != null) {
+                        aias.add(ai);
+                     }
+                  }
+               }
                Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> teamDefToAias = getTeamDefToAias(aias);
                for (Entry<IAtsTeamDefinition, Collection<IAtsActionableItem>> entry : teamDefToAias.entrySet()) {
 
@@ -200,6 +212,11 @@ public class ExcelAtsActionArtifactExtractor {
                      teamWorkflow.setSoleAttributeValue(AtsAttributeTypes.PriorityType, aData.priorityStr);
                   }
                   teamWorkflow.setSoleAttributeValue(AtsAttributeTypes.ChangeType, aData.changeType);
+
+                  for (JaxAttribute attr : aData.attributes) {
+                     IAttributeType attrType = AttributeTypeManager.getType(attr.getAttrTypeName());
+                     teamWorkflow.setAttributeValues(attrType, attr.getValues());
+                  }
                   newTeamArts.add(teamWorkflow);
                   addToGoal(Collections.singleton(teamWorkflow), changes);
                }
@@ -302,9 +319,6 @@ public class ExcelAtsActionArtifactExtractor {
       return "Extract each row as an Action";
    }
 
-   /**
-    * @return the actionArts
-    */
    public Set<Artifact> getActionArts() {
       return actionArts;
    }
@@ -323,6 +337,7 @@ public class ExcelAtsActionArtifactExtractor {
       protected Set<String> actionableItems = new HashSet<>();
       protected String version = "";
       protected Double estimatedHours = null;
+      protected List<JaxAttribute> attributes = new LinkedList<>();
    }
 
    private final static class InternalRowProcessor implements RowProcessor {
@@ -397,30 +412,52 @@ public class ExcelAtsActionArtifactExtractor {
 
          ActionData aData = new ActionData();
          for (int i = 0; i < cols.length; i++) {
-            if (headerRow[i] != null) {
-               if (headerRow[i].equalsIgnoreCase(Columns.Title.name())) {
+            String header = headerRow[i];
+            if (header != null) {
+               if (header.equalsIgnoreCase(Columns.Title.name())) {
                   if (cols[i].equals("")) {
                      return;
                   }
                   aData.title = cols[i];
-               } else if (headerRow[i].equalsIgnoreCase(Columns.Priority.name())) {
+               } else if (header.equalsIgnoreCase(Columns.Priority.name())) {
                   aData.priorityStr = cols[i];
-               } else if (headerRow[i].equalsIgnoreCase(Columns.Version.name())) {
+               } else if (header.equalsIgnoreCase(Columns.Version.name())) {
                   aData.version = cols[i] == null ? "" : cols[i];
-               } else if (headerRow[i].equalsIgnoreCase(Columns.ChangeType.name())) {
+               } else if (header.equalsIgnoreCase(Columns.ChangeType.name())) {
                   aData.changeType = cols[i];
-               } else if (headerRow[i].equalsIgnoreCase(Columns.Description.name())) {
+               } else if (header.equalsIgnoreCase(Columns.Description.name())) {
                   aData.desc = cols[i] == null ? "" : cols[i];
-               } else if (headerRow[i].equalsIgnoreCase(Columns.EstimatedHours.name())) {
+               } else if (header.equalsIgnoreCase(Columns.EstimatedHours.name())) {
                   if (Strings.isValid(cols[i])) {
                      aData.estimatedHours = new Double(cols[i]);
                   }
-               } else if (headerRow[i].equalsIgnoreCase(Columns.ActionableItems.name())) {
+               } else if (header.equalsIgnoreCase(Columns.ActionableItems.name())) {
                   processActionableItems(cols, aData, i);
-               } else if (headerRow[i].equalsIgnoreCase(Columns.Assignees.name())) {
+               } else if (header.equalsIgnoreCase(Columns.Assignees.name())) {
                   processAssignees(cols, aData, i);
                } else {
-                  resultData.error("Unhandled column => " + headerRow[i]);
+                  String attrTypeName = header;
+                  if (Strings.isValid(attrTypeName)) {
+                     AttributeType attributeType = AttributeTypeManager.getType(attrTypeName);
+                     if (attributeType == null) {
+                        OseeLog.log(Activator.class, Level.SEVERE, "Invalid Attribute Type Name => " + header);
+                     } else {
+                        if (!ArtifactTypeManager.getArtifactTypesFromAttributeType(attributeType,
+                           AtsUtilCore.getAtsBranch()).contains(AtsArtifactTypes.Task)) {
+                           OseeLog.log(Activator.class, Level.SEVERE, "Invalid Attribute Type for Task => " + header);
+                        } else {
+                           String value = cols[i];
+                           if (Strings.isValid(value)) {
+                              JaxAttribute attr = new JaxAttribute();
+                              attr.setAttrTypeName(attrTypeName);
+                              attr.getValues().add(value);
+                              aData.attributes.add(attr);
+                           }
+                        }
+                     }
+                  } else {
+                     OseeLog.log(Activator.class, Level.SEVERE, "Unhandled column => " + header);
+                  }
                }
             }
          }

@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.JaxAtsTaskFactory;
@@ -24,14 +25,19 @@ import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -139,28 +145,49 @@ public class ExcelAtsTaskArtifactExtractor {
             return;
          }
          for (int i = 0; i < row.length; i++) {
-            if (headerRow[i] == null) {
+            String header = headerRow[i];
+            if (header == null) {
                OseeLog.log(Activator.class, Level.SEVERE, "Null header column => " + i);
-            } else if (headerRow[i].equalsIgnoreCase("Assignees")) {
+            } else if (header.equalsIgnoreCase("Assignees")) {
                processAssignees(row, task, i);
-            } else if (headerRow[i].equalsIgnoreCase("Resolution")) {
+            } else if (header.equalsIgnoreCase("Resolution")) {
                processResolution(row, task, i);
-            } else if (headerRow[i].equalsIgnoreCase("Description")) {
+            } else if (header.equalsIgnoreCase("Created By")) {
+               processCreatedBy(row, task, i);
+            } else if (header.equalsIgnoreCase("Description")) {
                processDescription(row, task, i);
-            } else if (headerRow[i].equalsIgnoreCase("Related to State")) {
+            } else if (header.equalsIgnoreCase("Related to State")) {
                processRelatedToState(row, task, i);
-            } else if (headerRow[i].equalsIgnoreCase("Notes")) {
+            } else if (header.equalsIgnoreCase("Notes")) {
                processNotes(row, task, i);
-            } else if (headerRow[i].equalsIgnoreCase("Title")) {
+            } else if (header.equalsIgnoreCase("Title")) {
                processTitle(row, task, i);
-            } else if (headerRow[i].equalsIgnoreCase("Percent Complete")) {
+            } else if (header.equalsIgnoreCase("Percent Complete")) {
                processPercentComplete(row, i);
-            } else if (headerRow[i].equalsIgnoreCase("Hours Spent")) {
+            } else if (header.equalsIgnoreCase("Hours Spent")) {
                processHoursSpent(row, i);
-            } else if (headerRow[i].equalsIgnoreCase("Estimated Hours")) {
+            } else if (header.equalsIgnoreCase("Estimated Hours")) {
                processEstimatedHours(row, task, i);
             } else {
-               OseeLog.log(Activator.class, Level.SEVERE, "Unhandled column => " + headerRow[i]);
+               String attrTypeName = header;
+               if (Strings.isValid(attrTypeName)) {
+                  AttributeType attributeType = AttributeTypeManager.getType(attrTypeName);
+                  if (attributeType == null) {
+                     OseeLog.log(Activator.class, Level.SEVERE, "Invalid Attribute Type Name => " + header);
+                  } else {
+                     if (!ArtifactTypeManager.getArtifactTypesFromAttributeType(attributeType,
+                        AtsUtilCore.getAtsBranch()).contains(AtsArtifactTypes.Task)) {
+                        OseeLog.log(Activator.class, Level.SEVERE, "Invalid Attribute Type for Task => " + header);
+                     } else {
+                        String value = row[i];
+                        if (Strings.isValid(value)) {
+                           task.addAttribute(attributeType, value);
+                        }
+                     }
+                  }
+               } else {
+                  OseeLog.log(Activator.class, Level.SEVERE, "Unhandled column => " + header);
+               }
             }
          }
       }
@@ -212,6 +239,31 @@ public class ExcelAtsTaskArtifactExtractor {
          String str = row[i];
          if (Strings.isValid(str)) {
             taskArt.addAttribute(AtsAttributeTypes.Resolution, str);
+         }
+      }
+
+      private void processCreatedBy(String[] row, JaxAtsTask taskArt, int i) throws OseeCoreException {
+         String str = row[i];
+         if (Strings.isValid(str)) {
+            IAtsUser user = null;
+            try {
+               user = AtsClientService.get().getUserService().getUserById(str);
+            } catch (ArtifactDoesNotExist ex) {
+               // do nothing
+            }
+            if (user == null) {
+               try {
+                  user = AtsClientService.get().getUserService().getUserByName(str);
+               } catch (ArtifactDoesNotExist ex) {
+                  // do nothing
+               }
+            }
+            if (user != null) {
+               taskArt.setCreatedByUserId(user.getUserId());
+            } else {
+               throw new OseeArgumentException("Invalid Created By \"%s\" for row %d.  Use OSEE user name or id.", str,
+                  rowNum);
+            }
          }
       }
 

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.operation;
+package org.eclipse.osee.ats.util.Import;
 
 import java.util.ArrayList;
 import java.util.Arrays;

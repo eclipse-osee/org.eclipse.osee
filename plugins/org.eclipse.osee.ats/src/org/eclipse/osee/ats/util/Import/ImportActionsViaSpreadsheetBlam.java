@@ -139,7 +139,11 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
 
    @Override
    public String getDescriptionUsage() {
-      return "Import Actions via Excel Spreadsheet.\n Open example spreadsheet, save to desktop and edit as desired. Once completed, select file from this BLAM and Run.";
+      return "Import Actions via Excel Spreadsheet.\n Open example spreadsheet, " //
+         + "save to desktop and edit as desired. Once completed, select file from " //
+         + "this BLAM and Run.  Titles that are the same are placed under the same action." //
+         + "  After \"Estimated Hours\", remaining columns will attempt to match " //
+         + "column name with valid attribute type name add that to Task.";
    }
 
    @Override
