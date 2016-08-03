@@ -159,6 +159,8 @@ public final class SafetyInformationAccumulator {
       String sevCat =
          subsystemFunction.getSoleAttributeAsString(CoreAttributeTypes.SeverityCategory, "Error: not available");
       writer.writeCell(sevCat);
+      writer.writeCell(subsystemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDAL, ""));
+      writer.writeCell(subsystemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDALRationale, ""));
 
       for (ArtifactReadable subsystemRequirement : subsystemRequirements.get(subsystemFunction)) {
          processSubsystemRequirement(subsystemRequirement, convertSafetyCriticalityToDAL(sevCat));
