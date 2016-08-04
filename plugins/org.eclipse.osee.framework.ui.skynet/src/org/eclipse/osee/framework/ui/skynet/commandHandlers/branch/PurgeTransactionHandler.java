@@ -14,7 +14,7 @@ import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.action.PurgeTransactionAction;
@@ -27,7 +27,7 @@ public class PurgeTransactionHandler extends CommandHandler {
 
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
-      List<TransactionRecord> transactions = Handlers.getTransactionsFromStructuredSelection(selection);
+      List<TransactionToken> transactions = Handlers.getTransactionsFromStructuredSelection(selection);
 
       PurgeTransactionAction action = new PurgeTransactionAction(transactions);
       action.run();
@@ -37,7 +37,7 @@ public class PurgeTransactionHandler extends CommandHandler {
 
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
-      List<TransactionRecord> transactions = Handlers.getTransactionsFromStructuredSelection(structuredSelection);
+      List<TransactionToken> transactions = Handlers.getTransactionsFromStructuredSelection(structuredSelection);
       return transactions.size() > 0 && AccessControlManager.isOseeAdmin();
    }
 }

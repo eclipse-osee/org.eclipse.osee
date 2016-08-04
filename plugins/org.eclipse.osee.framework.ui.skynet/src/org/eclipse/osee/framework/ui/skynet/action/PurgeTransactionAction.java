@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -42,13 +42,13 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 public class PurgeTransactionAction extends Action {
 
    private static final String NAME = "Purge Transaction";
-   private final List<TransactionRecord> transactions;
+   private final List<TransactionToken> transactions;
 
    public PurgeTransactionAction() {
-      this(new ArrayList<TransactionRecord>());
+      this(new ArrayList<TransactionToken>());
    }
 
-   public PurgeTransactionAction(List<TransactionRecord> transactions) {
+   public PurgeTransactionAction(List<TransactionToken> transactions) {
       super(NAME);
       this.transactions = transactions;
       setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.PURGE));

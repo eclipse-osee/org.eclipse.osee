@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.action;
 
-import static org.eclipse.osee.framework.core.data.TransactionId.SENTINEL;
 import java.net.URI;
 import java.util.List;
 import javax.ws.rs.core.MediaType;
@@ -21,9 +20,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -77,7 +75,7 @@ public class WasIsCompareEditorAction extends Action {
                return;
             }
             Change change = localChanges.iterator().next();
-            List<TransactionRecord> transactionsFromStructuredSelection =
+            List<TransactionToken> transactionsFromStructuredSelection =
                Handlers.getTransactionsFromStructuredSelection(structuredSelection);
             TransactionId transactionId = transactionsFromStructuredSelection.iterator().next();
             List<Artifact> artifactsFromStructuredSelection =

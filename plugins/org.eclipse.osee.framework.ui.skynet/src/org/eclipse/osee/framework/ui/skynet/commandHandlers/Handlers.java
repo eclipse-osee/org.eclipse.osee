@@ -16,7 +16,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
@@ -41,8 +41,8 @@ public class Handlers {
     * Populates a list of TransactionIds from a IStructuredSelection. Returns an empty list if no TransactionIds were
     * found.
     */
-   public static List<TransactionRecord> getTransactionsFromStructuredSelection(IStructuredSelection structuredSelection) {
-      return processSelectionObjects(TransactionRecord.class, structuredSelection);
+   public static List<TransactionToken> getTransactionsFromStructuredSelection(IStructuredSelection structuredSelection) {
+      return processSelectionObjects(TransactionToken.class, structuredSelection);
    }
 
    /**
