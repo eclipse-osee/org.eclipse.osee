@@ -52,7 +52,6 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -284,7 +283,6 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
          public void run() {
             String useTitle = Strings.truncate(title, WorldEditor.TITLE_MAX_LENGTH);
             iWorldEditor.setTableTitle(useTitle, warning);
-            worldXViewer.setReportingTitle(useTitle + " - " + DateUtil.getDateNow());
          };
       });
    }

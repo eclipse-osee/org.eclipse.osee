@@ -29,6 +29,8 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -53,6 +55,7 @@ import org.eclipse.osee.ats.world.IMenuActionProvider;
 import org.eclipse.osee.ats.world.IWorldEditor;
 import org.eclipse.osee.ats.world.IWorldEditorProvider;
 import org.eclipse.osee.ats.world.IWorldViewerEventHandler;
+import org.eclipse.osee.ats.world.WorkflowMetricsUI;
 import org.eclipse.osee.ats.world.WorldComposite;
 import org.eclipse.osee.ats.world.WorldViewDragAndDrop;
 import org.eclipse.osee.ats.world.WorldXViewer;
@@ -72,14 +75,18 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.AttributeFormPart;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
+import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -89,11 +96,14 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
@@ -113,6 +123,7 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
    private static Map<String, Integer> guidToScrollLocation = new HashMap<>();
    private final ReloadJobChangeAdapter reloadAdapter;
    private final IMemberProvider provider;
+   private WorkflowMetricsUI workflowMetricsUi;
 
    public WfeMembersTab(WorkflowEditor editor, IMemberProvider provider) {
       super(editor, ID, provider.getMembersName());
@@ -264,10 +275,11 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
     */
    private boolean createMembersBody() {
       if (!Widgets.isAccessible(worldComposite)) {
-         worldComposite = new WorldComposite(this, provider.getXViewerFactory(provider.getArtifact()),
-            bodyComp, SWT.BORDER, false);
+         worldComposite =
+            new WorldComposite(this, provider.getXViewerFactory(provider.getArtifact()), bodyComp, SWT.BORDER, false);
 
          new MembersDragAndDrop(worldComposite, WorkflowEditor.EDITOR_ID);
+         worldComposite.setLayout(ALayout.getZeroMarginLayout());
 
          if (editor.getAwa().isOfType(AtsArtifactTypes.Goal)) {
             worldComposite.getXViewer().setParentGoal((GoalArtifact) editor.getAwa());
@@ -281,9 +293,15 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
          gd.widthHint = 100;
          gd.heightHint = 100;
          worldComposite.setLayoutData(gd);
+         workflowMetricsUi = new WorkflowMetricsUI(worldComposite, editor.getToolkit());
+
+         editor.getToolkit().adapt(worldComposite);
 
          reload();
          createActions();
+
+         AttributeFormPart.setLabelFonts(worldComposite, FontManager.getDefaultLabelFont());
+
          return true;
       }
       return false;
@@ -441,6 +459,12 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
       toolBarMgr.add(new ExpandAllAction(worldComposite.getXViewer()));
       toolBarMgr.add(new CollapseAllAction(worldComposite.getXViewer()));
       toolBarMgr.add(new RefreshAction(worldComposite));
+
+      toolBarMgr.add(new Separator());
+
+      createDropDownMenuActions();
+      toolBarMgr.add(new DropDownAction());
+
       scrolledForm.updateToolBar();
    }
 
@@ -704,6 +728,94 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
    @Override
    public String getCurrentTitleLabel() {
       return null;
+   }
+
+   public class DropDownAction extends Action implements IMenuCreator {
+      private Menu fMenu;
+
+      public DropDownAction() {
+         setText("Other");
+         setMenuCreator(this);
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.GEAR));
+         addKeyListener();
+      }
+
+      @Override
+      public Menu getMenu(Control parent) {
+         if (fMenu != null) {
+            fMenu.dispose();
+         }
+
+         fMenu = new Menu(parent);
+         addActionToMenu(fMenu, workflowMetricsUi.getOrCreateAction());
+         return fMenu;
+      }
+
+      @Override
+      public void dispose() {
+         if (fMenu != null) {
+            fMenu.dispose();
+            fMenu = null;
+         }
+      }
+
+      @Override
+      public Menu getMenu(Menu parent) {
+         return null;
+      }
+
+      protected void addActionToMenu(Menu parent, Action action) {
+         ActionContributionItem item = new ActionContributionItem(action);
+         item.fill(parent, -1);
+      }
+
+      @Override
+      public void run() {
+         // provided for subclass implementation
+      }
+
+      /**
+       * Get's rid of the menu, because the menu hangs on to * the searches, etc.
+       */
+      void clear() {
+         dispose();
+      }
+
+      private void addKeyListener() {
+         Tree tree = worldComposite.getXViewer().getTree();
+         GridData gridData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL | GridData.GRAB_HORIZONTAL);
+         gridData.heightHint = 100;
+         gridData.widthHint = 100;
+         tree.setLayoutData(gridData);
+         tree.setHeaderVisible(true);
+         tree.setLinesVisible(true);
+
+         worldComposite.getXViewer().getTree().addKeyListener(new KeyListener() {
+            @Override
+            public void keyPressed(KeyEvent event) {
+               // do nothing
+            }
+
+            @Override
+            public void keyReleased(KeyEvent event) {
+               // if CTRL key is already pressed
+               if ((event.stateMask & SWT.MODIFIER_MASK) == SWT.CTRL) {
+                  if (event.keyCode == 'a') {
+                     worldComposite.getXViewer().getTree().setSelection(
+                        worldComposite.getXViewer().getTree().getItems());
+                  } else if (event.keyCode == 'x') {
+                     workflowMetricsUi.getOrCreateAction().setChecked(
+                        !workflowMetricsUi.getOrCreateAction().isChecked());
+                     workflowMetricsUi.getOrCreateAction().run();
+                  }
+               }
+            }
+         });
+      }
+   }
+
+   protected void createDropDownMenuActions() {
+      workflowMetricsUi.getOrCreateAction();
    }
 
 }

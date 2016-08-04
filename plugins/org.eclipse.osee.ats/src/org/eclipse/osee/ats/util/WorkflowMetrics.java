@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.column.RemainingHoursColumn;
@@ -34,6 +35,7 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -47,6 +49,7 @@ public class WorkflowMetrics {
    double manDaysNeeded = 0;
    double cummulativeWorkflowPercentComplete = 0;
    double percentCompleteByWorkflowPercents = 0;
+   double points = 0, pointsNumeric = 0;
 
    Date estimatedReleaseDate;
    long daysTillRel = 0;
@@ -109,6 +112,8 @@ public class WorkflowMetrics {
       manDaysNeeded = 0;
       cummulativeWorkflowPercentComplete = 0;
       manDaysNeeded = 0;
+      points = 0;
+      pointsNumeric = 0;
       for (AbstractWorkflowArtifact team : awas) {
          hrsRemainFromEstimates += RemainingHoursColumn.getRemainingHours(team);
          estHours += EstimatedHoursUtil.getEstimatedHours(team);
@@ -116,6 +121,9 @@ public class WorkflowMetrics {
          manDaysNeeded += WorkDaysNeededColumn.getWorldViewManDaysNeeded(team);
          cummulativeWorkflowPercentComplete +=
             PercentCompleteTotalUtil.getPercentCompleteTotal(team, AtsClientService.get().getServices());
+         String ptsStr = team.getSoleAttributeValue(AtsAttributeTypes.Points, null);
+         points += Strings.isNumeric(ptsStr) ? Integer.valueOf(ptsStr) : 0;
+         pointsNumeric += team.getSoleAttributeValue(AtsAttributeTypes.PointsNumeric, 0.0);
       }
       if (hrsRemainFromEstimates != 0) {
          manDaysNeeded = hrsRemainFromEstimates / manHoursPerDay;
@@ -133,9 +141,11 @@ public class WorkflowMetrics {
       if (estimatedReleaseDate != null && estimatedReleaseDate.after(today)) {
          daysTillRel = DateUtil.getWorkingDaysBetween(today, estimatedReleaseDate);
       }
-      str = String.format("TeamWFs: %s Tasks: %s EstHrs: %5.2f  %sCmp: %5.2f  RmnHrs: %5.2f  HrsSpnt: %5.2f  %s  %s",
-         getNumTeamWfs(), getNumTasks(), estHours, "%", percentCompleteByWorkflowPercents, hrsRemainFromEstimates,
-         hrsSpent, manDaysNeeded > 0 ? String.format("ManDaysNeeded: %5.2f ", manDaysNeeded) : "",
+      str = String.format(
+         "TeamWFs: %s Tasks: %s Revs: %s EstHrs: %5.2f  %sCmp: %5.2f  RmnHrs: %5.2f  HrsSpnt: %5.2f  Pts: %s  PtsNum: %s  %s  %s",
+         getNumTeamWfs(), getNumTasks(), getNumReviews(), estHours, "%", percentCompleteByWorkflowPercents,
+         hrsRemainFromEstimates, hrsSpent, points, pointsNumeric,
+         manDaysNeeded > 0 ? String.format("ManDaysNeeded: %5.2f ", manDaysNeeded) : "",
          version != null ? String.format("Version: %s  EstRelDate: %s DaysLeft: %d ", version.getName(),
             estimatedReleaseDate == null ? "Not Set" : DateUtil.getMMDDYY(estimatedReleaseDate), daysTillRel) : "");
    }

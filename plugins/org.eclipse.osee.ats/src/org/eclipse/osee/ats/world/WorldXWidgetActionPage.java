@@ -43,7 +43,6 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.task.TaskComposite;
-import org.eclipse.osee.ats.util.WorkflowMetrics;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -82,7 +81,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Tree;
@@ -110,11 +108,10 @@ public class WorldXWidgetActionPage extends FormPage {
    public static final String MENU_GROUP_PRE = "world.menu.group.pre";
    private final WorldEditor worldEditor;
    private WorldComposite worldComposite;
-   private Action filterCompletedAction, filterMyAssigneeAction, selectionMetricsAction, toAction, toGoal, toReview,
-      toWorkFlow, toTask;
+   private Action filterCompletedAction, filterMyAssigneeAction, toAction, toGoal, toReview, toWorkFlow, toTask;
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
    private WorldAssigneeFilter worldAssigneeFilter = null;
-   protected Label showReleaseMetricsLabel;
+   private WorkflowMetricsUI workflowMetricsUi;
 
    public WorldXWidgetActionPage(WorldEditor worldEditor) {
       super(worldEditor, ID, (worldEditor.isTaskEditor() ? "Tasks" : "Actions"));
@@ -308,16 +305,16 @@ public class WorldXWidgetActionPage extends FormPage {
 
       resultsContainer = toolkit.createClientContainer(resultsSection, 1);
 
-      showReleaseMetricsLabel = toolkit.createLabel(resultsContainer, "");
-      showReleaseMetricsLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
       worldComposite = new WorldComposite(worldEditor, resultsContainer, SWT.BORDER | SWT.NO_SCROLL);
+      worldComposite.setLayout(ALayout.getZeroMarginLayout());
       GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
       gd.widthHint = 100;
       gd.heightHint = 100;
       worldComposite.setLayoutData(gd);
+      workflowMetricsUi = new WorkflowMetricsUI(worldComposite, toolkit);
 
       toolkit.adapt(worldComposite);
+
       return resultsSection;
    }
 
@@ -354,7 +351,6 @@ public class WorldXWidgetActionPage extends FormPage {
          setMenuCreator(this);
          setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.GEAR));
          addKeyListener();
-         addSelectionListener();
       }
 
       @Override
@@ -364,9 +360,7 @@ public class WorldXWidgetActionPage extends FormPage {
          }
 
          fMenu = new Menu(parent);
-         if (!worldEditor.isTaskEditor()) {
-            addActionToMenu(fMenu, selectionMetricsAction);
-         }
+         addActionToMenu(fMenu, workflowMetricsUi.getOrCreateAction());
          addActionToMenu(fMenu, filterCompletedAction);
          addActionToMenu(fMenu, filterMyAssigneeAction);
          if (!worldEditor.isTaskEditor()) {
@@ -436,8 +430,9 @@ public class WorldXWidgetActionPage extends FormPage {
                      worldComposite.getXViewer().getTree().setSelection(
                         worldComposite.getXViewer().getTree().getItems());
                   } else if (event.keyCode == 'x') {
-                     selectionMetricsAction.setChecked(!selectionMetricsAction.isChecked());
-                     selectionMetricsAction.run();
+                     workflowMetricsUi.getOrCreateAction().setChecked(
+                        !workflowMetricsUi.getOrCreateAction().isChecked());
+                     workflowMetricsUi.getOrCreateAction().run();
                   } else if (event.keyCode == 'f') {
                      filterCompletedAction.setChecked(!filterCompletedAction.isChecked());
                      filterCompletedAction.run();
@@ -518,40 +513,6 @@ public class WorldXWidgetActionPage extends FormPage {
       return taskComposite;
    }
 
-   private void addSelectionListener() {
-      worldComposite.getXViewer().getTree().addSelectionListener(new SelectionAdapter() {
-
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            if (selectionMetricsAction != null) {
-               if (selectionMetricsAction.isChecked()) {
-                  selectionMetricsAction.run();
-               } else {
-                  if (worldComposite != null) {
-                     showReleaseMetricsLabel.setText("");
-                  }
-               }
-            }
-         }
-      });
-   }
-
-   public void updateExtraInfoLine() throws OseeCoreException {
-      if (selectionMetricsAction != null && selectionMetricsAction.isChecked()) {
-         if (worldComposite.getXViewer() != null && worldComposite.getXViewer().getSelectedWorkflowArtifacts() != null && !worldComposite.getXViewer().getSelectedWorkflowArtifacts().isEmpty()) {
-            showReleaseMetricsLabel.setText(
-               WorkflowMetrics.getEstRemainMetrics(worldComposite.getXViewer().getSelectedWorkflowArtifacts(), null,
-                  worldComposite.getXViewer().getSelectedWorkflowArtifacts().iterator().next().getManHrsPerDayPreference(),
-                  null));
-         } else {
-            showReleaseMetricsLabel.setText("");
-         }
-      } else {
-         showReleaseMetricsLabel.setText("");
-      }
-      showReleaseMetricsLabel.getParent().layout();
-   }
-
    protected void createDropDownMenuActions() {
       try {
          worldAssigneeFilter = new WorldAssigneeFilter();
@@ -559,18 +520,7 @@ public class WorldXWidgetActionPage extends FormPage {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
-      selectionMetricsAction = new Action("Show Release Metrics by Selection - Ctrl-X", IAction.AS_CHECK_BOX) {
-         @Override
-         public void run() {
-            try {
-               updateExtraInfoLine();
-            } catch (Exception ex) {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      };
-      selectionMetricsAction.setToolTipText("Show Release Metrics by Selection - Ctrl-X");
-      selectionMetricsAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.PAGE));
+      workflowMetricsUi.getOrCreateAction();
 
       filterCompletedAction = new Action("Filter Out Completed/Cancelled - Ctrl-F", IAction.AS_CHECK_BOX) {
 

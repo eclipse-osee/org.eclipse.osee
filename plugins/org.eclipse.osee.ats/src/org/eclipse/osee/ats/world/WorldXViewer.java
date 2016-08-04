@@ -94,7 +94,6 @@ import org.eclipse.swt.widgets.TreeItem;
  * @author Donald G. Dunne
  */
 public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPersistAltLeftClickProvider, ISelectedTeamWorkflowArtifacts, ISelectedArtifacts, IDirtiableEditor {
-   private String title;
    private String extendedStatusString = "";
    public static final String MENU_GROUP_ATS_WORLD_EDIT = "ATS WORLD EDIT";
    public static final String MENU_GROUP_ATS_WORLD_OPEN = "ATS WORLD OPEN";
@@ -521,10 +520,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          }
       }
       return actionArts;
-   }
-
-   public void setReportingTitle(String title) {
-      this.title = title;
    }
 
    public List<Artifact> getSelectedArtifactItems() {
