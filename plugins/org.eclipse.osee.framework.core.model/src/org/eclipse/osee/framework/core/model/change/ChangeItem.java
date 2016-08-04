@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.change;
 
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
+
 /**
  * @author Roberto E. Escobar
  */
@@ -28,11 +30,29 @@ public class ChangeItem implements Comparable<ChangeItem> {
    private ChangeVersion netChange = new ChangeVersion();
 
    private boolean synthetic = false;
+   private boolean isApplicabilityCopy = false;
 
    private int artIdB = -1;
 
    public ChangeItem() {
       super();
+   }
+
+   public void copy(ChangeItem source) {
+      Conditions.checkNotNull(source, "ChangeItem");
+      setIgnoreType(source.getIgnoreType());
+      setChangeType(source.getChangeType());
+      setArtId(source.getArtId());
+      setItemId(source.getItemId());
+      setItemTypeId(source.getItemTypeId());
+      setBaselineVersion(source.getBaselineVersion());
+      setFirstNonCurrentChange(source.getFirstNonCurrentChange());
+      setCurrentVersion(source.getCurrentVersion());
+      setDestinationVersion(source.getDestinationVersion());
+      setNetChange(source.getNetChange());
+      setSynthetic(source.isSynthetic());
+      setApplicabilityCopy(source.isApplicabilityCopy());
+      setArtIdB(source.getArtIdB());
    }
 
    public ChangeIgnoreType getIgnoreType() {
@@ -45,6 +65,14 @@ public class ChangeItem implements Comparable<ChangeItem> {
 
    public void setSynthetic(boolean synthetic) {
       this.synthetic = synthetic;
+   }
+
+   public boolean isApplicabilityCopy() {
+      return isApplicabilityCopy;
+   }
+
+   public void setApplicabilityCopy(boolean isApplicabilityCopy) {
+      this.isApplicabilityCopy = isApplicabilityCopy;
    }
 
    public ChangeType getChangeType() {
@@ -181,6 +209,9 @@ public class ChangeItem implements Comparable<ChangeItem> {
          return false;
       }
       if (!(this.synthetic == other.synthetic)) {
+         return false;
+      }
+      if (!(this.isApplicabilityCopy == other.isApplicabilityCopy)) {
          return false;
       }
       if (this.getArtIdB() != other.getArtIdB()) {

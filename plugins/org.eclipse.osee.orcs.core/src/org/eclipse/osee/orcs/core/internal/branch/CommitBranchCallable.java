@@ -52,7 +52,7 @@ public class CommitBranchCallable extends AbstractBranchCallable<TransactionToke
       Conditions.checkNotNull(destinationBranch, "destinationBranch");
 
       Callable<TransactionId> commitBranchCallable = getBranchStore().commitBranch(getSession(), committer,
-         sourceBranch, sourceHead, destinationBranch, destinationHead);
+         sourceBranch, sourceHead, destinationBranch, destinationHead, queryFactory.applicabilityQuery());
       TransactionId newTx = callAndCheckForCancel(commitBranchCallable);
       return queryFactory.transactionQuery().andTxId(newTx).getResults().getExactlyOne();
    }

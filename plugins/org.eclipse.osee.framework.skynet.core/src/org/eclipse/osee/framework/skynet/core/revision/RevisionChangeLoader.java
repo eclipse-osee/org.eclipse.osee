@@ -207,7 +207,7 @@ public final class RevisionChangeLoader {
             ArtifactDelta delta = new ArtifactDelta(builder.getTxDelta(), changeArtifact, null);
             if (builder instanceof ArtifactChangeBuilder) {
                toReturn = new ArtifactChange(branch, builder.getSourceGamma(), builder.getArtId(), builder.getTxDelta(),
-                  builder.getModType(), isHistorical, changeArtifact, delta);
+                  builder.getModType(), "", "", isHistorical, changeArtifact, delta);
             } else if (builder instanceof AttributeChangeBuilder) {
                AttributeChangeBuilder attrBuilder = (AttributeChangeBuilder) builder;
                toReturn = new AttributeChange(branch, attrBuilder.getSourceGamma(), attrBuilder.getArtId(),
@@ -219,11 +219,11 @@ public final class RevisionChangeLoader {
                Artifact bArtifact = loadedMap.get(builder.getTxDelta().getEndTx(), relBuilder.getbArtId());
                toReturn = new RelationChange(branch, builder.getSourceGamma(), builder.getArtId(), builder.getTxDelta(),
                   builder.getModType(), relBuilder.getbArtId(), relBuilder.getRelLinkId(), relBuilder.getRationale(),
-                  relBuilder.getRelationType(), isHistorical, changeArtifact, delta, bArtifact);
+                  "", relBuilder.getRelationType(), isHistorical, changeArtifact, delta, bArtifact);
             }
          } else {
             toReturn = new ArtifactChange(branch, builder.getSourceGamma(), builder.getArtId(), builder.getTxDelta(),
-               builder.getModType(), isHistorical, null, null);
+               builder.getModType(), "", "", isHistorical, null, null);
          }
          changes.add(toReturn);
       }

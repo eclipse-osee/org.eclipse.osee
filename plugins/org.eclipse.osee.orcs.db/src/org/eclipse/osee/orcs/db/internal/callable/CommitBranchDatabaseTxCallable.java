@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.db.internal.callable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -159,14 +159,14 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       List<Object[]> insertData = new ArrayList<>();
       for (ChangeItem change : changes) {
          ModificationType modType = change.getNetChange().getModType();
-         ApplicabilityId appId = change.getNetChange().getApplicabilityId();
+         ApplicabilityToken appToken = change.getNetChange().getApplicabilityToken();
          insertData.add(new Object[] {
             newTx,
             destinationBranch.getUuid(),
             change.getNetChange().getGammaId(),
             modType.getValue(),
             TxChange.getCurrent(modType).getValue(),
-            appId.getId()});
+            appToken.getId()});
       }
       getJdbcClient().runBatchUpdate(connection, INSERT_COMMIT_ADDRESSING, insertData);
    }

@@ -22,9 +22,13 @@ import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 public final class ArtifactChange extends Change {
    private static LoadChangeType changeType = LoadChangeType.artifact;
    private static Class<ArtifactChangeWorker> worker = ArtifactChangeWorker.class;
+   private final String isValue;
+   private final String wasValue;
 
-   public ArtifactChange(BranchId branch, long sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
+   public ArtifactChange(BranchId branch, long sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, String isValue, String wasValue, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
       super(branch, sourceGamma, artId, txDelta, modType, isHistorical, changeArtifact, artifactDelta);
+      this.isValue = isValue;
+      this.wasValue = wasValue;
    }
 
    @Override
@@ -39,7 +43,7 @@ public final class ArtifactChange extends Change {
 
    @Override
    public String getIsValue() {
-      return "";
+      return isValue;
    }
 
    @Override
@@ -49,7 +53,7 @@ public final class ArtifactChange extends Change {
 
    @Override
    public String getWasValue() {
-      return null;
+      return wasValue;
    }
 
    @Override

@@ -50,6 +50,7 @@ import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactory;
 import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportItemFactory;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
+import org.eclipse.osee.orcs.search.ApplicabilityQuery;
 
 /**
  * @author Roberto E. Escobar
@@ -89,9 +90,9 @@ public class BranchModule {
          }
 
          @Override
-         public Callable<TransactionId> commitBranch(OrcsSession session, ArtifactReadable committer, BranchReadable source, TransactionToken sourceHead, BranchReadable destination, TransactionToken destinationHead) {
+         public Callable<TransactionId> commitBranch(OrcsSession session, ArtifactReadable committer, BranchReadable source, TransactionToken sourceHead, BranchReadable destination, TransactionToken destinationHead, ApplicabilityQuery applicQuery) {
             return new CommitBranchDatabaseCallable(logger, session, jdbcClient, joinFactory, idManager, committer,
-               source, sourceHead, destination, destinationHead, missingChangeItemFactory);
+               source, sourceHead, destination, destinationHead, missingChangeItemFactory, applicQuery);
          }
 
          @Override
@@ -100,9 +101,9 @@ public class BranchModule {
          }
 
          @Override
-         public Callable<List<ChangeItem>> compareBranch(OrcsSession session, TransactionToken sourceTx, TransactionToken destinationTx) {
+         public Callable<List<ChangeItem>> compareBranch(OrcsSession session, TransactionToken sourceTx, TransactionToken destinationTx, ApplicabilityQuery applicQuery) {
             return new CompareDatabaseCallable(logger, session, jdbcClient, joinFactory, sourceTx, destinationTx,
-               missingChangeItemFactory);
+               missingChangeItemFactory, applicQuery);
          }
 
          @Override

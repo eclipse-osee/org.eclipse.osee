@@ -80,7 +80,7 @@ public class ArtifactRendererTest {
       TransactionDelta deltaTx = new TransactionDelta(startTx, endTx1);
       ArtifactDelta delta = new ArtifactDelta(null, artifact2, artifact1);
       Change change = new ArtifactChange(COMMON, artifact1.getGammaId(), artifact1.getArtId(), deltaTx,
-         ModificationType.MODIFIED, false, artifact1, delta);
+         ModificationType.MODIFIED, "", "", false, artifact1, delta);
 
       String name = RenderingUtil.getAssociatedArtifactName(Arrays.asList(change));
       Assert.assertEquals(EXPECTED_NAME, name);
@@ -91,7 +91,7 @@ public class ArtifactRendererTest {
       TransactionDelta deltaTx = new TransactionDelta(startTx, endTx2);
       ArtifactDelta delta = new ArtifactDelta(null, artifact1, artifact2);
       Change change = new ArtifactChange(COMMON, artifact2.getGammaId(), artifact2.getArtId(), deltaTx,
-         ModificationType.MODIFIED, false, artifact2, delta);
+         ModificationType.MODIFIED, "", "", false, artifact2, delta);
 
       String name = RenderingUtil.getAssociatedArtifactName(Arrays.asList(change));
       Assert.assertEquals(EXPECTED_NAME, name);

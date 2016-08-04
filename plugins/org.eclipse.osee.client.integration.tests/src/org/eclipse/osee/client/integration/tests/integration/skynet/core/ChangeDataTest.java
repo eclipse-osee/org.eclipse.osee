@@ -18,8 +18,8 @@ import java.util.Collection;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -72,11 +72,11 @@ public class ChangeDataTest {
 
       ModificationType modType = ModificationType.MODIFIED;
       Change change = new ArtifactChange(workingBranch, artifactStart.getGammaId(), artifactStart.getArtId(), null,
-         modType, false, artifactStart, artDelta);
+         modType, "", "", false, artifactStart, artDelta);
       theChanges.add(change);
 
       AttributeType paragraphAttributeType = AttributeTypeManager.getType(CoreAttributeTypes.ParagraphNumber);
-      int typeID = ((Long) paragraphAttributeType.getId()).intValue();
+      int typeID = paragraphAttributeType.getId().intValue();
       change = new AttributeChange(workingBranch, artifactStart.getGammaId(), artifactStart.getArtId(), null,
          ModificationType.NEW, "1.2", "", typeID, paragraphAttributeType, modType, false, artifactStart, artDelta);
       theChanges.add(change);
@@ -91,15 +91,15 @@ public class ChangeDataTest {
       modType = ModificationType.MODIFIED;
 
       change = new ArtifactChange(workingBranch, artifactStart.getGammaId(), artifactStart.getArtId(), null, modType,
-         false, artifactStart, artDelta);
+         "", "", false, artifactStart, artDelta);
       theChanges.add(change);
-      typeID = ((Long) paragraphAttributeType.getId()).intValue();
+      typeID = paragraphAttributeType.getId().intValue();
       change = new AttributeChange(workingBranch, artifactStart.getGammaId(), artifactStart.getArtId(), null,
          ModificationType.NEW, "1.2", "", typeID, paragraphAttributeType, modType, false, artifactStart, artDelta);
       theChanges.add(change);
 
       AttributeType nameAttributeType = AttributeTypeManager.getType(CoreAttributeTypes.Name);
-      typeID = ((Long) nameAttributeType.getId()).intValue();
+      typeID = nameAttributeType.getId().intValue();
       change = new AttributeChange(workingBranch, artifactStart.getGammaId(), artifactStart.getArtId(), null, modType,
          "test artifact 2A", "test artifact 2", typeID, nameAttributeType, modType, false, artifactStart, artDelta);
       theChanges.add(change);
@@ -107,8 +107,8 @@ public class ChangeDataTest {
       artifactStart = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch);
       artifactEnd.setSoleAttributeFromString(CoreAttributeTypes.ParagraphNumber, "1.2");
       artDelta = new ArtifactDelta(null, null, artifactStart);
-      change = new ArtifactChange(null, 1, artifactStart.getArtId(), null, ModificationType.NEW, false, artifactStart,
-         artDelta);
+      change = new ArtifactChange(null, 1, artifactStart.getArtId(), null, ModificationType.NEW, "", "", false,
+         artifactStart, artDelta);
       theChanges.add(change);
       theData = new ChangeData(theChanges);
    }

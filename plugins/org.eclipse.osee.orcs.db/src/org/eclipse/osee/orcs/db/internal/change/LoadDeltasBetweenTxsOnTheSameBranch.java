@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.change;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -31,6 +33,7 @@ import org.eclipse.osee.orcs.data.TransactionTokenDelta;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.sql.join.ExportImportJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
+import org.eclipse.osee.orcs.search.ApplicabilityQuery;
 
 /**
  * @author Ryan D. Brooks
@@ -56,11 +59,21 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
 
    private final SqlJoinFactory joinFactory;
    private final TransactionTokenDelta txDelta;
+   private final HashMap<Long, ApplicabilityToken> applicTokens;
 
-   public LoadDeltasBetweenTxsOnTheSameBranch(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, TransactionTokenDelta txDelta) {
+   public LoadDeltasBetweenTxsOnTheSameBranch(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, TransactionTokenDelta txDelta, ApplicabilityQuery applicQuery) {
       super(logger, session, jdbcClient);
       this.joinFactory = joinFactory;
       this.txDelta = txDelta;
+      this.applicTokens = applicQuery.getApplicabilityTokens(txDelta.getStartTx().getBranch());
+   }
+
+   private ApplicabilityToken getApplicabilityToken(ApplicabilityId appId) {
+      ApplicabilityToken toReturn = applicTokens.get(appId.getId());
+      if (toReturn != null) {
+         return toReturn;
+      }
+      return ApplicabilityToken.BASE;
    }
 
    private Long getBranchId() {
@@ -106,13 +119,13 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
             case 1: {
                int artId = stmt.getInt("item_first");
                String value = stmt.getString("item_value");
-               hashChangeData.put(1, itemId,
-                  ChangeItemUtil.newAttributeChange(itemId, itemTypeId, artId, gammaId, modType, value, appId));
+               hashChangeData.put(1, itemId, ChangeItemUtil.newAttributeChange(itemId, itemTypeId, artId, gammaId,
+                  modType, value, getApplicabilityToken(appId)));
                break;
             }
             case 2: {
                hashChangeData.put(2, itemId,
-                  ChangeItemUtil.newArtifactChange(itemId, itemTypeId, gammaId, modType, appId));
+                  ChangeItemUtil.newArtifactChange(itemId, itemTypeId, gammaId, modType, getApplicabilityToken(appId)));
                break;
             }
             case 3: {
@@ -120,7 +133,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
                int bArtId = stmt.getInt("item_second");
                String rationale = stmt.getString("item_value");
                hashChangeData.put(3, itemId, ChangeItemUtil.newRelationChange(itemId, itemTypeId, gammaId, modType,
-                  aArtId, bArtId, rationale, appId));
+                  aArtId, bArtId, rationale, getApplicabilityToken(appId)));
                break;
             }
          }
@@ -161,7 +174,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
          ChangeItem change = changesByItemId.get(tableType, itemId);
          change.getDestinationVersion().setModType(modType);
          change.getDestinationVersion().setGammaId(gammaId);
-         change.getDestinationVersion().setApplicabilityId(appId);
+         change.getDestinationVersion().setApplicabilityToken(getApplicabilityToken(appId));
          change.getBaselineVersion().copy(change.getDestinationVersion());
       };
 

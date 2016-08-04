@@ -14,12 +14,14 @@ import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -27,6 +29,7 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
@@ -35,6 +38,7 @@ import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandlerAdapter;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
+import org.eclipse.osee.orcs.search.ApplicabilityQuery;
 
 /**
  * @author John Misinco
@@ -42,6 +46,7 @@ import org.eclipse.osee.orcs.core.ds.RelationData;
 public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
 
    private final DataLoaderFactory dataLoaderFactory;
+   private HashMap<Long, ApplicabilityToken> applicTokensForMissingArts = null;
 
    public MissingChangeItemFactoryImpl(DataLoaderFactory dataModuleFactory) {
       super();
@@ -49,7 +54,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
    }
 
    @Override
-   public Collection<ChangeItem> createMissingChanges(HasCancellation cancellation, OrcsSession session, List<ChangeItem> changes, TransactionToken sourceTx, TransactionToken destTx) throws OseeCoreException {
+   public Collection<ChangeItem> createMissingChanges(HasCancellation cancellation, OrcsSession session, List<ChangeItem> changes, TransactionToken sourceTx, TransactionToken destTx, ApplicabilityQuery applicQuery) throws OseeCoreException {
       if (changes != null && !changes.isEmpty()) {
          Set<Integer> modifiedArtIds = new HashSet<>();
          Multimap<Integer, Integer> modifiedAttrIds = LinkedListMultimap.create();
@@ -81,11 +86,25 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
          Set<Integer> missingArtIds = determineWhichArtifactsNotOnDestination(cancellation, session, allArtIds, destTx);
 
          if (!missingArtIds.isEmpty()) {
+            applicTokensForMissingArts = applicQuery.getApplicabilityTokens(sourceTx.getBranch(), destTx.getBranch());
             return createMissingChangeItems(cancellation, session, sourceTx, destTx, modifiedArtIds, modifiedAttrIds,
                modifiedRels, missingArtIds, allArtIds);
          }
       }
       return Collections.emptyList();
+   }
+
+   private ApplicabilityToken getApplicabilityToken(ApplicabilityId appId) {
+      Conditions.checkNotNull(appId, "ApplicabilityId");
+      ApplicabilityToken toReturn = ApplicabilityToken.BASE;
+      if (applicTokensForMissingArts != null) {
+         toReturn = applicTokensForMissingArts.get(appId.getId());
+         if (toReturn == null) {
+            toReturn = ApplicabilityToken.BASE;
+         }
+      }
+
+      return toReturn;
    }
 
    private Set<Integer> determineWhichArtifactsNotOnDestination(HasCancellation cancellation, OrcsSession session, Set<Integer> artIds, TransactionToken destTx) throws OseeCoreException {
@@ -189,22 +208,25 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
    }
 
    private ChangeItem createArtifactChangeItem(ArtifactData data) throws OseeCoreException {
+      ApplicabilityId appId = data.getApplicabilityId();
       ChangeItem artChange = ChangeItemUtil.newArtifactChange(data.getLocalId(), data.getTypeUuid(),
-         data.getVersion().getGammaId(), determineModType(data), ApplicabilityId.valueOf(1L));
+         data.getVersion().getGammaId(), determineModType(data), getApplicabilityToken(appId));
       return artChange;
    }
 
    private ChangeItem createAttributeChangeItem(AttributeData data) throws OseeCoreException {
+      ApplicabilityId appId = data.getApplicabilityId();
       ChangeItem attrChange = ChangeItemUtil.newAttributeChange(data.getLocalId(), data.getTypeUuid(),
          data.getArtifactId(), data.getVersion().getGammaId(), determineModType(data),
-         data.getDataProxy().getDisplayableString(), ApplicabilityId.valueOf(1L));
+         data.getDataProxy().getDisplayableString(), getApplicabilityToken(appId));
       attrChange.getNetChange().copy(attrChange.getCurrentVersion());
       return attrChange;
    }
 
    private ChangeItem createRelationChangeItem(RelationData data) throws OseeCoreException {
+      ApplicabilityId appId = data.getApplicabilityId();
       return ChangeItemUtil.newRelationChange(data.getLocalId(), data.getTypeUuid(), data.getVersion().getGammaId(),
-         determineModType(data), data.getArtIdA(), data.getArtIdB(), data.getRationale(), ApplicabilityId.valueOf(1L));
+         determineModType(data), data.getArtIdA(), data.getArtIdB(), data.getRationale(), getApplicabilityToken(appId));
    }
 
 }

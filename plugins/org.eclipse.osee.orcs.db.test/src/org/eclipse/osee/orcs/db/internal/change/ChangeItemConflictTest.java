@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.db.internal.change;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
@@ -89,10 +89,10 @@ public class ChangeItemConflictTest {
       // but since we don't seem to handle the mixed case of say artifact on src and attribute on destination
       ChangeItem item;
       if (itemType == ItemType.artifact) {
-         item = ChangeItemUtil.newArtifactChange(0, 0, GAMMA, ModificationType.MODIFIED, ApplicabilityId.valueOf(1L));
+         item = ChangeItemUtil.newArtifactChange(0, 0, GAMMA, ModificationType.MODIFIED, ApplicabilityToken.BASE);
       } else {
          item = ChangeItemUtil.newAttributeChange(0, 0, 0, GAMMA, ModificationType.MODIFIED, "change",
-            ApplicabilityId.valueOf(1L));
+            ApplicabilityToken.BASE);
       }
 
       buildTestCase(GAMMA, item);

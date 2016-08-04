@@ -29,15 +29,17 @@ public final class RelationChange extends Change {
    private final Artifact endTxBArtifact;
    private final int relLinkId;
    private final String rationale;
+   private final String wasValue;
    private final RelationType relationType;
 
-   public RelationChange(BranchId branch, long sourceGamma, int aArtId, TransactionDelta txDelta, ModificationType modType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta, Artifact endTxBArtifact) {
+   public RelationChange(BranchId branch, long sourceGamma, int aArtId, TransactionDelta txDelta, ModificationType modType, int bArtId, int relLinkId, String rationale, String wasValue, RelationType relationType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta, Artifact endTxBArtifact) {
       super(branch, sourceGamma, aArtId, txDelta, modType, isHistorical, changeArtifact, artifactDelta);
       this.bArtId = bArtId;
       this.relLinkId = relLinkId;
       this.rationale = rationale;
       this.relationType = relationType;
       this.endTxBArtifact = endTxBArtifact;
+      this.wasValue = wasValue;
    }
 
    /**
@@ -99,7 +101,7 @@ public final class RelationChange extends Change {
 
    @Override
    public String getWasValue() {
-      return null;
+      return wasValue;
    }
 
    @Override

@@ -109,6 +109,11 @@ public class ChangeDataLoader extends AbstractOperation {
       BranchId startTxBranch = txDelta.getStartTx().getBranch();
       for (ChangeItem item : changeItems) {
          checkForCancelledStatus(monitor);
+         if (ChangeItemUtil.hasValueChange(item) && ChangeItemUtil.hasApplicabilityChange(item)) {
+            ChangeItem splitItem = ChangeItemUtil.splitForApplicability(item);
+            Change splitChange = computeChangeFromGamma(bulkLoaded, startTxBranch, splitItem);
+            changes.add(splitChange);
+         }
          Change change = computeChangeFromGamma(bulkLoaded, startTxBranch, item);
          changes.add(change);
          monitor.worked(calculateWork(workAmount));
@@ -197,34 +202,53 @@ public class ChangeDataLoader extends AbstractOperation {
 
       switch (item.getChangeType()) {
          case ARTIFACT_CHANGE:
-            change = new ArtifactChange(startTxBranch, itemGammaId, itemId, txDelta, netModType, isHistorical,
-               changeArtifact, artifactDelta);
+
+            if (ChangeItemUtil.hasApplicabilityChange(item)) {
+               netModType = ModificationType.APPLICABILITY;
+
+               change = new ArtifactChange(startTxBranch, itemGammaId, itemId, txDelta, netModType,
+                  item.getCurrentVersion().getApplicabilityToken().getName(),
+                  item.getDestinationVersion().getApplicabilityToken().getName(), isHistorical, changeArtifact,
+                  artifactDelta);
+            } else {
+               change = new ArtifactChange(startTxBranch, itemGammaId, itemId, txDelta, netModType, "", "",
+                  isHistorical, changeArtifact, artifactDelta);
+            }
             break;
          case ATTRIBUTE_CHANGE:
-            String isValue = item.getCurrentVersion().getValue();
             AttributeType attributeType = AttributeTypeManager.getTypeByGuid(item.getItemTypeId());
-
-            String wasValue = "";
-            if (!txDelta.areOnTheSameBranch()) {
-               ChangeVersion netChange = item.getNetChange();
-               if (!ChangeItemUtil.isNew(netChange) && !ChangeItemUtil.isIntroduced(netChange)) {
-                  ChangeVersion fromVersion = ChangeItemUtil.getStartingVersion(item);
-                  wasValue = fromVersion.getValue();
-               }
+            if (ChangeItemUtil.hasApplicabilityChange(item)) {
+               netModType = ModificationType.APPLICABILITY;
+               change = new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType,
+                  item.getCurrentVersion().getApplicabilityToken().getName(),
+                  item.getDestinationVersion().getApplicabilityToken().getName(), itemId, attributeType, netModType,
+                  isHistorical, changeArtifact, artifactDelta);
             } else {
-               Artifact startArtifact = artifactDelta.getBaseArtifact();
-               if (startArtifact == null) {
-                  startArtifact = artifactDelta.getStartArtifact();
-               }
-               if (startArtifact != null) {
-                  wasValue = startArtifact.getAttributesToString(attributeType);
-                  if (wasValue == null) {
-                     wasValue = "";
+               String isValue = item.getCurrentVersion().getValue();
+
+               String wasValue = "";
+               if (!txDelta.areOnTheSameBranch()) {
+                  ChangeVersion netChange = item.getNetChange();
+                  if (!ChangeItemUtil.isNew(netChange) && !ChangeItemUtil.isIntroduced(netChange)) {
+                     ChangeVersion fromVersion = ChangeItemUtil.getStartingVersion(item);
+                     wasValue = fromVersion.getValue();
+                  }
+               } else {
+                  Artifact startArtifact = artifactDelta.getBaseArtifact();
+                  if (startArtifact == null) {
+                     startArtifact = artifactDelta.getStartArtifact();
+                  }
+                  if (startArtifact != null) {
+                     wasValue = startArtifact.getAttributesToString(attributeType);
+                     if (wasValue == null) {
+                        wasValue = "";
+                     }
                   }
                }
+
+               change = new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType, isValue, wasValue,
+                  itemId, attributeType, netModType, isHistorical, changeArtifact, artifactDelta);
             }
-            change = new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType, isValue, wasValue,
-               itemId, attributeType, netModType, isHistorical, changeArtifact, artifactDelta);
             break;
          case RELATION_CHANGE:
             RelationType relationType = RelationTypeManager.getTypeByGuid(item.getItemTypeId());
@@ -236,9 +260,18 @@ public class ChangeDataLoader extends AbstractOperation {
             Artifact endTxBArtifact = bulkLoaded.get(transaction, item.getArtIdB());
 
             String rationale = item.getCurrentVersion().getValue();
-            change =
-               new RelationChange(startTxBranch, itemGammaId, artId, txDelta, netModType, endTxBArtifact.getArtId(),
-                  itemId, rationale, relationType, isHistorical, changeArtifact, artifactDelta, endTxBArtifact);
+
+            if (ChangeItemUtil.hasApplicabilityChange(item)) {
+               netModType = ModificationType.APPLICABILITY;
+               change = new RelationChange(startTxBranch, itemGammaId, artId, txDelta, netModType,
+                  endTxBArtifact.getArtId(), itemId, item.getCurrentVersion().getApplicabilityToken().getName(),
+                  item.getDestinationVersion().getApplicabilityToken().getName(), relationType, isHistorical,
+                  changeArtifact, artifactDelta, endTxBArtifact);
+            } else {
+               change =
+                  new RelationChange(startTxBranch, itemGammaId, artId, txDelta, netModType, endTxBArtifact.getArtId(),
+                     itemId, rationale, "", relationType, isHistorical, changeArtifact, artifactDelta, endTxBArtifact);
+            }
             break;
          default:
             throw new OseeCoreException("The change item must map to either an artifact, attribute or relation change");
@@ -309,5 +342,4 @@ public class ChangeDataLoader extends AbstractOperation {
          ignoreType.isDeletedOnDestAndNotResurrected() || //
          ignoreType.isDeletedOnDestination();
    }
-
 }

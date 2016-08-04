@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.mocks;
 
-import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeVersion;
@@ -26,7 +26,7 @@ public final class ChangeTestUtility {
    }
 
    public static ChangeVersion createChange(Long long1, ModificationType mod1) {
-      return new ChangeVersion(long1, mod1, ApplicabilityId.valueOf(1L));
+      return new ChangeVersion(long1, mod1, ApplicabilityToken.BASE);
    }
 
    public static void checkChange(String message, ChangeVersion expected, ChangeVersion actual) {
@@ -49,7 +49,7 @@ public final class ChangeTestUtility {
       ChangeVersion currentVersion = change.getCurrentVersion();
       currentVersion.setGammaId(current.getGammaId());
       currentVersion.setModType(current.getModType());
-      currentVersion.setApplicabilityId(current.getApplicabilityId());
+      currentVersion.setApplicabilityToken(current.getApplicabilityToken());
 
       if (base != null) {
          change.getBaselineVersion().copy(base);

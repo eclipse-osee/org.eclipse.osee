@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.change;
 
-import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * @author Roberto E. Escobar
@@ -19,18 +20,18 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 public final class ChangeVersion {
    private Long gammaId;
    private ModificationType modType;
-   private ApplicabilityId appId;
+   private ApplicabilityToken appId;
    private String value;
 
    public ChangeVersion() {
       this(null, null, null, null);
    }
 
-   public ChangeVersion(Long gammaId, ModificationType modType, ApplicabilityId appId) {
+   public ChangeVersion(Long gammaId, ModificationType modType, ApplicabilityToken appId) {
       this(null, gammaId, modType, appId);
    }
 
-   public ChangeVersion(String value, Long gammaId, ModificationType modType, ApplicabilityId appId) {
+   public ChangeVersion(String value, Long gammaId, ModificationType modType, ApplicabilityToken appId) {
       this.value = value;
       this.gammaId = gammaId;
       this.modType = modType;
@@ -45,7 +46,7 @@ public final class ChangeVersion {
       return modType;
    }
 
-   public ApplicabilityId getApplicabilityId() {
+   public ApplicabilityToken getApplicabilityToken() {
       return appId;
    }
 
@@ -65,7 +66,7 @@ public final class ChangeVersion {
       this.modType = modType;
    }
 
-   public void setApplicabilityId(ApplicabilityId appId) {
+   public void setApplicabilityToken(ApplicabilityToken appId) {
       this.appId = appId;
    }
 
@@ -74,15 +75,18 @@ public final class ChangeVersion {
    }
 
    public void copy(ChangeVersion item) {
+      Conditions.checkNotNull(item, "ChangeVersion");
       setGammaId(item.getGammaId());
       setModType(item.getModType());
       setValue(item.getValue());
-      setApplicabilityId(item.getApplicabilityId());
+      setApplicabilityToken(item.getApplicabilityToken());
    }
 
    @Override
    public String toString() {
-      return String.format("[%s,%s,%s]", getGammaId(), getModType(), getApplicabilityId());
+      ApplicabilityToken token = getApplicabilityToken();
+      String tokenName = token != null ? token.getName() : "null";
+      return String.format("[%s,%s,%s]", getGammaId(), getModType(), tokenName);
    }
 
    @Override

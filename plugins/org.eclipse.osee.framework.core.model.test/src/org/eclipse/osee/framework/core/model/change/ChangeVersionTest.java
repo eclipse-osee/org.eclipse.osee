@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.change;
 
-import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.mocks.ChangeTestUtility;
 import org.junit.Assert;
@@ -29,29 +29,29 @@ public class ChangeVersionTest {
       ChangeVersion expected = new ChangeVersion();
       ChangeTestUtility.checkChange(expected, actual);
 
-      actual = new ChangeVersion(45L, ModificationType.NEW, ApplicabilityId.valueOf(1L));
+      actual = new ChangeVersion(45L, ModificationType.NEW, ApplicabilityToken.BASE);
       expected.setValue(null);
       expected.setGammaId(45L);
       expected.setModType(ModificationType.NEW);
-      expected.setApplicabilityId(ApplicabilityId.valueOf(1L));
+      expected.setApplicabilityToken(ApplicabilityToken.BASE);
       ChangeTestUtility.checkChange(expected, actual);
 
-      actual = new ChangeVersion("hello", 47L, ModificationType.MERGED, ApplicabilityId.valueOf(1L));
+      actual = new ChangeVersion("hello", 47L, ModificationType.MERGED, ApplicabilityToken.BASE);
       expected.setValue("hello");
       expected.setGammaId(47L);
       expected.setModType(ModificationType.MERGED);
-      expected.setApplicabilityId(ApplicabilityId.valueOf(1L));
+      expected.setApplicabilityToken(ApplicabilityToken.BASE);
       ChangeTestUtility.checkChange(expected, actual);
    }
 
    @Test
    public void testCopy() {
-      ChangeVersion expected = new ChangeVersion("hello", 47L, ModificationType.MERGED, ApplicabilityId.valueOf(1L));
+      ChangeVersion expected = new ChangeVersion("hello", 47L, ModificationType.MERGED, ApplicabilityToken.BASE);
       ChangeVersion actual = new ChangeVersion();
       actual.copy(expected);
       ChangeTestUtility.checkChange(expected, actual);
 
-      expected = new ChangeVersion(null, 47L, ModificationType.MERGED, ApplicabilityId.valueOf(1L));
+      expected = new ChangeVersion(null, 47L, ModificationType.MERGED, ApplicabilityToken.BASE);
       actual.copy(expected);
       ChangeTestUtility.checkChange(expected, actual);
    }
@@ -70,8 +70,8 @@ public class ChangeVersionTest {
 
    @Test
    public void testEquals() {
-      ChangeVersion actual1 = new ChangeVersion("hello", 47L, ModificationType.MERGED, ApplicabilityId.valueOf(1L));
-      ChangeVersion actual2 = new ChangeVersion("hello", 47L, ModificationType.MERGED, ApplicabilityId.valueOf(1L));
+      ChangeVersion actual1 = new ChangeVersion("hello", 47L, ModificationType.MERGED, ApplicabilityToken.BASE);
+      ChangeVersion actual2 = new ChangeVersion("hello", 47L, ModificationType.MERGED, ApplicabilityToken.BASE);
       ChangeVersion expected = new ChangeVersion();
 
       Assert.assertEquals(actual2, actual1);
@@ -91,8 +91,8 @@ public class ChangeVersionTest {
 
    @Test
    public void testToString() {
-      ChangeVersion actual1 = new ChangeVersion("hello", 47L, ModificationType.MERGED, ApplicabilityId.valueOf(1L));
-      Assert.assertEquals("[47,MERGED,1]", actual1.toString());
+      ChangeVersion actual1 = new ChangeVersion("hello", 47L, ModificationType.MERGED, ApplicabilityToken.BASE);
+      Assert.assertEquals("[47,MERGED,Base]", actual1.toString());
 
       ChangeVersion expected = new ChangeVersion();
       Assert.assertEquals("[null,null,null]", expected.toString());

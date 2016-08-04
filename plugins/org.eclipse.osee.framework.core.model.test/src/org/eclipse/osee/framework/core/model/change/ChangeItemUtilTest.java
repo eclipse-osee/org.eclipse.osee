@@ -16,7 +16,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.mocks.ChangeTestUtility;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -316,7 +316,7 @@ public class ChangeItemUtilTest {
 
    @Test
    public void testCopy() throws OseeCoreException {
-      ChangeVersion expected = new ChangeVersion(5679L, ModificationType.MERGED, ApplicabilityId.valueOf(1L));
+      ChangeVersion expected = new ChangeVersion(5679L, ModificationType.MERGED, ApplicabilityToken.BASE);
 
       ChangeVersion actual = new ChangeVersion();
       ChangeItemUtil.copy(expected, actual);
@@ -350,6 +350,52 @@ public class ChangeItemUtilTest {
       ChangeItem item = ChangeTestUtility.createItem(500, base, first, current, destination, net);
 
       Assert.assertFalse(ChangeItemUtil.isResurrected(item));
+   }
+
+   @Test
+   public void testAreApplicabilitiesEqual() {
+      ChangeVersion one = new ChangeVersion(100L, ModificationType.NEW, ApplicabilityToken.BASE);
+      Assert.assertFalse(ChangeItemUtil.areApplicabilitiesEqual(null, one));
+      Assert.assertFalse(ChangeItemUtil.areApplicabilitiesEqual(one, null));
+      Assert.assertTrue(ChangeItemUtil.areApplicabilitiesEqual(one, one));
+      Assert.assertTrue(ChangeItemUtil.areApplicabilitiesEqual(null, null));
+      ChangeVersion two = new ChangeVersion(100L, ModificationType.NEW, new ApplicabilityToken(2L, "dummy"));
+      Assert.assertFalse(ChangeItemUtil.areApplicabilitiesEqual(one, two));
+   }
+
+   @Test
+   public void testHasApplicabilityChange() {
+      ChangeVersion base = ChangeTestUtility.createChange(1111L, ModificationType.NEW);
+      ChangeVersion first = ChangeTestUtility.createChange(2222L, ModificationType.MODIFIED);
+      ChangeVersion current = ChangeTestUtility.createChange(3333L, ModificationType.INTRODUCED);
+      ChangeVersion destination = ChangeTestUtility.createChange(4444L, ModificationType.MERGED);
+      ChangeVersion net = ChangeTestUtility.createChange(5555L, ModificationType.DELETED);
+
+      current.setApplicabilityToken(new ApplicabilityToken(789L, "TestAppl"));
+      destination.setApplicabilityToken(ApplicabilityToken.BASE);
+
+      ChangeItem item = ChangeTestUtility.createItem(200, base, first, current, destination, net);
+      Assert.assertTrue(ChangeItemUtil.hasApplicabilityChange(item));
+
+      item.getDestinationVersion().setApplicabilityToken(new ApplicabilityToken(789L, "TestAppl"));
+      Assert.assertFalse(ChangeItemUtil.hasApplicabilityChange(item));
+   }
+
+   @Test
+   public void testSplitForApplicability() {
+      ChangeVersion base = ChangeTestUtility.createChange(1111L, ModificationType.NEW);
+      ChangeVersion first = ChangeTestUtility.createChange(2222L, ModificationType.MODIFIED);
+      ChangeVersion current = ChangeTestUtility.createChange(3333L, ModificationType.INTRODUCED);
+      ChangeVersion destination = ChangeTestUtility.createChange(4444L, ModificationType.MERGED);
+      ChangeVersion net = ChangeTestUtility.createChange(5555L, ModificationType.DELETED);
+
+      current.setApplicabilityToken(new ApplicabilityToken(789L, "TestAppl"));
+      destination.setApplicabilityToken(ApplicabilityToken.BASE);
+      ChangeItem item = ChangeTestUtility.createItem(200, base, first, current, destination, net);
+      ChangeItem split = ChangeItemUtil.splitForApplicability(item);
+      Assert.assertTrue(split.isApplicabilityCopy());
+      split.setApplicabilityCopy(false);
+      Assert.assertTrue(split.totalEquals(item));
    }
 
    private Triplet<ChangeVersion, ChangeVersion, Boolean> createTriplet(Long long1, ModificationType mod1, Long long2, ModificationType mod2, boolean expected) {

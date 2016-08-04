@@ -52,7 +52,9 @@ public enum ModificationType {
    //Attribute: Valid and can be used to replace the current version of an attribute with another historical version
    REPLACED_WITH_VERSION("Replace_with_version", 8),
 
-   DELETED_ON_DESTINATION("Deleted on Destination", 9);
+   DELETED_ON_DESTINATION("Deleted on Destination", 9),
+
+   APPLICABILITY("Applicability", 10);
 
    private final static Set<ModificationType> ALL_NOT_HARD_DELETED = new HashSet<>();
    private final static Set<ModificationType> ALL_MOD_TYPES = new HashSet<>();
