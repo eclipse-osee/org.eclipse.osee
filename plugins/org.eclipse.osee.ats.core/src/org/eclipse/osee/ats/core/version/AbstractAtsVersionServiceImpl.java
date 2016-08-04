@@ -138,7 +138,12 @@ public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionServic
    @Override
    public IAtsVersion getById(Identity<String> id) throws OseeCoreException {
       IAtsVersion version = null;
-      Object verArt = services.getArtifactById(id.getGuid());
+      Object verArt = null;
+      if (id instanceof ArtifactId) {
+         verArt = services.getArtifact(((ArtifactId) id).getUuid());
+      } else {
+         verArt = services.getArtifactById(id.getGuid());
+      }
       if (verArt != null) {
          version = services.getConfigItemFactory().getVersion((ArtifactId) verArt);
       }

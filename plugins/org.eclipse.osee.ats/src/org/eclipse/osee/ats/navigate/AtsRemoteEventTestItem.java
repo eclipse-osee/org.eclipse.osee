@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.navigate;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -45,6 +44,7 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -57,19 +57,17 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
+ * Test that runs off a Demo DBInit database via AtsClient_Integration_Test. ActiveMQ must be running and two clients
+ * launched with that active mq configured.
+ *
  * @author Donald G. Dunne
  */
 public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
    XResultData resultData;
-   IArtifactToken Version_2_5_6 =
-      TokenFactory.createArtifactToken(212596, "A8Yqcqy9Ewu1LTNllrAA", "2.5.6", AtsArtifactTypes.Version);
-   IArtifactToken Version_2_5_7 =
-      TokenFactory.createArtifactToken(443308, "A8YqcqzY91Im4M9XsKQA", "2.5.7", AtsArtifactTypes.Version);
-   IArtifactToken Version_2_5_8 =
-      TokenFactory.createArtifactToken(666319, "A8YqcqzzHG5BUQ4PJqwA", "2.5.8", AtsArtifactTypes.Version);
-   IArtifactToken atsActionableItem = TokenFactory.createArtifactToken(126809, "AAABER+4zV8A8O7WAtxxaA",
-      "Action Tracking System", AtsArtifactTypes.ActionableItem);
+   IArtifactToken SAW_Bld_1 = TokenFactory.createArtifactToken(2749182, "SAW_Bld_1", AtsArtifactTypes.Version);
+   IArtifactToken SAW_Bld_2 = TokenFactory.createArtifactToken(7632957, "SAW_Bld_2", AtsArtifactTypes.Version);
+   IArtifactToken SAW_Bld_3 = TokenFactory.createArtifactToken(577781, "SAW_Bld_3", AtsArtifactTypes.Version);
 
    public AtsRemoteEventTestItem(XNavigateItem parent) {
       super(parent, "ATS Remote Event Test");
@@ -101,16 +99,12 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       }
    }
 
-   private static Set<IAtsActionableItem> getActionableItemsByToken(Collection<IArtifactToken> aiArtifactTokens) throws OseeCoreException {
+   private static Set<IAtsActionableItem> getActionableItems() {
       Set<IAtsActionableItem> aias = new HashSet<>();
-      for (IArtifactToken token : aiArtifactTokens) {
-         Artifact aiArt = ArtifactQuery.getArtifactFromId(token.getGuid(), AtsUtilCore.getAtsBranch());
-
-         if (aiArt != null) {
-            IAtsActionableItem item = AtsClientService.get().getConfigItem(aiArt);
-            aias.add(item);
-         }
-      }
+      IAtsActionableItem sawCodeAi = (IAtsActionableItem) AtsClientService.get().getQueryService().createQuery(
+         AtsArtifactTypes.ActionableItem).andName("SAW Code").getResults().getAtMostOneOrNull();
+      Conditions.checkNotNull(sawCodeAi, "SAW Code AI; DBInit should be Demo DbInit");
+      aias.add(sawCodeAi);
       return aias;
    }
 
@@ -118,8 +112,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       String title = getName() + " - Destination Client Test";
       resultData.log("Running " + title);
       NewActionJob job = null;
-      job = new NewActionJob("tt", "description", ChangeType.Improvement, "1", null, false,
-         getActionableItemsByToken(Arrays.asList(atsActionableItem)), null, null);
+      job = new NewActionJob("tt", "description", ChangeType.Improvement, "1", null, false, getActionableItems(), null,
+         null);
       job.setUser(true);
       job.setPriority(Job.LONG);
       job.schedule();
@@ -200,7 +194,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
    private void makeChanges6(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       // Make changes and transition
-      AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamArt, getVersion257());
+      AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamArt, getSawBld2());
       teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "false");
       teamArt.persist("Remote Event Test");
    }
@@ -218,13 +212,13 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       teamArt.setSoleAttributeFromString(AtsAttributeTypes.Description, "description 4");
       ChangeTypeUtil.setChangeType(teamArt, ChangeType.Support);
       teamArt.setSoleAttributeFromString(AtsAttributeTypes.PriorityType, "3");
-      AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamArt, getVersion258());
+      AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamArt, getSawBld3());
       teamArt.persist("Remote Event Test");
    }
 
    private void makeChanges3(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       // Make changes and persist
-      AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamArt, getVersion257());
+      AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamArt, getSawBld2());
       teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "false");
       teamArt.persist(getClass().getSimpleName());
    }
@@ -242,20 +236,20 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       ChangeTypeUtil.setChangeType(teamArt, ChangeType.Problem);
       teamArt.setSoleAttributeFromString(AtsAttributeTypes.PriorityType, "2");
       teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "true");
-      AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamArt, getVersion256());
+      AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamArt, getSawBld1());
       teamArt.persist("Remote Event Test");
    }
 
-   private IAtsVersion getVersion256() throws OseeCoreException {
-      return AtsClientService.get().getVersionService().getById(Version_2_5_6);
+   private IAtsVersion getSawBld1() throws OseeCoreException {
+      return AtsClientService.get().getVersionService().getById(SAW_Bld_1);
    }
 
-   private IAtsVersion getVersion257() throws OseeCoreException {
-      return AtsClientService.get().getVersionService().getById(Version_2_5_7);
+   private IAtsVersion getSawBld2() throws OseeCoreException {
+      return AtsClientService.get().getVersionService().getById(SAW_Bld_2);
    }
 
-   private IAtsVersion getVersion258() throws OseeCoreException {
-      return AtsClientService.get().getVersionService().getById(Version_2_5_8);
+   private IAtsVersion getSawBld3() throws OseeCoreException {
+      return AtsClientService.get().getVersionService().getById(SAW_Bld_3);
    }
 
    private void validateActionAtStart(Artifact actionArt) throws OseeCoreException {
@@ -298,7 +292,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       } else {
          expectedTargetedVersion = "not set";
       }
-      testEquals("Targeted Version", expectedTargetedVersion, "2.5.7");
+      testEquals("Targeted Version", expectedTargetedVersion, "SAW_Bld_2");
       testEquals("State", TeamState.Analyze.getName(), teamArt.getStateMgr().getCurrentStateName());
    }
 
