@@ -68,6 +68,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.world.WorldEditor;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -289,6 +290,10 @@ public class AtsTestUtil {
     * Clear workDef from cache, clear all objects and create new objects with postFixName in titles
     */
    private static void reset(String postFixName) throws OseeCoreException {
+      if (ClientSessionManager.isProductionDataStore()) {
+         throw new OseeStateException("AtsTestUtil should not be run on production.");
+      }
+
       AtsBulkLoad.reloadConfig(true);
       AtsTestUtil.postFixName = postFixName;
 
