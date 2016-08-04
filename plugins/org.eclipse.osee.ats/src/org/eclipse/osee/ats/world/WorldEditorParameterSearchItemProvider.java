@@ -75,10 +75,12 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
       }
       if (firstTime) {
          firstTime = false;
+         worldEditor.getWorldXWidgetActionPage().getWorldComposite().getWorldXViewer().setLoading(false);
          worldEditor.setTableTitle(ENTER_OPTIONS_AND_SELECT_SEARCH, false);
          return;
       }
       if (worldParameterSearchItem.isCancelled()) {
+         worldEditor.getWorldXWidgetActionPage().getWorldComposite().getWorldXViewer().setLoading(false);
          return;
       }
 
