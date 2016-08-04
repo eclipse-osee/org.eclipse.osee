@@ -196,6 +196,14 @@ public final class TransactionManager {
       return getTransactionRecord(txId);
    }
 
+   public static String getComment(long txId) {
+      return getTransactionRecord(txId).getComment();
+   }
+
+   public static String getComment(TransactionId tx) {
+      return getComment(tx.getId());
+   }
+
    private static TransactionRecord getTransactionRecord(long txId) {
       JdbcClient jdbcClient = ConnectionHandler.getJdbcClient();
       return jdbcClient.fetchOrException(
