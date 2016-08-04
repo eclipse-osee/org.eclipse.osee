@@ -33,8 +33,6 @@ public interface IAtsChangeSet {
 
    void add(Object obj) throws OseeCoreException;
 
-   Collection<Object> getObjects();
-
    /**
     * Store changed items.
     *

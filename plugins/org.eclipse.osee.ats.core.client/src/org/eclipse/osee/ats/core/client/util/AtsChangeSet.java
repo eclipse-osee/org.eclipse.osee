@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -71,27 +71,22 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       }
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), comment);
       // First, create or update any artifacts that changed
-      for (Object obj : objects) {
+      for (Object obj : new ArrayList<>(objects)) {
          if (obj instanceof IAtsWorkItem) {
             IAtsWorkItem workItem = (IAtsWorkItem) obj;
             if (workItem.getStateMgr().isDirty()) {
                AtsClientService.get().getStateFactory().writeToStore(asUser, workItem, this);
-               ((Artifact) workItem.getStoreObject()).persist(transaction);
             }
             if (workItem.getLog().isDirty()) {
                AtsClientService.get().getLogFactory().writeToStore(workItem,
                   AtsClientService.get().getAttributeResolver(), this);
-               ((Artifact) workItem.getStoreObject()).persist(transaction);
             }
-         } else if (obj instanceof IAtsConfigObject) {
-            IAtsConfigObject configObj = (IAtsConfigObject) obj;
-            Artifact storeConfigObject = (Artifact) configObj.getStoreObject();
-            storeConfigObject.persist(transaction);
          }
+
          if (obj instanceof Artifact) {
-            ((Artifact) obj).persist(transaction);
+            transaction.addArtifact((Artifact) obj);
          } else if (obj instanceof IAtsObject && ((IAtsObject) obj).getStoreObject() instanceof Artifact) {
-            ((Artifact) ((IAtsObject) obj).getStoreObject()).persist(transaction);
+            transaction.addArtifact((Artifact) ((IAtsObject) obj).getStoreObject());
          }
       }
       // Second, add or delete any relations; this has to be done separate so all artifacts are created

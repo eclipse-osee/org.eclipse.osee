@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    protected String comment;
-   protected final Set<Object> objects = new CopyOnWriteArraySet<>();
+   protected final List<Object> objects = new ArrayList<>();
    protected final Set<Object> deleteObjects = new CopyOnWriteArraySet<>();
    protected final Set<IExecuteListener> listeners = new CopyOnWriteArraySet<>();
    protected final IAtsUser asUser;
@@ -67,11 +67,6 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
       for (Object obj : objects) {
          add(obj);
       }
-   }
-
-   @Override
-   public Set<Object> getObjects() {
-      return objects;
    }
 
    public void setComment(String comment) {

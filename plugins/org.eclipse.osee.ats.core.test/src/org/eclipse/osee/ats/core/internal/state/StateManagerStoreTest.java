@@ -14,9 +14,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -46,7 +44,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link StateManagerStore}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class StateManagerStoreTest {
@@ -150,8 +148,6 @@ public class StateManagerStoreTest {
       Assert.assertEquals(2, stateMgr.getAssignees().size());
 
       when(workItem.getStateMgr()).thenReturn(stateMgr);
-      List<Object> objects = new ArrayList<>();
-      when(changes.getObjects()).thenReturn(objects);
       IExecuteListener listener = StateManagerStore.getPostPersistExecutionListener(asUser, workItem, stateMgr,
          stateMgr.getAssigneesAdded(), attrResolver, workStateFactory, changes);
 
@@ -161,9 +157,6 @@ public class StateManagerStoreTest {
       when(workStateFactory.fromStoreStr(eq("Analyze;<Joe><Kay>;;"))).thenReturn(currentState);
       when(changes.getNotifications()).thenReturn(notifications);
       when(workItem.getAtsId()).thenReturn("ATS1234");
-
-      objects.add(workItem);
-      objects.add("now");
 
       listener = StateManagerStore.getPostPersistExecutionListener(asUser, workItem, stateMgr,
          stateMgr.getAssigneesAdded(), attrResolver, workStateFactory, changes);
