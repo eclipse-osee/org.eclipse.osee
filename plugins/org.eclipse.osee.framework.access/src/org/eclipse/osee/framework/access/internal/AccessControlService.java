@@ -434,6 +434,9 @@ public class AccessControlService implements IAccessControlService {
       int subjectId = subject.getArtId();
 
       userPermission = accessControlListCache.get(subjectId, accessObject);
+      if (userPermission == null) {
+         userPermission = PermissionEnum.FULLACCESS;
+      }
 
       if (subjectToGroupCache.containsKey(subjectId)) {
          for (int groupPermissionId : subjectToGroupCache.getValues(subjectId)) {
