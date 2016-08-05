@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.core.users;
 
 import java.util.HashMap;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -164,11 +163,6 @@ public class CoreAtsUsersTest {
       }
 
       @Override
-      public void setStoreObject(ArtifactId artifact) {
-         // do nothing
-      }
-
-      @Override
       public Long getId() {
          return 999994L;
       }
@@ -187,11 +181,6 @@ public class CoreAtsUsersTest {
       }
 
       @Override
-      public String getDescription() {
-         return getName();
-      }
-
-      @Override
       public String getEmail() {
          return getName();
       }
@@ -199,21 +188,6 @@ public class CoreAtsUsersTest {
       @Override
       public boolean isActive() {
          return true;
-      }
-
-      @Override
-      public String toStringWithId() {
-         return String.format("[%s][%d]", getName(), getId());
-      }
-
-      @Override
-      public ArtifactId getStoreObject() {
-         return null;
-      }
-
-      @Override
-      public void setStoreObject(ArtifactId artifact) {
-         // do nothing
       }
 
       @Override

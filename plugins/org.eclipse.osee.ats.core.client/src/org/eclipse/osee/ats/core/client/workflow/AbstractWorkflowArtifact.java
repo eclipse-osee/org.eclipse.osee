@@ -128,11 +128,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return 0;
    }
 
-   @Override
-   public String getDescription() {
-      return "";
-   }
-
    public AbstractWorkflowArtifact getParentAWA() throws OseeCoreException {
       return parentAwa;
    }

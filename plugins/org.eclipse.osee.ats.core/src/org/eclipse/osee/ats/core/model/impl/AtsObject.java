@@ -36,11 +36,6 @@ public class AtsObject extends NamedId implements IAtsObject {
    }
 
    @Override
-   public final String toStringWithId() {
-      return String.format("[%d][%s]", getId(), getName());
-   }
-
-   @Override
    public ArtifactId getStoreObject() {
       return object;
    }

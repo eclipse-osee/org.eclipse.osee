@@ -101,11 +101,6 @@ public class AtsUser implements IAtsUser {
    }
 
    @Override
-   public String toStringWithId() {
-      return String.format("[%s][%d]", getName(), getId());
-   }
-
-   @Override
    public ArtifactId getStoreObject() {
       return user;
    }

@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.api.config;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 
 /**
  * @author Donald G. Dunne
@@ -30,17 +29,4 @@ public class JaxAtsConfigObject extends JaxAtsObject {
    public void setActive(boolean active) {
       this.active = active;
    }
-
-   public final String toStringWithId() {
-      return String.format("[%d][%s]", getUuid(), getName());
-   }
-
-   public ArtifactId getStoreObject() {
-      return null;
-   }
-
-   public void setStoreObject(ArtifactId artifact) {
-      // do nothing
-   }
-
 }

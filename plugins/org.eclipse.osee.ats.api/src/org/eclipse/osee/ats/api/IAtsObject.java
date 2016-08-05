@@ -20,9 +20,20 @@ import org.eclipse.osee.framework.jdk.core.type.Named;
  */
 public interface IAtsObject extends Named, Id, HasDescription {
 
-   String toStringWithId();
+   default String toStringWithId() {
+      return String.format("[%s][%s]", getName(), getId());
+   }
 
-   ArtifactId getStoreObject();
+   default ArtifactId getStoreObject() {
+      return null;
+   }
 
-   void setStoreObject(ArtifactId artifact);
+   default void setStoreObject(ArtifactId artifact) {
+      // do nothing
+   }
+
+   @Override
+   default String getDescription() {
+      return getName();
+   }
 }

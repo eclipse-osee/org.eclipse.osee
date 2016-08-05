@@ -34,9 +34,4 @@ public abstract class AbstractAtsArtifact extends Artifact implements IAtsObject
    public ArtifactId getStoreObject() {
       return this;
    }
-
-   @Override
-   public void setStoreObject(ArtifactId artifact) {
-      // do nothing
-   }
 }
