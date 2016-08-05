@@ -299,9 +299,17 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
    @Override
    public void reloadAllCaches() throws OseeCoreException {
-      reloadConfigCache();
-      reloadWorkDefinitionCache();
-      getUserService().clearCache();
+      Job job = new Job("Reload ATS Caches") {
+
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+            reloadConfigCache();
+            reloadWorkDefinitionCache();
+            getUserService().clearCache();
+            return Status.OK_STATUS;
+         }
+      };
+      Jobs.startJob(job);
    }
 
    @Override
