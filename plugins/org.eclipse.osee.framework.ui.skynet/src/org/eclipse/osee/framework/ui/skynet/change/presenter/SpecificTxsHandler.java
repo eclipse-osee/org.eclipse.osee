@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.change.presenter;
 
 import java.text.NumberFormat;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
@@ -47,7 +48,13 @@ public final class SpecificTxsHandler implements IChangeReportUiHandler {
          OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
          branchName = "Unknown";
       }
-      String toReturn = TransactionManager.getComment(txDelta.getEndTx());
+
+      String toReturn = null;
+      try {
+         toReturn = TransactionManager.getComment(txDelta.getEndTx());
+      } catch (TransactionDoesNotExist ex) {
+         toReturn = "Not Found";
+      }
       if (!Strings.isValid(toReturn)) {
          toReturn = String.format("%s - Transactions", branchName);
       }
