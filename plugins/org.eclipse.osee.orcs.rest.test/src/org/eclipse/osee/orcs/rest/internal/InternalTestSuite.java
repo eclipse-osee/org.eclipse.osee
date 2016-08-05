@@ -18,6 +18,7 @@ import org.eclipse.osee.orcs.rest.internal.search.predicate.GuidsPredicateHandle
 import org.eclipse.osee.orcs.rest.internal.search.predicate.IdsPredicateHandlerTest;
 import org.eclipse.osee.orcs.rest.internal.search.predicate.IsOfTypePredicateHandlerTest;
 import org.eclipse.osee.orcs.rest.internal.search.predicate.TypeEqualsPredicateHandlerTest;
+import org.eclipse.osee.orcs.rest.internal.writer.OrcsValidationHelperAdapterTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -30,6 +31,7 @@ import org.junit.runners.Suite;
    AttributeTypePredicateHandlerTest.class,
    ExistenceTypePredicateHandlerTest.class,
    IdsPredicateHandlerTest.class,
+   OrcsValidationHelperAdapterTest.class,
    GuidsPredicateHandlerTest.class,
    IsOfTypePredicateHandlerTest.class,
    TypeEqualsPredicateHandlerTest.class,

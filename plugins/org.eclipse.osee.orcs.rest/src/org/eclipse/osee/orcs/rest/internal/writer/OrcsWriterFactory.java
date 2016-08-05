@@ -8,21 +8,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.writer;
+package org.eclipse.osee.orcs.rest.internal.writer;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.orcs.writer.model.reader.OwArtifact;
-import org.eclipse.osee.orcs.writer.model.reader.OwArtifactToken;
-import org.eclipse.osee.orcs.writer.model.reader.OwArtifactType;
-import org.eclipse.osee.orcs.writer.model.reader.OwAttribute;
-import org.eclipse.osee.orcs.writer.model.reader.OwAttributeType;
-import org.eclipse.osee.orcs.writer.model.reader.OwBranch;
-import org.eclipse.osee.orcs.writer.model.reader.OwCollector;
-import org.eclipse.osee.orcs.writer.model.reader.OwRelation;
-import org.eclipse.osee.orcs.writer.model.reader.OwRelationType;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifact;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactToken;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactType;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwAttribute;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwAttributeType;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwBranch;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwCollector;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwRelation;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwRelationType;
 
 /**
  * @author Donald G. Dunne

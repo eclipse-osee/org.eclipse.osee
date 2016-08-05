@@ -26,9 +26,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.orcs.rest.model.OrcsWriterEndpoint;
-import org.eclipse.osee.orcs.writer.model.reader.OwArtifact;
-import org.eclipse.osee.orcs.writer.model.reader.OwCollector;
-import org.eclipse.osee.orcs.writer.model.reader.OwFactory;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifact;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactToken;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwCollector;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -115,7 +115,12 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
       OwCollector collector = getDefaultOwCollector();
       collector.getCreate().clear();
       collector.getUpdate().clear();
-      collector.getDelete().add(OwFactory.createArtifactToken(artifact.getName(), artifact.getUuid()));
+      OwArtifactToken owToken = new OwArtifactToken();
+      owToken.setUuid(artifact.getUuid());
+      owToken.setName(artifact.getName());
+      String tokenStr = String.format("[%s]-[%d]", artifact.getName(), artifact.getUuid());
+      owToken.setData(tokenStr);
+      collector.getDelete().add(owToken);
 
       Response response = writer.getOrcsWriterPersist(collector);
       assertEquals(javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.getStatus());

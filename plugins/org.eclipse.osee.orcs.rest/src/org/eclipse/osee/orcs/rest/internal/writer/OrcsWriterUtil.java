@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.writer;
+package org.eclipse.osee.orcs.rest.internal.writer;
 
 /**
  * @author Donald G. Dunne

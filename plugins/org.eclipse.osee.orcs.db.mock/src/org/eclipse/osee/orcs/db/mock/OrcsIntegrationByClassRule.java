@@ -8,14 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs;
+package org.eclipse.osee.orcs.db.mock;
 
 import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.db.mock.OseeClassDatabase;
-import org.eclipse.osee.orcs.db.mock.OsgiRule;
-import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.osgi.service.event.EventAdmin;

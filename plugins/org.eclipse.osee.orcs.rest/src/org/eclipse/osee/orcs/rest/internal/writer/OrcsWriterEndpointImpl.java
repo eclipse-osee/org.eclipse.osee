@@ -20,9 +20,8 @@ import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.OrcsWriterEndpoint;
-import org.eclipse.osee.orcs.writer.OrcsWriterExcelReader;
-import org.eclipse.osee.orcs.writer.model.config.OrcsWriterInputConfig;
-import org.eclipse.osee.orcs.writer.model.reader.OwCollector;
+import org.eclipse.osee.orcs.rest.model.writer.config.OrcsWriterInputConfig;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwCollector;
 
 /**
  * @author Donald G. Dunne

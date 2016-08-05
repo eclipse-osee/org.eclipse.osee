@@ -29,8 +29,5 @@ Export-Package: org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.search,
  org.eclipse.osee.orcs.statistics,
  org.eclipse.osee.orcs.transaction,
- org.eclipse.osee.orcs.utility,
- org.eclipse.osee.orcs.writer,
- org.eclipse.osee.orcs.writer.model.config,
- org.eclipse.osee.orcs.writer.model.reader
+ org.eclipse.osee.orcs.utility
 Bundle-ActivationPolicy: lazy

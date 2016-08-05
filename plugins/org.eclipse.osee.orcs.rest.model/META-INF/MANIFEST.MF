@@ -6,7 +6,10 @@ Bundle-Version: 0.24.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.osee.orcs.rest.model,
- org.eclipse.osee.orcs.rest.model.search.artifact
+ org.eclipse.osee.orcs.rest.model.search.artifact,
+ org.eclipse.osee.orcs.rest.model.writer,
+ org.eclipse.osee.orcs.rest.model.writer.config,
+ org.eclipse.osee.orcs.rest.model.writer.reader
 Import-Package: javax.annotation.security;version="1.2.0",
  javax.ws.rs;version="2.0.0",
  javax.ws.rs.core;version="2.0.0",
@@ -20,8 +23,5 @@ Import-Package: javax.annotation.security;version="1.2.0",
  org.eclipse.osee.framework.core.model.change,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.type,
- org.eclipse.osee.framework.jdk.core.util,
- org.eclipse.osee.orcs.transaction,
- org.eclipse.osee.orcs.writer.model.config,
- org.eclipse.osee.orcs.writer.model.reader
+ org.eclipse.osee.framework.jdk.core.util
 Require-Bundle: org.codehaus.jackson.mapper

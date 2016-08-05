@@ -15,7 +15,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.writer.model.reader.OwCollector;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwCollector;
 
 /**
  * @author Donald G. Dunne

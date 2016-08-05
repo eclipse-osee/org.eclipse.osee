@@ -8,11 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.writer.model.config;
+package org.eclipse.osee.orcs.rest.model.writer.config;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.orcs.rest.model.writer.OrcsWriterToken;
 
 /**
  * @author Donald G. Dunne

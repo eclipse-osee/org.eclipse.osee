@@ -8,18 +8,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.writer.model.reader;
-
-import javax.xml.bind.annotation.XmlRootElement;
+package org.eclipse.osee.orcs.rest.internal.writer;
 
 /**
  * @author Donald G. Dunne
  */
-@XmlRootElement
-public class OwArtifactType extends OwNamedBase {
+public interface IOrcsValidationHelper {
 
-   @Override
-   public String toString() {
-      return "OwArtifactType [uuid=" + uuid + ", data=" + data + "]";
-   }
+   boolean isBranchExists(long branchUuid);
+
+   boolean isUserExists(String userId);
+
+   boolean isArtifactTypeExist(long artifactTypeUuid);
+
+   boolean isRelationTypeExist(long relationTypeUuid);
+
+   boolean isAttributeTypeExists(long attributeTypeUuid);
+
+   public boolean isArtifactExists(long branchUuid, long artifactUuid);
+
+   boolean isAttributeTypeExists(String attributeTypeName);
+
 }

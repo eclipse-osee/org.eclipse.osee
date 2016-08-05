@@ -5,19 +5,23 @@ Bundle-SymbolicName: org.eclipse.osee.orcs.db.mock
 Bundle-Version: 0.24.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.eclipse.osee.framework.core.data,
+Import-Package: org.eclipse.osee.event,
+ org.eclipse.osee.executor.admin,
+ org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.annotation,
  org.eclipse.osee.jdbc,
+ org.eclipse.osee.logger,
  org.json,
  org.junit,
  org.junit.rules,
  org.junit.runner,
  org.junit.runners.model,
  org.osgi.framework,
- org.osgi.service.cm
+ org.osgi.service.cm,
+ org.osgi.service.event;version="1.3.1"
 Export-Package: org.eclipse.osee.orcs.db.mock
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.equinox.ds,

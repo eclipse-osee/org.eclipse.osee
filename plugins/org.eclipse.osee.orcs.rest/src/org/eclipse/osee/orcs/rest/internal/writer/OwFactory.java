@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.writer.model.reader;
+package org.eclipse.osee.orcs.rest.internal.writer;
 
 /**
  * Donald G. Dunne
@@ -21,6 +21,13 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifact;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactToken;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactType;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwAttribute;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwAttributeType;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwBranch;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwRelationType;
 
 public class OwFactory {
 

@@ -132,7 +132,7 @@ Import-Package: com.google.common.collect,
  org.eclipse.osee.jaxrs,
  org.eclipse.osee.jaxrs.client,
  org.eclipse.osee.orcs.rest.model,
- org.eclipse.osee.orcs.writer.model.reader,
+ org.eclipse.osee.orcs.rest.model.writer.reader,
  org.eclipse.osee.support.test.util,
  org.osgi.framework,
  org.osgi.service.event

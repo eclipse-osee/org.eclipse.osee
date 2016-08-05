@@ -22,14 +22,12 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.writer.OrcsWriterUtil;
-import org.eclipse.osee.orcs.writer.model.reader.OwArtifactToken;
-import org.eclipse.osee.orcs.writer.model.reader.OwArtifactType;
-import org.eclipse.osee.orcs.writer.model.reader.OwAttributeType;
-import org.eclipse.osee.orcs.writer.model.reader.OwBranch;
-import org.eclipse.osee.orcs.writer.model.reader.OwCollector;
-import org.eclipse.osee.orcs.writer.model.reader.OwFactory;
-import org.eclipse.osee.orcs.writer.model.reader.OwRelationType;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactToken;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactType;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwAttributeType;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwBranch;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwCollector;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwRelationType;
 
 /**
  * @author Donald G. Dunne

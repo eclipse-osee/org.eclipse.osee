@@ -8,26 +8,28 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.writer;
+package org.eclipse.osee.orcs.rest.internal.writer;
 
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
-import org.eclipse.osee.orcs.writer.model.reader.OwBranch;
-import org.eclipse.osee.orcs.writer.model.reader.OwCollector;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactToken;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwCollector;
 
 /**
  * @author Donald G. Dunne
  */
-public class OrcsWriterSheetProcessorForSettings implements RowProcessor {
+public class OrcsWriterSheetProcessorForDelete implements RowProcessor {
 
    private final OwCollector collector;
    private int rowCount = 0;
    private final OrcsWriterFactory factory;
+   private final XResultData result;
 
-   public OrcsWriterSheetProcessorForSettings(OwCollector collector, XResultData result) {
+   public OrcsWriterSheetProcessorForDelete(OwCollector collector, XResultData result) {
       this.collector = collector;
+      this.result = result;
       this.factory = new OrcsWriterFactory(collector);
    }
 
@@ -53,34 +55,28 @@ public class OrcsWriterSheetProcessorForSettings implements RowProcessor {
 
    @Override
    public void processHeaderRow(String[] headerRow) {
-      // do nothing
+      rowCount++;
+      if (headerRow.length > 1) {
+         result.warning("More than 1 column found in DELETE sheet.  Only column 1 is processed");
+      }
    }
 
    @Override
    public void processRow(String[] row) throws OseeCoreException {
       rowCount++;
-      for (int colCount = 0; colCount < row.length; colCount++) {
-         if (colCount == 0) {
-            String key = row[colCount];
-            if (key.equals(OrcsWriterUtil.BRANCH_TOKEN_SETTING)) {
-               String branchTokenStr = row[1];
-               if (Strings.isValid(branchTokenStr)) {
-                  OwBranch branchToken = factory.getOrCreateBranchToken(branchTokenStr);
-                  collector.setBranch(branchToken);
-                  branchToken.setData(OrcsWriterUtil.getData(rowCount, colCount, branchTokenStr));
-               }
-            } else if (key.equals(OrcsWriterUtil.AS_USER_ID_SETTING)) {
-               String userId = row[1];
-               if (Strings.isValid(userId)) {
-                  collector.setAsUserId(userId);
-               }
-            } else if (key.equals(OrcsWriterUtil.PERSIST_COMMENT_SETTING)) {
-               String persistComment = row[1];
-               if (Strings.isValid(persistComment)) {
-                  collector.setPersistComment(persistComment);
-               }
-            }
-         }
+      OwArtifactToken artifact = null;
+      String value = row[0];
+      if (Strings.isNumeric(value)) {
+         artifact = new OwArtifactToken();
+         artifact.setUuid(Long.valueOf(value));
+         artifact.setName("unknown");
+      }
+      if (Strings.isValid(value)) {
+         artifact = factory.getOrCreateToken(value);
+      }
+      if (artifact != null) {
+         artifact.setData("Row " + rowCount);
+         collector.getDelete().add(artifact);
       }
    }
 

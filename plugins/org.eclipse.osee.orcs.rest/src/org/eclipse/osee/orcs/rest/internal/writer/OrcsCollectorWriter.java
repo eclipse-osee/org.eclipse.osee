@@ -32,15 +32,15 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifact;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactToken;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactType;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwAttribute;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwAttributeType;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwCollector;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwRelation;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwRelationType;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
-import org.eclipse.osee.orcs.writer.model.reader.OwArtifact;
-import org.eclipse.osee.orcs.writer.model.reader.OwArtifactToken;
-import org.eclipse.osee.orcs.writer.model.reader.OwArtifactType;
-import org.eclipse.osee.orcs.writer.model.reader.OwAttribute;
-import org.eclipse.osee.orcs.writer.model.reader.OwAttributeType;
-import org.eclipse.osee.orcs.writer.model.reader.OwCollector;
-import org.eclipse.osee.orcs.writer.model.reader.OwRelation;
-import org.eclipse.osee.orcs.writer.model.reader.OwRelationType;
 
 /**
  * @author Donald G. Dunne

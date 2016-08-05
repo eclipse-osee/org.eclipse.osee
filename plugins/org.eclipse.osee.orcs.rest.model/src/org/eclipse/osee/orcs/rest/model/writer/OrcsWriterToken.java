@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.writer.model.config;
+package org.eclipse.osee.orcs.rest.model.writer;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

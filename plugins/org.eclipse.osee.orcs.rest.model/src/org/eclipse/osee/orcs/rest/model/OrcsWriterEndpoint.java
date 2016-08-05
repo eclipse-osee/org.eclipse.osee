@@ -18,8 +18,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.eclipse.osee.orcs.writer.model.config.OrcsWriterInputConfig;
-import org.eclipse.osee.orcs.writer.model.reader.OwCollector;
+import org.eclipse.osee.orcs.rest.model.writer.config.OrcsWriterInputConfig;
+import org.eclipse.osee.orcs.rest.model.writer.reader.OwCollector;
 
 /**
  * @author Donald G. dunne

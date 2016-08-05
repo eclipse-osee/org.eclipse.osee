@@ -22,7 +22,6 @@ import org.eclipse.osee.orcs.api.OrcsScriptTest;
 import org.eclipse.osee.orcs.api.OrcsTransactionTest;
 import org.eclipse.osee.orcs.api.OrcsTupleTest;
 import org.eclipse.osee.orcs.api.OrcsTxQueryTest;
-import org.eclipse.osee.orcs.writer.OrcsValidationHelperAdapterTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -32,7 +31,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    OrcsQueryTest.class,
-   OrcsValidationHelperAdapterTest.class,
    OrcsAttributeLoadingTest.class,
    OrcsAttributeSearchTest.class,
    OrcsBranchQueryTest.class,

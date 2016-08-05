@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.writer.model.reader;
+package org.eclipse.osee.orcs.rest.model.writer.reader;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -16,10 +16,10 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Donald G. Dunne
  */
 @XmlRootElement
-public class OwBranch extends OwNamedBase {
+public class OwArtifactType extends OwNamedBase {
 
    @Override
    public String toString() {
-      return "OwBranch [uuid=" + uuid + ", data=" + data + "]";
+      return "OwArtifactType [uuid=" + uuid + ", data=" + data + "]";
    }
 }

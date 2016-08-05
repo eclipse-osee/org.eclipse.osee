@@ -8,24 +8,33 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.writer.model.reader;
+package org.eclipse.osee.orcs.rest.model.writer.config;
 
-import org.eclipse.osee.framework.jdk.core.type.Named;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Donald G. Dunne
  */
-public class OwNamedBase extends OwBase implements Named {
+@XmlRootElement
+public class OrcsWriterRelationSide {
 
-   private String name;
+   private Long relationTypeUuid;
+   private boolean sideA;
 
-   @Override
-   public String getName() {
-      return name;
+   public Long getRelationTypeUuid() {
+      return relationTypeUuid;
    }
 
-   public void setName(String name) {
-      this.name = name;
+   public void setRelationTypeUuid(Long relationTypeUuid) {
+      this.relationTypeUuid = relationTypeUuid;
+   }
+
+   public boolean isSideA() {
+      return sideA;
+   }
+
+   public void setSideA(boolean sideA) {
+      this.sideA = sideA;
    }
 
 }
