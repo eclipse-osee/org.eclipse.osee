@@ -188,7 +188,8 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
                } else if (isShowRelations()) {
                   List<RelationLink> relationsAll = artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED);
                   for (RelationLink link : relationsAll) {
-                     if (link.getRelationType().getId() != CoreRelationTypes.Default_Hierarchical__Child.getGuid()) {
+                     if (!link.getRelationType().getId().equals(
+                        CoreRelationTypes.Default_Hierarchical__Child.getGuid())) {
                         return true;
                      }
                   }
