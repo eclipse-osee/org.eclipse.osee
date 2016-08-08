@@ -318,10 +318,4 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       }
       return country;
    }
-
-   @Override
-   public IAtsCountry getCountry(long uuid) {
-      return getCountry(atsServer.getArtifact(uuid));
-   }
-
 }

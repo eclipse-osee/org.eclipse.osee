@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.core.client.config.IAtsClientVersionService;
-import org.eclipse.osee.ats.core.client.internal.IArtifactProvider;
 import org.eclipse.osee.ats.core.client.internal.IAtsWorkItemArtifactServiceProvider;
 import org.eclipse.osee.ats.core.client.util.IArtifactMembersCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -43,41 +42,37 @@ import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.IAtsCacheProvider;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolverProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsWorkItemArtifactServiceProvider, IAtsWorkItemServiceProvider, IAtsCacheProvider, ITeamDefinitionFactory, IActionableItemFactory, IArtifactProvider, IAtsVersionServiceProvider, IAtsEarnedValueServiceProvider {
+public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolverProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsWorkItemArtifactServiceProvider, IAtsWorkItemServiceProvider, IAtsCacheProvider, ITeamDefinitionFactory, IActionableItemFactory, IAtsVersionServiceProvider, IAtsEarnedValueServiceProvider {
 
-   Artifact getConfigArtifact(IAtsConfigObject atsConfigObject) throws OseeCoreException;
+   @Override
+   Artifact getArtifact(ArtifactId artifact);
+
+   Artifact getConfigArtifact(IAtsConfigObject atsConfigObject);
 
    /**
     * @return corresponding Artifact or null if not found
     */
    @Override
-   Artifact getArtifact(IArtifactToken token) throws OseeCoreException;
+   Artifact getArtifact(IAtsObject atsObject);
 
-   /**
-    * @return corresponding Artifact or null if not found
-    */
-   @Override
-   Artifact getArtifact(IAtsObject atsObject) throws OseeCoreException;
+   AbstractWorkflowArtifact getWorkflowArtifact(IAtsObject atsObject);
 
-   AbstractWorkflowArtifact getWorkflowArtifact(IAtsObject atsObject) throws OseeCoreException;
-
-   List<Artifact> getConfigArtifacts(Collection<? extends IAtsObject> atsObjects) throws OseeCoreException;
+   List<Artifact> getConfigArtifacts(Collection<? extends IAtsObject> atsObjects);
 
    void invalidateCache();
 
-   void reloadWorkDefinitionCache(boolean pend) throws OseeCoreException;
+   void reloadWorkDefinitionCache(boolean pend);
 
    void invalidateWorkDefinitionCache();
 
-   void reloadAllCaches(boolean pend) throws OseeCoreException;
+   void reloadAllCaches(boolean pend);
 
    void invalidateAllCaches();
 
@@ -94,7 +89,7 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
    IAtsTeamDefinitionService getTeamDefinitionService();
 
    @Override
-   Artifact getArtifact(Long uuid) throws OseeCoreException;
+   Artifact getArtifact(Long uuid);
 
    @Override
    IAtsClientVersionService getVersionService();
@@ -108,7 +103,7 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
    IVersionFactory getVersionFactory();
 
    @Override
-   Artifact getArtifactByGuid(String guid) throws OseeCoreException;
+   Artifact getArtifactByGuid(String guid);
 
    Artifact getArtifactByAtsId(String id);
 

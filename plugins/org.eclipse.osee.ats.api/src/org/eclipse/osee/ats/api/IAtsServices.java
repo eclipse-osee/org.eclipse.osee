@@ -45,13 +45,15 @@ import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.logger.Log;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IAtsServices extends IAtsConfigurationProvider, IWorkDefinitionStringProvider {
+
+   IOseeBranch getAtsBranch();
 
    IRelationResolver getRelationResolver();
 
@@ -71,9 +73,9 @@ public interface IAtsServices extends IAtsConfigurationProvider, IWorkDefinition
 
    ArtifactId getArtifact(Long uuid);
 
-   ArtifactId getArtifact(ArtifactId artifact) throws OseeCoreException;
+   ArtifactId getArtifact(ArtifactId artifact);
 
-   ArtifactId getArtifact(IAtsObject atsObject) throws OseeCoreException;
+   ArtifactId getArtifact(IAtsObject atsObject);
 
    void setChangeType(IAtsObject atsObject, ChangeType changeType, IAtsChangeSet changes);
 
@@ -91,11 +93,9 @@ public interface IAtsServices extends IAtsConfigurationProvider, IWorkDefinition
 
    IAtsConfigItemFactory getConfigItemFactory();
 
-   ArtifactId getArtifact(IArtifactToken token);
-
    IAtsStoreService getStoreService();
 
-   <A extends IAtsConfigObject> A getSoleByUuid(long uuid, Class<A> clazz) throws OseeCoreException;
+   <A extends IAtsConfigObject> A getSoleByUuid(long uuid, Class<A> clazz);
 
    Collection<ITransitionListener> getTransitionListeners();
 
@@ -146,7 +146,6 @@ public interface IAtsServices extends IAtsConfigurationProvider, IWorkDefinition
    <T> T getConfigItem(String guid);
 
    <T> T getConfigItem(Long uuid);
-
    void setConfigValue(String key, String value);
 
 }

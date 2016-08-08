@@ -85,7 +85,7 @@ public class AtsConfigPreferencePage extends PreferencePage implements IWorkbenc
 
    private void updateConfigurationField() {
       configText.setEditable(true);
-      configText.setText(AtsUtilCore.getAtsConfigName());
+      configText.setText(AtsUtilCore.getAtsBranch().getName());
       configText.setEditable(false);
    }
 

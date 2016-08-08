@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.IAtsClient;
-import org.eclipse.osee.ats.core.client.internal.IArtifactProvider;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.review.ValidateReviewManager;
@@ -36,20 +35,17 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class AtsReviewServiceImpl implements IAtsReviewService {
 
-   private final IArtifactProvider artifactProvider;
    private final IAtsClient atsClient;
 
-   public AtsReviewServiceImpl(IAtsClient atsClient, IArtifactProvider artifactProvider) {
+   public AtsReviewServiceImpl(IAtsClient atsClient) {
       this.atsClient = atsClient;
-      this.artifactProvider = artifactProvider;
    }
 
    @Override
    public boolean isValidationReviewRequired(IAtsWorkItem workItem) throws OseeCoreException {
       boolean required = false;
       if (workItem.isTeamWorkflow()) {
-         required =
-            artifactProvider.getArtifact(workItem).getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, false);
+         required = atsClient.getArtifact(workItem).getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, false);
       }
       return required;
    }

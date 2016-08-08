@@ -68,8 +68,5 @@ public interface IAtsConfigItemFactory {
 
    IAtsCountry getCountry(ArtifactId artifact);
 
-   IAtsCountry getCountry(long uuid);
-
    IAtsWorkPackage getWorkPackage(ArtifactId artifact);
-
 }

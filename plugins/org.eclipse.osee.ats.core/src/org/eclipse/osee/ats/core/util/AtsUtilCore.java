@@ -21,7 +21,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -42,17 +42,11 @@ public class AtsUtilCore {
    public static final String ATS_DEFAULT_ACTION_URL = "/ats/ui/action/UUID";
 
    private static final Object lock = new Object();
-   private volatile static BranchId atsBranch;
-   private volatile static String atsConfigName;
+   private volatile static IOseeBranch atsBranch;
    private static Map<Long, String> uuidToGuidMap = new HashMap<>(50);
    private static Map<String, Long> guidToUuidMap = new HashMap<>(50);
 
-   public static String getAtsConfigName() {
-      getAtsBranch();
-      return atsConfigName;
-   }
-
-   public static BranchId getAtsBranch() {
+   public static IOseeBranch getAtsBranch() {
       synchronized (lock) {
          if (atsBranch == null) {
             // Preference store overrides all
@@ -74,7 +68,6 @@ public class AtsUtilCore {
             // default is always common
             if (atsBranch == null) {
                atsBranch = CoreBranches.COMMON;
-               atsConfigName = CoreBranches.COMMON.getName();
             }
          }
       }
@@ -86,8 +79,7 @@ public class AtsUtilCore {
          name = "unknown";
       }
       if (Strings.isValid(branchUuid) && branchUuid.matches("\\d+")) {
-         atsBranch = TokenFactory.createBranch(Long.valueOf(branchUuid), name);
-         atsConfigName = name;
+         atsBranch = IOseeBranch.create(Long.valueOf(branchUuid), name);
       }
    }
 

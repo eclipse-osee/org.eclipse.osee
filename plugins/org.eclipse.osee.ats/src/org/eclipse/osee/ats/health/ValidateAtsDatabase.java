@@ -718,7 +718,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private List<Long> getInvalidUuids(List<Long> uuids) throws OseeCoreException {
       List<Long> badUuids = new ArrayList<>();
       for (Long uuid : uuids) {
-         if (AtsClientService.get().getArtifact(uuid.longValue()) == null) {
+         if (AtsClientService.get().getArtifact(uuid) == null) {
             badUuids.add(uuid);
          }
       }
@@ -773,9 +773,10 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   "Error: [%s][%d][%s] has Parent Branch Uuid attribute set to Archived Branch [%s] named [%s]",
                   name.getName(), name.getId(), name, parentBranchUuid, branch));
          } else if (!BranchManager.getType(branch).isBaselineBranch()) {
-            results.log("validateBranchUuid", String.format(
-               "Error: [%s][%d][%s] has Parent Branch Uuid attribute [%s][%s] that is a [%s] branch; should be a BASELINE branch",
-               name.getName(), name.getId(), name, BranchManager.getType(branch).name(), parentBranchUuid, branch));
+            results.log("validateBranchUuid",
+               String.format(
+                  "Error: [%s][%d][%s] has Parent Branch Uuid attribute [%s][%s] that is a [%s] branch; should be a BASELINE branch",
+                  name.getName(), name.getId(), name, BranchManager.getType(branch).name(), parentBranchUuid, branch));
          }
       } catch (BranchDoesNotExist ex) {
          results.log("validateBranchUuid",

@@ -209,7 +209,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
             writer.writeEndObject();
          }
          writer.writeEndArray();
-         ArtifactReadable teamArt = atsServer.getArtifact(team.getId());
+         ArtifactReadable teamArt = atsServer.getArtifact(team);
          ArtifactReadable backlogArt =
             teamArt.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).getAtMostOneOrNull();
          writer.writeStringField("Backlog Uuid", backlogArt != null ? String.valueOf(backlogArt.getId()) : "");

@@ -278,7 +278,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    @Override
    public Response storeWorkDef(JaxAtsWorkDef jaxWorkDef) {
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON,
-         atsServer.getArtifact(AtsCoreUsers.SYSTEM_USER.getId()), "Store Work Definition " + jaxWorkDef.getName());
+         atsServer.getArtifact(AtsCoreUsers.SYSTEM_USER), "Store Work Definition " + jaxWorkDef.getName());
       ArtifactReadable workDefArt = orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
          AtsArtifactTypes.WorkDefinition).andNameEquals(jaxWorkDef.getName()).getResults().getAtMostOneOrNull();
       if (workDefArt == null) {

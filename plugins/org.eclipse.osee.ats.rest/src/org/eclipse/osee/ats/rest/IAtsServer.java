@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.core.config.IAtsCacheProvider;
 import org.eclipse.osee.ats.rest.util.IArtifactProvider;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -78,9 +77,6 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
    Collection<ArtifactReadable> getArtifacts(List<Long> uuids);
 
    void addAtsDatabaseConversion(IAtsDatabaseConversion conversion);
-
-   @Override
-   ArtifactReadable getArtifact(IArtifactToken token);
 
    CustomizeData getCustomizationByGuid(String customize_guid);
 

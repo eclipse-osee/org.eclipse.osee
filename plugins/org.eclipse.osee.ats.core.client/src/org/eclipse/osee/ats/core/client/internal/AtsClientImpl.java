@@ -106,8 +106,8 @@ import org.eclipse.osee.ats.core.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -231,7 +231,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       workDefAdmin = new AtsWorkDefinitionAdminImpl(workDefCache, workDefService, attributeResolverService,
          teamWorkflowProvidersLazy);
       branchService = new AtsBranchServiceImpl(this, teamWorkflowProvidersLazy);
-      reviewService = new AtsReviewServiceImpl(this, this);
+      reviewService = new AtsReviewServiceImpl(this);
 
       atsLogFactory = AtsCoreFactory.newLogFactory();
       atsStateFactory = AtsCoreFactory.newStateFactory(getServices(), atsLogFactory);
@@ -441,7 +441,10 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
     */
    @Override
    public Artifact getArtifact(ArtifactId artifact) throws OseeCoreException {
-      return (Artifact) artifact;
+      if (artifact instanceof Artifact) {
+         return (Artifact) artifact;
+      }
+      return ArtifactQuery.getArtifactFromId(artifact, AtsUtilCore.getAtsBranch());
    }
 
    @Override
@@ -695,11 +698,6 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public Artifact getArtifact(IArtifactToken token) throws OseeCoreException {
-      return getArtifact(token.getId());
-   }
-
-   @Override
    public <A extends IAtsConfigObject> A getSoleByUuid(long uuid, Class<A> clazz) throws OseeCoreException {
       return getCache().getByUuid(uuid, clazz);
    }
@@ -773,8 +771,12 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
+   public IOseeBranch getAtsBranch() {
+      return AtsUtilCore.getAtsBranch();
+   }
+   
+   @Override
    public IAtsChangeSet createAtsChangeSet(String comment) {
       return getStoreService().createAtsChangeSet(comment, getUserService().getCurrentUser());
    }
-
 }
