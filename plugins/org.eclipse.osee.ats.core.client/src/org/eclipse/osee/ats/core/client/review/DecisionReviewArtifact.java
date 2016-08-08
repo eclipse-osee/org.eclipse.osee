@@ -11,9 +11,8 @@
 package org.eclipse.osee.ats.core.client.review;
 
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 
 /**
@@ -23,9 +22,8 @@ public class DecisionReviewArtifact extends AbstractReviewArtifact implements IA
 
    public XDecisionOptions decisionOptions;
 
-   public DecisionReviewArtifact(String guid, BranchId branch, IArtifactType artifactType) throws OseeCoreException {
+   public DecisionReviewArtifact(String guid, BranchId branch, ArtifactTypeId artifactType) {
       super(guid, branch, artifactType);
       decisionOptions = new XDecisionOptions(this);
    }
-
 }

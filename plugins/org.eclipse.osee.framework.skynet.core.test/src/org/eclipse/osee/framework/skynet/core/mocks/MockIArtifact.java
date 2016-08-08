@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.mocks;
 
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -22,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 /**
  * @author Roberto E. Escobar
  */
-public class MockIArtifact extends NamedIdentity<String>implements IArtifact {
+public class MockIArtifact extends NamedIdentity<String> implements IArtifact {
 
    private boolean wasGetFullArtifactCalled;
    private final int uniqueId;
@@ -53,6 +54,11 @@ public class MockIArtifact extends NamedIdentity<String>implements IArtifact {
 
    @Override
    public ArtifactType getArtifactType() {
+      return artifactType;
+   }
+
+   @Override
+   public ArtifactTypeId getArtifactTypeId() {
       return artifactType;
    }
 

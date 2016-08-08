@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -137,11 +138,11 @@ public class ArtifactTypeManager {
       return artifactType;
    }
 
-   public static ArtifactType getType(IArtifactType artifactType) throws OseeCoreException {
-      return getTypeByGuid(artifactType.getGuid());
+   public static ArtifactType getType(ArtifactTypeId artifactType) throws OseeCoreException {
+      return getTypeByGuid(artifactType.getId());
    }
 
-   public static boolean inheritsFrom(IArtifactType artifactType, IArtifactType... parentTypes) throws OseeCoreException {
+   public static boolean inheritsFrom(ArtifactTypeId artifactType, ArtifactTypeId... parentTypes) {
       return getType(artifactType).inheritsFrom(parentTypes);
    }
 

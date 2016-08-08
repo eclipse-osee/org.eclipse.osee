@@ -49,8 +49,7 @@ public final class ArtifactImageManager {
 
    private static final Map<IArtifactType, ArtifactImageProvider> providersOverrideImageMap =
       new ConcurrentHashMap<IArtifactType, ArtifactImageProvider>();
-   private static final Map<IArtifactType, KeyedImage> artifactTypeImageMap =
-      new ConcurrentHashMap<IArtifactType, KeyedImage>();
+   private static final Map<IArtifactType, KeyedImage> artifactTypeImageMap = new ConcurrentHashMap<>();
    private static final Map<IArtifactType, String> artifactTypeImageProviderMap =
       new ConcurrentHashMap<IArtifactType, String>();
 

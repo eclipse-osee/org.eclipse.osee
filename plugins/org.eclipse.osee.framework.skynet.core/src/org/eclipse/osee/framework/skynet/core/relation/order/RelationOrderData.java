@@ -128,7 +128,7 @@ public class RelationOrderData {
          }
          BranchId branch = getIArtifact().getBranch();
          DefaultBasicGuidArtifact guidArtifact =
-            new DefaultBasicGuidArtifact(branch, getIArtifact().getArtifactType().getGuid(), getIArtifact().getGuid());
+            new DefaultBasicGuidArtifact(branch, getIArtifact().getArtifactTypeId().getId(), getIArtifact().getGuid());
 
          DefaultBasicUuidRelationReorder reorder =
             new DefaultBasicUuidRelationReorder(relationOrderModType, branch.getUuid(), type.getGuid(), guidArtifact);

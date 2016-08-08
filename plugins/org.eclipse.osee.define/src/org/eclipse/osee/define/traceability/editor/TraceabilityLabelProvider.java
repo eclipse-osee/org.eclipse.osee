@@ -30,11 +30,10 @@ public class TraceabilityLabelProvider extends ResultsXViewerLabelProvider {
          if (element instanceof ResultsXViewerRow) {
             Object data = ((ResultsXViewerRow) element).getData();
             if (data instanceof Artifact) {
-               return ArtifactImageManager.getImage(((Artifact) data).getArtifactTypeToken());
+               return ArtifactImageManager.getImage(((Artifact) data).getArtifactType());
             }
          }
       }
       return null;
    }
-
 }

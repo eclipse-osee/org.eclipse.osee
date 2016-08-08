@@ -10,9 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.artifact;
 
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Action;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.ActionableItem;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileFeatureGroup;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileSprint;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileTeam;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.DecisionReview;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Goal;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.PeerToPeerReview;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Task;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamDefinition;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamWorkflow;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Version;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.WorkDefinition;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -24,8 +38,8 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -40,37 +54,40 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
  * @author Donald G. Dunne
  */
 public class AtsArtifactFactory extends ArtifactFactory {
+   private final List<ArtifactTypeId> disabledUserCreationTypes = new ArrayList<>(20);
+   private final List<ArtifactTypeId> supportedTypes = new ArrayList<>(20);
+   private static final ArtifactTypeId[] subclassesTypes =
+      new ArtifactTypeId[] {Action, PeerToPeerReview, DecisionReview, Task, TeamWorkflow, Goal, AgileSprint};
 
-   List<IArtifactType> disabledUserCreationTypes = null;
-
-   public AtsArtifactFactory() {
-      super(AtsArtifactTypes.Action, AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview,
-         AtsArtifactTypes.Task, AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Goal, AtsArtifactTypes.AgileSprint);
-      try {
-         for (IArtifactType teamWorkflowTypeName : AtsClientService.get().getStoreService().getTeamWorkflowArtifactTypes()) {
-            registerAsResponsible(teamWorkflowTypeName);
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
+   private void setupSupportedTypes() {
+      Collections.addAll(supportedTypes, subclassesTypes);
+      supportedTypes.addAll(AtsClientService.get().getStoreService().getTeamWorkflowArtifactTypes());
    }
 
    @Override
-   public Artifact getArtifactInstance(String guid, BranchId branch, IArtifactType artifactType, boolean inDataStore) throws OseeCoreException {
+   public boolean isResponsibleFor(ArtifactTypeId artifactType) {
+      if (supportedTypes.isEmpty()) {
+         setupSupportedTypes();
+      }
+      return supportedTypes.contains(artifactType);
+   }
+
+   @Override
+   public Artifact getArtifactInstance(String guid, BranchId branch, ArtifactTypeId artifactType, boolean inDataStore) throws OseeCoreException {
       Artifact toReturn;
-      if (artifactType.equals(AtsArtifactTypes.Task)) {
+      if (artifactType.equals(Task)) {
          toReturn = new TaskArtifact(guid, branch, artifactType);
-      } else if (ArtifactTypeManager.inheritsFrom(artifactType, AtsArtifactTypes.TeamWorkflow)) {
+      } else if (ArtifactTypeManager.inheritsFrom(artifactType, TeamWorkflow)) {
          toReturn = new TeamWorkFlowArtifact(guid, branch, artifactType);
-      } else if (artifactType.equals(AtsArtifactTypes.DecisionReview)) {
+      } else if (artifactType.equals(DecisionReview)) {
          toReturn = new DecisionReviewArtifact(guid, branch, artifactType);
-      } else if (artifactType.equals(AtsArtifactTypes.PeerToPeerReview)) {
+      } else if (artifactType.equals(PeerToPeerReview)) {
          toReturn = new PeerToPeerReviewArtifact(guid, branch, artifactType);
-      } else if (artifactType.equals(AtsArtifactTypes.Goal)) {
+      } else if (artifactType.equals(Goal)) {
          toReturn = new GoalArtifact(guid, branch, artifactType);
-      } else if (artifactType.equals(AtsArtifactTypes.AgileSprint)) {
+      } else if (artifactType.equals(AgileSprint)) {
          toReturn = new SprintArtifact(guid, branch, artifactType);
-      } else if (artifactType.equals(AtsArtifactTypes.Action)) {
+      } else if (artifactType.equals(Action)) {
          toReturn = new ActionArtifact(branch);
       } else {
          throw new OseeArgumentException("AtsArtifactFactory did not recognize the artifact type [%s]", artifactType);
@@ -79,18 +96,16 @@ public class AtsArtifactFactory extends ArtifactFactory {
    }
 
    @Override
-   public Collection<IArtifactType> getEternalArtifactTypes() {
-      List<IArtifactType> artifactTypes = new ArrayList<>();
-      artifactTypes.add(AtsArtifactTypes.WorkDefinition);
-      artifactTypes.add(AtsArtifactTypes.Version);
-      artifactTypes.add(AtsArtifactTypes.TeamDefinition);
-      artifactTypes.add(AtsArtifactTypes.ActionableItem);
-      return artifactTypes;
+   public Collection<ArtifactTypeId> getEternalArtifactTypes() {
+      return Arrays.asList(WorkDefinition, Version, TeamDefinition, ActionableItem);
    }
 
    @Override
-   public boolean isUserCreationEnabled(IArtifactType artifactType) {
-      if (getDisabledUserCreationArtifactTypes().contains(artifactType)) {
+   public boolean isUserCreationEnabled(ArtifactTypeId artifactType) {
+      if (disabledUserCreationTypes.isEmpty()) {
+         setupDisabledUserCreationArtifactTypes();
+      }
+      if (disabledUserCreationTypes.contains(artifactType)) {
          return false;
       } else if (ArtifactTypeManager.inheritsFrom(artifactType, AtsArtifactTypes.TeamWorkflow)) {
          return false;
@@ -98,26 +113,20 @@ public class AtsArtifactFactory extends ArtifactFactory {
       return true;
    }
 
-   public List<IArtifactType> getDisabledUserCreationArtifactTypes() {
-      if (disabledUserCreationTypes == null) {
-         disabledUserCreationTypes = new ArrayList<IArtifactType>(
-            Arrays.asList(AtsArtifactTypes.Action, AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview,
-               AtsArtifactTypes.Task, AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Goal,
-               AtsArtifactTypes.AgileSprint, AtsArtifactTypes.AgileTeam, AtsArtifactTypes.AgileFeatureGroup));
-         String configValue = AtsClientService.get().getConfigValue(AtsUtilCore.USER_CREATION_DISABLED);
-         if (Strings.isValid(configValue)) {
-            for (String artifactTypeToken : configValue.split(";")) {
-               IArtifactType artifactTypeFromToken = TokenFactory.createArtifactTypeFromToken(artifactTypeToken);
-               if (artifactTypeFromToken == null) {
-                  OseeLog.logf(Activator.class, Level.SEVERE,
-                     "Artifact Type Name [%s] specified in AtsConfig.[%s] is invalid",
-                     AtsUtilCore.USER_CREATION_DISABLED);
-               } else {
-                  disabledUserCreationTypes.add(artifactTypeFromToken);
-               }
+   public void setupDisabledUserCreationArtifactTypes() {
+      Collections.addAll(disabledUserCreationTypes, subclassesTypes);
+      Collections.addAll(disabledUserCreationTypes, AgileTeam, AgileFeatureGroup);
+      String configValue = AtsClientService.get().getConfigValue(AtsUtilCore.USER_CREATION_DISABLED);
+      if (Strings.isValid(configValue)) {
+         for (String artifactTypeToken : configValue.split(";")) {
+            ArtifactTypeId artifactTypeFromToken = TokenFactory.createArtifactTypeFromToken(artifactTypeToken);
+            if (artifactTypeFromToken == null) {
+               OseeLog.logf(Activator.class, Level.SEVERE,
+                  "Artifact Type Name [%s] specified in AtsConfig.[%s] is invalid", AtsUtilCore.USER_CREATION_DISABLED);
+            } else {
+               disabledUserCreationTypes.add(artifactTypeFromToken);
             }
          }
       }
-      return disabledUserCreationTypes;
    }
 }

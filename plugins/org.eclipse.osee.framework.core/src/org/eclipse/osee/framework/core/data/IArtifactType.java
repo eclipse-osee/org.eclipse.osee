@@ -10,12 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 
 /**
  * @author Ryan D. Brooks
  */
-public interface IArtifactType extends Identifiable<Long>, Id {
-   // composition interface requires no additional methods,fields
+public interface IArtifactType extends Named, ArtifactTypeId {
+   Long getGuid();
 }

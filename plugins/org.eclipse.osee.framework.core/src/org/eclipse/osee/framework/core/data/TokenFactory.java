@@ -165,6 +165,11 @@ public final class TokenFactory {
       }
 
       @Override
+      public ArtifactTypeId getArtifactTypeId() {
+         return artifactType;
+      }
+
+      @Override
       public Long getUuid() {
          return uuid;
       }

@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
@@ -34,7 +35,7 @@ public final class ArtifactFactoryManager {
       new ExtensionDefinedObjects<ArtifactFactory>(EXTENSION_ID, ARTIFACT_FACTORY_EXTENSION, CLASSNAME_ATTRIBUTE);
 
    private static final DefaultArtifactFactory defaultArtifactFactory = new DefaultArtifactFactory();
-   private static Set<IArtifactType> eternalArtifactTypes = null;
+   private static Set<ArtifactTypeId> eternalArtifactTypes = null;
 
    public ArtifactFactory getFactory(IArtifactType artifactType) {
       ArtifactFactory responsibleFactory = null;
@@ -45,7 +46,7 @@ public final class ArtifactFactoryManager {
             } else {
                OseeLog.logf(Activator.class, Level.SEVERE,
 
-               "Multiple ArtifactFactories [%s] [%s]responsible for same artifact type [%s].  Defaulting to DefaultArtifactFactory.",
+                  "Multiple ArtifactFactories [%s] [%s]responsible for same artifact type [%s].  Defaulting to DefaultArtifactFactory.",
                   responsibleFactory, factory, artifactType);
                return getDefaultArtifactFactory();
             }
@@ -57,7 +58,7 @@ public final class ArtifactFactoryManager {
       return getDefaultArtifactFactory();
    }
 
-   public static synchronized Collection<IArtifactType> getEternalArtifactTypes() {
+   public static synchronized Collection<ArtifactTypeId> getEternalArtifactTypes() {
       if (eternalArtifactTypes == null) {
          eternalArtifactTypes = new HashSet<>();
          for (ArtifactFactory factory : getFactories()) {

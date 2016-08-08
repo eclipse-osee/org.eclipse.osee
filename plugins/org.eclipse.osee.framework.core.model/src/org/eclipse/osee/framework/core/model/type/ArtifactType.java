@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -157,9 +158,9 @@ public class ArtifactType extends AbstractOseeIdType implements IArtifactType {
     * @param otherType artifact types to check against
     * @return whether this artifact type inherits from otherType
     */
-   public boolean inheritsFrom(IArtifactType... otherTypes) {
+   public boolean inheritsFrom(ArtifactTypeId... otherTypes) {
       boolean result = false;
-      for (IArtifactType otherArtifactType : otherTypes) {
+      for (ArtifactTypeId otherArtifactType : otherTypes) {
          if (inheritsFromSingle(otherArtifactType)) {
             result = true;
             break;
@@ -168,7 +169,7 @@ public class ArtifactType extends AbstractOseeIdType implements IArtifactType {
       return result;
    }
 
-   private boolean inheritsFromSingle(IArtifactType otherType) {
+   private boolean inheritsFromSingle(ArtifactTypeId otherType) {
       boolean result = false;
       if (this.equals(otherType)) {
          result = true;

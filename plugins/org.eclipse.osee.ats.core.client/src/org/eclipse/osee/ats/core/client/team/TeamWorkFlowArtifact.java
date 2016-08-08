@@ -37,8 +37,8 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -60,7 +60,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    private boolean creatingWorkingBranch = false;
    private boolean committingWorkingBranch = false;
 
-   public TeamWorkFlowArtifact(String guid, BranchId branch, IArtifactType artifactType) throws OseeCoreException {
+   public TeamWorkFlowArtifact(String guid, BranchId branch, ArtifactTypeId artifactType) {
       super(guid, branch, artifactType);
    }
 
