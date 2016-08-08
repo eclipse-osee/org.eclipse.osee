@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.api;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -56,11 +56,9 @@ public class OrcsAttributeLoadingTest {
       OseeClassDatabase.cleanup();
    }
 
-   @SuppressWarnings("unchecked")
    @Test
    public void testAttributeLoading() throws Exception {
-      ArtifactReadable art =
-         query.fromBranch(COMMON_ID).andIds(CoreArtifactTokens.Everyone).getResults().getExactlyOne();
+      ArtifactReadable art = query.fromBranch(COMMON).andIds(CoreArtifactTokens.Everyone).getResults().getExactlyOne();
       Assert.assertNotNull(art);
       assertEquals("Everyone", art.getSoleAttributeAsString(CoreAttributeTypes.Name));
 

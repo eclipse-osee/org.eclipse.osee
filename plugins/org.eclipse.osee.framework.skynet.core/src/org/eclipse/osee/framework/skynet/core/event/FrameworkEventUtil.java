@@ -235,10 +235,9 @@ public final class FrameworkEventUtil {
          OseeLog.log(Activator.class, Level.WARNING,
             "Can't determine RelationEventType from guid " + guidRel.getModTypeGuid());
       }
-      EventBasicGuidRelation event =
-         new EventBasicGuidRelation(eventType, getBranchUuidFromRemoteEvent(guidRel.getBranchGuid()),
-            guidRel.getRelTypeGuid(), guidRel.getRelationId(), guidRel.getGammaId(), guidRel.getArtAId(),
-            getBasicGuidArtifact(guidRel.getArtA()), guidRel.getArtBId(), getBasicGuidArtifact(guidRel.getArtB()));
+      EventBasicGuidRelation event = new EventBasicGuidRelation(eventType, guidRel.getBranch(),
+         guidRel.getRelTypeGuid(), guidRel.getRelationId(), guidRel.getGammaId(), guidRel.getArtAId(),
+         getBasicGuidArtifact(guidRel.getArtA()), guidRel.getArtBId(), getBasicGuidArtifact(guidRel.getArtB()));
       if (eventType == RelationEventType.ModifiedRationale || eventType == RelationEventType.Added) {
          event.setRationale(guidRel.getRationale());
       }

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal.search;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Collection;
@@ -60,13 +60,13 @@ public class ArtifactSearch_V1Test {
    @Test
    public void testSearchRequestNull() throws OseeCoreException {
       when(orcsApi.getQueryFactory()).thenReturn(queryFactory);
-      when(queryFactory.fromBranch(COMMON_ID)).thenReturn(builder);
+      when(queryFactory.fromBranch(COMMON)).thenReturn(builder);
 
       Collection<IAttributeType> attrTypes = PredicateHandlerUtil.getIAttributeTypes(types);
       Predicate predicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, types, Arrays.asList("AtsAdmin"));
       when(builder.and(attrTypes, predicate.getValues().iterator().next(), predicate.getOptions())).thenReturn(builder);
 
-      SearchRequest params = new SearchRequest(COMMON_ID, Arrays.asList(predicate), null, 0, false);
+      SearchRequest params = new SearchRequest(COMMON, Arrays.asList(predicate), null, 0, false);
       SearchResponse response = search.getSearchWithMatrixParams(params);
 
       Assert.assertEquals(response.getSearchRequest(), params);

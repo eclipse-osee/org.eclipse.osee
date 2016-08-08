@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal.search.dsl;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
-import static org.mockito.Matchers.any;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.Arrays;
@@ -26,7 +25,6 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -60,16 +58,15 @@ public class SearchDslTest {
 
    @Test
    public void testBuildValidSearchType() throws OseeCoreException {
-      when(queryFactory.fromBranch(any(Long.class))).thenReturn(builder);
+      when(queryFactory.fromBranch(COMMON)).thenReturn(builder);
 
       Predicate predicate =
          new Predicate(SearchMethod.ATTRIBUTE_TYPE, Arrays.asList("1000000000000070"), Arrays.asList("AtsAdmin"));
-      SearchRequest params = new SearchRequest(COMMON_ID, Arrays.asList(predicate), RequestType.IDS, 0, false);
+      SearchRequest params = new SearchRequest(COMMON, Arrays.asList(predicate), RequestType.IDS, 0, false);
 
       dsl.build(queryFactory, params);
 
-      verify(queryFactory).fromBranch(fromBranch.capture());
-      Assert.assertEquals(COMMON_ID, fromBranch.getValue());
+      verify(queryFactory).fromBranch(COMMON);
       verify(handler).handle(builder, predicate);
    }
 }

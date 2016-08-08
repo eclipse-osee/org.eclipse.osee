@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.rest.internal.writer;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -66,8 +65,8 @@ public class OrcsWriterCollectorGenerator {
       collector.setPersistComment("Put Comment Here");
       collector.setAsUserId(SystemUser.OseeSystem.getUserId());
       collector.getBranch().setName(COMMON.getName());
-      collector.getBranch().setUuid(COMMON_ID);
-      collector.getBranch().setData(String.format("[%s]-[%s]", COMMON.getName(), COMMON_ID));
+      collector.getBranch().setUuid(COMMON.getId());
+      collector.getBranch().setData(String.format("[%s]-[%s]", COMMON.getName(), COMMON.getId()));
       createInstructions();
       createCreateSheet();
       createUpdateSheet();

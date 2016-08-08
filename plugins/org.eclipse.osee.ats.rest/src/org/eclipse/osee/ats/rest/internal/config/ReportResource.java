@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.core.model.change.CompareResults;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
@@ -58,7 +57,7 @@ public class ReportResource {
 
    @GET
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   public Response getTypeCount(@QueryParam("branchUuid") BranchId branch, @QueryParam("artTypes") List<Long> artTypes, @QueryParam("attrTypes") List<Long> attrTypes) throws OseeCoreException {
+   public Response getTypeCount(@QueryParam("branch") BranchId branch, @QueryParam("artTypes") List<Long> artTypes, @QueryParam("attrTypes") List<Long> attrTypes) {
       List<ChangeItem> changes = getChanges(branch);
       Set<Long> newArts = new HashSet<>();
       Set<Long> modArts = new HashSet<>();

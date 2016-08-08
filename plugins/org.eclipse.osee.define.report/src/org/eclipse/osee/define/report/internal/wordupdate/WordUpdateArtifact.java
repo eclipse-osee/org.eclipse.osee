@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.report.internal.wordupdate;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
+import com.google.common.collect.Lists;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +21,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.define.report.api.WordArtifactChange;
 import org.eclipse.osee.define.report.api.WordUpdateChange;
 import org.eclipse.osee.define.report.api.WordUpdateData;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -42,7 +43,6 @@ import org.osgi.service.event.EventAdmin;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
-import com.google.common.collect.Lists;
 
 /**
  * @author Ryan D. Brooks
@@ -82,11 +82,6 @@ public class WordUpdateArtifact {
       return wordArtifactUpdate(data, extractorDatas, oleDataElement);
    }
 
-   public ArtifactReadable getArtifact(Long branchUuid, long uuid) {
-      ArtifactReadable toReturn = queryFactory.fromBranch(branchUuid).andUuid(uuid).getResults().getExactlyOne();
-      return toReturn;
-   }
-
    public ArtifactReadable getArtifact(BranchId branch, String guid) {
       return queryFactory.fromBranch(branch).andGuid(guid).getResults().getExactlyOne();
    }
@@ -110,8 +105,8 @@ public class WordUpdateArtifact {
          boolean singleArtifact = extractorDatas.size() == 1;
          boolean containsOleData = false;
          boolean containsWordData = false;
-         ArtifactReadable userArtifact = getArtifact(COMMON_ID, data.getUserArtId());
-         TransactionBuilder txBuilder = txFactory.createTransaction(data.getBranch(), userArtifact, data.getComment());
+         ArtifactId account = ArtifactId.valueOf(data.getUserArtId());
+         TransactionBuilder txBuilder = txFactory.createTransaction(data.getBranch(), account, data.getComment());
          for (WordExtractorData extractorData : extractorDatas) {
             ArtifactReadable artifact = getArtifact(data.getBranch(), extractorData.getGuid());
             WordArtifactChange artChange = new WordArtifactChange();
@@ -176,7 +171,7 @@ public class WordUpdateArtifact {
          }
          TransactionReadable tx = txBuilder.commit();
          if (tx != null) {
-            postProcessChange(tx, updateChange, userArtifact);
+            postProcessChange(tx, updateChange, account);
          }
 
       } catch (Exception ex) {
@@ -190,14 +185,14 @@ public class WordUpdateArtifact {
       return updateChange;
    }
 
-   private void postProcessChange(TransactionReadable tx, WordUpdateChange updateChange, ArtifactReadable userId) {
+   private void postProcessChange(TransactionReadable tx, WordUpdateChange updateChange, ArtifactId account) {
       updateChange.setTx(tx);
       updateChange.setBranch(tx.getBranch());
       if (updateChange.hasSafetyRelatedArtifactChange()) {
          try {
             HashMap<String, Object> properties = new HashMap<String, Object>();
             properties.put(SafetyWorkflowEventHandler.SAFETY_EVENT_BRANCH_ID, tx.getBranch());
-            properties.put(SafetyWorkflowEventHandler.SAFETY_EVENT_USER_ART, userId);
+            properties.put(SafetyWorkflowEventHandler.SAFETY_EVENT_USER_ART, account);
             Event event = new Event(SafetyWorkflowEventHandler.SAFETY_EVENT_TOPIC, properties);
             eventAdmin.postEvent(event);
          } catch (Exception ex) {

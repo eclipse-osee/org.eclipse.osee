@@ -45,7 +45,6 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       return SystemUser.OseeSystem.getUserId();
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public boolean isAtsAdmin(IAtsUser user) {
       if (atsAdminArt == null) {
@@ -83,7 +82,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       atsUser.setUserId(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId, ""));
       atsUser.setEmail(userArt.getSoleAttributeValue(CoreAttributeTypes.Email, ""));
       atsUser.setActive(userArt.getSoleAttributeValue(CoreAttributeTypes.Active, true));
-      atsUser.setUuid(userArt.getUuid());
+      atsUser.setUuid(userArt.getId());
       return atsUser;
    }
 
@@ -125,4 +124,10 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       return user;
    }
 
+   @Override
+   public IAtsUser getUserByArtifactId(ArtifactId id) {
+      ArtifactReadable userArt =
+         orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andId(id).getResults().getExactlyOne();
+      return createFromArtifact(userArt);
+   }
 }

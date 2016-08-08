@@ -37,7 +37,7 @@ public class SearchQueryBuilder {
    public QueryBuilder build(QueryFactory queryFactory, SearchRequest params) throws OseeCoreException {
       Conditions.checkNotNull(queryFactory, "queryFactory");
       Conditions.checkNotNull(params, "params");
-      QueryBuilder builder = queryFactory.fromBranch(params.getBranchUuid());
+      QueryBuilder builder = queryFactory.fromBranch(params.getBranch());
       List<Predicate> predicates = params.getPredicates();
       if (predicates != null) {
          for (Predicate predicate : predicates) {

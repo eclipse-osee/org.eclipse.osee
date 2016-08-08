@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.api;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -81,7 +81,7 @@ public class OrcsTupleTest {
    public void testAddTuple2() throws OseeCoreException {
       TupleTypeId createTuple2Type = TupleTypeId.valueOf(24L);
       TransactionBuilder transaction =
-         orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON_ID, OseeSystem, "Add Tuple2 Test");
+         orcsApi.getTransactionFactory().createTransaction(COMMON, OseeSystem, "Add Tuple2 Test");
       Long gamma_id = transaction.addTuple(createTuple2Type, 234L, "t");
       transaction.commit();
 
@@ -95,7 +95,7 @@ public class OrcsTupleTest {
    public void testAddTuple3() throws OseeCoreException {
       TupleTypeId createTuple3Type = TupleTypeId.valueOf(44L);
       TransactionBuilder transaction =
-         orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON_ID, OseeSystem, "Add Tuple3 Test");
+         orcsApi.getTransactionFactory().createTransaction(COMMON, OseeSystem, "Add Tuple3 Test");
       Long gamma_id = transaction.addTuple(createTuple3Type, 244L, 12L, "three");
       transaction.commit();
 
@@ -109,7 +109,7 @@ public class OrcsTupleTest {
    public void testAddTuple4() throws OseeCoreException {
       TupleTypeId createTuple4Type = TupleTypeId.valueOf(44L);
       TransactionBuilder transaction =
-         orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON_ID, OseeSystem, "Add Tuple4 Test");
+         orcsApi.getTransactionFactory().createTransaction(COMMON, OseeSystem, "Add Tuple4 Test");
       Long gamma_id = transaction.addTuple(createTuple4Type, 244L, 12L, "four", "four2");
       transaction.commit();
 

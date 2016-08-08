@@ -702,7 +702,7 @@ public class ArtifactQuery {
          SearchResult result = proxied.getSearchResult(RequestType.IDS);
          SearchParameters searchParameters = result.getSearchParameters();
 
-         BranchId branch = TokenFactory.createBranch(searchParameters.getBranchUuid());
+         BranchId branch = searchParameters.getBranch();
 
          TransactionId tx = TransactionId.SENTINEL;
          if (searchParameters.getFromTx() > 0) {
@@ -729,7 +729,7 @@ public class ArtifactQuery {
          SearchResult result = proxied.getSearchResult(RequestType.MATCHES);
          SearchParameters searchParameters = result.getSearchParameters();
 
-         BranchId branch = TokenFactory.createBranch(searchParameters.getBranchUuid());
+         BranchId branch = searchParameters.getBranch();
 
          TransactionId tx = TransactionId.SENTINEL;
          if (searchParameters.getFromTx() > 0) {

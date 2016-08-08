@@ -29,7 +29,7 @@ public class ArtifactValidationRule extends AbstractValidationRule {
    private String getStatusMessage(Artifact itemChecked, IStatus status) throws OseeCoreException {
       String link =
          XResultDataUI.getHyperlink(String.format("%s:[%s]", itemChecked.getArtifactTypeName(), itemChecked.getName()),
-            AtsUtilClient.getAtsId(itemChecked), itemChecked.getBranchId());
+            AtsUtilClient.getAtsId(itemChecked), itemChecked.getBranch());
       return String.format("%s: %s", link, status.getMessage());
    }
 

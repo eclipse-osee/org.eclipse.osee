@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.rest.model.search.artifact;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchId;
 
 /**
  * @author John R. Misinco
@@ -18,7 +19,7 @@ import java.util.List;
  */
 public interface SearchParameters {
 
-   Long getBranchUuid();
+   BranchId getBranch();
 
    List<Predicate> getPredicates();
 

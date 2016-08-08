@@ -98,6 +98,10 @@ public class RemoteBasicGuidRelation1 extends RemoteEvent {
       return branchGuid;
    }
 
+   public BranchId getBranch() {
+      return BranchId.valueOf(branchGuid);
+   }
+
    /**
     * Sets the value of the branchGuid property.
     *

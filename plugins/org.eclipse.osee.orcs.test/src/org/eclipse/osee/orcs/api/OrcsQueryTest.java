@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.api;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import static org.junit.Assert.assertEquals;
@@ -95,8 +95,8 @@ public class OrcsQueryTest {
    }
 
    @Test
-   public void testAllArtifactsFromBranch() throws OseeCoreException {
-      QueryBuilder builder = factory.fromBranch(COMMON_ID);
+   public void testAllArtifactsFromBranch() {
+      QueryBuilder builder = factory.fromBranch(COMMON);
       assertEquals(245, builder.getCount());
 
       assertEquals(245, builder.getResults().size());
@@ -104,21 +104,21 @@ public class OrcsQueryTest {
 
    @Test
    public void testNameAttributeNotExists() {
-      QueryBuilder builder = factory.fromBranch(COMMON_ID);
+      QueryBuilder builder = factory.fromBranch(COMMON);
       builder.andNotExists(CoreAttributeTypes.Name);
       assertEquals(0, builder.getCount());
    }
 
    @Test
    public void testAttributeNotExists() {
-      QueryBuilder builder = factory.fromBranch(COMMON_ID);
+      QueryBuilder builder = factory.fromBranch(COMMON);
       builder.andNotExists(CoreAttributeTypes.Afha);
       assertTrue(builder.getCount() >= 245);
    }
 
    @Test
    public void testQueryByIds() throws OseeCoreException {
-      QueryBuilder builder = factory.fromBranch(COMMON_ID).andId(CoreArtifactTokens.UserGroups);
+      QueryBuilder builder = factory.fromBranch(COMMON).andId(CoreArtifactTokens.UserGroups);
       assertEquals(1, builder.getCount());
 
       ArtifactReadable artifact = builder.getResults().getExactlyOne();
@@ -127,7 +127,7 @@ public class OrcsQueryTest {
 
    @Test
    public void testQueryArtifactType() throws OseeCoreException {
-      QueryBuilder builder = factory.fromBranch(COMMON_ID).andIsOfType(CoreArtifactTypes.Folder);
+      QueryBuilder builder = factory.fromBranch(COMMON).andIsOfType(CoreArtifactTypes.Folder);
 
       assertTrue(builder.getCount() >= 6);
 
@@ -171,7 +171,7 @@ public class OrcsQueryTest {
 
    @Test
    public void testQueryArtifactTypesMatch() throws OseeCoreException {
-      QueryBuilder builder = factory.fromBranch(COMMON_ID);
+      QueryBuilder builder = factory.fromBranch(COMMON);
       builder.andTypeEquals(CoreArtifactTypes.OseeTypeDefinition, CoreArtifactTypes.Folder);
 
       assertTrue(builder.getCount() >= 14);
@@ -198,7 +198,7 @@ public class OrcsQueryTest {
 
    @Test
    public void testQueryAttributeValue() throws OseeCoreException {
-      QueryBuilder builder = factory.fromBranch(COMMON_ID);
+      QueryBuilder builder = factory.fromBranch(COMMON);
       builder.and(CoreAttributeTypes.Name, "User Groups");
 
       assertEquals(1, builder.getCount());
@@ -226,7 +226,7 @@ public class OrcsQueryTest {
 
    @Test
    public void testQueryMultipleArtifactType() throws OseeCoreException {
-      QueryBuilder builder = factory.fromBranch(COMMON_ID);
+      QueryBuilder builder = factory.fromBranch(COMMON);
       builder.andIsOfType(CoreArtifactTypes.AccessControlModel, CoreArtifactTypes.GlobalPreferences);
 
       assertEquals(2, builder.getCount());
@@ -242,7 +242,7 @@ public class OrcsQueryTest {
 
    @Test
    public void testQueryMultipleAttributeExistsType() throws OseeCoreException {
-      QueryBuilder builder = factory.fromBranch(COMMON_ID);
+      QueryBuilder builder = factory.fromBranch(COMMON);
       List<IAttributeType> attributeTypes =
          Arrays.asList(CoreAttributeTypes.AccessContextId, CoreAttributeTypes.Dictionary);
       builder.andExists(attributeTypes);
@@ -254,7 +254,7 @@ public class OrcsQueryTest {
 
    @Test
    public void testQueryMultipleAttributeNotExistsType() throws OseeCoreException {
-      QueryBuilder builder = factory.fromBranch(COMMON_ID);
+      QueryBuilder builder = factory.fromBranch(COMMON);
       List<IAttributeType> attributeTypes = Arrays.asList(CoreAttributeTypes.ContentUrl, CoreAttributeTypes.Name);
       builder.andNotExists(attributeTypes);
 

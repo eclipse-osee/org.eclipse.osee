@@ -12,7 +12,6 @@ package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -623,7 +622,7 @@ public class ArtifactEventTest {
       Assert.assertEquals(RelationOrderModType.Absolute, guidReorder.getModType());
       Assert.assertEquals(parentRemGuidArt.getArtGuid(), guidReorder.getParentArt().getGuid());
       Assert.assertEquals(parentRemGuidArt.getArtTypeGuid(), (long) guidReorder.getParentArt().getArtTypeGuid());
-      Assert.assertTrue(guidReorder.getParentArt().isOnBranch(COMMON_ID));
+      Assert.assertTrue(guidReorder.getParentArt().isOnBranch(COMMON));
       Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidReorder.getRelTypeGuid());
       Assert.assertTrue(injectArt.isOnSameBranch(guidReorder));
 

@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.intergration;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.orcs.db.intergration.IntegrationUtil.integrationRule;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -56,11 +56,10 @@ public class PurgeAttributeTest {
    @Before
    public void setupAndTeardown() {
       TransactionBuilder tx = null;
-      for (ArtifactReadable art : orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON_ID).and(
-         CoreAttributeTypes.Annotation, UNIQUE_ATTR_VALUE).getResults()) {
+      for (ArtifactReadable art : orcsApi.getQueryFactory().fromBranch(COMMON).and(CoreAttributeTypes.Annotation,
+         UNIQUE_ATTR_VALUE).getResults()) {
          if (tx == null) {
-            tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON_ID, Joe_Smith,
-               getClass().getSimpleName());
+            tx = orcsApi.getTransactionFactory().createTransaction(COMMON, Joe_Smith, getClass().getSimpleName());
          }
          tx.deleteArtifact(art);
       }
@@ -78,8 +77,8 @@ public class PurgeAttributeTest {
       }
 
       // Setup test
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON_ID, Joe_Smith,
-         getClass().getSimpleName());
+      TransactionBuilder tx =
+         orcsApi.getTransactionFactory().createTransaction(COMMON, Joe_Smith, getClass().getSimpleName());
       tx.createAttribute(CoreArtifactTokens.UserGroups, CoreAttributeTypes.Annotation, UNIQUE_ATTR_VALUE);
       tx.createAttribute(CoreArtifactTokens.Everyone, CoreAttributeTypes.Annotation, UNIQUE_ATTR_VALUE);
       tx.createAttribute(CoreArtifactTokens.OseeAdmin, CoreAttributeTypes.Annotation, UNIQUE_ATTR_VALUE);

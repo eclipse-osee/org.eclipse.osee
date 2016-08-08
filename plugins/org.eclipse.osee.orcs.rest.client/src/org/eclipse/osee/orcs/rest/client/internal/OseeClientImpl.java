@@ -123,7 +123,7 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
          includeDeleted = true;
       }
 
-      SearchRequest params = new SearchRequest(branch.getUuid(), predicates, requestType, fromTx, includeDeleted);
+      SearchRequest params = new SearchRequest(branch, predicates, requestType, fromTx, includeDeleted);
 
       JaxRsWebTarget resource = newTarget("branch/{branch-uuid}/artifact/search/v1", branch.getUuid());
       try {

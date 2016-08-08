@@ -80,7 +80,7 @@ public class RelationTransactionData extends BaseTransactionData {
 
    @Override
    protected void internalAddToEvents(ArtifactEvent artifactEvent) throws OseeCoreException {
-      DefaultBasicUuidRelation defaultBasicGuidRelation = new DefaultBasicUuidRelation(relation.getBranchId(),
+      DefaultBasicUuidRelation defaultBasicGuidRelation = new DefaultBasicUuidRelation(relation.getBranch(),
          relation.getRelationType().getId(), relation.getId(), relation.getGammaId(),
          relation.getArtifactA().getBasicGuidArtifact(), relation.getArtifactB().getBasicGuidArtifact());
       EventBasicGuidRelation event = new EventBasicGuidRelation(relationEventType, relation.getAArtifactId(),

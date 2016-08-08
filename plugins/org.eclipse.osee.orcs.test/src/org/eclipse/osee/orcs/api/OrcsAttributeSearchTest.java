@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.api;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -56,7 +56,7 @@ public class OrcsAttributeSearchTest {
 
    @Test
    public void testNameAttributeEqualSearch() throws OseeCoreException {
-      QueryBuilder builder = queryFactory.fromBranch(COMMON_ID).and(CoreAttributeTypes.Name, "User Groups");
+      QueryBuilder builder = queryFactory.fromBranch(COMMON).and(CoreAttributeTypes.Name, "User Groups");
 
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
 
@@ -85,7 +85,7 @@ public class OrcsAttributeSearchTest {
 
    @Test
    public void testBooleanAttributeSearch() throws OseeCoreException {
-      QueryBuilder builder = queryFactory.fromBranch(COMMON_ID).and(CoreAttributeTypes.DefaultGroup, "true");
+      QueryBuilder builder = queryFactory.fromBranch(COMMON).and(CoreAttributeTypes.DefaultGroup, "true");
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
 
       assertEquals(1, resultSet.size());
@@ -97,15 +97,15 @@ public class OrcsAttributeSearchTest {
 
    @Test
    public void testNullAttributeSearch() {
-      QueryBuilder builder = queryFactory.fromBranch(COMMON_ID).and(CoreAttributeTypes.Email, (String) null);
+      QueryBuilder builder = queryFactory.fromBranch(COMMON).and(CoreAttributeTypes.Email, (String) null);
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
       assertEquals(8, resultSet.size());
 
-      builder = queryFactory.fromBranch(COMMON_ID).and(CoreAttributeTypes.Email, "");
+      builder = queryFactory.fromBranch(COMMON).and(CoreAttributeTypes.Email, "");
       resultSet = builder.getResults();
       assertEquals(8, resultSet.size());
 
-      builder = queryFactory.fromBranch(COMMON_ID).and(CoreAttributeTypes.Email, " ");
+      builder = queryFactory.fromBranch(COMMON).and(CoreAttributeTypes.Email, " ");
       resultSet = builder.getResults();
       assertEquals(0, resultSet.size());
    }

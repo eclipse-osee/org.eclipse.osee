@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.results;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -32,9 +33,9 @@ public class XResultDataUI {
    /*
     * Creates hyperlink using name. Default editor will open guid for branchUuid given
     */
-   public static String getHyperlink(String name, String guid, long branchUuid) {
+   public static String getHyperlink(String name, String guid, BranchId branch) {
       return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifactBranch,
-         guid + "(" + branchUuid + ")"), name);
+         guid + "(" + branch.getId() + ")"), name);
    }
 
    public static String getHyperlinkUrlExternal(String name, String url) {
@@ -69,18 +70,18 @@ public class XResultDataUI {
     * Creates hyperlink using guid as name. Default editor will open.
     */
    public static String getHyperlink(Artifact art) throws OseeCoreException {
-      return getHyperlink(art.getGuid(), art.getGuid(), art.getBranchId());
+      return getHyperlink(art.getGuid(), art.getGuid(), art.getBranch());
    }
 
    public static String getHyperlinkWithName(Artifact art) throws OseeCoreException {
-      return getHyperlink(art.toStringWithId(), art.getGuid(), art.getBranchId());
+      return getHyperlink(art.toStringWithId(), art.getGuid(), art.getBranch());
    }
 
    /*
     * Creates hyperlink using name. Default editor will open.
     */
    public static String getHyperlink(String name, Artifact art) throws OseeCoreException {
-      return getHyperlink(name, art.getGuid(), art.getBranchId());
+      return getHyperlink(name, art.getGuid(), art.getBranch());
    }
 
    public static String report(XResultData resultData, final String title) {
@@ -138,7 +139,7 @@ public class XResultDataUI {
             UserManager.getUser()));
 
          rd.log("Example of hyperlinked guid on another branch: " + getHyperlink(UserManager.getUser().getGuid(),
-            UserManager.getUser().getGuid(), COMMON_ID));
+            UserManager.getUser().getGuid(), COMMON));
          rd.addRaw(AHTML.newline());
          rd.addRaw("Example of hyperlink that opens external browser " + getHyperlinkUrlExternal("Google",
             "http://www.google.com") + AHTML.newline());

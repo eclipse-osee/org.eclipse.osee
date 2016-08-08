@@ -100,9 +100,9 @@ public class AtsTaskService extends AbstractAtsTaskService {
          if (relation != null) {
             Artifact taskArt = atsClient.getArtifact(task.getUuid());
 
-            DefaultBasicUuidRelation guidRelation = new DefaultBasicUuidRelation(AtsUtilCore.getAtsBranch().getUuid(),
-               AtsRelationTypes.TeamWfToTask_Task.getGuid(), relation.getId(), relation.getGammaId(),
-               getBasicGuidArtifact(teamWf), getBasicGuidArtifact(taskArt));
+            DefaultBasicUuidRelation guidRelation =
+               new DefaultBasicUuidRelation(AtsUtilCore.getAtsBranch(), AtsRelationTypes.TeamWfToTask_Task.getGuid(),
+                  relation.getId(), relation.getGammaId(), getBasicGuidArtifact(teamWf), getBasicGuidArtifact(taskArt));
 
             artifactEvent.getRelations().add(new EventBasicGuidRelation(RelationEventType.Added,
                newTaskData.getTeamWfUuid().intValue(), new Long(task.getUuid()).intValue(), guidRelation));

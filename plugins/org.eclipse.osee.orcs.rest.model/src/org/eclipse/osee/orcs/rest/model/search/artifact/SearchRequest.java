@@ -15,6 +15,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import org.eclipse.osee.framework.core.data.BranchId;
 
 /**
  * @author John R. Misinco
@@ -23,7 +24,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement(name = "SearchRequest")
 public class SearchRequest implements SearchParameters {
 
-   private Long branchUuid;
+   private BranchId branch;
    private RequestType type;
    private int fromTx;
    private boolean includeDeleted;
@@ -35,9 +36,8 @@ public class SearchRequest implements SearchParameters {
       super();
    }
 
-   public SearchRequest(Long branchUuid, List<Predicate> predicates, RequestType type, int fromTx, boolean includeDeleted) {
-      super();
-      this.branchUuid = branchUuid;
+   public SearchRequest(BranchId branch, List<Predicate> predicates, RequestType type, int fromTx, boolean includeDeleted) {
+      this.branch = branch;
       this.predicates = predicates;
       this.type = type;
       this.fromTx = fromTx;
@@ -45,8 +45,8 @@ public class SearchRequest implements SearchParameters {
    }
 
    @Override
-   public Long getBranchUuid() {
-      return branchUuid;
+   public BranchId getBranch() {
+      return branch;
    }
 
    @Override
@@ -61,8 +61,8 @@ public class SearchRequest implements SearchParameters {
       return type;
    }
 
-   public void setBranchUuid(Long uuid) {
-      this.branchUuid = uuid;
+   public void setBranch(BranchId branch) {
+      this.branch = branch;
    }
 
    public void setPredicates(List<Predicate> predicates) {

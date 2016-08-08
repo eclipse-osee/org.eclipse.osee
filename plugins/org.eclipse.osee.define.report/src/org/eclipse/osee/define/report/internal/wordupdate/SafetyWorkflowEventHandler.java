@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -76,12 +77,16 @@ public class SafetyWorkflowEventHandler implements EventHandler {
          Object userArt = event.getProperty(SAFETY_EVENT_USER_ART);
 
          checkEventObjects(branchId, userArt); // throws exception if incorrect
-         ArtifactReadable assocArt = getAssociatedWorkflowArt((BranchId) branchId);
-         if (assocArt != null) {
+
+         BranchReadable branch = queryFactory.branchQuery().andIds((BranchId) branchId).getResults().getExactlyOne();
+         ArtifactId workflowId = branch.getAssociatedArtifact();
+         if (workflowId.notEqual(SystemUser.OseeSystem)) {
+            ArtifactReadable assocArt = atsServer.getQuery().andId(workflowId).andIsOfType(
+               AtsArtifactTypes.TeamWorkflow).getResults().getExactlyOne();
             IAtsTeamWorkflow safetyWf = getSafetyWorkflow(assocArt);
             if (safetyWf == null) {
                IAtsTeamWorkflow teamWf = atsServer.getWorkItemFactory().getTeamWf(assocArt);
-               safetyWf = createSafetyAction(teamWf, (ArtifactReadable) userArt);
+               safetyWf = createSafetyAction(teamWf, (ArtifactId) userArt);
             }
          }
       } catch (Exception ex) {
@@ -94,26 +99,10 @@ public class SafetyWorkflowEventHandler implements EventHandler {
          throw new OseeArgumentException("BranchID provided to safety workflow creation event incorrect type: %s",
             branchId.getClass());
       }
-      if (!(userArt instanceof ArtifactReadable)) {
+      if (!(userArt instanceof ArtifactId)) {
          throw new OseeArgumentException("User Artifact provided to safety workflow creation event incorrect type: %s",
-            userArt.toString());
+            userArt.getClass());
       }
-   }
-
-   private ArtifactReadable getAssociatedWorkflowArt(BranchId branchId) {
-      ArtifactReadable toReturn = null;
-      ArtifactId workflowId = branch.getAssociatedArtifact();
-      try {
-         BranchReadable branch = queryFactory.branchQuery().andIds(branchId).getResults().getOneOrNull();
-         if (branch != null) {
-            long workflowUuid = branch.getAssociatedArtifactId();
-            toReturn = atsServer.getQuery().andId(workflowId).andIsOfType(
-               AtsArtifactTypes.TeamWorkflow).getResults().getOneOrNull();
-         }
-      } catch (Exception ex) {
-         // do not throw exception when associated artifact is osee system or doesn't exist
-      }
-      return toReturn;
    }
 
    private IAtsTeamWorkflow getSafetyWorkflow(ArtifactReadable workflowArt) {
@@ -131,7 +120,7 @@ public class SafetyWorkflowEventHandler implements EventHandler {
       return safetyWorkflow;
    }
 
-   private IAtsTeamWorkflow createSafetyAction(IAtsTeamWorkflow teamWf, ArtifactReadable userArt) {
+   private IAtsTeamWorkflow createSafetyAction(IAtsTeamWorkflow teamWf, ArtifactId userArt) {
       IAtsTeamWorkflow teamWorkflow = null;
       try {
          IAtsActionableItem ai = atsServer.getCache().getAtsObject(AtsArtifactToken.SafetyActionableItem);
@@ -144,7 +133,7 @@ public class SafetyWorkflowEventHandler implements EventHandler {
          }
          IAtsUser createdBy = AtsCoreUsers.SYSTEM_USER;
          IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet("Create System Safety Workflow",
-            atsServer.getUserService().getUserById(userArt.getSoleAttributeAsString(CoreAttributeTypes.UserId)));
+            atsServer.getUserService().getUserByArtifactId(userArt));
          IAtsAction action = atsServer.getActionFactory().getAction(teamWf);
          teamWorkflow =
             atsServer.getActionFactory().createTeamWorkflow(action, teamDef, java.util.Collections.singleton(ai),

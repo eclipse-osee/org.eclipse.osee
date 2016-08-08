@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event.model;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelation;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
@@ -25,11 +26,11 @@ public class EventBasicGuidRelation extends DefaultBasicUuidRelation {
    private String rationale;
 
    public EventBasicGuidRelation(RelationEventType relationEventType, int artAId, int artBId, DefaultBasicUuidRelation guidRel) {
-      this(relationEventType, guidRel.getBranchId(), guidRel.getRelTypeGuid(), guidRel.getRelationId(),
+      this(relationEventType, guidRel.getBranch(), guidRel.getRelTypeGuid(), guidRel.getRelationId(),
          guidRel.getGammaId(), artAId, guidRel.getArtA(), artBId, guidRel.getArtB());
    }
 
-   public EventBasicGuidRelation(RelationEventType relationEventType, Long branchUuid, Long relTypeGuid, int relationId, int gammaId, int artAId, DefaultBasicGuidArtifact artA, int artBId, DefaultBasicGuidArtifact artB) {
+   public EventBasicGuidRelation(RelationEventType relationEventType, BranchId branchUuid, Long relTypeGuid, int relationId, int gammaId, int artAId, DefaultBasicGuidArtifact artA, int artBId, DefaultBasicGuidArtifact artB) {
       super(branchUuid, relTypeGuid, relationId, gammaId, artA, artB);
       this.relationEventType = relationEventType;
       this.artAId = artAId;

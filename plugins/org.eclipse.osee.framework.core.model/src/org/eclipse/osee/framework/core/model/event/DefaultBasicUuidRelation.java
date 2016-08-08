@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.event;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 
 /**
@@ -23,8 +24,8 @@ public class DefaultBasicUuidRelation implements IBasicGuidRelation {
    int gammaId;
    int relationId;
 
-   public DefaultBasicUuidRelation(Long branchUuid, Long relTypeUuid, int relationId, int gammaId, DefaultBasicGuidArtifact artA, DefaultBasicGuidArtifact artB) {
-      this.branchUuid = branchUuid;
+   public DefaultBasicUuidRelation(BranchId branch, Long relTypeUuid, int relationId, int gammaId, DefaultBasicGuidArtifact artA, DefaultBasicGuidArtifact artB) {
+      this.branchUuid = branch.getId();
       this.relTypeUuid = relTypeUuid;
       this.relationId = relationId;
       this.gammaId = gammaId;
