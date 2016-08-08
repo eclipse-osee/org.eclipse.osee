@@ -38,8 +38,7 @@ public class EarnedValueReportOperationTest {
    @Test
    public void testReport() throws OseeCoreException {
       List<IAtsTeamDefinition> teamDefs = new ArrayList<>();
-      IAtsTeamDefinition teamDef =
-         AtsClientService.get().getCache().getByUuid(DemoArtifactToken.SAW_SW.getId(), IAtsTeamDefinition.class);
+      IAtsTeamDefinition teamDef = AtsClientService.get().getCache().getAtsObject(DemoArtifactToken.SAW_SW);
       teamDefs.add(teamDef);
       SearchWorkPackageOperation srch = new SearchWorkPackageOperation("srch", teamDefs, true,
          new ArrayList<IAtsActionableItem>(), false, Active.Both);

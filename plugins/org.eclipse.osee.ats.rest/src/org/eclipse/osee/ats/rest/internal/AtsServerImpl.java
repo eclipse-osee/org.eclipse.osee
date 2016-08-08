@@ -575,7 +575,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
 
    @Override
    public <A extends IAtsConfigObject> A getSoleByUuid(long uuid, Class<A> clazz) throws OseeCoreException {
-      return getCache().getByUuid(uuid, clazz);
+      return getCache().getAtsObject(uuid);
    }
 
    @Override

@@ -356,7 +356,7 @@ public class AtsBranchConfigurationTest {
          branch.getName(), AtsUtilCore.getAtsBranch())) {
          teamDefArt.deleteAndPersist(transaction, false);
          IAtsTeamDefinition soleByUuid =
-            AtsClientService.get().getCache().getByUuid(teamDefArt.getId(), IAtsTeamDefinition.class);
+            AtsClientService.get().getCache().getAtsObject(teamDefArt.getId());
          if (soleByUuid != null) {
             AtsClientService.get().getCache().deCacheAtsObject(soleByUuid);
          }
@@ -370,7 +370,7 @@ public class AtsBranchConfigurationTest {
          for (Artifact childArt : aiaArt.getChildren()) {
             childArt.deleteAndPersist(transaction, false);
             IAtsActionableItem soleByUuid =
-               AtsClientService.get().getCache().getByUuid(childArt.getId(), IAtsActionableItem.class);
+               AtsClientService.get().getCache().getAtsObject(childArt.getId());
             if (soleByUuid != null) {
                AtsClientService.get().getCache().deCacheAtsObject(soleByUuid);
             }
@@ -379,7 +379,7 @@ public class AtsBranchConfigurationTest {
          aiaArt.deleteAndPersist(transaction, false);
 
          IAtsActionableItem ai =
-            AtsClientService.get().getCache().getByUuid(aiaArt.getId(), IAtsActionableItem.class);
+            AtsClientService.get().getCache().getAtsObject(aiaArt.getId());
          if (ai != null) {
             AtsClientService.get().getCache().deCacheAtsObject(ai);
          }

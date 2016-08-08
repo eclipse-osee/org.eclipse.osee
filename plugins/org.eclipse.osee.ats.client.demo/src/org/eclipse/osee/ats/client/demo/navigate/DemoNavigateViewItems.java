@@ -62,8 +62,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       // Add check to keep exception from occurring for OSEE developers running against production
       if (!ClientSessionManager.isProductionDataStore()) {
          try {
-            results = AtsClientService.get().getCache().getByUuid(team.getTeamDefToken().getId(),
-               IAtsTeamDefinition.class);
+            results = AtsClientService.get().getCache().getAtsObject(team.getTeamDefToken());
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }

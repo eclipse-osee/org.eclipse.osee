@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
@@ -37,12 +36,9 @@ public class AtsCache implements IAtsCache {
    private final LoadingCache<Long, ArtifactId> uuidToArtifactIdCache = CacheBuilder.newBuilder() //
       .expireAfterWrite(15, TimeUnit.MINUTES) //
       .build(uuidToArtifactIdCacheLoader);
-   private final LoadingCache<String, IAtsObject> tagToAtsObjectCache = CacheBuilder.newBuilder() //
+   private final LoadingCache<String, IAtsObject> guidToAtsObjectCache = CacheBuilder.newBuilder() //
       .expireAfterWrite(15, TimeUnit.MINUTES) //
       .build(tagToAtsObjectCacheLoader);
-   private final LoadingCache<String, ArtifactId> tagToArtifactIdCache = CacheBuilder.newBuilder() //
-      .expireAfterWrite(15, TimeUnit.MINUTES) //
-      .build(tagToArtifactIdCacheLoader);
 
    public AtsCache(IAtsServices services) {
       AtsCache.services = services;
@@ -60,95 +56,34 @@ public class AtsCache implements IAtsCache {
    }
 
    @Override
+   public <T extends IAtsObject> T getAtsObject(ArtifactId artifact) {
+      return getAtsObject(artifact.getId());
+   }
+
+   @Override
    @SuppressWarnings("unchecked")
    public <T extends IAtsObject> T getAtsObjectByGuid(String guid) {
       Conditions.checkNotNullOrEmpty(guid, "guid");
       try {
-         return (T) tagToAtsObjectCache.get(guid);
+         return (T) guidToAtsObjectCache.get(guid);
       } catch (Exception ex) {
          return null;
       }
-   }
-
-   @Override
-   @SuppressWarnings("unchecked")
-   public <T extends IAtsObject> T getAtsObjectByTag(String tag) {
-      Conditions.checkNotNullOrEmpty(tag, "tag");
-      try {
-         return (T) tagToAtsObjectCache.get(tag);
-      } catch (Exception ex) {
-         return null;
-      }
-   }
-
-   @Override
-   public <T extends IAtsObject> T getAtsObjectByTag(String tag, Class<T> clazz) {
-      Conditions.checkNotNullOrEmpty(tag, "tag");
-      return getAtsObjectByTag(tag);
    }
 
    @Override
    public void cacheAtsObject(IAtsObject atsObject) {
       Conditions.checkNotNull(atsObject, "atsObject");
       if (atsObject.getStoreObject() != null) {
-         tagToAtsObjectCache.put(atsObject.getStoreObject().getGuid(), atsObject);
-         tagToArtifactIdCache.put(atsObject.getStoreObject().getGuid(), atsObject.getStoreObject());
+         guidToAtsObjectCache.put(atsObject.getStoreObject().getGuid(), atsObject);
          uuidToArtifactIdCache.put(atsObject.getId(), atsObject.getStoreObject());
       }
       uuidToAtsObjectCache.put(atsObject.getId(), atsObject);
    }
 
    @Override
-   public void cacheAtsObjectByTag(String tag, IAtsObject atsObject) {
-      Conditions.checkNotNullOrEmpty(tag, "tag");
-      Conditions.checkNotNull(atsObject, "atsObject");
-      tagToAtsObjectCache.put(tag, atsObject);
-   }
-
-   @Override
-   @SuppressWarnings("unchecked")
-   public <T extends ArtifactId> T getArtifact(Long uuid) {
-      Conditions.checkNotNull(uuid, "uuid");
-      try {
-         return (T) uuidToArtifactIdCache.get(uuid);
-      } catch (Exception ex) {
-         return null;
-      }
-   }
-
-   @Override
-   @SuppressWarnings("unchecked")
-   public <T extends ArtifactId> T getArtifactByGuid(String guid) {
-      Conditions.checkNotNullOrEmpty(guid, "guid");
-      try {
-         return (T) tagToArtifactIdCache.get(guid);
-      } catch (Exception ex) {
-         return null;
-      }
-   }
-
-   @Override
-   @SuppressWarnings("unchecked")
-   public <T extends ArtifactId> T getArtifactByTag(String tag) {
-      Conditions.checkNotNullOrEmpty(tag, "tag");
-      try {
-         return (T) tagToArtifactIdCache.get(tag);
-      } catch (Exception ex) {
-         return null;
-      }
-   }
-
-   @Override
-   public void cacheArtifactByTag(String tag, ArtifactId artifact) {
-      Conditions.checkNotNullOrEmpty(tag, "tag");
-      Conditions.checkNotNull(artifact, "artifact");
-      tagToArtifactIdCache.put(tag, artifact);
-   }
-
-   @Override
    public void cacheArtifact(ArtifactId artifact) {
       Conditions.checkNotNull(artifact, "artifact");
-      tagToArtifactIdCache.put(artifact.getGuid(), artifact);
       uuidToArtifactIdCache.put(artifact.getId(), artifact);
    }
 
@@ -187,16 +122,9 @@ public class AtsCache implements IAtsCache {
    };
 
    @Override
-   public <T extends IAtsObject> T getByUuid(Long uuid, Class<T> clazz) {
-      Conditions.checkNotNull(uuid, "uuid");
-      return getAtsObject(uuid);
-   }
-
-   @Override
    public void invalidate() {
-      tagToAtsObjectCache.invalidateAll();
+      guidToAtsObjectCache.invalidateAll();
       uuidToAtsObjectCache.invalidateAll();
-      tagToArtifactIdCache.invalidateAll();
       uuidToArtifactIdCache.invalidateAll();
    }
 
@@ -204,25 +132,10 @@ public class AtsCache implements IAtsCache {
    public void deCacheAtsObject(IAtsObject atsObject) {
       Conditions.checkNotNull(atsObject, "atsObject");
       if (atsObject.getStoreObject() != null) {
-         tagToAtsObjectCache.invalidate(atsObject.getStoreObject().getGuid());
-         tagToArtifactIdCache.invalidate(atsObject.getStoreObject().getGuid());
+         guidToAtsObjectCache.invalidate(atsObject.getStoreObject().getGuid());
       }
+
       uuidToAtsObjectCache.invalidate(atsObject.getId());
       uuidToArtifactIdCache.invalidate(atsObject.getId());
    }
-
-   @Override
-   public ArtifactId getArtifact(IAtsObject atsObject) {
-      if (atsObject.getStoreObject() != null) {
-         return atsObject.getStoreObject();
-      }
-      return getArtifact(atsObject.getId());
-   }
-
-   @Override
-   public <T extends IAtsObject> T getAtsObjectByToken(IArtifactToken token, Class<T> clazz) {
-      Conditions.checkNotNull(token, "token");
-      return getAtsObject(token.getId());
-   }
-
 }

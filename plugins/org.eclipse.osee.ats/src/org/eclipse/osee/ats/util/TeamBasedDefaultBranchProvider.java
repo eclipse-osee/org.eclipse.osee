@@ -38,7 +38,7 @@ public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesPr
          Collection<IAtsTeamDefinition> teams = new ArrayList<>();
          for (Artifact art : AtsClientService.get().getUserServiceClient().getOseeUser(user).getRelatedArtifacts(
             AtsRelationTypes.TeamMember_Team)) {
-            teams.add(AtsClientService.get().getCache().getByUuid(art.getId(), IAtsTeamDefinition.class));
+            teams.add(AtsClientService.get().getCache().getAtsObject(art.getId()));
          }
 
          Collection<BranchId> branches = new LinkedList<>();

@@ -69,7 +69,7 @@ public class TeamDefinitionSearchWidget {
          List<IAtsTeamDefinition> teamDefs = new LinkedList<>();
          for (Long uuid : data.getTeamDefUuids()) {
             IAtsTeamDefinition teamDef =
-               AtsClientService.get().getCache().getByUuid(uuid, IAtsTeamDefinition.class);
+               AtsClientService.get().getCache().getAtsObject(uuid);
             if (teamDef != null) {
                teamDefs.add(teamDef);
             }

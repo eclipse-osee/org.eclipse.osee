@@ -57,9 +57,9 @@ public class AtsVersionServiceImpl extends AbstractAtsVersionServiceImpl impleme
          if (verArts.size() > 1) {
             OseeLog.log(Activator.class, Level.SEVERE,
                "Multiple targeted versions for artifact " + teamWf.toStringWithId());
-            version = cache.getByUuid(verArts.iterator().next().getId(), IAtsVersion.class);
+            version = cache.getAtsObject(verArts.iterator().next().getId());
          } else {
-            version = cache.getByUuid(verArts.iterator().next().getId(), IAtsVersion.class);
+            version = cache.getAtsObject(verArts.iterator().next().getId());
          }
       }
       return version;
