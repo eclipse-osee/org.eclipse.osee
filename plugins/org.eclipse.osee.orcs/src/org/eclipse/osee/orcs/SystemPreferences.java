@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core;
+package org.eclipse.osee.orcs;
 
 import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;

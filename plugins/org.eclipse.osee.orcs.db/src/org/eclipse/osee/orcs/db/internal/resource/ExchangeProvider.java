@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.IResourceProvider;
 import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
 import org.eclipse.osee.framework.resource.management.util.OptionsProcessor;
-import org.eclipse.osee.orcs.core.SystemPreferences;
+import org.eclipse.osee.orcs.SystemPreferences;
 
 /**
  * @author Roberto E. Escobar

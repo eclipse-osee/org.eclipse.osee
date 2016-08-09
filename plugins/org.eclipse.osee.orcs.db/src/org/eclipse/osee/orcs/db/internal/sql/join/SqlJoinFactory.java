@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.SystemPreferences;
+import org.eclipse.osee.orcs.SystemPreferences;
 
 /**
  * @author Roberto E. Escobar
