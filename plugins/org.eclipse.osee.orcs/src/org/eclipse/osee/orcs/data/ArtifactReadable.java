@@ -49,7 +49,9 @@ public interface ArtifactReadable extends ArtifactId, HasLocalId<Integer>, HasTr
 
    Collection<? extends IAttributeType> getExistingAttributeTypes() throws OseeCoreException;
 
-   <T> T getSoleAttributeValue(IAttributeType attributeType) throws OseeCoreException;
+   <T> T getSoleAttributeValue(IAttributeType attributeType);
+
+   <T> T getSoleAttributeValue(IAttributeType attributeType, DeletionFlag flag, T defaultValue);
 
    <T> T getSoleAttributeValue(IAttributeType attributeType, T defaultValue) throws OseeCoreException;
 

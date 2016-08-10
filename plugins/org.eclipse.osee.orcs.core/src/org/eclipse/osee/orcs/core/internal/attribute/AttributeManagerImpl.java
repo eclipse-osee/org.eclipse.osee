@@ -42,7 +42,7 @@ import org.eclipse.osee.orcs.core.internal.util.OrcsPredicates;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AttributeManagerImpl extends BaseIdentity<String>implements HasOrcsData<ArtifactData>, AttributeManager, AttributeExceptionFactory {
+public abstract class AttributeManagerImpl extends BaseIdentity<String> implements HasOrcsData<ArtifactData>, AttributeManager, AttributeExceptionFactory {
 
    private final AttributeCollection attributes;
    private boolean isLoaded;
@@ -230,9 +230,23 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String>implement
    }
 
    @Override
-   public <T> T getSoleAttributeValue(IAttributeType attributeType) throws OseeCoreException {
+   public <T> T getSoleAttributeValue(IAttributeType attributeType) {
       Attribute<T> attribute = getSoleAttribute(attributeType);
       return attribute.getValue();
+   }
+
+   @Override
+   public <T> T getSoleAttributeValue(IAttributeType attributeType, DeletionFlag flag, T defaultValue) {
+      T value = defaultValue;
+      Attribute<T> attribute = null;
+      try {
+         attribute = getSoleAttribute(attributeType, flag);
+         value = attribute.getValue();
+      } catch (AttributeDoesNotExist ex) {
+         // do nothing
+      }
+
+      return value;
    }
 
    @Override
@@ -241,12 +255,11 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String>implement
       Attribute<T> attribute = null;
       try {
          attribute = getSoleAttribute(attributeType);
+         value = attribute.getValue();
       } catch (AttributeDoesNotExist ex) {
          // do nothing
       }
-      if (attribute != null) {
-         value = attribute.getValue();
-      }
+
       return value;
    }
 
@@ -373,9 +386,14 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String>implement
    }
 
    @Override
-   public <T> Attribute<T> getSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
+   public <T> Attribute<T> getSoleAttribute(IAttributeType attributeType) {
+      return getSoleAttribute(attributeType, DeletionFlag.EXCLUDE_DELETED);
+   }
+
+   @Override
+   public <T> Attribute<T> getSoleAttribute(IAttributeType attributeType, DeletionFlag flag) {
       ensureAttributesLoaded();
-      ResultSet<Attribute<T>> result = attributes.getResultSet(attributeType, DeletionFlag.EXCLUDE_DELETED);
+      ResultSet<Attribute<T>> result = attributes.getResultSet(attributeType, flag);
       return result.getExactlyOne();
    }
 
