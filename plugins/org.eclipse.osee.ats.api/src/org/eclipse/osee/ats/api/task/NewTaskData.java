@@ -13,6 +13,8 @@ package org.eclipse.osee.ats.api.task;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.ser.std.ToStringSerializer;
 
 /**
  * @author Donald G. Dunne
@@ -20,6 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class NewTaskData {
 
+   @JsonSerialize(using = ToStringSerializer.class)
    Long teamWfUuid;
    List<JaxAtsTask> newTasks;
    String asUserId;

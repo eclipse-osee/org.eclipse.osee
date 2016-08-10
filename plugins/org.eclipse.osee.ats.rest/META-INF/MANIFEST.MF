@@ -9,7 +9,8 @@ Service-Component: OSGI-INF/*.xml
 Osee-JaxRs-Resource: /web/*;path=/ats/cpa/ui,
  OSEE-INF/web/*;path=/ats
 Osee-Template: OSEE-INF/templates/*.html
-Import-Package: com.google.common.cache,
+Import-Package: com.google.common.base,
+ com.google.common.cache,
  com.google.gson;version="2.1.0",
  com.lowagie.text,
  com.lowagie.text.html,

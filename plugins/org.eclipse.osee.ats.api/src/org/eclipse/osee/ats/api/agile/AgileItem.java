@@ -74,12 +74,12 @@ public class AgileItem extends JaxAtsObject {
    }
 
    @Override
-   public long getUuid() {
+   public Long getUuid() {
       return uuid;
    }
 
    @Override
-   public void setUuid(long uuid) {
+   public void setUuid(Long uuid) {
       this.uuid = uuid;
    }
 

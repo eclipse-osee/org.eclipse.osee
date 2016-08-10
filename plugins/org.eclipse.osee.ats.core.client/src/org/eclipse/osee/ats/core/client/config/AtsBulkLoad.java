@@ -44,7 +44,7 @@ public class AtsBulkLoad {
          IOperation op = new AbstractOperation("Re-load ATS Config", Activator.PLUGIN_ID) {
             @Override
             protected void doWork(IProgressMonitor monitor) throws Exception {
-               AtsClientService.get().reloadAllCaches();
+               AtsClientService.get().reloadAllCaches(false);
             }
          };
          ops.add(op);
@@ -56,7 +56,7 @@ public class AtsBulkLoad {
 
    public static void reloadConfig(boolean pend) throws OseeCoreException {
       if (pend) {
-         AtsClientService.get().reloadAllCaches();
+         AtsClientService.get().reloadAllCaches(pend);
       } else {
          AtsClientService.get().invalidateAllCaches();
       }

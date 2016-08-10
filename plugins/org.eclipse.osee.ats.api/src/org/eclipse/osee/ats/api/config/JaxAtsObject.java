@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.ser.std.ToStringSerializer;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 
 /**
@@ -24,7 +25,7 @@ public class JaxAtsObject {
 
    private String name;
    @JsonSerialize(using = ToStringSerializer.class)
-   private long uuid;
+   private Long uuid;
    private boolean active;
    private String description;
 
@@ -36,14 +37,14 @@ public class JaxAtsObject {
       this.name = name;
    }
 
-   public long getUuid() {
+   public Long getUuid() {
       return uuid;
    }
 
    /**
     * Provided for deserialization. Setting will not apply to new artifact.
     */
-   public void setUuid(long uuid) {
+   public void setUuid(Long uuid) {
       this.uuid = uuid;
    }
 
@@ -102,6 +103,12 @@ public class JaxAtsObject {
       }
       if (obj instanceof IAtsObject) {
          IAtsObject other = (IAtsObject) obj;
+         if (other.getUuid().equals(uuid)) {
+            return true;
+         }
+      }
+      if (obj instanceof ArtifactId) {
+         ArtifactId other = (ArtifactId) obj;
          if (other.getUuid().equals(uuid)) {
             return true;
          }

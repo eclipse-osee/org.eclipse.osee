@@ -109,7 +109,7 @@ public class CreateTasksOperation {
 
          for (JaxAtsTask task : newTaskData.getNewTasks()) {
             Long taskUuid = task.getUuid();
-            if (taskUuid > 0L) {
+            if (taskUuid != null && taskUuid > 0L) {
                ArtifactReadable taskArt = atsServer.getArtifact(taskUuid);
                if (taskArt != null) {
                   resultData.errorf("Task with uuid %d already exists for %s", taskUuid, task);
@@ -250,7 +250,7 @@ public class CreateTasksOperation {
          for (JaxAtsTask jaxTask : newTaskData.getNewTasks()) {
 
             Long uuid = jaxTask.getUuid();
-            if (uuid <= 0L) {
+            if (uuid == null || uuid <= 0L) {
                uuid = Lib.generateArtifactIdAsInt();
                jaxTask.setUuid(uuid);
             }

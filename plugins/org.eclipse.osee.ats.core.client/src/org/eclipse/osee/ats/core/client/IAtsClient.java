@@ -72,11 +72,11 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    void invalidateCache();
 
-   void reloadWorkDefinitionCache() throws OseeCoreException;
+   void reloadWorkDefinitionCache(boolean pend) throws OseeCoreException;
 
    void invalidateWorkDefinitionCache();
 
-   void reloadAllCaches() throws OseeCoreException;
+   void reloadAllCaches(boolean pend) throws OseeCoreException;
 
    void invalidateAllCaches();
 
@@ -125,6 +125,8 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    IAtsEventService getEventService();
 
-   void reloadConfigCache();
+   void reloadConfigCache(boolean pend);
+
+   void reloadUserCache(boolean pend);
 
 }

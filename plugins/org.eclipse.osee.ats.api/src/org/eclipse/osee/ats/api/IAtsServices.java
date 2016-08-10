@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.IAtsCache;
+import org.eclipse.osee.ats.api.config.IAtsConfigurationProvider;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
@@ -49,7 +50,7 @@ import org.eclipse.osee.logger.Log;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsServices {
+public interface IAtsServices extends IAtsConfigurationProvider {
 
    IRelationResolver getRelationResolver();
 
@@ -113,6 +114,7 @@ public interface IAtsServices {
 
    IAtsEarnedValueService getEarnedValueService();
 
+   @Override
    AtsConfigurations getConfigurations();
 
    IAtsEarnedValueServiceProvider getEarnedValueServiceProvider();

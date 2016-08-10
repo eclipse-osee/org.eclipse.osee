@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
@@ -30,11 +31,13 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.rest.IAtsServer;
-import org.eclipse.osee.ats.rest.internal.notify.WorkItemNotificationProcessor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -45,14 +48,16 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test unit for {@link WorkItemNotificationProcessor}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class WorkItemNotificationProcessorTest {
 
    // @formatter:off
-   @Mock IAtsUser joeSmith_CurrentUser, kay_ValidEmail, jason_ValidEmail, alex_NoValidEmail, inactiveSteve; 
+   @Mock IAtsUser joeSmith_CurrentUser, kay_ValidEmail, jason_ValidEmail, alex_NoValidEmail, inactiveSteve;
+   @Mock ArtifactId kayArtifact;
    @Mock IAtsTeamWorkflow teamWf;
+   @Mock ArtifactId teamWfArt;
    @Mock IAtsPeerToPeerReview peerReview;
    @Mock IAtsStateManager stateMgr;
    @Mock Log logger;
@@ -61,6 +66,7 @@ public class WorkItemNotificationProcessorTest {
    @Mock IAtsWorkItemFactory workItemFactory;
    @Mock IAtsUserService userService;
    @Mock IAttributeResolver attrResolver;
+   @Mock IRelationResolver relResolver;
    @Mock IAtsStateDefinition stateDef;
    @Mock IAtsTeamDefinition teamDef;
    @Mock IAtsActionableItem ai;
@@ -71,19 +77,16 @@ public class WorkItemNotificationProcessorTest {
    public void setup() {
       MockitoAnnotations.initMocks(this);
 
-      setupUser(joeSmith_CurrentUser, 61106791L, "Joe Smith", "joe@boeing.com", "3333", true,
-         false);
+      setupUser(joeSmith_CurrentUser, 61106791L, "Joe Smith", "joe@boeing.com", "3333", true, false);
       setupUser(kay_ValidEmail, 5896672L, "Kay Jones", "kay@boeing.com", "4444", true, false);
-      setupUser(jason_ValidEmail, 277990L, "Jason Michael", "jason@boeing.com", "5555",
-         true, false);
+      setupUser(jason_ValidEmail, 277990L, "Jason Michael", "jason@boeing.com", "5555", true, false);
       setupUser(alex_NoValidEmail, 8006939L, "Alex Kay", "", "6666", true, false);
-      setupUser(inactiveSteve, 5808093L, "Inactive Steve", "insactiveSteve@boeing.com", "7777",
-         false, false);
+      setupUser(inactiveSteve, 5808093L, "Inactive Steve", "insactiveSteve@boeing.com", "7777", false, false);
 
       when(teamWf.getName()).thenReturn(WorkItemNotificationProcessorTest.class.getSimpleName() + "-testNotify");
       List<IAtsUser> assignees = new ArrayList<>();
-      assignees.addAll(Arrays.asList(inactiveSteve, alex_NoValidEmail, jason_ValidEmail, kay_ValidEmail,
-         joeSmith_CurrentUser));
+      assignees.addAll(
+         Arrays.asList(inactiveSteve, alex_NoValidEmail, jason_ValidEmail, kay_ValidEmail, joeSmith_CurrentUser));
       String atsId = "ATS003";
       when(teamWf.getAtsId()).thenReturn(atsId);
       when(workItemFactory.getWorkItemByAtsId(atsId)).thenReturn(teamWf);
@@ -165,8 +168,8 @@ public class WorkItemNotificationProcessorTest {
       Assert.assertEquals(1, notifications.getNotificationEvents().size());
       notifyEvent = notifications.getNotificationEvents().get(0);
 
-      Assert.assertTrue(org.eclipse.osee.framework.jdk.core.util.Collections.isEqual(expectedUserIds,
-         notifyEvent.getUserIds()));
+      Assert.assertTrue(
+         org.eclipse.osee.framework.jdk.core.util.Collections.isEqual(expectedUserIds, notifyEvent.getUserIds()));
       Assert.assertEquals(
          "You have been set as the assignee of [Team Workflow] in state [Analyze] titled [WorkItemNotificationProcessorTest-testNotify]",
          notifyEvent.getDescription());
@@ -188,8 +191,13 @@ public class WorkItemNotificationProcessorTest {
 
    @org.junit.Test
    public void testNotifySubscribe() throws OseeCoreException {
-
-      when(userService.getSubscribed(teamWf)).thenReturn(Arrays.asList(kay_ValidEmail));
+      when(teamWf.getStoreObject()).thenReturn(teamWfArt);
+      when(atsServer.getRelationResolver()).thenReturn(relResolver);
+      when(atsServer.getAttributeResolver()).thenReturn(attrResolver);
+      when(relResolver.getRelated(teamWf.getStoreObject(), AtsRelationTypes.SubscribedUser_User)).thenReturn(
+         Arrays.asList(kayArtifact));
+      when(attrResolver.getSoleAttributeValue(kayArtifact, CoreAttributeTypes.UserId, null)).thenReturn("4444");
+      when(userService.getUserById(eq("4444"))).thenReturn(kay_ValidEmail);
       AtsWorkItemNotificationEvent event = new AtsWorkItemNotificationEvent();
       event.setFromUserId(joeSmith_CurrentUser.getUserId());
       event.setNotifyType(AtsNotifyType.Subscribed);

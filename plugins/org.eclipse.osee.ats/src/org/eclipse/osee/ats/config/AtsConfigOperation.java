@@ -202,17 +202,21 @@ public class AtsConfigOperation extends AbstractOperation {
       IAtsWorkDefinition workDef = null;
       // If can't be found, create a new one
       if (!workDefMatch.isMatched()) {
-         workDef = generateDefaultWorkflow(name, resultData, changes, teamDef);
+         IAtsChangeSet changes2 = AtsClientService.get().getStoreService().createAtsChangeSet("Create Work Definition",
+            AtsClientService.get().getUserService().getCurrentUser());
+         workDef = generateDefaultWorkflow(name, resultData, changes2, teamDef);
          try {
             String workDefXml = AtsClientService.get().getWorkDefinitionAdmin().getStorageString(workDef, resultData);
             Artifact workDefArt = AtsWorkDefinitionImporter.get().importWorkDefinitionToDb(workDefXml,
-               workDef.getName(), name, null, resultData, changes);
+               workDef.getName(), name, null, resultData, changes2);
             Artifact folder = AtsUtilClient.getFromToken(AtsArtifactToken.WorkDefinitionsFolder);
             folder.addChild(workDefArt);
-            changes.add(folder);
+            changes2.add(folder);
          } catch (Exception ex) {
             throw new OseeWrappedException(ex);
          }
+         changes2.executeIfNeeded();
+         AtsClientService.get().getWorkDefinitionAdmin().clearCaches();
       } else {
          workDef = workDefMatch.getWorkDefinition();
       }

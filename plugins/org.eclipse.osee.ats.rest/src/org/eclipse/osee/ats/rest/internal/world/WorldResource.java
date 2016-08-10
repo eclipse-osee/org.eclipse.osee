@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
@@ -76,7 +77,9 @@ public class WorldResource {
    @Path("my/{uuid}")
    @Produces(MediaType.APPLICATION_JSON)
    public Collection<IAtsWorkItem> getMyWorld(@PathParam("uuid") int uuid) throws Exception {
-      IAtsUser userById = atsServer.getUserService().getUserById(new Long(uuid));
+      ArtifactReadable userArt = atsServer.getArtifact(Long.valueOf(uuid));
+      IAtsUser userById =
+         atsServer.getUserService().getUserById(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId));
       Collection<IAtsWorkItem> myWorldItems =
          atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andAssignee(userById).getItems(
             IAtsWorkItem.class);
@@ -88,7 +91,9 @@ public class WorldResource {
    @Produces(MediaType.TEXT_HTML)
    public String getMyWorldUI(@PathParam("uuid") int uuid) throws Exception {
       StringBuilder sb = new StringBuilder();
-      IAtsUser userById = atsServer.getUserService().getUserById(new Long(uuid));
+      ArtifactReadable userArt = atsServer.getArtifact(Long.valueOf(uuid));
+      IAtsUser userById =
+         atsServer.getUserService().getUserById(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId));
       Collection<IAtsWorkItem> myWorldItems =
          atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andAssignee(userById).getItems(
             IAtsWorkItem.class);
@@ -101,7 +106,9 @@ public class WorldResource {
    @Produces(MediaType.TEXT_HTML)
    public String getMyWorldUICustomized(@PathParam("uuid") int uuid, @PathParam("customize_guid") String customize_guid) throws Exception {
       ElapsedTime time = new ElapsedTime("start");
-      IAtsUser userById = atsServer.getUserService().getUserById(new Long(uuid));
+      ArtifactReadable userArt = atsServer.getArtifact(Long.valueOf(uuid));
+      IAtsUser userById =
+         atsServer.getUserService().getUserById(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId));
       Conditions.checkNotNull(userById, "User by Id " + uuid);
 
       ElapsedTime getCustomization = new ElapsedTime("getCustomizationByGuid");

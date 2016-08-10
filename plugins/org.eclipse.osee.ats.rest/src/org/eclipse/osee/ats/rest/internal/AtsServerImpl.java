@@ -164,6 +164,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
       new ConcurrentHashMap<String, IAtsDatabaseConversion>();
    private IArtifactResolver artifactResolver;
    private IAtsColumnService columnServices;
+   private AtsConfigEndpointImpl configurationsProvider;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -614,8 +615,16 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    }
 
    @Override
-   protected AtsConfigurations loadConfigurations() {
-      return new AtsConfigEndpointImpl(this, orcsApi, logger).get();
+   public AtsConfigurations getConfigurations() {
+      if (configurationsProvider == null) {
+         configurationsProvider = new AtsConfigEndpointImpl(this, orcsApi, logger);
+      }
+      return configurationsProvider.get();
+   }
+
+   @Override
+   public void clearConfigurationsCaches() {
+      // do nothing
    }
 
    @Override

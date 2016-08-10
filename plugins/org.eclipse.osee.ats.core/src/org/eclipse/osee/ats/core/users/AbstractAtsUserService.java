@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.users;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.AtsUserNameComparator;
@@ -29,27 +30,29 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public abstract class AbstractAtsUserService implements IAtsUserService {
 
-   protected final Map<String, IAtsUser> userIdToAtsUser = new HashMap<>(300);
-   protected final Map<String, Boolean> userIdToAdmin = new HashMap<>(300);
-   protected final Map<String, IAtsUser> nameToAtsUser = new HashMap<>(300);
+   protected final Map<String, IAtsUser> userIdToAtsUser = new ConcurrentHashMap<>(300);
+   protected final Map<String, Boolean> userIdToAdmin = new ConcurrentHashMap<>(300);
+   protected final Map<String, IAtsUser> nameToAtsUser = new ConcurrentHashMap<>(300);
    protected IAtsUser currentUser = null;
-   protected String currentUserId = null;
-   protected boolean loaded = false;
-
-   protected abstract void ensureLoaded();
 
    @Override
    public IAtsUser getCurrentUser() throws OseeCoreException {
-      ensureLoaded();
       if (currentUser == null) {
-         currentUser = getUserById(getCurrentUserId());
+         currentUser = userIdToAtsUser.get(getCurrentUserId());
+         if (currentUser == null) {
+            for (IAtsUser user : getUsers(Active.Both)) {
+               if (user.getUserId().equals(getCurrentUserId())) {
+                  currentUser = user;
+                  break;
+               }
+            }
+         }
       }
       return currentUser;
    }
 
    @Override
    public Collection<IAtsUser> getUsersByUserIds(Collection<String> userIds) throws OseeCoreException {
-      ensureLoaded();
       List<IAtsUser> users = new LinkedList<>();
       for (String userId : userIds) {
          IAtsUser user = getUserById(userId);
@@ -62,68 +65,98 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
 
    @Override
    public IAtsUser getUserById(String userId) throws OseeCoreException {
-      ensureLoaded();
-      IAtsUser atsUser = userIdToAtsUser.get(userId);
-      if (atsUser == null && Strings.isValid(userId)) {
-         atsUser = AtsCoreUsers.getAtsCoreUserByUserId(userId);
-         if (atsUser == null) {
-            atsUser = loadUserByUserIdFromDb(userId);
+      IAtsUser atsUser = null;
+      if (Strings.isValid(userId)) {
+         atsUser = userIdToAtsUser.get(userId);
+         if (atsUser == null && Strings.isValid(userId)) {
+            atsUser = AtsCoreUsers.getAtsCoreUserByUserId(userId);
+            if (atsUser == null) {
+               atsUser = loadUserFromDbByUserId(userId);
+               if (atsUser != null) {
+                  userIdToAtsUser.put(userId, atsUser);
+               }
+            }
          }
       }
       return atsUser;
    }
 
-   protected abstract IAtsUser loadUserByUserIdFromDb(String userId);
+   protected abstract IAtsUser loadUserFromDbByUserId(String userId);
 
    @Override
    public IAtsUser getUserByName(String name) throws OseeCoreException {
-      ensureLoaded();
       IAtsUser atsUser = nameToAtsUser.get(name);
       if (atsUser == null && Strings.isValid(name)) {
-         atsUser = loadUserByUserNameFromDb(name);
+         atsUser = loadUserFromDbByUserName(name);
+         if (atsUser != null) {
+            nameToAtsUser.put(name, atsUser);
+         }
       }
       return atsUser;
    }
 
-   protected abstract IAtsUser loadUserByUserNameFromDb(String name);
+   protected abstract IAtsUser loadUserFromDbByUserName(String name);
 
    @Override
    public boolean isUserIdValid(String userId) throws OseeCoreException {
-      ensureLoaded();
       return getUserById(userId) != null;
    }
 
    @Override
    public boolean isUserNameValid(String name) throws OseeCoreException {
-      ensureLoaded();
       return getUserByName(name) != null;
    }
 
    @Override
    public List<IAtsUser> getUsersSortedByName(Active active) {
-      ensureLoaded();
       List<IAtsUser> users = getUsers(active);
       Collections.sort(users, new AtsUserNameComparator(false));
       return users;
    }
 
    public IAtsUser getUserFromToken(IUserToken userToken) {
-      ensureLoaded();
       return getUserById(userToken.getUserId());
+   }
+
+   public void releaseUser(IAtsUser newUser) {
+      currentUser = null;
+   }
+
+   @Override
+   public abstract String getCurrentUserId();
+
+   @Override
+   public abstract boolean isAtsAdmin(IAtsUser user);
+
+   @Override
+   public abstract List<? extends IAtsUser> getUsers();
+
+   @Override
+   public List<IAtsUser> getUsers(Active active) {
+      List<IAtsUser> users = new ArrayList<>();
+      for (IAtsUser user : getUsers()) {
+         if (active == Active.Both || active == Active.Active && user.isActive() || active == Active.InActive && !user.isActive()) {
+            users.add(user);
+         }
+      }
+      return users;
+   }
+
+   @Override
+   public void reloadCache() {
+      userIdToAdmin.clear();
+      userIdToAtsUser.clear();
+      nameToAtsUser.clear();
+      currentUser = null;
+      for (IAtsUser user : getUsers()) {
+         userIdToAtsUser.put(user.getUserId(), user);
+         nameToAtsUser.put(user.getName(), user);
+      }
    }
 
    @Override
    public void releaseUser() {
       currentUser = null;
-      currentUserId = null;
-   }
-
-   @Override
-   public void clearCache() {
-      userIdToAdmin.clear();
-      userIdToAtsUser.clear();
-      nameToAtsUser.clear();
-      loaded = false;
    }
 
 }

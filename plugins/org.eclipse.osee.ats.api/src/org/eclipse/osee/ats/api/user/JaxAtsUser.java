@@ -19,11 +19,14 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
  * @author Donald G. Dunne
  */
 @XmlRootElement
-public class JaxAtsUser extends JaxAtsObject {
+public class JaxAtsUser extends JaxAtsObject implements IAtsUser {
 
    private String userId;
    private String email;
+   private ArtifactId storeObject;
+   private IUserArtLoader userArtLoader;
 
+   @Override
    public String getUserId() {
       return userId;
    }
@@ -32,6 +35,7 @@ public class JaxAtsUser extends JaxAtsObject {
       this.userId = userId;
    }
 
+   @Override
    public String getEmail() {
       return email;
    }
@@ -40,18 +44,33 @@ public class JaxAtsUser extends JaxAtsObject {
       this.email = email;
    }
 
+   @Override
    public String toStringWithId() {
       return String.format("[%s]-[%d]", getName(), getUserId());
    }
 
+   @Override
    @JsonIgnore
    public ArtifactId getStoreObject() {
-      return null;
+      if (storeObject == null && userArtLoader != null) {
+         storeObject = userArtLoader.loadUser(this);
+      }
+      return storeObject;
    }
 
    @Override
-   public long getUuid() {
+   public Long getUuid() {
       return super.getUuid();
+   }
+
+   @Override
+   public void setStoreObject(ArtifactId artifact) {
+      this.storeObject = artifact;
+   }
+
+   @JsonIgnore
+   public void setUserArtLoader(IUserArtLoader userArtLoader) {
+      this.userArtLoader = userArtLoader;
    }
 
 }

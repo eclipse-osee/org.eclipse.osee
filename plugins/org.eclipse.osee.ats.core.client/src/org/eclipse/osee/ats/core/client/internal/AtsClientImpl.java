@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.IAtsCache;
+import org.eclipse.osee.ats.api.config.IAtsConfigurationProvider;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -72,14 +73,13 @@ import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.core.client.branch.internal.AtsBranchServiceImpl;
 import org.eclipse.osee.ats.core.client.config.IAtsClientVersionService;
 import org.eclipse.osee.ats.core.client.internal.config.ActionableItemFactory;
-import org.eclipse.osee.ats.core.client.internal.config.LoadAtsConfigCacheCallable;
 import org.eclipse.osee.ats.core.client.internal.config.TeamDefinitionFactory;
 import org.eclipse.osee.ats.core.client.internal.config.VersionFactory;
 import org.eclipse.osee.ats.core.client.internal.ev.AtsEarnedValueImpl;
 import org.eclipse.osee.ats.core.client.internal.query.AtsQueryServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.review.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.store.AtsVersionServiceImpl;
-import org.eclipse.osee.ats.core.client.internal.user.AtsUserServiceImpl;
+import org.eclipse.osee.ats.core.client.internal.user.AtsUserServiceClientImpl;
 import org.eclipse.osee.ats.core.client.internal.workdef.ArtifactResolverImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsRelationResolverServiceImpl;
@@ -172,6 +172,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    List<IAtsSearchDataProvider> searchDataProviders;
    private IAtsEventService eventService;
    private IAtsImplementerService implementerService;
+   private IAtsConfigurationProvider configProvider;
 
    public AtsClientImpl() {
       searchDataProviders = new ArrayList<>();
@@ -189,6 +190,10 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       this.logger = logger;
    }
 
+   public void setConfigurationsService(IAtsConfigurationProvider configProvider) {
+      this.configProvider = configProvider;
+   }
+
    public void addSearchDataProvider(IAtsSearchDataProvider provider) {
       searchDataProviders.add(provider);
    }
@@ -200,7 +205,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    public void start() throws OseeCoreException {
       Conditions.checkNotNull(workDefService, "IAtsWorkDefinitionService");
 
-      userService = new AtsUserServiceImpl();
+      userService = new AtsUserServiceClientImpl(this);
       userServiceClient = (IAtsUserServiceClient) userService;
 
       atsCache = new AtsCache(this);
@@ -292,32 +297,68 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public void reloadWorkDefinitionCache() throws OseeCoreException {
-      workDefCache.invalidate();
-      workDefCache.getAllWorkDefinitions();
-   }
-
-   @Override
-   public void reloadAllCaches() throws OseeCoreException {
-      Job job = new Job("Reload ATS Caches") {
+   public void reloadWorkDefinitionCache(boolean pend) throws OseeCoreException {
+      Runnable reload = new Runnable() {
 
          @Override
-         protected IStatus run(IProgressMonitor monitor) {
-            reloadConfigCache();
-            reloadWorkDefinitionCache();
-            getUserService().clearCache();
-            return Status.OK_STATUS;
+         public void run() {
+            workDefCache.invalidate();
+            workDefCache.getAllWorkDefinitions();
          }
       };
-      Jobs.startJob(job);
+      if (pend) {
+         reload.run();
+      } else {
+         new Thread(reload).start();
+      }
    }
 
    @Override
-   public void reloadConfigCache() {
-      try {
-         new LoadAtsConfigCacheCallable(atsCache).run();
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+   public void reloadUserCache(boolean pend) throws OseeCoreException {
+      Runnable reload = new Runnable() {
+
+         @Override
+         public void run() {
+            configProvider.clearConfigurationsCaches();
+            getUserService().reloadCache();
+         }
+      };
+      if (pend) {
+         reload.run();
+      } else {
+         new Thread(reload).start();
+      }
+   }
+
+   @Override
+   public void reloadAllCaches(boolean pend) throws OseeCoreException {
+      reloadUserCache(pend);
+      reloadWorkDefinitionCache(pend);
+      reloadConfigCache(pend);
+   }
+
+   @Override
+   public void reloadConfigCache(boolean pend) {
+      Runnable reload = new Runnable() {
+
+         @Override
+         public void run() {
+            try {
+               List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(
+                  configProvider.getConfigurations().getAtsActiveConfigIds(), AtsUtilCore.getAtsBranch());
+
+               for (Artifact artifact : artifacts) {
+                  atsCache.cacheArtifact(artifact);
+               }
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+      };
+      if (pend) {
+         reload.run();
+      } else {
+         new Thread(reload).start();
       }
    }
 
@@ -738,8 +779,13 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   protected AtsConfigurations loadConfigurations() {
-      return AtsClientService.getConfigEndpoint().get();
+   public AtsConfigurations getConfigurations() {
+      return configProvider.getConfigurations();
+   }
+
+   @Override
+   public void clearConfigurationsCaches() {
+      configProvider.clearConfigurationsCaches();
    }
 
 }

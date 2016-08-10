@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.config;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -30,11 +33,13 @@ import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.JaxAtsUser;
 import org.eclipse.osee.ats.api.workdef.JaxAtsWorkDef;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -67,26 +72,61 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       this.logger = logger;
    }
 
+   private final Supplier<AtsConfigurations> configurationsCache =
+      Suppliers.memoizeWithExpiration(getConfigurationsSupplier(), 5, TimeUnit.MINUTES);
+
+   private Supplier<AtsConfigurations> getConfigurationsSupplier() {
+      return new Supplier<AtsConfigurations>() {
+         @SuppressWarnings("unchecked")
+         @Override
+         public AtsConfigurations get() {
+            ResultSet<ArtifactReadable> artifacts =
+               orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andTypeEquals(
+                  AtsArtifactTypes.Configuration).getResults();
+            AtsConfigurations configs = new AtsConfigurations();
+            for (ArtifactReadable art : artifacts) {
+               AtsConfiguration config = new AtsConfiguration();
+               configs.getConfigs().add(config);
+               config.setName(art.getName());
+               config.setUuid(art.getUuid());
+               config.setBranchUuid(
+                  Long.valueOf(art.getSoleAttributeValue(AtsAttributeTypes.AtsConfiguredBranch, "0L")));
+               config.setIsDefault(art.getSoleAttributeValue(AtsAttributeTypes.Default, false));
+            }
+            UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsServer);
+            AtsViews views = update.getConfigViews();
+            configs.setViews(views);
+            configs.setColorColumns(update.getColorColumns());
+            for (IAtsUser user : atsServer.getUserService().getUsers()) {
+               configs.getUsers().add((JaxAtsUser) user);
+            }
+            ArtifactReadable atsAdminArt = orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIds(
+               AtsArtifactToken.AtsAdmin).getResults().getAtMostOneOrNull();
+            if (atsAdminArt != null) {
+               for (ArtifactReadable member : atsAdminArt.getRelated(CoreRelationTypes.User_Grouping__Members)) {
+                  IAtsUser found = configs.getUsers().stream().filter(
+                     user -> user.getUuid().equals(member.getUuid())).findFirst().orElse(null);
+                  if (found != null) {
+                     configs.getAtsAdmins().add((JaxAtsUser) found);
+                  }
+               }
+            }
+            for (HasLocalId<Integer> configArtId : orcsApi.getQueryFactory().fromBranch(
+               AtsUtilCore.getAtsBranch()).andIsOfType(AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.Version,
+                  AtsArtifactTypes.ActionableItem).getResultsAsLocalIds()) {
+               configs.getAtsActiveConfigIds().add(configArtId.getLocalId());
+            }
+            return configs;
+         }
+
+      };
+   }
+
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    @Override
    public AtsConfigurations get() {
-      ResultSet<ArtifactReadable> artifacts = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andTypeEquals(
-         AtsArtifactTypes.Configuration).getResults();
-      AtsConfigurations configs = new AtsConfigurations();
-      for (ArtifactReadable art : artifacts) {
-         AtsConfiguration config = new AtsConfiguration();
-         configs.getConfigs().add(config);
-         config.setName(art.getName());
-         config.setUuid(art.getUuid());
-         config.setBranchUuid(Long.valueOf(art.getSoleAttributeValue(AtsAttributeTypes.AtsConfiguredBranch, "0L")));
-         config.setIsDefault(art.getSoleAttributeValue(AtsAttributeTypes.Default, false));
-      }
-      UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsServer);
-      AtsViews views = update.getConfigViews();
-      configs.setViews(views);
-      configs.setColorColumns(update.getColorColumns());
-      return configs;
+      return configurationsCache.get();
    }
 
    @GET

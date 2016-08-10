@@ -64,7 +64,7 @@ public class AgileEndpointTest {
       JaxAgileTeam team = agile.getTeam(teamUuid);
       Assert.assertNotNull(team);
       Assert.assertEquals("My Agile Team", team.getName());
-      Assert.assertEquals(teamUuid, team.getUuid());
+      Assert.assertEquals(teamUuid, team.getUuid().longValue());
       Assert.assertEquals("", team.getDescription());
       Assert.assertEquals(true, team.isActive());
 
@@ -112,7 +112,7 @@ public class AgileEndpointTest {
       JaxAgileSprint sprint = sprints.iterator().next();
       Assert.assertEquals("My Sprint", sprint.getName());
       Assert.assertEquals(teamUuid, sprint.getTeamUuid());
-      Assert.assertEquals(uuid.longValue(), sprint.getUuid());
+      Assert.assertEquals(uuid.longValue(), sprint.getUuid().longValue());
 
       // Test Delete
       agile.deleteSprint(teamUuid, sprint.getUuid());
@@ -142,7 +142,7 @@ public class AgileEndpointTest {
       JaxAgileFeatureGroup newGroup = groups.iterator().next();
       Assert.assertEquals("Communications", newGroup.getName());
       Assert.assertEquals(teamUuid, newGroup.getTeamUuid());
-      Assert.assertEquals(uuid.longValue(), newGroup.getUuid());
+      Assert.assertEquals(uuid.longValue(), newGroup.getUuid().longValue());
 
       // Test Delete
       agile.deleteFeatureGroup(teamUuid, newGroup.getUuid());
@@ -172,7 +172,7 @@ public class AgileEndpointTest {
       Assert.assertEquals("My Backlog", newBacklog.getName());
       Assert.assertEquals(teamUuid, newBacklog.getTeamUuid());
       Assert.assertTrue(newBacklog.isActive());
-      Assert.assertEquals(uuid.longValue(), newBacklog.getUuid());
+      Assert.assertEquals(uuid.longValue(), newBacklog.getUuid().longValue());
    }
 
 }

@@ -65,7 +65,7 @@ public class DemoCountryConfigTest {
       List<JaxCountry> countries = AtsClientService.getCountryEp().get();
       JaxCountry usgCountry = null;
       for (JaxCountry country : countries) {
-         if (country.getUuid() == DemoCountry.usg.getUuid()) {
+         if (country.getUuid().equals(DemoCountry.usg.getUuid())) {
             usgCountry = country;
             break;
          }
@@ -79,7 +79,7 @@ public class DemoCountryConfigTest {
 
       JaxProgram sawProgram = null;
       for (JaxProgram program : programs) {
-         if (program.getUuid() == DemoProgram.sawProgram.getUuid()) {
+         if (program.getUuid().equals(DemoProgram.sawProgram.getUuid())) {
             sawProgram = program;
             break;
          }
@@ -93,7 +93,7 @@ public class DemoCountryConfigTest {
 
       JaxInsertion sawCommInsertion = null;
       for (JaxInsertion insertion : insertions) {
-         if (insertion.getUuid() == DemoInsertion.sawComm.getUuid()) {
+         if (insertion.getUuid().equals(DemoInsertion.sawComm.getUuid())) {
             sawCommInsertion = insertion;
             break;
          }
@@ -108,7 +108,7 @@ public class DemoCountryConfigTest {
 
       JaxInsertionActivity commPageInsertionActivity = null;
       for (JaxInsertionActivity activity : insertionActivities) {
-         if (activity.getUuid() == DemoInsertionActivity.commPage.getUuid()) {
+         if (activity.getUuid().equals(DemoInsertionActivity.commPage.getUuid())) {
             commPageInsertionActivity = activity;
             break;
          }

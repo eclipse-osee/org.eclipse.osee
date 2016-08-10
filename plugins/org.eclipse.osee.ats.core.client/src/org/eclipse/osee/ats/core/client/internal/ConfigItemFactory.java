@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.core.insertion.Insertion;
 import org.eclipse.osee.ats.core.insertion.InsertionActivity;
 import org.eclipse.osee.ats.core.model.WorkPackage;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.logger.Log;
@@ -81,6 +82,9 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
             configObject = getCountry(artifact);
          } else if (artifact.isOfType(AtsArtifactTypes.WorkPackage)) {
             configObject = getWorkPackage(artifact);
+         } else {
+            throw new OseeArgumentException("Unhandled artifact type %s for %s", ((Artifact) art).getArtifactTypeName(),
+               art.toStringWithId());
          }
       }
       return configObject;

@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.api.config;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.ats.api.user.JaxAtsUser;
 import org.eclipse.osee.ats.api.util.ColorColumns;
 
 /**
@@ -24,6 +25,9 @@ public class AtsConfigurations {
    private final List<AtsConfiguration> configs = new ArrayList<>();
    private AtsViews views = new AtsViews();
    private ColorColumns colorColumns = new ColorColumns();
+   List<JaxAtsUser> users = new ArrayList<>();
+   List<JaxAtsUser> atsAdmins = new ArrayList<>();
+   List<Integer> atsActiveConfigIds = new ArrayList<>();
 
    public List<AtsConfiguration> getConfigs() {
       return configs;
@@ -43,6 +47,26 @@ public class AtsConfigurations {
 
    public void setColorColumns(ColorColumns colorColumns) {
       this.colorColumns = colorColumns;
+   }
+
+   public List<JaxAtsUser> getUsers() {
+      return users;
+   }
+
+   public void setUsers(List<JaxAtsUser> users) {
+      this.users = users;
+   }
+
+   public List<JaxAtsUser> getAtsAdmins() {
+      return atsAdmins;
+   }
+
+   public List<Integer> getAtsActiveConfigIds() {
+      return atsActiveConfigIds;
+   }
+
+   public void setAtsActiveConfigIds(List<Integer> atsActiveConfigIds) {
+      this.atsActiveConfigIds = atsActiveConfigIds;
    }
 
 }

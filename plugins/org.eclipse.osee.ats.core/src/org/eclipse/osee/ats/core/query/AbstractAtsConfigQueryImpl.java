@@ -179,7 +179,8 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    @Override
    public <T extends ArtifactId> ResultSet<T> getResultArtifacts() {
       List<T> items = new ArrayList<>();
-      for (IAtsConfigObject configObject : getResults()) {
+      ResultSet<IAtsConfigObject> results = getResults();
+      for (IAtsConfigObject configObject : results) {
          if (configObject == null) {
             OseeLog.log(AbstractAtsConfigQueryImpl.class, Level.SEVERE, "Null found in results");
          } else {

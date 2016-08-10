@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
@@ -37,6 +38,8 @@ import org.eclipse.osee.ats.core.review.UserRoleManager;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.users.AtsUsersUtility;
 import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
@@ -126,7 +129,7 @@ public class WorkItemNotificationProcessor {
          if (types.contains(AtsNotifyType.Subscribed)) {
             try {
                Collection<IAtsUser> subscribed = new HashSet<>();
-               subscribed.addAll(userService.getSubscribed(workItem));
+               subscribed.addAll(getSubscribed(workItem));
                subscribed = AtsUsersUtility.getValidEmailUsers(subscribed);
                subscribed = AtsUsersUtility.getActiveEmailUsers(subscribed);
                if (subscribed.size() > 0) {
@@ -233,6 +236,16 @@ public class WorkItemNotificationProcessor {
             }
          }
       }
+   }
+
+   public List<IAtsUser> getSubscribed(IAtsWorkItem workItem) throws OseeCoreException {
+      ArrayList<IAtsUser> arts = new ArrayList<>();
+      for (ArtifactId art : atsServer.getRelationResolver().getRelated(workItem.getStoreObject(),
+         AtsRelationTypes.SubscribedUser_User)) {
+         arts.add(userService.getUserById(
+            (String) atsServer.getAttributeResolver().getSoleAttributeValue(art, CoreAttributeTypes.UserId, null)));
+      }
+      return arts;
    }
 
    private boolean isOriginatorDifferentThanCancelledOrCompletedBy(IAtsWorkItem workItem, IAtsUser fromUser, IAtsUser originator) {

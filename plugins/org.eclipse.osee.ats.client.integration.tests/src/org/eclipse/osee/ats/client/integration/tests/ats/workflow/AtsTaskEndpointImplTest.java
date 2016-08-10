@@ -161,7 +161,7 @@ public class AtsTaskEndpointImplTest {
       JaxAtsTask task1R = taskEp.get(taskUuid1).readEntity(JaxAtsTask.class);
       Assert.assertNotNull(task1R);
       Assert.assertEquals("Task 1", task1R.getName());
-      Assert.assertEquals(taskUuid1, task1R.getUuid());
+      Assert.assertEquals(taskUuid1, task1R.getUuid().longValue());
       Assert.assertEquals(createdByUserId, task1R.getCreatedByUserId());
       Assert.assertEquals("description", task1R.getDescription());
       Assert.assertEquals(true, task1R.isActive());
@@ -187,7 +187,7 @@ public class AtsTaskEndpointImplTest {
       JaxAtsTask task2R = taskEp.get(taskUuid2).readEntity(JaxAtsTask.class);
       Assert.assertNotNull(task2R);
       Assert.assertEquals("Task 2", task2R.getName());
-      Assert.assertEquals(taskUuid2, task2R.getUuid());
+      Assert.assertEquals(taskUuid2, task2R.getUuid().longValue());
       Assert.assertEquals(createdByUserId, task2R.getCreatedByUserId());
       Assert.assertEquals("description", task2R.getDescription());
       Assert.assertEquals(true, task2R.isActive());
@@ -206,7 +206,7 @@ public class AtsTaskEndpointImplTest {
       JaxAtsTask task3R = taskEp.get(taskUuid3).readEntity(JaxAtsTask.class);
       Assert.assertNotNull(task3R);
       Assert.assertEquals("Task 3", task3R.getName());
-      Assert.assertEquals(taskUuid3, task3R.getUuid());
+      Assert.assertEquals(taskUuid3, task3R.getUuid().longValue());
       Assert.assertEquals(createdByUserId, task2R.getCreatedByUserId());
       Assert.assertEquals("", task3R.getDescription());
       Assert.assertEquals(true, task3R.isActive());

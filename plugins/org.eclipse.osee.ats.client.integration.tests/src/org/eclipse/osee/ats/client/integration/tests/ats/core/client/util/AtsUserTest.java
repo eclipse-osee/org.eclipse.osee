@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.junit.Assert;
 import org.junit.Before;
-import org.mockito.Mockito;
 
 /**
  * @author Donald G. Dunne
@@ -51,16 +50,6 @@ public class AtsUserTest {
    @org.junit.Test
    public void testGetEmail() throws OseeCoreException {
       Assert.assertEquals(user.getEmail(), atsUser.getEmail());
-   }
-
-   @org.junit.Test
-   public void testEquals() throws OseeCoreException {
-      Assert.assertEquals(atsUser, user);
-
-      IAtsUser atsUser2 = Mockito.mock(IAtsUser.class);
-      Mockito.when(atsUser2.getName()).thenReturn(user.getName());
-      Mockito.when(atsUser2.getUserId()).thenReturn(user.getUserId());
-      Assert.assertEquals(atsUser, atsUser2);
    }
 
    @org.junit.Test

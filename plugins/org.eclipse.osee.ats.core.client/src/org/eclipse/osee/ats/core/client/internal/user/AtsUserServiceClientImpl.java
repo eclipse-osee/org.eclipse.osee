@@ -16,17 +16,17 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.config.IAtsConfigurationProvider;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.JaxAtsUser;
 import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -38,82 +38,27 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  *
  * @author Donald G Dunne
  */
-public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUserServiceClient {
+public class AtsUserServiceClientImpl extends AbstractAtsUserService implements IAtsUserServiceClient {
 
-   /************************************************
-    ** IAtsUserService implementations
-    ************************************************/
+   private IAtsConfigurationProvider configurationProvider;
 
-   @Override
-   public String getCurrentUserId() throws OseeCoreException {
-      if (currentUserId == null) {
-         currentUserId = ClientSessionManager.getCurrentUserToken().getUserId();
-      }
-      return currentUserId;
+   public AtsUserServiceClientImpl() {
+      // For OSGI Instantiation
    }
 
-   @Override
-   protected IAtsUser loadUserByUserNameFromDb(String name) {
-      IAtsUser atsUser = null;
-      User user = null;
-      try {
-         user = (User) ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Name,
-            name, AtsUtilCore.getAtsBranch());
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
-      }
-      if (user != null) {
-         atsUser = new AtsUser(user);
-      }
-      return atsUser;
+   public AtsUserServiceClientImpl(IAtsConfigurationProvider configurationProvider) {
+      this.configurationProvider = configurationProvider;
    }
 
-   @Override
-   protected IAtsUser loadUserByUserIdFromDb(String userId) {
-      IAtsUser atsUser = null;
-      User user = (User) ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User,
-         CoreAttributeTypes.UserId, userId, AtsUtilCore.getAtsBranch());
-
-      if (user != null) {
-         atsUser = getUserFromOseeUser(user);
-      }
-      return atsUser;
+   public void setConfigurationsService(IAtsConfigurationProvider configurationProvider) {
+      this.configurationProvider = configurationProvider;
    }
-
-   @Override
-   public boolean isAtsAdmin(IAtsUser user) {
-      ensureLoaded();
-      Boolean admin = userIdToAdmin.get(user.getUserId());
-      if (admin == null) {
-         admin = AtsGroup.AtsAdmin.isMember(user);
-         userIdToAdmin.put(user.getUserId(), admin);
-      }
-      return admin;
-   }
-
-   @Override
-   public List<IAtsUser> getUsers(Active active) {
-      ensureLoaded();
-      List<IAtsUser> users = new ArrayList<>();
-      for (Artifact user : ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, AtsUtilCore.getAtsBranch())) {
-         Boolean activeFlag = user.getSoleAttributeValue(CoreAttributeTypes.Active, true);
-         if (active == Active.Both || active == Active.Active && activeFlag || active == Active.InActive && !activeFlag) {
-            users.add(new AtsUser((User) user));
-         }
-      }
-      return users;
-   }
-
-   /************************************************
-    ** IAtsUserServiceClient implementations
-    ************************************************/
 
    @Override
    public IAtsUser getUserFromOseeUser(User user) throws OseeCoreException {
-      ensureLoaded();
       IAtsUser atsUser = userIdToAtsUser.get(user.getUserId());
       if (atsUser == null) {
-         atsUser = new AtsUser(user);
+         atsUser = createFromArtifact(user);
          userIdToAtsUser.put(user.getUserId(), atsUser);
       }
       return atsUser;
@@ -121,7 +66,6 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
 
    @Override
    public User getOseeUser(IAtsUser atsUser) throws OseeCoreException {
-      ensureLoaded();
       User oseeUser = null;
       if (atsUser.getStoreObject() != null) {
          oseeUser = (User) atsUser.getStoreObject();
@@ -133,14 +77,12 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
 
    @Override
    public User getCurrentOseeUser() throws OseeCoreException {
-      ensureLoaded();
       IAtsUser user = getCurrentUser();
       return getOseeUser(user);
    }
 
    @Override
    public Collection<? extends User> toOseeUsers(Collection<? extends IAtsUser> users) throws OseeCoreException {
-      ensureLoaded();
       List<User> results = new LinkedList<>();
       for (IAtsUser user : users) {
          results.add(getOseeUser(user));
@@ -150,7 +92,6 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
 
    @Override
    public Collection<IAtsUser> getAtsUsers(Collection<? extends Artifact> artifacts) throws OseeCoreException {
-      ensureLoaded();
       List<IAtsUser> users = new LinkedList<>();
       for (Artifact artifact : artifacts) {
          if (artifact instanceof User) {
@@ -164,7 +105,6 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
 
    @Override
    public Collection<User> getOseeUsers(Collection<? extends IAtsUser> users) throws OseeCoreException {
-      ensureLoaded();
       List<User> results = new LinkedList<>();
       for (IAtsUser user : users) {
          results.add(getOseeUser(user));
@@ -174,22 +114,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
 
    @Override
    public User getOseeUserById(String userId) throws OseeCoreException {
-      ensureLoaded();
       return getOseeUser(getUserById(userId));
-   }
-
-   @Override
-   protected synchronized void ensureLoaded() {
-      if (!loaded) {
-         for (Artifact art : ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User,
-            AtsUtilCore.getAtsBranch())) {
-            User user = (User) art;
-            AtsUser atsUser = new AtsUser(user);
-            userIdToAtsUser.put(user.getUserId(), atsUser);
-            nameToAtsUser.put(user.getName(), atsUser);
-         }
-         loaded = true;
-      }
    }
 
    @Override
@@ -214,6 +139,51 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
    @Override
    public IAtsUser getUserById(long accountId) {
       return getUserFromOseeUser(UserManager.getUserByArtId((int) accountId));
+   }
+
+   @Override
+   public String getCurrentUserId() {
+      return UserManager.getUser().getUserId();
+   }
+
+   @Override
+   public boolean isAtsAdmin(IAtsUser user) {
+      Boolean admin = userIdToAdmin.get(user.getUserId());
+      if (admin == null) {
+         admin = AtsGroup.AtsAdmin.isMember(user);
+         userIdToAdmin.put(user.getUserId(), admin);
+      }
+      return admin;
+   }
+
+   @Override
+   public List<? extends IAtsUser> getUsers() {
+      return configurationProvider.getConfigurations().getUsers();
+   }
+
+   @Override
+   protected IAtsUser loadUserFromDbByUserId(String userId) {
+      Artifact userArt = ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User,
+         CoreAttributeTypes.UserId, userId, AtsUtilCore.getAtsBranch());
+      return createFromArtifact(userArt);
+   }
+
+   private JaxAtsUser createFromArtifact(Artifact userArt) {
+      JaxAtsUser atsUser = new JaxAtsUser();
+      atsUser.setName(userArt.getName());
+      atsUser.setStoreObject(userArt);
+      atsUser.setUserId(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId, ""));
+      atsUser.setEmail(userArt.getSoleAttributeValue(CoreAttributeTypes.Email, ""));
+      atsUser.setActive(userArt.getSoleAttributeValue(CoreAttributeTypes.Active, true));
+      atsUser.setUuid(userArt.getUuid());
+      return atsUser;
+   }
+
+   @Override
+   protected IAtsUser loadUserFromDbByUserName(String name) {
+      Artifact userArt = ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Name,
+         name, AtsUtilCore.getAtsBranch());
+      return createFromArtifact(userArt);
    }
 
 }

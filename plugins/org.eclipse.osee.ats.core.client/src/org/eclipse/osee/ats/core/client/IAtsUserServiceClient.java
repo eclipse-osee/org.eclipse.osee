@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.client;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -41,5 +42,9 @@ public interface IAtsUserServiceClient {
    IAtsUser getUserFromToken(IUserToken userToken);
 
    List<User> getOseeUsersSorted(Active active);
+
+   List<IAtsUser> getSubscribed(IAtsWorkItem workItem) throws OseeCoreException;
+
+   IAtsUser getUserById(long accountId);
 
 }
