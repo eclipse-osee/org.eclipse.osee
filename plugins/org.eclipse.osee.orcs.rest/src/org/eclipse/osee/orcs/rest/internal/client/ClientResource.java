@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.rest.internal.client;
 
 import java.io.ByteArrayOutputStream;
+import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,8 +24,11 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -33,20 +37,24 @@ import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcService;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.rest.internal.client.model.ClientDetails;
 import org.eclipse.osee.orcs.rest.internal.client.model.ClientInfo;
 import org.eclipse.osee.orcs.rest.internal.client.model.ClientSession;
 import org.eclipse.osee.orcs.rest.internal.client.model.Sessions;
-import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Donald G. Dunne
  */
 public class ClientResource {
+
+   @Context
+   private UriInfo uriInfo;
 
    private final JdbcService jdbcService;
    private final OrcsApi orcsApi;
@@ -98,7 +106,7 @@ public class ClientResource {
       }
 
       Consumer<JdbcStatement> consumer = stmt -> {
-         ClientSession session = createSession(stmt);
+         ClientSession session = createSession(stmt, uriInfo);
          String key = session.getClientAddress() + session.getClientPort();
          Boolean alive = portToAlive.get(key);
          if (alive == null) {
@@ -131,16 +139,24 @@ public class ClientResource {
    @GET
    @Path("client/{userId}/session/{sessionId}")
    @Produces({MediaType.TEXT_PLAIN})
-   public String getClientInfo(@PathParam("userId") String userId, @PathParam("sessionId") String sessionId) {
+   public Response getClientInfo(@PathParam("userId") String userId, @PathParam("sessionId") String sessionId) {
+      if (!GUID.isValid(sessionId)) {
+         return Response.ok(String.format("Session [%s] is invalid", sessionId)).build();
+      }
       ClientSession session = getClientSession(sessionId);
       String infoStr = getInfoStr(session, true);
-      return infoStr;
+      return Response.ok(infoStr).build();
    }
 
-   private static ClientSession createSession(JdbcStatement stmt) {
-      return new ClientSession(stmt.getString("CLIENT_ADDRESS"), stmt.getString("CLIENT_PORT"),
+   private static ClientSession createSession(JdbcStatement stmt, UriInfo uriInfo) {
+      ClientSession session = new ClientSession(stmt.getString("CLIENT_ADDRESS"), stmt.getString("CLIENT_PORT"),
          stmt.getString("USER_ID"), stmt.getString("CLIENT_VERSION"), stmt.getString("SESSION_ID"),
          DateUtil.get(stmt.getDate("CREATED_ON"), DateUtil.MMDDYYHHMM));
+      URI location =
+         UriBuilder.fromPath(uriInfo.getBaseUri().toASCIIString()).path("client").path(stmt.getString("USER_ID")).path(
+            "session").path(stmt.getString("SESSION_ID")).build();
+      session.setSessionLog(location.toString());
+      return session;
    }
 
    private Map<ClientSession, ClientInfo> getActiveSessions() {
@@ -148,7 +164,7 @@ public class ClientResource {
       Set<String> pinged = new HashSet<>(200);
 
       Consumer<JdbcStatement> consumer = stmt -> {
-         ClientSession session = createSession(stmt);
+         ClientSession session = createSession(stmt, uriInfo);
          String key = session.getClientAddress() + session.getClientPort();
          // don't ping same host:port twice
          if (!pinged.contains(key)) {
@@ -195,27 +211,53 @@ public class ClientResource {
    }
 
    private ClientSession getClientSession(String sessionId) {
-      return jdbcService.getClient().fetch(null, stmt -> createSession(stmt),
+      return jdbcService.getClient().fetch(null, stmt -> createSession(stmt, uriInfo),
          "select * from osee_session where session_id = ?", sessionId);
    }
 
    private boolean alive(ClientSession session) throws OseeCoreException {
+      boolean alive = isHostAlive(session);
+      if (!alive) {
+         return false;
+      }
+
+      alive = false;
       try {
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
          URL url = new URL(
             String.format("http://%s:%s/osee/request?cmd=pingId", session.getClientAddress(), session.getClientPort()));
          AcquireResult result = HttpProcessor.acquire(url, outputStream, 1000);
          if (result.wasSuccessful()) {
-            return true;
+            alive = true;
          }
       } catch (Exception ex) {
          // do nothing
       }
-      return false;
+      return alive;
+   }
+
+   private boolean isHostAlive(ClientSession session) {
+      boolean reachable = false;
+      try {
+         String osName = System.getProperty("os.name");
+         String option = osName.toLowerCase().contains("windows") ? "-n" : "-c";
+         Process p1 =
+            java.lang.Runtime.getRuntime().exec(String.format("ping %s 1 %s", option, session.getClientAddress()));
+         int returnVal = p1.waitFor();
+         reachable = (returnVal == 0);
+      } catch (Exception ex1) {
+         // do nothing
+      }
+      return reachable;
    }
 
    private String getInfoStr(ClientSession session, boolean withLog) throws OseeCoreException {
       try {
+         boolean alive = isHostAlive(session);
+         if (!alive) {
+            return "Host Not Alive";
+         }
+
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
          URL url = new URL(String.format("http://%s:%s/osee/request?cmd=" + (withLog ? "log" : "info"),
             session.getClientAddress(), session.getClientPort()));

@@ -24,6 +24,7 @@ public class ClientSession {
    private final String clientVersion;
    private final String sessionId;
    private final String createdOn;
+   private String sessionLog;
 
    public ClientSession(String clientAddress, String clientPort, String userId, String clientVersion, String sessionId, String createdOn) {
       this.clientAddress = clientAddress;
@@ -57,4 +58,13 @@ public class ClientSession {
    public String getCreatedOn() {
       return createdOn;
    }
+
+   public String getSessionLog() {
+      return sessionLog;
+   }
+
+   public void setSessionLog(String sessionLog) {
+      this.sessionLog = sessionLog;
+   }
+
 }
