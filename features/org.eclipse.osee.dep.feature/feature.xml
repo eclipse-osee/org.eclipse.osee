@@ -345,7 +345,6 @@
       <import feature="org.eclipse.xtext.runtime" version="2.9.0" match="equivalent"/>
       <import plugin="org.eclipse.xtext.util" version="2.9.0" match="equivalent"/>
       <import plugin="com.lowagie.text" version="2.0.0" match="compatible"/>
-      <import plugin="org.antlr.runtime" version="4.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

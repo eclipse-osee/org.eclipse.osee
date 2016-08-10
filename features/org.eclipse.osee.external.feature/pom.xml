@@ -39,7 +39,6 @@
 								<plugin id="org.apache.cxf.core.config" />
 								<plugin id="ch.qos.logback.slf4j" />
 								<plugin id="javax.ws.rs" />
-								<plugin id="org.antlr.runtime" />
 							</excludes>
 						</configuration>
 					</execution>
