@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -71,7 +72,10 @@ public class SkynetViews {
                   if (workbenchWindow != null) {
                      IWorkbenchPage workbenchPage = workbenchWindow.getActivePage();
                      if (workbenchPage != null) {
-                        workbenchPage.hideView(workbenchPage.findViewReference(viewId, secondaryId));
+                        IViewReference viewReference = workbenchPage.findViewReference(viewId, secondaryId);
+                        if (viewReference.getPart(false) != null) {
+                           workbenchPage.hideView(viewReference);
+                        }
                      }
                   }
                }
