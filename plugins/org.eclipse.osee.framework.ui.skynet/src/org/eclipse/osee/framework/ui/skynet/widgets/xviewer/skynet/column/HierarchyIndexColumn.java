@@ -10,21 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import java.util.HashSet;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import java.util.Map;
+import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 
@@ -32,9 +29,8 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
  * @author Roberto E. Escobar
  * @author Ryan D. Brooks
  */
-public class HierarchyIndexColumn extends XViewerValueColumn {
-   private final Set<Artifact> strongArtifactRefs = new HashSet<>();
-
+public class HierarchyIndexColumn extends XViewerColumn implements IXViewerPreComputedColumn {
+   private final Map<Long, List<Artifact>> parentToChildrenCache = new HashMap<>();
    public static HierarchyIndexColumn instance = new HierarchyIndexColumn();
 
    public static HierarchyIndexColumn getInstance() {
@@ -58,72 +54,84 @@ public class HierarchyIndexColumn extends XViewerValueColumn {
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      Artifact artifact = null;
-      if (element instanceof Artifact) {
-         artifact = (Artifact) element;
-      } else if (element instanceof Change) {
-         artifact = ((Change) element).getChangeArtifact();
-      } else {
-         return "unexpected type: " + element;
+   public Long getKey(Object obj) {
+      Long id = -1L;
+      Artifact art = getArtifactFromElement(obj);
+      if (art != null) {
+         id = art.getId();
       }
-
-      try {
-         if (artifact.isDeleted()) {
-            return "deleted";
-         }
-         return computeHierarchyIndex(artifact);
-      } catch (OseeCoreException ex) {
-         return ex.toString();
-      }
+      return id;
    }
 
-   private final Cache<Artifact, String> artToIndexStr =
-      CacheBuilder.newBuilder().expireAfterAccess(2, TimeUnit.MINUTES).build();
+   @Override
+   public void populateCachedValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
+      for (Object element : objects) {
+         Artifact artifactCursor = getArtifactFromElement(element);
+         if (artifactCursor != null) {
+            Long artId = artifactCursor.getId();
+            if (!preComputedValueMap.containsKey(artId)) {
+               if (artifactCursor.isDeleted()) {
+                  preComputedValueMap.put(artId, "deleted");
+               } else {
+                  StringBuilder builder = new StringBuilder(20);
+                  String error = Strings.emptyString();
 
-   private String computeHierarchyIndex(final Artifact artifact) throws OseeCoreException {
-      String indexStr = "";
-      try {
-         indexStr = artToIndexStr.get(artifact, new Callable<String>() {
-
-            @Override
-            public String call() throws Exception {
-               StringBuilder builder = new StringBuilder(20);
-               Artifact artifactCursor = artifact;
-               Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(artifact.getBranch());
-
-               while (!artifactCursor.equals(root)) {
-                  Artifact parent = null;
-                  try {
-                     parent = artifactCursor.getParent();
-                  } catch (OseeCoreException ex) {
-                     return "Hierarchy Index unavailable: " + ex.getLocalizedMessage();
+                  while (!artifactCursor.equals(CoreArtifactTokens.DefaultHierarchyRoot)) {
+                     Artifact parent = null;
+                     try {
+                        parent = artifactCursor.getParent();
+                     } catch (OseeCoreException ex) {
+                        error = "Hierarchy Index unavailable: " + ex.getLocalizedMessage();
+                        break;
+                     }
+                     if (parent == null) {
+                        error = "not connected to root";
+                        break;
+                     }
+                     builder.insert(0, getPosition(artifactCursor) + ".");
+                     artifactCursor = parent;
                   }
-                  if (parent == null) {
-                     return "not connected to root";
+                  if (error.isEmpty()) {
+                     if (builder.length() > 0) {
+                        preComputedValueMap.put(artId, builder.substring(0, builder.length() - 1));
+                     } else {
+                        preComputedValueMap.put(artId, "no parent");
+                     }
+                  } else {
+                     preComputedValueMap.put(artId, error);
                   }
-                  builder.insert(0, getPosition(artifactCursor) + ".");
-                  artifactCursor = parent;
                }
-               return builder.substring(0, builder.length() - 1);
             }
-         });
-      } catch (ExecutionException ex) {
-         OseeCoreException.wrapAndThrow(ex);
+         }
       }
-      return indexStr;
+      parentToChildrenCache.clear();
+   }
+
+   private Artifact getArtifactFromElement(Object element) {
+      Artifact toReturn = null;
+      if (element instanceof Artifact) {
+         toReturn = (Artifact) element;
+      } else if (element instanceof Change) {
+         toReturn = ((Change) element).getChangeArtifact();
+      }
+      return toReturn;
+   }
+
+   @Override
+   public String getText(Object obj, Long key, String cachedValue) {
+      return cachedValue;
    }
 
    private int getPosition(Artifact artifact) throws OseeCoreException {
       Artifact parent = artifact.getParent();
-      List<Artifact> children = parent.getChildren();
-      strongArtifactRefs.addAll(children);
-
-      for (int index = 0; index < children.size(); index++) {
-         Artifact child = children.get(index);
-         if (artifact.equals(child)) {
-            return index + 1;
-         }
+      List<Artifact> children = parentToChildrenCache.get(parent.getId());
+      if (children == null) {
+         children = parent.getChildren();
+         parentToChildrenCache.put(parent.getId(), children);
+      }
+      int index = 1 + children.indexOf(artifact);
+      if (index > 0) {
+         return index;
       }
       throw new OseeStateException("[%s] is expected to be a child of [%s]", artifact, parent);
    }
