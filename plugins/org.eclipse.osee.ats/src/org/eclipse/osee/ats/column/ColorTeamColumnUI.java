@@ -14,8 +14,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.core.column.ColorTeamColumn;
@@ -32,7 +32,6 @@ public class ColorTeamColumnUI extends XViewerAtsColumn implements IXViewerPreCo
 
    public static final Integer DEFAULT_WIDTH = 45;
    Map<Long, String> workItemUuidToColorTeam = new HashMap<>(100);
-   boolean loading = false;
    public static ColorTeamColumnUI instance = new ColorTeamColumnUI();
 
    public static ColorTeamColumnUI getInstance() {
@@ -40,8 +39,8 @@ public class ColorTeamColumnUI extends XViewerAtsColumn implements IXViewerPreCo
    }
 
    public ColorTeamColumnUI() {
-      super(ColorTeamColumn.ATS_COLOR_TEAM_COLUMN_ID, "Color Team", 45, XViewerAlign.Left, false, SortDataType.String, true,
-         "Color Team associated by related Work Package");
+      super(ColorTeamColumn.ATS_COLOR_TEAM_COLUMN_ID, "Color Team", 45, XViewerAlign.Left, false, SortDataType.String,
+         true, "Color Team associated by related Work Package");
    }
 
    /**
@@ -66,11 +65,7 @@ public class ColorTeamColumnUI extends XViewerAtsColumn implements IXViewerPreCo
 
    @Override
    public String getText(Object obj, Long key, String cachedValue) {
-      String result = "";
-      if (!loading) {
-         result = workItemUuidToColorTeam.get(key);
-      }
-      return result;
+      return workItemUuidToColorTeam.get(key);
    }
 
    @Override
