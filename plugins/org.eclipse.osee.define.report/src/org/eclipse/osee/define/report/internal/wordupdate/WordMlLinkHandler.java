@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -78,7 +79,13 @@ public class WordMlLinkHandler {
 
    private static final Matcher OSEE_LINK_PATTERN = Pattern.compile("OSEE_LINK\\((.*?)\\)", Pattern.DOTALL).matcher("");
    private static final Matcher WORDML_LINK =
-      Pattern.compile("<w:hlink\\s+w:dest=\"(.*?)\".*?</w:hlink\\s*>", Pattern.DOTALL).matcher("");
+      Pattern.compile("<w:hlink\\s+w:dest=\"(.*?)\"[^>]*?(/>|>.*?</w:hlink\\s*>)", Pattern.DOTALL).matcher("");
+   private static final Matcher HYPERLINK_PATTERN = Pattern.compile(
+      "<w:r[^>]*><w:instrText>\\s*HYPERLINK\\s+\"(.+?)\"\\s*</w:instrText></w:r>(.*?</w:t>.+?</w:fldChar></w:r>)?",
+      Pattern.DOTALL).matcher("");
+
+   public static final String WORDML_KEY = "wordml";
+   public static final String UNKNOWNGUIDS_KEY = "unknownguids";
 
    private static final OseeLinkBuilder linkBuilder = new OseeLinkBuilder();
 
@@ -91,7 +98,6 @@ public class WordMlLinkHandler {
     * link call. Therefore we expect the input to have links that are recognized by this handler as identified by the
     * sourceLinkType.
     *
-    * @param source artifact that produced the string content
     * @param content input
     * @return processed input
     */
@@ -100,7 +106,8 @@ public class WordMlLinkHandler {
       String modified = content;
       HashCollection<String, MatchRange> matchMap = parseOseeWordMLLinks(content);
       if (!matchMap.isEmpty()) {
-         modified = modifiedContent(queryFactory, linkType, source, content, matchMap, true);
+         modified = modifiedContent(queryFactory, linkType, source, content, matchMap, true, TransactionId.SENTINEL,
+            null, null, null);
       }
       return modified;
    }
@@ -108,12 +115,10 @@ public class WordMlLinkHandler {
    /**
     * Replace OSEE_LINK marker or Legacy hyper-links with WordML hyperlinks.
     *
-    * @param destLinkType type of link to produce
-    * @param source artifact that produced the string content
     * @param content input
     * @return processed input
     */
-   public static String link(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String content) throws OseeCoreException {
+   public static String link(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String content, TransactionId txId, String sessionId, String oseeLink, Set<String> unknownGuids) throws OseeCoreException {
       LinkType linkType = checkLinkType(destLinkType);
       String modified = content;
 
@@ -131,13 +136,15 @@ public class WordMlLinkHandler {
       OSEE_LINK_PATTERN.reset();
 
       if (!matchMap.isEmpty()) {
-         modified = modifiedContent(queryFactory, linkType, source, content, matchMap, false);
+         modified = modifiedContent(queryFactory, linkType, source, content, matchMap, false, txId, sessionId, oseeLink,
+            unknownGuids);
       }
 
       if (linkType != LinkType.OSEE_SERVER_LINK) {
          // Add a bookmark to the start of the content so internal links can link later
          modified = linkBuilder.getWordMlBookmark(source) + modified;
       }
+
       return modified;
    }
 
@@ -162,18 +169,34 @@ public class WordMlLinkHandler {
          }
       }
       WORDML_LINK.reset();
+
+      HYPERLINK_PATTERN.reset(content);
+      while (HYPERLINK_PATTERN.find()) {
+         String link = HYPERLINK_PATTERN.group(1);
+         if (Strings.isValid(link)) {
+            linkParser.parse(link);
+            String guid = linkParser.getGuid();
+            if (Strings.isValid(guid)) {
+               matchMap.put(guid, new MatchRange(HYPERLINK_PATTERN.start(), HYPERLINK_PATTERN.end()));
+            }
+         }
+      }
+      HYPERLINK_PATTERN.reset();
+
       return matchMap;
    }
 
-   private static List<ArtifactReadable> findArtifacts(QueryFactory queryFactory, BranchId branch, List<String> guidsFromLinks) throws OseeCoreException {
-
+   private static List<ArtifactReadable> findArtifacts(QueryFactory queryFactory, BranchId branch, List<String> guidsFromLinks, TransactionId txId) throws OseeCoreException {
       List<ArtifactReadable> arts = Lists.newLinkedList();
-      for (String guid : guidsFromLinks) {
-         ArtifactReadable art = queryFactory.fromBranch(branch).andGuid(guid).getResults().getOneOrNull();
-         if (art != null) {
-            arts.add(art);
-         }
+
+      if (txId.isValid()) {
+         arts.addAll(queryFactory.fromBranch(branch).fromTransaction(txId).andGuids(
+            guidsFromLinks).includeDeletedArtifacts().getResults().getList());
+      } else {
+         arts.addAll(
+            queryFactory.fromBranch(branch).andGuids(guidsFromLinks).includeDeletedArtifacts().getResults().getList());
       }
+
       return arts;
    }
 
@@ -185,20 +208,20 @@ public class WordMlLinkHandler {
       return Collections.setComplement(guidsFromLinks, artGuids);
    }
 
-   private static String modifiedContent(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnliking) throws OseeCoreException {
+   private static String modifiedContent(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnliking, TransactionId txId, String sessionId, String oseeLink, Set<String> unknown) throws OseeCoreException {
       BranchId branch = source.getBranch();
       ChangeSet changeSet = new ChangeSet(original);
       List<ArtifactReadable> artifactsFromSearch = null;
       List<String> guidsFromLinks = new ArrayList<>(matchMap.keySet());
 
-      artifactsFromSearch = findArtifacts(queryFactory, branch, guidsFromLinks);
+      artifactsFromSearch = findArtifacts(queryFactory, branch, guidsFromLinks, txId);
       boolean isMergeBranch = queryFactory.branchQuery().andIds(branch).andIsOfType(BranchType.MERGE).getCount() > 0;
       if (guidsFromLinks.size() != artifactsFromSearch.size() && isMergeBranch) {
          BranchReadable branchReadable = queryFactory.branchQuery().andIds(branch).getResults().getExactlyOne();
          List<String> unknownGuids = getGuidsNotFound(guidsFromLinks, artifactsFromSearch);
 
          List<ArtifactReadable> union = new ArrayList<>();
-         union.addAll(findArtifacts(queryFactory, branchReadable.getParentBranch(), unknownGuids));
+         union.addAll(findArtifacts(queryFactory, branchReadable.getParentBranch(), unknownGuids, txId));
          union.addAll(artifactsFromSearch);
          artifactsFromSearch = union;
       }
@@ -216,10 +239,13 @@ public class WordMlLinkHandler {
             }
          } else {
             // Items not found
-            for (String guid : unknownGuids) {
-               for (MatchRange match : matchMap.getValues(guid)) {
-                  String link = linkBuilder.getUnknownArtifactLink(guid, branch);
-                  changeSet.replace(match.start(), match.end(), link);
+            if (!unknownGuids.isEmpty()) {
+               unknown.addAll(unknownGuids);
+               for (String guid : unknownGuids) {
+                  for (MatchRange match : matchMap.getValues(guid)) {
+                     String link = linkBuilder.getUnknownArtifactLink(guid, branch);
+                     changeSet.replace(match.start(), match.end(), link);
+                  }
                }
             }
          }
@@ -231,11 +257,12 @@ public class WordMlLinkHandler {
             if (isUnliking) {
                replaceWith = linkBuilder.getOseeLinkMarker(artifact.getGuid());
             } else {
-               throw new OseeCoreException("Linking not valid for server");
+               replaceWith = linkBuilder.getWordMlLink(destLinkType, artifact, txId, sessionId, oseeLink);
             }
             changeSet.replace(match.start(), match.end(), replaceWith);
          }
       }
+
       return changeSet.applyChangesToSelf().toString();
    }
 
@@ -255,6 +282,11 @@ public class WordMlLinkHandler {
 
       public int end() {
          return end;
+      }
+
+      @Override
+      public String toString() {
+         return "{" + start + ", " + end + "}";
       }
    }
 

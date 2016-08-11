@@ -11,6 +11,11 @@
 package org.eclipse.osee.define.report.internal.wordupdate;
 
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -18,6 +23,8 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  * @author David W. Miller Reduced from the client side class to only support unlinking
  */
 public class OseeLinkBuilder {
+   private static final String WORDML_INTERNAL_DOC_LINK_FORMAT =
+      "<w:r><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:instrText> HYPERLINK \\l \"OSEE.%s\" </w:instrText></w:r><w:r><w:fldChar w:fldCharType=\"separate\"/></w:r><w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>%s</w:t></w:r><w:r><w:fldChar w:fldCharType=\"end\"/></w:r>";
    private static final String WORDML_LINK_FORMAT =
       "<w:hlink w:dest=\"%s\"><w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>%s</w:t></w:r></w:hlink>";
    private static final String WORDML_BOOKMARK_FORMAT =
@@ -125,5 +132,61 @@ public class OseeLinkBuilder {
 
    public String getOseeLinkMarker(String guid) {
       return String.format(OSEE_LINK_MARKER, guid);
+   }
+
+   public String getWordMlLink(LinkType destLinkType, ArtifactReadable artifact, TransactionId txId, String sessionId, String oseeLink) throws OseeCoreException {
+      String linkFormat = getLinkFormat(destLinkType);
+      String linkId = getLinkId(destLinkType, artifact, txId, sessionId, oseeLink);
+      String linkText = getLinkText(destLinkType, artifact);
+      return String.format(linkFormat, linkId, linkText);
+   }
+
+   private String getLinkFormat(LinkType destLinkType) {
+      String toReturn;
+      if (destLinkType == LinkType.OSEE_SERVER_LINK) {
+         toReturn = WORDML_LINK_FORMAT;
+      } else {
+         toReturn = WORDML_INTERNAL_DOC_LINK_FORMAT;
+      }
+      return toReturn;
+   }
+
+   private String getLinkId(LinkType destLinkType, ArtifactReadable artifact, TransactionId tx, String sessionId, String oseeLink) throws OseeCoreException {
+      String toReturn;
+      if (destLinkType == LinkType.OSEE_SERVER_LINK) {
+         toReturn = escapeXml(oseeLink);
+      } else {
+         toReturn = artifact.getGuid();
+      }
+      return toReturn;
+   }
+
+   private String getLinkText(LinkType linkType, ArtifactReadable artifact) throws OseeCoreException {
+      StringBuilder builder = new StringBuilder();
+      if (isParagraphRequired(linkType)) {
+         builder.append(artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "Undefined"));
+      }
+      if (isArtifactNameRequired(linkType)) {
+         if (builder.length() > 0) {
+            builder.append(" ");
+         }
+         builder.append(artifact.getName());
+      }
+      if (artifact.isHardDeleted()) {
+         builder.append(" (DELETED)");
+      }
+      return escapeXml(builder.toString());
+   }
+
+   private boolean isParagraphRequired(LinkType linkType) {
+      return linkType == LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER || linkType == LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME;
+   }
+
+   private boolean isArtifactNameRequired(LinkType linkType) {
+      return linkType == LinkType.OSEE_SERVER_LINK || linkType == LinkType.INTERNAL_DOC_REFERENCE_USE_NAME || linkType == LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME;
+   }
+
+   private String escapeXml(String source) {
+      return Xml.escape(source).toString();
    }
 }

@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -32,20 +31,23 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.define.report.api.ReportConstants;
+import org.eclipse.osee.define.report.api.WordTemplateContentData;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
+import org.eclipse.osee.framework.skynet.core.httpRequests.HttpWordUpdateRequest;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
-import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
@@ -156,48 +158,39 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    public void renderAttribute(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement, String footer) throws OseeCoreException {
       WordMLProducer wordMl = (WordMLProducer) producer;
 
+      String data = null;
       if (attributeType.equals(CoreAttributeTypes.WordTemplateContent)) {
-         Attribute<?> wordTempConAttr = artifact.getSoleAttribute(attributeType);
-         String data = null;
-         if (wordTempConAttr != null) {
-            data = (String) wordTempConAttr.getValue();
-         }
+
+         LinkType linkType = (LinkType) getOption("linkType");
 
          if (attributeElement.getLabel().length() > 0) {
             wordMl.addParagraph(attributeElement.getLabel());
          }
 
-         if (data != null) {
-            //Change the BinData Id so images do not get overridden by the other images
-            data = WordUtil.reassignBinDataID(data);
+         TransactionId txId = null;
+         if (artifact.isHistorical()) {
+            txId = artifact.getTransaction();
+         } else {
+            txId = TransactionId.SENTINEL;
+         }
 
-            LinkType linkType = (LinkType) getOption("linkType");
-            Set<String> unknownGuids = new HashSet<>();
-            data = WordMlLinkHandler.link(linkType, artifact, data, unknownGuids);
-            WordUiUtil.displayUnknownGuids(artifact, unknownGuids);
+         String oseeLink = ArtifactURL.getOpenInOseeLink(artifact).toString();
 
-            data = WordUtil.reassignBookMarkID(data);
+         WordTemplateContentData wtcData = new WordTemplateContentData();
+         wtcData.setArtId(artifact.getUuid());
+         wtcData.setBranchId(artifact.getBranch());
+         wtcData.setFooter(footer);
+         wtcData.setIsEdit(presentationType == PresentationType.SPECIALIZED_EDIT);
+         wtcData.setLinkType(linkType != null ? linkType.toString() : null);
+         wtcData.setTxId(txId);
+         wtcData.setSessionId(ClientSessionManager.getSessionId());
+         wtcData.setOseeLink(oseeLink);
 
-            // remove any existing footers and replace with the current one
-            // first try to remove footer for extra paragraphs
-            if (presentationType == PresentationType.SPECIALIZED_EDIT) {
-               data = data.replaceAll(ReportConstants.ENTIRE_FTR_EXTRA_PARA, "");
-            }
+         Pair<String, Set<String>> content = HttpWordUpdateRequest.renderWordTemplateContent(wtcData);
 
-            // if no extra paragraphs have been added this will replace the normal footer
-            data = data.replaceAll(ReportConstants.ENTIRE_FTR, "");
-            data = data.replaceAll(ReportConstants.NO_DATA_RIGHTS, "");
-
-            // Do not put data rights in if Artifact is empty because a section break with no leading paragraph will cause typing issues
-            // This issue can still occur if the artifact isn't empty but not as likely - Remove data rights on all edits if user support continues
-            if (presentationType == PresentationType.SPECIALIZED_EDIT) {
-               if (!data.equals(
-                  "<w:p xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\"><w:r><w:t></w:t></w:r></w:p>") && !data.isEmpty()) {
-                  data = data.concat(footer);
-               }
-            } else {
-               data = data.concat(footer);
-            }
+         if (content != null) {
+            data = content.getFirst();
+            WordUiUtil.displayUnknownGuids(artifact, content.getSecond());
          }
 
          if (presentationType == PresentationType.SPECIALIZED_EDIT) {
@@ -207,7 +200,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             wordMl.addEditParagraphNoEscape(linkBuilder.getEndEditImage(artifact.getGuid()));
 
          } else if (data != null) {
-            data = data.replaceAll(WordTemplateProcessor.PGNUMTYPE_START_1, "");
             wordMl.addWordMl(data);
          }
          wordMl.resetListValue();

@@ -20,6 +20,10 @@ public class Pair<T, K> implements Serializable {
    private T first;
    private K second;
 
+   public Pair() {
+      // Dummy Constructor
+   }
+
    public Pair(T first, K second) {
       this.first = first;
       this.second = second;

@@ -7,6 +7,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/*.xml
 Import-Package: com.google.common.base;version="15.0.0",
  com.google.common.collect;version="15.0.0",
+ com.google.gson,
  javax.ws.rs,
  javax.ws.rs.core,
  org.eclipse.osee.app,
@@ -33,6 +34,7 @@ Import-Package: com.google.common.base;version="15.0.0",
  org.eclipse.osee.orcs.search,
  org.eclipse.osee.orcs.transaction,
  org.eclipse.osee.template.engine,
+ org.json,
  org.osgi.service.event
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.define.report

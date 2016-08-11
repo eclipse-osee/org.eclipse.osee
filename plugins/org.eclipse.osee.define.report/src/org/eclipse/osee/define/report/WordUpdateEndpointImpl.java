@@ -10,10 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.define.report;
 
+import java.util.Set;
+import org.eclipse.osee.define.report.api.WordTemplateContentData;
 import org.eclipse.osee.define.report.api.WordUpdateChange;
 import org.eclipse.osee.define.report.api.WordUpdateData;
 import org.eclipse.osee.define.report.api.WordUpdateEndpoint;
+import org.eclipse.osee.define.report.internal.wordupdate.WordTemplateContentRendererHandler;
 import org.eclipse.osee.define.report.internal.wordupdate.WordUpdateArtifact;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -52,4 +56,9 @@ public final class WordUpdateEndpointImpl implements WordUpdateEndpoint {
       Conditions.checkNotNull(data.getWordData(), "WordUpdateData content");
    }
 
+   @Override
+   public Pair<String, Set<String>> renderWordTemplateContent(WordTemplateContentData data) {
+      WordTemplateContentRendererHandler wordRendererHandler = new WordTemplateContentRendererHandler(orcsApi);
+      return wordRendererHandler.renderWordML(data);
+   }
 }
