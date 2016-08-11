@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.loader.data;
 
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -194,10 +195,10 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public BranchData createBranchData(Long branchUuid, BranchType branchType, String name, BranchId parentBranch, TransactionId baseTransaction, TransactionId sourceTransaction, BranchArchivedState archiveState, BranchState branchState, int associatedArtifactId, boolean inheritAccessControl) {
+   public BranchData createBranchData(Long branchUuid, BranchType branchType, String name, BranchId parentBranch, TransactionId baseTransaction, TransactionId sourceTransaction, BranchArchivedState archiveState, BranchState branchState, ArtifactId associatedArtifact, boolean inheritAccessControl) {
       BranchData data = new BranchDataImpl(branchUuid, name);
       data.setArchiveState(archiveState);
-      data.setAssociatedArtifactId(associatedArtifactId);
+      data.setAssociatedArtifact(associatedArtifact);
       data.setBaseTransaction(baseTransaction);
       data.setBranchState(branchState);
       data.setBranchType(branchType);
@@ -211,25 +212,25 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    public BranchData createCopy(BranchData source) {
       return createBranchData(source.getId(), source.getBranchType(), source.getName(), source.getParentBranch(),
          source.getBaseTransaction(), source.getSourceTransaction(), source.getArchiveState(), source.getBranchState(),
-         source.getAssociatedArtifactId(), source.isInheritAccessControl());
+         source.getAssociatedArtifact(), source.isInheritAccessControl());
    }
 
    @Override
-   public TxOrcsData createTxData(Long localId, TransactionDetailsType type, Date date, String comment, Long branchId, int authorId, int commitId) {
+   public TxOrcsData createTxData(Long localId, TransactionDetailsType type, Date date, String comment, Long branchId, ArtifactId author, ArtifactId commitArt) {
       TxOrcsData data = new TransactionDataImpl(localId);
       data.setTxType(type);
       data.setDate(date);
       data.setComment(comment);
       data.setBranchId(branchId);
-      data.setAuthorId(authorId);
-      data.setCommit(commitId);
+      data.setAuthor(author);
+      data.setCommitArt(commitArt);
       return data;
    }
 
    @Override
    public TxOrcsData createCopy(TxOrcsData source) {
       return createTxData(source.getId(), source.getTxType(), source.getDate(), source.getComment(),
-         source.getBranchId(), source.getAuthorId(), source.getCommit());
+         source.getBranchId(), source.getAuthor(), source.getCommitArt());
    }
 
    @Override

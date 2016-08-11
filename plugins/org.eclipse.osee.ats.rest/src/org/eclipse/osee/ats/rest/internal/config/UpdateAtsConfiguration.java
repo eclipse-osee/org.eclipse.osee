@@ -144,7 +144,7 @@ public class UpdateAtsConfiguration {
    }
 
    @SuppressWarnings("unchecked")
-   public ArtifactId getOrCreateConfigFolder(ArtifactReadable userArt, XResultData rd) {
+   public ArtifactId getOrCreateConfigFolder(ArtifactId userArt, XResultData rd) {
       ArtifactReadable configFolderArt =
          atsServer.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(
             AtsArtifactToken.ConfigFolder).getResults().getAtMostOneOrNull();
@@ -191,7 +191,7 @@ public class UpdateAtsConfiguration {
    }
 
    @SuppressWarnings("unchecked")
-   public ArtifactId getOrCreateConfigsFolder(ArtifactReadable userArt, XResultData rd) {
+   public ArtifactId getOrCreateConfigsFolder(ArtifactId userArt, XResultData rd) {
       ArtifactId configFolderArt = getOrCreateConfigFolder(userArt, rd);
       ArtifactId configsFolderArt = atsServer.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(
          AtsArtifactToken.ConfigsFolder).getResults().getAtMostOneOrNull();

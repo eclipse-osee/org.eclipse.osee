@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.model;
 
-import static org.eclipse.osee.framework.core.data.TransactionId.SENTINEL;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 
@@ -27,8 +27,8 @@ public class Transaction {
    private TransactionDetailsType txType;
    private String comment;
    private Date timestamp;
-   private int authorId;
-   private int commitArtId;
+   private ArtifactId author;
+   private ArtifactId commitArtId;
 
    public TransactionId getTxId() {
       return txId;
@@ -70,25 +70,24 @@ public class Transaction {
       this.timestamp = timestamp;
    }
 
-   public int getAuthorId() {
-      return authorId;
+   public ArtifactId getAuthor() {
+      return author;
    }
 
-   public void setAuthorId(int authorId) {
-      this.authorId = authorId;
+   public void setAuthor(ArtifactId author) {
+      this.author = author;
    }
 
-   public int getCommitArtId() {
+   public ArtifactId getCommitArt() {
       return commitArtId;
    }
 
-   public void setCommitArtId(int commitArtId) {
+   public void setCommitArt(ArtifactId commitArtId) {
       this.commitArtId = commitArtId;
    }
 
    @Override
    public String toString() {
-      return "Transaction [txId=" + getTxId() + ", branchUuid=" + branchUuid + ", txType=" + txType + ", comment=" + comment + ", timestamp=" + timestamp + ", authorArtId=" + authorId + ", commitArtId=" + commitArtId + "]";
+      return "Transaction [txId=" + getTxId() + ", branchUuid=" + branchUuid + ", txType=" + txType + ", comment=" + comment + ", timestamp=" + timestamp + ", authorArtId=" + author + ", commitArtId=" + commitArtId + "]";
    }
-
 }

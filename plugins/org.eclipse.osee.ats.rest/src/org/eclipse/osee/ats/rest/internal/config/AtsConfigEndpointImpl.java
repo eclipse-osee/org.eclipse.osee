@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.config;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import javax.ws.rs.GET;
@@ -56,6 +54,8 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 
 /**
  * @author Donald G. Dunne
@@ -89,7 +89,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
                AtsConfiguration config = new AtsConfiguration();
                configs.getConfigs().add(config);
                config.setName(art.getName());
-         config.setUuid(art.getId());
+               config.setUuid(art.getId());
                config.setBranchUuid(
                   Long.valueOf(art.getSoleAttributeValue(AtsAttributeTypes.AtsConfiguredBranch, "0L")));
                config.setIsDefault(art.getSoleAttributeValue(AtsAttributeTypes.Default, false));
@@ -160,17 +160,16 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       Conditions.checkNotNullOrEmpty(newBranchName, "newBranchName");
       String userId = form.getFirst("userId");
       Conditions.checkNotNullOrEmpty(userId, "UserId");
-      IAtsUser user = atsServer.getUserService().getUserById(userId);
+      ArtifactId user = atsServer.getUserService().getUserById(userId).getStoreObject();
       if (user == null) {
          logger.error("User by id [%s] does not exist", userId);
       }
-      ArtifactReadable userArt = atsServer.getArtifact(user);
       org.eclipse.osee.orcs.data.BranchReadable fromBranch =
          orcsApi.getQueryFactory().branchQuery().andUuids(fromBranchUuid).getResults().getExactlyOne();
 
       // Create new baseline branch off Root
       Callable<BranchReadable> newBranchCallable =
-         orcsApi.getBranchOps().createTopLevelBranch(TokenFactory.createBranch(newBranchName), userArt);
+         orcsApi.getBranchOps().createTopLevelBranch(TokenFactory.createBranch(newBranchName), user);
       BranchReadable newBranch;
       try {
          newBranch = newBranchCallable.call();
@@ -180,16 +179,16 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       long newBranchUuid = newBranch.getUuid();
 
       // Introduce all ATS heading artifacts to new branch
-      introduceAtsHeadingArtifacts(fromBranch, newBranch, userArt);
+      introduceAtsHeadingArtifacts(fromBranch, newBranch, user);
 
       // Create config artifact on Common
-      AtsConfiguration config = createConfigArtifactOnCommon(newBranchName, userArt, newBranchUuid);
+      AtsConfiguration config = createConfigArtifactOnCommon(newBranchName, user, newBranchUuid);
 
       // Return new branch uuid
       return config;
    }
 
-   private void introduceAtsHeadingArtifacts(org.eclipse.osee.orcs.data.BranchReadable fromBranch, BranchReadable newBranch, ArtifactReadable userArt) {
+   private void introduceAtsHeadingArtifacts(org.eclipse.osee.orcs.data.BranchReadable fromBranch, BranchReadable newBranch, ArtifactId userArt) {
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(newBranch, userArt, "Add ATS Configuration");
 
@@ -239,7 +238,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       return artifact;
    }
 
-   private AtsConfiguration createConfigArtifactOnCommon(String branchName, ArtifactReadable userArt, long newBranchUuid) {
+   private AtsConfiguration createConfigArtifactOnCommon(String branchName, ArtifactId userArt, long newBranchUuid) {
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, userArt, "Add ATS Configuration");
       AtsConfiguration config = new AtsConfiguration();

@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -114,13 +115,13 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
                destinationBranch);
          }
       } else if (!newBranchData.getBranchType().isSystemRootBranch()) {
-         int associatedArtifactId = newBranchData.getAssociatedArtifactId();
+         ArtifactId associatedArtifactId = newBranchData.getAssociatedArtifact();
 
          // this checks to see if there are any branches that aren't either DELETED or REBASELINED with the same artifact ID
-         if (associatedArtifactId > -1 && !SystemUser.OseeSystem.getUuid().equals((long) associatedArtifactId)) {
+         if (associatedArtifactId.isValid() && !SystemUser.OseeSystem.equals(associatedArtifactId)) {
             int count = jdbcClient.fetch(connection, 0,
                "SELECT (1) FROM osee_branch WHERE associated_art_id = ? AND branch_state NOT IN (?, ?)",
-               newBranchData.getAssociatedArtifactId(), BranchState.DELETED.getValue(),
+               newBranchData.getAssociatedArtifact(), BranchState.DELETED.getValue(),
                BranchState.REBASELINED.getValue());
             if (count > 0) {
                // the PORT branch type is a special case, a PORT branch can have the same associated artifact
@@ -130,7 +131,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
 
                   int portcount = jdbcClient.fetch(connection, 0,
                      "SELECT (1) FROM osee_branch WHERE associated_art_id = ? AND branch_state NOT IN (?, ?) AND branch_type = ?",
-                     newBranchData.getAssociatedArtifactId(), BranchState.DELETED.getValue(),
+                     newBranchData.getAssociatedArtifact(), BranchState.DELETED.getValue(),
                      BranchState.REBASELINED.getValue(), BranchType.PORT.getValue());
                   if (portcount > 0) {
                      throw new OseeStateException("Existing port branch creation detected for [%s]",
@@ -183,7 +184,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
          parentBranch,
          sourceTx,
          BranchArchivedState.UNARCHIVED.getValue(),
-         newBranchData.getAssociatedArtifactId(),
+         newBranchData.getAssociatedArtifact(),
          newBranchData.getBranchType().getValue(),
          BranchState.CREATED.getValue(),
          nextTransactionId,
@@ -192,12 +193,12 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       jdbcClient.runPreparedUpdate(connection, INSERT_BRANCH, toInsert);
 
       if (inheritAccessControl != 0) {
-         copyAccessRules(newBranchData.getUserArtifactId(), parentBranch, uuid);
+         copyAccessRules(newBranchData.getAuthor(), parentBranch, uuid);
       }
 
       nextTransactionId = tobeTransactionId;
       jdbcClient.runPreparedUpdate(connection, INSERT_TX_DETAILS, uuid, nextTransactionId,
-         newBranchData.getCreationComment(), timestamp, newBranchData.getUserArtifactId(),
+         newBranchData.getCreationComment(), timestamp, newBranchData.getAuthor(),
          TransactionDetailsType.Baselined.getId());
 
       if (needsUpdate) {
@@ -256,15 +257,15 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       }
    }
 
-   private void copyAccessRules(int userArtId, BranchId parentBranch, Long branchUuid) {
+   private void copyAccessRules(ArtifactId author, BranchId parentBranch, Long branchUuid) {
       int lock = PermissionEnum.LOCK.getPermId();
       int deny = PermissionEnum.DENY.getPermId();
 
       List<Object[]> data = new ArrayList<>();
       jdbcClient.runQuery(stmt -> {
          int permissionId = stmt.getInt("permission_id");
-         int priviledgeId = stmt.getInt("privilege_entity_id");
-         if (priviledgeId == userArtId && permissionId < lock && permissionId != deny) {
+         Long priviledgeId = stmt.getLong("privilege_entity_id");
+         if (author.equals(priviledgeId) && permissionId < lock && permissionId != deny) {
             permissionId = lock;
          }
          data.add(new Object[] {permissionId, priviledgeId, branchUuid});

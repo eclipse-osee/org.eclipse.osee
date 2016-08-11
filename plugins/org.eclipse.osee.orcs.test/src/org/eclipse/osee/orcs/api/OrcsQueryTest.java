@@ -30,8 +30,8 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -81,7 +81,7 @@ public class OrcsQueryTest {
    private OrcsBranch branchApi;
    private TransactionFactory txFactory;
    private QueryFactory factory;
-   private static ArtifactReadable author;
+   private final ArtifactId author = SystemUser.OseeSystem;
 
    @Before
    public void setup() {
@@ -467,7 +467,7 @@ public class OrcsQueryTest {
 
       // Add a child
       ArtifactReadable parent = results.iterator().next().getParent();
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(SAW_Bld_2, getAuthor(), "FollowTest");
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(SAW_Bld_2, author, "FollowTest");
       ArtifactId child = tx.createArtifact(CoreArtifactTypes.SoftwareRequirement, "Dummy Robot");
       tx.relate(parent, CoreRelationTypes.Default_Hierarchical__Child, child);
       TransactionId commitTx = tx.commit();
@@ -490,13 +490,6 @@ public class OrcsQueryTest {
       assertEquals("Robot collaboration", iterator.next());
    }
 
-   private ArtifactReadable getAuthor() {
-      if (author == null) {
-         author = factory.fromBranch(COMMON_ID).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
-      }
-      return author;
-   }
-
    @Test
    public void testRelatedTo() {
       // do a query on branch
@@ -505,7 +498,7 @@ public class OrcsQueryTest {
          .andIsOfType(CoreArtifactTypes.SoftwareRequirement).getResults().getExactlyOne();
 
       // create a tx on branch
-      TransactionBuilder tx = txFactory.createTransaction(SAW_Bld_2, getAuthor(), "Simple Tx");
+      TransactionBuilder tx = txFactory.createTransaction(SAW_Bld_2, author, "Simple Tx");
       tx.createArtifact(CoreArtifactTypes.Folder, "Just a Folder");
       tx.commit();
 
@@ -525,8 +518,8 @@ public class OrcsQueryTest {
          .andIsOfType(CoreArtifactTypes.SoftwareRequirement).getResults().getExactlyOne();
 
       // create a tx on branch
-      TransactionBuilder tx1 = txFactory.createTransaction(SAW_Bld_2, getAuthor(), "Simple Tx1");
-      TransactionBuilder tx2 = txFactory.createTransaction(SAW_Bld_2, getAuthor(), "Simple Tx2");
+      TransactionBuilder tx1 = txFactory.createTransaction(SAW_Bld_2, author, "Simple Tx1");
+      TransactionBuilder tx2 = txFactory.createTransaction(SAW_Bld_2, author, "Simple Tx2");
 
       ArtifactId folder = tx1.createArtifact(CoreArtifactTypes.Folder, "Just a Folder");
       tx1.commit();
@@ -553,7 +546,6 @@ public class OrcsQueryTest {
    }
 
    private BranchReadable setupNameEqualsArtifacts() throws Exception {
-      getAuthor();
       IOseeBranch branchToken = TokenFactory.createBranch("TestAndNameEquals");
       BranchReadable branch = branchApi.createTopLevelBranch(branchToken, author).call();
       TransactionBuilder tx = txFactory.createTransaction(branch, author, "add folders");

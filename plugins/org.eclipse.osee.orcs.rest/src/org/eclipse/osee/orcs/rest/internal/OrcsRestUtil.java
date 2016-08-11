@@ -70,7 +70,7 @@ public final class OrcsRestUtil {
    public static Branch asBranch(BranchReadable src) {
       Branch data = new Branch();
       data.setArchiveState(src.getArchiveState());
-      data.setAssociatedArtifactId(src.getAssociatedArtifactId());
+      data.setAssociatedArtifact(src.getAssociatedArtifact());
       data.setBaseTransactionId(src.getBaseTransaction());
       data.setBranchState(src.getBranchState());
       data.setBranchType(src.getBranchType());
@@ -85,10 +85,10 @@ public final class OrcsRestUtil {
    public static Transaction asTransaction(TransactionReadable tx) {
       Transaction data = new Transaction();
       data.setTxId(tx);
-      data.setAuthorId(tx.getAuthorId());
+      data.setAuthor(tx.getAuthor());
       data.setBranchUuid(tx.getBranchId());
       data.setComment(tx.getComment());
-      data.setCommitArtId(tx.getCommit());
+      data.setCommitArt(tx.getCommitArt());
       data.setTimeStamp(tx.getDate());
       data.setTxType(tx.getTxType());
       return data;

@@ -175,18 +175,17 @@ public final class TokenFactory {
       }
    }
 
-   private static class UserToken extends NamedIdentity<String> implements IUserToken {
-
+   private static class UserToken extends NamedId implements IUserToken {
       private final String userId;
       private final boolean active;
       private final boolean admin;
       private final String email;
+      private final String guid;
       private final boolean creationRequired;
-      private final long uuid;
 
-      public UserToken(long uuid, String guid, String name, String userId, boolean active, boolean admin, String email, boolean creationRequired) {
-         super(guid, name);
-         this.uuid = uuid;
+      public UserToken(long id, String guid, String name, String userId, boolean active, boolean admin, String email, boolean creationRequired) {
+         super(id, name);
+         this.guid = guid;
          this.userId = userId;
          this.active = active;
          this.admin = admin;
@@ -232,7 +231,12 @@ public final class TokenFactory {
 
       @Override
       public Long getUuid() {
-         return uuid;
+         return getId();
+      }
+
+      @Override
+      public String getGuid() {
+         return guid;
       }
    }
 

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import org.eclipse.osee.framework.core.data.Adaptable;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -38,7 +39,7 @@ public class Branch extends NamedId implements IOseeBranch, Adaptable {
    private TransactionRecord parentTx;
    private TransactionRecord baselineTx;
    private Branch parent;
-   private Integer associatedArtifactId;
+   private ArtifactId associatedArtifact;
 
    public Branch(Long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived, boolean inheritsAccessControl) {
       super(uuid, name);
@@ -64,12 +65,12 @@ public class Branch extends NamedId implements IOseeBranch, Adaptable {
       return isArchived;
    }
 
-   public Integer getAssociatedArtifactId() throws OseeCoreException {
-      return associatedArtifactId;
+   public ArtifactId getAssociatedArtifactId() {
+      return associatedArtifact;
    }
 
-   public void setAssociatedArtifactId(Integer artifactId) throws OseeCoreException {
-      this.associatedArtifactId = artifactId;
+   public void setAssociatedArtifact(ArtifactId artifact) {
+      this.associatedArtifact = artifact;
    }
 
    public TransactionRecord getBaseTransaction() throws OseeCoreException {

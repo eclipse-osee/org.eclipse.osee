@@ -350,9 +350,7 @@ public class PopulateSawBuild2Actions {
          throw new OseeArgumentException(
             new StringBuilder("Error creating working branch: ").append(result.getText()).toString());
       }
-      AtsBranchUtil.createWorkingBranch_Create(reqTeam);
-
-      DemoDbUtil.sleep(5000);
+      AtsBranchUtil.createWorkingBranch_Create(reqTeam, true);
 
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.Robot,
          reqTeam.getWorkingBranch())) {

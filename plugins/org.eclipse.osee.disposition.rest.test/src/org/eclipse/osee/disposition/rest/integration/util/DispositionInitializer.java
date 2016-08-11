@@ -52,7 +52,8 @@ public class DispositionInitializer {
 
    public void initialize() throws Exception {
 
-      orcsApi.getBranchOps().createWorkingBranch(SAW_Bld_1_FOR_DISPO, getDispositionUser(), SAW_Bld_1, null).call();
+      orcsApi.getBranchOps().createWorkingBranch(SAW_Bld_1_FOR_DISPO, getDispositionUser(), SAW_Bld_1,
+         ArtifactId.SENTINEL).call();
 
       // create Dispo Config Art
       ArtifactReadable oseeSystem = findUser();

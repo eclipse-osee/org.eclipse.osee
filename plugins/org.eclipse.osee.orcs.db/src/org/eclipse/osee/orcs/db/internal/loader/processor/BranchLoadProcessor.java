@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.processor;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -43,7 +44,7 @@ public class BranchLoadProcessor extends LoadProcessor<BranchData, BranchObjectF
       BranchId parentBranchId = TokenFactory.createBranch(chStmt.getLong("parent_branch_id"));
       TransactionId sourceTx = TransactionId.valueOf(chStmt.getLong("parent_transaction_id"));
       TransactionId baseTx = TransactionId.valueOf(chStmt.getLong("baseline_transaction_id"));
-      int assocArtId = chStmt.getInt("associated_art_id");
+      ArtifactId assocArtId = ArtifactId.valueOf(chStmt.getLong("associated_art_id"));
       boolean inheritAccessControl = chStmt.getInt("inherit_access_control") != 0;
 
       return factory.createBranchData(branchUuid, branchType, branchName, parentBranchId, baseTx, sourceTx,

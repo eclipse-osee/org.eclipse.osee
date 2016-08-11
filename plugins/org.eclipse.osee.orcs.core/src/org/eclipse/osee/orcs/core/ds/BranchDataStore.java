@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.ds;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -23,7 +24,6 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;
@@ -39,7 +39,7 @@ public interface BranchDataStore {
 
    Callable<Void> purgeBranch(OrcsSession session, BranchReadable branch);
 
-   Callable<TransactionId> commitBranch(OrcsSession session, ArtifactReadable committer, BranchReadable source, TransactionToken sourceHead, BranchReadable destination, TransactionToken destinationHead, ApplicabilityQuery applicQuery);
+   Callable<TransactionId> commitBranch(OrcsSession session, ArtifactId committer, BranchReadable source, TransactionToken sourceHead, BranchReadable destination, TransactionToken destinationHead, ApplicabilityQuery applicQuery);
 
    Callable<List<ChangeItem>> compareBranch(OrcsSession session, TransactionToken sourceTx, TransactionToken destinationTx, ApplicabilityQuery applicQuery);
 
@@ -55,7 +55,7 @@ public interface BranchDataStore {
 
    Callable<Void> changeBranchName(OrcsSession session, BranchId branch, String branchName);
 
-   Callable<Void> changeBranchAssociatedArtId(OrcsSession session, BranchId branch, int assocArtId);
+   Callable<Void> changeBranchAssociatedArt(OrcsSession session, BranchId branch, ArtifactId assocArt);
 
    Callable<Void> archiveUnArchiveBranch(OrcsSession session, BranchId branch, ArchiveOperation op);
 

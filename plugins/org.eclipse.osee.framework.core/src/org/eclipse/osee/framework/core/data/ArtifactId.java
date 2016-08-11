@@ -20,6 +20,8 @@ import org.eclipse.osee.framework.jdk.core.type.Identifiable;
  */
 public interface ArtifactId extends Identifiable<String>, Id {
 
+   public static final ArtifactId SENTINEL = ArtifactId.valueOf(Id.SENTINEL);
+
    public Long getUuid();
 
    public static ArtifactId valueOf(String id) {

@@ -227,7 +227,7 @@ public class OrcsStorageImpl implements Storage {
       IOseeBranch branch = TokenFactory.createBranch(normalizedName);
 
       try {
-         getBranchFactory().createWorkingBranch(branch, author, dispoBranch, null).call();
+         getBranchFactory().createWorkingBranch(branch, author, dispoBranch, ArtifactId.SENTINEL).call();
       } catch (Exception ex) {
          throw OseeCoreException.wrap(ex);
       }

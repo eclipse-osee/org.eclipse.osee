@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.QueryData;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxArtifactIds;
 import org.eclipse.osee.orcs.search.Operator;
 import org.eclipse.osee.orcs.search.TxQueryBuilder;
 
@@ -147,8 +148,7 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
 
    @Override
    public T andAuthorLocalIds(Collection<ArtifactId> ids) throws OseeCoreException {
-      Criteria criteria = criteriaFactory.newByArtifactId(ids);
-      return addAndCheck(queryData, criteria);
+      return addAndCheck(queryData, new CriteriaTxArtifactIds(ids));
    }
 
    @Override

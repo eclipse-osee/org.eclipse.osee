@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -23,7 +24,6 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.search.BranchQuery;
@@ -46,22 +46,20 @@ public class BranchDataFactoryTest {
    @Mock private BranchQuery branchQuery;
    @Mock private TransactionQuery txQuery;
    @Mock private QueryFactory queryFactory;
-   @Mock private ArtifactReadable author;
-   @Mock private ArtifactReadable associatedArtifact;
    @Mock private ResultSet<TransactionToken> results;
    @Mock private ResultSet<BranchReadable> branchResults;
    @Mock private BranchReadable parentBranch;
    // @formatter:on
 
-   private BranchDataFactory factory;
+   private final ArtifactId associatedArtifact = ArtifactId.valueOf(66);
+   private final ArtifactId author = ArtifactId.valueOf(55);
    private final TransactionToken txRecord = TransactionToken.valueOf(99, parentBranch);
+   private BranchDataFactory factory;
 
    @Before
    public void init() {
       MockitoAnnotations.initMocks(this);
 
-      when(author.getLocalId()).thenReturn(55);
-      when(associatedArtifact.getLocalId()).thenReturn(66);
       when(queryFactory.transactionQuery()).thenReturn(txQuery);
       when(queryFactory.branchQuery()).thenReturn(branchQuery);
       factory = new BranchDataFactory(queryFactory);
@@ -88,7 +86,8 @@ public class BranchDataFactoryTest {
       verify(txQuery).andIsHead(CoreBranches.SYSTEM_ROOT);
 
       String comment = String.format("New Branch from %s (%s)", CoreBranches.SYSTEM_ROOT.getName(), txRecord);
-      assertData(result, branch.getName(), branch.getId(), BranchType.BASELINE, comment, txRecord, author, null, false);
+      assertData(result, branch.getName(), branch.getId(), BranchType.BASELINE, comment, txRecord, author,
+         ArtifactId.SENTINEL, false);
    }
 
    @Test
@@ -119,31 +118,33 @@ public class BranchDataFactoryTest {
    public void testDataForCopyTxBranch() throws OseeCoreException {
       IOseeBranch branch = TokenFactory.createBranch("testDataForCopyTxBranch");
 
-      CreateBranchData result = factory.createCopyTxBranchData(branch, author, txRecord, null);
+      CreateBranchData result = factory.createCopyTxBranchData(branch, author, txRecord, ArtifactId.SENTINEL);
 
       verify(txQuery).andTxId(txRecord);
       verify(branchQuery).andIds(txRecord.getBranch());
 
       String comment = String.format("Transaction %d copied from %s to create Branch %s", txRecord.getId(),
          parentBranch.getName(), branch.getName());
-      assertData(result, branch.getName(), branch.getId(), BranchType.WORKING, comment, txRecord, author, null, true);
+      assertData(result, branch.getName(), branch.getId(), BranchType.WORKING, comment, txRecord, author,
+         ArtifactId.SENTINEL, true);
    }
 
    @Test
    public void testDataForPortBranch() throws OseeCoreException {
       IOseeBranch branch = TokenFactory.createBranch("testDataForPortBranch");
 
-      CreateBranchData result = factory.createPortBranchData(branch, author, txRecord, null);
+      CreateBranchData result = factory.createPortBranchData(branch, author, txRecord, ArtifactId.SENTINEL);
 
       verify(txQuery).andTxId(txRecord);
       verify(branchQuery).andIds(txRecord.getBranch());
 
       String comment = String.format("Transaction %d ported from %s to create Branch %s", txRecord.getId(),
          parentBranch.getName(), branch.getName());
-      assertData(result, branch.getName(), branch.getId(), BranchType.PORT, comment, txRecord, author, null, true);
+      assertData(result, branch.getName(), branch.getId(), BranchType.PORT, comment, txRecord, author,
+         ArtifactId.SENTINEL, true);
    }
 
-   private static void assertData(CreateBranchData actual, String branchName, Long branchUuid, BranchType type, String comment, TransactionId fromTx, ArtifactReadable author, ArtifactReadable associatedArtifact, boolean isCopyFromTx) {
+   private static void assertData(CreateBranchData actual, String branchName, Long branchUuid, BranchType type, String comment, TransactionId fromTx, ArtifactId author, ArtifactId associatedArtifact, boolean isCopyFromTx) {
       assertEquals(branchName, actual.getName());
       assertEquals(branchUuid, actual.getGuid());
 
@@ -154,13 +155,8 @@ public class BranchDataFactoryTest {
       assertEquals(-1, actual.getMergeAddressingQueryId());
       assertEquals(-1L, actual.getMergeDestinationBranchId());
 
-      assertEquals(author, actual.getUserArtifact());
-      assertEquals(author.getLocalId(), actual.getUserArtifactId());
-
+      assertEquals(author, actual.getAuthor());
       assertEquals(associatedArtifact, actual.getAssociatedArtifact());
-
-      int assocArtId = associatedArtifact == null ? -1 : associatedArtifact.getLocalId();
-      assertEquals(assocArtId, actual.getAssociatedArtifactId());
 
       assertEquals(isCopyFromTx, actual.isTxCopyBranchType());
    }

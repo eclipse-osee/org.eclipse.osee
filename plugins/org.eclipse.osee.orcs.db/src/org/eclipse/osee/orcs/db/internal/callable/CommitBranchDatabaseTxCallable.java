@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -59,17 +60,17 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
 
    private final SqlJoinFactory joinFactory;
    private final IdentityManager idManager;
-   private final int userArtId;
+   private final ArtifactId committer;
    private final BranchReadable sourceBranch;
    private final BranchReadable destinationBranch;
    private final BranchId mergeBranch;
    private final List<ChangeItem> changes;
 
-   public CommitBranchDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, IdentityManager idManager, int userArtId, BranchReadable sourceBranch, BranchReadable destinationBranch, BranchId mergeBranch, List<ChangeItem> changes) {
+   public CommitBranchDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, IdentityManager idManager, ArtifactId committer, BranchReadable sourceBranch, BranchReadable destinationBranch, BranchId mergeBranch, List<ChangeItem> changes) {
       super(logger, session, jdbcClient);
       this.joinFactory = joinFactory;
       this.idManager = idManager;
-      this.userArtId = userArtId;
+      this.committer = committer;
       this.sourceBranch = sourceBranch;
       this.destinationBranch = destinationBranch;
       this.mergeBranch = mergeBranch;
@@ -87,7 +88,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
 
       TransactionId newTx = null;
       try {
-         newTx = addCommitTransactionToDatabase(userArtId, connection);
+         newTx = addCommitTransactionToDatabase(committer, connection);
          updatePreviousCurrentsOnDestinationBranch(connection);
          insertCommitAddressing(newTx, connection);
 
@@ -143,7 +144,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       updater.updateTxNotCurrents();
    }
 
-   private TransactionId addCommitTransactionToDatabase(int userArtId, JdbcConnection connection) throws OseeCoreException {
+   private TransactionId addCommitTransactionToDatabase(ArtifactId committer, JdbcConnection connection) throws OseeCoreException {
       TransactionId newTransactionNumber = idManager.getNextTransactionId();
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
@@ -151,7 +152,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
 
       getJdbcClient().runPreparedUpdate(connection, INSERT_COMMIT_TRANSACTION,
          TransactionDetailsType.NonBaselined.getId(), destinationBranch.getUuid(), newTransactionNumber, comment,
-         timestamp, userArtId, sourceBranch.getAssociatedArtifactId());
+         timestamp, committer, sourceBranch.getAssociatedArtifact());
       return newTransactionNumber;
    }
 

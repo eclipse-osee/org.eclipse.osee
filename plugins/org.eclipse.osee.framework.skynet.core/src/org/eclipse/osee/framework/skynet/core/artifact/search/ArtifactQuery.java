@@ -106,6 +106,10 @@ public class ArtifactQuery {
       return getArtifactFromId(new Long(artId).intValue(), branch, EXCLUDE_DELETED);
    }
 
+   public static Artifact getArtifactFromId(ArtifactId artId, BranchId branch) {
+      return getArtifactFromId(artId.getId(), branch);
+   }
+
    /**
     * search for exactly one artifact by one its id - otherwise throw an exception
     *

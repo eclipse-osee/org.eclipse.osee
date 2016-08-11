@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.model;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -18,24 +18,17 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 /**
  * @author Roberto E. Escobar
  */
-@XmlRootElement
 public class NewBranch {
-
    private String branchName;
    private BranchId parentBranch;
-   private int associatedArtifactId;
+   private ArtifactId associatedArtifact;
    private BranchType branchType;
-
-   private int authorId;
+   private ArtifactId author;
    private TransactionId sourceTransaction;
    private String creationComment;
    private int mergeAddressingQueryId;
    private long mergeDestinationBranchId;
    private boolean txCopyBranchType;
-
-   public NewBranch() {
-      super();
-   }
 
    public String getBranchName() {
       return branchName;
@@ -45,16 +38,16 @@ public class NewBranch {
       return parentBranch;
    }
 
-   public int getAssociatedArtifactId() {
-      return associatedArtifactId;
+   public ArtifactId getAssociatedArtifact() {
+      return associatedArtifact;
    }
 
    public BranchType getBranchType() {
       return branchType;
    }
 
-   public int getAuthorId() {
-      return authorId;
+   public ArtifactId getAuthor() {
+      return author;
    }
 
    public TransactionId getSourceTransaction() {
@@ -85,16 +78,16 @@ public class NewBranch {
       this.parentBranch = parentBranch;
    }
 
-   public void setAssociatedArtifactId(int associatedArtifactId) {
-      this.associatedArtifactId = associatedArtifactId;
+   public void setAssociatedArtifact(ArtifactId associatedArtifact) {
+      this.associatedArtifact = associatedArtifact;
    }
 
    public void setBranchType(BranchType branchType) {
       this.branchType = branchType;
    }
 
-   public void setAuthorId(int authorId) {
-      this.authorId = authorId;
+   public void setAuthor(ArtifactId author) {
+      this.author = author;
    }
 
    public void setSourceTransactionId(TransactionId sourceTransaction) {
@@ -119,7 +112,6 @@ public class NewBranch {
 
    @Override
    public String toString() {
-      return "NewBranch [branchName=" + branchName + ", parentBranchId=" + parentBranch + ", associatedArtifactId=" + associatedArtifactId + ", branchType=" + branchType + ", authorId=" + authorId + ", sourceTransactionId=" + sourceTransaction + ", creationComment=" + creationComment + ", mergeAddressingQueryId=" + mergeAddressingQueryId + ", mergeDestinationBranchId=" + mergeDestinationBranchId + ", txCopyBranchType=" + txCopyBranchType + "]";
+      return "NewBranch [branchName=" + branchName + ", parentBranchId=" + parentBranch + ", associatedArtifactId=" + associatedArtifact + ", branchType=" + branchType + ", authorId=" + author + ", sourceTransactionId=" + sourceTransaction + ", creationComment=" + creationComment + ", mergeAddressingQueryId=" + mergeAddressingQueryId + ", mergeDestinationBranchId=" + mergeDestinationBranchId + ", txCopyBranchType=" + txCopyBranchType + "]";
    }
-
 }

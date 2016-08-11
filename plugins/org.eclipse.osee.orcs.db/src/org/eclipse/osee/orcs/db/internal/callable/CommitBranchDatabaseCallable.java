@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -22,7 +23,6 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.change.ComputeNetChangeCallable;
@@ -38,7 +38,7 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Tran
 
    private final SqlJoinFactory joinFactory;
    private final IdentityManager idManager;
-   private final ArtifactReadable committer;
+   private final ArtifactId committer;
    private final TransactionToken sourceHead;
    private final BranchReadable source;
    private final TransactionToken destinationHead;
@@ -51,7 +51,7 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Tran
    private static final String SELECT_MERGE_BRANCH_HEAD_TX =
       "select max(transaction_id) from osee_tx_details where branch_id = ?";
 
-   public CommitBranchDatabaseCallable(Log logger, OrcsSession session, JdbcClient service, SqlJoinFactory joinFactory, IdentityManager idManager, ArtifactReadable committer, BranchReadable source, TransactionToken sourceHead, BranchReadable destination, TransactionToken destinationHead, MissingChangeItemFactory missingChangeItemFactory, ApplicabilityQuery applicQuery) {
+   public CommitBranchDatabaseCallable(Log logger, OrcsSession session, JdbcClient service, SqlJoinFactory joinFactory, IdentityManager idManager, ArtifactId committer, BranchReadable source, TransactionToken sourceHead, BranchReadable destination, TransactionToken destinationHead, MissingChangeItemFactory missingChangeItemFactory, ApplicabilityQuery applicQuery) {
       super(logger, session, service);
       this.joinFactory = joinFactory;
       this.idManager = idManager;
@@ -62,10 +62,6 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Tran
       this.destinationHead = destinationHead;
       this.missingChangeItemFactory = missingChangeItemFactory;
       this.applicQuery = applicQuery;
-   }
-
-   private int getUserArtId() {
-      return committer != null ? committer.getLocalId() : -1;
    }
 
    private List<ChangeItem> callComputeChanges(BranchId mergeBranch) throws Exception {
@@ -100,7 +96,7 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Tran
       List<ChangeItem> changes = callComputeChanges(mergeBranch);
 
       CancellableCallable<TransactionId> commitCallable = new CommitBranchDatabaseTxCallable(getLogger(), getSession(),
-         getJdbcClient(), joinFactory, idManager, getUserArtId(), source, destination, mergeBranch, changes);
+         getJdbcClient(), joinFactory, idManager, committer, source, destination, mergeBranch, changes);
       TransactionId newTx = callAndCheckForCancel(commitCallable);
 
       return newTx;

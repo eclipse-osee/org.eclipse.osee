@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.branch;
 
 import java.util.Arrays;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -76,8 +77,8 @@ public class BranchUtilBranchReadableTest {
       }
 
       @Override
-      public int getAssociatedArtifactId() {
-         return 0;
+      public ArtifactId getAssociatedArtifact() {
+         return ArtifactId.SENTINEL;
       }
 
       @Override

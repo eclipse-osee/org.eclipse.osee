@@ -16,6 +16,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -35,12 +36,12 @@ public class SetAssociatedBranchArtifactHandler extends CommandHandler {
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
       IOseeBranch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
-      Integer artId = BranchManager.getAssociatedArtifactId(selectedBranch);
+      ArtifactId artId = BranchManager.getAssociatedArtifactId(selectedBranch);
       EntryDialog ed = new EntryDialog("Set Associated Artifact",
-         "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getName() + "\"" + (artId != null ? "\n\nCurrently: " + artId : "") + "\n\nEnter new Artifact Id to associate:");
-      ed.setEntry(String.valueOf(artId));
+         "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getName() + "\"\n\nCurrently: " + artId + "\n\nEnter new Artifact Id to associate:");
+      ed.setEntry(String.valueOf(artId.getId()));
       if (ed.open() == 0) {
-         Integer newArtId = Integer.parseInt(ed.getEntry());
+         ArtifactId newArtId = ArtifactId.valueOf(ed.getEntry());
          Artifact associatedArtifact = ArtifactQuery.getArtifactFromId(newArtId, COMMON);
          if (MessageDialog.openConfirm(Displays.getActiveShell(), "Set Associated Artifact",
             "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getName() + "\"\nto\nArtifact: " + associatedArtifact)) {

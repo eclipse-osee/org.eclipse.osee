@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
 import java.util.Date;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.TxOrcsData;
@@ -20,7 +21,7 @@ import org.eclipse.osee.orcs.core.ds.TxOrcsData;
  */
 public interface TransactionObjectFactory extends OrcsDataFactory {
 
-   TxOrcsData createTxData(Long localId, TransactionDetailsType type, Date date, String comment, Long branchId, int authorId, int commitId) throws OseeCoreException;
+   TxOrcsData createTxData(Long localId, TransactionDetailsType type, Date date, String comment, Long branchId, ArtifactId author, ArtifactId commitArt) throws OseeCoreException;
 
    TxOrcsData createCopy(TxOrcsData source) throws OseeCoreException;
 }

@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.sql.OseeSql;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -338,6 +339,15 @@ public abstract class AbstractSqlWriter implements HasOptions {
       IdJoinQuery joinQuery = joinFactory.createIdJoinQuery();
       for (Number id : ids) {
          joinQuery.add(id.longValue());
+      }
+      addJoin(joinQuery);
+      return joinQuery;
+   }
+
+   public IdJoinQuery writeJoin(Collection<? extends Id> ids) {
+      IdJoinQuery joinQuery = joinFactory.createIdJoinQuery();
+      for (Id id : ids) {
+         joinQuery.add(id.getId());
       }
       addJoin(joinQuery);
       return joinQuery;

@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.callable;
 
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -64,7 +65,7 @@ public class ChangeBranchFieldCallable extends AbstractDatastoreTxCallable<Void>
       return new ChangeBranchFieldCallable(logger, session, jdbcClient, branch, "branch_name", branchName);
    }
 
-   public static Callable<Void> newAssocArtId(Log logger, OrcsSession session, JdbcClient jdbcClient, BranchId branch, int associatedArtId) {
-      return new ChangeBranchFieldCallable(logger, session, jdbcClient, branch, "associated_art_id", associatedArtId);
+   public static Callable<Void> newAssocArtId(Log logger, OrcsSession session, JdbcClient jdbcClient, BranchId branch, ArtifactId associatedArt) {
+      return new ChangeBranchFieldCallable(logger, session, jdbcClient, branch, "associated_art_id", associatedArt);
    }
 }

@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.branch;
 
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -18,18 +19,17 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 public class CommitBranchCallable extends AbstractBranchCallable<TransactionToken> {
 
-   private final ArtifactReadable committer;
+   private final ArtifactId committer;
    private final BranchId source;
    private final BranchId destination;
    private final QueryFactory queryFactory;
 
-   public CommitBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, QueryFactory queryFactory, ArtifactReadable committer, BranchId source, BranchId destination) {
+   public CommitBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, QueryFactory queryFactory, ArtifactId committer, BranchId source, BranchId destination) {
       super(logger, session, branchStore);
       this.committer = committer;
       this.source = source;

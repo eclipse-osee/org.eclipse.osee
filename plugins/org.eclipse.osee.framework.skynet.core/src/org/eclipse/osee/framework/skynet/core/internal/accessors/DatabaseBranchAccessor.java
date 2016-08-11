@@ -3,6 +3,7 @@ package org.eclipse.osee.framework.skynet.core.internal.accessors;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_FETCH_SIZE;
 import java.util.Date;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -70,7 +71,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       BranchState branchState = BranchState.getBranchState(stmt.getInt("branch_state"));
       boolean isArchived = BranchArchivedState.valueOf(stmt.getInt("archived")).isArchived();
       boolean inheritAccessControl = stmt.getInt("inherit_access_control") == 1;
-      Integer artifactId = stmt.getInt("associated_art_id");
+      ArtifactId artifactId = ArtifactId.valueOf(stmt.getLong("associated_art_id"));
 
       Branch branch = cache.getById(branchId);
       if (branch == null) {
@@ -93,7 +94,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
          branch.setArchived(isArchived);
          branch.setInheritAccessControl(inheritAccessControl);
       }
-      branch.setAssociatedArtifactId(artifactId);
+      branch.setAssociatedArtifact(artifactId);
       return branch;
    }
 

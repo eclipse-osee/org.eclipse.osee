@@ -10,46 +10,50 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds.criteria;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaTxArtifactGuids extends Criteria implements TxCriteria {
+public class CriteriaTxArtifactIds extends Criteria implements TxCriteria {
 
-   private final Collection<String> artifactGuids;
+   private final Collection<ArtifactId> artifactIds;
+   private final ArtifactId artifactId;
 
-   public CriteriaTxArtifactGuids(Collection<String> artifactGuids) {
-      super();
-      this.artifactGuids = artifactGuids;
+   public CriteriaTxArtifactIds(ArtifactId artifactId) {
+      this.artifactId = artifactId;
+      this.artifactIds = null;
+   }
+
+   public CriteriaTxArtifactIds(Collection<ArtifactId> artifactIds) {
+      this.artifactIds = artifactIds;
+      this.artifactId = null;
    }
 
    @Override
    public void checkValid(Options options) throws OseeCoreException {
-      Conditions.checkNotNullOrEmpty(artifactGuids, "artifact guids");
-      List<String> invalids = new ArrayList<>();
-      for (String guid : artifactGuids) {
-         if (!GUID.isValid(guid)) {
-            invalids.add(guid);
-         }
-      }
-      Conditions.checkExpressionFailOnTrue(!invalids.isEmpty(), "Invalid Guids - %s", invalids);
+      Conditions.checkNotNullOrEmpty(artifactIds, "artifact ids");
    }
 
-   public Collection<String> getIds() {
-      return artifactGuids;
+   public Collection<ArtifactId> getIds() {
+      return artifactIds;
+   }
+
+   public ArtifactId getId() {
+      return artifactId;
    }
 
    @Override
    public String toString() {
-      return "CriteriaArtifactGuids [artifactGuids=" + artifactGuids + "]";
+      return "CriteriaTxArtifactIds [" + artifactIds + "]";
    }
 
+   public boolean hasMultiple() {
+      return artifactId == null;
+   }
 }

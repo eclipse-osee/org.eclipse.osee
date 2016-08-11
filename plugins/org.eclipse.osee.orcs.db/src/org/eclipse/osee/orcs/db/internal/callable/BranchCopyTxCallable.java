@@ -75,7 +75,7 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
       String creationComment = branchData.getCreationComment();
 
       jdbcClient.runPreparedUpdate(connection, INSERT_TX_DETAILS, branchData.getUuid(), nextTransactionId,
-         creationComment, timestamp, branchData.getUserArtifactId(), TransactionDetailsType.NonBaselined.getId());
+         creationComment, timestamp, branchData.getAuthor(), TransactionDetailsType.NonBaselined.getId());
 
       populateTransaction(0.30, connection, nextTransactionId, branchData.getParentBranch(),
          branchData.getSavedTransaction());

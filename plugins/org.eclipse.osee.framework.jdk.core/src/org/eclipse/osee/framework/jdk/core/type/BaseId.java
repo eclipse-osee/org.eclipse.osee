@@ -29,10 +29,13 @@ public class BaseId implements Id, Cloneable {
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof Id) {
-         return ((Id) obj).getId().equals(id);
+         return id.equals(((Id) obj).getId());
       }
       if (obj instanceof Identity<?>) {
          return id.equals(((Identity<?>) obj).getGuid());
+      }
+      if (obj instanceof Long) {
+         return id.equals(obj);
       }
       return false;
    }

@@ -92,7 +92,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
       dataItemInserts = new HashCollection<>();
       txNotCurrentsJoin = new HashMap<>();
 
-      addRow(SqlOrderEnum.TXS_DETAIL, txId, tx.getComment(), tx.getDate(), tx.getAuthorId(), tx.getBranchId(),
+      addRow(SqlOrderEnum.TXS_DETAIL, txId, tx.getComment(), tx.getDate(), tx.getAuthor(), tx.getBranchId(),
          tx.getTxType().getId());
       changeSet.accept(this);
    }

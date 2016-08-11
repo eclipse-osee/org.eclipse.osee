@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.data;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -22,8 +23,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  * @author Roberto E. Escobar
  */
 public class CreateBranchData implements Identifiable<Long> {
-
-   private static final int NULL_ARTIFACT_ID = -1;
    private final long MERGE_DESTINATION_BRANCH_ID = -1; // only used on merge branches
    private final int MERGE_ADDRESSING_QUERY_ID = -1; // only used on merge branches
 
@@ -33,8 +32,8 @@ public class CreateBranchData implements Identifiable<Long> {
    private String creationComment;
    private TransactionId fromTransaction;
    private TransactionId savedTransaction;
-   private ArtifactReadable associatedArtifact;
-   private ArtifactReadable userArtifact;
+   private ArtifactId associatedArtifact;
+   private ArtifactId author;
 
    // Merge Branch Legacy Support
    private int mergeAddressingQueryId = MERGE_ADDRESSING_QUERY_ID;
@@ -56,20 +55,8 @@ public class CreateBranchData implements Identifiable<Long> {
       return branchUuid;
    }
 
-   public int getAssociatedArtifactId() {
-      int result = NULL_ARTIFACT_ID;
-      if (associatedArtifact != null) {
-         result = associatedArtifact.getLocalId();
-      }
-      return result;
-   }
-
-   public Integer getUserArtifactId() {
-      int result = NULL_ARTIFACT_ID;
-      if (userArtifact != null) {
-         result = userArtifact.getLocalId();
-      }
-      return result;
+   public ArtifactId getAssociatedArtifact() {
+      return associatedArtifact;
    }
 
    @Override
@@ -113,19 +100,15 @@ public class CreateBranchData implements Identifiable<Long> {
       this.savedTransaction = priorTransaction;
    }
 
-   public ArtifactReadable getUserArtifact() {
-      return userArtifact;
+   public ArtifactId getAuthor() {
+      return author;
    }
 
-   public void setUserArtifact(ArtifactReadable userArtifact) {
-      this.userArtifact = userArtifact;
+   public void setAuthor(ArtifactId author) {
+      this.author = author;
    }
 
-   public ArtifactReadable getAssociatedArtifact() {
-      return associatedArtifact;
-   }
-
-   public void setAssociatedArtifact(ArtifactReadable associatedArtifact) {
+   public void setAssociatedArtifact(ArtifactId associatedArtifact) {
       this.associatedArtifact = associatedArtifact;
    }
 
@@ -168,7 +151,7 @@ public class CreateBranchData implements Identifiable<Long> {
 
    @Override
    public String toString() {
-      return "CreateBranchData [branchUuid=" + branchUuid + ", branchName=" + branchName + ", branchType=" + branchType + ", creationComment=" + creationComment + ", fromTransaction=" + fromTransaction + ", associatedArtifact=" + associatedArtifact + ", userArtifact=" + userArtifact + ", mergeAddressingQueryId=" + mergeAddressingQueryId + ", destinationBranchId=" + mergeDestinationBranchId + "]";
+      return "CreateBranchData [branchUuid=" + branchUuid + ", branchName=" + branchName + ", branchType=" + branchType + ", creationComment=" + creationComment + ", fromTransaction=" + fromTransaction + ", associatedArtifact=" + associatedArtifact + ", userArtifact=" + author + ", mergeAddressingQueryId=" + mergeAddressingQueryId + ", destinationBranchId=" + mergeDestinationBranchId + "]";
    }
 
    public long getUuid() {

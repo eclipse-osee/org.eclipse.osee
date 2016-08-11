@@ -14,6 +14,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -30,7 +31,6 @@ import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
@@ -90,7 +90,7 @@ public class BranchModule {
          }
 
          @Override
-         public Callable<TransactionId> commitBranch(OrcsSession session, ArtifactReadable committer, BranchReadable source, TransactionToken sourceHead, BranchReadable destination, TransactionToken destinationHead, ApplicabilityQuery applicQuery) {
+         public Callable<TransactionId> commitBranch(OrcsSession session, ArtifactId committer, BranchReadable source, TransactionToken sourceHead, BranchReadable destination, TransactionToken destinationHead, ApplicabilityQuery applicQuery) {
             return new CommitBranchDatabaseCallable(logger, session, jdbcClient, joinFactory, idManager, committer,
                source, sourceHead, destination, destinationHead, missingChangeItemFactory, applicQuery);
          }
@@ -143,8 +143,8 @@ public class BranchModule {
          }
 
          @Override
-         public Callable<Void> changeBranchAssociatedArtId(OrcsSession session, BranchId branch, int assocArtId) {
-            return ChangeBranchFieldCallable.newAssocArtId(logger, session, jdbcClient, branch, assocArtId);
+         public Callable<Void> changeBranchAssociatedArt(OrcsSession session, BranchId branch, ArtifactId assocArt) {
+            return ChangeBranchFieldCallable.newAssocArtId(logger, session, jdbcClient, branch, assocArt);
          }
 
          @Override

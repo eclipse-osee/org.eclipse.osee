@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.branch;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -17,7 +18,6 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -34,34 +34,34 @@ public class BranchDataFactory {
       this.queryFactory = queryFactory;
    }
 
-   public CreateBranchData createTopLevelBranchData(IOseeBranch branch, ArtifactReadable author) {
-      return createBranchData(branch, author, CoreBranches.SYSTEM_ROOT, null, BranchType.BASELINE);
+   public CreateBranchData createTopLevelBranchData(IOseeBranch branch, ArtifactId author) {
+      return createBranchData(branch, author, CoreBranches.SYSTEM_ROOT, ArtifactId.SENTINEL, BranchType.BASELINE);
    }
 
-   public CreateBranchData createBaselineBranchData(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) {
+   public CreateBranchData createBaselineBranchData(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact) {
       return createBranchData(branch, author, parent, associatedArtifact, BranchType.BASELINE);
    }
 
-   public CreateBranchData createWorkingBranchData(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) {
+   public CreateBranchData createWorkingBranchData(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact) {
       return createBranchData(branch, author, parent, associatedArtifact, BranchType.WORKING);
    }
 
-   private CreateBranchData createBranchData(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact, BranchType branchType) {
+   private CreateBranchData createBranchData(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact, BranchType branchType) {
       TransactionQuery txQuery = queryFactory.transactionQuery();
       TransactionId fromTx = txQuery.andIsHead(parent).getTokens().getExactlyOne();
       String creationComment = String.format("New Branch from %s (%s)", parent.getName(), fromTx);
       return createBranchData(branch, parent, branchType, creationComment, fromTx, author, associatedArtifact, false);
    }
 
-   public CreateBranchData createCopyTxBranchData(IOseeBranch branch, ArtifactReadable author, TransactionId fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
+   public CreateBranchData createCopyTxBranchData(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact) throws OseeCoreException {
       return createBranchData(branch, author, fromTransaction, associatedArtifact, BranchType.WORKING, "copied");
    }
 
-   public CreateBranchData createPortBranchData(IOseeBranch branch, ArtifactReadable author, TransactionId fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
+   public CreateBranchData createPortBranchData(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact) throws OseeCoreException {
       return createBranchData(branch, author, fromTransaction, associatedArtifact, BranchType.PORT, "ported");
    }
 
-   private CreateBranchData createBranchData(IOseeBranch branch, ArtifactReadable author, TransactionId fromTransaction, ArtifactReadable associatedArtifact, BranchType branchType, String verb) {
+   private CreateBranchData createBranchData(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact, BranchType branchType, String verb) {
       TransactionQuery txQuery = queryFactory.transactionQuery();
       BranchQuery branchQuery = queryFactory.branchQuery();
       TransactionToken fromTx = txQuery.andTxId(fromTransaction).getTokens().getExactlyOne();
@@ -72,7 +72,7 @@ public class BranchDataFactory {
       return createBranchData(branch, parent, branchType, creationComment, fromTx, author, associatedArtifact, true);
    }
 
-   private CreateBranchData createBranchData(IOseeBranch branch, BranchId parent, BranchType branchType, String creationComment, TransactionId sysRootHeadTx, ArtifactReadable author, ArtifactReadable associatedArtifact, boolean bCopyTx) {
+   private CreateBranchData createBranchData(IOseeBranch branch, BranchId parent, BranchType branchType, String creationComment, TransactionId sysRootHeadTx, ArtifactId author, ArtifactId associatedArtifact, boolean bCopyTx) {
       CreateBranchData createData = new CreateBranchData();
       createData.setUuid(branch.getUuid());
       createData.setName(branch.getName());
@@ -82,11 +82,10 @@ public class BranchDataFactory {
       createData.setBranchType(branchType);
       createData.setCreationComment(creationComment);
       createData.setFromTransaction(sysRootHeadTx);
-      createData.setUserArtifact(author);
+      createData.setAuthor(author);
       createData.setAssociatedArtifact(associatedArtifact);
       createData.setTxCopyBranchType(bCopyTx);
       createData.setParentBranch(parent);
       return createData;
    }
-
 }

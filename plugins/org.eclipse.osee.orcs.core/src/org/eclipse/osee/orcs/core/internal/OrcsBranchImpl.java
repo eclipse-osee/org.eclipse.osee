@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -83,7 +84,7 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<TransactionToken> commitBranch(ArtifactReadable committer, BranchId source, BranchId destination) {
+   public Callable<TransactionToken> commitBranch(ArtifactId committer, BranchId source, BranchId destination) {
       return new CommitBranchCallable(logger, session, branchStore, queryFactory, committer, source, destination);
    }
 
@@ -118,14 +119,14 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<Void> associateBranchToArtifact(BranchId branch, ArtifactReadable associatedArtifact) {
+   public Callable<Void> associateBranchToArtifact(BranchId branch, ArtifactId associatedArtifact) {
       Conditions.checkNotNull(associatedArtifact, "associatedArtifact");
-      return branchStore.changeBranchAssociatedArtId(session, branch, associatedArtifact.getLocalId());
+      return branchStore.changeBranchAssociatedArt(session, branch, associatedArtifact);
    }
 
    @Override
    public Callable<Void> unassociateBranch(BranchId branch) {
-      return branchStore.changeBranchAssociatedArtId(session, branch, -1);
+      return branchStore.changeBranchAssociatedArt(session, branch, ArtifactId.SENTINEL);
    }
 
    @Override
@@ -144,34 +145,34 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<BranchReadable> createTopLevelBranch(IOseeBranch branch, ArtifactReadable author) throws OseeCoreException {
+   public Callable<BranchReadable> createTopLevelBranch(IOseeBranch branch, ArtifactId author) throws OseeCoreException {
       CreateBranchData branchData = branchDataFactory.createTopLevelBranchData(branch, author);
       return createBranch(branchData);
    }
 
    @Override
-   public Callable<BranchReadable> createBaselineBranch(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException {
+   public Callable<BranchReadable> createBaselineBranch(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact) throws OseeCoreException {
       CreateBranchData branchData =
          branchDataFactory.createBaselineBranchData(branch, author, parent, associatedArtifact);
       return createBranch(branchData);
    }
 
    @Override
-   public Callable<BranchReadable> createWorkingBranch(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException {
+   public Callable<BranchReadable> createWorkingBranch(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact) throws OseeCoreException {
       CreateBranchData branchData =
          branchDataFactory.createWorkingBranchData(branch, author, parent, associatedArtifact);
       return createBranch(branchData);
    }
 
    @Override
-   public Callable<BranchReadable> createCopyTxBranch(IOseeBranch branch, ArtifactReadable author, TransactionId fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
+   public Callable<BranchReadable> createCopyTxBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact) throws OseeCoreException {
       CreateBranchData branchData =
          branchDataFactory.createCopyTxBranchData(branch, author, fromTransaction, associatedArtifact);
       return createBranch(branchData);
    }
 
    @Override
-   public Callable<BranchReadable> createPortBranch(IOseeBranch branch, ArtifactReadable author, TransactionId fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
+   public Callable<BranchReadable> createPortBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact) throws OseeCoreException {
       CreateBranchData branchData =
          branchDataFactory.createPortBranchData(branch, author, fromTransaction, associatedArtifact);
       return createBranch(branchData);

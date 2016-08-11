@@ -58,30 +58,26 @@ public class OrcsPortingTest {
    private QueryFactory query;
    private TransactionFactory txFactory;
    private final String branchString = "CopiedTxBranch";
-
-   private ArtifactReadable author;
+   private final ArtifactId author = SystemUser.OseeSystem;
 
    @Before
    public void setUp() throws Exception {
       branchApi = orcsApi.getBranchOps();
       query = orcsApi.getQueryFactory();
       txFactory = orcsApi.getTransactionFactory();
-
-      author = query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
    }
 
    @Test
    public void testCreateBranch() throws Exception {
       String artifactGuid = GUID.create();
 
-      String assocArtifactGuid = GUID.create();
-      setupAssociatedArtifact(assocArtifactGuid);
+      ArtifactId assocaitedArt = setupAssociatedArtifact();
 
       TransactionToken mainBranchTx = createBaselineBranchAndArtifacts(artifactGuid);
       IOseeBranch branch = TokenFactory.createBranch(mainBranchTx.getBranchId(), "testCreateBranch");
       TransactionId transactionToCopy = createWorkingBranchChanges(branch, artifactGuid);
 
-      BranchId copyTxBranch = createCopyFromTransactionBranch(transactionToCopy, assocArtifactGuid);
+      BranchId copyTxBranch = createCopyFromTransactionBranch(transactionToCopy, assocaitedArt);
       TransactionToken finalTx = commitToDestinationBranch(copyTxBranch);
 
       // now check to make sure everything is as expected
@@ -115,19 +111,18 @@ public class OrcsPortingTest {
       String artifactGuid = GUID.create();
       String differentGuid = GUID.create();
 
-      String assocArtifactGuid = GUID.create();
-      setupAssociatedArtifact(assocArtifactGuid);
+      ArtifactId assocaitedArt = setupAssociatedArtifact();
 
       TransactionId mainBranchTx = createBaselineBranchAndArtifacts(artifactGuid);
       TransactionId differentBranchTx = createBaselineBranchAndArtifacts(differentGuid);
 
-      BranchId copyTxBranch = createCopyFromTransactionBranch(mainBranchTx, assocArtifactGuid);
+      BranchId copyTxBranch = createCopyFromTransactionBranch(mainBranchTx, assocaitedArt);
       assertNotNull(copyTxBranch);
 
       // There should only be one Port Branch per associated artifact. Expecting an exception
       thrown.expect(OseeCoreException.class);
       thrown.expectMessage(String.format("Existing port branch creation detected for [%s]", branchString));
-      createCopyFromTransactionBranch(differentBranchTx, assocArtifactGuid);
+      createCopyFromTransactionBranch(differentBranchTx, assocaitedArt);
       fail(); // should never get here due to thrown exception
    }
 
@@ -149,19 +144,20 @@ public class OrcsPortingTest {
       return tx2.commit();
    }
 
-   private void setupAssociatedArtifact(String associatedArtifactGuid) throws Exception {
+   private ArtifactId setupAssociatedArtifact() throws Exception {
       TransactionBuilder tx = txFactory.createTransaction(CoreBranches.COMMON, author, "setup associated artifact");
       // normally the associated artifact would be a work flow,
       // but since that is an ATS construct, we are just using a requirement
-      tx.createArtifact(CoreArtifactTypes.Requirement, "AssociatedArtifact", associatedArtifactGuid);
+      ArtifactId assocaitedArt = tx.createArtifact(CoreArtifactTypes.Requirement, "AssociatedArtifact");
       tx.commit();
+      return assocaitedArt;
    }
 
    private TransactionId createWorkingBranchChanges(IOseeBranch parentBranch, String artifactToModifyGuid) throws Exception {
       // set up the child branch to copy to
 
       IOseeBranch childBranch = TokenFactory.createBranch("childBranch");
-      branchApi.createWorkingBranch(childBranch, author, parentBranch, null).call();
+      branchApi.createWorkingBranch(childBranch, author, parentBranch, ArtifactId.SENTINEL).call();
 
       TransactionBuilder tx3 = txFactory.createTransaction(childBranch, author, "update second requirement");
       ArtifactReadable readableReq2 =
@@ -191,14 +187,14 @@ public class OrcsPortingTest {
       return transactionToCopy;
    }
 
-   private BranchId createCopyFromTransactionBranch(TransactionId transactionToCopy, String assocArtifactGuid) throws Exception {
+   private BranchId createCopyFromTransactionBranch(TransactionId transactionToCopy, ArtifactId assocaitedArt) throws Exception {
       // create the branch with the copied transaction
       IOseeBranch branch = TokenFactory.createBranch(branchString);
 
       // get the setup associated artifact - this is for a later test to make sure the branch is not duplicated
       // there should only be one port branch per associated artifact
       ArtifactReadable readableReq =
-         query.fromBranch(CoreBranches.COMMON).andGuid(assocArtifactGuid).getResults().getExactlyOne();
+         query.fromBranch(CoreBranches.COMMON).andIds(assocaitedArt).getResults().getExactlyOne();
 
       assertNotNull(readableReq);
       // the new branch will contain two transactions -

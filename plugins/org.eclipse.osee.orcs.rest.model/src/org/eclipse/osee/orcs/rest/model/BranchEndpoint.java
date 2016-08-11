@@ -23,6 +23,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.change.CompareResults;
@@ -155,7 +156,7 @@ public interface BranchEndpoint {
 
    @PUT
    @Path("{branch-uuid}/associated-artifact/{art-id}")
-   Response associateBranchToArtifact(@PathParam("branch-uuid") long branchUuid, @PathParam("art-id") int artifactId);
+   Response associateBranchToArtifact(@PathParam("branch-uuid") long branchUuid, @PathParam("art-id") ArtifactId artifact);
 
    @PUT
    @Path("{branch-uuid}/txs/{tx-id}/comment/{tx-comment}")

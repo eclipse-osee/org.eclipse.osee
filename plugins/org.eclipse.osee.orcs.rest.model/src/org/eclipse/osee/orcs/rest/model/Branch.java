@@ -11,8 +11,8 @@
 package org.eclipse.osee.orcs.rest.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -23,14 +23,11 @@ import org.eclipse.osee.framework.core.enums.BranchType;
  */
 @XmlRootElement
 public class Branch {
-
-   private static final int DEFAULT_INT = -1;
-
    private long branchUuid;
    private String name;
    private BranchId parentBranch;
 
-   private int associatedArtifactId = DEFAULT_INT;
+   private ArtifactId associatedArtifact = ArtifactId.SENTINEL;
    private TransactionId baseTransaction = TransactionId.SENTINEL;
    private TransactionId sourceTransaction = TransactionId.SENTINEL;
 
@@ -59,12 +56,12 @@ public class Branch {
       this.name = name;
    }
 
-   public int getAssociatedArtifactId() {
-      return associatedArtifactId;
+   public ArtifactId getAssociatedArtifact() {
+      return associatedArtifact;
    }
 
-   public void setAssociatedArtifactId(int artId) {
-      associatedArtifactId = artId;
+   public void setAssociatedArtifact(ArtifactId associatedArtifact) {
+      this.associatedArtifact = associatedArtifact;
    }
 
    public TransactionId getBaseTransactionId() {
@@ -151,7 +148,7 @@ public class Branch {
 
    @Override
    public String toString() {
-      return "Branch [branchUuid=" + getBranchUuid() + ", name=" + name + ", parentBranchUuid=" + getParentBranch() + ", associatedArtifactId=" + associatedArtifactId + ", baseTransaction=" + baseTransaction + ", sourceTransaction=" + sourceTransaction + ", archiveState=" + archiveState + ", branchState=" + branchState + ", branchType=" + branchType + ", inheritAccessControl=" + inheritAccessControl + "]";
+      return "Branch [branchUuid=" + getBranchUuid() + ", name=" + name + ", parentBranchUuid=" + getParentBranch() + ", associatedArtifactId=" + associatedArtifact + ", baseTransaction=" + baseTransaction + ", sourceTransaction=" + sourceTransaction + ", archiveState=" + archiveState + ", branchState=" + branchState + ", branchType=" + branchType + ", inheritAccessControl=" + inheritAccessControl + "]";
    }
 
 }

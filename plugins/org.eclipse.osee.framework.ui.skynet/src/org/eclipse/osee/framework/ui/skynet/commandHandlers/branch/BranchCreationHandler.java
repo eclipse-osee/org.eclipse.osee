@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
 
+import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -73,7 +74,7 @@ public class BranchCreationHandler extends CommandHandler {
                   if (dialog.isChecked()) {
                      BranchManager.createWorkingBranchFromTx(parentTransactionId, dialog.getEntry(), null);
                   } else {
-                     BranchManager.createWorkingBranch(parentTransactionId, dialog.getEntry(), null);
+                     BranchManager.createWorkingBranch(parentTransactionId, dialog.getEntry(), OseeSystem);
                   }
 
                }

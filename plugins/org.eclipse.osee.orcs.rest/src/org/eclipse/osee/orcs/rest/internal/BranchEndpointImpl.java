@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import static org.eclipse.osee.framework.jdk.core.util.Compare.isDifferent;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asBranch;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asBranches;
@@ -37,6 +36,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.activity.api.Activity;
 import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -136,14 +136,6 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    private OrcsBranch getBranchOps() {
       return orcsApi.getBranchOps();
-   }
-
-   private ArtifactReadable getArtifactById(Long branchId, int id) {
-      ArtifactReadable artifact = null;
-      if (id > 0) {
-         artifact = newQuery().fromBranch(branchId).andUuid(id).getResults().getExactlyOne();
-      }
-      return artifact;
    }
 
    private BranchReadable getBranchById(long branchUuid) {
@@ -299,8 +291,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
       createData.setBranchType(data.getBranchType());
       createData.setCreationComment(data.getCreationComment());
 
-      createData.setUserArtifact(getArtifactById(COMMON_ID, data.getAuthorId()));
-      createData.setAssociatedArtifact(getArtifactById(COMMON_ID, data.getAssociatedArtifactId()));
+      createData.setAuthor(data.getAuthor());
+      createData.setAssociatedArtifact(data.getAssociatedArtifact());
 
       createData.setFromTransaction(data.getSourceTransaction());
       createData.setParentBranch(data.getParentBranch());
@@ -358,8 +350,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       BranchReadable srcBranch = getBranchById(branchUuid);
       BranchReadable destBranch = getBranchById(destinationBranchUuid);
 
-      ArtifactReadable committer = getArtifactById(COMMON_ID, options.getCommitterId());
-      Callable<TransactionToken> op = getBranchOps().commitBranch(committer, srcBranch, destBranch);
+      Callable<TransactionToken> op = getBranchOps().commitBranch(options.getCommitter(), srcBranch, destBranch);
       TransactionToken tx = executeCallable(op);
 
       if (options.isArchive()) {
@@ -650,20 +641,19 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public Response associateBranchToArtifact(long branchUuid, int artifactId) {
+   public Response associateBranchToArtifact(long branchUuid, ArtifactId artifact) {
       BranchReadable branch = getBranchById(branchUuid);
       boolean modified = false;
-      if (isDifferent(branch.getAssociatedArtifactId(), artifactId)) {
+      if (isDifferent(branch.getAssociatedArtifact(), artifact)) {
          try {
             activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
                String.format(
                   "Branch Operation Associate Branch to Artifact {branchUUID: %s prevArt: %s newArt: %s accountId: %s serverId: %s clientId: %s}",
-                  branchUuid, branch.getAssociatedArtifactId(), artifactId, RestUtil.getAccountId(httpHeaders),
+                  branchUuid, branch.getAssociatedArtifact(), artifact, RestUtil.getAccountId(httpHeaders),
                   RestUtil.getServerId(httpHeaders), RestUtil.getClientId(httpHeaders)));
          } catch (OseeCoreException ex) {
             OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
          }
-         ArtifactReadable artifact = newQuery().fromBranch(COMMON_ID).andUuid(artifactId).getResults().getExactlyOne();
          Callable<?> op = getBranchOps().associateBranchToArtifact(branch, artifact);
          executeCallable(op);
          modified = true;
@@ -745,7 +735,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    public Response unassociateBranch(long branchUuid) {
       BranchReadable branch = getBranchById(branchUuid);
       boolean modified = false;
-      if (branch.getAssociatedArtifactId() != -1) {
+      if (branch.getAssociatedArtifact().isValid()) {
          Callable<?> op = getBranchOps().unassociateBranch(branch);
          executeCallable(op);
          modified = true;

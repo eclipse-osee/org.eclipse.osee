@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -23,7 +24,7 @@ import org.eclipse.osee.orcs.core.ds.BranchData;
  */
 public interface BranchObjectFactory extends OrcsDataFactory {
 
-   BranchData createBranchData(Long branchUuid, BranchType branchType, String name, BranchId parentBranch, TransactionId baseTransaction, TransactionId sourceTransaction, BranchArchivedState archiveState, BranchState branchState, int associatedArtifactId, boolean inheritAccessControl) throws OseeCoreException;
+   BranchData createBranchData(Long branchUuid, BranchType branchType, String name, BranchId parentBranch, TransactionId baseTransaction, TransactionId sourceTransaction, BranchArchivedState archiveState, BranchState branchState, ArtifactId associatedArtifact, boolean inheritAccessControl) throws OseeCoreException;
 
    BranchData createCopy(BranchData source) throws OseeCoreException;
 }

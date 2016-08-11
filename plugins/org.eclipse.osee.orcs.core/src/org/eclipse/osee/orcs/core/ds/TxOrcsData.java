@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import java.util.Date;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 
@@ -19,31 +20,15 @@ import org.eclipse.osee.orcs.data.TransactionReadable;
  */
 public interface TxOrcsData extends TransactionReadable {
 
-   @Override
-   int getAuthorId();
-
-   @Override
-   String getComment();
-
-   @Override
-   int getCommit();
-
-   @Override
-   Date getDate();
-
-   @Override
-   TransactionDetailsType getTxType();
-
-   void setAuthorId(int authorId);
+   void setAuthor(ArtifactId author);
 
    void setBranchId(Long branchId);
 
    void setComment(String comment);
 
-   void setCommit(int commitId);
+   void setCommitArt(ArtifactId commitArt);
 
    void setDate(Date date);
 
    void setTxType(TransactionDetailsType type);
-
 }

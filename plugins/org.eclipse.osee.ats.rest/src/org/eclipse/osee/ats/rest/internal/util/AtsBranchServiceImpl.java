@@ -133,8 +133,9 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       ArtifactId artifact = teamWf.getStoreObject();
       if (!commitArtifactIdMap.containsKey(artifact)) {
          txQuery.andCommitIds(artifact.getId().intValue());
-         txQuery.getResults().forEach(tx -> commitArtifactIdMap.put(artifact, new TransactionRecord(tx.getId(),
-            tx.getBranch(), tx.getComment(), tx.getDate(), tx.getAuthorId(), tx.getCommit(), tx.getTxType())));
+         txQuery.getResults().forEach(
+            tx -> commitArtifactIdMap.put(artifact, new TransactionRecord(tx.getId(), tx.getBranch(), tx.getComment(),
+               tx.getDate(), tx.getAuthor().getId().intValue(), tx.getCommitArt().getId().intValue(), tx.getTxType())));
       }
       Collection<TransactionRecord> transactions = commitArtifactIdMap.getValues(artifact);
       return transactions == null ? Collections.emptyList() : transactions;

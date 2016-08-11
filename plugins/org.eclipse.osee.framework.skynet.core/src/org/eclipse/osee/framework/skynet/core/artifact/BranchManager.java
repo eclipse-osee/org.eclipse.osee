@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
+import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -28,6 +29,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -36,7 +38,6 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -236,16 +237,16 @@ public final class BranchManager {
    }
 
    public static IStatus isDeleteable(Collection<Artifact> artifacts) throws OseeCoreException {
-      List<Integer> artIdsToCheck = new LinkedList<>();
+      List<ArtifactId> artIdsToCheck = new LinkedList<>();
       for (Artifact art : artifacts) {
-         if (art.isOnBranch(CoreBranches.COMMON_ID)) {
-            artIdsToCheck.add(art.getArtId());
+         if (art.isOnBranch(CoreBranches.COMMON)) {
+            artIdsToCheck.add(art);
          }
       }
 
       if (!artIdsToCheck.isEmpty()) {
          for (IOseeBranch branch : getCache().getAll()) {
-            Integer associatedArtifactId = getAssociatedArtifactId(branch);
+            ArtifactId associatedArtifactId = getAssociatedArtifactId(branch);
             if (getState(branch) != BranchState.DELETED && artIdsToCheck.contains(associatedArtifactId)) {
                return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
                   String.format("Cannot delete artId [%d] because it is the associated artifact of branch [%s]",
@@ -433,11 +434,11 @@ public final class BranchManager {
       return mergeBranch;
    }
 
-   public static IOseeBranch createWorkingBranch(TransactionToken parentTransactionId, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
+   public static IOseeBranch createWorkingBranch(TransactionToken parentTransactionId, String childBranchName, ArtifactId associatedArtifact) throws OseeCoreException {
       return createWorkingBranch(parentTransactionId, childBranchName, Lib.generateUuid(), associatedArtifact);
    }
 
-   public static IOseeBranch createWorkingBranch(TransactionToken parentTransactionId, String childBranchName, Long childBranchUuid, Artifact associatedArtifact) throws OseeCoreException {
+   public static IOseeBranch createWorkingBranch(TransactionToken parentTransactionId, String childBranchName, Long childBranchUuid, ArtifactId associatedArtifact) throws OseeCoreException {
       Conditions.notNull(childBranchUuid, "childBranchUuid");
       String creationComment =
          String.format("New Branch from %s (%s)", getBranchName(parentTransactionId), parentTransactionId.getId());
@@ -477,10 +478,10 @@ public final class BranchManager {
    }
 
    public static IOseeBranch createWorkingBranch(BranchId parentBranch, String childBranchName) throws OseeCoreException {
-      return createWorkingBranch(parentBranch, childBranchName, UserManager.getUser(SystemUser.OseeSystem));
+      return createWorkingBranch(parentBranch, childBranchName, OseeSystem);
    }
 
-   public static IOseeBranch createWorkingBranch(BranchId parentBranch, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
+   public static IOseeBranch createWorkingBranch(BranchId parentBranch, String childBranchName, ArtifactId associatedArtifact) throws OseeCoreException {
       Conditions.checkNotNull(parentBranch, "Parent Branch");
       Conditions.checkNotNull(childBranchName, "Child Branch Name");
       Conditions.checkNotNull(associatedArtifact, "Associated Artifact");
@@ -489,10 +490,10 @@ public final class BranchManager {
    }
 
    public static IOseeBranch createWorkingBranch(BranchId parentBranch, IOseeBranch childBranch) throws OseeCoreException {
-      return createWorkingBranch(parentBranch, childBranch, UserManager.getUser(SystemUser.OseeSystem));
+      return createWorkingBranch(parentBranch, childBranch, OseeSystem);
    }
 
-   public static IOseeBranch createWorkingBranch(BranchId parentBranch, IOseeBranch childBranch, Artifact associatedArtifact) throws OseeCoreException {
+   public static IOseeBranch createWorkingBranch(BranchId parentBranch, IOseeBranch childBranch, ArtifactId associatedArtifact) throws OseeCoreException {
       TransactionToken parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
       return createWorkingBranch(parentTransactionId, childBranch.getName(), childBranch.getUuid(), associatedArtifact);
    }
@@ -501,22 +502,22 @@ public final class BranchManager {
     * Creates a new Branch based on the most recent transaction on the parent branch.
     */
    public static BranchId createBaselineBranch(BranchId parentBranch, IOseeBranch childBranch) throws OseeCoreException {
-      return createBaselineBranch(parentBranch, childBranch, UserManager.getUser(SystemUser.OseeSystem));
+      return createBaselineBranch(parentBranch, childBranch, OseeSystem);
    }
 
-   public static BranchId createBaselineBranch(BranchId parentBranch, IOseeBranch childBranch, Artifact associatedArtifact) throws OseeCoreException {
+   public static BranchId createBaselineBranch(BranchId parentBranch, IOseeBranch childBranch, ArtifactId associatedArtifact) throws OseeCoreException {
       TransactionToken parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
       String creationComment = String.format("Branch Creation for %s", childBranch.getName());
       return createBranch(BranchType.BASELINE, parentTransactionId, childBranch.getName(), childBranch.getUuid(),
          associatedArtifact, creationComment);
    }
 
-   private static IOseeBranch createBranch(BranchType branchType, TransactionToken parentTransaction, String branchName, long branchUuid, Artifact associatedArtifact, String creationComment) {
+   private static IOseeBranch createBranch(BranchType branchType, TransactionToken parentTransaction, String branchName, long branchUuid, ArtifactId associatedArtifact, String creationComment) {
       return createBranch(branchType, parentTransaction, branchName, branchUuid, associatedArtifact, creationComment,
          -1, BranchId.SENTINEL);
    }
 
-   private static IOseeBranch createBranch(BranchType branchType, TransactionToken parentTransaction, String branchName, long branchUuid, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, BranchId destinationBranch) throws OseeCoreException {
+   private static IOseeBranch createBranch(BranchType branchType, TransactionToken parentTransaction, String branchName, long branchUuid, ArtifactId associatedArtifact, String creationComment, int mergeAddressingQueryId, BranchId destinationBranch) throws OseeCoreException {
       CreateBranchHttpRequestOperation operation = new CreateBranchHttpRequestOperation(branchType, parentTransaction,
          branchName, branchUuid, associatedArtifact, creationComment, mergeAddressingQueryId, destinationBranch);
       Operations.executeWorkAndCheckStatus(operation);
@@ -529,7 +530,7 @@ public final class BranchManager {
     * @param initializeArtifacts adds common artifacts needed by most normal root branches
     */
    public static BranchId createTopLevelBranch(IOseeBranch branch) throws OseeCoreException {
-      return createBaselineBranch(SYSTEM_ROOT, branch, null);
+      return createBaselineBranch(SYSTEM_ROOT, branch, OseeSystem);
    }
 
    public static BranchId createTopLevelBranch(final String branchName) throws OseeCoreException {
@@ -595,28 +596,28 @@ public final class BranchManager {
    }
 
    public static boolean isChangeManaged(BranchId branch) throws OseeCoreException {
-      Integer associatedArtifactId = getAssociatedArtifactId(branch);
-      return associatedArtifactId > 0 && !associatedArtifactId.equals(SystemUser.OseeSystem);
+      ArtifactId associatedArtifactId = getAssociatedArtifactId(branch);
+      return associatedArtifactId.isValid() && !associatedArtifactId.equals(OseeSystem);
    }
 
-   public static void setAssociatedArtifactId(BranchId branch, Integer artifactId) {
+   public static void setAssociatedArtifactId(BranchId branch, ArtifactId artifactId) {
       OseeClient client = ServiceUtil.getOseeClient();
       BranchEndpoint proxy = client.getBranchEndpoint();
 
       Response response = proxy.associateBranchToArtifact(branch.getId(), artifactId);
       if (javax.ws.rs.core.Response.Status.OK.getStatusCode() == response.getStatus()) {
-         getBranch(branch).setAssociatedArtifactId(artifactId);
+         getBranch(branch).setAssociatedArtifact(artifactId);
       }
    }
 
-   public static Integer getAssociatedArtifactId(BranchId branch) {
+   public static ArtifactId getAssociatedArtifactId(BranchId branch) {
       return getBranch(branch).getAssociatedArtifactId();
    }
 
    public static Artifact getAssociatedArtifact(BranchId branch) throws OseeCoreException {
-      Integer associatedArtifactId = getAssociatedArtifactId(branch);
-      if (associatedArtifactId == null || associatedArtifactId.equals(-1)) {
-         return UserManager.getUser(SystemUser.OseeSystem);
+      ArtifactId associatedArtifactId = getAssociatedArtifactId(branch);
+      if (associatedArtifactId.isInvalid()) {
+         return UserManager.getUser(OseeSystem);
       }
       return ArtifactQuery.getArtifactFromId(associatedArtifactId, COMMON);
    }

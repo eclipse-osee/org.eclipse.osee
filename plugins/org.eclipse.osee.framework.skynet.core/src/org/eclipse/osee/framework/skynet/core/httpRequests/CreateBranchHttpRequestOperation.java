@@ -10,28 +10,27 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.httpRequests;
 
+import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
 import java.net.URI;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
-import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
@@ -45,7 +44,7 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
    private final BranchType branchType;
    private final TransactionToken parentTransaction;
    private final String branchName;
-   private final Artifact associatedArtifact;
+   private final ArtifactId associatedArtifact;
    private final String creationComment;
    private final int mergeAddressingQueryId;
    private final BranchId destinationBranch;
@@ -53,12 +52,12 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
    private boolean txCopyBranchType;
    private final long branchUuid;
 
-   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionToken parentTransaction, String branchName, long branchUuid, Artifact associatedArtifact, String creationComment) {
+   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionToken parentTransaction, String branchName, long branchUuid, ArtifactId associatedArtifact, String creationComment) {
       this(branchType, parentTransaction, branchName, branchUuid, associatedArtifact, creationComment, -1,
          BranchId.SENTINEL);
    }
 
-   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionToken parentTransaction, String branchName, long branchUuid, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, BranchId destinationBranch) {
+   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionToken parentTransaction, String branchName, long branchUuid, ArtifactId associatedArtifact, String creationComment, int mergeAddressingQueryId, BranchId destinationBranch) {
       super("Create branch " + branchName, Activator.PLUGIN_ID);
       this.branchType = branchType;
       this.parentTransaction = parentTransaction;
@@ -81,8 +80,8 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
       BranchEndpoint proxy = client.getBranchEndpoint();
 
       NewBranch data = new NewBranch();
-      data.setAssociatedArtifactId(getAssociatedArtifactId(associatedArtifact));
-      data.setAuthorId(getAuthorId());
+      data.setAssociatedArtifact(associatedArtifact.isValid() ? associatedArtifact : OseeSystem);
+      data.setAuthor(UserManager.getUser());
       data.setBranchName(branchName);
       data.setBranchType(branchType);
       data.setCreationComment(creationComment);
@@ -124,21 +123,6 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
          }
       }
       return toReturn;
-   }
-
-   private static int getAssociatedArtifactId(Artifact associatedArtifact) throws OseeCoreException {
-      int associatedArtifactId = -1;
-      if (associatedArtifact == null && !DbUtil.isDbInit()) {
-         associatedArtifact = UserManager.getUser(SystemUser.OseeSystem);
-      }
-      if (associatedArtifact != null) {
-         associatedArtifactId = associatedArtifact.getArtId();
-      }
-      return associatedArtifactId;
-   }
-
-   private static int getAuthorId() throws OseeCoreException {
-      return UserManager.getUser().getArtId();
    }
 
    public IOseeBranch getNewBranch() {

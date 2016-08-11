@@ -11,24 +11,22 @@
 package org.eclipse.osee.orcs.rest.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 
 /**
  * @author Roberto E. Escobar
  */
 @XmlRootElement
 public class BranchCommitOptions {
-
-   private static final int DEFAULT_COMMITTER_ID = -1;
-
-   private int committerId = DEFAULT_COMMITTER_ID;
+   private ArtifactId committer = ArtifactId.SENTINEL;
    private boolean archive;
 
-   public int getCommitterId() {
-      return committerId;
+   public ArtifactId getCommitter() {
+      return committer;
    }
 
-   public void setCommitterId(int committerId) {
-      this.committerId = committerId;
+   public void setCommitter(ArtifactId committer) {
+      this.committer = committer;
    }
 
    public boolean isArchive() {
@@ -38,5 +36,4 @@ public class BranchCommitOptions {
    public void setArchive(boolean archive) {
       this.archive = archive;
    }
-
 }

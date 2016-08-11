@@ -12,6 +12,7 @@ package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
+import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -257,8 +258,7 @@ public class BranchStateTest {
 
          checkBranchWasRebaselined(originalBranchName, workingBranch);
          // Check that the associated artifact remained unchanged
-         assertEquals((long) BranchManager.getAssociatedArtifactId(workingBranch),
-            SystemUser.OseeSystem.getUuid().longValue());
+         assertEquals(BranchManager.getAssociatedArtifactId(workingBranch), OseeSystem);
 
          Collection<IOseeBranch> branches = BranchManager.getBranchesByName(originalBranchName);
          assertEquals("Check only 1 original branch", 1, branches.size());

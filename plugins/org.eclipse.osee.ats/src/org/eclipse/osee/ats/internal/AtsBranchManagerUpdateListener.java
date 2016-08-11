@@ -45,8 +45,9 @@ public class AtsBranchManagerUpdateListener implements IBranchEventListener {
          return;
       }
       try {
-         Artifact assocArtInCache =
-            ArtifactCache.getActive(BranchManager.getAssociatedArtifactId(branchEvent.getSourceBranch()), COMMON);
+         Integer associatedArtifact =
+            BranchManager.getAssociatedArtifactId(branchEvent.getSourceBranch()).getId().intValue();
+         Artifact assocArtInCache = ArtifactCache.getActive(associatedArtifact, COMMON);
          if (assocArtInCache != null && assocArtInCache instanceof TeamWorkFlowArtifact) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) assocArtInCache;
             if (branchEvent.getEventType() == BranchEventType.Added) {

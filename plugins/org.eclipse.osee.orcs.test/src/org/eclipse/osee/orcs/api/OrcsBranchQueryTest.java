@@ -23,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -90,11 +91,11 @@ public class OrcsBranchQueryTest {
       List<BranchReadable> list = results.getList();
 
       // list, IOseeBranch, BranchType, BranchState, isArchived, parentId, baseTx, sourceTx, assocArtId
-      assertBranch(list, SYSTEM_ROOT, BranchType.SYSTEM_ROOT, MODIFIED, false, BranchId.SENTINEL, -1);
-      assertBranch(list, SAW_Bld_1, BASELINE, MODIFIED, false, SYSTEM_ROOT, -1);
-      assertBranch(list, CIS_Bld_1, BASELINE, MODIFIED, false, SYSTEM_ROOT, -1);
-      assertBranch(list, SAW_Bld_2, BASELINE, MODIFIED, false, SAW_Bld_1, 11);
-      assertBranch(list, COMMON, BASELINE, MODIFIED, false, SYSTEM_ROOT, -1);
+      assertBranch(list, SYSTEM_ROOT, BranchType.SYSTEM_ROOT, MODIFIED, false, BranchId.SENTINEL, ArtifactId.SENTINEL);
+      assertBranch(list, SAW_Bld_1, BASELINE, MODIFIED, false, SYSTEM_ROOT, ArtifactId.SENTINEL);
+      assertBranch(list, CIS_Bld_1, BASELINE, MODIFIED, false, SYSTEM_ROOT, ArtifactId.SENTINEL);
+      assertBranch(list, SAW_Bld_2, BASELINE, MODIFIED, false, SAW_Bld_1, SystemUser.OseeSystem);
+      assertBranch(list, COMMON, BASELINE, MODIFIED, false, SYSTEM_ROOT, ArtifactId.SENTINEL);
    }
 
    @Test
@@ -295,7 +296,7 @@ public class OrcsBranchQueryTest {
 
    private IOseeBranch createBranch(IOseeBranch parent, IOseeBranch uuid) throws Exception {
       ArtifactReadable author = getSystemUser();
-      return getBranchOps().createWorkingBranch(uuid, author, parent, null).call();
+      return getBranchOps().createWorkingBranch(uuid, author, parent, ArtifactId.SENTINEL).call();
    }
 
    @SuppressWarnings("unchecked")
@@ -307,19 +308,14 @@ public class OrcsBranchQueryTest {
       return orcsApi.getBranchOps();
    }
 
-   private static void assertBranch(List<BranchReadable> list, IOseeBranch token, BranchType type, BranchState state, boolean isArchived, BranchId parent, int assocArtId) {
-      BranchReadable found = null;
-      for (BranchReadable branch : list) {
-         if (branch.getId().equals(token.getId())) {
-            found = branch;
-            break;
-         }
-      }
-      Assert.assertNotNull(found);
-      assertBranch(found, token.getName(), token.getGuid(), type, state, isArchived, parent, assocArtId);
+   private static void assertBranch(List<BranchReadable> list, IOseeBranch token, BranchType type, BranchState state, boolean isArchived, BranchId parent, ArtifactId associatedArtifact) {
+      int index = list.indexOf(token);
+      Assert.assertNotEquals(index, -1);
+      assertBranch(list.get(index), token.getName(), token.getGuid(), type, state, isArchived, parent,
+         associatedArtifact);
    }
 
-   private static void assertBranch(BranchReadable actual, String name, Long localId, BranchType type, BranchState state, boolean isArchived, BranchId parent, int assocArtId) {
+   private static void assertBranch(BranchReadable actual, String name, Long localId, BranchType type, BranchState state, boolean isArchived, BranchId parent, ArtifactId associatedArtifact) {
       assertEquals(name, actual.getName());
       assertEquals(localId, actual.getUuid());
 
@@ -327,6 +323,6 @@ public class OrcsBranchQueryTest {
       assertEquals(state, actual.getBranchState());
       assertEquals(isArchived, actual.getArchiveState().isArchived());
       assertEquals(parent, actual.getParentBranch());
-      assertEquals(assocArtId, actual.getAssociatedArtifactId());
+      assertEquals(associatedArtifact, actual.getAssociatedArtifact());
    }
 }

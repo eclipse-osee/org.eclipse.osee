@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.data;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -31,7 +32,7 @@ public interface BranchReadable extends IOseeBranch {
    boolean hasParentBranch();
 
    // These get Id method might change
-   int getAssociatedArtifactId();
+   ArtifactId getAssociatedArtifact();
 
    TransactionId getBaseTransaction();
 

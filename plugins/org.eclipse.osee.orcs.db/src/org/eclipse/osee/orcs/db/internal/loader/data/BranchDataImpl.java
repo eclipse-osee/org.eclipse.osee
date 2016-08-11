@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -24,7 +24,7 @@ import org.eclipse.osee.orcs.data.BranchReadable;
  * @author Roberto E. Escobar
  */
 public class BranchDataImpl extends NamedId implements BranchData, BranchReadable {
-   private int associatedArtifactId = RelationalConstants.ART_ID_SENTINEL;
+   private ArtifactId associatedArtifact = ArtifactId.SENTINEL;
    private TransactionId baseTransaction = TransactionId.SENTINEL;
    private TransactionId sourceTransaction = TransactionId.SENTINEL;
    private BranchId parentBranch = BranchId.SENTINEL;
@@ -38,13 +38,13 @@ public class BranchDataImpl extends NamedId implements BranchData, BranchReadabl
    }
 
    @Override
-   public int getAssociatedArtifactId() {
-      return associatedArtifactId;
+   public ArtifactId getAssociatedArtifact() {
+      return associatedArtifact;
    }
 
    @Override
-   public void setAssociatedArtifactId(int artId) {
-      associatedArtifactId = artId;
+   public void setAssociatedArtifact(ArtifactId associatedArtifact) {
+      this.associatedArtifact = associatedArtifact;
    }
 
    @Override

@@ -11,9 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.search;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.orcs.core.ds.Criteria;
@@ -22,7 +20,6 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAuthorIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaCommitIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateRange;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateWithOperator;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxBranchIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxComment;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxGetHead;
@@ -76,14 +73,6 @@ public class TransactionCriteriaFactory {
 
    public Criteria newByAuthorId(Collection<Integer> ids) {
       return new CriteriaAuthorIds(ids);
-   }
-
-   public Criteria newByArtifactId(Collection<ArtifactId> ids) {
-      ArrayList<String> theGuids = new ArrayList<>(ids.size());
-      for (ArtifactId id : ids) {
-         theGuids.add(id.getGuid());
-      }
-      return new CriteriaTxArtifactGuids(theGuids);
    }
 
    public Criteria newByCommitId(Collection<Integer> ids) {

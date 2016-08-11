@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -71,9 +72,9 @@ public class TxSqlBuilderTest {
 
    private static final TransactionId EXPECTED_TX = TransactionId.valueOf(10000);
    private static final TransactionId LOADED_TX_ID = TransactionId.valueOf(567);
-   private static final int EXPECTED_COMMIT_ID = 46;
+   private static final ArtifactId EXPECTED_COMMIT_ART = ArtifactId.valueOf(46);
    private static final long EXPECTED_BRANCH_ID = 65L;
-   private static final int EXPECTED_AUTHOR_ID = 89;
+   private static final ArtifactId EXPECTED_AUTHOR = ArtifactId.valueOf(89);
    private static final String EXPECTED_COMMENT = "My comment";
    private static final TransactionDetailsType EXPECTED_TX_TYPE = TransactionDetailsType.Baselined;
    private static final Date EXPECTED_TX_TIME = new Date();
@@ -141,10 +142,10 @@ public class TxSqlBuilderTest {
       relData.setArtIdB(B_ART_ID);
       relData.setRationale(RATIONALE);
 
-      tx.setAuthorId(EXPECTED_AUTHOR_ID);
+      tx.setAuthor(EXPECTED_AUTHOR);
       tx.setBranchId(EXPECTED_BRANCH_ID);
       tx.setComment(EXPECTED_COMMENT);
-      tx.setCommit(EXPECTED_COMMIT_ID);
+      tx.setCommitArt(EXPECTED_COMMIT_ART);
       tx.setDate(EXPECTED_TX_TIME);
       tx.setTxType(EXPECTED_TX_TYPE);
 
@@ -184,7 +185,7 @@ public class TxSqlBuilderTest {
       assertEquals(EXPECTED_TX, data[index++]);
       assertEquals(EXPECTED_COMMENT, data[index++]);
       assertEquals(EXPECTED_TX_TIME, data[index++]);
-      assertEquals(EXPECTED_AUTHOR_ID, data[index++]);
+      assertEquals(EXPECTED_AUTHOR, data[index++]);
       assertEquals(EXPECTED_BRANCH_ID, data[index++]);
       assertEquals(EXPECTED_TX_TYPE.getId(), data[index++]);
    }

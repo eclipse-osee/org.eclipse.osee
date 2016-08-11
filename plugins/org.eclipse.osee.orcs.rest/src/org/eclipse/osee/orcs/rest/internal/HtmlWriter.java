@@ -158,7 +158,7 @@ public class HtmlWriter {
       data.put("TxType", txRecord.getTxType());
       data.put("Date", txRecord.getDate());
       data.put("Comment", txRecord.getComment());
-      data.put("Author", txRecord.getAuthorId());
+      data.put("Author", txRecord.getAuthor());
       IOseeBranch branch = getBranchFromId(txRecord.getBranch());
 
       URI uri;

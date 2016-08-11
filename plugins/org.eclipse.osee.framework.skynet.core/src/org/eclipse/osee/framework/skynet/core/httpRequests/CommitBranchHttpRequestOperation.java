@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -33,7 +34,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -65,15 +65,15 @@ import org.eclipse.osee.orcs.rest.model.Transaction;
  * @author Ryan D. Brooks
  */
 public final class CommitBranchHttpRequestOperation extends AbstractOperation {
-   private final User user;
+   private final ArtifactId committer;
    private final BranchId sourceBranch;
    private final BranchId destinationBranch;
    private final boolean isArchiveAllowed;
    private final boolean skipChecksAndEvents;
 
-   public CommitBranchHttpRequestOperation(User user, BranchId sourceBranch, BranchId destinationBranch, boolean isArchiveAllowed, boolean skipChecksAndEvents) {
+   public CommitBranchHttpRequestOperation(ArtifactId committer, BranchId sourceBranch, BranchId destinationBranch, boolean isArchiveAllowed, boolean skipChecksAndEvents) {
       super("Commit " + sourceBranch, Activator.PLUGIN_ID);
-      this.user = user;
+      this.committer = committer;
       this.sourceBranch = sourceBranch;
       this.destinationBranch = destinationBranch;
       this.isArchiveAllowed = isArchiveAllowed;
@@ -93,7 +93,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
 
       BranchCommitOptions options = new BranchCommitOptions();
       options.setArchive(isArchiveAllowed);
-      options.setCommitterId(user.getArtId());
+      options.setCommitter(committer);
       try {
          Response response = proxy.commitBranch(sourceBranch.getUuid(), destinationBranch.getUuid(), options);
          if (Status.CREATED.getStatusCode() == response.getStatus()) {

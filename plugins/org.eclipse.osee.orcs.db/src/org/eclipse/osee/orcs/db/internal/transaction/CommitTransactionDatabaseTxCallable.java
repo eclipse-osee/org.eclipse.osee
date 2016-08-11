@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal.transaction;
 
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -116,10 +115,10 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();
 
       TransactionDataImpl created = new TransactionDataImpl(transaction.getId());
-      created.setAuthorId(author.getUuid().intValue());
+      created.setAuthor(author);
       created.setBranchId(branchId);
       created.setComment(comment);
-      created.setCommit(RelationalConstants.ART_ID_SENTINEL);
+      created.setCommitArt(ArtifactId.SENTINEL);
       created.setDate(transactionTime);
       created.setTxType(txType);
 
