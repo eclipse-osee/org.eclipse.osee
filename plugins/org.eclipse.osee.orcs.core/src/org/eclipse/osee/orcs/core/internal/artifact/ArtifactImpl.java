@@ -143,8 +143,8 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
-   public boolean isDeleted() {
-      return getModificationType().isDeleted();
+   public boolean isHardDeleted() {
+      return getModificationType().isHardDeleted();
    }
 
    @Override
@@ -182,7 +182,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
    @Override
    public boolean isDeleteAllowed() {
-      return !isDeleted();
+      return !isHardDeleted();
    }
 
    @Override
@@ -193,7 +193,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
    @Override
    public boolean isAccessible() {
-      return !isDeleted();
+      return !isHardDeleted();
    }
 
    @Override

@@ -75,7 +75,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public boolean isDeleted(IAtsObject atsObject) {
-      return ((ArtifactReadable) atsObject.getStoreObject()).isDeleted();
+      return ((ArtifactReadable) atsObject.getStoreObject()).isHardDeleted();
    }
 
    @Override

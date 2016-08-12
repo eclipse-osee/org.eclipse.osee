@@ -141,7 +141,7 @@ public final class OrcsPredicates {
       public boolean apply(T data) {
          boolean result = true;
          if (checkNeeded) {
-            result = !data.isDeleted();
+            result = !data.isHardDeleted();
          }
          return result;
       }

@@ -242,7 +242,7 @@ public class RelationManagerImpl implements RelationManager {
          graph.<RelationNodeAdjacencies> getAdjacencies(bNode).add(type.getGuid(), relation);
          updated = true;
       }
-      if (relation.isDeleted()) {
+      if (relation.isHardDeleted()) {
          relation.unDelete();
          updated = true;
       }

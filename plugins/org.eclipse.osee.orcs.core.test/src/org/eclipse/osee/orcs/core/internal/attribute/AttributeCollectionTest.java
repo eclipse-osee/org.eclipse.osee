@@ -56,7 +56,7 @@ public class AttributeCollectionTest {
       attributeCollection.add(CoreAttributeTypes.Annotation, deletedAttr);
 
       when(dirtyAttr.isDirty()).thenReturn(true);
-      when(deletedAttr.isDeleted()).thenReturn(true);
+      when(deletedAttr.isHardDeleted()).thenReturn(true);
    }
 
    @Test
@@ -93,13 +93,13 @@ public class AttributeCollectionTest {
       AttributeType typeC = mock(AttributeType.class);
 
       when(dirtyAttr.getAttributeType()).thenReturn(typeA);
-      when(dirtyAttr.isDeleted()).thenReturn(true);
+      when(dirtyAttr.isHardDeleted()).thenReturn(true);
 
       when(cleanAttr.getAttributeType()).thenReturn(typeB);
-      when(cleanAttr.isDeleted()).thenReturn(true);
+      when(cleanAttr.isHardDeleted()).thenReturn(true);
 
       when(deletedAttr.getAttributeType()).thenReturn(typeC);
-      when(deletedAttr.isDeleted()).thenReturn(false);
+      when(deletedAttr.isHardDeleted()).thenReturn(false);
 
       Collection<? extends IAttributeType> types = attributeCollection.getExistingTypes(DeletionFlag.INCLUDE_DELETED);
 

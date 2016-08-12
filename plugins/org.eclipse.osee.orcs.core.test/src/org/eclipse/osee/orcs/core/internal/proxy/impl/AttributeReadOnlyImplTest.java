@@ -125,12 +125,12 @@ public class AttributeReadOnlyImplTest {
    @Test
    public void testIsDeleted() {
       boolean expected = true;
-      when(proxiedObject.isDeleted()).thenReturn(expected);
+      when(proxiedObject.isHardDeleted()).thenReturn(expected);
 
-      boolean actual = readOnly.isDeleted();
+      boolean actual = readOnly.isHardDeleted();
 
       assertEquals(expected, actual);
-      verify(proxiedObject).isDeleted();
+      verify(proxiedObject).isHardDeleted();
    }
 
    @Test

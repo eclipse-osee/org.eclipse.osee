@@ -385,11 +385,18 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
       return attribute;
    }
 
+   /*
+    * Exclude any hard deleted attributes, but include artifact deleted attributes
+    */
    @Override
    public <T> Attribute<T> getSoleAttribute(IAttributeType attributeType) {
       return getSoleAttribute(attributeType, DeletionFlag.EXCLUDE_DELETED);
    }
 
+   /*
+    * INCLUDE_DELETED: Includes all hard deleted attributes and artifact deleted attributes, EXCLUDE_DELETED: Excludes
+    * all hard deleted attributes, but include artifact deleted attributes
+    */
    @Override
    public <T> Attribute<T> getSoleAttribute(IAttributeType attributeType, DeletionFlag flag) {
       ensureAttributesLoaded();

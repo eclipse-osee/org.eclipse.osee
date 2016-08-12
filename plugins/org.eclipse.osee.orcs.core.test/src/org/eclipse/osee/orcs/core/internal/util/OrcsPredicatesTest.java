@@ -80,8 +80,8 @@ public class OrcsPredicatesTest {
       when(dirty.isDirty()).thenReturn(true);
       when(notDirty.isDirty()).thenReturn(false);
 
-      when(deleted.isDeleted()).thenReturn(true);
-      when(notDeleted.isDeleted()).thenReturn(false);
+      when(deleted.isHardDeleted()).thenReturn(true);
+      when(notDeleted.isHardDeleted()).thenReturn(false);
 
       date = new Date();
 
@@ -124,8 +124,8 @@ public class OrcsPredicatesTest {
 
    @Test
    public void testDeletionFlag() {
-      when(attribute1.isDeleted()).thenReturn(true);
-      when(attribute2.isDeleted()).thenReturn(false);
+      when(attribute1.isHardDeleted()).thenReturn(true);
+      when(attribute2.isHardDeleted()).thenReturn(false);
 
       assertFalse(deletionFlagEquals(EXCLUDE_DELETED).apply(attribute1));
       assertTrue(deletionFlagEquals(EXCLUDE_DELETED).apply(attribute2));

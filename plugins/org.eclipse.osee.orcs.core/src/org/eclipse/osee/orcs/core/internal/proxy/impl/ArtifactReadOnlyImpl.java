@@ -188,8 +188,8 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public boolean isDeleted() {
-      return getProxiedObject().isDeleted();
+   public boolean isHardDeleted() {
+      return getProxiedObject().isHardDeleted();
    }
 
    @Override

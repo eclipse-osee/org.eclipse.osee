@@ -67,7 +67,7 @@ public class RelationNodeAdjacenciesTest {
       collection.add(TYPE_3.getGuid(), deleted);
 
       when(dirty.isDirty()).thenReturn(true);
-      when(deleted.isDeleted()).thenReturn(true);
+      when(deleted.isHardDeleted()).thenReturn(true);
    }
 
    @Test
@@ -104,13 +104,13 @@ public class RelationNodeAdjacenciesTest {
       IRelationType typeC = mock(IRelationType.class);
 
       when(dirty.getRelationType()).thenReturn(typeA);
-      when(dirty.isDeleted()).thenReturn(true);
+      when(dirty.isHardDeleted()).thenReturn(true);
 
       when(clean.getRelationType()).thenReturn(typeB);
-      when(clean.isDeleted()).thenReturn(true);
+      when(clean.isHardDeleted()).thenReturn(true);
 
       when(deleted.getRelationType()).thenReturn(typeC);
-      when(deleted.isDeleted()).thenReturn(false);
+      when(deleted.isHardDeleted()).thenReturn(false);
 
       Collection<? extends IRelationType> types = collection.getExistingTypes(DeletionFlag.INCLUDE_DELETED);
 
@@ -195,7 +195,7 @@ public class RelationNodeAdjacenciesTest {
 
    @Test
    public void testLocalIdOnSide() throws OseeCoreException {
-      when(relation.isDeleted()).thenReturn(false);
+      when(relation.isHardDeleted()).thenReturn(false);
       when(relation.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(11);
       when(relation.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(22);
 

@@ -104,12 +104,18 @@ public enum ModificationType {
       throw new OseeArgumentException("[%s] does not correspond to any defined ModificationType enumerations", value);
    }
 
+   // Returns true if artifact has been deleted even if the relation or attribute was not deleted on that artifact
    public boolean isDeleted() {
       return this == DELETED || this == ARTIFACT_DELETED;
    }
 
    public boolean isUnDeleted() {
       return this == UNDELETED;
+   }
+
+   // Returns false for attributes and relations if artifact was deleted but the attribute or relation was not deleted
+   public boolean isHardDeleted() {
+      return this == DELETED;
    }
 
    public static Set<ModificationType> getAllNotHardDeletedTypes() {

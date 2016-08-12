@@ -274,7 +274,7 @@ public class RelationManagerTest {
       int actual = manager.getRelatedCount(session, DEFAULT_HIERARCHY, node1, IS_PARENT);
       assertEquals(3, actual);
 
-      when(relation2.isDeleted()).thenReturn(true);
+      when(relation2.isHardDeleted()).thenReturn(true);
 
       int actual2 = manager.getRelatedCount(session, DEFAULT_HIERARCHY, node1, IS_PARENT);
       assertEquals(2, actual2);

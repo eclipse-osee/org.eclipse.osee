@@ -15,5 +15,5 @@ package org.eclipse.osee.orcs.data;
  */
 public interface HasDeleteState {
 
-   boolean isDeleted();
+   boolean isHardDeleted();
 }

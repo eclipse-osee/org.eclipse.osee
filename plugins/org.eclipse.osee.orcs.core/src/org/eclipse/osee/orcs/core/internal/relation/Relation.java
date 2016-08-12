@@ -54,8 +54,8 @@ public class Relation implements HasOrcsData<RelationData>, OrcsWriteable {
    }
 
    @Override
-   public boolean isDeleted() {
-      return getModificationType().isDeleted();
+   public boolean isHardDeleted() {
+      return getModificationType().isHardDeleted();
    }
 
    @Override
@@ -153,7 +153,7 @@ public class Relation implements HasOrcsData<RelationData>, OrcsWriteable {
 
    @Override
    public boolean isDeleteAllowed() {
-      return !isDeleted();
+      return !isHardDeleted();
    }
 
    @Override

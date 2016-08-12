@@ -294,7 +294,7 @@ public class OrcsTransactionTest {
 
       toDelete = query.fromBranch(COMMON).andIds(artifact).includeDeletedArtifacts().getResults().getOneOrNull();
       assertNotNull(toDelete);
-      assertTrue(toDelete.isDeleted());
+      assertTrue(toDelete.isHardDeleted());
    }
 
    @Test
@@ -335,7 +335,7 @@ public class OrcsTransactionTest {
 
       toDelete = query.fromBranch(COMMON).andIds(artifact).includeDeletedArtifacts().getResults().getOneOrNull();
       assertNotNull(toDelete);
-      assertTrue(toDelete.isDeleted());
+      assertTrue(toDelete.isHardDeleted());
 
    }
 
@@ -372,7 +372,7 @@ public class OrcsTransactionTest {
 
          toDelete = query.fromBranch(COMMON).andIds(artifact1).includeDeletedArtifacts().getResults().getOneOrNull();
          assertNotNull(toDelete);
-         assertTrue(toDelete.isDeleted());
+         assertTrue(toDelete.isHardDeleted());
          toReturn = new TransactionId[] {tx1, tx2, tx3, tx4};
          historySetup = true;
       }

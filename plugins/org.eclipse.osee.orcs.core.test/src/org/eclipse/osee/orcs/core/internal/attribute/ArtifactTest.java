@@ -103,7 +103,7 @@ public class ArtifactTest {
       when(artifactData.getLocalId()).thenReturn(0);
       when(version.getBranchId()).thenReturn(55L);
 
-      when(deleted.isDeleted()).thenReturn(true);
+      when(deleted.isHardDeleted()).thenReturn(true);
       when(notDeleted.getOrcsData()).thenReturn(attributeData);
       when(deleted.getOrcsData()).thenReturn(attributeData);
       when(differentType.getOrcsData()).thenReturn(attributeData);
@@ -257,7 +257,7 @@ public class ArtifactTest {
       for (ModificationType modType : ModificationType.values()) {
          reset(artifactData);
          when(artifactData.getModType()).thenReturn(modType);
-         Assert.assertEquals(modType.isDeleted(), artifact.isDeleted());
+         Assert.assertEquals(modType.isHardDeleted(), artifact.isHardDeleted());
       }
    }
 

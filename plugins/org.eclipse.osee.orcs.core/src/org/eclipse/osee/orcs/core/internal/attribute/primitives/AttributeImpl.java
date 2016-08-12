@@ -238,7 +238,7 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
    @Override
    public boolean isDeleteAllowed() {
       try {
-         return !isDeleted() && getContainer().getAttributeCount(
+         return !isHardDeleted() && getContainer().getAttributeCount(
             getAttributeType()) > attributeTypeCache.getMinOccurrences(getAttributeType());
       } catch (OseeCoreException ex) {
          return false;
@@ -286,8 +286,8 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
    }
 
    @Override
-   public boolean isDeleted() {
-      return getModificationType().isDeleted();
+   public boolean isHardDeleted() {
+      return getModificationType().isHardDeleted();
    }
 
    /**

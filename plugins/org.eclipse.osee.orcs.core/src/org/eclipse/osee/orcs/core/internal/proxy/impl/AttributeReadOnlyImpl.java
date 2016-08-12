@@ -38,8 +38,8 @@ public class AttributeReadOnlyImpl<T> extends AbstractProxied<Attribute<T>> impl
    }
 
    @Override
-   public boolean isDeleted() {
-      return getProxiedObject().isDeleted();
+   public boolean isHardDeleted() {
+      return getProxiedObject().isHardDeleted();
    }
 
    @Override

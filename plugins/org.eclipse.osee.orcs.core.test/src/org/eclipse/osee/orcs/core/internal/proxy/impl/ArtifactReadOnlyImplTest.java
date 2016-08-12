@@ -156,12 +156,12 @@ public class ArtifactReadOnlyImplTest {
 
    @Test
    public void testIsDeleted() {
-      when(proxiedObject.isDeleted()).thenReturn(true);
+      when(proxiedObject.isHardDeleted()).thenReturn(true);
 
-      boolean actual = readOnly.isDeleted();
+      boolean actual = readOnly.isHardDeleted();
 
       assertEquals(true, actual);
-      verify(proxiedObject).isDeleted();
+      verify(proxiedObject).isHardDeleted();
    }
 
    @Test
