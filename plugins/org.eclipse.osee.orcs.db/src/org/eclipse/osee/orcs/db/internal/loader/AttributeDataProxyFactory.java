@@ -19,7 +19,6 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.DataProxyFactory;
 import org.eclipse.osee.orcs.data.AttributeTypes;
-import org.eclipse.osee.orcs.db.internal.util.AttributeDataUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -60,14 +59,9 @@ public class AttributeDataProxyFactory implements ProxyDataFactory {
    private String intern(IAttributeType attributeType, String original) throws OseeCoreException {
       String value = original;
       if (isEnumOrBoolean(attributeType)) {
-         value = intern(value);
+         value = Strings.intern(value);
       }
-      value = AttributeDataUtil.replaceGuidsWithName(original, jdbcClient);
       return value;
-   }
-
-   protected String intern(String value) {
-      return Strings.intern(value);
    }
 
    protected boolean isEnumOrBoolean(IAttributeType attributeType) throws OseeCoreException {

@@ -162,39 +162,4 @@ public class AttributeDataProxyFactoryTest {
       Assert.assertEquals(proxy, theProxy);
       Mockito.verify(proxy).setData(null, null);
    }
-
-   @Test
-   public void testCreateFromStringsCheckIntern() throws OseeCoreException {
-      long typeUuid = 45L;
-      String value = "hello";
-      String uri = null;
-
-      Mockito.when(attributeTypeCache.getByUuid(45L)).thenReturn(attributeType);
-      Mockito.when(attributeTypeCache.getAttributeProviderId(attributeType)).thenReturn("org.eclipse.proxyfactory");
-      Mockito.when(proxyProvider.getFactory("proxyfactory")).thenReturn(dataProxyFactory);
-      Mockito.when(dataProxyFactory.createInstance("proxyfactory")).thenReturn(proxy);
-
-      AttributeDataProxyFactory spy = Mockito.spy(factory);
-
-      spy.createProxy(typeUuid, value, uri);
-      Mockito.verify(spy, Mockito.times(0)).intern(value);
-
-      Mockito.reset(spy);
-
-      Mockito.when(attributeTypeCache.isEnumerated(attributeType)).thenReturn(true);
-      spy.createProxy(typeUuid, value, uri);
-      Mockito.verify(spy).intern(value);
-
-      Mockito.reset(spy);
-
-      Mockito.when(attributeTypeCache.isEnumerated(attributeType)).thenReturn(false);
-      spy.createProxy(typeUuid, value, uri);
-      Mockito.verify(spy, Mockito.times(0)).intern(value);
-
-      Mockito.reset(spy);
-
-      Mockito.when(attributeTypeCache.isBooleanType(attributeType)).thenReturn(true);
-      spy.createProxy(typeUuid, value, uri);
-      Mockito.verify(spy).intern(value);
-   }
 }

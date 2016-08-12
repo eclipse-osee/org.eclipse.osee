@@ -42,24 +42,7 @@ public class AttributeDataUtil {
       return null;
    }
 
-   public static String replaceGuidsWithName(String value, JdbcClient jdbcClient) {
-      if (value != null) {
-         StringBuffer sb = new StringBuffer();
-         Matcher matcher = guidPattern.matcher(value);
-         while (matcher.find()) {
-            String guid = matcher.group(2);
-            String name = getName(guid, jdbcClient);
-            if (name != null) {
-               matcher.appendReplacement(sb, name.substring(0, name.indexOf('}') + 1));
-            }
-         }
-         matcher.appendTail(sb);
-         return sb.toString();
-      }
-      return null;
-   }
-
-   public static String getName(String guid, JdbcClient jdbcClient) {
+   private static String getName(String guid, JdbcClient jdbcClient) {
       final StringBuffer sb = new StringBuffer();
       Consumer<JdbcStatement> consumer = stmt -> {
          sb.append(stmt.getString("value"));
