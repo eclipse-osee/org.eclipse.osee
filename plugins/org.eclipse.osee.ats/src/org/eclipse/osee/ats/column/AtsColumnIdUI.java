@@ -10,22 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
-import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
+import java.util.Collection;
+import java.util.Map;
+import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.column.AtsColumnIdValueColumn;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
+import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 
 /**
  * XViewerAtsColumn for columns that provide their text through AtsColumnService and are not strictly attribute based.
  *
  * @author Donald G. Dunne
  */
-public class AtsColumnIdUI extends XViewerAtsColumn implements IXViewerValueColumn {
+public class AtsColumnIdUI extends XViewerAtsColumn implements IXViewerPreComputedColumn {
 
    private final AtsColumnIdValueColumn columnIdColumn;
    private final IAtsServices services;
@@ -53,12 +56,32 @@ public class AtsColumnIdUI extends XViewerAtsColumn implements IXViewerValueColu
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      String result = "";
-      if (element instanceof IAtsObject) {
-         result = services.getColumnService().getColumnText(columnIdColumn.getColumnId(), (IAtsObject) element);
+   public Long getKey(Object obj) {
+      Long result = 0L;
+      if (obj instanceof IAtsWorkItem) {
+         result = ((IAtsObject) obj).getUuid();
       }
       return result;
+   }
+
+   @Override
+   public void populateCachedValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
+      for (Object element : objects) {
+         String value = "";
+         try {
+            if (element instanceof IAtsObject) {
+               value = services.getColumnService().getColumnText(columnIdColumn.getColumnId(), (IAtsObject) element);
+            }
+         } catch (Exception ex) {
+            value = LogUtil.getCellExceptionString(ex);
+         }
+         preComputedValueMap.put(getKey(element), value);
+      }
+   }
+
+   @Override
+   public String getText(Object obj, Long key, String cachedValue) {
+      return cachedValue;
    }
 
    public static XViewerAlign getXViewerAlign(ColumnAlign align) {
