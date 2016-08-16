@@ -65,7 +65,7 @@ public class ColorTeamColumnUI extends XViewerAtsColumn implements IXViewerPreCo
 
    @Override
    public String getText(Object obj, Long key, String cachedValue) {
-      return workItemUuidToColorTeam.get(key);
+      return cachedValue;
    }
 
    @Override
@@ -76,7 +76,7 @@ public class ColorTeamColumnUI extends XViewerAtsColumn implements IXViewerPreCo
                IAtsWorkItem workItem = (IAtsWorkItem) element;
                Pair<String, Boolean> result =
                   ColorTeamColumn.getWorkItemColorTeam(workItem, AtsClientService.get().getServices());
-               workItemUuidToColorTeam.put(workItem.getUuid(), result.getFirst());
+               preComputedValueMap.put(workItem.getUuid(), result.getFirst());
             }
          } catch (OseeCoreException ex) {
             LogUtil.getCellExceptionString(ex);
