@@ -27,7 +27,9 @@ import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.integration.util.DispositionIntegrationRule;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
 import org.eclipse.osee.disposition.rest.internal.importer.DiscrepancyParser;
+import org.eclipse.osee.disposition.rest.internal.importer.DiscrepancyParser.MutableString;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoItemDataCopier;
+import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
@@ -53,6 +55,9 @@ public class DispoItemDataCopierTest {
 
    @Test
    public void testCopyItemData() throws Exception {
+      MutableBoolean stoppedParsing = new MutableBoolean(false);
+      MutableBoolean isException = new MutableBoolean(false);
+      MutableString exMessage = new MutableString();
 
       DispoItemData oldItemTemp = new DispoItemData();
       String name = "sampleTmo.tmo";
@@ -60,7 +65,8 @@ public class DispoItemDataCopierTest {
       InputStream stream = null;
       try {
          stream = new BufferedInputStream(resource.openStream());
-         DiscrepancyParser.buildItemFromFile(oldItemTemp, name, stream, true, new Date());
+         DiscrepancyParser.buildItemFromFile(oldItemTemp, name, stream, true, new Date(), stoppedParsing, isException,
+            exMessage);
       } finally {
          Lib.close(stream);
       }
@@ -90,7 +96,8 @@ public class DispoItemDataCopierTest {
       InputStream stream2 = null;
       try {
          stream2 = new BufferedInputStream(resource2.openStream());
-         DiscrepancyParser.buildItemFromFile(itemFromNewVersion, name2, stream2, false, oldItemTemp.getLastUpdate());
+         DiscrepancyParser.buildItemFromFile(itemFromNewVersion, name2, stream2, false, oldItemTemp.getLastUpdate(),
+            stoppedParsing, isException, exMessage);
       } finally {
          Lib.close(stream2);
       }

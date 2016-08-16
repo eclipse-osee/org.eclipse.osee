@@ -24,10 +24,13 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
+import org.eclipse.osee.disposition.model.DispoSummarySeverity;
 import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.DispoImporterApi;
 import org.eclipse.osee.disposition.rest.internal.DispoDataFactory;
+import org.eclipse.osee.disposition.rest.internal.importer.DiscrepancyParser.MutableString;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
+import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 
@@ -109,16 +112,20 @@ public class TmoImporter implements DispoImporterApi {
             try {
                inputStream = new FileInputStream(file);
                String sanitizedFileName = file.getName().replaceAll("\\..*", "");
-
                DispoItemData itemToBuild = new DispoItemData();
+               MutableString message = new MutableString();
+               MutableBoolean isSameFile = new MutableBoolean(false);
+               MutableBoolean isExeptioned = new MutableBoolean(false);
 
                // We already have an item with this name so we now have to check the dates in the parsing
                if (exisitingItems.containsKey(sanitizedFileName)) {
                   DispoItem oldItem = exisitingItems.get(sanitizedFileName);
                   Date lastUpdate = oldItem.getLastUpdate();
-                  boolean wasSameFile = DiscrepancyParser.buildItemFromFile(itemToBuild, sanitizedFileName, inputStream,
-                     false, lastUpdate);
-                  if (!wasSameFile) {
+                  DiscrepancyParser.buildItemFromFile(itemToBuild, sanitizedFileName, inputStream, false, lastUpdate,
+                     isSameFile, isExeptioned, message);
+                  if (isExeptioned.getValue()) {
+                     operationReport.addEntry(sanitizedFileName, message.getValue(), DispoSummarySeverity.ERROR);
+                  } else if (!isSameFile.getValue()) {
                      // Copy Id to tell callee that this is not a new Item
                      itemToBuild.setGuid(oldItem.getGuid());
                      itemToBuild.setAnnotationsList(new ArrayList<DispoAnnotationData>());
@@ -131,9 +138,15 @@ public class TmoImporter implements DispoImporterApi {
                      fromThread.add(itemToBuild);
                   }
                } else {
-                  DiscrepancyParser.buildItemFromFile(itemToBuild, sanitizedFileName, inputStream, true, new Date());
-                  dataFactory.initDispoItem(itemToBuild);
-                  fromThread.add(itemToBuild);
+                  DiscrepancyParser.buildItemFromFile(itemToBuild, sanitizedFileName, inputStream, true, new Date(),
+                     isSameFile, isExeptioned, message);
+                  if (isExeptioned.getValue()) {
+                     operationReport.addEntry(sanitizedFileName, message.getValue(), DispoSummarySeverity.ERROR);
+                  } else {
+                     dataFactory.initDispoItem(itemToBuild);
+                     fromThread.add(itemToBuild);
+                  }
+
                }
             } finally {
                Lib.close(inputStream);

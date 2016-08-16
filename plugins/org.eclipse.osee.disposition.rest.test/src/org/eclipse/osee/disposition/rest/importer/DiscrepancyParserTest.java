@@ -19,6 +19,8 @@ import java.util.Map;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.rest.internal.importer.DiscrepancyParser;
+import org.eclipse.osee.disposition.rest.internal.importer.DiscrepancyParser.MutableString;
+import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Assert;
 import org.junit.Test;
@@ -41,21 +43,24 @@ public class DiscrepancyParserTest {
    public void testNewImport() throws Exception {
 
       DispoItemData dispoItem = new DispoItemData();
-      boolean stoppedParsing = false;
+      MutableBoolean stoppedParsing = new MutableBoolean(false);
+      MutableBoolean isException = new MutableBoolean(false);
+      MutableString exMessage = new MutableString();
 
       String name = "sampleTmo.tmo";
       URL resource = getClass().getResource("sampleTmo.tmo");
       InputStream stream = null;
       try {
          stream = new BufferedInputStream(resource.openStream());
-         stoppedParsing = DiscrepancyParser.buildItemFromFile(dispoItem, name, stream, false, new Date(0));
+         DiscrepancyParser.buildItemFromFile(dispoItem, name, stream, false, new Date(0), stoppedParsing, isException,
+            exMessage);
       } finally {
          Lib.close(stream);
       }
 
       int actualLength = dispoItem.getDiscrepanciesList().size();
       Assert.assertEquals(6, actualLength);
-      Assert.assertFalse(stoppedParsing);
+      Assert.assertFalse(stoppedParsing.getValue());
 
       Map<String, Discrepancy> discrepanciesList = dispoItem.getDiscrepanciesList();
       Collection<Discrepancy> values = discrepanciesList.values();
@@ -95,21 +100,24 @@ public class DiscrepancyParserTest {
    public void testNewImportStringLocations() throws Exception {
 
       DispoItemData dispoItem = new DispoItemData();
-      boolean stoppedParsing = false;
+      MutableBoolean stoppedParsing = new MutableBoolean(false);
+      MutableBoolean isException = new MutableBoolean(false);
+      MutableString exMessage = new MutableString();
 
       String name = "sampleTmoStrings.tmo";
       URL resource = getClass().getResource(name);
       InputStream stream = null;
       try {
          stream = new BufferedInputStream(resource.openStream());
-         stoppedParsing = DiscrepancyParser.buildItemFromFile(dispoItem, name, stream, false, new Date(0));
+         DiscrepancyParser.buildItemFromFile(dispoItem, name, stream, false, new Date(0), stoppedParsing, isException,
+            exMessage);
       } finally {
          Lib.close(stream);
       }
 
       int actualLength = dispoItem.getDiscrepanciesList().size();
       Assert.assertEquals(6, actualLength);
-      Assert.assertFalse(stoppedParsing);
+      Assert.assertFalse(stoppedParsing.getValue());
 
       Map<String, Discrepancy> discrepanciesList = dispoItem.getDiscrepanciesList();
       Collection<Discrepancy> values = discrepanciesList.values();

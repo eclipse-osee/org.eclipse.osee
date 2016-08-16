@@ -62,7 +62,7 @@ public class DiscrepancyParser {
       }
    }
 
-   public static boolean buildItemFromFile(DispoItemData dispoItem, String resourceName, InputStream inputStream, final boolean isNewImport, final Date lastUpdate) throws Exception {
+   public static void buildItemFromFile(DispoItemData dispoItem, String resourceName, InputStream inputStream, final boolean isNewImport, final Date lastUpdate, MutableBoolean isSameFile, MutableBoolean isException, MutableString exMessage) throws Exception {
       final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US);
       final MutableBoolean isWithinTestPointElement = new MutableBoolean(false);
       final MutableString location = new MutableString();
@@ -72,7 +72,6 @@ public class DiscrepancyParser {
       final Map<String, Discrepancy> discrepancies = new HashMap<String, Discrepancy>();
       final MutableDate scriptRunDate = new MutableDate();
       final MutableDate firstTestPointDate = new MutableDate();
-      final MutableBoolean stoppedParsing = new MutableBoolean(false);
       final MutableString version = new MutableString();
       final MutableString totalPoints = new MutableString();
       final MutableBoolean firstTestPointResultFound = new MutableBoolean(false);
@@ -263,13 +262,17 @@ public class DiscrepancyParser {
          }
       } catch (Exception ex) {
          if (ex.getMessage().equals("Stopped Parsing")) {
-            stoppedParsing.setValue(true);
+            exMessage.setValue("Old File");
+            isSameFile.setValue(true);
+            return;
          } else {
-            throw ex;
+            isException.setValue(true);
+            exMessage.setValue(ex.getMessage());
+            return;
          }
       }
 
-      if (!stoppedParsing.getValue()) {
+      if (!isSameFile.getValue()) {
          dispoItem.setName(resourceName);
 
          if (abortedFlag.getValue() == null || totalPoints.getValue() == null) {
@@ -313,8 +316,6 @@ public class DiscrepancyParser {
          }
          dispoItem.setLastUpdate(scriptRunDate.getValue());
       }
-
-      return stoppedParsing.getValue();
    }
 
    private static Discrepancy createAdditionalDiscrepancy(String id, String message) {
