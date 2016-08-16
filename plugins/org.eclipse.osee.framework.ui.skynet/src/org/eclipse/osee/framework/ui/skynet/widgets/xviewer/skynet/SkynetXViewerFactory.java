@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -43,6 +44,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.Attrib
 public class SkynetXViewerFactory extends XViewerFactory {
 
    private IOseeTreeReportProvider reportProvider;
+   private static List<XViewerColumn> attrColumns;
 
    public SkynetXViewerFactory(String namespace, IOseeTreeReportProvider reportProvider) {
       super(namespace);
@@ -93,11 +95,13 @@ public class SkynetXViewerFactory extends XViewerFactory {
    }
 
    public static List<XViewerColumn> getAllAttributeColumns() throws OseeCoreException {
-      List<XViewerColumn> columns = new ArrayList<>();
-      for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
-         columns.add(getAttributeColumn(attributeType));
+      if (attrColumns == null) {
+         attrColumns = new LinkedList<XViewerColumn>();
+         for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
+            attrColumns.add(getAttributeColumn(attributeType));
+         }
       }
-      return columns;
+      return attrColumns;
    }
 
    public static XViewerColumn getAttributeColumn(IAttributeType attributeType) throws OseeCoreException {
