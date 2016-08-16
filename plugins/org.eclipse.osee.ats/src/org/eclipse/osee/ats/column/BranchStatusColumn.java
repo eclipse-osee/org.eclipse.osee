@@ -10,28 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
-import java.util.HashSet;
-import java.util.Set;
-import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import java.util.Collection;
+import java.util.Map;
+import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 
 /**
  * @author Donald G. Dunne
  */
-public class BranchStatusColumn extends XViewerAtsColumn implements IXViewerValueColumn {
+public class BranchStatusColumn extends XViewerAtsColumn implements IXViewerPreComputedColumn {
 
    public static BranchStatusColumn instance = new BranchStatusColumn();
 
@@ -56,38 +53,52 @@ public class BranchStatusColumn extends XViewerAtsColumn implements IXViewerValu
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      try {
-         if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            Set<String> strs = new HashSet<>();
-            for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
-               String str = getColumnText(team, column, columnIndex);
-               if (Strings.isValid(str)) {
-                  strs.add(str);
-               }
-            }
-            return Collections.toString(", ", strs);
-         }
-         if (Artifacts.isOfType(element, AtsArtifactTypes.TeamWorkflow)) {
-            TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) element;
-            try {
-               if (AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt)) {
-                  return "Working";
-               } else if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt)) {
-                  if (!AtsClientService.get().getBranchService().isAllObjectsToCommitToConfigured(
-                     teamArt) || !AtsClientService.get().getBranchService().isBranchesAllCommitted(teamArt)) {
-                     return "Needs Commit";
-                  }
-                  return "Committed";
-               }
-               return "";
-            } catch (Exception ex) {
-               return "Exception: " + ex.getLocalizedMessage();
-            }
-         }
-      } catch (OseeCoreException ex) {
-         LogUtil.getCellExceptionString(ex);
+   public Long getKey(Object obj) {
+      Long result = 0L;
+      if (obj instanceof IAtsObject) {
+         result = ((IAtsObject) obj).getUuid();
       }
-      return "";
+      return result;
    }
+
+   @Override
+   public String getText(Object obj, Long key, String cachedValue) {
+      return cachedValue;
+   }
+
+   @Override
+   public void populateCachedValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
+      for (Object element : objects) {
+         Long key = getKey(element);
+         try {
+            if (Artifacts.isOfType(element, AtsArtifactTypes.TeamWorkflow)) {
+               String status = getBranchStatus((IAtsTeamWorkflow) element);
+               preComputedValueMap.put(key, status);
+            } else {
+               preComputedValueMap.put(key, "");
+            }
+         } catch (OseeCoreException ex) {
+            String cellExceptionString = LogUtil.getCellExceptionString(ex);
+            preComputedValueMap.put(key, cellExceptionString);
+         }
+      }
+   }
+
+   public String getBranchStatus(IAtsTeamWorkflow teamWf) {
+      try {
+         if (AtsClientService.get().getBranchService().isWorkingBranchInWork(teamWf)) {
+            return "Working";
+         } else if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamWf)) {
+            if (!AtsClientService.get().getBranchService().isAllObjectsToCommitToConfigured(
+               teamWf) || !AtsClientService.get().getBranchService().isBranchesAllCommitted(teamWf)) {
+               return "Needs Commit";
+            }
+            return "Committed";
+         }
+         return "";
+      } catch (Exception ex) {
+         return "Exception: " + ex.getLocalizedMessage();
+      }
+   }
+
 }
