@@ -12,12 +12,10 @@ package org.eclipse.osee.ats.column;
 
 import java.util.Collection;
 import java.util.Map;
-import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.column.AtsColumnIdValueColumn;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
@@ -28,7 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
  *
  * @author Donald G. Dunne
  */
-public class AtsColumnIdUI extends XViewerAtsColumn implements IXViewerPreComputedColumn {
+public class AtsColumnIdUI extends XViewerAtsColumn implements IAtsXViewerPreComputedColumn {
 
    private final AtsColumnIdValueColumn columnIdColumn;
    private final IAtsServices services;
@@ -56,15 +54,6 @@ public class AtsColumnIdUI extends XViewerAtsColumn implements IXViewerPreComput
    }
 
    @Override
-   public Long getKey(Object obj) {
-      Long result = 0L;
-      if (obj instanceof IAtsWorkItem) {
-         result = ((IAtsObject) obj).getUuid();
-      }
-      return result;
-   }
-
-   @Override
    public void populateCachedValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
       for (Object element : objects) {
          String value = "";
@@ -77,11 +66,6 @@ public class AtsColumnIdUI extends XViewerAtsColumn implements IXViewerPreComput
          }
          preComputedValueMap.put(getKey(element), value);
       }
-   }
-
-   @Override
-   public String getText(Object obj, Long key, String cachedValue) {
-      return cachedValue;
    }
 
    public static XViewerAlign getXViewerAlign(ColumnAlign align) {

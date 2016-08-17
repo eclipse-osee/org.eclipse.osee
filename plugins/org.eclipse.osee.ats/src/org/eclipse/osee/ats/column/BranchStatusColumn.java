@@ -12,10 +12,8 @@ package org.eclipse.osee.ats.column;
 
 import java.util.Collection;
 import java.util.Map;
-import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -28,7 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 /**
  * @author Donald G. Dunne
  */
-public class BranchStatusColumn extends XViewerAtsColumn implements IXViewerPreComputedColumn {
+public class BranchStatusColumn extends XViewerAtsColumn implements IAtsXViewerPreComputedColumn {
 
    public static BranchStatusColumn instance = new BranchStatusColumn();
 
@@ -50,20 +48,6 @@ public class BranchStatusColumn extends XViewerAtsColumn implements IXViewerPreC
       BranchStatusColumn newXCol = new BranchStatusColumn();
       super.copy(this, newXCol);
       return newXCol;
-   }
-
-   @Override
-   public Long getKey(Object obj) {
-      Long result = 0L;
-      if (obj instanceof IAtsObject) {
-         result = ((IAtsObject) obj).getUuid();
-      }
-      return result;
-   }
-
-   @Override
-   public String getText(Object obj, Long key, String cachedValue) {
-      return cachedValue;
    }
 
    @Override

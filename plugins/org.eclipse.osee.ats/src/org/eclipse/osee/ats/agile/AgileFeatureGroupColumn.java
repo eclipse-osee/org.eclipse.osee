@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
-import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
@@ -33,6 +32,7 @@ import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxAgileItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.column.IAtsXViewerPreComputedColumn;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -59,7 +59,7 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IXViewerPreComputedColumn, IAltLeftClickProvider, IMultiColumnEditProvider {
+public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXViewerPreComputedColumn, IAltLeftClickProvider, IMultiColumnEditProvider {
 
    public static AgileFeatureGroupColumn instance = new AgileFeatureGroupColumn();
 
@@ -191,11 +191,6 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IXViewe
          result = ((IAtsObject) obj).getUuid();
       }
       return result;
-   }
-
-   @Override
-   public String getText(Object obj, Long key, String cachedValue) {
-      return cachedValue;
    }
 
    @Override

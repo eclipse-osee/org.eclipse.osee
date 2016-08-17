@@ -10,21 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
-import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
+import java.util.Collection;
+import java.util.Map;
+import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.core.column.ParentTopTeamColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 
 /**
  * @author Donald G. Dunne
  */
-public class ParentTopTeamColumnUI extends XViewerAtsColumn implements IXViewerValueColumn {
+public class ParentTopTeamColumnUI extends XViewerAtsColumn implements IXViewerPreComputedColumn {
 
    private final static ParentTopTeamColumnUI instance = new ParentTopTeamColumnUI();
 
@@ -50,16 +52,36 @@ public class ParentTopTeamColumnUI extends XViewerAtsColumn implements IXViewerV
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      String result = "";
-      if (element instanceof IAtsObject) {
-         try {
-            result = ParentTopTeamColumn.getColumnText((IAtsObject) element);
-         } catch (OseeCoreException ex) {
-            result = XViewerCells.getCellExceptionString(ex);
-         }
+   public Long getKey(Object obj) {
+      Long result = 0L;
+      if (obj instanceof IAtsObject) {
+         result = ((IAtsObject) obj).getUuid();
       }
       return result;
+   }
+
+   @Override
+   public String getText(Object obj, Long key, String cachedValue) {
+      return cachedValue;
+   }
+
+   @Override
+   public void populateCachedValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
+      for (Object element : objects) {
+         try {
+            String result = "";
+            if (element instanceof IAtsObject) {
+               try {
+                  result = ParentTopTeamColumn.getColumnText((IAtsObject) element);
+               } catch (OseeCoreException ex) {
+                  result = XViewerCells.getCellExceptionString(ex);
+               }
+            }
+            preComputedValueMap.put(getKey(element), result);
+         } catch (OseeCoreException ex) {
+            preComputedValueMap.put(getKey(element), LogUtil.getCellExceptionString(ex));
+         }
+      }
    }
 
 }

@@ -14,11 +14,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
-import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
-import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.artifact.MembersManager;
 import org.eclipse.osee.ats.core.client.artifact.CollectorArtifact;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
@@ -31,7 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 /**
  * @author Donald G. Dunne
  */
-public abstract class AbstractMembersOrderColumn extends XViewerAtsColumn implements IXViewerPreComputedColumn, IAltLeftClickProvider {
+public abstract class AbstractMembersOrderColumn extends XViewerAtsColumn implements IAtsXViewerPreComputedColumn, IAltLeftClickProvider {
 
    public static final Integer DEFAULT_WIDTH = 45;
    Map<Long, String> multiMembersValueMap = new HashMap<>();
@@ -39,15 +37,6 @@ public abstract class AbstractMembersOrderColumn extends XViewerAtsColumn implem
 
    public AbstractMembersOrderColumn(String id, String name, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
-   }
-
-   @Override
-   public Long getKey(Object obj) {
-      Long result = 0L;
-      if (obj instanceof IAtsObject) {
-         result = ((IAtsObject) obj).getUuid();
-      }
-      return result;
    }
 
    public abstract Artifact getParentMembersArtifact(WorldXViewer worldXViewer);
