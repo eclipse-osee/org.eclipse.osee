@@ -16,14 +16,16 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
-import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
+import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
@@ -33,7 +35,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -41,7 +42,6 @@ import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -59,7 +59,7 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IXViewerValueColumn, IAltLeftClickProvider, IMultiColumnEditProvider {
+public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IXViewerPreComputedColumn, IAltLeftClickProvider, IMultiColumnEditProvider {
 
    public static AgileFeatureGroupColumn instance = new AgileFeatureGroupColumn();
 
@@ -94,6 +94,7 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IXViewe
                awa.persist("persist goals via alt-left-click");
             }
             if (modified) {
+               populateCachedValues(java.util.Collections.singleton(awa), preComputedValueMap);
                xViewer.update(awa, null);
                return true;
             }
@@ -184,24 +185,40 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IXViewe
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      try {
-         if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            Set<String> strs = new HashSet<>();
-            for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
-               String str = getColumnText(team, column, columnIndex);
-               if (Strings.isValid(str)) {
-                  strs.add(str);
-               }
-            }
-            return Collections.toString(", ", strs);
+   public Long getKey(Object obj) {
+      Long result = 0L;
+      if (obj instanceof IAtsObject) {
+         result = ((IAtsObject) obj).getUuid();
+      }
+      return result;
+   }
 
-         } else {
-            return Collections.toString(", ", ((Artifact) (IAtsWorkItem) element).getRelatedArtifacts(
-               AtsRelationTypes.AgileFeatureToItem_FeatureGroup));
+   @Override
+   public String getText(Object obj, Long key, String cachedValue) {
+      return cachedValue;
+   }
+
+   @Override
+   public void populateCachedValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
+      for (Object element : objects) {
+         try {
+            if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
+               Set<String> strs = new HashSet<>();
+               for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(element)) {
+                  for (Artifact art : ((Artifact) teamWf.getStoreObject()).getRelatedArtifacts(
+                     AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
+                     strs.add(art.getName());
+                  }
+               }
+               preComputedValueMap.put(getKey(element), Collections.toString(", ", strs));
+            } else {
+               preComputedValueMap.put(getKey(element),
+                  Collections.toString(", ", ((Artifact) (IAtsWorkItem) element).getRelatedArtifacts(
+                     AtsRelationTypes.AgileFeatureToItem_FeatureGroup)));
+            }
+         } catch (OseeCoreException ex) {
+            preComputedValueMap.put(getKey(element), LogUtil.getCellExceptionString(ex));
          }
-      } catch (OseeCoreException ex) {
-         return LogUtil.getCellExceptionString(ex);
       }
    }
 
