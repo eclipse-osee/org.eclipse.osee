@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.config;
 
+import java.util.Collection;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -36,5 +37,7 @@ public interface IAtsClientVersionService extends IAtsVersionService {
    IAtsVersion createVersion(String name, String guid, long uuid, IAtsChangeSet changes);
 
    IAtsVersion createVersion(String name, IAtsChangeSet changes);
+
+   Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef);
 
 }

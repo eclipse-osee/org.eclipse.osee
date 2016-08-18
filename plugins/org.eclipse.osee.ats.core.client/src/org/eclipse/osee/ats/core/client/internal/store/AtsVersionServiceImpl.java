@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal.store;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
@@ -138,6 +139,11 @@ public class AtsVersionServiceImpl extends AbstractAtsVersionServiceImpl impleme
       IAtsVersion item = atsClient.getVersionFactory().createVersion(name, changes, atsClient);
       cache.cacheAtsObject(item);
       return item;
+   }
+
+   @Override
+   public Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef) {
+      return atsClient.getTeamDefinitionService().getVersions(teamDef);
    }
 
 }

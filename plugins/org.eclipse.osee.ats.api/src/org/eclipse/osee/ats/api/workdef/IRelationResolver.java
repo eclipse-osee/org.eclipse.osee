@@ -40,4 +40,6 @@ public interface IRelationResolver {
 
    List<ArtifactId> getRelatedArtifacts(IAtsWorkItem workItem, IRelationTypeSide relationTypeSide);
 
+   Collection<ArtifactId> getRelated(IAtsObject atsObject, IRelationTypeSide relationTypeSide);
+
 }

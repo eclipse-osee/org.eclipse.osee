@@ -12,8 +12,10 @@ package org.eclipse.osee.ats.rest.internal.workitem;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -77,6 +79,16 @@ public class AtsTeamDefinitionService implements IAtsTeamDefinitionService {
          teamDef = atsServer.getConfigItemFactory().getTeamDef(teamDefArt);
       }
       return teamDef;
+   }
+
+   @Override
+   public Collection<IAtsTeamDefinition> getTeamDefinitions(IAgileTeam agileTeam) {
+      List<IAtsTeamDefinition> teamDefs = new LinkedList<>();
+      for (ArtifactReadable atsTeamArt : atsServer.getArtifact(agileTeam).getRelated(
+         AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam)) {
+         teamDefs.add(atsServer.getConfigItemFactory().getTeamDef(atsTeamArt));
+      }
+      return teamDefs;
    }
 
 }

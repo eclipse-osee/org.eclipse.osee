@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api.team;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -27,5 +28,7 @@ public interface IAtsTeamDefinitionService {
    IAtsTeamDefinition getTeamDefHoldingVersions(IAtsProgram program);
 
    IAtsTeamDefinition getTeamDefinition(String name);
+
+   Collection<IAtsTeamDefinition> getTeamDefinitions(IAgileTeam agileTeam);
 
 }

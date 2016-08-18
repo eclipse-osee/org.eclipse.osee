@@ -169,4 +169,9 @@ public class AtsRelationResolverServiceImpl implements IRelationResolver {
       return Collections.castAll(getRelated(artifact, relationTypeSide));
    }
 
+   @Override
+   public Collection<ArtifactId> getRelated(IAtsObject atsObject, IRelationTypeSide relationTypeSide) {
+      return getRelated(atsObject.getStoreObject(), relationTypeSide);
+   }
+
 }
