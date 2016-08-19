@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.client.demo.navigate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -30,6 +31,7 @@ import org.eclipse.osee.ats.version.CreateNewVersionItem;
 import org.eclipse.osee.ats.version.ReleaseVersionItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeWithInheritenceSearchItem;
+import org.eclipse.osee.ats.world.search.ILazyTeamDefinitionProvider;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.OpenWorkflowsByTeamDefSearchItem;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
@@ -60,8 +62,8 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       // Add check to keep exception from occurring for OSEE developers running against production
       if (!ClientSessionManager.isProductionDataStore()) {
          try {
-            results = AtsClientService.get().getCache().getByUuid(team.getTeamDefToken().getUuid(),
-               IAtsTeamDefinition.class);
+            results =
+               AtsClientService.get().getCache().getByUuid(team.getTeamDefToken().getUuid(), IAtsTeamDefinition.class);
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
@@ -96,12 +98,13 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
          try {
             IAtsTeamDefinition teamDef = getTeamDef(team);
             XNavigateItem teamItems = new XNavigateItemFolder(jhuItem, "JHU " + team.name().replaceAll("_", " "));
-            new SearchNavigateItem(teamItems,
-               new OpenWorkflowsByTeamDefSearchItem("Show Open " + teamDef + " Workflows", Arrays.asList(teamDef)));
+            new SearchNavigateItem(teamItems, new OpenWorkflowsByTeamDefSearchItem(
+               "Show Open " + teamDef + " Workflows", new SimpleTeamDefinitionProvider(Arrays.asList(teamDef))));
             // Handle all children teams
             for (IAtsTeamDefinition childTeamDef : TeamDefinitions.getChildren(teamDef, true)) {
-               new SearchNavigateItem(teamItems, new OpenWorkflowsByTeamDefSearchItem(
-                  "Show Open " + childTeamDef + " Workflows", Arrays.asList(childTeamDef)));
+               new SearchNavigateItem(teamItems,
+                  new OpenWorkflowsByTeamDefSearchItem("Show Open " + childTeamDef + " Workflows",
+                     new SimpleTeamDefinitionProvider(Arrays.asList(childTeamDef))));
             }
             if (teamDef.isTeamUsesVersions()) {
                if (team.name().contains("SAW")) {
@@ -114,7 +117,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
                new SearchNavigateItem(teamItems,
                   new VersionTargetedForTeamSearchItem(teamDef, null, false, LoadView.WorldEditor));
                new SearchNavigateItem(teamItems, new OpenWorkflowsByTeamDefSearchItem("Show Un-Released Team Workflows",
-                  Arrays.asList(teamDef), true, ReleasedOption.UnReleased));
+                  new SimpleTeamDefinitionProvider(Arrays.asList(teamDef)), true, ReleasedOption.UnReleased));
                new ReleaseVersionItem(teamItems, teamDef);
                new CreateNewVersionItem(teamItems, teamDef);
             }
@@ -144,4 +147,20 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
 
       return items;
    }
+
+   private class SimpleTeamDefinitionProvider implements ILazyTeamDefinitionProvider {
+
+      private final Collection<IAtsTeamDefinition> teamDefs;
+
+      public SimpleTeamDefinitionProvider(Collection<IAtsTeamDefinition> teamDefs) {
+         this.teamDefs = teamDefs;
+      }
+
+      @Override
+      public Collection<IAtsTeamDefinition> getTeamDefs() {
+         return teamDefs;
+      }
+
+   }
+
 }
