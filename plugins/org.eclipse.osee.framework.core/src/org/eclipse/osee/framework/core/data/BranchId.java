@@ -12,9 +12,11 @@ package org.eclipse.osee.framework.core.data;
 
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Ryan D. Brooks
@@ -38,6 +40,15 @@ public interface BranchId extends Identity<Long>, Id {
 
    @JsonCreator
    public static BranchId valueOf(long id) {
-      return TokenFactory.createBranch(id);
+      final class BranchIdImpl extends BaseId implements BranchId {
+         public BranchIdImpl(Long id) {
+            super(id);
+         }
+      }
+      return new BranchIdImpl(id);
+   }
+
+   public static BranchId create() {
+      return valueOf(Lib.generateUuid());
    }
 }

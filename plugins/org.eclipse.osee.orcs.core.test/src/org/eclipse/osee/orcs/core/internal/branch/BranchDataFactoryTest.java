@@ -86,8 +86,8 @@ public class BranchDataFactoryTest {
       verify(txQuery).andIsHead(CoreBranches.SYSTEM_ROOT);
 
       String comment = String.format("New Branch from %s (%s)", CoreBranches.SYSTEM_ROOT.getName(), txRecord);
-      assertData(result, branch.getName(), branch.getId(), BranchType.BASELINE, comment, txRecord, author,
-         ArtifactId.SENTINEL, false);
+      assertData(result, branch.getName(), branch, BranchType.BASELINE, comment, txRecord, author, ArtifactId.SENTINEL,
+         false);
    }
 
    @Test
@@ -98,8 +98,8 @@ public class BranchDataFactoryTest {
       verify(txQuery).andIsHead(parentBranch);
 
       String comment = String.format("New Branch from %s (%s)", parentBranch.getName(), txRecord.getId());
-      assertData(result, branch.getName(), branch.getId(), BranchType.BASELINE, comment, txRecord, author,
-         associatedArtifact, false);
+      assertData(result, branch.getName(), branch, BranchType.BASELINE, comment, txRecord, author, associatedArtifact,
+         false);
    }
 
    @Test
@@ -110,8 +110,8 @@ public class BranchDataFactoryTest {
       verify(txQuery).andIsHead(parentBranch);
 
       String comment = String.format("New Branch from %s (%s)", parentBranch.getName(), txRecord.getId());
-      assertData(result, branch.getName(), branch.getId(), BranchType.WORKING, comment, txRecord, author,
-         associatedArtifact, false);
+      assertData(result, branch.getName(), branch, BranchType.WORKING, comment, txRecord, author, associatedArtifact,
+         false);
    }
 
    @Test
@@ -125,8 +125,8 @@ public class BranchDataFactoryTest {
 
       String comment = String.format("Transaction %d copied from %s to create Branch %s", txRecord.getId(),
          parentBranch.getName(), branch.getName());
-      assertData(result, branch.getName(), branch.getId(), BranchType.WORKING, comment, txRecord, author,
-         ArtifactId.SENTINEL, true);
+      assertData(result, branch.getName(), branch, BranchType.WORKING, comment, txRecord, author, ArtifactId.SENTINEL,
+         true);
    }
 
    @Test
@@ -140,13 +140,13 @@ public class BranchDataFactoryTest {
 
       String comment = String.format("Transaction %d ported from %s to create Branch %s", txRecord.getId(),
          parentBranch.getName(), branch.getName());
-      assertData(result, branch.getName(), branch.getId(), BranchType.PORT, comment, txRecord, author,
-         ArtifactId.SENTINEL, true);
+      assertData(result, branch.getName(), branch, BranchType.PORT, comment, txRecord, author, ArtifactId.SENTINEL,
+         true);
    }
 
-   private static void assertData(CreateBranchData actual, String branchName, Long branchUuid, BranchType type, String comment, TransactionId fromTx, ArtifactId author, ArtifactId associatedArtifact, boolean isCopyFromTx) {
+   private static void assertData(CreateBranchData actual, String branchName, BranchId branch, BranchType type, String comment, TransactionId fromTx, ArtifactId author, ArtifactId associatedArtifact, boolean isCopyFromTx) {
       assertEquals(branchName, actual.getName());
-      assertEquals(branchUuid, actual.getGuid());
+      assertEquals(branch, actual.getBranch());
 
       assertEquals(type, actual.getBranchType());
       assertEquals(comment, actual.getCreationComment());

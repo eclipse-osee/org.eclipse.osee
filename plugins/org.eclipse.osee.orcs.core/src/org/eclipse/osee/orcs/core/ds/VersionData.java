@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 
 /**
@@ -29,9 +30,9 @@ public interface VersionData extends Cloneable {
 
    void setStripeId(TransactionId stripeId);
 
-   Long getBranchId();
+   BranchId getBranch();
 
-   void setBranchId(Long branchId);
+   void setBranch(BranchId branch);
 
    boolean isInStorage();
 

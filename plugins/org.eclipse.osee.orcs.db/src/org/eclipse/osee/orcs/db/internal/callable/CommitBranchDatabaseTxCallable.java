@@ -125,7 +125,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
 
    private void updatePreviousCurrentsOnDestinationBranch(JdbcConnection connection) throws OseeCoreException {
       UpdatePreviousTxCurrent updater =
-         new UpdatePreviousTxCurrent(getJdbcClient(), joinFactory, connection, destinationBranch.getUuid());
+         new UpdatePreviousTxCurrent(getJdbcClient(), joinFactory, connection, destinationBranch);
       for (ChangeItem change : changes) {
          switch (change.getChangeType()) {
             case ARTIFACT_CHANGE:

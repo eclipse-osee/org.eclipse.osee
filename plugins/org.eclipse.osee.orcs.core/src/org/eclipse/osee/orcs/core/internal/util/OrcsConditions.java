@@ -41,13 +41,13 @@ public final class OrcsConditions {
          checkNotNull(node, "node");
          GraphData graph2 = node.getGraph();
          checkExpressionFailOnTrue(!graph.getBranch().equals(graph2.getBranch()),
-            "Error - Node[%s] is on branch[%d] but should be on branch[%d]", node, graph2.getBranchId(),
-            graph.getBranchId());
+            "Error - Node[%s] is on branch[%d] but should be on branch[%d]", node, graph2.getBranch(),
+            graph.getBranch());
       }
    }
 
    public static void checkBranch(RelationNode node1, RelationNode node2) throws OseeCoreException {
-      boolean areEqual = node1.getBranchId().equals(node2.getBranchId());
+      boolean areEqual = node1.getBranch().equals(node2.getBranch());
       checkExpressionFailOnTrue(!areEqual, "Cross branch linking is not yet supported.");
    }
 

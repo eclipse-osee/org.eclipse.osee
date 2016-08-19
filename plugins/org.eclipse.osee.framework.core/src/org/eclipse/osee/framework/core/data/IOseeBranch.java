@@ -28,7 +28,11 @@ public interface IOseeBranch extends BranchId, Named {
       return Strings.truncate(getName(), length);
    }
 
-   public static IOseeBranch valueOf(Long id, String name) {
+   public static IOseeBranch create(BranchId id, String name) {
+      return create(id.getId(), name);
+   }
+
+   public static IOseeBranch create(Long id, String name) {
       final class BranchTokenImpl extends NamedId implements IOseeBranch {
 
          public BranchTokenImpl(Long id, String name) {

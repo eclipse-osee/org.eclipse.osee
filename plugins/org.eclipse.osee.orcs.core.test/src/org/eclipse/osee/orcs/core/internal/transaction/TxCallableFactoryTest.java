@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.transaction;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -21,7 +22,6 @@ import static org.mockito.Mockito.when;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
@@ -67,7 +67,6 @@ public class TxCallableFactoryTest {
    @Mock private TxDataLoader loader;
    @Mock private TupleManager tupleManager;
 
-   @Mock private BranchId branch;
    @Mock private GraphData graph;
    @Mock private TxDataStore txDataStore;
 
@@ -88,6 +87,7 @@ public class TxCallableFactoryTest {
       txManager = new TxDataManager(proxyManager, artifactFactory, relationManager, tupleManager, loader);
       txFactory = new TxCallableFactory(logger, txDataStore, txManager);
       data = new TxData(session, graph);
+      when(graph.getBranch()).thenReturn(COMMON);
 
    }
 
@@ -130,7 +130,7 @@ public class TxCallableFactoryTest {
       assertFalse(data.isCommitInProgress());
 
       TransactionData data = txData.getValue();
-      assertEquals(branch.getUuid(), data.getBranchId());
+      assertEquals(COMMON, data.getBranch());
       assertEquals(userArtifact, data.getAuthor());
       assertEquals("My Comment", data.getComment());
    }

@@ -94,14 +94,14 @@ public class TransactionFactoryImplTest {
    public void testCreateTransaction() throws OseeCoreException {
       String expectedComment = "This is my comment";
 
-      when(txDataManager.createTxData(session, expectedBranch.getUuid())).thenReturn(txData);
+      when(txDataManager.createTxData(session, expectedBranch)).thenReturn(txData);
       when(txData.getAuthor()).thenReturn(expectedAuthor);
-      when(txData.getBranchId()).thenReturn(expectedBranch.getUuid());
+      when(txData.getBranch()).thenReturn(expectedBranch);
       when(txData.getComment()).thenReturn(expectedComment);
 
       TransactionBuilder tx = factory.createTransaction(expectedBranch, expectedAuthor, expectedComment);
       assertNotNull(tx);
-      assertEquals(expectedBranch.getUuid(), tx.getBranchId());
+      assertEquals(expectedBranch, tx.getBranch());
       assertEquals(expectedComment, tx.getComment());
    }
 }

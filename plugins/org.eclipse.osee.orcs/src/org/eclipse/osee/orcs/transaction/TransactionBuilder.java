@@ -35,7 +35,7 @@ import org.eclipse.osee.orcs.data.TransactionReadable;
  */
 public interface TransactionBuilder {
 
-   Long getBranchId();
+   BranchId getBranch();
 
    String getComment();
 

@@ -24,6 +24,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.change.CompareResults;
@@ -53,14 +54,14 @@ public interface BranchEndpoint {
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    List<Branch> getBranches(@DefaultValue("") @QueryParam("branchUuids") String branchUuids, //
-   @DefaultValue("") @QueryParam("branchTypes") String branchTypes, //
-   @DefaultValue("") @QueryParam("branchStates") String branchStates, //
-   @QueryParam("deleted") boolean deleted, //
-   @QueryParam("archived") boolean archived, //
-   @DefaultValue("") @QueryParam("nameEquals") String nameEquals, //
-   @DefaultValue("") @QueryParam("namePattern") String namePattern, //
-   @QueryParam("childOf") Long childOf, //
-   @QueryParam("ancestorOf") Long ancestorOf);
+      @DefaultValue("") @QueryParam("branchTypes") String branchTypes, //
+      @DefaultValue("") @QueryParam("branchStates") String branchStates, //
+      @QueryParam("deleted") boolean deleted, //
+      @QueryParam("archived") boolean archived, //
+      @DefaultValue("") @QueryParam("nameEquals") String nameEquals, //
+      @DefaultValue("") @QueryParam("namePattern") String namePattern, //
+      @QueryParam("childOf") Long childOf, //
+      @QueryParam("ancestorOf") Long ancestorOf);
 
    @GET
    @Path("baseline")
@@ -73,24 +74,24 @@ public interface BranchEndpoint {
    List<Branch> getWorkingBranches();
 
    @GET
-   @Path("{branch-uuid}")
+   @Path("{branch}")
    @Produces({MediaType.APPLICATION_JSON})
-   Branch getBranch(@PathParam("branch-uuid") long branchUuid);
+   Branch getBranch(@PathParam("branch") BranchId branch);
 
    @GET
-   @Path("{branch-uuid}/diff/{branch-uuid2}")
+   @Path("{branch1}/diff/{branch2}")
    @Produces({MediaType.APPLICATION_JSON})
-   CompareResults compareBranches(@PathParam("branch-uuid") long branchUuid, @PathParam("branch-uuid2") long branchUuid2);
+   CompareResults compareBranches(@PathParam("branch1") BranchId branch1, @PathParam("branch2") BranchId branch2);
 
    @GET
-   @Path("{branch-uuid}/txs")
+   @Path("{branch}/txs")
    @Produces({MediaType.APPLICATION_JSON})
-   List<Transaction> getAllBranchTxs(@PathParam("branch-uuid") long branchUuid);
+   List<Transaction> getAllBranchTxs(@PathParam("branch") BranchId branch);
 
    @GET
-   @Path("{branch-uuid}/txs/{tx-id}")
+   @Path("{branch}/txs/{tx-id}")
    @Produces({MediaType.APPLICATION_JSON})
-   Transaction getBranchTx(@PathParam("branch-uuid") long branchUuid, @PathParam("tx-id") int txId);
+   Transaction getBranchTx(@PathParam("branch") BranchId branch, @PathParam("tx-id") int txId);
 
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
@@ -103,26 +104,26 @@ public interface BranchEndpoint {
    Response createBranch(NewBranch data);
 
    @POST
-   @Path("{branch-uuid}")
+   @Path("{branch}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   Response createBranchWithId(@PathParam("branch-uuid") long branchUuid, NewBranch data);
+   Response createBranchWithId(@PathParam("branch") BranchId branch, NewBranch data);
 
    @POST
-   @Path("{branch-uuid}/commit/{destination-branch-uuid}")
+   @Path("{branch}/commit/{destination-branch}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   Response commitBranch(@PathParam("branch-uuid") long branchUuid, @PathParam("destination-branch-uuid") long destinationBranchUuid, BranchCommitOptions options);
+   Response commitBranch(@PathParam("branch") BranchId branch, @PathParam("destination-branch") BranchId destinationBranch, BranchCommitOptions options);
 
    @POST
-   @Path("{branch-uuid}/archive")
-   Response archiveBranch(@PathParam("branch-uuid") long branchUuid);
+   @Path("{branch}/archive")
+   Response archiveBranch(@PathParam("branch") BranchId branch);
 
    @POST
-   @Path("{branch-uuid}/txs")
+   @Path("{branch}/txs")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   Response writeTx(@PathParam("branch-uuid") long branchUuid, NewTransaction data);
+   Response writeTx(@PathParam("branch") BranchId branch, NewTransaction data);
 
    @POST
    @Path("exchange/validation")
@@ -144,45 +145,45 @@ public interface BranchEndpoint {
 
    @PUT
    @Path("{branch-uuid}/name")
-   Response setBranchName(@PathParam("branch-uuid") long branchUuid, String newName);
+   Response setBranchName(@PathParam("branch") BranchId branch, String newName);
 
    @PUT
-   @Path("{branch-uuid}/type/{branch-type}")
-   Response setBranchType(@PathParam("branch-uuid") long branchUuid, @PathParam("branch-type") BranchType newType);
+   @Path("{branch}/type/{branch-type}")
+   Response setBranchType(@PathParam("branch") BranchId branch, @PathParam("branch-type") BranchType newType);
 
    @PUT
-   @Path("{branch-uuid}/state/{branch-state}")
-   Response setBranchState(@PathParam("branch-uuid") long branchUuid, @PathParam("branch-state") BranchState newState);
+   @Path("{branch}/state/{branch-state}")
+   Response setBranchState(@PathParam("branch") BranchId branch, @PathParam("branch-state") BranchState newState);
 
    @PUT
-   @Path("{branch-uuid}/associated-artifact/{art-id}")
-   Response associateBranchToArtifact(@PathParam("branch-uuid") long branchUuid, @PathParam("art-id") ArtifactId artifact);
+   @Path("{branch}/associated-artifact/{art-id}")
+   Response associateBranchToArtifact(@PathParam("branch") BranchId branch, @PathParam("art-id") ArtifactId artifact);
 
    @PUT
-   @Path("{branch-uuid}/txs/{tx-id}/comment/{tx-comment}")
-   Response setTxComment(@PathParam("branch-uuid") long branchUuid, @PathParam("tx-id") int txId, @PathParam("tx-comment") String comment);
+   @Path("{branch}/txs/{tx-id}/comment/{tx-comment}")
+   Response setTxComment(@PathParam("branch") BranchId branch, @PathParam("tx-id") int txId, @PathParam("tx-comment") String comment);
 
    @DELETE
-   @Path("{branch-uuid}")
-   Response purgeBranch(@PathParam("branch-uuid") long branchUuid, @DefaultValue("false") @QueryParam("recurse") boolean recurse);
+   @Path("{branch}")
+   Response purgeBranch(@PathParam("branch") BranchId branch, @DefaultValue("false") @QueryParam("recurse") boolean recurse);
 
    @DELETE
-   @Path("{branch-uuid}/associated-artifact")
-   Response unassociateBranch(@PathParam("branch-uuid") long branchUuid);
+   @Path("{branch}/associated-artifact")
+   Response unassociateBranch(@PathParam("branch") BranchId branch);
 
    @DELETE
-   @Path("{branch-uuid}/commit/{destination-branch-uuid}")
+   @Path("{branch}/commit/{destination-branch}")
    @Produces({MediaType.APPLICATION_JSON})
-   Response unCommitBranch(@PathParam("branch-uuid") long branchUuid, @PathParam("destination-branch-uuid") long destinationBranchUuid);
+   Response unCommitBranch(@PathParam("branch") BranchId branch, @PathParam("destination-branch") BranchId destinationBranch);
 
    @DELETE
-   @Path("{branch-uuid}/archive")
+   @Path("{branch}/archive")
    @Produces({MediaType.APPLICATION_JSON})
-   Response unarchiveBranch(@PathParam("branch-uuid") long branchUuid);
+   Response unarchiveBranch(@PathParam("branch") BranchId branch);
 
    @DELETE
-   @Path("{branch-uuid}/txs/{tx-ids}")
-   Response purgeTxs(@PathParam("branch-uuid") long branchUuid, @PathParam("tx-ids") String txIds);
+   @Path("{branch}/txs/{tx-ids}")
+   Response purgeTxs(@PathParam("branch") BranchId branch, @PathParam("tx-ids") String txIds);
 
    @PUT
    @Path("log/{comment}")

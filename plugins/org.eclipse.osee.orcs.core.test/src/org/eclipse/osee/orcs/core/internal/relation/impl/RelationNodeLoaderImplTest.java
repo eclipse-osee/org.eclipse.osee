@@ -17,7 +17,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -68,7 +67,7 @@ public class RelationNodeLoaderImplTest {
 
       relationNode = new RelationNodeLoaderImpl(dataLoaderFactory, graphBuilderFactory);
 
-      when(graph.getBranchId()).thenReturn(BRANCH.getUuid());
+      when(graph.getBranch()).thenReturn(BRANCH);
       when(graph.getTransaction()).thenReturn(TRANSACTION_ID);
    }
 
@@ -76,13 +75,13 @@ public class RelationNodeLoaderImplTest {
    public void testLoadNodes() throws OseeCoreException {
       Iterable<Artifact> artifacts = Arrays.asList(artifact);
 
-      when(dataLoaderFactory.newDataLoaderFromIds(session, BRANCH.getUuid(), ids)).thenReturn(loader);
+      when(dataLoaderFactory.newDataLoaderFromIds(session, BRANCH, ids)).thenReturn(loader);
       when(graphBuilderFactory.createBuilderForGraph(graph)).thenReturn(builder);
       when(builder.getArtifacts()).thenReturn(artifacts);
 
       Iterable<RelationNode> actual = relationNode.loadNodes(session, graph, ids, LoadLevel.ALL);
 
-      verify(dataLoaderFactory).newDataLoaderFromIds(session, BRANCH.getUuid(), ids);
+      verify(dataLoaderFactory).newDataLoaderFromIds(session, BRANCH, ids);
       verify(graphBuilderFactory).createBuilderForGraph(graph);
 
       verify(loader).withLoadLevel(LoadLevel.ALL);

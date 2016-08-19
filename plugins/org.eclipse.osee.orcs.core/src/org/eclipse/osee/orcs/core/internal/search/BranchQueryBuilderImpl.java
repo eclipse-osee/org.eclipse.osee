@@ -165,8 +165,8 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
    }
 
    @Override
-   public T andIsMergeFor(Long sourceUuid, Long destUuid) {
-      Criteria criteria = criteriaFactory.createMergeForCriteria(sourceUuid, destUuid);
+   public T andIsMergeFor(BranchId source, BranchId destination) {
+      Criteria criteria = criteriaFactory.createMergeForCriteria(source, destination);
       return addAndCheck(getQueryData(), criteria);
    }
 

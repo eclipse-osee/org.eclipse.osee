@@ -68,8 +68,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public Long getBranchId() {
-      return txData.getBranchId();
+   public BranchId getBranch() {
+      return txData.getBranch();
    }
 
    @Override
@@ -104,52 +104,43 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public ArtifactId createArtifact(IArtifactToken token) throws OseeCoreException {
-      Conditions.checkExpressionFailOnTrue(token.getUuid() <= 0L, "Invalid Uuid %d. Must be > 0", token.getUuid());
-      return txManager.createArtifact(txData, token.getArtifactType(), token.getName(), token.getGuid(),
-         token.getUuid());
+      Conditions.checkExpressionFailOnTrue(token.isInvalid(), "Invalid Id %d. Must be > 0", token.getId());
+      return txManager.createArtifact(txData, token.getArtifactType(), token.getName(), token.getGuid(), token.getId());
    }
 
    @Override
    public ArtifactId copyArtifact(ArtifactReadable sourceArtifact) throws OseeCoreException {
-      return copyArtifact(sourceArtifact.getBranchId(), sourceArtifact);
+      return copyArtifact(sourceArtifact.getBranch(), sourceArtifact);
    }
 
    @Override
    public ArtifactId copyArtifact(BranchId fromBranch, ArtifactId artifactId) throws OseeCoreException {
-      return copyArtifact(fromBranch.getUuid(), artifactId);
-   }
-
-   private ArtifactId copyArtifact(Long fromBranchId, ArtifactId artifactId) throws OseeCoreException {
-      return txManager.copyArtifact(txData, fromBranchId, artifactId);
+      return txManager.copyArtifact(txData, fromBranch, artifactId);
    }
 
    @Override
    public ArtifactId copyArtifact(ArtifactReadable sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
-      return copyArtifact(sourceArtifact.getBranchId(), sourceArtifact, attributesToDuplicate);
+      return copyArtifact(sourceArtifact.getBranch(), sourceArtifact, attributesToDuplicate);
    }
 
    @Override
    public ArtifactId copyArtifact(BranchId fromBranch, ArtifactId artifactId, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
-      return copyArtifact(fromBranch.getUuid(), artifactId, attributesToDuplicate);
-   }
-
-   private ArtifactId copyArtifact(Long fromBranch, ArtifactId artifactId, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
       return txManager.copyArtifact(txData, fromBranch, artifactId, attributesToDuplicate);
    }
 
    @Override
    public ArtifactId introduceArtifact(BranchId fromBranch, ArtifactId sourceArtifact) throws OseeCoreException {
-      checkAreOnDifferentBranches(txData, fromBranch.getUuid());
-      ArtifactReadable source = getArtifactReadable(txData.getSession(), query, fromBranch.getUuid(), sourceArtifact);
+      checkAreOnDifferentBranches(txData, fromBranch);
+      ArtifactReadable source = getArtifactReadable(txData.getSession(), query, fromBranch, sourceArtifact);
       Conditions.checkNotNull(source, "Source Artifact");
       ArtifactReadable destination =
-         getArtifactReadable(txData.getSession(), query, txData.getBranchId(), sourceArtifact);
-      return txManager.introduceArtifact(txData, fromBranch.getUuid(), source, destination);
+         getArtifactReadable(txData.getSession(), query, txData.getBranch(), sourceArtifact);
+      return txManager.introduceArtifact(txData, fromBranch, source, destination);
    }
 
    @Override
    public ArtifactId replaceWithVersion(ArtifactReadable sourceArtifact, ArtifactReadable destination) throws OseeCoreException {
-      return txManager.replaceWithVersion(txData, sourceArtifact.getBranchId(), sourceArtifact, destination);
+      return txManager.replaceWithVersion(txData, sourceArtifact.getBranch(), sourceArtifact, destination);
    }
 
    @Override
@@ -347,13 +338,13 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       }
    }
 
-   private void checkAreOnDifferentBranches(TxData txData, Long sourceBranch) throws OseeCoreException {
+   private void checkAreOnDifferentBranches(TxData txData, BranchId sourceBranch) throws OseeCoreException {
       boolean isOnSameBranch = txData.isOnBranch(sourceBranch);
       Conditions.checkExpressionFailOnTrue(isOnSameBranch, "Source branch is same branch as transaction branch[%s]",
-         txData.getBranchId());
+         txData.getBranch());
    }
 
-   protected ArtifactReadable getArtifactReadable(OrcsSession session, QueryModule query, Long branch, ArtifactId id) {
+   protected ArtifactReadable getArtifactReadable(OrcsSession session, QueryModule query, BranchId branch, ArtifactId id) {
       return query.createQueryFactory(session).fromBranch(branch).includeDeletedArtifacts().andId(
          id).getResults().getOneOrNull();
    }

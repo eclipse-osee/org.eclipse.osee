@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -434,7 +435,7 @@ public class BranchQuerySqlContextFactoryImplTest {
          "mbr1.merge_branch_id = br1.branch_id\n" + //
          " ORDER BY br1.branch_id";
 
-      queryData.addCriteria(new CriteriaMergeBranchFor(1L, 2L));
+      queryData.addCriteria(new CriteriaMergeBranchFor(CoreBranches.SYSTEM_ROOT, COMMON));
 
       QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
 
@@ -446,8 +447,8 @@ public class BranchQuerySqlContextFactoryImplTest {
       assertEquals(0, joins.size());
 
       Iterator<Object> iterator = parameters.iterator();
-      assertEquals(1L, iterator.next());
-      assertEquals(2L, iterator.next());
+      assertEquals(CoreBranches.SYSTEM_ROOT, iterator.next());
+      assertEquals(COMMON, iterator.next());
    }
 
    @Test

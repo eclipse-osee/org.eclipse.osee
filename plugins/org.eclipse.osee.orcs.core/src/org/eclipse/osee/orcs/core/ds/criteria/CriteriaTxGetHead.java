@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds.criteria;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 
 /**
@@ -17,20 +18,20 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
  */
 public class CriteriaTxGetHead extends Criteria implements TxCriteria {
 
-   private final long branchUuid;
+   private final BranchId branch;
 
-   public CriteriaTxGetHead(long branchUuid) {
+   public CriteriaTxGetHead(BranchId branch) {
       super();
-      this.branchUuid = branchUuid;
+      this.branch = branch;
    }
 
-   public long getBranchid() {
-      return branchUuid;
+   public BranchId getBranch() {
+      return branch;
    }
 
    @Override
    public String toString() {
-      return "CriteriaTxGetHead [branchUuid=" + branchUuid + "]";
+      return "CriteriaTxGetHead [branchUuid=" + branch + "]";
    }
 
 }

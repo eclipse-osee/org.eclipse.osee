@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.loader;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -101,27 +102,27 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
    }
 
    @Override
-   public DataLoader newDataLoaderFromIds(OrcsSession session, Long branchId, Integer... ids) throws OseeCoreException {
-      return newDataLoaderFromIds(session, branchId, Arrays.asList(ids));
+   public DataLoader newDataLoaderFromIds(OrcsSession session, BranchId branch, Integer... ids) throws OseeCoreException {
+      return newDataLoaderFromIds(session, branch, Arrays.asList(ids));
    }
 
    @Override
-   public DataLoader newDataLoaderFromIds(OrcsSession session, Long branchId, Collection<Integer> ids) throws OseeCoreException {
-      Conditions.checkNotNull(branchId, "branch");
+   public DataLoader newDataLoaderFromIds(OrcsSession session, BranchId branch, Collection<Integer> ids) throws OseeCoreException {
+      Conditions.checkNotNull(branch, "branch");
       Options options = OptionsUtil.createOptions();
-      return new DataLoaderImpl(logger, ids, options, session, branchId, loader, joinFactory);
+      return new DataLoaderImpl(logger, ids, options, session, branch, loader, joinFactory);
    }
 
    @Override
-   public DataLoader newDataLoaderFromGuids(OrcsSession session, Long branchId, String... guids) throws OseeCoreException {
-      return newDataLoaderFromGuids(session, branchId, Arrays.asList(guids));
+   public DataLoader newDataLoaderFromGuids(OrcsSession session, BranchId branch, String... guids) throws OseeCoreException {
+      return newDataLoaderFromGuids(session, branch, Arrays.asList(guids));
    }
 
    @Override
-   public DataLoader newDataLoaderFromGuids(OrcsSession session, Long branchId, Collection<String> guids) throws OseeCoreException {
-      Conditions.checkNotNull(branchId, "branch");
+   public DataLoader newDataLoaderFromGuids(OrcsSession session, BranchId branch, Collection<String> guids) throws OseeCoreException {
+      Conditions.checkNotNull(branch, "branch");
       Options options = OptionsUtil.createOptions();
-      return new DataLoaderImpl(logger, options, session, branchId, loader, guids, joinFactory);
+      return new DataLoaderImpl(logger, options, session, branch, loader, guids, joinFactory);
    }
 
    @SuppressWarnings("unchecked")

@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.accessor;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -44,16 +45,16 @@ public class UpdatePreviousTxCurrent {
 
    private final JdbcClient jdbcClient;
    private final SqlJoinFactory joinFactory;
-   private final long branchUuid;
+   private final BranchId branch;
    private final JdbcConnection connection;
    private IdJoinQuery artifactJoin;
    private IdJoinQuery attributeJoin;
    private IdJoinQuery relationJoin;
 
-   public UpdatePreviousTxCurrent(JdbcClient jdbcClient, SqlJoinFactory joinFactory, JdbcConnection connection, long branchUuid) {
+   public UpdatePreviousTxCurrent(JdbcClient jdbcClient, SqlJoinFactory joinFactory, JdbcConnection connection, BranchId branch) {
       this.jdbcClient = jdbcClient;
       this.joinFactory = joinFactory;
-      this.branchUuid = branchUuid;
+      this.branch = branch;
       this.connection = connection;
    }
 
@@ -98,10 +99,10 @@ public class UpdatePreviousTxCurrent {
       List<Object[]> updateData = new ArrayList<>();
       JdbcStatement chStmt = jdbcClient.getStatement(connection);
       try {
-         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, queryId, branchUuid,
+         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, queryId, branch,
             TxChange.NOT_CURRENT.getValue());
          while (chStmt.next()) {
-            updateData.add(new Object[] {branchUuid, chStmt.getLong("gamma_id"), chStmt.getLong("transaction_id")});
+            updateData.add(new Object[] {branch, chStmt.getLong("gamma_id"), chStmt.getLong("transaction_id")});
          }
       } finally {
          chStmt.close();
@@ -114,10 +115,10 @@ public class UpdatePreviousTxCurrent {
       List<Object[]> updateData = new ArrayList<>();
       JdbcStatement chStmt = jdbcClient.getStatement(connection);
       try {
-         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_TXS_AND_GAMMAS_FROM_TXS, branchUuid,
-            transaction_id, branchUuid, transaction_id, TxChange.NOT_CURRENT.getValue());
+         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_TXS_AND_GAMMAS_FROM_TXS, branch,
+            transaction_id, branch, transaction_id, TxChange.NOT_CURRENT.getValue());
          while (chStmt.next()) {
-            updateData.add(new Object[] {branchUuid, chStmt.getLong("gamma_id"), chStmt.getLong("transaction_id")});
+            updateData.add(new Object[] {branch, chStmt.getLong("gamma_id"), chStmt.getLong("transaction_id")});
          }
       } finally {
          chStmt.close();

@@ -16,7 +16,6 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Active;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.UriGeneralStringData;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import static org.eclipse.osee.orcs.db.intergration.IntegrationUtil.integrationRule;
@@ -130,7 +129,7 @@ public class LoaderTest {
    @org.junit.Test
    public void testLoad() throws OseeCoreException {
       DataLoader loader =
-         loaderFactory.newDataLoaderFromIds(session, COMMON_ID, OseeTypesFrameworkId, OseeTypesDemoId, UserGroupsId);
+         loaderFactory.newDataLoaderFromIds(session, COMMON, OseeTypesFrameworkId, OseeTypesDemoId, UserGroupsId);
       loader.withLoadLevel(LoadLevel.ALL);
       verifyArtsAttrAndRelData(loader);
    }
@@ -144,7 +143,7 @@ public class LoaderTest {
       verify(builder).onLoadEnd();
 
       LoadDescription descriptor = descriptorCaptor.getValue();
-      assertEquals(COMMON_ID, descriptor.getBranchId());
+      assertEquals(COMMON, descriptor.getBranch());
 
       verify(builder, times(3)).onData(artifactCaptor.capture());
       verify(builder, times(7)).onData(attributeCaptor.capture());
@@ -202,7 +201,7 @@ public class LoaderTest {
    @org.junit.Test
    public void testLoadByTypes() throws OseeCoreException {
       DataLoader loader =
-         loaderFactory.newDataLoaderFromIds(session, COMMON_ID, OseeTypesFrameworkId, OseeTypesDemoId, UserGroupsId);
+         loaderFactory.newDataLoaderFromIds(session, COMMON, OseeTypesFrameworkId, OseeTypesDemoId, UserGroupsId);
       loader.withLoadLevel(LoadLevel.ALL);
 
       loader.withAttributeTypes(Name);
@@ -215,7 +214,7 @@ public class LoaderTest {
       verify(builder).onLoadEnd();
 
       LoadDescription descriptor = descriptorCaptor.getValue();
-      assertEquals(COMMON_ID, descriptor.getBranchId());
+      assertEquals(COMMON, descriptor.getBranch());
 
       verify(builder, times(3)).onData(artifactCaptor.capture());
       verify(builder, times(3)).onData(attributeCaptor.capture());
@@ -244,7 +243,7 @@ public class LoaderTest {
    @org.junit.Test
    public void testLoadByIds() throws OseeCoreException {
       DataLoader loader =
-         loaderFactory.newDataLoaderFromIds(session, COMMON_ID, OseeTypesFrameworkId, OseeTypesDemoId, UserGroupsId);
+         loaderFactory.newDataLoaderFromIds(session, COMMON, OseeTypesFrameworkId, OseeTypesDemoId, UserGroupsId);
       loader.withLoadLevel(LoadLevel.ALL);
 
       loader.withAttributeIds(4, 10);
@@ -257,7 +256,7 @@ public class LoaderTest {
       verify(builder).onLoadEnd();
 
       LoadDescription descriptor = descriptorCaptor.getValue();
-      assertEquals(COMMON_ID, descriptor.getBranchId());
+      assertEquals(COMMON, descriptor.getBranch());
 
       verify(builder, times(3)).onData(artifactCaptor.capture());
       verify(builder, times(2)).onData(attributeCaptor.capture());
@@ -290,7 +289,7 @@ public class LoaderTest {
    @org.junit.Test
    public void testLoadByGuids() throws OseeCoreException {
       String[] ids = new String[] {OseeTypesFrameworkGuid, OseeTypesDemoGuid, UserGroupsGuid};
-      DataLoader loader = loaderFactory.newDataLoaderFromGuids(session, COMMON_ID, ids);
+      DataLoader loader = loaderFactory.newDataLoaderFromGuids(session, COMMON, ids);
       loader.withLoadLevel(LoadLevel.ALL);
       verifyArtsAttrAndRelData(loader);
    }

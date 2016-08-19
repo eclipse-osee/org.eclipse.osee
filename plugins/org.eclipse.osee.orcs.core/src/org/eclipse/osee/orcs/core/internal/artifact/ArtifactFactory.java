@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal.artifact;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -47,21 +48,21 @@ public class ArtifactFactory {
       return new ArtifactImpl(artifactTypeCache, artifactData, attributeFactory);
    }
 
-   public Artifact createArtifact(OrcsSession session, Long branch, IArtifactType artifactType, String guid) throws OseeCoreException {
+   public Artifact createArtifact(OrcsSession session, BranchId branch, IArtifactType artifactType, String guid) throws OseeCoreException {
       ArtifactData artifactData = factory.create(branch, artifactType, guid);
       Artifact artifact = createArtifact(session, artifactData);
       artifact.setLoaded(true);
       return artifact;
    }
 
-   public Artifact createArtifact(OrcsSession session, Long branch, IArtifactType artifactType, String guid, long uuid) throws OseeCoreException {
+   public Artifact createArtifact(OrcsSession session, BranchId branch, IArtifactType artifactType, String guid, long uuid) throws OseeCoreException {
       ArtifactData artifactData = factory.create(branch, artifactType, guid, uuid);
       Artifact artifact = createArtifact(session, artifactData);
       artifact.setLoaded(true);
       return artifact;
    }
 
-   public Artifact copyArtifact(OrcsSession session, Artifact source, Collection<? extends IAttributeType> types, Long ontoBranch) throws OseeCoreException {
+   public Artifact copyArtifact(OrcsSession session, Artifact source, Collection<? extends IAttributeType> types, BranchId ontoBranch) throws OseeCoreException {
       ArtifactData artifactData = factory.copy(ontoBranch, source.getOrcsData());
       Artifact copy = createArtifact(session, artifactData);
       Collection<? extends IAttributeType> typesToCopy = getAllowedTypes(copy, types);
@@ -75,14 +76,14 @@ public class ArtifactFactory {
       return copy;
    }
 
-   public Artifact introduceArtifact(OrcsSession session, Artifact source, Artifact destination, Long ontoBranch) throws OseeCoreException {
+   public Artifact introduceArtifact(OrcsSession session, Artifact source, Artifact destination, BranchId ontoBranch) throws OseeCoreException {
       destination = processIntroduceArtifact(session, source, destination, ontoBranch);
       processIntroduceAttributes(source, destination, ontoBranch);
       destination.setLoaded(true);
       return destination;
    }
 
-   private void processIntroduceAttributes(Artifact source, Artifact destination, Long ontoBranch) {
+   private void processIntroduceAttributes(Artifact source, Artifact destination, BranchId ontoBranch) {
       Collection<Attribute<Object>> introduceAttributes = source.getAttributes(DeletionFlag.INCLUDE_DELETED);
       removeAttributes(source, destination);
       //introduce the existing attributes
@@ -93,7 +94,7 @@ public class ArtifactFactory {
       }
    }
 
-   private Artifact processIntroduceArtifact(OrcsSession session, Artifact source, Artifact destination, Long ontoBranch) {
+   private Artifact processIntroduceArtifact(OrcsSession session, Artifact source, Artifact destination, BranchId ontoBranch) {
       ArtifactData artifactData = factory.introduce(ontoBranch, source.getOrcsData());
       destination.setOrcsData(artifactData);
       return destination;

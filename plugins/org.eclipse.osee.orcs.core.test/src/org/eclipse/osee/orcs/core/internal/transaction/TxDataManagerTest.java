@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.core.internal.transaction;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.DirectSoftwareRequirement;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Category;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.DEFAULT_HIERARCHY;
@@ -115,8 +115,6 @@ public class TxDataManagerTest {
    private String r2Guid;
    private String r3Guid;
 
-   private static final Long BRANCH_ID = 111L;
-
    @Before
    public void init() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
@@ -132,7 +130,7 @@ public class TxDataManagerTest {
       when(txData.getSession()).thenReturn(session);
       when(txData.getGraph()).thenReturn(graph);
 
-      when(graph.getBranchId()).thenReturn(BRANCH_ID);
+      when(graph.getBranch()).thenReturn(COMMON);
       txDataReal = new TxData(session, graph);
 
       r1Guid = GUID.create();
@@ -147,7 +145,7 @@ public class TxDataManagerTest {
       when(readable2.getGuid()).thenReturn(r2Guid);
       when(readable3.getGuid()).thenReturn(r3Guid);
 
-      when(readable1.getBranchId()).thenReturn(BRANCH_ID);
+      when(readable1.getBranch()).thenReturn(COMMON);
 
       when(artifact1.getGuid()).thenReturn(r1Guid);
       when(artifact2.getGuid()).thenReturn(r2Guid);
@@ -159,7 +157,7 @@ public class TxDataManagerTest {
 
    @Test
    public void testCreateTxData() throws OseeCoreException {
-      TxData newData = txDataManager.createTxData(session, BRANCH_ID);
+      TxData newData = txDataManager.createTxData(session, COMMON);
       assertNotNull(newData);
    }
 
@@ -382,7 +380,7 @@ public class TxDataManagerTest {
 
    @Test
    public void testCreateArtifact() throws OseeCoreException {
-      when(artifactFactory.createArtifact(session, BRANCH_ID, DirectSoftwareRequirement, guid)).thenReturn(artifact1);
+      when(artifactFactory.createArtifact(session, COMMON, DirectSoftwareRequirement, guid)).thenReturn(artifact1);
       when(proxyManager.asExternalArtifact(session, artifact1)).thenReturn(readable1);
 
       ArtifactData data = Mockito.mock(ArtifactData.class);
@@ -392,7 +390,7 @@ public class TxDataManagerTest {
       ArtifactReadable actual =
          txDataManager.createArtifact(txDataReal, DirectSoftwareRequirement, "Direct SW requirement", guid);
 
-      verify(artifactFactory).createArtifact(session, BRANCH_ID, DirectSoftwareRequirement, guid);
+      verify(artifactFactory).createArtifact(session, COMMON, DirectSoftwareRequirement, guid);
       assertEquals(readable1, actual);
    }
 
@@ -400,7 +398,7 @@ public class TxDataManagerTest {
    public void testCopyExisitingArtifact() throws OseeCoreException {
       txDataReal.add(artifact1);
 
-      when(artifactFactory.copyArtifact(session, artifact1, types, BRANCH_ID)).thenReturn(artifact2);
+      when(artifactFactory.copyArtifact(session, artifact1, types, COMMON)).thenReturn(artifact2);
       when(proxyManager.asExternalArtifact(session, artifact2)).thenReturn(readable2);
 
       ArtifactData data = Mockito.mock(ArtifactData.class);
@@ -408,9 +406,9 @@ public class TxDataManagerTest {
       when(artifact2.getOrcsData()).thenReturn(data);
       when(data.isExistingVersionUsed()).thenReturn(false);
 
-      ArtifactReadable actual = txDataManager.copyArtifact(txDataReal, BRANCH_ID, readable1);
+      ArtifactReadable actual = txDataManager.copyArtifact(txDataReal, COMMON, readable1);
 
-      verify(artifactFactory).copyArtifact(session, artifact1, types, BRANCH_ID);
+      verify(artifactFactory).copyArtifact(session, artifact1, types, COMMON);
       verify(proxyManager).asExternalArtifact(session, artifact2);
 
       assertEquals(readable2, actual);
@@ -425,13 +423,13 @@ public class TxDataManagerTest {
       when(artifact2.getOrcsData()).thenReturn(data);
       when(data.isExistingVersionUsed()).thenReturn(false);
 
-      when(artifactFactory.copyArtifact(session, artifact1, types, BRANCH_ID)).thenReturn(artifact2);
+      when(artifactFactory.copyArtifact(session, artifact1, types, COMMON)).thenReturn(artifact2);
       when(proxyManager.asExternalArtifact(session, artifact2)).thenReturn(readable2);
 
-      ArtifactReadable actual = txDataManager.copyArtifact(txDataReal, BRANCH_ID, readable1);
+      ArtifactReadable actual = txDataManager.copyArtifact(txDataReal, COMMON, readable1);
 
       verify(proxyManager).asInternalArtifact(readable1);
-      verify(artifactFactory).copyArtifact(session, artifact1, types, BRANCH_ID);
+      verify(artifactFactory).copyArtifact(session, artifact1, types, COMMON);
       verify(proxyManager).asExternalArtifact(session, artifact2);
 
       assertEquals(readable2, actual);
@@ -444,7 +442,7 @@ public class TxDataManagerTest {
       ArtifactData data = Mockito.mock(ArtifactData.class);
       VersionData version = Mockito.mock(VersionData.class);
       when(data.getVersion()).thenReturn(version);
-      when(version.getBranchId()).thenReturn(BRANCH_ID);
+      when(version.getBranch()).thenReturn(COMMON);
 
       Artifact sourceArtifact = Mockito.spy(new ArtifactImpl(null, data, null));
 
@@ -456,12 +454,12 @@ public class TxDataManagerTest {
       when(artifact2.getOrcsData()).thenReturn(data);
       when(data.isExistingVersionUsed()).thenReturn(false);
 
-      when(artifactFactory.copyArtifact(session, sourceArtifact, copyTypes, BRANCH_ID)).thenReturn(artifact2);
+      when(artifactFactory.copyArtifact(session, sourceArtifact, copyTypes, COMMON)).thenReturn(artifact2);
       when(proxyManager.asExternalArtifact(session, artifact2)).thenReturn(readable2);
 
-      ArtifactReadable actual = txDataManager.copyArtifact(txDataReal, BRANCH_ID, sourceArtifact);
+      ArtifactReadable actual = txDataManager.copyArtifact(txDataReal, COMMON, sourceArtifact);
 
-      verify(artifactFactory).copyArtifact(session, sourceArtifact, copyTypes, BRANCH_ID);
+      verify(artifactFactory).copyArtifact(session, sourceArtifact, copyTypes, COMMON);
 
       assertEquals(readable2, actual);
    }
@@ -471,7 +469,7 @@ public class TxDataManagerTest {
       txDataReal.add(artifact1);
 
       when(artifact1.getExistingAttributeTypes()).thenAnswer(answerValue(types));
-      when(artifactFactory.copyArtifact(session, artifact1, types, BRANCH_ID)).thenReturn(artifact2);
+      when(artifactFactory.copyArtifact(session, artifact1, types, COMMON)).thenReturn(artifact2);
       when(proxyManager.asExternalArtifact(session, artifact2)).thenReturn(readable2);
 
       ArtifactData data = Mockito.mock(ArtifactData.class);
@@ -479,9 +477,9 @@ public class TxDataManagerTest {
       when(artifact2.getOrcsData()).thenReturn(data);
       when(data.isExistingVersionUsed()).thenReturn(false);
 
-      ArtifactReadable actual = txDataManager.copyArtifact(txDataReal, BRANCH_ID, artifactId1);
+      ArtifactReadable actual = txDataManager.copyArtifact(txDataReal, COMMON, artifactId1);
 
-      verify(artifactFactory).copyArtifact(session, artifact1, types, BRANCH_ID);
+      verify(artifactFactory).copyArtifact(session, artifact1, types, COMMON);
       verify(proxyManager).asExternalArtifact(session, artifact2);
 
       assertEquals(readable2, actual);
@@ -490,8 +488,8 @@ public class TxDataManagerTest {
    @Test
    public void testIntroduceArtifact() throws OseeCoreException {
       ResultSet<Artifact> loaded = ResultSets.singleton(artifact1);
-      when(loader.loadArtifacts(eq(session), eq(COMMON_ID), anyCollectionOf(ArtifactId.class))).thenReturn(loaded);
-      when(artifactFactory.introduceArtifact(session, artifact1, artifact1, BRANCH_ID)).thenReturn(artifact2);
+      when(loader.loadArtifacts(eq(session), eq(COMMON), anyCollectionOf(ArtifactId.class))).thenReturn(loaded);
+      when(artifactFactory.introduceArtifact(session, artifact1, artifact1, COMMON)).thenReturn(artifact2);
       when(proxyManager.asExternalArtifact(session, artifact2)).thenReturn(readable2);
       when(artifact1.getGraph()).thenReturn(graph);
       when(graph.getAdjacencies(artifact1)).thenReturn(adjacencies);
@@ -501,9 +499,9 @@ public class TxDataManagerTest {
       when(artifact2.getOrcsData()).thenReturn(data);
       when(data.isExistingVersionUsed()).thenReturn(false);
 
-      ArtifactReadable actual = txDataManager.introduceArtifact(txDataReal, COMMON_ID, readable1, readable2);
+      ArtifactReadable actual = txDataManager.introduceArtifact(txDataReal, COMMON, readable1, readable2);
 
-      verify(artifactFactory).introduceArtifact(session, artifact1, artifact1, BRANCH_ID);
+      verify(artifactFactory).introduceArtifact(session, artifact1, artifact1, COMMON);
       verify(proxyManager).asExternalArtifact(session, artifact1);
       assertEquals(readable1, actual);
    }

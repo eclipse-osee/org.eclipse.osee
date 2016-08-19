@@ -68,8 +68,6 @@ public interface TxQueryBuilder<T> {
 
    T andNullCommitId() throws OseeCoreException;
 
-   T andIsHead(long branchUuid) throws OseeCoreException;
-
    T andIsHead(BranchId branch) throws OseeCoreException;
 
    T andIsPriorTx(TransactionId txId) throws OseeCoreException;

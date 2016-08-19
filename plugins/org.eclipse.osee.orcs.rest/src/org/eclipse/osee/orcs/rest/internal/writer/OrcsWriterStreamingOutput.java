@@ -22,12 +22,10 @@ import org.eclipse.osee.orcs.rest.model.writer.reader.OwCollector;
  */
 public final class OrcsWriterStreamingOutput implements StreamingOutput {
    private final OrcsApi orcsApi;
-   private final long branchUuid;
    private final OwCollector collector;
 
-   public OrcsWriterStreamingOutput(OrcsApi orcsApi, long branchUuid, OwCollector collector) {
+   public OrcsWriterStreamingOutput(OrcsApi orcsApi, OwCollector collector) {
       this.orcsApi = orcsApi;
-      this.branchUuid = branchUuid;
       this.collector = collector;
    }
 
@@ -36,7 +34,7 @@ public final class OrcsWriterStreamingOutput implements StreamingOutput {
       try {
          Writer writer = new OutputStreamWriter(output);
          OrcsWriterWorkbookGenerator generator = new OrcsWriterWorkbookGenerator(collector, orcsApi);
-         generator.runOperation(orcsApi, branchUuid, writer);
+         generator.runOperation(orcsApi, writer);
       } catch (Exception ex) {
          // do nothing
       }

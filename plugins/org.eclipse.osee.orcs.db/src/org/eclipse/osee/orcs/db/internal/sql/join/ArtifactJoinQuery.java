@@ -113,8 +113,4 @@ public class ArtifactJoinQuery extends AbstractJoinQuery {
          throw new OseeDataStoreException("Exceeded max artifact join size of [%d]", maxJoinSize);
       }
    }
-
-   public void add(Integer art_id, Long branchUuid) {
-      add(art_id, branchUuid, null);
-   }
 }

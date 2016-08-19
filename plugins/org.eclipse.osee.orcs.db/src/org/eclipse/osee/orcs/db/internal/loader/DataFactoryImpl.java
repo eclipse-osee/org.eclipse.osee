@@ -50,12 +50,12 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public ArtifactData create(Long branch, IArtifactType token, String guid) throws OseeCoreException {
+   public ArtifactData create(BranchId branch, IArtifactType token, String guid) throws OseeCoreException {
       return this.create(branch, token, guid, idFactory.getNextArtifactId());
    }
 
    @Override
-   public ArtifactData create(Long branchId, IArtifactType token, String guid, long artifactId) throws OseeCoreException {
+   public ArtifactData create(BranchId branchId, IArtifactType token, String guid, long artifactId) throws OseeCoreException {
       Conditions.checkNotNull(branchId, "branch");
 
       Conditions.checkExpressionFailOnTrue(artifactCache.isAbstract(token),
@@ -67,7 +67,7 @@ public class DataFactoryImpl implements DataFactory {
          "Invalid guid [%s] during artifact creation [type: %s]", guidToSet, token);
 
       VersionData version = objectFactory.createDefaultVersionData();
-      version.setBranchId(branchId);
+      version.setBranch(branchId);
 
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
       ArtifactData artifactData =
@@ -76,7 +76,7 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public ArtifactData copy(Long destination, ArtifactData source) throws OseeCoreException {
+   public ArtifactData copy(BranchId destination, ArtifactData source) throws OseeCoreException {
       ArtifactData copy = objectFactory.createCopy(source);
       updateDataForCopy(destination, copy);
       copy.setGuid(idFactory.getUniqueGuid(null));
@@ -85,7 +85,7 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public AttributeData introduce(Long destination, AttributeData source) throws OseeCoreException {
+   public AttributeData introduce(BranchId destination, AttributeData source) throws OseeCoreException {
       AttributeData newVersion = objectFactory.createCopy(source);
       newVersion.setUseBackingData(true);
       updateDataForIntroduce(destination, newVersion);
@@ -95,7 +95,7 @@ public class DataFactoryImpl implements DataFactory {
    @Override
    public AttributeData create(ArtifactData parent, IAttributeType attributeType) throws OseeCoreException {
       VersionData version = objectFactory.createDefaultVersionData();
-      version.setBranchId(parent.getVersion().getBranchId());
+      version.setBranch(parent.getVersion().getBranch());
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
       Integer attributeid = RelationalConstants.DEFAULT_ITEM_ID;
       return objectFactory.createAttributeData(version, attributeid, attributeType, modType, parent.getLocalId(),
@@ -103,7 +103,7 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public AttributeData copy(Long destination, AttributeData orcsData) throws OseeCoreException {
+   public AttributeData copy(BranchId destination, AttributeData orcsData) throws OseeCoreException {
       AttributeData copy = objectFactory.createCopy(orcsData);
       updateDataForCopy(destination, copy);
       copy.setLocalId(RelationalConstants.DEFAULT_ITEM_ID);
@@ -111,7 +111,7 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public ArtifactData introduce(Long destination, ArtifactData source) throws OseeCoreException {
+   public ArtifactData introduce(BranchId destination, ArtifactData source) throws OseeCoreException {
       ArtifactData newVersion = objectFactory.createCopy(source);
       newVersion.setUseBackingData(true);
       updateDataForIntroduce(destination, newVersion);
@@ -119,9 +119,9 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public RelationData createRelationData(IRelationType relationType, Long branchId, HasLocalId<Integer> aArt, HasLocalId<Integer> bArt, String rationale) throws OseeCoreException {
+   public RelationData createRelationData(IRelationType relationType, BranchId branch, HasLocalId<Integer> aArt, HasLocalId<Integer> bArt, String rationale) throws OseeCoreException {
       VersionData version = objectFactory.createDefaultVersionData();
-      version.setBranchId(branchId);
+      version.setBranch(branch);
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
       Integer relationId = RelationalConstants.DEFAULT_ITEM_ID;
       return objectFactory.createRelationData(version, relationId, relationType, modType, aArt.getLocalId(),
@@ -150,7 +150,7 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public RelationData introduce(Long destination, RelationData source) {
+   public RelationData introduce(BranchId destination, RelationData source) {
       RelationData newVersion = objectFactory.createCopy(source);
       newVersion.setUseBackingData(true);
       updateDataForIntroduce(destination, newVersion);
@@ -172,9 +172,9 @@ public class DataFactoryImpl implements DataFactory {
       return objectFactory.createCopy(source);
    }
 
-   private void updateDataForCopy(Long destination, OrcsData data) throws OseeCoreException {
+   private void updateDataForCopy(BranchId destination, OrcsData data) throws OseeCoreException {
       VersionData version = data.getVersion();
-      version.setBranchId(destination);
+      version.setBranch(destination);
       version.setTransactionId(TransactionId.SENTINEL);
       version.setStripeId(TransactionId.SENTINEL);
       version.setHistorical(false);
@@ -183,9 +183,9 @@ public class DataFactoryImpl implements DataFactory {
       data.setModType(ModificationType.NEW);
    }
 
-   private void updateDataForIntroduce(Long destination, OrcsData data) throws OseeCoreException {
+   private void updateDataForIntroduce(BranchId destination, OrcsData data) throws OseeCoreException {
       VersionData version = data.getVersion();
-      version.setBranchId(destination);
+      version.setBranch(destination);
       version.setHistorical(false);
       version.setTransactionId(TransactionId.SENTINEL);
       // do not clear gammaId for introduce case so we reuse the same version

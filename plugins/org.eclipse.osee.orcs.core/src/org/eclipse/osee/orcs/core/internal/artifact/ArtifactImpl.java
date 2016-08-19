@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.artifact;
 
 import static org.eclipse.osee.framework.core.enums.DirtyState.APPLICABILITY_ONLY;
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -93,8 +94,8 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
-   public Long getBranchId() {
-      return artifactData.getVersion().getBranchId();
+   public BranchId getBranch() {
+      return artifactData.getVersion().getBranch();
    }
 
    @Override
@@ -156,7 +157,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    @Override
    public String getExceptionString() {
       try {
-         return String.format("artifact type[%s] guid[%s] on branch[%s]", getArtifactType(), getGuid(), getBranchId());
+         return String.format("artifact type[%s] guid[%s] on branch[%s]", getArtifactType(), getGuid(), getBranch());
       } catch (OseeCoreException ex) {
          return Lib.exceptionToString(ex);
       }
@@ -209,8 +210,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    @Override
    public String toString() {
       try {
-         return String.format("artifact [type=[%s] guid=[%s] branch=[%s]]", getArtifactType(), getGuid(),
-            getBranchId());
+         return String.format("artifact [type=[%s] guid=[%s] branch=[%s]]", getArtifactType(), getGuid(), getBranch());
       } catch (OseeCoreException ex) {
          return Lib.exceptionToString(ex);
       }

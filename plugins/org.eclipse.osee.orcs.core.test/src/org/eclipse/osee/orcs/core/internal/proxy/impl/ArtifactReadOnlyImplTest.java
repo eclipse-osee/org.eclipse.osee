@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.core.internal.proxy.impl;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Active;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Annotation;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Allocation__Requirement;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Child;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
@@ -31,11 +31,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -108,12 +108,12 @@ public class ArtifactReadOnlyImplTest {
 
    @Test
    public void testGetBranchUuid() {
-      when(proxiedObject.getBranchId()).thenReturn(COMMON_ID);
+      when(proxiedObject.getBranch()).thenReturn(COMMON);
 
-      Long actual = readOnly.getBranchId();
+      BranchId actual = readOnly.getBranch();
 
-      assertEquals(COMMON_ID, actual);
-      verify(proxiedObject).getBranchId();
+      assertEquals(COMMON, actual);
+      verify(proxiedObject).getBranch();
    }
 
    @Test

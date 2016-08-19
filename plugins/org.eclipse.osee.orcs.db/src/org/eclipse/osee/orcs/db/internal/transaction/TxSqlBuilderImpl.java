@@ -92,7 +92,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
       dataItemInserts = new HashCollection<>();
       txNotCurrentsJoin = new HashMap<>();
 
-      addRow(SqlOrderEnum.TXS_DETAIL, txId, tx.getComment(), tx.getDate(), tx.getAuthor(), tx.getBranchId(),
+      addRow(SqlOrderEnum.TXS_DETAIL, txId, tx.getComment(), tx.getDate(), tx.getAuthor(), tx.getBranch(),
          tx.getTxType().getId());
       changeSet.accept(this);
    }
@@ -195,7 +195,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
       ModificationType modType = orcsData.getModType();
 
       addRow(SqlOrderEnum.TXS, data.getTransactionId(), data.getGammaId(), modType.getValue(),
-         TxChange.getCurrent(modType).getValue(), data.getBranchId(), orcsData.getApplicabilityId());
+         TxChange.getCurrent(modType).getValue(), data.getBranch(), orcsData.getApplicabilityId());
 
       if (key.hasTxNotCurrentQuery()) {
          IdJoinQuery join = txNotCurrentsJoin.get(key);

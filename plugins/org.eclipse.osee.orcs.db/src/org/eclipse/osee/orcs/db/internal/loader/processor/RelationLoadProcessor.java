@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.loader.processor;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -38,7 +39,7 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
    protected RelationData createData(Object conditions, RelationObjectFactory factory, JdbcStatement chStmt, Options options) throws OseeCoreException {
       RelationData toReturn = null;
 
-      long branchUuid = chStmt.getLong("branch_id");
+      BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
       int aArtId = chStmt.getInt("a_art_id");
       int bArtId = chStmt.getInt("b_art_id");
       long typeId = chStmt.getLong("rel_link_type_id");
@@ -48,12 +49,12 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
       boolean historical = OptionsUtil.isHistorical(options);
 
       CreateConditions condition = asConditions(conditions);
-      if (!condition.isSame(branchUuid, aArtId, bArtId, typeId)) {
-         condition.saveConditions(branchUuid, aArtId, bArtId, typeId, gammaId);
+      if (!condition.isSame(branch, aArtId, bArtId, typeId)) {
+         condition.saveConditions(branch, aArtId, bArtId, typeId, gammaId);
 
          TransactionId txId = TransactionId.valueOf(chStmt.getLong("transaction_id"));
 
-         VersionData version = factory.createVersion(branchUuid, txId, gammaId, historical);
+         VersionData version = factory.createVersion(branch, txId, gammaId, historical);
          if (historical) {
             version.setStripeId(TransactionId.valueOf(chStmt.getLong("stripe_transaction_id")));
          }
@@ -73,7 +74,7 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
          if (!historical) {
             logger.warn(
                "multiple relation versions for branch[%d] rel_type [%d] a_artId[%d] b_artId[%s] previousGammaId[%s] currentGammaId[%s]",
-               branchUuid, typeId, aArtId, bArtId, condition.previousGammaId, gammaId);
+               branch, typeId, aArtId, bArtId, condition.previousGammaId, gammaId);
          }
       }
       return toReturn;
@@ -89,18 +90,19 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
    }
 
    private static final class CreateConditions {
-      long previousBranchId = -1;
+      BranchId previousBranchId = BranchId.SENTINEL;
       int previousArtIdA = -1;
       int previousArtIdB = -1;
       long previousTypeId = -1;
       long previousGammaId = -1;
 
-      boolean isSame(long branchUuid, int aArtId, int bArtId, long typeId) {
-         return previousBranchId == branchUuid && previousArtIdA == aArtId && previousArtIdB == bArtId && previousTypeId == typeId;
+      boolean isSame(BranchId branch, int aArtId, int bArtId, long typeId) {
+         return previousBranchId.equals(
+            branch) && previousArtIdA == aArtId && previousArtIdB == bArtId && previousTypeId == typeId;
       }
 
-      void saveConditions(long branchUuid, int aArtId, int bArtId, long typeId, long gammaId) {
-         previousBranchId = branchUuid;
+      void saveConditions(BranchId branch, int aArtId, int bArtId, long typeId, long gammaId) {
+         previousBranchId = branch;
          previousArtIdA = aArtId;
          previousArtIdB = bArtId;
          previousTypeId = typeId;

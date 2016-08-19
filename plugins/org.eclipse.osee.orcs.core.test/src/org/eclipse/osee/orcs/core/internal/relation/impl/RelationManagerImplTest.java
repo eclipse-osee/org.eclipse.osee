@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation.impl;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
-import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT_ID;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Child;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
@@ -158,6 +158,10 @@ public class RelationManagerImplTest {
       when(node4.getGraph()).thenReturn(graph);
       when(node5.getGraph()).thenReturn(graph);
       when(node6.getGraph()).thenReturn(graph);
+
+      when(node1.getBranch()).thenReturn(COMMON);
+      when(node2.getBranch()).thenReturn(COMMON);
+      when(node3.getBranch()).thenReturn(SYSTEM_ROOT);
 
       when(graph.getTransaction()).thenReturn(TransactionId.SENTINEL);
 
@@ -419,12 +423,9 @@ public class RelationManagerImplTest {
 
    @Test
    public void testRelateErrorOnDifferentBranches() throws OseeCoreException {
-      when(node1.getBranchId()).thenReturn(SYSTEM_ROOT_ID);
-      when(node2.getBranchId()).thenReturn(COMMON_ID);
-
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("Cross branch linking is not yet supported.");
-      manager.relate(session, node1, typeAndSide1, node2);
+      manager.relate(session, node2, typeAndSide1, node3);
    }
 
    @Test

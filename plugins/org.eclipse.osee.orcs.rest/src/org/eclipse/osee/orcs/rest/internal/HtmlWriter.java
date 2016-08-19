@@ -79,7 +79,7 @@ public class HtmlWriter {
       data.put("Name", artifact.getName());
       data.put("Artifact Id", artifact.getUuid());
       data.put("Tx Id", artifact.getTransaction());
-      Long branchId = artifact.getBranchId();
+      Long branchId = artifact.getBranch().getId();
 
       URI uri;
       if (isAtEndOfPath(uriInfo.getPath(), "artifact")) {

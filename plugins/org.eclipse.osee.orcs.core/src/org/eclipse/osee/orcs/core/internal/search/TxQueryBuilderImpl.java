@@ -185,13 +185,8 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
    }
 
    @Override
-   public T andIsHead(BranchId branch) throws OseeCoreException {
-      return andIsHead(branch.getUuid());
-   }
-
-   @Override
-   public T andIsHead(long branchUuid) throws OseeCoreException {
-      Criteria criteria = criteriaFactory.newGetHead(branchUuid);
+   public T andIsHead(BranchId branch) {
+      Criteria criteria = criteriaFactory.newGetHead(branch);
       return addAndCheck(queryData, criteria);
    }
 

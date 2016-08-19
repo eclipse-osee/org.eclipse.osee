@@ -114,7 +114,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
    }
 
    private Set<Integer> determineWhichArtifactsNotOnDestination(HasCancellation cancellation, OrcsSession session, Set<Integer> artIds, TransactionToken destTx) throws OseeCoreException {
-      DataLoader loader = dataLoaderFactory.newDataLoaderFromIds(session, destTx.getBranchId(), artIds);
+      DataLoader loader = dataLoaderFactory.newDataLoaderFromIds(session, destTx.getBranch(), artIds);
       final Set<Integer> missingArtIds = new LinkedHashSet<>(artIds);
       loader.includeDeletedArtifacts();
       loader.fromTransaction(destTx);
@@ -133,7 +133,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       final Set<ChangeItem> toReturn = new LinkedHashSet<>();
       final Set<RelationData> relations = new LinkedHashSet<>();
 
-      DataLoader loader = dataLoaderFactory.newDataLoaderFromIds(session, sourceTx.getBranchId(), missingArtIds);
+      DataLoader loader = dataLoaderFactory.newDataLoaderFromIds(session, sourceTx.getBranch(), missingArtIds);
       loader.withLoadLevel(LoadLevel.ALL);
       loader.includeDeletedArtifacts();
       loader.fromTransaction(sourceTx);
@@ -191,7 +191,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       final Set<ChangeItem> toReturn = new LinkedHashSet<>();
 
       DataLoader loader =
-         dataLoaderFactory.newDataLoaderFromIds(session, destTx.getBranchId(), relationChangesToAdd.keySet());
+         dataLoaderFactory.newDataLoaderFromIds(session, destTx.getBranch(), relationChangesToAdd.keySet());
       loader.fromTransaction(destTx);
       loader.load(cancellation, new LoadDataHandlerAdapter() {
 

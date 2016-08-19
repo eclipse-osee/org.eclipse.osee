@@ -346,7 +346,7 @@ public class OrcsTransactionTest {
       tx.relate(artifact2, Default_Hierarchical__Parent, artifact1);
       TransactionId tx1 = tx.commit();
 
-      tx = txFactory.createTransaction(COMMON, userArtifact, "delete art 1 attribute");
+      tx = txFactory.createTransaction(COMMON, userArtifact, "create art 1 attribute");
       tx.deleteAttributes(artifact1, CoreAttributeTypes.GeneralStringData);
       TransactionId tx2 = tx.commit();
 

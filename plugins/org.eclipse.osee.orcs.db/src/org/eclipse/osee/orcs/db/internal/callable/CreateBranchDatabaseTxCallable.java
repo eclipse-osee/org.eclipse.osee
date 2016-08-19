@@ -152,7 +152,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
 
       checkPreconditions(connection, parentBranch, destinationBranchUuid);
 
-      long uuid = newBranchData.getUuid();
+      BranchId branch = newBranchData.getBranch();
 
       final String truncatedName = Strings.truncate(newBranchData.getName(), 195, true);
 
@@ -179,7 +179,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
 
       //write to branch table
       Object[] toInsert = new Object[] {
-         uuid,
+         branch,
          truncatedName,
          parentBranch,
          sourceTx,
@@ -193,16 +193,16 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       jdbcClient.runPreparedUpdate(connection, INSERT_BRANCH, toInsert);
 
       if (inheritAccessControl != 0) {
-         copyAccessRules(newBranchData.getAuthor(), parentBranch, uuid);
+         copyAccessRules(newBranchData.getAuthor(), parentBranch, branch);
       }
 
       nextTransactionId = tobeTransactionId;
-      jdbcClient.runPreparedUpdate(connection, INSERT_TX_DETAILS, uuid, nextTransactionId,
+      jdbcClient.runPreparedUpdate(connection, INSERT_TX_DETAILS, branch, nextTransactionId,
          newBranchData.getCreationComment(), timestamp, newBranchData.getAuthor(),
          TransactionDetailsType.Baselined.getId());
 
       if (needsUpdate) {
-         jdbcClient.runPreparedUpdate(connection, UPDATE_BASELINE_BRANCH_TX, nextTransactionId, uuid);
+         jdbcClient.runPreparedUpdate(connection, UPDATE_BASELINE_BRANCH_TX, nextTransactionId, branch);
       }
 
       populateBaseTransaction(0.30, connection, nextTransactionId, sourceTx);
@@ -213,7 +213,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
    private void addMergeBranchEntry(double workAmount, JdbcConnection connection) {
       if (newBranchData.getBranchType().isMergeBranch()) {
          jdbcClient.runPreparedUpdate(connection, MERGE_BRANCH_INSERT, newBranchData.getParentBranch(),
-            newBranchData.getMergeDestinationBranchId(), newBranchData.getUuid(), 0);
+            newBranchData.getMergeDestinationBranchId(), newBranchData.getBranch(), 0);
       }
    }
 
@@ -241,7 +241,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       JdbcStatement chStmt = jdbcClient.getStatement(connection);
       try {
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, parameters);
-         Long branchId = newBranchData.getUuid();
+         BranchId branchId = newBranchData.getBranch();
          while (chStmt.next()) {
             Long gamma = chStmt.getLong("gamma_id");
             if (!gammas.contains(gamma)) {
@@ -257,7 +257,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       }
    }
 
-   private void copyAccessRules(ArtifactId author, BranchId parentBranch, Long branchUuid) {
+   private void copyAccessRules(ArtifactId author, BranchId parentBranch, BranchId branch) {
       int lock = PermissionEnum.LOCK.getPermId();
       int deny = PermissionEnum.DENY.getPermId();
 
@@ -268,7 +268,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
          if (author.equals(priviledgeId) && permissionId < lock && permissionId != deny) {
             permissionId = lock;
          }
-         data.add(new Object[] {permissionId, priviledgeId, branchUuid});
+         data.add(new Object[] {permissionId, priviledgeId, branch});
       }, JdbcConstants.JDBC__MAX_FETCH_SIZE, GET_BRANCH_ACCESS_CONTROL_LIST, parentBranch);
 
       if (!data.isEmpty()) {

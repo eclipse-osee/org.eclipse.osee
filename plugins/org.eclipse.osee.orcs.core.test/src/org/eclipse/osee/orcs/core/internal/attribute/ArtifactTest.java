@@ -101,7 +101,6 @@ public class ArtifactTest {
       when(artifactData.getVersion()).thenReturn(version);
       when(artifactData.getTypeUuid()).thenReturn(artifactType.getGuid());
       when(artifactData.getLocalId()).thenReturn(0);
-      when(version.getBranchId()).thenReturn(55L);
 
       when(deleted.getModificationType()).thenReturn(ModificationType.ARTIFACT_DELETED);
       when(deleted.isDeleted()).thenReturn(true);

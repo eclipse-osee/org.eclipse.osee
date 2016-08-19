@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -50,30 +51,30 @@ public class DataLoaderImpl implements DataLoader {
    private final Options options;
 
    private final OrcsSession session;
-   private final Long branchId;
+   private final BranchId branchId;
    private final SqlObjectLoader sqlLoader;
    private final SqlJoinFactory joinFactory;
 
-   public DataLoaderImpl(Log logger, AbstractLoadExecutor loadExecutor, Options options, OrcsSession session, Long branchId, SqlObjectLoader sqlLoader, SqlJoinFactory joinFactory) {
-      this(logger, options, session, branchId, sqlLoader, joinFactory);
+   public DataLoaderImpl(Log logger, AbstractLoadExecutor loadExecutor, Options options, OrcsSession session, BranchId branch, SqlObjectLoader sqlLoader, SqlJoinFactory joinFactory) {
+      this(logger, options, session, branch, sqlLoader, joinFactory);
       this.loadExecutor = loadExecutor;
    }
 
-   public DataLoaderImpl(Log logger, Collection<Integer> artifactIds, Options options, OrcsSession session, Long branchId, SqlObjectLoader sqlLoader, SqlJoinFactory joinFactory) {
-      this(logger, options, session, branchId, sqlLoader, joinFactory);
+   public DataLoaderImpl(Log logger, Collection<Integer> artifactIds, Options options, OrcsSession session, BranchId branch, SqlObjectLoader sqlLoader, SqlJoinFactory joinFactory) {
+      this(logger, options, session, branch, sqlLoader, joinFactory);
       withArtifactIds(artifactIds);
    }
 
-   public DataLoaderImpl(Log logger, Options options, OrcsSession session, Long branchId, SqlObjectLoader sqlLoader, Collection<String> artifactIds, SqlJoinFactory joinFactory) {
-      this(logger, options, session, branchId, sqlLoader, joinFactory);
+   public DataLoaderImpl(Log logger, Options options, OrcsSession session, BranchId branch, SqlObjectLoader sqlLoader, Collection<String> artifactIds, SqlJoinFactory joinFactory) {
+      this(logger, options, session, branch, sqlLoader, joinFactory);
       withArtifactGuids(artifactIds);
    }
 
-   private DataLoaderImpl(Log logger, Options options, OrcsSession session, Long branchId, SqlObjectLoader sqlLoader, SqlJoinFactory joinFactory) {
+   private DataLoaderImpl(Log logger, Options options, OrcsSession session, BranchId branch, SqlObjectLoader sqlLoader, SqlJoinFactory joinFactory) {
       this.logger = logger;
       this.options = options;
       this.session = session;
-      this.branchId = branchId;
+      this.branchId = branch;
       this.sqlLoader = sqlLoader;
       this.joinFactory = joinFactory;
    }

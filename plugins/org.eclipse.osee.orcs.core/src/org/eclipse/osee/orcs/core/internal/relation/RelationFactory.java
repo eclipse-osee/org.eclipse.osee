@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.RelationData;
@@ -46,7 +47,7 @@ public class RelationFactory {
    public Relation createRelation(RelationNode aNode, IRelationType type, RelationNode bNode, String rationale) throws OseeCoreException {
       OrcsConditions.checkBranch(aNode, bNode);
       OrcsConditions.checkRelateSelf(aNode, bNode);
-      RelationData data = relationDataFactory.createRelationData(type, aNode.getBranchId(), aNode, bNode, rationale);
+      RelationData data = relationDataFactory.createRelationData(type, aNode.getBranch(), aNode, bNode, rationale);
       return createRelation(data);
    }
 
@@ -55,10 +56,8 @@ public class RelationFactory {
       return createRelation(data);
    }
 
-   public Relation introduce(Long branch, RelationData data) {
+   public Relation introduce(BranchId branch, RelationData data) {
       RelationData source = relationDataFactory.introduce(branch, data);
-
       return createRelation(source);
    }
-
 }

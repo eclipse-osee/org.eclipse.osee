@@ -439,7 +439,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       @Override
       public Void caseOsTxHeadOfBranchIdCriteria(OsTxHeadOfBranchIdCriteria object) {
          Long id = resolver.resolveSingle(Long.class, object.getId());
-         getTxQuery().andIsHead(id);
+         getTxQuery().andIsHead(TokenFactory.createBranch(id));
          return null;
       }
 

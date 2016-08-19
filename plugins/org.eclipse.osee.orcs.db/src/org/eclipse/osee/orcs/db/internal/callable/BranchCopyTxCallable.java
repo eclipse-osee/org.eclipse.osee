@@ -74,14 +74,14 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
 
       String creationComment = branchData.getCreationComment();
 
-      jdbcClient.runPreparedUpdate(connection, INSERT_TX_DETAILS, branchData.getUuid(), nextTransactionId,
+      jdbcClient.runPreparedUpdate(connection, INSERT_TX_DETAILS, branchData.getBranch(), nextTransactionId,
          creationComment, timestamp, branchData.getAuthor(), TransactionDetailsType.NonBaselined.getId());
 
       populateTransaction(0.30, connection, nextTransactionId, branchData.getParentBranch(),
          branchData.getSavedTransaction());
 
       UpdatePreviousTxCurrent updater =
-         new UpdatePreviousTxCurrent(jdbcClient, joinFactory, connection, branchData.getUuid());
+         new UpdatePreviousTxCurrent(jdbcClient, joinFactory, connection, branchData.getBranch());
       updater.updateTxNotCurrentsFromTx(nextTransactionId);
    }
 
@@ -111,7 +111,7 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
                   gamma,
                   modType.getValue(),
                   txCurrent.getValue(),
-                  branchData.getUuid(),
+                  branchData.getBranch(),
                   app_id});
                gammas.add(gamma);
             }

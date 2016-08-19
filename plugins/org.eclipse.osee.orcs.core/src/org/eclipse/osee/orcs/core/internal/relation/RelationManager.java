@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal.relation;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -85,7 +86,7 @@ public interface RelationManager {
 
    void cloneRelations(OrcsSession session, RelationNode source, RelationNode destination) throws OseeCoreException;
 
-   void introduce(OrcsSession session, Long branch, RelationNode source, RelationNode destination) throws OseeCoreException;
+   void introduce(OrcsSession session, BranchId branch, RelationNode source, RelationNode destination) throws OseeCoreException;
 
    void setApplicabilityId(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, ApplicabilityId applicId);
 

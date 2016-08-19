@@ -83,10 +83,6 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
       return ApplicabilityToken.BASE;
    }
 
-   private Long getBranchId() {
-      return getEndTx().getBranchId();
-   }
-
    private TransactionToken getEndTx() {
       return txDelta.getEndTx();
    }
@@ -146,8 +142,8 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
          }
       };
       String query = String.format(SELECT_ITEMS_BETWEEN_TRANSACTIONS, isArchived ? "_archived" : "");
-      getJdbcClient().runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, query, getBranchId(), getStartTx(),
-         getEndTx());
+      getJdbcClient().runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, query, getEndTx().getBranch(),
+         getStartTx(), getEndTx());
 
       return hashChangeData;
    }
@@ -199,7 +195,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
          archiveTable, archiveTable);
 
       getJdbcClient().runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, query, queryId,
-         transactionLimit.getBranchId(), transactionLimit, queryId, transactionLimit.getBranchId(), transactionLimit,
-         queryId, transactionLimit.getBranchId(), transactionLimit);
+         transactionLimit.getBranch(), transactionLimit, queryId, transactionLimit.getBranch(), transactionLimit,
+         queryId, transactionLimit.getBranch(), transactionLimit);
    }
 }

@@ -92,7 +92,7 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
       data.setTxCopyBranchType(isTxCopyBranchType());
 
       try {
-         Response response = proxy.createBranchWithId(branchUuid, data);
+         Response response = proxy.createBranchWithId(BranchId.valueOf(branchUuid), data);
          if (Status.CREATED.getStatusCode() == response.getStatus()) {
             long branchId = getBranchUuid(response);
             newBranch = BranchManager.getBranch(branchId); // can't use TokenFactory here because some places assume branch will be cached such as getBranchesByName

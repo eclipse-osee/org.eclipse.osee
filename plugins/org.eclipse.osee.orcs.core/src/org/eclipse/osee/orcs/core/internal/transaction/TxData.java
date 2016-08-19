@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.TupleData;
@@ -66,8 +67,8 @@ public class TxData implements HasSession, HasBranch {
    }
 
    @Override
-   public Long getBranchId() {
-      return graph.getBranchId();
+   public BranchId getBranch() {
+      return graph.getBranch();
    }
 
    public GraphData getGraph() {

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
 import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.DEFAULT_HIERARCHY;
@@ -129,6 +130,13 @@ public class RelationManagerTest {
       when(node4.getLocalId()).thenReturn(44);
       when(node5.getLocalId()).thenReturn(55);
       when(node6.getLocalId()).thenReturn(66);
+
+      when(node1.getBranch()).thenReturn(COMMON);
+      when(node2.getBranch()).thenReturn(COMMON);
+      when(node3.getBranch()).thenReturn(COMMON);
+      when(node4.getBranch()).thenReturn(COMMON);
+      when(node5.getBranch()).thenReturn(COMMON);
+      when(node6.getBranch()).thenReturn(COMMON);
 
       when(node1.getName()).thenReturn("z");
       when(node2.getName()).thenReturn("y");
@@ -305,14 +313,13 @@ public class RelationManagerTest {
 
    @Test
    public void testIntroduce() throws OseeCoreException {
-      Long branchId = 1L;
       when(types.isArtifactTypeAllowed(CoreRelationTypes.Default_Hierarchical__Parent, RelationSide.SIDE_A,
          CoreArtifactTypes.SoftwareRequirement)).thenReturn(true);
       when(types.getMultiplicity(CoreRelationTypes.Default_Hierarchical__Parent)).thenReturn(
          RelationTypeMultiplicity.ONE_TO_MANY);
-      when(relationFactory.introduce(branchId, data1)).thenReturn(relation1);
+      when(relationFactory.introduce(COMMON, data1)).thenReturn(relation1);
 
-      manager.introduce(session, branchId, node2, node3);
+      manager.introduce(session, COMMON, node2, node3);
       RelationNodeAdjacencies node2Adj = node2.getGraph().getAdjacencies(node2);
       RelationNodeAdjacencies node3Adj = node3.getGraph().getAdjacencies(node3);
 

@@ -95,7 +95,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       options.setArchive(isArchiveAllowed);
       options.setCommitter(committer);
       try {
-         Response response = proxy.commitBranch(sourceBranch.getUuid(), destinationBranch.getUuid(), options);
+         Response response = proxy.commitBranch(sourceBranch, destinationBranch, options);
          if (Status.CREATED.getStatusCode() == response.getStatus()) {
             BranchManager.setState(sourceBranch, BranchState.COMMITTED);
             Long txId = getTransactionId(response);

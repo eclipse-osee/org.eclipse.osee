@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.loader.processor;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -35,10 +36,10 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
       ArtifactData toReturn = null;
 
       int artifactId = chStmt.getInt("art_id");
-      long branchUuid = chStmt.getLong("branch_id");
+      BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
 
       CreateConditions onCreate = asConditions(conditions);
-      if (!onCreate.isSame(branchUuid, artifactId)) {
+      if (!onCreate.isSame(branch, artifactId)) {
 
          ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
          ApplicabilityId applicId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
@@ -48,7 +49,7 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
             long gamma = chStmt.getInt("gamma_id");
             TransactionId txId = TransactionId.valueOf(chStmt.getLong("transaction_id"));
 
-            VersionData version = factory.createVersion(branchUuid, txId, gamma, historical);
+            VersionData version = factory.createVersion(branch, txId, gamma, historical);
 
             if (historical) {
                version.setStripeId(TransactionId.valueOf(chStmt.getLong("stripe_transaction_id")));
@@ -58,7 +59,7 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
             String guid = chStmt.getString("guid");
             toReturn = factory.createArtifactData(version, artifactId, typeId, modType, guid, applicId);
          }
-         onCreate.saveConditions(branchUuid, artifactId);
+         onCreate.saveConditions(branch, artifactId);
       }
       return toReturn;
    }
@@ -74,14 +75,14 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
 
    private static final class CreateConditions {
       int previousArtId = -1;
-      long previousBranchId = -1;
+      BranchId previousBranchId = BranchId.SENTINEL;
 
-      boolean isSame(long branchUuid, int artifactId) {
-         return previousBranchId == branchUuid && previousArtId == artifactId;
+      boolean isSame(BranchId branch, int artifactId) {
+         return previousBranchId.equals(branch) && previousArtId == artifactId;
       }
 
-      void saveConditions(long branchUuid, int artifactId) {
-         previousBranchId = branchUuid;
+      void saveConditions(BranchId branch, int artifactId) {
+         previousBranchId = branch;
          previousArtId = artifactId;
       }
    }

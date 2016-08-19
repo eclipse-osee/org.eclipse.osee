@@ -73,12 +73,8 @@ public class BranchDataFactory {
    }
 
    private CreateBranchData createBranchData(IOseeBranch branch, BranchId parent, BranchType branchType, String creationComment, TransactionId sysRootHeadTx, ArtifactId author, ArtifactId associatedArtifact, boolean bCopyTx) {
-      CreateBranchData createData = new CreateBranchData();
-      createData.setUuid(branch.getUuid());
+      CreateBranchData createData = new CreateBranchData(branch);
       createData.setName(branch.getName());
-      if (branch.getUuid() > 0) {
-         createData.setUuid(branch.getUuid());
-      }
       createData.setBranchType(branchType);
       createData.setCreationComment(creationComment);
       createData.setFromTransaction(sysRootHeadTx);

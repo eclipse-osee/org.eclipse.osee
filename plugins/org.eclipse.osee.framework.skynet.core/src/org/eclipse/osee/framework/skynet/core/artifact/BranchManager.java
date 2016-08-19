@@ -287,7 +287,7 @@ public final class BranchManager {
 
    public static void setType(BranchId branch, BranchType type) throws OseeCoreException {
       BranchEndpoint proxy = ServiceUtil.getOseeClient().getBranchEndpoint();
-      Response response = proxy.setBranchType(branch.getId(), type);
+      Response response = proxy.setBranchType(branch, type);
       if (response.getStatus() == javax.ws.rs.core.Response.Status.OK.getStatusCode()) {
          BranchManager.getBranch(branch).setBranchType(type);
          OseeEventManager.kickBranchEvent(BranchManager.class, new BranchEvent(BranchEventType.TypeUpdated, branch));
@@ -296,7 +296,7 @@ public final class BranchManager {
 
    public static void setState(BranchId branch, BranchState state) {
       BranchEndpoint proxy = ServiceUtil.getOseeClient().getBranchEndpoint();
-      Response response = proxy.setBranchState(branch.getId(), state);
+      Response response = proxy.setBranchState(branch, state);
       if (response.getStatus() == javax.ws.rs.core.Response.Status.OK.getStatusCode()) {
          BranchManager.getBranch(branch).setBranchState(state);
          OseeEventManager.kickBranchEvent(BranchManager.class, new BranchEvent(BranchEventType.StateUpdated, branch));
@@ -305,16 +305,15 @@ public final class BranchManager {
 
    public static void setArchiveState(BranchId branch, BranchArchivedState state) throws OseeCoreException {
       BranchEndpoint proxy = ServiceUtil.getOseeClient().getBranchEndpoint();
-      Long branchId = branch.getUuid();
       if (state.isArchived()) {
-         Response response = proxy.archiveBranch(branchId);
+         Response response = proxy.archiveBranch(branch);
          if (response.getStatus() == javax.ws.rs.core.Response.Status.OK.getStatusCode()) {
             BranchManager.getBranch(branch).setArchived(true);
             OseeEventManager.kickBranchEvent(BranchManager.class,
                new BranchEvent(BranchEventType.ArchiveStateUpdated, branch));
          }
       } else {
-         Response response = proxy.unarchiveBranch(branchId);
+         Response response = proxy.unarchiveBranch(branch);
          if (response.getStatus() == javax.ws.rs.core.Response.Status.OK.getStatusCode()) {
             BranchManager.getBranch(branch).setArchived(false);
             OseeEventManager.kickBranchEvent(BranchManager.class,
@@ -325,7 +324,7 @@ public final class BranchManager {
 
    public static void setName(BranchId branch, String newBranchName) {
       BranchEndpoint proxy = ServiceUtil.getOseeClient().getBranchEndpoint();
-      Response response = proxy.setBranchName(branch.getId(), newBranchName);
+      Response response = proxy.setBranchName(branch, newBranchName);
       if (response.getStatus() == javax.ws.rs.core.Response.Status.OK.getStatusCode()) {
          BranchManager.getBranch(branch).setName(newBranchName);
          OseeEventManager.kickBranchEvent(BranchManager.class, new BranchEvent(BranchEventType.Renamed, branch));
@@ -604,7 +603,7 @@ public final class BranchManager {
       OseeClient client = ServiceUtil.getOseeClient();
       BranchEndpoint proxy = client.getBranchEndpoint();
 
-      Response response = proxy.associateBranchToArtifact(branch.getId(), artifactId);
+      Response response = proxy.associateBranchToArtifact(branch, artifactId);
       if (javax.ws.rs.core.Response.Status.OK.getStatusCode() == response.getStatus()) {
          getBranch(branch).setAssociatedArtifact(artifactId);
       }

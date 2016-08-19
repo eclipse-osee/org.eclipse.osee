@@ -72,7 +72,7 @@ public class OrcsPortingTest {
       ArtifactId assocaitedArt = setupAssociatedArtifact();
 
       TransactionToken mainBranchTx = createBaselineBranchAndArtifacts();
-      IOseeBranch branch = TokenFactory.createBranch(mainBranchTx.getBranchId(), "testCreateBranch");
+      IOseeBranch branch = IOseeBranch.create(mainBranchTx.getBranch(), "testCreateBranch");
       TransactionId transactionToCopy = createWorkingBranchChanges(branch, nextReq);
 
       BranchId copyTxBranch = createCopyFromTransactionBranch(transactionToCopy, assocaitedArt);
@@ -83,7 +83,7 @@ public class OrcsPortingTest {
       // the attribute for the SecondRequirement should not be named "test changed again" (on the branch after the copy from)
       // we should have a folder named "childBranch folder", but no folder named "folder after transaction"
       ResultSet<ArtifactReadable> artifacts =
-         query.fromBranch(finalTx.getBranchId()).andTypeEquals(CoreArtifactTypes.Artifact).getResults();
+         query.fromBranch(finalTx.getBranch()).andTypeEquals(CoreArtifactTypes.Artifact).getResults();
       for (ArtifactReadable art : artifacts) {
          if (art.isOfType(CoreArtifactTypes.SoftwareRequirement)) {
             assertEquals(2, art.getAttributes().size());

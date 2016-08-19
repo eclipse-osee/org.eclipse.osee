@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.artifact;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -19,9 +20,9 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -82,8 +83,6 @@ public class ArtifactFactoryTest {
    private ArtifactFactory artifactFactory;
    private List<IAttributeType> types;
 
-   private final Long BRANCH_ID = 23L;
-
    @Before
    public void init() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
@@ -101,10 +100,10 @@ public class ArtifactFactoryTest {
       when(artifactData.getGuid()).thenReturn(guid);
       when(artifactData.getTypeUuid()).thenReturn(65L);
       when(artifactData.getVersion()).thenReturn(artifactVersion);
-      when(artifactVersion.getBranchId()).thenReturn(BRANCH_ID);
+      when(artifactVersion.getBranch()).thenReturn(COMMON);
       when(source.getOrcsData()).thenReturn(artifactData);
 
-      when(attributeFactory.copyAttribute(any(AttributeData.class), any(Long.class),
+      when(attributeFactory.copyAttribute(any(AttributeData.class), any(BranchId.class),
          any(AttributeManager.class))).thenReturn(attribute);
 
       when(otherArtifactData.getLocalId()).thenReturn(45);
@@ -118,11 +117,11 @@ public class ArtifactFactoryTest {
 
    @Test
    public void testCreateArtifactFromBranchTypeAndGuid() throws OseeCoreException {
-      when(dataFactory.create(BRANCH_ID, artifactType, guid)).thenReturn(artifactData);
+      when(dataFactory.create(COMMON, artifactType, guid)).thenReturn(artifactData);
 
-      Artifact artifact = artifactFactory.createArtifact(session, BRANCH_ID, artifactType, guid);
+      Artifact artifact = artifactFactory.createArtifact(session, COMMON, artifactType, guid);
 
-      verify(dataFactory).create(BRANCH_ID, artifactType, guid);
+      verify(dataFactory).create(COMMON, artifactType, guid);
       assertEquals(artifactType, artifact.getArtifactType());
       assertEquals(guid, artifact.getGuid());
    }
@@ -130,11 +129,11 @@ public class ArtifactFactoryTest {
    @Test
    public void testCreateArtifactFromBranchTypeAndGuidAndUuid() throws OseeCoreException {
       long uuid = 93456L;
-      when(dataFactory.create(BRANCH_ID, artifactType, guid, uuid)).thenReturn(artifactData);
+      when(dataFactory.create(COMMON, artifactType, guid, uuid)).thenReturn(artifactData);
 
-      Artifact artifact = artifactFactory.createArtifact(session, BRANCH_ID, artifactType, guid, uuid);
+      Artifact artifact = artifactFactory.createArtifact(session, COMMON, artifactType, guid, uuid);
 
-      verify(dataFactory).create(BRANCH_ID, artifactType, guid, uuid);
+      verify(dataFactory).create(COMMON, artifactType, guid, uuid);
       assertEquals(artifactType, artifact.getArtifactType());
       assertEquals(guid, artifact.getGuid());
    }
@@ -149,7 +148,7 @@ public class ArtifactFactoryTest {
 
    @Test
    public void testCopyArtifact() throws OseeCoreException {
-      when(dataFactory.copy(BRANCH_ID, artifactData)).thenReturn(otherArtifactData);
+      when(dataFactory.copy(COMMON, artifactData)).thenReturn(otherArtifactData);
 
       when(source.getAttributes(CoreAttributeTypes.Annotation)).thenAnswer(new ReturnAttribute(attribute));
       when(attribute.getOrcsData()).thenReturn(attributeData);
@@ -159,12 +158,12 @@ public class ArtifactFactoryTest {
 
       ArgumentCaptor<Artifact> implCapture = ArgumentCaptor.forClass(Artifact.class);
 
-      Artifact actual = artifactFactory.copyArtifact(session, source, types, BRANCH_ID);
+      Artifact actual = artifactFactory.copyArtifact(session, source, types, COMMON);
 
       verify(source, times(0)).getAttributes(CoreAttributeTypes.RelationOrder);
       verify(source, times(0)).getAttributes(CoreAttributeTypes.City);
       verify(source, times(1)).getAttributes(CoreAttributeTypes.Annotation);
-      verify(attributeFactory).copyAttribute(eq(attributeData), eq(BRANCH_ID), implCapture.capture());
+      verify(attributeFactory).copyAttribute(eq(attributeData), eq(COMMON), implCapture.capture());
 
       Assert.assertTrue(implCapture.getValue().isLoaded());
       Assert.assertTrue(actual == implCapture.getValue());
@@ -172,7 +171,7 @@ public class ArtifactFactoryTest {
 
    @Test
    public void testIntroduceArtifact() throws OseeCoreException {
-      when(dataFactory.introduce(BRANCH_ID, artifactData)).thenReturn(otherArtifactData);
+      when(dataFactory.introduce(COMMON, artifactData)).thenReturn(otherArtifactData);
 
       when(source.getExistingAttributeTypes()).thenAnswer(new ReturnExistingTypes(types));
       when(source.getAttributes(DeletionFlag.INCLUDE_DELETED)).thenAnswer(new ReturnAttribute(attribute));
@@ -182,15 +181,15 @@ public class ArtifactFactoryTest {
       when(attribute.getAttributeType()).thenReturn(CoreAttributeTypes.Annotation);
       when(destination.isAttributeTypeValid(CoreAttributeTypes.Annotation)).thenReturn(true);
 
-      Artifact actual = artifactFactory.introduceArtifact(session, source, destination, BRANCH_ID);
+      Artifact actual = artifactFactory.introduceArtifact(session, source, destination, COMMON);
 
-      verify(attributeFactory).introduceAttribute(eq(attributeData), eq(BRANCH_ID), eq(destination));
+      verify(attributeFactory).introduceAttribute(eq(attributeData), eq(COMMON), eq(destination));
       Assert.assertTrue(actual == destination);
    }
 
    @Test
    public void testClone() throws OseeCoreException {
-      when(dataFactory.copy(BRANCH_ID, artifactData)).thenReturn(otherArtifactData);
+      when(dataFactory.copy(COMMON, artifactData)).thenReturn(otherArtifactData);
 
       when(source.getExistingAttributeTypes()).thenAnswer(new ReturnExistingTypes(types));
       when(source.getAttributes(CoreAttributeTypes.Annotation)).thenAnswer(new ReturnAttribute(attribute));
@@ -200,12 +199,12 @@ public class ArtifactFactoryTest {
 
       ArgumentCaptor<Artifact> implCapture = ArgumentCaptor.forClass(Artifact.class);
 
-      Artifact actual = artifactFactory.copyArtifact(session, source, types, BRANCH_ID);
+      Artifact actual = artifactFactory.copyArtifact(session, source, types, COMMON);
 
       verify(source, times(0)).getAttributes(CoreAttributeTypes.RelationOrder);
       verify(source, times(0)).getAttributes(CoreAttributeTypes.City);
       verify(source, times(1)).getAttributes(CoreAttributeTypes.Annotation);
-      verify(attributeFactory).copyAttribute(eq(attributeData), eq(BRANCH_ID), implCapture.capture());
+      verify(attributeFactory).copyAttribute(eq(attributeData), eq(COMMON), implCapture.capture());
       Assert.assertTrue(implCapture.getValue().isLoaded());
       Assert.assertTrue(actual == implCapture.getValue());
    }

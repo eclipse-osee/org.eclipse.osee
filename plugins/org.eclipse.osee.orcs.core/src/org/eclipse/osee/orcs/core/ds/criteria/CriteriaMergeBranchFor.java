@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds.criteria;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
@@ -20,30 +21,31 @@ import org.eclipse.osee.orcs.core.ds.Options;
  */
 public class CriteriaMergeBranchFor extends Criteria implements BranchCriteria {
 
-   private final Long sourceUuid, destUuid;
+   private final BranchId source;
+   private final BranchId destination;
 
-   public CriteriaMergeBranchFor(Long sourceUuid, Long destUuid) {
+   public CriteriaMergeBranchFor(BranchId source, BranchId destination) {
       super();
-      this.sourceUuid = sourceUuid;
-      this.destUuid = destUuid;
+      this.source = source;
+      this.destination = destination;
    }
 
-   public Long getSourceUuid() {
-      return sourceUuid;
+   public BranchId getSource() {
+      return source;
    }
 
-   public Long getDestUuid() {
-      return destUuid;
+   public BranchId getDestination() {
+      return destination;
    }
 
    @Override
    public void checkValid(Options options) throws OseeCoreException {
-      Conditions.checkExpressionFailOnTrue(sourceUuid == null, "Source Uuid cannot be null");
-      Conditions.checkExpressionFailOnTrue(destUuid == null, "Destination Uuid cannot be null");
+      Conditions.checkExpressionFailOnTrue(source == null, "Source Uuid cannot be null");
+      Conditions.checkExpressionFailOnTrue(destination == null, "Destination Uuid cannot be null");
    }
 
    @Override
    public String toString() {
-      return "CriteriaMergeBranchFor [source=" + sourceUuid + ", destination=" + destUuid + "]";
+      return "CriteriaMergeBranchFor [source=" + source + ", destination=" + destination + "]";
    }
 }

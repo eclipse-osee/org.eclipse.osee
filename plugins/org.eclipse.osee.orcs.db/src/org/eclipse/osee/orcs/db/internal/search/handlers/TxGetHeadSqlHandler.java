@@ -51,8 +51,7 @@ public class TxGetHeadSqlHandler extends SqlHandler<CriteriaTxGetHead> {
       writer.write(" WHERE ");
       writer.write("branch_id = ?)");
 
-      long branch = criteria.getBranchid();
-      writer.addParameter(branch);
+      writer.addParameter(criteria.getBranch());
       return true;
    }
 

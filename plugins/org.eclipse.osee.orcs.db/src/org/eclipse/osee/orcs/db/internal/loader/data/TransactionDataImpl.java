@@ -24,7 +24,7 @@ import org.eclipse.osee.orcs.core.ds.TxOrcsData;
 public class TransactionDataImpl extends BaseId implements TxOrcsData {
 
    private ArtifactId authorId = ArtifactId.SENTINEL;
-   private Long branchId = BranchId.SENTINEL.getId();
+   private BranchId branch = BranchId.SENTINEL;
    private String comment = RelationalConstants.DEFAULT_COMMENT;
    private ArtifactId commitId = ArtifactId.SENTINEL;
    private TransactionDetailsType type = TransactionDetailsType.INVALID;
@@ -40,8 +40,8 @@ public class TransactionDataImpl extends BaseId implements TxOrcsData {
    }
 
    @Override
-   public Long getBranchId() {
-      return branchId;
+   public BranchId getBranch() {
+      return branch;
    }
 
    @Override
@@ -70,8 +70,8 @@ public class TransactionDataImpl extends BaseId implements TxOrcsData {
    }
 
    @Override
-   public void setBranchId(Long branchId) {
-      this.branchId = branchId;
+   public void setBranch(BranchId branch) {
+      this.branch = branch;
    }
 
    @Override
@@ -96,6 +96,6 @@ public class TransactionDataImpl extends BaseId implements TxOrcsData {
 
    @Override
    public String toString() {
-      return "TransactionDataImpl [id=" + getId() + ", authorId=" + authorId + ", branchUuid=" + branchId + ", comment=" + comment + ", commitId=" + commitId + ", date=" + date + ", type=" + type + "]";
+      return "TransactionDataImpl [id=" + getId() + ", authorId=" + authorId + ", branch=" + branch + ", comment=" + comment + ", commitId=" + commitId + ", date=" + date + ", type=" + type + "]";
    }
 }

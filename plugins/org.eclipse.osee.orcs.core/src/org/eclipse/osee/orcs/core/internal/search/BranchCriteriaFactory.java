@@ -54,8 +54,8 @@ public class BranchCriteriaFactory {
       return new CriteriaBranchArchived(states);
    }
 
-   public Criteria createMergeForCriteria(Long sourceUuid, Long destUuid) {
-      return new CriteriaMergeBranchFor(sourceUuid, destUuid);
+   public Criteria createMergeForCriteria(BranchId source, BranchId destination) {
+      return new CriteriaMergeBranchFor(source, destination);
    }
 
    public Criteria createAssociatedArtIdCriteria(int artId) {

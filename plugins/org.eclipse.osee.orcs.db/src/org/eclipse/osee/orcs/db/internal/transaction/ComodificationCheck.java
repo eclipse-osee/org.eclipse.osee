@@ -47,7 +47,7 @@ public class ComodificationCheck implements TransactionProcessor {
       txData.getChangeSet().accept(checker);
 
       if (!checker.getArtifactIds().isEmpty()) {
-         DataLoader loader = dataLoader.newDataLoaderFromIds(session, txData.getBranchId(), checker.getArtifactIds());
+         DataLoader loader = dataLoader.newDataLoaderFromIds(session, txData.getBranch(), checker.getArtifactIds());
          loader.withAttributeIds(checker.getAttributeIds());
          loader.withRelationIds(checker.getRelationIds());
 

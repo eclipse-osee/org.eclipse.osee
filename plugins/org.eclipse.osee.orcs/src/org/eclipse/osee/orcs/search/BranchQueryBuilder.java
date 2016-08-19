@@ -58,7 +58,7 @@ public interface BranchQueryBuilder<T> {
 
    T andIsAncestorOf(BranchId branch) throws OseeCoreException;
 
-   T andIsMergeFor(Long sourceUuid, Long destUuid);
+   T andIsMergeFor(BranchId source, BranchId destination);
 
    T andAssociatedArtId(int artId);
 

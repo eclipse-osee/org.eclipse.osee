@@ -67,7 +67,7 @@ public class GraphBuilderImpl extends LoadDataHandlerAdapter implements GraphBui
 
    @Override
    public void onLoadDescription(LoadDescription data) throws OseeCoreException {
-      graph = graphProvider.getGraph(data.getSession(), data.getBranchId(), data.getTransaction());
+      graph = graphProvider.getGraph(data.getSession(), data.getBranch(), data.getTransaction());
       Conditions.checkNotNull(graph, "graph");
    };
 

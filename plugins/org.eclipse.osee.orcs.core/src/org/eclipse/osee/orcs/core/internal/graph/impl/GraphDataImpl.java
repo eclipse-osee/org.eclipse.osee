@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.graph.impl;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -29,14 +30,14 @@ public class GraphDataImpl implements GraphData {
    private final Map<Integer, GraphNode> nodesById = new ConcurrentHashMap<>();
    private final Map<Integer, GraphAdjacencies> adjacenciesById = new ConcurrentHashMap<>();
 
-   private final Long branchId;
+   private final BranchId branch;
    private final TransactionId txId;
    private final OrcsSession orcsSession;
 
-   public GraphDataImpl(OrcsSession session, Long branchId, TransactionId txId) {
+   public GraphDataImpl(OrcsSession session, BranchId branch, TransactionId txId) {
       super();
       this.orcsSession = session;
-      this.branchId = branchId;
+      this.branch = branch;
       this.txId = txId;
    }
 
@@ -58,7 +59,7 @@ public class GraphDataImpl implements GraphData {
 
    @Override
    public void addNode(GraphNode node, boolean useBackingData) throws OseeCoreException {
-      boolean sameBranches = getBranchId().equals(node.getBranchId());
+      boolean sameBranches = getBranch().equals(node.getBranch());
       if (!sameBranches) {
          throw new OseeArgumentException("Invalid node added to graph. Graph[%s] Node[%s]", this,
             node.getExceptionString());
@@ -121,14 +122,14 @@ public class GraphDataImpl implements GraphData {
 
    @Override
    public String toString() {
-      return String.format("Graph - branch[%s] txId[%s] nodes[%s] adjacencies[%s]", getBranchId(), getTransaction(),
+      return String.format("Graph - branch[%s] txId[%s] nodes[%s] adjacencies[%s]", getBranch(), getTransaction(),
          nodesById.size(), adjacenciesById.size());
    }
 
    @Override
    public int hashCode() {
       final int prime = 31;
-      int result = getBranchId().hashCode();
+      int result = getBranch().hashCode();
       result = prime * result + getTransaction().hashCode();
       return result;
    }
@@ -142,7 +143,7 @@ public class GraphDataImpl implements GraphData {
          return false;
       }
       GraphData other = (GraphData) obj;
-      if (!getBranchId().equals(other.getBranchId())) {
+      if (!getBranch().equals(other.getBranch())) {
          return false;
       }
       if (getTransaction() != other.getTransaction()) {
@@ -157,7 +158,7 @@ public class GraphDataImpl implements GraphData {
    }
 
    @Override
-   public Long getBranchId() {
-      return branchId;
+   public BranchId getBranch() {
+      return branch;
    }
 }

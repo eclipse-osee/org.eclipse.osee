@@ -104,7 +104,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
          return false;
       }
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
-      query = query.andIsMergeFor(workingBranch.getUuid(), destinationBranch.getUuid());
+      query = query.andIsMergeFor(workingBranch, destinationBranch);
       return query.getCount() > 0;
    }
 

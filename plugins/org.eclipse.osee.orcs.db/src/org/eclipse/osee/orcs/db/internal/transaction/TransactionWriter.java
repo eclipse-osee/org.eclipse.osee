@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.transaction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -136,10 +137,9 @@ public class TransactionWriter {
          }
          sqlBuilder.updateAfterBinaryStorePersist();
 
-         long branchUuid = tx.getBranchId();
          List<Object[]> txNotCurrentData = new ArrayList<>();
          for (Entry<SqlOrderEnum, ? extends AbstractJoinQuery> entry : sqlBuilder.getTxNotCurrents()) {
-            fetchTxNotCurrent(connection, branchUuid, txNotCurrentData, entry.getKey().getTxsNotCurrentQuery(),
+            fetchTxNotCurrent(connection, tx.getBranch(), txNotCurrentData, entry.getKey().getTxsNotCurrentQuery(),
                entry.getValue());
          }
 
@@ -156,14 +156,14 @@ public class TransactionWriter {
       }
    }
 
-   private void fetchTxNotCurrent(JdbcConnection connection, long branchUuid, List<Object[]> results, String query, AbstractJoinQuery join) throws OseeCoreException {
+   private void fetchTxNotCurrent(JdbcConnection connection, BranchId branch, List<Object[]> results, String query, AbstractJoinQuery join) throws OseeCoreException {
       try {
          join.store();
          JdbcStatement chStmt = jdbcClient.getStatement(connection);
          try {
-            chStmt.runPreparedQuery(query, join.getQueryId(), branchUuid);
+            chStmt.runPreparedQuery(query, join.getQueryId(), branch);
             while (chStmt.next()) {
-               results.add(new Object[] {branchUuid, chStmt.getLong("transaction_id"), chStmt.getLong("gamma_id")});
+               results.add(new Object[] {branch, chStmt.getLong("transaction_id"), chStmt.getLong("gamma_id")});
             }
          } finally {
             chStmt.close();

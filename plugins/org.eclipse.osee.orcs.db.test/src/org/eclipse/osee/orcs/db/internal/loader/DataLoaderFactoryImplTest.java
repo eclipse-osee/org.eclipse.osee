@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.loader;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import static org.junit.Assert.assertEquals;
@@ -137,7 +136,7 @@ public class DataLoaderFactoryImplTest {
    public void testLoadFull() throws OseeCoreException {
       LoadLevel expectedLoadLevel = LoadLevel.ALL;
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.fromTransaction(EXPECTED_TX);
 
@@ -158,15 +157,15 @@ public class DataLoaderFactoryImplTest {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_DATA;
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-         " jart1.art_id, art1.art_type_id, art1.guid\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_artifact art1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "art1.art_id = jart1.art_id AND jart1.query_id = ? AND art1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, txs1.transaction_id desc";
+            " jart1.art_id, art1.art_type_id, art1.guid\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_artifact art1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "art1.art_id = jart1.art_id AND jart1.query_id = ? AND art1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
@@ -181,15 +180,15 @@ public class DataLoaderFactoryImplTest {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_DATA;
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-         " jart1.art_id, art1.art_type_id, art1.guid\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_artifact art1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "art1.art_id = jart1.art_id AND jart1.query_id = ? AND art1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, txs1.transaction_id desc";
+            " jart1.art_id, art1.art_type_id, art1.guid\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_artifact art1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "art1.art_id = jart1.art_id AND jart1.query_id = ? AND art1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.includeDeletedArtifacts();
 
@@ -213,7 +212,7 @@ public class DataLoaderFactoryImplTest {
             " AND txs1.transaction_id <= jart1.transaction_id AND txs1.mod_type != 3 AND txs1.branch_id = jart1.branch_id\n" + //
             " ORDER BY txs1.branch_id, jart1.art_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.fromTransaction(EXPECTED_TX);
 
@@ -237,7 +236,7 @@ public class DataLoaderFactoryImplTest {
             " AND txs1.transaction_id <= jart1.transaction_id AND txs1.branch_id = jart1.branch_id\n" + //
             " ORDER BY txs1.branch_id, jart1.art_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.fromTransaction(EXPECTED_TX);
       dataLoader.includeDeletedArtifacts();
@@ -256,15 +255,15 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-         " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_attribute att1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
+            " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_attribute att1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
@@ -280,15 +279,15 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-         " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_attribute att1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.attr_type_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
+            " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_attribute att1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.attr_type_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.withAttributeTypes(CoreAttributeTypes.Annotation);
 
@@ -306,15 +305,15 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-         " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_join_id jid1, osee_attribute att1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.attr_type_id = jid1.id AND jid1.query_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
+            " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_join_id jid1, osee_attribute att1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.attr_type_id = jid1.id AND jid1.query_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.withAttributeTypes(CoreAttributeTypes.Annotation, CoreAttributeTypes.Category);
 
@@ -332,15 +331,15 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-         " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_attribute att1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.attr_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
+            " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_attribute att1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.attr_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.withAttributeIds(45);
 
@@ -357,15 +356,15 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-         " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_join_id jid1, osee_attribute att1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.attr_id = jid1.id AND jid1.query_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
+            " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_join_id jid1, osee_attribute att1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.attr_id = jid1.id AND jid1.query_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.withAttributeIds(45, 55);
 
@@ -382,15 +381,15 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-         " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_join_id jid1, osee_join_id jid2, osee_attribute att1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.attr_id = jid1.id AND jid1.query_id = ? AND att1.attr_type_id = jid2.id AND jid2.query_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
+            " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_join_id jid1, osee_join_id jid2, osee_attribute att1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.attr_id = jid1.id AND jid1.query_id = ? AND att1.attr_type_id = jid2.id AND jid2.query_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.withAttributeIds(45, 55);
       dataLoader.withAttributeTypes(CoreAttributeTypes.Annotation, CoreAttributeTypes.Category);
@@ -409,15 +408,15 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-         " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_attribute att1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.attr_id = ? AND att1.attr_type_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
+            " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_attribute att1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.attr_id = ? AND att1.attr_type_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.withAttributeIds(45);
       dataLoader.withAttributeTypes(CoreAttributeTypes.Annotation);
@@ -436,15 +435,15 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-         " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_attribute att1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
+            " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_attribute att1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.includeDeletedArtifacts();
 
@@ -469,7 +468,7 @@ public class DataLoaderFactoryImplTest {
             " AND txs1.transaction_id <= jart1.transaction_id AND txs1.mod_type != 3 AND txs1.branch_id = jart1.branch_id\n" + //
             " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.fromTransaction(EXPECTED_TX);
 
@@ -494,7 +493,7 @@ public class DataLoaderFactoryImplTest {
             " AND txs1.transaction_id <= jart1.transaction_id AND txs1.branch_id = jart1.branch_id\n" + //
             " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.fromTransaction(EXPECTED_TX);
       dataLoader.includeDeletedArtifacts();
@@ -514,15 +513,15 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-         " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
+            " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
@@ -538,15 +537,15 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-         " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
+            " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.includeDeletedArtifacts();
 
@@ -563,15 +562,15 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-         " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_type_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
+            " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_type_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.withRelationTypes(CoreRelationTypes.Default_Hierarchical__Child);
 
@@ -589,15 +588,15 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-         " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_join_id jid1, osee_relation_link rel1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_type_id = jid1.id AND jid1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
+            " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_join_id jid1, osee_relation_link rel1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_type_id = jid1.id AND jid1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.withRelationTypes(CoreRelationTypes.Default_Hierarchical__Child,
          CoreRelationTypes.Dependency__Artifact);
@@ -617,15 +616,15 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-         " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
+            " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.withRelationIds(45);
 
@@ -642,15 +641,15 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-         " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_join_id jid1, osee_relation_link rel1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_id = jid1.id AND jid1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
+            " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_join_id jid1, osee_relation_link rel1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_id = jid1.id AND jid1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.withRelationIds(45, 55);
 
@@ -667,15 +666,15 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-         " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_join_id jid1, osee_join_id jid2, osee_relation_link rel1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_id = jid1.id AND jid1.query_id = ? AND rel1.rel_link_type_id = jid2.id AND jid2.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
+            " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_join_id jid1, osee_join_id jid2, osee_relation_link rel1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_id = jid1.id AND jid1.query_id = ? AND rel1.rel_link_type_id = jid2.id AND jid2.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.withRelationIds(45, 55);
       dataLoader.withRelationTypes(CoreRelationTypes.Default_Hierarchical__Child,
@@ -695,15 +694,15 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-         " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_id = ? AND rel1.rel_link_type_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
+            " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_id = ? AND rel1.rel_link_type_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.withRelationIds(45);
       dataLoader.withRelationTypes(CoreRelationTypes.Default_Hierarchical__Child);
@@ -730,7 +729,7 @@ public class DataLoaderFactoryImplTest {
             " AND txs1.transaction_id <= jart1.transaction_id AND txs1.mod_type != 3 AND txs1.branch_id = jart1.branch_id\n" + //
             " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.fromTransaction(EXPECTED_TX);
 
@@ -746,15 +745,15 @@ public class DataLoaderFactoryImplTest {
       LoadLevel expectedLoadLevel = LoadLevel.ALL;
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-         " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
+            " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.includeDeletedAttributes();
       dataLoader.withAttributeIds(45, 55);
@@ -772,15 +771,15 @@ public class DataLoaderFactoryImplTest {
       LoadLevel expectedLoadLevel = LoadLevel.ALL;
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-         " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_type_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
+            " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_type_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.includeDeletedRelations();
       dataLoader.withRelationTypes(CoreRelationTypes.Default_Hierarchical__Child);

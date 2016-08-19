@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal.writer;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -54,9 +55,9 @@ public class OrcsValidationHelperAdapterTest {
 
    @Test
    public void testIsBranchExists() {
-      Assert.assertTrue(helper.isBranchExists(COMMON_ID));
+      Assert.assertTrue(helper.isBranchExists(COMMON));
 
-      Assert.assertFalse(helper.isBranchExists(34598L));
+      Assert.assertFalse(helper.isBranchExists(BranchId.valueOf(34598)));
    }
 
    @Test
@@ -68,11 +69,11 @@ public class OrcsValidationHelperAdapterTest {
 
    @Test
    public void testIsArtifactExists() {
-      ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(COMMON_ID).andIsOfType(
+      ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(COMMON).andIsOfType(
          CoreArtifactTypes.User).getResults().iterator().next();
-      Assert.assertTrue(helper.isArtifactExists(COMMON_ID, artifact.getUuid()));
+      Assert.assertTrue(helper.isArtifactExists(COMMON, artifact.getUuid()));
 
-      Assert.assertFalse(helper.isArtifactExists(COMMON_ID, 999999L));
+      Assert.assertFalse(helper.isArtifactExists(COMMON, 999999L));
    }
 
    @Test

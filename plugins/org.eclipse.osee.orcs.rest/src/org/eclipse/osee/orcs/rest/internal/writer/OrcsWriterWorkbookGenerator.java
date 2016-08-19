@@ -51,7 +51,7 @@ public class OrcsWriterWorkbookGenerator {
       this.orcsApi = orcsApi;
    }
 
-   public void runOperation(OrcsApi providedOrcs, long branchUuid, Writer providedWriter) throws IOException {
+   public void runOperation(OrcsApi providedOrcs, Writer providedWriter) throws IOException {
       ISheetWriter writer = new ExcelXmlWriter(providedWriter);
       createInstructionSheet(writer);
       createCreateSheet(writer);

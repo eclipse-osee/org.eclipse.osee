@@ -21,6 +21,7 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.PlainText
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.QualificationMethod;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.RelationOrder;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WordTemplateContent;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC;
 import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
@@ -40,13 +41,11 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -92,8 +91,6 @@ public class TransactionBuilderImplTest {
    @Mock private QueryModule query;
    @Mock private KeyValueOps keyValueOps;
 
-   @Mock private BranchId branch;
-
    @Mock private ArtifactReadable expectedAuthor;
    @Mock private ArtifactReadable expectedDestination;
    @Mock private ArtifactReadable node1;
@@ -108,8 +105,6 @@ public class TransactionBuilderImplTest {
    @Mock private TxData txData;
    // @formatter:on
 
-   private final BranchId expectedBranch = CoreBranches.COMMON;
-   private final Long BRANCH_ID = expectedBranch.getUuid();
    private TransactionBuilderImpl factory;
    private String guid;
 
@@ -124,21 +119,20 @@ public class TransactionBuilderImplTest {
       when(txDataManager.getForWrite(txData, expectedAuthor)).thenReturn(artifact);
       when(artifact.getAttributeById(attrId.getLocalId())).thenReturn(attribute);
       when(query.createQueryFactory(session)).thenReturn(queryFactory);
+      when(expectedAuthor.getBranch()).thenReturn(COMMON);
+      when(txData.getBranch()).thenReturn(COMMON);
    }
 
    @Test
    public void testGetComment() {
       when(factory.getComment()).thenReturn("This is a comment");
-
       String comment = factory.getComment();
-
       assertEquals(comment, "This is a comment");
       verify(txData).getComment();
    }
 
    public void testSetAuthor() throws OseeCoreException {
       factory.setAuthor(expectedAuthor);
-
       verify(txDataManager).setAuthor(txData, expectedAuthor);
    }
 
@@ -158,49 +152,41 @@ public class TransactionBuilderImplTest {
 
    @Test
    public void testCopyArtifact() throws OseeCoreException {
-      when(expectedAuthor.getBranchId()).thenReturn(BRANCH_ID);
-
       factory.copyArtifact(expectedAuthor);
-
-      verify(txDataManager).copyArtifact(txData, BRANCH_ID, expectedAuthor);
+      verify(txDataManager).copyArtifact(txData, COMMON, expectedAuthor);
    }
 
    @Test
    public void testCopyArtifactWithList() throws OseeCoreException {
       Collection<? extends IAttributeType> attributesToDuplicate = Arrays.asList(Name, Annotation);
-      when(expectedAuthor.getBranchId()).thenReturn(BRANCH_ID);
 
       factory.copyArtifact(expectedAuthor, attributesToDuplicate);
 
-      verify(txDataManager).copyArtifact(txData, BRANCH_ID, expectedAuthor, attributesToDuplicate);
+      verify(txDataManager).copyArtifact(txData, COMMON, expectedAuthor, attributesToDuplicate);
    }
 
    @Test
    public void testIntroduceArtifactBranchException() throws OseeCoreException {
-      when(expectedAuthor.getBranchId()).thenReturn(BRANCH_ID);
-      when(txData.getBranchId()).thenReturn(BRANCH_ID);
-      when(txData.isOnBranch(BRANCH_ID)).thenReturn(true);
+      when(txData.isOnBranch(COMMON)).thenReturn(true);
 
       thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("Source branch is same branch as transaction branch[" + BRANCH_ID + "]");
-      factory.introduceArtifact(expectedBranch, expectedAuthor);
+      thrown.expectMessage("Source branch is same branch as transaction branch[" + COMMON + "]");
+      factory.introduceArtifact(COMMON, expectedAuthor);
    }
 
    @Test
    public void testIntroduceArtifact() throws OseeCoreException {
-      when(query.createQueryFactory(null)).thenReturn(queryFactory);
-      when(queryFactory.fromBranch(any(Long.class))).thenReturn(builder);
-
-      when(queryFactory.fromBranch(branch)).thenReturn(builder);
+      when(query.createQueryFactory(any())).thenReturn(queryFactory);
+      when(queryFactory.fromBranch(COMMON)).thenReturn(builder);
       when(builder.includeDeletedArtifacts()).thenReturn(builder);
       when(builder.andId(any())).thenReturn(builder);
 
       ResultSet<ArtifactReadable> source = ResultSets.singleton(expectedAuthor);
       when(builder.getResults()).thenReturn(source);
 
-      factory.introduceArtifact(expectedBranch, expectedAuthor);
+      factory.introduceArtifact(COMMON, expectedAuthor);
 
-      verify(txDataManager).introduceArtifact(txData, BRANCH_ID, expectedAuthor, expectedAuthor);
+      verify(txDataManager).introduceArtifact(txData, COMMON, expectedAuthor, expectedAuthor);
    }
 
    @Test

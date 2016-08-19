@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.loader.processor;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -38,7 +39,7 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
    protected AttributeData createData(Object conditions, AttributeObjectFactory factory, JdbcStatement chStmt, Options options) throws OseeCoreException {
       AttributeData toReturn = null;
 
-      long branchUuid = chStmt.getLong("branch_id");
+      BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
       int artId = chStmt.getInt("art_id");
       int attrId = chStmt.getInt("attr_id");
       long gammaId = chStmt.getInt("gamma_id");
@@ -48,12 +49,12 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
       boolean historical = OptionsUtil.isHistorical(options);
 
       CreateConditions condition = asConditions(conditions);
-      if (!condition.isSame(branchUuid, artId, attrId)) {
-         condition.saveConditions(branchUuid, artId, attrId, gammaId, modType);
+      if (!condition.isSame(branch, artId, attrId)) {
+         condition.saveConditions(branch, artId, attrId, gammaId, modType);
 
          TransactionId txId = TransactionId.valueOf(chStmt.getLong("transaction_id"));
 
-         VersionData version = factory.createVersion(branchUuid, txId, gammaId, historical);
+         VersionData version = factory.createVersion(branch, txId, gammaId, historical);
          if (historical) {
             version.setStripeId(TransactionId.valueOf(chStmt.getLong("stripe_transaction_id")));
          }
@@ -69,7 +70,7 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
          if (!historical) {
             logger.warn(
                "multiple attribute versions for attribute id [%d] artifact id[%d] branch[%d] previousGammaId[%s] currentGammaId[%s] previousModType[%s] currentModType[%s]",
-               attrId, artId, branchUuid, condition.previousGammaId, gammaId, condition.previousModType, modType);
+               attrId, artId, branch, condition.previousGammaId, gammaId, condition.previousModType, modType);
          }
       }
       return toReturn;
@@ -86,17 +87,17 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
 
    private static final class CreateConditions {
       int previousArtId = -1;
-      long previousBranchId = -1;
+      BranchId previousBranchId = BranchId.SENTINEL;
       int previousAttrId = -1;
       long previousGammaId = -1;
       ModificationType previousModType = null;
 
-      boolean isSame(long branchUuid, int artifactId, int attrId) {
-         return previousBranchId == branchUuid && previousArtId == artifactId && previousAttrId == attrId;
+      boolean isSame(BranchId branch, int artifactId, int attrId) {
+         return previousBranchId.equals(branch) && previousArtId == artifactId && previousAttrId == attrId;
       }
 
-      void saveConditions(long branchUuid, int artifactId, int attrId, long gammaId, ModificationType modType) {
-         previousBranchId = branchUuid;
+      void saveConditions(BranchId branch, int artifactId, int attrId, long gammaId, ModificationType modType) {
+         previousBranchId = branch;
          previousArtId = artifactId;
          previousAttrId = attrId;
          previousGammaId = gammaId;

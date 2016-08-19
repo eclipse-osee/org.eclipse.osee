@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds.criteria;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -21,9 +22,9 @@ import org.eclipse.osee.orcs.core.ds.Options;
  */
 public class CriteriaBranch extends Criteria implements HasBranch, BranchCriteria {
 
-   private final Long branchId;
+   private final BranchId branchId;
 
-   public CriteriaBranch(Long branchId) {
+   public CriteriaBranch(BranchId branchId) {
       this.branchId = branchId;
    }
 
@@ -33,7 +34,7 @@ public class CriteriaBranch extends Criteria implements HasBranch, BranchCriteri
    }
 
    @Override
-   public Long getBranchId() {
+   public BranchId getBranch() {
       return branchId;
    }
 
@@ -41,5 +42,4 @@ public class CriteriaBranch extends Criteria implements HasBranch, BranchCriteri
    public String toString() {
       return "CriteriaBranch [branch=" + branchId + "]";
    }
-
 }

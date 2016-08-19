@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal.writer;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import java.util.Arrays;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifact;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactToken;
@@ -83,7 +85,7 @@ public class OrcsCollectorValidatorTest {
    @Test
    public void test_validateArtifactDoesNotExist() {
 
-      when(helper.isBranchExists(570)).thenReturn(true);
+      when(helper.isBranchExists(COMMON)).thenReturn(true);
       XResultData rd = validator.run();
       assertFalse(rd.toString().contains("Branch [OwBranch [uuid=570]] not valid."));
 
@@ -94,7 +96,7 @@ public class OrcsCollectorValidatorTest {
       artifact.setType(artType);
       artifact.setUuid(5555L);
 
-      when(helper.isArtifactExists(570, 5555L)).thenReturn(false);
+      when(helper.isArtifactExists(COMMON, 5555L)).thenReturn(false);
       when(collector.getCreate()).thenReturn(Arrays.asList(artifact));
       rd = validator.run();
       assertTrue(rd.toString().contains("Artifact Type [OwArtifactType [uuid=11, data=null]] does not exist."));
@@ -109,7 +111,7 @@ public class OrcsCollectorValidatorTest {
    @Test
    public void test_validateCreateAttributes() {
 
-      when(helper.isBranchExists(570)).thenReturn(true);
+      when(helper.isBranchExists(COMMON)).thenReturn(true);
       XResultData rd = validator.run();
       assertFalse(rd.toString().contains("Branch [OwBranch [uuid=570]] not valid."));
 
@@ -152,7 +154,7 @@ public class OrcsCollectorValidatorTest {
    @Test
    public void test_validateCreateRelations() {
 
-      when(helper.isBranchExists(570)).thenReturn(true);
+      when(helper.isBranchExists(COMMON)).thenReturn(true);
       XResultData rd = validator.run();
       assertFalse(rd.toString().contains("Branch [OwBranch [uuid=570]] not valid."));
 
@@ -187,7 +189,7 @@ public class OrcsCollectorValidatorTest {
       assertTrue(rd.toString().contains(
          "Artifact from token [OwArtifactToken [uuid=9999, data=null]] does not exist to relate to artifact [OwArtifact [type=OwArtifactType [uuid=11, data=null], uuid=5555, data=null]] for relation [OwRelation [type=OwRelationType [sideA=false, sideName=null, uuid=65656, data=null], artToken=OwArtifactToken [uuid=9999, data=null], data=null]]."));
 
-      when(helper.isArtifactExists(collector.getBranch().getUuid(), 9999)).thenReturn(true);
+      when(helper.isArtifactExists(BranchId.valueOf(collector.getBranch().getUuid()), 9999)).thenReturn(true);
       rd = validator.run();
       assertFalse(rd.toString().contains(
          "Artifact from token [OwArtifactToken [uuid=9999, data=null]] does not exist to relate to artifact [OwArtifact [type=OwArtifactType [uuid=11, data=null], uuid=5555, data=null]] for relation [OwRelation [type=OwRelationType [sideA=false, sideName=null, uuid=65656, data=null], artToken=OwArtifactToken [uuid=9999, data=null], data=null]]."));
@@ -207,11 +209,11 @@ public class OrcsCollectorValidatorTest {
 
    @Test
    public void test_branch() {
-      when(helper.isBranchExists(570)).thenReturn(false);
+      when(helper.isBranchExists(COMMON)).thenReturn(false);
       XResultData rd = validator.run();
       assertTrue(rd.toString().contains("Branch [OwBranch [uuid=570]] not valid."));
 
-      when(helper.isBranchExists(570)).thenReturn(true);
+      when(helper.isBranchExists(COMMON)).thenReturn(true);
       rd = validator.run();
       assertFalse(rd.toString().contains("Branch [OwBranch [uuid=570]] not valid."));
    }

@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
@@ -66,7 +67,7 @@ public class AttributeFactory {
       return attribute;
    }
 
-   public <T> Attribute<T> copyAttribute(AttributeData source, Long ontoBranch, AttributeContainer destinationContainer) throws OseeCoreException {
+   public <T> Attribute<T> copyAttribute(AttributeData source, BranchId ontoBranch, AttributeContainer destinationContainer) throws OseeCoreException {
       AttributeData attributeData = dataFactory.copy(ontoBranch, source);
       return createAttribute(destinationContainer, attributeData, true, false);
    }
@@ -77,7 +78,7 @@ public class AttributeFactory {
       return destinationAttribute;
    }
 
-   public <T> Attribute<Object> introduceAttribute(AttributeData source, Long ontoBranch, AttributeManager destination) throws OseeCoreException {
+   public <T> Attribute<Object> introduceAttribute(AttributeData source, BranchId ontoBranch, AttributeManager destination) throws OseeCoreException {
       AttributeData attributeData = dataFactory.introduce(ontoBranch, source);
       // In order to reflect attributes they must exist in the data store
       Attribute<Object> destinationAttribute = null;

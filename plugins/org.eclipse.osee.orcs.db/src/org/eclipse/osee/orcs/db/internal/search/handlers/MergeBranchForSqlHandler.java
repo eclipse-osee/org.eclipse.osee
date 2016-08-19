@@ -50,10 +50,10 @@ public class MergeBranchForSqlHandler extends SqlHandler<CriteriaMergeBranchFor>
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
       writer.write("%s.source_branch_id = ?", mergeAlias);
-      writer.addParameter(criteria.getSourceUuid());
+      writer.addParameter(criteria.getSource());
       writer.writeAndLn();
       writer.write("%s.dest_branch_id = ?", mergeAlias);
-      writer.addParameter(criteria.getDestUuid());
+      writer.addParameter(criteria.getDestination());
       writer.writeAndLn();
       writer.write("%s.merge_branch_id = %s.branch_id", mergeAlias, brAlias);
       return true;

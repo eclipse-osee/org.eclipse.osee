@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.ds;
 
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 
@@ -22,7 +23,7 @@ public interface TxOrcsData extends TransactionReadable {
 
    void setAuthor(ArtifactId author);
 
-   void setBranchId(Long branchId);
+   void setBranch(BranchId branch);
 
    void setComment(String comment);
 

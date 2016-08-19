@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.loader.executors;
 
 import java.util.Collection;
 import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -33,14 +34,14 @@ public class LoadExecutor extends AbstractLoadExecutor {
 
    private final SqlJoinFactory joinFactory;
    private final OrcsSession session;
-   private final Long branchId;
+   private final BranchId branch;
    private final Collection<Integer> artifactIds;
 
-   public LoadExecutor(SqlObjectLoader loader, JdbcClient jdbcClient, SqlJoinFactory joinFactory, OrcsSession session, Long branchId, Collection<Integer> artifactIds) {
+   public LoadExecutor(SqlObjectLoader loader, JdbcClient jdbcClient, SqlJoinFactory joinFactory, OrcsSession session, BranchId branch, Collection<Integer> artifactIds) {
       super(loader, jdbcClient);
       this.joinFactory = joinFactory;
       this.session = session;
-      this.branchId = branchId;
+      this.branch = branch;
       this.artifactIds = artifactIds;
    }
 
@@ -51,10 +52,10 @@ public class LoadExecutor extends AbstractLoadExecutor {
       ArtifactJoinQuery join = joinFactory.createArtifactJoinQuery();
       TransactionId transactionId = OptionsUtil.getFromTransaction(options);
       for (Integer artId : artifactIds) {
-         join.add(artId, branchId, transactionId);
+         join.add(artId, branch.getId(), transactionId);
       }
 
-      LoadSqlContext loadContext = new LoadSqlContext(session, options, branchId);
+      LoadSqlContext loadContext = new LoadSqlContext(session, options, branch);
       int fetchSize = LoadUtil.computeFetchSize(artifactIds.size());
       getLoader().loadArtifacts(cancellation, handler, join, criteria, loadContext, fetchSize);
    }

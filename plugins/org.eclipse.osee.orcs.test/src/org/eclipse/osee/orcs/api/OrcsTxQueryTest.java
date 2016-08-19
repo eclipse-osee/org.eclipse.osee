@@ -32,6 +32,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -394,7 +395,7 @@ public class OrcsTxQueryTest {
    @Test
    public void testGetHead() throws Exception {
       TransactionQuery query = factory.transactionQuery();
-      query.andIsHead(1);
+      query.andIsHead(CoreBranches.SYSTEM_ROOT);
       ResultSet<TransactionReadable> results = query.getResults();
       assertEquals(1, query.getCount());
 
@@ -479,7 +480,7 @@ public class OrcsTxQueryTest {
       assertEquals(comment, transaction.getComment());
 
       assertEquals(author, transaction.getAuthor());
-      assertEquals(branch, transaction.getBranchId());
+      assertEquals(branch, transaction.getBranch());
       assertTrue(transaction.getCommitArt().isInvalid());
    }
 

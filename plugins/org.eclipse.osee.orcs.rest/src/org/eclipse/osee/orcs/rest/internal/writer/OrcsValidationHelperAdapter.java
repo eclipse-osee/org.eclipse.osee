@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.rest.internal.writer;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -27,8 +28,8 @@ public class OrcsValidationHelperAdapter implements IOrcsValidationHelper {
    }
 
    @Override
-   public boolean isBranchExists(long branchUuid) {
-      return orcsApi.getQueryFactory().branchQuery().andUuids(branchUuid).getResultsAsId().size() == 1;
+   public boolean isBranchExists(BranchId branch) {
+      return orcsApi.getQueryFactory().branchQuery().andIds(branch).getResultsAsId().size() == 1;
    }
 
    @Override
@@ -38,8 +39,8 @@ public class OrcsValidationHelperAdapter implements IOrcsValidationHelper {
    }
 
    @Override
-   public boolean isArtifactExists(long branchUuid, long artifactUuid) {
-      int matchedArtifacts = orcsApi.getQueryFactory().fromBranch(branchUuid).andUuid(artifactUuid).getResults().size();
+   public boolean isArtifactExists(BranchId branch, long artifactUuid) {
+      int matchedArtifacts = orcsApi.getQueryFactory().fromBranch(branch).andUuid(artifactUuid).getResults().size();
       return matchedArtifacts == 1;
    }
 

@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.transaction;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.google.common.collect.Sets.SetView;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -38,9 +41,6 @@ import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.common.collect.Sets.SetView;
 
 /**
  * @author Roberto E. Escobar
@@ -64,8 +64,8 @@ public class TransactionFactoryImpl implements TransactionFactory {
       this.query = query;
       this.queryFactory = queryFactory;
       this.orcsBranch = orcsBranch;
-	  this.keyValueOps = keyValueOps;
-	  this.txDataStore = txDataStore;
+      this.keyValueOps = keyValueOps;
+      this.txDataStore = txDataStore;
    }
 
    @Override
@@ -85,7 +85,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
       Conditions.checkNotNull(author, "author");
       Conditions.checkNotNullOrEmpty(comment, "comment");
 
-      TxData txData = txDataManager.createTxData(session, branch.getUuid());
+      TxData txData = txDataManager.createTxData(session, branch);
       TransactionBuilderImpl orcsTxn =
          new TransactionBuilderImpl(txCallableFactory, txDataManager, txData, query, keyValueOps);
       orcsTxn.setComment(comment);

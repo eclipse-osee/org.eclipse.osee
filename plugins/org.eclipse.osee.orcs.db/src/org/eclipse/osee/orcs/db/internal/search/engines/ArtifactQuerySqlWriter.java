@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -30,11 +31,11 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
  */
 public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
 
-   private final long branchUuid;
+   private final BranchId branch;
 
-   public ArtifactQuerySqlWriter(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryType queryType, long branchUuid) {
+   public ArtifactQuerySqlWriter(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryType queryType, BranchId branch) {
       super(logger, joinFactory, jdbcClient, context, queryType);
-      this.branchUuid = branchUuid;
+      this.branch = branch;
    }
 
    private void writeSelectHelper() throws OseeCoreException {
@@ -86,11 +87,11 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
 
       StringBuilder sb = new StringBuilder();
       writeTxFilter(txsAlias, sb, allowDeleted);
-      if (branchUuid > 0) {
+      if (branch.isValid()) {
          sb.append(" AND ");
          sb.append(txsAlias);
          sb.append(".branch_id = ?");
-         addParameter(branchUuid);
+         addParameter(branch);
       } else {
          throw new OseeArgumentException("getTxBranchFilter: branch uuid must be > 0");
       }
@@ -101,11 +102,11 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
    public String getTxBranchFilter(String txsAlias, boolean allowDeleted) {
       StringBuilder sb = new StringBuilder();
       writeTxFilter(txsAlias, sb, allowDeleted);
-      if (branchUuid > 0) {
+      if (branch.isValid()) {
          sb.append(" AND ");
          sb.append(txsAlias);
          sb.append(".branch_id = ?");
-         addParameter(branchUuid);
+         addParameter(branch);
       }
       return sb.toString();
    }
@@ -150,13 +151,13 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
             addParameter(OptionsUtil.getFromTransaction(getOptions()));
          }
       }
-      if (branchUuid > 0) {
+      if (branch.isValid()) {
          if (sb.length() > 0) {
             sb.append(" AND ");
          }
          sb.append(txsAlias);
          sb.append(".branch_id = ?");
-         addParameter(branchUuid);
+         addParameter(branch);
       }
       return sb.toString();
    }

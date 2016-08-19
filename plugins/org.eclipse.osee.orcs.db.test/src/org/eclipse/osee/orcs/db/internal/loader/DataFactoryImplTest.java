@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -50,7 +51,7 @@ import org.mockito.MockitoAnnotations;
  * @author Roberto E. Escobar
  */
 public class DataFactoryImplTest {
-   private static final Long BRANCH_ID2 = Long.valueOf(11);
+   private static final BranchId BRANCH = BranchId.valueOf(11);
    private static final TransactionId tx333 = TransactionId.valueOf(333);
    private static final TransactionId tx444 = TransactionId.valueOf(444);
 
@@ -87,7 +88,7 @@ public class DataFactoryImplTest {
       dataFactory = new DataFactoryImpl(idFactory, objectFactory, artifactCache);
 
       // VERSION
-      when(verData.getBranchId()).thenReturn(BRANCH_ID2);
+      when(verData.getBranch()).thenReturn(BRANCH);
       when(verData.getGammaId()).thenReturn(222L);
       when(verData.getTransactionId()).thenReturn(tx333);
       when(verData.getStripeId()).thenReturn(tx444);
@@ -137,7 +138,7 @@ public class DataFactoryImplTest {
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("Cannot create an instance of abstract type [artifactTypeToken]");
-      dataFactory.create(COMMON_ID, artifactTypeToken, guid);
+      dataFactory.create(COMMON, artifactTypeToken, guid);
    }
 
    @Test
@@ -151,7 +152,7 @@ public class DataFactoryImplTest {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("Invalid guid [123] during artifact creation [type: artifactTypeToken]");
 
-      dataFactory.create(COMMON_ID, artifactTypeToken, guid);
+      dataFactory.create(COMMON, artifactTypeToken, guid);
    }
 
    @Test
@@ -161,13 +162,13 @@ public class DataFactoryImplTest {
       when(idFactory.getUniqueGuid(guid)).thenReturn(guid);
       when(idFactory.getNextArtifactId()).thenReturn(987);
 
-      ArtifactData actual = dataFactory.create(COMMON_ID, artifactTypeToken, guid);
+      ArtifactData actual = dataFactory.create(COMMON, artifactTypeToken, guid);
       verify(idFactory).getUniqueGuid(guid);
       verify(idFactory).getNextArtifactId();
 
       VersionData actualVer = actual.getVersion();
 
-      assertEquals(COMMON_ID, actualVer.getBranchId());
+      assertEquals(COMMON, actualVer.getBranch());
       assertEquals(RelationalConstants.GAMMA_SENTINEL, actualVer.getGammaId());
       assertEquals(TransactionId.SENTINEL, actualVer.getTransactionId());
       assertEquals(TransactionId.SENTINEL, actualVer.getStripeId());
@@ -190,12 +191,12 @@ public class DataFactoryImplTest {
       when(idFactory.getUniqueGuid(guid)).thenReturn(guid);
       when(idFactory.getNextArtifactId()).thenReturn(987);
 
-      ArtifactData actual = dataFactory.create(COMMON_ID, artifactTypeToken, guid);
+      ArtifactData actual = dataFactory.create(COMMON, artifactTypeToken, guid);
       verify(idFactory).getUniqueGuid(guid);
       verify(idFactory).getNextArtifactId();
 
       VersionData actualVer = actual.getVersion();
-      assertEquals(COMMON_ID, actualVer.getBranchId());
+      assertEquals(COMMON, actualVer.getBranch());
       assertEquals(RelationalConstants.GAMMA_SENTINEL, actualVer.getGammaId());
       assertEquals(TransactionId.SENTINEL, actualVer.getTransactionId());
       assertEquals(TransactionId.SENTINEL, actualVer.getStripeId());
@@ -221,7 +222,7 @@ public class DataFactoryImplTest {
       AttributeData actual = dataFactory.create(artData, attributeType);
 
       VersionData actualVer = actual.getVersion();
-      assertEquals(BRANCH_ID2, actualVer.getBranchId());
+      assertEquals(BRANCH, actualVer.getBranch());
       assertEquals(RelationalConstants.GAMMA_SENTINEL, actualVer.getGammaId());
       assertEquals(TransactionId.SENTINEL, actualVer.getTransactionId());
       assertEquals(TransactionId.SENTINEL, actualVer.getStripeId());
@@ -254,10 +255,10 @@ public class DataFactoryImplTest {
       when(localId1.getLocalId()).thenReturn(4562);
       when(localId2.getLocalId()).thenReturn(9513);
 
-      RelationData actual = dataFactory.createRelationData(relationType, COMMON_ID, localId1, localId2, "My rationale");
+      RelationData actual = dataFactory.createRelationData(relationType, COMMON, localId1, localId2, "My rationale");
 
       VersionData actualVer = actual.getVersion();
-      assertEquals(COMMON_ID, actualVer.getBranchId());
+      assertEquals(COMMON, actualVer.getBranch());
       assertEquals(RelationalConstants.GAMMA_SENTINEL, actualVer.getGammaId());
       assertEquals(TransactionId.SENTINEL, actualVer.getTransactionId());
       assertEquals(TransactionId.SENTINEL, actualVer.getStripeId());
@@ -277,11 +278,11 @@ public class DataFactoryImplTest {
 
    @Test
    public void testIntroduceArtifactData() throws OseeCoreException {
-      ArtifactData actual = dataFactory.introduce(COMMON_ID, artData);
+      ArtifactData actual = dataFactory.introduce(COMMON, artData);
 
       VersionData actualVer = actual.getVersion();
       assertNotSame(verData, actualVer);
-      assertEquals(COMMON_ID, actualVer.getBranchId());
+      assertEquals(COMMON, actualVer.getBranch());
       assertEquals(222L, actualVer.getGammaId());
       assertEquals(TransactionId.SENTINEL, actualVer.getTransactionId());
       assertEquals(artData.getVersion().getStripeId(), actualVer.getStripeId());
@@ -298,11 +299,11 @@ public class DataFactoryImplTest {
 
    @Test
    public void testIntroduceAttributeData() throws OseeCoreException {
-      AttributeData actual = dataFactory.introduce(COMMON_ID, attrData);
+      AttributeData actual = dataFactory.introduce(COMMON, attrData);
 
       VersionData actualVer = actual.getVersion();
       assertNotSame(verData, actualVer);
-      assertEquals(COMMON_ID, actualVer.getBranchId());
+      assertEquals(COMMON, actualVer.getBranch());
       assertEquals(222L, actualVer.getGammaId());
       assertEquals(TransactionId.SENTINEL, actualVer.getTransactionId());
       assertEquals(attrData.getVersion().getStripeId(), actualVer.getStripeId());
@@ -331,12 +332,12 @@ public class DataFactoryImplTest {
       when(idFactory.getNextArtifactId()).thenReturn(987);
       when(idFactory.getUniqueGuid(null)).thenReturn(newGuid);
 
-      ArtifactData actual = dataFactory.copy(COMMON_ID, artData);
+      ArtifactData actual = dataFactory.copy(COMMON, artData);
       verify(idFactory).getUniqueGuid(null);
 
       VersionData actualVer = actual.getVersion();
       assertNotSame(verData, actualVer);
-      assertEquals(COMMON_ID, actualVer.getBranchId());
+      assertEquals(COMMON, actualVer.getBranch());
       assertEquals(RelationalConstants.GAMMA_SENTINEL, actualVer.getGammaId());
       assertEquals(TransactionId.SENTINEL, actualVer.getTransactionId());
       assertEquals(TransactionId.SENTINEL, actualVer.getStripeId());
@@ -353,11 +354,11 @@ public class DataFactoryImplTest {
 
    @Test
    public void testCopyAttributeData() throws OseeCoreException {
-      AttributeData actual = dataFactory.copy(COMMON_ID, attrData);
+      AttributeData actual = dataFactory.copy(COMMON, attrData);
 
       VersionData actualVer = actual.getVersion();
       assertNotSame(verData, actualVer);
-      assertEquals(COMMON_ID, actualVer.getBranchId());
+      assertEquals(COMMON, actualVer.getBranch());
       assertEquals(RelationalConstants.GAMMA_SENTINEL, actualVer.getGammaId());
       assertEquals(TransactionId.SENTINEL, actualVer.getTransactionId());
       assertEquals(TransactionId.SENTINEL, actualVer.getStripeId());
@@ -388,7 +389,7 @@ public class DataFactoryImplTest {
       assertNotSame(artData, actual);
       assertNotSame(verData, actualVer);
 
-      assertEquals(BRANCH_ID2, actualVer.getBranchId());
+      assertEquals(BRANCH, actualVer.getBranch());
       assertEquals(222L, actualVer.getGammaId());
       assertEquals(tx333, actualVer.getTransactionId());
       assertEquals(tx444, actualVer.getStripeId());
@@ -413,7 +414,7 @@ public class DataFactoryImplTest {
       assertNotSame(attrData, actual);
       assertNotSame(verData, actualVer);
 
-      assertEquals(BRANCH_ID2, actualVer.getBranchId());
+      assertEquals(BRANCH, actualVer.getBranch());
       assertEquals(222L, actualVer.getGammaId());
       assertEquals(tx333, actualVer.getTransactionId());
       assertEquals(tx444, actualVer.getStripeId());
@@ -444,7 +445,7 @@ public class DataFactoryImplTest {
       assertNotSame(relData, actual);
       assertNotSame(verData, actualVer);
 
-      assertEquals(BRANCH_ID2, actualVer.getBranchId());
+      assertEquals(BRANCH, actualVer.getBranch());
       assertEquals(222L, actualVer.getGammaId());
       assertEquals(tx333, actualVer.getTransactionId());
       assertEquals(tx444, actualVer.getStripeId());

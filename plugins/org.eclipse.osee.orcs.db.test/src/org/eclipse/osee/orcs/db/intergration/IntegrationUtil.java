@@ -14,7 +14,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -78,7 +77,7 @@ public class IntegrationUtil {
       assertEquals(orcsData.getTypeUuid(), values[index++]);
 
       VersionData version = orcsData.getVersion();
-      assertEquals(version.getBranchId(), ((BranchId) values[index++]).getId());
+      assertEquals(version.getBranch(), values[index++]);
       assertEquals(version.getTransactionId(), values[index++]);
       assertEquals(version.getStripeId(), TransactionId.SENTINEL);
       assertEquals(version.getGammaId(), values[index++]);

@@ -53,7 +53,6 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -138,16 +137,16 @@ public class BranchEndpointImpl implements BranchEndpoint {
       return orcsApi.getBranchOps();
    }
 
-   private BranchReadable getBranchById(long branchUuid) {
-      ResultSet<BranchReadable> results = newBranchQuery().andUuids(branchUuid)//
+   private BranchReadable getBranchById(BranchId branch) {
+      ResultSet<BranchReadable> results = newBranchQuery().andIds(branch)//
          .includeArchived()//
          .includeDeleted()//
          .getResults();
       return results.getExactlyOne();
    }
 
-   private TransactionReadable getTxByBranchAndId(long branchUuid, int txId) {
-      return newTxQuery().andBranchIds(branchUuid).andTxId(txId).getResults().getExactlyOne();
+   private TransactionReadable getTxByBranchAndId(BranchId branch, int txId) {
+      return newTxQuery().andBranch(branch).andTxId(txId).getResults().getExactlyOne();
    }
 
    private TransactionFactory newTxFactory() {
@@ -238,23 +237,22 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public Branch getBranch(long branchUuid) {
-      BranchReadable branch = getBranchById(branchUuid);
-      return asBranch(branch);
+   public Branch getBranch(BranchId branch) {
+      return asBranch(getBranchById(branch));
    }
 
    @Override
-   public List<Transaction> getAllBranchTxs(long branchUuid) {
-      return asTransactions(newTxQuery().andBranchIds(branchUuid).getResults());
+   public List<Transaction> getAllBranchTxs(BranchId branch) {
+      return asTransactions(newTxQuery().andBranch(branch).getResults());
    }
 
    @Override
-   public Transaction getBranchTx(long branchUuid, int txId) {
+   public Transaction getBranchTx(BranchId branchUuid, int txId) {
       return asTransaction(getTxByBranchAndId(branchUuid, txId));
    }
 
    @Override
-   public CompareResults compareBranches(long branchUuid, long branchUuid2) {
+   public CompareResults compareBranches(BranchId branchUuid, BranchId branchUuid2) {
       TransactionToken sourceTx = newTxQuery().andIsHead(branchUuid).getResults().getExactlyOne();
       TransactionToken destinationTx = newTxQuery().andIsHead(branchUuid2).getResults().getExactlyOne();
 
@@ -275,18 +273,16 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public Response createBranch(NewBranch data) {
-      long branchUuid = Lib.generateUuid();
-      return createBranchWithId(branchUuid, data);
+      return createBranchWithId(TokenFactory.createBranch(), data);
    }
 
    @Override
-   public Response createBranchWithId(long branchUuid, NewBranch data) {
-      if (branchUuid <= 0) {
-         throw new OseeWebApplicationException(Status.BAD_REQUEST, "branchUuid [%d] uuid must be > 0", branchUuid);
+   public Response createBranchWithId(BranchId branch, NewBranch data) {
+      if (branch.isInvalid()) {
+         throw new OseeWebApplicationException(Status.BAD_REQUEST, "branchUuid [%d] uuid must be > 0", branch);
       }
 
-      CreateBranchData createData = new CreateBranchData();
-      createData.setUuid(branchUuid);
+      CreateBranchData createData = new CreateBranchData(branch);
       createData.setName(data.getBranchName());
       createData.setBranchType(data.getBranchType());
       createData.setCreationComment(data.getCreationComment());
@@ -312,7 +308,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
          activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
             String.format(
                "Branch Operation Create Branch {branchUUID: %s, branchName: %s accountId: %s serverId: %s clientId: %s}",
-               branchUuid, data.getBranchName(), RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
+               branch, data.getBranchName(), RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
                RestUtil.getClientId(httpHeaders)));
       } catch (OseeCoreException ex) {
          OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
@@ -346,9 +342,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public Response commitBranch(long branchUuid, long destinationBranchUuid, BranchCommitOptions options) {
-      BranchReadable srcBranch = getBranchById(branchUuid);
-      BranchReadable destBranch = getBranchById(destinationBranchUuid);
+   public Response commitBranch(BranchId branch, BranchId destinationBranch, BranchCommitOptions options) {
+      BranchReadable srcBranch = getBranchById(branch);
+      BranchReadable destBranch = getBranchById(destinationBranch);
 
       Callable<TransactionToken> op = getBranchOps().commitBranch(options.getCommitter(), srcBranch, destBranch);
       TransactionToken tx = executeCallable(op);
@@ -363,8 +359,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
       try {
          activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
             String.format(
-               "Branch Operation Commit Branch {branchUUID: %s srcBranch: %s destBranch: %s accountId: %s serverId: %s clientId: %s}",
-               branchUuid, srcBranch, destBranch, RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
+               "Branch Operation Commit Branch {branchId: %s srcBranch: %s destBranch: %s accountId: %s serverId: %s clientId: %s}",
+               branch, srcBranch, destBranch, RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
                RestUtil.getClientId(httpHeaders)));
       } catch (OseeCoreException ex) {
          OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
@@ -379,8 +375,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public Response archiveBranch(long branchUuid) {
-      BranchReadable branch = getBranchById(branchUuid);
+   public Response archiveBranch(BranchId branchId) {
+      BranchReadable branch = getBranchById(branchId);
 
       boolean modified = false;
       BranchArchivedState currentState = branch.getArchiveState();
@@ -390,8 +386,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
          modified = true;
          try {
             activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
-               String.format("Branch Operation Archive Branch {branchUUID: %s accountId: %s serverId: %s clientId: %s}",
-                  branchUuid, RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
+               String.format("Branch Operation Archive Branch {branchId: %s accountId: %s serverId: %s clientId: %s}",
+                  branchId, RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
                   RestUtil.getClientId(httpHeaders)));
          } catch (OseeCoreException ex) {
             OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
@@ -401,12 +397,12 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public Response writeTx(long branchUuid, NewTransaction data) {
+   public Response writeTx(BranchId branch, NewTransaction data) {
       String comment = data.getComment();
       ArtifactReadable userArtifact = null;
 
       TransactionFactory txFactory = newTxFactory();
-      TransactionBuilder txBuilder = txFactory.createTransaction(branchUuid, userArtifact, comment);
+      TransactionBuilder txBuilder = txFactory.createTransaction(branch, userArtifact, comment);
 
       //TODO: Integrate data with TxBuilder
 
@@ -577,8 +573,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public Response setBranchName(long branchUuid, String newName) {
-      BranchReadable branch = getBranchById(branchUuid);
+   public Response setBranchName(BranchId branchId, String newName) {
+      BranchReadable branch = getBranchById(branchId);
       boolean modified = false;
       if (isDifferent(branch.getName(), newName)) {
          Callable<?> op = getBranchOps().changeBranchName(branch, newName);
@@ -587,8 +583,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
          try {
             activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
                String.format(
-                  "Branch Operation Set Branch Name {branchUUID: %s prevName: %s newName: %s accountId: %s serverId: %s clientId: %s}",
-                  branchUuid, branch.getName(), newName, RestUtil.getAccountId(httpHeaders),
+                  "Branch Operation Set Branch Name {branchId: %s prevName: %s newName: %s accountId: %s serverId: %s clientId: %s}",
+                  branchId, branch.getName(), newName, RestUtil.getAccountId(httpHeaders),
                   RestUtil.getServerId(httpHeaders), RestUtil.getClientId(httpHeaders)));
          } catch (OseeCoreException ex) {
             OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
@@ -598,15 +594,15 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public Response setBranchType(long branchUuid, BranchType newType) {
-      BranchReadable branch = getBranchById(branchUuid);
+   public Response setBranchType(BranchId branchId, BranchType newType) {
+      BranchReadable branch = getBranchById(branchId);
       boolean modified = false;
       if (isDifferent(branch.getBranchType(), newType)) {
          try {
             activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
                String.format(
                   "Branch Operation Set Branch Type {branchUUID: %s prevType: %s newType: %s accountId: %s serverId: %s clientId: %s}",
-                  branchUuid, branch.getBranchType(), newType, RestUtil.getAccountId(httpHeaders),
+                  branchId, branch.getBranchType(), newType, RestUtil.getAccountId(httpHeaders),
                   RestUtil.getServerId(httpHeaders), RestUtil.getClientId(httpHeaders)));
          } catch (OseeCoreException ex) {
             OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
@@ -619,8 +615,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public Response setBranchState(long branchUuid, BranchState newState) {
-      BranchReadable branch = getBranchById(branchUuid);
+   public Response setBranchState(BranchId branchId, BranchState newState) {
+      BranchReadable branch = getBranchById(branchId);
       boolean modified = false;
       if (isDifferent(branch.getBranchState(), newState)) {
          Callable<?> op = getBranchOps().changeBranchState(branch, newState);
@@ -630,8 +626,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
          try {
             activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
                String.format(
-                  "Branch Operation Branch State Changed {branchUUID: %s prevState: %s newState: %s accountId: %s serverId: %s clientId: %s}",
-                  branchUuid, branch.getBranchType(), newState, RestUtil.getAccountId(httpHeaders),
+                  "Branch Operation Branch State Changed {branchId: %s prevState: %s newState: %s accountId: %s serverId: %s clientId: %s}",
+                  branchId, branch.getBranchType(), newState, RestUtil.getAccountId(httpHeaders),
                   RestUtil.getServerId(httpHeaders), RestUtil.getClientId(httpHeaders)));
          } catch (OseeCoreException ex) {
             OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
@@ -641,15 +637,15 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public Response associateBranchToArtifact(long branchUuid, ArtifactId artifact) {
-      BranchReadable branch = getBranchById(branchUuid);
+   public Response associateBranchToArtifact(BranchId branchId, ArtifactId artifact) {
+      BranchReadable branch = getBranchById(branchId);
       boolean modified = false;
       if (isDifferent(branch.getAssociatedArtifact(), artifact)) {
          try {
             activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
                String.format(
-                  "Branch Operation Associate Branch to Artifact {branchUUID: %s prevArt: %s newArt: %s accountId: %s serverId: %s clientId: %s}",
-                  branchUuid, branch.getAssociatedArtifact(), artifact, RestUtil.getAccountId(httpHeaders),
+                  "Branch Operation Associate Branch to Artifact {branchId: %s prevArt: %s newArt: %s accountId: %s serverId: %s clientId: %s}",
+                  branchId, branch.getAssociatedArtifact(), artifact, RestUtil.getAccountId(httpHeaders),
                   RestUtil.getServerId(httpHeaders), RestUtil.getClientId(httpHeaders)));
          } catch (OseeCoreException ex) {
             OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
@@ -662,15 +658,15 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public Response setTxComment(long branchUuid, int txId, String comment) {
-      TransactionReadable tx = getTxByBranchAndId(branchUuid, txId);
+   public Response setTxComment(BranchId branch, int txId, String comment) {
+      TransactionReadable tx = getTxByBranchAndId(branch, txId);
       boolean modified = false;
       if (Compare.isDifferent(tx.getComment(), comment)) {
          try {
             activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
                String.format(
-                  "Branch Operation Set Tx Comment {branchUUID: %s prevComment: %s newComment: %s accountId: %s serverId: %s clientId: %s}",
-                  branchUuid, tx.getComment(), comment, RestUtil.getAccountId(httpHeaders),
+                  "Branch Operation Set Tx Comment {branchId: %s prevComment: %s newComment: %s accountId: %s serverId: %s clientId: %s}",
+                  branch, tx.getComment(), comment, RestUtil.getAccountId(httpHeaders),
                   RestUtil.getServerId(httpHeaders), RestUtil.getClientId(httpHeaders)));
          } catch (OseeCoreException ex) {
             OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
@@ -683,9 +679,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public Response purgeBranch(long branchUuid, boolean recurse) {
+   public Response purgeBranch(BranchId branchId, boolean recurse) {
       boolean modified = false;
-      BranchReadable branch = getBranchById(branchUuid);
+      BranchReadable branch = getBranchById(branchId);
       if (branch != null) {
          Callable<?> op = getBranchOps().purgeBranch(branch, recurse);
          executeCallable(op);
@@ -694,8 +690,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
       try {
          activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
-            String.format("Branch Operation Purge Branch {branchUUID: %s, accountId: %s serverId: %s clientId: %s}",
-               branchUuid, RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
+            String.format("Branch Operation Purge Branch {branchId: %s, accountId: %s serverId: %s clientId: %s}",
+               branchId, RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
                RestUtil.getClientId(httpHeaders)));
       } catch (OseeCoreException ex) {
          OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
@@ -704,8 +700,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public Response unarchiveBranch(long branchUuid) {
-      BranchReadable branch = getBranchById(branchUuid);
+   public Response unarchiveBranch(BranchId branchId) {
+      BranchReadable branch = getBranchById(branchId);
       BranchArchivedState state = branch.getArchiveState();
 
       boolean modified = false;
@@ -715,9 +711,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
          modified = true;
          try {
             activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
-               String.format(
-                  "Branch Operation Unarchive Branch {branchUUID: %s accountId: %s serverId: %s clientId: %s}",
-                  branchUuid, RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
+               String.format("Branch Operation Unarchive Branch {branchId: %s accountId: %s serverId: %s clientId: %s}",
+                  branchId, RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
                   RestUtil.getClientId(httpHeaders)));
          } catch (OseeCoreException ex) {
             OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
@@ -727,13 +722,13 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public Response unCommitBranch(long branchUuid, long destinationBranchUuid) {
+   public Response unCommitBranch(BranchId branch, BranchId destinationBranch) {
       throw new UnsupportedOperationException("Not yet implemented");
    }
 
    @Override
-   public Response unassociateBranch(long branchUuid) {
-      BranchReadable branch = getBranchById(branchUuid);
+   public Response unassociateBranch(BranchId branchId) {
+      BranchReadable branch = getBranchById(branchId);
       boolean modified = false;
       if (branch.getAssociatedArtifact().isValid()) {
          Callable<?> op = getBranchOps().unassociateBranch(branch);
@@ -742,8 +737,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
          try {
             activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
                String.format(
-                  "Branch Operation Unassociate Branch {branchUUID: %s, accountId: %s serverId: %s clientId: %s}",
-                  branchUuid, RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
+                  "Branch Operation Unassociate Branch {branchId: %s, accountId: %s serverId: %s clientId: %s}",
+                  branchId, RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
                   RestUtil.getClientId(httpHeaders)));
          } catch (OseeCoreException ex) {
             OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
@@ -753,14 +748,13 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public Response purgeTxs(long branchUuid, String txIds) {
+   public Response purgeTxs(BranchId branch, String txIds) {
       boolean modified = false;
       List<Long> txsToDelete = OrcsRestUtil.asLongList(txIds);
       if (!txsToDelete.isEmpty()) {
-         ResultSet<? extends TransactionId> results =
-            newTxQuery().andBranchIds(branchUuid).andTxIds(txsToDelete).getResults();
+         ResultSet<? extends TransactionId> results = newTxQuery().andBranch(branch).andTxIds(txsToDelete).getResults();
          if (!results.isEmpty()) {
-            checkAllTxFoundAreOnBranch("Purge Transaction", branchUuid, txsToDelete, results);
+            checkAllTxFoundAreOnBranch("Purge Transaction", branch, txsToDelete, results);
             List<TransactionId> list = Lists.newArrayList(results);
             Callable<?> op = newTxFactory().purgeTransaction(list);
             executeCallable(op);
@@ -769,8 +763,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
             try {
                activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
                   String.format(
-                     "Branch Operation Purge Txs {branchUUID: %s, txsToDelete: %s accountId: %s serverId: %s clientId: %s}",
-                     branchUuid, txIds, RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
+                     "Branch Operation Purge Txs {branchId: %s, txsToDelete: %s accountId: %s serverId: %s clientId: %s}",
+                     branch, txIds, RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
                      RestUtil.getClientId(httpHeaders)));
             } catch (OseeCoreException ex) {
                OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
@@ -780,7 +774,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       return asResponse(modified);
    }
 
-   private void checkAllTxFoundAreOnBranch(String opName, long branchUuid, List<Long> txIds, ResultSet<? extends TransactionId> result) {
+   private void checkAllTxFoundAreOnBranch(String opName, BranchId branch, List<Long> txIds, ResultSet<? extends TransactionId> result) {
       if (txIds.size() != result.size()) {
          Set<Long> found = new HashSet<>();
          for (TransactionId tx : result) {
@@ -790,7 +784,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
          if (!difference.isEmpty()) {
             throw new OseeWebApplicationException(Status.BAD_REQUEST,
                "%s Error - The following transactions from %s were not found on branch [%s] - txs %s - Please remove them from the request and try again.",
-               opName, txIds, branchUuid, difference);
+               opName, txIds, branch, difference);
          }
       }
    }

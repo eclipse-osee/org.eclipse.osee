@@ -13,21 +13,18 @@ package org.eclipse.osee.orcs.data;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CreateBranchData implements Identifiable<Long> {
+public class CreateBranchData {
    private final long MERGE_DESTINATION_BRANCH_ID = -1; // only used on merge branches
    private final int MERGE_ADDRESSING_QUERY_ID = -1; // only used on merge branches
 
    private String branchName;
-   private long branchUuid;
+   private final BranchId branch;
    private BranchType branchType;
    private String creationComment;
    private TransactionId fromTransaction;
@@ -43,23 +40,17 @@ public class CreateBranchData implements Identifiable<Long> {
    private BranchId parentBranch;
 
    public CreateBranchData() {
-      this(Lib.generateUuid());
+      this(TokenFactory.createBranch());
    }
 
-   public CreateBranchData(long uuid) {
-      branchUuid = uuid;
-   }
-
-   @Override
-   public Long getGuid() {
-      return branchUuid;
+   public CreateBranchData(BranchId branch) {
+      this.branch = branch;
    }
 
    public ArtifactId getAssociatedArtifact() {
       return associatedArtifact;
    }
 
-   @Override
    public String getName() {
       return branchName;
    }
@@ -130,15 +121,12 @@ public class CreateBranchData implements Identifiable<Long> {
 
    @Override
    public int hashCode() {
-      return getGuid().hashCode();
+      return branch.hashCode();
    }
 
    @Override
    public boolean equals(Object obj) {
-      if (obj instanceof Identity) {
-         return getGuid().equals(((Identity<?>) obj).getGuid());
-      }
-      return false;
+      return branch.equals(obj);
    }
 
    public boolean isTxCopyBranchType() {
@@ -151,18 +139,11 @@ public class CreateBranchData implements Identifiable<Long> {
 
    @Override
    public String toString() {
-      return "CreateBranchData [branchUuid=" + branchUuid + ", branchName=" + branchName + ", branchType=" + branchType + ", creationComment=" + creationComment + ", fromTransaction=" + fromTransaction + ", associatedArtifact=" + associatedArtifact + ", userArtifact=" + author + ", mergeAddressingQueryId=" + mergeAddressingQueryId + ", destinationBranchId=" + mergeDestinationBranchId + "]";
+      return "CreateBranchData [branchUuid=" + branch + ", branchName=" + branchName + ", branchType=" + branchType + ", creationComment=" + creationComment + ", fromTransaction=" + fromTransaction + ", associatedArtifact=" + associatedArtifact + ", author=" + author + ", mergeAddressingQueryId=" + mergeAddressingQueryId + ", destinationBranchId=" + mergeDestinationBranchId + "]";
    }
 
-   public long getUuid() {
-      return branchUuid;
-   }
-
-   public void setUuid(long uuid) {
-      if (uuid <= 0) {
-         throw new OseeStateException("uuid [%d] must be > 0", uuid);
-      }
-      this.branchUuid = uuid;
+   public BranchId getBranch() {
+      return branch;
    }
 
    public void setParentBranch(BranchId parentBranch) {

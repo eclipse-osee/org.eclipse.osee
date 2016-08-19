@@ -11,10 +11,11 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 
 public interface TransactionData extends HasOrcsChangeSet {
 
-   Long getBranchId();
+   BranchId getBranch();
 
    ArtifactId getAuthor();
 

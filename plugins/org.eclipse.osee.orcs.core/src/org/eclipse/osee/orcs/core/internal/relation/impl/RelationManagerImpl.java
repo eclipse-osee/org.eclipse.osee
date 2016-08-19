@@ -32,7 +32,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -472,7 +474,7 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
-   public void introduce(OrcsSession session, Long branch, RelationNode source, RelationNode destination) throws OseeCoreException {
+   public void introduce(OrcsSession session, BranchId branch, RelationNode source, RelationNode destination) throws OseeCoreException {
       ensureRelationsInitialized(session, source.getGraph(), source);
 
       Collection<? extends IRelationType> validRelationTypes = getValidRelationTypes(session, destination);

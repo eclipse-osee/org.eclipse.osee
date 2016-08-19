@@ -44,7 +44,7 @@ public class OrcsWriterEndpointImpl implements OrcsWriterEndpoint {
    public Response getOrcsWriterInputDefault() {
       OrcsWriterCollectorGenerator generator = new OrcsWriterCollectorGenerator();
       OwCollector collector = generator.run(orcsApi);
-      StreamingOutput streamingOutput = new OrcsWriterStreamingOutput(orcsApi, 0L, collector);
+      StreamingOutput streamingOutput = new OrcsWriterStreamingOutput(orcsApi, collector);
       ResponseBuilder builder = Response.ok(streamingOutput);
       builder.header("Content-Disposition", "attachment; filename=" + "OrcsWriterInput.xml");
       return builder.build();
@@ -61,7 +61,7 @@ public class OrcsWriterEndpointImpl implements OrcsWriterEndpoint {
    public Response getOrcsWriterInputFromConfig(OrcsWriterInputConfig config) {
       OrcsWriterCollectorGenerator generator = new OrcsWriterCollectorGenerator(config);
       OwCollector collector = generator.run(orcsApi);
-      StreamingOutput streamingOutput = new OrcsWriterStreamingOutput(orcsApi, 0L, collector);
+      StreamingOutput streamingOutput = new OrcsWriterStreamingOutput(orcsApi, collector);
       ResponseBuilder builder = Response.ok(streamingOutput);
       builder.header("Content-Disposition", "attachment; filename=" + "OrcsWriterInput.xml");
       return builder.build();

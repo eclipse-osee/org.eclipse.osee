@@ -80,4 +80,8 @@ public class BranchCache extends AbstractOseeLoadingCache<Branch> {
    public synchronized List<Branch> getBranches(Predicate<Branch> branchFilter) {
       return getRawValues().stream().filter(branchFilter).collect(Collectors.toList());
    }
+
+   public Branch get(BranchId branch) {
+      return getById(branch.getId());
+   }
 }

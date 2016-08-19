@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal.writer;
 
+import org.eclipse.osee.framework.core.data.BranchId;
+
 /**
  * @author Donald G. Dunne
  */
 public interface IOrcsValidationHelper {
 
-   boolean isBranchExists(long branchUuid);
+   boolean isBranchExists(BranchId branch);
 
    boolean isUserExists(String userId);
 
@@ -25,7 +27,7 @@ public interface IOrcsValidationHelper {
 
    boolean isAttributeTypeExists(long attributeTypeUuid);
 
-   public boolean isArtifactExists(long branchUuid, long artifactUuid);
+   public boolean isArtifactExists(BranchId branch, long artifactUuid);
 
    boolean isAttributeTypeExists(String attributeTypeName);
 

@@ -21,7 +21,7 @@ import org.eclipse.osee.orcs.core.ds.VersionData;
  */
 public class VersionDataImpl implements VersionData {
 
-   private Long branchId = BranchId.SENTINEL.getId();
+   private BranchId branch = BranchId.SENTINEL;
    private TransactionId txId = TransactionId.SENTINEL;
    private long gamma = GAMMA_SENTINEL;
    private boolean historical = IS_HISTORICAL_DEFAULT;
@@ -62,13 +62,13 @@ public class VersionDataImpl implements VersionData {
    }
 
    @Override
-   public Long getBranchId() {
-      return branchId;
+   public BranchId getBranch() {
+      return branch;
    }
 
    @Override
-   public void setBranchId(Long branchUuid) {
-      this.branchId = branchUuid;
+   public void setBranch(BranchId branch) {
+      this.branch = branch;
    }
 
    @Override
@@ -90,7 +90,7 @@ public class VersionDataImpl implements VersionData {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + branchId.hashCode();
+      result = prime * result + branch.hashCode();
       result = prime * result + (int) (gamma ^ gamma >>> 32);
       result = prime * result + (historical ? 1231 : 1237);
       result = prime * result + stripeId.hashCode();
@@ -110,7 +110,7 @@ public class VersionDataImpl implements VersionData {
          return false;
       }
       VersionDataImpl other = (VersionDataImpl) obj;
-      if (!branchId.equals(other.branchId)) {
+      if (!branch.equals(other.branch)) {
          return false;
       }
       if (gamma != other.gamma) {
@@ -130,13 +130,13 @@ public class VersionDataImpl implements VersionData {
 
    @Override
    public String toString() {
-      return "Version [branchUuid=" + branchId + ", txId=" + txId + ", gamma=" + gamma + ", historical=" + historical + ", stripeId=" + stripeId + "]";
+      return "Version [branch=" + branch + ", txId=" + txId + ", gamma=" + gamma + ", historical=" + historical + ", stripeId=" + stripeId + "]";
    }
 
    @Override
    public VersionData clone() {
       VersionData copy = new VersionDataImpl();
-      copy.setBranchId(getBranchId());
+      copy.setBranch(getBranch());
       copy.setGammaId(getGammaId());
       copy.setHistorical(isHistorical());
       copy.setStripeId(getStripeId());

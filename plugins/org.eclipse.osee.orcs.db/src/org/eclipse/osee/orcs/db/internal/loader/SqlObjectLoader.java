@@ -299,7 +299,7 @@ public class SqlObjectLoader {
 
          @Override
          public boolean isMultiBranch() {
-            return getBranchId() == null;
+            return getBranch() == null;
          }
 
          @Override

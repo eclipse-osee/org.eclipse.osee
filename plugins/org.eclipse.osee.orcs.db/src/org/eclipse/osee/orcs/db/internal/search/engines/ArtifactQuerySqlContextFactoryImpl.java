@@ -14,6 +14,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -70,19 +71,19 @@ public class ArtifactQuerySqlContextFactoryImpl implements QuerySqlContextFactor
    }
 
    private QuerySqlContext createContext(OrcsSession session, QueryData queryData) throws OseeCoreException {
-      Long branch = getBranchToSearch(queryData);
+      BranchId branch = getBranchToSearch(queryData);
       Conditions.checkNotNull(branch, "branch");
       return new ArtifactQuerySqlContext(session, branch, queryData.getOptions());
    }
 
    private AbstractSqlWriter createQueryWriter(SqlContext context, QueryData queryData, QueryType queryType) throws OseeCoreException {
-      Long branch = getBranchToSearch(queryData);
+      BranchId branch = getBranchToSearch(queryData);
       Conditions.checkNotNull(branch, "branch");
       return new ArtifactQuerySqlWriter(logger, joinFactory, jdbcClient, context, queryType, branch);
    }
 
-   private Long getBranchToSearch(QueryData queryData) throws OseeCoreException {
-      Long branch = null;
+   private BranchId getBranchToSearch(QueryData queryData) throws OseeCoreException {
+      BranchId branch = BranchId.SENTINEL;
 
       Iterable<? extends Criteria> criterias = queryData.getAllCriteria();
       Optional<? extends Criteria> item = Iterables.tryFind(criterias, new Predicate<Criteria>() {
@@ -95,9 +96,8 @@ public class ArtifactQuerySqlContextFactoryImpl implements QuerySqlContextFactor
       });
       if (item.isPresent()) {
          HasBranch criteria = (HasBranch) item.get();
-         branch = criteria.getBranchId();
+         branch = criteria.getBranch();
       }
       return branch;
    }
-
 }

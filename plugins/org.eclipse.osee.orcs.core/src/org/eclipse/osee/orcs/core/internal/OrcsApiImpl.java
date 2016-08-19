@@ -199,7 +199,7 @@ public class OrcsApiImpl implements OrcsApi {
       GraphProvider graphProvider = new GraphProvider() {
 
          @Override
-         public GraphData getGraph(OrcsSession session, Long branch, TransactionId transactionId) throws OseeCoreException {
+         public GraphData getGraph(OrcsSession session, BranchId branch, TransactionId transactionId) throws OseeCoreException {
             return graphFactory.createGraph(session, branch, transactionId);
          }
       };
@@ -209,7 +209,7 @@ public class OrcsApiImpl implements OrcsApi {
       TransactionProvider txProvider = new TransactionProvider() {
 
          @Override
-         public TransactionId getHeadTransaction(OrcsSession session, Long branch) {
+         public TransactionId getHeadTransaction(OrcsSession session, BranchId branch) {
             QueryFactory queryFactory = queryModule.createQueryFactory(session);
             return queryFactory.transactionQuery().andIsHead(branch).getResults().getExactlyOne();
          }

@@ -115,9 +115,9 @@ public class MissingChangeItemFactoryTest {
 
       String sessionGuid = GUID.create();
       when(session.getGuid()).thenReturn(sessionGuid);
-      when(dataLoaderFactory.newDataLoaderFromIds(any(OrcsSession.class), eq(sourceBranch.getId()),
+      when(dataLoaderFactory.newDataLoaderFromIds(any(OrcsSession.class), eq(sourceBranch),
          any(Collection.class))).thenReturn(sourceDataLoader);
-      when(dataLoaderFactory.newDataLoaderFromIds(any(OrcsSession.class), eq(destBranch.getId()),
+      when(dataLoaderFactory.newDataLoaderFromIds(any(OrcsSession.class), eq(destBranch),
          any(Collection.class))).thenReturn(destDataLoader);
       when(applicQuery.getApplicabilityTokens(any(BranchId.class), any(BranchId.class))).thenReturn(applicMap);
       changeItemFactory = new MissingChangeItemFactoryImpl(dataLoaderFactory);

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -118,7 +118,6 @@ public class AttributeFactoryTest {
       when(dataFactory.create(artifactData, attributeType)).thenReturn(attributeData);
       when(attributeData.getVersion()).thenReturn(attrVersionData);
       when(artifactData.getVersion()).thenReturn(artVersionData);
-      when(artVersionData.getBranchId()).thenReturn(45L);
 
       ArgumentCaptor<ResourceNameResolver> resolverCapture = ArgumentCaptor.forClass(ResourceNameResolver.class);
       ArgumentCaptor<WeakReference> refCapture = ArgumentCaptor.forClass(WeakReference.class);
@@ -140,18 +139,18 @@ public class AttributeFactoryTest {
    public void testCopyAttribute() throws OseeCoreException {
       AttributeData copiedAttributeData = mock(AttributeData.class);
 
-      when(dataFactory.copy(COMMON_ID, attributeData)).thenReturn(copiedAttributeData);
+      when(dataFactory.copy(COMMON, attributeData)).thenReturn(copiedAttributeData);
       when(copiedAttributeData.getTypeUuid()).thenReturn(expectedGuid);
       when(copiedAttributeData.getDataProxy()).thenReturn(proxy);
 
       ArgumentCaptor<ResourceNameResolver> resolverCapture = ArgumentCaptor.forClass(ResourceNameResolver.class);
       ArgumentCaptor<WeakReference> refCapture = ArgumentCaptor.forClass(WeakReference.class);
 
-      Attribute<Object> actual = factory.copyAttribute(attributeData, COMMON_ID, container);
+      Attribute<Object> actual = factory.copyAttribute(attributeData, COMMON, container);
 
       assertTrue(attribute == actual);
 
-      verify(dataFactory).copy(COMMON_ID, attributeData);
+      verify(dataFactory).copy(COMMON, attributeData);
 
       verify(proxy).setResolver(resolverCapture.capture());
       verify(attribute).internalInitialize(eq(cache), refCapture.capture(), eq(copiedAttributeData), eq(true),
@@ -165,7 +164,7 @@ public class AttributeFactoryTest {
       when(attributeData.getVersion()).thenReturn(attrVersionData);
       when(attrVersionData.isInStorage()).thenReturn(false);
 
-      Attribute<Object> actual = factory.introduceAttribute(attributeData, COMMON_ID, container);
+      Attribute<Object> actual = factory.introduceAttribute(attributeData, COMMON, container);
       assertNull(actual);
    }
 
@@ -177,17 +176,17 @@ public class AttributeFactoryTest {
       when(attrVersionData.isInStorage()).thenReturn(true);
       when(attributeData.getLocalId()).thenReturn(12345);
 
-      when(dataFactory.introduce(COMMON_ID, attributeData)).thenReturn(introducedAttributeData);
+      when(dataFactory.introduce(COMMON, attributeData)).thenReturn(introducedAttributeData);
       when(introducedAttributeData.getTypeUuid()).thenReturn(expectedGuid);
       when(introducedAttributeData.getDataProxy()).thenReturn(proxy);
 
       when(container.getAttributeById(attributeData.getLocalId(), DeletionFlag.INCLUDE_DELETED)).thenReturn(
          destinationAttribute);
 
-      Attribute<Object> actual = factory.introduceAttribute(attributeData, COMMON_ID, container);
+      Attribute<Object> actual = factory.introduceAttribute(attributeData, COMMON, container);
       assertNotNull(actual);
 
-      verify(dataFactory).introduce(COMMON_ID, attributeData);
+      verify(dataFactory).introduce(COMMON, attributeData);
 
       assertEquals(actual, destinationAttribute);
    }

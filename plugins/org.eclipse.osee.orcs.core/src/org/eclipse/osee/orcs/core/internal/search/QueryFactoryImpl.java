@@ -59,7 +59,7 @@ public class QueryFactoryImpl implements QueryFactory {
       this.tupleQuery = tupleQuery;
    }
 
-   private QueryBuilder createBuilder(Long branchId) {
+   private QueryBuilder createBuilder(BranchId branchId) {
       Options options = OptionsUtil.createOptions();
       CriteriaSet criteriaSet = new CriteriaSet();
       if (branchId != null) {
@@ -81,13 +81,12 @@ public class QueryFactoryImpl implements QueryFactory {
 
    @Override
    public QueryBuilder fromBranch(BranchId branch) throws OseeCoreException {
-      Conditions.checkNotNull(branch, "branch");
-      return fromBranch(branch.getUuid());
+      return createBuilder(branch);
    }
 
    @Override
    public QueryBuilder fromBranch(Long branchId) throws OseeCoreException {
-      return createBuilder(branchId);
+      return fromBranch(BranchId.valueOf(branchId));
    }
 
    @Override

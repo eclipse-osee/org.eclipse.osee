@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -18,14 +19,14 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface ArtifactDataFactory {
 
-   ArtifactData create(Long branch, IArtifactType artifactType, String guid) throws OseeCoreException;
+   ArtifactData create(BranchId branch, IArtifactType artifactType, String guid) throws OseeCoreException;
 
-   ArtifactData create(Long branch, IArtifactType artifactType, String guid, long artifactId) throws OseeCoreException;
+   ArtifactData create(BranchId branch, IArtifactType artifactType, String guid, long artifactId) throws OseeCoreException;
 
-   ArtifactData copy(Long destination, ArtifactData source) throws OseeCoreException;
+   ArtifactData copy(BranchId destination, ArtifactData source) throws OseeCoreException;
 
    ArtifactData clone(ArtifactData source) throws OseeCoreException;
 
-   ArtifactData introduce(Long destination, ArtifactData source) throws OseeCoreException;
+   ArtifactData introduce(BranchId destination, ArtifactData source) throws OseeCoreException;
 
 }

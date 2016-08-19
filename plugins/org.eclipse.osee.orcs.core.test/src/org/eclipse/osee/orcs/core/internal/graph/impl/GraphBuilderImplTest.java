@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.graph.impl;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -88,9 +88,9 @@ public class GraphBuilderImplTest {
       builder = new GraphBuilderImpl(logger, artifactFactory, attributeFactory, relationFactory, graphProvider);
 
       when(description.getSession()).thenReturn(session);
-      when(description.getBranchId()).thenReturn(COMMON_ID);
+      when(description.getBranch()).thenReturn(COMMON);
       when(description.getTransaction()).thenReturn(TRANSACTION_ID);
-      when(graphProvider.getGraph(session, COMMON_ID, TRANSACTION_ID)).thenReturn(graphData);
+      when(graphProvider.getGraph(session, COMMON, TRANSACTION_ID)).thenReturn(graphData);
 
       when(relationFactory.createRelationContainer()).thenReturn(adjacencies);
       when(relationFactory.createRelation(relationData)).thenReturn(relation);
@@ -117,7 +117,7 @@ public class GraphBuilderImplTest {
       builder.onLoadDescription(description);
       builder.onLoadEnd();
 
-      verify(description).getBranchId();
+      verify(description).getBranch();
       verify(description).getTransaction();
    }
 

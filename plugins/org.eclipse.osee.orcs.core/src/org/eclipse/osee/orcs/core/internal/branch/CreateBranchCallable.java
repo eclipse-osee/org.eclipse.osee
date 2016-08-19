@@ -35,7 +35,7 @@ public class CreateBranchCallable extends AbstractBranchCallable<BranchReadable>
    protected BranchReadable innerCall() throws Exception {
       Conditions.checkNotNull(branchData, "branchData");
 
-      Conditions.checkNotNull(branchData.getUuid(), "branchUuid");
+      Conditions.checkNotNull(branchData.getBranch(), "branchUuid");
       Conditions.checkNotNull(branchData.getName(), "branchName");
       Conditions.checkNotNull(branchData.getBranchType(), "branchType");
 
@@ -54,6 +54,6 @@ public class CreateBranchCallable extends AbstractBranchCallable<BranchReadable>
          getBranchStore().createBranch(branchData);
       }
 
-      return queryFactory.branchQuery().andUuids(branchData.getUuid()).getResults().getExactlyOne();
+      return queryFactory.branchQuery().andIds(branchData.getBranch()).getResults().getExactlyOne();
    }
 }
