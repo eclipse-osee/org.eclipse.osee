@@ -123,14 +123,21 @@ public class SprintPageBuilder {
    }
 
    private void updateFeatureGroupSum(ArtifactReadable item, TreeMap<String, FeatureGroupSum> featureSums, double points) {
-      ArtifactReadable featureGroup = item.getRelated(AtsRelationTypes.AgileFeatureToItem_FeatureGroup).getExactlyOne();
-      FeatureGroupSum feature = featureSums.get(featureGroup.getName());
+      String featureGroupName = null;
+      ArtifactReadable featureGroup =
+         item.getRelated(AtsRelationTypes.AgileFeatureToItem_FeatureGroup).getAtMostOneOrNull();
+      if (featureGroup == null) {
+         featureGroupName = "UnSet";
+      } else {
+         featureGroupName = featureGroup.getName();
+      }
+      FeatureGroupSum feature = featureSums.get(featureGroupName);
       if (feature == null) {
-         feature = new FeatureGroupSum(featureGroup.getName(),
-            featureGroup.getSoleAttributeAsString(AtsAttributeTypes.Description, ""));
+         feature = new FeatureGroupSum(featureGroupName,
+            featureGroup == null ? "" : featureGroup.getSoleAttributeAsString(AtsAttributeTypes.Description, ""));
       }
       feature.addToSum(points);
-      featureSums.put(featureGroup.getName(), feature);
+      featureSums.put(featureGroupName, feature);
    }
 
    private boolean includeInCount(ArtifactReadable item) {
@@ -160,7 +167,7 @@ public class SprintPageBuilder {
          startDate = adjustDate((Date) sprint.getSoleAttributeValue(AtsAttributeTypes.StartDate), false);
          endDate = adjustDate((Date) sprint.getSoleAttributeValue(AtsAttributeTypes.EndDate), true);
       } catch (Exception e) {
-         throw new OseeCoreException("Date not available in sprint %s", sprint.getName());
+         throw new OseeCoreException("Start Date and End Date must be set in Sprint [%s]", sprint.getName());
       }
       numActionsCompleted = 0;
       workCompleted = 0;

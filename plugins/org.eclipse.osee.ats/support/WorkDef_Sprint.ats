@@ -14,6 +14,22 @@ workDefinition "WorkDef_Sprint" {
       option FILL_VERTICALLY
    }
 
+   widgetDefinition "Start Date" {
+      attributeName "ats.Start Date"
+      xWidgetName "XDateDam"
+      option HORIZONTAL_LABEL
+   }
+
+   widgetDefinition "End Date" {
+      attributeName "ats.End Date"
+      xWidgetName "XDateDam"
+      option HORIZONTAL_LABEL
+   }
+
+   widgetDefinition "XRunSprintReportButton" {
+      xWidgetName "XRunSprintReportButton"
+   }
+   
    state "Cancelled" {
       type Cancelled
       ordinal 3
@@ -26,6 +42,12 @@ workDefinition "WorkDef_Sprint" {
       to "Cancelled"
       to "Completed" AsDefault
       layout {
+      	composite {
+      		numColumns 6
+      		widget "Start Date"
+      		widget "End Date"
+      		widget "XRunSprintReportButton"
+      	}
          widget "Title" 
          widget "Description"
       }

@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.util.widgets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.agile.XRunSprintSummaryButton;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.column.OperationalImpactWithWorkaroundXWidget;
 import org.eclipse.osee.ats.column.OperationalImpactXWidget;
@@ -139,6 +140,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new ClosureStateMultiChoiceSelect();
       } else if (widgetName.equals(XProgramSelectionWidget.WIDGET_ID)) {
          return new XProgramSelectionWidget();
+      } else if (widgetName.equals(XRunSprintSummaryButton.WIDGET_ID)) {
+         return new XRunSprintSummaryButton();
       }
       return toReturn;
    }
