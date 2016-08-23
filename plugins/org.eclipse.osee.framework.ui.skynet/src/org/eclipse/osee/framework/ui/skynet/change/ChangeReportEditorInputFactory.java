@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.ui.IElementFactory;
 import org.eclipse.ui.IMemento;
 
@@ -41,29 +40,27 @@ public class ChangeReportEditorInputFactory implements IElementFactory {
       ChangeReportEditorInput toReturn = null;
       try {
          if (memento != null) {
-            if (SkynetViews.isSourceValid(memento)) {
-               CompareType compareType = CompareType.valueOf(memento.getString(COMPARE_TYPE));
+            CompareType compareType = CompareType.valueOf(memento.getString(COMPARE_TYPE));
 
-               Long startTxId = Long.parseLong(memento.getString(START_TX_KEY));
-               Long endTxId = Long.parseLong(memento.getString(END_TX_KEY));
+            Long startTxId = Long.parseLong(memento.getString(START_TX_KEY));
+            Long endTxId = Long.parseLong(memento.getString(END_TX_KEY));
 
-               TransactionToken startTx = TransactionManager.getTransaction(startTxId);
-               TransactionToken endTx = TransactionManager.getTransaction(endTxId);
-               TransactionDelta txDelta = new TransactionDelta(startTx, endTx);
-               toReturn = ChangeUiUtil.createInput(compareType, txDelta, false);
-               String branchUuid = memento.getString(BRANCH_ID_KEY);
-               if (Strings.isNumeric(branchUuid)) {
-                  try {
-                     toReturn.setBranch(TokenFactory.createBranch(Long.valueOf(branchUuid)));
-                  } catch (Exception ex) {
-                     // do nothing
-                  }
+            TransactionToken startTx = TransactionManager.getTransaction(startTxId);
+            TransactionToken endTx = TransactionManager.getTransaction(endTxId);
+            TransactionDelta txDelta = new TransactionDelta(startTx, endTx);
+            toReturn = ChangeUiUtil.createInput(compareType, txDelta, false);
+            String branchUuid = memento.getString(BRANCH_ID_KEY);
+            if (Strings.isNumeric(branchUuid)) {
+               try {
+                  toReturn.setBranch(TokenFactory.createBranch(Long.valueOf(branchUuid)));
+               } catch (Exception ex) {
+                  // do nothing
                }
-               Boolean transactionTabActive = memento.getBoolean(TRANSACTION_TAB_ACTIVE_KEY);
-               if (transactionTabActive != null) {
-                  toReturn.setTransactionTabActive(transactionTabActive);
-                  toReturn.setNotLoaded(true);
-               }
+            }
+            Boolean transactionTabActive = memento.getBoolean(TRANSACTION_TAB_ACTIVE_KEY);
+            if (transactionTabActive != null) {
+               toReturn.setTransactionTabActive(transactionTabActive);
+               toReturn.setNotLoaded(true);
             }
          }
       } catch (Exception ex) {
@@ -81,6 +78,5 @@ public class ChangeReportEditorInputFactory implements IElementFactory {
          memento.putString(BRANCH_ID_KEY, String.valueOf(input.getBranch().getUuid()));
          memento.putBoolean(TRANSACTION_TAB_ACTIVE_KEY, input.isTransactionTabActive());
       }
-      SkynetViews.addDatabaseSourceId(memento);
    }
 }

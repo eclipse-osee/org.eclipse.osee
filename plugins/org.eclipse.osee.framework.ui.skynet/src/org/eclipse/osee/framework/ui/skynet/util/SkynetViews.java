@@ -10,15 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util;
 
-import java.util.logging.Level;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
-import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -29,37 +22,6 @@ import org.eclipse.ui.PlatformUI;
  * @author Jeff C. Phillips
  */
 public class SkynetViews {
-
-   private static final String MEMENTO_SOURCE_GUID = "sourceDbGuid";
-
-   public static boolean isSourceValid(IMemento memento) throws OseeCoreException {
-      boolean result = false;
-      if (memento != null) {
-         String dbId = memento.getString(MEMENTO_SOURCE_GUID);
-         if (Strings.isValid(dbId)) {
-            String currentDbId = null;
-            try {
-               currentDbId = OseeInfo.getDatabaseGuid();
-            } catch (OseeDataStoreException ex) {
-               OseeLog.log(Activator.class, Level.WARNING, "Unable to set memento source db guid");
-            }
-            if (dbId.equals(currentDbId)) {
-               result = true;
-            }
-         }
-      }
-      return result;
-   }
-
-   public static void addDatabaseSourceId(IMemento memento) {
-      if (memento != null) {
-         try {
-            memento.putString(MEMENTO_SOURCE_GUID, OseeInfo.getDatabaseGuid());
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.WARNING, "Unable to set memento source db guid");
-         }
-      }
-   }
 
    public static void closeView(final String viewId, final String secondaryId) {
       if (Strings.isValid(viewId)) {

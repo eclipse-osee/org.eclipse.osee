@@ -323,7 +323,6 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
       if (artifact != null) {
          memento.putString(ART_GUID, artifact.getGuid());
          memento.putString(BRANCH_ID, String.valueOf(artifact.getBranch().getGuid()));
-         SkynetViews.addDatabaseSourceId(memento);
       }
    }
 
@@ -334,17 +333,15 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
          if (memento != null) {
             memento = memento.getChild(INPUT);
             if (memento != null) {
-               if (SkynetViews.isSourceValid(memento)) {
-                  String guid = memento.getString(ART_GUID);
-                  String branchUuidStr = memento.getString(BRANCH_ID);
-                  if (Strings.isValid(branchUuidStr)) {
-                     Long branchUuid = Long.valueOf(branchUuidStr);
-                     Artifact artifact = ArtifactQuery.getArtifactFromId(guid, TokenFactory.createBranch(branchUuid));
-                     openViewUpon(artifact, false);
-                  }
-               } else {
-                  closeView();
+               String guid = memento.getString(ART_GUID);
+               String branchUuidStr = memento.getString(BRANCH_ID);
+               if (Strings.isValid(branchUuidStr)) {
+                  Long branchUuid = Long.valueOf(branchUuidStr);
+                  Artifact artifact = ArtifactQuery.getArtifactFromId(guid, TokenFactory.createBranch(branchUuid));
+                  openViewUpon(artifact, false);
                }
+            } else {
+               closeView();
             }
          }
       } catch (Exception ex) {
