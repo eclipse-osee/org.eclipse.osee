@@ -250,6 +250,7 @@ artifactType "Work Package" extends "Artifact" {
 	attribute "ats.Description"
    attribute "ats.Estimated Hours"
 	attribute "ats.IPT"
+	attribute "ats.CAM"
    attribute "ats.Color Team"
 }
 
@@ -522,6 +523,15 @@ attributeType "ats.IPT" extends EnumeratedAttribute {
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	enumType "enum.ats.ipt"
+	mediaType "text/plain"
+}
+
+attributeType "ats.CAM" extends StringAttribute {
+	uuid 0x1000001548094653
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 	mediaType "text/plain"
 }
 
