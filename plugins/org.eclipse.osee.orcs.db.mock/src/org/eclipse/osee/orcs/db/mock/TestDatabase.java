@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.mock.internal;
+package org.eclipse.osee.orcs.db.mock;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcService;
-import org.eclipse.osee.orcs.db.mock.OseeDatabase;
+import org.eclipse.osee.orcs.db.mock.internal.OsgiUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.Assert;

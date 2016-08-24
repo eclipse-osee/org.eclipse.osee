@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.mock;
 
-import org.eclipse.osee.orcs.db.mock.internal.TestDatabase;
 import org.junit.Assert;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
