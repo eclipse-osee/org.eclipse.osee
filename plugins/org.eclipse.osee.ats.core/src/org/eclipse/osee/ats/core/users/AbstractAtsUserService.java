@@ -47,6 +47,9 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
                }
             }
          }
+         if (currentUser == null) {
+            currentUser = loadUserFromDbByUserId(getCurrentUserId());
+         }
       }
       return currentUser;
    }
