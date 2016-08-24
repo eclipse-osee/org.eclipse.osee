@@ -61,6 +61,7 @@ public interface OrcsWriterEndpoint {
    @POST
    @Path("writer")
    @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
    Response getOrcsWriterPersist(OwCollector collector);
 
    @POST

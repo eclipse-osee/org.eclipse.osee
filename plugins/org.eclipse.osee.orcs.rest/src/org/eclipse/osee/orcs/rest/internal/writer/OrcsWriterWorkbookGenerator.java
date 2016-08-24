@@ -170,8 +170,6 @@ public class OrcsWriterWorkbookGenerator {
    private void createDeleteSheet(ISheetWriter writer) throws IOException {
       writer.startSheet(OrcsWriterUtil.DELETE_SHEET_NAME, deleteSheetHeadings.length);
       writer.writeRow((Object[]) deleteSheetHeadings);
-      writer.writeCell("This sheet is not yet implemented");
-      writer.endRow();
       writer.endSheet();
    }
 

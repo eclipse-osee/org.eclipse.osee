@@ -27,16 +27,16 @@ public class OrcsWriterUtil {
       // Utility Class
    }
 
-   public static String getData(int rowCount, int colCount, String data) {
+   public static String getData(String sheetName, int rowCount, int colCount, String data) {
       if (data != null) {
          data += ", ";
       }
-      data += getRowColumnStr(rowCount, colCount);
+      data += getRowColumnStr(rowCount, colCount, sheetName);
       return data;
    }
 
-   public static String getRowColumnStr(int rowCount, int colCount) {
-      return "row " + rowCount + ", column " + (colCount + 1);
+   public static String getRowColumnStr(int rowCount, int colCount, String sheetName) {
+      return " sheet=" + sheetName + " row=" + rowCount + ", column=" + (colCount + 1);
    }
 
 }

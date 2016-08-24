@@ -21,8 +21,12 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -63,12 +67,11 @@ public class OrcsCollectorWriter {
    }
 
    public XResultData run() {
-      XResultData results = new XResultData(false);
       processCreate(results);
       processUpdate(results);
       processDelete(results);
-
       getTransaction().commit();
+      results.log("Complete");
       return results;
    }
 
@@ -99,92 +102,104 @@ public class OrcsCollectorWriter {
             logChange(artifact, CoreAttributeTypes.Name, artifact.getName(), owArtifact.getName());
          }
 
-         for (OwAttribute owAttribute : owArtifact.getAttributes()) {
-            IAttributeType attrType = getAttributeType(owAttribute.getType());
+         try {
+            createMissingRelations(owArtifact.getRelations(), artifact, results);
+         } catch (Exception ex) {
+            throw new OseeWrappedException(ex, "Exception processing relations for [%s]", owArtifact);
+         }
 
-            if (artifact.getAttributeCount(attrType) <= 1 && owAttribute.getValues().size() <= 1) {
-               String currValue = artifact.getSoleAttributeAsString(attrType, null);
+         try {
+            for (OwAttribute owAttribute : owArtifact.getAttributes()) {
+               IAttributeType attrType = getAttributeType(owAttribute.getType());
 
-               String newValue = null;
-               if (owAttribute.getValues().size() == 1) {
-                  Object object = owAttribute.getValues().iterator().next();
-                  if (object != null) {
-                     newValue = owAttribute.getValues().iterator().next().toString();
+               if (artifact.getAttributeCount(attrType) <= 1 && owAttribute.getValues().size() <= 1) {
+                  String currValue = artifact.getSoleAttributeAsString(attrType, null);
+
+                  String newValue = null;
+                  if (owAttribute.getValues().size() == 1) {
+                     Object object = owAttribute.getValues().iterator().next();
+                     if (object != null) {
+                        newValue = owAttribute.getValues().iterator().next().toString();
+                     }
                   }
-               }
 
-               // handle delete attribute case first
-               if (Strings.isValid(currValue) && newValue == null) {
-                  logChange(artifact, attrType, currValue, newValue);
-                  getTransaction().deleteAttributes(artifact, attrType);
-               } else if (orcsApi.getOrcsTypes().getAttributeTypes().isBooleanType(attrType)) {
-                  Boolean currVal = getBoolean(currValue);
-                  Boolean newVal = getBoolean(newValue);
-                  if (currVal == null || !currVal.equals(newVal)) {
+                  // handle delete attribute case first
+                  if (Strings.isValid(currValue) && newValue == null) {
                      logChange(artifact, attrType, currValue, newValue);
-                     getTransaction().setSoleAttributeValue(artifact, attrType, newVal);
-                  }
-               } else if (orcsApi.getOrcsTypes().getAttributeTypes().isFloatingType(attrType)) {
-                  try {
-                     Double currVal = getDouble(currValue);
-                     Double newVal = getDouble(newValue);
+                     getTransaction().deleteAttributes(artifact, attrType);
+                  } else if (orcsApi.getOrcsTypes().getAttributeTypes().isBooleanType(attrType)) {
+                     Boolean currVal = getBoolean(currValue);
+                     Boolean newVal = getBoolean(newValue);
                      if (currVal == null || !currVal.equals(newVal)) {
                         logChange(artifact, attrType, currValue, newValue);
                         getTransaction().setSoleAttributeValue(artifact, attrType, newVal);
                      }
-                  } catch (Exception ex) {
-                     throw new OseeArgumentException("Exception processing Double for OwAttribute %s Exception %s",
-                        owAttribute, ex);
-                  }
-               } else if (orcsApi.getOrcsTypes().getAttributeTypes().isIntegerType(attrType)) {
-                  try {
-                     Integer currVal = getInteger(currValue);
-                     Integer newVal = getInteger(newValue);
-                     if (currVal == null || !currVal.equals(newVal)) {
-                        logChange(artifact, attrType, currValue, newValue);
-                        getTransaction().setSoleAttributeValue(artifact, attrType, newVal);
+                  } else if (orcsApi.getOrcsTypes().getAttributeTypes().isFloatingType(attrType)) {
+                     try {
+                        Double currVal = getDouble(currValue);
+                        Double newVal = getDouble(newValue);
+                        if (currVal == null || !currVal.equals(newVal)) {
+                           logChange(artifact, attrType, currValue, newValue);
+                           getTransaction().setSoleAttributeValue(artifact, attrType, newVal);
+                        }
+                     } catch (Exception ex) {
+                        throw new OseeArgumentException("Exception processing Double for OwAttribute %s Exception %s",
+                           owAttribute, ex);
                      }
-                  } catch (Exception ex) {
-                     throw new OseeArgumentException("Exception processing Integer for OwAttribute %s Exception %s",
-                        owAttribute, ex);
-                  }
-               } else if (orcsApi.getOrcsTypes().getAttributeTypes().isDateType(attrType)) {
-                  try {
-                     Date currVal = artifact.getSoleAttributeValue(attrType, null);
-                     Date newVal = getDate(newValue);
-                     if (currVal == null || currVal.compareTo(newVal) != 0) {
-                        logChange(artifact, attrType, DateUtil.getMMDDYYHHMM(currVal), DateUtil.getMMDDYYHHMM(newVal));
-                        TransactionBuilder tx = getTransaction();
-                        tx.setSoleAttributeValue(artifact, attrType, newVal);
+                  } else if (orcsApi.getOrcsTypes().getAttributeTypes().isIntegerType(attrType)) {
+                     try {
+                        Integer currVal = getInteger(currValue);
+                        Integer newVal = getInteger(newValue);
+                        if (currVal == null || !currVal.equals(newVal)) {
+                           logChange(artifact, attrType, currValue, newValue);
+                           getTransaction().setSoleAttributeValue(artifact, attrType, newVal);
+                        }
+                     } catch (Exception ex) {
+                        throw new OseeArgumentException("Exception processing Integer for OwAttribute %s Exception %s",
+                           owAttribute, ex);
                      }
-                  } catch (Exception ex) {
-                     throw new OseeArgumentException("Exception processing Integer for OwAttribute %s Exception %s",
-                        owAttribute, ex);
+                  } else if (orcsApi.getOrcsTypes().getAttributeTypes().isDateType(attrType)) {
+                     try {
+                        Date currVal = artifact.getSoleAttributeValue(attrType, null);
+                        Date newVal = getDate(newValue);
+                        if (currVal == null || currVal.compareTo(newVal) != 0) {
+                           logChange(artifact, attrType, DateUtil.getMMDDYYHHMM(currVal),
+                              DateUtil.getMMDDYYHHMM(newVal));
+                           TransactionBuilder tx = getTransaction();
+                           tx.setSoleAttributeValue(artifact, attrType, newVal);
+                        }
+                     } catch (Exception ex) {
+                        throw new OseeArgumentException("Exception processing Integer for OwAttribute %s Exception %s",
+                           owAttribute, ex);
+                     }
+                  } else if (currValue == null && newValue != null || currValue != null && !currValue.equals(
+                     newValue)) {
+                     logChange(artifact, attrType, currValue, newValue);
+                     getTransaction().setSoleAttributeValue(artifact, attrType, newValue);
                   }
-               } else if (currValue == null && newValue != null || currValue != null && !currValue.equals(newValue)) {
-                  logChange(artifact, attrType, currValue, newValue);
-                  getTransaction().setSoleAttributeValue(artifact, attrType, newValue);
+               } else if (owAttribute.getValues().size() > 1 && orcsApi.getOrcsTypes().getAttributeTypes().getMaxOccurrences(
+                  attrType) > 1) {
+                  if (orcsApi.getOrcsTypes().getAttributeTypes().isDateType(attrType)) {
+                     throw new OseeArgumentException(
+                        "Date attributes not supported for multi-value set for OwAttribute %s Exception %s",
+                        owAttribute);
+                  }
+                  List<String> values = new LinkedList<>();
+                  for (Object obj : owAttribute.getValues()) {
+                     values.add(obj.toString());
+                  }
+                  getTransaction().setAttributesFromStrings(artifact, attrType, values);
+                  logChange(artifact, attrType, artifact.getAttributeValues(attrType).toString(), values.toString());
                }
-            } else if (owAttribute.getValues().size() > 1 && orcsApi.getOrcsTypes().getAttributeTypes().getMaxOccurrences(
-               attrType) > 1) {
-               if (orcsApi.getOrcsTypes().getAttributeTypes().isDateType(attrType)) {
-                  throw new OseeArgumentException(
-                     "Date attributes not supported for multi-value set for OwAttribute %s Exception %s", owAttribute);
-               }
-               List<String> values = new LinkedList<>();
-               for (Object obj : owAttribute.getValues()) {
-                  values.add(obj.toString());
-               }
-               getTransaction().setAttributesFromStrings(artifact, attrType, values);
-               logChange(artifact, attrType, artifact.getAttributeValues(attrType).toString(), values.toString());
             }
-
+         } catch (Exception ex) {
+            throw new OseeWrappedException(ex, "Exception processing attributes for [%s]", owArtifact);
          }
       }
    }
 
    private void logChange(ArtifactReadable artifact, IAttributeType attrType, String currValue, String newValue) {
-      results.log(String.format("Attr Values not same; Current [%s], New [%s] for attr type [%s] and artifact %s",
+      results.log(String.format("Attribute Updated: Current [%s], New [%s] for attr type [%s] and artifact %s",
          currValue, newValue, attrType, artifact.toStringWithId()));
    }
 
@@ -249,14 +264,26 @@ public class OrcsCollectorWriter {
 
          uuidToArtifact.put(artifactUuid, artifact);
 
-         createAttributes(owArtifact, artifact, results);
+         try {
+            createAttributes(owArtifact, artifact, results);
+         } catch (Exception ex) {
+            throw new OseeWrappedException(ex, "Exception creating attributes for [%s]", owArtifact);
+         }
 
-         createRelations(owArtifact, artifact, results);
+         try {
+            createMissingRelations(owArtifact, artifact, results);
+         } catch (Exception ex) {
+            throw new OseeWrappedException(ex, "Exception creating relations for [%s]", owArtifact);
+         }
       }
    }
 
-   private void createRelations(OwArtifact owArtifact, ArtifactId artifact, XResultData results) {
-      for (OwRelation relation : owArtifact.getRelations()) {
+   private void createMissingRelations(OwArtifact owArtifact, ArtifactId artifact, XResultData results) {
+      createMissingRelations(owArtifact.getRelations(), artifact, results);
+   }
+
+   private void createMissingRelations(List<OwRelation> relations, ArtifactId artifact, XResultData results) {
+      for (OwRelation relation : relations) {
          OwRelationType owRelType = relation.getType();
          IRelationType relType = orcsApi.getOrcsTypes().getRelationTypes().getByUuid(owRelType.getUuid());
 
@@ -272,9 +299,17 @@ public class OrcsCollectorWriter {
             uuidToArtifact.put(artToken.getUuid(), otherArtifact);
          }
          if (relation.getType().isSideA()) {
-            getTransaction().relate(otherArtifact, relType, artifact);
+            IRelationTypeSide relTypeSide = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A,
+               relation.getType().getUuid(), relation.getType().getName());
+            if (!otherArtifact.areRelated(relTypeSide, (ArtifactReadable) artifact)) {
+               getTransaction().relate(otherArtifact, relType, artifact);
+            }
          } else {
-            getTransaction().relate(artifact, relType, otherArtifact);
+            IRelationTypeSide relTypeSide = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B,
+               relation.getType().getUuid(), relation.getType().getName());
+            if (!otherArtifact.areRelated(relTypeSide, (ArtifactReadable) artifact)) {
+               getTransaction().relate(artifact, relType, otherArtifact);
+            }
          }
       }
    }

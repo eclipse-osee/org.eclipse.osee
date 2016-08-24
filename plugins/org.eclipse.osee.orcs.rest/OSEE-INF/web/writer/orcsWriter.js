@@ -45,29 +45,17 @@ app
 											'Accept' : 'application/json',
 											'Content-Type' : 'application/json'
 										}
-									})
-											.success(
-													function(data, status,
-															headers, config) {
-														$scope.message += "\nValidation Passed";
-														if (!validate) {
-															$scope.message += "...Execution Succeeded";
-														}
-													})
-											.error(
-													function(data, status,
-															headers, config) {
-														var message = 'error - status: '
-																+ status
-																+ ' '
-																+ data;
-														if (data.exception) {
-															message += ' Exception: '
-																	+ data.exception;
-														}
-														$scope.message += '\n'
-																+ message;
-													});
+									}).success(
+											function(data, status, headers,
+													config) {
+												$scope.message += '\n\n'
+														+ data.message;
+											}).error(
+											function(data, status, headers,
+													config) {
+												$scope.message += '\n\n'
+														+ data.message;
+											});
 								} else if ($scope.file) {
 									$scope.message = "Processing EXCEL XML";
 									$suffix = ".xml";
@@ -76,33 +64,23 @@ app
 													- $suffix.length) == -1) {
 										$scope.message += "\n\nError: File must be Excel XML 2003 format with .xml extension.";
 									} else {
-										Upload
-												.upload({
-													url : url + '/excel',
-													file : $scope.file
-												})
-												.success(
-														function(data, status,
-																headers, config) {
-															$scope.message += "\nValidation Passed";
-															if (!validate) {
-																$scope.message += "...Execution Succeeded";
-															}
-														})
-												.error(
-														function(data, status,
-																headers, config) {
-															var message = 'error - status: '
-																	+ status
-																	+ ' '
-																	+ data;
-															if (data.exception) {
-																message += ' Exception: '
-																		+ data.exception;
-															}
-															$scope.message += '\n'
-																	+ message;
-														});
+										Upload.upload({
+											url : url + '/excel',
+											file : $scope.file
+										}).success(
+												function(data, status, headers,
+														config) {
+													$scope.message += '\n\n'
+															+ data.message;
+												}).error(
+												function(data, status, headers,
+														config) {
+													var errStr = data.message;
+													if (typeof errStr == 'undefined') {
+														errStr = data;
+													}
+													$scope.message += '\n\n' + errStr;
+												});
 									}
 								}
 							}

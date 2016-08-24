@@ -15,11 +15,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.OrcsWriterEndpoint;
+import org.eclipse.osee.orcs.rest.model.writer.OrcsWriterResponse;
 import org.eclipse.osee.orcs.rest.model.writer.config.OrcsWriterInputConfig;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwCollector;
 
@@ -28,6 +28,12 @@ import org.eclipse.osee.orcs.rest.model.writer.reader.OwCollector;
  */
 public class OrcsWriterEndpointImpl implements OrcsWriterEndpoint {
 
+   private static final String EXCEPTION_READING_INPUT_S = "Exception reading input\n\n%s";
+   private static final String ERROR_READING_INPUT_S = "Exception reading input\n\n%s";
+   private static final String ERROR_VALIDATING_INPUT_S = "Error validating input\n\n%s";
+   private static final String EXCEPTION_VALIDATING_INPUT_S = "Exception validating input\n\n%s";
+   private static final String EXCEPTION_WRITING_CHANGES_S = "Exception writing changes\n\n%s";
+   private static final String ERROR_WRITING_CHANGES_S = "Error writing changes:\n\n%s";
    private final OrcsApi orcsApi;
 
    public OrcsWriterEndpointImpl(OrcsApi orcsApi) {
@@ -63,77 +69,159 @@ public class OrcsWriterEndpointImpl implements OrcsWriterEndpoint {
 
    @Override
    public Response getOrcsWriterValidate(OwCollector collector) {
+      // Setup
+      OrcsWriterResponse response = new OrcsWriterResponse();
+      response.setTitle("JSON Validator");
+      XResultData results = null;
+
+      // Validate
       try {
          OrcsCollectorValidator validator = new OrcsCollectorValidator(orcsApi, collector);
-         XResultData results = validator.run();
-         if (results.isErrors()) {
-            return Response.serverError().entity(results.toString()).build();
-         }
-         return Response.ok(results.toString()).build();
+         results = validator.run();
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         response.setMessage(String.format(EXCEPTION_VALIDATING_INPUT_S, Lib.exceptionToString(ex)));
+         return Response.serverError().entity(response).build();
       }
+      if (results.isErrors()) {
+         response.setMessage(String.format(ERROR_VALIDATING_INPUT_S, results.toString()));
+         return Response.serverError().entity(response).build();
+      }
+
+      // Return Success
+      response.setMessage("Success");
+      return Response.ok(response).build();
    }
 
    @Override
    public Response getOrcsWriterPersist(OwCollector collector) {
-      OrcsCollectorValidator validator = new OrcsCollectorValidator(orcsApi, collector);
-      XResultData results = validator.run();
-      if (results.isErrors()) {
-         throw new OseeArgumentException(results.toString());
+      // Setup
+      OrcsWriterResponse response = new OrcsWriterResponse();
+      response.setTitle("JSON Executor");
+      XResultData results = null;
+
+      // Validate
+      try {
+         OrcsCollectorValidator validator = new OrcsCollectorValidator(orcsApi, collector);
+         results = validator.run();
+      } catch (Exception ex) {
+         response.setMessage(String.format(EXCEPTION_VALIDATING_INPUT_S, Lib.exceptionToString(ex)));
+         return Response.serverError().entity(response).build();
       }
-      OrcsCollectorWriter writer = new OrcsCollectorWriter(orcsApi, collector, results);
-      writer.run();
       if (results.isErrors()) {
-         return Response.notModified().entity(results.toString()).build();
+         response.setMessage(String.format(ERROR_VALIDATING_INPUT_S, results.toString()));
+         return Response.serverError().entity(response).build();
       }
-      return Response.ok().entity(results.toString()).build();
+
+      // Write
+      try {
+         OrcsCollectorWriter writer = new OrcsCollectorWriter(orcsApi, collector, results);
+         writer.run();
+      } catch (Exception ex) {
+         response.setMessage(String.format(EXCEPTION_WRITING_CHANGES_S, Lib.exceptionToString(ex)));
+         return Response.serverError().entity(response).build();
+      }
+      if (results.isErrors()) {
+         response.setMessage(String.format(ERROR_WRITING_CHANGES_S, results.toString()));
+         return Response.serverError().entity(response).build();
+      }
+
+      // Return Success
+      response.setMessage("Success");
+      return Response.ok().entity(response).build();
    }
 
    @Override
    public Response validateExcelInput(Attachment attachment) {
+      // Setup
       InputStream stream = attachment.getObject(InputStream.class);
-
+      OrcsWriterResponse response = new OrcsWriterResponse();
+      response.setTitle("Excel Validation");
       XResultData results = new XResultData();
+
+      // Read Input
       OrcsWriterExcelReader reader = new OrcsWriterExcelReader(results);
       try {
          reader.run(stream);
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         response.setMessage(String.format(EXCEPTION_READING_INPUT_S, Lib.exceptionToString(ex)));
+         return Response.serverError().entity(response).build();
+      }
+      if (results.isErrors()) {
+         response.setMessage(String.format(ERROR_READING_INPUT_S, results.toString()));
+         return Response.serverError().entity(response).build();
       }
       OwCollector collector = reader.getCollector();
-      OrcsCollectorValidator validator = new OrcsCollectorValidator(orcsApi, collector);
-      results = validator.run();
-      if (results.isErrors()) {
-         throw new OseeArgumentException(results.toString());
+
+      // Validate
+      try {
+         OrcsCollectorValidator validator = new OrcsCollectorValidator(orcsApi, collector);
+         results = validator.run();
+      } catch (Exception ex) {
+         response.setMessage(String.format(EXCEPTION_VALIDATING_INPUT_S, Lib.exceptionToString(ex)));
+         return Response.serverError().entity(response).build();
       }
-      return Response.ok().entity(results.toString()).build();
+      if (results.isErrors()) {
+         response.setMessage(String.format(ERROR_VALIDATING_INPUT_S, results.toString()));
+         return Response.serverError().entity(response).build();
+      }
+
+      // Return Success
+      response.setMessage("Success");
+      return Response.ok().entity(response).build();
    }
 
    @Override
    public Response persistExcelInput(Attachment attachment) {
+      // Setup
       InputStream stream = attachment.getObject(InputStream.class);
-
       XResultData results = new XResultData();
+      OrcsWriterResponse response = new OrcsWriterResponse();
+      response.setTitle("Excel Executor");
+
+      // Read Input
       OrcsWriterExcelReader reader = new OrcsWriterExcelReader(results);
       try {
          reader.run(stream);
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         response.setMessage(String.format(EXCEPTION_READING_INPUT_S, Lib.exceptionToString(ex)));
+         return Response.serverError().entity(response).build();
+      }
+      if (results.isErrors()) {
+         response.setMessage(String.format(ERROR_READING_INPUT_S, results.toString()));
+         return Response.serverError().entity(response).build();
       }
       OwCollector collector = reader.getCollector();
 
-      OrcsCollectorValidator validator = new OrcsCollectorValidator(orcsApi, collector);
-      results = validator.run();
-      if (results.isErrors()) {
-         throw new OseeArgumentException(results.toString());
+      // Validate
+      try {
+         OrcsCollectorValidator validator = new OrcsCollectorValidator(orcsApi, collector);
+         results = validator.run();
+      } catch (Exception ex) {
+         response.setMessage(String.format(EXCEPTION_VALIDATING_INPUT_S, Lib.exceptionToString(ex)));
+         return Response.serverError().entity(response).build();
       }
-      OrcsCollectorWriter writer = new OrcsCollectorWriter(orcsApi, collector, results);
-      writer.run();
       if (results.isErrors()) {
-         return Response.notModified().entity(results.toString()).build();
+         response.setMessage(String.format(ERROR_VALIDATING_INPUT_S, results.toString()));
+         return Response.serverError().entity(response).build();
       }
-      return Response.ok().entity(results.toString()).build();
+
+      // Write
+      try {
+         OrcsCollectorWriter writer = new OrcsCollectorWriter(orcsApi, collector, results);
+         writer.run();
+      } catch (Exception ex) {
+         response.setMessage(String.format(EXCEPTION_WRITING_CHANGES_S, Lib.exceptionToString(ex)));
+         return Response.serverError().entity(response).build();
+      }
+      if (results.isErrors()) {
+         response.setMessage(String.format(ERROR_WRITING_CHANGES_S, results.toString()));
+         return Response.serverError().entity(response).build();
+      }
+
+      // Return Success
+      results.log("Success");
+      response.setMessage(results.toString());
+      return Response.ok().entity(response).build();
    }
 
 }

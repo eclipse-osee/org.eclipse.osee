@@ -85,7 +85,8 @@ public class OwFactory {
 
    public static OwArtifact createArtifact(IArtifactType artifactType, String name, Long uuid) {
       OwArtifact artifact = new OwArtifact();
-      artifact.setType(OwFactory.createArtifactType(artifactType));
+      OwArtifactType owArtType = OwFactory.createArtifactType(artifactType);
+      artifact.setType(owArtType);
       if (uuid == null) {
          uuid = Lib.generateArtifactIdAsInt();
       }

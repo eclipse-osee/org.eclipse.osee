@@ -88,12 +88,12 @@ public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
                nameColumn = colCount;
             } else if (value.toLowerCase().equals("attribute")) {
                OwAttributeType attrType = new OwAttributeType();
-               attrType.setData("Column " + colCount);
+               attrType.setData(OrcsWriterUtil.getData(getSheetName(), rowCount, colCount, ""));
                columnToAttributeType.put(colCount, attrType);
                collector.getAttrTypes().add(attrType);
             } else if (value.toLowerCase().equals("relation")) {
                OwRelationType relType = new OwRelationType();
-               relType.setData("Column " + colCount);
+               relType.setData(OrcsWriterUtil.getData(getSheetName(), rowCount, colCount, ""));
                columnToRelationType.put(colCount, relType);
                collector.getRelTypes().add(relType);
             } else if (value.toLowerCase().startsWith("new art token")) {
@@ -121,14 +121,14 @@ public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
    }
 
    private String getSheetName() {
-      return createSheet ? "CREATE" : "UPDATE";
+      return createSheet ? OrcsWriterUtil.CREATE_SHEET_NAME : OrcsWriterUtil.UPDATE_SHEET_NAME;
    }
 
    @Override
    public void processRow(String[] row) throws OseeCoreException {
       rowCount++;
       OwArtifact artifact = new OwArtifact();
-      artifact.setData("Row " + rowCount);
+      artifact.setData(OrcsWriterUtil.getData(getSheetName(), rowCount, 0, ""));
       if (rowCount == 2) {
          for (int colCount = 0; colCount < row.length; colCount++) {
             if (isAttributeColumn(colCount)) {
@@ -188,8 +188,8 @@ public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
                   if (token.getUuid() > 0L) {
                      artifact.setUuid(token.getUuid());
                   } else {
-                     throw new OseeStateException("Unexpected string [%s] at %s; expected [name]-[uuid] on sheet",
-                        value, OrcsWriterUtil.getRowColumnStr(colCount, colCount), getSheetName());
+                     throw new OseeStateException("Unexpected string [%s] at %s; expected [name]-[uuid]", value,
+                        OrcsWriterUtil.getRowColumnStr(colCount, colCount, getSheetName()));
                   }
                }
             }
@@ -198,26 +198,26 @@ public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
                if (Strings.isValid(value)) {
                   artifact.setName(value);
                } else {
-                  throw new OseeStateException("Unexpected Name [%s] at %s on %s sheet", value,
-                     OrcsWriterUtil.getRowColumnStr(colCount, colCount), getSheetName());
+                  throw new OseeStateException("Unexpected Name [%s] at %s", value,
+                     OrcsWriterUtil.getRowColumnStr(colCount, colCount, getSheetName()));
                }
             }
             if (isAttributeColumn(colCount)) {
                OwAttributeType attrType = columnToAttributeType.get(colCount);
                if (attrType.getName().equals(CoreAttributeTypes.Name.getName())) {
-                  throw new OseeStateException("Name cannot also exist as attribute column at %s on %s sheet",
-                     OrcsWriterUtil.getRowColumnStr(rowCount, colCount), getSheetName());
+                  throw new OseeStateException("Name cannot also exist as attribute column at %s",
+                     OrcsWriterUtil.getRowColumnStr(rowCount, colCount, getSheetName()));
                }
                String value = row[colCount];
                OwAttribute attr = factory.getOrCreateAttribute(artifact, attrType);
                attr.getValues().add(value);
-               attr.setData(OrcsWriterUtil.getData(rowCount, colCount, attr.getData()));
+               attr.setData(OrcsWriterUtil.getData(getSheetName(), rowCount, colCount, attr.getData()));
             } else if (isRelationColumn(colCount)) {
                OwRelationType relType = columnToRelationType.get(colCount);
                String value = row[colCount];
                if (Strings.isValid(value)) {
                   OwRelation relation = factory.createRelationType(relType, value);
-                  relation.setData(OrcsWriterUtil.getData(rowCount, colCount, relation.getData()));
+                  relation.setData(OrcsWriterUtil.getData(getSheetName(), rowCount, colCount, relation.getData()));
                   artifact.getRelations().add(relation);
                }
             }

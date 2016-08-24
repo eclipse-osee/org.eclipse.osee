@@ -63,6 +63,7 @@ public class OrcsWriterExcelReader {
       private final XResultData result;
       private OrcsWriterSheetProcessorForCreateUpdate updateSheet;
       private OrcsWriterSheetProcessorForDelete deleteSheet;
+      private boolean skipSheet = true;
 
       public ExcelRowProcessor(OwCollector collector, XResultData result) {
          this.collector = collector;
@@ -76,20 +77,21 @@ public class OrcsWriterExcelReader {
 
       @Override
       public void foundStartOfWorksheet(String sheetName) throws OseeCoreException {
-         System.out.println("Processing Sheet " + sheetName);
          this.sheetName = sheetName;
          if (sheetName.equals(OrcsWriterUtil.CREATE_SHEET_NAME)) {
             createSheet = new OrcsWriterSheetProcessorForCreateUpdate(collector, result, true);
-            return;
+            skipSheet = false;
          } else if (sheetName.equals(OrcsWriterUtil.UPDATE_SHEET_NAME)) {
             updateSheet = new OrcsWriterSheetProcessorForCreateUpdate(collector, result, false);
-            return;
+            skipSheet = false;
          } else if (sheetName.equals(OrcsWriterUtil.INSTRUCTIONS_AND_SETTINGS_SHEET_NAME)) {
             settingsSheet = new OrcsWriterSheetProcessorForSettings(collector, result);
-            return;
+            skipSheet = false;
          } else if (sheetName.equals(OrcsWriterUtil.DELETE_SHEET_NAME)) {
             deleteSheet = new OrcsWriterSheetProcessorForDelete(collector, result);
-            return;
+            skipSheet = false;
+         } else {
+            skipSheet = true;
          }
       }
 
@@ -105,6 +107,9 @@ public class OrcsWriterExcelReader {
 
       @Override
       public void processHeaderRow(String[] headerRow) {
+         if (skipSheet) {
+            return;
+         }
          if (isCreateSheet()) {
             createSheet.processHeaderRow(headerRow);
          } else if (isUpdateSheet()) {
@@ -132,6 +137,9 @@ public class OrcsWriterExcelReader {
 
       @Override
       public void processRow(String[] row) throws OseeCoreException {
+         if (skipSheet) {
+            return;
+         }
          if (isCreateSheet()) {
             processCreateSheetRow(row);
          } else if (isUpdateSheet()) {
@@ -157,6 +165,7 @@ public class OrcsWriterExcelReader {
 
       @Override
       public void reachedEndOfWorksheet() {
+         skipSheet = true;
          // do nothing
       }
 

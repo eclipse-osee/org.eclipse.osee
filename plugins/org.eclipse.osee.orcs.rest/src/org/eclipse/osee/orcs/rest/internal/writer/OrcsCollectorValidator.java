@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -53,9 +54,14 @@ public class OrcsCollectorValidator {
       branchValid = validateBranch(results);
       if (!helper.isUserExists(collector.getAsUserId())) {
          results.errorf("Invalid asUserId [%s].\n", collector.getAsUserId());
+      } else if (collector.getAsUserId().equals(SystemUser.OseeSystem.getUserId())) {
+         results.errorf("Invalid AS USER ID [%s].  Enter userId of user making change.\n", collector.getAsUserId());
       }
       if (!Strings.isValid(collector.getPersistComment())) {
          results.errorf("Invalid persistComment [%s].\n", collector.getPersistComment());
+      } else if (collector.getPersistComment().toLowerCase().contains("enter persist comment")) {
+         results.errorf("Invalid persistComment [%s].  Enter why change is being made.\n",
+            collector.getPersistComment());
       }
       boolean createEntries = collector.getCreate() != null && !collector.getCreate().isEmpty();
       boolean updateEntries = collector.getUpdate() != null && !collector.getUpdate().isEmpty();
@@ -64,6 +70,8 @@ public class OrcsCollectorValidator {
          results.error("No create, update or delete entries.\n");
       }
       validateCreate(results);
+      validateUpdate(results);
+      results.log("Completed");
       return results;
    }
 
@@ -71,8 +79,16 @@ public class OrcsCollectorValidator {
       for (OwArtifact artifact : collector.getCreate()) {
          validateArtifactType(results, artifact);
          validateArtifactDoesNotExist(results, artifact);
-         validateCreateAttributes(artifact, results);
-         validateCreateRelations(artifact, results);
+         validateCreateUpdateAttributes(artifact, results);
+         validateCreateUpdateRelations(artifact, results);
+      }
+   }
+
+   private void validateUpdate(XResultData results) {
+      for (OwArtifact artifact : collector.getUpdate()) {
+         validateArtifactDoesExist(results, artifact);
+         validateCreateUpdateAttributes(artifact, results);
+         validateCreateUpdateRelations(artifact, results);
       }
    }
 
@@ -102,7 +118,23 @@ public class OrcsCollectorValidator {
       }
    }
 
-   private void validateCreateRelations(OwArtifact artifact, XResultData results) {
+   private void validateArtifactDoesExist(XResultData results, OwArtifact artifact) {
+      long artifactUuid = artifact.getUuid();
+      if (!branchValid) {
+         results.errorf("Invalid Branch; can't validate artifact uuid for [%s].\n", artifact);
+      } else if (artifactUuid > 0L) {
+         if (!helper.isArtifactExists(collector.getBranch().getUuid(), artifactUuid)) {
+            results.errorf("Artifact with uuid does not exist [%s].\n", artifact);
+         } else {
+            if (uuidToArtifact == null) {
+               uuidToArtifact = new HashMap<>();
+            }
+            uuidToArtifact.put(artifactUuid, artifact);
+         }
+      }
+   }
+
+   private void validateCreateUpdateRelations(OwArtifact artifact, XResultData results) {
       for (OwRelation relation : artifact.getRelations()) {
          if (!branchValid) {
             results.errorf("Invalid Branch; can't validate artifact uuid for artifact [%s] and relation [%s].\n",
@@ -142,7 +174,7 @@ public class OrcsCollectorValidator {
       }
    }
 
-   private void validateCreateAttributes(OwArtifact artifact, XResultData results) {
+   private void validateCreateUpdateAttributes(OwArtifact artifact, XResultData results) {
       String name = artifact.getName();
       if (!Strings.isValid(name)) {
          results.errorf("Artifact [%s] does not have Name attribute.\n", artifact);
@@ -152,14 +184,10 @@ public class OrcsCollectorValidator {
 
          if (attrType == null) {
             results.errorf("Invalid Attribute Type for artifact [%s].\n", artifact);
-         } else if (attrType.getUuid() <= 0L) {
-            if (!helper.isAttributeTypeExists(attrType.getName())) {
-               results.errorf("Invalid Attribute Type uuid [%s] for artifact [%s].\n", attrType, artifact);
-            }
-         } else {
-            if (!helper.isAttributeTypeExists(attrType.getUuid())) {
-               results.errorf("Attribute Type [%s] does not exist for artifact [%s].\n", attrType, artifact);
-            }
+         } else if (attrType.getUuid() <= 0L && !helper.isAttributeTypeExists(attrType.getName())) {
+            results.errorf("Invalid Attribute Type uuid [%s] for artifact [%s].\n", attrType, artifact);
+         } else if (attrType.getUuid() > 0L && !helper.isAttributeTypeExists(attrType.getUuid())) {
+            results.errorf("Attribute Type [%s] does not exist for artifact [%s].\n", attrType, artifact);
          }
       }
    }

@@ -75,7 +75,7 @@ public class OrcsWriterSheetProcessorForDelete implements RowProcessor {
          artifact = factory.getOrCreateToken(value);
       }
       if (artifact != null) {
-         artifact.setData("Row " + rowCount);
+         artifact.setData(OrcsWriterUtil.getData(OrcsWriterUtil.DELETE_SHEET_NAME, rowCount, 0, value));
          collector.getDelete().add(artifact);
       }
    }

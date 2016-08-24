@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -69,6 +70,8 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
    @Test
    public void testValidate() throws Exception {
       OwCollector collector = getDefaultOwCollector();
+      collector.setAsUserId(DemoUsers.Joe_Smith.getUserId());
+      collector.setPersistComment(getClass().getSimpleName() + " - testValidate");
       Response response = writer.getOrcsWriterValidate(collector);
       assertEquals(javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.getStatus());
    }
@@ -76,6 +79,8 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
    @Test
    public void testPersist() throws Exception {
       OwCollector collector = getDefaultOwCollector();
+      collector.setAsUserId(DemoUsers.Joe_Smith.getUserId());
+      collector.setPersistComment(getClass().getSimpleName() + " - testPersist");
       Response response = writer.getOrcsWriterPersist(collector);
       assertEquals(javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.getStatus());
 
@@ -121,6 +126,9 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
       String tokenStr = String.format("[%s]-[%d]", artifact.getName(), artifact.getUuid());
       owToken.setData(tokenStr);
       collector.getDelete().add(owToken);
+
+      collector.setAsUserId(DemoUsers.Joe_Smith.getUserId());
+      collector.setPersistComment(getClass().getSimpleName() + " - testValidate");
 
       Response response = writer.getOrcsWriterPersist(collector);
       assertEquals(javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.getStatus());

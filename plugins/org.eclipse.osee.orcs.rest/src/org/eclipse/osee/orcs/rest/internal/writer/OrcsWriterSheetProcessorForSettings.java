@@ -67,7 +67,8 @@ public class OrcsWriterSheetProcessorForSettings implements RowProcessor {
                if (Strings.isValid(branchTokenStr)) {
                   OwBranch branchToken = factory.getOrCreateBranchToken(branchTokenStr);
                   collector.setBranch(branchToken);
-                  branchToken.setData(OrcsWriterUtil.getData(rowCount, colCount, branchTokenStr));
+                  branchToken.setData(OrcsWriterUtil.getData(OrcsWriterUtil.INSTRUCTIONS_AND_SETTINGS_SHEET_NAME, rowCount, colCount,
+                     branchTokenStr));
                }
             } else if (key.equals(OrcsWriterUtil.AS_USER_ID_SETTING)) {
                String userId = row[1];
