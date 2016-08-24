@@ -11,12 +11,15 @@
 package org.eclipse.osee.framework.core.data;
 
 import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
 
 /**
  * @author Megumi Telles
  */
+@JsonSerialize(using = IdSerializer.class)
 public interface AttributeId extends HasLocalId<Integer>, Id {
 
    public static AttributeId valueOf(String id) {

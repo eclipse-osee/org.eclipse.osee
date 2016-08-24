@@ -10,11 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
 
 /**
  * @author Ryan D. Brooks
  */
+@JsonSerialize(using = IdSerializer.class)
 public interface TupleTypeId extends Id {
 
    public static TupleTypeId valueOf(long tupleTypeId) {

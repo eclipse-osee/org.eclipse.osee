@@ -11,12 +11,9 @@
 
 package org.eclipse.osee.framework.jdk.core.type;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-
 /**
  * @author Ryan D. Brooks
  */
-@JsonSerialize(using = IdSerializer.class)
 public interface Id {
    public static final Long SENTINEL = -1L;
 

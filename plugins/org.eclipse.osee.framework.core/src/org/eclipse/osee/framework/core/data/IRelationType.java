@@ -10,13 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
 /**
  * @author Ryan D. Brooks
  */
+@JsonSerialize(using = IdSerializer.class)
 public interface IRelationType extends Named, Id {
    default Long getGuid() {
       return getId();
