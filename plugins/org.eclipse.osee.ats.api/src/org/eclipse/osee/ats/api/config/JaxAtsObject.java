@@ -97,7 +97,7 @@ public class JaxAtsObject {
       }
       if (obj instanceof JaxAtsObject) {
          JaxAtsObject other = (JaxAtsObject) obj;
-         if (other.getUuid() == uuid) {
+         if (other.getUuid().equals(uuid)) {
             return true;
          }
       }
