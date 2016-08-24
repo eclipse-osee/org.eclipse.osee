@@ -106,7 +106,7 @@ public final class CompareArtifactAction extends Action {
          Conditions.checkExpressionFailOnTrue(changeA.getArtId() != changeB.getArtId(),
             "Change art ids don't match [%s:%s]", changeA.getArtId(), changeB.getArtId());
 
-         int artId = changeA.getArtId();
+         int artId = changeA.getArtId().getId().intValue();
          TransactionDelta txDelta = asTxDelta(changeA, changeB);
 
          Artifact startArtifact =

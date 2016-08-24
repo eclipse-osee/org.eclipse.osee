@@ -10,24 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.conflict;
 
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.model.MergeBranch;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 public final class Conflict implements IOseeStorable {
    private final MergeBranch mergeBranch;
    private final ConflictStatus conflictStatus;
-   private final long itemId;
-   private final Long sourceGammaId;
-   private final Long destinationGammaId;
+   private final Id itemId;
+   private final GammaId sourceGammaId;
+   private final GammaId destinationGammaId;
    private final ConflictType conflictType;
 
    private StorageState storageState;
    private boolean isDirty;
 
-   public Conflict(StorageState storageState, long itemId, ConflictType conflictType, MergeBranch mergeBranch, ConflictStatus conflictStatus, long sourceGammaId, long destinationGammaId) {
+   public Conflict(StorageState storageState, Id itemId, ConflictType conflictType, MergeBranch mergeBranch, ConflictStatus conflictStatus, GammaId sourceGammaId, GammaId destinationGammaId) {
       this.mergeBranch = mergeBranch;
       this.storageState = storageState;
       this.conflictStatus = conflictStatus;
@@ -42,15 +44,15 @@ public final class Conflict implements IOseeStorable {
       return conflictType;
    }
 
-   public Long getSourceGammaId() {
+   public GammaId getSourceGammaId() {
       return sourceGammaId;
    }
 
-   public Long getDestinationGammaId() {
+   public GammaId getDestinationGammaId() {
       return destinationGammaId;
    }
 
-   public long getId() {
+   public Id getId() {
       return itemId;
    }
 

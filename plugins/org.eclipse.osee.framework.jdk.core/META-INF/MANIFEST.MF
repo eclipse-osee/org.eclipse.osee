@@ -30,8 +30,8 @@ Export-Package: org.eclipse.osee.framework.jdk.core.collection.tree,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.apache.commons.codec.binary,
  org.codehaus.jackson,
+ org.codehaus.jackson.annotate,
  org.codehaus.jackson.map,
  org.codehaus.jackson.map.annotate,
  org.codehaus.jackson.map.ser.std
 Require-Bundle: org.codehaus.jackson.mapper;bundle-version="1.9.13"
-

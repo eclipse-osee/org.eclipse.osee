@@ -170,18 +170,19 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
                   change.getModificationType().isDeleted() ? RelationEventType.Deleted : change.getModificationType().isUnDeleted() ? RelationEventType.Undeleted : RelationEventType.Added;
 
                DefaultBasicUuidRelation defaultBasicGuidRelation = new DefaultBasicUuidRelation(relChange.getBranchId(),
-                  relChange.getRelationType().getGuid(), relChange.getItemId(), (int) relChange.getGamma(),
-                  relChange.getChangeArtifact().getBasicGuidArtifact(),
+                  relChange.getRelationType().getGuid(), relChange.getItemId().getId().intValue(),
+                  relChange.getGamma().getId().intValue(), relChange.getChangeArtifact().getBasicGuidArtifact(),
                   relChange.getEndTxBArtifact().getBasicGuidArtifact());
-               EventBasicGuidRelation event = new EventBasicGuidRelation(relationEventType, relChange.getArtId(),
-                  relChange.getBArtId(), defaultBasicGuidRelation);
+               EventBasicGuidRelation event =
+                  new EventBasicGuidRelation(relationEventType, relChange.getArtId().getId().intValue(),
+                     relChange.getBArtId().getId().intValue(), defaultBasicGuidRelation);
                event.setRationale(relChange.getRationale());
                artifactEvent.getRelations().add(event);
                break;
             case attribute:
                // Only reload items that were already in the active cache
-               int artifactId = change.getArtId();
-               Artifact artifact = ArtifactCache.getActive(change.getArtId(), newTransaction.getBranch());
+               int artifactId = change.getArtId().getId().intValue();
+               Artifact artifact = ArtifactCache.getActive(artifactId, newTransaction.getBranch());
                if (artifact != null) {
                   artifacts.add(artifact);
                }
@@ -201,12 +202,12 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
                   org.eclipse.osee.framework.skynet.core.event.model.AttributeChange attrChangeEvent =
                      new org.eclipse.osee.framework.skynet.core.event.model.AttributeChange();
                   attrChangeEvent.setAttrTypeGuid(attributeChange.getAttributeType().getGuid());
-                  attrChangeEvent.setGammaId((int) attributeChange.getGamma());
-                  attrChangeEvent.setAttributeId(attributeChange.getAttrId());
+                  attrChangeEvent.setGammaId(attributeChange.getGamma().getId().intValue());
+                  attrChangeEvent.setAttributeId(attributeChange.getAttrId().getId().intValue());
                   attrChangeEvent.setModTypeGuid(
                      AttributeEventModificationType.getType(attributeChange.getModificationType()).getGuid());
 
-                  Attribute<?> attribute = changedArtifact.getAttributeById(attributeChange.getAttrId(), true);
+                  Attribute<?> attribute = changedArtifact.getAttributeById(attributeChange.getAttrId().getId(), true);
                   if (attribute != null) {
                      for (Object obj : attribute.getAttributeDataProvider().getData()) {
                         if (obj == null) {

@@ -22,7 +22,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Test Case for {@link ChangeItem}
- * 
+ *
  * @author Roberto E. Escobar
  */
 @RunWith(Parameterized.class)
@@ -33,9 +33,9 @@ public class ChangeItemTest {
    private final ChangeVersion current;
    private final ChangeVersion destination;
    private final ChangeVersion net;
-   private final int itemId;
+   private final Long itemId;
 
-   public ChangeItemTest(int itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current, ChangeVersion destination, ChangeVersion net) {
+   public ChangeItemTest(Long itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current, ChangeVersion destination, ChangeVersion net) {
       this.itemId = itemId;
       this.base = base;
       this.first = first;
@@ -47,7 +47,8 @@ public class ChangeItemTest {
 
    @Test
    public void testGetItemId() {
-      assertEquals(itemId, item.getItemId());
+      Long actual = item.getItemId().getId();
+      assertEquals(itemId, actual);
    }
 
    @Test
@@ -77,12 +78,16 @@ public class ChangeItemTest {
 
    @Test
    public void testGetItemTypeId() {
-      assertEquals(item.getItemId() * 10, item.getItemTypeId());
+      Long expected = item.getItemId().getId() * 10;
+      Long actual = item.getItemTypeId().getId();
+      assertEquals(expected, actual);
    }
 
    @Test
    public void testGetArtId() {
-      assertEquals(item.getItemId() * 100, item.getArtId());
+      Long expected = item.getItemId().getId() * 100;
+      Long actual = item.getArtId().getId();
+      assertEquals(expected, actual);
    }
 
    @Parameters
@@ -95,7 +100,7 @@ public class ChangeItemTest {
       ChangeVersion destination = ChangeTestUtility.createChange(4444L, ModificationType.MERGED);
       ChangeVersion net = ChangeTestUtility.createChange(5555L, ModificationType.DELETED);
 
-      data.add(new Object[] {200, base, first, current, destination, net});
+      data.add(new Object[] {200L, base, first, current, destination, net});
       return data;
    }
 }

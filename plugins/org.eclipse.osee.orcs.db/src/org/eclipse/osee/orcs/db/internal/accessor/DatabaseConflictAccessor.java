@@ -15,10 +15,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.model.MergeBranch;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -50,9 +53,9 @@ public class DatabaseConflictAccessor {
 
    public void load(Collection<Conflict> conflicts, MergeBranch mergeBranch) throws OseeCoreException {
       Consumer<JdbcStatement> consumer = stmt -> {
-         int uniqueId = stmt.getInt("conflict_id");
-         Long sourceGammaId = stmt.getLong("source_gamma_id");
-         Long destGammaId = stmt.getLong("dest_gamma_id");
+         Id uniqueId = ArtifactId.valueOf(stmt.getLong("conflict_id"));
+         GammaId sourceGammaId = GammaId.valueOf(stmt.getLong("source_gamma_id"));
+         GammaId destGammaId = GammaId.valueOf(stmt.getLong("dest_gamma_id"));
          ConflictType conflictType = ConflictType.valueOf(stmt.getInt("conflict_type"));
          ConflictStatus status = ConflictStatus.valueOf(stmt.getInt("status"));
          conflicts.add(

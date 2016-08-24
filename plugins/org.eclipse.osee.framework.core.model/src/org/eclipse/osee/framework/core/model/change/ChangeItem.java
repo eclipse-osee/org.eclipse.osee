@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.change;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
@@ -19,9 +21,9 @@ public class ChangeItem implements Comparable<ChangeItem> {
 
    private ChangeIgnoreType ignoreType = ChangeIgnoreType.SENTINEL;
    private ChangeType changeType = ChangeType.UNKNOWN_CHANGE;
-   private int artId = -1;
-   private int itemId = -1;
-   private long itemTypeId = -1;
+   private ArtifactId artId = ArtifactId.SENTINEL;
+   private Id itemId = Id.valueOf(Id.SENTINEL);
+   private Id itemTypeId = Id.valueOf(Id.SENTINEL);
 
    private ChangeVersion baselineVersion = new ChangeVersion();
    private ChangeVersion firstNonCurrentChange = new ChangeVersion();
@@ -32,7 +34,7 @@ public class ChangeItem implements Comparable<ChangeItem> {
    private boolean synthetic = false;
    private boolean isApplicabilityCopy = false;
 
-   private int artIdB = -1;
+   private ArtifactId artIdB = ArtifactId.valueOf(-1L);
 
    public ChangeItem() {
       super();
@@ -83,15 +85,15 @@ public class ChangeItem implements Comparable<ChangeItem> {
       this.changeType = changeType;
    }
 
-   public void setArtId(int artId) {
+   public void setArtId(ArtifactId artId) {
       this.artId = artId;
    }
 
-   public void setItemId(int itemId) {
+   public void setItemId(Id itemId) {
       this.itemId = itemId;
    }
 
-   public void setItemTypeId(long itemTypeId) {
+   public void setItemTypeId(Id itemTypeId) {
       this.itemTypeId = itemTypeId;
    }
 
@@ -99,15 +101,15 @@ public class ChangeItem implements Comparable<ChangeItem> {
       return synthetic;
    }
 
-   public int getArtId() {
+   public ArtifactId getArtId() {
       return artId;
    }
 
-   public int getItemId() {
+   public Id getItemId() {
       return itemId;
    }
 
-   public long getItemTypeId() {
+   public Id getItemTypeId() {
       return itemTypeId;
    }
 
@@ -151,11 +153,11 @@ public class ChangeItem implements Comparable<ChangeItem> {
       this.netChange = netChange;
    }
 
-   public int getArtIdB() {
+   public ArtifactId getArtIdB() {
       return artIdB;
    }
 
-   public void setArtIdB(int artIdB) {
+   public void setArtIdB(ArtifactId artIdB) {
       this.artIdB = artIdB;
    }
 
@@ -178,10 +180,10 @@ public class ChangeItem implements Comparable<ChangeItem> {
 
       ChangeItem other = (ChangeItem) obj;
 
-      if (itemId != other.itemId) {
+      if (!itemId.equals(other.itemId)) {
          return false;
       }
-      if (artId != other.artId) {
+      if (!artId.equals(other.artId)) {
          return false;
       }
       if (currentVersion == null) {
@@ -192,7 +194,7 @@ public class ChangeItem implements Comparable<ChangeItem> {
       if (!currentVersion.equals(other.currentVersion)) {
          return false;
       }
-      if (itemTypeId != other.itemTypeId) {
+      if (!itemTypeId.equals(other.itemTypeId)) {
          return false;
       }
       return true;
@@ -254,11 +256,11 @@ public class ChangeItem implements Comparable<ChangeItem> {
 
    @Override
    public int compareTo(ChangeItem obj) {
-      return itemId - obj.itemId;
+      return itemId.getId().compareTo(obj.itemId.getId());
    }
 
    @Override
    public int hashCode() {
-      return itemId;
+      return itemId.getId().hashCode();
    }
 }

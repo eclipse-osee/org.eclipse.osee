@@ -16,6 +16,8 @@ import java.util.Arrays;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -79,8 +81,8 @@ public class ArtifactRendererTest {
 
       TransactionDelta deltaTx = new TransactionDelta(startTx, endTx1);
       ArtifactDelta delta = new ArtifactDelta(null, artifact2, artifact1);
-      Change change = new ArtifactChange(COMMON, artifact1.getGammaId(), artifact1.getArtId(), deltaTx,
-         ModificationType.MODIFIED, "", "", false, artifact1, delta);
+      Change change = new ArtifactChange(COMMON, GammaId.valueOf(artifact1.getGammaId()),
+         ArtifactId.valueOf(artifact1.getArtId()), deltaTx, ModificationType.MODIFIED, "", "", false, artifact1, delta);
 
       String name = RenderingUtil.getAssociatedArtifactName(Arrays.asList(change));
       Assert.assertEquals(EXPECTED_NAME, name);
@@ -90,8 +92,8 @@ public class ArtifactRendererTest {
    public void testAssociatedArtifact_notAllowedSingleQuotes() throws Exception {
       TransactionDelta deltaTx = new TransactionDelta(startTx, endTx2);
       ArtifactDelta delta = new ArtifactDelta(null, artifact1, artifact2);
-      Change change = new ArtifactChange(COMMON, artifact2.getGammaId(), artifact2.getArtId(), deltaTx,
-         ModificationType.MODIFIED, "", "", false, artifact2, delta);
+      Change change = new ArtifactChange(COMMON, GammaId.valueOf(artifact2.getGammaId()),
+         ArtifactId.valueOf(artifact2.getArtId()), deltaTx, ModificationType.MODIFIED, "", "", false, artifact2, delta);
 
       String name = RenderingUtil.getAssociatedArtifactName(Arrays.asList(change));
       Assert.assertEquals(EXPECTED_NAME, name);

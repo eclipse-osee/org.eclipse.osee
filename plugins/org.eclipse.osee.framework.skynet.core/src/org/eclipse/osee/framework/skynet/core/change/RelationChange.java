@@ -11,10 +11,14 @@
 
 package org.eclipse.osee.framework.skynet.core.change;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 
@@ -24,14 +28,14 @@ import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 public final class RelationChange extends Change {
    private final static LoadChangeType changeType = LoadChangeType.relation;
 
-   private final int bArtId;
+   private final ArtifactId bArtId;
    private final Artifact endTxBArtifact;
-   private final int relLinkId;
+   private final RelationId relLinkId;
    private final String rationale;
    private final String wasValue;
    private final RelationType relationType;
 
-   public RelationChange(BranchId branch, long sourceGamma, int aArtId, TransactionDelta txDelta, ModificationType modType, int bArtId, int relLinkId, String rationale, String wasValue, RelationType relationType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta, Artifact endTxBArtifact) {
+   public RelationChange(BranchId branch, GammaId sourceGamma, ArtifactId aArtId, TransactionDelta txDelta, ModificationType modType, ArtifactId bArtId, RelationId relLinkId, String rationale, String wasValue, RelationType relationType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta, Artifact endTxBArtifact) {
       super(branch, sourceGamma, aArtId, txDelta, modType, isHistorical, changeArtifact, artifactDelta);
       this.bArtId = bArtId;
       this.relLinkId = relLinkId;
@@ -41,10 +45,7 @@ public final class RelationChange extends Change {
       this.wasValue = wasValue;
    }
 
-   /**
-    * @return the bArtId
-    */
-   public int getBArtId() {
+   public ArtifactId getBArtId() {
       return bArtId;
    }
 
@@ -52,23 +53,14 @@ public final class RelationChange extends Change {
       return endTxBArtifact;
    }
 
-   /**
-    * @return the relLinkId
-    */
-   public int getRelLinkId() {
+   public RelationId getRelLinkId() {
       return relLinkId;
    }
 
-   /**
-    * @return the rationale
-    */
    public String getRationale() {
       return rationale;
    }
 
-   /**
-    * @return the relationType
-    */
    public RelationType getRelationType() {
       return relationType;
    }
@@ -104,12 +96,12 @@ public final class RelationChange extends Change {
    }
 
    @Override
-   public long getItemTypeId() {
-      return relationType.getId();
+   public Id getItemTypeId() {
+      return relationType;
    }
 
    @Override
-   public int getItemId() {
+   public Id getItemId() {
       return relLinkId;
    }
 }

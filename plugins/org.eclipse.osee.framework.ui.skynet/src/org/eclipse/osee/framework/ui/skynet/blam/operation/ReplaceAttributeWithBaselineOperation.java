@@ -54,7 +54,8 @@ public class ReplaceAttributeWithBaselineOperation extends AbstractOperation {
          for (Change change : changes) {
             monitor.subTask("Reverting: " + changes.toString());
             monitor.worked(1);
-            Artifact artifact = ArtifactQuery.getArtifactFromId(change.getArtId(), change.getBranch());
+            Artifact artifact =
+               ArtifactQuery.getArtifactFromId(change.getArtId().getId().intValue(), change.getBranch());
             revertAttribute(artifact, change);
             artifactHistory.add(artifact);
             artifact.persist(transaction);
@@ -74,8 +75,8 @@ public class ReplaceAttributeWithBaselineOperation extends AbstractOperation {
    }
 
    private void revertAttribute(Artifact artifact, Change change) throws OseeStateException, OseeCoreException, SecurityException, IllegalArgumentException {
-      Attribute<?> attribute = artifact.getAttributeById(change.getItemId(), true);
-      if (attribute != null && change.getItemId() == attribute.getId()) {
+      Attribute<?> attribute = artifact.getAttributeById(change.getItemId().getId(), true);
+      if (attribute != null && change.getItemId().getId().intValue() == attribute.getId()) {
          IChangeWorker worker = new AttributeChangeWorker(change, artifact);
          worker.revert();
       }

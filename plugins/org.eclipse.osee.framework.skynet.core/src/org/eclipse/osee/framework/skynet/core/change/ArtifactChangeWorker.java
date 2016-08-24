@@ -30,7 +30,7 @@ public class ArtifactChangeWorker implements IChangeWorker {
    @Override
    public void revert() throws OseeCoreException {
       if (change.isBaseline()) {
-         artifact.replaceWithVersion((int) change.getBaselineGamma());
+         artifact.replaceWithVersion(change.getBaselineGamma().getId().intValue());
       } else {
          artifact.delete();
       }

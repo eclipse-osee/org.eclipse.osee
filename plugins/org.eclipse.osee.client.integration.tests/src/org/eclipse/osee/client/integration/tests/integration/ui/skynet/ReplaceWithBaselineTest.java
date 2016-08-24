@@ -22,8 +22,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -68,26 +68,26 @@ import org.junit.runners.Parameterized.Parameters;
  *     Attribute  |  4           5            6
  *     Relation   |  7           8                     9*                        **
  *                 -------------------------------------------------------------------------
- * 
- * 
+ *
+ *
  *    Legend:
  *    * -   artifact will be left with a DELETED attribute change and a SYNTHETIC
  *          modified artifact change. CASE_10_EXPECTED. i.e.:
- * 
+ *
  *          A           C-
  *          `- B   ->   `- B        B is moved to C
  *                                  C gets a new user defined order attribute
- * 
+ *
  *                                  Revert on B causes A to have a new relation order attribute because
  *                                  B was the only child of A and when the link was deleted the relation order
  *                                  attribute was also deleted. (link.deleteEmptyRelationOrder()) After the B
  *                                  link is added back from the revert of B. A will get a new relation order attribute.
- * 
+ *
  *    ** - creates a parent artifact A on the baseline branch and adds 5 children. On the working branch
  *                                  the same artifact A gets additional 5 children. The revert is called A.
  *                                  Which will set the parent (A) back to the baseline state but leaves
  *                                  the new artifacts orphaned on the working branch.
- * 
+ *
  *    Case 10 is a collection of 1-9, all cases.
  * </pre>
  */
@@ -308,8 +308,8 @@ public final class ReplaceWithBaselineTest {
                      testData.setArtifactId(createNewArtifact(workingBranch, GUID.create()).getArtId());
                      break;
                   case INTRODUCED:
-                     BranchId anotherBranch = BranchManager.createWorkingBranch(workingBranch,
-                        "another working branch", UserManager.getUser(SystemUser.OseeSystem));
+                     BranchId anotherBranch = BranchManager.createWorkingBranch(workingBranch, "another working branch",
+                        UserManager.getUser(SystemUser.OseeSystem));
 
                      Artifact artifactToIntroduce = createNewArtifact(anotherBranch, "introduce artifact");
 
@@ -452,7 +452,7 @@ public final class ReplaceWithBaselineTest {
       List<Change> attrChanges = new ArrayList<>(1);
 
       for (Change change : changes) {
-         if (change.getChangeType() == LoadChangeType.attribute && change.getItemId() == attributeToRevert.getId()) {
+         if (change.getChangeType() == LoadChangeType.attribute && change.getItemId().getId().intValue() == attributeToRevert.getId()) {
             attrChanges.add(change);
          }
       }

@@ -16,7 +16,14 @@ import java.util.List;
 import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.RelationId;
+import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -96,16 +103,16 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
          "Unable to compute deltas between transactions on the same branch [%s]", sourceBranch);
 
       TransactionId sourceBaselineTxId = getJdbcClient().fetch(TransactionId.SENTINEL, SELECT_BASE_TX, sourceBranch);
-      DoubleKeyHashMap<Integer, Integer, ChangeItem> newChangeData = this.loadSourceBranchChanges(sourceBaselineTxId);
+      DoubleKeyHashMap<Integer, Long, ChangeItem> newChangeData = this.loadSourceBranchChanges(sourceBaselineTxId);
       return loadItemsbyId(newChangeData, sourceBaselineTxId);
    }
 
-   private List<ChangeItem> loadItemsbyId(DoubleKeyHashMap<Integer, Integer, ChangeItem> changeData, TransactionId sourceBaselineTxId) {
+   private List<ChangeItem> loadItemsbyId(DoubleKeyHashMap<Integer, Long, ChangeItem> changeData, TransactionId sourceBaselineTxId) {
       ExportImportJoinQuery idJoin = joinFactory.createExportImportJoinQuery();
       try {
          for (Integer i : changeData.getKeySetOne()) {
             for (ChangeItem item : changeData.allValues(i)) {
-               idJoin.add(Long.valueOf(i), Long.valueOf(item.getItemId()));
+               idJoin.add(Long.valueOf(i), item.getItemId().getId());
             }
          }
          idJoin.store();
@@ -124,37 +131,37 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
       return list;
    }
 
-   private DoubleKeyHashMap<Integer, Integer, ChangeItem> loadSourceBranchChanges(TransactionId sourceBaselineTxId) throws OseeCoreException {
-      DoubleKeyHashMap<Integer, Integer, ChangeItem> hashChangeData =
-         new DoubleKeyHashMap<Integer, Integer, ChangeItem>();
+   private DoubleKeyHashMap<Integer, Long, ChangeItem> loadSourceBranchChanges(TransactionId sourceBaselineTxId) throws OseeCoreException {
+      DoubleKeyHashMap<Integer, Long, ChangeItem> hashChangeData = new DoubleKeyHashMap<>();
 
       Consumer<JdbcStatement> consumer = stmt -> {
          checkForCancelled();
-         Long gammaId = stmt.getLong("gamma_id");
+         GammaId gammaId = GammaId.valueOf(stmt.getLong("gamma_id"));
          ModificationType modType = ModificationType.getMod(stmt.getInt("mod_type"));
          ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
          int tableType = stmt.getInt("table_type");
-         int itemId = stmt.getInt("item_id");
+         Long itemId = stmt.getLong("item_id");
          Long itemTypeId = stmt.getLong("item_type_id");
          switch (tableType) {
             case 1:
-               int artId = stmt.getInt("item_first");
+               ArtifactId artId = ArtifactId.valueOf(stmt.getLong("item_first"));
                String value = stmt.getString("item_value");
-               hashChangeData.put(1, itemId, ChangeItemUtil.newAttributeChange(itemId, itemTypeId, artId, gammaId,
-                  modType, value, getApplicabilityToken(appId)));
+               hashChangeData.put(1, itemId, ChangeItemUtil.newAttributeChange(AttributeId.valueOf(itemId),
+                  AttributeTypeId.valueOf(itemTypeId), artId, gammaId, modType, value, getApplicabilityToken(appId)));
                break;
 
             case 2: {
-               hashChangeData.put(2, itemId,
-                  ChangeItemUtil.newArtifactChange(itemId, itemTypeId, gammaId, modType, getApplicabilityToken(appId)));
+               hashChangeData.put(2, itemId, ChangeItemUtil.newArtifactChange(ArtifactId.valueOf(itemId),
+                  ArtifactTypeId.valueOf(itemTypeId), gammaId, modType, getApplicabilityToken(appId)));
                break;
             }
             case 3: {
-               int aArtId = stmt.getInt("item_first");
-               int bArtId = stmt.getInt("item_second");
+               ArtifactId aArtId = ArtifactId.valueOf(stmt.getLong("item_first"));
+               ArtifactId bArtId = ArtifactId.valueOf(stmt.getLong("item_second"));
                String rationale = stmt.getString("item_value");
-               hashChangeData.put(3, itemId, ChangeItemUtil.newRelationChange(itemId, itemTypeId, gammaId, modType,
-                  aArtId, bArtId, rationale, getApplicabilityToken(appId)));
+               hashChangeData.put(3, itemId,
+                  ChangeItemUtil.newRelationChange(RelationId.valueOf(itemId), RelationTypeId.valueOf(itemTypeId),
+                     gammaId, modType, aArtId, bArtId, rationale, getApplicabilityToken(appId)));
                break;
             }
          }
@@ -165,14 +172,14 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
       return hashChangeData;
    }
 
-   private void loadCurrentVersionData(ExportImportJoinQuery idJoin, DoubleKeyHashMap<Integer, Integer, ChangeItem> changesByItemId, BranchId txBranchId, TransactionId txId, boolean isMergeBranch) throws OseeCoreException {
+   private void loadCurrentVersionData(ExportImportJoinQuery idJoin, DoubleKeyHashMap<Integer, Long, ChangeItem> changesByItemId, BranchId txBranchId, TransactionId txId, boolean isMergeBranch) throws OseeCoreException {
       Consumer<JdbcStatement> consumer = stmt -> {
          checkForCancelled();
 
-         Integer itemId = stmt.getInt("item_id");
+         Long itemId = stmt.getLong("item_id");
          Integer tableType = stmt.getInt("table_type");
          ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
-         Long gammaId = stmt.getLong("gamma_id");
+         GammaId gammaId = GammaId.valueOf(stmt.getLong("gamma_id"));
          ChangeItem change = changesByItemId.get(tableType, itemId);
 
          if (isMergeBranch) {
@@ -188,14 +195,14 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
 
       String query =
          "select txs.gamma_id, txs.mod_type, txs.app_id, item.art_id as item_id, 2 as table_type from osee_join_export_import idj," + //
-            " osee_artifact item, osee_txs txs where idj.query_id = ? and idj.id2 = item.art_id and idj.id1 = 2" + //
-            " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?" + //
-            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.attr_id as item_id, 1 as table_type from osee_join_export_import idj," + //
-            " osee_attribute item, osee_txs txs where idj.query_id = ? and idj.id2 = item.attr_id and idj.id1 = 1" + //
-            " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?" + //
-            " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.rel_link_id as item_id, 3 as table_type from osee_join_export_import idj," + //
-            " osee_relation_link item, osee_txs txs where idj.query_id = ? and idj.id2 = item.rel_link_id and idj.id1 = 3" + //
-            " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?";
+         " osee_artifact item, osee_txs txs where idj.query_id = ? and idj.id2 = item.art_id and idj.id1 = 2" + //
+         " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?" + //
+         " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.attr_id as item_id, 1 as table_type from osee_join_export_import idj," + //
+         " osee_attribute item, osee_txs txs where idj.query_id = ? and idj.id2 = item.attr_id and idj.id1 = 1" + //
+         " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?" + //
+         " union all select txs.gamma_id, txs.mod_type, txs.app_id, item.rel_link_id as item_id, 3 as table_type from osee_join_export_import idj," + //
+         " osee_relation_link item, osee_txs txs where idj.query_id = ? and idj.id2 = item.rel_link_id and idj.id1 = 3" + //
+         " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?";
 
       getJdbcClient().runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, query, idJoin.getQueryId(),
          TxChange.NOT_CURRENT.getValue(), txBranchId, txId, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
@@ -203,33 +210,33 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
 
    }
 
-   private void loadNonCurrentSourceVersionData(ExportImportJoinQuery idJoin, DoubleKeyHashMap<Integer, Integer, ChangeItem> changesByItemId, TransactionId sourceBaselineTxId) throws OseeCoreException {
+   private void loadNonCurrentSourceVersionData(ExportImportJoinQuery idJoin, DoubleKeyHashMap<Integer, Long, ChangeItem> changesByItemId, TransactionId sourceBaselineTxId) throws OseeCoreException {
       try (JdbcStatement chStmt = getJdbcClient().getStatement()) {
          String query =
             "select * from (select null as value, item.art_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 2 as table_type from osee_join_export_import idj, " + //
-               "osee_artifact item, osee_txs txs where idj.query_id = ? and idj.id2 = item.art_id and idj.id1 = 2 " + //
-               "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
-               "union all select item.value as value, item.attr_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 1 as table_type from osee_join_export_import idj, " + //
-               "osee_attribute item, osee_txs txs where idj.query_id = ? and idj.id2 = item.attr_id and idj.id1 = 1 " + //
-               "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
-               "union all select null as value, item.rel_link_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 3 as table_type from osee_join_export_import idj, " + //
-               "osee_relation_link item, osee_txs txs where idj.query_id = ? and idj.id2 = item.rel_link_id and idj.id1 = 3 " + //
-               "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ?) t order by t.id2, t.transaction_id asc";
+            "osee_artifact item, osee_txs txs where idj.query_id = ? and idj.id2 = item.art_id and idj.id1 = 2 " + //
+            "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
+            "union all select item.value as value, item.attr_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 1 as table_type from osee_join_export_import idj, " + //
+            "osee_attribute item, osee_txs txs where idj.query_id = ? and idj.id2 = item.attr_id and idj.id1 = 1 " + //
+            "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? " + //
+            "union all select null as value, item.rel_link_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 3 as table_type from osee_join_export_import idj, " + //
+            "osee_relation_link item, osee_txs txs where idj.query_id = ? and idj.id2 = item.rel_link_id and idj.id1 = 3 " + //
+            "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ?) t order by t.id2, t.transaction_id asc";
 
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, idJoin.getQueryId(),
             TxChange.NOT_CURRENT.getValue(), sourceBranch, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
             sourceBranch, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(), sourceBranch);
 
-         int previousItemId = -1;
+         Long previousItemId = -1L;
          boolean isFirstSet = false;
          while (chStmt.next()) {
             checkForCancelled();
-            Integer itemId = chStmt.getInt("item_id");
+            Long itemId = chStmt.getLong("item_id");
             Integer tableType = chStmt.getInt("table_type");
             Long transactionId = chStmt.getLong("transaction_id");
             ApplicabilityId appId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
             ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
-            Long gammaId = chStmt.getLong("gamma_id");
+            GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
 
             String value = chStmt.getString("value");
 
@@ -248,10 +255,10 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
       }
    }
 
-   private void setVersionData(ChangeVersion versionedChange, Long gammaId, ModificationType modType, String value, ApplicabilityId appId) {
+   private void setVersionData(ChangeVersion versionedChange, GammaId gammaId, ModificationType modType, String value, ApplicabilityId appId) {
       // Tolerates the case of having more than one version of an item on a
       // baseline transaction by picking the most recent one
-      if (versionedChange.getGammaId() == null || versionedChange.getGammaId().compareTo(gammaId) < 0) {
+      if (versionedChange.getGammaId() == null || versionedChange.getGammaId().getId().compareTo(gammaId.getId()) < 0) {
          versionedChange.setValue(value);
          versionedChange.setModType(modType);
          versionedChange.setGammaId(gammaId);

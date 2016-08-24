@@ -12,12 +12,15 @@
 package org.eclipse.osee.framework.skynet.core.change;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.osee.framework.core.data.HasBranch;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
@@ -26,8 +29,8 @@ import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
  * @author Jeff C. Phillips
  */
 public abstract class Change implements IAdaptable, Comparable<Change>, HasBranch {
-   private final long sourceGamma;
-   private final int artId;
+   private final GammaId sourceGamma;
+   private final ArtifactId artId;
    private final TransactionDelta txDelta;
    private final ArtifactDelta artifactDelta;
    private final ModificationType modType;
@@ -36,7 +39,7 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
    private final Artifact changeArtifact;
    private ChangeItem changeItem;
 
-   public Change(BranchId branch, long sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
+   public Change(BranchId branch, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
       this.branch = branch;
       this.sourceGamma = sourceGamma;
       this.artId = artId;
@@ -68,13 +71,13 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
             }
             return areDeltasEqual && change.getArtId() == getArtId() &&
             //
-               change.getGamma() == getGamma() &&
-               //
-               change.getChangeArtifact().equals(getChangeArtifact()) &&
-               //
-               change.getModificationType() == getModificationType() &&
-               //
-               change.getTxDelta().equals(getTxDelta());
+            change.getGamma() == getGamma() &&
+            //
+            change.getChangeArtifact().equals(getChangeArtifact()) &&
+            //
+            change.getModificationType() == getModificationType() &&
+            //
+            change.getTxDelta().equals(getTxDelta());
          }
       }
       return false;
@@ -83,8 +86,8 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
    @Override
    public int hashCode() {
       int hashCode = 7;
-      hashCode += 13 * getArtId();
-      hashCode += 13 * getGamma();
+      hashCode += 13 * getArtId().hashCode();
+      hashCode += 13 * getGamma().hashCode();
       hashCode += getChangeArtifact() != null ? 13 * getChangeArtifact().hashCode() : 0;
       hashCode += getDelta() != null ? 13 * getDelta().hashCode() : 0;
       hashCode += getModificationType() != null ? 13 * getModificationType().hashCode() : 0;
@@ -92,7 +95,7 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
       return hashCode;
    }
 
-   public long getBaselineGamma() {
+   public GammaId getBaselineGamma() {
       return changeItem.getBaselineVersion().getGammaId();
    }
 
@@ -120,11 +123,11 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
       return getChangeArtifact().getName();
    }
 
-   public long getGamma() {
+   public GammaId getGamma() {
       return sourceGamma;
    }
 
-   public int getArtId() {
+   public ArtifactId getArtId() {
       return artId;
    }
 
@@ -132,7 +135,7 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
       return txDelta;
    }
 
-   public abstract long getItemTypeId();
+   public abstract Id getItemTypeId();
 
    public ArtifactType getArtifactType() {
       return getChangeArtifact().getArtifactType();
@@ -159,7 +162,7 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
 
    public abstract String getItemKind();
 
-   public abstract int getItemId();
+   public abstract Id getItemId();
 
    public abstract LoadChangeType getChangeType();
 

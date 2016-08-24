@@ -17,14 +17,19 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.RelationId;
+import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -125,7 +130,6 @@ public class MissingChangeItemFactoryTest {
          @Override
          public Object answer(InvocationOnMock invocation) throws Throwable {
             LoadDataHandler handler = (LoadDataHandler) invocation.getArguments()[1];
-            Set<Integer> missingArtIds = new LinkedHashSet<>();
             if (artifactData != null) {
                for (ArtifactData data : artifactData) {
                   handler.onData(data);
@@ -192,8 +196,9 @@ public class MissingChangeItemFactoryTest {
       HashMap<Long, ApplicabilityToken> applicMap = new HashMap<>();
       applicMap.put(1L, ApplicabilityToken.BASE);
 
-      ChangeItem ci1 = ChangeItemUtil.newAttributeChange(ci1AttrId, 2, artId, 4L, ModificationType.MODIFIED,
-         Strings.EMPTY_STRING, ApplicabilityToken.BASE);
+      ChangeItem ci1 = ChangeItemUtil.newAttributeChange(AttributeId.valueOf(ci1AttrId), AttributeTypeId.valueOf(2),
+         ArtifactId.valueOf(artId), GammaId.valueOf(4L), ModificationType.MODIFIED, Strings.EMPTY_STRING,
+         ApplicabilityToken.BASE);
       changes.add(ci1);
 
       List<AttributeData> attrDatas = new LinkedList<>();
@@ -222,14 +227,14 @@ public class MissingChangeItemFactoryTest {
       final long missingGamma = 9L;
       long artGamma = 7L;
 
-      int relId = 6;
+      RelationId relId = RelationId.valueOf(6);
       int artA = 65;
       int artB = 2;
-      long srcGamma = 7L;
+      GammaId srcGamma = GammaId.valueOf(7L);
       HashMap<Long, ApplicabilityToken> applicMap = new HashMap<>();
       applicMap.put(1L, ApplicabilityToken.BASE);
-      ChangeItem ci1 = ChangeItemUtil.newRelationChange(relId, 0, srcGamma, ModificationType.NEW, artA, artB, "",
-         ApplicabilityToken.BASE);
+      ChangeItem ci1 = ChangeItemUtil.newRelationChange(relId, RelationTypeId.valueOf(0), srcGamma,
+         ModificationType.NEW, ArtifactId.valueOf(artA), ArtifactId.valueOf(artB), "", ApplicabilityToken.BASE);
       changes.add(ci1);
 
       List<AttributeData> attrDatas = new LinkedList<>();
@@ -267,8 +272,9 @@ public class MissingChangeItemFactoryTest {
       final int artId = 3;
       HashMap<Long, ApplicabilityToken> applicMap = new HashMap<>();
       applicMap.put(1L, ApplicabilityToken.BASE);
-      ChangeItem ci1 = ChangeItemUtil.newAttributeChange(22, 2, artId, 4L, ModificationType.DELETED,
-         Strings.EMPTY_STRING, ApplicabilityToken.BASE);
+      ChangeItem ci1 = ChangeItemUtil.newAttributeChange(AttributeId.valueOf(22), AttributeTypeId.valueOf(2),
+         ArtifactId.valueOf(artId), GammaId.valueOf(4L), ModificationType.DELETED, Strings.EMPTY_STRING,
+         ApplicabilityToken.BASE);
       changes.add(ci1);
 
       List<AttributeData> attrDatas = new LinkedList<>();
@@ -294,21 +300,23 @@ public class MissingChangeItemFactoryTest {
     */
    private static Object[] testCase_artifactDeletedAttribute() {
       List<ChangeItem> changes = new LinkedList<>();
-      final int artId = 3;
+      final ArtifactId artId = ArtifactId.valueOf(3);
       HashMap<Long, ApplicabilityToken> applicMap = new HashMap<>();
       applicMap.put(1L, ApplicabilityToken.BASE);
-      ChangeItem ci1 = ChangeItemUtil.newAttributeChange(22, 2, artId, 4L, ModificationType.ARTIFACT_DELETED,
-         Strings.EMPTY_STRING, ApplicabilityToken.BASE);
+      ChangeItem ci1 = ChangeItemUtil.newAttributeChange(AttributeId.valueOf(22), AttributeTypeId.valueOf(2), artId,
+         GammaId.valueOf(4L), ModificationType.ARTIFACT_DELETED, Strings.EMPTY_STRING, ApplicabilityToken.BASE);
       changes.add(ci1);
 
       List<AttributeData> attrDatas = new LinkedList<>();
-      AttributeData attrData1 = createAttributeData(artId, 33, 1L, ModificationType.ARTIFACT_DELETED);
-      AttributeData attrData2 = createAttributeData(artId, 44 + 1, 67L, ModificationType.ARTIFACT_DELETED);
+      AttributeData attrData1 =
+         createAttributeData(artId.getId().intValue(), 33, 1L, ModificationType.ARTIFACT_DELETED);
+      AttributeData attrData2 =
+         createAttributeData(artId.getId().intValue(), 44 + 1, 67L, ModificationType.ARTIFACT_DELETED);
       attrDatas.add(attrData1);
       attrDatas.add(attrData2);
 
       List<ArtifactData> artData = new LinkedList<>();
-      ArtifactData artData1 = createArtifactData(artId, 89L, ModificationType.DELETED);
+      ArtifactData artData1 = createArtifactData(artId.getId().intValue(), 89L, ModificationType.DELETED);
       artData.add(artData1);
 
       List<ChangeItem> expected = new LinkedList<>();
@@ -328,25 +336,27 @@ public class MissingChangeItemFactoryTest {
    }
 
    private static ChangeItem createExpected(RelationData data) {
-      return ChangeItemUtil.newRelationChange(data.getLocalId(), 0, data.getVersion().getGammaId(),
-         determineModType(data), data.getArtIdA(), data.getArtIdB(), "", ApplicabilityToken.BASE);
+      return ChangeItemUtil.newRelationChange(RelationId.valueOf(data.getLocalId()), RelationTypeId.valueOf(0),
+         GammaId.valueOf(data.getVersion().getGammaId()), determineModType(data), ArtifactId.valueOf(data.getArtIdA()),
+         ArtifactId.valueOf(data.getArtIdB()), "", ApplicabilityToken.BASE);
    }
 
    private static ChangeItem createExpected(AttributeData data) {
-      return ChangeItemUtil.newAttributeChange(data.getLocalId(), 0, data.getArtifactId(),
-         data.getVersion().getGammaId(), determineModType(data), "", ApplicabilityToken.BASE);
+      return ChangeItemUtil.newAttributeChange(data, AttributeTypeId.valueOf(0),
+         ArtifactId.valueOf(data.getArtifactId()), GammaId.valueOf(data.getVersion().getGammaId()),
+         determineModType(data), "", ApplicabilityToken.BASE);
    }
 
    private static ChangeItem createExpected(ArtifactData data) {
-      return ChangeItemUtil.newArtifactChange(data.getLocalId(), 0, data.getVersion().getGammaId(),
-         determineModType(data), ApplicabilityToken.BASE);
+      return ChangeItemUtil.newArtifactChange(ArtifactId.valueOf(data.getLocalId()), ArtifactTypeId.valueOf(0),
+         GammaId.valueOf(data.getVersion().getGammaId()), determineModType(data), ApplicabilityToken.BASE);
    }
 
    private ChangeItem getMatchingChangeItem(ChangeItem item) {
       for (ChangeItem change : expectedMissingChanges) {
-         if (change.getItemId() == item.getItemId() && //
-            change.getArtId() == item.getArtId() && //
-            change.getClass().getSimpleName().equals(item.getClass().getSimpleName())) {
+         if (change.getItemId().equals(item.getItemId()) && //
+         change.getArtId().equals(item.getArtId()) && //
+         change.getClass().getSimpleName().equals(item.getClass().getSimpleName())) {
             return change;
          }
       }

@@ -18,7 +18,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -77,7 +81,7 @@ public class ChangeDataLoader extends AbstractOperation {
          monitor.setTaskName("Bulk load changed artifacts");
 
          checkForCancelledStatus(monitor);
-         CompositeKeyHashMap<TransactionId, Integer, Artifact> bulkLoaded = new CompositeKeyHashMap<>();
+         CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded = new CompositeKeyHashMap<>();
 
          bulkLoadArtifactDeltas(bulkLoaded, changeItems);
          monitor.worked(calculateWork(0.20));
@@ -105,7 +109,7 @@ public class ChangeDataLoader extends AbstractOperation {
 
       checkForCancelledStatus(monitor);
       monitor.setTaskName("Bulk load changed artifacts");
-      CompositeKeyHashMap<TransactionId, Integer, Artifact> bulkLoaded = new CompositeKeyHashMap<>();
+      CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded = new CompositeKeyHashMap<>();
 
       bulkLoadArtifactDeltas(bulkLoaded, changeItems);
 
@@ -125,12 +129,12 @@ public class ChangeDataLoader extends AbstractOperation {
       }
    }
 
-   private Change computeChangeFromGamma(CompositeKeyHashMap<TransactionId, Integer, Artifact> bulkLoaded, BranchId startTxBranch, ChangeItem item) {
+   private Change computeChangeFromGamma(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded, BranchId startTxBranch, ChangeItem item) {
       Change change = null;
       try {
-         int artId = item.getArtId();
-         Long destGamma = item.getDestinationVersion().getGammaId();
-         Long baseGamma = item.getBaselineVersion().getGammaId();
+         ArtifactId artId = item.getArtId();
+         GammaId destGamma = item.getDestinationVersion().getGammaId();
+         GammaId baseGamma = item.getBaselineVersion().getGammaId();
          Artifact startTxArtifact;
          Artifact endTxArtifact;
          // When start and end transactions are on same branch set them to start and end respectfully
@@ -165,10 +169,10 @@ public class ChangeDataLoader extends AbstractOperation {
       return change;
    }
 
-   private Change computeChange(CompositeKeyHashMap<TransactionId, Integer, Artifact> bulkLoaded, BranchId startTxBranch, ChangeItem item) {
+   private Change computeChange(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded, BranchId startTxBranch, ChangeItem item) {
       Change change = null;
       try {
-         int artId = item.getArtId();
+         ArtifactId artId = item.getArtId();
          Artifact startTxArtifact;
          Artifact endTxArtifact;
          if (txDelta.areOnTheSameBranch()) {
@@ -190,13 +194,13 @@ public class ChangeDataLoader extends AbstractOperation {
       return change;
    }
 
-   private Change createChangeObject(CompositeKeyHashMap<TransactionId, Integer, Artifact> bulkLoaded, ChangeItem item, TransactionDelta txDelta, BranchId startTxBranch, ArtifactDelta artifactDelta) throws OseeCoreException {
+   private Change createChangeObject(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded, ChangeItem item, TransactionDelta txDelta, BranchId startTxBranch, ArtifactDelta artifactDelta) throws OseeCoreException {
       Change change = null;
 
-      int itemId = item.getItemId();
-      long itemGammaId = item.getNetChange().getGammaId();
+      Long itemId = item.getItemId().getId();
+      GammaId itemGammaId = item.getNetChange().getGammaId();
       ModificationType netModType = item.getNetChange().getModType();
-      int artId = item.getArtId();
+      ArtifactId artId = item.getArtId();
 
       // The change artifact is the artifact that is displayed by the GUI.
       // When we are comparing two different branches, the displayed artifact should be the start artifact or the artifact from the
@@ -210,23 +214,23 @@ public class ChangeDataLoader extends AbstractOperation {
 
             if (item.isApplicabilityCopy() || ChangeItemUtil.hasApplicabilityOnlyChange(item)) {
                netModType = ModificationType.APPLICABILITY;
-               change = new ArtifactChange(startTxBranch, itemGammaId, itemId, txDelta, netModType,
+               change = new ArtifactChange(startTxBranch, itemGammaId, ArtifactId.valueOf(itemId), txDelta, netModType,
                   item.getCurrentVersion().getApplicabilityToken().getName(),
                   item.getDestinationVersion().getApplicabilityToken().getName(), isHistorical, changeArtifact,
                   artifactDelta);
             } else {
-               change = new ArtifactChange(startTxBranch, itemGammaId, itemId, txDelta, netModType, "", "",
-                  isHistorical, changeArtifact, artifactDelta);
+               change = new ArtifactChange(startTxBranch, itemGammaId, ArtifactId.valueOf(itemId), txDelta, netModType,
+                  "", "", isHistorical, changeArtifact, artifactDelta);
             }
             break;
          case ATTRIBUTE_CHANGE:
-            AttributeType attributeType = AttributeTypeManager.getTypeByGuid(item.getItemTypeId());
+            AttributeType attributeType = AttributeTypeManager.getTypeByGuid(item.getItemTypeId().getId());
             if (item.isApplicabilityCopy() || ChangeItemUtil.hasApplicabilityOnlyChange(item)) {
                netModType = ModificationType.APPLICABILITY;
                change = new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType,
                   item.getCurrentVersion().getApplicabilityToken().getName(),
-                  item.getDestinationVersion().getApplicabilityToken().getName(), itemId, attributeType, netModType,
-                  isHistorical, changeArtifact, artifactDelta);
+                  item.getDestinationVersion().getApplicabilityToken().getName(), AttributeId.valueOf(itemId),
+                  attributeType, netModType, isHistorical, changeArtifact, artifactDelta);
             } else {
                String isValue = item.getCurrentVersion().getValue();
 
@@ -251,11 +255,11 @@ public class ChangeDataLoader extends AbstractOperation {
                }
 
                change = new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType, isValue, wasValue,
-                  itemId, attributeType, netModType, isHistorical, changeArtifact, artifactDelta);
+                  AttributeId.valueOf(itemId), attributeType, netModType, isHistorical, changeArtifact, artifactDelta);
             }
             break;
          case RELATION_CHANGE:
-            RelationType relationType = RelationTypeManager.getTypeByGuid(item.getItemTypeId());
+            RelationType relationType = RelationTypeManager.getTypeByGuid(item.getItemTypeId().getId());
 
             TransactionId transaction = txDelta.getStartTx();
             if (txDelta.areOnTheSameBranch()) {
@@ -268,13 +272,14 @@ public class ChangeDataLoader extends AbstractOperation {
             if (item.isApplicabilityCopy() || ChangeItemUtil.hasApplicabilityOnlyChange(item)) {
                netModType = ModificationType.APPLICABILITY;
                change = new RelationChange(startTxBranch, itemGammaId, artId, txDelta, netModType,
-                  endTxBArtifact.getArtId(), itemId, item.getCurrentVersion().getApplicabilityToken().getName(),
+                  ArtifactId.valueOf(endTxBArtifact.getArtId()), RelationId.valueOf(itemId),
+                  item.getCurrentVersion().getApplicabilityToken().getName(),
                   item.getDestinationVersion().getApplicabilityToken().getName(), relationType, isHistorical,
                   changeArtifact, artifactDelta, endTxBArtifact);
             } else {
-               change =
-                  new RelationChange(startTxBranch, itemGammaId, artId, txDelta, netModType, endTxBArtifact.getArtId(),
-                     itemId, rationale, "", relationType, isHistorical, changeArtifact, artifactDelta, endTxBArtifact);
+               change = new RelationChange(startTxBranch, itemGammaId, artId, txDelta, netModType,
+                  ArtifactId.valueOf(endTxBArtifact.getArtId()), RelationId.valueOf(itemId), rationale, "",
+                  relationType, isHistorical, changeArtifact, artifactDelta, endTxBArtifact);
             }
             break;
          default:
@@ -283,7 +288,7 @@ public class ChangeDataLoader extends AbstractOperation {
       return change;
    }
 
-   private void bulkLoadArtifactDeltas(CompositeKeyHashMap<TransactionId, Integer, Artifact> bulkLoaded, Collection<ChangeItem> changeItems) throws OseeCoreException {
+   private void bulkLoadArtifactDeltas(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded, Collection<ChangeItem> changeItems) throws OseeCoreException {
       Set<Integer> artIds = asArtIds(changeItems);
 
       preloadArtifacts(bulkLoaded, artIds, txDelta.getStartTx(), txDelta.areOnTheSameBranch());
@@ -296,7 +301,7 @@ public class ChangeDataLoader extends AbstractOperation {
       }
    }
 
-   private static void preloadArtifacts(CompositeKeyHashMap<TransactionId, Integer, Artifact> bulkLoaded, Collection<Integer> artIds, TransactionToken tx, boolean isHistorical) throws OseeCoreException {
+   private static void preloadArtifacts(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded, Collection<Integer> artIds, TransactionToken tx, boolean isHistorical) throws OseeCoreException {
       List<Artifact> artifacts;
 
       if (isHistorical) {
@@ -305,16 +310,16 @@ public class ChangeDataLoader extends AbstractOperation {
          artifacts = ArtifactQuery.getArtifactListFromIds(artIds, tx.getBranch(), INCLUDE_DELETED);
       }
       for (Artifact artifact : artifacts) {
-         bulkLoaded.put(tx, artifact.getArtId(), artifact);
+         bulkLoaded.put(tx, ArtifactId.valueOf(artifact.getId()), artifact);
       }
    }
 
    private static Set<Integer> asArtIds(Collection<ChangeItem> changeItems) {
       Set<Integer> artIds = new HashSet<>();
       for (ChangeItem item : changeItems) {
-         artIds.add(item.getArtId());
+         artIds.add(item.getArtId().getId().intValue());
          if (item.getChangeType().isRelationChange()) {
-            artIds.add(item.getArtIdB());
+            artIds.add(item.getArtIdB().getId().intValue());
          }
       }
       return artIds;
@@ -342,8 +347,8 @@ public class ChangeDataLoader extends AbstractOperation {
    private static boolean isAllowableChange(ChangeIgnoreType ignoreType) {
       return //
       ignoreType.isNone() || //
-         ignoreType.isResurrected() || //
-         ignoreType.isDeletedOnDestAndNotResurrected() || //
-         ignoreType.isDeletedOnDestination();
+      ignoreType.isResurrected() || //
+      ignoreType.isDeletedOnDestAndNotResurrected() || //
+      ignoreType.isDeletedOnDestination();
    }
 }

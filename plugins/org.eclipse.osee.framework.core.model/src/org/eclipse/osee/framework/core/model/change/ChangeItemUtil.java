@@ -11,6 +11,13 @@
 package org.eclipse.osee.framework.core.model.change;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.RelationId;
+import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -26,7 +33,7 @@ public final class ChangeItemUtil {
       // Utility Class
    }
 
-   public static ChangeItem newArtifactChange(int artId, long artTypeId, long currentSourceGammaId, ModificationType currentSourceModType, ApplicabilityToken appToken) {
+   public static ChangeItem newArtifactChange(ArtifactId artId, ArtifactTypeId artTypeId, GammaId currentSourceGammaId, ModificationType currentSourceModType, ApplicabilityToken appToken) {
       ChangeItem item = new ChangeItem();
       item.setChangeType(ChangeType.ARTIFACT_CHANGE);
 
@@ -43,7 +50,7 @@ public final class ChangeItemUtil {
       return item;
    }
 
-   public static ChangeItem newAttributeChange(int attrId, long attrTypeId, int artId, long currentSourceGammaId, ModificationType currentSourceModType, String value, ApplicabilityToken appToken) {
+   public static ChangeItem newAttributeChange(AttributeId attrId, AttributeTypeId attrTypeId, ArtifactId artId, GammaId currentSourceGammaId, ModificationType currentSourceModType, String value, ApplicabilityToken appToken) {
       ChangeItem item = new ChangeItem();
       item.setChangeType(ChangeType.ATTRIBUTE_CHANGE);
 
@@ -61,7 +68,7 @@ public final class ChangeItemUtil {
       return item;
    }
 
-   public static ChangeItem newRelationChange(int relLinkId, long relTypeId, long currentSourceGammaId, ModificationType currentSourceModType, int aArtId, int bArtId, String rationale, ApplicabilityToken appToken) {
+   public static ChangeItem newRelationChange(RelationId relLinkId, RelationTypeId relTypeId, GammaId currentSourceGammaId, ModificationType currentSourceModType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityToken appToken) {
       ChangeItem item = new ChangeItem();
       item.setChangeType(ChangeType.RELATION_CHANGE);
 
@@ -129,14 +136,14 @@ public final class ChangeItemUtil {
 
    public static boolean hasBeenReplacedWithVersion(ChangeItem changeItem) {
       boolean results = areGammasEqual(changeItem.getCurrentVersion(), changeItem.getBaselineVersion()) && //
-         isModType(changeItem.getCurrentVersion(), ModificationType.MODIFIED);
+      isModType(changeItem.getCurrentVersion(), ModificationType.MODIFIED);
       return results;
    }
 
    public static boolean isAlreadyOnDestination(ChangeItem changeItem) {
       return areGammasEqual(changeItem.getCurrentVersion(), changeItem.getDestinationVersion()) && //
-         areModTypesEqual(changeItem.getCurrentVersion(), changeItem.getDestinationVersion()) && //
-         areApplicabilitiesEqual(changeItem.getCurrentVersion(), changeItem.getDestinationVersion());
+      areModTypesEqual(changeItem.getCurrentVersion(), changeItem.getDestinationVersion()) && //
+      areApplicabilitiesEqual(changeItem.getCurrentVersion(), changeItem.getDestinationVersion());
    }
 
    public static boolean areModTypesEqual(ChangeVersion object1, ChangeVersion object2) {

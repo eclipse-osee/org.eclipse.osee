@@ -11,6 +11,9 @@
 package org.eclipse.osee.framework.core.model.mocks;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeVersion;
@@ -26,7 +29,7 @@ public final class ChangeTestUtility {
    }
 
    public static ChangeVersion createChange(Long long1, ModificationType mod1) {
-      return new ChangeVersion(long1, mod1, ApplicabilityToken.BASE);
+      return new ChangeVersion(GammaId.valueOf(long1), mod1, ApplicabilityToken.BASE);
    }
 
    public static void checkChange(String message, ChangeVersion expected, ChangeVersion actual) {
@@ -40,11 +43,11 @@ public final class ChangeTestUtility {
       checkChange(null, expected, actual);
    }
 
-   public static ChangeItem createItem(int itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current, ChangeVersion destination, ChangeVersion net) {
+   public static ChangeItem createItem(Long itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current, ChangeVersion destination, ChangeVersion net) {
       ChangeItem change = new ChangeItem();
-      change.setItemId(itemId);
-      change.setItemTypeId(itemId * 10);
-      change.setArtId(itemId * 100);
+      change.setItemId(ArtifactId.valueOf(itemId));
+      change.setItemTypeId(ArtifactTypeId.valueOf(itemId * 10));
+      change.setArtId(ArtifactId.valueOf(itemId * 100));
 
       ChangeVersion currentVersion = change.getCurrentVersion();
       currentVersion.setGammaId(current.getGammaId());

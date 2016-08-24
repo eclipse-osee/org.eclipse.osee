@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 200L4, 200L7 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,9 +14,14 @@ package org.eclipse.osee.framework.core.model.change;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.mocks.ChangeTestUtility;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -41,10 +46,10 @@ public class ChangeItemUtilTest {
       ChangeVersion destination = ChangeTestUtility.createChange(4444L, ModificationType.MERGED);
       ChangeVersion net = ChangeTestUtility.createChange(5555L, ModificationType.DELETED);
 
-      ChangeItem item = ChangeTestUtility.createItem(200, base, first, current, destination, net);
-      assertEquals(200, item.getItemId());
-      assertEquals(2000, item.getItemTypeId());
-      assertEquals(20000, item.getArtId());
+      ChangeItem item = ChangeTestUtility.createItem(200L, base, first, current, destination, net);
+      assertEquals(ArtifactId.valueOf(200L), item.getItemId());
+      assertEquals(ArtifactTypeId.valueOf(2000L), item.getItemTypeId());
+      assertEquals(ArtifactId.valueOf(20000L), item.getArtId());
       ChangeTestUtility.checkChange(base, item.getBaselineVersion());
       ChangeTestUtility.checkChange(first, item.getFirstNonCurrentChange());
       ChangeTestUtility.checkChange(current, item.getCurrentVersion());
@@ -57,10 +62,10 @@ public class ChangeItemUtilTest {
       ChangeVersion current = ChangeTestUtility.createChange(3333L, ModificationType.INTRODUCED);
       ChangeVersion destination = ChangeTestUtility.createChange(4444L, ModificationType.DELETED);
 
-      ChangeItem item = ChangeTestUtility.createItem(200, null, null, current, destination, null);
+      ChangeItem item = ChangeTestUtility.createItem(200L, null, null, current, destination, null);
       assertTrue(ChangeItemUtil.hasBeenDeletedInDestination(item));
 
-      item = ChangeTestUtility.createItem(200, null, null, current, null, null);
+      item = ChangeTestUtility.createItem(200L, null, null, current, null, null);
       assertFalse(ChangeItemUtil.hasBeenDeletedInDestination(item));
    }
 
@@ -68,19 +73,19 @@ public class ChangeItemUtilTest {
    public void testAlreadyOnDestination() {
       ChangeVersion current = ChangeTestUtility.createChange(3333L, ModificationType.INTRODUCED);
       ChangeVersion destination = ChangeTestUtility.createChange(3333L, ModificationType.INTRODUCED);
-      ChangeItem item = ChangeTestUtility.createItem(200, null, null, current, destination, null);
+      ChangeItem item = ChangeTestUtility.createItem(200L, null, null, current, destination, null);
       assertTrue(ChangeItemUtil.isAlreadyOnDestination(item));
 
       destination = ChangeTestUtility.createChange(4444L, ModificationType.INTRODUCED);
-      item = ChangeTestUtility.createItem(200, null, null, current, destination, null);
+      item = ChangeTestUtility.createItem(200L, null, null, current, destination, null);
       assertFalse(ChangeItemUtil.isAlreadyOnDestination(item));
 
       destination = ChangeTestUtility.createChange(3333L, ModificationType.DELETED);
-      item = ChangeTestUtility.createItem(200, null, null, current, destination, null);
+      item = ChangeTestUtility.createItem(200L, null, null, current, destination, null);
       assertFalse(ChangeItemUtil.isAlreadyOnDestination(item));
 
       current = ChangeTestUtility.createChange(3333L, ModificationType.DELETED);
-      item = ChangeTestUtility.createItem(200, null, null, current, destination, null);
+      item = ChangeTestUtility.createItem(200L, null, null, current, destination, null);
       assertTrue(ChangeItemUtil.isAlreadyOnDestination(item));
 
    }
@@ -92,15 +97,15 @@ public class ChangeItemUtilTest {
 
       current = ChangeTestUtility.createChange(2222L, ModificationType.DELETED);
       dest = null;
-      item = ChangeTestUtility.createItem(200, null, null, current, dest, null);
+      item = ChangeTestUtility.createItem(200L, null, null, current, dest, null);
       assertTrue(ChangeItemUtil.isDeletedAndDoesNotExistInDestination(item));
 
       dest = ChangeTestUtility.createChange(3333L, ModificationType.NEW);
-      item = ChangeTestUtility.createItem(200, null, null, current, dest, null);
+      item = ChangeTestUtility.createItem(200L, null, null, current, dest, null);
       assertFalse(ChangeItemUtil.isDeletedAndDoesNotExistInDestination(item));
 
       dest = ChangeTestUtility.createChange(3333L, null);
-      item = ChangeTestUtility.createItem(200, null, null, current, dest, null);
+      item = ChangeTestUtility.createItem(200L, null, null, current, dest, null);
       assertTrue(ChangeItemUtil.isDeletedAndDoesNotExistInDestination(item));
    }
 
@@ -109,13 +114,13 @@ public class ChangeItemUtilTest {
       ChangeVersion isNew = ChangeTestUtility.createChange(2222L, ModificationType.NEW);
 
       ChangeVersion deletedCurrent = ChangeTestUtility.createChange(3333L, ModificationType.DELETED);
-      ChangeItem item = ChangeTestUtility.createItem(200, null, isNew, deletedCurrent, null, null);
+      ChangeItem item = ChangeTestUtility.createItem(200L, null, isNew, deletedCurrent, null, null);
       ChangeItemUtil.checkAndSetIgnoreCase(item);
       assertFalse(item.getIgnoreType().isNone());
 
       ChangeVersion current = ChangeTestUtility.createChange(3333L, ModificationType.INTRODUCED);
       ChangeVersion destination = ChangeTestUtility.createChange(3333L, ModificationType.INTRODUCED);
-      item = ChangeTestUtility.createItem(200, null, null, current, destination, null);
+      item = ChangeTestUtility.createItem(200L, null, null, current, destination, null);
       ChangeItemUtil.checkAndSetIgnoreCase(item);
       assertFalse(item.getIgnoreType().isNone());
 
@@ -123,7 +128,7 @@ public class ChangeItemUtilTest {
 
       current = ChangeTestUtility.createChange(2222L, ModificationType.DELETED);
       dest = null;
-      item = ChangeTestUtility.createItem(200, null, null, current, dest, null);
+      item = ChangeTestUtility.createItem(200L, null, null, current, dest, null);
       ChangeItemUtil.checkAndSetIgnoreCase(item);
       assertFalse(item.getIgnoreType().isNone());
 
@@ -133,13 +138,13 @@ public class ChangeItemUtilTest {
       current = ChangeTestUtility.createChange(3333L, ModificationType.INTRODUCED);
       destination = ChangeTestUtility.createChange(4444L, ModificationType.DELETED);
 
-      item = ChangeTestUtility.createItem(200, baseline, null, current, destination, null);
+      item = ChangeTestUtility.createItem(200L, baseline, null, current, destination, null);
       ChangeItemUtil.checkAndSetIgnoreCase(item);
       assertTrue(item.getIgnoreType().isNone());
 
       current = ChangeTestUtility.createChange(3333L, ModificationType.NEW);
 
-      item = ChangeTestUtility.createItem(200, baseline, null, current, destination, null);
+      item = ChangeTestUtility.createItem(200L, baseline, null, current, destination, null);
       ChangeItemUtil.checkAndSetIgnoreCase(item);
       assertTrue(item.getIgnoreType().isNone());
 
@@ -147,13 +152,13 @@ public class ChangeItemUtilTest {
       current = ChangeTestUtility.createChange(3333L, ModificationType.MODIFIED);
       baseline = ChangeTestUtility.createChange(6234L, ModificationType.MODIFIED);
 
-      item = ChangeTestUtility.createItem(200, baseline, null, current, destination, null);
+      item = ChangeTestUtility.createItem(200L, baseline, null, current, destination, null);
       ChangeItemUtil.checkAndSetIgnoreCase(item);
       assertFalse(item.getIgnoreType().isNone());
 
       isNew = ChangeTestUtility.createChange(2222L, ModificationType.NEW);
       destination = ChangeTestUtility.createChange(3333L, ModificationType.NEW);
-      item = ChangeTestUtility.createItem(200, null, null, isNew, destination, null);
+      item = ChangeTestUtility.createItem(200L, null, null, isNew, destination, null);
       ChangeItemUtil.checkAndSetIgnoreCase(item);
       assertTrue(item.getIgnoreType().isNone());
 
@@ -161,16 +166,16 @@ public class ChangeItemUtilTest {
       isNew = ChangeTestUtility.createChange(2222L, ModificationType.NEW);
       ChangeVersion isIntroduced = ChangeTestUtility.createChange(2222L, ModificationType.NEW);
       dest = ChangeTestUtility.createChange(1111L, ModificationType.NEW);
-      item = ChangeTestUtility.createItem(200, null, null, isNew, dest, null);
+      item = ChangeTestUtility.createItem(200L, null, null, isNew, dest, null);
       ChangeItemUtil.checkAndSetIgnoreCase(item);
       assertTrue(item.getIgnoreType().isNone());
 
-      item = ChangeTestUtility.createItem(200, null, null, isIntroduced, dest, null);
+      item = ChangeTestUtility.createItem(200L, null, null, isIntroduced, dest, null);
       ChangeItemUtil.checkAndSetIgnoreCase(item);
       assertTrue(item.getIgnoreType().isNone());
 
       ChangeVersion isNotNew = ChangeTestUtility.createChange(2222L, ModificationType.MODIFIED);
-      item = ChangeTestUtility.createItem(200, null, null, isNotNew, dest, null);
+      item = ChangeTestUtility.createItem(200L, null, null, isNotNew, dest, null);
       ChangeItemUtil.checkAndSetIgnoreCase(item);
       assertTrue(item.getIgnoreType().isNone());
    }
@@ -180,11 +185,11 @@ public class ChangeItemUtilTest {
       ChangeVersion isNew = ChangeTestUtility.createChange(2222L, ModificationType.NEW);
 
       ChangeVersion deletedCurrent = ChangeTestUtility.createChange(3333L, ModificationType.DELETED);
-      ChangeItem item = ChangeTestUtility.createItem(200, null, isNew, deletedCurrent, null, null);
+      ChangeItem item = ChangeTestUtility.createItem(200L, null, isNew, deletedCurrent, null, null);
       assertTrue(ChangeItemUtil.wasCreatedAndDeleted(item));
 
       ChangeVersion notDeletedCurrent = ChangeTestUtility.createChange(3333L, ModificationType.INTRODUCED);
-      item = ChangeTestUtility.createItem(200, null, isNew, notDeletedCurrent, null, null);
+      item = ChangeTestUtility.createItem(200L, null, isNew, notDeletedCurrent, null, null);
       assertFalse(ChangeItemUtil.wasCreatedAndDeleted(item));
    }
 
@@ -193,13 +198,13 @@ public class ChangeItemUtilTest {
       ChangeVersion newType = ChangeTestUtility.createChange(2222L, ModificationType.NEW);
       ChangeVersion modified = ChangeTestUtility.createChange(2223L, ModificationType.MODIFIED);
 
-      ChangeItem item = ChangeTestUtility.createItem(200, null, newType, modified, null, null);
+      ChangeItem item = ChangeTestUtility.createItem(200L, null, newType, modified, null, null);
       assertTrue(ChangeItemUtil.wasNewOnSource(item));
 
-      item = ChangeTestUtility.createItem(200, null, null, newType, null, null);
+      item = ChangeTestUtility.createItem(200L, null, null, newType, null, null);
       assertTrue(ChangeItemUtil.wasNewOnSource(item));
 
-      item = ChangeTestUtility.createItem(200, null, modified, modified, null, null);
+      item = ChangeTestUtility.createItem(200L, null, modified, modified, null, null);
       assertFalse(ChangeItemUtil.wasNewOnSource(item));
    }
 
@@ -209,13 +214,13 @@ public class ChangeItemUtilTest {
       ChangeVersion modified = ChangeTestUtility.createChange(1234L, ModificationType.MODIFIED);
       ChangeItem item;
 
-      item = ChangeTestUtility.createItem(200, null, introduced, modified, null, null);
+      item = ChangeTestUtility.createItem(200L, null, introduced, modified, null, null);
       assertTrue(ChangeItemUtil.wasIntroducedOnSource(item));
 
-      item = ChangeTestUtility.createItem(200, null, null, introduced, null, null);
+      item = ChangeTestUtility.createItem(200L, null, null, introduced, null, null);
       assertTrue(ChangeItemUtil.wasIntroducedOnSource(item));
 
-      item = ChangeTestUtility.createItem(200, null, null, modified, null, null);
+      item = ChangeTestUtility.createItem(200L, null, null, modified, null, null);
       assertFalse(ChangeItemUtil.wasIntroducedOnSource(item));
    }
 
@@ -267,11 +272,11 @@ public class ChangeItemUtilTest {
          new ArrayList<Triplet<ChangeVersion, ChangeVersion, Boolean>>();
 
       cases.add(createTriplet(3000L, ModificationType.MODIFIED, 3000L, ModificationType.NEW, true));
-      cases.add(createTriplet(null, ModificationType.MODIFIED, 3000L, ModificationType.NEW, false));
+      cases.add(createTriplet(0L, ModificationType.MODIFIED, 3000L, ModificationType.NEW, false));
       cases.add(createTriplet(3000L, null, 3000L, ModificationType.NEW, true));
-      cases.add(createTriplet(3000L, ModificationType.MODIFIED, null, ModificationType.NEW, false));
+      cases.add(createTriplet(3000L, ModificationType.MODIFIED, 0L, ModificationType.NEW, false));
       cases.add(createTriplet(3000L, ModificationType.MODIFIED, 3000L, null, true));
-      cases.add(createTriplet(null, null, null, null, true));
+      cases.add(createTriplet(0L, null, 0L, null, true));
       cases.add(createTriplet(3000L, null, 3001L, null, false));
 
       int index = 0;
@@ -296,17 +301,17 @@ public class ChangeItemUtilTest {
          Assert.assertTrue(ex instanceof OseeArgumentException);
       }
 
-      ChangeItem item = ChangeTestUtility.createItem(1, ver1, ver2, ver3, null, null);
+      ChangeItem item = ChangeTestUtility.createItem(1L, ver1, ver2, ver3, null, null);
       Assert.assertEquals(ver1, ChangeItemUtil.getStartingVersion(item));
 
-      item = ChangeTestUtility.createItem(2, invalid, ver2, ver3, null, null);
+      item = ChangeTestUtility.createItem(2L, invalid, ver2, ver3, null, null);
       Assert.assertEquals(ver2, ChangeItemUtil.getStartingVersion(item));
 
-      item = ChangeTestUtility.createItem(3, invalid, invalid, ver3, null, null);
+      item = ChangeTestUtility.createItem(3L, invalid, invalid, ver3, null, null);
       Assert.assertEquals(ver3, ChangeItemUtil.getStartingVersion(item));
 
       try {
-         item = ChangeTestUtility.createItem(3, invalid, invalid, invalid, null, null);
+         item = ChangeTestUtility.createItem(3L, invalid, invalid, invalid, null, null);
          ChangeItemUtil.getStartingVersion(item);
          Assert.fail("This line should not be executed");
       } catch (OseeCoreException ex) {
@@ -316,7 +321,8 @@ public class ChangeItemUtilTest {
 
    @Test
    public void testCopy() throws OseeCoreException {
-      ChangeVersion expected = new ChangeVersion(5679L, ModificationType.MERGED, ApplicabilityToken.BASE);
+      ChangeVersion expected =
+         new ChangeVersion(GammaId.valueOf(5679L), ModificationType.MERGED, ApplicabilityToken.BASE);
 
       ChangeVersion actual = new ChangeVersion();
       ChangeItemUtil.copy(expected, actual);
@@ -341,25 +347,26 @@ public class ChangeItemUtilTest {
 
    @Test
    public void testIsRessurectedOnNewItem() throws OseeCoreException {
-      ChangeVersion base = ChangeTestUtility.createChange(null, null);
-      ChangeVersion first = ChangeTestUtility.createChange(null, null);
+      ChangeVersion base = ChangeTestUtility.createChange(0L, null);
+      ChangeVersion first = ChangeTestUtility.createChange(0L, null);
       ChangeVersion current = ChangeTestUtility.createChange(3333L, ModificationType.NEW);
       ChangeVersion destination = ChangeTestUtility.createChange(3333L, ModificationType.DELETED);
-      ChangeVersion net = ChangeTestUtility.createChange(null, null);
+      ChangeVersion net = ChangeTestUtility.createChange(0L, null);
 
-      ChangeItem item = ChangeTestUtility.createItem(500, base, first, current, destination, net);
+      ChangeItem item = ChangeTestUtility.createItem(500L, base, first, current, destination, net);
 
       Assert.assertFalse(ChangeItemUtil.isResurrected(item));
    }
 
    @Test
    public void testAreApplicabilitiesEqual() {
-      ChangeVersion one = new ChangeVersion(100L, ModificationType.NEW, ApplicabilityToken.BASE);
+      ChangeVersion one = new ChangeVersion(GammaId.valueOf(100L), ModificationType.NEW, ApplicabilityToken.BASE);
       Assert.assertFalse(ChangeItemUtil.areApplicabilitiesEqual(null, one));
       Assert.assertFalse(ChangeItemUtil.areApplicabilitiesEqual(one, null));
       Assert.assertTrue(ChangeItemUtil.areApplicabilitiesEqual(one, one));
       Assert.assertTrue(ChangeItemUtil.areApplicabilitiesEqual(null, null));
-      ChangeVersion two = new ChangeVersion(100L, ModificationType.NEW, new ApplicabilityToken(2L, "dummy"));
+      ChangeVersion two =
+         new ChangeVersion(GammaId.valueOf(100L), ModificationType.NEW, new ApplicabilityToken(2L, "dummy"));
       Assert.assertFalse(ChangeItemUtil.areApplicabilitiesEqual(one, two));
    }
 
@@ -374,7 +381,7 @@ public class ChangeItemUtilTest {
       current.setApplicabilityToken(new ApplicabilityToken(789L, "TestAppl"));
       destination.setApplicabilityToken(ApplicabilityToken.BASE);
 
-      ChangeItem item = ChangeTestUtility.createItem(200, base, first, current, destination, net);
+      ChangeItem item = ChangeTestUtility.createItem(200L, base, first, current, destination, net);
       Assert.assertTrue(ChangeItemUtil.hasApplicabilityChange(item));
 
       item.getDestinationVersion().setApplicabilityToken(new ApplicabilityToken(789L, "TestAppl"));
@@ -392,7 +399,7 @@ public class ChangeItemUtilTest {
       current.setApplicabilityToken(new ApplicabilityToken(789L, "TestAppl"));
       destination.setApplicabilityToken(ApplicabilityToken.BASE);
 
-      ChangeItem item = ChangeTestUtility.createItem(200, base, first, current, destination, net);
+      ChangeItem item = ChangeTestUtility.createItem(200L, base, first, current, destination, net);
       Assert.assertTrue(ChangeItemUtil.hasApplicabilityOnlyChange(item));
 
       item.setApplicabilityCopy(true);
@@ -417,7 +424,7 @@ public class ChangeItemUtilTest {
 
       current.setApplicabilityToken(new ApplicabilityToken(789L, "TestAppl"));
       destination.setApplicabilityToken(ApplicabilityToken.BASE);
-      ChangeItem item = ChangeTestUtility.createItem(200, base, first, current, destination, net);
+      ChangeItem item = ChangeTestUtility.createItem(200L, base, first, current, destination, net);
       ChangeItem split = ChangeItemUtil.splitForApplicability(item);
       Assert.assertTrue(split.isApplicabilityCopy());
       split.setApplicabilityCopy(false);

@@ -72,7 +72,6 @@ public class ReportResource {
 
       final TypeCountWriter writer = new TypeCountWriter(orcsApi);
       final String fileName = String.format("Type_Count_Report_%s", System.currentTimeMillis());
-
       StreamingOutput streamingOutput = new StreamingOutput() {
 
          @Override
@@ -89,7 +88,7 @@ public class ReportResource {
 
    private void buildArtIdToChangeMap(List<ChangeItem> changes, Map<Integer, Pair<ChangeItem, Set<ChangeItem>>> artToChanges) {
       for (ChangeItem change : changes) {
-         int artId = change.getArtId();
+         int artId = change.getArtId().getId().intValue();
          ChangeType changeType = change.getChangeType();
          if (changeType.isArtifactChange()) {
             if (!artToChanges.containsKey(artId)) {
@@ -140,7 +139,7 @@ public class ReportResource {
 
       // Was a synthetic artifact change added by AddArtifactChangeDataCallable
       for (ChangeItem change : attrChanges) {
-         IAttributeType attrType = attributeTypes.getByUuid(change.getItemTypeId());
+         IAttributeType attrType = attributeTypes.getByUuid(change.getItemTypeId().getId());
          if (attrType.matches(WordTemplateContent)) {
             toReturn = true;
             break;

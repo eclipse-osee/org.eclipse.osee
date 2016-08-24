@@ -83,7 +83,7 @@ public class WasIsCompareEditorAction extends Action {
             Artifact artifact = artifactsFromStructuredSelection.iterator().next();
 
             String was = change.getWasValue();
-            int attrId = ((AttributeChange) change).getAttrId();
+            int attrId = ((AttributeChange) change).getAttrId().getId().intValue();
             TransactionId previousTransaction = getPreviousTransaction(artifact.getBranchId(), attrId, transactionId);
             if (!Strings.isValid(was) && change instanceof AttributeChange) {
                if (previousTransaction.isValid()) {

@@ -111,7 +111,7 @@ public class ChangeManagerTest {
       Operations.executeWorkAndCheckStatus(operation);
 
       for (Change change : changes) {
-         if (change.getArtId() == artifact.getArtId()) {
+         if (change.getArtId().getId().intValue() == artifact.getArtId()) {
             pass = change.getModificationType() == modificationType;
             break;
          }

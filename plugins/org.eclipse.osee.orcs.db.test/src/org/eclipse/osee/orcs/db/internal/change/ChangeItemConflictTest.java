@@ -14,6 +14,11 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
@@ -53,7 +58,7 @@ import org.junit.runners.Parameterized.Parameters;
  */
 @RunWith(Parameterized.class)
 public class ChangeItemConflictTest {
-   private static final long GAMMA = 100L;
+   private static final GammaId GAMMA = GammaId.valueOf(100L);
 
    private final ChangeItemCase srcCase;
    private final ItemType itemType;
@@ -89,10 +94,11 @@ public class ChangeItemConflictTest {
       // but since we don't seem to handle the mixed case of say artifact on src and attribute on destination
       ChangeItem item;
       if (itemType == ItemType.artifact) {
-         item = ChangeItemUtil.newArtifactChange(0, 0, GAMMA, ModificationType.MODIFIED, ApplicabilityToken.BASE);
+         item = ChangeItemUtil.newArtifactChange(ArtifactId.valueOf(0), ArtifactTypeId.valueOf(0), GAMMA,
+            ModificationType.MODIFIED, ApplicabilityToken.BASE);
       } else {
-         item = ChangeItemUtil.newAttributeChange(0, 0, 0, GAMMA, ModificationType.MODIFIED, "change",
-            ApplicabilityToken.BASE);
+         item = ChangeItemUtil.newAttributeChange(AttributeId.valueOf(0), AttributeTypeId.valueOf(0),
+            ArtifactId.valueOf(0), GAMMA, ModificationType.MODIFIED, "change", ApplicabilityToken.BASE);
       }
 
       buildTestCase(GAMMA, item);
@@ -150,7 +156,7 @@ public class ChangeItemConflictTest {
       data.add(new Object[] {testMessage, itemType, srcCase, dstCase});
    }
 
-   private void buildTestCase(long gamma, ChangeItem item) {
+   private void buildTestCase(GammaId gamma, ChangeItem item) {
       changeVersion(item.getBaselineVersion(), gamma, ModificationType.MODIFIED);
 
       switch (srcCase) {
@@ -158,10 +164,10 @@ public class ChangeItemConflictTest {
             changeVersion(item.getCurrentVersion(), gamma, ModificationType.DELETED);
             break;
          case SRC_MOD:
-            changeVersion(item.getCurrentVersion(), gamma + 1, ModificationType.MODIFIED);
+            changeVersion(item.getCurrentVersion(), GammaId.valueOf(gamma.getId() + 1), ModificationType.MODIFIED);
             break;
          case SRC_MRG:
-            changeVersion(item.getCurrentVersion(), gamma + 2, ModificationType.MERGED);
+            changeVersion(item.getCurrentVersion(), GammaId.valueOf(gamma.getId() + 2), ModificationType.MERGED);
             break;
          case SRC_INT:
             changeVersion(item.getCurrentVersion(), gamma, ModificationType.INTRODUCED);
@@ -175,10 +181,10 @@ public class ChangeItemConflictTest {
             changeVersion(item.getDestinationVersion(), gamma, ModificationType.DELETED);
             break;
          case DST_MOD:
-            changeVersion(item.getDestinationVersion(), gamma + 3, ModificationType.MODIFIED);
+            changeVersion(item.getDestinationVersion(), GammaId.valueOf(gamma.getId() + 3), ModificationType.MODIFIED);
             break;
          case DST_MRG:
-            changeVersion(item.getCurrentVersion(), gamma + 4, ModificationType.MERGED);
+            changeVersion(item.getCurrentVersion(), GammaId.valueOf(gamma.getId() + 4), ModificationType.MERGED);
             break;
          case DST_INT:
             changeVersion(item.getCurrentVersion(), gamma, ModificationType.INTRODUCED);
@@ -188,7 +194,7 @@ public class ChangeItemConflictTest {
       }
    }
 
-   private void changeVersion(ChangeVersion version, Long gammaId, ModificationType modType) {
+   private void changeVersion(ChangeVersion version, GammaId gammaId, ModificationType modType) {
       version.setGammaId(gammaId);
       version.setModType(modType);
    }

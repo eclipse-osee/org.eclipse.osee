@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 
 /**
  * Collection of changes from working branch or transactionId from committed branch.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class ChangeData {
@@ -103,7 +103,7 @@ public class ChangeData {
                   try {
                      if (change instanceof AttributeChange) {
                         Integer id = artifact.getArtId();
-                        long typeId = change.getItemTypeId();
+                        long typeId = change.getItemTypeId().getId();
                         AttributeType attributeType = AttributeTypeManager.getTypeByGuid(typeId);
                         if (excludeArtifact.containsKey(id)) {
                            if (!artifactTypesToIgnore.contains(attributeType)) {

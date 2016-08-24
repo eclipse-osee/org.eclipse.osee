@@ -11,11 +11,22 @@
 
 package org.eclipse.osee.framework.jdk.core.type;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+
 /**
  * @author Ryan D. Brooks
  */
 public interface Id {
    public static final Long SENTINEL = -1L;
+
+   public static Id valueOf(String id) {
+      return valueOf(Long.valueOf(id));
+   }
+
+   @JsonCreator
+   public static Id valueOf(long id) {
+      return new BaseId(id);
+   }
 
    Long getId();
 

@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.operation;
 
 import static org.eclipse.osee.framework.ui.skynet.render.IRenderer.NO_DISPLAY;
-import static org.eclipse.osee.framework.ui.skynet.render.IRenderer.SKIP_DIALOGS;
 import static org.eclipse.osee.framework.ui.skynet.render.IRenderer.OVERRIDE_DATA_RIGHTS_OPTION;
+import static org.eclipse.osee.framework.ui.skynet.render.IRenderer.SKIP_DIALOGS;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,10 +29,11 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -49,7 +50,6 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
-import org.eclipse.osee.framework.ui.skynet.render.IRenderer.DataRightsClassification;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.compare.CompareData;
 import org.eclipse.osee.framework.ui.skynet.render.compare.CompareDataCollector;
@@ -102,7 +102,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
       };
 
       for (TeamWorkFlowArtifact workflow : workflows) {
-         Set<Integer> artIds = new HashSet<>();
+         Set<ArtifactId> artIds = new HashSet<>();
          Collection<Change> changes = computeChanges(workflow, monitor, artIds);
          if (!changes.isEmpty() && changes.size() < 4000) {
             logf("Exporting: %s -- %s", workflow.toString(), workflow.getAtsId());
@@ -172,7 +172,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
       });
    }
 
-   private Collection<Change> computeChanges(Artifact workflow, IProgressMonitor monitor, Set<Integer> artIds) throws OseeCoreException {
+   private Collection<Change> computeChanges(Artifact workflow, IProgressMonitor monitor, Set<ArtifactId> artIds) throws OseeCoreException {
       TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) workflow;
 
       List<Change> changes = new ArrayList<>();

@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.change;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 
@@ -24,7 +27,7 @@ public final class ArtifactChange extends Change {
    private final String isValue;
    private final String wasValue;
 
-   public ArtifactChange(BranchId branch, long sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, String isValue, String wasValue, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
+   public ArtifactChange(BranchId branch, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, String isValue, String wasValue, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
       super(branch, sourceGamma, artId, txDelta, modType, isHistorical, changeArtifact, artifactDelta);
       this.isValue = isValue;
       this.wasValue = wasValue;
@@ -56,12 +59,12 @@ public final class ArtifactChange extends Change {
    }
 
    @Override
-   public long getItemTypeId() {
-      return getArtifactType().getId();
+   public Id getItemTypeId() {
+      return getArtifactType();
    }
 
    @Override
-   public int getItemId() {
+   public ArtifactId getItemId() {
       return getArtId();
    }
 

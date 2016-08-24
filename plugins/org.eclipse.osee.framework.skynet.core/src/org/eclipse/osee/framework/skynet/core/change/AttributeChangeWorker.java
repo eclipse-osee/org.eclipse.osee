@@ -30,9 +30,10 @@ public class AttributeChangeWorker implements IChangeWorker {
    @Override
    public void revert() throws OseeCoreException {
       if (change.isBaseline()) {
-         artifact.getAttributeById(change.getItemId(), true).replaceWithVersion((int) change.getBaselineGamma());
+         artifact.getAttributeById(change.getItemId().getId(), true).replaceWithVersion(
+            change.getBaselineGamma().getId().intValue());
       } else {
-         artifact.getAttributeById(change.getItemId(), true).delete();
+         artifact.getAttributeById(change.getItemId().getId(), true).delete();
       }
    }
 }

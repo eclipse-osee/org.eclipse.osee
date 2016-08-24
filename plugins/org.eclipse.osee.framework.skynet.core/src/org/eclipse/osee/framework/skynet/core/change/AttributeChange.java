@@ -13,11 +13,15 @@ package org.eclipse.osee.framework.skynet.core.change;
 
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -33,11 +37,11 @@ public final class AttributeChange extends Change {
 
    private final String isValue;
    private final String wasValue;
-   private final int attrId;
+   private final AttributeId attrId;
    private final AttributeType attributeType;
    private final ModificationType artModType;
 
-   public AttributeChange(BranchId branch, long sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, String isValue, String wasValue, int attrId, AttributeType attributeType, ModificationType artModType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
+   public AttributeChange(BranchId branch, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, String isValue, String wasValue, AttributeId attrId, AttributeType attributeType, ModificationType artModType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
       super(branch, sourceGamma, artId, txDelta, modType, isHistorical, changeArtifact, artifactDelta);
       this.isValue = isValue;
       this.wasValue = wasValue;
@@ -63,11 +67,11 @@ public final class AttributeChange extends Change {
       int hashCode = 7 * super.hashCode();
       hashCode += getAttributeType() != null ? 7 * getAttributeType().hashCode() : 0;
       hashCode += getArtModType() != null ? 7 * getArtModType().hashCode() : 0;
-      hashCode += 7 * getAttrId();
+      hashCode += 7 * getAttrId().hashCode();
       return hashCode;
    }
 
-   public int getAttrId() {
+   public AttributeId getAttrId() {
       return attrId;
    }
 
@@ -103,7 +107,7 @@ public final class AttributeChange extends Change {
    public Attribute<?> getAttribute() throws OseeCoreException {
       List<Attribute<?>> attributes = getChangeArtifact().getAttributes(true);
       for (Attribute<?> attribute : attributes) {
-         if (attribute.getId() == attrId) {
+         if (attribute.getId() == attrId.getId().intValue()) {
             return attribute;
          }
       }
@@ -133,12 +137,12 @@ public final class AttributeChange extends Change {
    }
 
    @Override
-   public long getItemTypeId() {
-      return getAttributeType().getId();
+   public Id getItemTypeId() {
+      return getAttributeType();
    }
 
    @Override
-   public int getItemId() {
+   public AttributeId getItemId() {
       return attrId;
    }
 

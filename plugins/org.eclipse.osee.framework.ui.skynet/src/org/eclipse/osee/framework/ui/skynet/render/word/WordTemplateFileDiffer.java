@@ -124,7 +124,7 @@ public final class WordTemplateFileDiffer {
       Set<Integer> addedIds = new HashSet<>();
       Set<Integer> changeIds = new HashSet<>(changes.size());
       for (Change change : changes) {
-         changeIds.add(change.getArtId());
+         changeIds.add(change.getArtId().getId().intValue());
       }
       BranchId endBranch = txDelta.getEndTx().getBranch();
       // loop through all artifacts that are on the IS branch
@@ -160,7 +160,7 @@ public final class WordTemplateFileDiffer {
    private Change findChange(Integer artId, List<Change> changes) {
       Change toReturn = null;
       for (Change change : changes) {
-         if (change.getArtId() == artId) {
+         if (change.getArtId().getId().intValue() == artId.intValue()) {
             toReturn = change;
             break;
          }

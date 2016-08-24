@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.model.change;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
@@ -18,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  * @author Roberto E. Escobar
  */
 public final class ChangeVersion {
-   private Long gammaId;
+   private GammaId gammaId;
    private ModificationType modType;
    private ApplicabilityToken appId;
    private String value;
@@ -27,18 +28,18 @@ public final class ChangeVersion {
       this(null, null, null, null);
    }
 
-   public ChangeVersion(Long gammaId, ModificationType modType, ApplicabilityToken appId) {
+   public ChangeVersion(GammaId gammaId, ModificationType modType, ApplicabilityToken appId) {
       this(null, gammaId, modType, appId);
    }
 
-   public ChangeVersion(String value, Long gammaId, ModificationType modType, ApplicabilityToken appId) {
+   public ChangeVersion(String value, GammaId gammaId, ModificationType modType, ApplicabilityToken appId) {
       this.value = value;
       this.gammaId = gammaId;
       this.modType = modType;
       this.appId = appId;
    }
 
-   public Long getGammaId() {
+   public GammaId getGammaId() {
       return gammaId;
    }
 
@@ -58,7 +59,7 @@ public final class ChangeVersion {
       this.value = value;
    }
 
-   public void setGammaId(Long gammaId) {
+   public void setGammaId(GammaId gammaId) {
       this.gammaId = gammaId;
    }
 

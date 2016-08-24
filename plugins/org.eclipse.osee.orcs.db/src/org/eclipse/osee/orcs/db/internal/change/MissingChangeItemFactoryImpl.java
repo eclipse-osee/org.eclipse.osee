@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.change;
 
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,6 +20,12 @@ import java.util.Set;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.RelationId;
+import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -39,6 +43,8 @@ import org.eclipse.osee.orcs.core.ds.LoadDataHandlerAdapter;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
 
 /**
  * @author John Misinco
@@ -64,15 +70,15 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
             switch (change.getChangeType()) {
                case ARTIFACT_CHANGE:
                   if (!change.isSynthetic()) {
-                     modifiedArtIds.add(change.getArtId());
+                     modifiedArtIds.add(change.getArtId().getId().intValue());
                   }
                   break;
                case ATTRIBUTE_CHANGE:
-                  modifiedAttrIds.put(change.getArtId(), change.getItemId());
+                  modifiedAttrIds.put(change.getArtId().getId().intValue(), change.getItemId().getId().intValue());
                   break;
                case RELATION_CHANGE:
-                  modifiedRels.put(change.getArtId(), change.getItemId());
-                  modifiedRels.put(change.getArtIdB(), change.getItemId());
+                  modifiedRels.put(change.getArtId().getId().intValue(), change.getItemId().getId().intValue());
+                  modifiedRels.put(change.getArtIdB().getId().intValue(), change.getItemId().getId().intValue());
                   break;
                default:
                   throw new OseeStateException("Unknonw change type detected [%s]", change);
@@ -209,24 +215,27 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
 
    private ChangeItem createArtifactChangeItem(ArtifactData data) throws OseeCoreException {
       ApplicabilityId appId = data.getApplicabilityId();
-      ChangeItem artChange = ChangeItemUtil.newArtifactChange(data.getLocalId(), data.getTypeUuid(),
-         data.getVersion().getGammaId(), determineModType(data), getApplicabilityToken(appId));
+      ChangeItem artChange = ChangeItemUtil.newArtifactChange(ArtifactId.valueOf(data.getLocalId()),
+         ArtifactTypeId.valueOf(data.getTypeUuid()), GammaId.valueOf(data.getVersion().getGammaId()),
+         determineModType(data), getApplicabilityToken(appId));
       return artChange;
    }
 
    private ChangeItem createAttributeChangeItem(AttributeData data) throws OseeCoreException {
       ApplicabilityId appId = data.getApplicabilityId();
-      ChangeItem attrChange = ChangeItemUtil.newAttributeChange(data.getLocalId(), data.getTypeUuid(),
-         data.getArtifactId(), data.getVersion().getGammaId(), determineModType(data),
-         data.getDataProxy().getDisplayableString(), getApplicabilityToken(appId));
+      ChangeItem attrChange = ChangeItemUtil.newAttributeChange(data, AttributeTypeId.valueOf(data.getTypeUuid()),
+         ArtifactId.valueOf(data.getArtifactId()), GammaId.valueOf(data.getVersion().getGammaId()),
+         determineModType(data), data.getDataProxy().getDisplayableString(), getApplicabilityToken(appId));
       attrChange.getNetChange().copy(attrChange.getCurrentVersion());
       return attrChange;
    }
 
    private ChangeItem createRelationChangeItem(RelationData data) throws OseeCoreException {
       ApplicabilityId appId = data.getApplicabilityId();
-      return ChangeItemUtil.newRelationChange(data.getLocalId(), data.getTypeUuid(), data.getVersion().getGammaId(),
-         determineModType(data), data.getArtIdA(), data.getArtIdB(), data.getRationale(), getApplicabilityToken(appId));
+      return ChangeItemUtil.newRelationChange(RelationId.valueOf(data.getLocalId()),
+         RelationTypeId.valueOf(data.getTypeUuid()), GammaId.valueOf(data.getVersion().getGammaId()),
+         determineModType(data), ArtifactId.valueOf(data.getArtIdA()), ArtifactId.valueOf(data.getArtIdB()),
+         data.getRationale(), getApplicabilityToken(appId));
    }
 
 }
