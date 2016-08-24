@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.search;
 
+import java.util.List;
 import java.util.function.BiConsumer;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
+import org.eclipse.osee.framework.core.data.Tuple3Type;
 
 /**
  * @author Angel Avila
@@ -31,4 +33,12 @@ public interface TupleQuery {
     * @return Iterable of E2 as Id and associated String value Object
     */
    <E1, E2> void getTuple2UniqueE2Pair(Tuple2Type<E1, E2> tupleType, BranchId branchId, BiConsumer<Long, String> consumer);
+
+   <E1, E2, E3> void getTuple3UniqueE1Pair(Tuple3Type<E1, E2, E3> tupleType, BranchId branchId, BiConsumer<Long, String> consumer);
+
+   <E1, E2, E3> void getTuple3UniqueE3Pair(Tuple3Type<E1, E2, E3> tupleType, BranchId branchId, BiConsumer<Long, String> consumer);
+
+   <E1, E2, E3> void getTuple3NamedId(Tuple3Type<E1, E2, E3> tupleType, BranchId branchId, Long e1, BiConsumer<Long, String> consumer);
+
+   <E1, E2, E3> void getTuple3GammaFromE1(Tuple3Type<E1, E2, E3> tupleType, BranchId branchId, Long e1, List<Long> consumer);
 }
