@@ -92,7 +92,7 @@ public interface IAtsQuery {
 
    IAtsQuery andActionableItem(IAtsActionableItem actionableItem);
 
-   Collection<Integer> getItemIds() throws OseeCoreException;
+   Collection<ArtifactId> getItemIds() throws OseeCoreException;
 
    IAtsQuery andAssigneeWas(IAtsUser... assignees);
 

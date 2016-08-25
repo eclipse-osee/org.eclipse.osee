@@ -30,7 +30,7 @@ public interface IAtsConfigQuery {
 
    <T extends IAtsConfigObject> ResultSet<T> getResults();
 
-   Collection<Integer> getItemIds() throws OseeCoreException;
+   Collection<ArtifactId> getItemIds() throws OseeCoreException;
 
    <T extends IAtsConfigObject> Collection<T> getItems();
 

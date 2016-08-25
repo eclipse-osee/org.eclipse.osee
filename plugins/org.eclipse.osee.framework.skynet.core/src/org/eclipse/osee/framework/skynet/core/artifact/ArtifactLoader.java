@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -57,7 +58,7 @@ public final class ArtifactLoader {
     * (re)loads the artifacts selected by sql and then returns them in a list
     */
    public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, LoadLevel loadLevel, LoadType reload, ISearchConfirmer confirmer, TransactionRecord transactionId, DeletionFlag allowDeleted, boolean isArchived) throws OseeCoreException {
-      List<Pair<Integer, Long>> toLoad = selectArtifacts(sql, queryParameters, artifactCountEstimate);
+      List<Pair<ArtifactId, BranchId>> toLoad = selectArtifacts(sql, queryParameters, artifactCountEstimate);
       List<Artifact> artifacts =
          loadSelectedArtifacts(toLoad, loadLevel, reload, allowDeleted, transactionId, isArchived);
 
@@ -67,23 +68,32 @@ public final class ArtifactLoader {
       return new LinkedList<Artifact>(artifacts);
    }
 
-   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, BranchId branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionId transactionId) throws OseeCoreException {
-      List<Pair<Integer, Long>> toLoad = new LinkedList<>();
-      Long branchUuid = branch.getUuid();
-      for (Integer artId : new HashSet<Integer>(artIds)) {
-         toLoad.add(new Pair<Integer, Long>(artId, branchUuid));
-      }
-
-      List<Artifact> artifacts = loadSelectedArtifacts(toLoad, loadLevel, reload, allowDeleted, transactionId,
-         BranchManager.isArchived(branch));
-      return artifacts;
+   public static List<Artifact> loadArtifactIds(Collection<Integer> artIds, BranchId branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted) {
+      return loadArtifactIds(artIds, branch, loadLevel, reload, allowDeleted, TransactionId.SENTINEL);
    }
 
-   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, BranchId branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted) throws OseeCoreException {
+   public static List<Artifact> loadArtifactIds(Collection<Integer> artIds, BranchId branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionId transactionId) {
+      List<ArtifactId> artifacts = new ArrayList<>();
+      for (Integer artId : artIds) {
+         artifacts.add(ArtifactId.valueOf(artId));
+      }
+      return loadArtifacts(artifacts, branch, loadLevel, reload, allowDeleted, transactionId);
+   }
+
+   public static List<Artifact> loadArtifacts(Collection<ArtifactId> artIds, BranchId branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted) {
       return loadArtifacts(artIds, branch, loadLevel, reload, allowDeleted, TransactionId.SENTINEL);
    }
 
-   private static List<Artifact> loadSelectedArtifacts(List<Pair<Integer, Long>> toLoad, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionId transactionId, boolean isArchived) throws OseeCoreException {
+   public static List<Artifact> loadArtifacts(Collection<ArtifactId> artIds, BranchId branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionId transactionId) {
+      List<Pair<ArtifactId, BranchId>> toLoad = new LinkedList<>();
+      for (ArtifactId artId : new HashSet<>(artIds)) {
+         toLoad.add(new Pair<ArtifactId, BranchId>(artId, branch));
+      }
+      return loadSelectedArtifacts(toLoad, loadLevel, reload, allowDeleted, transactionId,
+         BranchManager.isArchived(branch));
+   }
+
+   private static List<Artifact> loadSelectedArtifacts(List<Pair<ArtifactId, BranchId>> toLoad, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionId transactionId, boolean isArchived) throws OseeCoreException {
       Set<Artifact> artifacts = new LinkedHashSet<>();
       if (transactionId.isValid()) {
          loadArtifacts(toLoad, loadLevel, transactionId, reload, allowDeleted, artifacts, isArchived);
@@ -93,17 +103,17 @@ public final class ArtifactLoader {
       return new LinkedList<Artifact>(artifacts);
    }
 
-   private static void loadActiveArtifacts(List<Pair<Integer, Long>> toLoad, Set<Artifact> artifacts, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, boolean isArchived) throws OseeCoreException {
+   private static void loadActiveArtifacts(List<Pair<ArtifactId, BranchId>> toLoad, Set<Artifact> artifacts, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, boolean isArchived) throws OseeCoreException {
       if (!toLoad.isEmpty()) {
          int numRequested = toLoad.size();
-         Iterator<Pair<Integer, Long>> iterator = toLoad.iterator();
+         Iterator<Pair<ArtifactId, BranchId>> iterator = toLoad.iterator();
          CompositeKeyHashMap<Integer, Long, ReentrantLock> locks =
             new CompositeKeyHashMap<Integer, Long, ReentrantLock>();
 
          while (iterator.hasNext()) {
-            Pair<Integer, Long> next = iterator.next();
-            Integer artId = next.getFirst();
-            Long branchUuid = next.getSecond();
+            Pair<ArtifactId, BranchId> next = iterator.next();
+            Integer artId = next.getFirst().getId().intValue();
+            Long branchUuid = next.getSecond().getId();
 
             Artifact active = null;
 
@@ -126,9 +136,9 @@ public final class ArtifactLoader {
          } finally {
             // remove and unlock locks this thread created but didn't load
             if (artifacts.size() != numRequested) {
-               for (Pair<Integer, Long> loadPair : toLoad) {
-                  Integer artId = loadPair.getFirst();
-                  Long branchUuid = loadPair.getSecond();
+               for (Pair<ArtifactId, BranchId> loadPair : toLoad) {
+                  Integer artId = loadPair.getFirst().getId().intValue();
+                  Long branchUuid = loadPair.getSecond().getId();
                   removeAndUnlock(artId, branchUuid);
                   locks.removeAndGet(artId, branchUuid);
                }
@@ -247,12 +257,12 @@ public final class ArtifactLoader {
     * @param artifacts
     * @param locks
     */
-   private static void loadArtifacts(List<Pair<Integer, Long>> toLoad, LoadLevel loadLevel, TransactionId transactionId, LoadType reload, DeletionFlag allowDeleted, Set<Artifact> artifacts, boolean isArchived) throws OseeCoreException {
+   private static void loadArtifacts(List<Pair<ArtifactId, BranchId>> toLoad, LoadLevel loadLevel, TransactionId transactionId, LoadType reload, DeletionFlag allowDeleted, Set<Artifact> artifacts, boolean isArchived) throws OseeCoreException {
       if (toLoad != null && !toLoad.isEmpty()) {
 
          ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
-         for (Pair<Integer, Long> pair : toLoad) {
-            joinQuery.add(pair.getFirst(), pair.getSecond(), transactionId);
+         for (Pair<ArtifactId, BranchId> pair : toLoad) {
+            joinQuery.add(pair.getFirst().getId().intValue(), pair.getSecond().getId(), transactionId);
          }
          loadArtifacts(artifacts, joinQuery, loadLevel, null, reload, transactionId, allowDeleted, isArchived);
       }
@@ -289,18 +299,18 @@ public final class ArtifactLoader {
    /**
     * Determines the artIds and branchUuids of artifacts to load based on sql and queryParameters
     */
-   private static List<Pair<Integer, Long>> selectArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate) throws OseeCoreException {
+   private static List<Pair<ArtifactId, BranchId>> selectArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate) throws OseeCoreException {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       long time = System.currentTimeMillis();
 
-      List<Pair<Integer, Long>> toLoad = new LinkedList<>();
+      List<Pair<ArtifactId, BranchId>> toLoad = new LinkedList<>();
 
       try {
          chStmt.runPreparedQuery(artifactCountEstimate, sql, queryParameters);
          while (chStmt.next()) {
             int artId = chStmt.getInt("art_id");
             long branchUuid = chStmt.getLong("branch_id");
-            toLoad.add(new Pair<Integer, Long>(artId, branchUuid));
+            toLoad.add(new Pair<>(ArtifactId.valueOf(artId), BranchId.valueOf(branchUuid)));
          }
       } finally {
          chStmt.close();

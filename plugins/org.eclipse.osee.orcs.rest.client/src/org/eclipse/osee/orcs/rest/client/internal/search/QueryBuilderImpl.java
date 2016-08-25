@@ -13,8 +13,8 @@ package org.eclipse.osee.orcs.rest.client.internal.search;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -93,12 +93,8 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder andLocalId(int... artifactId) {
-      Collection<Integer> ids = new LinkedList<>();
-      for (int id : artifactId) {
-         ids.add(id);
-      }
-      return andLocalIds(ids);
+   public QueryBuilder andLocalId(ArtifactId artifactId) {
+      return andLocalIds(Collections.singletonList(artifactId.getId().intValue()));
    }
 
    @Override
@@ -221,26 +217,12 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder andRelatedTo(IRelationTypeSide relationTypeSide, IArtifactToken... artifacts) {
+   public QueryBuilder andRelatedTo(IRelationTypeSide relationTypeSide, ArtifactId... artifacts) {
       return andRelatedTo(relationTypeSide, Arrays.asList(artifacts));
    }
 
    @Override
-   public QueryBuilder andRelatedTo(IRelationTypeSide relationTypeSide, Collection<? extends IArtifactToken> artifacts) {
-      throw new UnsupportedOperationException();
-   }
-
-   @Override
-   public QueryBuilder andRelatedToLocalIds(IRelationTypeSide relationTypeSide, int... artifactIds) {
-      Collection<Integer> ids = new LinkedList<>();
-      for (int id : artifactIds) {
-         ids.add(id);
-      }
-      return andRelatedToLocalIds(relationTypeSide, ids);
-   }
-
-   @Override
-   public QueryBuilder andRelatedToLocalIds(IRelationTypeSide relationTypeSide, Collection<Integer> artifactIds) {
+   public QueryBuilder andRelatedTo(IRelationTypeSide relationTypeSide, Collection<ArtifactId> artifactIds) {
       predicates.add(predicateFactory.createRelatedToSearch(relationTypeSide, artifactIds));
       return this;
    }
@@ -258,7 +240,7 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public List<Integer> getIds() {
+   public List<ArtifactId> getIds() {
       return getSearchResult(RequestType.IDS).getIds();
    }
 

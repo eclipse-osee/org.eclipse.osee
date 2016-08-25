@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -217,10 +218,10 @@ public class ConflictManagerInternal {
             BranchManager.getBaseTransaction(source).getId(), joinQuery.getQueryId(), dest.getUuid());
 
          while (chStmt.next()) {
-            int artId = chStmt.getInt("art_id");
-            int sAttrId = chStmt.getInt("source_attr_id");
-            int dAttrId = chStmt.getInt("dest_attr_id");
-            artIdSet.add(artId);
+            Long artId = chStmt.getLong("art_id");
+            Long sAttrId = chStmt.getLong("source_attr_id");
+            Long dAttrId = chStmt.getLong("dest_attr_id");
+            artIdSet.add(artId.intValue());
             batchParams.add(new Object[] {dAttrId, sAttrId, artId});
          }
 
@@ -234,7 +235,7 @@ public class ConflictManagerInternal {
          ConnectionHandler.runBatchUpdate(updateSql, batchParams);
          // update cached source artifacts
          for (Object[] params : batchParams) {
-            ArtifactQuery.reloadArtifactFromId((int) params[2], source);
+            ArtifactQuery.reloadArtifactFromId(ArtifactId.valueOf((Long) params[2]), source);
          }
       }
    }

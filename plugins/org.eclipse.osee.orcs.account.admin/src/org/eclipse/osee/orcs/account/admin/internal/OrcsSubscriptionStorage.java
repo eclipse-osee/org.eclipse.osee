@@ -143,10 +143,10 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
 
    @Override
    public ResultSet<Account> getSubscriptionMembersById(SubscriptionGroupId groupId) {
-      int intGroupId = Long.valueOf(groupId.getId()).intValue();
+      ArtifactId groupArtId = ArtifactId.valueOf(groupId.getId());
       ResultSet<ArtifactReadable> results =
-         newQuery().andIsOfType(CoreArtifactTypes.User).andRelatedToLocalIds(CoreRelationTypes.Users_Artifact,
-            intGroupId).getResults();
+         newQuery().andIsOfType(CoreArtifactTypes.User).andRelatedTo(CoreRelationTypes.Users_Artifact,
+            groupArtId).getResults();
       return getFactory().newAccountResultSet(results);
    }
 

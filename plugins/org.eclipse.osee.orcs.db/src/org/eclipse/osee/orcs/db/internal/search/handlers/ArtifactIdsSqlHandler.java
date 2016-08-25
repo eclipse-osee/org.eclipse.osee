@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import java.util.Collection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
@@ -43,18 +42,17 @@ public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds> {
          StringBuilder sb = new StringBuilder();
          sb.append(
             "SELECT max(txs.transaction_id) as transaction_id, art.art_id\n    FROM osee_txs txs, osee_artifact art");
-         Collection<Long> ids = criteria.getIds();
-         if (ids.size() > 1) {
+         if (criteria.hasMultipleIds()) {
             sb.append(", osee_join_id id");
          }
          sb.append("\n    WHERE txs.gamma_id = art.gamma_id\n");
-         if (ids.size() > 1) {
-            AbstractJoinQuery joinQuery = writer.writeIdJoin(ids);
+         if (criteria.hasMultipleIds()) {
+            AbstractJoinQuery joinQuery = writer.writeJoin(criteria.getIds());
             sb.append("    AND art.art_id = id.id AND id.query_id = ?");
             writer.addParameter(joinQuery.getQueryId());
          } else {
             sb.append("    AND art.art_id = ?");
-            writer.addParameter(ids.iterator().next());
+            writer.addParameter(criteria.getId());
          }
          sb.append(" AND ");
          sb.append(writer.getWithClauseTxBranchFilter("txs", false));
@@ -75,7 +73,7 @@ public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      if (criteria.getIds().size() > 1 && !OptionsUtil.isHistorical(writer.getOptions())) {
+      if (criteria.hasMultipleIds() && !OptionsUtil.isHistorical(writer.getOptions())) {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
       artAlias = writer.addTable(TableEnum.ARTIFACT_TABLE);
@@ -84,7 +82,6 @@ public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds> {
 
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
-      Collection<Long> ids = criteria.getIds();
 
       if (OptionsUtil.isHistorical(writer.getOptions())) {
          writer.write(withClauseName);
@@ -97,8 +94,8 @@ public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds> {
          writer.write(".art_id");
       } else {
          writer.write(artAlias);
-         if (ids.size() > 1) {
-            AbstractJoinQuery joinQuery = writer.writeIdJoin(ids);
+         if (criteria.hasMultipleIds()) {
+            AbstractJoinQuery joinQuery = writer.writeJoin(criteria.getIds());
             writer.write(".art_id = ");
             writer.write(jIdAlias);
             writer.write(".id AND ");
@@ -107,7 +104,7 @@ public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds> {
             writer.addParameter(joinQuery.getQueryId());
          } else {
             writer.write(".art_id = ?");
-            writer.addParameter(ids.iterator().next());
+            writer.addParameter(criteria.getId());
          }
       }
 

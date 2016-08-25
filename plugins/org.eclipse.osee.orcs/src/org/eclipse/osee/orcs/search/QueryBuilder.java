@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.search;
 
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.framework.core.data.HasLocalId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -25,24 +25,24 @@ public interface QueryBuilder extends ArtifactQueryBuilder<QueryBuilder>, Query 
 
    /**
     * Executes query
-    * 
+    *
     * @return artifact search results
     */
    ResultSet<ArtifactReadable> getResults() throws OseeCoreException;
 
    /**
     * Executes query
-    * 
+    *
     * @return artifact search results with match locations
     */
    ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getMatches() throws OseeCoreException;
 
    /**
     * Executes query
-    * 
+    *
     * @return localIds search results
     */
-   ResultSet<HasLocalId<Integer>> getResultsAsLocalIds() throws OseeCoreException;
+   ResultSet<? extends ArtifactId> getResultsAsLocalIds() throws OseeCoreException;
 
    /**
     * Count search results
@@ -58,23 +58,23 @@ public interface QueryBuilder extends ArtifactQueryBuilder<QueryBuilder>, Query 
 
    /**
     * Schedule query
-    * 
+    *
     * @return artifact search results
     */
    CancellableCallable<ResultSet<ArtifactReadable>> createSearch() throws OseeCoreException;
 
    /**
     * Schedule query and find matching locations
-    * 
+    *
     * @return artifact search results with match locations
     */
    CancellableCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> createSearchWithMatches() throws OseeCoreException;
 
    /**
     * Schedule query and find matching locations
-    * 
+    *
     * @return localIds search results
     */
-   CancellableCallable<ResultSet<HasLocalId<Integer>>> createSearchResultsAsLocalIds() throws OseeCoreException;
+   CancellableCallable<ResultSet<? extends ArtifactId>> createSearchResultsAsLocalIds() throws OseeCoreException;
 
 }

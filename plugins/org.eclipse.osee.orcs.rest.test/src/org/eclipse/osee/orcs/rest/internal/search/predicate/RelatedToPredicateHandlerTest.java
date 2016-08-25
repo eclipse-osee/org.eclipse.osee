@@ -15,6 +15,7 @@ import static org.mockito.Mockito.verify;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -40,7 +41,7 @@ public class RelatedToPredicateHandlerTest {
    @Mock
    private QueryBuilder builder;
    @Captor
-   private ArgumentCaptor<Collection<Integer>> idsCaptor;
+   private ArgumentCaptor<Collection<ArtifactId>> idsCaptor;
    @Captor
    private ArgumentCaptor<IRelationTypeSide> rtsCaptor;
 
@@ -55,15 +56,15 @@ public class RelatedToPredicateHandlerTest {
       Predicate testPredicate = new Predicate(SearchMethod.RELATED_TO, Arrays.asList("A1", "B2"),
          Arrays.asList("4", "5"), QueryOption.TOKEN_DELIMITER__ANY);
       handler.handle(builder, testPredicate);
-      verify(builder, times(2)).andRelatedToLocalIds(rtsCaptor.capture(), idsCaptor.capture());
+      verify(builder, times(2)).andRelatedTo(rtsCaptor.capture(), idsCaptor.capture());
       List<IRelationTypeSide> rts = rtsCaptor.getAllValues();
       Assert.assertEquals(2, rts.size());
       verifyRelationTypeSide(rts.get(0), "A1");
       verifyRelationTypeSide(rts.get(1), "B2");
 
-      List<Collection<Integer>> ids = idsCaptor.getAllValues();
+      List<Collection<ArtifactId>> ids = idsCaptor.getAllValues();
       Assert.assertEquals(2, ids.size());
-      ids.containsAll(Arrays.asList(4, 5));
+      ids.containsAll(Arrays.asList(ArtifactId.valueOf(4), ArtifactId.valueOf(5)));
    }
 
    @Test(expected = UnsupportedOperationException.class)

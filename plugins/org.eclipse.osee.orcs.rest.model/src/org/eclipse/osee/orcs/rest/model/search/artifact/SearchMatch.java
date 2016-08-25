@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.rest.model.search.artifact;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 
 /**
@@ -21,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 @XmlRootElement(name = "SearchMatch")
 public class SearchMatch {
 
-   private int artId;
+   private ArtifactId artId;
    private int attrId;
 
    @XmlTransient
@@ -31,17 +32,17 @@ public class SearchMatch {
       // default constructor
    }
 
-   public SearchMatch(int artId, int attrId, List<MatchLocation> locations) {
+   public SearchMatch(ArtifactId artId, int attrId, List<MatchLocation> locations) {
       this.artId = artId;
       this.attrId = attrId;
       this.locations = locations;
    }
 
-   public int getArtId() {
+   public ArtifactId getArtId() {
       return artId;
    }
 
-   public void setArtId(int artId) {
+   public void setArtId(ArtifactId artId) {
       this.artId = artId;
    }
 

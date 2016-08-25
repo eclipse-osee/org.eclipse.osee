@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
+import com.google.common.collect.Iterables;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.framework.core.data.HasLocalId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
@@ -34,7 +35,6 @@ import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
-import com.google.common.collect.Iterables;
 
 /**
  * @author Roberto E. Escobar
@@ -69,12 +69,12 @@ public class CallableQueryFactory {
       };
    }
 
-   public CancellableCallable<ResultSet<HasLocalId<Integer>>> createLocalIdSearch(OrcsSession session, QueryData queryData) {
-      return new AbstractSearchCallable<ResultSet<HasLocalId<Integer>>>(session, queryData) {
+   public CancellableCallable<ResultSet<? extends ArtifactId>> createLocalIdSearch(OrcsSession session, QueryData queryData) {
+      return new AbstractSearchCallable<ResultSet<? extends ArtifactId>>(session, queryData) {
 
          @Override
-         protected ResultSet<HasLocalId<Integer>> innerCall() throws Exception {
-            final List<HasLocalId<Integer>> results = new LinkedList<>();
+         protected ResultSet<? extends ArtifactId> innerCall() throws Exception {
+            final List<ArtifactId> results = new LinkedList<>();
             LoadDataHandlerAdapter handler = new LoadDataHandlerAdapter() {
                @Override
                public void onData(ArtifactData data) {

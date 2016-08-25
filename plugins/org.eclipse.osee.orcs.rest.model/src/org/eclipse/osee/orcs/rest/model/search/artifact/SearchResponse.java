@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 
 /**
  * @author John R. Misinco
@@ -30,7 +31,7 @@ public class SearchResponse implements SearchResult {
    private SearchRequest searchRequest;
 
    @XmlTransient
-   private List<Integer> ids = new LinkedList<>();
+   private List<ArtifactId> ids = new LinkedList<>();
 
    @XmlTransient
    private List<SearchMatch> searchMatches = new LinkedList<>();
@@ -73,14 +74,14 @@ public class SearchResponse implements SearchResult {
    @Override
    @XmlElementWrapper(name = "ids")
    @XmlElement(name = "id")
-   public List<Integer> getIds() {
+   public List<ArtifactId> getIds() {
       if (ids == null) {
          ids = new LinkedList<>();
       }
       return ids;
    }
 
-   public void setIds(List<Integer> ids) {
+   public void setIds(List<ArtifactId> ids) {
       this.ids = ids;
    }
 

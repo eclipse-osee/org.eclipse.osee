@@ -37,7 +37,6 @@ import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -115,10 +114,10 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
                }
             }
             // load ats config object ids
-            for (HasLocalId<Integer> configArtId : orcsApi.getQueryFactory().fromBranch(
-               AtsUtilCore.getAtsBranch()).andIsOfType(AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.Version,
-                  AtsArtifactTypes.ActionableItem).getResultsAsLocalIds()) {
-               configs.getAtsConfigIds().add(Long.valueOf(configArtId.getLocalId()));
+            for (ArtifactId configArtId : orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
+               AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.Version,
+               AtsArtifactTypes.ActionableItem).getResultsAsLocalIds()) {
+               configs.getAtsConfigIds().add(configArtId.getId());
             }
             // load work definitions
             for (ArtifactId workDefArt : orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(

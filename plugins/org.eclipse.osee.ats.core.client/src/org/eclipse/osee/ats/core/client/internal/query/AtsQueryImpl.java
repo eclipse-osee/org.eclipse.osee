@@ -68,7 +68,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   public List<Integer> queryGetIds() {
+   public List<ArtifactId> queryGetIds() {
       return query.getIds();
    }
 
@@ -83,18 +83,18 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   public void queryAndRelatedToLocalIds(IRelationTypeSide relationTypeSide, int artId) {
-      query.andRelatedToLocalIds(relationTypeSide, artId);
+   public void queryAndRelatedToLocalIds(IRelationTypeSide relationTypeSide, ArtifactId artId) {
+      query.andRelatedTo(relationTypeSide, artId);
+   }
+
+   @Override
+   public void queryAndRelatedTo(IRelationTypeSide relationTypeSide, List<ArtifactId> artIds) {
+      query.andRelatedTo(relationTypeSide, artIds);
    }
 
    @Override
    public void queryAnd(IAttributeType attrType, Collection<String> values, QueryOption[] queryOption) {
       query.and(attrType, values, queryOption);
-   }
-
-   @Override
-   public void queryAndRelatedToLocalIds(IRelationTypeSide relationTypeSide, List<Integer> artIds) {
-      query.andRelatedToLocalIds(relationTypeSide, artIds);
    }
 
    @Override
@@ -128,7 +128,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   public List<Integer> getRelatedTeamWorkflowUuidsBasedOnTeamDefsAisAndVersions(List<AtsAttributeQuery> teamWorkflowAttr) {
+   public List<ArtifactId> getRelatedTeamWorkflowUuidsBasedOnTeamDefsAisAndVersions(List<AtsAttributeQuery> teamWorkflowAttr) {
       AtsQueryImpl search = new AtsQueryImpl(services);
       search.isOfType(AtsArtifactTypes.TeamWorkflow);
       if (teamDefUuids != null && !teamDefUuids.isEmpty()) {
@@ -153,5 +153,4 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
       query.andNotExists(attributeType);
       return this;
    }
-
 }

@@ -95,17 +95,9 @@ public class OseeClientQueryTest {
    @Test
    public void searchForArtifactByLocalId() throws OseeCoreException {
       final int EXPECTED_RESULTS = 1;
-      SearchResult results = createClient.createQueryBuilder(COMMON).andLocalId(
-         CoreArtifactTokens.UserGroups.getId().intValue()).getSearchResult(RequestType.IDS);
-      assertEquals(EXPECTED_RESULTS, results.getTotal());
-   }
-
-   @Test
-   public void searchForArtifactByLocalIds() throws OseeCoreException {
-      final int EXPECTED_RESULTS = 2;
       SearchResult results =
-         createClient.createQueryBuilder(COMMON).andLocalId(CoreArtifactTokens.UserGroups.getId().intValue(),
-            CoreArtifactTokens.Everyone.getId().intValue()).getSearchResult(RequestType.IDS);
+         createClient.createQueryBuilder(COMMON).andLocalId(CoreArtifactTokens.UserGroups).getSearchResult(
+            RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 

@@ -84,8 +84,7 @@ public class MockIArtifact extends NamedIdentity<String> implements IArtifact {
    }
 
    @Override
-   public Long getUuid() {
+   public Long getId() {
       return new Long(uniqueId);
    }
-
 }

@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.search;
 
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.framework.core.data.HasLocalId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -24,7 +24,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 /**
  * @author Roberto E. Escobar
  */
-public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder>implements QueryBuilder {
+public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> implements QueryBuilder {
 
    private final CallableQueryFactory queryFactory;
    private final OrcsSession session;
@@ -63,7 +63,7 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder>impl
    }
 
    @Override
-   public ResultSet<HasLocalId<Integer>> getResultsAsLocalIds() throws OseeCoreException {
+   public ResultSet<? extends ArtifactId> getResultsAsLocalIds() throws OseeCoreException {
       try {
          return createSearchResultsAsLocalIds().call();
       } catch (Exception ex) {
@@ -82,7 +82,7 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder>impl
    }
 
    @Override
-   public CancellableCallable<ResultSet<HasLocalId<Integer>>> createSearchResultsAsLocalIds() throws OseeCoreException {
+   public CancellableCallable<ResultSet<? extends ArtifactId>> createSearchResultsAsLocalIds() throws OseeCoreException {
       return queryFactory.createLocalIdSearch(session, buildAndCopy());
    }
 

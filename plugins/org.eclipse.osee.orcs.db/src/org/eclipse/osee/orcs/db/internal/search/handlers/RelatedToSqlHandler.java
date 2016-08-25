@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -49,7 +48,7 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
          StringBuilder sb = new StringBuilder();
          sb.append("SELECT max(txs.transaction_id) as transaction_id, rel.a_art_id as art_id\n");
          sb.append("    FROM osee_txs txs, osee_relation_link rel");
-         if (criteria.getIds().size() > 1) {
+         if (criteria.hasMultipleIds()) {
             sb.append(", ");
             sb.append(TableEnum.ID_JOIN_TABLE.getName());
             sb.append(" ");
@@ -87,7 +86,7 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      if (criteria.getIds().size() > 1) {
+      if (criteria.hasMultipleIds()) {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
 
@@ -107,26 +106,23 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
       sb.append(".rel_link_type_id = ?");
       writer.addParameter(typeSide.getGuid());
 
-      Collection<Integer> ids = criteria.getIds();
-      if (!ids.isEmpty()) {
-         sb.append(" AND ");
-         String aOrbArtId = typeSide.getSide().isSideA() ? ".a_art_id" : ".b_art_id";
-         if (ids.size() > 1) {
-            AbstractJoinQuery joinQuery = writer.writeIdJoin(ids);
-            sb.append(relAliasName);
-            sb.append(aOrbArtId);
-            sb.append(" = ");
-            sb.append(jIdAlias);
-            sb.append(".id AND ");
-            sb.append(jIdAlias);
-            sb.append(".query_id = ?");
-            writer.addParameter(joinQuery.getQueryId());
-         } else {
-            sb.append(relAliasName);
-            sb.append(aOrbArtId);
-            sb.append(" = ?");
-            writer.addParameter(ids.iterator().next());
-         }
+      sb.append(" AND ");
+      String aOrbArtId = typeSide.getSide().isSideA() ? ".a_art_id" : ".b_art_id";
+      if (criteria.hasMultipleIds()) {
+         AbstractJoinQuery joinQuery = writer.writeJoin(criteria.getIds());
+         sb.append(relAliasName);
+         sb.append(aOrbArtId);
+         sb.append(" = ");
+         sb.append(jIdAlias);
+         sb.append(".id AND ");
+         sb.append(jIdAlias);
+         sb.append(".query_id = ?");
+         writer.addParameter(joinQuery.getQueryId());
+      } else {
+         sb.append(relAliasName);
+         sb.append(aOrbArtId);
+         sb.append(" = ?");
+         writer.addParameter(criteria.getId());
       }
 
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);

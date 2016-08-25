@@ -16,18 +16,18 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
 /**
  * @author Roberto E. Escobar
  */
-public final class DefaultBasicArtifact extends NamedIdentity<String>implements IBasicArtifact<Object> {
+public final class DefaultBasicArtifact extends NamedIdentity<String> implements IBasicArtifact<Object> {
 
-   private final int artId;
+   private final Long artId;
 
-   public DefaultBasicArtifact(int artId, String guid, String name) {
+   public DefaultBasicArtifact(long artId, String guid, String name) {
       super(guid, name);
       this.artId = artId;
    }
 
    @Override
    public int getArtId() {
-      return artId;
+      return artId.intValue();
    }
 
    @Override
@@ -46,7 +46,7 @@ public final class DefaultBasicArtifact extends NamedIdentity<String>implements 
    }
 
    @Override
-   public Long getUuid() {
-      return 0L;
+   public Long getId() {
+      return artId;
    }
 }

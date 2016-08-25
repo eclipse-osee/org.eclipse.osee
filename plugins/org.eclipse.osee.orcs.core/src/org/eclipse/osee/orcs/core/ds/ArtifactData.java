@@ -10,13 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
+
 /**
  * @author Roberto E. Escobar
  */
-public interface ArtifactData extends OrcsData {
-
-   String getGuid();
+public interface ArtifactData extends OrcsData, ArtifactId {
 
    void setGuid(String guid);
-
 }

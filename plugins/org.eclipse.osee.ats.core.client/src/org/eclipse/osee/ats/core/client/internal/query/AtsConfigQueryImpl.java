@@ -69,7 +69,7 @@ public class AtsConfigQueryImpl extends AbstractAtsConfigQueryImpl {
    }
 
    @Override
-   public List<Integer> queryGetIds() {
+   public List<? extends ArtifactId> queryGetIds() {
       return getQuery().getIds();
    }
 
@@ -81,11 +81,6 @@ public class AtsConfigQueryImpl extends AbstractAtsConfigQueryImpl {
    @Override
    public void queryAnd(IAttributeType attrType, String value) {
       getQuery().and(attrType, value);
-   }
-
-   @Override
-   public void queryAndRelatedToLocalIds(IRelationTypeSide relationTypeSide, int artId) {
-      getQuery().andRelatedToLocalIds(relationTypeSide, artId);
    }
 
    @Override

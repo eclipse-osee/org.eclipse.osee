@@ -25,7 +25,9 @@ public interface ArtifactId extends Identifiable<String>, Id {
 
    public static final ArtifactId SENTINEL = ArtifactId.valueOf(Id.SENTINEL);
 
-   public Long getUuid();
+   default Long getUuid() {
+      return getId();
+   }
 
    public static ArtifactId valueOf(String id) {
 
@@ -42,11 +44,6 @@ public interface ArtifactId extends Identifiable<String>, Id {
          @Override
          public String getGuid() {
             return null;
-         }
-
-         @Override
-         public Long getUuid() {
-            return getId();
          }
 
          @Override

@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.rest.client;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -52,7 +53,7 @@ public interface QueryBuilder {
    /**
     * Search criteria that finds a given artifact id
     */
-   QueryBuilder andLocalId(int... artifactId) throws OseeCoreException;
+   QueryBuilder andLocalId(ArtifactId artifactId);
 
    /**
     * Search criteria that finds a given artifact ids
@@ -177,28 +178,14 @@ public interface QueryBuilder {
     *
     * @param relationTypeSide the type-side to search on
     */
-   QueryBuilder andRelatedTo(IRelationTypeSide relationTypeSide, IArtifactToken... artifacts) throws OseeCoreException;
+   QueryBuilder andRelatedTo(IRelationTypeSide relationTypeSide, ArtifactId... artifacts) throws OseeCoreException;
 
    /**
     * Search for related artifacts
     *
     * @param relationTypeSide the type-side to search on
     */
-   QueryBuilder andRelatedTo(IRelationTypeSide relationTypeSide, Collection<? extends IArtifactToken> artifacts) throws OseeCoreException;
-
-   /**
-    * Search for related artifacts
-    *
-    * @param relationTypeSide the type-side to search on
-    */
-   QueryBuilder andRelatedToLocalIds(IRelationTypeSide relationTypeSide, int... artifactIds) throws OseeCoreException;
-
-   /**
-    * Search for related artifacts
-    *
-    * @param relationTypeSide the type-side to search on
-    */
-   QueryBuilder andRelatedToLocalIds(IRelationTypeSide relationTypeSide, Collection<Integer> artifactIds) throws OseeCoreException;
+   QueryBuilder andRelatedTo(IRelationTypeSide relationTypeSide, Collection<ArtifactId> artifactIds) throws OseeCoreException;
 
    /**
     * Executes query
@@ -217,7 +204,7 @@ public interface QueryBuilder {
     *
     * @return artifact search ids
     */
-   List<Integer> getIds();
+   List<ArtifactId> getIds();
 
    QueryBuilder getQueryBuilder();
 }

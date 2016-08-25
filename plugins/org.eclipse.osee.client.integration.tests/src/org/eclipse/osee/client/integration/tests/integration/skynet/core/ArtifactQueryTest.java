@@ -242,8 +242,8 @@ public class ArtifactQueryTest {
       ArtifactCache.deCache(toCheck);
 
       TransactionToken beforeDelete = idToTxId.get(newIdsInOrder.get(1));
-      Assert.assertNotNull(ArtifactQuery.checkHistoricalArtifactFromId(firstCreated.getArtId(), beforeDelete,
-         DeletionFlag.EXCLUDE_DELETED));
+      Assert.assertNotNull(
+         ArtifactQuery.checkHistoricalArtifactFromId(firstCreated, beforeDelete, DeletionFlag.EXCLUDE_DELETED));
    }
 
    @Test

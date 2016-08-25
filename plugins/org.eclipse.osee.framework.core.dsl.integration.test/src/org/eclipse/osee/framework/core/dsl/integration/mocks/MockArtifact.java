@@ -57,7 +57,7 @@ public class MockArtifact extends NamedIdentity<String> implements IBasicArtifac
    }
 
    @Override
-   public Long getUuid() {
+   public Long getId() {
       return Long.valueOf(artId);
    }
 

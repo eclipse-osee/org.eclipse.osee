@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.ActionableItemListDialog;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -84,12 +85,12 @@ public class OpenOrphanedTasks extends Action {
 
                @Override
                protected void doWork(IProgressMonitor monitor) throws Exception {
-                  List<Integer> ids = ArtifactQuery.createQueryBuilder(AtsUtilCore.getAtsBranch()).andIsOfType(
+                  List<ArtifactId> ids = ArtifactQuery.createQueryBuilder(AtsUtilCore.getAtsBranch()).andIsOfType(
                      AtsArtifactTypes.Task).andNotExists(AtsRelationTypes.TeamWfToTask_Task).getIds();
                   if (ids.isEmpty()) {
                      AWorkbench.popup("No Orphaned Tasks Found");
                   } else {
-                     List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(ids, AtsUtilCore.getAtsBranch());
+                     List<Artifact> artifacts = ArtifactQuery.getArtifactListFrom(ids, AtsUtilCore.getAtsBranch());
                      CustomizeData data = new CustomizeData();
                      data.setGuid(GUID.create());
                      data.setName("Orphaned Task View");

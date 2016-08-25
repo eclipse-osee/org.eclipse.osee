@@ -74,7 +74,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    protected Long insertionUuid;
    protected Long insertionActivityUuid;
    protected Long workPackageUuid;
-   protected List<Integer> onlyIds = null;
+   protected List<ArtifactId> onlyIds = null;
    private ReleasedOption releasedOption;
    protected final List<IAtsQueryFilter> queryFilters;
 
@@ -93,7 +93,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public Collection<Integer> getItemIds() throws OseeCoreException {
+   public Collection<ArtifactId> getItemIds() throws OseeCoreException {
       onlyIds = new LinkedList<>();
       getItems();
       return onlyIds;
@@ -178,7 +178,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       }
    }
 
-   private Collection<? extends Integer> handleReleaseOption(List<Integer> queryGetIds) {
+   private Collection<ArtifactId> handleReleaseOption(List<ArtifactId> queryGetIds) {
       if (releasedOption != null && releasedOption != ReleasedOption.Both) {
          throw new UnsupportedOperationException("This option not supported");
       }
@@ -231,8 +231,8 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
          // teamDef, ai and version
          if (isTeamTypeDefAisOrVersionSearched(allArtTypes)) {
-            List<Integer> teamWfUuids = getRelatedTeamWorkflowUuidsBasedOnTeamDefsAisAndVersions(teamWorkflowAttr);
-            queryAndRelatedToLocalIds(AtsRelationTypes.TeamWfToTask_TeamWf, teamWfUuids);
+            List<ArtifactId> teamWfUuids = getRelatedTeamWorkflowUuidsBasedOnTeamDefsAisAndVersions(teamWorkflowAttr);
+            queryAndRelatedTo(AtsRelationTypes.TeamWfToTask_TeamWf, teamWfUuids);
          }
 
          addEvConfigCriteria();
@@ -251,8 +251,8 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
          // teamDef, ai and version
          if (isTeamTypeDefAisOrVersionSearched(allArtTypes)) {
-            List<Integer> teamWfUuids = getRelatedTeamWorkflowUuidsBasedOnTeamDefsAisAndVersions(teamWorkflowAttr);
-            queryAndRelatedToLocalIds(AtsRelationTypes.TeamWorkflowToReview_Team, teamWfUuids);
+            List<ArtifactId> teamWfUuids = getRelatedTeamWorkflowUuidsBasedOnTeamDefsAisAndVersions(teamWorkflowAttr);
+            queryAndRelatedTo(AtsRelationTypes.TeamWorkflowToReview_Team, teamWfUuids);
          }
 
          collectResults(allResults, allArtTypes);
@@ -431,12 +431,12 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       return onlyIds != null;
    }
 
-   public abstract List<Integer> queryGetIds();
+   public abstract List<ArtifactId> queryGetIds();
 
    /**
     * Return team workflow ids based on teamdef, ai and version criteria to use in relatedTo criteria.
     */
-   public abstract List<Integer> getRelatedTeamWorkflowUuidsBasedOnTeamDefsAisAndVersions(List<AtsAttributeQuery> teamWorkflowAttr);
+   public abstract List<ArtifactId> getRelatedTeamWorkflowUuidsBasedOnTeamDefsAisAndVersions(List<AtsAttributeQuery> teamWorkflowAttr);
 
    private Set<IArtifactType> getAllArtTypes() {
       Set<IArtifactType> allArtTypes = new HashSet<>();
@@ -788,11 +788,11 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    private void addVersionCriteria() {
       if (versionUuid != null && versionUuid > 0) {
          queryAndRelatedToLocalIds(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
-            Long.valueOf(versionUuid).intValue());
+            ArtifactId.valueOf(versionUuid));
       }
    }
 
-   public abstract void queryAndRelatedToLocalIds(IRelationTypeSide relationTypeSide, int artId);
+   public abstract void queryAndRelatedToLocalIds(IRelationTypeSide relationTypeSide, ArtifactId artId);
 
    private void addAiCriteria() {
       if (isActionableItemSpecified()) {
@@ -829,16 +829,16 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    private void addRelationCriteria() {
       if (!andRels.isEmpty()) {
          for (Entry<IRelationTypeSide, List<IAtsObject>> entry : andRels.entrySet()) {
-            List<Integer> artIds = new LinkedList<>();
+            List<ArtifactId> artIds = new LinkedList<>();
             for (IAtsObject object : entry.getValue()) {
-               artIds.add(new Long(object.getId()).intValue());
+               artIds.add(ArtifactId.valueOf(object.getId()));
             }
-            queryAndRelatedToLocalIds(entry.getKey(), artIds);
+            queryAndRelatedTo(entry.getKey(), artIds);
          }
       }
    }
 
-   public abstract void queryAndRelatedToLocalIds(IRelationTypeSide relationTypeSide, List<Integer> artIds);
+   public abstract void queryAndRelatedTo(IRelationTypeSide relationTypeSide, List<ArtifactId> artIds);
 
    private void addStateNameCriteria() {
       if (stateName != null) {

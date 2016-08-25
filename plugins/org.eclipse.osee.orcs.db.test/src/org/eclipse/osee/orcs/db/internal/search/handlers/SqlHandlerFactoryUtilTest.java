@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
@@ -43,7 +44,7 @@ import org.mockito.Mock;
 
 /**
  * Test Case for {@link SqlHandlerFactoryUtil}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class SqlHandlerFactoryUtilTest {
@@ -67,7 +68,7 @@ public class SqlHandlerFactoryUtilTest {
    public void testQueryModuleFactory() throws Exception {
       List<Criteria> criteria = new ArrayList<>();
       criteria.add(new CriteriaArtifactGuids(null));
-      criteria.add(new CriteriaArtifactIds(null));
+      criteria.add(new CriteriaArtifactIds((Collection<? extends ArtifactId>) null));
       criteria.add(new CriteriaRelationTypeFollow(null));
       criteria.add(new CriteriaArtifactType(null, null, true));
       criteria.add(new CriteriaRelationTypeExists(null));
@@ -76,7 +77,7 @@ public class SqlHandlerFactoryUtilTest {
       criteria.add(new CriteriaAttributeOther(null, null));
       criteria.add(
          new CriteriaAttributeKeywords(false, null, null, Collections.<String> emptyList(), null, null, null));
-      criteria.add(new CriteriaRelatedTo(null, null));
+      criteria.add(new CriteriaRelatedTo(null, (Collection<? extends ArtifactId>) null));
       criteria.add(new CriteriaAllArtifacts());
 
       Collections.shuffle(criteria);

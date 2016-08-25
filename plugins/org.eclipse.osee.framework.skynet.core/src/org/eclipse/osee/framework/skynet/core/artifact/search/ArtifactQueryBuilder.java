@@ -22,10 +22,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -57,7 +56,7 @@ public class ArtifactQueryBuilder {
    private String guid;
    private final ArtifactSearchCriteria[] criteria;
    private final BranchId branch;
-   private int artifactId;
+   private ArtifactId artifactId;
    private Collection<Integer> artifactIds;
    private final Collection<? extends IArtifactType> artifactTypes;
    private final DeletionFlag allowDeleted;
@@ -68,7 +67,7 @@ public class ArtifactQueryBuilder {
    /**
     * @param allowDeleted set whether deleted artifacts should be included in the resulting artifact list
     */
-   public ArtifactQueryBuilder(int artId, BranchId branch, DeletionFlag allowDeleted, LoadLevel loadLevel) {
+   public ArtifactQueryBuilder(ArtifactId artId, BranchId branch, DeletionFlag allowDeleted, LoadLevel loadLevel) {
       this(null, artId, null, null, null, branch, TransactionToken.SENTINEL, allowDeleted, loadLevel);
    }
 
@@ -79,75 +78,82 @@ public class ArtifactQueryBuilder {
     * @param allowDeleted set whether deleted artifacts should be included in the resulting artifact list
     */
    public ArtifactQueryBuilder(Collection<Integer> artifactIds, BranchId branch, DeletionFlag allowDeleted, LoadLevel loadLevel) {
-      this(artifactIds, 0, null, null, null, branch, TransactionToken.SENTINEL, allowDeleted, loadLevel);
+      this(artifactIds, ArtifactId.SENTINEL, null, null, null, branch, TransactionToken.SENTINEL, allowDeleted,
+         loadLevel);
       emptyCriteria = artifactIds.isEmpty();
    }
 
    public ArtifactQueryBuilder(List<String> guids, BranchId branch, LoadLevel loadLevel) {
-      this(null, 0, guids, null, null, branch, TransactionToken.SENTINEL, EXCLUDE_DELETED, loadLevel);
+      this(null, ArtifactId.SENTINEL, guids, null, null, branch, TransactionToken.SENTINEL, EXCLUDE_DELETED, loadLevel);
       emptyCriteria = guids.isEmpty();
    }
 
    public ArtifactQueryBuilder(List<String> guids, BranchId branch, DeletionFlag allowDeleted, LoadLevel loadLevel) {
-      this(null, 0, guids, null, null, branch, TransactionToken.SENTINEL, allowDeleted, loadLevel);
+      this(null, ArtifactId.SENTINEL, guids, null, null, branch, TransactionToken.SENTINEL, allowDeleted, loadLevel);
       emptyCriteria = guids.isEmpty();
    }
 
    public ArtifactQueryBuilder(List<String> guids, TransactionToken transactionId, DeletionFlag allowDeleted, LoadLevel loadLevel) throws OseeCoreException {
-      this(null, 0, guids, null, null, transactionId.getBranch(), transactionId, allowDeleted, loadLevel);
+      this(null, ArtifactId.SENTINEL, guids, null, null, transactionId.getBranch(), transactionId, allowDeleted,
+         loadLevel);
       emptyCriteria = guids.isEmpty();
    }
 
    public ArtifactQueryBuilder(Collection<Integer> artifactIds, TransactionToken transactionId, DeletionFlag allowDeleted, LoadLevel loadLevel) throws OseeCoreException {
-      this(artifactIds, 0, null, null, null, transactionId.getBranch(), transactionId, allowDeleted, loadLevel);
+      this(artifactIds, ArtifactId.SENTINEL, null, null, null, transactionId.getBranch(), transactionId, allowDeleted,
+         loadLevel);
       emptyCriteria = artifactIds.isEmpty();
    }
 
-   public ArtifactQueryBuilder(int artifactId, TransactionToken transactionId, DeletionFlag allowDeleted, LoadLevel loadLevel) throws OseeCoreException {
+   public ArtifactQueryBuilder(ArtifactId artifactId, TransactionToken transactionId, DeletionFlag allowDeleted, LoadLevel loadLevel) throws OseeCoreException {
       this(null, artifactId, null, null, null, transactionId.getBranch(), transactionId, allowDeleted, loadLevel);
    }
 
    public ArtifactQueryBuilder(String guid, BranchId branch, DeletionFlag allowDeleted, LoadLevel loadLevel) throws OseeCoreException {
-      this(null, 0, null, ensureValid(guid), null, branch, TransactionToken.SENTINEL, allowDeleted, loadLevel);
-   }
-
-   public ArtifactQueryBuilder(IArtifactType artifactType, BranchId branch, LoadLevel loadLevel, DeletionFlag allowDeleted) {
-      this(null, 0, null, null, Arrays.asList(artifactType), branch, TransactionToken.SENTINEL, allowDeleted,
+      this(null, ArtifactId.SENTINEL, null, ensureValid(guid), null, branch, TransactionToken.SENTINEL, allowDeleted,
          loadLevel);
    }
 
+   public ArtifactQueryBuilder(IArtifactType artifactType, BranchId branch, LoadLevel loadLevel, DeletionFlag allowDeleted) {
+      this(null, ArtifactId.SENTINEL, null, null, Arrays.asList(artifactType), branch, TransactionToken.SENTINEL,
+         allowDeleted, loadLevel);
+   }
+
    public ArtifactQueryBuilder(Collection<? extends IArtifactType> artifactTypes, BranchId branch, LoadLevel loadLevel, DeletionFlag allowDeleted) {
-      this(null, 0, null, null, artifactTypes, branch, TransactionToken.SENTINEL, allowDeleted, loadLevel);
+      this(null, ArtifactId.SENTINEL, null, null, artifactTypes, branch, TransactionToken.SENTINEL, allowDeleted,
+         loadLevel);
       emptyCriteria = artifactTypes.isEmpty();
    }
 
    public ArtifactQueryBuilder(BranchId branch, LoadLevel loadLevel, DeletionFlag allowDeleted) {
-      this(null, 0, null, null, null, branch, TransactionToken.SENTINEL, allowDeleted, loadLevel);
+      this(null, ArtifactId.SENTINEL, null, null, null, branch, TransactionToken.SENTINEL, allowDeleted, loadLevel);
    }
 
    public ArtifactQueryBuilder(BranchId branch, LoadLevel loadLevel, DeletionFlag allowDeleted, ArtifactSearchCriteria... criteria) {
-      this(null, 0, null, null, null, branch, TransactionToken.SENTINEL, allowDeleted, loadLevel, criteria);
+      this(null, ArtifactId.SENTINEL, null, null, null, branch, TransactionToken.SENTINEL, allowDeleted, loadLevel,
+         criteria);
       emptyCriteria = criteria.length == 0;
    }
 
    public ArtifactQueryBuilder(BranchId branch, LoadLevel loadLevel, List<ArtifactSearchCriteria> criteria) {
-      this(null, 0, null, null, null, branch, TransactionToken.SENTINEL, EXCLUDE_DELETED, loadLevel, toArray(criteria));
+      this(null, ArtifactId.SENTINEL, null, null, null, branch, TransactionToken.SENTINEL, EXCLUDE_DELETED, loadLevel,
+         toArray(criteria));
       emptyCriteria = criteria.isEmpty();
    }
 
    public ArtifactQueryBuilder(IArtifactType artifactType, BranchId branch, LoadLevel loadLevel, ArtifactSearchCriteria... criteria) {
-      this(null, 0, null, null, Arrays.asList(artifactType), branch, TransactionToken.SENTINEL, EXCLUDE_DELETED,
-         loadLevel, criteria);
+      this(null, ArtifactId.SENTINEL, null, null, Arrays.asList(artifactType), branch, TransactionToken.SENTINEL,
+         EXCLUDE_DELETED, loadLevel, criteria);
       emptyCriteria = criteria.length == 0;
    }
 
    public ArtifactQueryBuilder(IArtifactType artifactType, BranchId branch, LoadLevel loadLevel, List<ArtifactSearchCriteria> criteria) {
-      this(null, 0, null, null, Arrays.asList(artifactType), branch, TransactionToken.SENTINEL, EXCLUDE_DELETED,
-         loadLevel, toArray(criteria));
+      this(null, ArtifactId.SENTINEL, null, null, Arrays.asList(artifactType), branch, TransactionToken.SENTINEL,
+         EXCLUDE_DELETED, loadLevel, toArray(criteria));
       emptyCriteria = criteria.isEmpty();
    }
 
-   private ArtifactQueryBuilder(Collection<Integer> artifactIds, int artifactId, List<String> guids, String guid, Collection<? extends IArtifactType> artifactTypes, BranchId branch, TransactionToken transactionId, DeletionFlag allowDeleted, LoadLevel loadLevel, ArtifactSearchCriteria... criteria) {
+   private ArtifactQueryBuilder(Collection<Integer> artifactIds, ArtifactId artifactId, List<String> guids, String guid, Collection<? extends IArtifactType> artifactTypes, BranchId branch, TransactionToken transactionId, DeletionFlag allowDeleted, LoadLevel loadLevel, ArtifactSearchCriteria... criteria) {
       this.artifactTypes = artifactTypes;
       this.branch = branch;
       this.criteria = criteria;
@@ -158,7 +164,7 @@ public class ArtifactQueryBuilder {
       this.transactionId = transactionId;
       if (artifactIds != null && !artifactIds.isEmpty()) {
          if (artifactIds.size() == 1) {
-            this.artifactId = artifactIds.iterator().next();
+            this.artifactId = ArtifactId.valueOf(artifactIds.iterator().next());
          } else {
             this.artifactIds = artifactIds;
          }
@@ -193,7 +199,7 @@ public class ArtifactQueryBuilder {
 
    private boolean useServerSearch() {
       return Conditions.hasValues(artifactTypes) || guid != null || Conditions.hasValues(
-         guids) || criteria.length > 0 || artifactId == 0 && !Conditions.hasValues(artifactIds);
+         guids) || criteria.length > 0 || artifactId.isInvalid() && !Conditions.hasValues(artifactIds);
    }
 
    private QueryBuilder getQueryBuilder() throws OseeCoreException {
@@ -218,10 +224,10 @@ public class ArtifactQueryBuilder {
          builder.includeDeleted();
       }
 
-      if (artifactId != 0 || Conditions.hasValues(artifactIds)) {
+      if (artifactId.isValid() || Conditions.hasValues(artifactIds)) {
          if (Conditions.hasValues(artifactIds)) {
             builder.andLocalIds(artifactIds);
-         } else if (artifactId != 0) {
+         } else if (artifactId.isValid()) {
             builder.andLocalId(artifactId);
          }
       }
@@ -275,7 +281,7 @@ public class ArtifactQueryBuilder {
    }
 
    private List<Artifact> loadArtifactsFromServerIds(LoadType reload) throws OseeCoreException {
-      List<Integer> ids = createOrcsQuery().getIds();
+      List<ArtifactId> ids = createOrcsQuery().getIds();
       List<Artifact> artifacts;
       if (ids != null && !ids.isEmpty()) {
          artifacts = ArtifactLoader.loadArtifacts(ids, branch, loadLevel, reload, allowDeleted, transactionId);
@@ -294,7 +300,7 @@ public class ArtifactQueryBuilder {
       return artifactsFromServerIds;
    }
 
-   public List<Integer> selectArtifacts(int artifactCountEstimate) throws OseeCoreException {
+   public List<ArtifactId> selectArtifacts(int artifactCountEstimate) throws OseeCoreException {
       return createOrcsQuery().getIds();
    }
 
@@ -336,7 +342,7 @@ public class ArtifactQueryBuilder {
          message.append(" with type(s): ");
          message.append(artifactTypes);
       }
-      if (artifactId != 0) {
+      if (artifactId.isValid()) {
          message.append(" with id \"");
          message.append(artifactId);
          message.append("\"");
@@ -359,7 +365,7 @@ public class ArtifactQueryBuilder {
 
    private static final class LocalIdQueryBuilder implements InvocationHandler {
 
-      private final Set<Integer> localIds = new LinkedHashSet<>();
+      private final List<ArtifactId> localIds = new ArrayList<>();
       private DeletionFlag allowDeleted = EXCLUDE_DELETED;
       private TransactionId txId = TransactionId.SENTINEL;
       private final BranchId branch;
@@ -416,7 +422,7 @@ public class ArtifactQueryBuilder {
       @SuppressWarnings("unused")
       public SearchResult getSearchResult() throws OseeCoreException {
          SearchResponse response = new SearchResponse();
-         List<Integer> ids = new LinkedList<>(localIds);
+         List<ArtifactId> ids = new LinkedList<>(localIds);
          response.setIds(ids);
          return response;
       }
@@ -432,21 +438,18 @@ public class ArtifactQueryBuilder {
       }
 
       @SuppressWarnings("unused")
-      public void andLocalId(int... artifactId) {
-         for (int id : artifactId) {
-            localIds.add(id);
-         }
+      public void andLocalId(ArtifactId artifactId) {
+         localIds.add(artifactId);
       }
 
       @SuppressWarnings("unused")
       public void andLocalIds(Collection<Integer> artifactIds) {
-         localIds.addAll(artifactIds);
+         artifactIds.stream().map(id -> ArtifactId.valueOf(id)).forEachOrdered(localIds::add);
       }
 
       @SuppressWarnings("unused")
-      public List<Integer> getIds() {
-         return new LinkedList<Integer>(localIds);
+      public List<ArtifactId> getIds() {
+         return localIds;
       }
-
    }
 }

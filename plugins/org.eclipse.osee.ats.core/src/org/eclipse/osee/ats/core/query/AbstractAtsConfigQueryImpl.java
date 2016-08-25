@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.query;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -47,7 +48,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    protected Collection<Long> uuids;
    protected final IAtsServices services;
    protected Collection<Long> aiUuids;
-   protected List<Integer> onlyIds = null;
+   protected List<ArtifactId> onlyIds = null;
    protected final List<IAtsQueryFilter> queryFilters;
 
    public AbstractAtsConfigQueryImpl(IAtsServices services) {
@@ -59,7 +60,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    }
 
    @Override
-   public Collection<Integer> getItemIds() throws OseeCoreException {
+   public Collection<ArtifactId> getItemIds() throws OseeCoreException {
       onlyIds = new LinkedList<>();
       getItems();
       return onlyIds;
@@ -142,7 +143,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
       return onlyIds != null;
    }
 
-   public abstract List<Integer> queryGetIds();
+   public abstract List<? extends ArtifactId> queryGetIds();
 
    @Override
    public IAtsConfigQuery isOfType(IArtifactType artifactType) {
@@ -161,7 +162,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
 
    @Override
    public IAtsConfigQuery andUuids(Long... uuids) {
-      this.uuids = org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(uuids);
+      this.uuids = Arrays.asList(uuids);
       return this;
    }
 
@@ -201,8 +202,6 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    public abstract void queryAndIsOfType(List<IArtifactType> artTypes);
 
    public abstract void queryAnd(IAttributeType attrType, String value);
-
-   public abstract void queryAndRelatedToLocalIds(IRelationTypeSide relationTypeSide, int artId);
 
    private void addAttributeCriteria() {
       if (!andAttr.isEmpty()) {

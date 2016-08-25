@@ -23,12 +23,10 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllArtifacts;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeNotExists;
@@ -106,16 +104,8 @@ public class CriteriaFactory {
       return new CriteriaArtifactType(artifactTypeCache, artifactTypes, true);
    }
 
-   public Criteria createArtifactIdCriteria(Collection<Long> artifactIds) throws OseeCoreException {
-      return new CriteriaArtifactIds(artifactIds);
-   }
-
    public Criteria createArtifactGuidCriteria(Set<String> guids) throws OseeCoreException {
       return new CriteriaArtifactGuids(guids);
-   }
-
-   public Criteria createRelatedToCriteria(IRelationTypeSide relationType, Collection<Integer> artifactIds) throws OseeCoreException {
-      return new CriteriaRelatedTo(relationType, artifactIds);
    }
 
    public Criteria createAllArtifactsCriteria() {

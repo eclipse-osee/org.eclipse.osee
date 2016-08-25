@@ -10,14 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.HasLocalId;
+import java.util.stream.Collectors;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -26,8 +25,6 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -36,6 +33,8 @@ import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.criteria.BranchCriteria;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.TxCriteria;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.ArtifactQueryBuilder;
@@ -144,18 +143,28 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
    }
 
    @Override
-   public T andUuid(long... uuids) throws OseeCoreException {
-      List<Long> ids = new ArrayList<>(uuids.length);
-      for (long id : uuids) {
-         ids.add(id);
-      }
-      return andUuids(ids);
+   public T andUuid(long id) {
+      return andId(ArtifactId.valueOf(id));
+   }
+
+   @Override
+   public T andId(ArtifactId id) {
+      return addAndCheck(queryData, new CriteriaArtifactIds(id));
+   }
+
+   @Override
+   public T andIds(ArtifactId id) {
+      return andId(id);
+   }
+
+   @Override
+   public T andIds(Collection<? extends ArtifactId> ids) {
+      return addAndCheck(queryData, new CriteriaArtifactIds(ids));
    }
 
    @Override
    public T andUuids(Collection<Long> artifactIds) throws OseeCoreException {
-      Criteria criteria = criteriaFactory.createArtifactIdCriteria(artifactIds);
-      return addAndCheck(getQueryData(), criteria);
+      return andIds(artifactIds.stream().map(id -> ArtifactId.valueOf(id)).collect(Collectors.toList()));
    }
 
    @Override
@@ -165,7 +174,7 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
 
    @SuppressWarnings("unchecked")
    @Override
-   public T andGuids(Collection<String> ids) throws OseeCoreException {
+   public T andGuids(Collection<String> ids) {
       Set<String> guids = new HashSet<>();
       Set<String> invalids = new HashSet<>();
       for (String id : ids) {
@@ -185,141 +194,118 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
    }
 
    @Override
-   public T andIsOfType(IArtifactType... artifactType) throws OseeCoreException {
+   public T andIsOfType(IArtifactType... artifactType) {
       return andIsOfType(Arrays.asList(artifactType));
    }
 
    @Override
-   public T andIsOfType(Collection<? extends IArtifactType> artifactType) throws OseeCoreException {
+   public T andIsOfType(Collection<? extends IArtifactType> artifactType) {
       Criteria criteria = criteriaFactory.createArtifactTypeCriteriaWithInheritance(artifactType);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T andTypeEquals(IArtifactType... artifactType) throws OseeCoreException {
+   public T andTypeEquals(IArtifactType... artifactType) {
       return andTypeEquals(Arrays.asList(artifactType));
    }
 
    @Override
-   public T andTypeEquals(Collection<? extends IArtifactType> artifactType) throws OseeCoreException {
+   public T andTypeEquals(Collection<? extends IArtifactType> artifactType) {
       Criteria criteria = criteriaFactory.createArtifactTypeCriteria(artifactType);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T andExists(IAttributeType... attributeType) throws OseeCoreException {
+   public T andExists(IAttributeType... attributeType) {
       return andExists(Arrays.asList(attributeType));
    }
 
    @Override
-   public T andExists(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
+   public T andExists(Collection<? extends IAttributeType> attributeTypes) {
       Criteria criteria = criteriaFactory.createExistsCriteria(attributeTypes);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T andNotExists(IAttributeType attributeType) throws OseeCoreException {
+   public T andNotExists(IAttributeType attributeType) {
       Criteria criteria = criteriaFactory.createNotExistsCriteria(attributeType);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T andNotExists(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
+   public T andNotExists(Collection<? extends IAttributeType> attributeTypes) {
       Criteria criteria = criteriaFactory.createNotExistsCriteria(attributeTypes);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T andExists(IRelationType relationType) throws OseeCoreException {
+   public T andExists(IRelationType relationType) {
       Criteria criteria = criteriaFactory.createExistsCriteria(relationType);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T andNotExists(IRelationType relationType) throws OseeCoreException {
+   public T andNotExists(IRelationType relationType) {
       Criteria criteria = criteriaFactory.createNotExistsCriteria(relationType);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T andNotExists(IRelationTypeSide relationTypeSide) throws OseeCoreException {
+   public T andNotExists(IRelationTypeSide relationTypeSide) {
       Criteria criteria = criteriaFactory.createNotExistsCriteria(relationTypeSide);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T andExists(IRelationTypeSide relationTypeSide) throws OseeCoreException {
+   public T andExists(IRelationTypeSide relationTypeSide) {
       Criteria criteria = criteriaFactory.createExistsCriteria(relationTypeSide);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T and(IAttributeType attributeType, Collection<String> values, QueryOption... options) throws OseeCoreException {
+   public T and(IAttributeType attributeType, Collection<String> values, QueryOption... options) {
       return and(Collections.singleton(attributeType), values, options);
    }
 
    @Override
-   public T and(IAttributeType attributeType, String value, QueryOption... options) throws OseeCoreException {
+   public T and(IAttributeType attributeType, String value, QueryOption... options) {
       return and(Collections.singleton(attributeType), Collections.singleton(value), options);
    }
 
    @Override
-   public T and(Collection<IAttributeType> attributeTypes, String value, QueryOption... options) throws OseeCoreException {
+   public T and(Collection<IAttributeType> attributeTypes, String value, QueryOption... options) {
       return and(attributeTypes, Collections.singleton(value), options);
    }
 
    @Override
-   public T and(Collection<IAttributeType> attributeTypes, Collection<String> value, QueryOption... options) throws OseeCoreException {
+   public T and(Collection<IAttributeType> attributeTypes, Collection<String> value, QueryOption... options) {
       Criteria criteria = criteriaFactory.createAttributeCriteria(attributeTypes, value, options);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T andNameEquals(String artifactName) throws OseeCoreException {
+   public T andNameEquals(String artifactName) {
       return and(CoreAttributeTypes.Name, artifactName);
    }
 
    @Override
-   public T andIds(Identifiable<String>... ids) throws OseeCoreException {
+   public T andIds(ArtifactId... ids) {
       return andIds(Arrays.asList(ids));
    }
 
    @Override
-   public T andIds(Collection<? extends Identifiable<String>> ids) throws OseeCoreException {
-      Set<String> guids = new HashSet<>();
-      for (Identity<String> id : ids) {
-         guids.add(id.getGuid());
-      }
-      return andGuids(guids);
-   }
-
-   @Override
-   public T andRelatedTo(IRelationTypeSide relationTypeSide, ArtifactReadable... artifacts) throws OseeCoreException {
+   public T andRelatedTo(IRelationTypeSide relationTypeSide, ArtifactReadable... artifacts) {
       return andRelatedTo(relationTypeSide, Arrays.asList(artifacts));
    }
 
    @Override
-   public T andRelatedTo(IRelationTypeSide relationTypeSide, Collection<? extends ArtifactReadable> artifacts) throws OseeCoreException {
-      Set<Integer> ids = new HashSet<>();
-      for (HasLocalId<Integer> token : artifacts) {
-         ids.add(token.getLocalId());
-      }
-      return andRelatedToLocalIds(relationTypeSide, ids);
+   public T andRelatedTo(IRelationTypeSide relationTypeSide, Collection<? extends ArtifactId> artifacts) {
+      return addAndCheck(getQueryData(), new CriteriaRelatedTo(relationTypeSide, artifacts));
    }
 
    @Override
-   public T andRelatedToLocalIds(IRelationTypeSide relationTypeSide, int... artifactIds) throws OseeCoreException {
-      Set<Integer> ids = new HashSet<>();
-      for (Integer id : artifactIds) {
-         ids.add(id);
-      }
-      return andRelatedToLocalIds(relationTypeSide, ids);
-   }
-
-   @Override
-   public T andRelatedToLocalIds(IRelationTypeSide relationTypeSide, Collection<Integer> artifactIds) throws OseeCoreException {
-      Criteria criteria = criteriaFactory.createRelatedToCriteria(relationTypeSide, artifactIds);
-      return addAndCheck(getQueryData(), criteria);
+   public T andRelatedTo(IRelationTypeSide relationTypeSide, ArtifactId artifactId) {
+      return addAndCheck(getQueryData(), new CriteriaRelatedTo(relationTypeSide, artifactId));
    }
 
    @SuppressWarnings("unchecked")
@@ -332,7 +318,7 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
    }
 
    @SuppressWarnings("unchecked")
-   private T addAndCheck(QueryData queryData, Criteria criteria) throws OseeCoreException {
+   private T addAndCheck(QueryData queryData, Criteria criteria) {
       criteria.checkValid(getOptions());
       queryData.addCriteria(criteria);
       return (T) this;

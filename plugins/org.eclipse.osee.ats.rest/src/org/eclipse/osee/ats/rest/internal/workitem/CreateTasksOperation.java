@@ -179,8 +179,9 @@ public class CreateTasksOperation {
                   resultData.errorf("Relation [%s] Uuids must be suplied Task creation in %s",
                      relation.getRelationTypeName(), task);
                }
-               Collection<Integer> foundUuids = atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andUuids(
-                  relation.getRelatedUuids().toArray(new Long[relation.getRelatedUuids().size()])).getItemIds();
+               Collection<ArtifactId> foundUuids =
+                  atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andUuids(
+                     relation.getRelatedUuids().toArray(new Long[relation.getRelatedUuids().size()])).getItemIds();
                List<Long> notFoundUuids = relation.getRelatedUuids();
                notFoundUuids.removeAll(foundUuids);
                if (foundUuids.size() != relation.getRelatedUuids().size()) {

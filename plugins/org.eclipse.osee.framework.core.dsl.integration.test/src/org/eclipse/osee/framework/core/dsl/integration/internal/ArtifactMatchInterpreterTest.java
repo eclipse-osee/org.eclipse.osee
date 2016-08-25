@@ -306,7 +306,7 @@ public class ArtifactMatchInterpreterTest {
          }
 
          @Override
-         public Long getUuid() {
+         public Long getId() {
             return 0L;
          }
       };

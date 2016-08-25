@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.core.query.AtsAttributeQuery;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -70,11 +69,11 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   public List<Integer> queryGetIds() {
-      List<Integer> results = new LinkedList<>();
-      Iterator<HasLocalId<Integer>> iterator = query.getResultsAsLocalIds().iterator();
+   public List<ArtifactId> queryGetIds() {
+      List<ArtifactId> results = new LinkedList<>();
+      Iterator<? extends ArtifactId> iterator = query.getResultsAsLocalIds().iterator();
       while (iterator.hasNext()) {
-         results.add(iterator.next().getLocalId());
+         results.add(iterator.next());
       }
       return results;
    }
@@ -90,18 +89,18 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   public void queryAndRelatedToLocalIds(IRelationTypeSide relationTypeSide, int artId) {
-      query.andRelatedToLocalIds(relationTypeSide, artId);
+   public void queryAndRelatedToLocalIds(IRelationTypeSide relationTypeSide, ArtifactId artId) {
+      query.andRelatedTo(relationTypeSide, artId);
+   }
+
+   @Override
+   public void queryAndRelatedTo(IRelationTypeSide relationTypeSide, List<ArtifactId> artifacts) {
+      query.andRelatedTo(relationTypeSide, artifacts);
    }
 
    @Override
    public void queryAnd(IAttributeType attrType, Collection<String> values, QueryOption[] queryOption) {
       query.and(attrType, values, queryOption);
-   }
-
-   @Override
-   public void queryAndRelatedToLocalIds(IRelationTypeSide relationTypeSide, List<Integer> artIds) {
-      query.andRelatedToLocalIds(relationTypeSide, artIds);
    }
 
    @Override
@@ -140,7 +139,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   public List<Integer> getRelatedTeamWorkflowUuidsBasedOnTeamDefsAisAndVersions(List<AtsAttributeQuery> teamWorkflowAttr) {
+   public List<ArtifactId> getRelatedTeamWorkflowUuidsBasedOnTeamDefsAisAndVersions(List<AtsAttributeQuery> teamWorkflowAttr) {
       AtsQueryImpl search = new AtsQueryImpl(atsServer);
       search.isOfType(AtsArtifactTypes.TeamWorkflow);
       if (teamDefUuids != null && !teamDefUuids.isEmpty()) {
@@ -160,5 +159,4 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
       query.andNotExists(attributeType);
       return this;
    }
-
 }

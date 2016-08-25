@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -119,7 +118,7 @@ public class OrcsQueryTest {
 
    @Test
    public void testQueryByIds() throws OseeCoreException {
-      QueryBuilder builder = factory.fromBranch(COMMON_ID).andGuid(CoreArtifactTokens.UserGroups.getGuid());
+      QueryBuilder builder = factory.fromBranch(COMMON_ID).andId(CoreArtifactTokens.UserGroups);
       assertEquals(1, builder.getCount());
 
       ArtifactReadable artifact = builder.getResults().getExactlyOne();
@@ -330,7 +329,7 @@ public class OrcsQueryTest {
       builder.and(CoreAttributeTypes.Name, "REQUIREMENTS", QueryOption.CASE__IGNORE,
          QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.TOKEN_COUNT__IGNORE);
 
-      ResultSet<HasLocalId<Integer>> results = builder.getResultsAsLocalIds();
+      ResultSet<? extends ArtifactId> results = builder.getResultsAsLocalIds();
       assertEquals(7, results.size());
       assertEquals(7, builder.getCount());
    }

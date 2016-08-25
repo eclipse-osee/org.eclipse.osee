@@ -28,7 +28,6 @@ import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.DEFAULT_
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -194,7 +193,7 @@ public class TransactionBuilderImplTest {
 
       when(queryFactory.fromBranch(branch)).thenReturn(builder);
       when(builder.includeDeletedArtifacts()).thenReturn(builder);
-      when(builder.andGuid(anyString())).thenReturn(builder);
+      when(builder.andId(any())).thenReturn(builder);
 
       ResultSet<ArtifactReadable> source = ResultSets.singleton(expectedAuthor);
       when(builder.getResults()).thenReturn(source);

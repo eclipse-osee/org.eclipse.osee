@@ -95,7 +95,7 @@ public class MockArtifactProxy implements ArtifactProxy {
    }
 
    @Override
-   public Long getUuid() {
+   public Long getId() {
       return Long.valueOf(artifactObject.getArtId());
    }
 }

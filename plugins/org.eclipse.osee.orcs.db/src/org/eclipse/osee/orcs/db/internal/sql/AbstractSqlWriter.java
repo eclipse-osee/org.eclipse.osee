@@ -328,27 +328,21 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    public CharJoinQuery writeCharJoin(Collection<String> ids) {
       CharJoinQuery joinQuery = joinFactory.createCharJoinQuery();
-      for (String id : ids) {
-         joinQuery.add(id);
-      }
-      addJoin(joinQuery);
-      return joinQuery;
-   }
-
-   public IdJoinQuery writeIdJoin(Collection<? extends Number> ids) {
-      IdJoinQuery joinQuery = joinFactory.createIdJoinQuery();
-      for (Number id : ids) {
-         joinQuery.add(id.longValue());
-      }
+      ids.forEach(id -> joinQuery.add(id));
       addJoin(joinQuery);
       return joinQuery;
    }
 
    public IdJoinQuery writeJoin(Collection<? extends Id> ids) {
       IdJoinQuery joinQuery = joinFactory.createIdJoinQuery();
-      for (Id id : ids) {
-         joinQuery.add(id.getId());
-      }
+      ids.forEach(id -> joinQuery.add(id.getId()));
+      addJoin(joinQuery);
+      return joinQuery;
+   }
+
+   public IdJoinQuery writeIdJoin(Collection<? extends Number> ids) {
+      IdJoinQuery joinQuery = joinFactory.createIdJoinQuery();
+      ids.forEach(id -> joinQuery.add(id));
       addJoin(joinQuery);
       return joinQuery;
    }
@@ -384,5 +378,4 @@ public abstract class AbstractSqlWriter implements HasOptions {
       String pattern = jdbcClient.getDbType().getRegularExpMatchSql();
       write(pattern, field, expression);
    }
-
 }

@@ -98,7 +98,7 @@ public class QueryFactoryImpl implements QueryFactory {
       for (ArtifactReadable art : artifacts) {
          guids.add(art.getGuid());
       }
-      return fromBranch(artifact.getBranchId()).andGuids(guids);
+      return fromBranch(artifact.getBranch()).andGuids(guids);
    }
 
    @Override

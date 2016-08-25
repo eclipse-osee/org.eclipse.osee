@@ -528,8 +528,8 @@ public class OrcsStorageImpl implements Storage {
       TransactionReadable commit = tx.commit();
       if (commit != null) {
 
-         ArtifactReadable newRerpotArt = getQuery().fromBranch(program.getUuid()).fromTransaction(commit).andGuid(
-            reportArt.getGuid()).getResults().getExactlyOne();
+         ArtifactReadable newRerpotArt = getQuery().fromBranch(program.getUuid()).fromTransaction(commit).andId(
+            reportArt).getResults().getExactlyOne();
 
          AttributeReadable<Object> contentsAsAttribute =
             newRerpotArt.getAttributes(CoreAttributeTypes.GeneralStringData).getExactlyOne();

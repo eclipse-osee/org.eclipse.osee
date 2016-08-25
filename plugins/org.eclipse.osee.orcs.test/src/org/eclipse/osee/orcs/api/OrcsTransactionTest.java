@@ -560,10 +560,10 @@ public class OrcsTransactionTest {
    public void testArtifactGetTransaction() throws OseeCoreException {
       TransactionBuilder tx = createTx();
 
-      String guid = tx.createArtifact(CoreArtifactTypes.Component, "A component").getGuid();
+      ArtifactId artId = tx.createArtifact(CoreArtifactTypes.Component, "A component");
       TransactionId startingTx = tx.commit();
 
-      ArtifactReadable artifact = query.fromBranch(COMMON).andGuid(guid).getResults().getExactlyOne();
+      ArtifactReadable artifact = query.fromBranch(COMMON).andId(artId).getResults().getExactlyOne();
       assertEquals(startingTx, artifact.getTransaction());
 
       TransactionBuilder tx2 = createTx();
@@ -572,7 +572,7 @@ public class OrcsTransactionTest {
 
       assertFalse(startingTx.equals(lastTx));
 
-      ArtifactReadable currentArtifact = query.fromBranch(COMMON).andGuid(guid).getResults().getExactlyOne();
+      ArtifactReadable currentArtifact = query.fromBranch(COMMON).andId(artId).getResults().getExactlyOne();
       assertEquals(lastTx, currentArtifact.getTransaction());
    }
 

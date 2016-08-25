@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -24,11 +25,11 @@ import org.eclipse.osee.orcs.rest.client.QueryBuilder;
 public class RelationCriteria implements ArtifactSearchCriteria {
    private final IRelationType relationType;
    private final RelationSide relationSide;
-   private final int artifactId;
+   private final ArtifactId artifactId;
 
    /**
     * Constructor for search criteria that follows the relation link ending on the given side
-    * 
+    *
     * @param relationEnum the side to start following the link from
     */
    public RelationCriteria(IRelationTypeSide relationEnum) {
@@ -40,10 +41,10 @@ public class RelationCriteria implements ArtifactSearchCriteria {
    }
 
    public RelationCriteria(IRelationType relationType, RelationSide relationSide) {
-      this(0, relationType, relationSide);
+      this(ArtifactId.SENTINEL, relationType, relationSide);
    }
 
-   public RelationCriteria(int artifactId, IRelationType relationType, RelationSide relationSide) {
+   public RelationCriteria(ArtifactId artifactId, IRelationType relationType, RelationSide relationSide) {
       this.artifactId = artifactId;
       this.relationType = relationType;
       this.relationSide = relationSide;
@@ -51,10 +52,10 @@ public class RelationCriteria implements ArtifactSearchCriteria {
 
    @Override
    public void addToQueryBuilder(QueryBuilder builder) throws OseeCoreException {
-      if (artifactId > 0) {
+      if (artifactId.isValid()) {
          IRelationTypeSide rts =
             TokenFactory.createRelationTypeSide(relationSide, relationType.getGuid(), Strings.EMPTY_STRING);
-         builder.andRelatedToLocalIds(rts, artifactId);
+         builder.andRelatedTo(rts, artifactId);
       } else if (relationSide == null) {
          builder.andExists(relationType);
       } else {
@@ -63,5 +64,4 @@ public class RelationCriteria implements ArtifactSearchCriteria {
          builder.andExists(rts);
       }
    }
-
 }

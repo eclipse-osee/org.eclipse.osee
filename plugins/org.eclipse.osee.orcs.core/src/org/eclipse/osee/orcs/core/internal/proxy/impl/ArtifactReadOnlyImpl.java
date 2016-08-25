@@ -285,7 +285,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public Long getUuid() {
+   public Long getId() {
       return Long.valueOf(getLocalId());
    }
 

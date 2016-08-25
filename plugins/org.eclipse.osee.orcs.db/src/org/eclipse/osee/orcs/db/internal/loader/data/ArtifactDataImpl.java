@@ -81,4 +81,8 @@ public class ArtifactDataImpl extends OrcsVersionedObjectImpl implements Artifac
       this.useBackingData = useBackingData;
    }
 
+   @Override
+   public Long getId() {
+      return getLocalId().longValue();
+   }
 }

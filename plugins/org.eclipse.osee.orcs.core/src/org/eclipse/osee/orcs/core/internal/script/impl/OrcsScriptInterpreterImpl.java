@@ -18,8 +18,10 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -624,8 +626,9 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       @Override
       public Void caseOsRelatedToClause(OsRelatedToClause object) {
          IRelationTypeSide typeSide = asRelationTypeSide(object.getType(), object.getSide());
-         Collection<Integer> ids = resolver.resolve(Integer.class, object.getIds());
-         getArtifactQuery().andRelatedToLocalIds(typeSide, ids);
+         Collection<Long> ids = resolver.resolve(Long.class, object.getIds());
+         getArtifactQuery().andRelatedTo(typeSide,
+            ids.stream().map(id -> ArtifactId.valueOf(id)).collect(Collectors.toList()));
          return null;
       }
 

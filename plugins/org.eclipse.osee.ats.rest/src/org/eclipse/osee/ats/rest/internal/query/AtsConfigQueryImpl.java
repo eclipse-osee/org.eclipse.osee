@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.core.query.AbstractAtsConfigQueryImpl;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -72,13 +71,8 @@ public class AtsConfigQueryImpl extends AbstractAtsConfigQueryImpl {
    }
 
    @Override
-   public List<Integer> queryGetIds() {
-      List<Integer> results = new LinkedList<>();
-      Iterator<HasLocalId<Integer>> iterator = getQuery().getResultsAsLocalIds().iterator();
-      while (iterator.hasNext()) {
-         results.add(iterator.next().getLocalId());
-      }
-      return results;
+   public List<? extends ArtifactId> queryGetIds() {
+      return getQuery().getResultsAsLocalIds().getList();
    }
 
    @Override
@@ -89,11 +83,6 @@ public class AtsConfigQueryImpl extends AbstractAtsConfigQueryImpl {
    @Override
    public void queryAnd(IAttributeType attrType, String value) {
       getQuery().and(attrType, value);
-   }
-
-   @Override
-   public void queryAndRelatedToLocalIds(IRelationTypeSide relationTypeSide, int artId) {
-      getQuery().andRelatedToLocalIds(relationTypeSide, artId);
    }
 
    @Override

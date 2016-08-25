@@ -11,14 +11,13 @@
 package org.eclipse.osee.ats.api.commit;
 
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
  */
-public interface ICommitConfigItem {
-
-   public String getName() throws OseeCoreException;
+public interface ICommitConfigItem extends Named {
 
    public long getBaselineBranchUuid() throws OseeCoreException;
 

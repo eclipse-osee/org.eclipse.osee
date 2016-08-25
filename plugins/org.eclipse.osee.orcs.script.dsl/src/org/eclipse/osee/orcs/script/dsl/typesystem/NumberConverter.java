@@ -46,7 +46,7 @@ public class NumberConverter {
                   return "";
             }
          default:
-            throw new IllegalArgumentException("Invalid number literal base " + getBase(literal));
+            throw new IllegalArgumentException("Invalid number literal base " + literal);
       }
    }
 

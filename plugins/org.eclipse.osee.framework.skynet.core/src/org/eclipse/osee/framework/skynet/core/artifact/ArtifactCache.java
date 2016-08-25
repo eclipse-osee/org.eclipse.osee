@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
@@ -153,6 +154,10 @@ public final class ArtifactCache {
 
    public static Artifact getActive(Integer artId, BranchId branch) {
       return getActive(artId, branch.getUuid());
+   }
+
+   public static Artifact getActive(ArtifactId artId, BranchId branch) {
+      return getActive(artId.getId(), branch.getUuid());
    }
 
    public static Artifact getActive(Integer artId, Long branchUuid) {

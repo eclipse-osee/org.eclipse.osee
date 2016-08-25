@@ -151,11 +151,11 @@ public final class TokenFactory {
 
    private static class ArtifactToken extends NamedIdentity<String> implements IArtifactToken {
       private final IArtifactType artifactType;
-      private final long uuid;
+      private final long id;
 
-      public ArtifactToken(long uuid, String guid, String name, IArtifactType artifactType) {
+      public ArtifactToken(long id, String guid, String name, IArtifactType artifactType) {
          super(guid, name);
-         this.uuid = uuid;
+         this.id = id;
          this.artifactType = artifactType;
       }
 
@@ -170,8 +170,8 @@ public final class TokenFactory {
       }
 
       @Override
-      public Long getUuid() {
-         return uuid;
+      public Long getId() {
+         return id;
       }
    }
 
@@ -227,11 +227,6 @@ public final class TokenFactory {
       public String toString() {
          return String.format("UserToken [userId=[%s], active=[%s], admin=[%s], email=[%s], creationRequired=[%s]",
             userId, active, admin, email, creationRequired);
-      }
-
-      @Override
-      public Long getUuid() {
-         return getId();
       }
 
       @Override

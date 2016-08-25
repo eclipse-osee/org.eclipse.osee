@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -59,6 +58,7 @@ public class OrcsPortingTest {
    private TransactionFactory txFactory;
    private final String branchString = "CopiedTxBranch";
    private final ArtifactId author = SystemUser.OseeSystem;
+   private ArtifactId nextReq;
 
    @Before
    public void setUp() throws Exception {
@@ -69,13 +69,11 @@ public class OrcsPortingTest {
 
    @Test
    public void testCreateBranch() throws Exception {
-      String artifactGuid = GUID.create();
-
       ArtifactId assocaitedArt = setupAssociatedArtifact();
 
-      TransactionToken mainBranchTx = createBaselineBranchAndArtifacts(artifactGuid);
+      TransactionToken mainBranchTx = createBaselineBranchAndArtifacts();
       IOseeBranch branch = TokenFactory.createBranch(mainBranchTx.getBranchId(), "testCreateBranch");
-      TransactionId transactionToCopy = createWorkingBranchChanges(branch, artifactGuid);
+      TransactionId transactionToCopy = createWorkingBranchChanges(branch, nextReq);
 
       BranchId copyTxBranch = createCopyFromTransactionBranch(transactionToCopy, assocaitedArt);
       TransactionToken finalTx = commitToDestinationBranch(copyTxBranch);
@@ -90,7 +88,7 @@ public class OrcsPortingTest {
          if (art.isOfType(CoreArtifactTypes.SoftwareRequirement)) {
             assertEquals(2, art.getAttributes().size());
 
-            assertEquals(artifactGuid, art.getGuid());
+            assertEquals(nextReq, art);
             assertEquals("SecondRequirement", art.getName());
 
             String actual = art.getSoleAttributeAsString(CoreAttributeTypes.Subsystem);
@@ -108,13 +106,10 @@ public class OrcsPortingTest {
 
    @Test
    public void testForMultiplePortBranches() throws Exception {
-      String artifactGuid = GUID.create();
-      String differentGuid = GUID.create();
-
       ArtifactId assocaitedArt = setupAssociatedArtifact();
 
-      TransactionId mainBranchTx = createBaselineBranchAndArtifacts(artifactGuid);
-      TransactionId differentBranchTx = createBaselineBranchAndArtifacts(differentGuid);
+      TransactionId mainBranchTx = createBaselineBranchAndArtifacts();
+      TransactionId differentBranchTx = createBaselineBranchAndArtifacts();
 
       BranchId copyTxBranch = createCopyFromTransactionBranch(mainBranchTx, assocaitedArt);
       assertNotNull(copyTxBranch);
@@ -126,7 +121,7 @@ public class OrcsPortingTest {
       fail(); // should never get here due to thrown exception
    }
 
-   private TransactionToken createBaselineBranchAndArtifacts(String artifactGuid) throws Exception {
+   private TransactionToken createBaselineBranchAndArtifacts() throws Exception {
       // set up the main branch
       IOseeBranch branch = TokenFactory.createBranch("MainFromBranch");
       branchApi.createTopLevelBranch(branch, author).call();
@@ -138,7 +133,7 @@ public class OrcsPortingTest {
       tx.setSoleAttributeFromString(baseReq, CoreAttributeTypes.Subsystem, "Test");
 
       TransactionBuilder tx2 = txFactory.createTransaction(branch, author, "add another requirement");
-      ArtifactId nextReq = tx2.createArtifact(CoreArtifactTypes.SoftwareRequirement, "SecondRequirement", artifactGuid);
+      nextReq = tx2.createArtifact(CoreArtifactTypes.SoftwareRequirement, "SecondRequirement");
       tx2.setSoleAttributeFromString(nextReq, CoreAttributeTypes.Subsystem, "Test2");
 
       return tx2.commit();
@@ -153,7 +148,7 @@ public class OrcsPortingTest {
       return assocaitedArt;
    }
 
-   private TransactionId createWorkingBranchChanges(IOseeBranch parentBranch, String artifactToModifyGuid) throws Exception {
+   private TransactionId createWorkingBranchChanges(IOseeBranch parentBranch, ArtifactId artifactToModify) throws Exception {
       // set up the child branch to copy to
 
       IOseeBranch childBranch = TokenFactory.createBranch("childBranch");
@@ -161,7 +156,7 @@ public class OrcsPortingTest {
 
       TransactionBuilder tx3 = txFactory.createTransaction(childBranch, author, "update second requirement");
       ArtifactReadable readableReq2 =
-         query.fromBranch(childBranch).andGuid(artifactToModifyGuid).getResults().getExactlyOne();
+         query.fromBranch(childBranch).andId(artifactToModify).getResults().getExactlyOne();
 
       // modifying this artifact should cause it to get introduced
       tx3.setSoleAttributeFromString(readableReq2, CoreAttributeTypes.Subsystem, "test changed");
@@ -175,7 +170,7 @@ public class OrcsPortingTest {
       // make an additional transaction to make sure it doesn't get copied also
       TransactionBuilder tx4 = txFactory.createTransaction(childBranch, author, "after second requirement");
       ArtifactReadable readableReq2verA =
-         query.fromBranch(childBranch).andGuid(artifactToModifyGuid).getResults().getExactlyOne();
+         query.fromBranch(childBranch).andId(artifactToModify).getResults().getExactlyOne();
 
       // modifying this artifact should cause it to get introduced
       tx4.setSoleAttributeFromString(readableReq2verA, CoreAttributeTypes.Subsystem, "test changed again");

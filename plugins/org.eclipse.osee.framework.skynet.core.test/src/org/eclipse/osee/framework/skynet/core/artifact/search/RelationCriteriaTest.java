@@ -14,6 +14,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -37,10 +38,11 @@ public class RelationCriteriaTest {
       verify(builder).andExists(CoreRelationTypes.Allocation__Component);
 
       reset(builder);
-      criteria = new RelationCriteria(4, CoreRelationTypes.Allocation__Component, RelationSide.SIDE_A);
+      ArtifactId artifact = ArtifactId.valueOf(4);
+      criteria = new RelationCriteria(artifact, CoreRelationTypes.Allocation__Component, RelationSide.SIDE_A);
       criteria.addToQueryBuilder(builder);
       ArgumentCaptor<IRelationTypeSide> rtsCaptor = ArgumentCaptor.forClass(IRelationTypeSide.class);
-      verify(builder).andRelatedToLocalIds(rtsCaptor.capture(), eq(4));
+      verify(builder).andRelatedTo(rtsCaptor.capture(), eq(artifact));
       Assert.assertEquals(CoreRelationTypes.Allocation__Component.getGuid(), rtsCaptor.getValue().getGuid());
       Assert.assertEquals(RelationSide.SIDE_A, rtsCaptor.getValue().getSide());
    }
@@ -53,10 +55,11 @@ public class RelationCriteriaTest {
       verify(builder).andExists((IRelationType) CoreRelationTypes.Allocation__Component);
 
       reset(builder);
-      criteria = new RelationCriteria(4, CoreRelationTypes.Allocation__Component, RelationSide.SIDE_A);
+      ArtifactId artifact = ArtifactId.valueOf(4);
+      criteria = new RelationCriteria(artifact, CoreRelationTypes.Allocation__Component, RelationSide.SIDE_A);
       criteria.addToQueryBuilder(builder);
       ArgumentCaptor<IRelationTypeSide> rtsCaptor = ArgumentCaptor.forClass(IRelationTypeSide.class);
-      verify(builder).andRelatedToLocalIds(rtsCaptor.capture(), eq(4));
+      verify(builder).andRelatedTo(rtsCaptor.capture(), eq(artifact));
       Assert.assertEquals(CoreRelationTypes.Allocation__Component.getGuid(), rtsCaptor.getValue().getGuid());
       Assert.assertEquals(RelationSide.SIDE_A, rtsCaptor.getValue().getSide());
    }

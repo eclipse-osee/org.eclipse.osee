@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.rest.model.search.artifact;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 
 /**
  * @author John R. Misinco
@@ -26,7 +27,7 @@ public interface SearchResult {
 
    SearchParameters getSearchParameters();
 
-   List<Integer> getIds();
+   List<ArtifactId> getIds();
 
    List<SearchMatch> getSearchMatches();
 

@@ -221,7 +221,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
-   public Long getUuid() {
+   public Long getId() {
       return Long.valueOf(getLocalId());
    }
 }

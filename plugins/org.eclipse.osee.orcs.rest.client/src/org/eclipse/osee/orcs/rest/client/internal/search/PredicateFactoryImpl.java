@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -128,18 +128,13 @@ public class PredicateFactoryImpl implements PredicateFactory {
    }
 
    @Override
-   public Predicate createRelatedToSearch(IRelationTypeSide relationTypeSide, Collection<?> ids) {
+   public Predicate createRelatedToSearch(IRelationTypeSide relationTypeSide, Collection<ArtifactId> ids) {
       List<String> values = new LinkedList<>();
       String side = relationTypeSide.getSide().isSideA() ? "A" : "B";
-      for (Object id : ids) {
-         if (id instanceof IArtifactToken) {
-            values.add(((IArtifactToken) id).getGuid());
-         } else if (id instanceof Integer) {
-            values.add(id.toString());
-         }
+      for (ArtifactId id : ids) {
+         values.add(id.getId().toString());
       }
-      return new Predicate(SearchMethod.RELATED_TO, Arrays.asList(side + relationTypeSide.getGuid().toString()),
-         values);
+      return new Predicate(SearchMethod.RELATED_TO, Arrays.asList(side + relationTypeSide.getId().toString()), values);
    }
 
    private List<String> getLongIds(Collection<? extends Id> types) {

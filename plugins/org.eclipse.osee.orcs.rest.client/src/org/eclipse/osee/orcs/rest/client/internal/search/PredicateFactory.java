@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.rest.client.internal.search;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -50,6 +51,6 @@ public interface PredicateFactory {
 
    Predicate createRelationTypeSideExistsSearch(IRelationTypeSide relationTypeSide);
 
-   Predicate createRelatedToSearch(IRelationTypeSide relationTypeSide, Collection<?> ids);
+   Predicate createRelatedToSearch(IRelationTypeSide relationTypeSide, Collection<ArtifactId> ids);
 
 }

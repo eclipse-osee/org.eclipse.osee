@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.rest.internal.search.artifact.predicate;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -40,19 +41,25 @@ public class RelatedToPredicateHandler implements PredicateHandler {
       Conditions.checkNotNull(values, "values");
 
       Collection<IRelationTypeSide> types = PredicateHandlerUtil.getIRelationTypeSides(typeParameters);
-      Collection<Integer> localIds = new LinkedList<>();
+      Collection<ArtifactId> artIds = new LinkedList<>();
 
       for (String value : values) {
          if (GUID.isValid(value)) {
             throw new UnsupportedOperationException();
          } else {
-            localIds.add(Integer.parseInt(value));
+            artIds.add(ArtifactId.valueOf(value));
          }
       }
 
-      if (!localIds.isEmpty()) {
-         for (IRelationTypeSide rts : types) {
-            builder.andRelatedToLocalIds(rts, localIds);
+      if (!artIds.isEmpty()) {
+         if (artIds.size() == 1) {
+            for (IRelationTypeSide rts : types) {
+               builder.andRelatedTo(rts, artIds.iterator().next());
+            }
+         } else {
+            for (IRelationTypeSide rts : types) {
+               builder.andRelatedTo(rts, artIds);
+            }
          }
       }
       return builder;

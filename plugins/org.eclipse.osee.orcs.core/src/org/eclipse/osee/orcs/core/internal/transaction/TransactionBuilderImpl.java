@@ -354,8 +354,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    protected ArtifactReadable getArtifactReadable(OrcsSession session, QueryModule query, Long branch, ArtifactId id) {
-      return query.createQueryFactory(session).fromBranch(branch).includeDeletedArtifacts().andGuid(
-         id.getGuid()).getResults().getOneOrNull();
+      return query.createQueryFactory(session).fromBranch(branch).includeDeletedArtifacts().andId(
+         id).getResults().getOneOrNull();
    }
 
    @Override

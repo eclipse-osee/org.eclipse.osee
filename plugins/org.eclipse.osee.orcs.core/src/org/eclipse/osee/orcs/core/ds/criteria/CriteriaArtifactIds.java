@@ -11,29 +11,37 @@
 package org.eclipse.osee.orcs.core.ds.criteria;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.Options;
 
 /**
  * @author Roberto E. Escobar
  */
 public class CriteriaArtifactIds extends Criteria {
 
-   private final Collection<Long> ids;
+   private final Collection<? extends ArtifactId> ids;
 
-   public CriteriaArtifactIds(Collection<Long> ids) {
-      super();
+   private final ArtifactId id;
+
+   public CriteriaArtifactIds(Collection<? extends ArtifactId> ids) {
       this.ids = ids;
+      id = null;
    }
 
-   @Override
-   public void checkValid(Options options) throws OseeCoreException {
-      Conditions.checkNotNullOrEmpty(ids, "artifact ids");
+   public CriteriaArtifactIds(ArtifactId id) {
+      this.id = id;
+      ids = null;
    }
 
-   public Collection<Long> getIds() {
+   public boolean hasMultipleIds() {
+      return id == null;
+   }
+
+   public ArtifactId getId() {
+      return id;
+   }
+
+   public Collection<? extends ArtifactId> getIds() {
       return ids;
    }
 

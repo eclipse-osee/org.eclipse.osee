@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.ds.criteria;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -22,11 +23,18 @@ import org.eclipse.osee.orcs.core.ds.Options;
  */
 public class CriteriaRelatedTo extends Criteria {
    private final IRelationTypeSide relationTypeSide;
-   private final Collection<Integer> artifactIds;
+   private final Collection<? extends ArtifactId> artifactIds;
+   private final ArtifactId artifactId;
 
-   public CriteriaRelatedTo(IRelationTypeSide relationTypeSide, Collection<Integer> artifactIds) {
-      super();
+   public CriteriaRelatedTo(IRelationTypeSide relationTypeSide, ArtifactId artifactId) {
       this.relationTypeSide = relationTypeSide;
+      this.artifactId = artifactId;
+      this.artifactIds = null;
+   }
+
+   public CriteriaRelatedTo(IRelationTypeSide relationTypeSide, Collection<? extends ArtifactId> artifactIds) {
+      this.relationTypeSide = relationTypeSide;
+      this.artifactId = null;
       this.artifactIds = artifactIds;
    }
 
@@ -34,8 +42,16 @@ public class CriteriaRelatedTo extends Criteria {
       return relationTypeSide;
    }
 
-   public Collection<Integer> getIds() {
+   public Collection<? extends ArtifactId> getIds() {
       return artifactIds;
+   }
+
+   public ArtifactId getId() {
+      return artifactId;
+   }
+
+   public boolean hasMultipleIds() {
+      return artifactId == null;
    }
 
    @Override

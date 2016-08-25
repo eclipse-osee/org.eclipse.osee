@@ -18,7 +18,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
-import org.eclipse.osee.framework.core.data.HasLocalId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -74,15 +74,15 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
       SearchResponse result = new SearchResponse();
       RequestType request = params.getRequestType();
       if (request != null) {
-         List<Integer> localIds = new LinkedList<>();
+         List<ArtifactId> localIds = new LinkedList<>();
          switch (request) {
             case COUNT:
                int total = builder.getCount();
                result.setTotal(total);
                break;
             case IDS:
-               for (HasLocalId<Integer> art : builder.getResultsAsLocalIds()) {
-                  localIds.add(art.getLocalId());
+               for (ArtifactId art : builder.getResultsAsLocalIds()) {
+                  localIds.add(art);
                }
                result.setIds(localIds);
                result.setTotal(localIds.size());
@@ -91,7 +91,7 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
                ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> matches = builder.getMatches();
                List<SearchMatch> searchMatches = new LinkedList<>();
                for (Match<ArtifactReadable, AttributeReadable<?>> match : matches) {
-                  int artId = match.getItem().getLocalId();
+                  ArtifactId artId = match.getItem();
                   localIds.add(artId);
                   for (AttributeReadable<?> attribute : match.getElements()) {
                      int attrId = attribute.getLocalId();
