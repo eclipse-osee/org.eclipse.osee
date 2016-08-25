@@ -36,12 +36,10 @@ import org.eclipse.swt.graphics.Image;
  */
 public class WorldLabelProvider extends XViewerLabelProvider {
 
-   private final WorldXViewer worldXViewer;
    protected Font font;
 
    public WorldLabelProvider(WorldXViewer worldXViewer) {
       super(worldXViewer);
-      this.worldXViewer = worldXViewer;
    }
 
    @Override
