@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.core.enums;
 
 public enum DeletionFlag {
    INCLUDE_DELETED,
+   INCLUDE_HARD_DELETED,
    EXCLUDE_DELETED;
 
    public boolean areDeletedAllowed() {

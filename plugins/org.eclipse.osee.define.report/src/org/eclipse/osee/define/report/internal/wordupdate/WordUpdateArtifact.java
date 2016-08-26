@@ -116,7 +116,7 @@ public class WordUpdateArtifact {
             ArtifactReadable artifact = getArtifact(data.getBranch(), extractorData.getGuid());
             WordArtifactChange artChange = new WordArtifactChange();
             artChange.setArtId(artifact.getLocalId());
-            if (artifact.isHardDeleted()) {
+            if (artifact.isDeleted()) {
                deletedArtifacts.add(artifact.getName());
 
             } else {

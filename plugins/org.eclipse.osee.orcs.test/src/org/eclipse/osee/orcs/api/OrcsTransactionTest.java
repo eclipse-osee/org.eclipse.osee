@@ -291,7 +291,7 @@ public class OrcsTransactionTest {
 
       toDelete = query.fromBranch(COMMON).andIds(artifact).includeDeletedArtifacts().getResults().getOneOrNull();
       assertNotNull(toDelete);
-      assertTrue(toDelete.isHardDeleted());
+      assertTrue(toDelete.isDeleted());
    }
 
    @Test
@@ -332,7 +332,7 @@ public class OrcsTransactionTest {
 
       toDelete = query.fromBranch(COMMON).andIds(artifact).includeDeletedArtifacts().getResults().getOneOrNull();
       assertNotNull(toDelete);
-      assertTrue(toDelete.isHardDeleted());
+      assertTrue(toDelete.isDeleted());
 
    }
 
@@ -366,7 +366,7 @@ public class OrcsTransactionTest {
 
       toDelete = query.fromBranch(COMMON).andIds(artifact1).includeDeletedArtifacts().getResults().getOneOrNull();
       assertNotNull(toDelete);
-      assertTrue(toDelete.isHardDeleted());
+      assertTrue(toDelete.isDeleted());
       transactions = new TransactionId[] {tx1, tx2, tx3, tx4};
    }
 
@@ -545,10 +545,10 @@ public class OrcsTransactionTest {
          for (ArtifactReadable art : artifacts) {
             if (artifact != null && art.matches(artifact)) {
                assertEquals(1,
-                  art.getAttributeCount(CoreAttributeTypes.GeneralStringData, DeletionFlag.INCLUDE_DELETED));
-               assertEquals(1, art.getAttributeCount(CoreAttributeTypes.PublishInline, DeletionFlag.INCLUDE_DELETED));
+                  art.getAttributeCount(CoreAttributeTypes.GeneralStringData, DeletionFlag.INCLUDE_HARD_DELETED));
+               assertEquals(1, art.getAttributeCount(CoreAttributeTypes.PublishInline, DeletionFlag.INCLUDE_HARD_DELETED));
             } else if (artifact1 != null && art.matches(artifact1)) {
-               assertEquals(1, art.getAttributeCount(CoreAttributeTypes.Annotation, DeletionFlag.INCLUDE_DELETED));
+               assertEquals(1, art.getAttributeCount(CoreAttributeTypes.Annotation, DeletionFlag.INCLUDE_HARD_DELETED));
             } else {
                assertTrue("Unexpected artifact", false);
             }

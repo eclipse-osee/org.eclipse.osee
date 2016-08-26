@@ -127,11 +127,14 @@ public class RelationTest {
 
    @Test
    public void testIsDeleteD() {
+      when(data.getModType()).thenReturn(ModificationType.ARTIFACT_DELETED);
+      assertTrue(relation.isDeleted());
+
       when(data.getModType()).thenReturn(ModificationType.DELETED);
-      assertTrue(relation.isHardDeleted());
+      assertTrue(relation.isDeleted());
 
       when(data.getModType()).thenReturn(ModificationType.MODIFIED);
-      assertFalse(relation.isHardDeleted());
+      assertFalse(relation.isDeleted());
    }
 
    @Test

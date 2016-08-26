@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -274,7 +275,8 @@ public class RelationManagerTest {
       int actual = manager.getRelatedCount(session, DEFAULT_HIERARCHY, node1, IS_PARENT);
       assertEquals(3, actual);
 
-      when(relation2.isHardDeleted()).thenReturn(true);
+      when(relation2.getModificationType()).thenReturn(ModificationType.ARTIFACT_DELETED);
+      when(relation2.isDeleted()).thenReturn(true);
 
       int actual2 = manager.getRelatedCount(session, DEFAULT_HIERARCHY, node1, IS_PARENT);
       assertEquals(2, actual2);

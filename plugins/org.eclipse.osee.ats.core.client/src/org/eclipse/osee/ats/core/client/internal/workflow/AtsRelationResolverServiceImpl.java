@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -47,13 +48,18 @@ public class AtsRelationResolverServiceImpl implements IRelationResolver {
       return results;
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, IRelationTypeSide relationType, Class<T> clazz) {
+      return getRelated(atsObject, relationType, DeletionFlag.EXCLUDE_DELETED, clazz);
+   }
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, IRelationTypeSide relationType, DeletionFlag flag, Class<T> clazz) {
       List<T> results = new ArrayList<>();
       Artifact useArt = getArtifact(atsObject);
       if (useArt != null) {
-         for (Artifact art : useArt.getRelatedArtifacts(relationType)) {
+         for (Artifact art : useArt.getRelatedArtifacts(relationType, flag)) {
             IAtsObject object = getAtsObject(art);
             if (object != null) {
                results.add((T) object);

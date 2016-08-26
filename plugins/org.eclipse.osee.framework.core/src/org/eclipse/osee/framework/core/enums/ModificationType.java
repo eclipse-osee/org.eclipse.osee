@@ -113,6 +113,11 @@ public enum ModificationType {
       return this == UNDELETED;
    }
 
+   // Returns true if attribute or relation was deleted from an artifact deletion
+   public boolean isArtifactDeleted() {
+      return this == ARTIFACT_DELETED;
+   }
+
    // Returns false for attributes and relations if artifact was deleted but the attribute or relation was not deleted
    public boolean isHardDeleted() {
       return this == DELETED;

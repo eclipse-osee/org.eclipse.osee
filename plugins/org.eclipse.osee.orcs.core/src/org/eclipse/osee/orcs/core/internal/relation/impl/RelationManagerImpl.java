@@ -163,7 +163,12 @@ public class RelationManagerImpl implements RelationManager {
 
    @Override
    public <T extends RelationNode> ResultSet<T> getRelated(OrcsSession session, IRelationType type, RelationNode node, RelationSide side) throws OseeCoreException {
-      List<Relation> links = getRelations(session, type, node, side, EXCLUDE_DELETED);
+      return getRelated(session, type, node, side, EXCLUDE_DELETED);
+   }
+
+   @Override
+   public <T extends RelationNode> ResultSet<T> getRelated(OrcsSession session, IRelationType type, RelationNode node, RelationSide side, DeletionFlag flag) throws OseeCoreException {
+      List<Relation> links = getRelations(session, type, node, side, flag);
       List<T> result = null;
       if (links.isEmpty()) {
          result = Collections.emptyList();
@@ -242,7 +247,7 @@ public class RelationManagerImpl implements RelationManager {
          graph.<RelationNodeAdjacencies> getAdjacencies(bNode).add(type.getGuid(), relation);
          updated = true;
       }
-      if (relation.isHardDeleted()) {
+      if (relation.isDeleted()) {
          relation.unDelete();
          updated = true;
       }

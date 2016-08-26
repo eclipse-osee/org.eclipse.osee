@@ -29,6 +29,7 @@ import com.google.common.base.Predicate;
 import java.util.Date;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.HasLocalId;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
@@ -80,8 +81,11 @@ public class OrcsPredicatesTest {
       when(dirty.isDirty()).thenReturn(true);
       when(notDirty.isDirty()).thenReturn(false);
 
-      when(deleted.isHardDeleted()).thenReturn(true);
-      when(notDeleted.isHardDeleted()).thenReturn(false);
+      when(deleted.getModificationType()).thenReturn(ModificationType.ARTIFACT_DELETED);
+      when(deleted.isDeleted()).thenReturn(true);
+
+      when(notDeleted.getModificationType()).thenReturn(ModificationType.NEW);
+      when(notDeleted.isDeleted()).thenReturn(false);
 
       date = new Date();
 
@@ -124,8 +128,10 @@ public class OrcsPredicatesTest {
 
    @Test
    public void testDeletionFlag() {
-      when(attribute1.isHardDeleted()).thenReturn(true);
-      when(attribute2.isHardDeleted()).thenReturn(false);
+      when(attribute1.getModificationType()).thenReturn(ModificationType.ARTIFACT_DELETED);
+      when(attribute1.isDeleted()).thenReturn(true);
+      when(attribute2.getModificationType()).thenReturn(ModificationType.NEW);
+      when(attribute2.isDeleted()).thenReturn(false);
 
       assertFalse(deletionFlagEquals(EXCLUDE_DELETED).apply(attribute1));
       assertTrue(deletionFlagEquals(EXCLUDE_DELETED).apply(attribute2));

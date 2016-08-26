@@ -59,6 +59,8 @@ public interface RelationManager {
 
    <T extends RelationNode> ResultSet<T> getRelated(OrcsSession session, IRelationType type, RelationNode node, RelationSide side) throws OseeCoreException;
 
+   <T extends RelationNode> ResultSet<T> getRelated(OrcsSession session, IRelationType type, RelationNode node, RelationSide side, DeletionFlag flag) throws OseeCoreException;
+
    ///////////////////////////////////////
 
    void addChild(OrcsSession session, RelationNode parent, RelationNode child) throws OseeCoreException;

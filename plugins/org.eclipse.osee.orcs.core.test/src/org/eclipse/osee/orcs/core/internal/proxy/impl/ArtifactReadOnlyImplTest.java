@@ -38,6 +38,8 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
@@ -156,12 +158,14 @@ public class ArtifactReadOnlyImplTest {
 
    @Test
    public void testIsDeleted() {
-      when(proxiedObject.isHardDeleted()).thenReturn(true);
+      when(proxiedObject.getModificationType()).thenReturn(ModificationType.DELETED);
+      when(proxiedObject.isDeleted()).thenReturn(true);
 
-      boolean actual = readOnly.isHardDeleted();
+      boolean actual = readOnly.isDeleted();
 
       assertEquals(true, actual);
-      verify(proxiedObject).isHardDeleted();
+
+      verify(proxiedObject).isDeleted();
    }
 
    @Test
@@ -360,14 +364,15 @@ public class ArtifactReadOnlyImplTest {
       ResultSet<ArtifactReadable> expected = ResultSets.singleton(readable1);
 
       ResultSet<Artifact> resultSet1 = ResultSets.singleton(artifact1);
-      when(relationManager.getRelated(session, DEFAULT_HIERARCHY, proxiedObject, IS_CHILD)).thenAnswer(
-         answer(resultSet1));
+      when(relationManager.getRelated(session, DEFAULT_HIERARCHY, proxiedObject, IS_CHILD,
+         DeletionFlag.EXCLUDE_DELETED)).thenAnswer(answer(resultSet1));
       when(proxyManager.asExternalArtifacts(session, resultSet1)).thenReturn(expected);
 
       ResultSet<ArtifactReadable> actual = readOnly.getRelated(Default_Hierarchical__Parent);
 
       assertEquals(expected, actual);
-      verify(relationManager).getRelated(session, DEFAULT_HIERARCHY, proxiedObject, IS_CHILD);
+      verify(relationManager).getRelated(session, DEFAULT_HIERARCHY, proxiedObject, IS_CHILD,
+         DeletionFlag.EXCLUDE_DELETED);
       verify(proxyManager).asExternalArtifacts(session, resultSet1);
    }
 

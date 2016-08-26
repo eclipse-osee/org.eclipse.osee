@@ -671,7 +671,7 @@ public class RelationManagerImplTest {
       when(container1.getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED)).thenReturn(null);
       when(container2.getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED)).thenReturn(relation1);
 
-      when(relation1.isHardDeleted()).thenReturn(true);
+      when(relation1.isDeleted()).thenReturn(true);
 
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
       when(orderManager1.getSorterId(Default_Hierarchical__Child)).thenReturn(UNORDERED);

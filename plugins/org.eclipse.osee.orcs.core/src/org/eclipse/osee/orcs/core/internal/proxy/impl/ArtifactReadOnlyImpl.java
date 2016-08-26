@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.proxy.impl;
 
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.asRelationType;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,6 +22,7 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -188,11 +190,6 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public boolean isHardDeleted() {
-      return getProxiedObject().isHardDeleted();
-   }
-
-   @Override
    public int getMaximumRelationAllowed(IRelationTypeSide typeAndSide) throws OseeCoreException {
       IRelationType type = asRelationType(typeAndSide);
       RelationSide side = whichSideAmIOn(typeAndSide);
@@ -247,9 +244,15 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
 
    @Override
    public ResultSet<ArtifactReadable> getRelated(IRelationTypeSide typeAndSide) throws OseeCoreException {
+      return getRelated(typeAndSide, EXCLUDE_DELETED);
+   }
+
+   @Override
+   public ResultSet<ArtifactReadable> getRelated(IRelationTypeSide typeAndSide, DeletionFlag deletionFlag) throws OseeCoreException {
       IRelationType type = asRelationType(typeAndSide);
       RelationSide side = whichSideAmIOn(typeAndSide);
-      ResultSet<Artifact> related = getRelationManager().getRelated(getSession(), type, getProxiedObject(), side);
+      ResultSet<Artifact> related =
+         getRelationManager().getRelated(getSession(), type, getProxiedObject(), side, deletionFlag);
       return getProxyManager().asExternalArtifacts(getSession(), related);
    }
 
@@ -293,5 +296,15 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    public String toString() {
       return String.format("Artifact: Id [%s] Type [%s] Name [%s]", getId().toString(), getArtifactType().getName(),
          getName());
+   }
+
+   @Override
+   public boolean isDeleted() {
+      return getProxiedObject().isDeleted();
+   }
+
+   @Override
+   public ModificationType getModificationType() {
+      return getProxiedObject().getModificationType();
    }
 }

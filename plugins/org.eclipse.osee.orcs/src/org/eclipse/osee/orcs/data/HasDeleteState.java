@@ -10,10 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.data;
 
+import org.eclipse.osee.framework.core.enums.ModificationType;
+
 /**
  * @author Roberto E. Escobar
  */
 public interface HasDeleteState {
 
-   boolean isHardDeleted();
+   default boolean isDeleted() {
+      return getModificationType().isDeleted();
+   }
+
+   ModificationType getModificationType();
+
 }

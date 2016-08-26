@@ -49,13 +49,14 @@ public class Relation implements HasOrcsData<RelationData>, OrcsWriteable {
       return relationTypes.getByUuid(getOrcsData().getTypeUuid());
    }
 
+   @Override
    public ModificationType getModificationType() {
       return getOrcsData().getModType();
    }
 
    @Override
-   public boolean isHardDeleted() {
-      return getModificationType().isHardDeleted();
+   public boolean isDeleted() {
+      return getModificationType().isDeleted();
    }
 
    @Override
@@ -153,7 +154,7 @@ public class Relation implements HasOrcsData<RelationData>, OrcsWriteable {
 
    @Override
    public boolean isDeleteAllowed() {
-      return !isHardDeleted();
+      return !isDeleted();
    }
 
    @Override

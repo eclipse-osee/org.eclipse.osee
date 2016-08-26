@@ -172,9 +172,20 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
 
    @Override
    protected IAtsUser loadUserFromDbByUserName(String name) {
-      Artifact userArt = ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Name,
-         name, AtsUtilCore.getAtsBranch());
-      return createFromArtifact(userArt);
+      Artifact userArt = null;
+      try {
+         userArt = ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Name, name,
+            AtsUtilCore.getAtsBranch());
+         return createFromArtifact(userArt);
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+      return null;
+   }
+
+   @Override
+   public IAtsUser getUserByArtifactId(ArtifactId artifact) {
+      return getUserFromOseeUser((User) artifact);
    }
 
    @Override

@@ -18,6 +18,7 @@ import static com.google.common.base.Predicates.not;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
@@ -131,18 +132,26 @@ public final class OrcsPredicates {
 
    private static class DeletedMatcher<T extends HasDeleteState> implements Predicate<T> {
 
-      private final boolean checkNeeded;
+      DeletionFlag flag;
 
       public DeletedMatcher(DeletionFlag includeDeleted) {
-         this.checkNeeded = !includeDeleted.areDeletedAllowed();
+         flag = includeDeleted;
       }
 
       @Override
       public boolean apply(T data) {
-         boolean result = true;
-         if (checkNeeded) {
-            result = !data.isHardDeleted();
+         boolean result = false;
+         ModificationType modificationType = data.getModificationType();
+
+         if (flag == DeletionFlag.INCLUDE_HARD_DELETED) {
+            result = true;
+         } else if (flag == DeletionFlag.INCLUDE_DELETED && ModificationType.getAllNotHardDeletedTypes().contains(
+            modificationType)) {
+            result = true;
+         } else {
+            result = !data.isDeleted();
          }
+
          return result;
       }
    }

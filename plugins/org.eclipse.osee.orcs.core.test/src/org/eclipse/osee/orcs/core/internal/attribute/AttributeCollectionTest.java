@@ -21,6 +21,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -56,7 +57,11 @@ public class AttributeCollectionTest {
       attributeCollection.add(CoreAttributeTypes.Annotation, deletedAttr);
 
       when(dirtyAttr.isDirty()).thenReturn(true);
-      when(deletedAttr.isHardDeleted()).thenReturn(true);
+      when(deletedAttr.isDeleted()).thenReturn(true);
+
+      when(dirtyAttr.getModificationType()).thenReturn(ModificationType.MODIFIED);
+      when(cleanAttr.getModificationType()).thenReturn(ModificationType.NEW);
+      when(deletedAttr.getModificationType()).thenReturn(ModificationType.ARTIFACT_DELETED);
    }
 
    @Test
@@ -93,13 +98,13 @@ public class AttributeCollectionTest {
       AttributeType typeC = mock(AttributeType.class);
 
       when(dirtyAttr.getAttributeType()).thenReturn(typeA);
-      when(dirtyAttr.isHardDeleted()).thenReturn(true);
+      when(dirtyAttr.isDeleted()).thenReturn(true);
 
       when(cleanAttr.getAttributeType()).thenReturn(typeB);
-      when(cleanAttr.isHardDeleted()).thenReturn(true);
+      when(cleanAttr.isDeleted()).thenReturn(true);
 
       when(deletedAttr.getAttributeType()).thenReturn(typeC);
-      when(deletedAttr.isHardDeleted()).thenReturn(false);
+      when(deletedAttr.isDeleted()).thenReturn(false);
 
       Collection<? extends IAttributeType> types = attributeCollection.getExistingTypes(DeletionFlag.INCLUDE_DELETED);
 

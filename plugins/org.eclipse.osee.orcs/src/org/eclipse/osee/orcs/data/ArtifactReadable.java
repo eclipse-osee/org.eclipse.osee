@@ -94,6 +94,8 @@ public interface ArtifactReadable extends ArtifactId, HasLocalId<Integer>, HasTr
 
    ResultSet<ArtifactReadable> getRelated(IRelationTypeSide relationTypeSide) throws OseeCoreException;
 
+   ResultSet<ArtifactReadable> getRelated(IRelationTypeSide relationTypeSide, DeletionFlag deletionFlag) throws OseeCoreException;
+
    boolean areRelated(IRelationTypeSide typeAndSide, ArtifactReadable readable) throws OseeCoreException;
 
    int getRelatedCount(IRelationTypeSide typeAndSide) throws OseeCoreException;

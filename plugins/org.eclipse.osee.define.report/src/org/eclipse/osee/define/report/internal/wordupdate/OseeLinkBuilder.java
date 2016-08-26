@@ -172,7 +172,7 @@ public class OseeLinkBuilder {
          }
          builder.append(artifact.getName());
       }
-      if (artifact.isHardDeleted()) {
+      if (artifact.isDeleted()) {
          builder.append(" (DELETED)");
       }
       return escapeXml(builder.toString());

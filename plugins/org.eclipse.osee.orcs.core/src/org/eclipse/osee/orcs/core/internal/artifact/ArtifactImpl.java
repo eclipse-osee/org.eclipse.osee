@@ -65,7 +65,8 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
       objectEditState = EditState.NO_CHANGE;
    }
 
-   private ModificationType getModificationType() {
+   @Override
+   public ModificationType getModificationType() {
       return getOrcsData().getModType();
    }
 
@@ -143,11 +144,6 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
-   public boolean isHardDeleted() {
-      return getModificationType().isHardDeleted();
-   }
-
-   @Override
    public boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException {
       return artifactTypeCache.isValidAttributeType(getArtifactType(), getBranch(), attributeType);
    }
@@ -182,7 +178,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
    @Override
    public boolean isDeleteAllowed() {
-      return !isHardDeleted();
+      return !isDeleted();
    }
 
    @Override
@@ -193,7 +189,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
    @Override
    public boolean isAccessible() {
-      return !isHardDeleted();
+      return !isDeleted();
    }
 
    @Override

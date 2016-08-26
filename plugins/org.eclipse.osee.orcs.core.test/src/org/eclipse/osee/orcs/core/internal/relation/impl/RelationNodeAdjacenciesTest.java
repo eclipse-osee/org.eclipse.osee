@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -67,7 +68,9 @@ public class RelationNodeAdjacenciesTest {
       collection.add(TYPE_3.getGuid(), deleted);
 
       when(dirty.isDirty()).thenReturn(true);
-      when(deleted.isHardDeleted()).thenReturn(true);
+
+      when(deleted.getModificationType()).thenReturn(ModificationType.ARTIFACT_DELETED);
+      when(deleted.isDeleted()).thenReturn(true);
    }
 
    @Test
@@ -104,13 +107,16 @@ public class RelationNodeAdjacenciesTest {
       IRelationType typeC = mock(IRelationType.class);
 
       when(dirty.getRelationType()).thenReturn(typeA);
-      when(dirty.isHardDeleted()).thenReturn(true);
+      when(dirty.getModificationType()).thenReturn(ModificationType.ARTIFACT_DELETED);
+      when(dirty.isDeleted()).thenReturn(true);
 
       when(clean.getRelationType()).thenReturn(typeB);
-      when(clean.isHardDeleted()).thenReturn(true);
+      when(clean.getModificationType()).thenReturn(ModificationType.ARTIFACT_DELETED);
+      when(clean.isDeleted()).thenReturn(true);
 
       when(deleted.getRelationType()).thenReturn(typeC);
-      when(deleted.isHardDeleted()).thenReturn(false);
+      when(deleted.getModificationType()).thenReturn(ModificationType.MODIFIED);
+      when(deleted.isDeleted()).thenReturn(false);
 
       Collection<? extends IRelationType> types = collection.getExistingTypes(DeletionFlag.INCLUDE_DELETED);
 
@@ -195,7 +201,7 @@ public class RelationNodeAdjacenciesTest {
 
    @Test
    public void testLocalIdOnSide() throws OseeCoreException {
-      when(relation.isHardDeleted()).thenReturn(false);
+      when(relation.isDeleted()).thenReturn(false);
       when(relation.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(11);
       when(relation.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(22);
 
