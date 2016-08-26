@@ -45,7 +45,9 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class WorldResource {
 
    private final IAtsServer atsServer;
-   public final static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
+   public final static List<String> namespaces =
+      Arrays.asList("org.eclipse.osee.ats.WorldXViewer", "org.eclipse.osee.ats.BacklogXViewer",
+         "org.eclipse.osee.ats.SprintXViewer", "org.eclipse.osee.ats.GoalXViewer", "org.eclipse.osee.ats.TaskXViewer");
 
    public WorldResource(IAtsServer atsServer) {
       this.atsServer = atsServer;
@@ -53,24 +55,24 @@ public class WorldResource {
 
    @GET
    @Path("cust/global")
-   @Produces(MediaType.TEXT_PLAIN)
-   public String getCustomizationsGlobal() throws Exception {
-      StringBuilder sb = new StringBuilder();
-      for (CustomizeData customization : atsServer.getCustomizationsGlobal(NAMESPACE)) {
-         sb.append(customization.toString() + "\n");
+   @Produces(MediaType.APPLICATION_JSON)
+   public Collection<CustomizeData> getCustomizationsGlobal() throws Exception {
+      List<CustomizeData> datas = new LinkedList<>();
+      for (String namespace : namespaces) {
+         datas.addAll(atsServer.getCustomizationsGlobal(namespace));
       }
-      return sb.toString();
+      return datas;
    }
 
    @GET
    @Path("cust")
-   @Produces(MediaType.TEXT_PLAIN)
-   public String getCustomizations() throws Exception {
-      StringBuilder sb = new StringBuilder();
-      for (CustomizeData customization : atsServer.getCustomizations(NAMESPACE)) {
-         sb.append(customization.toString() + "\n");
+   @Produces(MediaType.APPLICATION_JSON)
+   public Collection<CustomizeData> getCustomizations() throws Exception {
+      List<CustomizeData> datas = new LinkedList<>();
+      for (String namespace : namespaces) {
+         datas.addAll(atsServer.getCustomizations(namespace));
       }
-      return sb.toString();
+      return datas;
    }
 
    @GET
