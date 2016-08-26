@@ -145,7 +145,7 @@ public class CommitXManager extends XViewer {
       }
       // merge manager
       else {
-         AtsBranchManager.showMergeManager(xCommitManager.getTeamArt(), branch);
+         AtsBranchManager.showMergeManager(xCommitManager.getTeamArt());
       }
    }
 }
