@@ -20,6 +20,8 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
 /**
+ * Event handler to handle refreshing WorkflowEditor when work item is update remotely
+ * 
  * @author Donald G. Dunne
  */
 public class AtsWorkItemEventHandler implements EventHandler {

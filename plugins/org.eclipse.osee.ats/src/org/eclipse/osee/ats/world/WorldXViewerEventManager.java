@@ -11,12 +11,15 @@
 package org.eclipse.osee.ats.world;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.IContentProvider;
+import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
@@ -37,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * Common location for event handling for task and world composites in order to keep number of registrations and
@@ -149,6 +153,8 @@ public class WorldXViewerEventManager {
          try {
             // Don't refresh deleted artifacts
             if (!artifact.isDeleted() && AtsUtil.isAtsArtifact(artifact)) {
+               // Reset pre-computed column
+               clearPreComputedColumnValue(artifact, worldViewer);
                worldViewer.refresh(artifact);
                // If parent is loaded and child changed, refresh parent
                if (artifact instanceof AbstractWorkflowArtifact) {
@@ -167,6 +173,24 @@ public class WorldXViewerEventManager {
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
+      }
+
+      private void clearPreComputedColumnValue(Artifact artifact, WorldXViewer worldViewer) {
+         try {
+            for (TreeItem item : worldViewer.getVisibleItems()) {
+               if (item.getData().equals(artifact)) {
+                  for (XViewerColumn column : worldViewer.getCustomizeMgr().getCurrentVisibleTableColumns()) {
+                     if (column instanceof IXViewerPreComputedColumn) {
+                        ((IXViewerPreComputedColumn) column).populateCachedValues(Collections.singleton(artifact),
+                           column.getPreComputedValueMap());
+                     }
+                  }
+               }
+            }
+         } catch (Exception ex) {
+            // do nothing
+         }
+
       }
 
       private void processPurged(WorldXViewer worldViewer, IWorldViewerEventHandler handler) {
@@ -210,4 +234,5 @@ public class WorldXViewerEventManager {
          }
       }
    }
+
 }
