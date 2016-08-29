@@ -170,7 +170,7 @@ public class OseeLinkBuilder {
          if (builder.length() > 0) {
             builder.append(" ");
          }
-         builder.append(artifact.getName());
+         builder.append(artifact.getSoleAttributeValue(CoreAttributeTypes.Name, DeletionFlag.INCLUDE_DELETED, ""));
       }
       if (artifact.isDeleted()) {
          builder.append(" (DELETED)");

@@ -191,10 +191,10 @@ public class WordMlLinkHandler {
 
       if (txId.isValid()) {
          arts.addAll(queryFactory.fromBranch(branch).fromTransaction(txId).andGuids(
-            guidsFromLinks).includeDeletedArtifacts().getResults().getList());
+            guidsFromLinks).includeDeletedArtifacts().includeDeletedAttributes().getResults().getList());
       } else {
          arts.addAll(
-            queryFactory.fromBranch(branch).andGuids(guidsFromLinks).includeDeletedArtifacts().getResults().getList());
+            queryFactory.fromBranch(branch).andGuids(guidsFromLinks).includeDeletedArtifacts().includeDeletedAttributes().getResults().getList());
       }
 
       return arts;

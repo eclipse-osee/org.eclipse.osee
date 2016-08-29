@@ -15,6 +15,7 @@ import java.util.Set;
 import org.eclipse.osee.define.report.api.ReportConstants;
 import org.eclipse.osee.define.report.api.WordTemplateContentData;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -38,7 +39,7 @@ public class WordTemplateContentRendererHandler {
       if (artifact != null) {
          Set<String> unknownGuids = new HashSet<>();
 
-         String data = artifact.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, null);
+         String data = artifact.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, DeletionFlag.INCLUDE_DELETED, null);
 
          if (data == null && wtcData.getIsEdit()) {
             data = orcsApi.getOrcsTypes().getAttributeTypes().getDefaultValue(CoreAttributeTypes.WordTemplateContent);
