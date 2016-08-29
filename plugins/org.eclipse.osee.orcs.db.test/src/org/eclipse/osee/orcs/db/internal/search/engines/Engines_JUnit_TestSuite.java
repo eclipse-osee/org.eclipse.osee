@@ -17,10 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-   ArtifactQuerySqlContextFactoryImplTest.class,
-   BranchQuerySqlContextFactoryImplTest.class,
-   TxQuerySqlContextFactoryImplTest.class})
+@Suite.SuiteClasses({BranchQuerySqlContextFactoryImplTest.class, TxQuerySqlContextFactoryImplTest.class})
 public class Engines_JUnit_TestSuite {
    // Test Suite
 }

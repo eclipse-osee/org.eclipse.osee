@@ -255,7 +255,7 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
          sb.append(".transaction_id <= ?");
          addParameter(OptionsUtil.getFromTransaction(getOptions()));
          if (!allowDeleted) {
-            sb.append(AND_WITH_NEWLINES);
+            writeAndLn();
             sb.append(txsAlias);
             sb.append(".mod_type <> ");
             sb.append(String.valueOf(ModificationType.DELETED.getValue()));

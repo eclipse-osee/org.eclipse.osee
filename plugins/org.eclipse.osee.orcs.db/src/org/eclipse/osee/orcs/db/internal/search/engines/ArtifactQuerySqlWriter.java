@@ -43,7 +43,7 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
 
       write("SELECT%s ", getSqlHint());
       if (OptionsUtil.isHistorical(getOptions())) {
-         write("max(%s.transaction_id) as transaction_id, %s.art_id, %s.branch_id", txAlias, artAlias, txAlias);
+         write("%s.transaction_id, %s.art_id, %s.branch_id", txAlias, artAlias, txAlias);
       } else {
          write("%s.art_id, %s.branch_id", artAlias, txAlias);
       }
@@ -66,11 +66,6 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
 
    @Override
    public void writeGroupAndOrder() throws OseeCoreException {
-      if (OptionsUtil.isHistorical(getOptions())) {
-         String txAlias = getLastAlias(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
-         String artAlias = getLastAlias(TableEnum.ARTIFACT_TABLE);
-         write("\n GROUP BY %s.art_id, %s.branch_id", artAlias, txAlias);
-      }
       if (!isCountQueryType()) {
          String txAlias = getLastAlias(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
          String artAlias = getLastAlias(TableEnum.ARTIFACT_TABLE);
@@ -117,11 +112,10 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
 
    private void writeTxFilter(String txsAlias, StringBuilder sb, boolean allowDeleted) {
       if (OptionsUtil.isHistorical(getOptions())) {
-         sb.append(txsAlias);
-         sb.append(".transaction_id <= ?");
-         addParameter(OptionsUtil.getFromTransaction(getOptions()));
-         if (!allowDeleted) {
-            sb.append(AND_WITH_NEWLINES);
+         if (allowDeleted) {
+            removeDanglingSeparator(AND_WITH_NEWLINES);
+            removeDanglingSeparator(" AND ");
+         } else {
             sb.append(txsAlias);
             sb.append(".mod_type <> ");
             sb.append(String.valueOf(ModificationType.DELETED.getValue()));
@@ -130,13 +124,8 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
          sb.append(txsAlias);
          sb.append(".tx_current");
          if (allowDeleted) {
-            sb.append(" IN (");
-            sb.append(String.valueOf(TxChange.CURRENT.getValue()));
-            sb.append(", ");
-            sb.append(String.valueOf(TxChange.DELETED.getValue()));
-            sb.append(", ");
-            sb.append(String.valueOf(TxChange.ARTIFACT_DELETED.getValue()));
-            sb.append(")");
+            sb.append(" <> ");
+            sb.append(String.valueOf(TxChange.NOT_CURRENT.getValue()));
          } else {
             sb.append(" = ");
             sb.append(String.valueOf(TxChange.CURRENT.getValue()));
