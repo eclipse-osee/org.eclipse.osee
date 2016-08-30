@@ -33,6 +33,7 @@ import org.eclipse.osee.define.report.api.PageOrientation;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -43,7 +44,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribu
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
-import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.WholeWordCompare;
@@ -98,7 +98,7 @@ public class WholeWordRenderer extends WordRenderer {
          } else {
             Artifact artifact = artifacts.iterator().next();
             String content = artifact.getOrInitializeSoleAttributeValue(CoreAttributeTypes.WholeWordContent);
-            if (presentationType == PresentationType.DIFF && WordUtil.containsWordAnnotations(content)) {
+            if (presentationType == PresentationType.DIFF && WordCoreUtil.containsWordAnnotations(content)) {
                throw new OseeStateException(
                   "Trying to diff the [%s] artifact on the [%s] branch, which has tracked changes turned on.  All tracked changes must be removed before the artifacts can be compared.",
                   artifact.getName(), artifact.getBranchToken().getName());
@@ -109,7 +109,8 @@ public class WholeWordRenderer extends WordRenderer {
             content = WordMlLinkHandler.link(linkType, artifact, content, unknownGuids);
             WordUiUtil.displayUnknownGuids(artifact, unknownGuids);
 
-            String classification = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.DataRightsClassification, "");
+            String classification =
+               artifact.getSoleAttributeValueAsString(CoreAttributeTypes.DataRightsClassification, "");
             if (Strings.isValid(classification)) {
                content = addDataRights(content, classification, artifact);
             }

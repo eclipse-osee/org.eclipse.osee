@@ -11,11 +11,11 @@
 
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import com.google.common.collect.Lists;
 import java.io.File;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.report.api.WordArtifactChange;
 import org.eclipse.osee.define.report.api.WordUpdateChange;
@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -36,6 +37,9 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuid
 import org.eclipse.osee.framework.skynet.core.httpRequests.HttpWordUpdateRequest;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
+import org.eclipse.osee.framework.ui.swt.Displays;
+import com.google.common.collect.Lists;
 
 /**
  * @author Ryan D. Brooks
@@ -75,26 +79,30 @@ public class UpdateArtifactOperation extends AbstractOperation {
 
       WordUpdateChange change = HttpWordUpdateRequest.updateWordArtifacts(wud);
       postProcessChange(change);
+      TrackedChangesDialog trackedChanges = new TrackedChangesDialog(change);
+      trackedChanges.doWork(null);
    }
 
    private void postProcessChange(WordUpdateChange change) {
-      // Collect attribute events
-      ArtifactEvent artifactEvent = new ArtifactEvent(TransactionToken.valueOf(change.getTx(), branch));
+      if (change.getTx() != null && change.getBranch() != null) {
+         // Collect attribute events
+         ArtifactEvent artifactEvent = new ArtifactEvent(TransactionToken.valueOf(change.getTx(), branch));
 
-      for (Artifact artifact : artifacts) {
-         WordArtifactChange artChange = change.getWordArtifactChange(artifact.getArtId());
-         if (artChange != null) {
-            artifact.reloadAttributesAndRelations();
-            Collection<AttributeChange> attrChanges = getAttributeChanges(artifact, artChange);
-            if (!attrChanges.isEmpty()) {
-               EventModifiedBasicGuidArtifact guidArt = new EventModifiedBasicGuidArtifact(artifact.getBranch(),
-                  artifact.getArtifactType().getGuid(), artifact.getGuid(), attrChanges);
-               artifactEvent.getArtifacts().add(guidArt);
+         for (Artifact artifact : artifacts) {
+            WordArtifactChange artChange = change.getWordArtifactChange(artifact.getArtId());
+            if (artChange != null) {
+               artifact.reloadAttributesAndRelations();
+               Collection<AttributeChange> attrChanges = getAttributeChanges(artifact, artChange);
+               if (!attrChanges.isEmpty()) {
+                  EventModifiedBasicGuidArtifact guidArt = new EventModifiedBasicGuidArtifact(artifact.getBranch(),
+                     artifact.getArtifactType().getGuid(), artifact.getGuid(), attrChanges);
+                  artifactEvent.getArtifacts().add(guidArt);
+               }
             }
          }
-      }
-      if (!artifactEvent.getArtifacts().isEmpty()) {
-         OseeEventManager.kickPersistEvent(this, artifactEvent);
+         if (!artifactEvent.getArtifacts().isEmpty()) {
+            OseeEventManager.kickPersistEvent(this, artifactEvent);
+         }
       }
    }
 
@@ -123,4 +131,38 @@ public class UpdateArtifactOperation extends AbstractOperation {
       }
       return sb.toString();
    }
+
+   private static final class TrackedChangesDialog extends AbstractOperation {
+
+      private final WordUpdateChange change;
+
+      public TrackedChangesDialog(WordUpdateChange change) {
+         super("Tracked Changes Dialog", Activator.PLUGIN_ID);
+         this.change = change;
+      }
+
+      @Override
+      protected void doWork(IProgressMonitor monitor) throws Exception {
+         Displays.ensureInDisplayThread(new Runnable() {
+
+            @Override
+            public void run() {
+               XResultData resultData = new XResultData(false);
+               if (change != null && !change.getTrackedChangeArts().isEmpty()) {
+                  resultData.setTitle("Artifacts with Tracked Changes");
+                  resultData.addRaw("The following artifacts contain tracked changes and could not be saved." //
+                     + "\nPlease accept or reject and turn off tracked changes, then save the artifact.\n\n");
+                  for (Map.Entry<Long, String> entry : change.getTrackedChangeArts().entrySet()) {
+                     resultData.addRaw("Artifact ");
+                     resultData.addRaw("id: " + entry.getKey() + ", ");
+                     resultData.addRaw("name: " + entry.getValue() + "\n");
+                  }
+                  XResultDataUI.report(resultData, resultData.getTitle());
+               }
+            }
+         });
+      }
+
+   }
+
 }

@@ -11,7 +11,6 @@
 package org.eclipse.osee.define.report.internal.wordupdate;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
-import com.google.common.collect.Lists;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +24,7 @@ import org.eclipse.osee.define.report.api.WordUpdateData;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -42,6 +42,7 @@ import org.osgi.service.event.EventAdmin;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+import com.google.common.collect.Lists;
 
 /**
  * @author Ryan D. Brooks
@@ -138,13 +139,13 @@ public class WordUpdateArtifact {
                String content = Lib.inputStreamToString(
                   new ByteArrayInputStream(WordUtilities.getFormattedContent(extractorData.getParentEelement())));
 
+               boolean hasTrackedChanges = WordCoreUtil.containsWordAnnotations(content);
                /**
                 * Only update if: a. editing a single artifact or b. in multi-edit mode only update if the artifact has
                 * at least one textual change (if the MUTI_EDIT_SAVE_ALL_CHANGES preference is not set).
                 */
-
                boolean multiSave = data.isMultiEdit() || hasChangedContent(artifact, content);
-               if (singleArtifact || multiSave) {
+               if (!hasTrackedChanges && (singleArtifact || multiSave)) {
                   if (extractorData.getParentEelement().getNodeName().endsWith("body")) {
                      /*
                       * This code pulls out all of the stuff after the inserted listnum reordering stuff. This needs to
@@ -160,6 +161,8 @@ public class WordUpdateArtifact {
                      artChange.setCreated(true);
                   }
                   artChange.addChangedAttrType(CoreAttributeTypes.WordTemplateContent.getGuid());
+               } else {
+                  updateChange.setTrackedChangeArts(artifact.getId(), artifact.getName());
                }
                if (artChange.isChanged()) {
                   artChange.setSafetyRelated(checkIfSafetyRelated(artifact,

@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.define.report.api;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 
@@ -21,6 +23,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 public class WordUpdateChange {
    private TransactionId tx;
    private List<WordArtifactChange> changedArts = new LinkedList<>();
+   private final Map<Long, String> trackedChangeArts = new HashMap<>();
    private BranchId branch;
 
    public TransactionId getTx() {
@@ -78,4 +81,13 @@ public class WordUpdateChange {
       }
       return hasRelatedChange;
    }
+
+   public Map<Long, String> getTrackedChangeArts() {
+      return trackedChangeArts;
+   }
+
+   public void setTrackedChangeArts(Long artId, String name) {
+      trackedChangeArts.put(artId, name);
+   }
+
 }

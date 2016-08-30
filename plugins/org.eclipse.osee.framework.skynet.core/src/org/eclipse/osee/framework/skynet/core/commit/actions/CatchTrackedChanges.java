@@ -12,7 +12,9 @@ package org.eclipse.osee.framework.skynet.core.commit.actions;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -47,6 +49,7 @@ public class CatchTrackedChanges implements CommitAction {
       IOperation operation = ChangeManager.compareTwoBranchesHead(sourceBranch, destinationBranch, changes);
       Operations.executeWorkAndCheckStatus(operation);
 
+      Map<Integer, String> trackedChanges = new HashMap<Integer, String>();
       for (Change change : changes) {
          if (!change.getModificationType().isDeleted()) {
             if (change.getChangeType() == LoadChangeType.attribute) {
@@ -54,9 +57,7 @@ public class CatchTrackedChanges implements CommitAction {
 
                if (attribute instanceof WordAttribute) {
                   if (((WordAttribute) attribute).containsWordAnnotations()) {
-                     throw new OseeCoreException(String.format(
-                        "Commit Branch Failed Artifact \"%s\" Art_ID \"%d\" contains Tracked Changes. Accept all revision changes and then recommit",
-                        attribute.getArtifact().getSafeName(), attribute.getArtifact().getArtId()));
+                     trackedChanges.put(attribute.getArtifact().getArtId(), attribute.getArtifact().getSafeName());
                   }
                }
             }
@@ -67,6 +68,13 @@ public class CatchTrackedChanges implements CommitAction {
             }
 
          }
+      }
+
+      if (!trackedChanges.isEmpty()) {
+         throw new OseeCoreException(String.format(
+            "Commit Branch Failed. The following artifacts contain Tracked Changes. " //
+               + " Please accept or reject and turn off track changes, then recommit : [%s]",
+            trackedChanges.toString()));
       }
 
       OseeValidator validator = OseeValidator.getInstance();

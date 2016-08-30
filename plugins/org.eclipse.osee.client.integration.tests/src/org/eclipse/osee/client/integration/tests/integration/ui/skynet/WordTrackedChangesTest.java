@@ -17,12 +17,12 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
-import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -42,14 +42,14 @@ public class WordTrackedChangesTest {
    @Test
    public void testFindTrackChanges() throws Exception {
       String content = Lib.fileToString(getClass(), TEST_WORD_EDIT_FILE_NAME);
-      assertTrue(WordUtil.containsWordAnnotations(content));
+      assertTrue(WordCoreUtil.containsWordAnnotations(content));
    }
 
    @Test
    public void testRemoveTrackChanges() throws Exception {
       String content = Lib.fileToString(getClass(), TEST_WORD_EDIT_FILE_NAME);
-      content = WordUtil.removeAnnotations(content);
-      assertFalse(WordUtil.containsWordAnnotations(content));
+      content = WordCoreUtil.removeAnnotations(content);
+      assertFalse(WordCoreUtil.containsWordAnnotations(content));
    }
 
    @Test
@@ -62,7 +62,7 @@ public class WordTrackedChangesTest {
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedureWML, SAW_Bld_1, getClass().getSimpleName());
          newArt.persist(getClass().getSimpleName());
          String unlinkedContent = WordMlLinkHandler.unlink(linkType, newArt, content);
-         assertTrue(WordUtil.containsWordAnnotations(unlinkedContent));
+         assertTrue(WordCoreUtil.containsWordAnnotations(unlinkedContent));
       } finally {
          if (newArt != null) {
             newArt.purgeFromBranch();

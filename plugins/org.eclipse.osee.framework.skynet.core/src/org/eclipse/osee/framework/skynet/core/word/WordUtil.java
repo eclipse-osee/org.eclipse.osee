@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -47,9 +46,6 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  * @author Paul K. Waldfogel
  */
 public class WordUtil {
-   private static final String AML_ANNOTATION = "<.??aml:annotation.*?>";
-   private static final String AML_CONTENT = "<.??aml:content.*?>";
-   private static final String DELETIONS = "<w:delText>.*?</w:delText>";
    public static final String BODY_START = "<w:body>";
    public static final String BODY_END = "</w:body>";
    private static final String[] NUMBER =
@@ -292,18 +288,4 @@ public class WordUtil {
       return newTemplate;
    }
 
-   public static boolean containsWordAnnotations(String wordml) {
-      return wordml.contains("<w:delText>") || wordml.contains("w:type=\"Word.Insertion\"") || wordml.contains(
-         "w:type=\"Word.Formatting\"") || wordml.contains("w:type=\"Word.Deletion\"");
-   }
-
-   public static String removeAnnotations(String wordml) {
-      String response = wordml;
-      if (Strings.isValid(response)) {
-         response = response.replaceAll(AML_ANNOTATION, "");
-         response = response.replaceAll(AML_CONTENT, "");
-         response = response.replaceAll(DELETIONS, "");
-      }
-      return response;
-   }
 }

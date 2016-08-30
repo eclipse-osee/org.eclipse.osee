@@ -25,13 +25,13 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
-import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -73,7 +73,7 @@ public class PlainTextRenderer extends FileSystemRenderer {
          } else {
             Artifact artifact = artifacts.iterator().next();
             String content = artifact.getOrInitializeSoleAttributeValue(CoreAttributeTypes.PlainTextContent);
-            if (presentationType == PresentationType.DIFF && WordUtil.containsWordAnnotations(content)) {
+            if (presentationType == PresentationType.DIFF && WordCoreUtil.containsWordAnnotations(content)) {
                throw new OseeStateException(
                   "Trying to diff the [%s] artifact on the [%s] branch, which has tracked changes turned on.  All tracked changes must be removed before the artifacts can be compared.",
                   artifact.getName(), artifact.getBranchToken().getName());
