@@ -22,6 +22,6 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({DbInitTest.class, DemoDbPopulateSuite.class})
-public class DemoDbInitLba8 {
+public class DemoDbInit_Database {
    // Test Suite
 }
