@@ -11,23 +11,31 @@
 package org.eclipse.osee.ats.api.config;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.eclipse.osee.ats.api.user.JaxAtsUser;
 import org.eclipse.osee.ats.api.util.ColorColumns;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
  */
 @XmlRootElement
-public class AtsConfigurations {
+public class AtsConfigurations implements IWorkDefinitionStringProvider {
 
-   private final List<AtsConfiguration> configs = new ArrayList<>();
+   private List<AtsConfiguration> configs = new ArrayList<>();
    private AtsViews views = new AtsViews();
    private ColorColumns colorColumns = new ColorColumns();
    List<JaxAtsUser> users = new ArrayList<>();
-   List<JaxAtsUser> atsAdmins = new ArrayList<>();
-   List<Integer> atsActiveConfigIds = new ArrayList<>();
+   List<Long> atsAdmins = new ArrayList<>();
+   List<Long> atsConfigIds = new ArrayList<>();
+   private Collection<String> validStateNames = new ArrayList<>();
+   private Map<String, String> workDefIdToWorkDef = new HashMap<>();
 
    public List<AtsConfiguration> getConfigs() {
       return configs;
@@ -57,16 +65,59 @@ public class AtsConfigurations {
       this.users = users;
    }
 
-   public List<JaxAtsUser> getAtsAdmins() {
+   public String getAtsConfigIdsStr() {
+      return Collections.toString(",", atsConfigIds);
+   }
+
+   @JsonIgnore
+   public List<Long> getAtsConfigIds() {
+      return atsConfigIds;
+   }
+
+   public void setAtsConfigIdsStr(String atsConfigIdsStr) {
+      parseStringOfLongs(this.atsConfigIds, atsConfigIdsStr);
+   }
+
+   public Collection<String> getValidStateNames() {
+      return validStateNames;
+   }
+
+   public void setConfigs(List<AtsConfiguration> configs) {
+      this.configs = configs;
+   }
+
+   public void setValidStateNames(Collection<String> validStateNames) {
+      this.validStateNames = validStateNames;
+   }
+
+   public String getAtsAdminsStr() {
+      return Collections.toString(",", atsAdmins);
+   }
+
+   @JsonIgnore
+   public List<Long> getAtsAdmins() {
       return atsAdmins;
    }
 
-   public List<Integer> getAtsActiveConfigIds() {
-      return atsActiveConfigIds;
+   public void setAtsAdminsStr(String atsAdmins) {
+      parseStringOfLongs(this.atsAdmins, atsAdmins);
    }
 
-   public void setAtsActiveConfigIds(List<Integer> atsActiveConfigIds) {
-      this.atsActiveConfigIds = atsActiveConfigIds;
+   private void parseStringOfLongs(List<Long> uuids, String strOfLongs) {
+      if (Strings.isValid(strOfLongs)) {
+         for (String uuid : strOfLongs.split(",")) {
+            uuids.add(Long.valueOf(uuid));
+         }
+      }
+   }
+
+   @Override
+   public Map<String, String> getWorkDefIdToWorkDef() {
+      return workDefIdToWorkDef;
+   }
+
+   public void setWorkDefIdToWorkDef(Map<String, String> workDefIdToWorkDef) {
+      this.workDefIdToWorkDef = workDefIdToWorkDef;
    }
 
 }

@@ -119,8 +119,6 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    TeamWorkflowProviders getTeamWorkflowProviders();
 
-   void setConfigValue(String key, String value);
-
    List<IAtsSearchDataProvider> getSearchDataProviders();
 
    IAtsEventService getEventService();

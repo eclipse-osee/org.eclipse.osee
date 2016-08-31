@@ -83,6 +83,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
             ResultSet<ArtifactReadable> artifacts =
                orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andTypeEquals(
                   AtsArtifactTypes.Configuration).getResults();
+            // load ats branch configurations
             AtsConfigurations configs = new AtsConfigurations();
             for (ArtifactReadable art : artifacts) {
                AtsConfiguration config = new AtsConfiguration();
@@ -95,26 +96,36 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
             }
             UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsServer);
             AtsViews views = update.getConfigViews();
+            // load views
             configs.setViews(views);
+            // load color column config
             configs.setColorColumns(update.getColorColumns());
+            // load valid state names
+            configs.setValidStateNames(update.getValidStateNames());
+            // load users
             for (IAtsUser user : atsServer.getUserService().getUsers()) {
                configs.getUsers().add((JaxAtsUser) user);
             }
+            // load admins
             ArtifactReadable atsAdminArt = orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIds(
                AtsArtifactToken.AtsAdmin).getResults().getAtMostOneOrNull();
             if (atsAdminArt != null) {
-               for (ArtifactReadable member : atsAdminArt.getRelated(CoreRelationTypes.User_Grouping__Members)) {
-                  IAtsUser found = configs.getUsers().stream().filter(
-                     user -> user.getUuid().equals(member.getUuid())).findFirst().orElse(null);
-                  if (found != null) {
-                     configs.getAtsAdmins().add((JaxAtsUser) found);
-                  }
+               for (ArtifactReadable member : atsAdminArt.getRelated(CoreRelationTypes.Users_User)) {
+                  configs.getAtsAdmins().add(member.getId());
                }
             }
+            // load ats config object ids
             for (HasLocalId<Integer> configArtId : orcsApi.getQueryFactory().fromBranch(
                AtsUtilCore.getAtsBranch()).andIsOfType(AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.Version,
                   AtsArtifactTypes.ActionableItem).getResultsAsLocalIds()) {
-               configs.getAtsActiveConfigIds().add(configArtId.getLocalId());
+               configs.getAtsConfigIds().add(Long.valueOf(configArtId.getLocalId()));
+            }
+            // load work definitions
+            for (ArtifactId workDefArt : orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
+               AtsArtifactTypes.WorkDefinition).getResults()) {
+               String workDefStr = atsServer.getAttributeResolver().getSoleAttributeValueAsString(workDefArt,
+                  AtsAttributeTypes.DslSheet, "");
+               configs.getWorkDefIdToWorkDef().put(workDefArt.getName(), workDefStr);
             }
             return configs;
          }
@@ -192,7 +203,6 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       ArtifactId workDefFolder =
          introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.WorkDefinitionsFolder, newBranch, null, headingArt);
       introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.Users, newBranch, null, configArt);
-      introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.WorkDef_State_Names, newBranch, null, workDefFolder);
 
       // Introduce default work defs
       introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.WorkDef_Goal, newBranch, null, workDefFolder);

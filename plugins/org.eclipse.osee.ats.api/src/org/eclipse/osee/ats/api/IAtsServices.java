@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationProvider;
+import org.eclipse.osee.ats.api.config.IWorkDefinitionStringProvider;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
@@ -50,7 +51,7 @@ import org.eclipse.osee.logger.Log;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsServices extends IAtsConfigurationProvider {
+public interface IAtsServices extends IAtsConfigurationProvider, IWorkDefinitionStringProvider {
 
    IRelationResolver getRelationResolver();
 
@@ -133,6 +134,9 @@ public interface IAtsServices extends IAtsConfigurationProvider {
 
    IAtsActionFactory getActionFactory();
 
+   /**
+    * @param key - key of key/value config pair.  equals sign not accepted
+    */
    String getConfigValue(String key);
 
    Log getLogger();
@@ -142,5 +146,7 @@ public interface IAtsServices extends IAtsConfigurationProvider {
    <T> T getConfigItem(String guid);
 
    <T> T getConfigItem(Long uuid);
+
+   void setConfigValue(String key, String value);
 
 }

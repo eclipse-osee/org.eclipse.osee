@@ -14,9 +14,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.config.IWorkDefinitionStringProvider;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
@@ -53,6 +55,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    private IAttributeResolver attrResolver;
    private IAtsUserService userService;
    private Log logger;
+   private IWorkDefinitionStringProvider workDefinitionStringProvider;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -115,7 +118,13 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    @Override
    public IAtsWorkDefinition getWorkDef(String workDefId, XResultData resultData) throws Exception {
       Conditions.checkNotNullOrEmpty(workDefId, "workDefId");
-      String workDefStr = workDefStore.loadWorkDefinitionString(workDefId);
+      String workDefStr = null;
+      if (workDefinitionStringProvider != null && workDefinitionStringProvider.getWorkDefIdToWorkDef() != null) {
+         workDefStr = workDefinitionStringProvider.getWorkDefIdToWorkDef().get(workDefId);
+      }
+      if (workDefStr == null) {
+         workDefStr = workDefStore.loadWorkDefinitionString(workDefId);
+      }
       Conditions.checkNotNullOrEmpty(workDefStr, "workDefStr");
       AtsDsl atsDsl = ModelUtil.loadModel(workDefId + ".ats", workDefStr);
       ConvertAtsDslToWorkDefinition convert =
@@ -253,23 +262,39 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    }
 
    @Override
-   public Collection<IAtsWorkDefinition> getAllWorkDefinitions(XResultData resultData) throws Exception {
+   public Collection<IAtsWorkDefinition> getAllWorkDefinitions(XResultData resultData) {
       List<IAtsWorkDefinition> workDefs = new ArrayList<>();
-      for (Pair<String, String> entry : workDefStore.getWorkDefinitionStrings()) {
-         String name = entry.getFirst();
-         String workDefStr = entry.getSecond();
+      if (workDefinitionStringProvider != null && workDefinitionStringProvider.getWorkDefIdToWorkDef() != null) {
+         for (Entry<String, String> entry : workDefinitionStringProvider.getWorkDefIdToWorkDef().entrySet()) {
+            String name = entry.getKey();
+            String workDefStr = entry.getValue();
+            processWorkDef(resultData, workDefs, name, workDefStr);
+         }
+      } else {
+         for (Pair<String, String> entry : workDefStore.getWorkDefinitionStrings()) {
+            String name = entry.getFirst();
+            String workDefStr = entry.getSecond();
+            processWorkDef(resultData, workDefs, name, workDefStr);
+         }
+      }
+      return workDefs;
+   }
+
+   private void processWorkDef(XResultData resultData, List<IAtsWorkDefinition> workDefs, String name, String workDefStr) {
+      try {
          AtsDsl atsDsl = ModelUtil.loadModel(name + ".ats", workDefStr);
          ConvertAtsDslToWorkDefinition convert =
             new ConvertAtsDslToWorkDefinition(name, atsDsl, resultData, attrResolver, userService);
          for (IAtsWorkDefinition workDef : convert.convert()) {
             workDefs.add(workDef);
          }
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
       }
-      return workDefs;
    }
 
    @Override
-   public Collection<String> getAllValidStateNames(XResultData resultData) throws Exception {
+   public Collection<String> getAllValidStateNames(XResultData resultData) {
       Set<String> allValidStateNames = new HashSet<>();
       for (IAtsWorkDefinition workDef : getAllWorkDefinitions(resultData)) {
          for (String stateName : getStateNames(workDef)) {
@@ -279,6 +304,11 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
          }
       }
       return allValidStateNames;
+   }
+
+   @Override
+   public void setWorkDefinitionStringProvider(IWorkDefinitionStringProvider workDefinitionStringProvider) {
+      this.workDefinitionStringProvider = workDefinitionStringProvider;
    }
 
 }

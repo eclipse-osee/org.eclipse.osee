@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.api.workdef;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.config.IWorkDefinitionStringProvider;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -52,8 +53,10 @@ public interface IAtsWorkDefinitionService {
 
    Collection<IAtsWorkDefinition> getAllWorkDefinitions(XResultData resultData) throws OseeCoreException, Exception;
 
-   Collection<String> getAllValidStateNames(XResultData resultData) throws Exception;
+   Collection<String> getAllValidStateNames(XResultData resultData);
 
    List<IAtsRuleDefinition> getRuleDefinitions();
+
+   void setWorkDefinitionStringProvider(IWorkDefinitionStringProvider workDefinitionStringProvider);
 
 }

@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.util.XResultData;
 
 /**
  * See description below
- * 
+ *
  * @author Donald G Dunne
  */
 public class ConvertCreateUpdateAtsConfig implements IAtsDatabaseConversion {
@@ -42,8 +42,13 @@ public class ConvertCreateUpdateAtsConfig implements IAtsDatabaseConversion {
    public String getDescription() {
       StringBuffer data = new StringBuffer();
       data.append("Updates AtsConfig artifact (optional but recommended conversion)\n\n");
-      data.append(
-         "This will add any new ATS columns that have been configured.\n\nCan be run multiple times without corruption.\nShould be run after each release.");
+      data.append("This will:\n" + "   - Create AtsConfig artifact, if not created\n" //
+         + "   - Create Rule Definitions from support/ruleDefinitions.ats, if not created\n" //
+         + "   - Create/Update Views from support/views.json\n" //
+         + "   - Create Color Team Column, if not created.\n" //
+         + "   - Create/Update Valid State Names\n\n" //
+         + "Can be run multiple times without corruption.\n" //
+         + "Should be run after each release.");
       return data.toString();
    }
 

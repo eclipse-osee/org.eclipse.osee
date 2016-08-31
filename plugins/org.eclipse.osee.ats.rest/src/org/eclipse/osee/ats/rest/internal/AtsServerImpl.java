@@ -226,6 +226,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
       relationResolver = new AtsRelationResolverServiceImpl(this);
       attributeResolverService.setOrcsApi(orcsApi);
       atsCache = new AtsCache(this);
+      workDefService.setWorkDefinitionStringProvider(this);
       workDefAdmin = new AtsWorkDefinitionAdminImpl(workDefCache, workDefService, attributeResolverService,
          teamWorkflowProvidersLazy);
 

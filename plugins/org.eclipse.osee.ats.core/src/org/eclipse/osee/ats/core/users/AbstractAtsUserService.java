@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public abstract class AbstractAtsUserService implements IAtsUserService {
 
    protected final Map<String, IAtsUser> userIdToAtsUser = new ConcurrentHashMap<>(300);
-   protected final Map<String, Boolean> userIdToAdmin = new ConcurrentHashMap<>(300);
    protected final Map<String, IAtsUser> nameToAtsUser = new ConcurrentHashMap<>(300);
    protected IAtsUser currentUser = null;
 
@@ -144,7 +143,6 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
 
    @Override
    public void reloadCache() {
-      userIdToAdmin.clear();
       userIdToAtsUser.clear();
       nameToAtsUser.clear();
       currentUser = null;

@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,11 +29,8 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.config.ImportAIsAndTeamDefinitionsToDb;
 import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionImporter;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -42,8 +38,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.PluginUtil;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.osgi.framework.Bundle;
 
 /**
@@ -53,7 +47,6 @@ public final class AtsWorkDefinitionSheetProviders {
 
    private static Set<IAtsWorkDefinitionSheetProvider> teamWorkflowExtensionItems;
    public static String WORK_DEF_TEAM_DEFAULT = "WorkDef_Team_Default";
-   private static List<String> allValidStateNames = null;
 
    private AtsWorkDefinitionSheetProviders() {
       // Utility Class
@@ -69,55 +62,8 @@ public final class AtsWorkDefinitionSheetProviders {
       List<WorkDefinitionSheet> sheets = getWorkDefinitionSheets();
       Set<String> stateNames = new HashSet<>();
       importWorkDefinitionSheets(resultData, changes, folder, sheets, stateNames);
-      createStateNameArtifact(stateNames, folder, changes);
       importTeamsAndAis(resultData, changes, folder, sheets);
       changes.execute();
-   }
-
-   /**
-    * Returns all valid state names for all work definitions in the system
-    */
-   public synchronized static Collection<String> getAllValidStateNames() {
-      if (allValidStateNames == null) {
-         allValidStateNames = new ArrayList<>();
-         try {
-            Artifact artifact = null;
-            try {
-               artifact = ArtifactQuery.getArtifactFromToken(
-                  org.eclipse.osee.ats.api.data.AtsArtifactToken.WorkDef_State_Names, AtsUtilCore.getAtsBranch());
-            } catch (ArtifactDoesNotExist ex) {
-               // do nothing
-            }
-            if (artifact != null) {
-               for (String value : artifact.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData, "").split(
-                  ",")) {
-                  allValidStateNames.add(value);
-               }
-            } else {
-               XResultData resultData = new XResultData(false);
-               OseeLog.logf(AtsWorkDefinitionSheetProviders.class, Level.INFO,
-                  "ATS Valid State Names: Missing [%s] Artifact; Falling back to loadAddDefinitions",
-                  org.eclipse.osee.ats.api.data.AtsArtifactToken.WorkDef_State_Names.getName());
-               allValidStateNames.addAll(
-                  AtsClientService.get().getWorkDefinitionAdmin().getAllValidStateNames(resultData));
-            }
-            Collections.sort(allValidStateNames);
-         } catch (Exception ex) {
-            OseeLog.log(AtsWorkDefinitionSheetProviders.class, Level.SEVERE, ex);
-         }
-      }
-      return allValidStateNames;
-   }
-
-   private static Artifact createStateNameArtifact(Set<String> stateNames, Artifact folder, IAtsChangeSet changes) throws OseeCoreException {
-      Artifact stateNameArt = ArtifactTypeManager.addArtifact(
-         org.eclipse.osee.ats.api.data.AtsArtifactToken.WorkDef_State_Names, AtsUtilCore.getAtsBranch());
-      stateNameArt.addAttribute(CoreAttributeTypes.GeneralStringData,
-         org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", stateNames));
-      changes.add(stateNameArt);
-      folder.addChild(stateNameArt);
-      changes.add(folder);
-      return stateNameArt;
    }
 
    public static void importWorkDefinitionSheets(XResultData resultData, IAtsChangeSet changes, Artifact folder, Collection<WorkDefinitionSheet> sheets, Set<String> stateNames) throws OseeCoreException {

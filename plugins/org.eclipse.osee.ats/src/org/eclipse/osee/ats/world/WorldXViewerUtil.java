@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
-import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -98,10 +97,8 @@ public class WorldXViewerUtil {
    }
 
    public static void registerStateColumns(XViewerFactory factory) {
-      for (String stateName : AtsWorkDefinitionSheetProviders.getAllValidStateNames()) {
+      for (String stateName : AtsClientService.get().getConfigurations().getValidStateNames()) {
          factory.registerColumns(new StateAssigneesColumn(stateName));
-      }
-      for (String stateName : AtsWorkDefinitionSheetProviders.getAllValidStateNames()) {
          factory.registerColumns(new StateCompletedColumn(stateName));
       }
    }

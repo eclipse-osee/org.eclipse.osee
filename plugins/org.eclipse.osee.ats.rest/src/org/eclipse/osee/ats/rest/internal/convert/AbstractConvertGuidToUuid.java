@@ -30,10 +30,10 @@ public abstract class AbstractConvertGuidToUuid implements IAtsDatabaseConversio
 
    private static final String SELECT_BRANCH_ID_BY_GUID = "select branch_id from osee_branch where branch_guid = ?";
 
-   private final Log logger;
-   private final JdbcClient jdbcClient;
-   private final OrcsApi orcsApi;
-   private final IAtsServer atsServer;
+   protected final Log logger;
+   protected final JdbcClient jdbcClient;
+   protected final OrcsApi orcsApi;
+   protected final IAtsServer atsServer;
 
    public AbstractConvertGuidToUuid(Log logger, JdbcClient jdbcClient, OrcsApi orcsApi, IAtsServer atsServer) {
       super();

@@ -63,4 +63,10 @@ public class AtsWorkDefinitionCache {
       workDefIdToWorkDefintion.clear();
    }
 
+   public void cache(String id, IAtsWorkDefinition workDef) {
+      WorkDefinitionMatch match = new WorkDefinitionMatch(id, null);
+      match.setWorkDefinition(workDef);
+      workDefIdToWorkDefintion.put(id, match);
+   }
+
 }

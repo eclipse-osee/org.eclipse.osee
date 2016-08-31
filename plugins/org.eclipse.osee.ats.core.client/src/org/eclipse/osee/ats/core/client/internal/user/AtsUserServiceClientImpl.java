@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.JaxAtsUser;
 import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
-import org.eclipse.osee.ats.core.client.util.AtsGroup;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -44,10 +43,6 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
 
    public AtsUserServiceClientImpl() {
       // For OSGI Instantiation
-   }
-
-   public AtsUserServiceClientImpl(IAtsConfigurationProvider configurationProvider) {
-      this.configurationProvider = configurationProvider;
    }
 
    public void setConfigurationsService(IAtsConfigurationProvider configurationProvider) {
@@ -148,12 +143,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
 
    @Override
    public boolean isAtsAdmin(IAtsUser user) {
-      Boolean admin = userIdToAdmin.get(user.getUserId());
-      if (admin == null) {
-         admin = AtsGroup.AtsAdmin.isMember(user);
-         userIdToAdmin.put(user.getUserId(), admin);
-      }
-      return admin;
+      return configurationProvider.getConfigurations().getAtsAdmins().contains(user.getUuid());
    }
 
    @Override

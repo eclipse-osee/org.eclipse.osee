@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.ITransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -121,7 +122,8 @@ public class AtsUtilClient {
    public static boolean isAtsAdmin() {
       if (atsAdmin == null) {
          try {
-            atsAdmin = AtsGroup.AtsAdmin.isCurrentUserMember();
+            atsAdmin = AtsClientService.get().getConfigurations().getAtsAdmins().contains(
+               AtsClientService.get().getUserService().getCurrentUser().getUuid());
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             atsAdmin = false;

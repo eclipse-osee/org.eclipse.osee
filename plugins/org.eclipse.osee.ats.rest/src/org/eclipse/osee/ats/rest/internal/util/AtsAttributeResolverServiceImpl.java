@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -236,9 +237,16 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
       return getAttributeValues(atsObject.getStoreObject(), attributeType);
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public <T> Collection<IAttribute<T>> getAttributes(ArtifactId artifact, IAttributeType attributeType) throws OseeCoreException {
-      return getArtifact(artifact).getAttributeValues(attributeType);
+      Assert.isNotNull(artifact, "Artifact can not be null");
+      Assert.isNotNull(attributeType, "Attribute Type can not be null");
+      List<IAttribute<T>> attributes = new LinkedList<>();
+      for (AttributeReadable<Object> attr : ((ArtifactReadable) artifact).getAttributes(attributeType)) {
+         attributes.add(new AttributeReadableWrapper<T>((AttributeReadable<T>) attr));
+      }
+      return attributes;
    }
 
    @Override

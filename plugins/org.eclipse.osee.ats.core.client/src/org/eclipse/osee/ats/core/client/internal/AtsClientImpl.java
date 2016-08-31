@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.client.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -79,7 +80,6 @@ import org.eclipse.osee.ats.core.client.internal.ev.AtsEarnedValueImpl;
 import org.eclipse.osee.ats.core.client.internal.query.AtsQueryServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.review.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.store.AtsVersionServiceImpl;
-import org.eclipse.osee.ats.core.client.internal.user.AtsUserServiceClientImpl;
 import org.eclipse.osee.ats.core.client.internal.workdef.ArtifactResolverImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsRelationResolverServiceImpl;
@@ -121,7 +121,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
@@ -141,7 +140,6 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    private IVersionFactory versionFactory;
    private AtsWorkDefinitionCache workDefCache;
    private IAtsEarnedValueService earnedValueService;
-   private IAtsUserService userService;
    private IAtsUserServiceClient userServiceClient;
    private IAtsWorkItemService workItemService;
    private IAtsBranchService branchService;
@@ -194,6 +192,10 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       this.configProvider = configProvider;
    }
 
+   public void setAtsUserService(IAtsUserServiceClient userServiceClient) {
+      this.userServiceClient = userServiceClient;
+   }
+
    public void addSearchDataProvider(IAtsSearchDataProvider provider) {
       searchDataProviders.add(provider);
    }
@@ -204,9 +206,6 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
    public void start() throws OseeCoreException {
       Conditions.checkNotNull(workDefService, "IAtsWorkDefinitionService");
-
-      userService = new AtsUserServiceClientImpl(this);
-      userServiceClient = (IAtsUserServiceClient) userService;
 
       atsCache = new AtsCache(this);
       earnedValueService = new AtsEarnedValueImpl(logger, getServices());
@@ -220,11 +219,14 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       versionFactory = new VersionFactory();
 
       workDefCache = new AtsWorkDefinitionCache();
+
       artifactResolver = new ArtifactResolverImpl(this);
       teamWorkflowProvidersLazy = new TeamWorkflowProviders();
       workItemService = new AtsWorkItemServiceImpl(this, teamWorkflowProvidersLazy);
       attributeResolverService = new AtsAttributeResolverServiceImpl();
       relationResolver = new AtsRelationResolverServiceImpl(this);
+
+      workDefService.setWorkDefinitionStringProvider(this);
 
       workDefAdmin = new AtsWorkDefinitionAdminImpl(workDefCache, workDefService, attributeResolverService,
          teamWorkflowProvidersLazy);
@@ -344,11 +346,16 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
          @Override
          public void run() {
             try {
-               List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(
-                  configProvider.getConfigurations().getAtsActiveConfigIds(), AtsUtilCore.getAtsBranch());
-
+               List<Integer> ids = new LinkedList<>();
+               for (Long id : configProvider.getConfigurations().getAtsConfigIds()) {
+                  ids.add(id.intValue());
+               }
+               List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(ids, AtsUtilCore.getAtsBranch());
                for (Artifact artifact : artifacts) {
-                  atsCache.cacheArtifact(artifact);
+                  IAtsConfigObject configObj = configItemFactory.getConfigObject(artifact);
+                  if (configObj != null) {
+                     atsCache.cacheAtsObject(configObj);
+                  }
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -422,7 +429,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
    @Override
    public IAtsUserService getUserService() throws OseeStateException {
-      return userService;
+      return userServiceClient;
    }
 
    private IAtsCache atsCache() throws OseeCoreException {
@@ -561,29 +568,6 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
          }
       }
       return result;
-   }
-
-   @SuppressWarnings("deprecation")
-   @Override
-   public void setConfigValue(String key, String value) {
-      Artifact atsConfig = ArtifactQuery.getArtifactFromToken(AtsArtifactToken.AtsConfig, AtsUtilCore.getAtsBranch());
-      if (atsConfig != null) {
-         String keyValue = String.format("%s=%s", key, value);
-         boolean found = false;
-         List<Attribute<String>> attributes = atsConfig.getAttributes(CoreAttributeTypes.GeneralStringData);
-         for (Attribute<String> attr : attributes) {
-            String str = attr.getValue();
-            if (str.startsWith(key)) {
-               attr.setValue(keyValue);
-               found = true;
-               break;
-            }
-         }
-         if (!found) {
-            atsConfig.addAttribute(CoreAttributeTypes.GeneralStringData, keyValue);
-         }
-         atsConfig.persist(String.format("Update AtsConfig [%s] Key", key));
-      }
    }
 
    @Override

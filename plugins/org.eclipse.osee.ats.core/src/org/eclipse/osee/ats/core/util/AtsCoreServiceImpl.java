@@ -10,14 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.util;
 
+import java.util.Collection;
+import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
@@ -83,6 +89,36 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
          }
       }
       return atsObject;
+   }
+
+   @Override
+   public void setConfigValue(String key, String value) {
+      ArtifactId atsConfig = getArtifact(AtsArtifactToken.AtsConfig);
+      IAtsChangeSet changes =
+         getStoreService().createAtsChangeSet("Set AtsConfig Value", getUserService().getCurrentUser());
+      if (atsConfig != null) {
+         String keyValue = String.format("%s=%s", key, value);
+         boolean found = false;
+         Collection<IAttribute<Object>> attributes =
+            getAttributeResolver().getAttributes(atsConfig, CoreAttributeTypes.GeneralStringData);
+         for (IAttribute<Object> attr : attributes) {
+            String str = (String) attr.getValue();
+            if (str.startsWith(key)) {
+               changes.setAttribute(atsConfig, attr.getId(), keyValue);
+               found = true;
+               break;
+            }
+         }
+         if (!found) {
+            changes.addAttribute(atsConfig, CoreAttributeTypes.GeneralStringData, keyValue);
+         }
+         changes.executeIfNeeded();
+      }
+   }
+
+   @Override
+   public Map<String, String> getWorkDefIdToWorkDef() {
+      return getConfigurations().getWorkDefIdToWorkDef();
    }
 
 }

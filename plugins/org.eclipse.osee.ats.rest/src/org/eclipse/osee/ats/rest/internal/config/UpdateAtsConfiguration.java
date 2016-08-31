@@ -12,9 +12,11 @@ package org.eclipse.osee.ats.rest.internal.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.AtsViews;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
@@ -29,11 +31,12 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -48,7 +51,7 @@ public class UpdateAtsConfiguration {
    private static final String VIEWS_KEY = "views";
    private static final String VIEWS_EQUAL_KEY = VIEWS_KEY + "=";
    private static final String COLOR_COLUMN_KEY = "colorColumns";
-   private static final String COLOR_COLUMN_EQUAL_KEY = COLOR_COLUMN_KEY + "=";
+   public static final String VALID_STATE_NAMES_KEY = "validStateNames";
 
    public UpdateAtsConfiguration(IAtsServer atsServer) {
       this.atsServer = atsServer;
@@ -58,36 +61,43 @@ public class UpdateAtsConfiguration {
    public XResultData createUpdateConfig(XResultData rd) {
       ArtifactReadable userArt = atsServer.getArtifact(AtsCoreUsers.SYSTEM_USER);
       ArtifactId configFolder = getOrCreateConfigFolder(userArt, rd);
-      getOrCreateAtsConfig(userArt, rd);
-      importRuleDefinitions(userArt, configFolder, rd);
+      ArtifactReadable atsConfigArt = (ArtifactReadable) getOrCreateAtsConfig(userArt, rd);
+      createRuleDefinitions(userArt, configFolder, rd);
+      createUpdateColorColumnAttributes(atsConfigArt, userArt, rd);
+      createUpdateConfigAttributes(atsConfigArt, userArt, rd);
+      createUpdateValidStateAttributes(atsConfigArt, userArt, rd);
       return rd;
    }
 
-   private void importRuleDefinitions(ArtifactReadable userArt, ArtifactId configFolderArt, XResultData rd) {
+   private void createRuleDefinitions(ArtifactReadable userArt, ArtifactId configFolderArt, XResultData rd) {
       try {
-         TransactionBuilder tx = atsServer.getOrcsApi().getTransactionFactory().createTransaction(CoreBranches.COMMON,
-            userArt, "Add Rule Definitions");
-         ArtifactId ruleDefConfigArt = tx.createArtifact(AtsArtifactToken.RuleDefinitions);
-         String ruleDefs = RestUtil.getResource("support/ruleDefinitions.ats");
-         tx.createAttribute(ruleDefConfigArt, AtsAttributeTypes.DslSheet, ruleDefs);
-         if (rd.isErrors()) {
-            throw new OseeStateException(rd.toString());
+         if (atsServer.getArtifact(AtsArtifactToken.RuleDefinitions) == null) {
+            TransactionBuilder tx = atsServer.getOrcsApi().getTransactionFactory().createTransaction(
+               CoreBranches.COMMON, userArt, "Add Rule Definitions Artifact");
+            ArtifactId ruleDefConfigArt = tx.createArtifact(AtsArtifactToken.RuleDefinitions);
+            String ruleDefs = RestUtil.getResource("support/ruleDefinitions.ats");
+            tx.createAttribute(ruleDefConfigArt, AtsAttributeTypes.DslSheet, ruleDefs);
+            if (rd.isErrors()) {
+               throw new OseeStateException(rd.toString());
+            }
+            tx.relate(configFolderArt, CoreRelationTypes.Default_Hierarchical__Child, ruleDefConfigArt);
+            tx.commit();
          }
-         tx.relate(configFolderArt, CoreRelationTypes.Default_Hierarchical__Child, ruleDefConfigArt);
-         tx.commit();
       } catch (Exception ex) {
-         throw new OseeWrappedException("Error loading column ruleDefinitions.ats file", ex);
+         OseeLog.log(UpdateAtsConfiguration.class, Level.SEVERE, ex);
+         rd.error("Error loading column ruleDefinitions.ats file (see log for details) " + ex.getLocalizedMessage());
       }
    }
 
-   private TransactionBuilder setConfigAttributes(ArtifactReadable configArt, ArtifactReadable userArt, TransactionBuilder tx, XResultData rd) throws OseeCoreException {
+   private void createUpdateConfigAttributes(ArtifactReadable configArt, ArtifactReadable userArt, XResultData rd) throws OseeCoreException {
       try {
          String viewsJson = RestUtil.getResource("support/views.json");
          AtsViews defaultViews = gson.fromJson(viewsJson, AtsViews.class);
          AtsViews databaseViews = getConfigViews();
+         TransactionBuilder tx = atsServer.getOrcsApi().getTransactionFactory().createTransaction(CoreBranches.COMMON,
+            userArt, "Create Update Config Attributes");
          if (databaseViews.getAttrColumns().isEmpty()) {
-            tx = getOrCreateTx(userArt, tx);
-            tx.createAttribute(configArt, CoreAttributeTypes.GeneralStringData, createViewsAttrValue(defaultViews));
+            tx.createAttribute(configArt, CoreAttributeTypes.GeneralStringData, getViewsAttrValue(defaultViews));
             rd.log("Creating VIEWS attribute\n");
          } else {
             // merge any new default view items to current database view items
@@ -116,28 +126,20 @@ public class UpdateAtsConfiguration {
             while (iterator.hasNext()) {
                AttributeReadable<Object> attributeReadable = iterator.next();
                if (((String) attributeReadable.getValue()).startsWith(VIEWS_EQUAL_KEY)) {
-                  tx = getOrCreateTx(userArt, tx);
-                  tx.setAttributeById(configArt, attributeReadable, createViewsAttrValue(databaseViews));
+                  tx.setAttributeById(configArt, attributeReadable, getViewsAttrValue(databaseViews));
                   rd.log("Create or update AtsConfig.VIEWS attribute\n");
                   break;
                }
             }
          }
+         tx.commit();
       } catch (Exception ex) {
-         throw new OseeWrappedException("Error loading column views.json file", ex);
+         OseeLog.log(UpdateAtsConfiguration.class, Level.SEVERE, ex);
+         rd.error("Error loading column views.json file (see log for details) " + ex.getLocalizedMessage());
       }
-      return tx;
    }
 
-   private TransactionBuilder getOrCreateTx(ArtifactReadable userArt, TransactionBuilder tx) {
-      if (tx == null) {
-         tx = atsServer.getOrcsApi().getTransactionFactory().createTransaction(CoreBranches.COMMON, userArt,
-            "Update AtsConfig attributes");
-      }
-      return tx;
-   }
-
-   private String createViewsAttrValue(AtsViews defaultViews) {
+   private String getViewsAttrValue(AtsViews defaultViews) {
       return VIEWS_EQUAL_KEY + gson.toJson(defaultViews);
    }
 
@@ -157,7 +159,6 @@ public class UpdateAtsConfiguration {
          tx.commit();
          rd.log("Created Config Folder");
       }
-
       return configFolderArt;
    }
 
@@ -171,44 +172,22 @@ public class UpdateAtsConfiguration {
          ArtifactReadable headingFolderArt = (ArtifactReadable) getOrCreateConfigFolder(userArt, rd);
          atsConfigArt = (ArtifactReadable) tx.createArtifact(AtsArtifactToken.AtsConfig);
          tx.relate(headingFolderArt, CoreRelationTypes.Default_Hierarchical__Parent, atsConfigArt);
-         setConfigAttributes(atsConfigArt, userArt, tx, rd);
-         setColorColumnAttributes(atsConfigArt, userArt, tx, rd);
          tx.commit();
          rd.log("Created AtsConfig");
-      } else {
-         TransactionBuilder tx = setConfigAttributes(atsConfigArt, userArt, null, rd);
-         if (tx != null) {
-            tx.commit();
-         }
       }
-
       return atsConfigArt;
    }
 
-   private void setColorColumnAttributes(ArtifactReadable atsConfigArt, ArtifactReadable userArt, TransactionBuilder tx, XResultData rd) {
+   private void createUpdateColorColumnAttributes(ArtifactReadable atsConfigArt, ArtifactReadable userArt, XResultData rd) {
       ColorColumns columns = new ColorColumns();
       columns.addColumn(ColorTeamColumn.getColor());
       String colorColumnsJson = gson.toJson(columns);
+      atsServer.setConfigValue(COLOR_COLUMN_KEY, colorColumnsJson);
+   }
 
-      Iterator<? extends AttributeReadable<Object>> iterator =
-         atsConfigArt.getAttributes(CoreAttributeTypes.GeneralStringData, DeletionFlag.EXCLUDE_DELETED).iterator();
-      boolean found = false;
-      while (iterator.hasNext()) {
-         AttributeReadable<Object> attributeReadable = iterator.next();
-         if (((String) attributeReadable.getValue()).startsWith(COLOR_COLUMN_EQUAL_KEY)) {
-            tx = getOrCreateTx(userArt, tx);
-            tx.setAttributeById(atsConfigArt, attributeReadable, colorColumnsJson);
-            found = true;
-            rd.log("Create or update AtsConfig.colorColumn attribute\n");
-            break;
-         }
-      }
-      if (!found) {
-         tx = getOrCreateTx(userArt, tx);
-         tx.createAttribute(atsConfigArt, CoreAttributeTypes.GeneralStringData,
-            COLOR_COLUMN_EQUAL_KEY + colorColumnsJson);
-      }
-
+   private void createUpdateValidStateAttributes(ArtifactReadable atsConfigArt, ArtifactReadable userArt, XResultData rd) {
+      Collection<String> validStateNames = atsServer.getWorkDefService().getAllValidStateNames(new XResultData());
+      atsServer.setConfigValue(VIEWS_KEY, Collections.toString(",", validStateNames));
    }
 
    @SuppressWarnings("unchecked")
@@ -225,6 +204,17 @@ public class UpdateAtsConfiguration {
          rd.log("Created Configs Folder");
       }
       return configsFolderArt;
+   }
+
+   public Collection<String> getValidStateNames() {
+      String stateNamesStr = atsServer.getConfigValue(VALID_STATE_NAMES_KEY);
+      List<String> stateNames = new LinkedList<>();
+      if (Strings.isValid(stateNamesStr)) {
+         for (String stateName : stateNamesStr.split(",")) {
+            stateNames.add(stateName);
+         }
+      }
+      return stateNames;
    }
 
    public AtsViews getConfigViews() {
