@@ -112,7 +112,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       try {
          // If the artifact is dirty when the editor gets disposed, then it needs to be reverted
          Artifact artifact = getEditorInput().getArtifact();
-         if (!artifact.isDeleted() && artifact.isDirty()) {
+         if (artifact != null && !artifact.isDeleted() && artifact.isDirty()) {
             try {
                artifact.reloadAttributesAndRelations();
             } catch (OseeCoreException ex) {
