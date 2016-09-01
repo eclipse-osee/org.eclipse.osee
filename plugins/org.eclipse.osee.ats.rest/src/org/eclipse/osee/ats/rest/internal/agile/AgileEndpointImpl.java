@@ -103,8 +103,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          throw new OseeWebApplicationException(Status.BAD_REQUEST, "name is not valid");
       }
 
-      long uuid = newTeam.getUuid();
-      if (uuid <= 0) {
+      Long uuid = newTeam.getUuid();
+      if (uuid == null || uuid <= 0) {
          newTeam.setUuid(Lib.generateArtifactIdAsInt());
       }
 
@@ -182,8 +182,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       }
 
       String guid = GUID.create();
-      long uuid = newFeatureGroup.getUuid();
-      if (uuid <= 0) {
+      Long uuid = newFeatureGroup.getUuid();
+      if (uuid == null || uuid <= 0) {
          uuid = Lib.generateArtifactIdAsInt();
       }
 
@@ -233,8 +233,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       }
 
       String guid = GUID.create();
-      long uuid = newSprint.getUuid();
-      if (uuid <= 0) {
+      Long uuid = newSprint.getUuid();
+      if (uuid == null || uuid <= 0) {
          uuid = Lib.generateArtifactIdAsInt();
       }
 
@@ -323,8 +323,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       }
 
       String guid = GUID.create();
-      long uuid = newBacklog.getUuid();
-      if (uuid <= 0) {
+      Long uuid = newBacklog.getUuid();
+      if (uuid == null || uuid <= 0) {
          uuid = Lib.generateArtifactIdAsInt();
       }
       ArtifactReadable teamArt = atsServer.getArtifact(newBacklog.getTeamUuid());
