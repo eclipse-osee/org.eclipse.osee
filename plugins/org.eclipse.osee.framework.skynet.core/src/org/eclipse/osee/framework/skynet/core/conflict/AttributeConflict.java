@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
@@ -58,9 +57,6 @@ public class AttributeConflict extends Conflict {
    private final long attrTypeId;
    private Object sourceObject;
    private Object destObject;
-   private Attribute<?> attribute = null;
-   private Attribute<?> sourceAttribute = null;
-   private Attribute<?> destAttribute = null;
    private AttributeType attributeType;
    private boolean mergeEqualsSource;
    private boolean mergeEqualsDest;
@@ -77,33 +73,11 @@ public class AttributeConflict extends Conflict {
    }
 
    public Attribute<?> getAttribute() throws OseeCoreException {
-      if (attribute != null) {
-         return attribute;
-      }
-      Collection<Attribute<Object>> localAttributes = getArtifact().getAttributes(getAttributeType());
-      for (Attribute<Object> localAttribute : localAttributes) {
-         if (localAttribute.getId() == attrId) {
-            attribute = localAttribute;
-         }
-      }
-      return attribute;
+      return getArtifact().getAttributeById(attrId, false);
    }
 
    public Attribute<?> getSourceAttribute(boolean allowDeleted) throws OseeCoreException {
-      if (sourceAttribute != null) {
-         return sourceAttribute;
-      }
-      Collection<Attribute<?>> localAttributes;
-      if (allowDeleted) {
-         localAttributes = getSourceArtifact().getAttributes(true);
-      } else {
-         localAttributes = getSourceArtifact().getAttributes();
-      }
-      for (Attribute<?> localAttribute : localAttributes) {
-         if (localAttribute.getId() == attrId) {
-            sourceAttribute = localAttribute;
-         }
-      }
+      Attribute<?> sourceAttribute = getSourceArtifact().getAttributeById(attrId, allowDeleted);
       if (sourceAttribute == null) {
          if (sourceBranch != null) {
             throw new AttributeDoesNotExist("Attribute %d could not be found on artifact %d on branch %s", attrId,
@@ -116,15 +90,7 @@ public class AttributeConflict extends Conflict {
    }
 
    public Attribute<?> getDestAttribute() throws OseeCoreException {
-      if (destAttribute != null) {
-         return destAttribute;
-      }
-      Collection<Attribute<Object>> localAttributes = getDestArtifact().getAttributes(getAttributeType());
-      for (Attribute<Object> localAttribute : localAttributes) {
-         if (localAttribute.getId() == attrId) {
-            destAttribute = localAttribute;
-         }
-      }
+      Attribute<?> destAttribute = getDestArtifact().getAttributeById(attrId, false);
       if (destAttribute == null) {
          throw new AttributeDoesNotExist("Attribute %d could not be found on artifact %d on branch %s", attrId,
             getArtId(), destBranch.getUuid());
@@ -133,13 +99,7 @@ public class AttributeConflict extends Conflict {
    }
 
    private Attribute<?> getAttribute(Artifact artifact) throws OseeCoreException {
-      Attribute<?> attribute = null;
-      Collection<Attribute<Object>> localAttributes = artifact.getAttributes(getAttributeType());
-      for (Attribute<Object> localAttribute : localAttributes) {
-         if (localAttribute.getId() == attrId) {
-            attribute = localAttribute;
-         }
-      }
+      Attribute<?> attribute = artifact.getAttributeById(attrId, false);
       if (attribute == null) {
          throw new AttributeDoesNotExist("Attribute %d could not be found on artifact %d on branch %s", attrId,
             artifact.getArtId(), artifact.getBranch().getGuid());
@@ -189,6 +149,7 @@ public class AttributeConflict extends Conflict {
          toReturn = (T) this;
       }
 
+      Attribute<?> attribute = getAttribute();
       if (type != null && type.isInstance(attribute)) {
          try {
             toReturn = (T) getSourceAttribute(true);
@@ -497,6 +458,7 @@ public class AttributeConflict extends Conflict {
    public boolean isSimpleStringAttribute() {
       boolean returnValue = true;
       returnValue &= !isWordAttribute();
+      Attribute<?> attribute = getAttribute();
       returnValue &= !(attribute instanceof EnumeratedAttribute);
       returnValue &= attribute instanceof StringAttribute;
       return returnValue;
