@@ -25,6 +25,8 @@ public interface IAtsLog {
 
    public abstract List<IAtsLogItem> getLogItemsReversed() throws OseeCoreException;
 
+   public abstract IAtsLogItem getLogItemWithTypeAsOfDate(LogType logType, Date date) throws OseeCoreException;
+
    /**
     * Used to reset the original originated user. Only for internal use. Kept for backward compatibility.
     */

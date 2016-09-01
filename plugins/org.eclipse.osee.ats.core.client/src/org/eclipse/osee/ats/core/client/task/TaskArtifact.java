@@ -11,16 +11,11 @@
 package org.eclipse.osee.ats.core.client.task;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
-import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
-import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
-import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -115,23 +110,5 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
          return awa.getWorldViewSWEnhancement();
       }
       return "";
-   }
-
-   public IAtsLogItem getLogItemWithTypeAsOfDate(LogType logType, Date date) throws OseeCoreException {
-      IAtsLogItem retLogItem = null;
-      IAtsLog atsLog = getLog();
-      List<IAtsLogItem> logItems = atsLog.getLogItems();
-      for (IAtsLogItem logItem : logItems) {
-         if (logItem.getType().equals(logType)) {
-            Date logItemDate = logItem.getDate();
-            if (logItemDate.after(date)) {
-               break;
-            } else {
-               retLogItem = logItem;
-            }
-         }
-      }
-
-      return retLogItem;
    }
 }

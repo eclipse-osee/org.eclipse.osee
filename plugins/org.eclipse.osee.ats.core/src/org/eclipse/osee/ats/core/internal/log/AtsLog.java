@@ -57,6 +57,22 @@ public class AtsLog implements IAtsLog {
       return logItems;
    }
 
+   @Override
+   public IAtsLogItem getLogItemWithTypeAsOfDate(LogType logType, Date date) throws OseeCoreException {
+      IAtsLogItem retLogItem = null;
+      for (IAtsLogItem logItem : logItems) {
+         if (logItem.getType().equals(logType)) {
+            Date logItemDate = logItem.getDate();
+            if (logItemDate.after(date)) {
+               break;
+            } else {
+               retLogItem = logItem;
+            }
+         }
+      }
+      return retLogItem;
+   }
+
    /**
     * Used to reset the original originated user. Only for internal use. Kept for backward compatibility.
     */
@@ -171,5 +187,4 @@ public class AtsLog implements IAtsLog {
    public String getLogId() {
       return logId;
    }
-
 }
