@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.transaction;
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -172,11 +171,6 @@ public final class TransactionManager {
       try {
          chStmt.runPreparedQuery(SELECT_BRANCH_TRANSACTION_BY_DATE, branch, new Timestamp(maxDateExclusive.getTime()));
          if (chStmt.next()) {
-            if (chStmt.wasNull()) {
-               DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
-               throw new TransactionDoesNotExist("Cannot find transaction for [%s] - the transation id was null",
-                  dateFormat.format(maxDateExclusive));
-            }
             txRecord = loadTransaction(chStmt);
          }
       } finally {
