@@ -670,6 +670,9 @@ attributeType "Access Context Id" extends StringAttribute {
 
 artifactType "Requirement" extends "Artifact" {
 	uuid 0x0000000000000015	
+	attribute "Data Rights Classification"
+	attribute "Data Rights Basis"
+	attribute "Subject Matter Expert"
 }
 
 artifactType "Abstract Spec Requirement" extends "Requirement" {
@@ -754,9 +757,6 @@ abstract artifactType "Abstract Software Requirement" extends "Abstract Spec Req
 	attribute "Partition"
 	attribute "Category"
 	attribute "System Security Requirement"
-	attribute "Data Rights Classification"
-	attribute "Data Rights Basis"
-	attribute "Subject Matter Expert"
 }
 
 artifactType "Software Requirement" extends "MS Word Template" , "Direct Software Requirement" {
@@ -859,7 +859,6 @@ artifactType "Interface Requirement" extends "Abstract Spec Requirement" , "MS W
 
 artifactType "Hardware Requirement" extends "Abstract Spec Requirement" , "MS Word Template" {
 	uuid 0x0000000000000021
-	attribute "Data Rights Classification"
 }
 
 abstract artifactType "Function" extends "MS Word Template" {
