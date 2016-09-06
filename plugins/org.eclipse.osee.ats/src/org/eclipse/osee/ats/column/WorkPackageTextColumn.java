@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.column;
 
 import java.util.logging.Level;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -25,19 +25,21 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
+ * Provides string based Work Package widget
+ *
  * @author Donald G. Dunne
  */
-public class WorkPackageColumn extends XViewerAtsAttributeValueColumn {
+public class WorkPackageTextColumn extends XViewerAtsAttributeValueColumn {
 
-   public static WorkPackageColumn instance = new WorkPackageColumn();
+   public static WorkPackageTextColumn instance = new WorkPackageTextColumn();
 
-   public static WorkPackageColumn getInstance() {
+   public static WorkPackageTextColumn getInstance() {
       return instance;
    }
 
-   protected WorkPackageColumn() {
-      super(AtsAttributeTypes.WorkPackage, WorldXViewerFactory.COLUMN_NAMESPACE + ".workPackage",
-         AtsAttributeTypes.WorkPackage.getUnqualifiedName(), 80, XViewerAlign.Left, false, SortDataType.String, true, "");
+   protected WorkPackageTextColumn() {
+      super(AtsAttributeTypes.WorkPackage, WorldXViewerFactory.COLUMN_NAMESPACE + ".workPackage", "Work Package (text)",
+         80, XViewerAlign.Left, false, SortDataType.String, true, "");
    }
 
    /**
@@ -45,8 +47,8 @@ public class WorkPackageColumn extends XViewerAtsAttributeValueColumn {
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public WorkPackageColumn copy() {
-      WorkPackageColumn newXCol = new WorkPackageColumn();
+   public WorkPackageTextColumn copy() {
+      WorkPackageTextColumn newXCol = new WorkPackageTextColumn();
       super.copy(this, newXCol);
       return newXCol;
    }

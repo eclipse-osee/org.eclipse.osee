@@ -142,6 +142,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XProgramSelectionWidget();
       } else if (widgetName.equals(XRunSprintSummaryButton.WIDGET_ID)) {
          return new XRunSprintSummaryButton();
+      } else if (widgetName.equals(XWorkPackageWidget.WIDGET_ID)) {
+         return new XWorkPackageWidget();
       }
       return toReturn;
    }

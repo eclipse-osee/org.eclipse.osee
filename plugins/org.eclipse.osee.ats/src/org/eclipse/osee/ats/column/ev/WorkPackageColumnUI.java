@@ -50,16 +50,16 @@ import org.eclipse.swt.widgets.TreeItem;
  *
  * @author Donald G. Dunne
  */
-public class ActivityIdColumnUI extends XViewerAtsColumn implements IMultiColumnEditProvider, IXViewerValueColumn, IAltLeftClickProvider {
+public class WorkPackageColumnUI extends XViewerAtsColumn implements IMultiColumnEditProvider, IXViewerValueColumn, IAltLeftClickProvider {
 
-   public static ActivityIdColumnUI instance = new ActivityIdColumnUI();
+   public static WorkPackageColumnUI instance = new WorkPackageColumnUI();
 
-   public static ActivityIdColumnUI getInstance() {
+   public static WorkPackageColumnUI getInstance() {
       return instance;
    }
 
-   private ActivityIdColumnUI() {
-      super(AtsColumnId.ActivityId.getId(), "Activity Id", 80, XViewerAlign.Left, false, SortDataType.String, true,
+   private WorkPackageColumnUI() {
+      super(AtsColumnId.ActivityId.getId(), "Work Pacakge", 80, XViewerAlign.Left, false, SortDataType.String, true,
          "Provides Activity Id and Name from the selected Work Package related to the selected workflow.");
    }
 
@@ -68,8 +68,8 @@ public class ActivityIdColumnUI extends XViewerAtsColumn implements IMultiColumn
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public ActivityIdColumnUI copy() {
-      ActivityIdColumnUI newXCol = new ActivityIdColumnUI();
+   public WorkPackageColumnUI copy() {
+      WorkPackageColumnUI newXCol = new WorkPackageColumnUI();
       super.copy(this, newXCol);
       return newXCol;
    }

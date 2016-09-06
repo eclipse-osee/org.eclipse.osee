@@ -14,20 +14,20 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
-import org.eclipse.osee.ats.core.column.IActivityIdUtility;
+import org.eclipse.osee.ats.core.column.IWorkPackageUtility;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
- * Provides for display of ActivityId and ActivityName from related Work Package
+ * Provides for display of Id and Name from related Work Package
  *
  * @author Donald G. Dunne
  */
-public class ActivityIdColumn implements IActivityIdUtility {
+public class WorkPackageColumn implements IWorkPackageUtility {
 
    private final IAtsEarnedValueServiceProvider earnedValueServiceProvider;
 
-   public ActivityIdColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider) {
+   public WorkPackageColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider) {
       this.earnedValueServiceProvider = earnedValueServiceProvider;
    }
 

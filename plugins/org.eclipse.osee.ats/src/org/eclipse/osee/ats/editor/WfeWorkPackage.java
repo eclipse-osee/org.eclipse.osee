@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.editor;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
-import org.eclipse.osee.ats.column.ev.ActivityIdColumnUI;
+import org.eclipse.osee.ats.column.ev.WorkPackageColumnUI;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -72,7 +72,7 @@ public class WfeWorkPackage extends Composite {
                      if (editor.isDirty()) {
                         editor.doSave(null);
                      }
-                     ActivityIdColumnUI.promptChangeActivityId(sma, true);
+                     WorkPackageColumnUI.promptChangeActivityId(sma, true);
                   } catch (Exception ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }
