@@ -13,7 +13,9 @@ package org.eclipse.osee.ats.search.widget;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageType;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
@@ -21,13 +23,17 @@ import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.StringNameSorter;
@@ -111,12 +117,21 @@ public class WorkPackageSearchWidget extends AbstractXComboViewerSearchWidget<IA
                   new ArrayTreeContentProvider(), new WorkPackageLabelProvider(), new StringNameSorter());
                dialog.setMultiSelect(false);
                if (combo.getSelected().equals(selectOtherActive)) {
-                  dialog.setInput(
-                     AtsClientService.get().getQueryService().createQuery(AtsArtifactTypes.WorkPackage).andActive(
-                        true).getItems());
+                  Collection<IArtifactToken> tokens = ArtifactQuery.getArtifactTokenListFromTypeAndActive(
+                     AtsArtifactTypes.WorkPackage, AtsUtilCore.getAtsBranch());
+                  Collection<IAtsConfigObject> items = new LinkedList<>();
+                  for (Artifact art : ArtifactQuery.getArtifactListFromTokens(tokens, AtsUtilCore.getAtsBranch())) {
+                     items.add(AtsClientService.get().getConfigItemFactory().getWorkPackage(art));
+                  }
+                  dialog.setInput(items);
                } else if (combo.getSelected().equals(selectOther)) {
-                  dialog.setInput(
-                     AtsClientService.get().getQueryService().createQuery(AtsArtifactTypes.WorkPackage).getItems());
+                  Collection<IArtifactToken> tokens = ArtifactQuery.getArtifactTokenListFromType(
+                     AtsArtifactTypes.WorkPackage, AtsUtilCore.getAtsBranch());
+                  Collection<IAtsConfigObject> items = new LinkedList<>();
+                  for (Artifact art : ArtifactQuery.getArtifactListFromTokens(tokens, AtsUtilCore.getAtsBranch())) {
+                     items.add(AtsClientService.get().getConfigItemFactory().getWorkPackage(art));
+                  }
+                  dialog.setInput(items);
                }
                if (dialog.open() == 0) {
                   IAtsWorkPackage selectedWorkPackage = dialog.getSelectedFirst();

@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -59,6 +60,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.client.QueryBuilder;
 import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
@@ -254,6 +257,14 @@ public class ArtifactQuery {
    public static Artifact checkArtifactFromTypeAndName(IArtifactType artifactTypeToken, String artifactName, BranchId branch, QueryOption... options) throws OseeCoreException {
       return queryFromTypeAndAttribute(artifactTypeToken, CoreAttributeTypes.Name, artifactName, branch,
          options).getOrCheckArtifact(QueryType.CHECK);
+   }
+
+   public static List<Artifact> getArtifactListFromTokens(Collection<IArtifactToken> tokens, BranchId branch) {
+      List<Integer> ids = new LinkedList<>();
+      for (IArtifactToken token : tokens) {
+         ids.add(token.getId().intValue());
+      }
+      return getArtifactListFromIds(ids, branch);
    }
 
    /**
@@ -767,5 +778,69 @@ public class ArtifactQuery {
       }
       return result;
    }
+
+   /**
+    * The following methods are in support of poor running queries that are known about in 0.24.0. Significant query
+    * improvements will be done for Product Line in 0.25.0. This code should be removed and it's uses move to the better
+    * performing queries.
+    */
+
+   public static Collection<IArtifactToken> getArtifactTokenListFromTypeAndActive(IArtifactType artifactType, BranchId branch) {
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
+      try {
+         chStmt.runPreparedQuery(getTokenQuery(Active.Active), artifactType.getId(), branch.getId(), branch.getId(),
+            branch.getId());
+         List<IArtifactToken> tokens = extractTokensFromQuery(chStmt);
+         return tokens;
+      } finally {
+         chStmt.close();
+      }
+   }
+
+   public static Collection<IArtifactToken> getArtifactTokenListFromType(IArtifactType artifactType, BranchId branch) {
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
+      try {
+         chStmt.runPreparedQuery(getTokenQuery(Active.Both), artifactType.getId(), branch.getId(), branch.getId());
+         List<IArtifactToken> tokens = extractTokensFromQuery(chStmt);
+         return tokens;
+      } finally {
+         chStmt.close();
+      }
+   }
+
+   private static String getTokenQuery(Active active) {
+      if (active == Active.Active) {
+         return tokenQuery + activeTokenQueryAdendum;
+      } else if (active == Active.Both) {
+         return tokenQuery;
+      } else {
+         throw new UnsupportedOperationException("Unhandled Active case " + active);
+      }
+   }
+
+   private static List<IArtifactToken> extractTokensFromQuery(JdbcStatement chStmt) {
+      List<IArtifactToken> tokens = new LinkedList<>();
+      while (chStmt.next()) {
+         Integer artId = chStmt.getInt("art_id");
+         Long artTypeId = chStmt.getLong("art_type_id");
+         String name = chStmt.getString("value");
+         String guid = chStmt.getString("guid");
+         IArtifactToken token =
+            TokenFactory.createArtifactToken(artId, guid, name, ArtifactTypeManager.getTypeByGuid(artTypeId));
+         tokens.add(token);
+      }
+      return tokens;
+   }
+
+   private static String tokenQuery = "select art.art_id, art.art_type_id, art.guid, attr.value " + //
+      "from osee_txs txsArt, osee_txs txsAttr, osee_artifact art, osee_attribute attr where art.art_type_id = ? " + //
+      "and txsArt.BRANCH_ID = ? and art.GAMMA_ID = txsArt.GAMMA_ID and txsArt.TX_CURRENT = 1 " + //
+      "and txsAttr.BRANCH_ID = ? and attr.GAMMA_ID = txsAttr.GAMMA_ID and txsAttr.TX_CURRENT = 1 " + //
+      "and art.ART_ID = attr.art_id and attr.ATTR_TYPE_ID = 1152921504606847088 ";
+
+   private static String activeTokenQueryAdendum =
+      "and not exists (select 1 from osee_attribute attr, osee_txs txs where txs.BRANCH_ID = ? " + //
+         "and txs.GAMMA_ID = attr.GAMMA_ID and attr.art_id = art.art_id " + //
+         "and txs.TX_CURRENT = 1 and  attr.ATTR_TYPE_ID = 1152921504606847153 and value = 'false')";
 
 }
