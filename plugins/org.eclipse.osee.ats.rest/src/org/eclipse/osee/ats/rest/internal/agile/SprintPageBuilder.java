@@ -68,7 +68,7 @@ public class SprintPageBuilder {
          if (includeInCount(item)) {
             ++numActionsCompleted;
             double points = getPointsFromAction(item);
-            if (item.getSoleAttributeValue(AtsAttributeTypes.UnplannedWork, false)) {
+            if (item.getSoleAttributeValue(AtsAttributeTypes.UnPlannedWork, false)) {
                walkupCompleted += points;
             } else {
                workCompleted += points;

@@ -138,7 +138,7 @@ public final class AtsAttributeTypes {
    public static final IAttributeType WorkPackageProgram = createType(0x1000000000000381L, "Work Package Program");
    public static final IAttributeType WorkPackageType = createType(0x100000000000081L, "Work Package Type");
    public static final IAttributeType ActivityId = createType(0x1000000000000382L, "Activity ID");
-   public static final IAttributeType UnplannedWork = createType(0x219973F5F43E2BE5L, "Unplanned Work");
+   public static final IAttributeType UnPlannedWork = createType(0x219973F5F43E2BE5L, "Unplanned Work");
    public static final IAttributeType ActivityName = createType(0x1000000000000383L, "Activity Name");
    public static final IAttributeType WorkPackageGuid = createType(0x1000000000000384L, "Work Package Guid", "Work Package for this Team Workflow, Review, Task or Goal");
 

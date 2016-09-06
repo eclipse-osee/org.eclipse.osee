@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.junit.Before;
@@ -51,7 +52,7 @@ public class WorkPackageUtilityTest {
    @Mock private IAttributeResolver attributeResolver;
    @Mock private IRelationResolver relationResolver;
 
-   @Mock private ArtifactId activityArt;
+   @Mock private ArtifactToken activityArt;
    @Mock private IAtsInsertionActivity activity;
 
    @Mock private IAtsInsertion insertion;

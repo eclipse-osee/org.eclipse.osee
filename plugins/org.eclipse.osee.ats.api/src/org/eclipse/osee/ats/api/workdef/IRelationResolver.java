@@ -34,16 +34,18 @@ public interface IRelationResolver {
 
    boolean areRelated(IAtsObject atsObject1, IRelationTypeSide relationType, IAtsObject atsObject2);
 
-   ArtifactId getRelatedOrNull(ArtifactId artifact, IRelationTypeSide relationType);
+   ArtifactToken getRelatedOrNull(ArtifactId artifact, IRelationTypeSide relationType);
 
-   ArtifactId getRelatedOrNull(IAtsObject atsObject, IRelationTypeSide relationType);
+   ArtifactToken getRelatedOrNull(IAtsObject atsObject, IRelationTypeSide relationType);
 
    <T> T getRelatedOrNull(IAtsObject atsObject, IRelationTypeSide relationType, Class<T> clazz);
 
    int getRelatedCount(IAtsWorkItem workItem, IRelationTypeSide relationType);
 
-   List<ArtifactId> getRelatedArtifacts(IAtsWorkItem workItem, IRelationTypeSide relationTypeSide);
+   List<ArtifactToken> getRelatedArtifacts(IAtsWorkItem workItem, IRelationTypeSide relationTypeSide);
 
    Collection<ArtifactToken> getRelated(IAtsObject atsObject, IRelationTypeSide relationTypeSide);
+
+   Collection<ArtifactToken> getRelatedArtifacts(ArtifactId artifact, IRelationTypeSide relationTypeSide);
 
 }

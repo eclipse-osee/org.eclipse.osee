@@ -124,9 +124,9 @@ public class WorldResource {
             IAtsWorkItem.class);
       getWorkItems.end();
 
-      String table =
-         getCustomizedTable("MY World - " + userById.getName() + " - Customization: " + customization.getName(),
-            customization, myWorldItems);
+      String table = getCustomizedTable(atsServer,
+         "MY World - " + userById.getName() + " - Customization: " + customization.getName(), customization,
+         myWorldItems);
       time.end();
       return table;
    }
@@ -179,35 +179,31 @@ public class WorldResource {
       Collection<IAtsWorkItem> collectorItems = getCollection(collectorArt);
       getWorkItems.end();
 
-      String table =
-         getCustomizedTable("Collector - " + collectorArt.getName() + " - Customization: " + customization.getName(),
-            customization, collectorItems);
+      String table = getCustomizedTable(atsServer,
+         "Collector - " + collectorArt.getName() + " - Customization: " + customization.getName(), customization,
+         collectorItems);
       time.end();
       return table;
 
    }
 
-   private String getCustomizedTable(String title, CustomizeData customization, Collection<IAtsWorkItem> workItems) {
-      Conditions.checkNotNull(customization, "Cuatomization" + customization);
+   public static String getCustomizedTable(IAtsServer atsServer, String title, CustomizeData customization, Collection<IAtsWorkItem> workItems) {
+      Conditions.checkNotNull(customization, "Customization " + customization + " ");
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.heading(2, title));
       sb.append(AHTML.beginMultiColumnTable(97, 1));
 
-      ElapsedTime getHeaders = new ElapsedTime("get column headers");
       // get column headers
       List<String> headers = new ArrayList<>();
       for (XViewerColumn col : customization.getColumnData().getColumns()) {
-         System.err.println(col);
          if (col.isShow()) {
             headers.add(col.getName());
          }
       }
       headers.add("Link");
       sb.append(AHTML.addHeaderRowMultiColumnTable(headers));
-      getHeaders.end();
 
       AtsConfigurations configurations = atsServer.getConfigurations();
-      ElapsedTime getRows = new ElapsedTime("get rows");
       for (IAtsWorkItem workItem : workItems) {
 
          // create row
@@ -230,7 +226,6 @@ public class WorldResource {
 
          sb.append(AHTML.addRowMultiColumnTable(rowStrs.toArray(new String[rowStrs.size()]), null));
       }
-      getRows.end();
 
       sb.append(AHTML.endMultiColumnTable());
       return sb.toString();

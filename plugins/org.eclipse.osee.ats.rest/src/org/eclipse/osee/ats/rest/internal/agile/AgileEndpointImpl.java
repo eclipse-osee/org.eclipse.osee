@@ -11,8 +11,10 @@
 package org.eclipse.osee.ats.rest.internal.agile;
 
 import java.net.URI;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import javax.ws.rs.core.Context;
@@ -20,6 +22,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.AgileItem;
 import org.eclipse.osee.ats.api.agile.AgileUtil;
@@ -40,11 +45,14 @@ import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.ats.rest.internal.util.RestUtil;
+import org.eclipse.osee.ats.rest.internal.world.WorldResource;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.ClassBasedResourceToken;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -62,6 +70,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    private UriInfo uriInfo;
    private final IAtsServer atsServer;
    private final IResourceRegistry resourceRegistry;
+   private static ObjectMapper mapper;
 
    public AgileEndpointImpl(IAtsServer atsServer, IResourceRegistry resourceRegistry) {
       this.atsServer = atsServer;
@@ -430,6 +439,61 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       UriBuilder builder = uriInfo.getRequestUriBuilder();
       URI location = builder.path("team").path(String.valueOf(item.getSprintUuid())).build();
       return Response.created(location).entity(item).build();
+   }
+
+   /********************************
+    ** Sprint Reporting
+    ***********************************/
+   @Override
+   public Collection<IAtsWorkItem> getSprintItems(long teamUuid, long sprintUuid) {
+      ArtifactReadable sprintArt = atsServer.getArtifact(sprintUuid);
+      return atsServer.getWorkItemFactory().getWorkItems(
+         sprintArt.getRelated(AtsRelationTypes.AgileSprintToItem_AtsItem).getList());
+   }
+
+   @Override
+   public Response getSprintItemsUI(long teamUuid, long sprintUuid) {
+      ArtifactReadable sprintArt = atsServer.getArtifact(sprintUuid);
+      Conditions.assertNotNull(sprintArt, "Sprint not found with id %s", sprintUuid);
+      Collection<IAtsWorkItem> myWorldItems = getSprintItems(teamUuid, sprintUuid);
+      CustomizeData custData = getDefaultAgileCustData();
+      Conditions.assertNotNull(custData, "Can't retrieve default customization");
+      String table =
+         WorldResource.getCustomizedTable(atsServer, "Sprint - " + sprintArt.getName(), custData, myWorldItems);
+      return Response.ok().entity(table).build();
+   }
+
+   private CustomizeData getDefaultAgileCustData() {
+      CustomizeData result = null;
+      try {
+         String custDataStr = RestUtil.getResource("support/DefaultAgileCustomization.json");
+         if (Strings.isValid(custDataStr)) {
+            result = getMapper().readValue(custDataStr, CustomizeData.class);
+         }
+      } catch (Exception ex) {
+         ex.printStackTrace();
+      }
+      return result;
+   }
+
+   @Override
+   public Response getSprintItemsUICustomized(long teamUuid, long sprintUuid, String customizeGuid) {
+      ArtifactReadable sprintArt = atsServer.getArtifact(sprintUuid);
+      Conditions.assertNotNull(sprintArt, "Sprint not found with id %s", sprintUuid);
+      Collection<IAtsWorkItem> myWorldItems = getSprintItems(teamUuid, sprintUuid);
+      CustomizeData custData = atsServer.getCustomizationByGuid(customizeGuid);
+      Conditions.assertNotNull(custData, "Can't retrieve customization with id %s", customizeGuid);
+      String table =
+         WorldResource.getCustomizedTable(atsServer, "Sprint - " + sprintArt.getName(), custData, myWorldItems);
+      return Response.ok().entity(table).build();
+   }
+
+   public static ObjectMapper getMapper() {
+      if (mapper == null) {
+         mapper = new ObjectMapper();
+         mapper.setDateFormat(new SimpleDateFormat("MMM d, yyyy h:mm:ss aa"));
+      }
+      return mapper;
    }
 
 }

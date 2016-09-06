@@ -118,8 +118,8 @@ public class AtsRelationResolverServiceImpl implements IRelationResolver {
    }
 
    @Override
-   public ArtifactId getRelatedOrNull(ArtifactId artifact, IRelationTypeSide relationType) {
-      ArtifactId related = null;
+   public ArtifactToken getRelatedOrNull(ArtifactId artifact, IRelationTypeSide relationType) {
+      ArtifactToken related = null;
       Artifact art = getArtifact(artifact);
       if (art != null) {
          try {
@@ -163,7 +163,7 @@ public class AtsRelationResolverServiceImpl implements IRelationResolver {
    }
 
    @Override
-   public ArtifactId getRelatedOrNull(IAtsObject atsObject, IRelationTypeSide relationSide) {
+   public ArtifactToken getRelatedOrNull(IAtsObject atsObject, IRelationTypeSide relationSide) {
       Artifact art = getArtifact(atsObject);
       if (art != null) {
          return art.getRelatedArtifactOrNull(relationSide);
@@ -172,7 +172,7 @@ public class AtsRelationResolverServiceImpl implements IRelationResolver {
    }
 
    @Override
-   public List<ArtifactId> getRelatedArtifacts(IAtsWorkItem workItem, IRelationTypeSide relationTypeSide) {
+   public List<ArtifactToken> getRelatedArtifacts(IAtsWorkItem workItem, IRelationTypeSide relationTypeSide) {
       Artifact artifact = getArtifact(workItem);
       return Collections.castAll(getRelated(artifact, relationTypeSide));
    }
@@ -180,6 +180,11 @@ public class AtsRelationResolverServiceImpl implements IRelationResolver {
    @Override
    public Collection<ArtifactToken> getRelated(IAtsObject atsObject, IRelationTypeSide relationTypeSide) {
       return getRelated(atsObject.getStoreObject(), relationTypeSide);
+   }
+
+   @Override
+   public Collection<ArtifactToken> getRelatedArtifacts(ArtifactId artifact, IRelationTypeSide relationTypeSide) {
+      return getRelated(artifact, relationTypeSide);
    }
 
 }

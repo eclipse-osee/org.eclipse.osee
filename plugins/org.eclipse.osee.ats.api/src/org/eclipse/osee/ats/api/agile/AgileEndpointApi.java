@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.agile;
 
+import java.util.Collection;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -21,6 +22,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 
 /**
  * @author Donald G. Dunne
@@ -70,6 +72,21 @@ public interface AgileEndpointApi {
    @Path("team/{teamUuid}/sprint/{sprintUuid}/summary")
    @Produces(MediaType.TEXT_HTML)
    public Response getSprintSummary(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+
+   @GET
+   @Path("team/{teamUuid}/sprint/{sprintUuid}/world")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Collection<IAtsWorkItem> getSprintItems(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+
+   @GET
+   @Path("team/{teamUuid}/sprint/{sprintUuid}/world/ui")
+   @Produces(MediaType.TEXT_HTML)
+   public Response getSprintItemsUI(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+
+   @GET
+   @Path("team/{teamUuid}/sprint/{sprintUuid}/world/ui/{customizeGuid}")
+   @Produces(MediaType.TEXT_HTML)
+   public Response getSprintItemsUICustomized(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid, @PathParam("customizeGuid") String customizeGuid);
 
    @POST
    @Path("team")

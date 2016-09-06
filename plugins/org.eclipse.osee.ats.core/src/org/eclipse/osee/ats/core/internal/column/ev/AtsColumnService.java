@@ -20,18 +20,22 @@ import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.core.column.ActionableItemsColumn;
+import org.eclipse.osee.ats.core.column.AgileFeatureGroupColum;
+import org.eclipse.osee.ats.core.column.AgileTeamPointsColumn;
 import org.eclipse.osee.ats.core.column.AssigneeColumn;
 import org.eclipse.osee.ats.core.column.AtsAttributeValueColumnHandler;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.core.column.AtsIdColumn;
 import org.eclipse.osee.ats.core.column.AttributeColumn;
+import org.eclipse.osee.ats.core.column.CompletedCancelledDateColumn;
 import org.eclipse.osee.ats.core.column.CreatedDateColumn;
 import org.eclipse.osee.ats.core.column.IAtsColumnProvider;
 import org.eclipse.osee.ats.core.column.ImplementerColumn;
 import org.eclipse.osee.ats.core.column.InsertionActivityColumn;
 import org.eclipse.osee.ats.core.column.InsertionColumn;
 import org.eclipse.osee.ats.core.column.PercentCompleteTasksColumn;
+import org.eclipse.osee.ats.core.column.SprintOrderColumn;
 import org.eclipse.osee.ats.core.column.StateColumn;
 import org.eclipse.osee.ats.core.column.TargetedVersionColumn;
 import org.eclipse.osee.ats.core.column.TeamColumn;
@@ -129,6 +133,16 @@ public class AtsColumnService implements IAtsColumnService {
             column = new InsertionActivityColumn(services);
          } else if (id.equals(AtsColumnId.TargetedVersion.getId())) {
             column = new TargetedVersionColumn(services);
+         } else if (id.equals(AtsColumnId.UnPlannedWork.getId())) {
+            column = new AtsAttributeValueColumnHandler(AtsColumnToken.UnPlannedWorkColumn, services);
+         } else if (id.equals(AtsColumnId.SprintOrder.getId())) {
+            column = new SprintOrderColumn(services);
+         } else if (id.equals(AtsColumnId.AgileTeamPoints.getId())) {
+            column = new AgileTeamPointsColumn(services);
+         } else if (id.equals(AtsColumnId.CompletedCancelledDate.getId())) {
+            column = new CompletedCancelledDateColumn(services);
+         } else if (id.equals(AtsColumnId.AgileFeatureGroup.getId())) {
+            column = new AgileFeatureGroupColum(services);
          }
       }
       // Add columns provided through OSGI services
@@ -144,6 +158,12 @@ public class AtsColumnService implements IAtsColumnService {
       if (column == null) {
          if (id.startsWith("attribute.")) {
             IAttributeType attrType = services.getStoreService().getAttributeType(id.replaceFirst("attribute\\.", ""));
+            if (attrType != null) {
+               column = new AttributeColumn(services, attrType);
+            }
+         }
+         if (id.startsWith("ats.")) {
+            IAttributeType attrType = services.getStoreService().getAttributeType(id);
             if (attrType != null) {
                column = new AttributeColumn(services, attrType);
             }

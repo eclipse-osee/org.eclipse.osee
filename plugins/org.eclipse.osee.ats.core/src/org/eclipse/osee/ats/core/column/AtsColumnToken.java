@@ -50,6 +50,18 @@ public class AtsColumnToken {
    public static AtsColumnIdValueColumn InsertionColumn = new AtsColumnIdValueColumn(AtsColumnId.Insertion, "Insertion",
       80, ColumnAlign.Left.name(), false, ColumnType.String, false,
       "Insertion specified by related Work Package.  (I) if inherited from parent.", true, true);
+   public static AtsColumnIdValueColumn SprintOrderColumn = new AtsColumnIdValueColumn(AtsColumnId.SprintOrder,
+      "Sprint order", 45, ColumnAlign.Left.name(), false, ColumnType.Integer, true,
+      "Order of item within displayed sprint.  Editing this field changes order.", false, false);
+   public static AtsColumnIdValueColumn AgileTeamPointsColumn = new AtsColumnIdValueColumn(AtsColumnId.AgileTeamPoints,
+      "Points", 40, ColumnAlign.Left.name(), false, ColumnType.Integer, false,
+      "Points as defined by AgileTeam configuration.  Either Points or Points Numeric", false, false);
+   public static AtsColumnIdValueColumn AgileFeatureGroupColumn =
+      new AtsColumnIdValueColumn(AtsColumnId.AgileFeatureGroup, "Feature Group", 110, ColumnAlign.Left.name(), false,
+         ColumnType.String, false, "Agile Feature Group for this Item", false, false);
+   public static AtsColumnIdValueColumn CompletedCancelledDateColumn =
+      new AtsColumnIdValueColumn(AtsColumnId.CompletedCancelledDate, "Completed or Cancelled Date", 80,
+         ColumnAlign.Left.name(), false, ColumnType.Date, false, "Date action to completed or cancelled", false, false);
 
    // AttributeValue columns
    public static AtsAttributeValueColumn NotesColumn = new AtsAttributeValueColumn(AtsAttributeTypes.SmaNote,
@@ -57,6 +69,10 @@ public class AtsColumnToken {
    public static AtsAttributeValueColumn ChangeTypeColumn = new AtsAttributeValueColumn(AtsAttributeTypes.ChangeType,
       AtsColumnId.ChangeType.getId(), AtsAttributeTypes.ChangeType.getUnqualifiedName(), 22, ColumnAlign.Center.name(),
       true, ColumnType.String, true, "", true, true);
+   public static AtsAttributeValueColumn UnPlannedWorkColumn =
+      new AtsAttributeValueColumn(AtsAttributeTypes.UnPlannedWork, AtsColumnId.UnPlannedWork.getId(),
+         AtsAttributeTypes.UnPlannedWork.getUnqualifiedName(), 20, ColumnAlign.Left.name(), false, ColumnType.Boolean,
+         true, "", false, false);
    public static AtsAttributeValueColumn PriorityColumn = new AtsAttributeValueColumn(AtsAttributeTypes.PriorityType,
       AtsColumnId.Priority.getId(), AtsAttributeTypes.PriorityType.getUnqualifiedName(), 20, ColumnAlign.Left.name(),
       true, ColumnType.String, true, "", true, false);
