@@ -175,7 +175,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             txId = TransactionId.SENTINEL;
          }
 
-         String oseeLink = ArtifactURL.getOpenInOseeLink(artifact).toString();
+         String oseeLink = ArtifactURL.getOpenInOseeLink(artifact, presentationType).toString();
 
          WordTemplateContentData wtcData = new WordTemplateContentData();
          wtcData.setArtId(artifact.getUuid());

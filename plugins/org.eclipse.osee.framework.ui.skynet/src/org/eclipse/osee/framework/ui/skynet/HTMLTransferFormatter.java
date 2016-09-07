@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osee.framework.core.client.CoreClientConstants;
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -60,7 +61,7 @@ public class HTMLTransferFormatter {
          for (Artifact artifact : artifacts) {
             String link = null;
             try {
-               link = ArtifactURL.getOpenInOseeLink(artifact).toString();
+               link = ArtifactURL.getOpenInOseeLink(artifact, PresentationType.SPECIALIZED_EDIT).toString();
             } catch (OseeCoreException ex) {
                link = String.format("guid:[%s] branch:[%s] gammaId:[%s]", artifact.getGuid(),
                   artifact.getBranch().getGuid(), artifact.getGammaId());

@@ -107,7 +107,7 @@ public class WholeWordRenderer extends WordRenderer {
 
             Set<String> unknownGuids = new HashSet<>();
             LinkType linkType = LinkType.OSEE_SERVER_LINK;
-            content = WordMlLinkHandler.link(linkType, artifact, content, unknownGuids);
+            content = WordMlLinkHandler.link(linkType, artifact, content, unknownGuids, presentationType);
             WordUiUtil.displayUnknownGuids(artifact, unknownGuids);
 
             String classification =

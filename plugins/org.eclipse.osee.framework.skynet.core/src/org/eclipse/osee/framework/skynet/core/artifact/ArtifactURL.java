@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.HttpUrlBuilder;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -30,16 +31,18 @@ import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
  */
 public class ArtifactURL {
 
-   public static URL getOpenInOseeLink(final Artifact artifact, String cmd) throws OseeCoreException {
+   public static URL getOpenInOseeLink(final Artifact artifact, String cmd, PresentationType presentationType) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<>();
       parameters.put("sessionId", ClientSessionManager.getSessionId());
       parameters.put("context", "osee/loopback");
       parameters.put("guid", artifact.getGuid());
       parameters.put("branchUuid", String.valueOf(artifact.getBranch().getGuid()));
       parameters.put("isDeleted", String.valueOf(artifact.isDeleted()));
-      if (artifact.isHistorical()) {
+
+      if (artifact.isHistorical() && presentationType != PresentationType.DIFF && presentationType != PresentationType.F5_DIFF) {
          parameters.put("transactionId", String.valueOf(artifact.getTransaction()));
       }
+
       parameters.put("cmd", cmd);
       String urlString = getPermanentLinkBaseUrl(OseeServerContext.CLIENT_LOOPBACK_CONTEXT, parameters);
       URL url = null;
@@ -51,8 +54,8 @@ public class ArtifactURL {
       return url;
    }
 
-   public static URL getOpenInOseeLink(final Artifact artifact) throws OseeCoreException {
-      return getOpenInOseeLink(artifact, "open.artifact");
+   public static URL getOpenInOseeLink(final Artifact artifact, PresentationType presentationType) throws OseeCoreException {
+      return getOpenInOseeLink(artifact, "open.artifact", presentationType);
    }
 
    public static String getPermanentLinkBaseUrl(String context, Map<String, String> parameters) throws OseeCoreException {

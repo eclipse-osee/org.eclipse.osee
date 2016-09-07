@@ -20,6 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -117,6 +118,10 @@ public class WordMlLinkHandler {
     * @return processed input
     */
    public static String link(LinkType destLinkType, Artifact source, String content, Set<String> unknownGuids) throws OseeCoreException {
+      return link(destLinkType, source, content, unknownGuids, PresentationType.DEFAULT_OPEN);
+   }
+
+   public static String link(LinkType destLinkType, Artifact source, String content, Set<String> unknownGuids, PresentationType presentationType) throws OseeCoreException {
       LinkType linkType = checkLinkType(destLinkType);
       String modified = content;
 
@@ -133,7 +138,7 @@ public class WordMlLinkHandler {
       }
       OSEE_LINK_PATTERN.reset();
       if (!matchMap.isEmpty()) {
-         modified = modifiedContent(linkType, source, content, matchMap, false, unknownGuids);
+         modified = modifiedContent(linkType, source, content, matchMap, false, unknownGuids, presentationType);
       }
       if (linkType != LinkType.OSEE_SERVER_LINK) {
          // Add a bookmark to the start of the content so internal links can link later
@@ -199,6 +204,11 @@ public class WordMlLinkHandler {
    }
 
    private static String modifiedContent(LinkType destLinkType, Artifact source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnliking, Set<String> unknown) throws OseeCoreException {
+      return modifiedContent(destLinkType, source, original, matchMap, isUnliking, unknown,
+         PresentationType.DEFAULT_OPEN);
+   }
+
+   private static String modifiedContent(LinkType destLinkType, Artifact source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnliking, Set<String> unknown, PresentationType presentationType) throws OseeCoreException {
       BranchId branch = source.getBranch();
       ChangeSet changeSet = new ChangeSet(original);
       List<Artifact> artifactsFromSearch = null;
@@ -247,7 +257,7 @@ public class WordMlLinkHandler {
             if (isUnliking) {
                replaceWith = linkBuilder.getOseeLinkMarker(artifact.getGuid());
             } else {
-               replaceWith = linkBuilder.getWordMlLink(destLinkType, artifact);
+               replaceWith = linkBuilder.getWordMlLink(destLinkType, artifact, presentationType);
             }
             changeSet.replace(match.start(), match.end(), replaceWith);
          }

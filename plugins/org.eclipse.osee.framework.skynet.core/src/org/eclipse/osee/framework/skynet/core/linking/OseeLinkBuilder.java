@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.linking;
 
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -102,10 +103,13 @@ public class OseeLinkBuilder {
    public OseeLinkBuilder() {
       super();
    }
-
    public String getWordMlLink(LinkType destLinkType, Artifact artifact) throws OseeCoreException {
+      return getWordMlLink(destLinkType, artifact, PresentationType.DEFAULT_OPEN);
+   }
+
+   public String getWordMlLink(LinkType destLinkType, Artifact artifact, PresentationType presentationType) throws OseeCoreException {
       String linkFormat = getLinkFormat(destLinkType);
-      String linkId = getLinkId(destLinkType, artifact);
+      String linkId = getLinkId(destLinkType, artifact, presentationType);
       String linkText = getLinkText(destLinkType, artifact);
       return String.format(linkFormat, linkId, linkText);
    }
@@ -187,10 +191,10 @@ public class OseeLinkBuilder {
       return escapeXml(builder.toString());
    }
 
-   private String getLinkId(LinkType destLinkType, Artifact artifact) throws OseeCoreException {
+   private String getLinkId(LinkType destLinkType, Artifact artifact, PresentationType presentationType) throws OseeCoreException {
       String toReturn;
       if (destLinkType == LinkType.OSEE_SERVER_LINK) {
-         toReturn = escapeXml(ArtifactURL.getOpenInOseeLink(artifact).toString());
+         toReturn = escapeXml(ArtifactURL.getOpenInOseeLink(artifact, presentationType).toString());
       } else {
          toReturn = artifact.getGuid();
       }
