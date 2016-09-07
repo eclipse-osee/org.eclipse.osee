@@ -11,12 +11,12 @@
 package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.XMergeLabelProvider;

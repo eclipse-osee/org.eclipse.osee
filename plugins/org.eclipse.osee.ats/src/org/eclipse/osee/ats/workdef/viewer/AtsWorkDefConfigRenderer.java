@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workdef.viewer;
 
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
+import static org.eclipse.osee.framework.core.enums.PresentationType.GENERALIZED_EDIT;
+import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED_EDIT;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.AtsImage;
@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -27,7 +28,6 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;

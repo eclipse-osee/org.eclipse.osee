@@ -11,8 +11,8 @@
 
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
+import static org.eclipse.osee.framework.core.enums.PresentationType.DEFAULT_OPEN;
+import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW;
 import java.io.InputStream;
 import java.nio.charset.CharacterCodingException;
 import java.util.ArrayList;
@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

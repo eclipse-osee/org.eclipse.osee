@@ -12,12 +12,15 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.ContentUrl;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERAL_REQUESTED;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.WEB_PREVIEW;
+import static org.eclipse.osee.framework.core.enums.PresentationType.DEFAULT_OPEN;
+import static org.eclipse.osee.framework.core.enums.PresentationType.GENERALIZED_EDIT;
+import static org.eclipse.osee.framework.core.enums.PresentationType.GENERAL_REQUESTED;
+import static org.eclipse.osee.framework.core.enums.PresentationType.WEB_PREVIEW;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;

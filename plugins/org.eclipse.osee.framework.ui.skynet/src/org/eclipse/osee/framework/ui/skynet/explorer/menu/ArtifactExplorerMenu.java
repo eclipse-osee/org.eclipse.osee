@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -63,7 +64,6 @@ import org.eclipse.osee.framework.ui.skynet.menu.ArtifactTreeViewerGlobalMenuHel
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenu;
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenuPermissions;
 import org.eclipse.osee.framework.ui.skynet.menu.IGlobalMenuHelper;
-import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactPasteConfiguration;

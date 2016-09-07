@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
-/**
- * @author Ryan D. Brooks
- */
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DIFF;
+import static org.eclipse.osee.framework.core.enums.PresentationType.DIFF;
 import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.core.runtime.IProgressMonitor;

@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERAL_REQUESTED;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PRODUCE_ATTRIBUTE;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.RENDER_AS_HUMAN_READABLE_TEXT;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
+import static org.eclipse.osee.framework.core.enums.PresentationType.DEFAULT_OPEN;
+import static org.eclipse.osee.framework.core.enums.PresentationType.GENERALIZED_EDIT;
+import static org.eclipse.osee.framework.core.enums.PresentationType.GENERAL_REQUESTED;
+import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW;
+import static org.eclipse.osee.framework.core.enums.PresentationType.PRODUCE_ATTRIBUTE;
+import static org.eclipse.osee.framework.core.enums.PresentationType.RENDER_AS_HUMAN_READABLE_TEXT;
+import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED_EDIT;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;

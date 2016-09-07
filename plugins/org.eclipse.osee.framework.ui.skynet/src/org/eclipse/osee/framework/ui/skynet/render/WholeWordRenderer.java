@@ -11,11 +11,11 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WholeWordContent;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERAL_REQUESTED;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PRODUCE_ATTRIBUTE;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
+import static org.eclipse.osee.framework.core.enums.PresentationType.GENERALIZED_EDIT;
+import static org.eclipse.osee.framework.core.enums.PresentationType.GENERAL_REQUESTED;
+import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW;
+import static org.eclipse.osee.framework.core.enums.PresentationType.PRODUCE_ATTRIBUTE;
+import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED_EDIT;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +32,7 @@ import org.eclipse.osee.define.report.api.DataRightResult;
 import org.eclipse.osee.define.report.api.PageOrientation;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;

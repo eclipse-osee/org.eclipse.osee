@@ -13,10 +13,10 @@ package org.eclipse.osee.framework.ui.skynet.render.compare;
 import java.util.Collection;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
-import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 
 public interface IComparator {
 

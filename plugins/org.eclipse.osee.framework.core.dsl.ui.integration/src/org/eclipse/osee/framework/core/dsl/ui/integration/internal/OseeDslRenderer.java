@@ -21,12 +21,12 @@ import org.eclipse.osee.framework.core.dsl.integration.util.OseeDslSegmentParser
 import org.eclipse.osee.framework.core.dsl.ui.integration.AbstractDslRenderer;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.FileToAttributeUpdateOperation;
-import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 
 /**
  * @author Roberto E. Escobar

@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
+import static org.eclipse.osee.framework.core.enums.PresentationType.DEFAULT_OPEN;
+import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW;
+import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED_EDIT;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Collections;
@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;

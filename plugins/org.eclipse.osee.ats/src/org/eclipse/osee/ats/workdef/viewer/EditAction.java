@@ -21,13 +21,13 @@ import org.eclipse.osee.ats.workdef.viewer.model.StateDefShape;
 import org.eclipse.osee.ats.workdef.viewer.model.WorkDefinitionDiagram;
 import org.eclipse.osee.ats.workdef.viewer.parts.DiagramEditPart;
 import org.eclipse.osee.ats.workdef.viewer.parts.StateDefEditPart;
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.ui.PlatformUI;
 

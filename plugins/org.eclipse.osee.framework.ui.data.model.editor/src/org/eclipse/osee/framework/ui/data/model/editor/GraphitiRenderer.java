@@ -11,16 +11,17 @@
 package org.eclipse.osee.framework.ui.data.model.editor;
 
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GraphitiDiagram;
+import static org.eclipse.osee.framework.core.enums.PresentationType.DEFAULT_OPEN;
+import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW;
+import static org.eclipse.osee.framework.core.enums.PresentationType.RENDER_AS_HUMAN_READABLE_TEXT;
+import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED_EDIT;
 import static org.eclipse.osee.framework.ui.data.model.editor.GraphitiImage.GRAPHITI_DIAGRAM;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.RENDER_AS_HUMAN_READABLE_TEXT;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -30,7 +31,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.IWorkbenchPage;
 

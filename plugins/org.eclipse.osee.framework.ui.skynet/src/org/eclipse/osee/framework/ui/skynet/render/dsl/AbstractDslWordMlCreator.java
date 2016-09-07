@@ -11,8 +11,8 @@
 //@formatter:off
 package org.eclipse.osee.framework.ui.skynet.render.dsl;
 
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 
 
 /**
