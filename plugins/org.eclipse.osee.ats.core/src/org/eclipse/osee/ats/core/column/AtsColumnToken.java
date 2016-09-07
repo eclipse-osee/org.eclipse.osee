@@ -68,8 +68,7 @@ public class AtsColumnToken {
          ColumnAlign.Left.name(), true, ColumnType.String, true, "", true, false);
    public static AtsAttributeValueColumn PercentCompleteWorkflowColumn =
       new AtsAttributeValueColumn(AtsAttributeTypes.PercentComplete, AtsColumnId.PercentCompleteWorkflow.getId(),
-         AtsAttributeTypes.PercentComplete.getUnqualifiedName(), 40, ColumnAlign.Center.name(), false,
-         ColumnType.Percent, false,
+         "Workflow Percent Complete", 40, ColumnAlign.Center.name(), false, ColumnType.Percent, false,
          "Percent Complete for full workflow (if work definition configured for single percent).\n\nAmount entered from user.",
          true, false);
 }
