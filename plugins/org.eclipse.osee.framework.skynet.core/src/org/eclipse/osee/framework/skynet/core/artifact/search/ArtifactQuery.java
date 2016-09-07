@@ -843,4 +843,33 @@ public class ArtifactQuery {
          "and txs.GAMMA_ID = attr.GAMMA_ID and attr.art_id = art.art_id " + //
          "and txs.TX_CURRENT = 1 and  attr.ATTR_TYPE_ID = 1152921504606847153 and value = 'false')";
 
+   private static String attributeTokenQuery = "select art.art_id, art.art_type_id, art.guid, attr.value " + //
+      "from osee_txs txsArt, osee_txs txsAttr, osee_artifact art, osee_attribute attr where art.art_type_id in ( ART_IDS_HERE ) " + //
+      "and txsArt.BRANCH_ID = ? and art.GAMMA_ID = txsArt.GAMMA_ID and txsArt.TX_CURRENT = 1 " + //
+      "and txsAttr.BRANCH_ID = ? and attr.GAMMA_ID = txsAttr.GAMMA_ID and txsAttr.TX_CURRENT = 1 " + //
+      "and art.ART_ID = attr.art_id and attr.ATTR_TYPE_ID = ? and value = ? ";
+
+   public static List<IArtifactToken> getArtifactTokenListFromSoleAttributeInherited(IArtifactType artifactType, IAttributeType attributetype, String value, BranchId branch) {
+
+      ArtifactType artifactTypeFull = ArtifactTypeManager.getType(artifactType);
+      List<Long> artTypeIds = new LinkedList<>();
+      String ids = "";
+      for (ArtifactType artType : artifactTypeFull.getAllDescendantTypes()) {
+         artTypeIds.add(artType.getId());
+         ids += artType.getId().toString() + ",";
+      }
+      artTypeIds.add(artifactTypeFull.getId());
+      ids = ids.replaceFirst(",$", "");
+
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
+      try {
+         String query = attributeTokenQuery.replaceFirst("ART_IDS_HERE", ids);
+         chStmt.runPreparedQuery(query, branch.getId(), branch.getId(), attributetype.getId(), value);
+         List<IArtifactToken> tokens = extractTokensFromQuery(chStmt);
+         return tokens;
+      } finally {
+         chStmt.close();
+      }
+   }
+
 }

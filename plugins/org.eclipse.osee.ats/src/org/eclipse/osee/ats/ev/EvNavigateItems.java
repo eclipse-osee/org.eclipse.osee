@@ -26,7 +26,7 @@ public class EvNavigateItems {
       try {
          XNavigateItem evItems = new XNavigateItem(parent, "Earned Value", AtsImage.E_BOXED);
          new WorkPackageConfigReport(evItems);
-         new WorkItemAndPackageReport(evItems);
+         new WorkPackageQBDReport(evItems);
          items.add(evItems);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Can't create Goals section");

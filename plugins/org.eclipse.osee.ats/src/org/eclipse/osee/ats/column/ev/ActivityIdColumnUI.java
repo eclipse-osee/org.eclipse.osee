@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.column.WorkPackageFilterTreeDialog;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
+import org.eclipse.osee.ats.ev.WorkPackageCollectionProvider;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
@@ -121,7 +122,8 @@ public class ActivityIdColumnUI extends XViewerAtsColumn implements IMultiColumn
          AWorkbench.popup("Options Invalid", result.getText());
       } else {
          WorkPackageFilterTreeDialog dialog = new WorkPackageFilterTreeDialog("Select Work Package",
-            getMessage(awas, commonWorkPackageOptions, uniqueWorkPackageOptions), commonWorkPackageOptions);
+            getMessage(awas, commonWorkPackageOptions, uniqueWorkPackageOptions),
+            new WorkPackageCollectionProvider(commonWorkPackageOptions));
          dialog.setInput();
          if (dialog.open() == Window.OK) {
             boolean removeFromWorkPackage = dialog.isRemoveFromWorkPackage();
@@ -194,4 +196,5 @@ public class ActivityIdColumnUI extends XViewerAtsColumn implements IMultiColumn
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
+
 }

@@ -11,9 +11,7 @@
 
 package org.eclipse.osee.ats.column;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -40,19 +38,20 @@ import org.eclipse.swt.widgets.Control;
 
 /**
  * Allows the selection of active work packages with the option to toggle on inActive.
- * 
+ *
  * @param workPackages contains the valid list of active and inactive Work Packages
  * @author Donald G. Dunne
  */
 public class WorkPackageFilterTreeDialog extends FilteredTreeDialog {
    private IAtsWorkPackage selection;
    XCheckBox showAll = new XCheckBox("Show All Work Packages");
-   private final Collection<IAtsWorkPackage> allValidWorkPackages;
    private boolean removeFromWorkPackage;
+   private boolean showRemoveCheckbox = true;
+   private final IWorkPackageProvider workPackageProvider;
 
-   public WorkPackageFilterTreeDialog(String title, String message, Collection<IAtsWorkPackage> allValidWorkPackages) {
+   public WorkPackageFilterTreeDialog(String title, String message, IWorkPackageProvider workPackageProvider) {
       super(title, message, new ArrayTreeContentProvider(), new StringLabelProvider());
-      this.allValidWorkPackages = allValidWorkPackages;
+      this.workPackageProvider = workPackageProvider;
    }
 
    @Override
@@ -92,7 +91,9 @@ public class WorkPackageFilterTreeDialog extends FilteredTreeDialog {
          };
       });
 
-      createRemoveCheckbox(comp1);
+      if (showRemoveCheckbox) {
+         createRemoveCheckbox(comp1);
+      }
 
       return comp1;
    }
@@ -136,27 +137,27 @@ public class WorkPackageFilterTreeDialog extends FilteredTreeDialog {
 
    public void setInput() {
       try {
-         super.setInput(filterInput(allValidWorkPackages));
+         if (showAll != null && showAll.isChecked()) {
+            super.setInput(workPackageProvider.getAllWorkPackages());
+         } else {
+            super.setInput(workPackageProvider.getActiveWorkPackages());
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
-   private Collection<? extends IAtsWorkPackage> filterInput(Collection<? extends IAtsWorkPackage> input2) throws OseeCoreException {
-      List<IAtsWorkPackage> filtered = new ArrayList<>();
-      boolean all = false;
-      if (showAll != null && showAll.isChecked()) {
-         all = true;
-      }
-      for (IAtsWorkPackage workPkg : input2) {
-         if (all || workPkg.isActive()) {
-            filtered.add(workPkg);
-         }
-      }
-      return filtered;
-   }
-
    public boolean isRemoveFromWorkPackage() {
       return removeFromWorkPackage;
+   }
+
+   public void setShowRemoveCheckbox(boolean showRemoveCheckbox) {
+      this.showRemoveCheckbox = showRemoveCheckbox;
+   }
+
+   public static interface IWorkPackageProvider {
+      public Collection<IAtsWorkPackage> getActiveWorkPackages();
+
+      public Collection<IAtsWorkPackage> getAllWorkPackages();
    }
 }
