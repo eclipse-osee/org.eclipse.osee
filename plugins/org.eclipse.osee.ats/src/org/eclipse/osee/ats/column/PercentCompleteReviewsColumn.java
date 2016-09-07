@@ -11,10 +11,13 @@
 package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -36,8 +39,8 @@ public class PercentCompleteReviewsColumn extends XViewerAtsColumn implements IX
    }
 
    private PercentCompleteReviewsColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".reviewPercentComplete", "Review Percent Complete", 40, XViewerAlign.Center,
-         false, SortDataType.Percent, false,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".reviewPercentComplete", "Review Percent Complete", 40,
+         XViewerAlign.Center, false, SortDataType.Percent, false,
          "Percent Complete for the reviews.\n\nCalculation: total percent of all reviews / number of reviews");
    }
 
@@ -55,8 +58,11 @@ public class PercentCompleteReviewsColumn extends XViewerAtsColumn implements IX
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (element instanceof Artifact) {
-            return String.valueOf(getPercentCompleteReview((Artifact) element));
+         if (IAtsAction.isOfType(element) || IAtsTeamWorkflow.isOfType(element)) {
+            IAtsWorkItem workItem = (IAtsWorkItem) element;
+            if (workItem.isTeamWorkflow()) {
+               return String.valueOf(getPercentCompleteReview((Artifact) element));
+            }
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);

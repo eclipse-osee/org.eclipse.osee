@@ -25,4 +25,8 @@ public interface IAtsTeamWorkflow extends IAtsWorkItem, IAtsActionableItemProvid
 
    IAtsTeamDefinition getTeamDefinition() throws OseeCoreException;
 
+   public static boolean isOfType(Object object) {
+      return object instanceof IAtsTeamWorkflow;
+   }
+
 }

@@ -24,4 +24,7 @@ public interface IAtsAction extends IAtsObject, IAtsTeamWorkflowProvider {
 
    void setAtsId(String atsId) throws OseeCoreException;
 
+   public static boolean isOfType(Object object) {
+      return object instanceof IAtsAction;
+   }
 }

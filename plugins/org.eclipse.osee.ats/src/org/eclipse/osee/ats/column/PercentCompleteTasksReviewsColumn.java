@@ -12,11 +12,12 @@ package org.eclipse.osee.ats.column;
 
 import java.util.Collection;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -59,7 +60,7 @@ public class PercentCompleteTasksReviewsColumn extends XViewerAtsColumn implemen
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (element instanceof Artifact) {
+         if (IAtsAction.isOfType(element) || IAtsTeamWorkflow.isOfType(element)) {
             return String.valueOf(getPercentCompleteFromTasksAndReviews((Artifact) element));
          }
       } catch (OseeCoreException ex) {
@@ -72,7 +73,7 @@ public class PercentCompleteTasksReviewsColumn extends XViewerAtsColumn implemen
     * Return Percent Complete ONLY on tasks. Total Percent / # Tasks
     */
    public static int getPercentCompleteFromTasksAndReviews(Artifact artifact) throws OseeCoreException {
-      if (artifact.isOfType(AtsArtifactTypes.Action)) {
+      if (IAtsAction.isOfType(artifact)) {
          double percent = 0;
          for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
             if (!team.isCancelled()) {
@@ -87,7 +88,7 @@ public class PercentCompleteTasksReviewsColumn extends XViewerAtsColumn implemen
       }
       int spent = 0;
       int size = 0;
-      if (artifact instanceof TeamWorkFlowArtifact) {
+      if (IAtsTeamWorkflow.isOfType(artifact)) {
          TeamWorkFlowArtifact TeamWorkFlowArtifact = (TeamWorkFlowArtifact) artifact;
          Collection<TaskArtifact> taskArts = TeamWorkFlowArtifact.getTaskArtifacts();
          for (TaskArtifact taskArt : taskArts) {
@@ -95,7 +96,7 @@ public class PercentCompleteTasksReviewsColumn extends XViewerAtsColumn implemen
          }
          size = taskArts.size();
       }
-      if (artifact instanceof TeamWorkFlowArtifact) {
+      if (IAtsTeamWorkflow.isOfType(artifact)) {
          TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) artifact;
          Collection<IAtsAbstractReview> reviewArts = AtsClientService.get().getReviewService().getReviews(teamWf);
          for (IAtsAbstractReview reviewArt : reviewArts) {

@@ -30,14 +30,17 @@ public class PercentCompleteTasksColumn extends AbstractServicesColumn {
 
    @Override
    public String getText(IAtsObject atsObject) throws Exception {
-      return String.valueOf(getPercentCompleteFromTasks(atsObject, services));
+      if (IAtsAction.isOfType(atsObject) || IAtsTeamWorkflow.isOfType(atsObject)) {
+         return String.valueOf(getPercentCompleteFromTasks(atsObject, services));
+      }
+      return "";
    }
 
    /**
     * Return Percent Complete ONLY on tasks. Total Percent / # Tasks
     */
    public static int getPercentCompleteFromTasks(IAtsObject atsObject, IAtsServices services) throws OseeCoreException {
-      if (atsObject instanceof IAtsAction) {
+      if (IAtsAction.isOfType(atsObject)) {
          IAtsAction action = (IAtsAction) atsObject;
          double percent = 0;
          for (IAtsTeamWorkflow teamWf : action.getTeamWorkflows()) {
@@ -51,7 +54,7 @@ public class PercentCompleteTasksColumn extends AbstractServicesColumn {
          Double rollPercent = percent / action.getTeamWorkflows().size();
          return rollPercent.intValue();
       }
-      if (atsObject instanceof IAtsTeamWorkflow) {
+      if (IAtsTeamWorkflow.isOfType(atsObject)) {
          return getPercentCompleteFromTasks((IAtsTeamWorkflow) atsObject, services);
       }
       return 0;
