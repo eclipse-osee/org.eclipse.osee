@@ -24,6 +24,9 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
  */
 public interface IWorldEditorProvider {
 
+   /**
+    * Called to start the process of search and load.
+    */
    public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) throws OseeCoreException;
 
    public String getSelectedName(SearchType searchType) throws OseeCoreException;
@@ -38,6 +41,10 @@ public interface IWorldEditorProvider {
 
    public void setTableLoadOptions(TableLoadOption... tableLoadOptions);
 
+   /**
+    * Called in background during run process to perform the search. Implementers should perform new searches of the
+    * objects so they get loaded fresh. At this point, any items have already been de-cached.
+    */
    Collection<Artifact> performSearch(SearchType searchType);
 
 }

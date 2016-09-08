@@ -12,17 +12,17 @@ package org.eclipse.osee.ats.core.client.config;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.action.ActionArtifact;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
-import org.eclipse.osee.ats.core.client.review.AtsReviewCache;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -65,26 +65,31 @@ public class AtsBulkLoad {
    public static Set<Artifact> bulkLoadArtifacts(Collection<? extends Artifact> artifacts) throws OseeCoreException {
       List<Artifact> actions = new ArrayList<>();
       List<Artifact> teams = new ArrayList<>();
+      List<Artifact> tasks = new ArrayList<>();
       for (Artifact art : artifacts) {
-         if (art instanceof ActionArtifact) {
+         if (IAtsAction.isOfType(art)) {
             actions.add(art);
-         } else if (art instanceof TeamWorkFlowArtifact) {
+         } else if (IAtsTeamWorkflow.isOfType(art)) {
             teams.add(art);
+         } else if (IAtsTask.isOfType(art)) {
+            tasks.add(art);
          }
       }
-      Set<Artifact> arts = RelationManager.getRelatedArtifacts(actions, 3, AtsRelationTypes.TeamWfToTask_Task,
-         AtsRelationTypes.TeamWorkflowToReview_Review, AtsRelationTypes.ActionToWorkflow_Action);
-      arts.addAll(RelationManager.getRelatedArtifacts(teams, 4, AtsRelationTypes.TeamWfToTask_Task,
-         AtsRelationTypes.ActionToWorkflow_WorkFlow, AtsRelationTypes.TeamWorkflowToReview_Review));
+      Set<Artifact> arts = new HashSet<Artifact>();
+      if (!actions.isEmpty()) {
+         arts.addAll(RelationManager.getRelatedArtifacts(actions, 3, AtsRelationTypes.TeamWfToTask_Task,
+            AtsRelationTypes.TeamWorkflowToReview_Review, AtsRelationTypes.ActionToWorkflow_Action));
+      }
+      if (!teams.isEmpty()) {
+         arts.addAll(RelationManager.getRelatedArtifacts(teams, 4, AtsRelationTypes.TeamWfToTask_Task,
+            AtsRelationTypes.ActionToWorkflow_WorkFlow, AtsRelationTypes.TeamWorkflowToReview_Review));
+      }
+      if (!tasks.isEmpty()) {
+         arts.addAll(RelationManager.getRelatedArtifacts(tasks, 2, AtsRelationTypes.TeamWfToTask_TeamWf,
+            AtsRelationTypes.ActionToWorkflow_WorkFlow));
+      }
       arts.addAll(artifacts);
-      for (Artifact art : arts) {
-         if (art instanceof TeamWorkFlowArtifact) {
-            AtsTaskCache.getTaskArtifacts((TeamWorkFlowArtifact) art);
-         }
-         if (art instanceof TeamWorkFlowArtifact) {
-            AtsReviewCache.getReviewArtifacts((TeamWorkFlowArtifact) art);
-         }
-      }
+      System.err.println("bulk loaded " + arts.size());
       return arts;
    }
 }

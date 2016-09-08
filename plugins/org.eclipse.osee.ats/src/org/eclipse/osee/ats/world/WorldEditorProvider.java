@@ -25,13 +25,14 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.CursorManager;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * @author Donald G. Dunne
@@ -80,6 +81,11 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
          return;
       }
 
+      // De-cache any object so they will be reloaded during search
+      for (TreeItem item : worldEditor.getWorldComposite().getXViewer().getVisibleItems()) {
+         ArtifactCache.deCache((Artifact) item.getData());
+      }
+
       LoadTableJob job = null;
       job = new LoadTableJob(worldEditor, this, searchType, tableLoadOptions, pend);
       job.setUser(false);
@@ -124,8 +130,10 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
             selectedName = worldEditorProvider.getSelectedName(searchType);
             worldEditor.setEditorTitle(selectedName != null ? selectedName : worldEditorProvider.getName());
             worldEditor.setTableTitle("Loading \"" + (selectedName != null ? selectedName : "") + "\"...", false);
+
             worldEditor.getWorldComposite().getXViewer().clear(forcePend);
 
+            // This will re-perform the search and since items are not cached, will load fresh
             Collection<Artifact> artifacts = performSearch(searchType);
 
             if (cancel) {
@@ -139,17 +147,14 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
                return Status.OK_STATUS;
             }
 
-            if (searchType == SearchType.ReSearch) {
-               reload(worldEditor, selectedName, forcePend, artifacts);
-            } else {
-               Artifact expandToArtifact = null;
-               if (worldEditorProvider instanceof WorldEditorSimpleProvider) {
-                  WorldEditorSimpleProvider provider = (WorldEditorSimpleProvider) worldEditorProvider;
-                  expandToArtifact = provider.getExpandToArtifact();
-               }
-               worldEditor.getWorldComposite().load(selectedName != null ? selectedName : "", artifacts, customizeData,
-                  expandToArtifact, tableLoadOptions);
+            Artifact expandToArtifact = null;
+            if (worldEditorProvider instanceof WorldEditorSimpleProvider) {
+               WorldEditorSimpleProvider provider = (WorldEditorSimpleProvider) worldEditorProvider;
+               expandToArtifact = provider.getExpandToArtifact();
             }
+            worldEditor.getWorldComposite().load(selectedName != null ? selectedName : "", artifacts, customizeData,
+               expandToArtifact, tableLoadOptions);
+
          } catch (final Exception ex) {
             String str = "Exception occurred.";
             if (Strings.isValid(ex.getLocalizedMessage())) {
@@ -165,37 +170,6 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
          monitor.done();
          return Status.OK_STATUS;
       }
-   }
-
-   /**
-    * Background job to reload artifacts and then reload viewer
-    */
-   public void reload(WorldEditor worldEditor, String name, boolean forcePend, Collection<Artifact> artifacts) {
-
-      if (forcePend) {
-         reload(worldEditor, name, artifacts);
-      } else {
-         Job job = new Job("Loading " + name) {
-
-            @Override
-            protected IStatus run(IProgressMonitor monitor) {
-               reload(worldEditor, name, artifacts);
-               return Status.OK_STATUS;
-            }
-
-         };
-         job.setSystem(false);
-         job.schedule();
-      }
-   }
-
-   /**
-    * Reload artifacts and then reload viewer
-    */
-   private void reload(WorldEditor worldEditor, String name, Collection<Artifact> artifacts) {
-      ArtifactQuery.reloadArtifacts(artifacts);
-      worldEditor.getWorldComposite().load(name != null ? name : "", artifacts, customizeData);
-
    }
 
    public void setLoading(final boolean loading) {

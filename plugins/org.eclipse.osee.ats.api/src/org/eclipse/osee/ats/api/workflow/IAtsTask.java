@@ -17,5 +17,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
  */
 public interface IAtsTask extends IAtsWorkItem {
 
-   // do nothing
+   public static boolean isOfType(Object object) {
+      return object instanceof IAtsTask;
+   }
 }

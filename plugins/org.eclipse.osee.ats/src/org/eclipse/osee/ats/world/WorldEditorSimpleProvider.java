@@ -11,10 +11,14 @@
 package org.eclipse.osee.ats.world;
 
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 
 /**
@@ -23,7 +27,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 public class WorldEditorSimpleProvider extends WorldEditorProvider {
 
    private final String name;
-   private final Collection<Artifact> artifacts;
+   private Collection<Artifact> artifacts;
    private final Artifact expandToArtifact;
 
    public WorldEditorSimpleProvider(String name, Collection<? extends Artifact> artifacts) {
@@ -60,6 +64,13 @@ public class WorldEditorSimpleProvider extends WorldEditorProvider {
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) {
+      if (searchType == SearchType.ReSearch) {
+         List<Integer> ids = new LinkedList<>();
+         for (Artifact art : artifacts) {
+            ids.add(art.getArtId());
+         }
+         artifacts = ArtifactQuery.getArtifactListFromIds(ids, AtsUtilCore.getAtsBranch());
+      }
       return artifacts;
    }
 }

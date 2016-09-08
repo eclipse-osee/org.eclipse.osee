@@ -62,11 +62,6 @@ public class TaskEditorSimpleProvider extends TaskEditorProvider {
    }
 
    @Override
-   public Collection<? extends Artifact> getTaskEditorTaskArtifacts() throws OseeCoreException {
-      return artifacts;
-   }
-
-   @Override
    public String getTaskEditorLabel(SearchType searchType) {
       return "Tasks";
    }

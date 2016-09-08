@@ -114,6 +114,9 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       if (!teamWorkflowArtTypes.isEmpty()) {
          teamWfs = getTeamWorkflows(teamWorkflowArtTypes, allResults, allArtTypes);
       }
+      if (allArtTypes.contains(AtsArtifactTypes.AbstractWorkflowArtifact)) {
+         teamWfs = getTeamWorkflows(allArtTypes, allResults, allArtTypes);
+      }
 
       /**
        * If team workflow's searched by Team Definition, Actionable Item or Version were searched, then the child tasks
@@ -367,7 +370,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       }
    }
 
-   private <T extends IAtsWorkItem> Collection<T> getTeamWorkflows(List<IArtifactType> teamWorkflowArtTypes, Set<T> allResults, Set<IArtifactType> allArtTypes) {
+   private <T extends IAtsWorkItem> Collection<T> getTeamWorkflows(Collection<IArtifactType> teamWorkflowArtTypes, Set<T> allResults, Set<IArtifactType> allArtTypes) {
       createQueryBuilder();
       getBaseSearchCriteria(teamWorkflowArtTypes, true, allArtTypes);
 
@@ -422,7 +425,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    public abstract void createQueryBuilder();
 
-   public abstract void queryAndIsOfType(IArtifactType teamworkflow);
+   public abstract void queryAndIsOfType(IArtifactType artifactType);
 
    public boolean isOnlyIds() {
       return onlyIds != null;
@@ -448,9 +451,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    private List<IArtifactType> getTeamWorkflowArtTypes(Set<IArtifactType> allArtTypes) {
       List<IArtifactType> teamWorkflowArtTypes = new LinkedList<>();
       for (IArtifactType artType : allArtTypes) {
-         if (services.getArtifactResolver().inheritsFrom(artType,
-            AtsArtifactTypes.TeamWorkflow) || services.getArtifactResolver().inheritsFrom(artType,
-               AtsArtifactTypes.AbstractWorkflowArtifact)) {
+         if (services.getArtifactResolver().inheritsFrom(artType, AtsArtifactTypes.TeamWorkflow)) {
             teamWorkflowArtTypes.add(artType);
          }
       }
@@ -732,7 +733,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       return guid;
    }
 
-   private void getBaseSearchCriteria(List<IArtifactType> artTypes, boolean withUuids, Set<IArtifactType> allArtTypes) {
+   private void getBaseSearchCriteria(Collection<IArtifactType> artTypes, boolean withUuids, Set<IArtifactType> allArtTypes) {
       createQueryBuilder();
 
       /**
@@ -751,7 +752,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       addStateTypeNameAndAttributeCriteria();
    }
 
-   public abstract void queryAndIsOfType(List<IArtifactType> artTypes);
+   public abstract void queryAndIsOfType(Collection<IArtifactType> artTypes);
 
    /**
     * Color Team is handled through workpackage, insertion, activity and program if specified. Otherwise, use color team

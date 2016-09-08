@@ -77,11 +77,6 @@ public class OpenNewAtsTaskEditorActionTest extends AbstractAtsActionRunTest {
                }
 
                @Override
-               public Collection<? extends Artifact> getTaskEditorTaskArtifacts() throws OseeCoreException {
-                  return null;
-               }
-
-               @Override
                public String getTaskEditorLabel(SearchType searchType) {
                   return null;
                }

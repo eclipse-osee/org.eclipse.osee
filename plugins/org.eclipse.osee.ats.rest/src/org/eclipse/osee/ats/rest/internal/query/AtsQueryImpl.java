@@ -80,7 +80,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   public void queryAndIsOfType(List<IArtifactType> artTypes) {
+   public void queryAndIsOfType(Collection<IArtifactType> artTypes) {
       query.andIsOfType(artTypes);
    }
 
