@@ -40,10 +40,10 @@ public interface Id {
    }
 
    default boolean isValid() {
-      return !isInvalid();
+      return getId().longValue() > 0;
    }
 
    default boolean isInvalid() {
-      return getId().equals(SENTINEL);
+      return !isValid();
    }
 }

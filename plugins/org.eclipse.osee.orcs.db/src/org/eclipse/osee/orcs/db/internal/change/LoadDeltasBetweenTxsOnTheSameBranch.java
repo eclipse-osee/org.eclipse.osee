@@ -125,7 +125,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
             }
          }
       };
-      String query = String.format(SELECT_ITEMS_BETWEEN_TRANSACTIONS, isArchived ? "archived" : "");
+      String query = String.format(SELECT_ITEMS_BETWEEN_TRANSACTIONS, isArchived ? "_archived" : "");
       getJdbcClient().runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, query, getBranchId(), getStartTx(),
          getEndTx());
 
