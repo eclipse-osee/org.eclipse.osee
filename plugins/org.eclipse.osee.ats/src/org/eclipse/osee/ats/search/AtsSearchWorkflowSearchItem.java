@@ -74,6 +74,10 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       return true;
    }
 
+   protected boolean showWorkPackageWidgets() {
+      return false;
+   }
+
    protected void addWidgets() {
       if (showWorkItemWidgets()) {
          getWorkItemType().addWidget(14);
@@ -90,11 +94,13 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       getUser().addWidget();
       getUserType().addWidget();
       getColorTeam().addWidget(4);
-      getStateName().addWidget();
-      getProgram().addWidget(8);
-      getInsertion().addWidget();
-      getInsertionActivity().addWidget();
-      getWorkPackage().addWidget();
+      if (showWorkPackageWidgets()) {
+         getStateName().addWidget();
+         getProgram().addWidget(8);
+         getInsertion().addWidget();
+         getInsertionActivity().addWidget();
+         getWorkPackage().addWidget();
+      }
    }
 
    @Override
@@ -122,7 +128,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       if (getUserType() != null) {
          data.setUserType(getUserType().get());
       }
-      if (getWorkItemType() != null) {
+      if (showWorkItemWidgets() && getWorkItemType() != null) {
          data.getWorkItemTypes().clear();
          data.getWorkItemTypes().addAll(getWorkItemType().get());
       }
@@ -140,16 +146,16 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       if (getStateName() != null && Strings.isValid(getStateName().get())) {
          data.setState(getStateName().get());
       }
-      if (getProgram() != null && getProgram().get() != null) {
+      if (showWorkPackageWidgets() && getProgram() != null && getProgram().get() != null) {
          data.setProgramUuid(getProgram().get().getUuid());
       }
-      if (getInsertion() != null && getInsertion().get() != null) {
+      if (showWorkPackageWidgets() && getInsertion() != null && getInsertion().get() != null) {
          data.setInsertionUuid(getInsertion().get().getUuid());
       }
-      if (getInsertionActivity() != null && getInsertionActivity().get() != null) {
+      if (showWorkPackageWidgets() && getInsertionActivity() != null && getInsertionActivity().get() != null) {
          data.setInsertionActivityUuid(getInsertionActivity().get().getUuid());
       }
-      if (getWorkPackage() != null && getWorkPackage().get() != null) {
+      if (showWorkPackageWidgets() && getWorkPackage() != null && getWorkPackage().get() != null) {
          data.setWorkPackageUuid(getWorkPackage().get().getUuid());
       }
       if (getColorTeam() != null && Strings.isValid(getColorTeam().get())) {
@@ -175,17 +181,21 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
          getStateType().set(data);
          getUser().set(data);
          getUserType().set(data);
-         getWorkItemType().clearAll();
-         getWorkItemType().set(data);
+         if (showWorkItemWidgets()) {
+            getWorkItemType().clearAll();
+            getWorkItemType().set(data);
+         }
          getTeamDef().set(data);
          getAi().set(data);
          getVersion().set(data);
          getStateName().set(data);
-         getProgram().set(data);
-         getInsertion().set(data);
-         getInsertionActivity().set(data);
+         if (showWorkPackageWidgets()) {
+            getProgram().set(data);
+            getInsertion().set(data);
+            getInsertionActivity().set(data);
+            getWorkPackage().set(data);
+         }
          getColorTeam().set(data);
-         getWorkPackage().set(data);
          getReviewType().set(data);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

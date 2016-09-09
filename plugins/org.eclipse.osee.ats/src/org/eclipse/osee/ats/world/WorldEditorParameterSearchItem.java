@@ -118,6 +118,12 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
                return new Result("Actionable Item(s) and Team Definition(s) are not compatible selections.");
             }
          }
+         if (workItemType != null && workItemType.get().isEmpty()) {
+            return new Result("You must select a workflow type.");
+         }
+         if (teamDef.get().isEmpty() && ai.get().isEmpty()) {
+            return new Result("You must select either Actionable Item(s) or Team Definition(s).");
+         }
          return Result.TrueResult;
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
