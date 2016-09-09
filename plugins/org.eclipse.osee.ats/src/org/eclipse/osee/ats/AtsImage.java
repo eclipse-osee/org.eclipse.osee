@@ -85,6 +85,7 @@ public enum AtsImage implements KeyedImage {
    VERSION_LOCKED("yellowV_8_8.gif"),
    WORKFLOW_CONFIG("workflow.gif"),
    WORK_DEFINITION("workDef.gif"),
+   WORK_PACKAGE("workPackage.gif"),
    TOOL("T.gif"),
    ZOOM("zoom_in.gif"),
    ZOOM_IN("zoom_in.gif"),

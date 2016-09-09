@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.ev;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
@@ -26,7 +27,6 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -40,7 +40,7 @@ public class WorkPackageQBDReport extends XNavigateItemAction implements IWorldE
    private IAtsWorkPackage selectedWorkPackage;
 
    public WorkPackageQBDReport(XNavigateItem parent) {
-      super(parent, TITLE, PluginUiImage.ADMIN);
+      super(parent, TITLE, AtsImage.WORK_PACKAGE);
    }
 
    @Override

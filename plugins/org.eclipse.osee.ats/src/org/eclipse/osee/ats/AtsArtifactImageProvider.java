@@ -52,6 +52,7 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.AgileTeam, AtsImage.AGILE_TEAM, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.AgileFeatureGroup, AtsImage.AGILE_FEATURE_GROUP, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.AgileSprint, AtsImage.AGILE_SPRINT, this);
+      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.WorkPackage, AtsImage.WORK_PACKAGE, this);
 
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Version);
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Task);

@@ -18,7 +18,9 @@ import org.eclipse.osee.ats.export.AtsExportAction;
 import org.eclipse.osee.ats.search.AtsSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.world.search.AtsSearchGoalSearchItem;
 import org.eclipse.osee.ats.world.search.AtsSearchReviewSearchItem;
+import org.eclipse.osee.ats.world.search.AtsSearchTaskSearchItem;
 import org.eclipse.osee.ats.world.search.AtsSearchTeamWorkflowSearchItem;
+import org.eclipse.osee.ats.world.search.AtsSearchWorkPackageSearchItem;
 
 /**
  * @author Donald G. Dunne
@@ -34,7 +36,8 @@ public class AtsWorldEditorItem extends AtsWorldEditorItemBase {
    @Override
    public List<AtsSearchWorkflowSearchItem> getSearchWorkflowSearchItems() {
       return Arrays.asList(new AtsSearchWorkflowSearchItem(), new AtsSearchTeamWorkflowSearchItem(),
-         new AtsSearchReviewSearchItem(), new AtsSearchGoalSearchItem());
+         new AtsSearchTaskSearchItem(), new AtsSearchReviewSearchItem(), new AtsSearchGoalSearchItem(),
+         new AtsSearchWorkPackageSearchItem());
    }
 
 }

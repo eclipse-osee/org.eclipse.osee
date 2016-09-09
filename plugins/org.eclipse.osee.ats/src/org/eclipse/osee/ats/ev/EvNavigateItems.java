@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.navigate.SearchNavigateItem;
+import org.eclipse.osee.ats.world.search.AtsSearchWorkPackageSearchItem;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 
@@ -27,6 +29,7 @@ public class EvNavigateItems {
          XNavigateItem evItems = new XNavigateItem(parent, "Earned Value", AtsImage.E_BOXED);
          new WorkPackageConfigReport(evItems);
          new WorkPackageQBDReport(evItems);
+         new SearchNavigateItem(evItems, new AtsSearchWorkPackageSearchItem());
          items.add(evItems);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Can't create Goals section");
