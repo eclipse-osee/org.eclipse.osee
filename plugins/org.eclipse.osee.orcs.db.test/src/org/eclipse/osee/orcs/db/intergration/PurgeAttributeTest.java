@@ -58,7 +58,7 @@ public class PurgeAttributeTest {
       TransactionBuilder tx = null;
       for (ArtifactReadable art : orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON_ID).and(
          CoreAttributeTypes.Annotation, UNIQUE_ATTR_VALUE).getResults()) {
-         if (tx != null) {
+         if (tx == null) {
             tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON_ID, Joe_Smith,
                getClass().getSimpleName());
          }
