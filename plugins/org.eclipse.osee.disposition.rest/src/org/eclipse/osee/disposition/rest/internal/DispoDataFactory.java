@@ -77,7 +77,7 @@ public class DispoDataFactory {
       if (itemToInit.getDiscrepanciesList().size() == 0) {
          itemToInit.setStatus(DispoStrings.Item_Pass);
       } else {
-         itemToInit.setStatus(DispoStrings.Item_InComplete);
+         itemToInit.setStatus(dispoConnector.getItemStatus(itemToInit));
       }
       if (!Strings.isValid(itemToInit.getAssignee())) {
          itemToInit.setAssignee("UnAssigned");

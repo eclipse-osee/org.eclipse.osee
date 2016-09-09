@@ -85,4 +85,8 @@ public interface VCastDataStore {
    Collection<VCastStatementData> getStatementData(VCastStatementCoverage statementCoverage) throws OseeCoreException;
 
    Collection<VCastResult> getResults(VCastStatementData statementDataItem) throws OseeCoreException;
+
+   void setIsMCDC();
+
+   boolean getIsMCDC();
 }

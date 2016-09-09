@@ -20,13 +20,19 @@ public class VCastStatementCoverage {
    private final int line;
    private final int hitCount;
    private final int maxHitCount;
+   private final boolean isMCDCPair;
+   private final String abbrevCondition;
+   private final String fullCondition;
 
-   public VCastStatementCoverage(int id, int functionId, int line, int hitCount, int maxHitCount) {
+   public VCastStatementCoverage(int id, int functionId, int line, int hitCount, int maxHitCount, boolean isMCDCPair, String abbrevCondition, String fullCondition) {
       this.id = id;
       this.functionId = functionId;
       this.line = line;
       this.hitCount = hitCount;
       this.maxHitCount = maxHitCount;
+      this.isMCDCPair = isMCDCPair;
+      this.abbrevCondition = abbrevCondition;
+      this.fullCondition = fullCondition;
    }
 
    public int getId() {
@@ -47,6 +53,18 @@ public class VCastStatementCoverage {
 
    public int getMaxHitCount() {
       return maxHitCount;
+   }
+
+   public boolean getIsMCDCPair() {
+      return isMCDCPair;
+   }
+
+   public String getAbbrevCondition() {
+      return abbrevCondition;
+   }
+
+   public String getFullCondition() {
+      return fullCondition;
    }
 
 }

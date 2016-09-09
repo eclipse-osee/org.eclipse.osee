@@ -45,6 +45,7 @@ import org.eclipse.osee.vcast.model.VCastWritable;
 public class VCastDataStoreImpl implements VCastDataStore {
 
    private final JdbcClient client;
+   private boolean isMCDC;
 
    public VCastDataStoreImpl(JdbcClient client) {
       super();
@@ -410,7 +411,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
             Integer line = stmt.getInt("line");
             Integer hit_count = stmt.getInt("hit_count");
             Integer max_hit_count = stmt.getInt("max_hit_count");
-            toReturn.add(new VCastStatementCoverage(id, function_id, line, hit_count, max_hit_count));
+            toReturn.add(new VCastStatementCoverage(id, function_id, line, hit_count, max_hit_count, false, "", ""));
          }
 
       } finally {
@@ -530,19 +531,68 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
    @Override
    public Collection<VCastStatementCoverage> getStatementCoverageLines(VCastFunction function) throws OseeCoreException {
+      if (isMCDC) {
+         return getStatementCoverageLinesWithMCDC(function);
+      } else {
+         Collection<VCastStatementCoverage> toReturn = new ArrayList<>();
+
+         JdbcStatement stmt = getStatement();
+         try {
+            stmt.runPreparedQuery("SELECT * FROM statement_coverage sc WHERE function_id=?", function.getId());
+            while (stmt.next()) {
+               Integer id = stmt.getInt("id");
+               Integer line = stmt.getInt("line");
+               Integer hit_count = stmt.getInt("hit_count");
+               Integer max_hit_count = stmt.getInt("max_hit_count");
+               toReturn.add(
+                  new VCastStatementCoverage(id, function.getId(), line, hit_count, max_hit_count, false, "", ""));
+            }
+
+         } finally {
+            stmt.close();
+         }
+         return toReturn;
+      }
+   }
+
+   private Collection<VCastStatementCoverage> getStatementCoverageLinesWithMCDC(VCastFunction function) {
       Collection<VCastStatementCoverage> toReturn = new ArrayList<>();
 
       JdbcStatement stmt = getStatement();
       try {
-         stmt.runPreparedQuery("SELECT * FROM statement_coverage sc WHERE function_id=?", function.getId());
+         // @formatter:off
+         String query =
+            "WITH temp as (SELECT sc.id as sc_id, mcdc.id as mcdc_id, sc.hit_count, sc.max_hit_count, sc.line, mcdc.id, mcdc.simplified_expr"+
+            " FROM statement_coverage sc left outer join mcdc_coverage mcdc on (sc.line = mcdc.line and sc.function_id = mcdc.function_id)"+
+            " where sc.function_id = ?) select temp.sc_id, temp.line, temp.hit_count, temp.max_hit_count, temp.simplified_expr, mcdc_c.cond_index,"+
+            " mcdc_c.cond_variable, mcdc_c.cond_expr from temp left outer join mcdc_coverage_conditions mcdc_c on temp.mcdc_id = mcdc_c.mcdc_id";
+         // @formatter:on
+
+         stmt.runPreparedQuery(query, function.getId());
          while (stmt.next()) {
-            Integer id = stmt.getInt("id");
-            Integer line = stmt.getInt("line");
-            Integer hit_count = stmt.getInt("hit_count");
-            Integer max_hit_count = stmt.getInt("max_hit_count");
-            toReturn.add(new VCastStatementCoverage(id, function.getId(), line, hit_count, max_hit_count));
+            Integer id = stmt.getInt("temp.sc_id");
+            Integer line = stmt.getInt("temp.line");
+            Integer hit_count = stmt.getInt("temp.hit_count");
+            Integer max_hit_count = stmt.getInt("temp.max_hit_count");
+            String variable = stmt.getString("mcdc_c.cond_variable");
+            String condExpression = stmt.getString("mcdc_c.cond_expr");
+            String simpExpression = stmt.getString("temp.simplified_expr");
+            boolean isMCDCPair = false;
+            if (variable != null) {
+               isMCDCPair = true;
+               if (variable.isEmpty()) {
+                  variable = "RESULT";
+                  condExpression = simpExpression;
+               } else {
+                  variable = variable.toUpperCase();
+               }
+            }
+            toReturn.add(new VCastStatementCoverage(id, function.getId(), line, hit_count, max_hit_count, isMCDCPair,
+               variable, condExpression));
          }
 
+      } catch (Exception ex) {
+         System.out.println(ex);
       } finally {
          stmt.close();
       }
@@ -593,6 +643,27 @@ public class VCastDataStoreImpl implements VCastDataStore {
          stmt.close();
       }
       return toReturn;
+   }
+
+   @Override
+   public void setIsMCDC() {
+      JdbcStatement stmt = getStatement();
+      try {
+         stmt.runPreparedQuery("SELECT COUNT(1) FROM mcdc_coverage");
+         if (stmt.next()) {
+            if (stmt.getInt("count(1)") > 0) {
+               isMCDC = true;
+            }
+         }
+
+      } finally {
+         stmt.close();
+      }
+   }
+
+   @Override
+   public boolean getIsMCDC() {
+      return isMCDC;
    }
 
 }

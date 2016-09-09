@@ -118,7 +118,7 @@ app.controller('userController', [
             }, function(data) {
                 $scope.annotations = data;
                 if($rootScope.type == 'codeCoverage') {
-            		 $scope.annotations.sort(function(a, b){return a.locationRefs-b.locationRefs});
+	               	$scope.annotations.sort(sortStuff);
             	}
                 var blankAnnotation = new Annotation();
                 $scope.annotations.push(blankAnnotation);
@@ -128,6 +128,34 @@ app.controller('userController', [
 
 
         };
+        
+        var sortStuff = function(a, b) {
+   			if(a.locationRefs == undefined) {
+   				return 1;
+   			}
+   			if(b.locationRefs == undefined) {
+   				return -1;
+   			}
+   			if(!isNaN(parseFloat(a)) && isFinite(a)) {
+       		  return a.locationRefs-b.locationRefs
+   			} else {
+   			  var aSplit = a.locationRefs.split(".");
+   			  var bSplit = b.locationRefs.split(".");
+   			  
+   			  var delta = aSplit[0] - bSplit[0];
+   			  if(delta == 0) {
+   				 if(aSplit[1].match("RESULT") && !bSplit[1].match("RESULT")) {
+   					return -1;
+   				 } else if(!aSplit[1].match("RESULT") && bSplit[1].match("RESULT")){
+   					return 1;
+   				 }else {
+   	   				 return a.locationRefs.localeCompare(b.locationRefs);
+   				 }
+   			  } else {
+   			 	 return delta;
+   			  }
+   			} 
+        }
 
         $scope.$on('ngGridEventStartCellEdit', function(data) {
             var field = data.targetScope.col.field;
@@ -446,15 +474,7 @@ app.controller('userController', [
                 });
                 
 	             if($rootScope.type == 'codeCoverage') {
-	               	$scope.annotations.sort(function(a, b){
-	               			if(a.locationRefs == undefined) {
-	               				return 1;
-	               			}
-	               			if(b.locationRefs == undefined) {
-	               				return -1;
-	               			}
-	               			return a.locationRefs-b.locationRefs
-	               		});
+	               	$scope.annotations.sort(sortStuff);
 	             }
 
             }
@@ -483,7 +503,7 @@ app.controller('userController', [
                 $scope.annotations.push(blankAnnotation);
                 
                 if($rootScope.type == 'codeCoverage') {
-            		 $scope.annotations.sort(function(a, b){return a.locationRefs-b.locationRefs});
+	               	$scope.annotations.sort(sortStuff);
             	 }
             }, function(data) {
                 alert("Could not make change, please try refreshing");
@@ -565,7 +585,7 @@ app.controller('userController', [
 	        		var covered = annotation.idsOfCoveredDiscrepancies[0]
 	        		
 	        		if(!discrepancies[covered] == null)
-		        			return discrepancies[covered].text;
+	        		return discrepancies[covered].text;        		
 		        		else 
 		        			return "";     		
         		} else {

@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.disposition.model.Discrepancy;
@@ -57,7 +58,9 @@ import org.eclipse.osee.vcast.model.VCastStatementCoverage;
 public class LisFileParser implements DispoImporterApi {
    private final DispoDataFactory dataFactory;
 
-   private static final Pattern fileMethodLineNumberPattern = Pattern.compile("\\s*([0-9]+)\\s+([0-9]+)\\s+([0-9]+)");
+   private static final Pattern fileMethod5LineNumberPattern =
+      Pattern.compile("\\s*([0-9]+)\\s+([0-9]+)\\s+([0-9]+)\\s+([0-9]+)\\s+([0-9]+)");
+   private static final Pattern fileMethod3LineNumberPattern = Pattern.compile("\\s*([0-9]+)\\s+([0-9]+)\\s+([0-9]+)");
    private final Map<String, DispoItemData> datIdToItem = new HashMap<>();
    private final Set<String> datIdsCoveredByException = new HashSet<>();
    private final Set<String> alreadyUsedDatIds = new HashSet<>();
@@ -76,6 +79,8 @@ public class LisFileParser implements DispoImporterApi {
       File f = new File(vCastDir + File.separator + "cover.db");
 
       VCastDataStore dataStore = VCastClient.newDataStore(f.getAbsolutePath());
+
+      dataStore.setIsMCDC();
 
       Collection<VCastInstrumentedFile> instrumentedFiles = getInstrumentedFiles(dataStore, report);
 
@@ -106,8 +111,8 @@ public class LisFileParser implements DispoImporterApi {
          item.setTotalPoints(String.valueOf(item.getAnnotationsList().size() + item.getDiscrepanciesList().size()));
       }
 
-      // This is a reimport so we'll need to copy all the annotations
       if (!exisitingItems.isEmpty()) {
+         // This is a reimport so we'll need to copy all the annotations
          DispoSetCopier copier = new DispoSetCopier(dispoConnector);
          List<DispoItemData> itemsFromImport = new ArrayList<>();
          itemsFromImport.addAll(values);
@@ -157,6 +162,10 @@ public class LisFileParser implements DispoImporterApi {
 
    private void processExceptionHandled(OperationReport report) {
       for (String datId : datIdsCoveredByException) {
+         if (datId.contains("4:46") || datId.contains("4:47")) {
+            System.out.println();
+         }
+
          Matcher matcher = Pattern.compile("\\d*:\\d*:").matcher(datId);
          matcher.find();
          String itemDatId = matcher.group();
@@ -227,12 +236,13 @@ public class LisFileParser implements DispoImporterApi {
          }
 
          for (VCastFunction function : functions) {
-            processFunction(instrumentedFile, lisFileParser, fileNum, dataStore, instrumentedFile, function, report);
+            processFunction(instrumentedFile, lisFileParser, fileNum, dataStore, instrumentedFile, function,
+               dataStore.getIsMCDC(), report);
          }
       }
    }
 
-   private void processFunction(VCastInstrumentedFile lisFile, VCastLisFileParser lisFileParser, int fileNum, VCastDataStore dataStore, VCastInstrumentedFile instrumentedFile, VCastFunction function, OperationReport report) {
+   private void processFunction(VCastInstrumentedFile lisFile, VCastLisFileParser lisFileParser, int fileNum, VCastDataStore dataStore, VCastInstrumentedFile instrumentedFile, VCastFunction function, boolean isMCDCFile, OperationReport report) {
       int functionNum = function.getFindex();
       DispoItemData newItem = new DispoItemData();
       newItem.setAnnotationsList(new ArrayList<DispoAnnotationData>());
@@ -256,25 +266,22 @@ public class LisFileParser implements DispoImporterApi {
                instrumentedFile.getId(), function.getId(), ex.getMessage()),
             ERROR);
       }
-
       Map<String, Discrepancy> discrepancies = new HashMap<>();
 
       for (VCastStatementCoverage statementCoverageItem : statementCoverageItems) {
-         processStatement(lisFile, lisFileParser, fileNum, functionNum, function, statementCoverageItem, discrepancies,
-            report);
+         processStatement(lisFile, lisFileParser, fileNum, functionNum, function, statementCoverageItem, isMCDCFile,
+            discrepancies, report);
       }
 
       // add discrepancies to item
       newItem.setDiscrepanciesList(discrepancies);
    }
 
-   private void processStatement(VCastInstrumentedFile lisFile, VCastLisFileParser lisFileParser, int fileNum, int functionNum, VCastFunction function, VCastStatementCoverage statementCoverageItem, Map<String, Discrepancy> discrepancies, OperationReport report) {
+   private void processStatement(VCastInstrumentedFile lisFile, VCastLisFileParser lisFileParser, int fileNum, int functionNum, VCastFunction function, VCastStatementCoverage statementCoverageItem, boolean isMCDCFile, Map<String, Discrepancy> discrepancies, OperationReport report) {
       // Create discrepancy for every line, annotate with test unit or exception handled
       Integer functionNumber = function.getFindex();
       Integer lineNumber = statementCoverageItem.getLine();
       Pair<String, Boolean> lineData = null;
-
-      Discrepancy newDiscrepancy = new Discrepancy();
 
       try {
          lineData = lisFileParser.getSourceCodeForLine(functionNumber, lineNumber);
@@ -284,20 +291,48 @@ public class LisFileParser implements DispoImporterApi {
             ERROR);
       }
 
-      if (lineData != null) {
-         newDiscrepancy.setText(lineData.getFirst().trim());
-         newDiscrepancy.setLocation(String.valueOf(lineNumber));
-         String id = String.valueOf(Lib.generateUuid());
-         newDiscrepancy.setId(id);
-         discrepancies.put(id, newDiscrepancy);
+      if (fileNum == 41 && functionNum == 1) {
+         System.out.println();
+      }
 
-         // Is covered by exception handling, pass as parameter from DispoApiImpl
+      String location;
+      if (lineData != null) {
+         boolean isMCDCPair = statementCoverageItem.getIsMCDCPair();
+         String text;
+         if (isMCDCPair) {
+            location = String.format("%s.%s.%s", lineNumber, statementCoverageItem.getAbbrevCondition(), "T");
+            String location2 = String.format("%s.%s.%s", lineNumber, statementCoverageItem.getAbbrevCondition(), "F");
+
+            if (!lineData.getFirst().matches("\\s*\\( \\)\\s*(WHEN|FOR).*")) {
+               // Only add corresponding 'F' disrepancy if it's not a WHEN condition statment
+               text = statementCoverageItem.getFullCondition();
+               addDiscrepancy(discrepancies, location, text);
+               addDiscrepancy(discrepancies, location2, text);
+            } else {
+               text = lineData.getFirst().trim();
+               addDiscrepancy(discrepancies, location, text);
+            }
+
+         } else {
+            location = String.valueOf(lineNumber);
+            text = lineData.getFirst().trim();
+            addDiscrepancy(discrepancies, location, text);
+            // Is covered by exception handling, pass as parameter from DispoApiImpl does not apply to MCDC
+         }
          if (lineData.getSecond()) {
-            String datId = generateDatId(fileNum, functionNum, lineNumber);
+            String datId = generateDatId(fileNum, functionNum, location);
             datIdsCoveredByException.add(datId);
          }
-
       }
+   }
+
+   private void addDiscrepancy(Map<String, Discrepancy> discrepancies, String location, String text) {
+      Discrepancy newDiscrepancy = new Discrepancy();
+      newDiscrepancy.setLocation(location);
+      newDiscrepancy.setText(text);
+      String id = String.valueOf(Lib.generateUuid());
+      newDiscrepancy.setId(id);
+      discrepancies.put(id, newDiscrepancy);
    }
 
    private String generateDatId(Object... ids) {
@@ -331,22 +366,22 @@ public class LisFileParser implements DispoImporterApi {
                      report.addEntry("SQL", String.format("This line [%s] is not in proper format. In DAT file [%s]",
                         resultsFile.getName()), ERROR);
                   } else {
-                     Matcher m = fileMethodLineNumberPattern.matcher(resultsLine);
-                     if (m.find()) {
-                        if (!alreadyUsedDatIds.contains(resultsLine)) {
-                           DispoItemData item = datIdToItem.get(generateDatId(m.group(1), m.group(2)));
-                           if (item != null) {
-                              String location = m.group(3);
-                              String text = "";
-                              Discrepancy matchingDiscrepancy = matchDiscrepancy(location, item.getDiscrepanciesList());
-                              if (matchingDiscrepancy != null) {
-                                 text = matchingDiscrepancy.getText();
-                                 Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
-                                 discrepancies.remove(matchingDiscrepancy.getId());
-                                 addAnnotationForForCoveredLine(item, location, Test_Unit_Resolution, text, resultPath);
-                              }
-                              alreadyUsedDatIds.add(resultsLine);
+                     if (!alreadyUsedDatIds.contains(resultsLine)) {
+                        alreadyUsedDatIds.add(resultsLine);
+                        StringTokenizer st = new StringTokenizer(resultsLine);
+                        int count = st.countTokens();
+                        if (count == 3) {
+                           Matcher m = fileMethod3LineNumberPattern.matcher(resultsLine);
+                           if (m.find()) {
+                              processSingleResult(resultPath, m);
                            }
+                        } else if (count == 5) {
+                           Matcher m = fileMethod5LineNumberPattern.matcher(resultsLine);
+                           if (m.find()) {
+                              processSingleResultMCDC(resultPath, m);
+                           }
+                        } else {
+                           // ERROR
                         }
                      }
                   }
@@ -356,6 +391,78 @@ public class LisFileParser implements DispoImporterApi {
             Lib.close(br);
          }
       }
+   }
+
+   private void processSingleResult(String resultPath, Matcher m) {
+      DispoItemData item = datIdToItem.get(generateDatId(m.group(1), m.group(2)));
+	  if(item != null) {
+	      String location = m.group(3);
+	      String text = "";
+	      Discrepancy matchingDiscrepancy = matchDiscrepancy(location, item.getDiscrepanciesList());
+	      if (matchingDiscrepancy != null) {
+	         text = matchingDiscrepancy.getText();
+	         Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
+	         discrepancies.remove(matchingDiscrepancy.getId());
+	         item.setDiscrepanciesList(discrepancies);
+	         addAnnotationForForCoveredLine(item, location, Test_Unit_Resolution, text, resultPath);
+	      }   
+	  }
+	  
+
+   }
+
+   private void processSingleResultMCDC(String resultPath, Matcher m) {
+      DispoItemData item = datIdToItem.get(generateDatId(m.group(1), m.group(2)));
+	  
+	  if(item != null) {
+	      Integer lineNumber = Integer.valueOf(m.group(3));
+	      Integer bitsTrue = Integer.valueOf(m.group(4));
+	      Integer bitsUsed = Integer.valueOf(m.group(5));
+
+	      Map<String, Boolean> bitsTrueMap = getBitToBoolean(Integer.toString(bitsTrue, 2), Integer.toString(bitsUsed, 2));
+
+	      for (String abbrevCond : bitsTrueMap.keySet()) {
+	         String TorF = bitsTrueMap.get(abbrevCond) ? "T" : "F";
+	         String location = String.format("%s.%s.%s", lineNumber, abbrevCond, TorF);
+	         Discrepancy matchingDiscrepancy = matchDiscrepancy(location, item.getDiscrepanciesList());
+	         if (matchingDiscrepancy != null) {
+	            String text = matchingDiscrepancy.getText();
+	            Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
+	            discrepancies.remove(matchingDiscrepancy.getId());
+	            item.setDiscrepanciesList(discrepancies);
+	            addAnnotationForForCoveredLine(item, location, Test_Unit_Resolution, resultPath, text);
+	         } 
+	      }	  
+	  }
+
+
+   }
+
+   private Map<String, Boolean> getBitToBoolean(String bitsTrue, String bitsUsed) {
+      Map<String, Boolean> toReturn = new HashMap<>();
+      char[] bitsUsedArray = bitsUsed.toCharArray();
+      char[] bitsTrueArray = bitsTrue.toCharArray();
+      int totalResultIndex = bitsTrueArray.length - 1;
+
+      int sizeDelta = bitsUsedArray.length - bitsTrueArray.length;
+      int highestChar = 63 + bitsUsedArray.length;
+      for (int i = 1; i <= sizeDelta; i++) {
+         char c = (char) (highestChar--);
+         String key = Character.toString(c);
+         toReturn.put(key, false);
+      }
+
+      for (int i = 0; i < bitsTrueArray.length; i++) {
+         char valueC = bitsTrueArray[i];
+         if (i != totalResultIndex) {
+            char c = (char) (highestChar--);
+            String key = Character.toString(c);
+            toReturn.put(key, valueC == '1');
+         } else {
+            toReturn.put("RESULT", valueC == '1');
+         }
+      }
+      return toReturn;
    }
 
    private Discrepancy matchDiscrepancy(String location, Map<String, Discrepancy> discrepancies) {
@@ -390,7 +497,7 @@ public class LisFileParser implements DispoImporterApi {
       annotationsList.add(newIndex, newAnnotation);
    }
 
-   private void addAnnotationForForCoveredLine(DispoItemData item, String location, String resolutionType, String text, String coveringFile) {
+   private void addAnnotationForForCoveredLine(DispoItemData item, String location, String resolutionType, String coveringFile, String text) {
       DispoAnnotationData newAnnotation = new DispoAnnotationData();
       dataFactory.initAnnotation(newAnnotation);
       String idOfNewAnnotation = dataFactory.getNewId();
@@ -402,7 +509,7 @@ public class LisFileParser implements DispoImporterApi {
       newAnnotation.setResolution(coveringFile);
       newAnnotation.setIsResolutionValid(true);
       newAnnotation.setCustomerNotes(text);
-      dispoConnector.connectAnnotation(newAnnotation, item.getDiscrepanciesList());
+      //      dispoConnector.connectAnnotation(newAnnotation, item.getDiscrepanciesList());
 
       List<DispoAnnotationData> annotationsList = item.getAnnotationsList();
       int newIndex = annotationsList.size();
