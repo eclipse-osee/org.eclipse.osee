@@ -24,6 +24,7 @@ import org.eclipse.osee.define.report.api.DataRightEntry;
 import org.eclipse.osee.define.report.api.DataRightId;
 import org.eclipse.osee.define.report.api.DataRightInput;
 import org.eclipse.osee.define.report.api.DataRightResult;
+import org.eclipse.osee.define.report.api.PageOrientation;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -81,6 +82,7 @@ public class DataRightBuilder {
       while (iterator.hasNext()) {
          DataRightEntry currentArtifact = iterator.next();
          String classification = currentArtifact.getClassification();
+         PageOrientation orientation = currentArtifact.getOrientation();
          boolean isSetDataRightFooter = false;
 
          if (previousArtifact == null) {
@@ -91,7 +93,8 @@ public class DataRightBuilder {
                isSetDataRightFooter = true;
             } else {
                DataRightAnchor previousArtAnchor = getAnchor(previousArtifact.getGuid(), anchors);
-               if (previousArtAnchor != null) {
+               PageOrientation prevOrientation = previousArtifact.getOrientation();
+               if (previousArtAnchor != null && orientation.equals(prevOrientation)) {
                   previousArtAnchor.setContinuous(true);
                }
             }
