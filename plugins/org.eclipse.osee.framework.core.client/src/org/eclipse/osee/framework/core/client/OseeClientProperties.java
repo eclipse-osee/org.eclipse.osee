@@ -155,7 +155,7 @@ public class OseeClientProperties extends OseeProperties {
     * @return application server URL
     */
    public static String getOseeApplicationServer() {
-      return getProperty(OseeClient.OSEE_APPLICATION_SERVER, "http://localhost:8092");
+      return getProperty(OseeClient.OSEE_APPLICATION_SERVER, "http://localhost:8089");
    }
 
    private static String getProperty(String name) {
