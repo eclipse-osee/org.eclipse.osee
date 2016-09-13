@@ -16,6 +16,10 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.column.HistoryTransactionAuthorColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.column.HistoryTransactionCommentColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.column.HistoryTransactionDateColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.column.HistoryTransactionIdColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 
@@ -23,8 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
  * @author Jeff C. Phillips
  */
 public class HistoryXViewerFactory extends SkynetXViewerFactory {
-   public final static XViewerColumn transaction = new XViewerColumn("framework.history.transaction", "Transaction", 90,
-      XViewerAlign.Left, true, SortDataType.Integer, false, null);
+   private final HistoryTransactionDateColumn historyTransactionDateColumn;
    public final static XViewerColumn gamma = new XViewerColumn("framework.history.gamma", "Gamma", 60,
       XViewerAlign.Left, false, SortDataType.Integer, false, null);
    public final static XViewerColumn itemType = new XViewerColumn("framework.history.itemType", "Item Type", 150,
@@ -39,18 +42,17 @@ public class HistoryXViewerFactory extends SkynetXViewerFactory {
       new XViewerColumn("framework.history.was", "Was", 150, XViewerAlign.Left, true, SortDataType.String, false, null);
    public final static XViewerColumn is =
       new XViewerColumn("framework.history.is", "Is", 150, XViewerAlign.Left, true, SortDataType.String, false, null);
-   public final static XViewerColumn timeStamp = new XViewerColumn("framework.history.timeStamp", "Time Stamp", 110,
-      XViewerAlign.Left, true, SortDataType.Date, false, null);
-   public final static XViewerColumn author = new XViewerColumn("framework.history.author", "Author", 100,
-      XViewerAlign.Left, true, SortDataType.String, false, null);
-   public final static XViewerColumn comment = new XViewerColumn("framework.history.comment", "Comment", 300,
-      XViewerAlign.Left, true, SortDataType.String, false, null);
 
    public final static String NAMESPACE = "osee.skynet.gui.HisotryXViewer";
+   private final IHistoryTransactionProvider txCache;
 
-   public HistoryXViewerFactory(IOseeTreeReportProvider reportProvider) {
+   public HistoryXViewerFactory(IOseeTreeReportProvider reportProvider, IHistoryTransactionProvider txCache) {
       super(NAMESPACE, reportProvider);
-      registerColumns(transaction, gamma, itemType, itemChange, modType, itemId, was, is, timeStamp, author, comment);
+      this.txCache = txCache;
+      historyTransactionDateColumn = new HistoryTransactionDateColumn(txCache);
+      registerColumns(new HistoryTransactionIdColumn(txCache), gamma, itemType, itemChange, modType, itemId, was, is,
+         historyTransactionDateColumn, new HistoryTransactionAuthorColumn(txCache),
+         new HistoryTransactionCommentColumn(txCache));
       registerAllAttributeColumns();
    }
 
@@ -63,12 +65,20 @@ public class HistoryXViewerFactory extends SkynetXViewerFactory {
    public CustomizeData getDefaultTableCustomizeData() {
       CustomizeData customizeData = super.getDefaultTableCustomizeData();
       for (XViewerColumn xCol : customizeData.getColumnData().getColumns()) {
-         if (xCol.getId() == transaction.getId()) {
+         if (xCol.getId().equals(HistoryTransactionIdColumn.ID)) {
             xCol.setSortForward(false);
          }
       }
-      customizeData.getSortingData().setSortingNames(transaction.getId());
+      customizeData.getSortingData().setSortingNames(HistoryTransactionIdColumn.ID);
       return customizeData;
+   }
+
+   public HistoryTransactionDateColumn getHistoryTransactionDateColumn() {
+      return historyTransactionDateColumn;
+   }
+
+   public IHistoryTransactionProvider getTxCache() {
+      return txCache;
    }
 
 }

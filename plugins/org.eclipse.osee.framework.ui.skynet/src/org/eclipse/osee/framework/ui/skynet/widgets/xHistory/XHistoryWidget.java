@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -39,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -289,7 +291,9 @@ public class XHistoryWidget extends GenericXWidget {
                         }
                         if (Widgets.isAccessible(xHistoryViewer.getControl())) {
                            calculateShading(changes);
-                           xHistoryViewer.setInput(changes);
+                           calculateTransactions(changes);
+                           ((XHistoryLabelProvider) getXViewer().getLabelProvider()).calculateImages(changes);
+                           xHistoryViewer.setInputXViewer(changes);
                         }
                      } else {
                         if (Widgets.isAccessible(extraInfoLabel)) {
@@ -306,6 +310,16 @@ public class XHistoryWidget extends GenericXWidget {
          }
       };
       Jobs.startJob(job);
+   }
+
+   public void calculateTransactions(Collection<Change> changes) {
+      Set<Long> ids = new HashSet<>();
+      for (Change change : changes) {
+         ids.add(change.getTxDelta().getEndTx().getId());
+      }
+      for (TransactionRecord transaction : TransactionManager.getTransactions(ids)) {
+         xHistoryViewer.put(transaction.getId(), transaction);
+      }
    }
 
    private void calculateShading(Collection<Change> changes) {

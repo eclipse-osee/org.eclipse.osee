@@ -10,19 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xHistory;
 
-import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.RelationChange;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.column.HistoryTransactionDateColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.column.HistoryTransactionIdColumn;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Color;
@@ -35,6 +37,9 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
 
    private final HistoryXViewer historyXViewer;
    private static Color lightGreyColor;
+   private final Map<XViewerColumn, Long> colToTime = new HashMap<XViewerColumn, Long>();
+   private final Map<Object, Image> objectToImage = new HashMap<Object, Image>(500);
+   private static Image transactionImage = null;
 
    public XHistoryLabelProvider(HistoryXViewer historyXViewer) {
       super(historyXViewer);
@@ -47,11 +52,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
       try {
          if (element instanceof Change) {
             Change data = (Change) element;
-            TransactionRecord endTx = TransactionManager.getTransaction(data.getTxDelta().getEndTx());
-
-            if (cCol.equals(HistoryXViewerFactory.transaction)) {
-               toReturn = String.valueOf(endTx.getId());
-            } else if (cCol.equals(HistoryXViewerFactory.gamma)) {
+            if (cCol.equals(HistoryXViewerFactory.gamma)) {
                toReturn = String.valueOf(data.getGamma());
             } else if (cCol.equals(HistoryXViewerFactory.itemType)) {
                if (data instanceof ArtifactChange && data.getChangeArtifact() == null) {
@@ -69,12 +70,6 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
                toReturn = data.getWasValue();
             } else if (cCol.equals(HistoryXViewerFactory.is)) {
                toReturn = data.getIsValue();
-            } else if (cCol.equals(HistoryXViewerFactory.timeStamp)) {
-               toReturn = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a").format(endTx.getTimeStamp());
-            } else if (cCol.equals(HistoryXViewerFactory.author)) {
-               toReturn = UserManager.getSafeUserNameById(endTx.getAuthor());
-            } else if (cCol.equals(HistoryXViewerFactory.comment)) {
-               toReturn = endTx.getComment();
             } else {
                toReturn = "unhandled column";
             }
@@ -95,8 +90,11 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
          return "";
       }
       Change data = (Change) element;
-      if (xCol.equals(HistoryXViewerFactory.timeStamp)) {
-         return TransactionManager.getTransaction(data.getTxDelta().getEndTx()).getTimeStamp();
+      if (xCol.getId().equals(HistoryTransactionDateColumn.ID)) {
+         Date date =
+            ((HistoryXViewerFactory) ((HistoryXViewer) xCol.getXViewer()).getXViewerFactory()).getHistoryTransactionDateColumn().getTransactionDate(
+               data.getTxDelta().getEndTx().getId());
+         return date;
       }
       return super.getBackingData(element, xCol, columnIndex);
    }
@@ -127,21 +125,23 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
+      Image result = null;
       try {
-         if (!(element instanceof Change)) {
-            return null;
+         if (element instanceof Change) {
+            if (xCol.getId().equals(HistoryTransactionIdColumn.ID)) {
+               if (transactionImage == null) {
+                  transactionImage = ImageManager.getImage(FrameworkImage.DB_ICON_BLUE);
+               }
+               result = transactionImage;
+            } else if (xCol.equals(HistoryXViewerFactory.itemType)) {
+               result = objectToImage.get(element);
+               objectToImage.put(element, result);
+            }
          }
-         Change change = (Change) element;
-         if (xCol.equals(HistoryXViewerFactory.transaction)) {
-            return ImageManager.getImage(FrameworkImage.DB_ICON_BLUE);
-         } else if (xCol.equals(HistoryXViewerFactory.itemType)) {
-            return ArtifactImageManager.getChangeTypeImage(change);
-         }
-
       } catch (Exception ex) {
          // do nothing
       }
-      return null;
+      return result;
    }
 
    @Override
@@ -149,7 +149,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
       if (historyXViewer.isSortByTransaction()) {
          Change change = (Change) element;
          long transactionId = change.getTxDelta().getEndTx().getId();
-         if (historyXViewer.getXHisotryViewer().isShaded(transactionId)) {
+         if (historyXViewer.getXHistoryViewer().isShaded(transactionId)) {
             return getLightGreyColor();
          }
       }
@@ -161,6 +161,13 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
          lightGreyColor = Displays.getColor(234, 234, 234);
       }
       return lightGreyColor;
+   }
+
+   public void calculateImages(Collection<Change> changes) {
+      for (Change change : changes) {
+         Image result = ArtifactImageManager.getChangeTypeImage(change);
+         objectToImage.put(change, result);
+      }
    }
 
 }

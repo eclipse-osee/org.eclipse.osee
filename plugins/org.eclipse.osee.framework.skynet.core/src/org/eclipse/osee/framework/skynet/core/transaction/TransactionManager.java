@@ -16,7 +16,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -47,6 +49,9 @@ public final class TransactionManager {
 
    private static final String SELECT_TRANSACTIONS =
       "SELECT * FROM osee_tx_details WHERE branch_id = ? ORDER BY transaction_id DESC";
+
+   private static final String SELECT_TRANSACTIONS_BY_IDS =
+      "SELECT * FROM osee_tx_details WHERE transaction_id in (%s)";
 
    private static final String SELECT_COMMIT_TRANSACTIONS = "SELECT * FROM osee_tx_details WHERE commit_art_id = ?";
 
@@ -203,5 +208,21 @@ public final class TransactionManager {
       return jdbcClient.fetchOrException(
          () -> new TransactionDoesNotExist("A transaction with id %d was not found.", txId),
          stmt -> loadTransaction(stmt), TX_GET_TRANSACTION_BY_ID, txId);
+   }
+
+   public static Collection<TransactionRecord> getTransactions(Set<Long> ids) {
+      List<TransactionRecord> transactions = new LinkedList<TransactionRecord>();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
+      try {
+         String query = String.format(SELECT_TRANSACTIONS_BY_IDS,
+            org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", ids));
+         chStmt.runPreparedQuery(query);
+         while (chStmt.next()) {
+            transactions.add(loadTransaction(chStmt));
+         }
+      } finally {
+         chStmt.close();
+      }
+      return transactions;
    }
 }
