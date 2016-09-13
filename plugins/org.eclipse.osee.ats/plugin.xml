@@ -227,6 +227,10 @@
             id="org.eclipse.osee.framework.ui.skynet.atsworkdef.command"
             name="ATS Work Definition Editor">
       </command>
+      <command
+            id="osee.ats.actions.OpenArtifactExplorer"
+            name="Open Artifact Explorer">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.commandImages">
@@ -320,6 +324,10 @@
             commandId="org.eclipse.osee.ats.actions.OpenReviewPerspective"
             class="org.eclipse.osee.ats.actions.OpenReviewPerspectiveHandler">  
       </handler>
+      <handler
+            commandId="osee.ats.actions.OpenArtifactExplorer"
+            class="org.eclipse.osee.ats.actions.OpenArtifactExplorerHandler">  
+      </handler>
    </extension>
    <extension point="org.eclipse.ui.commandImages">
      <image commandId="org.eclipse.osee.ats.actions.OpenAtsPerspective" icon="images/action.gif"> </image>
@@ -343,6 +351,19 @@
             </command>
          </menu>
       </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+         <toolbar
+               id="osee.ats.toolbar">
+            <command
+                  commandId="osee.ats.actions.OpenArtifactExplorer"
+                  icon="images/artifact_explorer.gif"
+                  id="osee.ats.actions.OpenArtifactExplorer"
+                  style="push">
+            </command>
+         </toolbar>
+      </menuContribution>
+      
    </extension>
    
    
@@ -441,4 +462,5 @@
             name="ATS">
       </page>
    </extension>
+   
 </plugin>
