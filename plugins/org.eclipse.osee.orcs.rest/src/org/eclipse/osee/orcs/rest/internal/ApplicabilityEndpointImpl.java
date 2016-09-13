@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -50,8 +51,12 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
       ArtifactId config1 = tx.createArtifact(CoreArtifactTypes.BranchView, "PL Config 1");
       ArtifactId config2 = tx.createArtifact(CoreArtifactTypes.BranchView, "PL Config 2");
+      ArtifactId folder = tx.createArtifact(CoreArtifactTypes.Folder, "Product Line");
 
       orcsApi.getKeyValueOps().putByKey(BASE.getId(), BASE.getName());
+
+      tx.addChildren(CoreArtifactTokens.DefaultHierarchyRoot, folder);
+      tx.addChildren(folder, config1, config2);
 
       tx.addTuple2(CoreTupleTypes.ViewApplicability, config1, "Base");
       tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "Base");
