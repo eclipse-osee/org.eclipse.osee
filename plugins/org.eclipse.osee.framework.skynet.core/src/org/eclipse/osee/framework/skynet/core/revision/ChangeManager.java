@@ -66,6 +66,10 @@ public final class ChangeManager {
       return revsionChangeLoader.getChangesPerArtifact(artifact, monitor);
    }
 
+   public static Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor, LoadChangeType... loadChangeTypes) throws OseeCoreException {
+      return revsionChangeLoader.getChangesPerArtifact(artifact, monitor, loadChangeTypes);
+   }
+
    /**
     * Acquires artifact, relation and attribute changes from a source branch since its creation.
     */
