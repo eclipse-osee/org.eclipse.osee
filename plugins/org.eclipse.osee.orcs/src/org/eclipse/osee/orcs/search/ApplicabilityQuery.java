@@ -15,6 +15,8 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Ryan D. Brooks
@@ -28,4 +30,6 @@ public interface ApplicabilityQuery {
    HashMap<Long, ApplicabilityToken> getApplicabilityTokens(BranchId branch1, BranchId branch2);
 
    HashMap<Long, ApplicabilityToken> getApplicabilityTokens(BranchId branch);
+
+   List<FeatureDefinitionData> getFeatureDefinitionData(List<ArtifactReadable> featureDefinitionArts);
 }

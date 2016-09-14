@@ -11,13 +11,19 @@
 package org.eclipse.osee.orcs.core.internal.search;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.BiConsumer;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;
 import org.eclipse.osee.orcs.search.TupleQuery;
 
@@ -73,5 +79,24 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       tupleQuery.getTuple2UniqueE2Pair(CoreTupleTypes.ViewApplicability, branch1, consumer);
       tupleQuery.getTuple2UniqueE2Pair(CoreTupleTypes.ViewApplicability, branch2, consumer);
       return tokens;
+   }
+
+   @Override
+   public List<FeatureDefinitionData> getFeatureDefinitionData(List<ArtifactReadable> featureDefinitionArts) {
+      List<FeatureDefinitionData> featureDefinition = new ArrayList<>();
+
+      for (ArtifactReadable art : featureDefinitionArts) {
+         String json = art.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
+
+         ObjectMapper mapper = new ObjectMapper();
+         try {
+            FeatureDefinitionData[] readValue = mapper.readValue(json, FeatureDefinitionData[].class);
+            featureDefinition.addAll(Arrays.asList(readValue));
+         } catch (Exception e) {
+            throw new OseeCoreException(e,
+               String.format("Invalid JSON in general string data attribute on artifactId [%s]", art.getId()));
+         }
+      }
+      return featureDefinition;
    }
 }

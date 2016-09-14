@@ -18,11 +18,13 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -85,6 +87,13 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    @Override
    public ApplicabilityToken getApplicabilityToken(ArtifactId artId) {
       return orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(artId, branch);
+   }
+
+   @Override
+   public List<FeatureDefinitionData> getFeatureDefinitionData() {
+      List<ArtifactReadable> featureDefinitionArts = orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(
+         CoreArtifactTypes.FeatureDefinition).getResults().getList();
+      return orcsApi.getQueryFactory().applicabilityQuery().getFeatureDefinitionData(featureDefinitionArts);
    }
 
    @Override

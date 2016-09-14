@@ -23,6 +23,7 @@ import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
 
 /**
  * @author Donald G. Dunne
@@ -33,6 +34,11 @@ public interface ApplicabilityEndpoint {
    @GET
    @Produces({MediaType.APPLICATION_JSON})
    List<ApplicabilityToken> getApplicabilityTokens();
+
+   @GET
+   @Path("feature/data")
+   @Produces({MediaType.APPLICATION_JSON})
+   List<FeatureDefinitionData> getFeatureDefinitionData();
 
    @PUT
    @Path("{applicId}")

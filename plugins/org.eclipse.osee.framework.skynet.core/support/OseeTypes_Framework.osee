@@ -19,6 +19,10 @@ artifactType "Branch View" extends "Artifact" {
 	uuid 0x512C19B4108793E2
 }
 
+artifactType "Feature Definition" extends "General Data" {
+	uuid 0x512C19B7102793A2
+}
+
 artifactType "Osee Type Enum" extends "Enumerated Artifact" {
 	uuid 0x4B9A7DCF0856C368
 	attribute "Id Value"
