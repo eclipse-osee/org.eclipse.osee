@@ -76,14 +76,14 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       tx.addTuple2(CoreTupleTypes.ViewApplicability, config1, "A = Included");
       tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "A = Excluded");
 
-      tx.addTuple2(CoreTupleTypes.ViewApplicability, config1, "B = Choice 1");
-      tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "B = Choice 2");
-      tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "B = Choice 3");
+      tx.addTuple2(CoreTupleTypes.ViewApplicability, config1, "B = Choice1");
+      tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "B = Choice2");
+      tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "B = Choice3");
 
       tx.addTuple2(CoreTupleTypes.ViewApplicability, config1, "C = Included");
       tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "C = Excluded");
 
-      String featureDefJson = "[{" + "\"name\": \"A\"," + //
+      String featureDefJson = "{\"FeatureDefinitions\" : [{" + "\"name\": \"A\"," + //
          "\"type\": \"single\"," + //
          "\"values\": [\"Included\", \"Excluded\"]," + //
          "\"defaultValue\": \"Included\"," + //
@@ -91,7 +91,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
          "}, {" + //
          "\"name\": \"B\"," + //
          "\"type\": \"multiple\"," + //
-         "\"values\": [\"Choice 1\", \"Choice 2\", \"Choice 3\"]," + //
+         "\"values\": [\"Choice1\", \"Choice2\", \"Choice3\"]," + //
          "\"defaultValue\": \"\"," + //
          "\"description\": \"Test B\"" + //
          "},{" + //
@@ -101,7 +101,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
          "\"defaultValue\": \"Included\"," + //
          "\"description\": \"Test C\"" + //
          "}" + //
-         "]";
+         "]}";
 
       tx.createAttribute(featureDefinition, CoreAttributeTypes.GeneralStringData, featureDefJson);
 

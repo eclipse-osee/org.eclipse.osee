@@ -160,9 +160,8 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement, String footer) throws OseeCoreException {
       WordMLProducer wordMl = (WordMLProducer) producer;
 
-      String data = null;
       if (attributeType.equals(CoreAttributeTypes.WordTemplateContent)) {
-
+         String data = null;
          LinkType linkType = (LinkType) getOption("linkType");
 
          if (attributeElement.getLabel().length() > 0) {
@@ -180,7 +179,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
          WordTemplateContentData wtcData = new WordTemplateContentData();
          wtcData.setArtId(artifact.getUuid());
-         wtcData.setBranchId(artifact.getBranch());
+         wtcData.setBranch(artifact.getBranch());
          wtcData.setFooter(footer);
          wtcData.setIsEdit(presentationType == PresentationType.SPECIALIZED_EDIT);
          wtcData.setLinkType(linkType != null ? linkType.toString() : null);
@@ -189,7 +188,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          wtcData.setOseeLink(oseeLink);
 
          Pair<String, Set<String>> content = HttpWordUpdateRequest.renderWordTemplateContent(wtcData);
-
          if (content != null) {
             data = content.getFirst();
             WordUiUtil.displayUnknownGuids(artifact, content.getSecond());

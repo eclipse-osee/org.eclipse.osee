@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.define.report.api.ReportConstants;
 import org.eclipse.osee.define.report.api.WordTemplateContentData;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -27,7 +28,13 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class WordTemplateContentRendererHandler {
 
    public static final String PGNUMTYPE_START_1 = "<w:pgNumType [^>]*w:start=\"1\"/>";
-   private final OrcsApi orcsApi;
+   public static final String PL_STYLE =
+      "<w:rPr><w:rStyle w:val=\"ProductLineApplicability\"((?=/>)(/>)|(.*?</w:rStyle>)).*?</w:rPr>";
+   public static final String PL_HIGHLIGHT =
+      "<w:highlight w:val=\"light-gray\"></w:highlight><w:shd w:color=\"auto\" w:fill=\"BFBFBF\" w:val=\"clear\"></w:shd>";
+   public static final String EMPTY_PARAGRAPHS = "<w:r wsp:rsidRPr=\"\\d+\"><w:t></w:t></w:r>";
+   public static final String EXTRA_SPACES = "<w:r><w:t> </w:t></w:r>";
+   private OrcsApi orcsApi;
 
    public WordTemplateContentRendererHandler(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -40,10 +47,10 @@ public class WordTemplateContentRendererHandler {
       }
       ArtifactReadable artifact = null;
       if (txId.equals(TransactionId.SENTINEL)) {
-         artifact = orcsApi.getQueryFactory().fromBranch(wtcData.getBranchId()).andUuid(
+         artifact = orcsApi.getQueryFactory().fromBranch(wtcData.getBranch()).andUuid(
             wtcData.getArtId()).includeDeletedArtifacts().includeDeletedAttributes().getResults().getAtMostOneOrNull();
       } else {
-         artifact = orcsApi.getQueryFactory().fromBranch(wtcData.getBranchId()).fromTransaction(txId).andUuid(
+         artifact = orcsApi.getQueryFactory().fromBranch(wtcData.getBranch()).fromTransaction(txId).andUuid(
             wtcData.getArtId()).includeDeletedArtifacts().includeDeletedAttributes().getResults().getAtMostOneOrNull();
       }
 
@@ -86,6 +93,13 @@ public class WordTemplateContentRendererHandler {
                   temp = temp.replaceAll("<w:p wsp:rsidR=\".*?\" wsp:rsidRDefault=\".*?\"></w:p>", "");
                   data = data.substring(0, lastIndex) + temp;
                }
+            }
+
+            if (!wtcData.getIsEdit() && wtcData.getBranch().getViewId().notEqual(ArtifactId.SENTINEL)) {
+               data = data.replaceAll(PL_STYLE, "");
+               data = data.replaceAll(PL_HIGHLIGHT, "");
+               data = WordMLApplicabilityHandler.previewValidApplicabilityContent(orcsApi, data, wtcData.getBranch());
+               data = data.replaceAll(EMPTY_PARAGRAPHS, "");
             }
 
             data = data.concat(wtcData.getFooter());

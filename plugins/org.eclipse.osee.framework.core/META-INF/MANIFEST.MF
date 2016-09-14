@@ -6,7 +6,9 @@ Bundle-Version: 0.25.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.core.internal.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.apache.commons.httpclient,
+Import-Package: org.antlr.runtime;
+ org.antlr.runtime.tree;
+ org.apache.commons.httpclient,
  org.apache.commons.httpclient.methods,
  org.apache.commons.httpclient.params,
  org.codehaus.jackson,
@@ -30,6 +32,7 @@ Export-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.event,
  org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.grammar,
  org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.core.ops,
  org.eclipse.osee.framework.core.sql,

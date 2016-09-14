@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 public class WordTemplateContentData {
 
    private Long artId;
-   private BranchId branchId;
+   private BranchId branch;
    private String footer;
    private boolean isEdit;
    private String linkType;
@@ -37,12 +37,12 @@ public class WordTemplateContentData {
       this.artId = artId;
    }
 
-   public BranchId getBranchId() {
-      return branchId;
+   public BranchId getBranch() {
+      return branch;
    }
 
-   public void setBranchId(BranchId branchId) {
-      this.branchId = branchId;
+   public void setBranch(BranchId branch) {
+      this.branch = branch;
    }
 
    public String getFooter() {
