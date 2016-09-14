@@ -201,12 +201,9 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       } else if (widget.getLabel().equals(InsertionActivitySearchWidget.INSERTION_ACTIVITY)) {
          getInsertionActivity().setup(widget);
          getInsertionActivity().setInsertionWidget(getInsertion());
-         getInsertionActivity().setProgramWidget(getProgram());
       } else if (widget.getLabel().equals(WorkPackageSearchWidget.WORK_PACKAGE)) {
          getWorkPackage().setup(widget);
          getWorkPackage().setInsertionActivityWidget(getInsertionActivity());
-         getWorkPackage().setInsertionWidget(getInsertion());
-         getWorkPackage().setProgramWidget(getProgram());
       } else if (widget.getLabel().equals(ColorTeamSearchWidget.COLOR_TEAM)) {
          getColorTeam().setup(widget);
       } else if (widget.getLabel().equals(UserSearchWidget.USER)) {

@@ -37,7 +37,7 @@ public class AtsWorldEditorItem extends AtsWorldEditorItemBase {
    public List<AtsSearchWorkflowSearchItem> getSearchWorkflowSearchItems() {
       return Arrays.asList(new AtsSearchWorkflowSearchItem(), new AtsSearchTeamWorkflowSearchItem(),
          new AtsSearchTaskSearchItem(), new AtsSearchReviewSearchItem(), new AtsSearchGoalSearchItem(),
-         new AtsSearchWorkPackageSearchItem());
+         new AtsSearchWorkPackageSearchItem(), new AtsSearchWorkPackageSearchItem());
    }
 
 }

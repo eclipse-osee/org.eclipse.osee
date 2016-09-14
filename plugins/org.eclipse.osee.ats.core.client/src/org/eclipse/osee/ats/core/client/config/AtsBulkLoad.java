@@ -89,7 +89,6 @@ public class AtsBulkLoad {
             AtsRelationTypes.ActionToWorkflow_WorkFlow));
       }
       arts.addAll(artifacts);
-      System.err.println("bulk loaded " + arts.size());
       return arts;
    }
 }

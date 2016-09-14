@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.world.search.AtsSearchGoalSearchItem;
 import org.eclipse.osee.ats.world.search.AtsSearchReviewSearchItem;
 import org.eclipse.osee.ats.world.search.AtsSearchTaskSearchItem;
 import org.eclipse.osee.ats.world.search.AtsSearchTeamWorkflowSearchItem;
+import org.eclipse.osee.ats.world.search.AtsSearchWorkPackageSearchItem;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.ui.IElementFactory;
@@ -78,6 +79,11 @@ public class WorldEditorInputFactory implements IElementFactory {
                }
                if (AtsSearchReviewSearchItem.NAMESPACE.equals(namespace)) {
                   AtsSearchReviewSearchItem searchItem = new AtsSearchReviewSearchItem();
+                  searchItem.setRestoreUuid(atsSearchUuid);
+                  return new WorldEditorInput(new WorldEditorParameterSearchItemProvider(searchItem, null));
+               }
+               if (AtsSearchWorkPackageSearchItem.NAMESPACE.equals(namespace)) {
+                  AtsSearchWorkPackageSearchItem searchItem = new AtsSearchWorkPackageSearchItem();
                   searchItem.setRestoreUuid(atsSearchUuid);
                   return new WorldEditorInput(new WorldEditorParameterSearchItemProvider(searchItem, null));
                }
