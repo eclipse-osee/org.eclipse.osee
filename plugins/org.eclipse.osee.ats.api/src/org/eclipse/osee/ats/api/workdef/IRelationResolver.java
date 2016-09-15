@@ -11,11 +11,11 @@
 package org.eclipse.osee.ats.api.workdef;
 
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 
@@ -25,6 +25,8 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 public interface IRelationResolver {
 
    Collection<ArtifactToken> getRelated(ArtifactId artifact, IRelationTypeSide relationType);
+
+   Collection<ArtifactToken> getRelated(ArtifactId artifact, IRelationTypeSide relationType, IArtifactType artifactType);
 
    <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, IRelationTypeSide relationType, Class<T> clazz);
 
@@ -42,10 +44,12 @@ public interface IRelationResolver {
 
    int getRelatedCount(IAtsWorkItem workItem, IRelationTypeSide relationType);
 
-   List<ArtifactToken> getRelatedArtifacts(IAtsWorkItem workItem, IRelationTypeSide relationTypeSide);
+   Collection<ArtifactToken> getRelatedArtifacts(IAtsWorkItem workItem, IRelationTypeSide relationTypeSide);
 
    Collection<ArtifactToken> getRelated(IAtsObject atsObject, IRelationTypeSide relationTypeSide);
 
    Collection<ArtifactToken> getRelatedArtifacts(ArtifactId artifact, IRelationTypeSide relationTypeSide);
+
+   Collection<ArtifactToken> getChildren(ArtifactId artifact, IArtifactType artifactType);
 
 }

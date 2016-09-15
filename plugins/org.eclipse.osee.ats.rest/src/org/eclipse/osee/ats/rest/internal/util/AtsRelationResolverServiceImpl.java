@@ -12,24 +12,25 @@ package org.eclipse.osee.ats.rest.internal.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.workdef.IRelationResolver;
+import org.eclipse.osee.ats.core.util.AbstractRelationResolverServiceImpl;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsRelationResolverServiceImpl implements IRelationResolver {
+public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServiceImpl {
 
    private final IAtsServer atsServer;
 
@@ -138,7 +139,8 @@ public class AtsRelationResolverServiceImpl implements IRelationResolver {
       return result;
    }
 
-   private ArtifactReadable getArtifact(Object object) {
+   @Override
+   public ArtifactReadable getArtifact(Object object) {
       ArtifactReadable useArt = null;
       if (object instanceof ArtifactReadable) {
          useArt = (ArtifactReadable) object;
@@ -171,14 +173,21 @@ public class AtsRelationResolverServiceImpl implements IRelationResolver {
    }
 
    @Override
-   public List<ArtifactToken> getRelatedArtifacts(IAtsWorkItem workItem, IRelationTypeSide relationTypeSide) {
+   public Collection<ArtifactToken> getRelatedArtifacts(IAtsWorkItem workItem, IRelationTypeSide relationTypeSide) {
       ArtifactReadable artifact = getArtifact(workItem);
-      return Collections.castAll(getRelated(artifact, relationTypeSide));
+      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(getRelated(artifact, relationTypeSide));
    }
 
    @Override
-   public Collection<ArtifactToken> getRelated(IAtsObject atsObject, IRelationTypeSide relationTypeSide) {
-      return getRelated(atsObject.getStoreObject(), relationTypeSide);
+   public Collection<ArtifactToken> getRelated(ArtifactId artifact, IRelationTypeSide relationType, IArtifactType artifactType) {
+      List<ArtifactToken> results = new LinkedList<>();
+      ArtifactReadable art = getArtifact(artifact);
+      for (ArtifactToken related : art.getRelated(relationType)) {
+         if (((ArtifactReadable) related).isOfType(artifactType)) {
+            results.add(related);
+         }
+      }
+      return results;
    }
 
    @Override
