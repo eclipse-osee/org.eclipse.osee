@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;
 import org.eclipse.osee.orcs.search.TupleQuery;
 
@@ -101,5 +102,22 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
          }
       }
       return featureDefinition;
+   }
+
+   @Override
+   public HashCollection<String, String> getBranchViewFeatureValues(ArtifactId artId, BranchId branch) {
+      HashCollection<String, String> toReturn = new HashCollection<>();
+      List<ApplicabilityToken> result = new ArrayList<>();
+      BiConsumer<Long, String> consumer = (id, name) -> result.add(new ApplicabilityToken(id, name));
+      tupleQuery.getTuple2KeyValuePair(CoreTupleTypes.ViewApplicability, artId, branch, consumer);
+
+      for (ApplicabilityToken app : result) {
+         if (!app.getName().equals("Base")) {
+            String[] nameValue = app.getName().split("=");
+            toReturn.put(nameValue[0].trim(), nameValue[1].trim());
+         }
+      }
+
+      return toReturn;
    }
 }

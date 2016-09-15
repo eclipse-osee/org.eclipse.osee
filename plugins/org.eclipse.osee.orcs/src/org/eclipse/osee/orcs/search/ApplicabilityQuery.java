@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 
 /**
  * @author Ryan D. Brooks
@@ -32,4 +33,6 @@ public interface ApplicabilityQuery {
    HashMap<Long, ApplicabilityToken> getApplicabilityTokens(BranchId branch);
 
    List<FeatureDefinitionData> getFeatureDefinitionData(List<ArtifactReadable> featureDefinitionArts);
+
+   HashCollection<String, String> getBranchViewFeatureValues(ArtifactId artId, BranchId branch);
 }

@@ -37,6 +37,9 @@ public class TupleQueryImpl implements TupleQuery {
    private static final String SELECT_E2_BY_TUPLE_TYPE =
       "select distinct e2, value from osee_txs txs, osee_tuple2 app, osee_key_value where tuple_type = ? and app.gamma_id = txs.gamma_id and branch_id = ? and tx_current = 1 and e2 = key";
 
+   private static final String SELECT_KEY_VALUE_FROM_BRANCH_VIEW =
+      "SELECT distinct e2, value from osee_tuple2 app, osee_txs txs1, osee_key_value where app.e1 = ? and tuple_type = ? and app.gamma_id = txs1.gamma_id and txs1.branch_id = ? AND txs1.tx_current = 1 and app.e2 = key";
+
    private static final String SELECT_TUPLE3_E1_BY_TUPLE_TYPE =
       "select distinct e1, value from osee_txs txs, osee_tuple3 app, osee_key_value where tuple_type = ? and app.gamma_id = txs.gamma_id and branch_id = ? and tx_current = 1 and e1 = key";
 
@@ -82,6 +85,11 @@ public class TupleQueryImpl implements TupleQuery {
    @Override
    public <E1, E2> void getTuple2NamedId(Tuple2Type<E1, E2> tupleType, BranchId branchId, E1 e1, BiConsumer<Long, String> consumer) {
       runQuery(consumer, SELECT_E2_FROM_E1, "e2", tupleType, e1, branchId);
+   }
+
+   @Override
+   public <E1, E2> void getTuple2KeyValuePair(Tuple2Type<E1, E2> tupleType, ArtifactId artId, BranchId branchId, BiConsumer<Long, String> consumer) {
+      runQuery(consumer, SELECT_KEY_VALUE_FROM_BRANCH_VIEW, "e2", artId, tupleType, branchId);
    }
 
    @Override

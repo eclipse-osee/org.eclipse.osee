@@ -81,7 +81,7 @@ public class OrcsScriptTest {
             "  'results' : [ {\n" + //
             "    'branches' : [ {\n" + //
             "      'archived' : 'UNARCHIVED',\n" + //
-            "      'assoc-id' : -1,\n" + //
+            "      'assoc-id' : 11,\n" + //
             "      'baseline-tx-id' : 4,\n" + //
             "      'id' : 570,\n" + //
             "      'inherits-access-control' : 0,\n" + //
@@ -109,7 +109,7 @@ public class OrcsScriptTest {
             "    }, {\n" + //
             "      'name' : 'Common'\n" + //
             "    }, {\n" + //
-            "      'name' : 'ATS9 - SAW (uncommitted) More Reqt Changes for...'\n" + //
+            "      'name' : 'ATS6 - SAW (uncommitted) More Reqt Changes for...'\n" + //
             "    }, {\n" + //
             "      'name' : 'ATS20 - SAW (uncommitted-conflicted) More Requi...'\n" + //
             "    } ]\n" + //
@@ -171,19 +171,19 @@ public class OrcsScriptTest {
             "        }\n" + //
             "      }\n" + //
             "    }, {\n" + //
-            "      'id' : 545949432,\n" + //
-            "      'attributes' : {\n" + //
-            "        'Name' : {\n" + //
-            "          'value' : 'Sprints'\n" + //
-            "        }\n" + //
-            "      }\n" + //
-            "    }, {\n" + //
-            "      'id' : 849027577,\n" + //
+            "      'id' : 407107128,\n" + //
             "      'attributes' : {\n" + //
             "        'Name' : {\n" + //
             "          'value' : 'Feature Groups'\n" + //
             "        }\n" + //
-            "      }\n" + //
+            "      }\n " + //
+            "   }, {\n" + //
+               "      'id' : 1691279068,\n" + //
+               "      'attributes' : {\n" + //
+               "        'Name' : {\n" + //
+               "          'value' : 'Sprints'\n" + //
+               "        }\n" + //
+               "      }\n" + //
             "    } ]\n" + //
             "  } ]\n" + //
             "}");

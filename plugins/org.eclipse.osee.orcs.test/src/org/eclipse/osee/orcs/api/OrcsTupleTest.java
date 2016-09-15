@@ -11,12 +11,23 @@
 package org.eclipse.osee.orcs.api;
 
 import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiConsumer;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
+import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.jdbc.JdbcException;
 import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.db.mock.OrcsIntegrationByClassRule;
 import org.eclipse.osee.orcs.db.mock.OseeClassDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
@@ -106,5 +117,20 @@ public class OrcsTupleTest {
 
       gamma_id = transaction.addTuple(createTuple4Type, 244L, 12L, "four", "four2");
       transaction.commit();
+   }
+
+   @Test
+   public void testGetTupleType2() throws OseeCoreException {
+      ResultSet<ArtifactReadable> branchViewArts =
+         orcsApi.getQueryFactory().fromBranch(DemoBranches.SAW_Bld_1.getId()).andTypeEquals(
+            CoreArtifactTypes.BranchView).getResults();
+      List<ApplicabilityToken> result = new ArrayList<>();
+
+      BiConsumer<Long, String> consumer = (id, name) -> result.add(new ApplicabilityToken(id, name));
+      orcsApi.getQueryFactory().tupleQuery().getTuple2KeyValuePair(CoreTupleTypes.ViewApplicability,
+         ArtifactId.valueOf(branchViewArts.getList().get(0).getId()),
+         TokenFactory.createBranch(DemoBranches.SAW_Bld_1.getId()), consumer);
+
+      Assert.assertEquals(5, result.size());
    }
 }

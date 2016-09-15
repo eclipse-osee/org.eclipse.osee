@@ -97,9 +97,9 @@ public class OrcsQueryTest {
    @Test
    public void testAllArtifactsFromBranch() throws OseeCoreException {
       QueryBuilder builder = factory.fromBranch(COMMON_ID);
-      assertEquals(252, builder.getCount());
+      assertEquals(245, builder.getCount());
 
-      assertEquals(252, builder.getResults().size());
+      assertEquals(245, builder.getResults().size());
    }
 
    @Test
@@ -113,7 +113,7 @@ public class OrcsQueryTest {
    public void testAttributeNotExists() {
       QueryBuilder builder = factory.fromBranch(COMMON_ID);
       builder.andNotExists(CoreAttributeTypes.Afha);
-      assertTrue(builder.getCount() >= 252);
+      assertTrue(builder.getCount() >= 245);
    }
 
    @Test
@@ -258,9 +258,9 @@ public class OrcsQueryTest {
       List<IAttributeType> attributeTypes = Arrays.asList(CoreAttributeTypes.ContentUrl, CoreAttributeTypes.Name);
       builder.andNotExists(attributeTypes);
 
-      assertTrue(builder.getCount() >= 252);
+      assertTrue(builder.getCount() >= 245);
       ResultSet<ArtifactReadable> artifacts = builder.getResults();
-      assertTrue(artifacts.size() >= 252);
+      assertTrue(artifacts.size() >= 245);
 
       Collection<String> names = Lib.getNames(artifacts.getList());
 
@@ -410,11 +410,12 @@ public class OrcsQueryTest {
          .followRelation(CoreRelationTypes.Default_Hierarchical__Child);
 
       ResultSet<ArtifactReadable> results = builder.getResults();
-      assertEquals(8, results.size());
+      assertEquals(9, results.size());
 
       Iterator<String> iterator = getNames(results).iterator();
       assertEquals("Hardware Requirements", iterator.next());
       assertEquals("Integration Tests", iterator.next());
+      assertEquals("Product Line", iterator.next());
       assertEquals("SAW Product Decomposition", iterator.next());
       assertEquals("Software Requirements", iterator.next());
       assertEquals("Subsystem Requirements", iterator.next());

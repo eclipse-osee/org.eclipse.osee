@@ -92,10 +92,10 @@ public class OrcsBranchQueryTest {
 
       // list, IOseeBranch, BranchType, BranchState, isArchived, parentId, baseTx, sourceTx, assocArtId
       assertBranch(list, SYSTEM_ROOT, BranchType.SYSTEM_ROOT, MODIFIED, false, BranchId.SENTINEL, ArtifactId.SENTINEL);
-      assertBranch(list, SAW_Bld_1, BASELINE, MODIFIED, false, SYSTEM_ROOT, ArtifactId.SENTINEL);
-      assertBranch(list, CIS_Bld_1, BASELINE, MODIFIED, false, SYSTEM_ROOT, ArtifactId.SENTINEL);
-      assertBranch(list, SAW_Bld_2, BASELINE, MODIFIED, false, SAW_Bld_1, SystemUser.OseeSystem);
-      assertBranch(list, COMMON, BASELINE, MODIFIED, false, SYSTEM_ROOT, ArtifactId.SENTINEL);
+      assertBranch(list, SAW_Bld_1, BASELINE, MODIFIED, false, SYSTEM_ROOT, ArtifactId.valueOf(SystemUser.OseeSystem.getId()));
+      assertBranch(list, CIS_Bld_1, BASELINE, MODIFIED, false, SYSTEM_ROOT, ArtifactId.valueOf(SystemUser.OseeSystem.getId()));
+      assertBranch(list, SAW_Bld_2, BASELINE, MODIFIED, false, SAW_Bld_1, ArtifactId.valueOf(SystemUser.OseeSystem.getId()));
+      assertBranch(list, COMMON, BASELINE, MODIFIED, false, SYSTEM_ROOT, ArtifactId.valueOf(SystemUser.OseeSystem.getId()));
    }
 
    @Test

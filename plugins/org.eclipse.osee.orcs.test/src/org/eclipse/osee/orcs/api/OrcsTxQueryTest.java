@@ -69,8 +69,8 @@ public class OrcsTxQueryTest {
    private final static DateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
    private QueryFactory factory;
    private final ArtifactId JoeSmith = ArtifactId.valueOf(61106791);
-   private final Long CommonBranchHeadTransaction = 117L;
-   private final String CommonBranchTransComment = "Create new Agile Feature Group";
+   private final Long CommonBranchHeadTransaction = 123L;
+   private final String CommonBranchTransComment = "Cleanup PopulateDemoActionsTest";
    private final int NumberCommonTransactions = 77;
 
    @Before
@@ -115,9 +115,9 @@ public class OrcsTxQueryTest {
       TransactionReadable actual = query.getResults().getExactlyOne();
 
       assertEquals(1, query.getCount());
-      assertTx(Arrays.asList(actual), Long.valueOf(26), Baselined, "Branch Creation for SAW_Bld_1", SAW_Bld_1,
+      assertTx(Arrays.asList(actual), Long.valueOf(30), Baselined, "Branch Creation for SAW_Bld_1", SAW_Bld_1,
          OseeSystem);
-      assertEquals(Long.valueOf(26), query.getResultsAsIds().getExactlyOne());
+      assertEquals(Long.valueOf(30), query.getResultsAsIds().getExactlyOne());
    }
 
    @Test
@@ -142,11 +142,15 @@ public class OrcsTxQueryTest {
       assertEquals(8, query.getCount());
 
       List<TransactionReadable> transactions = results.getList();
-      assertTx(transactions, Long.valueOf(1), Baselined, "System Root Branch Creation", SYSTEM_ROOT, OseeSystem);
-      assertTx(transactions, Long.valueOf(4), Baselined, "Branch Creation for Common", COMMON, OseeSystem);
-      assertTx(transactions, Long.valueOf(26), Baselined, "Branch Creation for SAW_Bld_1", SAW_Bld_1, OseeSystem);
-      assertTx(transactions, Long.valueOf(28), Baselined, "Branch Creation for CIS_Bld_1", CIS_Bld_1, OseeSystem);
-      assertTx(transactions, Long.valueOf(66), Baselined, "Branch Creation for SAW_Bld_2", SAW_Bld_2, JoeSmith);
+      assertTx(transactions, Long.valueOf(1), Baselined, "System Root Branch Creation", SYSTEM_ROOT,
+         ArtifactId.valueOf(OseeSystem.getId()));
+      assertTx(transactions, Long.valueOf(4), Baselined, "Branch Creation for Common", COMMON,
+         ArtifactId.valueOf(OseeSystem.getId()));
+      assertTx(transactions, Long.valueOf(30), Baselined, "Branch Creation for SAW_Bld_1", SAW_Bld_1,
+         ArtifactId.valueOf(OseeSystem.getId()));
+      assertTx(transactions, Long.valueOf(33), Baselined, "Branch Creation for CIS_Bld_1", CIS_Bld_1,
+         ArtifactId.valueOf(OseeSystem.getId()));
+      assertTx(transactions, Long.valueOf(71), Baselined, "Branch Creation for SAW_Bld_2", SAW_Bld_2, JoeSmith);
    }
 
    @Test
@@ -159,9 +163,9 @@ public class OrcsTxQueryTest {
       assertEquals(4, query.getCount());
 
       List<TransactionReadable> transactions = results.getList();
-      assertTx(transactions, Long.valueOf(28), Baselined, "Branch Creation for CIS_Bld_1", CIS_Bld_1, OseeSystem);
-      assertTx(transactions, Long.valueOf(66), Baselined, "Branch Creation for SAW_Bld_2", SAW_Bld_2, JoeSmith);
-
+      assertTx(transactions, Long.valueOf(33), Baselined, "Branch Creation for CIS_Bld_1", CIS_Bld_1,
+         ArtifactId.valueOf(OseeSystem.getId()));
+      assertTx(transactions, Long.valueOf(71), Baselined, "Branch Creation for SAW_Bld_2", SAW_Bld_2, JoeSmith);
    }
 
    @Test
@@ -170,19 +174,20 @@ public class OrcsTxQueryTest {
       query.andBranch(SAW_Bld_1, CIS_Bld_1);
 
       ResultSet<TransactionReadable> results = query.getResults();
-      assertEquals(8, results.size());
-      assertEquals(8, query.getCount());
+      assertEquals(9, results.size());
+      assertEquals(9, query.getCount());
 
       List<TransactionReadable> transactions = results.getList();
       //@formatter:off
-      assertTx(transactions, Long.valueOf(26), Baselined,    "Branch Creation for SAW_Bld_1", SAW_Bld_1, OseeSystem);
-      assertTx(transactions, Long.valueOf(27), NonBaselined, "DemoDatabaseConfig", SAW_Bld_1, OseeSystem);
-      assertTx(transactions, Long.valueOf(28), Baselined,    "Branch Creation for CIS_Bld_1", CIS_Bld_1, OseeSystem);
-      assertTx(transactions, Long.valueOf(29), NonBaselined, "DemoDatabaseConfig", CIS_Bld_1,OseeSystem);
-      assertTx(transactions, Long.valueOf(62), NonBaselined, "ArtifactImportOperationFactory: Artifact Import Wizard transaction", SAW_Bld_1, JoeSmith);
-      assertTx(transactions, Long.valueOf(63), NonBaselined, "ArtifactImportOperationFactory: Artifact Import Wizard transaction", SAW_Bld_1, JoeSmith);
-      assertTx(transactions, Long.valueOf(64), NonBaselined, "ArtifactImportOperationFactory: Artifact Import Wizard transaction", SAW_Bld_1, JoeSmith);
-      assertTx(transactions, Long.valueOf(65), NonBaselined, "Populate Demo DB - Create Traceability", SAW_Bld_1, JoeSmith);
+      assertTx(transactions, Long.valueOf(30), Baselined,    "Branch Creation for SAW_Bld_1", SAW_Bld_1, ArtifactId.valueOf(OseeSystem.getId()));
+      assertTx(transactions, Long.valueOf(31), NonBaselined, "DemoDatabaseConfig", SAW_Bld_1, ArtifactId.valueOf(OseeSystem.getId()));
+      assertTx(transactions, Long.valueOf(32), NonBaselined, "Create Demo Applicability", SAW_Bld_1, ArtifactId.valueOf(OseeSystem.getId()));
+      assertTx(transactions, Long.valueOf(33), Baselined,    "Branch Creation for CIS_Bld_1", CIS_Bld_1, ArtifactId.valueOf(OseeSystem.getId()));
+      assertTx(transactions, Long.valueOf(34), NonBaselined, "DemoDatabaseConfig", CIS_Bld_1,ArtifactId.valueOf(OseeSystem.getId()));
+      assertTx(transactions, Long.valueOf(67), NonBaselined, "ArtifactImportOperationFactory: Artifact Import Wizard transaction", SAW_Bld_1, JoeSmith);
+      assertTx(transactions, Long.valueOf(68), NonBaselined, "ArtifactImportOperationFactory: Artifact Import Wizard transaction", SAW_Bld_1, JoeSmith);
+      assertTx(transactions, Long.valueOf(69), NonBaselined, "ArtifactImportOperationFactory: Artifact Import Wizard transaction", SAW_Bld_1, JoeSmith);
+      assertTx(transactions, Long.valueOf(70), NonBaselined, "Populate Demo DB - Create Traceability", SAW_Bld_1, JoeSmith);
       //@formatter:on
 
    }
@@ -251,7 +256,7 @@ public class OrcsTxQueryTest {
       results = query.getResults();
 
       transactions = results.getList();
-      assertEquals(NumberCommonTransactions - 1, results.size());
+      assertEquals(NumberCommonTransactions - 1 + 5, results.size());
    }
 
    @Test
@@ -317,23 +322,23 @@ public class OrcsTxQueryTest {
       TransactionQuery query = factory.transactionQuery();
       query.andAuthorLocalIds(OseeSystem);
       ResultSet<TransactionReadable> results = query.getResults();
-      assertEquals(72, results.size());
-      assertEquals(72, query.getCount());
+      assertEquals(77, results.size());
+      assertEquals(77, query.getCount());
 
       List<TransactionReadable> transactions = results.getList();
-      assertTx(transactions, Long.valueOf(28), Baselined, "Branch Creation for CIS_Bld_1", CIS_Bld_1, OseeSystem);
+      assertTx(transactions, Long.valueOf(33), Baselined, "Branch Creation for CIS_Bld_1", CIS_Bld_1, OseeSystem);
 
       query = factory.transactionQuery();
       query.andAuthorLocalIds(OseeSystem, JoeSmith);
       results = query.getResults();
-      assertEquals(117, results.size());
-      assertEquals(117, query.getCount());
+      assertEquals(123, results.size());
+      assertEquals(123, query.getCount());
 
       transactions = results.getList();
       //@formatter:off
-      assertTx(transactions, Long.valueOf(28), Baselined, "Branch Creation for CIS_Bld_1", CIS_Bld_1, OseeSystem);
-      assertTx(transactions, Long.valueOf(62), NonBaselined, "ArtifactImportOperationFactory: Artifact Import Wizard transaction", SAW_Bld_1, JoeSmith);
-      assertTx(transactions, CommonBranchHeadTransaction, NonBaselined, CommonBranchTransComment, COMMON, OseeSystem);
+      assertTx(transactions, Long.valueOf(33), Baselined, "Branch Creation for CIS_Bld_1", CIS_Bld_1, ArtifactId.valueOf(OseeSystem.getId()));
+      assertTx(transactions, Long.valueOf(67), NonBaselined, "ArtifactImportOperationFactory: Artifact Import Wizard transaction", SAW_Bld_1, JoeSmith);
+      assertTx(transactions, CommonBranchHeadTransaction, NonBaselined, CommonBranchTransComment, COMMON, JoeSmith);
       //@formatter:on
 
       query = factory.transactionQuery();
@@ -342,14 +347,14 @@ public class OrcsTxQueryTest {
       list.add(JoeSmith);
       query.andAuthorLocalIds(list);
       results = query.getResults();
-      assertEquals(117, results.size());
-      assertEquals(117, query.getCount());
+      assertEquals(123, results.size());
+      assertEquals(123, query.getCount());
 
       transactions = results.getList();
       //@formatter:off
-      assertTx(transactions, Long.valueOf(28), Baselined, "Branch Creation for CIS_Bld_1", CIS_Bld_1, OseeSystem);
-      assertTx(transactions, Long.valueOf(62), NonBaselined, "ArtifactImportOperationFactory: Artifact Import Wizard transaction", SAW_Bld_1, JoeSmith);
-      assertTx(transactions, CommonBranchHeadTransaction, NonBaselined, CommonBranchTransComment, COMMON, OseeSystem);
+      assertTx(transactions, Long.valueOf(33), Baselined, "Branch Creation for CIS_Bld_1", CIS_Bld_1, ArtifactId.valueOf(OseeSystem.getId()));
+      assertTx(transactions, Long.valueOf(67), NonBaselined, "ArtifactImportOperationFactory: Artifact Import Wizard transaction", SAW_Bld_1, JoeSmith);
+      assertTx(transactions, CommonBranchHeadTransaction, NonBaselined, CommonBranchTransComment, COMMON, JoeSmith);
       //@formatter:on
 
    }
@@ -359,7 +364,7 @@ public class OrcsTxQueryTest {
       TransactionQuery query = factory.transactionQuery();
       query.andNullCommitId();
       ResultSet<TransactionReadable> results = query.getResults();
-      assertEquals(116, query.getCount());
+      assertEquals(122, query.getCount());
 
       List<TransactionReadable> transactions = results.getList();
       assertTxExists(transactions, Long.valueOf(1));
@@ -413,7 +418,7 @@ public class OrcsTxQueryTest {
       assertEquals(1, results.size());
 
       List<TransactionReadable> transactions = results.getList();
-      assertTx(transactions, CommonBranchHeadTransaction, NonBaselined, CommonBranchTransComment, COMMON, OseeSystem);
+      assertTx(transactions, CommonBranchHeadTransaction, NonBaselined, CommonBranchTransComment, COMMON, JoeSmith);
    }
 
    @Test
@@ -430,14 +435,14 @@ public class OrcsTxQueryTest {
 
       TransactionQuery query = factory.transactionQuery();
       query.andAuthorLocalIds(joeArt);
-      assertEquals(45, query.getCount());
+      assertEquals(46, query.getCount());
 
       /**********************************************************
        * Only valid user is 17. Verify the multiple entry by entering the same user twice
        */
       query = factory.transactionQuery();
       query.andAuthorLocalIds(joeArt, joeArt);
-      assertEquals(45, query.getCount());
+      assertEquals(46, query.getCount());
 
    }
 

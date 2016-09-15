@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -52,6 +53,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
+import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
@@ -69,6 +72,10 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
       // Create SAW_Bld_1 branch
       BranchManager.createTopLevelBranch(SAW_Bld_1);
       populateProgramBranch(SAW_Bld_1);
+
+      ApplicabilityEndpoint applEndpoint =
+         OsgiUtil.getService(getClass(), OseeClient.class).getApplicabilityEndpoint(SAW_Bld_1);
+      applEndpoint.createDemoApplicability();
 
       // Create build one branch for CIS
       BranchManager.createTopLevelBranch(CIS_Bld_1);
@@ -337,7 +344,6 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
 
       sawProduct.persist(getClass().getSimpleName());
       programRoot.persist(getClass().getSimpleName());
-
    }
 
 }
