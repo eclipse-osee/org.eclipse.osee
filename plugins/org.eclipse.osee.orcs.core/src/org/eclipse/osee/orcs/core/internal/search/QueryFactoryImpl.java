@@ -43,10 +43,9 @@ public class QueryFactoryImpl implements QueryFactory {
    private final BranchCallableQueryFactory branchQueryFactory;
    private final TransactionCallableQueryFactory txQueryFactory;
    private final TransactionCriteriaFactory txCriteriaFactory;
-   private final ApplicabilityQuery applicabilityQuery;
    private final TupleQuery tupleQuery;
 
-   public QueryFactoryImpl(OrcsSession context, CriteriaFactory criteriaFctry, CallableQueryFactory queryFctry, BranchCriteriaFactory branchCriteriaFactory, BranchCallableQueryFactory branchQueryFactory, TransactionCallableQueryFactory txQueryFactory, TransactionCriteriaFactory txCriteriaFactory, TupleQuery tupleQuery, ApplicabilityQuery applicabilityQuery) {
+   public QueryFactoryImpl(OrcsSession context, CriteriaFactory criteriaFctry, CallableQueryFactory queryFctry, BranchCriteriaFactory branchCriteriaFactory, BranchCallableQueryFactory branchQueryFactory, TransactionCallableQueryFactory txQueryFactory, TransactionCriteriaFactory txCriteriaFactory, TupleQuery tupleQuery) {
       super();
       this.context = context;
       this.criteriaFctry = criteriaFctry;
@@ -55,7 +54,6 @@ public class QueryFactoryImpl implements QueryFactory {
       this.branchQueryFactory = branchQueryFactory;
       this.txQueryFactory = txQueryFactory;
       this.txCriteriaFactory = txCriteriaFactory;
-      this.applicabilityQuery = applicabilityQuery;
       this.tupleQuery = tupleQuery;
    }
 
@@ -123,6 +121,6 @@ public class QueryFactoryImpl implements QueryFactory {
 
    @Override
    public ApplicabilityQuery applicabilityQuery() {
-      return applicabilityQuery;
+      return new ApplicabilityQueryImpl(tupleQuery);
    }
 }
