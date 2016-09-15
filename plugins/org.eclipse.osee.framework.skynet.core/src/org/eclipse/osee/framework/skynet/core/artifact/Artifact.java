@@ -1306,11 +1306,13 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       List<Artifact> currentOrder = getRelatedArtifacts(relationEnumeration, Artifact.class);
       // target artifact doesn't exist
       if (!currentOrder.contains(targetArtifact)) {
-         // add to end of list if not already in list
-         if (!currentOrder.contains(itemToAdd)) {
-            currentOrder.add(itemToAdd);
-         }
+         throw new OseeStateException("Could not set Relation Order: target not in list");
       }
+      // add to end of list if not already in list
+      if (!currentOrder.contains(itemToAdd)) {
+         currentOrder.add(itemToAdd);
+      }
+
       boolean result = Collections.moveItem(currentOrder, itemToAdd, targetArtifact, insertAfterTarget);
       if (!result) {
          throw new OseeStateException("Could not set Relation Order");

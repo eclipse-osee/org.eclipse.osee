@@ -47,6 +47,7 @@ import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.goal.NewActionToGoalAction;
 import org.eclipse.osee.ats.goal.RemoveFromCollectorAction;
 import org.eclipse.osee.ats.goal.RemoveFromCollectorAction.RemovedFromCollectorHandler;
 import org.eclipse.osee.ats.goal.SetCollectorOrderAction;
@@ -633,6 +634,7 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
    }
 
    Action setCollectorOrderAction, removeFromCollectorAction;
+   private NewActionToGoalAction newActionToGoalAction;
 
    private void createActions() {
       setCollectorOrderAction = new SetCollectorOrderAction(provider, (CollectorArtifact) editor.getAwa(), this);
@@ -648,6 +650,7 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
       };
       removeFromCollectorAction =
          new RemoveFromCollectorAction(provider, (CollectorArtifact) editor.getAwa(), this, handler);
+      newActionToGoalAction = new NewActionToGoalAction(provider, (CollectorArtifact) editor.getAwa(), this);
    }
 
    @Override
@@ -655,6 +658,8 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
       MenuManager mm = worldComposite.getXViewer().getMenuManager();
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, setCollectorOrderAction);
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, removeFromCollectorAction);
+      newActionToGoalAction.refreshText();
+      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, newActionToGoalAction);
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, new Separator());
    }
 

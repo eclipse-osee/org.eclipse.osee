@@ -45,6 +45,7 @@ public class NewActionJob extends Job {
    private final Set<IAtsActionableItem> actionableItems;
    private final NewActionWizard wizard;
    private final INewActionListener newActionListener;
+   private boolean openOnComplete = true;
 
    public NewActionJob(String title, String desc, ChangeType changeType, String priority, Date needByDate, boolean validationRequired, Set<IAtsActionableItem> actionableItems, NewActionWizard wizard, INewActionListener newActionListener) {
       super("Creating New Action");
@@ -82,10 +83,12 @@ public class NewActionJob extends Job {
          }
          changes.execute();
 
-         // Because this is a job, it will automatically kill any popups that are created during.
-         // Thus, if multiple teams were selected to create, don't popup on openAction or dialog
-         // will exception out when it is killed at the end of this job.
-         AtsUtil.openATSAction(actionArt, AtsOpenOption.OpenAll);
+         if (openOnComplete) {
+            // Because this is a job, it will automatically kill any popups that are created during.
+            // Thus, if multiple teams were selected to create, don't popup on openAction or dialog
+            // will exception out when it is killed at the end of this job.
+            AtsUtil.openATSAction(actionArt, AtsOpenOption.OpenAll);
+         }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getMessage(), ex);
@@ -99,6 +102,14 @@ public class NewActionJob extends Job {
 
    public Artifact getActionArt() {
       return actionArt;
+   }
+
+   public boolean isOpenOnComplete() {
+      return openOnComplete;
+   }
+
+   public void setOpenOnComplete(boolean openOnComplete) {
+      this.openOnComplete = openOnComplete;
    }
 
 }

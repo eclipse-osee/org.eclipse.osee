@@ -15,13 +15,11 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.agile.AgileUtilClient;
 import org.eclipse.osee.ats.agile.BacklogXViewerFactory;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -113,8 +111,14 @@ public class GoalMemberProvider extends AbstractMemberProvider {
       return Result.TrueResult;
    }
 
-   private boolean isBacklog() {
+   @Override
+   public boolean isBacklog() {
       return AgileUtilClient.isBacklog(getArtifact());
+   }
+
+   @Override
+   public boolean isSprint() {
+      return false;
    }
 
    @Override

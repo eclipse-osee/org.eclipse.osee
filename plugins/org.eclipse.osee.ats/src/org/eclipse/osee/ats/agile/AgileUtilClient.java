@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.agile;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -38,6 +39,10 @@ public class AgileUtilClient {
 
    public static boolean isBacklog(Artifact backlogArt) {
       return backlogArt.getRelatedArtifactsCount(AtsRelationTypes.AgileTeamToBacklog_AgileTeam) == 1;
+   }
+
+   public static boolean isSprint(Artifact artifact) {
+      return artifact.isOfType(AtsArtifactTypes.AgileSprint);
    }
 
    public static Collection<Artifact> getRelatedSprints(Artifact awa) {

@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.editor;
 import java.util.List;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -51,5 +50,9 @@ public interface IMemberProvider {
    void deCacheArtifact();
 
    void deCacheAndReload(boolean pend, IJobChangeListener listener);
+
+   boolean isBacklog();
+
+   boolean isSprint();
 
 }

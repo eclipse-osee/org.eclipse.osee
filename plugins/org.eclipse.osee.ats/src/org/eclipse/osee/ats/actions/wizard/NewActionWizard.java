@@ -46,6 +46,7 @@ public class NewActionWizard extends Wizard implements INewWizard {
    private String initialDescription;
    private NewActionJob job = null;
    private INewActionListener newActionListener;
+   private boolean openOnComplete = true;;
 
    @Override
    public boolean performFinish() {
@@ -58,6 +59,7 @@ public class NewActionWizard extends Wizard implements INewWizard {
          job = new NewActionJob(getTitle(), getDescription(), getChangeType(), getPriority(), getNeedBy(),
             getValidation(), getSelectedIAtsActionableItems(), this, newActionListener);
          job.setUser(true);
+         job.setOpenOnComplete(openOnComplete);
          job.setPriority(Job.LONG);
          job.schedule();
       } catch (OseeCoreException ex) {
@@ -168,6 +170,10 @@ public class NewActionWizard extends Wizard implements INewWizard {
 
    public void setNewActionListener(INewActionListener newActionListener) {
       this.newActionListener = newActionListener;
+   }
+
+   public void setOpenOnComplete(boolean openOnComplete) {
+      this.openOnComplete = openOnComplete;
    }
 
 }

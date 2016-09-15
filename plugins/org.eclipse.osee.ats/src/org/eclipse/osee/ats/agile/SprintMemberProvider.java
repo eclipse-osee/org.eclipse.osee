@@ -117,4 +117,14 @@ public class SprintMemberProvider extends AbstractMemberProvider {
       AtsClientService.get().getSprintItemsCache().decache(getArtifact());
    }
 
+   @Override
+   public boolean isBacklog() {
+      return false;
+   }
+
+   @Override
+   public boolean isSprint() {
+      return true;
+   }
+
 }
