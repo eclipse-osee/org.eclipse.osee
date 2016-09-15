@@ -144,7 +144,7 @@ public interface BranchEndpoint {
    Response deleteBranchExchange(@QueryParam("path") String path);
 
    @PUT
-   @Path("{branch-uuid}/name")
+   @Path("{branch}/name")
    Response setBranchName(@PathParam("branch") BranchId branch, String newName);
 
    @PUT
@@ -160,8 +160,8 @@ public interface BranchEndpoint {
    Response associateBranchToArtifact(@PathParam("branch") BranchId branch, @PathParam("art-id") ArtifactId artifact);
 
    @PUT
-   @Path("{branch}/txs/{tx-id}/comment/{tx-comment}")
-   Response setTxComment(@PathParam("branch") BranchId branch, @PathParam("tx-id") int txId, @PathParam("tx-comment") String comment);
+   @Path("{branch}/txs/{tx-id}/comment")
+   Response setTxComment(@PathParam("branchd") BranchId branch, @PathParam("tx-id") int txId, String comment);
 
    @DELETE
    @Path("{branch}")
@@ -186,6 +186,6 @@ public interface BranchEndpoint {
    Response purgeTxs(@PathParam("branch") BranchId branch, @PathParam("tx-ids") String txIds);
 
    @PUT
-   @Path("log/{comment}")
-   Response logBranchActivity(@PathParam("comment") String comment);
+   @Path("log")
+   Response logBranchActivity(String comment);
 }

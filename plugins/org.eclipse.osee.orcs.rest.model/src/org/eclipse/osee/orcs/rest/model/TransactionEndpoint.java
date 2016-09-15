@@ -43,8 +43,8 @@ public interface TransactionEndpoint {
    CompareResults compareTxs(@PathParam("tx-id1") TransactionId txId1, @PathParam("tx-id2") TransactionId txId2);
 
    @PUT
-   @Path("{tx-id}/comment/{tx-comment}")
-   Response setTxComment(@PathParam("tx-id") TransactionId txId, @PathParam("tx-comment") String comment);
+   @Path("{tx-id}/comment")
+   Response setTxComment(@PathParam("tx-id") TransactionId txId, String comment);
 
    @DELETE
    @Path("{tx-ids}")
@@ -54,6 +54,6 @@ public interface TransactionEndpoint {
    Response purgeUnusedBackingDataAndTransactions();
 
    @PUT
-   @Path("{user}/branch/{branch-id}/transaction/{tx-id}/artifact/{art-id}/comment/{comment}")
-   Response replaceWithBaselineTxVersion(@PathParam("user") String userId, @PathParam("branch-id") Long branchId, @PathParam("tx-id") TransactionId txId, @PathParam("art-id") int artId, @PathParam("comment") String comment);
+   @Path("{user}/branch/{branch-id}/transaction/{tx-id}/artifact/{art-id}/comment")
+   Response replaceWithBaselineTxVersion(@PathParam("user") String userId, @PathParam("branch-id") Long branchId, @PathParam("tx-id") TransactionId txId, @PathParam("art-id") int artId, String comment);
 }
