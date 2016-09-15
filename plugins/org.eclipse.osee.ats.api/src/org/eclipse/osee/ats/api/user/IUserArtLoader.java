@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.user;
 
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IUserArtLoader {
 
-   public ArtifactId loadUser(IAtsUser user);
+   public ArtifactToken loadUser(IAtsUser user);
 
 }

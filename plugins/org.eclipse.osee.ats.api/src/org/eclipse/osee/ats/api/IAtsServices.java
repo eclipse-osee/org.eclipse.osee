@@ -89,7 +89,7 @@ public interface IAtsServices extends IAtsConfigurationProvider, IWorkDefinition
 
    IAtsWorkItemFactory getWorkItemFactory();
 
-   ArtifactId getArtifactById(String id);
+   ArtifactToken getArtifactById(String id);
 
    IAtsConfigItemFactory getConfigItemFactory();
 

@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageType;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -31,10 +31,10 @@ import org.eclipse.osee.logger.Log;
  */
 public class WorkPackage extends AtsConfigObject implements IAtsWorkPackage {
 
-   private ArtifactId artifact;
+   private ArtifactToken artifact;
    private final IAtsServices services;
 
-   public WorkPackage(Log logger, ArtifactId artifact, IAtsServices services) {
+   public WorkPackage(Log logger, ArtifactToken artifact, IAtsServices services) {
       super(logger, services, artifact);
       this.artifact = artifact;
       this.services = services;
@@ -163,12 +163,12 @@ public class WorkPackage extends AtsConfigObject implements IAtsWorkPackage {
    }
 
    @Override
-   public ArtifactId getStoreObject() {
+   public ArtifactToken getStoreObject() {
       return artifact;
    }
 
    @Override
-   public void setStoreObject(ArtifactId artifact) {
+   public void setStoreObject(ArtifactToken artifact) {
       this.artifact = artifact;
    }
 
@@ -179,7 +179,6 @@ public class WorkPackage extends AtsConfigObject implements IAtsWorkPackage {
 
    @Override
    public String getTypeName() {
-      return services.getStoreService().getTypeName(artifact);
+      return artifact.getArtifactType().getName();
    }
-
 }

@@ -119,8 +119,8 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
                configs.getAtsConfigIds().add(configArtId.getId());
             }
             // load work definitions
-            for (ArtifactId workDefArt : orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
-               AtsArtifactTypes.WorkDefinition).getResults()) {
+            for (ArtifactToken workDefArt : orcsApi.getQueryFactory().fromBranch(
+               AtsUtilCore.getAtsBranch()).andIsOfType(AtsArtifactTypes.WorkDefinition).getResults()) {
                String workDefStr = atsServer.getAttributeResolver().getSoleAttributeValueAsString(workDefArt,
                   AtsAttributeTypes.DslSheet, "");
                configs.getWorkDefIdToWorkDef().put(workDefArt.getName(), workDefStr);

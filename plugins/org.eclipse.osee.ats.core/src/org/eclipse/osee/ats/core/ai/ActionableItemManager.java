@@ -54,7 +54,7 @@ public class ActionableItemManager implements IAtsActionableItemService {
             if (aia == null) {
                OseeLog.logf(ActionableItemManager.class, Level.SEVERE,
                   "Actionable Item Guid [%s] from [%s] doesn't match item in AtsConfigCache", guid,
-                  AtsUtilCore.toStringWithId(atsObject));
+                  atsObject.toStringWithId());
             } else {
                ais.add(aia);
             }

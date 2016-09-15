@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.model.WorkPackage;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -59,7 +60,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
       WorkPackage wpa = null;
       String workPackageGuid = getWorkPackageId(workItem);
       if (Strings.isValid(workPackageGuid)) {
-         ArtifactId workPkgArt = services.getArtifactById(workPackageGuid);
+         ArtifactToken workPkgArt = services.getArtifactById(workPackageGuid);
          wpa = new WorkPackage(logger, workPkgArt, services);
       }
       return wpa;
@@ -78,7 +79,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
          IAtsConfigObject configObj = (IAtsConfigObject) object;
          ArtifactId artifact = services.getArtifact(configObj);
          if (artifact != null) {
-            for (ArtifactId workPackageArt : services.getRelationResolver().getRelated(artifact,
+            for (ArtifactToken workPackageArt : services.getRelationResolver().getRelated(artifact,
                AtsRelationTypes.WorkPackage_WorkPackage)) {
                workPackageOptions.add(new WorkPackage(logger, workPackageArt, services));
             }
@@ -115,14 +116,14 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
    }
 
    @Override
-   public IAtsWorkPackage getWorkPackage(ArtifactId artifact) {
+   public IAtsWorkPackage getWorkPackage(ArtifactToken artifact) {
       return new WorkPackage(logger, artifact, services);
    }
 
    @Override
    public Collection<IAtsWorkPackage> getWorkPackages(IAtsInsertionActivity insertionActivity) {
       List<IAtsWorkPackage> workPackages = new ArrayList<>();
-      for (ArtifactId artifact : services.getRelationResolver().getRelated(
+      for (ArtifactToken artifact : services.getRelationResolver().getRelated(
          services.getArtifact(insertionActivity.getId()),
          AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
          workPackages.add(new WorkPackage(logger, artifact, services));

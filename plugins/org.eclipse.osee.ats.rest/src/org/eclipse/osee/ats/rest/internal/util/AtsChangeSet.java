@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.core.util.AbstractAtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -189,15 +190,15 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public ArtifactId createArtifact(IArtifactType artifactType, String name, String guid) {
-      ArtifactId artifact = getTransaction().createArtifact(artifactType, name, guid);
+   public ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid) {
+      ArtifactToken artifact = getTransaction().createArtifact(artifactType, name, guid);
       add(artifact);
       return artifact;
    }
 
    @Override
-   public ArtifactId createArtifact(IArtifactType artifactType, String name, String guid, Long uuid) {
-      ArtifactId artifact = getTransaction().createArtifact(artifactType, name, guid, uuid);
+   public ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid, Long uuid) {
+      ArtifactToken artifact = getTransaction().createArtifact(artifactType, name, guid, uuid);
       add(artifact);
       return artifact;
    }

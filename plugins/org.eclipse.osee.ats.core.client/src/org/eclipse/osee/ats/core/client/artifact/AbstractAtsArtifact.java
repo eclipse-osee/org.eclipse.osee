@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.client.artifact;
 
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -31,7 +31,7 @@ public abstract class AbstractAtsArtifact extends Artifact implements IAtsObject
    }
 
    @Override
-   public ArtifactId getStoreObject() {
+   public ArtifactToken getStoreObject() {
       return this;
    }
 }

@@ -29,10 +29,9 @@ public class TypeColumn extends AbstractServicesColumn {
          if (atsObject instanceof IAtsTeamWorkflow) {
             return ((IAtsTeamWorkflow) atsObject).getTeamDefinition().getName() + " Workflow";
          } else {
-            return services.getStoreService().getTypeName(atsObject.getStoreObject());
+            return atsObject.getStoreObject().getArtifactType().getName();
          }
       }
       return "(Deleted)";
    }
-
 }

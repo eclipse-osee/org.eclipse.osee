@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.core.util.AtsRelationChange;
 import org.eclipse.osee.ats.core.util.AtsRelationChange.RelationOperation;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -264,12 +265,12 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public ArtifactId createArtifact(IArtifactType artifactType, String name, String guid) {
+   public ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid) {
       return createArtifact(artifactType, name, guid, Lib.generateArtifactIdAsInt());
    }
 
    @Override
-   public ArtifactId createArtifact(IArtifactType artifactType, String name, String guid, Long uuid) {
+   public ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid, Long uuid) {
       Artifact artifact = ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch(), name, guid, uuid);
       add(artifact);
       return artifact;

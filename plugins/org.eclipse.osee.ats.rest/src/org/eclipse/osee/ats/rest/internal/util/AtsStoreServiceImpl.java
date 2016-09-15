@@ -79,11 +79,6 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
-   public String getTypeName(ArtifactId artifact) {
-      return ((ArtifactReadable) artifact).getArtifactType().getName();
-   }
-
-   @Override
    public String getGuid(IAtsObject atsObject) {
       return ((ArtifactReadable) atsObject.getStoreObject()).getGuid();
    }

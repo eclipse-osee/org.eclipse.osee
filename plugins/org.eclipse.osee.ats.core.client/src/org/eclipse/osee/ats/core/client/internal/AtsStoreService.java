@@ -84,11 +84,6 @@ public class AtsStoreService implements IAtsStoreService {
       return ((Artifact) atsObject.getStoreObject()).getGuid();
    }
 
-   @Override
-   public String getTypeName(ArtifactId artifact) {
-      return ((Artifact) artifact).getArtifactTypeName();
-   }
-
    /**
     * Uses artifact type inheritance to retrieve all TeamWorkflow artifact types
     */

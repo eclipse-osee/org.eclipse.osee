@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.api.user;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
  * @author Donald G. Dunne
@@ -23,7 +23,7 @@ public class JaxAtsUser extends JaxAtsObject implements IAtsUser {
 
    private String userId;
    private String email;
-   private ArtifactId storeObject;
+   private ArtifactToken storeObject;
    private IUserArtLoader userArtLoader;
 
    @Override
@@ -51,7 +51,7 @@ public class JaxAtsUser extends JaxAtsObject implements IAtsUser {
 
    @Override
    @JsonIgnore
-   public ArtifactId getStoreObject() {
+   public ArtifactToken getStoreObject() {
       if (storeObject == null && userArtLoader != null) {
          storeObject = userArtLoader.loadUser(this);
       }
@@ -59,7 +59,7 @@ public class JaxAtsUser extends JaxAtsObject implements IAtsUser {
    }
 
    @Override
-   public void setStoreObject(ArtifactId artifact) {
+   public void setStoreObject(ArtifactToken artifact) {
       this.storeObject = artifact;
    }
 

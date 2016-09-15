@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.AtsConfigCheckTreeDialog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -115,7 +116,7 @@ public class ConvertVersionToAgileSprint extends XNavigateItemAction {
 
                IAtsChangeSet changes =
                   client.getStoreService().createAtsChangeSet(getName(), client.getUserService().getCurrentUser());
-               Collection<ArtifactId> teamWfs = client.getRelationResolver().getRelated(version,
+               Collection<ArtifactToken> teamWfs = client.getRelationResolver().getRelated(version,
                   AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow);
                for (ArtifactId teamWf : teamWfs) {
                   changes.relate(sprint, AtsRelationTypes.AgileSprintToItem_AtsItem, teamWf);

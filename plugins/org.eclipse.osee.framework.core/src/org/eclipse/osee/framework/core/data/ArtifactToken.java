@@ -10,13 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
 /**
  * @author Ryan D. Brooks
  * @author Donald G. Dunne
  */
-public interface ArtifactToken extends ArtifactId, HasArtifactType, HasBranch {
+public interface ArtifactToken extends ArtifactId, HasArtifactType, HasBranch, Named {
    default ArtifactTypeId getArtifactTypeId() {
       return null;
    }
@@ -59,5 +60,9 @@ public interface ArtifactToken extends ArtifactId, HasArtifactType, HasBranch {
          }
       }
       return new ArtifactTokenImpl(id, guid, name, branch, artifactType);
+   }
+
+   default String toStringWithId() {
+      return String.format("[%s][%s]", getName(), getId());
    }
 }

@@ -35,7 +35,7 @@ import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -218,7 +218,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    }
 
    @Override
-   public ArtifactId getStoreObject() {
+   public ArtifactToken getStoreObject() {
       return artifact;
    }
 

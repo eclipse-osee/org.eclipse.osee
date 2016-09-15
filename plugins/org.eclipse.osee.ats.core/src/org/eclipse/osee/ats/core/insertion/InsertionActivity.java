@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.insertion;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -23,7 +23,7 @@ public class InsertionActivity extends AtsConfigObject implements IAtsInsertionA
 
    private long insertionUuid;
 
-   public InsertionActivity(Log logger, IAtsServices atsServer, ArtifactId artifact) {
+   public InsertionActivity(Log logger, IAtsServices atsServer, ArtifactToken artifact) {
       super(logger, atsServer, artifact);
    }
 
@@ -40,5 +40,4 @@ public class InsertionActivity extends AtsConfigObject implements IAtsInsertionA
    public void setInsertionUuid(long insertionUuid) {
       this.insertionUuid = insertionUuid;
    }
-
 }

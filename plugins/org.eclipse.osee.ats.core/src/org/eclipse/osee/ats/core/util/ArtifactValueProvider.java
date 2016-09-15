@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -26,18 +27,18 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class ArtifactValueProvider implements IValueProvider {
 
-   private final ArtifactId artifact;
+   private final ArtifactToken artifact;
    private final String attributeTypeName;
    private final IAtsServices services;
    private IAttributeType attributeType;
 
-   public ArtifactValueProvider(ArtifactId artifact, IAtsWidgetDefinition widgetDef, IAtsServices services) {
+   public ArtifactValueProvider(ArtifactToken artifact, IAtsWidgetDefinition widgetDef, IAtsServices services) {
       this.artifact = artifact;
       this.services = services;
       this.attributeTypeName = widgetDef.getAtrributeName();
    }
 
-   public ArtifactValueProvider(ArtifactId artifact, IAttributeType attributeType, IAtsServices services) {
+   public ArtifactValueProvider(ArtifactToken artifact, IAttributeType attributeType, IAtsServices services) {
       this.artifact = artifact;
       this.services = services;
       this.attributeTypeName = attributeType.getName();

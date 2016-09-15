@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -60,7 +61,7 @@ public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionServic
       if (team == null) {
          throw new OseeArgumentException("Team Workflow can not be null %s", team);
       }
-      Collection<ArtifactId> versions = services.getRelationResolver().getRelated(team.getStoreObject(),
+      Collection<ArtifactToken> versions = services.getRelationResolver().getRelated(team.getStoreObject(),
          AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
       IAtsVersion version = null;
       if (!versions.isEmpty()) {

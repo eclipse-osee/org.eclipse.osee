@@ -15,7 +15,7 @@ import static org.mockito.Mockito.when;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -29,7 +29,6 @@ import org.mockito.MockitoAnnotations;
 public class AtsCoreServiceImplTest {
 
    // @formatter:off
-   @Mock private ArtifactId artifact;
    @Mock private IAtsObject atsObject;
    @Mock private IAttributeResolver attrResolver;
    // @formatter:on
@@ -41,8 +40,8 @@ public class AtsCoreServiceImplTest {
 
    @Test
    public void testGetAtsId() {
+      ArtifactToken artifact = ArtifactToken.valueOf(0, "guid", null, null, null);
       when(attrResolver.getSoleAttributeValue(artifact, AtsAttributeTypes.AtsId, null)).thenReturn(null);
-      when(artifact.getGuid()).thenReturn("guid");
       String result = AtsCoreServiceImpl.getAtsId(attrResolver, artifact);
       assertEquals(result, "guid");
 
@@ -58,5 +57,4 @@ public class AtsCoreServiceImplTest {
       when(attrResolver.getSoleAttributeValue(artifact, AtsAttributeTypes.AtsId, null)).thenReturn("ATS23");
       assertEquals(result, "ATS23");
    }
-
 }

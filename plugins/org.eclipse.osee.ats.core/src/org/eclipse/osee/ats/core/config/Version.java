@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -30,7 +30,7 @@ import org.eclipse.osee.logger.Log;
  */
 public class Version extends AtsConfigObject implements IAtsVersion {
 
-   public Version(Log logger, IAtsServices services, ArtifactId artifact) {
+   public Version(Log logger, IAtsServices services, ArtifactToken artifact) {
       super(logger, services, artifact);
    }
 

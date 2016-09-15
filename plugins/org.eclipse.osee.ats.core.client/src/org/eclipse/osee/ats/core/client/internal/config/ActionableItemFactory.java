@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.config.ActionableItem;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
@@ -30,7 +30,7 @@ public class ActionableItemFactory implements IActionableItemFactory {
       if (guid == null) {
          throw new IllegalArgumentException("guid can not be null");
       }
-      ArtifactId artifact = changes.createArtifact(AtsArtifactTypes.ActionableItem, name, guid, uuid);
+      ArtifactToken artifact = changes.createArtifact(AtsArtifactTypes.ActionableItem, name, guid, uuid);
       return new ActionableItem(services.getLogger(), services, artifact);
    }
 

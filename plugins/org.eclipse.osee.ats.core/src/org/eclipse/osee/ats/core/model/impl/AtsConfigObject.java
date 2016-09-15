@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -30,11 +31,11 @@ import org.eclipse.osee.logger.Log;
  * @author Donald G Dunne
  */
 public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.impl.AtsObject implements IAtsConfigObject {
-   protected final ArtifactId artifact;
+   protected final ArtifactToken artifact;
    protected final Log logger;
    protected final IAtsServices services;
 
-   public AtsConfigObject(Log logger, IAtsServices services, ArtifactId artifact) {
+   public AtsConfigObject(Log logger, IAtsServices services, ArtifactToken artifact) {
       super(artifact.getName(), artifact.getId());
       this.logger = logger;
       this.services = services;
@@ -118,7 +119,7 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
    }
 
    @Override
-   public ArtifactId getStoreObject() {
+   public ArtifactToken getStoreObject() {
       return artifact != null ? artifact : super.getStoreObject();
    }
 

@@ -36,7 +36,7 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.rest.IAtsServer;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
@@ -55,9 +55,9 @@ public class WorkItemNotificationProcessorTest {
 
    // @formatter:off
    @Mock IAtsUser joeSmith_CurrentUser, kay_ValidEmail, jason_ValidEmail, alex_NoValidEmail, inactiveSteve;
-   @Mock ArtifactId kayArtifact;
+   @Mock ArtifactToken kayArtifact;
    @Mock IAtsTeamWorkflow teamWf;
-   @Mock ArtifactId teamWfArt;
+   @Mock ArtifactToken teamWfArt;
    @Mock IAtsPeerToPeerReview peerReview;
    @Mock IAtsStateManager stateMgr;
    @Mock Log logger;

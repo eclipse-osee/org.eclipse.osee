@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationProvider;
@@ -17,12 +19,10 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IUserArtLoader;
 import org.eclipse.osee.ats.api.user.JaxAtsUser;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 
 /**
  * @author Donald G. Dunne
@@ -67,8 +67,8 @@ public class AtsConfigurationsService implements IAtsConfigurationProvider {
    private class UserArtLoader implements IUserArtLoader {
 
       @Override
-      public ArtifactId loadUser(IAtsUser user) {
-         ArtifactId userArt = null;
+      public ArtifactToken loadUser(IAtsUser user) {
+         ArtifactToken userArt = null;
          try {
             userArt = UserManager.getUserByArtId(user.getId().intValue());
             if (userArt == null) {

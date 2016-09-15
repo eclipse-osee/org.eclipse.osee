@@ -98,9 +98,11 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    @Override
    public IAtsWorkPackage getWorkPackage(ArtifactId artifact) {
       IAtsWorkPackage workPackage = null;
-      if (artifact instanceof ArtifactReadable && ((ArtifactReadable) artifact).isOfType(
-         AtsArtifactTypes.WorkPackage)) {
-         workPackage = new WorkPackage(logger, artifact, atsServer.getServices());
+      if (artifact instanceof ArtifactReadable) {
+         ArtifactReadable art = (ArtifactReadable) artifact;
+         if (art.isOfType(AtsArtifactTypes.WorkPackage)) {
+            workPackage = new WorkPackage(logger, art, atsServer.getServices());
+         }
       }
       return workPackage;
    }

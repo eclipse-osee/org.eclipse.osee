@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.rest.internal.user;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -104,12 +104,12 @@ public class AtsUser implements IAtsUser {
 
    @Override
    @JsonIgnore
-   public ArtifactId getStoreObject() {
+   public ArtifactToken getStoreObject() {
       return user;
    }
 
    @Override
-   public void setStoreObject(ArtifactId artifact) {
+   public void setStoreObject(ArtifactToken artifact) {
       if (artifact instanceof ArtifactReadable) {
          this.user = (ArtifactReadable) artifact;
       }
@@ -119,5 +119,4 @@ public class AtsUser implements IAtsUser {
    public Long getId() {
       return this.user.getId();
    }
-
 }

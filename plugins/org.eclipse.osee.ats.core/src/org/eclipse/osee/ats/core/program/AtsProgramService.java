@@ -45,6 +45,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -97,7 +98,7 @@ public class AtsProgramService implements IAtsProgramService {
    @Override
    public IAtsInsertionActivity getInsertionActivity(IAtsWorkPackage workPackage) {
       ArtifactId wpArt = services.getArtifact(workPackage.getId());
-      Collection<ArtifactId> related = services.getRelationResolver().getRelated(wpArt,
+      Collection<ArtifactToken> related = services.getRelationResolver().getRelated(wpArt,
          AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity);
       if (related.size() > 0) {
          return services.getConfigItemFactory().getInsertionActivity(related.iterator().next());
@@ -107,7 +108,7 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public IAtsInsertion getInsertion(IAtsInsertionActivity activity) {
-      Collection<ArtifactId> related = services.getRelationResolver().getRelated(activity.getStoreObject(),
+      Collection<ArtifactToken> related = services.getRelationResolver().getRelated(activity.getStoreObject(),
          AtsRelationTypes.InsertionToInsertionActivity_Insertion);
       if (related.size() > 0) {
          return services.getConfigItemFactory().getInsertion(related.iterator().next());
@@ -117,7 +118,7 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public IAtsProgram getProgram(IAtsInsertion insertion) {
-      Collection<ArtifactId> related = services.getRelationResolver().getRelated(insertion.getStoreObject(),
+      Collection<ArtifactToken> related = services.getRelationResolver().getRelated(insertion.getStoreObject(),
          AtsRelationTypes.ProgramToInsertion_Program);
       if (related.size() > 0) {
          return services.getConfigItemFactory().getProgram(related.iterator().next());

@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -151,10 +152,10 @@ public class OrcsTransactionTest {
 
       TransactionBuilder tx = txFactory.createTransaction(COMMON, userArtifact, comment);
 
-      ArtifactId artifactId = tx.createArtifact(CoreArtifactTypes.Folder, expectedName);
+      ArtifactToken artifact = tx.createArtifact(CoreArtifactTypes.Folder, expectedName);
 
-      tx.setAttributesFromStrings(artifactId, CoreAttributeTypes.Annotation, expectedAnnotation);
-      assertEquals(expectedName, artifactId.getName());
+      tx.setAttributesFromStrings(artifact, CoreAttributeTypes.Annotation, expectedAnnotation);
+      assertEquals(expectedName, artifact.getName());
 
       TransactionReadable newTx = tx.commit();
       assertFalse(tx.isCommitInProgress());
@@ -166,14 +167,14 @@ public class OrcsTransactionTest {
       TransactionReadable newTxReadable = transactionQuery.andTxId(newTx).getResults().getExactlyOne();
       checkTransaction(previousTx, newTxReadable, COMMON, comment, userArtifact);
 
-      ResultSet<ArtifactReadable> result = query.fromBranch(COMMON).andIds(artifactId).getResults();
+      ResultSet<ArtifactReadable> result = query.fromBranch(COMMON).andIds(artifact).getResults();
 
-      ArtifactReadable artifact = result.getExactlyOne();
+      ArtifactReadable artifact1 = result.getExactlyOne();
 
-      assertEquals(expectedAnnotation, artifact.getAttributeValues(CoreAttributeTypes.Annotation).iterator().next());
-      assertEquals(expectedName, artifact.getName());
-      assertEquals(expectedAnnotation, artifact.getAttributeValues(CoreAttributeTypes.Annotation).iterator().next());
-      assertEquals(artifactId.getGuid(), artifact.getGuid());
+      assertEquals(expectedAnnotation, artifact1.getAttributeValues(CoreAttributeTypes.Annotation).iterator().next());
+      assertEquals(expectedName, artifact1.getName());
+      assertEquals(expectedAnnotation, artifact1.getAttributeValues(CoreAttributeTypes.Annotation).iterator().next());
+      assertEquals(artifact1.getGuid(), artifact1.getGuid());
    }
 
    @Test
@@ -190,15 +191,15 @@ public class OrcsTransactionTest {
 
       TransactionBuilder tx = txFactory.createTransaction(COMMON, userArtifact, comment);
 
-      ArtifactId artifactId = tx.createArtifact(CoreArtifactTypes.SubsystemRequirementHTML, expectedName);
+      ArtifactToken artifact = tx.createArtifact(CoreArtifactTypes.SubsystemRequirementHTML, expectedName);
 
-      tx.setAttributesFromStrings(artifactId, CoreAttributeTypes.Annotation, expectedAnnotation);
-      tx.setAttributesFromStrings(artifactId, CoreAttributeTypes.QualificationMethod, expectedQualifaction);
-      assertEquals(expectedName, artifactId.getName());
+      tx.setAttributesFromStrings(artifact, CoreAttributeTypes.Annotation, expectedAnnotation);
+      tx.setAttributesFromStrings(artifact, CoreAttributeTypes.QualificationMethod, expectedQualifaction);
+      assertEquals(expectedName, artifact.getName());
 
       tx.commit();
 
-      ArtifactReadable artifactReadable = query.fromBranch(COMMON).andIds(artifactId).getResults().getExactlyOne();
+      ArtifactReadable artifactReadable = query.fromBranch(COMMON).andIds(artifact).getResults().getExactlyOne();
       assertEquals(expectedName, artifactReadable.getName());
       assertEquals(expectedQualifaction,
          artifactReadable.getSoleAttributeAsString(CoreAttributeTypes.QualificationMethod));
@@ -546,7 +547,8 @@ public class OrcsTransactionTest {
             if (artifact != null && art.matches(artifact)) {
                assertEquals(1,
                   art.getAttributeCount(CoreAttributeTypes.GeneralStringData, DeletionFlag.INCLUDE_HARD_DELETED));
-               assertEquals(1, art.getAttributeCount(CoreAttributeTypes.PublishInline, DeletionFlag.INCLUDE_HARD_DELETED));
+               assertEquals(1,
+                  art.getAttributeCount(CoreAttributeTypes.PublishInline, DeletionFlag.INCLUDE_HARD_DELETED));
             } else if (artifact1 != null && art.matches(artifact1)) {
                assertEquals(1, art.getAttributeCount(CoreAttributeTypes.Annotation, DeletionFlag.INCLUDE_HARD_DELETED));
             } else {
@@ -832,21 +834,21 @@ public class OrcsTransactionTest {
    public void testAttributeCommitOnlyAffectNewStripe() throws OseeCoreException {
       // create artifact and check exists and name set
       TransactionBuilder tx1 = createTx();
-      ArtifactId art1 = tx1.createArtifact(Component, "orig name");
+      ArtifactToken art1 = tx1.createArtifact(Component, "orig name");
       TransactionId rec1 = tx1.commit();
       assertNotNull(rec1);
       art1 = query.fromBranch(COMMON).andIds(art1).getResults().getExactlyOne();
       assertEquals("orig name", art1.getName());
 
       // change name
-      ArtifactId art2 = query.fromBranch(COMMON).andIds(art1).getResults().getExactlyOne();
+      ArtifactToken art2 = query.fromBranch(COMMON).andIds(art1).getResults().getExactlyOne();
       TransactionBuilder tx2 = createTx();
       tx2.setName(art2, "new name");
       TransactionId rec2 = tx2.commit();
       assertNotNull(rec2);
 
       // verify that change only exists on new stripe?
-      ArtifactId art3 = query.fromBranch(COMMON).andIds(art1).getResults().getExactlyOne();
+      ArtifactToken art3 = query.fromBranch(COMMON).andIds(art1).getResults().getExactlyOne();
       assertEquals("orig name", art1.getName());
       // this should be same name cause we didn't re-query it and the tx didn't change the model?
       assertEquals("orig name", art2.getName());

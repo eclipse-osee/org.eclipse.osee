@@ -39,7 +39,6 @@ import org.eclipse.osee.ats.api.agile.JaxNewAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.ClassBasedResourceToken;
@@ -330,7 +329,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       ArtifactReadable teamArt = atsServer.getArtifact(newBacklog.getTeamUuid());
       if (!teamArt.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).isEmpty()) {
          new OseeWebApplicationException(Status.BAD_REQUEST, "Backlog already set for team %s",
-            AtsUtilCore.toStringWithId(teamArt));
+            teamArt.toStringWithId());
       }
 
       backlog =

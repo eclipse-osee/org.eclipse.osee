@@ -402,7 +402,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    }
 
    @Override
-   public ArtifactId getArtifactById(String id) {
+   public ArtifactReadable getArtifactById(String id) {
       ArtifactReadable action = null;
       if (GUID.isValid(id)) {
          action = getArtifactByGuid(id);
@@ -443,7 +443,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
       for (String id : ids.split(",")) {
          id = id.replaceAll("^ +", "");
          id = id.replaceAll(" +$", "");
-         ArtifactReadable action = (ArtifactReadable) getArtifactById(id);
+         ArtifactReadable action = getArtifactById(id);
          if (action != null) {
             actions.add(action);
          }

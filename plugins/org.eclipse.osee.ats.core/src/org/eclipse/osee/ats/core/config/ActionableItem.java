@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
@@ -30,7 +31,7 @@ import org.eclipse.osee.logger.Log;
  */
 public class ActionableItem extends AtsConfigObject implements IAtsActionableItem {
 
-   public ActionableItem(Log logger, IAtsServices services, ArtifactId artifact) {
+   public ActionableItem(Log logger, IAtsServices services, ArtifactToken artifact) {
       super(logger, services, artifact);
    }
 
@@ -53,7 +54,7 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
    public IAtsActionableItem getParentActionableItem() {
       IAtsActionableItem parent = null;
       try {
-         Collection<ArtifactId> related =
+         Collection<ArtifactToken> related =
             services.getRelationResolver().getRelated(artifact, CoreRelationTypes.Default_Hierarchical__Parent);
          if (!related.isEmpty()) {
             parent = services.getConfigItemFactory().getActionableItem(related.iterator().next());
@@ -68,7 +69,7 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
    public IAtsTeamDefinition getTeamDefinition() {
       IAtsTeamDefinition teamDef = null;
       try {
-         Collection<ArtifactId> related =
+         Collection<ArtifactToken> related =
             services.getRelationResolver().getRelated(artifact, AtsRelationTypes.TeamActionableItem_Team);
          if (!related.isEmpty()) {
             teamDef = services.getConfigItemFactory().getTeamDef(related.iterator().next());

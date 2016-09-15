@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -37,8 +38,8 @@ public class AtsRelationResolverServiceImpl implements IRelationResolver {
    }
 
    @Override
-   public Collection<ArtifactId> getRelated(ArtifactId artifact, IRelationTypeSide relationType) {
-      List<ArtifactId> results = new ArrayList<>();
+   public Collection<ArtifactToken> getRelated(ArtifactId artifact, IRelationTypeSide relationType) {
+      List<ArtifactToken> results = new ArrayList<>();
       Artifact useArt = getArtifact(artifact);
       if (useArt != null) {
          for (Artifact art : useArt.getRelatedArtifacts(relationType)) {
@@ -177,7 +178,7 @@ public class AtsRelationResolverServiceImpl implements IRelationResolver {
    }
 
    @Override
-   public Collection<ArtifactId> getRelated(IAtsObject atsObject, IRelationTypeSide relationTypeSide) {
+   public Collection<ArtifactToken> getRelated(IAtsObject atsObject, IRelationTypeSide relationTypeSide) {
       return getRelated(atsObject.getStoreObject(), relationTypeSide);
    }
 

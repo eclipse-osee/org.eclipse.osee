@@ -28,8 +28,6 @@ public interface IAtsStoreService {
 
    boolean isDeleted(IAtsObject atsObject);
 
-   String getTypeName(ArtifactId artifact);
-
    String getGuid(IAtsObject atsObject);
 
    boolean isAttributeTypeValid(IAtsObject atsObject, IAttributeType attributeType);

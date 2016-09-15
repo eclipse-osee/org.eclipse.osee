@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.config;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -21,7 +21,7 @@ import org.eclipse.osee.logger.Log;
  */
 public class Program extends AtsConfigObject implements IAtsProgram {
 
-   public Program(Log logger, IAtsServices services, ArtifactId artifact) {
+   public Program(Log logger, IAtsServices services, ArtifactToken artifact) {
       super(logger, services, artifact);
    }
 
@@ -34,5 +34,4 @@ public class Program extends AtsConfigObject implements IAtsProgram {
    public Long getId() {
       return artifact.getId();
    }
-
 }

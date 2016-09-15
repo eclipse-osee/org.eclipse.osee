@@ -14,9 +14,9 @@ import java.io.InputStream;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
@@ -50,27 +50,27 @@ public interface TransactionBuilder {
 
    // ARTIFACT
 
-   ArtifactId createArtifact(IArtifactType artifactType, String name) throws OseeCoreException;
+   ArtifactToken createArtifact(IArtifactType artifactType, String name) throws OseeCoreException;
 
-   ArtifactId createArtifact(IArtifactType artifactType, String name, String guid) throws OseeCoreException;
+   ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid) throws OseeCoreException;
 
-   ArtifactId createArtifact(IArtifactType artifactType, String name, String guid, long uuid) throws OseeCoreException;
+   ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid, long uuid) throws OseeCoreException;
 
-   ArtifactId createArtifact(ArtifactToken configsFolder);
+   ArtifactToken createArtifact(ArtifactToken configsFolder);
 
    void deleteArtifact(ArtifactId sourceArtifact) throws OseeCoreException;
 
-   ArtifactId copyArtifact(ArtifactReadable sourceArtifact) throws OseeCoreException;
+   ArtifactToken copyArtifact(ArtifactReadable sourceArtifact) throws OseeCoreException;
 
-   ArtifactId copyArtifact(ArtifactReadable sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException;
+   ArtifactToken copyArtifact(ArtifactReadable sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException;
 
-   ArtifactId copyArtifact(BranchId fromBranch, ArtifactId sourceArtifact) throws OseeCoreException;
+   ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId sourceArtifact) throws OseeCoreException;
 
-   ArtifactId copyArtifact(BranchId fromBranch, ArtifactId sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException;
+   ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException;
 
-   ArtifactId introduceArtifact(BranchId fromBranch, ArtifactId sourceArtifact) throws OseeCoreException;
+   ArtifactToken introduceArtifact(BranchId fromBranch, ArtifactId sourceArtifact) throws OseeCoreException;
 
-   ArtifactId replaceWithVersion(ArtifactReadable sourceArtifact, ArtifactReadable destination) throws OseeCoreException;
+   ArtifactToken replaceWithVersion(ArtifactReadable sourceArtifact, ArtifactReadable destination) throws OseeCoreException;
 
    // ATTRIBUTE
 

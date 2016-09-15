@@ -16,9 +16,9 @@ import java.util.Collection;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
@@ -87,49 +87,49 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public ArtifactId createArtifact(IArtifactType artifactType, String name) throws OseeCoreException {
+   public ArtifactToken createArtifact(IArtifactType artifactType, String name) throws OseeCoreException {
       return createArtifact(artifactType, name, null);
    }
 
    @Override
-   public ArtifactId createArtifact(IArtifactType artifactType, String name, String guid) throws OseeCoreException {
+   public ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid) throws OseeCoreException {
       return txManager.createArtifact(txData, artifactType, name, guid);
    }
 
    @Override
-   public ArtifactId createArtifact(IArtifactType artifactType, String name, String guid, long uuid) throws OseeCoreException {
+   public ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid, long uuid) throws OseeCoreException {
       Conditions.checkExpressionFailOnTrue(uuid <= 0L, "Invalid Uuid %d. Must be > 0", uuid);
       return txManager.createArtifact(txData, artifactType, name, guid, uuid);
    }
 
    @Override
-   public ArtifactId createArtifact(ArtifactToken token) throws OseeCoreException {
+   public ArtifactToken createArtifact(ArtifactToken token) throws OseeCoreException {
       Conditions.checkExpressionFailOnTrue(token.isInvalid(), "Invalid Id %d. Must be > 0", token.getId());
       return txManager.createArtifact(txData, token.getArtifactType(), token.getName(), token.getGuid(), token.getId());
    }
 
    @Override
-   public ArtifactId copyArtifact(ArtifactReadable sourceArtifact) throws OseeCoreException {
+   public ArtifactToken copyArtifact(ArtifactReadable sourceArtifact) throws OseeCoreException {
       return copyArtifact(sourceArtifact.getBranch(), sourceArtifact);
    }
 
    @Override
-   public ArtifactId copyArtifact(BranchId fromBranch, ArtifactId artifactId) throws OseeCoreException {
+   public ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId artifactId) throws OseeCoreException {
       return txManager.copyArtifact(txData, fromBranch, artifactId);
    }
 
    @Override
-   public ArtifactId copyArtifact(ArtifactReadable sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
+   public ArtifactToken copyArtifact(ArtifactReadable sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
       return copyArtifact(sourceArtifact.getBranch(), sourceArtifact, attributesToDuplicate);
    }
 
    @Override
-   public ArtifactId copyArtifact(BranchId fromBranch, ArtifactId artifactId, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
+   public ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId artifactId, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
       return txManager.copyArtifact(txData, fromBranch, artifactId, attributesToDuplicate);
    }
 
    @Override
-   public ArtifactId introduceArtifact(BranchId fromBranch, ArtifactId sourceArtifact) throws OseeCoreException {
+   public ArtifactToken introduceArtifact(BranchId fromBranch, ArtifactId sourceArtifact) throws OseeCoreException {
       checkAreOnDifferentBranches(txData, fromBranch);
       ArtifactReadable source = getArtifactReadable(txData.getSession(), query, fromBranch, sourceArtifact);
       Conditions.checkNotNull(source, "Source Artifact");
@@ -139,7 +139,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public ArtifactId replaceWithVersion(ArtifactReadable sourceArtifact, ArtifactReadable destination) throws OseeCoreException {
+   public ArtifactToken replaceWithVersion(ArtifactReadable sourceArtifact, ArtifactReadable destination) throws OseeCoreException {
       return txManager.replaceWithVersion(txData, sourceArtifact.getBranch(), sourceArtifact, destination);
    }
 

@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 
@@ -23,7 +24,7 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
  */
 public interface IRelationResolver {
 
-   Collection<ArtifactId> getRelated(ArtifactId artifact, IRelationTypeSide relationType);
+   Collection<ArtifactToken> getRelated(ArtifactId artifact, IRelationTypeSide relationType);
 
    <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, IRelationTypeSide relationType, Class<T> clazz);
 
@@ -43,6 +44,6 @@ public interface IRelationResolver {
 
    List<ArtifactId> getRelatedArtifacts(IAtsWorkItem workItem, IRelationTypeSide relationTypeSide);
 
-   Collection<ArtifactId> getRelated(IAtsObject atsObject, IRelationTypeSide relationTypeSide);
+   Collection<ArtifactToken> getRelated(IAtsObject atsObject, IRelationTypeSide relationTypeSide);
 
 }

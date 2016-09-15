@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.model.impl;
 
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
 /**
@@ -20,10 +20,10 @@ import org.eclipse.osee.framework.jdk.core.type.NamedId;
 public class AtsObject extends NamedId implements IAtsObject {
 
    private String desc;
-   private ArtifactId object;
+   private ArtifactToken object;
 
-   public AtsObject(String name, long uuid) {
-      super(uuid, name);
+   public AtsObject(String name, long id) {
+      super(id, name);
    }
 
    @Override
@@ -36,12 +36,12 @@ public class AtsObject extends NamedId implements IAtsObject {
    }
 
    @Override
-   public ArtifactId getStoreObject() {
+   public ArtifactToken getStoreObject() {
       return object;
    }
 
    @Override
-   public void setStoreObject(ArtifactId artifact) {
+   public void setStoreObject(ArtifactToken artifact) {
       this.object = artifact;
    }
 }

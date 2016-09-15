@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.client.internal.user;
 
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 
@@ -101,12 +101,12 @@ public class AtsUser implements IAtsUser {
    }
 
    @Override
-   public ArtifactId getStoreObject() {
+   public ArtifactToken getStoreObject() {
       return user;
    }
 
    @Override
-   public void setStoreObject(ArtifactId artifact) {
+   public void setStoreObject(ArtifactToken artifact) {
       if (artifact instanceof User) {
          this.user = (User) artifact;
       }

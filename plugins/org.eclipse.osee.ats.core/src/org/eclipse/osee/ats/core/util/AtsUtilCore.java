@@ -23,8 +23,6 @@ import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -114,16 +112,6 @@ public class AtsUtilCore {
       } else {
          return String.format("%4.2f", d);
       }
-   }
-
-   public static String toStringWithId(Identifiable<String> obj) {
-      Conditions.checkNotNull(obj, "object");
-      return String.format("[%s][%s]", obj.getGuid(), obj.getName());
-   }
-
-   public static String toStringWithId(IAtsObject obj) {
-      Conditions.checkNotNull(obj, "object");
-      return String.format("[%s][%s]", obj.getId(), obj.getName());
    }
 
    public static String getGuid(IAtsObject atsObject) {

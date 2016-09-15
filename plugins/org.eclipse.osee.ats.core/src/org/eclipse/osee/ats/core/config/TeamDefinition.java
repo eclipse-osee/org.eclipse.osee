@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -37,7 +38,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    private final IAtsServices services;
 
-   public TeamDefinition(Log logger, IAtsServices services, ArtifactId artifact) {
+   public TeamDefinition(Log logger, IAtsServices services, ArtifactToken artifact) {
       super(logger, services, artifact);
       this.services = services;
    }
@@ -66,7 +67,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    public IAtsTeamDefinition getParentTeamDef() {
       IAtsTeamDefinition parent = null;
       try {
-         Collection<ArtifactId> related =
+         Collection<ArtifactToken> related =
             services.getRelationResolver().getRelated(artifact, CoreRelationTypes.Default_Hierarchical__Parent);
          if (!related.isEmpty()) {
             parent = services.getConfigItemFactory().getTeamDef(related.iterator().next());

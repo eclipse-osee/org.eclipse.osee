@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api;
 
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.HasDescription;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Named;
@@ -24,11 +24,11 @@ public interface IAtsObject extends Named, Id, HasDescription {
       return String.format("[%s][%s]", getName(), getId());
    }
 
-   default ArtifactId getStoreObject() {
+   default ArtifactToken getStoreObject() {
       return null;
    }
 
-   default void setStoreObject(ArtifactId artifact) {
+   default void setStoreObject(ArtifactToken artifact) {
       // do nothing
    }
 

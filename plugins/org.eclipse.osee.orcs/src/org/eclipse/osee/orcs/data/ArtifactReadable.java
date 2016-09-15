@@ -12,8 +12,7 @@ package org.eclipse.osee.orcs.data;
 
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.HasBranch;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -29,11 +28,9 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
  * @author Roberto E. Escobar
  * @author Andrew M. Finkbeiner
  */
-public interface ArtifactReadable extends ArtifactId, HasLocalId<Integer>, HasTransaction, OrcsReadable, HasBranch {
+public interface ArtifactReadable extends ArtifactToken, HasLocalId<Integer>, HasTransaction, OrcsReadable {
 
    TransactionId getLastModifiedTransaction();
-
-   IArtifactType getArtifactType() throws OseeCoreException;
 
    boolean isOfType(IArtifactType... otherTypes) throws OseeCoreException;
 

@@ -96,7 +96,7 @@ public class RevertDuplicateTransitionsAction extends Action {
       for (IAttributeType attrType : Arrays.asList(AtsAttributeTypes.CompletedDate, AtsAttributeTypes.CancelledDate)) {
          for (IAtsWorkItem workItem : AtsClientService.get().getQueryService().runQuery(DUPLICATE_TRANSITION_QUERY,
             AtsUtilCore.getAtsBranch().getId(), attrType.getId())) {
-            artIds.add(workItem.getUuid().intValue());
+            artIds.add(workItem.getId().intValue());
          }
       }
       return artIds;
