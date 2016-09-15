@@ -229,7 +229,11 @@ public final class SafetyInformationAccumulator {
             }
             parentCritVal = SafetyCriticalityLookup.getSeverityLevel(intermediate);
          } else if (otherType.equals(CoreAttributeTypes.ItemDAL)) {
-            parentCritVal = SafetyCriticalityLookup.getDALLevel(parent.getSoleAttributeAsString(otherType, "E"));
+            String intermediate = parent.getSoleAttributeAsString(otherType, "E");
+            if (IAttribute.UNSPECIFIED.equals(intermediate)) {
+               intermediate = "E";
+            }
+            parentCritVal = SafetyCriticalityLookup.getDALLevel(intermediate);
          } else {
             throw new OseeArgumentException("Invalid attribute type: %s", otherType.toString());
          }
