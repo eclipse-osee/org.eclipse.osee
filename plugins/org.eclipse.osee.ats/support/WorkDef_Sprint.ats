@@ -1,62 +1,84 @@
 workDefinition "WorkDef_Sprint" {
-   id "WorkDef_Sprint"
-   startState "InWork"
+	id "WorkDef_Sprint"
+	startState "InWork"
 
-   widgetDefinition "Title" {
-      attributeName "Name"
-      xWidgetName "XTextDam"
-      option REQUIRED_FOR_TRANSITION
-   }
+	widgetDefinition "Title" {
+		attributeName "Name"
+		xWidgetName "XTextDam"
+		option REQUIRED_FOR_TRANSITION
+	}
 
-   widgetDefinition "Description" {
-      attributeName "ats.Description"
-      xWidgetName "XTextDam"
-      option FILL_VERTICALLY
-   }
+	widgetDefinition "Holiday" {
+		attributeName "ats.Holiday"
+		description "Holidays during Agile Sprint"
+		xWidgetName "XDateDam"
+	}
 
-   widgetDefinition "Start Date" {
-      attributeName "ats.Start Date"
-      xWidgetName "XDateDam"
-      option HORIZONTAL_LABEL
-   }
+	widgetDefinition "Un-Planned Points" {
+		attributeName "ats.Un-Planned Points"
+		xWidgetName "XIntegerDam"
+	}
 
-   widgetDefinition "End Date" {
-      attributeName "ats.End Date"
-      xWidgetName "XDateDam"
-      option HORIZONTAL_LABEL
-   }
+	widgetDefinition "Planned Points" {
+		attributeName "ats.Planned Points"
+		xWidgetName "XIntegerDam"
+	}
 
-   widgetDefinition "XRunSprintReportButton" {
-      xWidgetName "XRunSprintReportButton"
-   }
-   
-   state "Cancelled" {
-      type Cancelled
-      ordinal 3
-      to "InWork" OverrideAttributeValidation
-   }
+	widgetDefinition "Description" {
+		attributeName "ats.Description"
+		xWidgetName "XTextDam"
+		option FILL_VERTICALLY
+	}
 
-   state "InWork" {
-      type Working
-      ordinal 1
-      to "Cancelled"
-      to "Completed" AsDefault
-      layout {
-      	composite {
-      		numColumns 6
-      		widget "Start Date"
-      		widget "End Date"
-      		widget "XRunSprintReportButton"
-      	}
-         widget "Title" 
-         widget "Description"
-      }
-   }
+	widgetDefinition "Start Date" {
+		attributeName "ats.Start Date"
+		xWidgetName "XDateDam"
+		option HORIZONTAL_LABEL
+	}
 
-   state "Completed" {
-      type Completed
-      ordinal 2
-      to "InWork" OverrideAttributeValidation
-      rule AddDecisionValidateBlockingReview
-   }
+	widgetDefinition "End Date" {
+		attributeName "ats.End Date"
+		xWidgetName "XDateDam"
+		option HORIZONTAL_LABEL
+	}
+
+	widgetDefinition "Run Sprint Summary" {
+		xWidgetName "XRunSprintReportButton"
+	}
+
+	state "Cancelled" {
+		type Cancelled
+		ordinal 3
+		to "InWork" OverrideAttributeValidation
+	}
+
+	state "InWork" {
+		type Working
+		ordinal 1
+		to "Cancelled"
+		to "Completed" AsDefault
+		layout {
+			composite {
+				numColumns 6
+				widget "Start Date"
+				widget "End Date"
+				widget "Run Sprint Summary"
+			}
+			widget "Holiday"
+			composite {
+				numColumns 4
+				widget "Planned Points"
+				widget "Un-Planned Points"
+			}
+			widget "Title"
+			widget "Description"
+		}
+	}
+
+	state "Completed" {
+		type Completed
+		ordinal 2
+		to "InWork" OverrideAttributeValidation
+		rule AddDecisionValidateBlockingReview
+	}
 }

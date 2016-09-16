@@ -78,4 +78,6 @@ public interface IAgileService {
 
    IAttributeType getAgileTeamPointsAttributeType(IAgileTeam team);
 
+   Collection<IAgileItem> getItems(IAgileSprint sprint);
+
 }

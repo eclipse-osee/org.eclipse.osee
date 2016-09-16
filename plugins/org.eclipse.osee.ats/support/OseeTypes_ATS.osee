@@ -27,6 +27,9 @@ artifactType "Agile Feature Group" extends "ats.Ats Config Artifact" {
 
 artifactType "Agile Sprint" extends "ats.State Machine" {
 	uuid 0x7E213FC7506C5E43
+	attribute "ats.Holiday"
+	attribute "ats.Planned Points"
+	attribute "ats.Un-Planned Points"
 }
 
 artifactType "Work Definition" extends "Artifact" {
@@ -306,6 +309,30 @@ oseeEnumType "enum.color.team" {
    entry "Gold Team" entryGuid "74319306"
    entry "Plaid Team" entryGuid "74319307"
    entry "Unspecified" entryGuid "74319308"
+}
+
+attributeType "ats.Holiday" extends DateAttribute {
+	uuid 0x1000666112340FB
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	mediaType "text/calendar"
+}
+
+attributeType "ats.Planned Points" extends IntegerAttribute {
+	uuid 0x033B418311442956
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	mediaType "text/plain"
+}
+
+attributeType "ats.Un-Planned Points" extends IntegerAttribute {
+	uuid 0x03F1DFF4832FE702
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	mediaType "text/plain"
 }
 
 attributeType "ats.Work Type" extends StringAttribute {

@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -190,10 +191,11 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public IAtsStateDefinition getStateDefinition() {
-      if (getStateMgr().getCurrentStateName() == null) {
+      String currentStateName = getStateMgr().getCurrentStateName();
+      if (currentStateName == null) {
          return null;
       }
-      return getWorkDefinition().getStateByName(getStateMgr().getCurrentStateName());
+      return getWorkDefinition().getStateByName(currentStateName);
    }
 
    public IAtsStateDefinition getStateDefinitionByName(String name) {
@@ -275,7 +277,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public boolean isCompleted() {
-      return getStateMgr().getStateType().isCompleted();
+      return artifact.getSoleAttributeValue(AtsAttributeTypes.CurrentStateType, "").equals(StateType.Completed.name());
    }
 
    @Override
@@ -285,7 +287,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public boolean isCancelled() {
-      return getStateMgr().getStateType().isCancelled();
+      return artifact.getSoleAttributeValue(AtsAttributeTypes.CurrentStateType, "").equals(StateType.Cancelled.name());
    }
 
    @Override

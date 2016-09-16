@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
@@ -37,6 +38,7 @@ import org.eclipse.osee.ats.rest.internal.agile.util.AgileFolders;
 import org.eclipse.osee.ats.rest.internal.agile.util.AgileItemWriter;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -304,17 +306,26 @@ public class AgileService implements IAgileService {
 
    @Override
    public Collection<IAgileItem> getItems(IAgileBacklog backlog) {
+      return getItems(backlog, AtsRelationTypes.Goal_Member);
+   }
+
+   private Collection<IAgileItem> getItems(IAtsObject backlogOrSprint, RelationTypeSide relationType) {
       List<IAgileItem> items = new LinkedList<>();
-      ArtifactReadable backlogArt = (ArtifactReadable) backlog.getStoreObject();
-      for (ArtifactReadable art : backlogArt.getRelated(AtsRelationTypes.Goal_Member)) {
+      ArtifactReadable backlogArt = (ArtifactReadable) backlogOrSprint.getStoreObject();
+      for (ArtifactReadable art : backlogArt.getRelated(relationType)) {
          if (art.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
             items.add(atsServer.getWorkItemFactory().getAgileItem(art));
          } else {
-            throw new OseeStateException("Inavlid artifact [%s] in backlog.  Only workflows are allowed, not [%s]",
-               art.toStringWithId(), art.getArtifactType().getName());
+            throw new OseeStateException("Inavlid artifact [%s] in [%s].  Only workflows are allowed, not [%s]",
+               art.toStringWithId(), backlogOrSprint, art.getArtifactType().getName());
          }
       }
       return items;
+   }
+
+   @Override
+   public Collection<IAgileItem> getItems(IAgileSprint sprint) {
+      return getItems(sprint, AtsRelationTypes.AgileSprintToItem_AtsItem);
    }
 
    @Override

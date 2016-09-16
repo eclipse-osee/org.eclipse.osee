@@ -118,6 +118,9 @@ public final class AtsAttributeTypes {
    public static final IAttributeType State = createType(0x10000000000000D7L, "State", "States of workflow state machine.");
    public static final IAttributeType StateNotes = createType(0x10000000000000E3L, "State Notes");
    public static final IAttributeType StartDate = createType(0x1000000000000196L, "Start Date");
+   public static final IAttributeType Holiday = createType(0x1000666112340FBL, "Holiday");
+   public static final IAttributeType UnPlannedPoints = createType(0x03F1DFF4832FE702L, "Un-Planned Points");
+   public static final IAttributeType PlannedPoints = createType(0x033B418311442956L, "Planned Points");
    public static final IAttributeType EndDate = createType(0x1000000000000197L, "End Date");
    public static final IAttributeType SwEnhancement = createType(0x10000000000000FBL, "SW Enhancement");
    public static final IAttributeType TeamDefinition = createType(0x10000000000000E1L, "Team Definition");

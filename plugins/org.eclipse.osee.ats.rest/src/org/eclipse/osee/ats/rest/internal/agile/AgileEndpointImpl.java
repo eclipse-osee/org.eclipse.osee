@@ -25,6 +25,7 @@ import javax.ws.rs.core.UriInfo;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.agile.AgileBurndown;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.AgileItem;
 import org.eclipse.osee.ats.api.agile.AgileUtil;
@@ -57,6 +58,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
+import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.template.engine.PageCreator;
 import org.eclipse.osee.template.engine.PageFactory;
@@ -71,10 +73,12 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    private final IAtsServer atsServer;
    private final IResourceRegistry resourceRegistry;
    private static ObjectMapper mapper;
+   private final JdbcService jdbcService;
 
-   public AgileEndpointImpl(IAtsServer atsServer, IResourceRegistry resourceRegistry) {
+   public AgileEndpointImpl(IAtsServer atsServer, IResourceRegistry resourceRegistry, JdbcService jdbcService) {
       this.atsServer = atsServer;
       this.resourceRegistry = resourceRegistry;
+      this.jdbcService = jdbcService;
    }
 
    public void setUriInfo(UriInfo uriInfo) {
@@ -294,6 +298,45 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          page.generatePage(appPage, new ClassBasedResourceToken("sprintTemplate.html", SprintPageBuilder.class));
 
       return Response.ok().entity(result).build();
+   }
+
+   @Override
+   public Response getSprintBurndown(long teamUuid, long sprintUuid) {
+      if (teamUuid <= 0) {
+         throw new OseeWebApplicationException(Status.NOT_FOUND, "teamUuid is not valid");
+      }
+      if (sprintUuid <= 0) {
+         throw new OseeWebApplicationException(Status.NOT_FOUND, "sprintUuid is not valid");
+      }
+      ArtifactReadable sprintArt = getSprint(sprintUuid);
+      IAgileTeam agileTeam = atsServer.getAgileService().getAgileTeam(teamUuid);
+      IAgileSprint sprint = atsServer.getAgileService().getAgileSprint(sprintArt);
+
+      SprintBurndownDataBuilder builder = new SprintBurndownDataBuilder(agileTeam, sprint, atsServer, jdbcService);
+      AgileBurndown burndown = builder.get();
+
+      return Response.ok().entity(burndown).build();
+   }
+
+   @Override
+   public Response getSprintBurndownUi(long teamUuid, long sprintUuid) {
+      if (teamUuid <= 0) {
+         throw new OseeWebApplicationException(Status.NOT_FOUND, "teamUuid is not valid");
+      }
+      if (sprintUuid <= 0) {
+         throw new OseeWebApplicationException(Status.NOT_FOUND, "sprintUuid is not valid");
+      }
+      ArtifactReadable sprintArt = getSprint(sprintUuid);
+      IAgileTeam agileTeam = atsServer.getAgileService().getAgileTeam(teamUuid);
+      IAgileSprint sprint = atsServer.getAgileService().getAgileSprint(sprintArt);
+
+      SprintBurndownDataBuilder builder = new SprintBurndownDataBuilder(agileTeam, sprint, atsServer, jdbcService);
+      AgileBurndown burndown = builder.get();
+
+      SprintBurndownPageBuilder pageBuilder = new SprintBurndownPageBuilder(burndown);
+      String html = pageBuilder.getHtml();
+
+      return Response.ok().entity(html).build();
    }
 
    private ArtifactReadable getSprint(long sprintUuid) {

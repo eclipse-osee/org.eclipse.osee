@@ -74,6 +74,16 @@ public interface AgileEndpointApi {
    public Response getSprintSummary(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
 
    @GET
+   @Path("team/{teamUuid}/sprint/{sprintUuid}/burndown")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response getSprintBurndown(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+
+   @GET
+   @Path("team/{teamUuid}/sprint/{sprintUuid}/burndown/ui")
+   @Produces(MediaType.TEXT_HTML)
+   public Response getSprintBurndownUi(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+
+   @GET
    @Path("team/{teamUuid}/sprint/{sprintUuid}/world")
    @Produces(MediaType.APPLICATION_JSON)
    public Collection<IAtsWorkItem> getSprintItems(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);

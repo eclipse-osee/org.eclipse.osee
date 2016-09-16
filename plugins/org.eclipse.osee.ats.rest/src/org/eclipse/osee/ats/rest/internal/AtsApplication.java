@@ -44,6 +44,7 @@ import org.eclipse.osee.ats.rest.internal.workitem.StateResource;
 import org.eclipse.osee.ats.rest.internal.world.WorldResource;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
+import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.template.engine.OseeTemplateTokens;
@@ -60,6 +61,7 @@ public class AtsApplication extends Application {
    private OrcsApi orcsApi;
    private IAtsServer atsServer;
    private CpaServiceRegistry cpaRegistry;
+   private JdbcService jdbcService;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -71,6 +73,10 @@ public class AtsApplication extends Application {
 
    public void setAtsServer(IAtsServer atsServer) {
       this.atsServer = atsServer;
+   }
+
+   public void setJdbcService(JdbcService jdbcService) {
+      this.jdbcService = jdbcService;
    }
 
    public void setCpaServiceRegistry(CpaServiceRegistry cpaRegistry) {
@@ -104,7 +110,7 @@ public class AtsApplication extends Application {
       singletons.add(new WorldResource(atsServer));
 
       // Endpoints
-      singletons.add(new AgileEndpointImpl(atsServer, registry));
+      singletons.add(new AgileEndpointImpl(atsServer, registry, jdbcService));
       singletons.add(new CountryEndpointImpl(atsServer));
       singletons.add(new ProgramEndpointImpl(atsServer));
       singletons.add(new InsertionEndpointImpl(atsServer));
