@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.workdef;
 
 import java.io.File;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
  * @author Donald G. Dunne
@@ -20,13 +20,13 @@ public class WorkDefinitionSheet {
 
    public File file;
    public String name;
-   private final IArtifactToken token;
+   private final ArtifactToken token;
 
    public WorkDefinitionSheet(String name, File file) {
       this(name, file, null);
    }
 
-   public WorkDefinitionSheet(String name, File file, IArtifactToken asToken) {
+   public WorkDefinitionSheet(String name, File file, ArtifactToken asToken) {
       super();
       this.file = file;
       this.name = name;
@@ -46,7 +46,7 @@ public class WorkDefinitionSheet {
       return String.format("%s   - file[%s]", name, file);
    }
 
-   public IArtifactToken getToken() {
+   public ArtifactToken getToken() {
       return token;
    }
 }

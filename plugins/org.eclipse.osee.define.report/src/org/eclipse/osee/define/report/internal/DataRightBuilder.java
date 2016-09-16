@@ -25,7 +25,7 @@ import org.eclipse.osee.define.report.api.DataRightId;
 import org.eclipse.osee.define.report.api.DataRightInput;
 import org.eclipse.osee.define.report.api.DataRightResult;
 import org.eclipse.osee.define.report.api.PageOrientation;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -44,7 +44,7 @@ public class DataRightBuilder {
 
    private final OrcsApi orcsApi;
 
-   private static final IArtifactToken MAPPING_ARTIFACT = TokenFactory.createArtifactToken(5443258,
+   private static final ArtifactToken MAPPING_ARTIFACT = TokenFactory.createArtifactToken(5443258,
       "AOkJ_kFNbEXCS7UjmfwA", "DataRightsFooters", CoreArtifactTypes.GeneralData);
 
    public DataRightBuilder(OrcsApi orcsApi) {

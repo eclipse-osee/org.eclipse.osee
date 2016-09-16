@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.config;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import javax.ws.rs.GET;
@@ -37,7 +39,7 @@ import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -53,8 +55,6 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 
 /**
  * @author Donald G. Dunne
@@ -76,7 +76,6 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
    private Supplier<AtsConfigurations> getConfigurationsSupplier() {
       return new Supplier<AtsConfigurations>() {
-         @SuppressWarnings("unchecked")
          @Override
          public AtsConfigurations get() {
             ResultSet<ArtifactReadable> artifacts =
@@ -213,8 +212,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       tx.commit();
    }
 
-   @SuppressWarnings("unchecked")
-   private ArtifactId introduceAndRelateTo(TransactionBuilder tx, org.eclipse.osee.orcs.data.BranchReadable fromBranch, IArtifactToken introToken, BranchReadable newBranch, IArtifactToken relateToToken, ArtifactId relateToArt) {
+   private ArtifactId introduceAndRelateTo(TransactionBuilder tx, org.eclipse.osee.orcs.data.BranchReadable fromBranch, ArtifactToken introToken, BranchReadable newBranch, ArtifactToken relateToToken, ArtifactId relateToArt) {
       ArtifactReadable introArt =
          orcsApi.getQueryFactory().fromBranch(fromBranch).andIds(introToken).getResults().getAtMostOneOrNull();
       if (introArt == null) {

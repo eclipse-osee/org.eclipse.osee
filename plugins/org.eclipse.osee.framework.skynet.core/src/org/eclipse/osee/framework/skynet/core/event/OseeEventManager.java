@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.osee.activity.api.Activity;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -170,7 +170,7 @@ public final class OseeEventManager {
    }
 
    // Kick LOCAL transaction event
-   public static void kickLocalArtifactReloadEvent(Object source, Collection<? extends IArtifactToken> artifacts) throws OseeCoreException {
+   public static void kickLocalArtifactReloadEvent(Object source, Collection<? extends ArtifactToken> artifacts) throws OseeCoreException {
       if (isDisableEvents()) {
          return;
       }

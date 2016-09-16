@@ -26,7 +26,7 @@ import java.util.logging.Level;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -1586,8 +1586,8 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
          }
          return result;
       }
-      if (obj instanceof IArtifactToken) {
-         IArtifactToken token = (IArtifactToken) obj;
+      if (obj instanceof ArtifactToken) {
+         ArtifactToken token = (ArtifactToken) obj;
          return getGuid().equals(token.getGuid());
       }
       return false;

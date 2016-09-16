@@ -15,7 +15,7 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -29,10 +29,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class OseeGroup {
 
    private Artifact groupArtifact;
-   private final Map<IArtifactToken, Boolean> temporaryOverride = new HashMap<>();
-   private final IArtifactToken token;
+   private final Map<ArtifactToken, Boolean> temporaryOverride = new HashMap<>();
+   private final ArtifactToken token;
 
-   public OseeGroup(IArtifactToken token) {
+   public OseeGroup(ArtifactToken token) {
       this.token = token;
       this.groupArtifact = null;
    }
@@ -95,7 +95,7 @@ public class OseeGroup {
       }
    }
 
-   private Artifact getOrCreateGroupArtifact(IArtifactToken token) throws OseeCoreException {
+   private Artifact getOrCreateGroupArtifact(ArtifactToken token) throws OseeCoreException {
       Artifact groupArtifact = ArtifactQuery.checkArtifactFromId(token.getUuid().intValue(), COMMON, EXCLUDE_DELETED);
       if (groupArtifact == null) {
          Artifact userGroupsFolder = getOrCreateUserGroupsFolder(COMMON);

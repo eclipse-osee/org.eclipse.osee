@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
@@ -103,7 +103,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public ArtifactId createArtifact(IArtifactToken token) throws OseeCoreException {
+   public ArtifactId createArtifact(ArtifactToken token) throws OseeCoreException {
       Conditions.checkExpressionFailOnTrue(token.isInvalid(), "Invalid Id %d. Must be > 0", token.getId());
       return txManager.createArtifact(txData, token.getArtifactType(), token.getName(), token.getGuid(), token.getId());
    }

@@ -65,20 +65,8 @@ public final class TokenFactory {
       return new AccessContextIdToken(guid, name);
    }
 
-   public static ArtifactId createArtifactId(Long uuid) {
-      return new ArtifactToken(uuid, null, null, null);
-   }
-
-   public static IArtifactToken createArtifactToken(long uuid, String name, IArtifactType artifactType) {
-      Conditions.checkExpressionFailOnTrue(uuid <= 0, "Artifact Token Uuid must be > 0 for token [%s] type [%s]", name,
-         artifactType);
-      return new ArtifactToken(uuid, null, name, artifactType);
-   }
-
-   public static IArtifactToken createArtifactToken(long uuid, String guid, String name, IArtifactType artifactType) {
-      Conditions.checkExpressionFailOnTrue(uuid <= 0, "Artifact Token Uuid must be > 0 for token [%s] type [%s]", name,
-         artifactType);
-      return new ArtifactToken(uuid, guid, name, artifactType);
+   public static ArtifactToken createArtifactToken(long id, String guid, String name, IArtifactType artifactType) {
+      return ArtifactToken.valueOf(id, guid, name, BranchId.SENTINEL, artifactType);
    }
 
    public static IUserToken createUserToken(long uuid, String guid, String name, String email, String userId, boolean active, boolean admin, boolean creationRequired) {
@@ -146,32 +134,6 @@ public final class TokenFactory {
 
       public AttributeTypeToken(Long guid, String name, String description) {
          super(guid, name, description);
-      }
-   }
-
-   private static class ArtifactToken extends NamedIdentity<String> implements IArtifactToken {
-      private final IArtifactType artifactType;
-      private final long id;
-
-      public ArtifactToken(long id, String guid, String name, IArtifactType artifactType) {
-         super(guid, name);
-         this.id = id;
-         this.artifactType = artifactType;
-      }
-
-      @Override
-      public IArtifactType getArtifactType() {
-         return artifactType;
-      }
-
-      @Override
-      public ArtifactTypeId getArtifactTypeId() {
-         return artifactType;
-      }
-
-      @Override
-      public Long getId() {
-         return id;
       }
    }
 

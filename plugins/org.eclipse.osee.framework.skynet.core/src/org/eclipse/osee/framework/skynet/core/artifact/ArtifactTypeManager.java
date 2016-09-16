@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.OrcsTypesData;
@@ -169,7 +169,7 @@ public class ArtifactTypeManager {
       return getFactory(artifactType).makeNewArtifact(branch, artifactType, name, guid, uuid);
    }
 
-   public static Artifact addArtifact(IArtifactToken artifactToken, BranchId branch) throws OseeCoreException {
+   public static Artifact addArtifact(ArtifactToken artifactToken, BranchId branch) throws OseeCoreException {
       return addArtifact(artifactToken.getArtifactType(), branch, artifactToken.getName(), artifactToken.getGuid(),
          artifactToken.getUuid());
    }

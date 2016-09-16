@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -39,8 +40,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
-import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -65,9 +65,9 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
    XResultData resultData;
-   IArtifactToken SAW_Bld_1 = TokenFactory.createArtifactToken(2749182, "SAW_Bld_1", AtsArtifactTypes.Version);
-   IArtifactToken SAW_Bld_2 = TokenFactory.createArtifactToken(7632957, "SAW_Bld_2", AtsArtifactTypes.Version);
-   IArtifactToken SAW_Bld_3 = TokenFactory.createArtifactToken(577781, "SAW_Bld_3", AtsArtifactTypes.Version);
+   ArtifactToken SAW_Bld_1 = ArtifactToken.valueOf(2749182, "SAW_Bld_1", COMMON, AtsArtifactTypes.Version);
+   ArtifactToken SAW_Bld_2 = ArtifactToken.valueOf(7632957, "SAW_Bld_2", COMMON, AtsArtifactTypes.Version);
+   ArtifactToken SAW_Bld_3 = ArtifactToken.valueOf(577781, "SAW_Bld_3", COMMON, AtsArtifactTypes.Version);
 
    public AtsRemoteEventTestItem(XNavigateItem parent) {
       super(parent, "ATS Remote Event Test");

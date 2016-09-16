@@ -17,7 +17,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -38,7 +38,7 @@ public class ViewApplicabilityUtil {
    public static String CHANGE_APPLICABILITY_INVAILD = "User does not have permissions to change View Applicability";
    private static AccessPolicy policy;
 
-   public static boolean changeApplicability(List<? extends IArtifactToken> artifacts) {
+   public static boolean changeApplicability(List<? extends ArtifactToken> artifacts) {
       BranchId branch = artifacts.iterator().next().getBranch();
       ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint(branch);
       Iterable<ApplicabilityToken> applicabilityTokens = applEndpoint.getApplicabilityTokens();

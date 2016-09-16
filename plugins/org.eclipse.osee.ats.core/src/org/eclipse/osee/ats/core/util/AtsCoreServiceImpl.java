@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
@@ -61,7 +61,7 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
    }
 
    @Override
-   public <T> T getConfigItem(IArtifactToken artifactToken) {
+   public <T> T getConfigItem(ArtifactToken artifactToken) {
       return getConfigItem(artifactToken.getId());
    }
 

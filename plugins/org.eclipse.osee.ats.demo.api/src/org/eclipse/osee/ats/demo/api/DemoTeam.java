@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.demo.api;
 
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
  * Convenience method for demo plugin to retrieve configured teams for use mostly in DemoNavigateViewItem.
@@ -31,13 +31,13 @@ public enum DemoTeam {
    CIS_Test(DemoArtifactToken.CIS_Test),
    Facilities_Team(DemoArtifactToken.Facilities_Team);
 
-   private final IArtifactToken teamDefToken;
+   private final ArtifactToken teamDefToken;
 
-   private DemoTeam(IArtifactToken teamDefToken) {
+   private DemoTeam(ArtifactToken teamDefToken) {
       this.teamDefToken = teamDefToken;
    }
 
-   public IArtifactToken getTeamDefToken() {
+   public ArtifactToken getTeamDefToken() {
       return teamDefToken;
    }
 }

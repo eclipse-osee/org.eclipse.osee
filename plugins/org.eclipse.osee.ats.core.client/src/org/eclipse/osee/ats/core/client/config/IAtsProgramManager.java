@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.client.config;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -34,8 +34,8 @@ public interface IAtsProgramManager {
 
    public IAtsProgram getProgram(TeamWorkFlowArtifact teamArt) throws OseeCoreException;
 
-   public IArtifactToken getReviewAssigneeUserGroup(TeamWorkFlowArtifact teamArt) throws OseeCoreException;
+   public ArtifactToken getReviewAssigneeUserGroup(TeamWorkFlowArtifact teamArt) throws OseeCoreException;
 
-   public IArtifactToken getPidsReviewAssigneeUserGroup() throws OseeCoreException;
+   public ArtifactToken getPidsReviewAssigneeUserGroup() throws OseeCoreException;
 
 }

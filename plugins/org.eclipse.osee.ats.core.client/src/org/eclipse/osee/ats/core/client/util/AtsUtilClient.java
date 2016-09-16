@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -142,7 +142,7 @@ public class AtsUtilClient {
       return toReturn;
    }
 
-   public static Artifact getFromToken(IArtifactToken token) {
+   public static Artifact getFromToken(ArtifactToken token) {
       Artifact toReturn = null;
       try {
          toReturn = ArtifactQuery.getArtifactFromToken(token, AtsUtilCore.getAtsBranch());

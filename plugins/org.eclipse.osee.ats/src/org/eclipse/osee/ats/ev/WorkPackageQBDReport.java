@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleSearchProvider;
 import org.eclipse.osee.ats.world.WorldEditorSimpleSearchProvider.IWorldEditorSimpleSearchProvider;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -63,7 +63,7 @@ public class WorkPackageQBDReport extends XNavigateItemAction implements IWorldE
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) {
-      List<IArtifactToken> workItemTokens =
+      List<ArtifactToken> workItemTokens =
          ArtifactQuery.getArtifactTokenListFromSoleAttributeInherited(AtsArtifactTypes.AbstractWorkflowArtifact,
             AtsAttributeTypes.WorkPackageGuid, selectedWorkPackage.getGuid(), AtsUtilCore.getAtsBranch());
       List<Artifact> workItems = ArtifactQuery.getArtifactListFromTokens(workItemTokens, AtsUtilCore.getAtsBranch());

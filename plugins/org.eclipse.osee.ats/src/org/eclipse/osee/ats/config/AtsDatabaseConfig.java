@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -107,7 +107,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
          rootArt.addChild(headingArt);
          headingArt.persist(transaction);
       }
-      for (IArtifactToken token : Arrays.asList(AtsArtifactToken.TopActionableItem, AtsArtifactToken.TopTeamDefinition,
+      for (ArtifactToken token : Arrays.asList(AtsArtifactToken.TopActionableItem, AtsArtifactToken.TopTeamDefinition,
          AtsArtifactToken.WorkDefinitionsFolder)) {
          Artifact art = OseeSystemArtifacts.getOrCreateArtifact(token, atsBranch);
          headingArt.addChild(art);
@@ -127,7 +127,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       }
    }
 
-   public static void organizePrograms(IArtifactType programType, IArtifactToken programFolderToken) {
+   public static void organizePrograms(IArtifactType programType, ArtifactToken programFolderToken) {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Organize Programs");
       Artifact programFolder = OseeSystemArtifacts.getOrCreateArtifact(programFolderToken, AtsUtilCore.getAtsBranch());

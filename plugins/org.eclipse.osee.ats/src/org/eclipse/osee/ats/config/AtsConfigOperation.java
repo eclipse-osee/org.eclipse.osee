@@ -40,7 +40,7 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionImporter;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -75,8 +75,8 @@ public class AtsConfigOperation extends AbstractOperation {
    private IAtsTeamDefinition teamDefinition;
    private Collection<IAtsActionableItem> actionableItems;
    private IAtsWorkDefinition workDefinition = null;
-   private IArtifactToken teamDefToken = null;
-   private IArtifactToken actionableItemToken = null;
+   private ArtifactToken teamDefToken = null;
+   private ArtifactToken actionableItemToken = null;
 
    /**
     * @param teamDefName - name of team definition to use
@@ -91,7 +91,7 @@ public class AtsConfigOperation extends AbstractOperation {
       this.actionableItemsNames = actionableItems;
    }
 
-   public AtsConfigOperation(String name, IArtifactToken teamDefToken, Collection<String> versionNames, IArtifactToken actionableItemToken) {
+   public AtsConfigOperation(String name, ArtifactToken teamDefToken, Collection<String> versionNames, ArtifactToken actionableItemToken) {
       this(name, teamDefToken.getName(), versionNames, Arrays.asList(actionableItemToken.getName()));
       this.teamDefToken = teamDefToken;
       this.actionableItemToken = actionableItemToken;

@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.client.util;
 
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
@@ -30,7 +30,7 @@ public enum AtsGroup {
 
    private final OseeGroup group;
 
-   AtsGroup(IArtifactToken token) {
+   AtsGroup(ArtifactToken token) {
       group = new OseeGroup(token);
    }
 

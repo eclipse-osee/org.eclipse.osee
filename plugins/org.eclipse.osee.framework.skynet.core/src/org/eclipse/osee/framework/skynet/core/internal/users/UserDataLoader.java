@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.cache.admin.CacheDataLoader;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -67,7 +67,7 @@ public class UserDataLoader implements CacheDataLoader<String, User> {
    @Override
    public User reload(String key, User oldValue) throws OseeCoreException {
       Collection<? extends Artifact> reloadArtifacts = ArtifactQuery.reloadArtifacts(Collections.singleton(oldValue));
-      IArtifactToken artifact = reloadArtifacts.isEmpty() ? null : reloadArtifacts.iterator().next();
+      ArtifactToken artifact = reloadArtifacts.isEmpty() ? null : reloadArtifacts.iterator().next();
       return (User) artifact;
    }
 

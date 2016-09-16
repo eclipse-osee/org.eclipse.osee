@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest;
 
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -49,7 +50,7 @@ public final class DispoConstants {
    public static final IAttributeType DispoItemMethodNumber = TokenFactory.createAttributeType(0x3000000000000214L, "dispo.Method Number");
 
 
-   public static final IArtifactToken DISPO_ARTIFACT = TokenFactory.createArtifactToken(4757831L, "DispositionTypes", CoreArtifactTypes.OseeTypeDefinition);
+   public static final ArtifactToken DISPO_ARTIFACT = ArtifactToken.valueOf(4757831, "DispositionTypes", COMMON, CoreArtifactTypes.OseeTypeDefinition);
 
    // @formatter:on
 

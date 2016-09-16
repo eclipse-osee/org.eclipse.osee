@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -39,7 +40,7 @@ public final class OAuthTypes {
    public static final IAttributeType OAUTH_CLIENT_AUTHORIZED_SCOPE = TokenFactory.createAttributeType(0x315964489A850F7AL, "Authorized Scope");
    public static final IAttributeType OAUTH_CLIENT_AUTHORIZED_AUDIENCE = TokenFactory.createAttributeType(0x635EBFA0D4A82E22L, "Authorized Audience");
 
-   public static final IArtifactToken OAUTH_TYPES = TokenFactory.createArtifactToken(7067755L, "OAuthTypes", CoreArtifactTypes.OseeTypeDefinition);
+   public static final ArtifactToken OAUTH_TYPES = ArtifactToken.valueOf(7067755, "OAuthTypes", COMMON, CoreArtifactTypes.OseeTypeDefinition);
 
    // @formatter:on
 

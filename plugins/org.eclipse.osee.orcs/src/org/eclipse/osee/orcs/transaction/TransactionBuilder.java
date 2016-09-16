@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
@@ -56,7 +56,7 @@ public interface TransactionBuilder {
 
    ArtifactId createArtifact(IArtifactType artifactType, String name, String guid, long uuid) throws OseeCoreException;
 
-   ArtifactId createArtifact(IArtifactToken configsFolder);
+   ArtifactId createArtifact(ArtifactToken configsFolder);
 
    void deleteArtifact(ArtifactId sourceArtifact) throws OseeCoreException;
 

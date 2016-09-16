@@ -43,7 +43,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.logger.Log;
@@ -141,7 +141,7 @@ public interface IAtsServices extends IAtsConfigurationProvider, IWorkDefinition
 
    Log getLogger();
 
-   <T> T getConfigItem(IArtifactToken artifactToken);
+   <T> T getConfigItem(ArtifactToken artifactToken);
 
    <T> T getConfigItem(String guid);
 

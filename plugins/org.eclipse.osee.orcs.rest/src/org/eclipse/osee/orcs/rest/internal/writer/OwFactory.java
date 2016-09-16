@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.rest.internal.writer;
 /**
  * Donald G. Dunne
  */
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -49,7 +49,7 @@ public class OwFactory {
       return type;
    }
 
-   public static OwArtifactToken createArtifactToken(IArtifactToken token) {
+   public static OwArtifactToken createArtifactToken(ArtifactToken token) {
       return createArtifactToken(token.getName(), token.getUuid());
    }
 

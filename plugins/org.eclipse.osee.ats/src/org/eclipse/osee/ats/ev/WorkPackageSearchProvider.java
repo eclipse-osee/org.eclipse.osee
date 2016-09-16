@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.column.WorkPackageFilterTreeDialog.IWorkPackageProvider;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
@@ -34,7 +34,7 @@ public class WorkPackageSearchProvider implements IWorkPackageProvider {
 
    @Override
    public Collection<IAtsWorkPackage> getActiveWorkPackages() {
-      Collection<IArtifactToken> selectableWorkPackageTokens = ArtifactQuery.getArtifactTokenListFromTypeAndActive(
+      Collection<ArtifactToken> selectableWorkPackageTokens = ArtifactQuery.getArtifactTokenListFromTypeAndActive(
          AtsArtifactTypes.WorkPackage, AtsAttributeTypes.Active, AtsUtilCore.getAtsBranch());
       Collection<IAtsWorkPackage> items = new LinkedList<>();
       for (Artifact art : ArtifactQuery.getArtifactListFromTokens(selectableWorkPackageTokens,
@@ -46,7 +46,7 @@ public class WorkPackageSearchProvider implements IWorkPackageProvider {
 
    @Override
    public Collection<IAtsWorkPackage> getAllWorkPackages() {
-      Collection<IArtifactToken> selectableWorkPackageTokens =
+      Collection<ArtifactToken> selectableWorkPackageTokens =
          ArtifactQuery.getArtifactTokenListFromType(AtsArtifactTypes.WorkPackage, AtsUtilCore.getAtsBranch());
       Collection<IAtsWorkPackage> items = new LinkedList<>();
       for (Artifact art : ArtifactQuery.getArtifactListFromTokens(selectableWorkPackageTokens,

@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Donald G. Dunne
  */
-public interface IUserToken extends IArtifactToken {
+public interface IUserToken extends ArtifactToken {
 
    public String getUserId() throws OseeCoreException;
 

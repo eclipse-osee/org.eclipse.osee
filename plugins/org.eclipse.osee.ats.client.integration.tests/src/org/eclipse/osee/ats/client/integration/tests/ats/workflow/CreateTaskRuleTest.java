@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.After;
@@ -86,7 +86,7 @@ public class CreateTaskRuleTest {
       test(DemoArtifactToken.SAW_Test_AI, DemoArtifactToken.SAW_Test_AI, CREATE_TASK_ACTION_FROM_AI_TITLE);
    }
 
-   public void test(IArtifactToken configObjectToken, IArtifactToken actionableItem, String title) {
+   public void test(ArtifactToken configObjectToken, ArtifactToken actionableItem, String title) {
       IAtsClient atsClient = AtsClientService.get();
       Collection<IAtsRuleDefinition> allRuleDefs = atsClient.getWorkDefinitionAdmin().getAllRuleDefinitions();
       Assert.assertEquals("We should have no rules", 0, allRuleDefs.size());

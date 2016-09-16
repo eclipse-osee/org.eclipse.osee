@@ -30,8 +30,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -79,7 +79,7 @@ public class ArtifactQuery {
    private static Map<String, Long> guidToUuid;
    private static Map<Long, String> uuidToGuid;
 
-   public static Artifact getArtifactFromToken(IArtifactToken artifactToken, BranchId branch) throws OseeCoreException {
+   public static Artifact getArtifactFromToken(ArtifactToken artifactToken, BranchId branch) throws OseeCoreException {
       return getArtifactFromId(artifactToken.getUuid(), branch);
    }
 
@@ -261,9 +261,9 @@ public class ArtifactQuery {
          options).getOrCheckArtifact(QueryType.CHECK);
    }
 
-   public static List<Artifact> getArtifactListFromTokens(Collection<IArtifactToken> tokens, BranchId branch) {
+   public static List<Artifact> getArtifactListFromTokens(Collection<ArtifactToken> tokens, BranchId branch) {
       List<Integer> ids = new LinkedList<>();
-      for (IArtifactToken token : tokens) {
+      for (ArtifactToken token : tokens) {
          ids.add(token.getId().intValue());
       }
       return getArtifactListFromIds(ids, branch);
@@ -598,20 +598,20 @@ public class ArtifactQuery {
       return artifact;
    }
 
-   public static Collection<? extends Artifact> reloadArtifacts(Collection<? extends IArtifactToken> artifacts) throws OseeCoreException {
+   public static Collection<? extends Artifact> reloadArtifacts(Collection<? extends ArtifactToken> artifacts) throws OseeCoreException {
       Collection<Artifact> reloadedArts = new ArrayList<>(artifacts.size());
-      HashCollection<BranchId, IArtifactToken> branchMap = new HashCollection<>();
+      HashCollection<BranchId, ArtifactToken> branchMap = new HashCollection<>();
       if (artifacts.isEmpty()) {
          return reloadedArts;
       }
-      for (IArtifactToken artifact : artifacts) {
+      for (ArtifactToken artifact : artifacts) {
          // separate/group artifacts by branch since ArtifactQueryBuilder only supports a single branch
          branchMap.put(artifact.getBranch(), artifact);
       }
       Set<Integer> artIds = new HashSet<>();
-      for (Entry<BranchId, Collection<IArtifactToken>> entrySet : branchMap.entrySet()) {
+      for (Entry<BranchId, Collection<ArtifactToken>> entrySet : branchMap.entrySet()) {
 
-         for (IArtifactToken artifact : entrySet.getValue()) {
+         for (ArtifactToken artifact : entrySet.getValue()) {
             artIds.add(artifact.getUuid().intValue());
          }
 
@@ -799,24 +799,24 @@ public class ArtifactQuery {
     * performing queries.
     */
 
-   public static Collection<IArtifactToken> getArtifactTokenListFromTypeAndActive(IArtifactType artifactType, IAttributeType activeAttrType, BranchId branch) {
+   public static Collection<ArtifactToken> getArtifactTokenListFromTypeAndActive(IArtifactType artifactType, IAttributeType activeAttrType, BranchId branch) {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(getTokenQuery(Active.Active, activeAttrType), artifactType.getId(), branch.getId(),
             branch.getId(), branch.getId());
-         List<IArtifactToken> tokens = extractTokensFromQuery(chStmt);
+         List<ArtifactToken> tokens = extractTokensFromQuery(chStmt);
          return tokens;
       } finally {
          chStmt.close();
       }
    }
 
-   public static Collection<IArtifactToken> getArtifactTokenListFromType(IArtifactType artifactType, BranchId branch) {
+   public static Collection<ArtifactToken> getArtifactTokenListFromType(IArtifactType artifactType, BranchId branch) {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(getTokenQuery(Active.Both, null), artifactType.getId(), branch.getId(),
             branch.getId());
-         List<IArtifactToken> tokens = extractTokensFromQuery(chStmt);
+         List<ArtifactToken> tokens = extractTokensFromQuery(chStmt);
          return tokens;
       } finally {
          chStmt.close();
@@ -834,14 +834,14 @@ public class ArtifactQuery {
       }
    }
 
-   private static List<IArtifactToken> extractTokensFromQuery(JdbcStatement chStmt) {
-      List<IArtifactToken> tokens = new LinkedList<>();
+   private static List<ArtifactToken> extractTokensFromQuery(JdbcStatement chStmt) {
+      List<ArtifactToken> tokens = new LinkedList<>();
       while (chStmt.next()) {
          Integer artId = chStmt.getInt("art_id");
          Long artTypeId = chStmt.getLong("art_type_id");
          String name = chStmt.getString("value");
          String guid = chStmt.getString("guid");
-         IArtifactToken token =
+         ArtifactToken token =
             TokenFactory.createArtifactToken(artId, guid, name, ArtifactTypeManager.getTypeByGuid(artTypeId));
          tokens.add(token);
       }
@@ -865,7 +865,7 @@ public class ArtifactQuery {
       "and txsAttr.BRANCH_ID = ? and attr.GAMMA_ID = txsAttr.GAMMA_ID and txsAttr.TX_CURRENT = 1 " + //
       "and art.ART_ID = attr.art_id and attr.ATTR_TYPE_ID = ? and value = ? ";
 
-   public static List<IArtifactToken> getArtifactTokenListFromSoleAttributeInherited(IArtifactType artifactType, IAttributeType attributetype, String value, BranchId branch) {
+   public static List<ArtifactToken> getArtifactTokenListFromSoleAttributeInherited(IArtifactType artifactType, IAttributeType attributetype, String value, BranchId branch) {
 
       ArtifactType artifactTypeFull = ArtifactTypeManager.getType(artifactType);
       List<Long> artTypeIds = new LinkedList<>();
@@ -881,7 +881,7 @@ public class ArtifactQuery {
       try {
          String query = attributeTokenQuery.replaceFirst("ART_IDS_HERE", ids);
          chStmt.runPreparedQuery(query, branch.getId(), branch.getId(), attributetype.getId(), value);
-         List<IArtifactToken> tokens = extractTokensFromQuery(chStmt);
+         List<ArtifactToken> tokens = extractTokensFromQuery(chStmt);
          return tokens;
       } finally {
          chStmt.close();

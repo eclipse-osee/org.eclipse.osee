@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -52,7 +52,7 @@ public final class OseeSystemArtifacts {
       return getOrCreateCachedArtifact(artifactType, artifactName, branch, null, true);
    }
 
-   public static Artifact getOrCreateArtifact(IArtifactToken artifactToken, BranchId branch) throws OseeCoreException {
+   public static Artifact getOrCreateArtifact(ArtifactToken artifactToken, BranchId branch) throws OseeCoreException {
       return getOrCreateCachedArtifact(artifactToken.getArtifactType(), artifactToken.getName(), branch,
          artifactToken.getGuid(), artifactToken.getUuid(), true);
    }

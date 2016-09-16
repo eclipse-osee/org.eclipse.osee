@@ -55,7 +55,7 @@ import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.ats.util.SubscribeManagerUI;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -313,7 +313,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
    }
 
-   private Set<ActionArtifact> createActions(List<DemoDbActionData> actionDatas, IArtifactToken versionToken, TeamState toStateOverride, IAtsChangeSet changes) throws Exception {
+   private Set<ActionArtifact> createActions(List<DemoDbActionData> actionDatas, ArtifactToken versionToken, TeamState toStateOverride, IAtsChangeSet changes) throws Exception {
       Set<ActionArtifact> actionArts = new HashSet<>();
       int currNum = 1;
       for (DemoDbActionData aData : actionDatas) {

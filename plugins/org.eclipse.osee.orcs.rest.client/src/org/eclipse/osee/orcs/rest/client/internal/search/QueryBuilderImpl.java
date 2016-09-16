@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -115,12 +115,12 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder andIds(IArtifactToken... artifactToken) {
+   public QueryBuilder andIds(ArtifactToken... artifactToken) {
       return andIds(Arrays.asList(artifactToken));
    }
 
    @Override
-   public QueryBuilder andIds(Collection<? extends IArtifactToken> artifactTokens) {
+   public QueryBuilder andIds(Collection<? extends ArtifactToken> artifactTokens) {
       predicates.add(predicateFactory.createIdSearch(artifactTokens));
       return this;
    }

@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.WorkDef;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.AtsDslUtil;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -83,7 +83,7 @@ public class AtsWorkDefinitionImporter {
       return null;
    }
 
-   public Artifact importWorkDefinitionToDb(String workDefXml, String workDefName, String sheetName, IArtifactToken token, XResultData resultData, IAtsChangeSet changes) throws OseeCoreException {
+   public Artifact importWorkDefinitionToDb(String workDefXml, String workDefName, String sheetName, ArtifactToken token, XResultData resultData, IAtsChangeSet changes) throws OseeCoreException {
       Artifact artifact = null;
       try {
          if (token != null) {

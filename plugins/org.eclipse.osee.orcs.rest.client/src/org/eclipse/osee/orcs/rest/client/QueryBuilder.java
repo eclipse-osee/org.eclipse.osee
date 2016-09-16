@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.rest.client;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -73,12 +73,12 @@ public interface QueryBuilder {
    /**
     * Artifacts matching token id(s)
     */
-   QueryBuilder andIds(IArtifactToken... artifactToken) throws OseeCoreException;
+   QueryBuilder andIds(ArtifactToken... artifactToken) throws OseeCoreException;
 
    /**
     * Artifacts matching token id(s)
     */
-   QueryBuilder andIds(Collection<? extends IArtifactToken> artifactTokens) throws OseeCoreException;
+   QueryBuilder andIds(Collection<? extends ArtifactToken> artifactTokens) throws OseeCoreException;
 
    /**
     * Search criteria that finds a given artifact type using type inheritance
