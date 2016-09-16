@@ -121,7 +121,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
          if (workItemType != null && workItemType.get().isEmpty()) {
             return new Result("You must select a workflow type.");
          }
-         if (teamDef.get().isEmpty() && ai.get().isEmpty()) {
+         if ((teamDef != null && teamDef.get().isEmpty()) && (ai != null && ai.get().isEmpty())) {
             return new Result("You must select either Actionable Item(s) or Team Definition(s).");
          }
          return Result.TrueResult;
