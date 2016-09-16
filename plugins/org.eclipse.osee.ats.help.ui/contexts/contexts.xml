@@ -60,14 +60,14 @@
 	</context>
 	<context id="decisionReview" title="Decision Review Workflow">
 		<description>Provides description of the Decision review.</description>
-		<topic href="OSEE/ATS/Users_Guide/Usage/Decision-Review-Workflow.html" label="Decision Review Workflow"/>
+		<topic href="OSEE/ATS/Users_Guide/Usage/OSEE-Review.html" label="Decision Review Workflow"/>
 		<topic href="OSEE/ATS/Users_Guide/Views/ATS-Workflow-Editor.html#Workflow_Tab" label="ATS Workflow Editor: Workflow Tab"/>
 		<topic href="OSEE/ATS/Users_Guide/Views/Views.html" label="ATS Icons"/>
 		<topic href="OSEE/ATS/Users_Guide/Tips/Tips.html" label="ATS Tips"/>		
 	</context>
 	<context id="peerToPeerReview" title="Peer To Peer Review Workflow">
 		<description>Provides description of the Peer to Peer review.</description>
-		<topic href="OSEE/ATS/Users_Guide/Usage/Peer-To-Peer-Review-Workflow.html" label="Peer To Peer Review Workflow"/>
+		<topic href="OSEE/ATS/Users_Guide/Usage/OSEE-Review.html" label="Peer To Peer Review Workflow"/>
 		<topic href="OSEE/ATS/Users_Guide/Views/ATS-Workflow-Editor.html#Workflow_Tab" label="ATS Workflow Editor: Workflow Tab"/>
 		<topic href="OSEE/ATS/Users_Guide/Views/Views.html" label="ATS Icons"/>
 		<topic href="OSEE/ATS/Users_Guide/Tips/Tips.html" label="ATS Tips"/>		
