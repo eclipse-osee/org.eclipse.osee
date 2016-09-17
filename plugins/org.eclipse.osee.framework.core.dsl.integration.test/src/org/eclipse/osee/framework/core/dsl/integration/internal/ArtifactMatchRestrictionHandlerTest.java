@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.integration.internal;
 
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.DslAsserts;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockArtifactProxy;
@@ -18,7 +20,6 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactMatchRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -27,7 +28,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link ArtifactMatchRestrictionHandler}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class ArtifactMatchRestrictionHandlerTest extends BaseRestrictionHandlerTest<ArtifactMatchRestriction> {
@@ -66,7 +67,7 @@ public class ArtifactMatchRestrictionHandlerTest extends BaseRestrictionHandlerT
       restriction.setArtifactMatcherRef(artifactRef);
 
       matcher.setMatchesResult(true);
-      DefaultBasicArtifact expectedAccessObject = new DefaultBasicArtifact(1, GUID.create(), "Another Artifact");
+      ArtifactToken expectedAccessObject = ArtifactToken.valueOf(1, "Another Artifact", BranchId.SENTINEL);
       MockArtifactProxy artData = new MockArtifactProxy(expectedAccessObject);
 
       Scope expectedScope = new Scope();

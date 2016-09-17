@@ -15,8 +15,8 @@ import java.util.Collection;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -27,18 +27,18 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class OseeDslSegmentParser {
 
-   public String getStartTag(IBasicArtifact<?> artifact, IOseeBranch branch) throws OseeCoreException {
+   public String getStartTag(ArtifactToken artifact, IOseeBranch branch) throws OseeCoreException {
       return getSegmentTag("start", artifact, branch);
    }
 
-   public String getEndTag(IBasicArtifact<?> artifact, IOseeBranch branch) throws OseeCoreException {
+   public String getEndTag(ArtifactToken artifact, IOseeBranch branch) throws OseeCoreException {
       return getSegmentTag("end", artifact, branch);
    }
 
-   private static String getSegmentTag(String tagPrefix, IBasicArtifact<?> artifact, IOseeBranch branch) throws OseeCoreException {
+   private static String getSegmentTag(String tagPrefix, ArtifactToken artifact, IOseeBranch branch) throws OseeCoreException {
       Conditions.checkNotNull(artifact, "artifact");
       Conditions.checkNotNull(branch, "branch");
-      return String.format("//@%s_artifact branch/%s/artifact/%s/ (%s:%s)", tagPrefix, branch.getUuid(),
+      return String.format("//@%s_artifact branch/%s/artifact/%s/ (%s:%s)", tagPrefix, branch.getId(),
          artifact.getGuid(), branch.getName(), artifact.getName());
    }
 
@@ -150,21 +150,21 @@ public class OseeDslSegmentParser {
 
    public static final class OseeDslSegment {
 
-      private final Long branchUuid;
+      private final Long branchId;
       private final String artifactGuid;
       private final int start;
       private final int end;
 
-      public OseeDslSegment(Long branchUuid, String artifactGuid, int start, int end) {
+      public OseeDslSegment(Long branchId, String artifactGuid, int start, int end) {
          super();
-         this.branchUuid = branchUuid;
+         this.branchId = branchId;
          this.artifactGuid = artifactGuid;
          this.start = start;
          this.end = end;
       }
 
-      public Long getBranchUuid() {
-         return branchUuid;
+      public Long getBranchId() {
+         return branchId;
       }
 
       public String getArtifactGuid() {
@@ -184,7 +184,7 @@ public class OseeDslSegmentParser {
          final int prime = 31;
          int result = 1;
          result = prime * result + (artifactGuid == null ? 0 : artifactGuid.hashCode());
-         result = prime * result + (branchUuid == null ? 0 : branchUuid.hashCode());
+         result = prime * result + (branchId == null ? 0 : branchId.hashCode());
          result = prime * result + end;
          result = prime * result + start;
          return result;
@@ -209,11 +209,11 @@ public class OseeDslSegmentParser {
          } else if (!artifactGuid.equals(other.artifactGuid)) {
             return false;
          }
-         if (branchUuid == null) {
-            if (other.branchUuid != null) {
+         if (branchId == null) {
+            if (other.branchId != null) {
                return false;
             }
-         } else if (!branchUuid.equals(other.branchUuid)) {
+         } else if (!branchId.equals(other.branchId)) {
             return false;
          }
          if (end != other.end) {
@@ -227,7 +227,7 @@ public class OseeDslSegmentParser {
 
       @Override
       public String toString() {
-         return "OseeDslSegment [branchUuid=" + branchUuid + ", artifactUuid=" + artifactGuid + ", start=" + start + ", end=" + end + "]";
+         return "OseeDslSegment [branchId=" + branchId + ", artifactId=" + artifactGuid + ", start=" + start + ", end=" + end + "]";
       }
 
    }

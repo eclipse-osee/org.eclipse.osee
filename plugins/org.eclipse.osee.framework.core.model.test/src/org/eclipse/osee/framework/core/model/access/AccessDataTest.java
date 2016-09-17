@@ -10,20 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.access;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.model.mocks.ModelAsserts;
@@ -31,14 +31,13 @@ import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Test Case for {@link AccessData}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class AccessDataTest {
@@ -52,7 +51,7 @@ public class AccessDataTest {
    private RelationTypeSide relTypeSide1;
    private RelationTypeSide relTypeSide2;
 
-   private IBasicArtifact<?> artifactToCheck;
+   private ArtifactToken artifactToCheck;
 
    @Before
    public void setup() {
@@ -67,7 +66,7 @@ public class AccessDataTest {
       relTypeSide1 = new RelationTypeSide(relType, RelationSide.SIDE_A);
       relTypeSide2 = new RelationTypeSide(relType, RelationSide.SIDE_B);
 
-      artifactToCheck = new DefaultBasicArtifact(12, GUID.create(), "Hello");
+      artifactToCheck = ArtifactToken.valueOf(12, "Hello", COMMON);
    }
 
    @Test

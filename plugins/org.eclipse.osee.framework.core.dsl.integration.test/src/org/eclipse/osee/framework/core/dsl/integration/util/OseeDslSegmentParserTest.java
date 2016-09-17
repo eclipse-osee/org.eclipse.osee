@@ -14,14 +14,11 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.dsl.integration.mocks.MockArtifact;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeDslSegmentParser.OseeDslSegment;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeDslSegmentParser.TagLocation;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -51,7 +48,7 @@ public class OseeDslSegmentParserTest {
 
    @Test(expected = OseeArgumentException.class)
    public void testGetStartTagNullCheck2() throws OseeCoreException {
-      IBasicArtifact<?> artifact = new DefaultBasicArtifact(45, "abc", "name");
+      ArtifactToken artifact = ArtifactToken.valueOf(45, "name", null);
       parser.getStartTag(artifact, null);
    }
 
@@ -62,28 +59,27 @@ public class OseeDslSegmentParserTest {
 
    @Test(expected = OseeArgumentException.class)
    public void testGetEndTagNullCheck2() throws OseeCoreException {
-      IBasicArtifact<?> artifact = new DefaultBasicArtifact(45, "abc", "name");
+      ArtifactToken artifact = ArtifactToken.valueOf(45, "name", null);
       parser.getEndTag(artifact, null);
    }
 
    @Test
    public void testGetStartEndTag() throws OseeCoreException {
       IOseeBranch branch = CoreBranches.COMMON;
-      final String artifactGuid = GUID.create();
       final String artifactName = "artifactTest";
       final String branchName = branch.getName();
-      final Long branchUuid = branch.getUuid();
+      final Long branchId = branch.getId();
 
-      IBasicArtifact<?> artifact = new MockArtifact(artifactGuid, artifactName, branch, CoreArtifactTypes.Artifact, 45);
+      ArtifactToken artifact = ArtifactToken.valueOf(45, artifactName, branch);
 
       String actual = parser.getStartTag(artifact, branch);
-      String expected = String.format("//@start_artifact branch/%d/artifact/%s/ (%s:%s)", branchUuid, artifactGuid,
+      String expected = String.format("//@start_artifact branch/%d/artifact/%s/ (%s:%s)", branchId, artifact.getGuid(),
          branchName, artifactName);
       Assert.assertEquals(expected, actual);
 
       actual = parser.getEndTag(artifact, branch);
-      expected = String.format("//@end_artifact branch/%d/artifact/%s/ (%s:%s)", branchUuid, artifactGuid, branchName,
-         artifactName);
+      expected = String.format("//@end_artifact branch/%d/artifact/%s/ (%s:%s)", branchId, artifact.getGuid(),
+         branchName, artifactName);
       Assert.assertEquals(expected, actual);
    }
 
@@ -204,7 +200,7 @@ public class OseeDslSegmentParserTest {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
-         Assert.assertEquals("branchguid  - " + index, expected.getBranchUuid(), actual.getBranchUuid());
+         Assert.assertEquals("branchId - " + index, expected.getBranchId(), actual.getBranchId());
          Assert.assertEquals("artguid - " + index, expected.getArtifactGuid(), actual.getArtifactGuid());
          Assert.assertEquals("start - " + index, expected.start(), actual.start());
          Assert.assertEquals("end - " + index, expected.end(), actual.end());

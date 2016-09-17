@@ -21,8 +21,6 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
@@ -33,7 +31,6 @@ import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 import org.eclipse.osee.framework.core.model.type.OseeEnumTypeFactory;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
 
 /**
@@ -57,15 +54,11 @@ public final class MockDataFactory {
    public static <T> AccessDetail<T> createAccessDetails(T expAccessObject, PermissionEnum expPermission, String expReason, Scope scope) {
       AccessDetail<T> target;
       if (expReason != null) {
-         target = new AccessDetail<>(expAccessObject, expPermission, scope, expReason);
+         target = new AccessDetail<T>(expAccessObject, expPermission, scope, expReason);
       } else {
-         target = new AccessDetail<>(expAccessObject, expPermission, scope);
+         target = new AccessDetail<T>(expAccessObject, expPermission, scope);
       }
       return target;
-   }
-
-   public static IBasicArtifact<?> createArtifact(int index) {
-      return new DefaultBasicArtifact(index * 37, GUID.create(), "user_" + index);
    }
 
    public static AttributeType createAttributeType() throws OseeCoreException {

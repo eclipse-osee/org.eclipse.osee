@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.access.exp;
 
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 
 public interface IAccessFilter {
    int getPriority();
 
    boolean acceptToObject(Object object);
 
-   PermissionEnum filter(IBasicArtifact<?> artifact, Object object, PermissionEnum toPermission, PermissionEnum agrPermission, AccessFilterChain filterChain);
+   PermissionEnum filter(ArtifactToken artifact, Object object, PermissionEnum toPermission, PermissionEnum agrPermission, AccessFilterChain filterChain);
 }

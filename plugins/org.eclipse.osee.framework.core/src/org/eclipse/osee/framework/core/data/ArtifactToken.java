@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
  * @author Ryan D. Brooks
@@ -22,8 +23,12 @@ public interface ArtifactToken extends ArtifactId, HasArtifactType, HasBranch, N
       return null;
    }
 
+   public static ArtifactToken valueOf(long id, String name, BranchId branch) {
+      return valueOf(id, GUID.create(), name, branch, null);
+   }
+
    public static ArtifactToken valueOf(long id, String name, BranchId branch, IArtifactType artifactType) {
-      return valueOf(id, null, name, branch, artifactType);
+      return valueOf(id, GUID.create(), name, branch, artifactType);
    }
 
    public static ArtifactToken valueOf(long id, String guid, String name, BranchId branch, IArtifactType artifactType) {

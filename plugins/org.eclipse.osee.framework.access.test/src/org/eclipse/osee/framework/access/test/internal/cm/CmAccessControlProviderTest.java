@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.access.test.internal.cm;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.framework.access.internal.cm.CmAccessControlProviderImpl;
@@ -35,7 +36,7 @@ public class CmAccessControlProviderTest {
 
    @Before
    public void setup() {
-      user = MockDataFactory.createArtifact(4);
+      user = ArtifactToken.valueOf(1, null, COMMON);
       objectToCheck = new Object();
    }
 

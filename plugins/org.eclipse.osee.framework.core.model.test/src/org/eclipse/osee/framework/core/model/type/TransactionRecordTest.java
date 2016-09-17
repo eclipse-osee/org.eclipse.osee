@@ -125,6 +125,7 @@ public class TransactionRecordTest {
       tx2.setTimeStamp(new Date(11111111111L));
 
       Assert.assertNotSame(tx1, tx2);
+
       Assert.assertTrue(tx1.equals(tx2));
       Assert.assertTrue(tx2.equals(tx1));
       Assert.assertEquals(tx1.hashCode(), tx2.hashCode());

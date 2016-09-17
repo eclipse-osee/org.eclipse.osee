@@ -10,26 +10,27 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.access.exp;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * Test Case for {@link AccessFilterChain}
- * 
+ *
  * @author Jeff C. Phillips
  */
 public class AccessFilterChainTest {
+
+   private final ArtifactToken basicArtifact = ArtifactToken.valueOf(1, "123", COMMON);
 
    @Test
    public void testUseCase() {
       //Can we edit this attribute on an artifact
       AccessFilterChain chain = new AccessFilterChain();
-      IBasicArtifact<?> basicArtifact = new DefaultBasicArtifact(1, "1", "123");
       IAttributeType attributeType = CoreAttributeTypes.WordTemplateContent;
 
       BranchAccessFilter branchAccessFilter = new BranchAccessFilter(basicArtifact, PermissionEnum.READ);
@@ -49,8 +50,7 @@ public class AccessFilterChainTest {
    @Test
    public void testWrongArtifactUseCase() {
       AccessFilterChain chain = new AccessFilterChain();
-      IBasicArtifact<?> basicArtifact = new DefaultBasicArtifact(1, "1", "123");
-      IBasicArtifact<?> basicArtifact2 = new DefaultBasicArtifact(2, "2", "456");
+      ArtifactToken basicArtifact2 = ArtifactToken.valueOf(2, "456", COMMON);
       IAttributeType attributeType = CoreAttributeTypes.WordTemplateContent;
 
       BranchAccessFilter branchAccessFilter = new BranchAccessFilter(basicArtifact, PermissionEnum.READ);
@@ -70,8 +70,6 @@ public class AccessFilterChainTest {
    @Test
    public void testChain() {
       AccessFilterChain chain = new AccessFilterChain();
-      IBasicArtifact<?> basicArtifact = new DefaultBasicArtifact(1, "1", "123");
-
       BranchAccessFilter branchAccessFilter = new BranchAccessFilter(basicArtifact, PermissionEnum.READ);
       ArtifactAccessFilter artifactAccessFilter = new ArtifactAccessFilter(basicArtifact, PermissionEnum.WRITE);
 
@@ -86,7 +84,6 @@ public class AccessFilterChainTest {
    @Test
    public void testChainDeny() {
       AccessFilterChain chain = new AccessFilterChain();
-      IBasicArtifact<?> basicArtifact = new DefaultBasicArtifact(1, "1", "123");
       BranchAccessFilter branchAccessFilter = new BranchAccessFilter(basicArtifact, PermissionEnum.DENY);
       ArtifactAccessFilter artifactAccessFilter = new ArtifactAccessFilter(basicArtifact, PermissionEnum.WRITE);
 

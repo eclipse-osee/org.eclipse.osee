@@ -15,8 +15,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 
 public class AccessFilterChain {
    private final List<IAccessFilter> filters;
@@ -35,7 +35,7 @@ public class AccessFilterChain {
       filters.add(filter);
    }
 
-   public boolean doFilter(IBasicArtifact<?> artifact, Object object, PermissionEnum toPermission, PermissionEnum agrPermission) {
+   public boolean doFilter(ArtifactToken artifact, Object object, PermissionEnum toPermission, PermissionEnum agrPermission) {
 
       Collections.sort(filters, new Comparator<IAccessFilter>() {
 

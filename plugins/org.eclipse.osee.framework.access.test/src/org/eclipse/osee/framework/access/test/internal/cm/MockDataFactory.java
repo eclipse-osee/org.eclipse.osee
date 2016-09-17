@@ -13,11 +13,8 @@ package org.eclipse.osee.framework.access.test.internal.cm;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.Scope;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
 
 /**
@@ -45,9 +42,4 @@ public final class MockDataFactory {
       }
       return target;
    }
-
-   public static IBasicArtifact<?> createArtifact(int index) {
-      return new DefaultBasicArtifact(index * 37, GUID.create(), "user_" + index);
-   }
-
 }

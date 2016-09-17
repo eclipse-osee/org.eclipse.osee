@@ -10,17 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.access.exp;
 
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 
 public class AttributeTypeAccessFilter implements IAccessFilter {
    private final PermissionEnum permission;
-   private final IBasicArtifact<?> artifact;
+   private final ArtifactToken artifact;
    private final IAttributeType type;
 
-   public AttributeTypeAccessFilter(PermissionEnum permission, IBasicArtifact<?> artifact, IAttributeType type) {
+   public AttributeTypeAccessFilter(PermissionEnum permission, ArtifactToken artifact, IAttributeType type) {
       super();
       this.permission = permission;
       this.artifact = artifact;
@@ -35,11 +35,11 @@ public class AttributeTypeAccessFilter implements IAccessFilter {
    @Override
    public boolean acceptToObject(Object object) {
       //Return false if the object to be checked is a branch or artifact.
-      return !(object instanceof BranchId) && !(object instanceof IBasicArtifact<?>);
+      return !(object instanceof BranchId) && !(object instanceof ArtifactToken);
    }
 
    @Override
-   public PermissionEnum filter(IBasicArtifact<?> artifact, Object object, PermissionEnum toPermission, PermissionEnum agrPermission, AccessFilterChain filterChain) {
+   public PermissionEnum filter(ArtifactToken artifact, Object object, PermissionEnum toPermission, PermissionEnum agrPermission, AccessFilterChain filterChain) {
       PermissionEnum toReturn = agrPermission;
 
       if (this.artifact.equals(artifact) && type.equals(object)) {

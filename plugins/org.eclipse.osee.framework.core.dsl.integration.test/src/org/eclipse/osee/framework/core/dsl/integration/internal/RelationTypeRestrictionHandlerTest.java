@@ -15,6 +15,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.DslAsserts;
@@ -35,8 +37,6 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
-import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
@@ -50,7 +50,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link RelationTypeRestrictionHandler}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTest<RelationTypeRestriction> {
@@ -300,7 +300,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
          CoreArtifactTypes.AbstractSoftwareRequirement.getName(), false));
       artArtType.setSuperTypes(superTypes);
 
-      DefaultBasicArtifact expectedAccessObject = new DefaultBasicArtifact(1, GUID.create(), "Another Artifact");
+      ArtifactToken expectedAccessObject = ArtifactToken.valueOf(1, "Another Artifact", BranchId.SENTINEL);
       MockArtifactProxy artData = new MockArtifactProxy(expectedAccessObject.getGuid(), artArtType,
          expectedAccessObject, null, Collections.singleton(testRelationType));
 
@@ -338,7 +338,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
          new ArtifactType(CoreArtifactTypes.Artifact.getGuid(), CoreArtifactTypes.Artifact.getName(), false));
       artArtType.setSuperTypes(superTypes);
 
-      IBasicArtifact<Object> dummy = new DefaultBasicArtifact(43, GUID.create(), artifactName);
+      ArtifactToken dummy = ArtifactToken.valueOf(43, artifactName, BranchId.SENTINEL);
       MockArtifactProxy artData =
          new MockArtifactProxy(GUID.create(), artArtType, dummy, null, Collections.singleton(testRelationType));
       RelationTypeSide expectedObject = new RelationTypeSide(testRelationType, RelationSide.SIDE_B);

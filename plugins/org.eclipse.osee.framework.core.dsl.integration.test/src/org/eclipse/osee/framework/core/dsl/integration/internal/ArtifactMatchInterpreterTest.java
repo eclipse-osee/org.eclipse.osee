@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import java.util.Collection;
 import java.util.Iterator;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -26,7 +27,6 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.MatchField;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.SimpleCondition;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XLogicOperator;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -301,7 +301,7 @@ public class ArtifactMatchInterpreterTest {
          }
 
          @Override
-         public IBasicArtifact<?> getObject() {
+         public ArtifactToken getObject() {
             return null;
          }
 

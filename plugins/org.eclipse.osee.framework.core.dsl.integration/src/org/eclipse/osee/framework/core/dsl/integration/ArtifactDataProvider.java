@@ -14,7 +14,6 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -27,12 +26,6 @@ public interface ArtifactDataProvider {
    public static interface ArtifactProxy extends ArtifactToken {
 
       @Override
-      String getName();
-
-      @Override
-      String getGuid();
-
-      @Override
       ArtifactType getArtifactType();
 
       boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException;
@@ -41,7 +34,7 @@ public interface ArtifactDataProvider {
 
       Collection<ArtifactProxy> getHierarchy();
 
-      IBasicArtifact<?> getObject();
+      ArtifactToken getObject();
 
       IOseeBranch getBranchToken();
    }

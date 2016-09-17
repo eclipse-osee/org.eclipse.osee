@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.access.test.internal.cm;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,7 +41,7 @@ public class CmAccessProviderTest {
 
    @BeforeClass
    public static void setup() {
-      expectedUser = MockDataFactory.createArtifact(13);
+      expectedUser = ArtifactToken.valueOf(13, null, COMMON);
       expectedObject = new Object();
       contextId1 = MockDataFactory.createAccessContextId(GUID.create(), "context1");
    }

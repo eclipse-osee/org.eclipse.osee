@@ -12,12 +12,11 @@ package org.eclipse.osee.framework.core.dsl.integration.mocks;
 
 import java.util.Collection;
 import java.util.Collections;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 
@@ -30,18 +29,18 @@ public class MockArtifactProxy implements ArtifactProxy {
    private final ArtifactType artifactType;
    private final Collection<ArtifactProxy> hierarchy;
    private final Collection<RelationType> validRelationTypes;
-   private final IBasicArtifact<?> artifactObject;
+   private final ArtifactToken artifactObject;
 
-   public MockArtifactProxy(IBasicArtifact<?> artifactObject) {
-      this(artifactObject.getGuid(), artifactObject.getArtifactType(), artifactObject,
-         Collections.<ArtifactProxy> emptyList(), Collections.<RelationType> emptyList());
+   public MockArtifactProxy(ArtifactToken artifactObject) {
+      this(artifactObject.getGuid(), null, artifactObject, Collections.<ArtifactProxy> emptyList(),
+         Collections.<RelationType> emptyList());
    }
 
    public MockArtifactProxy(String guid, ArtifactType artifactType) {
       this(guid, artifactType, null, Collections.<ArtifactProxy> emptyList(), Collections.<RelationType> emptyList());
    }
 
-   public MockArtifactProxy(String guid, ArtifactType artifactType, IBasicArtifact<?> artifactObject, Collection<ArtifactProxy> hierarchy, Collection<RelationType> validRelationTypes) {
+   public MockArtifactProxy(String guid, ArtifactType artifactType, ArtifactToken artifactObject, Collection<ArtifactProxy> hierarchy, Collection<RelationType> validRelationTypes) {
       this.guid = guid;
       this.artifactType = artifactType;
       this.hierarchy = hierarchy;
@@ -75,18 +74,18 @@ public class MockArtifactProxy implements ArtifactProxy {
    }
 
    @Override
-   public IBasicArtifact<?> getObject() {
+   public ArtifactToken getObject() {
       return artifactObject;
    }
 
    @Override
    public BranchId getBranch() {
-      return getBranchToken();
+      return artifactObject.getBranch();
    }
 
    @Override
    public IOseeBranch getBranchToken() {
-      return TokenFactory.createBranch(getBranchId(), getClass().getName());
+      return IOseeBranch.create(getBranch(), getClass().getName());
    }
 
    @Override
@@ -96,6 +95,6 @@ public class MockArtifactProxy implements ArtifactProxy {
 
    @Override
    public Long getId() {
-      return Long.valueOf(artifactObject.getArtId());
+      return Long.valueOf(artifactObject.getId());
    }
 }

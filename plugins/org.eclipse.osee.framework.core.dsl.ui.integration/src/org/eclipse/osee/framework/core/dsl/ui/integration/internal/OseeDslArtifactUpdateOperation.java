@@ -60,7 +60,7 @@ public class OseeDslArtifactUpdateOperation extends AbstractOperation {
             int endAt = segment.end();
 
             String data = source.substring(startAt, endAt);
-            addChanges(transactionMap, segment.getBranchUuid(), segment.getArtifactGuid(), data);
+            addChanges(transactionMap, segment.getBranchId(), segment.getArtifactGuid(), data);
             monitor.worked(workAmount);
          }
          monitor.setTaskName("Persist...");

@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.access.exp;
 
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 
 public class BranchAccessFilter implements IAccessFilter {
    private final PermissionEnum branchPermission;
-   private final IBasicArtifact<?> artifact;
+   private final ArtifactToken artifact;
 
-   public BranchAccessFilter(IBasicArtifact<?> artifact, PermissionEnum branchPermission) {
+   public BranchAccessFilter(ArtifactToken artifact, PermissionEnum branchPermission) {
       this.artifact = artifact;
       this.branchPermission = branchPermission;
    }
@@ -28,7 +28,7 @@ public class BranchAccessFilter implements IAccessFilter {
    }
 
    @Override
-   public PermissionEnum filter(IBasicArtifact<?> artifact, Object object, PermissionEnum toPermission, PermissionEnum agrPermission, AccessFilterChain filterChain) {
+   public PermissionEnum filter(ArtifactToken artifact, Object object, PermissionEnum toPermission, PermissionEnum agrPermission, AccessFilterChain filterChain) {
       PermissionEnum toReturn = agrPermission;
 
       if (this.artifact.equals(artifact)) {
