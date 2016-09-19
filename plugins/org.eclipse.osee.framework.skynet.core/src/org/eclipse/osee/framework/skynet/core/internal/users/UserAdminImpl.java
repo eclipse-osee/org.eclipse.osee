@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.osee.cache.admin.Cache;
 import org.eclipse.osee.cache.admin.CacheAdmin;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.UserDataStoreException;
@@ -211,7 +212,7 @@ public class UserAdminImpl implements UserAdmin {
 
    /**
     * This is not the preferred way to get a user. Most likely getUserByUserId() or getUserByArtId() should be used
-    * 
+    *
     * @return the first user found with the given name
     */
    @Override
@@ -249,7 +250,7 @@ public class UserAdminImpl implements UserAdmin {
    }
 
    @Override
-   public String getUserNameById(int userArtifactId) throws OseeCoreException {
+   public String getUserNameById(ArtifactId userArtifactId) throws OseeCoreException {
       User user = getUserByArtId(userArtifactId);
       if (user == null) {
          throw new UserNotInDatabase("Unable to find user with artId[%s]", userArtifactId);
@@ -259,7 +260,7 @@ public class UserAdminImpl implements UserAdmin {
    }
 
    @Override
-   public String getSafeUserNameById(int userArtifactId) {
+   public String getSafeUserNameById(ArtifactId userArtifactId) {
       String name;
       try {
          name = getUserNameById(userArtifactId);
@@ -270,9 +271,9 @@ public class UserAdminImpl implements UserAdmin {
    }
 
    @Override
-   public User getUserByArtId(int userArtifactId) throws OseeCoreException {
+   public User getUserByArtId(ArtifactId userArtifactId) throws OseeCoreException {
       User toReturn = null;
-      if (userArtifactId <= 0) {
+      if (userArtifactId.isInvalid()) {
          toReturn = getUser(SystemUser.OseeSystem);
       } else {
          // check cached users first
@@ -284,10 +285,10 @@ public class UserAdminImpl implements UserAdmin {
       return toReturn;
    }
 
-   private User checkIterableForId(Iterable<User> users, int id) {
+   private User checkIterableForId(Iterable<User> users, ArtifactId id) {
       User toReturn = null;
       for (User tempUser : users) {
-         if (id == tempUser.getArtId()) {
+         if (id.equals(Long.valueOf(tempUser.getArtId()))) {
             toReturn = tempUser;
             break;
          }

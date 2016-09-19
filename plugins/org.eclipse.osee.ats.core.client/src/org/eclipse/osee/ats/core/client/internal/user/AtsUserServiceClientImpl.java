@@ -134,7 +134,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
 
    @Override
    public IAtsUser getUserById(long accountId) {
-      return getUserFromOseeUser(UserManager.getUserByArtId((int) accountId));
+      return getUserFromOseeUser(UserManager.getUserByArtId(accountId));
    }
 
    @Override

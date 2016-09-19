@@ -11,8 +11,6 @@
 
 package org.eclipse.osee.framework.access.internal;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,8 +31,9 @@ import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessObject;
 import org.eclipse.osee.framework.access.internal.data.ArtifactAccessObject;
 import org.eclipse.osee.framework.access.internal.data.BranchAccessObject;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -84,6 +83,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 /**
  * @author Jeff C. Phillips
@@ -110,18 +111,15 @@ public class AccessControlService implements IAccessControlService {
    private final String DELETE_BRANCH_ACL_FROM_BRANCH = "DELETE FROM OSEE_BRANCH_ACL WHERE branch_id =?";
 
    private final String USER_GROUP_MEMBERS =
-      "SELECT b_art_id FROM osee_relation_link WHERE a_art_id =? AND rel_link_type_id =? ORDER BY b_art_id";
+      "SELECT b_art_id FROM osee_relation_link WHERE a_art_id = ? AND rel_link_type_id = ? ORDER BY b_art_id";
 
-   private final DoubleKeyHashMap<Integer, AccessObject, PermissionEnum> accessControlListCache =
-      new DoubleKeyHashMap<Integer, AccessObject, PermissionEnum>();
-   private final HashCollection<AccessObject, Integer> objectToSubjectCache =
-      new HashCollection<AccessObject, Integer>(true); // <subjectId, groupId>
-   private final HashCollection<Integer, Integer> subjectToGroupCache = new HashCollection<>(true); // <groupId, subjectId>
-   private final HashCollection<Integer, Integer> groupToSubjectsCache = new HashCollection<>(true); // <artId, branchUuid>
+   private final DoubleKeyHashMap<Long, AccessObject, PermissionEnum> accessControlListCache = new DoubleKeyHashMap<>();
+   private final HashCollection<AccessObject, ArtifactId> objectToSubjectCache = new HashCollection<>(true);
+   private final HashCollection<Long, ArtifactId> subjectToGroupCache = new HashCollection<>(true); // <subjectId, groupId>
+   private final HashCollection<Long, ArtifactId> groupToSubjectsCache = new HashCollection<>(true); // <groupId, subjectId>
 
    // branch_id, art_id, subject_id
-   private final CompositeKeyHashMap<Long, Integer, Integer> artifactLockCache =
-      new CompositeKeyHashMap<Long, Integer, Integer>();
+   private final CompositeKeyHashMap<BranchId, Long, ArtifactId> artifactLockCache = new CompositeKeyHashMap<>();
 
    private final HashCollection<Integer, PermissionEnum> subjectToPermissionCache =
       new HashCollection<Integer, PermissionEnum>(true);
@@ -210,16 +208,16 @@ public class AccessControlService implements IAccessControlService {
    private void populateBranchAccessControlList() throws OseeCoreException {
       ensurePopulated();
       Consumer<JdbcStatement> consumer = stmt -> {
-         Integer subjectId = stmt.getInt("privilege_entity_id");
-         Long branchUuid = stmt.getLong("branch_id");
-         Long subjectArtifactTypeId = stmt.getLong("art_type_id");
+         ArtifactId subjectId = ArtifactId.valueOf(stmt.getLong("privilege_entity_id"));
+         BranchId branch = BranchId.valueOf(stmt.getLong("branch_id"));
+         ArtifactTypeId subjectArtifactTypeId = ArtifactTypeId.valueOf(stmt.getLong("art_type_id"));
          PermissionEnum permission = PermissionEnum.getPermission(stmt.getInt("permission_id"));
-         BranchAccessObject branchAccessObject = BranchAccessObject.getBranchAccessObject(branchUuid);
+         BranchAccessObject branchAccessObject = BranchAccessObject.getBranchAccessObject(branch);
 
-         accessControlListCache.put(subjectId, branchAccessObject, permission);
+         accessControlListCache.put(subjectId.getId(), branchAccessObject, permission);
          objectToSubjectCache.put(branchAccessObject, subjectId);
 
-         ArtifactType subjectArtifactType = getArtifactTypeCache().getById(subjectArtifactTypeId);
+         ArtifactType subjectArtifactType = getArtifactTypeCache().get(subjectArtifactTypeId);
          if (subjectArtifactType != null && subjectArtifactType.inheritsFrom(CoreArtifactTypes.UserGroup)) {
             populateGroupMembers(subjectId);
          }
@@ -231,19 +229,18 @@ public class AccessControlService implements IAccessControlService {
       ensurePopulated();
 
       Consumer<JdbcStatement> consumer = stmt -> {
-         Integer subjectId = stmt.getInt("privilege_entity_id");
-         Integer objectId = stmt.getInt("art_id");
-         Long branchUuid = stmt.getLong("branch_id");
+         ArtifactId subjectId = ArtifactId.valueOf(stmt.getLong("privilege_entity_id"));
+         ArtifactId objectId = ArtifactId.valueOf(stmt.getLong("art_id"));
+         BranchId branch = BranchId.valueOf(stmt.getLong("branch_id"));
          Long subjectArtifactTypeId = stmt.getLong("art_type_id");
          PermissionEnum permission = PermissionEnum.getPermission(stmt.getInt("permission_id"));
 
          if (permission != null) {
             if (permission.equals(PermissionEnum.LOCK)) {
-               artifactLockCache.put(branchUuid, objectId, subjectId);
+               artifactLockCache.put(branch, objectId.getId(), subjectId);
             } else {
-               AccessObject accessObject =
-                  ArtifactAccessObject.getArtifactAccessObject(objectId, TokenFactory.createBranch(branchUuid));
-               cacheAccessObject(objectId, subjectId, permission, accessObject);
+               AccessObject accessObject = ArtifactAccessObject.getArtifactAccessObject(objectId, branch);
+               cacheAccessObject(subjectId, permission, accessObject);
 
                ArtifactType subjectArtifactType = getArtifactTypeCache().getById(subjectArtifactTypeId);
                if (subjectArtifactType != null && subjectArtifactType.inheritsFrom(CoreArtifactTypes.UserGroup)) {
@@ -256,14 +253,14 @@ public class AccessControlService implements IAccessControlService {
       getJdbcClient().runQuery(consumer, GET_ALL_ARTIFACT_ACCESS_CONTROL_LIST);
    }
 
-   private void populateGroupMembers(Integer groupId) throws OseeCoreException {
+   private void populateGroupMembers(ArtifactId groupId) throws OseeCoreException {
       ensurePopulated();
-      if (!groupToSubjectsCache.containsKey(groupId)) {
+      if (!groupToSubjectsCache.containsKey(groupId.getId())) {
          getJdbcClient().runQuery(stmt -> {
-            Integer groupMember = stmt.getInt("b_art_id");
-            subjectToGroupCache.put(groupMember, groupId);
-            groupToSubjectsCache.put(groupId, groupMember);
-         }, USER_GROUP_MEMBERS, groupId, CoreRelationTypes.Users_User.getGuid());
+            ArtifactId groupMember = ArtifactId.valueOf(stmt.getLong("b_art_id"));
+            subjectToGroupCache.put(groupMember.getId(), groupId);
+            groupToSubjectsCache.put(groupId.getId(), groupMember);
+         }, USER_GROUP_MEMBERS, groupId, CoreRelationTypes.Users_User);
       }
    }
 
@@ -403,18 +400,17 @@ public class AccessControlService implements IAccessControlService {
          return PermissionEnum.FULLACCESS;
       }
 
-      Integer artId = artifact.getArtId();
+      Long artId = artifact.getId();
       BranchId branch = artifact.getBranch();
-      Long branchUuid = branch.getUuid();
 
       //      accessObject = accessObjectCache.get(artId, branchUuid);
-      accessObject = ArtifactAccessObject.getArtifactAccessObjectFromCache(artId, branch);
+      accessObject = ArtifactAccessObject.getArtifactAccessObjectFromCache(artifact);
 
-      if (artifactLockCache.containsKey(branchUuid, artId)) {
+      if (artifactLockCache.containsKey(branch, artId)) {
 
-         int lockOwnerId = artifactLockCache.get(branchUuid, artId);
+         ArtifactId lockOwnerId = artifactLockCache.get(branch, artId);
          // this object is locked under a different branch
-         if (lockOwnerId != subject.getArtId()) {
+         if (subject.notEqual(lockOwnerId)) {
             userPermission = PermissionEnum.LOCK;
          }
       }
@@ -429,15 +425,14 @@ public class AccessControlService implements IAccessControlService {
 
    private PermissionEnum acquirePermissionRank(IBasicArtifact<?> subject, AccessObject accessObject) {
       ensurePopulated();
-      int subjectId = subject.getArtId();
-
-      PermissionEnum userPermission = accessControlListCache.get(subjectId, accessObject);
-
-      if (subjectToGroupCache.containsKey(subjectId)) {
-         for (int groupPermissionId : subjectToGroupCache.getValues(subjectId)) {
-            PermissionEnum groupPermission = accessControlListCache.get(groupPermissionId, accessObject);
+      PermissionEnum userPermission = accessControlListCache.get(subject.getId(), accessObject);
+      if (subjectToGroupCache.containsKey(subject.getId())) {
+         for (ArtifactId groupPermissionId : subjectToGroupCache.getValues(subject.getId())) {
+            PermissionEnum groupPermission = accessControlListCache.get(groupPermissionId.getId(), accessObject);
 
             if (groupPermission != null) {
+               if (userPermission == null) {
+                  userPermission = groupPermission;
                } else if (groupPermission.getRank() > userPermission.getRank()) {
                   userPermission = groupPermission;
                }
@@ -465,9 +460,9 @@ public class AccessControlService implements IAccessControlService {
       ensurePopulated();
       AccessObject accessObject = getAccessObject(object);
 
-      boolean newAccessControlData = !accessControlListCache.containsKey(subject.getArtId(), accessObject);
+      boolean newAccessControlData = !accessControlListCache.containsKey(subject.getId(), accessObject);
 
-      if (newAccessControlData || permission != accessControlListCache.get(subject.getArtId(), accessObject)) {
+      if (newAccessControlData || permission != accessControlListCache.get(subject.getId(), accessObject)) {
          AccessControlData data = new AccessControlData(subject, accessObject, permission, newAccessControlData);
          persistPermission(data);
       }
@@ -512,26 +507,26 @@ public class AccessControlService implements IAccessControlService {
 
             if (data.isBirth()) {
                getJdbcClient().runPreparedUpdate(INSERT_INTO_ARTIFACT_ACL, artifactAccessObject.getArtId(),
-                  data.getPermission().getPermId(), data.getSubject().getArtId(), artifactAccessObject.getBranchId());
+                  data.getPermission().getPermId(), data.getSubject().getArtId(), artifactAccessObject.getBranch());
             } else {
                getJdbcClient().runPreparedUpdate(UPDATE_ARTIFACT_ACL, data.getPermission().getPermId(),
-                  data.getSubject().getArtId(), artifactAccessObject.getArtId(), artifactAccessObject.getBranchId());
+                  data.getSubject().getArtId(), artifactAccessObject.getArtId(), artifactAccessObject.getBranch());
             }
             event.addArtifact(artifactAccessObject.getArtId());
 
             if (recurse) {
-               Artifact artifact = ArtifactQuery.getArtifactFromId(artifactAccessObject.getArtId(),
-                  TokenFactory.createBranch(artifactAccessObject.getBranchId()));
+               Artifact artifact =
+                  ArtifactQuery.getArtifactFromId(artifactAccessObject.getArtId(), artifactAccessObject.getBranch());
 
                for (Artifact child : artifact.getChildren()) {
                   AccessControlData childAccessControlData = null;
                   AccessObject childAccessObject = getAccessObject(child);
 
                   if (objectToSubjectCache.containsKey(childAccessObject)) {
-                     Collection<Integer> subjectIds = objectToSubjectCache.getValues(childAccessObject);
+                     Collection<ArtifactId> subjectIds = objectToSubjectCache.getValues(childAccessObject);
 
-                     for (int subjectId : subjectIds) {
-                        if (subjectId == subject.getArtId()) {
+                     for (ArtifactId subjectId : subjectIds) {
+                        if (subjectId.equals(subject)) {
                            childAccessControlData =
                               new AccessControlData(subject, childAccessObject, permission, false);
                            break;
@@ -560,10 +555,10 @@ public class AccessControlService implements IAccessControlService {
          try {
             if (data.isBirth()) {
                getJdbcClient().runPreparedUpdate(INSERT_INTO_BRANCH_ACL, data.getPermission().getPermId(),
-                  data.getSubject().getArtId(), branchAccessObject.getBranchId());
+                  data.getSubject().getArtId(), branchAccessObject.getBranch());
             } else {
                getJdbcClient().runPreparedUpdate(UPDATE_BRANCH_ACL, data.getPermission().getPermId(),
-                  data.getSubject().getArtId(), branchAccessObject.getBranchId());
+                  data.getSubject().getArtId(), branchAccessObject.getBranch());
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
@@ -574,14 +569,14 @@ public class AccessControlService implements IAccessControlService {
    private void cacheAccessControlData(AccessControlData data) throws OseeCoreException {
       ensurePopulated();
       AccessObject accessObject = data.getObject();
-      int subjectId = data.getSubject().getArtId();
       PermissionEnum permission = data.getPermission();
+      ArtifactId subject = data.getSubject();
 
       if (!permission.equals(PermissionEnum.LOCK)) {
-         accessControlListCache.put(subjectId, accessObject, permission);
-         objectToSubjectCache.put(accessObject, subjectId);
+         accessControlListCache.put(data.getSubject().getId(), accessObject, permission);
+         objectToSubjectCache.put(accessObject, subject);
 
-         populateGroupMembers(subjectId);
+         populateGroupMembers(subject);
       }
    }
 
@@ -608,14 +603,14 @@ public class AccessControlService implements IAccessControlService {
       ensurePopulated();
       List<AccessControlData> datas = new LinkedList<>();
 
-      Collection<Integer> subjects = objectToSubjectCache.getValues(accessObject);
+      Collection<ArtifactId> subjects = objectToSubjectCache.getValues(accessObject);
       if (subjects == null) {
          return datas;
       }
 
-      for (int subjectId : subjects) {
+      for (ArtifactId subjectId : subjects) {
          Artifact subject = ArtifactQuery.getArtifactFromId(subjectId, CoreBranches.COMMON);
-         PermissionEnum permissionEnum = accessControlListCache.get(subjectId, accessObject);
+         PermissionEnum permissionEnum = accessControlListCache.get(subjectId.getId(), accessObject);
          AccessControlData accessControlData =
             new AccessControlData(subject, accessObject, permissionEnum, false, false);
          if (accessObject instanceof ArtifactAccessObject) {
@@ -631,10 +626,7 @@ public class AccessControlService implements IAccessControlService {
    }
 
    private PermissionEnum getBranchPermission(IBasicArtifact<?> subject, Object object) throws OseeCoreException {
-      long branchUuid = ((AccessObject) object).getBranchId();
-      BranchId branch = TokenFactory.createBranch(branchUuid);
-
-      return getBranchPermission(subject, branch);
+      return getBranchPermission(subject, ((AccessObject) object).getBranch());
    }
 
    public void removeAccessControlDataIf(boolean removeFromDb, AccessControlData data) throws OseeCoreException {
@@ -667,18 +659,18 @@ public class AccessControlService implements IAccessControlService {
       }
 
       AccessObject accessObject = data.getObject();
-      Integer subjectId = data.getSubject().getArtId();
+      ArtifactId subject = data.getSubject();
 
-      accessControlListCache.remove(subjectId, accessObject);
-      objectToSubjectCache.removeValue(accessObject, subjectId);
-      Collection<Integer> members = groupToSubjectsCache.getValues(subjectId);
+      accessControlListCache.remove(data.getSubject().getId(), accessObject);
+      objectToSubjectCache.removeValue(accessObject, subject);
+      Collection<ArtifactId> members = groupToSubjectsCache.getValues(subject.getId());
 
       if (members != null) {
-         for (Integer member : members) {
-            subjectToGroupCache.removeValue(member, subjectId);
+         for (ArtifactId member : members) {
+            subjectToGroupCache.removeValue(member.getId(), subject);
          }
       }
-      groupToSubjectsCache.removeValues(subjectId);
+      groupToSubjectsCache.removeValues(subject.getId());
       if (!objectToSubjectCache.containsKey(accessObject)) {
          accessObject.removeFromCache();
       }
@@ -688,8 +680,8 @@ public class AccessControlService implements IAccessControlService {
       return AccessObject.getAccessObject(object);
    }
 
-   private void cacheAccessObject(Integer objectId, Integer subjectId, PermissionEnum permission, AccessObject accessObject) {
-      accessControlListCache.put(subjectId, accessObject, permission);
+   private void cacheAccessObject(ArtifactId subjectId, PermissionEnum permission, AccessObject accessObject) {
+      accessControlListCache.put(subjectId.getId(), accessObject, permission);
       objectToSubjectCache.put(accessObject, subjectId);
    }
 
@@ -702,15 +694,14 @@ public class AccessControlService implements IAccessControlService {
       event.setLocked(true);
       Set<Artifact> lockedArts = new HashSet<>();
       for (Artifact object : objects) {
-         Integer objectArtId = object.getArtId();
-         Integer subjectArtId = subject.getArtId();
-         Long objectBranchId = object.getBranchId();
+         Long objectArtId = object.getId();
+         BranchId objectBranch = object.getBranch();
 
-         if (!artifactLockCache.containsKey(objectBranchId, objectArtId)) {
+         if (!artifactLockCache.containsKey(objectBranch, objectArtId)) {
             AccessObject accessObject = getAccessObject(object);
             AccessControlData data = new AccessControlData(subject, accessObject, PermissionEnum.LOCK, true);
             persistPermission(data);
-            artifactLockCache.put(objectBranchId, objectArtId, subjectArtId);
+            artifactLockCache.put(objectBranch, objectArtId, subject);
             event.addArtifact(object.getUuid());
             lockedArts.add(object);
          }
@@ -729,13 +720,13 @@ public class AccessControlService implements IAccessControlService {
       event.setLocked(false);
       Set<Artifact> lockedArts = new HashSet<>();
       for (Artifact object : objects) {
-         Integer objectArtId = object.getArtId();
-         Long branchUuid = object.getBranchId();
+         Long objectArtId = object.getId();
+         BranchId branch = object.getBranch();
 
-         if (artifactLockCache.containsKey(branchUuid, objectArtId) && canUnlockObject(object, subject)) {
+         if (artifactLockCache.containsKey(branch, objectArtId) && canUnlockObject(object, subject)) {
             AccessObject accessObject = getAccessObject(object);
             removeAccessControlDataIf(true, new AccessControlData(subject, accessObject, PermissionEnum.LOCK, false));
-            artifactLockCache.removeAndGet(branchUuid, objectArtId);
+            artifactLockCache.removeAndGet(branch, objectArtId);
             event.addArtifact(object.getUuid());
             lockedArts.add(object);
          }
@@ -767,13 +758,13 @@ public class AccessControlService implements IAccessControlService {
          return false;
       }
 
-      return artifactLockCache.containsKey(object.getBranchId(), object.getArtId());
+      return artifactLockCache.containsKey(object.getBranch(), object.getId());
    }
 
    public boolean canUnlockObject(Artifact object, Artifact subject) throws OseeCoreException {
       ensurePopulated();
-      Integer subjectId = artifactLockCache.get(object.getBranchId(), object.getArtId());
-      return subjectId != null && subjectId.intValue() == subject.getArtId();
+      ArtifactId subjectId = artifactLockCache.get(object.getBranch(), object.getId());
+      return subject.equals(subjectId);
    }
 
    public Artifact getSubjectFromLockedObject(Object object) throws OseeCoreException {
@@ -782,7 +773,7 @@ public class AccessControlService implements IAccessControlService {
 
       if (object instanceof Artifact) {
          Artifact art = (Artifact) object;
-         Integer subjectArtId = artifactLockCache.get(art.getBranchId(), art.getArtId());
+         ArtifactId subjectArtId = artifactLockCache.get(art.getBranch(), art.getId());
 
          if (subjectArtId != null) {
             subject = UserManager.getUserByArtId(subjectArtId);
@@ -800,8 +791,7 @@ public class AccessControlService implements IAccessControlService {
       }
 
       if (hasLock(object)) {
-         long branchUuid = object.getBranchId();
-         hasAccess = artifactLockCache.get(branchUuid, object.getArtId()) == UserManager.getUser().getArtId();
+         hasAccess = artifactLockCache.get(object.getBranch(), object.getId()).equals(UserManager.getUser());
       }
       return hasAccess;
    }

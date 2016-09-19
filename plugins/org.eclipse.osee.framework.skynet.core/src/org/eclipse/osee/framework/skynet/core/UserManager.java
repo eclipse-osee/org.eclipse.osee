@@ -17,6 +17,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 import org.eclipse.osee.cache.admin.CacheAdmin;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
@@ -133,20 +134,24 @@ public final class UserManager {
 
       String name;
       if (userAdmin != null) {
-         name = userAdmin.getSafeUserNameById(userArtifactId);
+         name = userAdmin.getSafeUserNameById(ArtifactId.valueOf(userArtifactId));
       } else {
          name = String.format("Unable resolve user by artId[%s] since userAdmin was unavailable", userArtifactId);
       }
       return name;
    }
 
-   public static User getUserByArtId(int userArtifactId) throws OseeCoreException {
+   public static User getUserByArtId(ArtifactId userArtifactId) throws OseeCoreException {
       return getUserAdmin().getUserByArtId(userArtifactId);
+   }
+
+   public static User getUserByArtId(long userArtifactId) throws OseeCoreException {
+      return getUserAdmin().getUserByArtId(ArtifactId.valueOf(userArtifactId));
    }
 
    /**
     * This is not the preferred way to get a user. Most likely getUserByUserId() or getUserByArtId() should be used
-    * 
+    *
     * @return the first user found with the given name
     */
    public static User getUserByName(String name) throws OseeCoreException {

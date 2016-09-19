@@ -21,53 +21,49 @@ import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
  * @author Jeff C. Phillips
  */
 public class BranchAccessObject extends AccessObject {
-   private final Long branchUuid;
-   private static final Map<Long, BranchAccessObject> cache = new HashMap<>();
+   private final BranchId branch;
+   private static final Map<BranchId, BranchAccessObject> cache = new HashMap<>();
 
    @Override
    public int hashCode() {
       int result = 17;
-      result = 31 * result + branchUuid.hashCode();
+      result = 31 * result + branch.hashCode();
       return result;
    }
 
-   public BranchAccessObject(long branchUuid) {
-      this.branchUuid = branchUuid;
+   public BranchAccessObject(BranchId branch) {
+      this.branch = branch;
    }
 
    @Override
-   public long getBranchId() {
-      return branchUuid;
+   public BranchId getBranch() {
+      return branch;
    }
 
    @Override
    public void removeFromCache() {
-      cache.remove(branchUuid);
+      cache.remove(branch);
    }
 
    @Override
    public void removeFromDatabase(int subjectId) throws OseeCoreException {
       final String DELETE_BRANCH_ACL = "DELETE FROM OSEE_BRANCH_ACL WHERE privilege_entity_id = ? AND branch_id =?";
-      ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL, subjectId, branchUuid);
+      ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL, subjectId, branch);
    }
 
    public static BranchAccessObject getBranchAccessObject(BranchId branch) throws OseeCoreException {
-      return getBranchAccessObject(branch.getId());
-   }
-
-   public static BranchAccessObject getBranchAccessObject(long branchUuid) {
       BranchAccessObject branchAccessObject;
-      if (cache.containsKey(branchUuid)) {
-         branchAccessObject = cache.get(branchUuid);
+      if (cache.containsKey(branch)) {
+         branchAccessObject = cache.get(branch);
       } else {
-         branchAccessObject = new BranchAccessObject(branchUuid);
-         cache.put(branchUuid, branchAccessObject);
+         branchAccessObject = new BranchAccessObject(branch);
+         cache.put(branch, branchAccessObject);
       }
       return branchAccessObject;
    }
 
    public static BranchAccessObject getBranchAccessObjectFromCache(BranchId branch) throws OseeCoreException {
-      return cache.get(branch.getUuid());
+      return cache.get(branch);
    }
 
    @Override
@@ -75,6 +71,6 @@ public class BranchAccessObject extends AccessObject {
       if (!(obj instanceof BranchAccessObject)) {
          return false;
       }
-      return branchUuid.equals(((BranchAccessObject) obj).branchUuid);
+      return branch.equals(((BranchAccessObject) obj).branch);
    }
 }

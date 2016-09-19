@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.access.internal.data;
 
 import org.eclipse.osee.framework.access.AccessObject;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -22,70 +23,60 @@ import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
  */
 public class ArtifactAccessObject extends AccessObject {
 
-   private final Integer artId;
-   private final Long branchUuid;
-   private static final DoubleKeyHashMap<Integer, Long, ArtifactAccessObject> cache =
-      new DoubleKeyHashMap<Integer, Long, ArtifactAccessObject>();
+   private final ArtifactId artId;
+   private final BranchId branch;
+   private static final DoubleKeyHashMap<Long, BranchId, ArtifactAccessObject> cache = new DoubleKeyHashMap<>();
 
-   public ArtifactAccessObject(Integer artId, Long branchUuid) {
-      super();
+   public ArtifactAccessObject(ArtifactId artId, BranchId branch) {
       this.artId = artId;
-      this.branchUuid = branchUuid;
+      this.branch = branch;
    }
 
    @Override
    public int hashCode() {
       int result = 17;
-      result = 31 * result + artId;
-      result = 31 * result + branchUuid.hashCode();
+      result = 31 * result + artId.hashCode();
+      result = 31 * result + branch.hashCode();
       return result;
    }
 
-   public Integer getArtId() {
+   public ArtifactId getArtId() {
       return artId;
    }
 
    @Override
-   public long getBranchId() {
-      return branchUuid;
+   public BranchId getBranch() {
+      return branch;
    }
 
    @Override
    public void removeFromCache() {
-      cache.remove(artId, branchUuid);
+      cache.remove(artId.getId(), branch);
    }
 
    @Override
    public void removeFromDatabase(int subjectId) throws OseeCoreException {
       final String DELETE_ARTIFACT_ACL =
          "DELETE FROM OSEE_ARTIFACT_ACL WHERE privilege_entity_id = ? AND art_id =? AND branch_id =?";
-      ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_ACL, subjectId, artId, branchUuid);
+      ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_ACL, subjectId, artId, branch);
    }
 
    public static ArtifactAccessObject getArtifactAccessObject(Artifact artifact) throws OseeCoreException {
-      Integer artId = artifact.getArtId();
-      BranchId branchUuid = artifact.getBranch();
-      return getArtifactAccessObject(artId, branchUuid);
+      return getArtifactAccessObject(artifact, artifact.getBranch());
    }
 
-   public static ArtifactAccessObject getArtifactAccessObject(Integer artId, BranchId branch) throws OseeCoreException {
-      long branchUuid = branch.getUuid();
-      ArtifactAccessObject accessObject = cache.get(artId, branchUuid);
+   public static ArtifactAccessObject getArtifactAccessObject(ArtifactId artifact, BranchId branch) throws OseeCoreException {
+      ArtifactAccessObject accessObject = cache.get(artifact.getId(), branch);
 
       if (accessObject == null) {
-         accessObject = new ArtifactAccessObject(artId, branchUuid);
-         cache.put(artId, branchUuid, accessObject);
+         accessObject = new ArtifactAccessObject(artifact, branch);
+         cache.put(artifact.getId(), branch, accessObject);
       }
       return accessObject;
    }
 
-   public static AccessObject getArtifactAccessObjectFromCache(Artifact art) throws OseeCoreException {
-      return getArtifactAccessObjectFromCache(art.getArtId(), art.getBranch());
-   }
-
-   public static AccessObject getArtifactAccessObjectFromCache(Integer artId2, BranchId branch) throws OseeCoreException {
-      long branchUuid2 = branch.getUuid();
-      return cache.get(artId2, branchUuid2);
+   public static AccessObject getArtifactAccessObjectFromCache(Artifact artifact) throws OseeCoreException {
+      return cache.get(artifact.getId(), artifact.getBranch());
    }
 
    @Override
@@ -94,6 +85,6 @@ public class ArtifactAccessObject extends AccessObject {
          return false;
       }
       ArtifactAccessObject ao = (ArtifactAccessObject) obj;
-      return ao.artId.equals(this.artId) && ao.branchUuid.equals(this.branchUuid);
+      return ao.artId.equals(this.artId) && ao.branch.equals(this.branch);
    }
 }

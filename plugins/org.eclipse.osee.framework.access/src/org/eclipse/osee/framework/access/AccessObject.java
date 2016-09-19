@@ -13,18 +13,17 @@ package org.eclipse.osee.framework.access;
 import org.eclipse.osee.framework.access.internal.data.ArtifactAccessObject;
 import org.eclipse.osee.framework.access.internal.data.BranchAccessObject;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Jeff C. Phillips
  */
-public abstract class AccessObject {
+public abstract class AccessObject implements HasBranch {
    public abstract void removeFromCache();
 
    public abstract void removeFromDatabase(int subjectId) throws OseeCoreException;
-
-   public abstract long getBranchId();
 
    public static AccessObject getAccessObject(Object object) throws OseeCoreException {
       if (object instanceof Artifact) {

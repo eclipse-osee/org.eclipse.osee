@@ -70,7 +70,7 @@ public class AtsConfigurationsService implements IAtsConfigurationProvider {
       public ArtifactToken loadUser(IAtsUser user) {
          ArtifactToken userArt = null;
          try {
-            userArt = UserManager.getUserByArtId(user.getId().intValue());
+            userArt = UserManager.getUserByArtId(user.getId());
             if (userArt == null) {
                userArt = ArtifactQuery.getArtifactFromId(user.getId(), AtsUtilCore.getAtsBranch());
             }

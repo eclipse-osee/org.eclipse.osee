@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -42,11 +43,11 @@ public interface UserAdmin {
 
    User getUser(IUserToken user) throws OseeCoreException;
 
-   String getSafeUserNameById(int userArtifactId);
+   String getSafeUserNameById(ArtifactId userArtifactId);
 
-   String getUserNameById(int userArtifactId) throws OseeCoreException;
+   String getUserNameById(ArtifactId userArtifactId) throws OseeCoreException;
 
-   User getUserByArtId(int userArtifactId) throws OseeCoreException;
+   User getUserByArtId(ArtifactId userArtifactId) throws OseeCoreException;
 
    User createUser(IUserToken userToken, String comment) throws OseeCoreException;
 
