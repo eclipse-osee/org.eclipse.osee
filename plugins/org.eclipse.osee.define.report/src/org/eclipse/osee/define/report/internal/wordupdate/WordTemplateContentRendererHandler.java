@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.define.report.api.ReportConstants;
 import org.eclipse.osee.define.report.api.WordTemplateContentData;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -26,20 +27,31 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class WordTemplateContentRendererHandler {
 
    public static final String PGNUMTYPE_START_1 = "<w:pgNumType [^>]*w:start=\"1\"/>";
-   private OrcsApi orcsApi;
+   private final OrcsApi orcsApi;
 
    public WordTemplateContentRendererHandler(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
    }
 
    public Pair<String, Set<String>> renderWordML(WordTemplateContentData wtcData) {
-      ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(wtcData.getBranchId()).andUuid(
-         wtcData.getArtId()).includeDeletedArtifacts().includeDeletedAttributes().getResults().getAtMostOneOrNull();
+      TransactionId txId = wtcData.getTxId();
+      if (txId == null) {
+         txId = TransactionId.SENTINEL;
+      }
+      ArtifactReadable artifact = null;
+      if (txId.equals(TransactionId.SENTINEL)) {
+         artifact = orcsApi.getQueryFactory().fromBranch(wtcData.getBranchId()).andUuid(
+            wtcData.getArtId()).includeDeletedArtifacts().includeDeletedAttributes().getResults().getAtMostOneOrNull();
+      } else {
+         artifact = orcsApi.getQueryFactory().fromBranch(wtcData.getBranchId()).fromTransaction(txId).andUuid(
+            wtcData.getArtId()).includeDeletedArtifacts().includeDeletedAttributes().getResults().getAtMostOneOrNull();
+      }
 
       if (artifact != null) {
          Set<String> unknownGuids = new HashSet<>();
 
-         String data = artifact.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, DeletionFlag.INCLUDE_DELETED, null);
+         String data =
+            artifact.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, DeletionFlag.INCLUDE_DELETED, null);
 
          if (data == null && wtcData.getIsEdit()) {
             data = orcsApi.getOrcsTypes().getAttributeTypes().getDefaultValue(CoreAttributeTypes.WordTemplateContent);
