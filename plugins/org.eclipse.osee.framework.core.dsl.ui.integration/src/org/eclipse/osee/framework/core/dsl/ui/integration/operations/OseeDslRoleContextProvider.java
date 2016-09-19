@@ -21,6 +21,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.integration.OseeDslProvider;
@@ -31,11 +32,11 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.ReferencedContext;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.Role;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.UsersAndGroups;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author John R. Misinco
@@ -49,7 +50,7 @@ public class OseeDslRoleContextProvider implements RoleContextProvider {
    }
 
    @Override
-   public Collection<? extends IAccessContextId> getContextId(IBasicArtifact<?> user) {
+   public Collection<? extends IAccessContextId> getContextId(ArtifactToken user) {
       OseeDsl dsl = null;
       try {
          dsl = dslProvider.getDsl();
@@ -66,7 +67,7 @@ public class OseeDslRoleContextProvider implements RoleContextProvider {
          //find which roles have the relevant guids
          List<String> applicableGuids;
          try {
-            applicableGuids = getApplicableGuids((Artifact) user.getFullArtifact());
+            applicableGuids = getApplicableGuids(user);
          } catch (OseeCoreException ex) {
             OseeLog.log(OseeDslRoleContextProvider.class, Level.SEVERE, Lib.exceptionToString(ex));
             return Collections.emptyList();
@@ -110,12 +111,18 @@ public class OseeDslRoleContextProvider implements RoleContextProvider {
       return includesInherited;
    }
 
-   private List<String> getApplicableGuids(Artifact user) {
+   private List<String> getApplicableGuids(ArtifactToken user) {
       List<String> applicableGuids = new LinkedList<>();
       List<Artifact> groups = Collections.emptyList();
 
       try {
-         groups = user.getRelatedArtifacts(CoreRelationTypes.Users_Artifact);
+         Artifact artifact;
+         if (user instanceof Artifact) {
+            artifact = (Artifact) user;
+         } else {
+            artifact = ArtifactQuery.getArtifactFromId(user, user.getBranch());
+         }
+         groups = artifact.getRelatedArtifacts(CoreRelationTypes.Users_Artifact);
       } catch (OseeCoreException ex) {
          OseeLog.log(OseeDslRoleContextProvider.class, Level.SEVERE, Lib.exceptionToString(ex));
       }

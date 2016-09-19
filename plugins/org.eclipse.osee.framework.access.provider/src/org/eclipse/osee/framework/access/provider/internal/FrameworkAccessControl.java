@@ -14,9 +14,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.dsl.integration.RoleContextProvider;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -36,12 +36,12 @@ public class FrameworkAccessControl implements CmAccessControl {
    }
 
    @Override
-   public boolean isApplicable(IBasicArtifact<?> user, Object object) {
+   public boolean isApplicable(ArtifactToken user, Object object) {
       return true;
    }
 
    @Override
-   public Collection<? extends IAccessContextId> getContextId(IBasicArtifact<?> user, Object object) {
+   public Collection<? extends IAccessContextId> getContextId(ArtifactToken user, Object object) {
       try {
          Conditions.checkExpressionFailOnTrue(!isAssocitedArtifactValid(object), "Associated artifact");
       } catch (OseeCoreException ex) {

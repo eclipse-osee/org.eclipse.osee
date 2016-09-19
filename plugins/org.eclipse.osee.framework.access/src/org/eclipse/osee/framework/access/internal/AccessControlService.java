@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.access.AccessObject;
 import org.eclipse.osee.framework.access.internal.data.ArtifactAccessObject;
 import org.eclipse.osee.framework.access.internal.data.BranchAccessObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -308,7 +309,7 @@ public class AccessControlService implements IAccessControlService {
       return result;
    }
 
-   private void addLockAccessControl(IBasicArtifact<?> userArtifact, Collection<?> objectsToCheck, AccessData accessData) throws OseeCoreException {
+   private void addLockAccessControl(ArtifactToken userArtifact, Collection<?> objectsToCheck, AccessData accessData) throws OseeCoreException {
       for (Object obj : objectsToCheck) {
          Artifact subject = getSubjectFromLockedObject(obj);
          if (subject != null && !subject.equals(userArtifact)) {
@@ -319,7 +320,7 @@ public class AccessControlService implements IAccessControlService {
    }
 
    @Override
-   public AccessDataQuery getAccessData(final IBasicArtifact<?> userArtifact, final Collection<?> objectsToCheck) throws OseeCoreException {
+   public AccessDataQuery getAccessData(ArtifactToken userArtifact, final Collection<?> objectsToCheck) throws OseeCoreException {
       ensurePopulated();
       List<String> key = new LinkedList<>();
       for (Object o : objectsToCheck) {
@@ -334,7 +335,7 @@ public class AccessControlService implements IAccessControlService {
       }
 
       if (listener2 == null) {
-         listener2 = new AccessControlUpdateListener((Artifact) userArtifact.getFullArtifact());
+         listener2 = new AccessControlUpdateListener(userArtifact);
          if (eventService != null) {
             eventService.addListener(EventQosType.NORMAL, listener2);
          }
@@ -375,7 +376,7 @@ public class AccessControlService implements IAccessControlService {
       return service;
    }
 
-   public PermissionEnum getBranchPermission(IBasicArtifact<?> subject, BranchId branch) throws OseeCoreException {
+   public PermissionEnum getBranchPermission(ArtifactToken subject, BranchId branch) throws OseeCoreException {
       PermissionEnum userPermission = null;
       AccessObject accessObject = BranchAccessObject.getBranchAccessObjectFromCache(branch);
 
@@ -390,7 +391,7 @@ public class AccessControlService implements IAccessControlService {
       return userPermission;
    }
 
-   public PermissionEnum getArtifactPermission(IBasicArtifact<?> subject, Artifact artifact) throws OseeCoreException {
+   public PermissionEnum getArtifactPermission(ArtifactToken subject, Artifact artifact) throws OseeCoreException {
       ensurePopulated();
       PermissionEnum userPermission = PermissionEnum.FULLACCESS;
       AccessObject accessObject = null;
@@ -423,7 +424,7 @@ public class AccessControlService implements IAccessControlService {
       return userPermission;
    }
 
-   private PermissionEnum acquirePermissionRank(IBasicArtifact<?> subject, AccessObject accessObject) {
+   private PermissionEnum acquirePermissionRank(ArtifactToken subject, AccessObject accessObject) {
       ensurePopulated();
       PermissionEnum userPermission = accessControlListCache.get(subject.getId(), accessObject);
       if (subjectToGroupCache.containsKey(subject.getId())) {
@@ -625,7 +626,7 @@ public class AccessControlService implements IAccessControlService {
       return datas;
    }
 
-   private PermissionEnum getBranchPermission(IBasicArtifact<?> subject, Object object) throws OseeCoreException {
+   private PermissionEnum getBranchPermission(ArtifactToken subject, Object object) throws OseeCoreException {
       return getBranchPermission(subject, ((AccessObject) object).getBranch());
    }
 
@@ -814,7 +815,7 @@ public class AccessControlService implements IAccessControlService {
             new BranchUuidEventFilter(CoreBranches.COMMON));
       }
 
-      public AccessControlUpdateListener(Artifact artifact) {
+      public AccessControlUpdateListener(ArtifactToken artifact) {
          eventFilters =
             Arrays.asList(new ArtifactEventFilter(artifact), new BranchUuidEventFilter(artifact.getBranch()));
       }

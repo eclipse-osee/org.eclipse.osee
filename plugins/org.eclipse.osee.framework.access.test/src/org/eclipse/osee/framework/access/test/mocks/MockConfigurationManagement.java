@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.access.test.mocks;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.junit.Assert;
 
@@ -21,14 +21,14 @@ import org.junit.Assert;
  */
 public class MockConfigurationManagement implements CmAccessControl {
 
-   private final IBasicArtifact<?> expectedUser;
+   private final ArtifactToken expectedUser;
    private final Object expectedObject;
    private final boolean isApplicable;
    private final Collection<IAccessContextId> contextIds;
    private boolean wasIsApplicableCalled;
    private boolean wasGetContextIdCalled;
 
-   public MockConfigurationManagement(IBasicArtifact<?> expectedUser, Object expectedObject, boolean isApplicable, Collection<IAccessContextId> contextIds) {
+   public MockConfigurationManagement(ArtifactToken expectedUser, Object expectedObject, boolean isApplicable, Collection<IAccessContextId> contextIds) {
       super();
       this.expectedUser = expectedUser;
       this.expectedObject = expectedObject;
@@ -37,7 +37,7 @@ public class MockConfigurationManagement implements CmAccessControl {
    }
 
    @Override
-   public boolean isApplicable(IBasicArtifact<?> user, Object object) {
+   public boolean isApplicable(ArtifactToken user, Object object) {
       wasIsApplicableCalled = true;
       Assert.assertEquals(expectedUser, user);
       Assert.assertEquals(expectedObject, object);
@@ -45,7 +45,7 @@ public class MockConfigurationManagement implements CmAccessControl {
    }
 
    @Override
-   public Collection<IAccessContextId> getContextId(IBasicArtifact<?> user, Object object) {
+   public Collection<IAccessContextId> getContextId(ArtifactToken user, Object object) {
       wasGetContextIdCalled = true;
       Assert.assertEquals(expectedUser, user);
       Assert.assertEquals(expectedObject, object);

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.access.internal;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.access.IAccessProvider;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
@@ -56,7 +57,7 @@ public final class ObjectAccessProviderProxy implements IAccessProvider {
    }
 
    @Override
-   public void computeAccess(IBasicArtifact<?> userArtifact, Collection<?> objToCheck, AccessData accessData) throws OseeCoreException {
+   public void computeAccess(ArtifactToken userArtifact, Collection<?> objToCheck, AccessData accessData) throws OseeCoreException {
       for (Object object : objToCheck) {
          if (object instanceof Artifact) {
             setArtifactAccessData(userArtifact, (Artifact) object, accessData);
@@ -72,7 +73,7 @@ public final class ObjectAccessProviderProxy implements IAccessProvider {
       }
    }
 
-   private void setArtifactAccessData(IBasicArtifact<?> userArtifact, Artifact artifact, AccessData accessData) throws OseeCoreException {
+   private void setArtifactAccessData(ArtifactToken userArtifact, Artifact artifact, AccessData accessData) throws OseeCoreException {
       setBranchAccessData(userArtifact, artifact.getBranch(), accessData);
       String reason = "Legacy Artifact Permission";
       PermissionEnum userPermission = getAccessService().getArtifactPermission(userArtifact, artifact);
@@ -92,7 +93,7 @@ public final class ObjectAccessProviderProxy implements IAccessProvider {
          new AccessDetail<IBasicArtifact<Artifact>>(artifact, userPermission, Scope.createLegacyScope(), reason));
    }
 
-   private void setBranchAccessData(IBasicArtifact<?> userArtifact, BranchId branch, AccessData accessData) throws OseeCoreException {
+   private void setBranchAccessData(ArtifactToken userArtifact, BranchId branch, AccessData accessData) throws OseeCoreException {
       String reason = "Legacy Branch Permission";
       PermissionEnum userPermission = getAccessService().getBranchPermission(userArtifact, branch);
       accessData.add(branch, new AccessDetail<BranchId>(branch, userPermission, Scope.createLegacyScope(), reason));

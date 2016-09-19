@@ -12,10 +12,10 @@ package org.eclipse.osee.framework.skynet.core.event.filter;
 
 import java.util.Arrays;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author John R. Misinco
@@ -25,7 +25,7 @@ public class ArtifactEventFilter implements IEventFilter {
    private final String filterArtifactGuid;
    private final BranchId filterBranch;
 
-   public ArtifactEventFilter(Artifact artifact) {
+   public ArtifactEventFilter(ArtifactToken artifact) {
       filterArtifactGuid = artifact.getGuid();
       filterBranch = artifact.getBranch();
    }
@@ -54,5 +54,4 @@ public class ArtifactEventFilter implements IEventFilter {
       }
       return false;
    }
-
 }

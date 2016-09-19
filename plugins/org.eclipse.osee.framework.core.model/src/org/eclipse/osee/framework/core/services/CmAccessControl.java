@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.core.services;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -20,8 +20,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface CmAccessControl {
 
-   boolean isApplicable(IBasicArtifact<?> user, Object object);
+   boolean isApplicable(ArtifactToken user, Object object);
 
-   Collection<? extends IAccessContextId> getContextId(IBasicArtifact<?> user, Object object) throws OseeCoreException;
+   Collection<? extends IAccessContextId> getContextId(ArtifactToken user, Object object) throws OseeCoreException;
 
 }

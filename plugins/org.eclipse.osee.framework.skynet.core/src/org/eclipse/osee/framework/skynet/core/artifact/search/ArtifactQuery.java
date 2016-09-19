@@ -83,6 +83,10 @@ public class ArtifactQuery {
       return getArtifactFromId(artifactToken.getUuid(), branch);
    }
 
+   public static Artifact getArtifactFromToken(ArtifactToken artifactToken) {
+      return getArtifactFromId(artifactToken.getId(), artifactToken.getBranch());
+   }
+
    public static Artifact getArtifactFromToken(EventBasicGuidArtifact guidArt) throws OseeCoreException {
       return getArtifactFromId(guidArt.getGuid(), TokenFactory.createBranch(guidArt.getBranchId()));
    }

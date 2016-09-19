@@ -14,13 +14,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.dsl.integration.AccessModelInterpreter;
 import org.eclipse.osee.framework.core.dsl.integration.RoleContextProvider;
 import org.eclipse.osee.framework.core.dsl.ui.integration.operations.OseeDslRoleContextProvider;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
 import org.eclipse.osee.framework.core.model.access.HasAccessModel;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
@@ -113,12 +113,12 @@ public class FrameworkAccessControlProxy implements CmAccessControl, HasAccessMo
    }
 
    @Override
-   public boolean isApplicable(IBasicArtifact<?> user, Object object) {
+   public boolean isApplicable(ArtifactToken user, Object object) {
       return getAccessControl().isApplicable(user, object);
    }
 
    @Override
-   public Collection<? extends IAccessContextId> getContextId(IBasicArtifact<?> user, Object object) throws OseeCoreException {
+   public Collection<? extends IAccessContextId> getContextId(ArtifactToken user, Object object) throws OseeCoreException {
       checkInitialized();
       return getAccessControl().getContextId(user, object);
    }

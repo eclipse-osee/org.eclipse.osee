@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.access.IAccessProvider;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.core.services.IAccessControlService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
@@ -186,7 +186,7 @@ public final class AccessControlServiceProxy implements IAccessControlService {
    }
 
    @Override
-   public AccessDataQuery getAccessData(IBasicArtifact<?> userArtifact, Collection<?> itemsToCheck) throws OseeCoreException {
+   public AccessDataQuery getAccessData(ArtifactToken userArtifact, Collection<?> itemsToCheck) throws OseeCoreException {
       checkInitialized();
       return getProxiedObject().getAccessData(userArtifact, itemsToCheck);
    }

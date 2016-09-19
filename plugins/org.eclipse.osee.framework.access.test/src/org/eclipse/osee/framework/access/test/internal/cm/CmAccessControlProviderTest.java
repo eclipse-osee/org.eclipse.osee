@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.framework.access.internal.cm.CmAccessControlProviderImpl;
 import org.eclipse.osee.framework.access.test.mocks.MockConfigurationManagement;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.core.services.CmAccessControlProvider;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -25,12 +25,12 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link CmAccessControlProvider}{@link CmAccessControlProviderImpl}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class CmAccessControlProviderTest {
 
-   private IBasicArtifact<?> user;
+   private ArtifactToken user;
    private Object objectToCheck;
 
    @Before
@@ -64,7 +64,7 @@ public class CmAccessControlProviderTest {
       assertCMProvider(user, objectToCheck, null, cm1, cm2);
    }
 
-   private static void assertCMProvider(IBasicArtifact<?> user, Object objectToCheck, MockConfigurationManagement expectedCM, MockConfigurationManagement... extraCms) throws OseeCoreException {
+   private static void assertCMProvider(ArtifactToken user, Object objectToCheck, MockConfigurationManagement expectedCM, MockConfigurationManagement... extraCms) throws OseeCoreException {
       Collection<CmAccessControl> cmServices = new HashSet<>();
       for (CmAccessControl extraCm : extraCms) {
          cmServices.add(extraCm);

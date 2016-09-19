@@ -43,6 +43,10 @@ public interface Id {
       return getId().equals(id);
    }
 
+   default boolean notEqual(long id) {
+      return !equals(id);
+   }
+
    default boolean notEqual(Id id) {
       return !equals(id);
    }

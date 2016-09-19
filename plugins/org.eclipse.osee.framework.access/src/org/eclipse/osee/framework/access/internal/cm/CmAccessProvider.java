@@ -15,8 +15,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.access.IAccessProvider;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessData;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
 import org.eclipse.osee.framework.core.model.access.HasAccessModel;
@@ -37,7 +37,7 @@ public class CmAccessProvider implements IAccessProvider {
    }
 
    @Override
-   public void computeAccess(IBasicArtifact<?> userArtifact, Collection<?> objToChecks, AccessData accessData) throws OseeCoreException {
+   public void computeAccess(ArtifactToken userArtifact, Collection<?> objToChecks, AccessData accessData) throws OseeCoreException {
       DoubleKeyHashMap<CmAccessControl, IAccessContextId, Collection<Object>> cmToCheckObjects =
          new DoubleKeyHashMap<CmAccessControl, IAccessContextId, Collection<Object>>();
 

@@ -17,8 +17,8 @@ import org.eclipse.osee.framework.access.IAccessProvider;
 import org.eclipse.osee.framework.access.internal.cm.CmAccessProvider;
 import org.eclipse.osee.framework.access.test.mocks.MockCMWithAccessModel;
 import org.eclipse.osee.framework.access.test.mocks.MockConfigurationManagementProvider;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessData;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -30,11 +30,11 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link CmAccessProvider}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class CmAccessProviderTest {
-   private static IBasicArtifact<?> expectedUser;
+   private static ArtifactToken expectedUser;
    private static Object expectedObject;
    private static IAccessContextId contextId1;
 

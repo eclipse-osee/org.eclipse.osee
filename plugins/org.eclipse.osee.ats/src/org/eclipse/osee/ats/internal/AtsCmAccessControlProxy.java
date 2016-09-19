@@ -12,13 +12,13 @@ package org.eclipse.osee.ats.internal;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.access.AtsBranchAccessManager;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.dsl.integration.AccessModelInterpreter;
 import org.eclipse.osee.framework.core.dsl.integration.OseeDslAccessModel;
 import org.eclipse.osee.framework.core.dsl.integration.OseeDslProvider;
 import org.eclipse.osee.framework.core.dsl.integration.RoleContextProvider;
 import org.eclipse.osee.framework.core.dsl.ui.integration.operations.OseeDslRoleContextProvider;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
 import org.eclipse.osee.framework.core.model.access.HasAccessModel;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
@@ -97,12 +97,12 @@ public class AtsCmAccessControlProxy implements CmAccessControl, HasAccessModel 
    }
 
    @Override
-   public boolean isApplicable(IBasicArtifact<?> user, Object object) {
+   public boolean isApplicable(ArtifactToken user, Object object) {
       return getProxiedService().isApplicable(user, object);
    }
 
    @Override
-   public Collection<? extends IAccessContextId> getContextId(IBasicArtifact<?> user, Object object) throws OseeCoreException {
+   public Collection<? extends IAccessContextId> getContextId(ArtifactToken user, Object object) throws OseeCoreException {
       return getProxiedService().getContextId(user, object);
    }
 

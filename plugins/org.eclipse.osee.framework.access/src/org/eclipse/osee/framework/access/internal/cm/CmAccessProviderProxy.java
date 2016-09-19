@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.access.IAccessProvider;
 import org.eclipse.osee.framework.access.internal.AccessControlHelper;
 import org.eclipse.osee.framework.access.internal.AccessControlServiceProxy;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.model.access.AccessData;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.core.services.CmAccessControlProvider;
@@ -154,7 +154,7 @@ public final class CmAccessProviderProxy implements IAccessProvider {
    }
 
    @Override
-   public void computeAccess(IBasicArtifact<?> userArtifact, Collection<?> objToCheck, AccessData accessData) throws OseeCoreException {
+   public void computeAccess(ArtifactToken userArtifact, Collection<?> objToCheck, AccessData accessData) throws OseeCoreException {
       checkInitialized();
       getAccessProvider().computeAccess(userArtifact, objToCheck, accessData);
    }

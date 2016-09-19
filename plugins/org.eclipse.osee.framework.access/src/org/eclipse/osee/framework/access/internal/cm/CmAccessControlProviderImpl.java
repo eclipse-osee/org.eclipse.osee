@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.access.internal.cm;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.core.services.CmAccessControlProvider;
 import org.eclipse.osee.framework.core.services.HasCmAccessControl;
@@ -41,7 +41,7 @@ public class CmAccessControlProviderImpl implements CmAccessControlProvider {
    }
 
    @Override
-   public CmAccessControl getService(IBasicArtifact<?> userArtifact, Object object) throws OseeCoreException {
+   public CmAccessControl getService(ArtifactToken userArtifact, Object object) throws OseeCoreException {
       if (object instanceof HasCmAccessControl) {
          HasCmAccessControl cmContainer = (HasCmAccessControl) object;
          return cmContainer.getAccessControl();

@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.access.test.mocks;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
 import org.eclipse.osee.framework.core.model.access.HasAccessModel;
 
@@ -24,7 +24,7 @@ public final class MockCMWithAccessModel extends MockConfigurationManagement imp
    private final AccessModel accessModel;
    private boolean wasGetAccessModelCalled;
 
-   public MockCMWithAccessModel(AccessModel accessModel, IBasicArtifact<?> expectedUser, Object expectedObject, boolean isApplicable, Collection<IAccessContextId> contextIds) {
+   public MockCMWithAccessModel(AccessModel accessModel, ArtifactToken expectedUser, Object expectedObject, boolean isApplicable, Collection<IAccessContextId> contextIds) {
       super(expectedUser, expectedObject, isApplicable, contextIds);
       this.accessModel = accessModel;
    }

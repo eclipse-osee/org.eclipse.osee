@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.access.IAccessProvider;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.model.access.AccessData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.lifecycle.AbstractLifecycleVisitor;
@@ -27,11 +27,11 @@ public class AccessProviderVisitor extends AbstractLifecycleVisitor<IAccessProvi
 
    public static final Type<IAccessProvider> TYPE = new Type<>();
 
-   private final IBasicArtifact<?> userArtifact;
+   private final ArtifactToken userArtifact;
    private final Collection<?> artsToCheck;
    private final AccessData mainAccessData;
 
-   public AccessProviderVisitor(IBasicArtifact<?> userArtifact, Collection<?> artsToCheck, AccessData mainAccessData) {
+   public AccessProviderVisitor(ArtifactToken userArtifact, Collection<?> artsToCheck, AccessData mainAccessData) {
       super();
       this.userArtifact = userArtifact;
       this.artsToCheck = artsToCheck;
