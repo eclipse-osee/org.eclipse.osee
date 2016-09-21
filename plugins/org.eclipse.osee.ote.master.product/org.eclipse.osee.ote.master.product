@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="OteMasterProduct" uid="org.eclipse.osee.ote.master.product" id="org.eclipse.osee.ote.master.rest.OTEMasterServerProduct" application="org.eclipse.osee.ote.master.app" version="0.24.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="OteMasterProduct" uid="org.eclipse.osee.ote.master.product" id="org.eclipse.osee.ote.master.rest.OTEMasterServerProduct" application="org.eclipse.osee.ote.master.app" version="0.24.1.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>

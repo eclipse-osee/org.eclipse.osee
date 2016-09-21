@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OTE IO (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.io;singleton:=true
-Bundle-Version: 0.24.0.qualifier
+Bundle-Version: 0.24.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.osee.framework.logging,
  org.eclipse.osee.ote.properties,
