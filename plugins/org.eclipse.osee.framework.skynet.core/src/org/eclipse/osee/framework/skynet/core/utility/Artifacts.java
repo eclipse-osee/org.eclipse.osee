@@ -20,8 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -55,9 +56,9 @@ public final class Artifacts {
       return toReturn;
    }
 
-   public static List<String> toGuids(Collection<? extends IArtifact> artifacts) {
+   public static List<String> toGuids(Collection<? extends ArtifactId> artifacts) {
       List<String> guids = new ArrayList<>(artifacts.size());
-      for (IArtifact artifact : artifacts) {
+      for (ArtifactId artifact : artifacts) {
          guids.add(artifact.getGuid());
       }
       return guids;

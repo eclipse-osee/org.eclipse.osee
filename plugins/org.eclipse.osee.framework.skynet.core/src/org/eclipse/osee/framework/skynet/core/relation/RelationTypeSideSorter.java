@@ -15,6 +15,7 @@ import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
@@ -42,40 +43,26 @@ public class RelationTypeSideSorter extends RelationTypeSide {
       this.orderData = orderData;
    }
 
-   public Artifact getArtifact() throws OseeCoreException {
-      return getIArtifact().getFullArtifact();
-   }
-
-   public IArtifact getIArtifact() {
-      return orderData.getIArtifact();
+   public Artifact getArtifact() {
+      return orderData.getArtifact();
    }
 
    @Override
    public boolean equals(Object arg0) {
       if (arg0 instanceof RelationTypeSideSorter) {
          RelationTypeSideSorter arg = (RelationTypeSideSorter) arg0;
-         if (getIArtifact() == null && arg.getIArtifact() == null) {
+         if (getArtifact() == null && arg.getArtifact() == null) {
             return super.equals(arg);
-         } else if (getIArtifact() == null) {
+         } else if (getArtifact() == null) {
             return false;
-         } else if (arg.getIArtifact() == null) {
+         } else if (arg.getArtifact() == null) {
             return false;
          } else {
-            return getIArtifact().equals(arg.getIArtifact()) && super.equals(arg);
+            return getArtifact().equals(arg.getArtifact()) && super.equals(arg);
          }
       } else {
          return super.equals(arg0);
       }
-   }
-
-   @Override
-   public int hashCode() {
-      int hashCode = 11;
-      hashCode = hashCode * 31 + super.hashCode();
-      if (getIArtifact() != null) {
-         hashCode = hashCode * 31 + getIArtifact().hashCode();
-      }
-      return hashCode;
    }
 
    public RelationSorter getSorterId() throws OseeCoreException {
@@ -88,16 +75,15 @@ public class RelationTypeSideSorter extends RelationTypeSide {
       order.sort(listToOrder, relativeOrder);
    }
 
-   @SuppressWarnings("unchecked")
-   public void addItem(RelationSorter sorterId, IArtifact itemToAdd) throws OseeCoreException {
+   public void addItem(RelationSorter sorterId, Artifact itemToAdd) throws OseeCoreException {
       RelationSorter sorterIdToUse = sorterId;
       if (sorterIdToUse == PREEXISTING) {
          sorterIdToUse = getSorterId();
       }
-      List<IArtifact> relatives = Collections.emptyList();
+      List<Artifact> relatives = Collections.emptyList();
       if (USER_DEFINED == sorterIdToUse) {
-         IArtifact target = getIArtifact();
-         relatives = (List<IArtifact>) target.getRelatedArtifacts(this);
+         Artifact target = getArtifact();
+         relatives = target.getRelatedArtifacts(this);
          if (relatives.contains(itemToAdd)) {
             relatives.remove(itemToAdd);
          }
@@ -106,21 +92,16 @@ public class RelationTypeSideSorter extends RelationTypeSide {
       setOrder(relatives, sorterIdToUse);
    }
 
-   @SuppressWarnings("unchecked")
-   public void removeItem(RelationSorter sorterId, IArtifact itemToRemove) throws OseeCoreException {
-      RelationSorter sorterIdToUse = sorterId;
-      if (sorterIdToUse == null) {
-         sorterIdToUse = getSorterId();
-      }
-      List<IArtifact> relatives = Collections.emptyList();
-      if (USER_DEFINED == sorterIdToUse) {
-         IArtifact target = getIArtifact();
-         relatives = (List<IArtifact>) target.getRelatedArtifacts(this);
+   public void removeItem(ArtifactId itemToRemove) throws OseeCoreException {
+      List<Artifact> relatives = Collections.emptyList();
+      if (USER_DEFINED == getSorterId()) {
+         Artifact target = getArtifact();
+         relatives = target.getRelatedArtifacts(this);
          if (relatives.contains(itemToRemove)) {
             relatives.remove(itemToRemove);
          }
       }
-      setOrder(relatives, sorterIdToUse);
+      setOrder(relatives, getSorterId());
    }
 
    public void setOrder(List<? extends IArtifact> relatives, RelationSorter sorterId) throws OseeCoreException {
@@ -136,6 +117,6 @@ public class RelationTypeSideSorter extends RelationTypeSide {
          // Do Nothing;
       }
       return String.format("Relation Sorter {relationType=%s, relationSide=[%s], artifact=%s, sorterId=%s}",
-         getRelationType(), getSide(), getIArtifact(), sorterId);
+         getRelationType(), getSide(), getArtifact(), sorterId);
    }
 }

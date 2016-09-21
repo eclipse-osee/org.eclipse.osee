@@ -51,7 +51,6 @@ import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderFactory;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationSorterProvider;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.jdbc.JdbcStatement;
 
@@ -125,7 +124,7 @@ public class RelationManager {
       if (relationType == null) {
          selectedRelations = relationCache.getAll(artifact);
       } else {
-         selectedRelations = relationCache.getAllByType(artifact, RelationTypeManager.getType(relationType));
+         selectedRelations = relationCache.getAllByType(artifact, relationType);
       }
 
       List<Artifact> relatedArtifacts;
@@ -557,21 +556,21 @@ public class RelationManager {
       return relationSorterProvider.getAllRelationOrderIds();
    }
 
-   public static RelationTypeSideSorter createTypeSideSorter(IArtifact artifact, IRelationType relationType, RelationSide side) {
+   public static RelationTypeSideSorter createTypeSideSorter(Artifact artifact, IRelationType relationType, RelationSide side) {
       RelationOrderData data = createRelationOrderData(artifact);
       return new RelationTypeSideSorter(RelationTypeManager.getType(relationType), side, relationSorterProvider, data);
    }
 
-   public static RelationOrderData createRelationOrderData(IArtifact artifact) throws OseeCoreException {
+   public static RelationOrderData createRelationOrderData(Artifact artifact) throws OseeCoreException {
       return relationOrderFactory.createRelationOrderData(artifact);
    }
 
-   public static void setRelationOrder(IArtifact artifact, IRelationType relationType, RelationSide side, RelationSorter orderId, List<? extends Artifact> relatives) throws OseeCoreException {
+   public static void setRelationOrder(Artifact artifact, IRelationType relationType, RelationSide side, RelationSorter orderId, List<? extends Artifact> relatives) throws OseeCoreException {
       RelationTypeSideSorter sorter = createTypeSideSorter(artifact, relationType, side);
       sorter.setOrder(relatives, orderId);
    }
 
-   private static void sort(IArtifact artifact, IRelationType type, RelationSide side, List<Artifact> listToOrder) throws OseeCoreException {
+   private static void sort(Artifact artifact, IRelationType type, RelationSide side, List<Artifact> listToOrder) throws OseeCoreException {
       if (type == null || side == null || listToOrder.size() <= 1) {
          return;
       }
@@ -649,10 +648,10 @@ public class RelationManager {
       @Override
       public void deleteFromRelationOrder(Artifact aArtifact, Artifact bArtifact, IRelationType relationType) throws OseeCoreException {
          RelationTypeSideSorter aSorter = RelationManager.createTypeSideSorter(aArtifact, relationType, SIDE_B);
-         aSorter.removeItem(null, bArtifact);
+         aSorter.removeItem(bArtifact);
 
          RelationTypeSideSorter bSorter = RelationManager.createTypeSideSorter(bArtifact, relationType, SIDE_A);
-         bSorter.removeItem(null, aArtifact);
+         bSorter.removeItem(aArtifact);
       }
 
       @Override

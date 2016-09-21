@@ -10,16 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.types;
 
-import java.util.List;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface IArtifact extends IBasicArtifact<Artifact> {
-
-   List<? extends IArtifact> getRelatedArtifacts(RelationTypeSide relationTypeSide) throws OseeCoreException;
+   // TODO: delete this interface
 }

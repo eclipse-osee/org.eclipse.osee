@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -30,7 +31,7 @@ import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
@@ -40,15 +41,15 @@ public class RelationOrderData {
 
    private final CompositeKeyHashMap<RelationTypeToken, RelationSide, Pair<RelationSorter, List<String>>> lists;
    private final IRelationOrderAccessor accessor;
-   private final IArtifact artifact;
+   private final Artifact artifact;
 
-   public RelationOrderData(IRelationOrderAccessor accessor, IArtifact artifact) {
+   public RelationOrderData(IRelationOrderAccessor accessor, Artifact artifact) {
       this.lists = new CompositeKeyHashMap<>();
       this.accessor = accessor;
       this.artifact = artifact;
    }
 
-   public IArtifact getIArtifact() {
+   public Artifact getArtifact() {
       return artifact;
    }
 
@@ -58,7 +59,7 @@ public class RelationOrderData {
 
    public void load() throws OseeCoreException {
       clear();
-      accessor.load(getIArtifact(), this);
+      accessor.load(artifact, this);
    }
 
    public Collection<Entry<Pair<RelationTypeToken, RelationSide>, Pair<RelationSorter, List<String>>>> entrySet() {
@@ -104,7 +105,7 @@ public class RelationOrderData {
       return lists.size();
    }
 
-   public void store(RelationType type, RelationSide side, RelationSorter requestedSorterId, List<? extends IArtifact> relativeSequence) throws OseeCoreException {
+   public void store(RelationType type, RelationSide side, RelationSorter requestedSorterId, List<? extends ArtifactId> relativeSequence) {
       storeFromGuids(type, side, requestedSorterId, Artifacts.toGuids(relativeSequence));
    }
 
@@ -120,14 +121,14 @@ public class RelationOrderData {
             addOrderList(type, side, requestedSorterId, relativeSequence);
             relationOrderModType = RelationOrderModType.Absolute;
          }
-         BranchId branch = getIArtifact().getBranch();
+         BranchId branch = artifact.getBranch();
          DefaultBasicGuidArtifact guidArtifact =
-            new DefaultBasicGuidArtifact(branch, getIArtifact().getArtifactTypeId().getId(), getIArtifact().getGuid());
+            new DefaultBasicGuidArtifact(branch, artifact.getArtifactTypeId().getId(), artifact.getGuid());
 
          DefaultBasicUuidRelationReorder reorder =
             new DefaultBasicUuidRelationReorder(relationOrderModType, branch.getUuid(), type.getGuid(), guidArtifact);
 
-         accessor.store(getIArtifact(), this, reorder);
+         accessor.store(artifact, this, reorder);
       }
    }
 
@@ -146,7 +147,7 @@ public class RelationOrderData {
 
    @Override
    public String toString() {
-      return String.format("Relation Order Data for artifact:%s", getIArtifact());
+      return String.format("Relation Order Data for artifact:%s", artifact);
    }
 
    public List<Pair<RelationTypeToken, RelationSide>> getAvailableTypeSides() {

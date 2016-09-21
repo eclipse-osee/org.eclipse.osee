@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core.utils;
 
-import java.util.Collections;
-import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -73,13 +70,7 @@ public class MockIArtifact extends NamedIdentity<String> implements IArtifact {
    }
 
    @Override
-   public List<? extends IArtifact> getRelatedArtifacts(RelationTypeSide relationTypeSide) {
-      return Collections.emptyList();
-   }
-
-   @Override
    public Long getId() {
       return new Long(uniqueId);
    }
-
 }

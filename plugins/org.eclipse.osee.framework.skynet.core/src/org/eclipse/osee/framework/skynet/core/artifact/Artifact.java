@@ -149,8 +149,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       return RelationManager.getRelatedArtifacts(this, new RelationTypeSide(relationType, RelationSide.SIDE_B));
    }
 
-   @Override
-   public final List<Artifact> getRelatedArtifacts(RelationTypeSide relationTypeSide) throws OseeCoreException {
+   public List<Artifact> getRelatedArtifacts(RelationTypeSide relationTypeSide) throws OseeCoreException {
       return RelationManager.getRelatedArtifacts(this, relationTypeSide);
    }
 
@@ -1004,7 +1003,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    }
 
    @Override
-   public final String getName() {
+   public String getName() {
       String name = null;
       try {
          ensureAttributesLoaded();

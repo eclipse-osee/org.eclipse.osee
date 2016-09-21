@@ -11,14 +11,14 @@
 package org.eclipse.osee.framework.skynet.core.relation.order;
 
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Roberto E. Escobar
  */
 public class RelationOrderFactory {
 
-   public RelationOrderData createRelationOrderData(IArtifact artifact) throws OseeCoreException {
+   public RelationOrderData createRelationOrderData(Artifact artifact) throws OseeCoreException {
       ArtifactRelationOrderAccessor accessor = new ArtifactRelationOrderAccessor(new RelationOrderParser());
       RelationOrderData data = new RelationOrderData(accessor, artifact);
       data.load();

@@ -11,6 +11,7 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
 import static org.junit.Assert.assertFalse;
@@ -59,7 +60,7 @@ public class RelationOrderingTest {
 
    private static final BranchId branch = CoreBranches.COMMON;
 
-   private Set<Artifact> itemsToDelete;
+   private final Set<Artifact> itemsToDelete = new HashSet<>();
    private Artifact parent;
    private Artifact child1;
    private Artifact child2;
@@ -67,16 +68,14 @@ public class RelationOrderingTest {
 
    @Before
    public void setupArtifacts() throws Exception {
-      itemsToDelete = new HashSet<>();
-
-      parent = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "parent");
+      parent = ArtifactTypeManager.addArtifact(Folder, branch, "parent");
       addToCleanup(parent);
 
-      child1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "a_child");
+      child1 = ArtifactTypeManager.addArtifact(Folder, branch, "a_child");
       addToCleanup(child1);
-      child2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "b_child");
+      child2 = ArtifactTypeManager.addArtifact(Folder, branch, "b_child");
       addToCleanup(child2);
-      child3 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "c_child");
+      child3 = ArtifactTypeManager.addArtifact(Folder, branch, "c_child");
       addToCleanup(child3);
 
       parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child1);

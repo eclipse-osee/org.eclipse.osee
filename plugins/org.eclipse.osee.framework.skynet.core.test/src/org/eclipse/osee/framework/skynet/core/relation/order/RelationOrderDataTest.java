@@ -22,21 +22,18 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.skynet.core.mocks.DataFactory;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.junit.After;
 import org.junit.Assert;
@@ -49,7 +46,7 @@ import org.junit.Test;
 public class RelationOrderDataTest {
    private static final Random randomGenerator = new Random();
 
-   private IArtifact artifact;
+   private Artifact artifact;
    private MockRelationOrderAccessor accessor;
    private RelationOrderData data;
    private RelationType relationType1;
@@ -58,7 +55,7 @@ public class RelationOrderDataTest {
 
    @Before
    public void setUp() throws OseeCoreException {
-      artifact = createArtifact("art1", GUID.create());
+      artifact = new Artifact(CoreBranches.SYSTEM_ROOT, CoreArtifactTypes.Artifact);
       accessor = new MockRelationOrderAccessor();
       data = new RelationOrderData(accessor, artifact);
 
@@ -81,7 +78,7 @@ public class RelationOrderDataTest {
 
    @Test
    public void testGetIArtifact() {
-      Assert.assertEquals(artifact, data.getIArtifact());
+      Assert.assertEquals(artifact, data.getArtifact());
    }
 
    @Test
@@ -233,13 +230,6 @@ public class RelationOrderDataTest {
       List<String> artGuids = Arrays.asList(guids);
       orderData.addOrderList(relationType, side, sorterId, artGuids);
       expectedData.add(new Object[] {relationType, side, sorterId, artGuids});
-   }
-
-   private static IArtifact createArtifact(String name, String guid) {
-      int uniqueId = randomGenerator.nextInt();
-      Branch branch =
-         new Branch(Lib.generateUuid(), name + " - branch", BranchType.WORKING, BranchState.MODIFIED, false, false);
-      return DataFactory.createArtifact(uniqueId, name, guid, branch);
    }
 
    private static RelationType createRelationType(long id, RelationTypeCache cache, String name, RelationSorter delationRelationOrderGuid) throws OseeCoreException {

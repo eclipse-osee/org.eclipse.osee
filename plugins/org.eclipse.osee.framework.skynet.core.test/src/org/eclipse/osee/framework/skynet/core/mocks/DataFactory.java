@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.mocks;
 
 import java.util.Random;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
@@ -41,9 +41,4 @@ public final class DataFactory {
    private static IArtifact createArtifact(int uniqueId, String name, String guid, BranchId branch, ArtifactType artifactType) {
       return new MockIArtifact(uniqueId, name, guid, branch, artifactType);
    }
-
-   public static IArtifact createArtifact(int uniqueId, String name, String guid, BranchId branch) {
-      return new MockIArtifact(uniqueId, name, guid, branch, fromToken(CoreArtifactTypes.Artifact));
-   }
-
 }

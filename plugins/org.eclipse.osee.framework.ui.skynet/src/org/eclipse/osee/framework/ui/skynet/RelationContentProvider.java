@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
@@ -109,10 +108,10 @@ public class RelationContentProvider implements ITreeContentProvider {
             }
          } else if (parentElement instanceof RelationTypeSideSorter) {
             RelationTypeSideSorter relationSorter = (RelationTypeSideSorter) parentElement;
-            List<? extends IArtifact> artifacts = artifactRoot.getRelatedArtifacts(relationSorter);
+            List<Artifact> artifacts = artifactRoot.getRelatedArtifacts(relationSorter);
             WrapperForRelationLink[] wrapper = new WrapperForRelationLink[artifacts.size()];
             for (int i = 0; i < artifacts.size(); i++) {
-               Artifact sideArtifact = artifacts.get(i).getFullArtifact();
+               Artifact sideArtifact = artifacts.get(i);
                if (relationSorter.getSide().isSideA()) {
                   wrapper[i] = new WrapperForRelationLink(relationSorter.getRelationType(), sideArtifact, sideArtifact,
                      relationSorter.getArtifact());

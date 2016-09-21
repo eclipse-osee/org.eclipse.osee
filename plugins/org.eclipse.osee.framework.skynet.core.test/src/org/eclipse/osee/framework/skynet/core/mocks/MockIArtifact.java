@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.mocks;
 
-import java.util.Collections;
-import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -76,11 +74,6 @@ public class MockIArtifact extends NamedIdentity<String> implements IArtifact {
    @Override
    public String toString() {
       return String.format("[%s]", getGuid());
-   }
-
-   @Override
-   public List<? extends IArtifact> getRelatedArtifacts(RelationTypeSide relationTypeSide) {
-      return Collections.emptyList();
    }
 
    @Override

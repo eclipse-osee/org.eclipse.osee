@@ -11,41 +11,29 @@
 
 package org.eclipse.osee.framework.skynet.core.relation;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
+import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.MANY_TO_MANY;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Random;
-import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.skynet.core.mocks.DataFactory;
-import org.eclipse.osee.framework.skynet.core.mocks.MockIArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationOrderAccessor;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
@@ -66,8 +54,6 @@ import org.junit.runners.Parameterized.Parameters;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(Parameterized.class)
 public class RelationTypeSideSorterTest {
-   private final static Random randomGenerator = new Random();
-
    private final RelationType relationType;
    private final RelationSide relationSide;
    private final RelationOrderData orderData;
@@ -89,16 +75,8 @@ public class RelationTypeSideSorterTest {
 
    @Test
    public void test02GetIArtifact() throws OseeCoreException {
-      Assert.assertNotNull(orderData.getIArtifact());
-      Assert.assertEquals(orderData.getIArtifact(), sorter.getIArtifact());
-
-      Assert.assertTrue(sorter.getIArtifact() instanceof MockIArtifact);
-      MockIArtifact mockArtifact = (MockIArtifact) sorter.getIArtifact();
-      mockArtifact.clear();
-
-      // Test Get Full Artifact is Called from IArtifact
-      sorter.getArtifact();
-      Assert.assertTrue(mockArtifact.wasGetFullArtifactCalled());
+      Assert.assertNotNull(orderData.getArtifact());
+      Assert.assertEquals(orderData.getArtifact(), sorter.getArtifact());
    }
 
    @Test
@@ -123,10 +101,10 @@ public class RelationTypeSideSorterTest {
 
    @Test
    public void test07SetOrder() throws OseeCoreException {
-      IArtifact art3 = createArtifact("c", GUID.create());
-      IArtifact art4 = createArtifact("d", GUID.create());
+      Artifact art3 = new MockArtifact("c");
+      Artifact art4 = new MockArtifact("d");
 
-      List<IArtifact> relatives = Arrays.asList(art3, art4);
+      List<Artifact> relatives = Arrays.asList(art3, art4);
       List<String> expected = Artifacts.toGuids(relatives);
 
       // set same sorter id
@@ -143,21 +121,21 @@ public class RelationTypeSideSorterTest {
 
    @Test
    public void test10AddItem() throws OseeCoreException {
-      IArtifact itemToAdd = createArtifact("Item to Add", GUID.create());
+      Artifact itemToAdd = new MockArtifact("Item to Add");
 
-      List<IArtifact> startingArtifacts = new ArrayList<>();
+      List<Artifact> startingArtifacts = new ArrayList<>();
       List<String> startingOrder = orderData.getOrderList(sorter.getRelationType(), sorter.getSide());
       for (int index = 0; index < startingOrder.size(); index++) {
          String artifactGuid = startingOrder.get(index);
-         startingArtifacts.add(createArtifact("Dummy" + index, artifactGuid));
+         startingArtifacts.add(new MockArtifact("Dummy" + index, artifactGuid));
       }
+
       // Set Related Artifact Data
-      MockArtifactWithRelations artifactMock = (MockArtifactWithRelations) sorter.getIArtifact();
-      artifactMock.setRelatedArtifacts(sorter.getRelationType(), startingArtifacts);
+      ((MockArtifact) sorter.getArtifact()).setRelations(startingArtifacts);
 
       for (IRelationSorter relationSorter : sorterProvider.getSorters()) {
          RelationSorter sorterId = relationSorter.getSorterId();
-         List<IArtifact> itemsToOrder = new ArrayList<>(startingArtifacts);
+         List<Artifact> itemsToOrder = new ArrayList<>(startingArtifacts);
          itemsToOrder.add(itemToAdd);
          if (USER_DEFINED != sorterId) {
             relationSorter.sort(itemsToOrder, null);
@@ -168,23 +146,22 @@ public class RelationTypeSideSorterTest {
          sorter.addItem(sorterId, itemToAdd);
 
          List<String> currentOrder = orderData.getOrderList(sorter.getRelationType(), sorter.getSide());
-         if (USER_DEFINED != sorterId) {
-            Assert.assertTrue(currentOrder.isEmpty());
-         } else {
+         if (USER_DEFINED.equals(sorterId)) {
             List<String> expectedOrder = Artifacts.toGuids(itemsToOrder);
-            Assert.assertTrue(expectedOrder.equals(currentOrder));
+            Assert.assertEquals(expectedOrder, currentOrder);
+         } else {
+            Assert.assertTrue(currentOrder.isEmpty());
          }
       }
    }
 
    @Test
    public void test11ToString() throws OseeCoreException {
-      String artGuid = sorter.getIArtifact().getGuid();
       RelationSorter sorterGuid = orderData.getCurrentSorterGuid(relationType, relationSide);
       RelationSorter expectedId = sorterProvider.getRelationOrder(sorterGuid).getSorterId();
       String expectedToString =
-         String.format("Relation Sorter {relationType=%s, relationSide=[%s], artifact=[%s], sorterId=%s}", relationType,
-            relationSide, artGuid, expectedId);
+         String.format("Relation Sorter {relationType=%s, relationSide=[%s], artifact=%s, sorterId=%s}", relationType,
+            relationSide, sorter.getArtifact(), expectedId);
       Assert.assertEquals(expectedToString, sorter.toString());
    }
 
@@ -193,49 +170,62 @@ public class RelationTypeSideSorterTest {
       RelationSorterProvider provider = new RelationSorterProvider();
       IRelationOrderAccessor accessor = new DoNothingAccessor();
 
-      RelationTypeCache cache = new RelationTypeCache();
+      RelationType relationType1 = createRelationType("Rel 1", LEXICOGRAPHICAL_ASC);
+      RelationType relationType2 = createRelationType("Rel 2", LEXICOGRAPHICAL_DESC);
 
-      RelationType relationType1 = createRelationType(cache, "Rel 1", LEXICOGRAPHICAL_ASC);
-      RelationType relationType2 = createRelationType(cache, "Rel 2", LEXICOGRAPHICAL_DESC);
-      IArtifact art1 = createArtifact("a", GUID.create());
-      IArtifact art2 = createArtifact("b", GUID.create());
-
-      RelationOrderData data1 = new RelationOrderData(accessor, art1);
-      RelationOrderData data2 = new RelationOrderData(accessor, art2);
+      RelationOrderData relOrderdata1 = new RelationOrderData(accessor, new MockArtifact("a"));
+      RelationOrderData relOrderdata2 = new RelationOrderData(accessor, new MockArtifact("b"));
 
       List<Object[]> expected1 = new ArrayList<>();
       List<Object[]> expected2 = new ArrayList<>();
 
-      addData(cache, data1, expected1);
-      addData(cache, data2, expected2);
+      addData(relationType1, relationType2, relOrderdata1, expected1);
+      addData(relationType1, relationType2, relOrderdata2, expected2);
 
       Collection<Object[]> data = new ArrayList<>();
-      data.add(new Object[] {provider, relationType1, RelationSide.SIDE_A, data1, expected1});
-      data.add(new Object[] {provider, relationType2, RelationSide.SIDE_B, data2, expected2});
+      data.add(new Object[] {provider, relationType1, RelationSide.SIDE_A, relOrderdata1, expected1});
+      data.add(new Object[] {provider, relationType2, RelationSide.SIDE_B, relOrderdata2, expected2});
       return data;
    }
 
-   private static IArtifact createArtifact(String name, String guid) {
-      int uniqueId = randomGenerator.nextInt();
-      Branch branch =
-         new Branch(Lib.generateUuid(), name + " - branch", BranchType.WORKING, BranchState.MODIFIED, false, false);
-      return new MockArtifactWithRelations(uniqueId, name, guid, branch, CoreArtifactTypes.Artifact);
+   private static class MockArtifact extends Artifact {
+      private static final ArtifactType artifactType = new ArtifactType(Artifact.getGuid(), Artifact.getName(), false);
+      private final String name;
+      private List<Artifact> artifacts = new ArrayList<>();
+
+      public MockArtifact(String name, String guid) {
+         super(guid, COMMON, artifactType);
+         this.name = name;
+      }
+
+      public MockArtifact(String name) {
+         this(name, GUID.create());
+      }
+
+      @Override
+      public String getName() {
+         return name;
+      }
+
+      @Override
+      public List<Artifact> getRelatedArtifacts(RelationTypeSide relationEnum) {
+         return artifacts;
+      }
+
+      public void setRelations(List<Artifact> artifacts) {
+         this.artifacts = artifacts;
+      }
    }
 
-   private static RelationType createRelationType(RelationTypeCache cache, String name, RelationSorter delationRelationOrderGuid) throws OseeCoreException {
-      IArtifactType type1 = new ArtifactType(0x01L, "1", false);
-      IArtifactType type2 = new ArtifactType(0x02L, "2", false);
-      RelationType relationType = new RelationType(0x03L, name, name + "_A", name + "_B", type1, type2,
-         RelationTypeMultiplicity.MANY_TO_MANY, delationRelationOrderGuid);
-      Assert.assertNotNull(relationType);
-      cache.cache(relationType);
-      return relationType;
+   private static RelationType createRelationType(String name, RelationSorter defaultRelationSorter) throws OseeCoreException {
+      return new RelationType(0x03L, name, name + "_A", name + "_B", Artifact, Artifact, MANY_TO_MANY,
+         defaultRelationSorter);
    }
 
-   private static void addData(RelationTypeCache cache, RelationOrderData data, List<Object[]> expected) throws OseeCoreException {
-      addData(data, expected, cache.getUniqueByName("Rel 1"), RelationSide.SIDE_A, //
+   private static void addData(RelationType relationType1, RelationType relationType2, RelationOrderData data, List<Object[]> expected) throws OseeCoreException {
+      addData(data, expected, relationType1, RelationSide.SIDE_A, //
          LEXICOGRAPHICAL_ASC, "1", "2", "3");
-      addData(data, expected, cache.getUniqueByName("Rel 2"), RelationSide.SIDE_B, //
+      addData(data, expected, relationType2, RelationSide.SIDE_B, //
          UNORDERED, "4", "5", "6");
 
       checkData(data, expected);
@@ -262,28 +252,6 @@ public class RelationTypeSideSorterTest {
       List<String> artGuids = Arrays.asList(guids);
       orderData.addOrderList(relationType, side, sorterId, artGuids);
       expectedData.add(new Object[] {relationType, side, sorterId, artGuids});
-   }
-
-   private static final class MockArtifactWithRelations extends MockIArtifact {
-      private final Map<IRelationType, List<? extends IArtifact>> relatedItemsMap;
-
-      public MockArtifactWithRelations(int uniqueId, String name, String guid, BranchId branch, IArtifactType artifactType) {
-         super(uniqueId, name, guid, branch, DataFactory.fromToken(artifactType));
-         this.relatedItemsMap = new HashMap<>();
-      }
-
-      @Override
-      public List<? extends IArtifact> getRelatedArtifacts(RelationTypeSide relationTypeSide) {
-         List<? extends IArtifact> related = relatedItemsMap.get(relationTypeSide.getRelationType());
-         if (related == null) {
-            related = Collections.emptyList();
-         }
-         return related;
-      }
-
-      public void setRelatedArtifacts(IRelationType relationType, List<? extends IArtifact> relatedItems) {
-         relatedItemsMap.put(relationType, relatedItems);
-      }
    }
 
    private static final class DoNothingAccessor implements IRelationOrderAccessor {
