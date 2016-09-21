@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 
-public class ArtifactNameComparator implements Comparator<IArtifact> {
+public class ArtifactNameComparator implements Comparator<ArtifactToken> {
    private static final Pattern numberPattern = Pattern.compile("[+-]?\\d+");
    private final Matcher numberMatcher = numberPattern.matcher("");
    private boolean descending = false;
@@ -26,7 +26,7 @@ public class ArtifactNameComparator implements Comparator<IArtifact> {
    }
 
    @Override
-   public int compare(IArtifact artifact1, IArtifact artifact2) {
+   public int compare(ArtifactToken artifact1, ArtifactToken artifact2) {
       String name1 = artifact1.getName();
       String name2 = artifact2.getName();
 

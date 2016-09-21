@@ -163,7 +163,7 @@ public class ArtifactPasteOperationTest {
          List<Artifact> sourceChildren = parent1.getChildren();
          List<String> guids = Artifacts.toGuids(sourceChildren);
          for (int index = 0; index < names.length; index++) {
-            IArtifact childArtifact = childArtifacts.get(index);
+            Artifact childArtifact = childArtifacts.get(index);
             Assert.assertEquals(names[index], childArtifact.getName());
             Assert.assertTrue(!guids.contains(childArtifact.getGuid()));
          }
@@ -192,7 +192,7 @@ public class ArtifactPasteOperationTest {
          if (hasChildren && expectedOrderType == USER_DEFINED) {
             Assert.assertEquals(childArtifacts.size(), guids.size());
             for (int index = 0; index < guids.size(); index++) {
-               IArtifact orderedChild = childArtifacts.get(index);
+               Artifact orderedChild = childArtifacts.get(index);
                String guid = guids.get(index);
                Assert.assertEquals(orderedChild.getGuid(), guid);
             }

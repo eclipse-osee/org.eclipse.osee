@@ -51,7 +51,7 @@ public class RelationCache {
       return key.setKey(artifact);
    }
 
-   private ArtifactKey getKey(int artId, BranchId branchUuid) {
+   private ArtifactKey getKey(long artId, BranchId branchUuid) {
       ArtifactKey key = THREAD_SHARED_KEY.get();
       return key.setKey(artId, branchUuid);
    }

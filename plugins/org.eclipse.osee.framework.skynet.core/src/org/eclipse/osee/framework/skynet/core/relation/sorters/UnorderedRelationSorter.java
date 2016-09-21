@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.skynet.core.relation.sorters;
 
 import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -27,7 +27,7 @@ public class UnorderedRelationSorter implements IRelationSorter {
    }
 
    @Override
-   public void sort(List<? extends IArtifact> relatives, List<String> relativeSequence) {
+   public void sort(List<? extends ArtifactToken> relatives, List<String> relativeSequence) {
       // do nothing
    }
 }

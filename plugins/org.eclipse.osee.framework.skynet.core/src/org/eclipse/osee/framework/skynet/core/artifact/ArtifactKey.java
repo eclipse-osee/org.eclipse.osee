@@ -10,30 +10,29 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 public final class ArtifactKey {
 
-   private int artId;
+   private Long artId;
    private BranchId branch;
 
-   public ArtifactKey(IArtifact artifact) {
-      this.artId = artifact.getArtId();
+   public ArtifactKey(ArtifactToken artifact) {
+      this.artId = artifact.getId();
       this.branch = artifact.getBranch();
    }
 
    public ArtifactKey() {
-
    }
 
-   public ArtifactKey setKey(IArtifact artifact) {
-      this.artId = artifact.getArtId();
+   public ArtifactKey setKey(ArtifactToken artifact) {
+      this.artId = artifact.getId();
       this.branch = artifact.getBranch();
       return this;
    }
 
-   public ArtifactKey setKey(int artId, BranchId branch) {
+   public ArtifactKey setKey(Long artId, BranchId branch) {
       this.artId = artId;
       this.branch = branch;
       return this;
@@ -41,11 +40,7 @@ public final class ArtifactKey {
 
    @Override
    public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + artId;
-      result = prime * result + String.valueOf(branch.getUuid()).hashCode();
-      return result;
+      return 31 * artId.hashCode() + branch.hashCode();
    }
 
    @Override
@@ -60,16 +55,12 @@ public final class ArtifactKey {
          return false;
       }
       ArtifactKey other = (ArtifactKey) obj;
-      if (artId != other.artId) {
+      if (!artId.equals(other.artId)) {
          return false;
       }
-      if (!branch.equals(other.branch)) {
+      if (branch.notEqual(other.branch)) {
          return false;
       }
       return true;
-   }
-
-   public BranchId getBranch() {
-      return branch;
    }
 }

@@ -49,7 +49,6 @@ import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.compare.CompareData;
 import org.eclipse.osee.framework.ui.skynet.render.compare.CompareDataCollector;
@@ -203,7 +202,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
       return changes;
    }
 
-   private TransactionToken pickTransaction(IArtifact workflow) throws OseeCoreException {
+   private TransactionToken pickTransaction(ArtifactId workflow) throws OseeCoreException {
       TransactionToken minTransactionId = TransactionToken.SENTINEL;
       for (TransactionToken transaction : TransactionManager.getCommittedArtifactTransactionIds(workflow)) {
          if (minTransactionId.isOlderThan(transaction) && !BranchManager.isArchived(transaction.getBranch())) {

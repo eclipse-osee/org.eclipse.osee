@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.skynet.core.relation.sorters;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -28,7 +28,7 @@ public class UserDefinedRelationSorter implements IRelationSorter {
    }
 
    @Override
-   public void sort(List<? extends IArtifact> relatives, List<String> relativeSequence) {
+   public void sort(List<? extends ArtifactToken> relatives, List<String> relativeSequence) {
       if (relatives.size() > 1) {
          Collections.sort(relatives, new UserDefinedOrderComparator(relativeSequence));
       }

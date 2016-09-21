@@ -14,12 +14,12 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
  * @author Andrew M. Finkbeiner
  */
-class UserDefinedOrderComparator implements Comparator<IArtifact> {
+class UserDefinedOrderComparator implements Comparator<ArtifactToken> {
 
    private final Map<String, Integer> value;
 
@@ -31,7 +31,7 @@ class UserDefinedOrderComparator implements Comparator<IArtifact> {
    }
 
    @Override
-   public int compare(IArtifact artifact1, IArtifact artifact2) {
+   public int compare(ArtifactToken artifact1, ArtifactToken artifact2) {
       Integer val1 = value.get(artifact1.getGuid());
       Integer val2 = value.get(artifact2.getGuid());
       if (val1 == null) {
