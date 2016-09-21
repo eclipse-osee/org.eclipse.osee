@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.skynet.core.relation;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
-import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -400,8 +401,9 @@ public class RelationManager {
    public static void ensureRelationCanBeAdded(IRelationType relationType, Artifact artifactA, Artifact artifactB) throws OseeCoreException {
       // For now, relations can not be cross branch.  Ensure that both artifacts are on same branch
       ensureSameBranch(artifactA, artifactB);
-      ensureSideWillSupport(artifactA, relationType, RelationSide.SIDE_A, 1);
-      ensureSideWillSupport(artifactB, relationType, RelationSide.SIDE_B, 1);
+      RelationType relType = RelationTypeManager.getType(relationType);
+      ensureSideWillSupport(artifactA, relType, RelationSide.SIDE_A, 1);
+      ensureSideWillSupport(artifactB, relType, RelationSide.SIDE_B, 1);
    }
 
    private static void ensureSameBranch(Artifact a, Artifact b) throws OseeArgumentException {
@@ -414,8 +416,7 @@ public class RelationManager {
     * Check whether artifactCount number of additional artifacts of type artifactType can be related to the artifact on
     * side relationSide for relations of type relationType
     */
-   private static void ensureSideWillSupport(Artifact artifact, IRelationType relationTypeToken, RelationSide relationSide, int artifactCount) throws OseeCoreException {
-      RelationType relationType = RelationTypeManager.getType(relationTypeToken);
+   private static void ensureSideWillSupport(Artifact artifact, RelationType relationType, RelationSide relationSide, int artifactCount) throws OseeCoreException {
       if (!relationType.isArtifactTypeAllowed(relationSide, artifact.getArtifactType())) {
          throw new OseeArgumentException(String.format(
             "Artifact [%s] of type [%s] does not belong on side [%s] of relation [%s] - only artifacts of type [%s] are allowed",
@@ -513,29 +514,30 @@ public class RelationManager {
       addRelation(PREEXISTING, relationType, artifactA, artifactB, rationale);
    }
 
-   public static void addRelation(RelationSorter sorterId, IRelationType relationTypeToken, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {
+   public static void addRelation(RelationSorter sorterId, IRelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {
       Conditions.checkExpressionFailOnTrue(artifactA.equals(artifactB), "Not valid to relate artifact [%s] to itself",
          artifactA);
       RelationLink relation = relationCache.getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(),
-         relationTypeToken, INCLUDE_DELETED);
+         relationType, INCLUDE_DELETED);
 
-      RelationType relationType = RelationTypeManager.getType(relationTypeToken);
+      //relationType = RelationTypeManager.getType(relationType);
+
       if (relation == null) {
-         ensureRelationCanBeAdded(relationTypeToken, artifactA, artifactB);
+         ensureRelationCanBeAdded(relationType, artifactA, artifactB);
 
-         relation = getOrCreate(artifactA.getArtId(), artifactB.getArtId(), artifactA.getBranch(), relationType, 0, 0,
-            rationale, ModificationType.NEW, ApplicabilityId.BASE);
+         relation = getOrCreate(artifactA.getArtId(), artifactB.getArtId(), artifactA.getBranch(),
+            RelationTypeManager.getType(relationType), 0, 0, rationale, ModificationType.NEW, , ApplicabilityId.BASE);
          relation.setDirty();
          if (relation.isDeleted()) {
             relation.undelete();
          }
 
-         RelationTypeSideSorter sorter = createTypeSideSorter(artifactA, relationTypeToken, RelationSide.SIDE_B);
+         RelationTypeSideSorter sorter = createTypeSideSorter(artifactA, relationType, RelationSide.SIDE_B);
          sorter.addItem(sorterId, artifactB);
 
       } else if (relation.isDeleted()) {
          relation.undelete();
-         RelationTypeSideSorter sorter = createTypeSideSorter(artifactA, relationTypeToken, RelationSide.SIDE_B);
+         RelationTypeSideSorter sorter = createTypeSideSorter(artifactA, relationType, RelationSide.SIDE_B);
          sorter.addItem(sorterId, artifactB);
       }
    }
@@ -555,8 +557,9 @@ public class RelationManager {
       return relationSorterProvider.getAllRelationOrderIds();
    }
 
-   public static RelationTypeSideSorter createTypeSideSorter(IArtifact artifact, IRelationType relationType, RelationSide side) throws OseeCoreException {
-      return relationOrderFactory.createTypeSideSorter(relationSorterProvider, artifact, relationType, side);
+   public static RelationTypeSideSorter createTypeSideSorter(IArtifact artifact, IRelationType relationType, RelationSide side) {
+      RelationOrderData data = createRelationOrderData(artifact);
+      return new RelationTypeSideSorter(RelationTypeManager.getType(relationType), side, relationSorterProvider, data);
    }
 
    public static RelationOrderData createRelationOrderData(IArtifact artifact) throws OseeCoreException {
@@ -592,7 +595,7 @@ public class RelationManager {
     * @param relationId 0 or relationId if already created
     * @throws OseeCoreException
     */
-   public static synchronized RelationLink getOrCreate(int aArtifactId, int bArtifactId, BranchId branch, RelationType relationType, int relationId, int gammaId, String rationale, ModificationType modificationType, ApplicabilityId applicabilityId) throws OseeCoreException {
+   public static synchronized RelationLink getOrCreate(int aArtifactId, int bArtifactId, BranchId branch, RelationTypeToken relationType, int relationId, int gammaId, String rationale, ModificationType modificationType, ApplicabilityId applicabilityId) throws OseeCoreException {
       RelationLink relation = null;
       if (relationId != 0) {
          relation = getLoadedRelationById(relationId, aArtifactId, bArtifactId, branch);

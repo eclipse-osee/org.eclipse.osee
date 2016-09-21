@@ -72,7 +72,7 @@ public class LoadDeletedRelationTest {
       List<RelationLink> links = RelationManager.getRelationsAll(left, DeletionFlag.INCLUDE_DELETED);
       int linkCount = 0;
       for (RelationLink link : links) {
-         if (link.getRelationType().getName().equals("Requirement Trace")) {
+         if (link.getRelationType().equals(type)) {
             linkCount++;
          }
       }

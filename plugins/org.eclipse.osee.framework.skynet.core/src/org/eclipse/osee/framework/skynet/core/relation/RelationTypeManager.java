@@ -54,7 +54,8 @@ public class RelationTypeManager {
       return validRelationTypes;
    }
 
-   public static int getRelationSideMax(RelationType relationType, IArtifactType artifactType, RelationSide relationSide) throws OseeCoreException {
+   public static int getRelationSideMax(IRelationType relType, IArtifactType artifactType, RelationSide relationSide) throws OseeCoreException {
+      RelationType relationType = getType(relType);
       int toReturn = 0;
       ArtifactType type = getCacheService().getArtifactTypeCache().get(artifactType);
       if (relationType.isArtifactTypeAllowed(relationSide, type)) {
@@ -93,6 +94,7 @@ public class RelationTypeManager {
       if (relationType instanceof RelationType) {
          return (RelationType) relationType;
       }
+
       return getCache().get(relationType);
    }
 

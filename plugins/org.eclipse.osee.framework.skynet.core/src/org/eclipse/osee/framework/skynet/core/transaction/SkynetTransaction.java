@@ -55,6 +55,7 @@ import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTransactionData;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TxMonitorImpl.TxState;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
@@ -262,7 +263,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
    }
 
    private void checkMultiplicity(Artifact art, RelationLink link) {
-      RelationType relationType = link.getRelationType();
+      RelationType relationType = RelationTypeManager.getType(link.getRelationType());
       RelationTypeMultiplicity multiplicity = relationType.getMultiplicity();
 
       RelationSide sideToCheck = link.getOppositeSide(art);
@@ -271,7 +272,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
          int count = art.getRelatedArtifactsCount(RelationTypeSide.create(relationType, sideToCheck));
          if (count > 1) {
             throw new OseeStateException("Artifact [%s] can only have 1 [%s] on [%s] but has %d", art.getName(),
-               link.getSideNameFor(art), sideToCheck.name(), count);
+               relationType.getSideName(sideToCheck), sideToCheck.name(), count);
          }
       }
    }

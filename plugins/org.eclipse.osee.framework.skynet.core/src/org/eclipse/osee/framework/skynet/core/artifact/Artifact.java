@@ -1265,7 +1265,8 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
 
    public final void addRelation(RelationSorter sorterId, RelationTypeSide relationTypeSide, Artifact artifact, String rationale) throws OseeCoreException {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
-      RelationManager.addRelation(sorterId, relationTypeSide, sides.getFirst(), sides.getSecond(), rationale);
+      RelationManager.addRelation(sorterId, relationTypeSide.getRelationType(), sides.getFirst(), sides.getSecond(),
+         rationale);
    }
 
    public final void addRelation(RelationTypeSide relationSide, Artifact artifact) throws OseeCoreException {
