@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -207,7 +208,7 @@ public class RelationOrderParserTest {
    private void checkData(RelationOrderData orderData, List<Object[]> expectedValues) {
       int index = 0;
       Assert.assertEquals(expectedValues.size(), orderData.size());
-      for (Entry<Pair<IRelationType, RelationSide>, Pair<RelationSorter, List<String>>> entry : orderData.getOrderedEntrySet()) {
+      for (Entry<Pair<RelationTypeToken, RelationSide>, Pair<RelationSorter, List<String>>> entry : orderData.getOrderedEntrySet()) {
          Object[] actual = new Object[] {
             entry.getKey().getFirst(),
             entry.getKey().getSecond(),

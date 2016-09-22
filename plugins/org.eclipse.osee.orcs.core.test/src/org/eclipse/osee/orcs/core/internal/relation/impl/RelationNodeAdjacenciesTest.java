@@ -14,7 +14,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import com.google.common.collect.Iterables;
@@ -22,7 +21,9 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -102,9 +103,9 @@ public class RelationNodeAdjacenciesTest {
 
    @Test
    public void testGetExistingTypes() throws OseeCoreException {
-      IRelationType typeA = mock(IRelationType.class);
-      IRelationType typeB = mock(IRelationType.class);
-      IRelationType typeC = mock(IRelationType.class);
+      RelationTypeToken typeA = CoreRelationTypes.DEFAULT_HIERARCHY;
+      RelationTypeToken typeB = CoreRelationTypes.Allocation__Component;
+      RelationTypeToken typeC = CoreRelationTypes.Dependency__Artifact;
 
       when(dirty.getRelationType()).thenReturn(typeA);
       when(dirty.getModificationType()).thenReturn(ModificationType.ARTIFACT_DELETED);

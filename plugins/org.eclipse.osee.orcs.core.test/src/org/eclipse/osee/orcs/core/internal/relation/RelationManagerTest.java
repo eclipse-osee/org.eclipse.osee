@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
@@ -46,7 +47,6 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
-import org.eclipse.osee.orcs.core.internal.proxy.impl.ExternalArtifactManagerImpl.ProxyProvider;
 import org.eclipse.osee.orcs.core.internal.relation.impl.RelationNodeAdjacencies;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule.QueryModuleProvider;
 import org.eclipse.osee.orcs.data.RelationTypes;
@@ -80,7 +80,6 @@ public class RelationManagerTest {
    @Mock private ExternalArtifactManager proxyManager;
    @Mock private QueryFactory factory;
    @Mock private QueryModuleProvider provider;
-   @Mock private ProxyProvider proxy;
 
    @Mock private RelationNodeLoader loader;
    @Mock private OrcsSession session;
@@ -120,7 +119,7 @@ public class RelationManagerTest {
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);
 
-      manager = RelationManagerFactory.createRelationManager(logger, types, relationFactory, loader, provider, proxy);
+      manager = RelationManagerFactory.createRelationManager(logger, types, relationFactory, loader, provider);
 
       when(loader.loadNodes(eq(session), eq(graph), anyCollectionOf(Integer.class), eq(LoadLevel.ALL))).thenAnswer(
          new LoaderAnswer());
@@ -209,6 +208,8 @@ public class RelationManagerTest {
       when(types.getDefaultOrderTypeGuid(Matchers.any())).thenReturn(LEXICOGRAPHICAL_DESC);
       when(types.getAll()).thenReturn(new ArrayList(
          Arrays.asList(CoreRelationTypes.Default_Hierarchical__Child, CoreRelationTypes.Default_Hierarchical__Parent)));
+
+      when(types.get((Id) Matchers.any())).thenReturn(CoreRelationTypes.Default_Hierarchical__Child);
    }
 
    private void setupAdjacencies(RelationNode node, Relation... relations) throws OseeCoreException {

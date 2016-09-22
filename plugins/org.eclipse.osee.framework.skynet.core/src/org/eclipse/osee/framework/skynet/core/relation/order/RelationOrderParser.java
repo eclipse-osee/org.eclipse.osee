@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -75,7 +75,7 @@ public class RelationOrderParser {
 
       StringBuilder sb = new StringBuilder();
       openRoot(sb);
-      for (Entry<Pair<IRelationType, RelationSide>, Pair<RelationSorter, List<String>>> entry : data.getOrderedEntrySet()) {
+      for (Entry<Pair<RelationTypeToken, RelationSide>, Pair<RelationSorter, List<String>>> entry : data.getOrderedEntrySet()) {
          writeEntry(sb, entry);
          sb.append("\n");
       }
@@ -95,8 +95,8 @@ public class RelationOrderParser {
       sb.append(">");
    }
 
-   private void writeEntry(StringBuilder sb, Entry<Pair<IRelationType, RelationSide>, Pair<RelationSorter, List<String>>> entry) {
-      Pair<IRelationType, RelationSide> key = entry.getKey();
+   private void writeEntry(StringBuilder sb, Entry<Pair<RelationTypeToken, RelationSide>, Pair<RelationSorter, List<String>>> entry) {
+      Pair<RelationTypeToken, RelationSide> key = entry.getKey();
       sb.append("<");
       sb.append("Order ");
       sb.append("relType=\"");

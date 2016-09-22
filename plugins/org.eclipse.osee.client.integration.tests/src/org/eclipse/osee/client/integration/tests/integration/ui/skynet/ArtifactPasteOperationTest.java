@@ -20,6 +20,7 @@ import java.util.Map.Entry;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -179,7 +180,7 @@ public class ArtifactPasteOperationTest {
 
       List<Artifact> childArtifacts = artifactToCheck.getChildren();
       Assert.assertEquals(hasChildren, !childArtifacts.isEmpty());
-      for (Entry<Pair<IRelationType, RelationSide>, Pair<RelationSorter, List<String>>> entry : data.entrySet()) {
+      for (Entry<Pair<RelationTypeToken, RelationSide>, Pair<RelationSorter, List<String>>> entry : data.entrySet()) {
          IRelationType relationTypeId = entry.getKey().getFirst();
          RelationSide relationSide = entry.getKey().getSecond();
          RelationSorter orderGuid = entry.getValue().getFirst();

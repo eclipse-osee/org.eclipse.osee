@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
@@ -68,7 +69,7 @@ public class RelationOrderRenderer {
             writer.addTableRow(NO_DATA_TAG);
          } else {
             writer.addTableRow("Relation Type", "Side Name", "Side", "Order Type", "Related Artifacts");
-            for (Entry<Pair<IRelationType, RelationSide>, Pair<RelationSorter, List<String>>> entry : relationOrderData.getOrderedEntrySet()) {
+            for (Entry<Pair<RelationTypeToken, RelationSide>, Pair<RelationSorter, List<String>>> entry : relationOrderData.getOrderedEntrySet()) {
                IRelationType relationTypeId = entry.getKey().getFirst();
                RelationSide relationSide = entry.getKey().getSecond();
                RelationSorter sorterGuid = entry.getValue().getFirst();

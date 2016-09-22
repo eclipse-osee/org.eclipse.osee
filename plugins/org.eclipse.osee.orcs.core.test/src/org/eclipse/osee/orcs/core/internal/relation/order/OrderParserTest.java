@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -91,8 +91,8 @@ public class OrderParserTest {
    @Captor private ArgumentCaptor<RelationTypeSide> typeSideCaptor;
    @Captor private ArgumentCaptor<OrderData> orderDataCaptor;
 
-   @Mock private IRelationType relationType1;
-   @Mock private IRelationType relationType2;
+   @Mock private RelationTypeToken relationType1;
+   @Mock private RelationTypeToken relationType2;
    // @formatter:on
 
    private OrderParser parser;

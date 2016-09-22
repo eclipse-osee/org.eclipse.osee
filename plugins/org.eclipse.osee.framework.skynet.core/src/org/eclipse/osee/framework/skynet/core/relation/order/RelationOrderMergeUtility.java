@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
@@ -36,7 +36,7 @@ public class RelationOrderMergeUtility {
       RelationOrderData mergedData =
          new RelationOrderData(new ArtifactRelationOrderAccessor(new RelationOrderParser()), right);
 
-      for (Pair<IRelationType, RelationSide> typeSide : getAllTypeSides(leftData, rightData)) {
+      for (Pair<RelationTypeToken, RelationSide> typeSide : getAllTypeSides(leftData, rightData)) {
          RelationType type = RelationTypeManager.getType(typeSide.getFirst());
          RelationSide side = typeSide.getSecond();
          RelationTypeSide rts = new RelationTypeSide(type, side);
@@ -56,11 +56,10 @@ public class RelationOrderMergeUtility {
       return mergedData;
    }
 
-   private static Collection<Pair<IRelationType, RelationSide>> getAllTypeSides(RelationOrderData leftData, RelationOrderData rightData) {
-      Collection<Pair<IRelationType, RelationSide>> rts = new HashSet<>();
+   private static Collection<Pair<RelationTypeToken, RelationSide>> getAllTypeSides(RelationOrderData leftData, RelationOrderData rightData) {
+      Collection<Pair<RelationTypeToken, RelationSide>> rts = new HashSet<>();
       rts.addAll(leftData.getAvailableTypeSides());
       rts.addAll(rightData.getAvailableTypeSides());
-
       return rts;
    }
 

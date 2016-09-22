@@ -26,8 +26,8 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -110,9 +110,9 @@ public class OrderParser {
                   }
 
                   // TODO don't store relation type by name - use type UUID
-                  IRelationType type = Iterables.find(relationCache.getAll(), new Predicate<IRelationType>() {
+                  RelationTypeToken type = Iterables.find(relationCache.getAll(), new Predicate<RelationTypeToken>() {
                      @Override
-                     public boolean apply(IRelationType type) {
+                     public boolean apply(RelationTypeToken type) {
                         return type.getName().equalsIgnoreCase(relationTypeName);
                      }
                   });

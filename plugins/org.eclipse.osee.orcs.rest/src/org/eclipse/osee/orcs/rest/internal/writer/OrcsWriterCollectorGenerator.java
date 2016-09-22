@@ -20,7 +20,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -220,15 +220,15 @@ public class OrcsWriterCollectorGenerator {
    }
 
    private void createRelationTypeSheet() {
-      Map<String, IRelationType> types = new HashMap<>(100);
+      Map<String, RelationTypeToken> types = new HashMap<>(100);
       if (config == null) {
-         for (IRelationType type : orcsApi.getOrcsTypes().getRelationTypes().getAll()) {
+         for (RelationTypeToken type : orcsApi.getOrcsTypes().getRelationTypes().getAll()) {
             types.put(type.getName(), type);
          }
       } else {
          for (OrcsWriterRelationSide token : config.getIncludeRelationTypes()) {
             Long relationTypeUuid = token.getRelationTypeUuid();
-            IRelationType type = orcsApi.getOrcsTypes().getRelationTypes().get(relationTypeUuid);
+            RelationTypeToken type = orcsApi.getOrcsTypes().getRelationTypes().get(relationTypeUuid);
             if (type != null) {
                types.put(type.getName(), type);
             }
@@ -239,12 +239,12 @@ public class OrcsWriterCollectorGenerator {
       typeNames.addAll(types.keySet());
       Collections.sort(typeNames);
       for (String typeName : typeNames) {
-         IRelationType type = types.get(typeName);
+         RelationTypeToken type = types.get(typeName);
          writeRelationType(type);
       }
    }
 
-   private void writeRelationType(IRelationType type) {
+   private void writeRelationType(RelationTypeToken type) {
       String sideAName = orcsApi.getOrcsTypes().getRelationTypes().getSideAName(type);
       OwRelationType owType = OwFactory.createRelationType(type, sideAName, true);
       collector.getRelTypes().add(owType);

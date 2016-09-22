@@ -17,23 +17,23 @@ import org.eclipse.osee.framework.jdk.core.type.NamedId;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class RelationTypeSide extends NamedId implements IRelationType {
+public class RelationTypeSide extends NamedId implements RelationTypeToken {
 
-   private final IRelationType type;
+   private final RelationTypeToken type;
    private final RelationSide side;
    private RelationTypeSide opposite;
 
-   public RelationTypeSide(IRelationType type, RelationSide side) {
+   public RelationTypeSide(RelationTypeToken type, RelationSide side) {
       super(type.getId(), type.getName());
       this.type = type;
       this.side = side;
    }
 
    public static RelationTypeSide create(RelationSide side, long id, String name) {
-      return new RelationTypeSide(IRelationType.valueOf(id, name), side);
+      return new RelationTypeSide(RelationTypeToken.create(id, name), side);
    }
 
-   public static RelationTypeSide create(IRelationType type, RelationSide side) {
+   public static RelationTypeSide create(RelationTypeToken type, RelationSide side) {
       return new RelationTypeSide(type, side);
    }
 
@@ -44,7 +44,7 @@ public class RelationTypeSide extends NamedId implements IRelationType {
       return opposite;
    }
 
-   public IRelationType getRelationType() {
+   public RelationTypeToken getRelationType() {
       return type;
    }
 

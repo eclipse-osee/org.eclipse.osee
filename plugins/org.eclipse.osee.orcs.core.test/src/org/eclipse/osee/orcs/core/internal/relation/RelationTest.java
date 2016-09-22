@@ -17,7 +17,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DirtyState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -139,8 +139,8 @@ public class RelationTest {
 
    @Test
    public void testIsOfType() throws OseeCoreException {
-      IRelationType type1 = mock(IRelationType.class);
-      IRelationType type2 = mock(IRelationType.class);
+      RelationTypeToken type1 = mock(RelationTypeToken.class);
+      RelationTypeToken type2 = mock(RelationTypeToken.class);
 
       when(relationTypes.get(TYPE_UUID)).thenReturn(type1);
 

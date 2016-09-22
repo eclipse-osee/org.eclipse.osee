@@ -16,6 +16,7 @@ import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHIC
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import com.google.common.collect.ArrayListMultimap;
@@ -37,7 +38,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
@@ -88,8 +89,8 @@ public class OrcsTypesTest {
    private static final IAttributeType FIELD_1 = TokenFactory.createAttributeType(0x1000000000000080L, "Field 1");
    private static final IAttributeType FIELD_2 = TokenFactory.createAttributeType(0x1000000000000081L, "Field 2");
 
-   private static final IRelationType REQUIREMENT_REL = TokenFactory.createRelationType(0x2000000000000157L, "Requirement Relation");
-   private static final IRelationType ANOTHER_REL = TokenFactory.createRelationType(0x2000000000000158L, "Another Relation");
+   private static final RelationTypeToken REQUIREMENT_REL = TokenFactory.createRelationType(0x2000000000000157L, "Requirement Relation");
+   private static final RelationTypeToken ANOTHER_REL = TokenFactory.createRelationType(0x2000000000000158L, "Another Relation");
 
    static long BRANCH_A_UUID = 3458234234L;
    static long BRANCH_B_UUID = 9993245332L;
@@ -765,8 +766,8 @@ public class OrcsTypesTest {
    public void testExistsRelationTypes() throws OseeCoreException {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
-      assertEquals(true, relTypes.exists(REQUIREMENT_REL));
-      assertEquals(true, relTypes.exists(ANOTHER_REL));
+      assertTrue(relTypes.exists(REQUIREMENT_REL));
+      assertTrue(relTypes.exists(ANOTHER_REL));
    }
 
    @Test
@@ -921,7 +922,7 @@ public class OrcsTypesTest {
 
       assertEquals(3, relTypes.size());
 
-      IRelationType relation = relTypes.get(0x2000000000000159L);
+      RelationTypeToken relation = relTypes.get(0x2000000000000159L);
 
       assertEquals("Dynamic Relation", relation.getName());
       assertEquals(Long.valueOf(0x2000000000000159L), relation.getId());

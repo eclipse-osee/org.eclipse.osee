@@ -52,8 +52,8 @@ public final class TokenFactory {
       return new AttributeTypeToken(guid, name, description);
    }
 
-   public static IRelationType createRelationType(long id, String name) {
-      return IRelationType.valueOf(id, name);
+   public static RelationTypeToken createRelationType(long id, String name) {
+      return RelationTypeToken.create(id, name);
    }
 
    public static IAccessContextId createAccessContextId(String guid, String name) {

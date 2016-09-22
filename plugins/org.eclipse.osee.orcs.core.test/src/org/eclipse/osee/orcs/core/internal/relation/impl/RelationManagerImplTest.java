@@ -42,7 +42,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -55,7 +55,6 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
-import org.eclipse.osee.orcs.core.internal.proxy.impl.ExternalArtifactManagerImpl.ProxyProvider;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
@@ -66,6 +65,8 @@ import org.eclipse.osee.orcs.core.internal.relation.RelationVisitor;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderManager;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderManagerFactory;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule.QueryModuleProvider;
+import org.eclipse.osee.orcs.core.internal.types.impl.RelationTypesImpl;
+import org.eclipse.osee.orcs.data.RelationTypes;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -86,7 +87,7 @@ import org.mockito.stubbing.Answer;
  */
 public class RelationManagerImplTest {
 
-   private static final IRelationType TYPE_1 = TokenFactory.createRelationType(123456789L, "TYPE_1");
+   private static final RelationTypeToken TYPE_1 = RelationTypeToken.create(123456789, "TYPE_1");
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();
@@ -100,7 +101,6 @@ public class RelationManagerImplTest {
    @Mock private RelationFactory relationFactory;
    @Mock private OrcsSession session;
    @Mock private QueryModuleProvider provider;
-   @Mock private ProxyProvider proxy;
 
    @Mock private GraphData graph;
 
@@ -134,12 +134,14 @@ public class RelationManagerImplTest {
    @Captor private ArgumentCaptor<List<? extends Identifiable<String>>> sortedListCaptor;
    // @formatter:on
 
+   private final RelationTypes relationTypes = new RelationTypesImpl(null);
    private RelationManager manager;
 
    @Before
    public void setUp() {
       MockitoAnnotations.initMocks(this);
-      manager = new RelationManagerImpl(logger, validity, resolver, relationFactory, orderFactory, provider, proxy);
+      manager =
+         new RelationManagerImpl(logger, validity, resolver, relationFactory, orderFactory, provider, relationTypes);
 
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);

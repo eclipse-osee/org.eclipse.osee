@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -37,7 +38,7 @@ public class RelationTypeValidity {
       this.relationTypes = relationTypes;
    }
 
-   public void checkRelationTypeMultiplicity(IRelationType type, RelationNode node, RelationSide side, int count) throws OseeCoreException {
+   public void checkRelationTypeMultiplicity(RelationTypeToken type, RelationNode node, RelationSide side, int count) throws OseeCoreException {
       MultiplicityState state = getRelationMultiplicityState(type, side, count);
       switch (state) {
          case MAX_VIOLATION:
@@ -78,7 +79,7 @@ public class RelationTypeValidity {
       return toReturn;
    }
 
-   public MultiplicityState getRelationMultiplicityState(IRelationType type, RelationSide side, int count) throws OseeCoreException {
+   public MultiplicityState getRelationMultiplicityState(RelationTypeToken type, RelationSide side, int count) throws OseeCoreException {
       Conditions.checkNotNull(type, "type");
       Conditions.checkNotNull(side, "relationSide");
       checkTypeExists(type);

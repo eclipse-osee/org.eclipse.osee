@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal.types.impl;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
@@ -44,17 +45,20 @@ public class RelationTypesImpl implements RelationTypes {
    }
 
    @Override
-   public Collection<? extends IRelationType> getAll() throws OseeCoreException {
+   public Collection<? extends RelationTypeToken> getAll() throws OseeCoreException {
       return provider.getRelationTypeIndex().getAllTokens();
    }
 
    @Override
-   public IRelationType get(Id id) {
+   public RelationTypeToken get(Id id) {
+      if (id instanceof RelationTypeToken) {
+         return (RelationTypeToken) id;
+      }
       return provider.getRelationTypeIndex().get(id);
    }
 
    @Override
-   public IRelationType get(Long id) {
+   public RelationTypeToken get(Long id) {
       return provider.getRelationTypeIndex().get(id);
    }
 

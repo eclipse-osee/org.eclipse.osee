@@ -21,10 +21,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.OseeDslResource;
 import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
@@ -147,8 +148,7 @@ public class OrcsTypesIndexer {
    }
 
    private void indexAttributes(ArtifactTypeIndex artifactTypeIndex, AttributeTypeIndex attributeTypeIndex, XArtifactType dslType) throws OseeCoreException {
-      Map<BranchId, Collection<IAttributeType>> validAttributes =
-         new HashMap<BranchId, Collection<IAttributeType>>();
+      Map<BranchId, Collection<IAttributeType>> validAttributes = new HashMap<BranchId, Collection<IAttributeType>>();
       for (XAttributeTypeRef xAttributeTypeRef : dslType.getValidAttributeTypes()) {
          XAttributeType xAttributeType = xAttributeTypeRef.getValidAttributeType();
          BranchId branch = getAttributeBranch(xAttributeTypeRef);
@@ -190,7 +190,7 @@ public class OrcsTypesIndexer {
    }
 
    private IRelationType getOrCreateToken(RelationTypeIndex index, XRelationType dslType) throws OseeCoreException {
-      IRelationType token = index.getTokenByDslType(dslType);
+      RelationTypeToken token = index.getTokenByDslType(dslType);
       if (token == null) {
          long id = HexUtil.toLong(dslType.getUuid());
          token = TokenFactory.createRelationType(id, dslType.getName());

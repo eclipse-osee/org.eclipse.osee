@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.relation;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -45,7 +46,7 @@ public class Relation implements HasOrcsData<RelationData>, OrcsWriteable {
       this.relationData = data;
    }
 
-   public IRelationType getRelationType() throws OseeCoreException {
+   public RelationTypeToken getRelationType() throws OseeCoreException {
       return relationTypes.get(getOrcsData().getTypeUuid());
    }
 

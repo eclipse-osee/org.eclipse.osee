@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
@@ -87,7 +87,7 @@ public class RelationOrderRendererTest {
       checkRelationOrderRenderer(getExpected(expectedData), orderData);
    }
 
-   private void addData(RelationOrderData orderData, List<Object[]> expectedData, IRelationType relationType, String relationSideName, RelationSide side, RelationSorter expectedSorterId, String... guids) throws OseeCoreException {
+   private void addData(RelationOrderData orderData, List<Object[]> expectedData, RelationTypeToken relationType, String relationSideName, RelationSide side, RelationSorter expectedSorterId, String... guids) throws OseeCoreException {
       List<String> guidList = Arrays.asList(guids);
       orderData.addOrderList(relationType, side, expectedSorterId, guidList);
       expectedData.add(new Object[] {

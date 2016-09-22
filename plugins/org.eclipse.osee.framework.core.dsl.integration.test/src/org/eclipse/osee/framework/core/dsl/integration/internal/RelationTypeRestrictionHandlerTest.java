@@ -19,8 +19,8 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.DslAsserts;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockModel;
@@ -54,6 +54,7 @@ import org.junit.Test;
  * @author Roberto E. Escobar
  */
 public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTest<RelationTypeRestriction> {
+   private static final RelationTypeToken relationType = CoreRelationTypes.Default_Hierarchical__Child;
 
    public RelationTypeRestrictionHandlerTest() {
       super(new RelationTypeRestrictionHandler(new ArtifactMatchInterpreter()),
@@ -62,7 +63,6 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
    @Test
    public void testProcessDataRelationTypeNoMatch() throws OseeCoreException {
-      IRelationType relationType = CoreRelationTypes.Default_Hierarchical__Child;
       XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
@@ -77,7 +77,6 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
    @Test
    public void testProcessDataRelationTypeMatchSideANoMatch() throws OseeCoreException {
-      IRelationType relationType = CoreRelationTypes.Default_Hierarchical__Child;
       XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
@@ -101,7 +100,6 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
    @Test
    public void testProcessDataRelationTypeMatchSideAMatch() throws OseeCoreException {
-      IRelationType relationType = CoreRelationTypes.Default_Hierarchical__Child;
       XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
@@ -129,7 +127,6 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
    @Test
    public void testProcessDataRelationTypeMatchSideBNoMatch() throws OseeCoreException {
-      IRelationType relationType = CoreRelationTypes.Default_Hierarchical__Child;
       XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
@@ -154,7 +151,6 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
    @Test
    public void testProcessDataRelationTypeMatchSideBMatch() throws OseeCoreException {
-      IRelationType relationType = CoreRelationTypes.Default_Hierarchical__Child;
       XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
@@ -182,7 +178,6 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
    @Test
    public void testProcessDataRelationTypeMatchBothMatch() throws OseeCoreException {
-      IRelationType relationType = CoreRelationTypes.Default_Hierarchical__Child;
       XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
@@ -234,8 +229,6 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       restriction.setRelationTypeMatch(true);
       restriction.setRestrictedToSide(XRelationSideEnum.BOTH);
 
-      IRelationType relationType = CoreRelationTypes.Default_Hierarchical__Child;
-
       RelationType testRelationType =
          getTestRelationType(relationType, CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.Artifact);
 
@@ -275,7 +268,6 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
    @Test
    public void testProcessDataArtifactTypeMatch() throws OseeCoreException {
-      IRelationType relationType = CoreRelationTypes.Default_Hierarchical__Child;
 
       IArtifactType artifactType = CoreArtifactTypes.AbstractSoftwareRequirement;
       XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getGuid(), artifactType.getName());
@@ -313,7 +305,6 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    private void testProcessRelationWithArtifactHelper(String artifactName, String matcherArtifactName, Scope expectedScope) throws OseeCoreException {
-      IRelationType relationType = CoreRelationTypes.Default_Hierarchical__Child;
       XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
@@ -357,7 +348,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       testProcessRelationWithArtifactHelper("artifactToMatch", "differentArtifactToMatch", new Scope());
    }
 
-   private static RelationType getTestRelationType(IRelationType relationType, IArtifactType aArtTypeToken, IArtifactType bArtTypeToken) {
+   private static RelationType getTestRelationType(RelationTypeToken relationType, IArtifactType aArtTypeToken, IArtifactType bArtTypeToken) {
       return new RelationType(relationType.getId(), relationType.getName(), "sideA_" + aArtTypeToken.getName(),
          "sideB_" + bArtTypeToken.getName(), aArtTypeToken, bArtTypeToken, RelationTypeMultiplicity.MANY_TO_MANY,
          LEXICOGRAPHICAL_ASC);

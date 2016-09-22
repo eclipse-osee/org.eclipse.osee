@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.types.impl;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -19,7 +20,7 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 /**
  * @author Roberto E. Escobar
  */
-public class RelationTypeIndex extends TokenTypeIndex<IRelationType, XRelationType> {
+public class RelationTypeIndex extends TokenTypeIndex<RelationTypeToken, XRelationType> {
 
    private final ArtifactTypeIndex artifactTypeIndex;
 

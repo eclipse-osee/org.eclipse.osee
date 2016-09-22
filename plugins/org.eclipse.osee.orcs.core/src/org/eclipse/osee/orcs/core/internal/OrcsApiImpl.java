@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
+import com.google.common.collect.Sets;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -35,7 +36,6 @@ import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.DataModule;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
-import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeClassRegistry;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeClassResolver;
@@ -48,7 +48,6 @@ import org.eclipse.osee.orcs.core.internal.graph.impl.GraphFactoryImpl;
 import org.eclipse.osee.orcs.core.internal.indexer.IndexerModule;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.proxy.impl.ExternalArtifactManagerImpl;
-import org.eclipse.osee.orcs.core.internal.proxy.impl.ExternalArtifactManagerImpl.ProxyProvider;
 import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManagerFactory;
@@ -76,7 +75,6 @@ import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
-import com.google.common.collect.Sets;
 
 /**
  * @author Roberto E. Escobar
@@ -180,18 +178,9 @@ public class OrcsApiImpl implements OrcsApi {
 
       };
 
-      ProxyProvider proxyProvider = new ProxyProvider() {
-
-         @Override
-         public Artifact getInternalArtifact(ArtifactReadable external) {
-            return proxyManager.asInternalArtifact(external);
-         }
-
-      };
-
       RelationNodeLoader nodeLoader = new RelationNodeLoaderImpl(module.getDataLoaderFactory(), graphBuilderFactory);
       RelationManager relationManager = RelationManagerFactory.createRelationManager(logger,
-         orcsTypes.getRelationTypes(), relationFactory, nodeLoader, queryModuleProvider, proxyProvider);
+         orcsTypes.getRelationTypes(), relationFactory, nodeLoader, queryModuleProvider);
 
       TupleFactory tupleFactory = new TupleFactory(module.getDataFactory());
       TupleManager tupleManager = TupleManagerFactory.createTupleManager(tupleFactory);

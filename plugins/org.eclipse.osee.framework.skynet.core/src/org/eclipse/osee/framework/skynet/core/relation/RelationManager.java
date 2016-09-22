@@ -547,8 +547,8 @@ public class RelationManager {
             return relation;
          }
       }
-      throw new OseeCoreException("Unable to find a relation link for type[%s] artA[%s] artB[%s]",
-         relationType.getName(), artifactA.getName(), artifactB.getName());
+      throw new OseeCoreException("Unable to find a relation link for type[%s] artA[%s] artB[%s]", relationType,
+         artifactA.getName(), artifactB.getName());
    }
 
    public static List<RelationSorter> getRelationOrderTypes() {

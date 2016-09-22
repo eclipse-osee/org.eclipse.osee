@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.integration.mocks;
 
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactMatchRestriction;
@@ -122,7 +122,7 @@ public final class MockModel {
       return toReturn;
    }
 
-   public static XRelationType createXRelationType(IRelationType type) throws OseeCoreException {
+   public static XRelationType createXRelationType(RelationTypeToken type) throws OseeCoreException {
       String name = type.getName();
       long id = type.getId();
       XRelationType toReturn = OseeDslFactory.eINSTANCE.createXRelationType();

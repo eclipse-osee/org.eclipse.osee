@@ -10,15 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation.impl;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
-import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
-import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.IS_CHILD;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.IS_PARENT;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import static org.eclipse.osee.framework.jdk.core.util.Conditions.checkNotNull;
 import static org.eclipse.osee.framework.jdk.core.util.Strings.emptyString;
 import static org.eclipse.osee.orcs.core.internal.util.OrcsConditions.checkBranch;
@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
@@ -49,7 +50,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
-import org.eclipse.osee.orcs.core.internal.proxy.impl.ExternalArtifactManagerImpl.ProxyProvider;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
@@ -62,6 +62,7 @@ import org.eclipse.osee.orcs.core.internal.relation.order.OrderManager;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderManagerFactory;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule.QueryModuleProvider;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.RelationTypes;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -75,17 +76,16 @@ public class RelationManagerImpl implements RelationManager {
    private final RelationFactory relationFactory;
    private final OrderManagerFactory orderFactory;
    private final QueryModuleProvider provider;
-   private final ProxyProvider proxy;
+   private final RelationTypes relationTypes;
 
-   public RelationManagerImpl(Log logger, RelationTypeValidity validity, RelationResolver resolver, RelationFactory relationFactory, OrderManagerFactory orderFactory, QueryModuleProvider queryProvider, ProxyProvider proxyProvider) {
-      super();
+   public RelationManagerImpl(Log logger, RelationTypeValidity validity, RelationResolver resolver, RelationFactory relationFactory, OrderManagerFactory orderFactory, QueryModuleProvider queryProvider, RelationTypes relationTypes) {
       this.logger = logger;
       this.validity = validity;
       this.resolver = resolver;
       this.relationFactory = relationFactory;
       this.orderFactory = orderFactory;
       this.provider = queryProvider;
-      this.proxy = proxyProvider;
+      this.relationTypes = relationTypes;
    }
 
    @Override
@@ -131,7 +131,7 @@ public class RelationManagerImpl implements RelationManager {
          toReturn = container.getExistingTypes(DeletionFlag.EXCLUDE_DELETED);
       } else {
          logger.warn("Unable to find relation container for [%s]", node.getExceptionString());
-         toReturn = Collections.<IRelationType> emptyList();
+         toReturn = Collections.emptyList();
       }
       return toReturn;
    }
@@ -179,7 +179,7 @@ public class RelationManagerImpl implements RelationManager {
          result = resolver.resolve(session, graph, links, otherSide);
          if (result.size() > 1) {
             OrderManager orderManager = orderFactory.createOrderManager(node);
-            RelationTypeSide key = RelationTypeSide.create(type, otherSide);
+            RelationTypeSide key = RelationTypeSide.create(relationTypes.get(type), otherSide);
             orderManager.sort(key, result);
          }
       }
@@ -269,16 +269,16 @@ public class RelationManagerImpl implements RelationManager {
       int bSideMax = validity.getMaximumRelationsAllowed(type, bNode.getArtifactType(), SIDE_B);
 
       if (bSideCount >= bSideMax) {
-         throw new OseeStateException("Relation type [%s] on [%s] exceeds max occurrence rule on [%s]", type.getName(),
-            SIDE_B, aNode.getExceptionString());
+         throw new OseeStateException("Relation type [%s] on [%s] exceeds max occurrence rule on [%s]", type, SIDE_B,
+            aNode.getExceptionString());
       }
 
       int aSideCount = getRelations(session, type, bNode, SIDE_B, EXCLUDE_DELETED).size();
       int aSideMax = validity.getMaximumRelationsAllowed(type, aNode.getArtifactType(), SIDE_A);
 
       if (aSideCount >= aSideMax) {
-         throw new OseeStateException("Relation type [%s] on [%s] exceeds max occurrence rule on [%s]", type.getName(),
-            SIDE_A, bNode.getExceptionString());
+         throw new OseeStateException("Relation type [%s] on [%s] exceeds max occurrence rule on [%s]", type, SIDE_A,
+            bNode.getExceptionString());
       }
    }
 
@@ -340,10 +340,10 @@ public class RelationManagerImpl implements RelationManager {
             node.delete();
 
             if (relations != null && !relations.isEmpty()) {
-               Map<IRelationType, RelationSide> typesToRemove = new HashMap<>();
+               Map<RelationTypeToken, RelationSide> typesToRemove = new HashMap<>();
                for (Relation relation : relations) {
                   relation.delete();
-                  IRelationType type = relation.getRelationType();
+                  RelationTypeToken type = relation.getRelationType();
                   RelationSide otherSide = relation.getLocalIdForSide(SIDE_A) == node.getLocalId() ? SIDE_B : SIDE_A;
                   typesToRemove.put(type, otherSide);
                }
@@ -351,8 +351,8 @@ public class RelationManagerImpl implements RelationManager {
                if (!typesToRemove.isEmpty()) {
                   OrderManager orderManager = orderFactory.createOrderManager(node);
 
-                  for (Entry<IRelationType, RelationSide> entry : typesToRemove.entrySet()) {
-                     IRelationType type = entry.getKey();
+                  for (Entry<RelationTypeToken, RelationSide> entry : typesToRemove.entrySet()) {
+                     RelationTypeToken type = entry.getKey();
                      RelationSide side = entry.getValue();
 
                      List<Relation> sideLinks = getRelations(session, type, node, side, EXCLUDE_DELETED);
@@ -434,7 +434,7 @@ public class RelationManagerImpl implements RelationManager {
       OrderManager orderManager = orderFactory.createOrderManager(node1);
 
       RelationSide orderSide = side.oppositeSide();
-      RelationTypeSide key = RelationTypeSide.create(type, orderSide);
+      RelationTypeSide key = RelationTypeSide.create(relationTypes.get(type), orderSide);
       RelationSorter sorterIdToUse = sorterId;
       if (sorterIdToUse == PREEXISTING) {
          sorterIdToUse = orderManager.getSorterId(key);

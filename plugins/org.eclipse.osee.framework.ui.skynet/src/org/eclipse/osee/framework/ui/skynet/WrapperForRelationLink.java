@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -20,19 +20,19 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 class WrapperForRelationLink implements IAdaptable {
 
-   private final IRelationType relationType;
+   private final RelationTypeToken relationType;
    private final Artifact artifactA;
    private final Artifact artifactB;
    private final Artifact other;
 
-   public WrapperForRelationLink(IRelationType relationType, Artifact other, Artifact artifactA, Artifact artifactB) {
+   public WrapperForRelationLink(RelationTypeToken relationType, Artifact other, Artifact artifactA, Artifact artifactB) {
       this.relationType = relationType;
       this.artifactA = artifactA;
       this.artifactB = artifactB;
       this.other = other;
    }
 
-   IRelationType getRelationType() {
+   RelationTypeToken getRelationType() {
       return relationType;
    }
 

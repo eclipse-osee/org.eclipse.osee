@@ -42,8 +42,8 @@ import java.util.List;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -76,7 +76,7 @@ import org.mockito.Mockito;
  */
 public class TransactionBuilderImplTest {
 
-   private static final IRelationType TYPE_1 = TokenFactory.createRelationType(123456789L, "TYPE_1");
+   private static final RelationTypeToken TYPE_1 = TokenFactory.createRelationType(123456789L, "TYPE_1");
    @Rule
    public ExpectedException thrown = ExpectedException.none();
 

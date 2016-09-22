@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -89,7 +89,7 @@ public class RelationOrderRepairBlam extends AbstractBlam {
 
    private void resetRelationOrder(Artifact art) throws OseeCoreException, IOException {
       RelationOrderData currentData = new RelationOrderFactory().createRelationOrderData(art);
-      for (Pair<IRelationType, RelationSide> typeSide : currentData.getAvailableTypeSides()) {
+      for (Pair<RelationTypeToken, RelationSide> typeSide : currentData.getAvailableTypeSides()) {
          RelationType type;
          try {
             type = RelationTypeManager.getType(typeSide.getFirst());

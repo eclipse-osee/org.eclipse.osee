@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2016 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,25 +10,27 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
 /**
  * @author Ryan D. Brooks
  */
-@JsonSerialize(using = IdSerializer.class)
-// TODO: Rename to RelationTypeId
-public interface IRelationType extends Id {
+public interface RelationTypeToken extends IRelationType, Named {
+   RelationTypeToken SENTINEL = create(Id.SENTINEL, Named.SENTINEL);
 
-   public static IRelationType valueOf(long id, String name) {
-      final class RelationTypeIdImpl extends NamedId implements IRelationType {
+   public static RelationTypeToken create(long id, String name) {
+      return create(Long.valueOf(id), name);
+   }
 
-         public RelationTypeIdImpl(Long id, String name) {
+   public static RelationTypeToken create(Long id, String name) {
+      final class RelationTypeTokenImpl extends NamedId implements RelationTypeToken {
+
+         public RelationTypeTokenImpl(Long id, String name) {
             super(id, name);
          }
       }
-      return new RelationTypeIdImpl(id, name);
+      return new RelationTypeTokenImpl(id, name);
    }
 }

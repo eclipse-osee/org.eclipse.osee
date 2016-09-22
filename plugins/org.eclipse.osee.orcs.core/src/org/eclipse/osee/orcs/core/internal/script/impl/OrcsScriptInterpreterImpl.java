@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -139,9 +140,9 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       }
    }
 
-   private IRelationType getRelationType(String name) {
-      IRelationType toReturn = null;
-      for (IRelationType type : orcsTypes.getRelationTypes().getAll()) {
+   private RelationTypeToken getRelationType(String name) {
+      RelationTypeToken toReturn = null;
+      for (RelationTypeToken type : orcsTypes.getRelationTypes().getAll()) {
          if (type.getName().equals(name)) {
             toReturn = type;
             break;
@@ -693,7 +694,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
          Class<?> clazz = resolver.resolveTypeSingle(expression);
          if (clazz.isAssignableFrom(String.class)) {
             String name = resolver.resolveSingle(String.class, expression);
-            IRelationType type = getRelationType(name);
+            RelationTypeToken type = getRelationType(name);
             toReturn = RelationTypeSide.create(type, asSide(side));
          } else {
             long typeId = resolver.resolveSingle(Long.class, expression);

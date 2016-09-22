@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.data;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
@@ -21,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Roberto E. Escobar
  */
-public interface RelationTypes extends IdCollection<IRelationType> {
+public interface RelationTypes extends IdCollection<RelationTypeToken> {
 
    RelationTypeMultiplicity getMultiplicity(IRelationType relation) throws OseeCoreException;
 

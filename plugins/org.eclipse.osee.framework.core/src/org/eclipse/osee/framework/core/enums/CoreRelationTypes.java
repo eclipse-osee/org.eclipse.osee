@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.core.enums;
 
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
-import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 
 public final class CoreRelationTypes {
 
@@ -25,7 +25,7 @@ public final class CoreRelationTypes {
 
    public static final RelationTypeSide Default_Hierarchical__Parent = RelationTypeSide.create(SIDE_A, 0x2000000000000154L, "Default Hierarchical");
    public static final RelationTypeSide Default_Hierarchical__Child = Default_Hierarchical__Parent.getOpposite();
-   public static final IRelationType DEFAULT_HIERARCHY = Default_Hierarchical__Parent;
+   public static final RelationTypeToken DEFAULT_HIERARCHY = Default_Hierarchical__Parent;
    public static final RelationSide IS_PARENT = RelationSide.SIDE_A;
    public static final RelationSide IS_CHILD = RelationSide.SIDE_B;
 

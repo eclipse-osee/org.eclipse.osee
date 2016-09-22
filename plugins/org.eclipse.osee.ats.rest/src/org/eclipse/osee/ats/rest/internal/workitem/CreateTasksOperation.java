@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -194,13 +194,13 @@ public class CreateTasksOperation {
       return resultData;
    }
 
-   private IRelationType getRelationType(IAtsServer atsServer, String relationTypeName) {
-      for (IRelationType relation : atsServer.getOrcsApi().getOrcsTypes().getRelationTypes().getAll()) {
+   private RelationTypeToken getRelationType(IAtsServer atsServer, String relationTypeName) {
+      for (RelationTypeToken relation : atsServer.getOrcsApi().getOrcsTypes().getRelationTypes().getAll()) {
          if (relation.getName().equals(relationTypeName)) {
             return relation;
          }
       }
-      return null;
+      return RelationTypeToken.SENTINEL;
    }
 
    private static IAttributeType getAttributeType(IAtsServer atsServer, String attrTypeName) {
@@ -302,7 +302,7 @@ public class CreateTasksOperation {
             }
 
             for (JaxRelation relation : jaxTask.getRelations()) {
-               IRelationType relationType = getRelationType(atsServer, relation.getRelationTypeName());
+               RelationTypeToken relationType = getRelationType(atsServer, relation.getRelationTypeName());
                if (relationType == null) {
                   resultData.errorf("Relation Type [%s] not valid for Task creation in %s",
                      relation.getRelationTypeName(), task);

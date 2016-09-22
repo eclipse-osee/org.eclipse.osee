@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.model.type;
 
 import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 /**
  * @author Robert A. Fisher
  */
-public final class RelationType extends AbstractOseeIdType implements IRelationType {
+public final class RelationType extends AbstractOseeIdType implements RelationTypeToken {
 
    private static final String RELATION_SIDE_A_NAME_FIELD_KEY = "osee.relation.type.side.a.name.field";
    private static final String RELATION_SIDE_B_NAME_FIELD_KEY = "osee.relation.type.side.b.name.field";
