@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -32,7 +32,7 @@ public class RelationCriteria implements ArtifactSearchCriteria {
     *
     * @param relationEnum the side to start following the link from
     */
-   public RelationCriteria(IRelationTypeSide relationEnum) {
+   public RelationCriteria(RelationTypeSide relationEnum) {
       this(relationEnum, relationEnum.getSide());
    }
 
@@ -53,14 +53,14 @@ public class RelationCriteria implements ArtifactSearchCriteria {
    @Override
    public void addToQueryBuilder(QueryBuilder builder) throws OseeCoreException {
       if (artifactId.isValid()) {
-         IRelationTypeSide rts =
-            TokenFactory.createRelationTypeSide(relationSide, relationType.getId(), Strings.EMPTY_STRING);
+         RelationTypeSide rts =
+            RelationTypeSide.create(relationSide, relationType.getId(), Strings.EMPTY_STRING);
          builder.andRelatedTo(rts, artifactId);
       } else if (relationSide == null) {
          builder.andExists(relationType);
       } else {
-         IRelationTypeSide rts =
-            TokenFactory.createRelationTypeSide(relationSide, relationType.getId(), "SearchRelationTypeSide");
+         RelationTypeSide rts =
+            RelationTypeSide.create(relationSide, relationType.getId(), "SearchRelationTypeSide");
          builder.andExists(rts);
       }
    }

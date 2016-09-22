@@ -43,7 +43,7 @@ import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -422,7 +422,7 @@ public class TransactionBuilderImplTest {
 
    @Test
    public void testUnrelateFromAllWithSide() throws OseeCoreException {
-      IRelationTypeSide asTypeSide = RelationUtil.asTypeSide(TYPE_1, SIDE_B);
+      RelationTypeSide asTypeSide = RelationUtil.asTypeSide(TYPE_1, SIDE_B);
       factory.unrelateFromAll(asTypeSide, expectedAuthor);
       verify(txDataManager).unrelateFromAll(txData, TYPE_1, expectedAuthor, SIDE_B);
    }

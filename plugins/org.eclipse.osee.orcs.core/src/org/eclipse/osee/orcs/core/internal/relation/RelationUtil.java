@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.core.internal.relation;
 
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -33,12 +33,12 @@ public final class RelationUtil {
       // Utility
    }
 
-   public static IRelationType asRelationType(IRelationTypeSide typeAndSide) {
+   public static IRelationType asRelationType(RelationTypeSide typeAndSide) {
       return TokenFactory.createRelationType(typeAndSide.getGuid(), typeAndSide.getName());
    }
 
-   public static IRelationTypeSide asTypeSide(IRelationType type, RelationSide side) {
-      return TokenFactory.createRelationTypeSide(side, type.getId(), type.getName());
+   public static RelationTypeSide asTypeSide(IRelationType type, RelationSide side) {
+      return RelationTypeSide.create(side, type.getId(), type.getName());
    }
 
    /**

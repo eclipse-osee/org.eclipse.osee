@@ -11,17 +11,17 @@
 package org.eclipse.osee.orcs.core.internal.relation.order;
 
 import java.util.Map.Entry;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface HasOrderData extends Iterable<Entry<IRelationTypeSide, OrderData>> {
+public interface HasOrderData extends Iterable<Entry<RelationTypeSide, OrderData>> {
 
-   void add(IRelationTypeSide typeAndSide, OrderData data) throws OseeCoreException;
+   void add(RelationTypeSide typeAndSide, OrderData data) throws OseeCoreException;
 
-   void remove(IRelationTypeSide typeAndSide) throws OseeCoreException;
+   void remove(RelationTypeSide typeAndSide) throws OseeCoreException;
 
    void clear();
 

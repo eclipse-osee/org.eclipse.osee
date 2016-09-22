@@ -21,8 +21,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -299,14 +298,14 @@ public class OrcsCollectorWriter {
             uuidToArtifact.put(artToken.getUuid(), otherArtifact);
          }
          if (relation.getType().isSideA()) {
-            IRelationTypeSide relTypeSide = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A,
-               relation.getType().getUuid(), relation.getType().getName());
+            RelationTypeSide relTypeSide =
+               RelationTypeSide.create(RelationSide.SIDE_A, relation.getType().getUuid(), relation.getType().getName());
             if (!otherArtifact.areRelated(relTypeSide, (ArtifactReadable) artifact)) {
                getTransaction().relate(otherArtifact, relType, artifact);
             }
          } else {
-            IRelationTypeSide relTypeSide = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B,
-               relation.getType().getUuid(), relation.getType().getName());
+            RelationTypeSide relTypeSide =
+               RelationTypeSide.create(RelationSide.SIDE_B, relation.getType().getUuid(), relation.getType().getName());
             if (!otherArtifact.areRelated(relTypeSide, (ArtifactReadable) artifact)) {
                getTransaction().relate(artifact, relType, otherArtifact);
             }

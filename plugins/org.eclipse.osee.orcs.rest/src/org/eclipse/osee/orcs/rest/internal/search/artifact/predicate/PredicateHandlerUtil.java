@@ -15,7 +15,7 @@ import java.util.LinkedHashSet;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -60,8 +60,8 @@ public class PredicateHandlerUtil {
       return types;
    }
 
-   public static Collection<IRelationTypeSide> getIRelationTypeSides(Collection<String> rels) throws OseeCoreException {
-      Collection<IRelationTypeSide> relSides = new LinkedHashSet<>();
+   public static Collection<RelationTypeSide> getRelationTypeSides(Collection<String> rels) throws OseeCoreException {
+      Collection<RelationTypeSide> relSides = new LinkedHashSet<>();
       for (String value : rels) {
          char sideChar = value.charAt(0);
          String uuid = value.substring(1);
@@ -71,7 +71,7 @@ public class PredicateHandlerUtil {
          }
          long longUuid = parseUuid(uuid);
          if (longUuid != -1L) {
-            relSides.add(TokenFactory.createRelationTypeSide(side, longUuid, "SearchRelationTypeSide"));
+            relSides.add(RelationTypeSide.create(side, longUuid, "SearchRelationTypeSide"));
          }
       }
       return relSides;

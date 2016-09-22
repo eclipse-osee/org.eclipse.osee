@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
@@ -32,16 +32,15 @@ public abstract class AbstractRelationResolverServiceImpl implements IRelationRe
    }
 
    @Override
-   public Collection<ArtifactToken> getRelated(IAtsObject atsObject, IRelationTypeSide relationTypeSide) {
+   public Collection<ArtifactToken> getRelated(IAtsObject atsObject, RelationTypeSide relationTypeSide) {
       return getRelated(atsObject.getStoreObject(), relationTypeSide);
    }
 
    public abstract ArtifactId getArtifact(Object object);
 
    @Override
-   public Collection<ArtifactToken> getRelatedArtifacts(IAtsWorkItem workItem, IRelationTypeSide relationTypeSide) {
+   public Collection<ArtifactToken> getRelatedArtifacts(IAtsWorkItem workItem, RelationTypeSide relationTypeSide) {
       ArtifactId artifact = getArtifact(workItem);
       return Collections.castAll(getRelated(artifact, relationTypeSide));
    }
-
 }

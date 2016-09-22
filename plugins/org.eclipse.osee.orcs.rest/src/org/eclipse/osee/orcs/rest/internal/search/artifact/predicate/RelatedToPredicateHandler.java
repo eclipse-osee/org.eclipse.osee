@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -40,7 +40,7 @@ public class RelatedToPredicateHandler implements PredicateHandler {
       Conditions.checkNotNull(typeParameters, "typeParameters");
       Conditions.checkNotNull(values, "values");
 
-      Collection<IRelationTypeSide> types = PredicateHandlerUtil.getIRelationTypeSides(typeParameters);
+      Collection<RelationTypeSide> types = PredicateHandlerUtil.getRelationTypeSides(typeParameters);
       Collection<ArtifactId> artIds = new LinkedList<>();
 
       for (String value : values) {
@@ -53,11 +53,11 @@ public class RelatedToPredicateHandler implements PredicateHandler {
 
       if (!artIds.isEmpty()) {
          if (artIds.size() == 1) {
-            for (IRelationTypeSide rts : types) {
+            for (RelationTypeSide rts : types) {
                builder.andRelatedTo(rts, artIds.iterator().next());
             }
          } else {
-            for (IRelationTypeSide rts : types) {
+            for (RelationTypeSide rts : types) {
                builder.andRelatedTo(rts, artIds);
             }
          }

@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -325,7 +325,7 @@ public class ArtifactReadOnlyImplTest {
 
    @Test
    public void testGetMaximumRelationAllowed() throws OseeCoreException {
-      IRelationTypeSide typeAndSide = Default_Hierarchical__Child;
+      RelationTypeSide typeAndSide = Default_Hierarchical__Child;
       when(relationManager.getMaximumRelationAllowed(session, DEFAULT_HIERARCHY, proxiedObject, IS_PARENT)).thenReturn(
          6);
 

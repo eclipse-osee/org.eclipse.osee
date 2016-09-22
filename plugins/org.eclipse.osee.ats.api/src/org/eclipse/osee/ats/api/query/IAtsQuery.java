@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -44,7 +44,7 @@ public interface IAtsQuery {
 
    IAtsQuery andAtsIds(Collection<String> atsIds);
 
-   IAtsQuery andRelated(IAtsObject object, IRelationTypeSide relation);
+   IAtsQuery andRelated(IAtsObject object, RelationTypeSide relation);
 
    IAtsQuery andLegacyIds(Collection<String> legacyIds);
 

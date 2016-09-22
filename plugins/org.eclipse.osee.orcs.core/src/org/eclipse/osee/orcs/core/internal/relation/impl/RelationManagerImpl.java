@@ -37,7 +37,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
@@ -180,7 +180,7 @@ public class RelationManagerImpl implements RelationManager {
          result = resolver.resolve(session, graph, links, otherSide);
          if (result.size() > 1) {
             OrderManager orderManager = orderFactory.createOrderManager(node);
-            IRelationTypeSide key = asTypeSide(type, otherSide);
+            RelationTypeSide key = asTypeSide(type, otherSide);
             orderManager.sort(key, result);
          }
       }
@@ -359,7 +359,7 @@ public class RelationManagerImpl implements RelationManager {
                      List<Relation> sideLinks = getRelations(session, type, node, side, EXCLUDE_DELETED);
                      List<RelationNode> nodes = resolver.resolve(session, graph, sideLinks, side);
 
-                     IRelationTypeSide asTypeSide = asTypeSide(type, side);
+                     RelationTypeSide asTypeSide = asTypeSide(type, side);
                      orderManager.setOrder(asTypeSide, nodes);
                   }
                }
@@ -435,7 +435,7 @@ public class RelationManagerImpl implements RelationManager {
       OrderManager orderManager = orderFactory.createOrderManager(node1);
 
       RelationSide orderSide = side.oppositeSide();
-      IRelationTypeSide key = asTypeSide(type, orderSide);
+      RelationTypeSide key = asTypeSide(type, orderSide);
       RelationSorter sorterIdToUse = sorterId;
       if (sorterIdToUse == PREEXISTING) {
          sorterIdToUse = orderManager.getSorterId(key);

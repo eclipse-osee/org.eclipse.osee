@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public abstract class AbstractArtifactRelationReport extends AbstractReport {
 
    private final Set<Artifact> artifactsToCheck;
-   private final List<IRelationTypeSide> relationsToCheck;
+   private final List<RelationTypeSide> relationsToCheck;
 
    public AbstractArtifactRelationReport() {
       super();
@@ -38,7 +38,7 @@ public abstract class AbstractArtifactRelationReport extends AbstractReport {
       }
    }
 
-   public void addRelationToCheck(IRelationTypeSide relation) {
+   public void addRelationToCheck(RelationTypeSide relation) {
       if (relation != null) {
          this.relationsToCheck.add(relation);
       }
@@ -48,8 +48,8 @@ public abstract class AbstractArtifactRelationReport extends AbstractReport {
       return artifactsToCheck.toArray(new Artifact[artifactsToCheck.size()]);
    }
 
-   public IRelationTypeSide[] getRelationsToCheck() {
-      return relationsToCheck.toArray(new IRelationTypeSide[relationsToCheck.size()]);
+   public RelationTypeSide[] getRelationsToCheck() {
+      return relationsToCheck.toArray(new RelationTypeSide[relationsToCheck.size()]);
    }
 
    @Override

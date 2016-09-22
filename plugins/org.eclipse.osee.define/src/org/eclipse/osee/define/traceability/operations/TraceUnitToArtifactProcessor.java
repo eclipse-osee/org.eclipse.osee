@@ -36,7 +36,7 @@ import org.eclipse.osee.define.traceability.data.TraceMark;
 import org.eclipse.osee.define.traceability.data.TraceUnit;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -222,7 +222,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
          Artifact requirementArtifact = getRequirementArtifact(traceMark.getRawTraceMark(), requirementData);
 
          if (requirementArtifact != null) {
-            IRelationTypeSide relationType = getRelationFromTraceType(traceUnitArtifact, traceMark.getTraceType());
+            RelationTypeSide relationType = getRelationFromTraceType(traceUnitArtifact, traceMark.getTraceType());
             if (relationType == null) {
                unknownRelationError.put(traceUnitArtifact.getArtifactTypeName(), traceMark.getTraceType());
             } else if (!requirementArtifact.isRelated(relationType, traceUnitArtifact)) {
@@ -253,7 +253,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       return traceType.equalsIgnoreCase("USES");
    }
 
-   private IRelationTypeSide getRelationFromTraceType(Artifact traceUnitArtifact, String traceType) {
+   private RelationTypeSide getRelationFromTraceType(Artifact traceUnitArtifact, String traceType) {
       if (traceUnitArtifact.isOfType(CoreArtifactTypes.TestUnit)) {
          if (isUsesTraceType(traceType)) {
             return CoreRelationTypes.Uses__TestUnit;

@@ -14,7 +14,7 @@ import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -23,9 +23,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public abstract class CollectorArtifact extends AbstractWorkflowArtifact implements HasMembers {
 
-   private final IRelationTypeSide membersRelationType;
+   private final RelationTypeSide membersRelationType;
 
-   public CollectorArtifact(String guid, BranchId branch, ArtifactTypeId artifactType, IRelationTypeSide membersRelationType) {
+   public CollectorArtifact(String guid, BranchId branch, ArtifactTypeId artifactType, RelationTypeSide membersRelationType) {
       super(guid, branch, artifactType);
       this.membersRelationType = membersRelationType;
    }

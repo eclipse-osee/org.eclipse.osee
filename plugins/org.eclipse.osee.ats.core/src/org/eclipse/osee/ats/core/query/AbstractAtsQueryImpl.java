@@ -43,7 +43,7 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -59,7 +59,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    protected final List<AtsAttributeQuery> andAttr;
    protected final List<AtsAttributeQuery> teamWorkflowAttr;
-   protected final HashMap<IRelationTypeSide, List<IAtsObject>> andRels;
+   protected final HashMap<RelationTypeSide, List<IAtsObject>> andRels;
    protected Collection<Long> teamDefUuids;
    protected Collection<StateType> stateTypes;
    protected Collection<WorkItemType> workItemTypes;
@@ -297,9 +297,9 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       }
    }
 
-   public abstract void queryAndNotExists(IRelationTypeSide relationTypeSide);
+   public abstract void queryAndNotExists(RelationTypeSide relationTypeSide);
 
-   public abstract void queryAndExists(IRelationTypeSide relationTypeSide);
+   public abstract void queryAndExists(RelationTypeSide relationTypeSide);
 
    private boolean typeIsSpecified(IArtifactType parentArtType, Set<IArtifactType> allArtTypes) {
       for (IArtifactType artifactType : allArtTypes) {
@@ -525,7 +525,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public IAtsQuery andRelated(IAtsObject object, IRelationTypeSide relation) {
+   public IAtsQuery andRelated(IAtsObject object, RelationTypeSide relation) {
       List<IAtsObject> list = andRels.get(relation);
       if (list == null) {
          list = new LinkedList<>();
@@ -792,7 +792,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       }
    }
 
-   public abstract void queryAndRelatedToLocalIds(IRelationTypeSide relationTypeSide, ArtifactId artId);
+   public abstract void queryAndRelatedToLocalIds(RelationTypeSide relationTypeSide, ArtifactId artId);
 
    private void addAiCriteria() {
       if (isActionableItemSpecified()) {
@@ -828,7 +828,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    private void addRelationCriteria() {
       if (!andRels.isEmpty()) {
-         for (Entry<IRelationTypeSide, List<IAtsObject>> entry : andRels.entrySet()) {
+         for (Entry<RelationTypeSide, List<IAtsObject>> entry : andRels.entrySet()) {
             List<ArtifactId> artIds = new LinkedList<>();
             for (IAtsObject object : entry.getValue()) {
                artIds.add(ArtifactId.valueOf(object.getId()));
@@ -838,7 +838,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       }
    }
 
-   public abstract void queryAndRelatedTo(IRelationTypeSide relationTypeSide, List<ArtifactId> artIds);
+   public abstract void queryAndRelatedTo(RelationTypeSide relationTypeSide, List<ArtifactId> artIds);
 
    private void addStateNameCriteria() {
       if (stateName != null) {

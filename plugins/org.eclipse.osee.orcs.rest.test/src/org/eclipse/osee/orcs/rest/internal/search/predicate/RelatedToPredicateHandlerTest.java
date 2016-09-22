@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -43,7 +43,7 @@ public class RelatedToPredicateHandlerTest {
    @Captor
    private ArgumentCaptor<Collection<ArtifactId>> idsCaptor;
    @Captor
-   private ArgumentCaptor<IRelationTypeSide> rtsCaptor;
+   private ArgumentCaptor<RelationTypeSide> rtsCaptor;
 
    @Before
    public void initialize() {
@@ -57,7 +57,7 @@ public class RelatedToPredicateHandlerTest {
          Arrays.asList("4", "5"), QueryOption.TOKEN_DELIMITER__ANY);
       handler.handle(builder, testPredicate);
       verify(builder, times(2)).andRelatedTo(rtsCaptor.capture(), idsCaptor.capture());
-      List<IRelationTypeSide> rts = rtsCaptor.getAllValues();
+      List<RelationTypeSide> rts = rtsCaptor.getAllValues();
       Assert.assertEquals(2, rts.size());
       verifyRelationTypeSide(rts.get(0), "A1");
       verifyRelationTypeSide(rts.get(1), "B2");
@@ -75,7 +75,7 @@ public class RelatedToPredicateHandlerTest {
       handler.handle(builder, testPredicate);
    }
 
-   private void verifyRelationTypeSide(IRelationTypeSide rts, String input) {
+   private void verifyRelationTypeSide(RelationTypeSide rts, String input) {
       if (input.startsWith("A")) {
          Assert.assertEquals(RelationSide.SIDE_A, rts.getSide());
       } else {

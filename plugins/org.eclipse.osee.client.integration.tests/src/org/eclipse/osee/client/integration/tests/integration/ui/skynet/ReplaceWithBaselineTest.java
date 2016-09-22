@@ -27,7 +27,7 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -477,7 +477,7 @@ public final class ReplaceWithBaselineTest {
       public final boolean isBaseline;
 
       private int artifactId;
-      private IRelationTypeSide relationType;
+      private RelationTypeSide relationType;
       private int bArtifactId;
 
       private int attrId;
@@ -506,11 +506,11 @@ public final class ReplaceWithBaselineTest {
          this.attrId = attrId;
       }
 
-      public IRelationTypeSide getRelationType() {
+      public RelationTypeSide getRelationType() {
          return relationType;
       }
 
-      public void setRelationType(IRelationTypeSide relationType) {
+      public void setRelationType(RelationTypeSide relationType) {
          this.relationType = relationType;
       }
 

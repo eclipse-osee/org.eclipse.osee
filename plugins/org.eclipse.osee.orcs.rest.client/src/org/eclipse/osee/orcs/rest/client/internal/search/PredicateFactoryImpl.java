@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
@@ -109,13 +109,13 @@ public class PredicateFactoryImpl implements PredicateFactory {
    }
 
    @Override
-   public Predicate createRelationTypeSideExistsSearch(IRelationTypeSide relationTypeSide) {
+   public Predicate createRelationTypeSideExistsSearch(RelationTypeSide relationTypeSide) {
       String side = relationTypeSide.getSide().isSideA() ? "A" : "B";
       return new Predicate(SearchMethod.EXISTS_TYPE, Arrays.asList("relTypeSide", side), getLongIds(relationTypeSide));
    }
 
    @Override
-   public Predicate createRelationTypeSideNotExistsSearch(IRelationTypeSide relationTypeSide) {
+   public Predicate createRelationTypeSideNotExistsSearch(RelationTypeSide relationTypeSide) {
       String side = relationTypeSide.getSide().isSideA() ? "A" : "B";
       return new Predicate(SearchMethod.NOT_EXISTS_TYPE, Arrays.asList("relTypeSide", side),
          getLongIds(relationTypeSide));
@@ -128,7 +128,7 @@ public class PredicateFactoryImpl implements PredicateFactory {
    }
 
    @Override
-   public Predicate createRelatedToSearch(IRelationTypeSide relationTypeSide, Collection<ArtifactId> ids) {
+   public Predicate createRelatedToSearch(RelationTypeSide relationTypeSide, Collection<ArtifactId> ids) {
       List<String> values = new LinkedList<>();
       String side = relationTypeSide.getSide().isSideA() ? "A" : "B";
       for (ArtifactId id : ids) {

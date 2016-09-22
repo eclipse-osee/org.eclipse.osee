@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.ExistenceTypePredicateHandler;
@@ -155,7 +155,7 @@ public class ExistenceTypePredicateHandlerTest {
       values = Collections.singletonList(value);
       testPredicate = new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, values, QueryOption.TOKEN_DELIMITER__ANY);
       handler.handle(builder, testPredicate);
-      verify(builder, never()).andExists(any(IRelationTypeSide.class));
+      verify(builder, never()).andExists(any(RelationTypeSide.class));
    }
 
    @Test(expected = OseeCoreException.class)

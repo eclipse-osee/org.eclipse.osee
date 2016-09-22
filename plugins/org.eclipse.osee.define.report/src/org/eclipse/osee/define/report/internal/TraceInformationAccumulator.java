@@ -16,7 +16,7 @@ import java.util.List;
 import org.eclipse.osee.define.report.AlternateTypeOutput;
 import org.eclipse.osee.define.report.TraceReportGenerator;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -143,7 +143,7 @@ public class TraceInformationAccumulator {
       return toReturn;
    }
 
-   private int processSoftwareReqtSubItem(ArtifactReadable softwareReqt, IRelationTypeSide type, int location) throws IOException {
+   private int processSoftwareReqtSubItem(ArtifactReadable softwareReqt, RelationTypeSide type, int location) throws IOException {
       List<ArtifactReadable> items = softwareReqt.getRelated(type).getList();
       if (items.size() > 0) {
          for (ArtifactReadable ar : items) {

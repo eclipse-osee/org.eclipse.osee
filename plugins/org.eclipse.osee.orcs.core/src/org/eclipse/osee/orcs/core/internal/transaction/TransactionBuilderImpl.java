@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
@@ -303,7 +303,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public void unrelateFromAll(IRelationTypeSide typeAndSide, ArtifactId art) throws OseeCoreException {
+   public void unrelateFromAll(RelationTypeSide typeAndSide, ArtifactId art) throws OseeCoreException {
       IRelationType type = RelationUtil.asRelationType(typeAndSide);
       txManager.unrelateFromAll(txData, type, art, typeAndSide.getSide());
    }

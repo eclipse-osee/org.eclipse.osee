@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.define.report.SafetyReportGenerator;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -184,7 +184,7 @@ public final class SafetyInformationAccumulator {
       writer.endRow();
    }
 
-   private String writeCriticalityWithDesignCheck(ArtifactReadable art, String criticality, IAttributeType thisType, IRelationTypeSide relType, IAttributeType otherType) throws IOException {
+   private String writeCriticalityWithDesignCheck(ArtifactReadable art, String criticality, IAttributeType thisType, RelationTypeSide relType, IAttributeType otherType) throws IOException {
       String current = art.getSoleAttributeAsString(thisType, "Error");
       if ("Error".equals(criticality) || "Error".equals(current)) {
          writer.writeCell("Error: invalid content");
@@ -214,7 +214,7 @@ public final class SafetyInformationAccumulator {
       return current;
    }
 
-   private void checkBackTrace(ArtifactReadable art, Integer current, IAttributeType thisType, IRelationTypeSide relType, IAttributeType otherType) throws IOException {
+   private void checkBackTrace(ArtifactReadable art, Integer current, IAttributeType thisType, RelationTypeSide relType, IAttributeType otherType) throws IOException {
       /**
        * when the parent criticality is less critical than the child, we check to see if the child traces to any more
        * critical parent (thus justifying the criticality of the child) note: more critical = lower number

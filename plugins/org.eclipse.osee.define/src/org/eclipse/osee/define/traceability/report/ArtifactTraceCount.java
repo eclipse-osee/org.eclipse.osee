@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -33,7 +33,7 @@ public class ArtifactTraceCount extends AbstractArtifactRelationReport {
       List<String> header = new ArrayList<>();
       header.add("Name");
       header.add("Type");
-      for (IRelationTypeSide relation : getRelationsToCheck()) {
+      for (RelationTypeSide relation : getRelationsToCheck()) {
          header.add(relation.getName() + " Trace Count");
       }
       header.add("Subsystem");
@@ -55,13 +55,13 @@ public class ArtifactTraceCount extends AbstractArtifactRelationReport {
    public void process(IProgressMonitor monitor) throws OseeCoreException {
       String[] header = getHeader();
       notifyOnTableHeader(header);
-      IRelationTypeSide[] relations = getRelationsToCheck();
+      RelationTypeSide[] relations = getRelationsToCheck();
       for (Artifact art : getArtifactsToCheck()) {
          String[] rowData = new String[header.length];
          int index = 0;
          rowData[index++] = art.getName();
          rowData[index++] = art.getArtifactTypeName();
-         for (IRelationTypeSide relationType : relations) {
+         for (RelationTypeSide relationType : relations) {
             rowData[index++] = String.valueOf(art.getRelatedArtifactsCount(relationType));
          }
          IAttributeType attributeType = getSubsystemAttributeType(art);

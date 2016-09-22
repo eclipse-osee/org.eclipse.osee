@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -26,10 +26,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public final class RelationSetRule extends AbstractValidationRule {
    private final IArtifactType artifactType;
    private final Integer minimumRelations;
-   private final IRelationTypeSide relationEnum;
+   private final RelationTypeSide relationEnum;
    private final Collection<IArtifactType> ignoreArtifactTypes;
 
-   public RelationSetRule(IArtifactType artifactType, IRelationTypeSide relationEnum, Integer minimumRelations, IArtifactType... ignoreArtifactTypes) {
+   public RelationSetRule(IArtifactType artifactType, RelationTypeSide relationEnum, Integer minimumRelations, IArtifactType... ignoreArtifactTypes) {
       this.artifactType = artifactType;
       this.relationEnum = relationEnum;
       this.minimumRelations = minimumRelations;

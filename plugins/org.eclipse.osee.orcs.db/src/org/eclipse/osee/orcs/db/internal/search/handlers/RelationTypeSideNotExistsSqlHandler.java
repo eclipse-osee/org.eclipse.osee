@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideNotExists;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
@@ -26,7 +26,7 @@ public class RelationTypeSideNotExistsSqlHandler extends AbstractRelationSqlHand
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
       super.addPredicates(writer);
 
-      IRelationTypeSide type = criteria.getType();
+      RelationTypeSide type = criteria.getType();
 
       writer.write("NOT EXISTS (SELECT 1 FROM ");
       writer.write(TableEnum.RELATION_TABLE.getName());

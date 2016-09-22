@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
@@ -97,7 +97,7 @@ public class GoalMemberProvider extends AbstractMemberProvider {
    }
 
    @Override
-   public IRelationTypeSide getMemberRelationTypeSide() {
+   public RelationTypeSide getMemberRelationTypeSide() {
       return AtsRelationTypes.Goal_Member;
    }
 

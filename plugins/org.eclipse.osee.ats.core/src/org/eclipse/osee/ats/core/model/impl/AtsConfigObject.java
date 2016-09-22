@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
@@ -103,7 +103,7 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
       return getRelatedUsers(AtsRelationTypes.SubscribedUser_User);
    }
 
-   protected Collection<IAtsUser> getRelatedUsers(IRelationTypeSide relation) {
+   protected Collection<IAtsUser> getRelatedUsers(RelationTypeSide relation) {
       Set<IAtsUser> results = new HashSet<>();
       try {
          for (Object userArt : services.getRelationResolver().getRelated(artifact, relation)) {

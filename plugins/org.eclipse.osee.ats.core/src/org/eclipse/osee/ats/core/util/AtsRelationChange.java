@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 
 /**
  * @author Donald G. Dunne
@@ -25,11 +25,11 @@ public class AtsRelationChange {
    }
 
    private final Object object;
-   private final IRelationTypeSide relationSide;
+   private final RelationTypeSide relationSide;
    private final Collection<Object> objects;
    private final RelationOperation operation;
 
-   public AtsRelationChange(Object object, IRelationTypeSide relationSide, Collection<? extends Object> objects, RelationOperation operation) {
+   public AtsRelationChange(Object object, RelationTypeSide relationSide, Collection<? extends Object> objects, RelationOperation operation) {
       this.object = object;
       this.relationSide = relationSide;
       this.objects = new ArrayList<>(objects);
@@ -40,7 +40,7 @@ public class AtsRelationChange {
       return object;
    }
 
-   public IRelationTypeSide getRelationSide() {
+   public RelationTypeSide getRelationSide() {
       return relationSide;
    }
 

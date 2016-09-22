@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideExists;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
@@ -37,7 +37,7 @@ public class RelationTypeSideExistsSqlHandler extends AbstractRelationSqlHandler
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
       super.addPredicates(writer);
 
-      IRelationTypeSide type = criteria.getType();
+      RelationTypeSide type = criteria.getType();
       writer.write(relAlias);
       writer.write(".rel_link_type_id = ?");
       writer.addParameter(type.getGuid());

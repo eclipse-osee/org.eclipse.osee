@@ -38,9 +38,9 @@ import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -309,7 +309,7 @@ public class CreateTasksOperation {
                }
                Collection<IAtsWorkItem> items = atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andUuids(
                   relation.getRelatedUuids().toArray(new Long[relation.getRelatedUuids().size()])).getItems();
-               IRelationTypeSide side = null;
+               RelationTypeSide side = null;
                if (relation.isSideA()) {
                   side = new RelationTypeSide(relationType, RelationSide.SIDE_A);
                } else {

@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -48,7 +48,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  */
 public class WfeRelationsHyperlinkComposite extends Composite {
 
-   private static IRelationTypeSide[] sides = new IRelationTypeSide[] {
+   private static RelationTypeSide[] sides = new RelationTypeSide[] {
       AtsRelationTypes.TeamWorkflowToReview_Review,
       AtsRelationTypes.TeamWorkflowToReview_Team,
       CoreRelationTypes.Supercedes_Superceded,
@@ -94,7 +94,7 @@ public class WfeRelationsHyperlinkComposite extends Composite {
    }
 
    public static boolean relationExists(AbstractWorkflowArtifact smaArt) throws OseeCoreException {
-      for (IRelationTypeSide side : sides) {
+      for (RelationTypeSide side : sides) {
          if (smaArt.getRelatedArtifacts(side).size() > 0) {
             return true;
          }
@@ -113,7 +113,7 @@ public class WfeRelationsHyperlinkComposite extends Composite {
       return "";
    }
 
-   private void createArtifactRelationHyperlinks(String prefix, Artifact thisArt, String action, IRelationTypeSide relationEnum) throws OseeCoreException {
+   private void createArtifactRelationHyperlinks(String prefix, Artifact thisArt, String action, RelationTypeSide relationEnum) throws OseeCoreException {
       for (final Artifact art : thisArt.getRelatedArtifacts(relationEnum)) {
          createLink(art, prefix, action, thisArt);
       }

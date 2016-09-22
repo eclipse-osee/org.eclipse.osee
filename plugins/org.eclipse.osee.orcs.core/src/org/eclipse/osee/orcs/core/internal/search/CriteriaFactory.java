@@ -17,7 +17,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.Criteria;
@@ -78,7 +78,7 @@ public class CriteriaFactory {
       return new CriteriaRelationTypeExists(relationType);
    }
 
-   public Criteria createExistsCriteria(IRelationTypeSide relationTypeSide) throws OseeCoreException {
+   public Criteria createExistsCriteria(RelationTypeSide relationTypeSide) throws OseeCoreException {
       return new CriteriaRelationTypeSideExists(relationTypeSide);
    }
 
@@ -86,7 +86,7 @@ public class CriteriaFactory {
       return new CriteriaRelationTypeNotExists(relationType);
    }
 
-   public Criteria createNotExistsCriteria(IRelationTypeSide relationTypeSide) {
+   public Criteria createNotExistsCriteria(RelationTypeSide relationTypeSide) {
       return new CriteriaRelationTypeSideNotExists(relationTypeSide);
    }
 
@@ -112,7 +112,7 @@ public class CriteriaFactory {
       return new CriteriaAllArtifacts();
    }
 
-   public Criteria createFollowRelationType(IRelationTypeSide relationTypeSide) {
+   public Criteria createFollowRelationType(RelationTypeSide relationTypeSide) {
       return new CriteriaRelationTypeFollow(relationTypeSide);
    }
 }

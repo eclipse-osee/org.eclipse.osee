@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -177,13 +177,13 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder andExists(IRelationTypeSide relationTypeSide) throws OseeCoreException {
+   public QueryBuilder andExists(RelationTypeSide relationTypeSide) throws OseeCoreException {
       predicates.add(predicateFactory.createRelationTypeSideExistsSearch(relationTypeSide));
       return this;
    }
 
    @Override
-   public QueryBuilder andNotExists(IRelationTypeSide relationTypeSide) throws OseeCoreException {
+   public QueryBuilder andNotExists(RelationTypeSide relationTypeSide) throws OseeCoreException {
       predicates.add(predicateFactory.createRelationTypeSideNotExistsSearch(relationTypeSide));
       return this;
    }
@@ -217,12 +217,12 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder andRelatedTo(IRelationTypeSide relationTypeSide, ArtifactId... artifacts) {
+   public QueryBuilder andRelatedTo(RelationTypeSide relationTypeSide, ArtifactId... artifacts) {
       return andRelatedTo(relationTypeSide, Arrays.asList(artifacts));
    }
 
    @Override
-   public QueryBuilder andRelatedTo(IRelationTypeSide relationTypeSide, Collection<ArtifactId> artifactIds) {
+   public QueryBuilder andRelatedTo(RelationTypeSide relationTypeSide, Collection<ArtifactId> artifactIds) {
       predicates.add(predicateFactory.createRelatedToSearch(relationTypeSide, artifactIds));
       return this;
    }

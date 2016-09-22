@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
@@ -36,6 +36,6 @@ public interface AccessPolicy {
 
    PermissionStatus hasArtifactPermission(Collection<? extends IBasicArtifact<?>> artifacts, PermissionEnum permission, Level level) throws OseeCoreException;
 
-   PermissionStatus canRelationBeModified(IBasicArtifact<?> subject, Collection<? extends IBasicArtifact<?>> toBeRelated, IRelationTypeSide relationTypeSide, Level level) throws OseeCoreException;
+   PermissionStatus canRelationBeModified(IBasicArtifact<?> subject, Collection<? extends IBasicArtifact<?>> toBeRelated, RelationTypeSide relationTypeSide, Level level) throws OseeCoreException;
 
 }

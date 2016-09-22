@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.editor;
 import java.util.List;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
@@ -39,7 +39,7 @@ public interface IMemberProvider {
 
    String getColumnName();
 
-   IRelationTypeSide getMemberRelationTypeSide();
+   RelationTypeSide getMemberRelationTypeSide();
 
    void promptChangeOrder(Artifact artifact, List<Artifact> selectedAtsArtifacts);
 

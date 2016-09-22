@@ -24,10 +24,10 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -254,7 +254,7 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
                WrapperForRelationLink targetLink = (WrapperForRelationLink) object;
                Artifact[] artifactsToMove = ((ArtifactData) event.data).getArtifacts();
                for (Artifact artifactToMove : artifactsToMove) {
-                  IRelationTypeSide typeSide =
+                  RelationTypeSide typeSide =
                      new RelationTypeSide(targetLink.getRelationType(), targetLink.getRelationSide());
                   artifact.setRelationOrder(typeSide, targetLink.getOther(), isFeedbackAfter, artifactToMove);
                }

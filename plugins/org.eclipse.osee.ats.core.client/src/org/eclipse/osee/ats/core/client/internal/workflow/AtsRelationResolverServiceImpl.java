@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.core.util.AbstractRelationResolverServiceImpl;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -40,7 +40,7 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    }
 
    @Override
-   public Collection<ArtifactToken> getRelated(ArtifactId artifact, IRelationTypeSide relationType) {
+   public Collection<ArtifactToken> getRelated(ArtifactId artifact, RelationTypeSide relationType) {
       List<ArtifactToken> results = new ArrayList<>();
       Artifact useArt = getArtifact(artifact);
       if (useArt != null) {
@@ -52,13 +52,13 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    }
 
    @Override
-   public <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, IRelationTypeSide relationType, Class<T> clazz) {
+   public <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, RelationTypeSide relationType, Class<T> clazz) {
       return getRelated(atsObject, relationType, DeletionFlag.EXCLUDE_DELETED, clazz);
    }
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, IRelationTypeSide relationType, DeletionFlag flag, Class<T> clazz) {
+   public <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, RelationTypeSide relationType, DeletionFlag flag, Class<T> clazz) {
       List<T> results = new ArrayList<>();
       Artifact useArt = getArtifact(atsObject);
       if (useArt != null) {
@@ -99,7 +99,7 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    }
 
    @Override
-   public boolean areRelated(ArtifactId artifact1, IRelationTypeSide relationType, ArtifactId artifact2) {
+   public boolean areRelated(ArtifactId artifact1, RelationTypeSide relationType, ArtifactId artifact2) {
       boolean related = false;
       Artifact useArt1 = getArtifact(artifact1);
       Artifact useArt2 = getArtifact(artifact2);
@@ -110,7 +110,7 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    }
 
    @Override
-   public boolean areRelated(IAtsObject atsObject1, IRelationTypeSide relationType, IAtsObject atsObject2) {
+   public boolean areRelated(IAtsObject atsObject1, RelationTypeSide relationType, IAtsObject atsObject2) {
       boolean related = false;
       Artifact useArt1 = getArtifact(atsObject1);
       Artifact useArt2 = getArtifact(atsObject2);
@@ -121,7 +121,7 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    }
 
    @Override
-   public ArtifactToken getRelatedOrNull(ArtifactId artifact, IRelationTypeSide relationType) {
+   public ArtifactToken getRelatedOrNull(ArtifactId artifact, RelationTypeSide relationType) {
       ArtifactToken related = null;
       Artifact art = getArtifact(artifact);
       if (art != null) {
@@ -136,7 +136,7 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T> T getRelatedOrNull(IAtsObject atsObject, IRelationTypeSide relationType, Class<T> clazz) {
+   public <T> T getRelatedOrNull(IAtsObject atsObject, RelationTypeSide relationType, Class<T> clazz) {
       T related = null;
       Artifact art = getArtifact(atsObject);
       if (art != null) {
@@ -156,7 +156,7 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    }
 
    @Override
-   public int getRelatedCount(IAtsWorkItem workItem, IRelationTypeSide relationType) {
+   public int getRelatedCount(IAtsWorkItem workItem, RelationTypeSide relationType) {
       Artifact artifact = getArtifact(workItem);
       int count = 0;
       if (artifact != null) {
@@ -166,7 +166,7 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    }
 
    @Override
-   public ArtifactToken getRelatedOrNull(IAtsObject atsObject, IRelationTypeSide relationSide) {
+   public ArtifactToken getRelatedOrNull(IAtsObject atsObject, RelationTypeSide relationSide) {
       Artifact art = getArtifact(atsObject);
       if (art != null) {
          return art.getRelatedArtifactOrNull(relationSide);
@@ -175,13 +175,13 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    }
 
    @Override
-   public List<ArtifactToken> getRelatedArtifacts(IAtsWorkItem workItem, IRelationTypeSide relationTypeSide) {
+   public List<ArtifactToken> getRelatedArtifacts(IAtsWorkItem workItem, RelationTypeSide relationTypeSide) {
       Artifact artifact = getArtifact(workItem);
       return Collections.castAll(getRelated(artifact, relationTypeSide));
    }
 
    @Override
-   public Collection<ArtifactToken> getRelated(ArtifactId artifact, IRelationTypeSide relationType, IArtifactType artifactType) {
+   public Collection<ArtifactToken> getRelated(ArtifactId artifact, RelationTypeSide relationType, IArtifactType artifactType) {
       List<ArtifactToken> results = new LinkedList<>();
       Artifact art = getArtifact(artifact);
       for (ArtifactToken related : art.getRelatedArtifacts(relationType)) {
@@ -193,7 +193,7 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    }
 
    @Override
-   public Collection<ArtifactToken> getRelatedArtifacts(ArtifactId artifact, IRelationTypeSide relationTypeSide) {
+   public Collection<ArtifactToken> getRelatedArtifacts(ArtifactId artifact, RelationTypeSide relationTypeSide) {
       return getRelated(artifact, relationTypeSide);
    }
 

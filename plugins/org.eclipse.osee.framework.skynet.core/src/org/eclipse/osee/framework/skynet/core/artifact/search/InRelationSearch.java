@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 
@@ -54,7 +54,7 @@ public class InRelationSearch implements ISearchPrimitive {
          builder.andExists(relationType);
       } else {
          RelationSide side = sideA.booleanValue() ? RelationSide.SIDE_A : RelationSide.SIDE_B;
-         IRelationTypeSide rts = TokenFactory.createRelationTypeSide(side, relationType.getId(), "SearchRelTypeSide");
+         RelationTypeSide rts = RelationTypeSide.create(side, relationType.getId(), "SearchRelTypeSide");
          builder.andExists(rts);
       }
    }

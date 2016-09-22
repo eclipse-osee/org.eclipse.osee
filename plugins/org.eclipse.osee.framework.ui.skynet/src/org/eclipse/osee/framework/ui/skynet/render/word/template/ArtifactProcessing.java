@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.render.word.template;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
@@ -28,7 +28,7 @@ public class ArtifactProcessing implements ITemplateTask {
    private final List<ITemplateTask> innerTasks;
    private boolean outlining;
    private boolean recurseChildren;
-   private IRelationTypeSide outlineRelation;
+   private RelationTypeSide outlineRelation;
    private String headingAttributeName;
    private String outlineNumber;
    private String cleanedText;
@@ -109,7 +109,7 @@ public class ArtifactProcessing implements ITemplateTask {
       return recurseChildren;
    }
 
-   public IRelationTypeSide getOutlineRelation() {
+   public RelationTypeSide getOutlineRelation() {
       return outlineRelation;
    }
 

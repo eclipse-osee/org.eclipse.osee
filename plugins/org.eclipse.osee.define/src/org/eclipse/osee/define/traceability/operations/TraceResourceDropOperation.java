@@ -30,7 +30,7 @@ import org.eclipse.osee.define.traceability.HierarchyHandler;
 import org.eclipse.osee.define.traceability.TestUnitTagger;
 import org.eclipse.osee.define.utility.IResourceLocator;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -55,12 +55,12 @@ public class TraceResourceDropOperation extends AbstractOperation {
 
    private final Collection<URI> resources;
    private final IResourceLocator locator;
-   private final IRelationTypeSide relTypeSide;
+   private final RelationTypeSide relTypeSide;
    private final Artifact requirement;
    private final boolean persistChanges;
    private final RenameConfirmer confirmer;
 
-   public TraceResourceDropOperation(Collection<URI> resources, IRelationTypeSide relTypeSide, Artifact requirement, IResourceLocator locator, boolean persistChanges, RenameConfirmer confirmer) {
+   public TraceResourceDropOperation(Collection<URI> resources, RelationTypeSide relTypeSide, Artifact requirement, IResourceLocator locator, boolean persistChanges, RenameConfirmer confirmer) {
       super("Trace Resource Drop Operation", Activator.PLUGIN_ID);
       this.relTypeSide = relTypeSide;
       this.requirement = requirement;

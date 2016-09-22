@@ -23,7 +23,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.core.client.artifact.CollectorArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -37,7 +37,7 @@ public abstract class MembersManager<T extends CollectorArtifact> {
    public MembersManager() {
    }
 
-   public abstract IRelationTypeSide getMembersRelationTypeSide();
+   public abstract RelationTypeSide getMembersRelationTypeSide();
 
    public abstract String getItemName();
 

@@ -15,17 +15,17 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OrderEntryComparator implements Comparator<Entry<IRelationTypeSide, OrderData>> {
+public class OrderEntryComparator implements Comparator<Entry<RelationTypeSide, OrderData>> {
 
    @Override
-   public int compare(Entry<IRelationTypeSide, OrderData> o1, Entry<IRelationTypeSide, OrderData> o2) {
-      IRelationTypeSide typeSide1 = o1.getKey();
-      IRelationTypeSide typeSide2 = o2.getKey();
+   public int compare(Entry<RelationTypeSide, OrderData> o1, Entry<RelationTypeSide, OrderData> o2) {
+      RelationTypeSide typeSide1 = o1.getKey();
+      RelationTypeSide typeSide2 = o2.getKey();
       OrderData orderData1 = o1.getValue();
       OrderData orderData2 = o2.getValue();
 

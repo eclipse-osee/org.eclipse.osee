@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.navigate;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -29,7 +29,7 @@ public class SubscribeUtility {
     * 
     * @param artifacts to subscribe or empty to remove all
     */
-   public static final void setSubcriptionsAndPersist(Artifact userArtifact, IRelationTypeSide relationSide, Collection<? extends Artifact> artifacts, IArtifactType artifactType, String persistComment) throws OseeCoreException {
+   public static final void setSubcriptionsAndPersist(Artifact userArtifact, RelationTypeSide relationSide, Collection<? extends Artifact> artifacts, IArtifactType artifactType, String persistComment) throws OseeCoreException {
       RelationTypeSideSorter sorter =
          RelationManager.createTypeSideSorter(userArtifact, relationSide, relationSide.getSide());
       Collection<Artifact> currentlyRelated = userArtifact.getRelatedArtifacts(relationSide, Artifact.class);

@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -137,7 +137,7 @@ public class AddRequirementData implements IDbInitializationTask {
       return file;
    }
 
-   private void relate(IRelationTypeSide relationSide, Artifact artifact, Collection<Artifact> artifacts) throws OseeCoreException {
+   private void relate(RelationTypeSide relationSide, Artifact artifact, Collection<Artifact> artifacts) throws OseeCoreException {
       for (Artifact otherArtifact : artifacts) {
          artifact.addRelation(relationSide, otherArtifact);
       }

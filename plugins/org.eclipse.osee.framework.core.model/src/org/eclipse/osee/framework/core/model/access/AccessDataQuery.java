@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -91,16 +91,16 @@ public class AccessDataQuery {
    }
 
    private class RelationTypeSideFilter implements AccessFilter {
-      IRelationTypeSide toFilter;
+      RelationTypeSide toFilter;
 
-      RelationTypeSideFilter(IRelationTypeSide toFilter) {
+      RelationTypeSideFilter(RelationTypeSide toFilter) {
          this.toFilter = toFilter;
       }
 
       @Override
       public boolean accept(AccessDetail<?> access) {
-         if (access.getAccessObject() instanceof IRelationTypeSide) {
-            IRelationTypeSide toCheck = (IRelationTypeSide) access.getAccessObject();
+         if (access.getAccessObject() instanceof RelationTypeSide) {
+            RelationTypeSide toCheck = (RelationTypeSide) access.getAccessObject();
             return toCheck.getSide().equals(toFilter.getSide()) && toCheck.getGuid().equals(toFilter.getGuid());
          }
          return false;
@@ -123,7 +123,7 @@ public class AccessDataQuery {
       }
    }
 
-   public void relationTypeMatches(PermissionEnum permissionToMatch, IBasicArtifact<?> artifact, IRelationTypeSide relationTypeSide, PermissionStatus permissionStatus) throws OseeCoreException {
+   public void relationTypeMatches(PermissionEnum permissionToMatch, IBasicArtifact<?> artifact, RelationTypeSide relationTypeSide, PermissionStatus permissionStatus) throws OseeCoreException {
       BranchId branchToMatch = artifact.getBranch();
       branchMatches(permissionToMatch, branchToMatch, permissionStatus);
       if (permissionStatus.matched()) {

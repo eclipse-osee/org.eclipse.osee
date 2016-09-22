@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
@@ -134,7 +134,7 @@ public interface TransactionBuilder {
 
    void unrelateFromAll(ArtifactId art) throws OseeCoreException;
 
-   void unrelateFromAll(IRelationTypeSide typeSide, ArtifactId art) throws OseeCoreException;
+   void unrelateFromAll(RelationTypeSide typeSide, ArtifactId art) throws OseeCoreException;
 
    void setRelationApplicability(ArtifactId artA, IRelationType relType, ArtifactId artB, ApplicabilityId applicId);
 

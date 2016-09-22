@@ -17,7 +17,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 
 /**
  * @author Donald G. Dunne
@@ -108,7 +108,7 @@ public class JaxAtsTask extends JaxAtsObject {
       addAttribute(attrType.getName(), value);
    }
 
-   public void addRelation(IRelationTypeSide relationSide, long... relatedUuid) {
+   public void addRelation(RelationTypeSide relationSide, long... relatedUuid) {
       JaxRelation relation = new JaxRelation();
       relation.setRelationTypeName(relationSide.getName());
       relation.setSideA(relationSide.getSide().isSideA());

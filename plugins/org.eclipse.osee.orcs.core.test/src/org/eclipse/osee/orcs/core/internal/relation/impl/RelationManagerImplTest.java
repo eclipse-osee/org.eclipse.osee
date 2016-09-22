@@ -41,7 +41,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -126,7 +126,7 @@ public class RelationManagerImplTest {
    @Mock private IRelationType relType1;
    @Mock private IRelationType relType2;
 
-   @Mock private IRelationTypeSide typeAndSide1;
+   @Mock private RelationTypeSide typeAndSide1;
 
    @Mock private ResultSet<Relation> rSet1;
    @Mock private ResultSet<Relation> rSet2;
@@ -367,7 +367,7 @@ public class RelationManagerImplTest {
 
       verify(resolver).resolve(session, graph, relations, SIDE_A);
 
-      IRelationTypeSide typeSide = TokenFactory.createRelationTypeSide(SIDE_A, TYPE_1.getId(), TYPE_1.getName());
+      RelationTypeSide typeSide = RelationTypeSide.create(TYPE_1, SIDE_A);
       verify(orderManager1).sort(typeSide, nodes);
    }
 
@@ -533,7 +533,7 @@ public class RelationManagerImplTest {
 
       manager.relate(session, node1, TYPE_1, node2, LEXICOGRAPHICAL_ASC);
 
-      IRelationTypeSide typeSide = RelationUtil.asTypeSide(TYPE_1, SIDE_B);
+      RelationTypeSide typeSide = RelationUtil.asTypeSide(TYPE_1, SIDE_B);
 
       verify(container1).getRelation(node1, TYPE_1, node2, INCLUDE_DELETED);
       verify(container2).getRelation(node1, TYPE_1, node2, INCLUDE_DELETED);
@@ -552,7 +552,7 @@ public class RelationManagerImplTest {
 
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
-      IRelationTypeSide typeSide = RelationUtil.asTypeSide(TYPE_1, SIDE_B);
+      RelationTypeSide typeSide = RelationUtil.asTypeSide(TYPE_1, SIDE_B);
       when(orderManager1.getSorterId(typeSide)).thenReturn(UNORDERED);
 
       when(node1.getArtifactType()).thenReturn(artifactType1);
@@ -599,7 +599,7 @@ public class RelationManagerImplTest {
 
       verify(resolver).resolve(session, graph, toOrder, SIDE_B);
 
-      IRelationTypeSide typeSide = RelationUtil.asTypeSide(TYPE_1, SIDE_B);
+      RelationTypeSide typeSide = RelationUtil.asTypeSide(TYPE_1, SIDE_B);
       verify(orderManager1).sort(typeSide, nodesToOrder);
       verify(orderManager1).setOrder(eq(typeSide), eq(USER_DEFINED), sortedListCaptor.capture());
 

@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -83,12 +83,12 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   public void queryAndRelatedToLocalIds(IRelationTypeSide relationTypeSide, ArtifactId artId) {
+   public void queryAndRelatedToLocalIds(RelationTypeSide relationTypeSide, ArtifactId artId) {
       query.andRelatedTo(relationTypeSide, artId);
    }
 
    @Override
-   public void queryAndRelatedTo(IRelationTypeSide relationTypeSide, List<ArtifactId> artIds) {
+   public void queryAndRelatedTo(RelationTypeSide relationTypeSide, List<ArtifactId> artIds) {
       query.andRelatedTo(relationTypeSide, artIds);
    }
 
@@ -108,12 +108,12 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   public void queryAndNotExists(IRelationTypeSide relationTypeSide) {
+   public void queryAndNotExists(RelationTypeSide relationTypeSide) {
       query.andNotExists(relationTypeSide);
    }
 
    @Override
-   public void queryAndExists(IRelationTypeSide relationTypeSide) {
+   public void queryAndExists(RelationTypeSide relationTypeSide) {
       query.andExists(relationTypeSide);
    }
 

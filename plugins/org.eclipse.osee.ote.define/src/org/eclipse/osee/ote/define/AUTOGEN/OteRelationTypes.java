@@ -10,15 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.define.AUTOGEN;
 
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 
 public final class OteRelationTypes {
 
-   public static final IRelationTypeSide TEST_SCRIPT_TO_RUN_RELATION__TEST_SCRIPT =
-      TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x2000000000000176L, "Test Case to Run Relation");
-   public static final IRelationTypeSide TEST_SCRIPT_TO_RUN_RELATION__TEST_RUN = TokenFactory.createRelationTypeSide(
+   public static final RelationTypeSide TEST_SCRIPT_TO_RUN_RELATION__TEST_SCRIPT =
+      RelationTypeSide.create(RelationSide.SIDE_A, 0x2000000000000176L, "Test Case to Run Relation");
+   public static final RelationTypeSide TEST_SCRIPT_TO_RUN_RELATION__TEST_RUN = RelationTypeSide.create(
       RelationSide.SIDE_B, 0x2000000000000176L, "Test Case to Run Relation");
 
    private OteRelationTypes() {

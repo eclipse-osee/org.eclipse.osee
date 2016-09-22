@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -138,14 +138,14 @@ public interface ArtifactQueryBuilder<T> {
     *
     * @param relationTypeSide the type to check for non-existence
     */
-   T andNotExists(IRelationTypeSide relationTypeSide);
+   T andNotExists(RelationTypeSide relationTypeSide);
 
    /**
     * Search criteria that follows the relation link ending on the given side
     *
     * @param relationTypeSide the type to start following the link from
     */
-   T andExists(IRelationTypeSide relationTypeSide);
+   T andExists(RelationTypeSide relationTypeSide);
 
    /**
     * Search criteria that checks for non-existence of a relation type
@@ -186,28 +186,28 @@ public interface ArtifactQueryBuilder<T> {
     *
     * @param relationTypeSide the type-side to search on
     */
-   T andRelatedTo(IRelationTypeSide relationTypeSide, ArtifactReadable... artifacts);
+   T andRelatedTo(RelationTypeSide relationTypeSide, ArtifactReadable... artifacts);
 
    /**
     * Search for related artifacts
     *
     * @param relationTypeSide the type-side to search on
     */
-   T andRelatedTo(IRelationTypeSide relationTypeSide, Collection<? extends ArtifactId> artifacts);
+   T andRelatedTo(RelationTypeSide relationTypeSide, Collection<? extends ArtifactId> artifacts);
 
    /**
     * Search for related artifacts
     *
     * @param relationTypeSide the type-side to search on
     */
-   T andRelatedTo(IRelationTypeSide relationTypeSide, ArtifactId artifactId);
+   T andRelatedTo(RelationTypeSide relationTypeSide, ArtifactId artifactId);
 
    /**
     * Search related artifacts with specific criteria. Will only follow first level of relations
     *
     * @param relationTypeSide the type-side to search on
     */
-   T followRelation(IRelationTypeSide relationTypeSide);
+   T followRelation(RelationTypeSide relationTypeSide);
 
    /**
     * @return DefaultHeirarchicalRootArtifact

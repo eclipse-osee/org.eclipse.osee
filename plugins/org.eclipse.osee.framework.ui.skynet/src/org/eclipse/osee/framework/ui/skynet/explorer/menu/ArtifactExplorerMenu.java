@@ -24,7 +24,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -311,7 +311,7 @@ public class ArtifactExplorerMenu {
          CoreRelationTypes.Default_Hierarchical__Child);
    }
 
-   public static Artifact handleCreateChild(Artifact parent, Collection<? extends IArtifactType> validArtifactTypes, TreeViewer treeViewer, IRelationTypeSide relationTypeSide) {
+   public static Artifact handleCreateChild(Artifact parent, Collection<? extends IArtifactType> validArtifactTypes, TreeViewer treeViewer, RelationTypeSide relationTypeSide) {
       FilteredTreeArtifactTypeEntryDialog dialog = getDialog(validArtifactTypes);
       if (dialog.open() == Window.OK) {
          IArtifactType type = dialog.getSelection();

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds.criteria;
 
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
@@ -21,14 +21,14 @@ import org.eclipse.osee.orcs.core.ds.Options;
  */
 public class CriteriaRelationTypeFollow extends Criteria {
 
-   private final IRelationTypeSide typeSide;
+   private final RelationTypeSide typeSide;
 
-   public CriteriaRelationTypeFollow(IRelationTypeSide typeSide) {
+   public CriteriaRelationTypeFollow(RelationTypeSide typeSide) {
       super();
       this.typeSide = typeSide;
    }
 
-   public IRelationTypeSide getType() {
+   public RelationTypeSide getType() {
       return typeSide;
    }
 

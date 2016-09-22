@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
@@ -101,7 +101,7 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
 
    private String getPredicate(AbstractSqlWriter writer, String txsAliasName, String relAliasName) throws OseeCoreException {
       StringBuilder sb = new StringBuilder();
-      IRelationTypeSide typeSide = criteria.getType();
+      RelationTypeSide typeSide = criteria.getType();
       sb.append(relAliasName);
       sb.append(".rel_link_type_id = ?");
       writer.addParameter(typeSide.getGuid());

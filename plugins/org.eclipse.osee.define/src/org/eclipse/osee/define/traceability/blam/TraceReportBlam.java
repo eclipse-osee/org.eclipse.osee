@@ -38,7 +38,7 @@ import org.eclipse.osee.define.traceability.report.ArtifactTraceCount;
 import org.eclipse.osee.define.traceability.report.ArtifactsWithoutRelations;
 import org.eclipse.osee.define.traceability.report.IReportDataCollector;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -332,7 +332,7 @@ public class TraceReportBlam extends AbstractBlam {
 
    private void addRelationToCheck(List<TraceTypeEnum> traceTypes, AbstractArtifactRelationReport report, boolean fromTraceUnit) {
       for (TraceTypeEnum traceTypeEnum : traceTypes) {
-         IRelationTypeSide relation =
+         RelationTypeSide relation =
             fromTraceUnit ? traceTypeEnum.getRelatedToRequirement() : traceTypeEnum.getRelatedToTraceUnit();
          report.addRelationToCheck(relation);
       }
@@ -397,21 +397,21 @@ public class TraceReportBlam extends AbstractBlam {
       Used_By_Test_Unit_Trace(CoreRelationTypes.Uses__Requirement, CoreRelationTypes.Uses__TestUnit, true),
       Validation_By_TestProcedure(CoreRelationTypes.Validation__Requirement, CoreRelationTypes.Validation__Validator, true);
 
-      private IRelationTypeSide toReq;
-      private IRelationTypeSide toTraceUnit;
+      private RelationTypeSide toReq;
+      private RelationTypeSide toTraceUnit;
       private boolean isTestType;
 
-      TraceTypeEnum(IRelationTypeSide toReq, IRelationTypeSide toTraceUnit, boolean isTestType) {
+      TraceTypeEnum(RelationTypeSide toReq, RelationTypeSide toTraceUnit, boolean isTestType) {
          this.toReq = toReq;
          this.toTraceUnit = toTraceUnit;
          this.isTestType = isTestType;
       }
 
-      public IRelationTypeSide getRelatedToRequirement() {
+      public RelationTypeSide getRelatedToRequirement() {
          return toReq;
       }
 
-      public IRelationTypeSide getRelatedToTraceUnit() {
+      public RelationTypeSide getRelatedToTraceUnit() {
          return toTraceUnit;
       }
 

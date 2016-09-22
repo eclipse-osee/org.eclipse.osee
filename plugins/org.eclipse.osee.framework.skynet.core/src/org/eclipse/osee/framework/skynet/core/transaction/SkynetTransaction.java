@@ -26,14 +26,13 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -269,8 +268,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       RelationSide sideToCheck = link.getOppositeSide(art);
       int limitToCheck = sideToCheck.isSideA() ? multiplicity.getSideALimit() : multiplicity.getSideBLimit();
       if (limitToCheck == 1) {
-         int count = art.getRelatedArtifactsCount(
-            TokenFactory.createRelationTypeSide(sideToCheck, relationType.getGuid(), relationType.getName()));
+         int count = art.getRelatedArtifactsCount(RelationTypeSide.create(relationType, sideToCheck));
          if (count > 1) {
             throw new OseeStateException("Artifact [%s] can only have 1 [%s] on [%s] but has %d", art.getName(),
                link.getSideNameFor(art), sideToCheck.name(), count);

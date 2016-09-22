@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -105,12 +105,12 @@ public class AtsConfigQueryImpl extends AbstractAtsConfigQueryImpl {
    }
 
    @Override
-   public void queryAndNotExists(IRelationTypeSide relationTypeSide) {
+   public void queryAndNotExists(RelationTypeSide relationTypeSide) {
       getQuery().andNotExists(relationTypeSide);
    }
 
    @Override
-   public void queryAndExists(IRelationTypeSide relationTypeSide) {
+   public void queryAndExists(RelationTypeSide relationTypeSide) {
       getQuery().andExists(relationTypeSide);
    }
 

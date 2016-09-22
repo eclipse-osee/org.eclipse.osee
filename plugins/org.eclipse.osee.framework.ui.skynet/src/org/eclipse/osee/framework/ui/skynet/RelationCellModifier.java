@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.core.model.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;

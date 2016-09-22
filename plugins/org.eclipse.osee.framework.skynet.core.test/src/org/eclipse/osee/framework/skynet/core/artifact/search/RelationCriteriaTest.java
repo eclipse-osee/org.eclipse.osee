@@ -16,7 +16,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -41,7 +41,7 @@ public class RelationCriteriaTest {
       ArtifactId artifact = ArtifactId.valueOf(4);
       criteria = new RelationCriteria(artifact, CoreRelationTypes.Allocation__Component, RelationSide.SIDE_A);
       criteria.addToQueryBuilder(builder);
-      ArgumentCaptor<IRelationTypeSide> rtsCaptor = ArgumentCaptor.forClass(IRelationTypeSide.class);
+      ArgumentCaptor<RelationTypeSide> rtsCaptor = ArgumentCaptor.forClass(RelationTypeSide.class);
       verify(builder).andRelatedTo(rtsCaptor.capture(), eq(artifact));
       Assert.assertEquals(CoreRelationTypes.Allocation__Component.getGuid(), rtsCaptor.getValue().getGuid());
       Assert.assertEquals(RelationSide.SIDE_A, rtsCaptor.getValue().getSide());
@@ -58,7 +58,7 @@ public class RelationCriteriaTest {
       ArtifactId artifact = ArtifactId.valueOf(4);
       criteria = new RelationCriteria(artifact, CoreRelationTypes.Allocation__Component, RelationSide.SIDE_A);
       criteria.addToQueryBuilder(builder);
-      ArgumentCaptor<IRelationTypeSide> rtsCaptor = ArgumentCaptor.forClass(IRelationTypeSide.class);
+      ArgumentCaptor<RelationTypeSide> rtsCaptor = ArgumentCaptor.forClass(RelationTypeSide.class);
       verify(builder).andRelatedTo(rtsCaptor.capture(), eq(artifact));
       Assert.assertEquals(CoreRelationTypes.Allocation__Component.getGuid(), rtsCaptor.getValue().getGuid());
       Assert.assertEquals(RelationSide.SIDE_A, rtsCaptor.getValue().getSide());

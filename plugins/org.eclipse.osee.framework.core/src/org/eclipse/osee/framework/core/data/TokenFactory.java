@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.core.data;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
@@ -55,10 +54,6 @@ public final class TokenFactory {
 
    public static IRelationType createRelationType(long id, String name) {
       return IRelationType.valueOf(id, name);
-   }
-
-   public static IRelationTypeSide createRelationTypeSide(RelationSide relationSide, long guid, String name) {
-      return new RelationTypeSideToken(guid, name, relationSide);
    }
 
    public static IAccessContextId createAccessContextId(String guid, String name) {
@@ -189,60 +184,6 @@ public final class TokenFactory {
       @Override
       public String toString() {
          return String.format("%s - %s", getName(), getGuid());
-      }
-   }
-
-   private final static class RelationTypeSideToken extends NamedId implements IRelationTypeSide {
-
-      private final RelationSide relationSide;
-      private RelationTypeSideToken opposite;
-
-      private RelationTypeSideToken(Long id, String name, RelationSide relationSide) {
-         super(id, name);
-         this.relationSide = relationSide;
-      }
-
-      @Override
-      public RelationSide getSide() {
-         return relationSide;
-      }
-
-      @Override
-      public boolean isOfType(IRelationType type) {
-         return equals(type);
-      }
-
-      @Override
-      public int hashCode() {
-         // Do not add relation side to hash code because it will violate the hash code contract
-         return super.hashCode();
-      }
-
-      @Override
-      public boolean equals(Object obj) {
-         if (obj instanceof IRelationTypeSide) {
-            IRelationTypeSide otherSide = (IRelationTypeSide) obj;
-            if (relationSide != otherSide.getSide()) {
-               return false;
-            }
-         }
-         if (obj instanceof IRelationType) {
-            return super.equals(obj);
-         }
-         return false;
-      }
-
-      @Override
-      public synchronized IRelationTypeSide getOpposite() {
-         if (opposite == null) {
-            opposite = new RelationTypeSideToken(getGuid(), getName(), getSide().oppositeSide());
-         }
-         return opposite;
-      }
-
-      @Override
-      public String toString() {
-         return String.format("RelationTypeSide - uuid=[%s] type=[%s] side=[%s]", getGuid(), getName(), getSide());
       }
    }
 

@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -49,7 +49,6 @@ import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
@@ -150,23 +149,19 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    }
 
    @Override
-   public final List<? extends IArtifact> getRelatedArtifacts(RelationTypeSide relationTypeSide) throws OseeCoreException {
+   public final List<Artifact> getRelatedArtifacts(RelationTypeSide relationTypeSide) throws OseeCoreException {
       return RelationManager.getRelatedArtifacts(this, relationTypeSide);
    }
 
-   public final List<Artifact> getRelatedArtifactsUnSorted(IRelationTypeSide relationEnum) throws OseeCoreException {
+   public final List<Artifact> getRelatedArtifactsUnSorted(RelationTypeSide relationEnum) throws OseeCoreException {
       return RelationManager.getRelatedArtifactsUnSorted(this, relationEnum);
    }
 
-   public final List<Artifact> getRelatedArtifacts(IRelationTypeSide relationEnum) throws OseeCoreException {
-      return RelationManager.getRelatedArtifacts(this, relationEnum);
-   }
-
-   public final List<Artifact> getRelatedArtifacts(IRelationTypeSide relationEnum, DeletionFlag deletionFlag) throws OseeCoreException {
+   public final List<Artifact> getRelatedArtifacts(RelationTypeSide relationEnum, DeletionFlag deletionFlag) throws OseeCoreException {
       return RelationManager.getRelatedArtifacts(this, relationEnum, deletionFlag);
    }
 
-   public final String getRelationRationale(Artifact artifact, IRelationTypeSide relationTypeSide) throws OseeCoreException {
+   public final String getRelationRationale(Artifact artifact, RelationTypeSide relationTypeSide) throws OseeCoreException {
       if (artifact.isHistorical()) {
          throw new OseeCoreException("Artifact [%s] is historical.  Historical relations are only supported on server",
             artifact);
@@ -176,13 +171,13 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       return link.getRationale();
    }
 
-   public final void setRelationRationale(Artifact artifact, IRelationTypeSide relationTypeSide, String rationale) throws OseeCoreException {
+   public final void setRelationRationale(Artifact artifact, RelationTypeSide relationTypeSide, String rationale) throws OseeCoreException {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
       RelationLink link = RelationManager.getRelationLink(sides.getFirst(), sides.getSecond(), relationTypeSide);
       link.setRationale(rationale);
    }
 
-   private Pair<Artifact, Artifact> determineArtifactSides(Artifact artifact, IRelationTypeSide relationSide) {
+   private Pair<Artifact, Artifact> determineArtifactSides(Artifact artifact, RelationTypeSide relationSide) {
       boolean sideA = relationSide.getSide().isSideA();
       Artifact artifactA = sideA ? artifact : this;
       Artifact artifactB = sideA ? this : artifact;
@@ -192,7 +187,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    /**
     * Check if artifacts are related to each other by relation type
     */
-   public final boolean isRelated(IRelationTypeSide relationEnum, Artifact other) throws OseeCoreException {
+   public final boolean isRelated(RelationTypeSide relationEnum, Artifact other) throws OseeCoreException {
       List<Artifact> relatedArtifacts = getRelatedArtifacts(relationEnum);
       return relatedArtifacts.contains(other);
    }
@@ -200,24 +195,24 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    /**
     * Get the exactly one artifact related to this artifact by a relation of type relationType
     */
-   public final Artifact getRelatedArtifact(IRelationTypeSide relationEnum) throws OseeCoreException {
+   public final Artifact getRelatedArtifact(RelationTypeSide relationEnum) throws OseeCoreException {
       return RelationManager.getRelatedArtifact(this, relationEnum);
    }
 
-   public final int getRelatedArtifactsCount(IRelationTypeSide relationEnum) throws OseeCoreException {
+   public final int getRelatedArtifactsCount(RelationTypeSide relationEnum) throws OseeCoreException {
       return RelationManager.getRelatedArtifactsCount(this, relationEnum, relationEnum.getSide());
    }
 
-   public final <A extends Artifact> List<A> getRelatedArtifactsUnSorted(IRelationTypeSide side, Class<A> clazz) throws OseeCoreException {
+   public final <A extends Artifact> List<A> getRelatedArtifactsUnSorted(RelationTypeSide side, Class<A> clazz) throws OseeCoreException {
       return Collections.castAll(getRelatedArtifactsUnSorted(side));
    }
 
-   public final <A extends Artifact> List<A> getRelatedArtifacts(IRelationTypeSide side, Class<A> clazz) throws OseeCoreException {
+   public final <A extends Artifact> List<A> getRelatedArtifacts(RelationTypeSide side, Class<A> clazz) throws OseeCoreException {
       return Collections.castAll(getRelatedArtifacts(side));
    }
 
    @SuppressWarnings("unchecked")
-   public final <A extends Artifact> List<A> getRelatedArtifactsOfType(IRelationTypeSide side, Class<A> clazz) throws OseeCoreException {
+   public final <A extends Artifact> List<A> getRelatedArtifactsOfType(RelationTypeSide side, Class<A> clazz) throws OseeCoreException {
       List<A> objs = new ArrayList<>();
       for (Artifact art : getRelatedArtifacts(side)) {
          if (clazz.isInstance(art)) {
@@ -1267,20 +1262,20 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       linksLoaded = loaded;
    }
 
-   public final void addRelation(RelationSorter sorterId, IRelationTypeSide relationTypeSide, Artifact artifact, String rationale) throws OseeCoreException {
+   public final void addRelation(RelationSorter sorterId, RelationTypeSide relationTypeSide, Artifact artifact, String rationale) throws OseeCoreException {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
       RelationManager.addRelation(sorterId, relationTypeSide, sides.getFirst(), sides.getSecond(), rationale);
    }
 
-   public final void addRelation(IRelationTypeSide relationSide, Artifact artifact) throws OseeCoreException {
+   public final void addRelation(RelationTypeSide relationSide, Artifact artifact) throws OseeCoreException {
       addRelation(PREEXISTING, relationSide, artifact, null);
    }
 
-   public final void addRelation(RelationSorter sorterId, IRelationTypeSide relationSide, Artifact artifact) throws OseeCoreException {
+   public final void addRelation(RelationSorter sorterId, RelationTypeSide relationSide, Artifact artifact) throws OseeCoreException {
       addRelation(sorterId, relationSide, artifact, null);
    }
 
-   public final void addRelation(RelationSorter sorterId, IRelationTypeSide relationEnumeration, Artifact targetArtifact, boolean insertAfterTarget, Artifact itemToAdd, String rationale) throws OseeCoreException {
+   public final void addRelation(RelationSorter sorterId, RelationTypeSide relationEnumeration, Artifact targetArtifact, boolean insertAfterTarget, Artifact itemToAdd, String rationale) throws OseeCoreException {
       boolean sideA = relationEnumeration.getSide().isSideA();
       Artifact artifactA = sideA ? itemToAdd : this;
       Artifact artifactB = sideA ? this : itemToAdd;
@@ -1289,11 +1284,11 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       setRelationOrder(relationEnumeration, targetArtifact, insertAfterTarget, itemToAdd);
    }
 
-   public final void setRelationOrder(IRelationTypeSide relationSide, List<Artifact> artifactsInNewOrder) throws OseeCoreException {
+   public final void setRelationOrder(RelationTypeSide relationSide, List<? extends Artifact> artifactsInNewOrder) throws OseeCoreException {
       RelationManager.setRelationOrder(this, relationSide, relationSide.getSide(), USER_DEFINED, artifactsInNewOrder);
    }
 
-   public final void setRelationOrder(IRelationTypeSide relationEnumeration, RelationSorter orderId) throws OseeCoreException {
+   public final void setRelationOrder(RelationTypeSide relationEnumeration, RelationSorter orderId) throws OseeCoreException {
       if (USER_DEFINED == orderId) {
          setRelationOrder(relationEnumeration, getRelatedArtifacts(relationEnumeration));
       } else {
@@ -1302,7 +1297,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       }
    }
 
-   public final void setRelationOrder(IRelationTypeSide relationEnumeration, Artifact targetArtifact, boolean insertAfterTarget, Artifact itemToAdd) throws OseeCoreException {
+   public final void setRelationOrder(RelationTypeSide relationEnumeration, Artifact targetArtifact, boolean insertAfterTarget, Artifact itemToAdd) throws OseeCoreException {
       List<Artifact> currentOrder = getRelatedArtifacts(relationEnumeration, Artifact.class);
       // target artifact doesn't exist
       if (!currentOrder.contains(targetArtifact)) {
@@ -1322,13 +1317,13 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
          currentOrder);
    }
 
-   public final void deleteRelation(IRelationTypeSide relationTypeSide, Artifact artifact) throws OseeCoreException {
+   public final void deleteRelation(RelationTypeSide relationTypeSide, Artifact artifact) throws OseeCoreException {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
       ArtifactPersistenceManager.performDeleteRelationChecks(artifact, relationTypeSide);
       RelationManager.deleteRelation(relationTypeSide, sides.getFirst(), sides.getSecond());
    }
 
-   public final void deleteRelations(IRelationTypeSide relationSide) throws OseeCoreException {
+   public final void deleteRelations(RelationTypeSide relationSide) throws OseeCoreException {
       for (Artifact art : getRelatedArtifacts(relationSide)) {
          ArtifactPersistenceManager.performDeleteRelationChecks(art, relationSide);
          deleteRelation(relationSide, art);
@@ -1338,7 +1333,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    /**
     * Creates new relations that don't already exist and removes relations to artifacts that are not in collection
     */
-   public final void setRelations(RelationSorter sorterId, IRelationTypeSide relationSide, Collection<? extends Artifact> artifacts) throws OseeCoreException {
+   public final void setRelations(RelationSorter sorterId, RelationTypeSide relationSide, Collection<? extends Artifact> artifacts) throws OseeCoreException {
       Collection<Artifact> currentlyRelated = getRelatedArtifacts(relationSide, Artifact.class);
       // Remove relations that have been removed
       for (Artifact artifact : currentlyRelated) {
@@ -1357,7 +1352,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    /**
     * Creates new relations that don't already exist and removes relations to artifacts that are not in collection
     */
-   public final void setRelations(IRelationTypeSide relationSide, Collection<? extends Artifact> artifacts) throws OseeCoreException {
+   public final void setRelations(RelationTypeSide relationSide, Collection<? extends Artifact> artifacts) throws OseeCoreException {
       setRelations(PREEXISTING, relationSide, artifacts);
    }
 
@@ -1392,7 +1387,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
     * Return true if this artifact any of it's links specified or any of the artifacts on the other side of the links
     * are dirty
     */
-   public final String isRelationsAndArtifactsDirty(Set<IRelationTypeSide> links) {
+   public final String isRelationsAndArtifactsDirty(Set<RelationTypeSide> links) {
       try {
          if (hasDirtyAttributes()) {
 
@@ -1404,7 +1399,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
             return "Artifact isDirty == true??";
          }
          // Loop through all relations
-         for (IRelationTypeSide side : links) {
+         for (RelationTypeSide side : links) {
             for (Artifact art : getRelatedArtifacts(side)) {
                // Check artifact dirty
                if (art.hasDirtyAttributes()) {
@@ -1625,7 +1620,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       return relations;
    }
 
-   public final List<RelationLink> getRelations(IRelationTypeSide relationEnum) throws OseeCoreException {
+   public final List<RelationLink> getRelations(RelationTypeSide relationEnum) throws OseeCoreException {
       return RelationManager.getRelations(this, relationEnum, relationEnum.getSide());
    }
 
@@ -1633,7 +1628,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
     * Return relations that exist between artifacts of type side
     */
    @Deprecated
-   public final ArrayList<RelationLink> getRelations(IRelationTypeSide side, Artifact artifact) throws OseeCoreException {
+   public final ArrayList<RelationLink> getRelations(RelationTypeSide side, Artifact artifact) throws OseeCoreException {
       ArrayList<RelationLink> relations = new ArrayList<>();
       for (RelationLink relation : getRelations(side)) {
          try {
@@ -1727,7 +1722,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       return types;
    }
 
-   public Artifact getRelatedArtifactOrNull(IRelationTypeSide relationSide) {
+   public Artifact getRelatedArtifactOrNull(RelationTypeSide relationSide) {
       Artifact artifact = null;
       try {
          artifact = getRelatedArtifact(relationSide);

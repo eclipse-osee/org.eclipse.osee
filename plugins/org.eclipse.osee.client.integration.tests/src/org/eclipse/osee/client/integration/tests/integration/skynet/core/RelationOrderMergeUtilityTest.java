@@ -21,7 +21,7 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -57,7 +57,7 @@ public class RelationOrderMergeUtilityTest {
    @Rule
    public final OseeHousekeepingRule oseeHousekeeping = new OseeHousekeepingRule();
 
-   private final IRelationTypeSide defaultHierarchy = CoreRelationTypes.Default_Hierarchical__Child;
+   private final RelationTypeSide defaultHierarchy = CoreRelationTypes.Default_Hierarchical__Child;
    private final RelationSorter ascOrder = LEXICOGRAPHICAL_ASC;
    private final RelationSorter descOrder = LEXICOGRAPHICAL_DESC;
 

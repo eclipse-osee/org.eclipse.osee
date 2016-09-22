@@ -20,7 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -206,7 +206,7 @@ public final class TestPlanComplianceReport extends AbstractBlam {
       return src.getArtifactType().inheritsFrom(CoreArtifactTypes.TestPlanElement);
    }
 
-   private List<String> getRequirementsCellOutput(Artifact art, IRelationTypeSide rts) throws OseeCoreException {
+   private List<String> getRequirementsCellOutput(Artifact art, RelationTypeSide rts) throws OseeCoreException {
       List<String> result = null;
       if (art.getArtifactType().inheritsFrom(CoreArtifactTypes.TestPlanElement)) {
          result = getRequirementsAsString(art, rts);
@@ -214,7 +214,7 @@ public final class TestPlanComplianceReport extends AbstractBlam {
       return result;
    }
 
-   private List<String> getRequirementsAsString(Artifact testPlan, IRelationTypeSide rts) throws OseeCoreException {
+   private List<String> getRequirementsAsString(Artifact testPlan, RelationTypeSide rts) throws OseeCoreException {
       Collection<Artifact> requirementArtifacts = testPlan.getRelatedArtifacts(rts);
       List<String> requirementNames = new ArrayList<>();
       for (Artifact req : requirementArtifacts) {

@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -277,7 +277,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void relate(Object object1, IRelationTypeSide relationSide, Object object2) {
+   public void relate(Object object1, RelationTypeSide relationSide, Object object2) {
       Artifact artifact = getArtifact(object1);
       Artifact artifact2 = getArtifact(object2);
       artifact.addRelation(relationSide, artifact2);
@@ -286,14 +286,14 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void unrelateAll(Object object, IRelationTypeSide relationType) {
+   public void unrelateAll(Object object, RelationTypeSide relationType) {
       Artifact artifact = getArtifact(object);
       artifact.deleteRelations(relationType);
       add(artifact);
    }
 
    @Override
-   public void setRelations(Object object, IRelationTypeSide relationSide, Collection<? extends Object> objects) {
+   public void setRelations(Object object, RelationTypeSide relationSide, Collection<? extends Object> objects) {
       Artifact artifact = getArtifact(object);
       Set<Artifact> artifacts = new HashSet<>(objects.size());
       for (Object obj : objects) {
@@ -371,7 +371,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void unrelate(ArtifactId artifact, IRelationTypeSide relationSide, ArtifactId artifact2) {
+   public void unrelate(ArtifactId artifact, RelationTypeSide relationSide, ArtifactId artifact2) {
       Artifact art = getArtifact(artifact);
       Artifact art2 = getArtifact(artifact2);
       art.deleteRelation(relationSide, art2);

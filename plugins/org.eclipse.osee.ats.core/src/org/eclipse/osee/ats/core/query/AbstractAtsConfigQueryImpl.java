@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.api.query.IAtsQueryFilter;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -133,9 +133,9 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
       return false;
    }
 
-   public abstract void queryAndNotExists(IRelationTypeSide relationTypeSide);
+   public abstract void queryAndNotExists(RelationTypeSide relationTypeSide);
 
-   public abstract void queryAndExists(IRelationTypeSide relationTypeSide);
+   public abstract void queryAndExists(RelationTypeSide relationTypeSide);
 
    public abstract void queryAndIsOfType(IArtifactType artifactType);
 

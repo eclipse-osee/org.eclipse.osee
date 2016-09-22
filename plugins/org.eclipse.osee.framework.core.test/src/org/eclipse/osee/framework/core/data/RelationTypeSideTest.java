@@ -29,7 +29,7 @@ public class RelationTypeSideTest {
    @Test
    public void testHashCodeEquals() {
       IRelationType relType1 = TokenFactory.createRelationType(uuid1, "X");
-      IRelationTypeSide relTypeSide1 = create(uuid1, sideA, uuid1 + "_sideA");
+      RelationTypeSide relTypeSide1 = RelationTypeSide.create(sideA, uuid1, uuid1 + "_sideA");
 
       Assert.assertTrue(relType1.equals(relTypeSide1));
       Assert.assertTrue(relTypeSide1.equals(relType1));
@@ -39,10 +39,10 @@ public class RelationTypeSideTest {
 
    @Test
    public void testMap() {
-      IRelationTypeSide relTypeSide1 = create(uuid1, sideA, uuid1 + "_sideA");
-      IRelationTypeSide relTypeSide2 = create(uuid1, sideB, uuid1 + "_sideB");
-      IRelationTypeSide relTypeSide3 = create(uuid2, sideA, uuid2 + "_sideA");
-      IRelationTypeSide relTypeSide4 = create(uuid2, sideB, uuid2 + "_sideB");
+      RelationTypeSide relTypeSide1 = RelationTypeSide.create(sideA, uuid1, uuid1 + "_sideA");
+      RelationTypeSide relTypeSide2 = RelationTypeSide.create(sideB, uuid1, uuid1 + "_sideB");
+      RelationTypeSide relTypeSide3 = RelationTypeSide.create(sideA, uuid2, uuid2 + "_sideA");
+      RelationTypeSide relTypeSide4 = RelationTypeSide.create(sideB, uuid2, uuid2 + "_sideB");
 
       Map<IRelationType, String> data = new HashMap<>();
       data.put(relTypeSide1, "a1");
@@ -57,7 +57,7 @@ public class RelationTypeSideTest {
       Assert.assertEquals("c3", data.get(relTypeSide3));
       Assert.assertEquals("d4", data.get(relTypeSide4));
 
-      IRelationType relType1 = create(uuid1, sideB, "");
+      IRelationType relType1 = RelationTypeSide.create(sideB, uuid1, "");
       String removed = data.put(relType1, "hello");
       Assert.assertEquals("b2", removed);
 
@@ -68,9 +68,4 @@ public class RelationTypeSideTest {
 
       Assert.assertEquals(4, data.size());
    }
-
-   private static IRelationTypeSide create(long guid, RelationSide side, String data) {
-      return TokenFactory.createRelationTypeSide(side, guid, data);
-   }
-
 }

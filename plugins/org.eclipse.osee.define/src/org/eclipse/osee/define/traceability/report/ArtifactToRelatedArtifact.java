@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.internal.Activator;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -37,11 +37,11 @@ public class ArtifactToRelatedArtifact extends AbstractArtifactRelationReport {
       return toReturn.toArray(new String[toReturn.size()]);
    }
 
-   public List<String[]> getRelatedRows(IRelationTypeSide[] relations, Artifact artifact) throws OseeCoreException {
+   public List<String[]> getRelatedRows(RelationTypeSide[] relations, Artifact artifact) throws OseeCoreException {
       List<String[]> toReturn = new ArrayList<>();
       int maxSize = 0;
       List<List<String>> items = new ArrayList<>();
-      for (IRelationTypeSide relationEnum : relations) {
+      for (RelationTypeSide relationEnum : relations) {
          List<String> entries = new ArrayList<>();
          for (Artifact relArtifact : artifact.getRelatedArtifacts(relationEnum)) {
             entries.add(relArtifact.getName());
@@ -66,10 +66,10 @@ public class ArtifactToRelatedArtifact extends AbstractArtifactRelationReport {
    @Override
    public void process(IProgressMonitor monitor) {
       notifyOnTableHeader(getHeader());
-      IRelationTypeSide[] relations = getRelationsToCheck();
+      RelationTypeSide[] relations = getRelationsToCheck();
       for (Artifact artifact : getArtifactsToCheck()) {
          String name = artifact.getName();
-         for (IRelationTypeSide relationEnum : relations) {
+         for (RelationTypeSide relationEnum : relations) {
             String typeName = relationEnum.getName();
             try {
                for (Artifact relArtifact : artifact.getRelatedArtifacts(relationEnum)) {

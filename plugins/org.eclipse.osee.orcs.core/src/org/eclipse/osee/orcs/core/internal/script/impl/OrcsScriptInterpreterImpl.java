@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -613,7 +613,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
                getArtifactQuery().andNotExists(type);
             }
          } else {
-            IRelationTypeSide typeSide = asRelationTypeSide(object.getType(), object.getSide());
+            RelationTypeSide typeSide = asRelationTypeSide(object.getType(), object.getSide());
             if (OsExistenceOperator.EXISTS == op) {
                getArtifactQuery().andExists(typeSide);
             } else {
@@ -625,7 +625,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
 
       @Override
       public Void caseOsRelatedToClause(OsRelatedToClause object) {
-         IRelationTypeSide typeSide = asRelationTypeSide(object.getType(), object.getSide());
+         RelationTypeSide typeSide = asRelationTypeSide(object.getType(), object.getSide());
          Collection<Long> ids = resolver.resolve(Long.class, object.getIds());
          getArtifactQuery().andRelatedTo(typeSide,
             ids.stream().map(id -> ArtifactId.valueOf(id)).collect(Collectors.toList()));
@@ -634,7 +634,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
 
       @Override
       public Void caseOsFollowRelationType(OsFollowRelationType object) {
-         IRelationTypeSide typeSide = asRelationTypeSide(object.getType(), object.getSide());
+         RelationTypeSide typeSide = asRelationTypeSide(object.getType(), object.getSide());
          getArtifactQuery().followRelation(typeSide);
          return null;
       }
@@ -688,16 +688,16 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
          return toReturn;
       }
 
-      private IRelationTypeSide asRelationTypeSide(OsExpression expression, OsRelationSide side) {
-         IRelationTypeSide toReturn;
+      private RelationTypeSide asRelationTypeSide(OsExpression expression, OsRelationSide side) {
+         RelationTypeSide toReturn;
          Class<?> clazz = resolver.resolveTypeSingle(expression);
          if (clazz.isAssignableFrom(String.class)) {
             String name = resolver.resolveSingle(String.class, expression);
             IRelationType type = getRelationType(name);
-            toReturn = TokenFactory.createRelationTypeSide(asSide(side), type.getId(), type.getName());
+            toReturn = RelationTypeSide.create(type, asSide(side));
          } else {
             long typeId = resolver.resolveSingle(Long.class, expression);
-            toReturn = TokenFactory.createRelationTypeSide(asSide(side), typeId, "N/A");
+            toReturn = RelationTypeSide.create(asSide(side), typeId, "N/A");
          }
          return toReturn;
       }

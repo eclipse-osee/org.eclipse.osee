@@ -25,7 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
@@ -88,7 +88,7 @@ public class OrderParserTest {
    @Mock private RelationTypes relationTypeCache;
    @Mock private HasOrderData hasOrderData;
 
-   @Captor private ArgumentCaptor<IRelationTypeSide> typeSideCaptor;
+   @Captor private ArgumentCaptor<RelationTypeSide> typeSideCaptor;
    @Captor private ArgumentCaptor<OrderData> orderDataCaptor;
 
    @Mock private IRelationType relationType1;
@@ -208,7 +208,7 @@ public class OrderParserTest {
    @Test
    public void testToXml() throws OseeCoreException {
       //@formatter:off
-      Map<IRelationTypeSide, OrderData> data = new LinkedHashMap<>();
+      Map<RelationTypeSide, OrderData> data = new LinkedHashMap<>();
       add(data, REL_TYPE_1_ID, REL_TYPE_1_NAME, RelationSide.SIDE_B, USER_DEFINED, ORDER_LIST_2);
       add(data, REL_TYPE_2_ID, REL_TYPE_2_NAME, RelationSide.SIDE_A, LEXICOGRAPHICAL_ASC, ORDER_LIST_3);
       //@formatter:on
@@ -221,7 +221,7 @@ public class OrderParserTest {
 
    @Test
    public void testToXmlEmptyEntries() throws OseeCoreException {
-      Map<IRelationTypeSide, OrderData> data = new LinkedHashMap<>();
+      Map<RelationTypeSide, OrderData> data = new LinkedHashMap<>();
       when(hasOrderData.iterator()).thenReturn(data.entrySet().iterator());
 
       String actual = parser.toXml(hasOrderData);
@@ -230,7 +230,7 @@ public class OrderParserTest {
 
    @Test
    public void testToXmlEmptyList() throws OseeCoreException {
-      Map<IRelationTypeSide, OrderData> data = new LinkedHashMap<>();
+      Map<RelationTypeSide, OrderData> data = new LinkedHashMap<>();
       add(data, REL_TYPE_1_ID, REL_TYPE_2_NAME, RelationSide.SIDE_A, LEXICOGRAPHICAL_DESC);
       when(hasOrderData.iterator()).thenReturn(data.entrySet().iterator());
 
@@ -239,12 +239,12 @@ public class OrderParserTest {
       assertEquals(DATA_4, actual);
    }
 
-   private void add(Map<IRelationTypeSide, OrderData> data, Long typeId, String typeName, RelationSide side, RelationSorter sorter) {
+   private void add(Map<RelationTypeSide, OrderData> data, Long typeId, String typeName, RelationSide side, RelationSorter sorter) {
       add(data, typeId, typeName, side, sorter, java.util.Collections.<String> emptyList());
    }
 
-   private void add(Map<IRelationTypeSide, OrderData> data, Long typeId, String typeName, RelationSide side, RelationSorter sorter, List<String> list) {
-      IRelationTypeSide typeSide = TokenFactory.createRelationTypeSide(side, typeId, typeName);
+   private void add(Map<RelationTypeSide, OrderData> data, Long typeId, String typeName, RelationSide side, RelationSorter sorter, List<String> list) {
+      RelationTypeSide typeSide = RelationTypeSide.create(side, typeId, typeName);
       OrderData orderData = new OrderData(sorter, list);
       data.put(typeSide, orderData);
    }
@@ -254,7 +254,7 @@ public class OrderParserTest {
    }
 
    private void verifyData(int index, Long typeId, RelationSide side, RelationSorter sorter, List<String> list) {
-      IRelationTypeSide actualTypeSide = typeSideCaptor.getAllValues().get(index);
+      RelationTypeSide actualTypeSide = typeSideCaptor.getAllValues().get(index);
       OrderData actualData = orderDataCaptor.getAllValues().get(index);
 
       assertEquals(side, actualTypeSide.getSide());

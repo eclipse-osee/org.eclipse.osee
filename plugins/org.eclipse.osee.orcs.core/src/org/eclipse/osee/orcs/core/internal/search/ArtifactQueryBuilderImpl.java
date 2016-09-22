@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -251,13 +251,13 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
    }
 
    @Override
-   public T andNotExists(IRelationTypeSide relationTypeSide) {
+   public T andNotExists(RelationTypeSide relationTypeSide) {
       Criteria criteria = criteriaFactory.createNotExistsCriteria(relationTypeSide);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T andExists(IRelationTypeSide relationTypeSide) {
+   public T andExists(RelationTypeSide relationTypeSide) {
       Criteria criteria = criteriaFactory.createExistsCriteria(relationTypeSide);
       return addAndCheck(getQueryData(), criteria);
    }
@@ -294,23 +294,23 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
    }
 
    @Override
-   public T andRelatedTo(IRelationTypeSide relationTypeSide, ArtifactReadable... artifacts) {
+   public T andRelatedTo(RelationTypeSide relationTypeSide, ArtifactReadable... artifacts) {
       return andRelatedTo(relationTypeSide, Arrays.asList(artifacts));
    }
 
    @Override
-   public T andRelatedTo(IRelationTypeSide relationTypeSide, Collection<? extends ArtifactId> artifacts) {
+   public T andRelatedTo(RelationTypeSide relationTypeSide, Collection<? extends ArtifactId> artifacts) {
       return addAndCheck(getQueryData(), new CriteriaRelatedTo(relationTypeSide, artifacts));
    }
 
    @Override
-   public T andRelatedTo(IRelationTypeSide relationTypeSide, ArtifactId artifactId) {
+   public T andRelatedTo(RelationTypeSide relationTypeSide, ArtifactId artifactId) {
       return addAndCheck(getQueryData(), new CriteriaRelatedTo(relationTypeSide, artifactId));
    }
 
    @SuppressWarnings("unchecked")
    @Override
-   public T followRelation(IRelationTypeSide relationTypeSide) {
+   public T followRelation(RelationTypeSide relationTypeSide) {
       Criteria criteria = criteriaFactory.createFollowRelationType(relationTypeSide);
       addAndCheck(getQueryData(), criteria);
       queryData.newCriteriaSet();

@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -76,15 +76,15 @@ public interface IAtsChangeSet {
 
    ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid, Long uuid);
 
-   void relate(Object object1, IRelationTypeSide relationSide, Object object2);
+   void relate(Object object1, RelationTypeSide relationSide, Object object2);
 
    AtsNotificationCollector getNotifications();
 
-   void unrelateAll(Object object, IRelationTypeSide relationType);
+   void unrelateAll(Object object, RelationTypeSide relationType);
 
-   void setRelation(Object object1, IRelationTypeSide relationType, Object object2);
+   void setRelation(Object object1, RelationTypeSide relationType, Object object2);
 
-   public void setRelations(Object object, IRelationTypeSide relationSide, Collection<? extends Object> objects);
+   public void setRelations(Object object, RelationTypeSide relationSide, Collection<? extends Object> objects);
 
    <T> void setAttribute(IAtsWorkItem workItem, int attributeId, T value);
 
@@ -114,13 +114,13 @@ public interface IAtsChangeSet {
     */
    IAtsUser getAsUser();
 
-   void unrelate(ArtifactId artifact, IRelationTypeSide relationSide, ArtifactId artifact2);
+   void unrelate(ArtifactId artifact, RelationTypeSide relationSide, ArtifactId artifact2);
 
-   void unrelate(IAtsObject atsObject, IRelationTypeSide relationSide, IAtsObject atsObjec2);
+   void unrelate(IAtsObject atsObject, RelationTypeSide relationSide, IAtsObject atsObjec2);
 
-   void unrelate(ArtifactId artifact, IRelationTypeSide relationSide, IAtsObject atsObject);
+   void unrelate(ArtifactId artifact, RelationTypeSide relationSide, IAtsObject atsObject);
 
-   void unrelate(IAtsObject atsObject, IRelationTypeSide relationSide, ArtifactId artifact);
+   void unrelate(IAtsObject atsObject, RelationTypeSide relationSide, ArtifactId artifact);
 
    void addAttribute(ArtifactId artifactId, IAttributeType attrType, Object value);
 

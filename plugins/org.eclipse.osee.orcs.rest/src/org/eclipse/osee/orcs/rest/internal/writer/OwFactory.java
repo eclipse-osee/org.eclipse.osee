@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifact;
@@ -73,7 +73,7 @@ public class OwFactory {
       return owType;
    }
 
-   public static OwRelationType createRelationType(OrcsApi orcsApi, IRelationTypeSide type) {
+   public static OwRelationType createRelationType(OrcsApi orcsApi, RelationTypeSide type) {
       String sideAName = orcsApi.getOrcsTypes().getRelationTypes().getSideAName(type);
       OwRelationType owType = OwFactory.createRelationType(type, sideAName, true);
       return owType;

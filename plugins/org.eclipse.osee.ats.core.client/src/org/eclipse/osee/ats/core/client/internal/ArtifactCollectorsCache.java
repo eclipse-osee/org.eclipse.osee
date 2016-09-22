@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.ats.core.client.artifact.CollectorArtifact;
 import org.eclipse.osee.ats.core.client.util.IArtifactMembersCache;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -41,9 +41,9 @@ public class ArtifactCollectorsCache<T extends CollectorArtifact> implements IAr
    private static DoubleKeyHashMap<Long, Long, String> collectorMemberOrderMap;
    private static Set<Long> registered;
    private static volatile boolean initialized = false;
-   private final IRelationTypeSide memberRelationType;
+   private final RelationTypeSide memberRelationType;
 
-   public ArtifactCollectorsCache(IRelationTypeSide memberRelationType) {
+   public ArtifactCollectorsCache(RelationTypeSide memberRelationType) {
       this.memberRelationType = memberRelationType;
    }
 

@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 
 /**
@@ -24,31 +24,31 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
  */
 public interface IRelationResolver {
 
-   Collection<ArtifactToken> getRelated(ArtifactId artifact, IRelationTypeSide relationType);
+   Collection<ArtifactToken> getRelated(ArtifactId artifact, RelationTypeSide relationType);
 
-   Collection<ArtifactToken> getRelated(ArtifactId artifact, IRelationTypeSide relationType, IArtifactType artifactType);
+   Collection<ArtifactToken> getRelated(ArtifactId artifact, RelationTypeSide relationType, IArtifactType artifactType);
 
-   <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, IRelationTypeSide relationType, Class<T> clazz);
+   <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, RelationTypeSide relationType, Class<T> clazz);
 
-   <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, IRelationTypeSide relationType, DeletionFlag flag, Class<T> clazz);
+   <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, RelationTypeSide relationType, DeletionFlag flag, Class<T> clazz);
 
-   boolean areRelated(ArtifactId artifact1, IRelationTypeSide relationType, ArtifactId artifact2);
+   boolean areRelated(ArtifactId artifact1, RelationTypeSide relationType, ArtifactId artifact2);
 
-   boolean areRelated(IAtsObject atsObject1, IRelationTypeSide relationType, IAtsObject atsObject2);
+   boolean areRelated(IAtsObject atsObject1, RelationTypeSide relationType, IAtsObject atsObject2);
 
-   ArtifactToken getRelatedOrNull(ArtifactId artifact, IRelationTypeSide relationType);
+   ArtifactToken getRelatedOrNull(ArtifactId artifact, RelationTypeSide relationType);
 
-   ArtifactToken getRelatedOrNull(IAtsObject atsObject, IRelationTypeSide relationType);
+   ArtifactToken getRelatedOrNull(IAtsObject atsObject, RelationTypeSide relationType);
 
-   <T> T getRelatedOrNull(IAtsObject atsObject, IRelationTypeSide relationType, Class<T> clazz);
+   <T> T getRelatedOrNull(IAtsObject atsObject, RelationTypeSide relationType, Class<T> clazz);
 
-   int getRelatedCount(IAtsWorkItem workItem, IRelationTypeSide relationType);
+   int getRelatedCount(IAtsWorkItem workItem, RelationTypeSide relationType);
 
-   Collection<ArtifactToken> getRelatedArtifacts(IAtsWorkItem workItem, IRelationTypeSide relationTypeSide);
+   Collection<ArtifactToken> getRelatedArtifacts(IAtsWorkItem workItem, RelationTypeSide relationTypeSide);
 
-   Collection<ArtifactToken> getRelated(IAtsObject atsObject, IRelationTypeSide relationTypeSide);
+   Collection<ArtifactToken> getRelated(IAtsObject atsObject, RelationTypeSide relationTypeSide);
 
-   Collection<ArtifactToken> getRelatedArtifacts(ArtifactId artifact, IRelationTypeSide relationTypeSide);
+   Collection<ArtifactToken> getRelatedArtifacts(ArtifactId artifact, RelationTypeSide relationTypeSide);
 
    Collection<ArtifactToken> getChildren(ArtifactId artifact, IArtifactType artifactType);
 

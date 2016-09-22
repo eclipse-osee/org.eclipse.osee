@@ -27,8 +27,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -119,7 +118,7 @@ public class OrderParser {
                   });
 
                   RelationSide side = RelationSide.fromString(relationSide);
-                  IRelationTypeSide typeSide = TokenFactory.createRelationTypeSide(side, type.getId(), type.getName());
+                  RelationTypeSide typeSide = RelationTypeSide.create(type, side);
                   OrderData orderData = new OrderData(RelationSorter.valueOfGuid(orderType), list);
                   hasOrderData.add(typeSide, orderData);
                }
@@ -137,7 +136,7 @@ public class OrderParser {
       try {
          xmlWriter = outputFactory.get().createXMLStreamWriter(writer);
          xmlWriter.writeStartElement(ROOT_ELEMENT);
-         for (Entry<IRelationTypeSide, OrderData> entry : hasOrderData) {
+         for (Entry<RelationTypeSide, OrderData> entry : hasOrderData) {
             writeEntry(xmlWriter, entry.getKey(), entry.getValue());
          }
          xmlWriter.writeEndElement();
@@ -156,7 +155,7 @@ public class OrderParser {
       return writer.toString();
    }
 
-   private void writeEntry(XMLStreamWriter xmlWriter, IRelationTypeSide typeAndSide, OrderData orderData) throws XMLStreamException {
+   private void writeEntry(XMLStreamWriter xmlWriter, RelationTypeSide typeAndSide, OrderData orderData) throws XMLStreamException {
       xmlWriter.writeStartElement(START_TAG);
       // TODO don't store relation type by name - use type UUID
       xmlWriter.writeAttribute(RELATION_TYPE_TAG, typeAndSide.getName());

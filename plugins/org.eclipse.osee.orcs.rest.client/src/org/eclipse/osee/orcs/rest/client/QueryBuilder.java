@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -132,7 +132,7 @@ public interface QueryBuilder {
     *
     * @param relationTypeSide the type to start following the link from
     */
-   QueryBuilder andExists(IRelationTypeSide relationTypeSide) throws OseeCoreException;
+   QueryBuilder andExists(RelationTypeSide relationTypeSide) throws OseeCoreException;
 
    /**
     * Search criteria that checks for non-existence of a relation type
@@ -146,7 +146,7 @@ public interface QueryBuilder {
     *
     * @param relationTypeSide the type to check for non-existence
     */
-   QueryBuilder andNotExists(IRelationTypeSide relationTypeSide) throws OseeCoreException;
+   QueryBuilder andNotExists(RelationTypeSide relationTypeSide) throws OseeCoreException;
 
    /**
     * Artifact name equals value
@@ -178,14 +178,14 @@ public interface QueryBuilder {
     *
     * @param relationTypeSide the type-side to search on
     */
-   QueryBuilder andRelatedTo(IRelationTypeSide relationTypeSide, ArtifactId... artifacts) throws OseeCoreException;
+   QueryBuilder andRelatedTo(RelationTypeSide relationTypeSide, ArtifactId... artifacts) throws OseeCoreException;
 
    /**
     * Search for related artifacts
     *
     * @param relationTypeSide the type-side to search on
     */
-   QueryBuilder andRelatedTo(IRelationTypeSide relationTypeSide, Collection<ArtifactId> artifactIds) throws OseeCoreException;
+   QueryBuilder andRelatedTo(RelationTypeSide relationTypeSide, Collection<ArtifactId> artifactIds) throws OseeCoreException;
 
    /**
     * Executes query

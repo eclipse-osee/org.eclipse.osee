@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
@@ -47,10 +47,10 @@ public interface PredicateFactory {
 
    Predicate createRelationNotExistsSearch(Collection<? extends IRelationType> relationTypes);
 
-   Predicate createRelationTypeSideNotExistsSearch(IRelationTypeSide relationTypeSide);
+   Predicate createRelationTypeSideNotExistsSearch(RelationTypeSide relationTypeSide);
 
-   Predicate createRelationTypeSideExistsSearch(IRelationTypeSide relationTypeSide);
+   Predicate createRelationTypeSideExistsSearch(RelationTypeSide relationTypeSide);
 
-   Predicate createRelatedToSearch(IRelationTypeSide relationTypeSide, Collection<ArtifactId> ids);
+   Predicate createRelatedToSearch(RelationTypeSide relationTypeSide, Collection<ArtifactId> ids);
 
 }

@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -73,7 +73,7 @@ public interface ArtifactReadable extends ArtifactToken, HasLocalId<Integer>, Ha
    <T> ResultSet<? extends AttributeReadable<T>> getAttributes(IAttributeType attributeType, DeletionFlag deletionFlag) throws OseeCoreException;
 
    ////////////////////
-   int getMaximumRelationAllowed(IRelationTypeSide relationTypeSide) throws OseeCoreException;
+   int getMaximumRelationAllowed(RelationTypeSide relationTypeSide) throws OseeCoreException;
 
    Collection<? extends IRelationType> getValidRelationTypes() throws OseeCoreException;
 
@@ -89,14 +89,14 @@ public interface ArtifactReadable extends ArtifactToken, HasLocalId<Integer>, Ha
 
    ResultSet<ArtifactReadable> getChildren() throws OseeCoreException;
 
-   ResultSet<ArtifactReadable> getRelated(IRelationTypeSide relationTypeSide) throws OseeCoreException;
+   ResultSet<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide) throws OseeCoreException;
 
-   ResultSet<ArtifactReadable> getRelated(IRelationTypeSide relationTypeSide, DeletionFlag deletionFlag) throws OseeCoreException;
+   ResultSet<ArtifactReadable> getRelated(RelationTypeSide relationTypeSide, DeletionFlag deletionFlag) throws OseeCoreException;
 
-   boolean areRelated(IRelationTypeSide typeAndSide, ArtifactReadable readable) throws OseeCoreException;
+   boolean areRelated(RelationTypeSide typeAndSide, ArtifactReadable readable) throws OseeCoreException;
 
-   int getRelatedCount(IRelationTypeSide typeAndSide) throws OseeCoreException;
+   int getRelatedCount(RelationTypeSide typeAndSide) throws OseeCoreException;
 
-   String getRationale(IRelationTypeSide typeAndSide, ArtifactReadable readable) throws OseeCoreException;
+   String getRationale(RelationTypeSide typeAndSide, ArtifactReadable readable) throws OseeCoreException;
 
 }

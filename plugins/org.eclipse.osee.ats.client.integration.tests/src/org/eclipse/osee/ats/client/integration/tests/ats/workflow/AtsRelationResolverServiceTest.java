@@ -51,18 +51,18 @@ public class AtsRelationResolverServiceTest {
    }
 
    @Test
-   public void testGetRelatedArtifactIdIRelationTypeSide() {
+   public void testGetRelatedArtifactIdRelationTypeSide() {
       Assert.assertEquals(6, relationResolver.getRelated(topAi, CoreRelationTypes.Default_Hierarchical__Child).size());
    }
 
    @Test
-   public void testGetRelatedIAtsObjectIRelationTypeSideClassOfT() {
+   public void testGetRelatedIAtsObjectRelationTypeSideClassOfT() {
       Assert.assertEquals(8, relationResolver.getRelatedArtifacts((ArtifactId) sawCodeCommittedWf,
          AtsRelationTypes.TeamWfToTask_Task).size());
    }
 
    @Test
-   public void testAreRelatedArtifactIdIRelationTypeSideArtifactId() {
+   public void testAreRelatedArtifactIdRelationTypeSideArtifactId() {
       Artifact sawCsciAi = (Artifact) services.getArtifact(DemoArtifactToken.SAW_CSCI_AI);
       Assert.assertTrue(relationResolver.areRelated(topAi, CoreRelationTypes.Default_Hierarchical__Child, sawCsciAi));
       Assert.assertTrue(relationResolver.areRelated(sawCsciAi, CoreRelationTypes.Default_Hierarchical__Parent, topAi));
@@ -73,7 +73,7 @@ public class AtsRelationResolverServiceTest {
    }
 
    @Test
-   public void testAreRelatedIAtsObjectIRelationTypeSideIAtsObject() {
+   public void testAreRelatedIAtsObjectRelationTypeSideIAtsObject() {
       Collection<ArtifactToken> related =
          relationResolver.getRelatedArtifacts((IAtsWorkItem) sawCodeCommittedWf, AtsRelationTypes.TeamWfToTask_Task);
       ArtifactId firstTask = related.iterator().next();
@@ -94,7 +94,7 @@ public class AtsRelationResolverServiceTest {
    }
 
    @Test
-   public void testGetRelatedOrNullArtifactIdIRelationTypeSide() {
+   public void testGetRelatedOrNullArtifactIdRelationTypeSide() {
       ArtifactId sawTestAi = services.getArtifact(DemoArtifactToken.SAW_Test_AI);
       ArtifactId relatedOrNull =
          relationResolver.getRelatedOrNull(sawTestAi, CoreRelationTypes.Default_Hierarchical__Parent);
@@ -106,7 +106,7 @@ public class AtsRelationResolverServiceTest {
    }
 
    @Test
-   public void testGetRelatedOrNullIAtsObjectIRelationTypeSideClassOfT() {
+   public void testGetRelatedOrNullIAtsObjectRelationTypeSideClassOfT() {
       Collection<ArtifactToken> related =
          relationResolver.getRelatedArtifacts((IAtsWorkItem) sawCodeCommittedWf, AtsRelationTypes.TeamWfToTask_Task);
       ArtifactId firstTaskArt = related.iterator().next();

@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -204,7 +204,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void relate(Object object1, IRelationTypeSide relationSide, Object object2) {
+   public void relate(Object object1, RelationTypeSide relationSide, Object object2) {
       ArtifactId artifact = getArtifact(object1);
       ArtifactId artifact2 = getArtifact(object2);
       if (relationSide.getSide().isSideA()) {
@@ -227,7 +227,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void unrelateAll(Object object, IRelationTypeSide relationType) {
+   public void unrelateAll(Object object, RelationTypeSide relationType) {
       ArtifactReadable artifact = getArtifact(object);
       add(artifact);
       for (ArtifactReadable otherArt : artifact.getRelated(relationType)) {
@@ -241,7 +241,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void setRelations(Object object, IRelationTypeSide relationSide, Collection<? extends Object> objects) {
+   public void setRelations(Object object, RelationTypeSide relationSide, Collection<? extends Object> objects) {
       ArtifactReadable artifact = getArtifact(object);
       List<ArtifactReadable> artifacts = new LinkedList<>();
       for (Object obj : objects) {
@@ -268,7 +268,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    }
 
-   public void unrelate(Object object1, IRelationTypeSide relationType, Object object2) {
+   public void unrelate(Object object1, RelationTypeSide relationType, Object object2) {
       getTransaction().unrelate(getArtifact(object1), relationType, getArtifact(object2));
       add(object1);
    }
@@ -327,7 +327,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void unrelate(ArtifactId artifact, IRelationTypeSide relationSide, ArtifactId artifact2) {
+   public void unrelate(ArtifactId artifact, RelationTypeSide relationSide, ArtifactId artifact2) {
       ArtifactReadable art = getArtifact(artifact);
       ArtifactReadable art2 = getArtifact(artifact2);
       if (relationSide.getSide().isSideA()) {

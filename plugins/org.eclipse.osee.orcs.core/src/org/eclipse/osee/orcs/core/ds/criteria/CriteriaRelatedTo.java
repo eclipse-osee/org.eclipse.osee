@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.core.ds.criteria;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
@@ -22,23 +22,23 @@ import org.eclipse.osee.orcs.core.ds.Options;
  * @author Roberto E. Escobar
  */
 public class CriteriaRelatedTo extends Criteria {
-   private final IRelationTypeSide relationTypeSide;
+   private final RelationTypeSide relationTypeSide;
    private final Collection<? extends ArtifactId> artifactIds;
    private final ArtifactId artifactId;
 
-   public CriteriaRelatedTo(IRelationTypeSide relationTypeSide, ArtifactId artifactId) {
+   public CriteriaRelatedTo(RelationTypeSide relationTypeSide, ArtifactId artifactId) {
       this.relationTypeSide = relationTypeSide;
       this.artifactId = artifactId;
       this.artifactIds = null;
    }
 
-   public CriteriaRelatedTo(IRelationTypeSide relationTypeSide, Collection<? extends ArtifactId> artifactIds) {
+   public CriteriaRelatedTo(RelationTypeSide relationTypeSide, Collection<? extends ArtifactId> artifactIds) {
       this.relationTypeSide = relationTypeSide;
       this.artifactId = null;
       this.artifactIds = artifactIds;
    }
 
-   public IRelationTypeSide getType() {
+   public RelationTypeSide getType() {
       return relationTypeSide;
    }
 

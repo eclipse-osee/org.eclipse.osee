@@ -27,7 +27,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
@@ -56,9 +56,9 @@ public class OrderManagerTest {
    @Mock private OrderAccessor accessor;
    @Mock private RelationTypes relationTypeCache;
 
-   @Mock private IRelationTypeSide typeSide1;
-   @Mock private IRelationTypeSide typeSide2;
-   @Mock private IRelationTypeSide typeSide3;
+   @Mock private RelationTypeSide typeSide1;
+   @Mock private RelationTypeSide typeSide2;
+   @Mock private RelationTypeSide typeSide3;
 
    @Mock private OrderData orderData1;
    @Mock private OrderData orderData2;
@@ -144,7 +144,7 @@ public class OrderManagerTest {
       assertEquals(3, orderManager.size());
       assertEquals(false, orderManager.isEmpty());
 
-      Collection<IRelationTypeSide> items = orderManager.getExistingTypes();
+      Collection<RelationTypeSide> items = orderManager.getExistingTypes();
       assertTrue(items.contains(typeSide1));
       assertTrue(items.contains(typeSide2));
       assertTrue(items.contains(typeSide3));
@@ -232,9 +232,9 @@ public class OrderManagerTest {
       when(orderData2.getSorterId()).thenReturn(USER_DEFINED);
       when(orderData3.getSorterId()).thenReturn(USER_DEFINED);
 
-      IRelationTypeSide typeSide4 = mock(IRelationTypeSide.class);
-      IRelationTypeSide typeSide5 = mock(IRelationTypeSide.class);
-      IRelationTypeSide typeSide6 = mock(IRelationTypeSide.class);
+      RelationTypeSide typeSide4 = mock(RelationTypeSide.class);
+      RelationTypeSide typeSide5 = mock(RelationTypeSide.class);
+      RelationTypeSide typeSide6 = mock(RelationTypeSide.class);
 
       when(typeSide4.getGuid()).thenReturn(11L);
       when(typeSide5.getGuid()).thenReturn(11L);
@@ -248,10 +248,10 @@ public class OrderManagerTest {
       orderManager.add(typeSide5, orderData2);
       orderManager.add(typeSide6, orderData3);
 
-      Iterator<Entry<IRelationTypeSide, OrderData>> iterator = orderManager.iterator();
-      Entry<IRelationTypeSide, OrderData> actual1 = iterator.next();
-      Entry<IRelationTypeSide, OrderData> actual2 = iterator.next();
-      Entry<IRelationTypeSide, OrderData> actual3 = iterator.next();
+      Iterator<Entry<RelationTypeSide, OrderData>> iterator = orderManager.iterator();
+      Entry<RelationTypeSide, OrderData> actual1 = iterator.next();
+      Entry<RelationTypeSide, OrderData> actual2 = iterator.next();
+      Entry<RelationTypeSide, OrderData> actual3 = iterator.next();
 
       assertEquals(typeSide5, actual1.getKey());
       assertEquals(typeSide4, actual2.getKey());
