@@ -44,7 +44,7 @@ import org.mockito.stubbing.Answer;
 
 /**
  * Test Case for {@link OrderParser}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class OrderParserTest {
@@ -65,14 +65,14 @@ public class OrderParserTest {
    private static final String ONE_ENTRY_PATTERN = String.format("<OrderList>%s</OrderList>", ENTRY_PATTERN);
    private static final String ONE_ENTRY_NO_LIST_PATTERN = String.format("<OrderList>%s</OrderList>", ENTRY_NO_LIST_PATTERN);
    private static final String TWO_ENTRY_PATTERN = String.format("<OrderList>%s%s</OrderList>", ENTRY_PATTERN, ENTRY_PATTERN);
-   
+
    private static final String DATA_1 = String.format(ONE_ENTRY_PATTERN, REL_TYPE_1_NAME, RelationSide.SIDE_B, RelationOrderBaseTypes.USER_DEFINED.getGuid(), Collections.toString(",", ORDER_LIST_1));
    private static final String DATA_2 = String.format(ONE_ENTRY_PATTERN, REL_TYPE_1_NAME, RelationSide.SIDE_B, RelationOrderBaseTypes.USER_DEFINED.getGuid(),  Collections.toString(",", ORDER_LIST_2));
    private static final String DATA_3 = String.format(TWO_ENTRY_PATTERN,
       REL_TYPE_1_NAME, RelationSide.SIDE_B, RelationOrderBaseTypes.USER_DEFINED.getGuid(), Collections.toString(",", ORDER_LIST_2),
       REL_TYPE_2_NAME, RelationSide.SIDE_A, RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid(), Collections.toString(",", ORDER_LIST_3));
    private static final String DATA_4 = String.format(ONE_ENTRY_NO_LIST_PATTERN, REL_TYPE_2_NAME, RelationSide.SIDE_A, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC.getGuid());
-   
+
    private static final String EMPTY_TYPE = "<OrderList><Order side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\"></Order></OrderList>";
    private static final String EMPTY_SIDE = "<OrderList><Order relType=\"X\" orderType=\"AAT0xogoMjMBhARkBZQA\"></Order></OrderList>";
    private static final String EMPTY_ORDER_TYPE = "<OrderList><Order relType=\"X\" side=\"SIDE_B\"></Order></OrderList>";
@@ -85,10 +85,10 @@ public class OrderParserTest {
    // @formatter:off
    @Mock private RelationTypes relationTypeCache;
    @Mock private HasOrderData hasOrderData;
-   
+
    @Captor private ArgumentCaptor<IRelationTypeSide> typeSideCaptor;
    @Captor private ArgumentCaptor<OrderData> orderDataCaptor;
-   
+
    @Mock private IRelationType relationType1;
    @Mock private IRelationType relationType2;
    // @formatter:on
@@ -102,10 +102,10 @@ public class OrderParserTest {
       parser = new OrderParser(relationTypeCache);
 
       when(relationType1.getName()).thenReturn(REL_TYPE_1_NAME);
-      when(relationType1.getGuid()).thenReturn(REL_TYPE_1_ID);
+      when(relationType1.getId()).thenReturn(REL_TYPE_1_ID);
 
       when(relationType2.getName()).thenReturn(REL_TYPE_2_NAME);
-      when(relationType2.getGuid()).thenReturn(REL_TYPE_2_ID);
+      when(relationType2.getId()).thenReturn(REL_TYPE_2_ID);
 
       final Collection<? extends IRelationType> types = Arrays.asList(relationType1, relationType2);
 

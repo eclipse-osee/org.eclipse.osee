@@ -67,7 +67,7 @@ public class ExistenceTypePredicateHandlerTest {
       handler.handle(builder, testPredicate);
       verify(builder).andExists(relationTypeCaptor.capture());
       Assert.assertEquals(1, relationTypeCaptor.getAllValues().size());
-      Assert.assertTrue(12345L == relationTypeCaptor.getValue().getGuid());
+      Assert.assertTrue(12345L == relationTypeCaptor.getValue().getId());
    }
 
    @Test
@@ -82,7 +82,7 @@ public class ExistenceTypePredicateHandlerTest {
 
       verify(builder).andExists(relationTypeCaptor.capture());
       Assert.assertEquals(1, relationTypeCaptor.getAllValues().size());
-      Assert.assertTrue(12345L == relationTypeCaptor.getValue().getGuid());
+      Assert.assertTrue(12345L == relationTypeCaptor.getValue().getId());
    }
 
    @Test
@@ -100,10 +100,10 @@ public class ExistenceTypePredicateHandlerTest {
 
       Assert.assertEquals(2, relationTypeCaptor.getAllValues().size());
       IRelationType type = relationTypeCaptor.getAllValues().get(0);
-      Assert.assertTrue(12345L == type.getGuid());
+      Assert.assertTrue(12345L == type.getId());
 
       type = relationTypeCaptor.getAllValues().get(1);
-      Assert.assertTrue(34567L == type.getGuid());
+      Assert.assertTrue(34567L == type.getId());
    }
 
    @Test

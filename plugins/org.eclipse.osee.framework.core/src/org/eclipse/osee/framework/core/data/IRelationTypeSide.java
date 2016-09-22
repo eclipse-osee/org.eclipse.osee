@@ -18,4 +18,9 @@ public interface IRelationTypeSide extends IRelationType {
    IRelationTypeSide getOpposite();
 
    boolean isOfType(IRelationType type);
+
+   default Long getGuid() {
+      return getId();
+   }
+
 }

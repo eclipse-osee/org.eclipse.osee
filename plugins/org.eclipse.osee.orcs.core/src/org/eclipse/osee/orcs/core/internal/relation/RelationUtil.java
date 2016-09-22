@@ -38,13 +38,13 @@ public final class RelationUtil {
    }
 
    public static IRelationTypeSide asTypeSide(IRelationType type, RelationSide side) {
-      return TokenFactory.createRelationTypeSide(side, type.getGuid(), type.getName());
+      return TokenFactory.createRelationTypeSide(side, type.getId(), type.getName());
    }
 
    /**
     * Orders artifacts into a and b relation nodes using relation side parameter as a specification of where art2 is in
     * the set.
-    * 
+    *
     * @param art1 The First artifact
     * @param art2 The Second artifact
     * @param side What side is artifact 2 on

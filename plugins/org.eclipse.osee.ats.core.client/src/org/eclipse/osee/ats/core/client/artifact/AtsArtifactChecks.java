@@ -54,7 +54,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
    public IStatus isDeleteableRelation(Artifact artifact, IRelationType relationType) throws OseeCoreException {
       if (deletionChecksEnabled) {
          boolean isAtsAdmin = AtsUtilClient.isAtsAdmin();
-         if (!isAtsAdmin && Admin_Only_Relation_Type_Ids.contains(relationType.getGuid())) {
+         if (!isAtsAdmin && Admin_Only_Relation_Type_Ids.contains(relationType.getId())) {
             return createStatus(
                String.format("Deletion of relation type [%s] off artifact [%s] is only permitted by ATS Admin",
                   relationType, artifact));
@@ -176,8 +176,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
    private Set<String> getActionableItemGuidsWithRecurse(HashSet<String> aiaGuids, Collection<Artifact> artifacts) {
       for (Artifact art : artifacts) {
          if (art.isOfType(AtsArtifactTypes.ActionableItem)) {
-            IAtsActionableItem aia =
-               AtsClientService.get().getCache().getAtsObject(art.getId());
+            IAtsActionableItem aia = AtsClientService.get().getCache().getAtsObject(art.getId());
             if (aia != null) {
                aiaGuids.add(AtsUtilCore.getGuid(aia));
                Collection<Artifact> childArts = art.getChildren();

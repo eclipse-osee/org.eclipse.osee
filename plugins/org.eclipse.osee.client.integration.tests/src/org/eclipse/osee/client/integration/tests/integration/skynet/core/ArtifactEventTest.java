@@ -369,7 +369,7 @@ public class ArtifactEventTest {
 
       remGuidRel.setBranchGuid(COMMON);
       remGuidRel.setGammaId(incrementingGammaId++);
-      remGuidRel.setRelTypeGuid(relType.getGuid());
+      remGuidRel.setRelTypeGuid(relType.getId());
       remGuidRel.setRelationId(relationId);
       remGuidRel.setArtAId(artA.getArtId());
       remGuidRel.setArtBId(artB.getArtId());

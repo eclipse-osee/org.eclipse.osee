@@ -162,7 +162,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
             guidArts.add(record.getParentArt());
          } else {
             for (IRelationType type : relationTypes) {
-               if (record.getRelTypeGuid().equals(type.getGuid())) {
+               if (type.equals(record.getRelTypeGuid())) {
                   guidArts.add(record.getParentArt());
                }
             }

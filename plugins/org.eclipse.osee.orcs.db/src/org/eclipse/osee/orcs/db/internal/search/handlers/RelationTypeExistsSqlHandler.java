@@ -39,7 +39,7 @@ public class RelationTypeExistsSqlHandler extends AbstractRelationSqlHandler<Cri
       IRelationType type = criteria.getType();
       writer.write(relAlias);
       writer.write(".rel_link_type_id = ?");
-      writer.addParameter(type.getGuid());
+      writer.addParameter(type.getId());
 
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       if (!aliases.isEmpty()) {

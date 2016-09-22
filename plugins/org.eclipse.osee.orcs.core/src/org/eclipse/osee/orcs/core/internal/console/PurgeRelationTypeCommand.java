@@ -85,7 +85,7 @@ public class PurgeRelationTypeCommand implements ConsoleCommand {
                try {
                   Long typeId = HexUtil.toLong(uuid);
                   IRelationType type = relationTypes.getByUuid(typeId);
-                  console.writeln("Type [%s] found. Guid: [0x%X]", type.getName(), type.getGuid());
+                  console.writeln("Type [%s] found. Id: [%s]", type.getName(), type.getId());
                   toReturn.add(type);
                } catch (OseeArgumentException ex) {
                   console.writeln("Type [0x%X] NOT found.", uuid);

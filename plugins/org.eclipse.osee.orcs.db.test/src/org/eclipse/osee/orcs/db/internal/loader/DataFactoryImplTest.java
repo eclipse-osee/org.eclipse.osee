@@ -251,7 +251,7 @@ public class DataFactoryImplTest {
       HasLocalId<Integer> localId1 = mock(HasLocalId.class);
       HasLocalId<Integer> localId2 = mock(HasLocalId.class);
 
-      when(relationType.getGuid()).thenReturn(2389L);
+      when(relationType.getId()).thenReturn(2389L);
       when(localId1.getLocalId()).thenReturn(4562);
       when(localId2.getLocalId()).thenReturn(9513);
 

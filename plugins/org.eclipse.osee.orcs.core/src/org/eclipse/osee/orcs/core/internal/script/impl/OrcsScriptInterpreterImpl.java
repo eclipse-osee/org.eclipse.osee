@@ -694,7 +694,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
          if (clazz.isAssignableFrom(String.class)) {
             String name = resolver.resolveSingle(String.class, expression);
             IRelationType type = getRelationType(name);
-            toReturn = TokenFactory.createRelationTypeSide(asSide(side), type.getGuid(), type.getName());
+            toReturn = TokenFactory.createRelationTypeSide(asSide(side), type.getId(), type.getName());
          } else {
             long typeId = resolver.resolveSingle(Long.class, expression);
             toReturn = TokenFactory.createRelationTypeSide(asSide(side), typeId, "N/A");

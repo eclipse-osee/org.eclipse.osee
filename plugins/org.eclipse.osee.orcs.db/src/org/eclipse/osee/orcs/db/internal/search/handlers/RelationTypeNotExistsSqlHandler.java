@@ -33,7 +33,7 @@ public class RelationTypeNotExistsSqlHandler extends AbstractRelationSqlHandler<
       writer.write(" rel, ");
       writer.write(TableEnum.TXS_TABLE.getName());
       writer.write(" txs WHERE rel.rel_link_type_id = ?");
-      writer.addParameter(type.getGuid());
+      writer.addParameter(type.getId());
 
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       writer.writeAndLn();

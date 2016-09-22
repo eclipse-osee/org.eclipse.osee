@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
@@ -245,8 +244,8 @@ public class RelationManagerImpl implements RelationManager {
       boolean updated = false;
       if (relation == null) {
          relation = relationFactory.createRelation(aNode, type, bNode, rationale);
-         graph.<RelationNodeAdjacencies> getAdjacencies(aNode).add(type.getGuid(), relation);
-         graph.<RelationNodeAdjacencies> getAdjacencies(bNode).add(type.getGuid(), relation);
+         graph.<RelationNodeAdjacencies> getAdjacencies(aNode).add(type.getId(), relation);
+         graph.<RelationNodeAdjacencies> getAdjacencies(bNode).add(type.getId(), relation);
          updated = true;
       }
       if (relation.isDeleted()) {
@@ -392,11 +391,11 @@ public class RelationManagerImpl implements RelationManager {
 
       Relation relation = aAdjacencies.getRelation(aNode, type, bNode, inludeDeleted);
       if (relation != null) {
-         bAdjacencies.add(type.getGuid(), relation);
+         bAdjacencies.add(type.getId(), relation);
       } else {
          relation = bAdjacencies.getRelation(aNode, type, bNode, inludeDeleted);
          if (relation != null) {
-            aAdjacencies.add(type.getGuid(), relation);
+            aAdjacencies.add(type.getId(), relation);
          }
       }
       return ResultSets.singleton(relation);

@@ -35,7 +35,7 @@ public class NotInRelationSearch implements ISearchPrimitive {
 
    @Override
    public String getStorageString() {
-      return sideA + TOKEN + relationType.getGuid().toString();
+      return sideA + TOKEN + relationType.getId();
    }
 
    public static NotInRelationSearch getPrimitive(String storageString) {
@@ -54,7 +54,7 @@ public class NotInRelationSearch implements ISearchPrimitive {
          builder.andNotExists(relationType);
       } else {
          RelationSide side = sideA.booleanValue() ? RelationSide.SIDE_A : RelationSide.SIDE_B;
-         IRelationTypeSide rts = TokenFactory.createRelationTypeSide(side, relationType.getGuid(), "SearchRelTypeSide");
+         IRelationTypeSide rts = TokenFactory.createRelationTypeSide(side, relationType.getId(), "SearchRelTypeSide");
          builder.andNotExists(rts);
       }
    }

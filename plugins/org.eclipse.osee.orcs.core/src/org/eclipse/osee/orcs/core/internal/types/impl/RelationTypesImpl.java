@@ -149,6 +149,6 @@ public class RelationTypesImpl implements RelationTypes {
 
    @Override
    public boolean exists(IRelationType item) throws OseeCoreException {
-      return provider.getRelationTypeIndex().existsByUuid(item.getGuid());
+      return provider.getRelationTypeIndex().existsByUuid(item.getId());
    }
 }

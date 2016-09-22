@@ -120,8 +120,7 @@ public class OrderParser {
                   });
 
                   RelationSide side = RelationSide.fromString(relationSide);
-                  IRelationTypeSide typeSide =
-                     TokenFactory.createRelationTypeSide(side, type.getGuid(), type.getName());
+                  IRelationTypeSide typeSide = TokenFactory.createRelationTypeSide(side, type.getId(), type.getName());
                   IRelationSorterId sorterId = RelationOrderBaseTypes.getFromGuid(orderType);
                   OrderData orderData = new OrderData(sorterId, list);
                   hasOrderData.add(typeSide, orderData);

@@ -32,7 +32,7 @@ import org.eclipse.osee.orcs.core.internal.util.OrcsPredicates;
 /**
  * @author Roberto E. Escobar
  */
-public class RelationNodeAdjacencies extends AbstractTypeCollection<IRelationType, Relation, Long, Relation>implements GraphAdjacencies {
+public class RelationNodeAdjacencies extends AbstractTypeCollection<IRelationType, Relation, Long, Relation> implements GraphAdjacencies {
 
    @Override
    protected ResultSet<Relation> createResultSet(List<Relation> values) {
@@ -58,7 +58,7 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<IRelationTyp
    @SuppressWarnings({"unchecked", "rawtypes"})
    public List<Relation> getList(IRelationType type, DeletionFlag includeDeleted) throws OseeCoreException {
       Predicate deletionFlagEquals = deletionFlagEquals(includeDeleted);
-      return getListByFilter(type.getGuid(), deletionFlagEquals);
+      return getListByFilter(type.getId(), deletionFlagEquals);
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
@@ -66,13 +66,13 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<IRelationTyp
       Predicate deletionFlagEquals = deletionFlagEquals(includeDeleted);
       Predicate relIdOnSide = nodeIdOnSideEquals(localId, side);
       Predicate matcher = and(deletionFlagEquals, relIdOnSide);
-      return getListByFilter(type.getGuid(), matcher);
+      return getListByFilter(type.getId(), matcher);
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
    public ResultSet<Relation> getResultSet(IRelationType type, DeletionFlag includeDeleted) throws OseeCoreException {
       Predicate deletionFlagEquals = deletionFlagEquals(includeDeleted);
-      return getSetByFilter(type.getGuid(), deletionFlagEquals);
+      return getSetByFilter(type.getId(), deletionFlagEquals);
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
@@ -80,7 +80,7 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<IRelationTyp
       Predicate deletionFlagEquals = deletionFlagEquals(includeDeleted);
       Predicate relIdOnSide = nodeIdOnSideEquals(localId, side);
       Predicate matcher = and(deletionFlagEquals, relIdOnSide);
-      return getSetByFilter(type.getGuid(), matcher);
+      return getSetByFilter(type.getId(), matcher);
    }
 
    @SuppressWarnings({"rawtypes", "unchecked"})
@@ -88,7 +88,7 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<IRelationTyp
       Predicate<Relation> nodeMatcher = OrcsPredicates.nodeIdsEquals(aNode, bNode);
       Predicate deletionFlagEquals = deletionFlagEquals(excludeDeleted);
       Predicate matcher = and(deletionFlagEquals, nodeMatcher);
-      List<Relation> listByFilter = getListByFilter(type.getGuid(), matcher);
+      List<Relation> listByFilter = getListByFilter(type.getId(), matcher);
       return listByFilter.isEmpty() ? null : listByFilter.get(0);
    }
 

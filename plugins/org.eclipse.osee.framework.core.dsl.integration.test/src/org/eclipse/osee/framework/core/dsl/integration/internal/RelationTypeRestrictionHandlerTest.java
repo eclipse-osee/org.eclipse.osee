@@ -63,7 +63,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    @Test
    public void testProcessDataRelationTypeNoMatch() throws OseeCoreException {
       IRelationType relationType = CoreRelationTypes.Default_Hierarchical__Child;
-      XRelationType relationTypeRef = MockModel.createXRelationType(relationType.getGuid(), relationType.getName());
+      XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
@@ -78,7 +78,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    @Test
    public void testProcessDataRelationTypeMatchSideANoMatch() throws OseeCoreException {
       IRelationType relationType = CoreRelationTypes.Default_Hierarchical__Child;
-      XRelationType relationTypeRef = MockModel.createXRelationType(relationType.getGuid(), relationType.getName());
+      XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
@@ -102,7 +102,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    @Test
    public void testProcessDataRelationTypeMatchSideAMatch() throws OseeCoreException {
       IRelationType relationType = CoreRelationTypes.Default_Hierarchical__Child;
-      XRelationType relationTypeRef = MockModel.createXRelationType(relationType.getGuid(), relationType.getName());
+      XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
@@ -130,7 +130,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    @Test
    public void testProcessDataRelationTypeMatchSideBNoMatch() throws OseeCoreException {
       IRelationType relationType = CoreRelationTypes.Default_Hierarchical__Child;
-      XRelationType relationTypeRef = MockModel.createXRelationType(relationType.getGuid(), relationType.getName());
+      XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
@@ -155,7 +155,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    @Test
    public void testProcessDataRelationTypeMatchSideBMatch() throws OseeCoreException {
       IRelationType relationType = CoreRelationTypes.Default_Hierarchical__Child;
-      XRelationType relationTypeRef = MockModel.createXRelationType(relationType.getGuid(), relationType.getName());
+      XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
@@ -183,7 +183,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    @Test
    public void testProcessDataRelationTypeMatchBothMatch() throws OseeCoreException {
       IRelationType relationType = CoreRelationTypes.Default_Hierarchical__Child;
-      XRelationType relationTypeRef = MockModel.createXRelationType(relationType.getGuid(), relationType.getName());
+      XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
@@ -314,7 +314,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
    private void testProcessRelationWithArtifactHelper(String artifactName, String matcherArtifactName, Scope expectedScope) throws OseeCoreException {
       IRelationType relationType = CoreRelationTypes.Default_Hierarchical__Child;
-      XRelationType relationTypeRef = MockModel.createXRelationType(relationType.getGuid(), relationType.getName());
+      XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
@@ -358,7 +358,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    private static RelationType getTestRelationType(IRelationType relationType, IArtifactType aArtTypeToken, IArtifactType bArtTypeToken) {
-      return new RelationType(relationType.getGuid(), relationType.getName(), "sideA_" + aArtTypeToken.getName(),
+      return new RelationType(relationType.getId(), relationType.getName(), "sideA_" + aArtTypeToken.getName(),
          "sideB_" + bArtTypeToken.getName(), aArtTypeToken, bArtTypeToken, RelationTypeMultiplicity.MANY_TO_MANY,
          RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid());
    }

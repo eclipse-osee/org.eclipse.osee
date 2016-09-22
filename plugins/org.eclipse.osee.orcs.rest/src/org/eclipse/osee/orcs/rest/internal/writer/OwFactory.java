@@ -64,9 +64,9 @@ public class OwFactory {
 
    public static OwRelationType createRelationType(IRelationType relType, String sideName, boolean sideA) {
       String sideData =
-         String.format("[%s]-[%s]-[Side %s]-[%d]", relType.getName(), sideName, sideA ? "A" : "B", relType.getGuid());
+         String.format("[%s]-[%s]-[Side %s]-[%s]", relType.getName(), sideName, sideA ? "A" : "B", relType.getId());
       OwRelationType owType = new OwRelationType();
-      owType.setUuid(relType.getGuid());
+      owType.setUuid(relType.getId());
       owType.setName(relType.getName());
       owType.setData(sideData);
       owType.setSideA(sideA);

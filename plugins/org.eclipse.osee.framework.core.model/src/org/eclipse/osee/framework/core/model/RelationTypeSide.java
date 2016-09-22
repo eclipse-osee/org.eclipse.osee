@@ -26,7 +26,7 @@ public class RelationTypeSide extends NamedId implements IRelationTypeSide {
    private RelationTypeSide opposite;
 
    public RelationTypeSide(IRelationType type, RelationSide side) {
-      super(type.getGuid(), type.getName());
+      super(type.getId(), type.getName());
       this.type = type;
       this.side = side;
    }
@@ -45,7 +45,7 @@ public class RelationTypeSide extends NamedId implements IRelationTypeSide {
 
    @Override
    public boolean isOfType(IRelationType type) {
-      return type.getGuid() == this.type.getGuid();
+      return this.type.equals(type);
    }
 
    @Override

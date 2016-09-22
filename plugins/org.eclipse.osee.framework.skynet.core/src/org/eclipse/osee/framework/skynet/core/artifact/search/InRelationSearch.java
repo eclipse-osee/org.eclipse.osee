@@ -35,7 +35,7 @@ public class InRelationSearch implements ISearchPrimitive {
 
    @Override
    public String getStorageString() {
-      return sideA + TOKEN + relationType.getGuid().toString();
+      return sideA + TOKEN + relationType.getId();
    }
 
    public static InRelationSearch getPrimitive(String storageString) {
@@ -54,7 +54,7 @@ public class InRelationSearch implements ISearchPrimitive {
          builder.andExists(relationType);
       } else {
          RelationSide side = sideA.booleanValue() ? RelationSide.SIDE_A : RelationSide.SIDE_B;
-         IRelationTypeSide rts = TokenFactory.createRelationTypeSide(side, relationType.getGuid(), "SearchRelTypeSide");
+         IRelationTypeSide rts = TokenFactory.createRelationTypeSide(side, relationType.getId(), "SearchRelTypeSide");
          builder.andExists(rts);
       }
    }

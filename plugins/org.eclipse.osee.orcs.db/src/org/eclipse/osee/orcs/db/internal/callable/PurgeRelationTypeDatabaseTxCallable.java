@@ -30,7 +30,7 @@ import org.eclipse.osee.orcs.OrcsSession;
  * <li>osee_relation_link</li>
  * </p>
  * <br/>
- * 
+ *
  * @author Karol M. Wilk
  */
 public final class PurgeRelationTypeDatabaseTxCallable extends AbstractDatastoreTxCallable<Void> {
@@ -62,7 +62,7 @@ public final class PurgeRelationTypeDatabaseTxCallable extends AbstractDatastore
       JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {
          for (IRelationType type : types) {
-            chStmt.runPreparedQuery(RETRIEVE_GAMMAS_OF_REL_LINK_TXS, type.getGuid());
+            chStmt.runPreparedQuery(RETRIEVE_GAMMAS_OF_REL_LINK_TXS, type);
             while (chStmt.next()) {
                gammas.add(new Integer[] {chStmt.getInt("gamma_id")});
             }

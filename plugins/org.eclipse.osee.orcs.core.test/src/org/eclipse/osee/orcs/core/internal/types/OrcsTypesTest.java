@@ -755,8 +755,8 @@ public class OrcsTypesTest {
    public void testGetRelationTypesByUuid() throws OseeCoreException {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
-      assertEquals(REQUIREMENT_REL, relTypes.getByUuid(REQUIREMENT_REL.getGuid()));
-      assertEquals(ANOTHER_REL, relTypes.getByUuid(ANOTHER_REL.getGuid()));
+      assertEquals(REQUIREMENT_REL, relTypes.getByUuid(REQUIREMENT_REL.getId()));
+      assertEquals(ANOTHER_REL, relTypes.getByUuid(ANOTHER_REL.getId()));
    }
 
    @Test
@@ -922,7 +922,7 @@ public class OrcsTypesTest {
       IRelationType relation = relTypes.getByUuid(0x2000000000000159L);
 
       assertEquals("Dynamic Relation", relation.getName());
-      assertEquals(Long.valueOf(0x2000000000000159L), relation.getGuid());
+      assertEquals(Long.valueOf(0x2000000000000159L), relation.getId());
 
       assertEquals(ARTIFACT, relTypes.getArtifactType(relation, SIDE_A));
       assertEquals(OTHER_ARTIFACT, relTypes.getArtifactType(relation, SIDE_B));

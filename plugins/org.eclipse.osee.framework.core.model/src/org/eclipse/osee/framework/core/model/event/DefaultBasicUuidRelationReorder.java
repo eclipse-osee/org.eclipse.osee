@@ -104,7 +104,7 @@ public class DefaultBasicUuidRelationReorder implements IBasicRelationReorder {
 
    public boolean is(IRelationType... relationTypes) {
       for (IRelationType relType : relationTypes) {
-         if (relType.getGuid().equals(getRelTypeGuid())) {
+         if (relType.equals(getRelTypeGuid())) {
             return true;
          }
       }

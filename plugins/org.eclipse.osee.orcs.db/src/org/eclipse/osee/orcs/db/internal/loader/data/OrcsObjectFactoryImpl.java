@@ -139,7 +139,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
 
    @Override
    public RelationData createRelationData(VersionData version, Integer localId, IRelationType type, ModificationType modType, int aArtId, int bArtId, String rationale, ApplicabilityId applicId) {
-      long typeId = type.getGuid();
+      long typeId = type.getId();
       return createRelationData(version, localId, typeId, modType, typeId, modType, aArtId, bArtId, rationale,
          applicId);
    }

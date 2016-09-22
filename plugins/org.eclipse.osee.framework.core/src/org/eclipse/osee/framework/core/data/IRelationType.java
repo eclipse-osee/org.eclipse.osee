@@ -21,9 +21,6 @@ import org.eclipse.osee.framework.jdk.core.type.NamedId;
  */
 @JsonSerialize(using = IdSerializer.class)
 public interface IRelationType extends Named, Id {
-   default Long getGuid() {
-      return getId();
-   }
 
    public static IRelationType valueOf(long id, String name) {
       final class RelationTypeImpl extends NamedId implements IRelationType {

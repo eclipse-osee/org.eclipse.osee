@@ -145,7 +145,7 @@ public class DefaultBasicUuidRelation implements IBasicGuidRelation {
 
    public boolean is(IRelationType... relationTypes) {
       for (IRelationType relType : relationTypes) {
-         if (relType.getGuid().equals(getRelTypeGuid())) {
+         if (relType.equals(getRelTypeGuid())) {
             return true;
          }
       }

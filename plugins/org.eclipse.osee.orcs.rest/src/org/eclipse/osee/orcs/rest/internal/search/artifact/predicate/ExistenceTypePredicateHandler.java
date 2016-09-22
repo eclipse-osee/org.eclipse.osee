@@ -66,7 +66,7 @@ public class ExistenceTypePredicateHandler implements PredicateHandler {
          } else if ("relTypeSide".equals(existsType)) {
             RelationSide side = typeParameters.get(1).equals("A") ? RelationSide.SIDE_A : RelationSide.SIDE_B;
             for (IRelationType rt : PredicateHandlerUtil.getIRelationTypes(values)) {
-               IRelationTypeSide rts = TokenFactory.createRelationTypeSide(side, rt.getGuid(), "SearchRelTypeSide");
+               IRelationTypeSide rts = TokenFactory.createRelationTypeSide(side, rt.getId(), "SearchRelTypeSide");
                if (checkExists(predicate.getType())) {
                   builder.andExists(rts);
                } else {

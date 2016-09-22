@@ -54,13 +54,13 @@ public class RelationCriteria implements ArtifactSearchCriteria {
    public void addToQueryBuilder(QueryBuilder builder) throws OseeCoreException {
       if (artifactId.isValid()) {
          IRelationTypeSide rts =
-            TokenFactory.createRelationTypeSide(relationSide, relationType.getGuid(), Strings.EMPTY_STRING);
+            TokenFactory.createRelationTypeSide(relationSide, relationType.getId(), Strings.EMPTY_STRING);
          builder.andRelatedTo(rts, artifactId);
       } else if (relationSide == null) {
          builder.andExists(relationType);
       } else {
          IRelationTypeSide rts =
-            TokenFactory.createRelationTypeSide(relationSide, relationType.getGuid(), "SearchRelationTypeSide");
+            TokenFactory.createRelationTypeSide(relationSide, relationType.getId(), "SearchRelationTypeSide");
          builder.andExists(rts);
       }
    }
