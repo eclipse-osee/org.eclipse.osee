@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.OseeDslResource;
 import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
@@ -45,7 +46,6 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.util.OseeDslSwitch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
@@ -64,7 +64,6 @@ import org.eclipse.osee.framework.core.model.type.OseeEnumTypeFactory;
 import org.eclipse.osee.framework.core.model.type.RelationTypeFactory;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.HexUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -166,8 +165,7 @@ public class DslToTypeLoader implements TypesLoader {
    }
 
    private Map<BranchId, Collection<AttributeType>> getOseeAttributes(TypeBuffer buffer, BranchCache branchCache, XArtifactType xArtifactType) throws OseeCoreException {
-      Map<BranchId, Collection<AttributeType>> validAttributes =
-         new HashMap<BranchId, Collection<AttributeType>>();
+      Map<BranchId, Collection<AttributeType>> validAttributes = new HashMap<BranchId, Collection<AttributeType>>();
       for (XAttributeTypeRef xAttributeTypeRef : xArtifactType.getValidAttributeTypes()) {
          XAttributeType xAttributeType = xAttributeTypeRef.getValidAttributeType();
          BranchId branch = getAttributeBranch(branchCache, xAttributeTypeRef);
@@ -375,13 +373,7 @@ public class DslToTypeLoader implements TypesLoader {
          sideAType, //
          sideBType, //
          multiplicity, //
-         orderTypeNameToGuid(xRelationType.getDefaultOrderType()) //
-      );
-   }
-
-   private String orderTypeNameToGuid(String orderTypeName) throws OseeCoreException {
-      Conditions.checkNotNull(orderTypeName, "orderTypeName");
-      return RelationOrderBaseTypes.getFromOrderTypeName(orderTypeName.replaceAll("_", " ")).getGuid();
+         RelationSorter.valueOfName(xRelationType.getDefaultOrderType()));
    }
 
    private static final class TypeBuffer {

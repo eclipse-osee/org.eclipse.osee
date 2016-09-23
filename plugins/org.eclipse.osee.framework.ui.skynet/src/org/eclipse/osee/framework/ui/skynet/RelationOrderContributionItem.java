@@ -91,13 +91,11 @@ public class RelationOrderContributionItem extends ContributionItem {
          public void widgetArmed(ArmEvent e) {
             RelationSorter sorterId = getSelectedSorterId();
             if (sorterId != null) {
-               String orderGuid = sorterId.getGuid();
                for (MenuItem item : subMenu.getItems()) {
                   Object data = item.getData();
-                  if (data instanceof String) {
-                     String itemGuid = (String) data;
-                     boolean matches = orderGuid.equals(itemGuid);
-                     item.setSelection(matches);
+                  if (data instanceof RelationSorter) {
+                     RelationSorter itemSorterId = (RelationSorter) data;
+                     item.setSelection(sorterId.equals(itemSorterId));
                   }
                }
             }
@@ -163,8 +161,8 @@ public class RelationOrderContributionItem extends ContributionItem {
 
    private void createMenuItem(final Menu menu, final RelationSorter id) {
       final MenuItem menuItem = new MenuItem(menu, SWT.CHECK);
-      menuItem.setText(id.getName());
-      menuItem.setData(id.getGuid());
+      menuItem.setText(id.toString());
+      menuItem.setData(id);
       menuItem.setSelection(false);
       menuItem.addSelectionListener(new SelectionAdapter() {
 
@@ -174,7 +172,7 @@ public class RelationOrderContributionItem extends ContributionItem {
             if (sorter != null) {
                try {
                   RelationSorter sorterId = sorter.getSorterId();
-                  if (!id.getGuid().equals(sorterId.getGuid())) {
+                  if (!id.equals(sorterId)) {
                      Artifact artifact = sorter.getArtifact();
                      artifact.setRelationOrder(sorter, id);
                      notifyListeners(sorter, sorterId, id);

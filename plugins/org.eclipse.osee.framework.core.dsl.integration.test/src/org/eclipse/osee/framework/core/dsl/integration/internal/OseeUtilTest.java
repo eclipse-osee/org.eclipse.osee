@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.integration.internal;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -28,7 +25,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -121,64 +117,6 @@ public class OseeUtilTest {
       type.setUuid("0x1111111111111111");
       actual = OseeUtil.toToken(type);
       Assert.assertFalse(expected.equals(actual));
-   }
-
-   @Test(expected = OseeArgumentException.class)
-   public void testGetRelationOrderTypeNullCheck() throws OseeCoreException {
-      OseeUtil.getRelationOrderType(null);
-   }
-
-   @Test(expected = OseeArgumentException.class)
-   public void testGetRelationOrderTypeEmptyCheck() throws OseeCoreException {
-      OseeUtil.getRelationOrderType("");
-   }
-
-   @Test(expected = OseeArgumentException.class)
-   public void testGetRelationOrderTypeNotFoundCheck() throws OseeCoreException {
-      OseeUtil.getRelationOrderType("a");
-   }
-
-   @Test
-   public void testGetRelationOrderType() throws OseeCoreException {
-      Map<String, String> testData = new HashMap<>();
-      testData.put(RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid(), "Lexicographical_Ascending");
-      testData.put(RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC.getGuid(), "Lexicographical_Descending");
-      testData.put(RelationOrderBaseTypes.UNORDERED.getGuid(), "Unordered");
-      testData.put(RelationOrderBaseTypes.USER_DEFINED.getGuid(), "User_Defined");
-      for (Entry<String, String> entry : testData.entrySet()) {
-         String actualName = OseeUtil.getRelationOrderType(entry.getKey());
-         String expectedName = entry.getValue();
-         Assert.assertEquals(expectedName, actualName);
-      }
-   }
-
-   @Test(expected = OseeArgumentException.class)
-   public void testOrderTypeNameToGuidNullCheck() throws OseeCoreException {
-      OseeUtil.orderTypeNameToGuid(null);
-   }
-
-   @Test(expected = OseeArgumentException.class)
-   public void testOrderTypeNameToGuidEmptyCheck() throws OseeCoreException {
-      OseeUtil.orderTypeNameToGuid("");
-   }
-
-   @Test(expected = OseeArgumentException.class)
-   public void testOrderTypeNameToGuidNotFoundCheck() throws OseeCoreException {
-      OseeUtil.orderTypeNameToGuid("a");
-   }
-
-   @Test
-   public void testOrderTypeNameToGuid() throws OseeCoreException {
-      Map<String, String> testData = new HashMap<>();
-      testData.put("Lexicographical_Ascending", RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid());
-      testData.put("Lexicographical_Descending", RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC.getGuid());
-      testData.put("Unordered", RelationOrderBaseTypes.UNORDERED.getGuid());
-      testData.put("User_Defined", RelationOrderBaseTypes.USER_DEFINED.getGuid());
-      for (Entry<String, String> entry : testData.entrySet()) {
-         String actualGuid = OseeUtil.orderTypeNameToGuid(entry.getKey());
-         String expectedGuid = entry.getValue();
-         Assert.assertEquals(expectedGuid, actualGuid);
-      }
    }
 
    private static void setupToToken(OseeType typeToCheck, Id expected) throws OseeCoreException {

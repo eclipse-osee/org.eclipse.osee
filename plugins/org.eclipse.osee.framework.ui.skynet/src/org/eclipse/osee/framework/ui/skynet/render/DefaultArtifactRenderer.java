@@ -177,8 +177,8 @@ public class DefaultArtifactRenderer implements IRenderer {
    private String renderRelationOrder(Artifact artifact) throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
       ArtifactGuidToWordML guidResolver = new ArtifactGuidToWordML(new OseeLinkBuilder());
-      RelationOrderRenderer renderer = new RelationOrderRenderer(
-         ServiceUtil.getOseeCacheService().getRelationTypeCache(), guidResolver, RelationManager.getSorterProvider());
+      RelationOrderRenderer renderer =
+         new RelationOrderRenderer(ServiceUtil.getOseeCacheService().getRelationTypeCache(), guidResolver);
 
       WordMLProducer producer = new WordMLProducer(builder);
       RelationOrderData relationOrderData = RelationManager.createRelationOrderData(artifact);

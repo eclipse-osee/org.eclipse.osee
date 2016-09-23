@@ -360,6 +360,6 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    private static RelationType getTestRelationType(IRelationType relationType, IArtifactType aArtTypeToken, IArtifactType bArtTypeToken) {
       return new RelationType(relationType.getId(), relationType.getName(), "sideA_" + aArtTypeToken.getName(),
          "sideB_" + bArtTypeToken.getName(), aArtTypeToken, bArtTypeToken, RelationTypeMultiplicity.MANY_TO_MANY,
-         RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid());
+         RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
    }
 }

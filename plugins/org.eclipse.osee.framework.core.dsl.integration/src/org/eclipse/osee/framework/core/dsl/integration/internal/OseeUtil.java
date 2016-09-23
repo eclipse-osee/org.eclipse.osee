@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
@@ -23,7 +22,6 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationSideEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -89,15 +87,5 @@ public final class OseeUtil {
          toReturn = PermissionEnum.READ;
       }
       return toReturn;
-   }
-
-   public static String getRelationOrderType(String guid) throws OseeCoreException {
-      RelationSorter type = RelationOrderBaseTypes.getFromGuid(guid);
-      return type.getName().replaceAll(" ", "_");
-   }
-
-   public static String orderTypeNameToGuid(String orderTypeName) throws OseeCoreException {
-      Conditions.checkNotNull(orderTypeName, "orderTypeName");
-      return RelationOrderBaseTypes.getFromOrderTypeName(orderTypeName.replaceAll("_", " ")).getGuid();
    }
 }

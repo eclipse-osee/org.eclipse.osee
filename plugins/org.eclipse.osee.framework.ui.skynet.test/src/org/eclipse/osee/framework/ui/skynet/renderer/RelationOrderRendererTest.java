@@ -14,8 +14,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
@@ -25,15 +26,11 @@ import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
-import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
-import org.eclipse.osee.framework.skynet.core.relation.order.RelationSorterProvider;
 import org.eclipse.osee.framework.ui.skynet.render.ArtifactGuidToWordML;
 import org.eclipse.osee.framework.ui.skynet.render.RelationOrderRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -44,7 +41,6 @@ import org.junit.Test;
 public class RelationOrderRendererTest {
 
    private static RelationOrderRenderer renderer;
-   private static RelationSorterProvider sorterProvider;
 
    @BeforeClass
    public static void prepareTest() throws Exception {
@@ -52,14 +48,7 @@ public class RelationOrderRendererTest {
 
       AbstractOseeCache<RelationType> typeCache = new RelationTypeCache();
       addRelationTypeData(typeCache);
-      sorterProvider = new RelationSorterProvider();
-      renderer = new RelationOrderRenderer(typeCache, resolver, sorterProvider);
-   }
-
-   @AfterClass
-   public static void cleanupTest() throws Exception {
-      sorterProvider = null;
-      renderer = null;
+      renderer = new RelationOrderRenderer(typeCache, resolver);
    }
 
    @Test
@@ -68,22 +57,14 @@ public class RelationOrderRendererTest {
       List<Object[]> expectedData = new ArrayList<>();
 
       addData(orderData, expectedData, "Relation 1", "Relation 1_A", RelationSide.SIDE_A,
-         RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid(), "1", "2", "3");
+         RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC, "1", "2", "3");
 
       addData(orderData, expectedData, "Relation 2", "Relation 2_B", RelationSide.SIDE_B, //
-         RelationOrderBaseTypes.UNORDERED.getGuid(), "4", "5", "6");
+         RelationOrderBaseTypes.UNORDERED, "4", "5", "6");
 
       addData(orderData, expectedData, "Relation 3", "Relation 3_B", RelationSide.SIDE_B, //
-         RelationOrderBaseTypes.USER_DEFINED.getGuid(), "7", "8", "9");
+         RelationOrderBaseTypes.USER_DEFINED, "7", "8", "9");
 
-      checkRelationOrderRenderer(getExpected(expectedData), orderData);
-   }
-
-   @Test(expected = OseeCoreException.class)
-   public void testRenderingOrderTypeNotFound() throws OseeCoreException {
-      RelationOrderData orderData = new MockRelationOrderData();
-      List<Object[]> expectedData = new ArrayList<>();
-      addData(orderData, expectedData, "Relation 1", "Relation 1_A", RelationSide.SIDE_A, GUID.create(), "0", "1", "2");
       checkRelationOrderRenderer(getExpected(expectedData), orderData);
    }
 
@@ -92,7 +73,7 @@ public class RelationOrderRendererTest {
       RelationOrderData orderData = new MockRelationOrderData();
       List<Object[]> expectedData = new ArrayList<>();
       addData(orderData, expectedData, "Relation 1", "Relation 1_A", RelationSide.SIDE_A,
-         RelationOrderBaseTypes.USER_DEFINED.getGuid());
+         RelationOrderBaseTypes.USER_DEFINED);
       checkRelationOrderRenderer(getExpected(expectedData), orderData);
    }
 
@@ -103,19 +84,12 @@ public class RelationOrderRendererTest {
       checkRelationOrderRenderer(getExpected(expectedData), orderData);
    }
 
-   private void addData(RelationOrderData orderData, List<Object[]> expectedData, String relationType, String relationSideName, RelationSide side, String relationOrderIdGuid, String... guids) throws OseeCoreException {
-      List<String> artGuids = new ArrayList<>();
-      if (guids != null && guids.length > 0) {
-         artGuids.addAll(Arrays.asList(guids));
-      }
-      orderData.addOrderList(relationType, side.name(), relationOrderIdGuid, artGuids);
-
-      String expectedOrderId = relationOrderIdGuid;
-      IRelationSorter sorter = sorterProvider.getRelationOrder(relationOrderIdGuid);
-      expectedOrderId = sorter.getSorterId().getName();
+   private void addData(RelationOrderData orderData, List<Object[]> expectedData, String relationType, String relationSideName, RelationSide side, RelationSorter expectedSorterId, String... guids) throws OseeCoreException {
+      List<String> guidList = Arrays.asList(guids);
+      orderData.addOrderList(relationType, side.name(), expectedSorterId, guidList);
 
       expectedData.add(
-         new Object[] {relationType, relationSideName, side.name().toLowerCase(), expectedOrderId, artGuids});
+         new Object[] {relationType, relationSideName, side.name().toLowerCase(), expectedSorterId, guidList});
    }
 
    private String getExpected(List<Object[]> data) {
@@ -202,7 +176,7 @@ public class RelationOrderRendererTest {
 
    private final static void createRelationType(AbstractOseeCache<RelationType> cache, String name, IArtifactType artifactType1, IArtifactType artifactType2) throws OseeCoreException {
       RelationType type = new RelationType(0x00L, name, name + "_A", name + "_B", artifactType1, artifactType2,
-         RelationTypeMultiplicity.MANY_TO_MANY, "");
+         RelationTypeMultiplicity.MANY_TO_MANY, null);
       cache.cache(type);
    }
    private final static class MockRelationOrderData extends RelationOrderData {

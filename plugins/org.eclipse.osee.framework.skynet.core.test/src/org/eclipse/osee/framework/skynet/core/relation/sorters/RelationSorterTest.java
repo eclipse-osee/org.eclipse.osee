@@ -53,8 +53,7 @@ public class RelationSorterTest {
    @Test
    public void testSorterId() {
       Assert.assertNotNull(message, sorter.getSorterId());
-      Assert.assertEquals(message, expectedOrderId.getGuid(), sorter.getSorterId().getGuid());
-      Assert.assertEquals(message, expectedOrderId.getName(), sorter.getSorterId().getName());
+      Assert.assertEquals(message, expectedOrderId, sorter.getSorterId());
    }
 
    @Test

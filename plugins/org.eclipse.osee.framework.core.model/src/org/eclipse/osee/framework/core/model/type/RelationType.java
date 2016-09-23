@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.model.type;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.model.AbstractOseeIdType;
@@ -32,11 +32,11 @@ public final class RelationType extends AbstractOseeIdType implements IRelationT
       "osee.relation.type.default.order.type.guid.field";
    private static final String RELATION_MULTIPLICITY_FIELD_KEY = "osee.relation.type.multiplicity.field";
 
-   public RelationType(Long guid, String relationTypeName, String sideAName, String sideBName, IArtifactType artifactTypeSideA, IArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) {
+   public RelationType(Long guid, String relationTypeName, String sideAName, String sideBName, IArtifactType artifactTypeSideA, IArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, RelationSorter defaultRelationSorter) {
       super(guid, relationTypeName);
       initializeFields();
       setFields(relationTypeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
-         defaultOrderTypeGuid);
+         defaultRelationSorter);
    }
 
    protected void initializeFields() {
@@ -44,17 +44,17 @@ public final class RelationType extends AbstractOseeIdType implements IRelationT
       addField(RELATION_SIDE_B_NAME_FIELD_KEY, new OseeField<String>());
       addField(RELATION_SIDE_A_ART_TYPE_FIELD_KEY, new OseeField<ArtifactType>());
       addField(RELATION_SIDE_B_ART_TYPE_FIELD_KEY, new OseeField<ArtifactType>());
-      addField(RELATION_DEFAULT_ORDER_TYPE_GUID_FIELD_KEY, new OseeField<String>());
+      addField(RELATION_DEFAULT_ORDER_TYPE_GUID_FIELD_KEY, new OseeField<RelationSorter>());
       addField(RELATION_MULTIPLICITY_FIELD_KEY, new OseeField<RelationTypeMultiplicity>());
    }
 
-   public void setFields(String relationTypeName, String sideAName, String sideBName, IArtifactType artifactTypeSideA, IArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) {
+   public void setFields(String relationTypeName, String sideAName, String sideBName, IArtifactType artifactTypeSideA, IArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, RelationSorter defaultRelationSorter) {
       setName(relationTypeName);
       setFieldLogException(RELATION_SIDE_A_NAME_FIELD_KEY, sideAName);
       setFieldLogException(RELATION_SIDE_B_NAME_FIELD_KEY, sideBName);
       setFieldLogException(RELATION_SIDE_A_ART_TYPE_FIELD_KEY, artifactTypeSideA);
       setFieldLogException(RELATION_SIDE_B_ART_TYPE_FIELD_KEY, artifactTypeSideB);
-      setFieldLogException(RELATION_DEFAULT_ORDER_TYPE_GUID_FIELD_KEY, defaultOrderTypeGuid);
+      setFieldLogException(RELATION_DEFAULT_ORDER_TYPE_GUID_FIELD_KEY, defaultRelationSorter);
       setFieldLogException(RELATION_MULTIPLICITY_FIELD_KEY, multiplicity);
    }
 
@@ -110,11 +110,11 @@ public final class RelationType extends AbstractOseeIdType implements IRelationT
    }
 
    public boolean isOrdered() {
-      return !RelationOrderBaseTypes.UNORDERED.getGuid().equals(getDefaultOrderTypeGuid());
+      return !RelationSorter.UNORDERED.equals(getDefaultOrderTypeGuid());
    }
 
-   public String getDefaultOrderTypeGuid() {
-      return getFieldValueLogException("", RELATION_DEFAULT_ORDER_TYPE_GUID_FIELD_KEY);
+   public RelationSorter getDefaultOrderTypeGuid() {
+      return getFieldValueLogException(null, RELATION_DEFAULT_ORDER_TYPE_GUID_FIELD_KEY);
    }
 
    @Override

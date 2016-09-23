@@ -205,7 +205,7 @@ public class RelationManagerTest {
       setupAdjacencies(node5, relation4);
       setupAdjacencies(node6);
 
-      when(types.getDefaultOrderTypeGuid(DEFAULT_HIERARCHY)).thenReturn(LEXICOGRAPHICAL_DESC.getGuid());
+      when(types.getDefaultOrderTypeGuid(DEFAULT_HIERARCHY)).thenReturn(LEXICOGRAPHICAL_DESC);
       when(types.getAll()).thenReturn(new ArrayList(
          Arrays.asList(CoreRelationTypes.Default_Hierarchical__Child, CoreRelationTypes.Default_Hierarchical__Parent)));
    }

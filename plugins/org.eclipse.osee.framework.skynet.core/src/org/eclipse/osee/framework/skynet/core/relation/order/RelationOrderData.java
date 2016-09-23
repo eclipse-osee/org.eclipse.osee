@@ -18,8 +18,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
  */
 public class RelationOrderData {
 
-   private final CompositeKeyHashMap<String, String, Pair<String, List<String>>> lists;
+   private final CompositeKeyHashMap<String, String, Pair<RelationSorter, List<String>>> lists;
    private final IRelationOrderAccessor accessor;
    private final IArtifact artifact;
 
@@ -61,39 +61,38 @@ public class RelationOrderData {
       accessor.load(getIArtifact(), this);
    }
 
-   public Collection<Entry<Pair<String, String>, Pair<String, List<String>>>> entrySet() {
+   public Collection<Entry<Pair<String, String>, Pair<RelationSorter, List<String>>>> entrySet() {
       return lists.entrySet();
    }
 
-   public Collection<Entry<Pair<String, String>, Pair<String, List<String>>>> getOrderedEntrySet() {
-      List<Entry<Pair<String, String>, Pair<String, List<String>>>> entries =
-         new ArrayList<Entry<Pair<String, String>, Pair<String, List<String>>>>(entrySet());
+   public Collection<Entry<Pair<String, String>, Pair<RelationSorter, List<String>>>> getOrderedEntrySet() {
+      List<Entry<Pair<String, String>, Pair<RelationSorter, List<String>>>> entries = new ArrayList<>(entrySet());
       Collections.sort(entries, new EntryComparator());
       return entries;
    }
 
    public List<String> getOrderList(IRelationType type, RelationSide side) throws OseeCoreException {
-      Pair<String, List<String>> currentOrder = getTypeSideEntry(type, side);
+      Pair<RelationSorter, List<String>> currentOrder = getTypeSideEntry(type, side);
       return currentOrder != null ? currentOrder.getSecond() : new ArrayList<String>();
    }
 
-   public String getCurrentSorterGuid(RelationType type, RelationSide side) throws OseeCoreException {
-      Pair<String, List<String>> currentOrder = getTypeSideEntry(type, side);
+   public RelationSorter getCurrentSorterGuid(RelationType type, RelationSide side) throws OseeCoreException {
+      Pair<RelationSorter, List<String>> currentOrder = getTypeSideEntry(type, side);
       return currentOrder != null ? currentOrder.getFirst() : type.getDefaultOrderTypeGuid();
    }
 
-   private Pair<String, List<String>> getTypeSideEntry(IRelationType type, RelationSide side) throws OseeCoreException {
+   private Pair<RelationSorter, List<String>> getTypeSideEntry(IRelationType type, RelationSide side) throws OseeCoreException {
       Conditions.checkNotNull(type, "relationType");
       Conditions.checkNotNull(side, "relationSide");
       return lists.get(type.getName(), side.name());
    }
 
    public void addOrderList(IRelationType type, RelationSide side, RelationSorter sorterId, List<String> guidList) {
-      addOrderList(type.getName(), side.name(), sorterId.getGuid(), guidList);
+      addOrderList(type.getName(), side.name(), sorterId, guidList);
    }
 
-   public void addOrderList(String relationType, String relationSide, String sorterGuid, List<String> guidList) {
-      lists.put(relationType, relationSide, new Pair<String, List<String>>(sorterGuid, guidList));
+   public void addOrderList(String relationType, String relationSide, RelationSorter sorterId, List<String> guidList) {
+      lists.put(relationType, relationSide, new Pair<RelationSorter, List<String>>(sorterId, guidList));
    }
 
    public void removeOrderList(IRelationType type, RelationSide side) throws OseeCoreException {
@@ -138,8 +137,7 @@ public class RelationOrderData {
    }
 
    protected boolean isRevertingToDefaultTypeOrder(RelationType type, RelationSide side, RelationSorter sorterId) throws OseeCoreException {
-      String defaultOrderGuid = type.getDefaultOrderTypeGuid();
-      return sorterId.getGuid().equals(defaultOrderGuid) && isDifferentSorterId(type, side, sorterId);
+      return sorterId.equals(type.getDefaultOrderTypeGuid()) && isDifferentSorterId(type, side, sorterId);
    }
 
    protected boolean isRelativeOrderChange(IRelationType type, RelationSide side, RelationSorter sorterId, List<String> relativeSequence) throws OseeCoreException {
@@ -147,8 +145,8 @@ public class RelationOrderData {
    }
 
    protected boolean isDifferentSorterId(RelationType type, RelationSide side, RelationSorter sorterId) throws OseeCoreException {
-      String currentSorterGuid = getCurrentSorterGuid(type, side);
-      return !sorterId.getGuid().equals(currentSorterGuid);
+      RelationSorter currentSorterGuid = getCurrentSorterGuid(type, side);
+      return !sorterId.equals(currentSorterGuid);
    }
 
    @Override
@@ -160,11 +158,11 @@ public class RelationOrderData {
       return lists.getEnumeratedKeys();
    }
 
-   private final static class EntryComparator implements Serializable, Comparator<Entry<Pair<String, String>, Pair<String, List<String>>>> {
+   private final static class EntryComparator implements Serializable, Comparator<Entry<Pair<String, String>, Pair<RelationSorter, List<String>>>> {
       private static final long serialVersionUID = 5242452476694174988L;
 
       @Override
-      public int compare(Entry<Pair<String, String>, Pair<String, List<String>>> o1, Entry<Pair<String, String>, Pair<String, List<String>>> o2) {
+      public int compare(Entry<Pair<String, String>, Pair<RelationSorter, List<String>>> o1, Entry<Pair<String, String>, Pair<RelationSorter, List<String>>> o2) {
          int result = o1.getKey().getFirst().compareTo(o2.getKey().getFirst());
          if (result == 0) {
             result = o1.getKey().getSecond().compareTo(o2.getKey().getSecond());

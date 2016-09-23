@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.relation.sorters.UserDefinedRelati
  */
 public class RelationSorterProvider {
 
-   private final Map<String, IRelationSorter> orderMap;
+   private final Map<RelationSorter, IRelationSorter> orderMap;
 
    public RelationSorterProvider() {
       orderMap = new ConcurrentHashMap<>();
@@ -43,7 +43,7 @@ public class RelationSorterProvider {
    }
 
    private void registerOrderType(IRelationSorter order) {
-      orderMap.put(order.getSorterId().getGuid(), order);
+      orderMap.put(order.getSorterId(), order);
    }
 
    public boolean exists(String orderGuid) throws OseeCoreException {
@@ -53,15 +53,19 @@ public class RelationSorterProvider {
       return orderMap.get(orderGuid) != null;
    }
 
-   public IRelationSorter getRelationOrder(String orderGuid) throws OseeCoreException {
-      if (!GUID.isValid(orderGuid)) {
-         throw new OseeArgumentException("Error invalid guid argument");
+   public IRelationSorter getRelationOrder(RelationSorter sorterId) throws OseeCoreException {
+      if (sorterId.equals(RelationSorter.PREEXISTING)) {
+         throw new OseeArgumentException("No sorted is defined for preexisting (nor should there be).");
       }
-      IRelationSorter order = orderMap.get(orderGuid);
+      IRelationSorter order = orderMap.get(sorterId);
       if (order == null) {
-         throw new OseeCoreException("Unable to locate RelationOrder for guid[%s].", orderGuid);
+         throw new OseeCoreException("Unable to locate RelationSorter[%s].", sorterId);
       }
       return order;
+   }
+
+   public Collection<IRelationSorter> getSorters() {
+      return orderMap.values();
    }
 
    public List<RelationSorter> getAllRelationOrderIds() {
@@ -70,7 +74,7 @@ public class RelationSorterProvider {
       for (IRelationSorter order : relationOrder) {
          ids.add(order.getSorterId());
       }
-      Collections.sort(ids, new RelationSorterIdComparator());
+      Collections.sort(ids);
       return ids;
    }
 }

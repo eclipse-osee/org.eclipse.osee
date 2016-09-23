@@ -10,15 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation.order;
 
+import static org.eclipse.osee.framework.core.data.RelationSorter.USER_DEFINED;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -33,7 +34,7 @@ public class RelationOrderParserTest {
       "<OrderList>\n<Order relType=\"Default Hierarchical\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"AAABDEJ_mIQBf8VXVtGqvA\"/>\n</OrderList>";
 
    private static String twoEntries =
-      "<OrderList>\n<Order relType=\"Default Hierarchical\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"AAABDEJ_mIQBf8VXVtGqvA,AAABDEJ_oQ8Bf8VXLX7U_g\"/>\n" + "<Order relType=\"Some Type\" side=\"SIDE_A\" orderType=\"AAABDEJ_mIQBf8VXVtGqvA\" list=\"AAABDEJ_mIQXf8VXVtGqvA,AAABDEJ_oQVBf8VXLX7U_g\"/>\n</OrderList>";
+      "<OrderList>\n<Order relType=\"Default Hierarchical\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"AAABDEJ_mIQBf8VXVtGqvA,AAABDEJ_oQ8Bf8VXLX7U_g\"/>\n" + "<Order relType=\"Some Type\" side=\"SIDE_A\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"AAABDEJ_mIQXf8VXVtGqvA,AAABDEJ_oQVBf8VXLX7U_g\"/>\n</OrderList>";
    private static String oneEntryEmptyList =
       "<OrderList>\n<Order relType=\"X\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\"/>\n</OrderList>";
 
@@ -64,7 +65,7 @@ public class RelationOrderParserTest {
    public void testWithData1Parser() throws OseeCoreException {
       RelationOrderParser parser = new RelationOrderParser();
 
-      RelationOrderData data = new MockRelationOrderData(null);
+      RelationOrderData data = new RelationOrderData(null, null);
       checkEmptyEntries(data, parser);
 
       parser.loadFromXml(data, oneEntry);
@@ -73,8 +74,8 @@ public class RelationOrderParserTest {
       Assert.assertEquals(1, data.size());
 
       List<Object[]> expectedData = new ArrayList<>();
-      addData(expectedData, "Default Hierarchical", RelationSide.SIDE_B, "AAT0xogoMjMBhARkBZQA",
-         "AAABDEJ_mIQBf8VXVtGqvA", "AAABDEJ_nMkBf8VXVXptpg", "AAABDEJ_oQ8Bf8VXLX7U_g");
+      addData(expectedData, "Default Hierarchical", RelationSide.SIDE_B, USER_DEFINED, "AAABDEJ_mIQBf8VXVtGqvA",
+         "AAABDEJ_nMkBf8VXVXptpg", "AAABDEJ_oQ8Bf8VXLX7U_g");
 
       checkData(data, expectedData);
       Assert.assertEquals(oneEntry, parser.toXml(data));
@@ -95,7 +96,7 @@ public class RelationOrderParserTest {
    public void testWithData2Parser() throws OseeCoreException {
       RelationOrderParser parser = new RelationOrderParser();
 
-      RelationOrderData data = new MockRelationOrderData(null);
+      RelationOrderData data = new RelationOrderData(null, null);
       checkEmptyEntries(data, parser);
 
       parser.loadFromXml(data, twoEntries);
@@ -103,9 +104,9 @@ public class RelationOrderParserTest {
       Assert.assertEquals(2, data.size());
 
       List<Object[]> expectedData = new ArrayList<>();
-      addData(expectedData, "Default Hierarchical", RelationSide.SIDE_B, "AAT0xogoMjMBhARkBZQA",
-         "AAABDEJ_mIQBf8VXVtGqvA", "AAABDEJ_oQ8Bf8VXLX7U_g");
-      addData(expectedData, "Some Type", RelationSide.SIDE_A, "AAABDEJ_mIQBf8VXVtGqvA", "AAABDEJ_mIQXf8VXVtGqvA",
+      addData(expectedData, "Default Hierarchical", RelationSide.SIDE_B, USER_DEFINED, "AAABDEJ_mIQBf8VXVtGqvA",
+         "AAABDEJ_oQ8Bf8VXLX7U_g");
+      addData(expectedData, "Some Type", RelationSide.SIDE_A, USER_DEFINED, "AAABDEJ_mIQXf8VXVtGqvA",
          "AAABDEJ_oQVBf8VXLX7U_g");
 
       checkData(data, expectedData);
@@ -116,7 +117,7 @@ public class RelationOrderParserTest {
    public void testOneEntryEmptyList() throws OseeCoreException {
       RelationOrderParser parser = new RelationOrderParser();
 
-      RelationOrderData data = new MockRelationOrderData(null);
+      RelationOrderData data = new RelationOrderData(null, null);
       checkEmptyEntries(data, parser);
 
       parser.loadFromXml(data, oneEntryEmptyList);
@@ -124,7 +125,7 @@ public class RelationOrderParserTest {
       Assert.assertEquals(1, data.size());
 
       List<Object[]> expectedData = new ArrayList<>();
-      addData(expectedData, "X", RelationSide.SIDE_B, "AAT0xogoMjMBhARkBZQA");
+      addData(expectedData, "X", RelationSide.SIDE_B, USER_DEFINED);
       checkData(data, expectedData);
       Assert.assertEquals(oneEntryEmptyList, parser.toXml(data));
    }
@@ -133,7 +134,7 @@ public class RelationOrderParserTest {
    public void testNullDataParser() throws OseeCoreException {
       RelationOrderParser parser = new RelationOrderParser();
 
-      RelationOrderData data = new MockRelationOrderData(null);
+      RelationOrderData data = new RelationOrderData(null, null);
       checkEmptyEntries(data, parser);
 
       parser.loadFromXml(data, null);
@@ -159,7 +160,7 @@ public class RelationOrderParserTest {
    public void testBadDataParser() throws OseeCoreException {
       RelationOrderParser parser = new RelationOrderParser();
 
-      RelationOrderData data = new MockRelationOrderData(null);
+      RelationOrderData data = new RelationOrderData(null, null);
       checkEmptyEntries(data, parser);
 
       try {
@@ -176,18 +177,14 @@ public class RelationOrderParserTest {
       Assert.assertEquals("<OrderList>\n</OrderList>", parser.toXml(data));
    }
 
-   private void addData(List<Object[]> expectedData, String relationType, RelationSide side, String relationOrderIdGuid, String... guids) {
-      List<String> artGuids = new ArrayList<>();
-      if (guids != null && guids.length > 0) {
-         artGuids.addAll(Arrays.asList(guids));
-      }
-      expectedData.add(new Object[] {relationType, side.name(), relationOrderIdGuid, artGuids});
+   private void addData(List<Object[]> expectedData, String relationType, RelationSide side, RelationSorter relationOrderIdGuid, String... guids) {
+      expectedData.add(new Object[] {relationType, side.name(), relationOrderIdGuid, Arrays.asList(guids)});
    }
 
    private void checkData(RelationOrderData orderData, List<Object[]> expectedValues) {
       int index = 0;
       Assert.assertEquals(expectedValues.size(), orderData.size());
-      for (Entry<Pair<String, String>, Pair<String, List<String>>> entry : orderData.getOrderedEntrySet()) {
+      for (Entry<Pair<String, String>, Pair<RelationSorter, List<String>>> entry : orderData.getOrderedEntrySet()) {
          Object[] actual = new Object[] {
             entry.getKey().getFirst(),
             entry.getKey().getSecond(),
@@ -198,12 +195,6 @@ public class RelationOrderParserTest {
          for (int index2 = 0; index2 < expected.length; index2++) {
             Assert.assertEquals(expected[index2], actual[index2]);
          }
-      }
-   }
-
-   private final static class MockRelationOrderData extends RelationOrderData {
-      public MockRelationOrderData(IArtifact artifact) {
-         super(null, artifact);
       }
    }
 }

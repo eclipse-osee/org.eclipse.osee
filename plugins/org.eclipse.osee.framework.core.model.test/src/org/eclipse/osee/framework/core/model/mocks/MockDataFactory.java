@@ -15,10 +15,10 @@ import java.util.Random;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
@@ -119,9 +119,8 @@ public final class MockDataFactory {
    public static RelationType createRelationType(int index, IArtifactType artTypeA, IArtifactType artTypeB, Long id) {
       RelationTypeMultiplicity multiplicity =
          RelationTypeMultiplicity.values()[Math.abs(index % RelationTypeMultiplicity.values().length)];
-      String order = RelationOrderBaseTypes.values()[index % RelationTypeMultiplicity.values().length].getGuid();
+      RelationSorter order = RelationSorter.values()[index % RelationTypeMultiplicity.values().length];
       return new RelationType(id, "relType_" + index, "sideA_" + index, "sideB_" + index, artTypeA, artTypeB,
          multiplicity, order);
    }
-
 }

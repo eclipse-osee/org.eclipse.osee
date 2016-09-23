@@ -24,9 +24,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -84,9 +84,9 @@ public class RelationManager {
          // Need to do this check before to catch the relations that are .equal but not ==
          for (RelationLink relation : artifactsRelations) {
             if (relation.getAArtifactId() == newRelation.getAArtifactId() && //
-            relation.getBArtifactId() == newRelation.getBArtifactId() && //
-            relation.getRelationType() == newRelation.getRelationType() && //
-            relation != newRelation) {
+               relation.getBArtifactId() == newRelation.getBArtifactId() && //
+               relation.getRelationType() == newRelation.getRelationType() && //
+               relation != newRelation) {
                OseeLog.logf(Activator.class, Level.WARNING,
                   "Duplicate relation objects for same relation for RELATION 1 [%s] RELATION 2 [%s]", relation,
                   newRelation);
@@ -111,7 +111,6 @@ public class RelationManager {
       return getRelatedArtifacts(artifact, relationType, relationSide, true);
    }
 
-   @SuppressWarnings("unused")
    private static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationType relationType, RelationSide relationSide, boolean sort) throws OseeCoreException {
       if (artifact.isHistorical()) {
          throw new OseeCoreException("Artifact [%s] is historical.  Historical relations are only supported on server",
@@ -550,10 +549,6 @@ public class RelationManager {
       }
       throw new OseeCoreException("Unable to find a relation link for type[%s] artA[%s] artB[%s]",
          relationType.getName(), artifactA.getName(), artifactB.getName());
-   }
-
-   public static RelationSorterProvider getSorterProvider() {
-      return relationSorterProvider;
    }
 
    public static List<RelationSorter> getRelationOrderTypes() {

@@ -19,8 +19,8 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -91,8 +91,8 @@ public class RelationOrderMergeUtilityTest {
       RelationOrderData mergedOrder = RelationOrderMergeUtility.mergeRelationOrder(parent, parent);
       Assert.assertNotNull(mergedOrder);
 
-      String sorter = mergedOrder.getCurrentSorterGuid(hierType, hierSide);
-      Assert.assertEquals(ascOrder.getGuid(), sorter);
+      RelationSorter sorter = mergedOrder.getCurrentSorterGuid(hierType, hierSide);
+      Assert.assertEquals(ascOrder, sorter);
    }
 
    @Test

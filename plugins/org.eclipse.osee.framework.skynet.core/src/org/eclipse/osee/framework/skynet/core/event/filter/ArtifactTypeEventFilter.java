@@ -57,7 +57,7 @@ public class ArtifactTypeEventFilter implements IEventFilter {
                   return true;
                }
                for (IArtifactType matchArtType : artifactTypes) {
-                  if (matchArtType.getGuid().equals(artType.getGuid())) {
+                  if (matchArtType.equals(artType)) {
                      return true;
                   }
                }

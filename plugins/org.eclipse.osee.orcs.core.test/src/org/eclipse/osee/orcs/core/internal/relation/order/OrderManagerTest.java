@@ -26,8 +26,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
-import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
@@ -44,7 +44,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link OrderManager}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class OrderManagerTest {
@@ -59,11 +59,11 @@ public class OrderManagerTest {
    @Mock private IRelationTypeSide typeSide1;
    @Mock private IRelationTypeSide typeSide2;
    @Mock private IRelationTypeSide typeSide3;
-   
+
    @Mock private OrderData orderData1;
    @Mock private OrderData orderData2;
    @Mock private OrderData orderData3;
-   
+
    @Mock private Identifiable<String> mock1;
    @Mock private Identifiable<String> mock2;
    @Mock private Identifiable<String> mock3;
@@ -91,9 +91,9 @@ public class OrderManagerTest {
       when(typeSide2.getSide()).thenReturn(RelationSide.SIDE_B);
       when(typeSide3.getSide()).thenReturn(RelationSide.SIDE_A);
 
-      when(relationTypeCache.getDefaultOrderTypeGuid(typeSide1)).thenReturn(USER_DEFINED.getGuid());
-      when(relationTypeCache.getDefaultOrderTypeGuid(typeSide2)).thenReturn(UNORDERED.getGuid());
-      when(relationTypeCache.getDefaultOrderTypeGuid(typeSide3)).thenReturn(LEXICOGRAPHICAL_ASC.getGuid());
+      when(relationTypeCache.getDefaultOrderTypeGuid(typeSide1)).thenReturn(USER_DEFINED);
+      when(relationTypeCache.getDefaultOrderTypeGuid(typeSide2)).thenReturn(UNORDERED);
+      when(relationTypeCache.getDefaultOrderTypeGuid(typeSide3)).thenReturn(LEXICOGRAPHICAL_ASC);
    }
 
    @Test

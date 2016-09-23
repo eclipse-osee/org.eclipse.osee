@@ -10,20 +10,52 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
-import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
+ * Defines built-in relation sorting type including unordered
+ *
  * @author Andrew M. Finkbeiner
  */
-public interface RelationSorter extends Identifiable<String> {
+public enum RelationSorter {
 
-   public static RelationSorter create(String id, String name) {
-      final class RelationSorterIdImpl extends NamedIdentity<String> implements RelationSorter {
-         public RelationSorterIdImpl(String guid, String name) {
-            super(guid, name);
+   USER_DEFINED("AAT0xogoMjMBhARkBZQA", "User Defined"),
+   LEXICOGRAPHICAL_ASC("AAT1QW4eVE+YuzsoHFAA", "Lexicographical_Ascending"),
+   LEXICOGRAPHICAL_DESC("AAmATn6R9m7VCXQQwuQA", "Lexicographical_Descending"),
+   UNORDERED("AAT1uKZpeDQExlygoIAA", "Unordered"),
+   PREEXISTING("AE2ypryqoVzNl6EjpgAA", "Preexisting");
+
+   private final String guid;
+   private final String name;
+
+   private RelationSorter(String guid, String name) {
+      this.guid = guid;
+      this.name = name;
+   }
+
+   public boolean equals(String guid) {
+      return this.guid.equals(guid);
+   }
+
+   public static RelationSorter valueOfName(String name) {
+      for (RelationSorter sorter : values()) {
+         if (sorter.name.equals(name)) {
+            return sorter;
          }
       }
-      return new RelationSorterIdImpl(id, name);
+      throw new OseeArgumentException("Order type guid does not map to an enum [%s]", name);
+   }
+
+   public static RelationSorter valueOfGuid(String guid) {
+      for (RelationSorter sorter : values()) {
+         if (sorter.guid.equals(guid)) {
+            return sorter;
+         }
+      }
+      throw new OseeArgumentException("Order type guid does not map to an enum [%s]", guid);
+   }
+
+   public String getGuid() {
+      return guid;
    }
 }

@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -26,7 +27,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
-import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactPasteConfiguration;
@@ -89,13 +89,12 @@ public class ArtifactPasteOperation extends AbstractOperation {
       if (config.isKeepRelationOrderSettings()) {
          IRelationTypeSide relationTypeSide = CoreRelationTypes.Default_Hierarchical__Child;
          RelationOrderData data = RelationManager.createRelationOrderData(source);
-         String order =
+         RelationSorter order =
             data.getCurrentSorterGuid(RelationTypeManager.getType(relationTypeSide), relationTypeSide.getSide());
-         IRelationSorter sorter = RelationManager.getSorterProvider().getRelationOrder(order);
-         if (RelationOrderBaseTypes.USER_DEFINED == sorter.getSorterId()) {
+         if (RelationOrderBaseTypes.USER_DEFINED == order) {
             newArtifact.setRelationOrder(relationTypeSide, copiedChildren);
          } else {
-            newArtifact.setRelationOrder(relationTypeSide, sorter.getSorterId());
+            newArtifact.setRelationOrder(relationTypeSide, order);
          }
       }
    }

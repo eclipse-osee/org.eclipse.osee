@@ -10,84 +10,57 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation.order;
 
-import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC;
-import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
-import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.UNORDERED;
-import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.USER_DEFINED;
+import static org.eclipse.osee.framework.core.data.RelationSorter.LEXICOGRAPHICAL_ASC;
+import static org.eclipse.osee.framework.core.data.RelationSorter.LEXICOGRAPHICAL_DESC;
+import static org.eclipse.osee.framework.core.data.RelationSorter.UNORDERED;
+import static org.eclipse.osee.framework.core.data.RelationSorter.USER_DEFINED;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.RelationSorter;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.LexicographicalRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.UnorderedRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.UserDefinedRelationSorter;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * @author Roberto E. Escobar
  */
 public class RelationSorterProviderTest {
+   @Rule
+   public ExpectedException thrown = ExpectedException.none();
 
    @Test
    public void testGetAllRelationOrderIds() {
       RelationSorterProvider provider = new RelationSorterProvider();
       List<RelationSorter> actual = provider.getAllRelationOrderIds();
 
-      List<RelationSorter> expected =
-         Collections.castAll(RelationSorter.class, Arrays.asList(RelationOrderBaseTypes.values()));
+      List<RelationSorter> expected = Arrays.asList(LEXICOGRAPHICAL_ASC, LEXICOGRAPHICAL_DESC, UNORDERED, USER_DEFINED);
       Assert.assertTrue(Collections.isEqual(expected, actual));
    }
 
    @Test
    public void testGetRelationOrder() throws OseeCoreException {
       RelationSorterProvider provider = new RelationSorterProvider();
-      for (RelationSorter baseType : RelationOrderBaseTypes.values()) {
-         IRelationSorter actual = provider.getRelationOrder(baseType.getGuid());
-         Assert.assertEquals(baseType, actual.getSorterId());
-         boolean matches = false;
 
-         if (baseType == LEXICOGRAPHICAL_ASC) {
-            matches = actual instanceof LexicographicalRelationSorter;
-         } else if (baseType == LEXICOGRAPHICAL_DESC) {
-            matches = actual instanceof LexicographicalRelationSorter;
+      testSorter(provider, RelationSorter.LEXICOGRAPHICAL_ASC, LexicographicalRelationSorter.class);
+      testSorter(provider, RelationSorter.LEXICOGRAPHICAL_DESC, LexicographicalRelationSorter.class);
+      testSorter(provider, RelationSorter.UNORDERED, UnorderedRelationSorter.class);
+      testSorter(provider, RelationSorter.USER_DEFINED, UserDefinedRelationSorter.class);
 
-         } else if (baseType == UNORDERED) {
-            matches = actual instanceof UnorderedRelationSorter;
-
-         } else if (baseType == USER_DEFINED) {
-            matches = actual instanceof UserDefinedRelationSorter;
-         } else {
-            Assert.assertNull("This line should not be reached");
-         }
-         Assert.assertTrue(matches);
-      }
+      thrown.expect(OseeArgumentException.class);
+      thrown.expectMessage("No sorted is defined for preexisting (nor should there be).");
+      testSorter(provider, RelationSorter.PREEXISTING, UserDefinedRelationSorter.class);
    }
 
-   @Test
-   public void testArgumentExceptions() {
-      RelationSorterProvider provider = new RelationSorterProvider();
-      try {
-         provider.getRelationOrder("ABC");
-         Assert.assertNull("This line should not be reached");
-      } catch (Exception ex) {
-         Assert.assertTrue(ex instanceof OseeArgumentException);
-      }
-   }
-
-   @Test
-   public void testNotFoundExceptions() {
-      RelationSorterProvider provider = new RelationSorterProvider();
-      String randomGuid = GUID.create();
-      try {
-         provider.getRelationOrder(randomGuid);
-         Assert.assertNull("This line should not be reached");
-      } catch (Exception ex) {
-         Assert.assertTrue(ex instanceof OseeCoreException);
-      }
+   private void testSorter(RelationSorterProvider provider, RelationSorter sorterId, Class<? extends IRelationSorter> clazz) {
+      IRelationSorter actual = provider.getRelationOrder(sorterId);
+      Assert.assertEquals(sorterId, actual.getSorterId());
+      Assert.assertEquals(clazz, actual.getClass());
    }
 }

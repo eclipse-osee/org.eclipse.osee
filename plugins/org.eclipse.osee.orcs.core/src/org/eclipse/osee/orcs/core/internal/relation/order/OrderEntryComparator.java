@@ -34,7 +34,7 @@ public class OrderEntryComparator implements Comparator<Entry<IRelationTypeSide,
          result = typeSide1.getSide().compareTo(typeSide2.getSide());
       }
       if (result == 0) {
-         result = orderData1.getSorterId().getGuid().compareTo(orderData2.getSorterId().getGuid());
+         result = orderData1.getSorterId().compareTo(orderData2.getSorterId());
       }
       if (result == 0) {
          List<String> guids1 = new ArrayList<>(orderData1.getOrderIds());

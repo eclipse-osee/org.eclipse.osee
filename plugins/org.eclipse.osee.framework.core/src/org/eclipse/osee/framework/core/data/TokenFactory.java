@@ -94,22 +94,6 @@ public final class TokenFactory {
       return new BranchToken(Lib.generateUuid(), null);
    }
 
-   public static RelationSorter createSorterId(String guid, String name) {
-      return new SorterIdToken(guid, name);
-   }
-
-   private final static class SorterIdToken extends NamedIdentity<String> implements RelationSorter {
-
-      public SorterIdToken(String guid, String name) {
-         super(guid, name);
-      }
-
-      @Override
-      public String toString() {
-         return String.format("[%s:%s]", getName(), getGuid());
-      }
-   }
-
    private final static class ArtifactTypeToken extends NamedId implements IArtifactType {
       public ArtifactTypeToken(Long id, String name) {
          super(id, name);

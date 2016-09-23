@@ -13,8 +13,8 @@ package org.eclipse.osee.orcs.core.internal.types.impl;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -91,19 +91,13 @@ public class RelationTypesImpl implements RelationTypes {
 
    @Override
    public boolean isOrdered(IRelationType relation) {
-      String defaultOrderTypeGuid = null;
-      try {
-         defaultOrderTypeGuid = getDefaultOrderTypeGuid(relation);
-      } catch (OseeCoreException ex) {
-         // Do nothing
-      }
-      return !RelationOrderBaseTypes.UNORDERED.getGuid().equals(defaultOrderTypeGuid);
+      return !RelationSorter.UNORDERED.equals(getDefaultOrderTypeGuid(relation));
    }
 
    @Override
-   public String getDefaultOrderTypeGuid(IRelationType relation) throws OseeCoreException {
+   public RelationSorter getDefaultOrderTypeGuid(IRelationType relation) throws OseeCoreException {
       XRelationType type = getType(relation);
-      return orderTypeNameToGuid(type.getDefaultOrderType());
+      return RelationSorter.valueOfName(type.getDefaultOrderType());
    }
 
    @Override
@@ -129,12 +123,6 @@ public class RelationTypesImpl implements RelationTypes {
       Conditions.checkNotNull(relationSide, "relationSide");
       Conditions.checkNotNull(artifactType, "artifactType");
       return provider.getRelationTypeIndex().isArtifactTypeAllowed(relation, relationSide, artifactType);
-   }
-
-   private static String orderTypeNameToGuid(String orderTypeName) throws OseeCoreException {
-      Conditions.checkNotNull(orderTypeName, "orderTypeName");
-      String orderType = orderTypeName.replaceAll("_", " ");
-      return RelationOrderBaseTypes.getFromOrderTypeName(orderType).getGuid();
    }
 
    @Override

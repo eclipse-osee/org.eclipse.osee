@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.model.type;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.model.cache.IOseeTypeFactory;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
@@ -22,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  */
 public class RelationTypeFactory implements IOseeTypeFactory {
 
-   public RelationType create(Long guid, String name, String sideAName, String sideBName, IArtifactType artifactTypeSideA, IArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) throws OseeCoreException {
+   public RelationType create(Long guid, String name, String sideAName, String sideBName, IArtifactType artifactTypeSideA, IArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, RelationSorter defaultRelationSorter) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(name, "relation type name");
       Conditions.checkNotNullOrEmpty(sideAName, "side A name");
       Conditions.checkNotNullOrEmpty(sideBName, "side B name");
@@ -30,19 +31,19 @@ public class RelationTypeFactory implements IOseeTypeFactory {
       Conditions.checkNotNull(artifactTypeSideB, "relation type B");
       Conditions.checkNotNull(multiplicity, "multiplicity");
       return new RelationType(guid, name, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
-         defaultOrderTypeGuid);
+         defaultRelationSorter);
    }
 
-   public RelationType createOrUpdate(RelationTypeCache cache, Long guid, String typeName, String sideAName, String sideBName, IArtifactType artifactTypeSideA, IArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) throws OseeCoreException {
+   public RelationType createOrUpdate(RelationTypeCache cache, Long guid, String typeName, String sideAName, String sideBName, IArtifactType artifactTypeSideA, IArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, RelationSorter defaultRelationSorter) throws OseeCoreException {
       Conditions.checkNotNull(cache, "RelationTypeCache");
       RelationType relationType = cache.getByGuid(guid);
       if (relationType == null) {
          relationType = create(guid, typeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
-            defaultOrderTypeGuid);
+            defaultRelationSorter);
          cache.cache(relationType);
       } else {
          relationType.setFields(typeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
-            defaultOrderTypeGuid);
+            defaultRelationSorter);
       }
       return relationType;
    }

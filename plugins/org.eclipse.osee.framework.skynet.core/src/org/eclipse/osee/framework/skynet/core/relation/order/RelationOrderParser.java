@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -71,7 +72,7 @@ public class RelationOrderParser {
 
       StringBuilder sb = new StringBuilder();
       openRoot(sb);
-      for (Entry<Pair<String, String>, Pair<String, List<String>>> entry : data.getOrderedEntrySet()) {
+      for (Entry<Pair<String, String>, Pair<RelationSorter, List<String>>> entry : data.getOrderedEntrySet()) {
          writeEntry(sb, entry);
          sb.append("\n");
       }
@@ -91,7 +92,7 @@ public class RelationOrderParser {
       sb.append(">");
    }
 
-   private void writeEntry(StringBuilder sb, Entry<Pair<String, String>, Pair<String, List<String>>> entry) {
+   private void writeEntry(StringBuilder sb, Entry<Pair<String, String>, Pair<RelationSorter, List<String>>> entry) {
       Pair<String, String> key = entry.getKey();
       sb.append("<");
       sb.append("Order ");
@@ -101,8 +102,8 @@ public class RelationOrderParser {
       sb.append(key.getSecond());
       sb.append("\" orderType=\"");
 
-      Pair<String, List<String>> value = entry.getValue();
-      sb.append(value.getFirst());
+      Pair<RelationSorter, List<String>> value = entry.getValue();
+      sb.append(value.getFirst().getGuid());
       List<String> guids = value.getSecond();
       if (guids != null) {
          if (guids.size() > 0) {
@@ -145,7 +146,7 @@ public class RelationOrderParser {
                   guidsList = new ArrayList<>();
                   Collections.addAll(guidsList, guids);
                }
-               data.addOrderList(relationType, relationSide, orderType, guidsList);
+               data.addOrderList(relationType, relationSide, RelationSorter.valueOfGuid(orderType), guidsList);
             }
          }
       }

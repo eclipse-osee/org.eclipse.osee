@@ -799,8 +799,8 @@ public class OrcsTypesTest {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
       //@formatter:off
-      assertEquals(RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid(), relTypes.getDefaultOrderTypeGuid(REQUIREMENT_REL));
-      assertEquals(RelationOrderBaseTypes.UNORDERED.getGuid(), relTypes.getDefaultOrderTypeGuid(ANOTHER_REL));
+      assertEquals(RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC, relTypes.getDefaultOrderTypeGuid(REQUIREMENT_REL));
+      assertEquals(RelationOrderBaseTypes.UNORDERED, relTypes.getDefaultOrderTypeGuid(ANOTHER_REL));
       //@formatter:on
    }
 
@@ -928,7 +928,7 @@ public class OrcsTypesTest {
       assertEquals(OTHER_ARTIFACT, relTypes.getArtifactType(relation, SIDE_B));
       assertEquals(ARTIFACT, relTypes.getArtifactTypeSideA(relation));
       assertEquals(OTHER_ARTIFACT, relTypes.getArtifactTypeSideB(relation));
-      assertEquals(RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC.getGuid(), relTypes.getDefaultOrderTypeGuid(relation));
+      assertEquals(RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC, relTypes.getDefaultOrderTypeGuid(relation));
       assertEquals(RelationTypeMultiplicity.MANY_TO_ONE, relTypes.getMultiplicity(relation));
       assertEquals("dynamic-sideA", relTypes.getSideName(relation, SIDE_A));
       assertEquals("dynamic-sideB", relTypes.getSideName(relation, SIDE_B));

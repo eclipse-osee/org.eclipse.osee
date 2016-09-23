@@ -19,12 +19,12 @@ import java.util.Random;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -144,7 +144,7 @@ public final class TestUtil {
    private static RelationType createRelationType(int index, IArtifactType artTypeA, IArtifactType artTypeB) {
       RelationTypeMultiplicity multiplicity =
          RelationTypeMultiplicity.values()[Math.abs(index % RelationTypeMultiplicity.values().length)];
-      String order = RelationOrderBaseTypes.values()[index % RelationTypeMultiplicity.values().length].getGuid();
+      RelationSorter order = RelationSorter.values()[index % RelationTypeMultiplicity.values().length];
       return new RelationType(randomGenerator.nextLong(), "relType_" + index, "sideA_" + index, "sideB_" + index,
          artTypeA, artTypeB, multiplicity, order);
    }

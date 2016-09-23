@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.data;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -42,5 +43,5 @@ public interface RelationTypes extends IdCollection<IRelationType> {
 
    boolean isOrdered(IRelationType relation) throws OseeCoreException;
 
-   String getDefaultOrderTypeGuid(IRelationType relation) throws OseeCoreException;
+   RelationSorter getDefaultOrderTypeGuid(IRelationType relation);
 }

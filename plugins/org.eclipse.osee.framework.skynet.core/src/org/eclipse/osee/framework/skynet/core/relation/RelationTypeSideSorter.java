@@ -77,26 +77,12 @@ public class RelationTypeSideSorter extends RelationTypeSide {
       return hashCode;
    }
 
-   public RelationType getRelationTypeHard() {
-      return relationType;
-   }
-
-   private IRelationSorter getSorter() throws OseeCoreException {
-      String guid = orderData.getCurrentSorterGuid(getRelationTypeHard(), getSide());
-      return sorterProvider.getRelationOrder(guid);
-   }
-
    public RelationSorter getSorterId() throws OseeCoreException {
-      return getSorter().getSorterId();
-   }
-
-   public String getSorterName() throws OseeCoreException {
-      RelationSorter id = getSorterId();
-      return id.getName();
+      return orderData.getCurrentSorterGuid(relationType, getSide());
    }
 
    public void sort(List<? extends IArtifact> listToOrder) throws OseeCoreException {
-      IRelationSorter order = getSorter();
+      IRelationSorter order = sorterProvider.getRelationOrder(getSorterId());
       List<String> relativeOrder = orderData.getOrderList(getRelationType(), getSide());
       order.sort(listToOrder, relativeOrder);
    }
@@ -137,7 +123,7 @@ public class RelationTypeSideSorter extends RelationTypeSide {
    }
 
    public void setOrder(List<? extends IArtifact> relatives, RelationSorter sorterId) throws OseeCoreException {
-      orderData.store(getRelationTypeHard(), getSide(), sorterId, relatives);
+      orderData.store(relationType, getSide(), sorterId, relatives);
    }
 
    @Override

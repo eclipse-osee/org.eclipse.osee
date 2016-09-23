@@ -29,7 +29,7 @@ import org.junit.runners.Parameterized.Parameters;
 /**
  * Test Case for {@link LexicographicalSorter}, {@link UnorderedSorter}, {@link UserDefinedSorter}, and
  * {@link UserDefinedComparator}
- * 
+ *
  * @author Roberto E. Escobar
  */
 @RunWith(Parameterized.class)
@@ -54,8 +54,7 @@ public class SorterTest {
    @Test
    public void testSorterId() {
       Assert.assertNotNull(message, sorter.getId());
-      Assert.assertEquals(message, expectedOrderId.getGuid(), sorter.getId().getGuid());
-      Assert.assertEquals(message, expectedOrderId.getName(), sorter.getId().getName());
+      Assert.assertEquals(message, expectedOrderId, sorter.getId());
    }
 
    @Test

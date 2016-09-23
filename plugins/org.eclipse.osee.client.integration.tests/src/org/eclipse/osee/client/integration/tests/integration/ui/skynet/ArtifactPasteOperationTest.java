@@ -44,7 +44,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link ArtifactPasteOperation}.
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class ArtifactPasteOperationTest {
@@ -179,15 +179,15 @@ public class ArtifactPasteOperationTest {
 
       List<Artifact> childArtifacts = artifactToCheck.getChildren();
       Assert.assertEquals(hasChildren, !childArtifacts.isEmpty());
-      for (Entry<Pair<String, String>, Pair<String, List<String>>> entry : data.entrySet()) {
+      for (Entry<Pair<String, String>, Pair<RelationSorter, List<String>>> entry : data.entrySet()) {
          String relationType = entry.getKey().getFirst();
          String relationSide = entry.getKey().getSecond();
-         String orderGuid = entry.getValue().getFirst();
+         RelationSorter orderGuid = entry.getValue().getFirst();
          List<String> guids = entry.getValue().getSecond();
 
          Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getName(), relationType);
          Assert.assertEquals(RelationSide.SIDE_B.name(), relationSide);
-         Assert.assertEquals(expectedOrderType.getGuid(), orderGuid);
+         Assert.assertEquals(expectedOrderType, orderGuid);
          if (hasChildren && expectedOrderType == RelationOrderBaseTypes.USER_DEFINED) {
             Assert.assertEquals(childArtifacts.size(), guids.size());
             for (int index = 0; index < guids.size(); index++) {
