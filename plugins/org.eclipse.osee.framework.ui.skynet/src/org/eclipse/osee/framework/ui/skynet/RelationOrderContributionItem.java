@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -43,7 +43,7 @@ public class RelationOrderContributionItem extends ContributionItem {
    private static final String MENU_TEXT = "&Order Relations";
 
    public static interface SelectionListener {
-      public void onSelected(final RelationTypeSideSorter sorter, final IRelationSorterId wasId, final IRelationSorterId isId);
+      public void onSelected(final RelationTypeSideSorter sorter, final RelationSorter wasId, final RelationSorter isId);
    }
 
    private final ISelectionProvider selectionProvider;
@@ -62,8 +62,8 @@ public class RelationOrderContributionItem extends ContributionItem {
       final Menu subMenu = new Menu(menu);
       relationOrderMenuItem.setMenu(subMenu);
 
-      List<IRelationSorterId> orderTypes = RelationManager.getRelationOrderTypes();
-      for (IRelationSorterId id : orderTypes) {
+      List<RelationSorter> orderTypes = RelationManager.getRelationOrderTypes();
+      for (RelationSorter id : orderTypes) {
          createMenuItem(subMenu, id);
       }
 
@@ -89,7 +89,7 @@ public class RelationOrderContributionItem extends ContributionItem {
 
          @Override
          public void widgetArmed(ArmEvent e) {
-            IRelationSorterId sorterId = getSelectedSorterId();
+            RelationSorter sorterId = getSelectedSorterId();
             if (sorterId != null) {
                String orderGuid = sorterId.getGuid();
                for (MenuItem item : subMenu.getItems()) {
@@ -121,7 +121,7 @@ public class RelationOrderContributionItem extends ContributionItem {
       return result;
    }
 
-   private void notifyListeners(final RelationTypeSideSorter sorter, final IRelationSorterId wasId, final IRelationSorterId isId) {
+   private void notifyListeners(final RelationTypeSideSorter sorter, final RelationSorter wasId, final RelationSorter isId) {
       for (SelectionListener listener : listeners) {
          try {
             listener.onSelected(sorter, wasId, isId);
@@ -136,8 +136,8 @@ public class RelationOrderContributionItem extends ContributionItem {
       return true;
    }
 
-   private IRelationSorterId getSelectedSorterId() {
-      IRelationSorterId sorterId = null;
+   private RelationSorter getSelectedSorterId() {
+      RelationSorter sorterId = null;
       RelationTypeSideSorter sorter = getSelected();
       if (sorter != null) {
          try {
@@ -161,7 +161,7 @@ public class RelationOrderContributionItem extends ContributionItem {
       return selectedSorter;
    }
 
-   private void createMenuItem(final Menu menu, final IRelationSorterId id) {
+   private void createMenuItem(final Menu menu, final RelationSorter id) {
       final MenuItem menuItem = new MenuItem(menu, SWT.CHECK);
       menuItem.setText(id.getName());
       menuItem.setData(id.getGuid());
@@ -173,7 +173,7 @@ public class RelationOrderContributionItem extends ContributionItem {
             RelationTypeSideSorter sorter = getSelected();
             if (sorter != null) {
                try {
-                  IRelationSorterId sorterId = sorter.getSorterId();
+                  RelationSorter sorterId = sorter.getSorterId();
                   if (!id.getGuid().equals(sorterId.getGuid())) {
                      Artifact artifact = sorter.getArtifact();
                      artifact.setRelationOrder(sorter, id);

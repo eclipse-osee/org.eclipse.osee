@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -42,7 +42,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
    private final IArtifactImportResolver artifactResolver;
    private final Map<RoughArtifact, Artifact> roughToRealArtifact;
    private final Artifact destinationArtifact;
-   private final IRelationSorterId importArtifactOrder;
+   private final RelationSorter importArtifactOrder;
    private final boolean deleteUnmatchedArtifacts;
    private Collection<Artifact> unmatchedArtifacts;
    private final IArtifactExtractor extractor;

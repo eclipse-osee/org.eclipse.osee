@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.relation.sorter;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 
 /**
@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.Identifiable;
  */
 public interface Sorter {
 
-   IRelationSorterId getId();
+   RelationSorter getId();
 
    void sort(List<? extends Identifiable<String>> relatives, List<String> relativeSequence);
 }

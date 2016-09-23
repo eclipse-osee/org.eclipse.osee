@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -393,9 +393,9 @@ public class RelationLink implements HasBranch {
       RelationOrderData leftData = factory.createRelationOrderData(aArtifact);
       RelationOrderData rightData = factory.createRelationOrderData(bArtifact);
 
-      IRelationSorterId leftSorter =
+      RelationSorter leftSorter =
          RelationOrderBaseTypes.getFromGuid(leftData.getCurrentSorterGuid(getRelationType(), getSide(aArtifact)));
-      IRelationSorterId rightSorter =
+      RelationSorter rightSorter =
          RelationOrderBaseTypes.getFromGuid(rightData.getCurrentSorterGuid(getRelationType(), getSide(bArtifact)));
 
       return rightSorter.equals(USER_DEFINED) && leftSorter.equals(USER_DEFINED);

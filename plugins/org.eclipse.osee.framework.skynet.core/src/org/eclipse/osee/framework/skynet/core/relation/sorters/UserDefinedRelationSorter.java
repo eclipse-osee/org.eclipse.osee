@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.relation.sorters;
 
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 public class UserDefinedRelationSorter implements IRelationSorter {
 
    @Override
-   public IRelationSorterId getSorterId() {
+   public RelationSorter getSorterId() {
       return RelationOrderBaseTypes.USER_DEFINED;
    }
 

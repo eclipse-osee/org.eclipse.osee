@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
@@ -86,12 +86,12 @@ public class RelationTypeSideSorter extends RelationTypeSide {
       return sorterProvider.getRelationOrder(guid);
    }
 
-   public IRelationSorterId getSorterId() throws OseeCoreException {
+   public RelationSorter getSorterId() throws OseeCoreException {
       return getSorter().getSorterId();
    }
 
    public String getSorterName() throws OseeCoreException {
-      IRelationSorterId id = getSorterId();
+      RelationSorter id = getSorterId();
       return id.getName();
    }
 
@@ -102,8 +102,8 @@ public class RelationTypeSideSorter extends RelationTypeSide {
    }
 
    @SuppressWarnings("unchecked")
-   public void addItem(IRelationSorterId sorterId, IArtifact itemToAdd) throws OseeCoreException {
-      IRelationSorterId sorterIdToUse = sorterId;
+   public void addItem(RelationSorter sorterId, IArtifact itemToAdd) throws OseeCoreException {
+      RelationSorter sorterIdToUse = sorterId;
       if (sorterIdToUse == RelationOrderBaseTypes.PREEXISTING) {
          sorterIdToUse = getSorterId();
       }
@@ -120,8 +120,8 @@ public class RelationTypeSideSorter extends RelationTypeSide {
    }
 
    @SuppressWarnings("unchecked")
-   public void removeItem(IRelationSorterId sorterId, IArtifact itemToRemove) throws OseeCoreException {
-      IRelationSorterId sorterIdToUse = sorterId;
+   public void removeItem(RelationSorter sorterId, IArtifact itemToRemove) throws OseeCoreException {
+      RelationSorter sorterIdToUse = sorterId;
       if (sorterIdToUse == null) {
          sorterIdToUse = getSorterId();
       }
@@ -136,13 +136,13 @@ public class RelationTypeSideSorter extends RelationTypeSide {
       setOrder(relatives, sorterIdToUse);
    }
 
-   public void setOrder(List<? extends IArtifact> relatives, IRelationSorterId sorterId) throws OseeCoreException {
+   public void setOrder(List<? extends IArtifact> relatives, RelationSorter sorterId) throws OseeCoreException {
       orderData.store(getRelationTypeHard(), getSide(), sorterId, relatives);
    }
 
    @Override
    public String toString() {
-      IRelationSorterId sorterId = null;
+      RelationSorter sorterId = null;
       try {
          sorterId = getSorterId();
       } catch (Exception ex) {

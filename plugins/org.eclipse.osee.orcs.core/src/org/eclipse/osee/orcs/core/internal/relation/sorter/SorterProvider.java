@@ -17,7 +17,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.jdk.core.type.Named;
@@ -32,8 +32,8 @@ import org.eclipse.osee.orcs.utility.SortOrder;
  */
 public class SorterProvider {
 
-   private final Map<IRelationSorterId, Sorter> orderMap = new HashMap<>();
-   private final List<IRelationSorterId> ids = new ArrayList<>();
+   private final Map<RelationSorter, Sorter> orderMap = new HashMap<>();
+   private final List<RelationSorter> ids = new ArrayList<>();
 
    private final RelationTypes typeCache;
 
@@ -56,7 +56,7 @@ public class SorterProvider {
       orderMap.put(order.getId(), order);
    }
 
-   public IRelationSorterId getDefaultSorterId(IRelationType relationType) throws OseeCoreException {
+   public RelationSorter getDefaultSorterId(IRelationType relationType) throws OseeCoreException {
       Conditions.checkNotNull(relationType, "type");
       String orderTypeGuid = typeCache.getDefaultOrderTypeGuid(relationType);
       Conditions.checkNotNullOrEmpty(orderTypeGuid, "defaultOrderTypeGuid", "Invalid default order type uuid for [%s]",
@@ -64,16 +64,16 @@ public class SorterProvider {
       return RelationOrderBaseTypes.getFromGuid(orderTypeGuid);
    }
 
-   public List<IRelationSorterId> getSorterIds() {
+   public List<RelationSorter> getSorterIds() {
       return ids;
    }
 
-   public boolean exists(IRelationSorterId sorterId) throws OseeCoreException {
+   public boolean exists(RelationSorter sorterId) throws OseeCoreException {
       Conditions.checkNotNull(sorterId, "sorterId");
       return orderMap.containsKey(sorterId);
    }
 
-   public Sorter getSorter(IRelationSorterId sorterId) throws OseeCoreException {
+   public Sorter getSorter(RelationSorter sorterId) throws OseeCoreException {
       Conditions.checkNotNull(sorterId, "sorterId");
       Sorter sorter = orderMap.get(sorterId);
       Conditions.checkNotNull(sorter, "sorter", "Unable to locate sorter with sorterId %s", sorterId);

@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -189,7 +189,7 @@ public class OrderManagerTest {
 
       assertEquals(RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC, orderManager.getSorterId(typeSide2));
 
-      IRelationSorterId actual = orderManager.getSorterId(typeSide3);
+      RelationSorter actual = orderManager.getSorterId(typeSide3);
       assertEquals(RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC, actual);
    }
 

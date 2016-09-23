@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -41,8 +41,8 @@ public class RelationOrderMergeUtility {
          RelationType type = RelationTypeManager.getType(typeSide.getFirst());
          RelationSide side = RelationSide.fromString(typeSide.getSecond());
          RelationTypeSide rts = new RelationTypeSide(type, side);
-         IRelationSorterId leftSorter = RelationOrderBaseTypes.getFromGuid(leftData.getCurrentSorterGuid(type, side));
-         IRelationSorterId rightSorter = RelationOrderBaseTypes.getFromGuid(rightData.getCurrentSorterGuid(type, side));
+         RelationSorter leftSorter = RelationOrderBaseTypes.getFromGuid(leftData.getCurrentSorterGuid(type, side));
+         RelationSorter rightSorter = RelationOrderBaseTypes.getFromGuid(rightData.getCurrentSorterGuid(type, side));
 
          List<String> order = null;
          if (rightSorter.equals(USER_DEFINED) && leftSorter.equals(USER_DEFINED)) {

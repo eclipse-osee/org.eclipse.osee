@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.relation.sorter;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 
@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 public class UnorderedSorter implements Sorter {
 
    @Override
-   public IRelationSorterId getId() {
+   public RelationSorter getId() {
       return RelationOrderBaseTypes.UNORDERED;
    }
 

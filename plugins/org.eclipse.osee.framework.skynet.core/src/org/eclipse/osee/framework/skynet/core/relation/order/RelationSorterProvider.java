@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -64,9 +64,9 @@ public class RelationSorterProvider {
       return order;
    }
 
-   public List<IRelationSorterId> getAllRelationOrderIds() {
+   public List<RelationSorter> getAllRelationOrderIds() {
       Collection<IRelationSorter> relationOrder = orderMap.values();
-      List<IRelationSorterId> ids = new ArrayList<>();
+      List<RelationSorter> ids = new ArrayList<>();
       for (IRelationSorter order : relationOrder) {
          ids.add(order.getSorterId());
       }

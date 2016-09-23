@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
@@ -122,9 +122,9 @@ public interface TransactionBuilder {
 
    void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale) throws OseeCoreException;
 
-   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, IRelationSorterId sortType) throws OseeCoreException;
+   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, RelationSorter sortType) throws OseeCoreException;
 
-   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale, IRelationSorterId sortType) throws OseeCoreException;
+   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale, RelationSorter sortType) throws OseeCoreException;
 
    void setRelations(ArtifactId artA, IRelationType relType, Iterable<? extends ArtifactId> artBs) throws OseeCoreException;
 

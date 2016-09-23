@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.mocks.DataFactory;
@@ -36,12 +36,12 @@ public class RelationSorterTest {
 
    private final String message;
    private final IRelationSorter sorter;
-   private final IRelationSorterId expectedOrderId;
+   private final RelationSorter expectedOrderId;
    private final List<IArtifact> expectedOrder;
    private final List<String> currentItems;
    private final List<IArtifact> itemsToOrder;
 
-   public RelationSorterTest(String message, IRelationSorter sorter, IRelationSorterId expectedOrderId, List<String> currentItems, List<IArtifact> itemsToOrder, List<IArtifact> expectedOrder) {
+   public RelationSorterTest(String message, IRelationSorter sorter, RelationSorter expectedOrderId, List<String> currentItems, List<IArtifact> itemsToOrder, List<IArtifact> expectedOrder) {
       this.sorter = sorter;
       this.message = message;
       this.expectedOrderId = expectedOrderId;
@@ -109,7 +109,7 @@ public class RelationSorterTest {
       IArtifact art3 = DataFactory.createArtifact(names[2], GUID.create());
       IArtifact art4 = DataFactory.createArtifact(names[3], GUID.create());
 
-      IRelationSorterId orderId =
+      RelationSorter orderId =
          mode == SortMode.ASCENDING ? RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC : RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
 
       List<IArtifact> itemsToOrder = Arrays.asList(art3, art1, art4, art2);

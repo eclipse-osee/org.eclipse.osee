@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -72,9 +72,9 @@ public interface RelationManager {
 
    void relate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, String rationale) throws OseeCoreException;
 
-   void relate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, IRelationSorterId sortType) throws OseeCoreException;
+   void relate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, RelationSorter sortType) throws OseeCoreException;
 
-   void relate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, String rationale, IRelationSorterId sortType) throws OseeCoreException;
+   void relate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, String rationale, RelationSorter sortType) throws OseeCoreException;
 
    void setRationale(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, String rationale) throws OseeCoreException;
 

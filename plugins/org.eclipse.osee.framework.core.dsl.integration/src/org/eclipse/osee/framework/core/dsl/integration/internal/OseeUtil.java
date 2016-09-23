@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
@@ -92,7 +92,7 @@ public final class OseeUtil {
    }
 
    public static String getRelationOrderType(String guid) throws OseeCoreException {
-      IRelationSorterId type = RelationOrderBaseTypes.getFromGuid(guid);
+      RelationSorter type = RelationOrderBaseTypes.getFromGuid(guid);
       return type.getName().replaceAll(" ", "_");
    }
 

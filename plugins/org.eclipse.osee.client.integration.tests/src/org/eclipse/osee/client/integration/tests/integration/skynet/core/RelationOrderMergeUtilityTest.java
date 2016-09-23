@@ -19,7 +19,7 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -57,8 +57,8 @@ public class RelationOrderMergeUtilityTest {
    public final OseeHousekeepingRule oseeHousekeeping = new OseeHousekeepingRule();
 
    private final IRelationTypeSide defaultHierarchy = CoreRelationTypes.Default_Hierarchical__Child;
-   private final IRelationSorterId ascOrder = RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC;
-   private final IRelationSorterId descOrder = RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
+   private final RelationSorter ascOrder = RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC;
+   private final RelationSorter descOrder = RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
 
    private RelationType hierType;
    private RelationSide hierSide;
@@ -156,7 +156,7 @@ public class RelationOrderMergeUtilityTest {
       Assert.assertNull(mergedOrder);
    }
 
-   private void setAsChild(Artifact parent, Artifact child, IRelationSorterId sorter) throws OseeCoreException {
+   private void setAsChild(Artifact parent, Artifact child, RelationSorter sorter) throws OseeCoreException {
       child.deleteRelations(CoreRelationTypes.Default_Hierarchical__Parent);
       parent.addRelation(sorter, CoreRelationTypes.Default_Hierarchical__Child, child);
    }

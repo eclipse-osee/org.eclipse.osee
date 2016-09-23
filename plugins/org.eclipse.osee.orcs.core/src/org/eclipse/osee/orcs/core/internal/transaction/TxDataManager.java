@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -359,13 +359,13 @@ public class TxDataManager {
       relationManager.relate(txData.getSession(), asArtifactA, type, asArtifactB, rationale);
    }
 
-   public void relate(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB, IRelationSorterId sortType) throws OseeCoreException {
+   public void relate(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB, RelationSorter sortType) throws OseeCoreException {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
       relationManager.relate(txData.getSession(), asArtifactA, type, asArtifactB, sortType);
    }
 
-   public void relate(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB, String rationale, IRelationSorterId sortType) throws OseeCoreException {
+   public void relate(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB, String rationale, RelationSorter sortType) throws OseeCoreException {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
       relationManager.relate(txData.getSession(), asArtifactA, type, asArtifactB, rationale, sortType);

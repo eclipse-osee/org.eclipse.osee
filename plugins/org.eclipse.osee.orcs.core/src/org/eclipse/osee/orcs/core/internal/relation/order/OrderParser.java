@@ -26,7 +26,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -121,7 +121,7 @@ public class OrderParser {
 
                   RelationSide side = RelationSide.fromString(relationSide);
                   IRelationTypeSide typeSide = TokenFactory.createRelationTypeSide(side, type.getId(), type.getName());
-                  IRelationSorterId sorterId = RelationOrderBaseTypes.getFromGuid(orderType);
+                  RelationSorter sorterId = RelationOrderBaseTypes.getFromGuid(orderType);
                   OrderData orderData = new OrderData(sorterId, list);
                   hasOrderData.add(typeSide, orderData);
                }

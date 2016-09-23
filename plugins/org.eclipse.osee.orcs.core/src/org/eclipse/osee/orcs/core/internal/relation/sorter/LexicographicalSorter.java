@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.core.internal.relation.sorter;
 
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.orcs.utility.NameComparator;
@@ -25,7 +25,7 @@ import org.eclipse.osee.orcs.utility.SortOrder;
 public class LexicographicalSorter implements Sorter {
 
    private final NameComparator comparator;
-   private final IRelationSorterId id;
+   private final RelationSorter id;
 
    public LexicographicalSorter(SortOrder sortOrder) {
       this.comparator = new NameComparator(sortOrder);
@@ -37,7 +37,7 @@ public class LexicographicalSorter implements Sorter {
    }
 
    @Override
-   public IRelationSorterId getId() {
+   public RelationSorter getId() {
       return id;
    }
 

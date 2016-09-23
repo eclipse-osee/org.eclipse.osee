@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -145,7 +145,7 @@ public class ArtifactPasteOperationTest {
       }
    }
 
-   private void checkPaste(Artifact destination, String expectedChild, Artifact copiedArtifact, IRelationSorterId expectedOrderType, String... names) throws OseeCoreException {
+   private void checkPaste(Artifact destination, String expectedChild, Artifact copiedArtifact, RelationSorter expectedOrderType, String... names) throws OseeCoreException {
       Artifact newArtifact = destination.getChild(expectedChild);
       Assert.assertNotNull(newArtifact);
       Assert.assertTrue(!copiedArtifact.getGuid().equals(newArtifact.getGuid()));
@@ -173,7 +173,7 @@ public class ArtifactPasteOperationTest {
       checkRelationOrder(destination, RelationOrderBaseTypes.USER_DEFINED, true);
    }
 
-   private void checkRelationOrder(Artifact artifactToCheck, IRelationSorterId expectedOrderType, boolean hasChildren) throws OseeCoreException {
+   private void checkRelationOrder(Artifact artifactToCheck, RelationSorter expectedOrderType, boolean hasChildren) throws OseeCoreException {
       RelationOrderData data = relationOrderFactory.createRelationOrderData(artifactToCheck);
       Assert.assertEquals(1, data.size());
 

@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.relation.order;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
  */
 public interface IRelationSorter {
 
-   IRelationSorterId getSorterId();
+   RelationSorter getSorterId();
 
    void sort(List<? extends IArtifact> relatives, List<String> relativeSequence);
 }

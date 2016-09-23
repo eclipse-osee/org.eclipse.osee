@@ -22,7 +22,7 @@ import java.util.Map.Entry;
 import java.util.Random;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -110,7 +110,7 @@ public class RelationTypeSideSorterTest {
    @Test
    public void test05GetSorterId() throws OseeCoreException {
       String sorterGuid = orderData.getCurrentSorterGuid(relationType, relationSide);
-      IRelationSorterId expected = sorterProvider.getRelationOrder(sorterGuid).getSorterId();
+      RelationSorter expected = sorterProvider.getRelationOrder(sorterGuid).getSorterId();
       Assert.assertNotNull(sorterGuid);
       Assert.assertEquals(expected, sorter.getSorterId());
       Assert.assertEquals(expected.getGuid(), sorter.getSorterId().getGuid());
@@ -120,7 +120,7 @@ public class RelationTypeSideSorterTest {
    @Test
    public void test06SorterName() throws OseeCoreException {
       String sorterGuid = orderData.getCurrentSorterGuid(relationType, relationSide);
-      IRelationSorterId expected = sorterProvider.getRelationOrder(sorterGuid).getSorterId();
+      RelationSorter expected = sorterProvider.getRelationOrder(sorterGuid).getSorterId();
       Assert.assertNotNull(sorterGuid);
       Assert.assertEquals(expected.getName(), sorter.getSorterName());
    }
@@ -175,7 +175,7 @@ public class RelationTypeSideSorterTest {
       MockArtifactWithRelations artifactMock = (MockArtifactWithRelations) sorter.getIArtifact();
       artifactMock.setRelatedArtifacts(sorter.getRelationType(), startingArtifacts);
 
-      for (IRelationSorterId sorterId : sorterProvider.getAllRelationOrderIds()) {
+      for (RelationSorter sorterId : sorterProvider.getAllRelationOrderIds()) {
          IRelationSorter relationSorter = sorterProvider.getRelationOrder(sorterId.getGuid());
 
          List<IArtifact> itemsToOrder = new ArrayList<>(startingArtifacts);
@@ -202,7 +202,7 @@ public class RelationTypeSideSorterTest {
    public void test11ToString() throws OseeCoreException {
       String artGuid = sorter.getIArtifact().getGuid();
       String sorterGuid = orderData.getCurrentSorterGuid(relationType, relationSide);
-      IRelationSorterId expectedId = sorterProvider.getRelationOrder(sorterGuid).getSorterId();
+      RelationSorter expectedId = sorterProvider.getRelationOrder(sorterGuid).getSorterId();
       String expectedToString =
          String.format("Relation Sorter {relationType=%s, relationSide=[%s], artifact=[%s], sorterId=%s}", relationType,
             relationSide, artGuid, expectedId);

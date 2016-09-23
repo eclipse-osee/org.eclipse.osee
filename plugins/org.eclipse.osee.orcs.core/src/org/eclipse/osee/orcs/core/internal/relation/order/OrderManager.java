@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -106,10 +106,10 @@ public class OrderManager implements HasOrderData {
       return data != null ? data.getOrderIds() : Collections.<String> emptyList();
    }
 
-   public IRelationSorterId getSorterId(IRelationTypeSide typeAndSide) throws OseeCoreException {
+   public RelationSorter getSorterId(IRelationTypeSide typeAndSide) throws OseeCoreException {
       Conditions.checkNotNull(typeAndSide, "type and side key");
       OrderData data = orderDataMap.get(typeAndSide);
-      IRelationSorterId sorterId = null;
+      RelationSorter sorterId = null;
       if (data != null) {
          sorterId = data.getSorterId();
       } else {
@@ -118,13 +118,13 @@ public class OrderManager implements HasOrderData {
       return sorterId;
    }
 
-   private IRelationSorterId getDefaultSorterId(IRelationType type) throws OseeCoreException {
+   private RelationSorter getDefaultSorterId(IRelationType type) throws OseeCoreException {
       return sorterProvider.getDefaultSorterId(type);
    }
 
    public void sort(IRelationTypeSide typeAndSide, List<? extends Identifiable<String>> listToOrder) throws OseeCoreException {
       if (listToOrder.size() > 1) {
-         IRelationSorterId sorterId = getSorterId(typeAndSide);
+         RelationSorter sorterId = getSorterId(typeAndSide);
          List<String> relativeOrder = getOrderIds(typeAndSide);
 
          Sorter order = sorterProvider.getSorter(sorterId);
@@ -133,11 +133,11 @@ public class OrderManager implements HasOrderData {
    }
 
    public void setOrder(IRelationTypeSide typeAndSide, List<? extends Identifiable<String>> relativeSequence) throws OseeCoreException {
-      IRelationSorterId sorterId = getSorterId(typeAndSide);
+      RelationSorter sorterId = getSorterId(typeAndSide);
       setOrder(typeAndSide, sorterId, relativeSequence);
    }
 
-   public void setOrder(IRelationTypeSide typeAndSide, IRelationSorterId sorterId, List<? extends Identifiable<String>> relativeSequence) throws OseeCoreException {
+   public void setOrder(IRelationTypeSide typeAndSide, RelationSorter sorterId, List<? extends Identifiable<String>> relativeSequence) throws OseeCoreException {
       List<String> sequence;
       if (!relativeSequence.isEmpty()) {
          sequence = new ArrayList<>();
@@ -150,7 +150,7 @@ public class OrderManager implements HasOrderData {
       setAndStoreOrder(typeAndSide, sorterId, sequence);
    }
 
-   private void setAndStoreOrder(IRelationTypeSide typeAndSide, IRelationSorterId requestedSorterId, List<String> relativeSequence) throws OseeCoreException {
+   private void setAndStoreOrder(IRelationTypeSide typeAndSide, RelationSorter requestedSorterId, List<String> relativeSequence) throws OseeCoreException {
       boolean isDifferentSorterId = isDifferentSorterId(typeAndSide, requestedSorterId);
       boolean changingRelatives = isRelativeOrderChange(typeAndSide, requestedSorterId, relativeSequence);
 
@@ -174,17 +174,17 @@ public class OrderManager implements HasOrderData {
       accessor.store(this, changeType);
    }
 
-   private boolean isDifferentSorterId(IRelationTypeSide typeAndSide, IRelationSorterId newSorterId) throws OseeCoreException {
-      IRelationSorterId currentSorter = getSorterId(typeAndSide);
+   private boolean isDifferentSorterId(IRelationTypeSide typeAndSide, RelationSorter newSorterId) throws OseeCoreException {
+      RelationSorter currentSorter = getSorterId(typeAndSide);
       return !currentSorter.equals(newSorterId);
    }
 
-   private boolean isSetToDefaultSorter(IRelationTypeSide typeAndSide, IRelationSorterId sorterId) throws OseeCoreException {
-      IRelationSorterId defaultSorterId = getDefaultSorterId(typeAndSide);
+   private boolean isSetToDefaultSorter(IRelationTypeSide typeAndSide, RelationSorter sorterId) throws OseeCoreException {
+      RelationSorter defaultSorterId = getDefaultSorterId(typeAndSide);
       return defaultSorterId.equals(sorterId);
    }
 
-   private boolean isRelativeOrderChange(IRelationTypeSide typeAndSide, IRelationSorterId sorterId, List<String> relativeSequence) throws OseeCoreException {
+   private boolean isRelativeOrderChange(IRelationTypeSide typeAndSide, RelationSorter sorterId, List<String> relativeSequence) throws OseeCoreException {
       boolean result = false;
       if (sorterId.equals(RelationOrderBaseTypes.USER_DEFINED)) {
          List<String> currentOrder = getOrderIds(typeAndSide);

@@ -12,16 +12,16 @@ package org.eclipse.osee.framework.skynet.core.relation.order;
 
 import java.io.Serializable;
 import java.util.Comparator;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 
 /**
  * @author Andrew M. Finkbeiner
  */
-public class RelationSorterIdComparator implements Serializable, Comparator<IRelationSorterId> {
+public class RelationSorterIdComparator implements Serializable, Comparator<RelationSorter> {
    private static final long serialVersionUID = -8364743688821990429L;
 
    @Override
-   public int compare(IRelationSorterId o1, IRelationSorterId o2) {
+   public int compare(RelationSorter o1, RelationSorter o2) {
       return o1.getName().compareToIgnoreCase(o2.getName());
    }
 

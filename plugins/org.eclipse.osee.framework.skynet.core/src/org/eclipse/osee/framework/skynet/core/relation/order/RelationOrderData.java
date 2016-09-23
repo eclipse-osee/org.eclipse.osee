@@ -18,7 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -88,7 +88,7 @@ public class RelationOrderData {
       return lists.get(type.getName(), side.name());
    }
 
-   public void addOrderList(IRelationType type, RelationSide side, IRelationSorterId sorterId, List<String> guidList) {
+   public void addOrderList(IRelationType type, RelationSide side, RelationSorter sorterId, List<String> guidList) {
       addOrderList(type.getName(), side.name(), sorterId.getGuid(), guidList);
    }
 
@@ -110,11 +110,11 @@ public class RelationOrderData {
       return lists.size();
    }
 
-   public void store(RelationType type, RelationSide side, IRelationSorterId requestedSorterId, List<? extends IArtifact> relativeSequence) throws OseeCoreException {
+   public void store(RelationType type, RelationSide side, RelationSorter requestedSorterId, List<? extends IArtifact> relativeSequence) throws OseeCoreException {
       storeFromGuids(type, side, requestedSorterId, Artifacts.toGuids(relativeSequence));
    }
 
-   public void storeFromGuids(RelationType type, RelationSide side, IRelationSorterId requestedSorterId, List<String> relativeSequence) throws OseeCoreException {
+   public void storeFromGuids(RelationType type, RelationSide side, RelationSorter requestedSorterId, List<String> relativeSequence) throws OseeCoreException {
       boolean isDifferentSorterId = isDifferentSorterId(type, side, requestedSorterId);
       boolean changingRelatives = isRelativeOrderChange(type, side, requestedSorterId, relativeSequence);
       if (isDifferentSorterId || changingRelatives) {
@@ -137,16 +137,16 @@ public class RelationOrderData {
       }
    }
 
-   protected boolean isRevertingToDefaultTypeOrder(RelationType type, RelationSide side, IRelationSorterId sorterId) throws OseeCoreException {
+   protected boolean isRevertingToDefaultTypeOrder(RelationType type, RelationSide side, RelationSorter sorterId) throws OseeCoreException {
       String defaultOrderGuid = type.getDefaultOrderTypeGuid();
       return sorterId.getGuid().equals(defaultOrderGuid) && isDifferentSorterId(type, side, sorterId);
    }
 
-   protected boolean isRelativeOrderChange(IRelationType type, RelationSide side, IRelationSorterId sorterId, List<String> relativeSequence) throws OseeCoreException {
+   protected boolean isRelativeOrderChange(IRelationType type, RelationSide side, RelationSorter sorterId, List<String> relativeSequence) throws OseeCoreException {
       return sorterId.equals(RelationOrderBaseTypes.USER_DEFINED) && !relativeSequence.equals(getOrderList(type, side));
    }
 
-   protected boolean isDifferentSorterId(RelationType type, RelationSide side, IRelationSorterId sorterId) throws OseeCoreException {
+   protected boolean isDifferentSorterId(RelationType type, RelationSide side, RelationSorter sorterId) throws OseeCoreException {
       String currentSorterGuid = getCurrentSorterGuid(type, side);
       return !sorterId.getGuid().equals(currentSorterGuid);
    }

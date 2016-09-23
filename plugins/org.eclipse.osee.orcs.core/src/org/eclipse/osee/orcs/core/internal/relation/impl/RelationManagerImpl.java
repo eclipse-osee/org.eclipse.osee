@@ -34,7 +34,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -224,12 +224,12 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
-   public void relate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, IRelationSorterId sortType) throws OseeCoreException {
+   public void relate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, RelationSorter sortType) throws OseeCoreException {
       relate(session, aNode, type, bNode, emptyString(), sortType);
    }
 
    @Override
-   public void relate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, String rationale, IRelationSorterId sortType) throws OseeCoreException {
+   public void relate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, String rationale, RelationSorter sortType) throws OseeCoreException {
       checkBranch(aNode, bNode);
       checkRelateSelf(aNode, bNode);
       GraphData graph = getGraph(aNode, bNode);
@@ -430,12 +430,12 @@ public class RelationManagerImpl implements RelationManager {
       order(session, type, node1, side, RelationOrderBaseTypes.PREEXISTING, op, node2);
    }
 
-   private void order(OrcsSession session, IRelationType type, RelationNode node1, RelationSide side, IRelationSorterId sorterId, OrderOp op, Collection<? extends RelationNode> node2) throws OseeCoreException {
+   private void order(OrcsSession session, IRelationType type, RelationNode node1, RelationSide side, RelationSorter sorterId, OrderOp op, Collection<? extends RelationNode> node2) throws OseeCoreException {
       OrderManager orderManager = orderFactory.createOrderManager(node1);
 
       RelationSide orderSide = side.oppositeSide();
       IRelationTypeSide key = asTypeSide(type, orderSide);
-      IRelationSorterId sorterIdToUse = sorterId;
+      RelationSorter sorterIdToUse = sorterId;
       if (sorterIdToUse == RelationOrderBaseTypes.PREEXISTING) {
          sorterIdToUse = orderManager.getSorterId(key);
       }

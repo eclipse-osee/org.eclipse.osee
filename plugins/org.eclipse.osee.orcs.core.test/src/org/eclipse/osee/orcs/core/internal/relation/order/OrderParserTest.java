@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -237,21 +237,21 @@ public class OrderParserTest {
       assertEquals(DATA_4, actual);
    }
 
-   private void add(Map<IRelationTypeSide, OrderData> data, Long typeId, String typeName, RelationSide side, IRelationSorterId sorter) {
+   private void add(Map<IRelationTypeSide, OrderData> data, Long typeId, String typeName, RelationSide side, RelationSorter sorter) {
       add(data, typeId, typeName, side, sorter, java.util.Collections.<String> emptyList());
    }
 
-   private void add(Map<IRelationTypeSide, OrderData> data, Long typeId, String typeName, RelationSide side, IRelationSorterId sorter, List<String> list) {
+   private void add(Map<IRelationTypeSide, OrderData> data, Long typeId, String typeName, RelationSide side, RelationSorter sorter, List<String> list) {
       IRelationTypeSide typeSide = TokenFactory.createRelationTypeSide(side, typeId, typeName);
       OrderData orderData = new OrderData(sorter, list);
       data.put(typeSide, orderData);
    }
 
-   private void verifyData(int index, Long typeId, RelationSide side, IRelationSorterId sorter) {
+   private void verifyData(int index, Long typeId, RelationSide side, RelationSorter sorter) {
       verifyData(index, typeId, side, sorter, java.util.Collections.<String> emptyList());
    }
 
-   private void verifyData(int index, Long typeId, RelationSide side, IRelationSorterId sorter, List<String> list) {
+   private void verifyData(int index, Long typeId, RelationSide side, RelationSorter sorter, List<String> list) {
       IRelationTypeSide actualTypeSide = typeSideCaptor.getAllValues().get(index);
       OrderData actualData = orderDataCaptor.getAllValues().get(index);
 

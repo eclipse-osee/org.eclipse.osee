@@ -94,11 +94,11 @@ public final class TokenFactory {
       return new BranchToken(Lib.generateUuid(), null);
    }
 
-   public static IRelationSorterId createSorterId(String guid, String name) {
+   public static RelationSorter createSorterId(String guid, String name) {
       return new SorterIdToken(guid, name);
    }
 
-   private final static class SorterIdToken extends NamedIdentity<String> implements IRelationSorterId {
+   private final static class SorterIdToken extends NamedIdentity<String> implements RelationSorter {
 
       public SorterIdToken(String guid, String name) {
          super(guid, name);

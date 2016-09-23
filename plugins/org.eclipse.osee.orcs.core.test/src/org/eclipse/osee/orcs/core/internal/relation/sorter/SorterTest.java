@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
@@ -37,12 +37,12 @@ public class SorterTest {
 
    private final String message;
    private final Sorter sorter;
-   private final IRelationSorterId expectedOrderId;
+   private final RelationSorter expectedOrderId;
    private final List<Identifiable<String>> expectedOrder;
    private final List<String> currentItems;
    private final List<Identifiable<String>> itemsToOrder;
 
-   public SorterTest(String message, Sorter sorter, IRelationSorterId expectedOrderId, List<String> currentItems, List<Identifiable<String>> itemsToOrder, List<Identifiable<String>> expectedOrder) {
+   public SorterTest(String message, Sorter sorter, RelationSorter expectedOrderId, List<String> currentItems, List<Identifiable<String>> itemsToOrder, List<Identifiable<String>> expectedOrder) {
       this.sorter = sorter;
       this.message = message;
       this.expectedOrderId = expectedOrderId;
@@ -110,7 +110,7 @@ public class SorterTest {
       Identifiable<String> art3 = createItem(names[2]);
       Identifiable<String> art4 = createItem(names[3]);
 
-      IRelationSorterId orderId;
+      RelationSorter orderId;
       if (mode.isAscending()) {
          orderId = RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC;
       } else {

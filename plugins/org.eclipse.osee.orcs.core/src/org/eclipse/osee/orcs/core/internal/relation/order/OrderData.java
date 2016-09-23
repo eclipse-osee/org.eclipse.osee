@@ -12,27 +12,27 @@ package org.eclipse.osee.orcs.core.internal.relation.order;
 
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OrderData {
 
-   private IRelationSorterId sorterId;
+   private RelationSorter sorterId;
    private List<String> guids;
 
-   public OrderData(IRelationSorterId sorterId, List<String> guids) {
+   public OrderData(RelationSorter sorterId, List<String> guids) {
       super();
       this.sorterId = sorterId;
       this.guids = guids;
    }
 
-   public void setSorterId(IRelationSorterId sorterId) {
+   public void setSorterId(RelationSorter sorterId) {
       this.sorterId = sorterId;
    }
 
-   public IRelationSorterId getSorterId() {
+   public RelationSorter getSorterId() {
       return sorterId;
    }
 

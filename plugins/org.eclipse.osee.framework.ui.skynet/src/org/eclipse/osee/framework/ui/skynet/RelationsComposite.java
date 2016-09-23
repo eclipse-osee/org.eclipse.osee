@@ -28,7 +28,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -221,7 +221,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
          contributionItem.addListener(new SelectionListener() {
 
             @Override
-            public void onSelected(RelationTypeSideSorter sorter, IRelationSorterId wasId, IRelationSorterId isId) {
+            public void onSelected(RelationTypeSideSorter sorter, RelationSorter wasId, RelationSorter isId) {
                editor.onDirtied();
                Object parent = ((ITreeContentProvider) treeViewer.getContentProvider()).getParent(sorter);
                if (parent != null) {

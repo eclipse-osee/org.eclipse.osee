@@ -11,10 +11,19 @@
 package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
 
 /**
  * @author Andrew M. Finkbeiner
  */
-public interface IRelationSorterId extends Identifiable<String> {
-   // composition interface requires no additional methods,fields
+public interface RelationSorter extends Identifiable<String> {
+
+   public static RelationSorter create(String id, String name) {
+      final class RelationSorterIdImpl extends NamedIdentity<String> implements RelationSorter {
+         public RelationSorterIdImpl(String guid, String name) {
+            super(guid, name);
+         }
+      }
+      return new RelationSorterIdImpl(id, name);
+   }
 }

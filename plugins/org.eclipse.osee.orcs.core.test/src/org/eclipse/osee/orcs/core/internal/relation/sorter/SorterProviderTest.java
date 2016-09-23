@@ -19,7 +19,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -62,13 +62,13 @@ public class SorterProviderTest {
       when(relationTypeCache.getDefaultOrderTypeGuid(CoreRelationTypes.Default_Hierarchical__Child)).thenReturn(
          RelationOrderBaseTypes.USER_DEFINED.getGuid());
 
-      IRelationSorterId actual1 = provider.getDefaultSorterId(CoreRelationTypes.Default_Hierarchical__Child);
+      RelationSorter actual1 = provider.getDefaultSorterId(CoreRelationTypes.Default_Hierarchical__Child);
       assertEquals(RelationOrderBaseTypes.USER_DEFINED, actual1);
 
       when(relationTypeCache.getDefaultOrderTypeGuid(CoreRelationTypes.Users_User)).thenReturn(
          RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC.getGuid());
 
-      IRelationSorterId actual2 = provider.getDefaultSorterId(CoreRelationTypes.Users_User);
+      RelationSorter actual2 = provider.getDefaultSorterId(CoreRelationTypes.Users_User);
       assertEquals(RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC, actual2);
    }
 
@@ -92,7 +92,7 @@ public class SorterProviderTest {
 
    @Test
    public void testGetAllRelationOrderIds() {
-      List<IRelationSorterId> actual = provider.getSorterIds();
+      List<RelationSorter> actual = provider.getSorterIds();
 
       int index = 0;
       assertEquals(RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC, actual.get(index++));
@@ -103,7 +103,7 @@ public class SorterProviderTest {
 
    @Test
    public void testGetRelationOrder() throws OseeCoreException {
-      for (IRelationSorterId sorterId : RelationOrderBaseTypes.values()) {
+      for (RelationSorter sorterId : RelationOrderBaseTypes.values()) {
          Sorter actual = provider.getSorter(sorterId);
          assertEquals(sorterId, actual.getId());
          boolean matches = false;
@@ -134,7 +134,7 @@ public class SorterProviderTest {
    public void testNotFoundExceptions() throws OseeCoreException {
       String randomGuid = GUID.create();
       String idName = "TestSorterId";
-      IRelationSorterId sorterId = TokenFactory.createSorterId(randomGuid, "TestSorterId");
+      RelationSorter sorterId = TokenFactory.createSorterId(randomGuid, "TestSorterId");
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage(
          String.format("sorter cannot be null - Unable to locate sorter with sorterId [%s:%s]", idName, randomGuid));
