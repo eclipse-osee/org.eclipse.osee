@@ -17,6 +17,10 @@
       %license
    </license>
 
+   <includes
+         id="org.eclipse.jdt"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="org.eclipse.equinox.registry" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.common" version="3.2.0" match="compatible"/>
