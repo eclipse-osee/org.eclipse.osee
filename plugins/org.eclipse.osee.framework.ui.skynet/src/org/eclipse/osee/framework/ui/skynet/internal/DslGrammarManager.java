@@ -10,13 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.internal;
 
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
-import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
@@ -26,6 +22,9 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.DslGrammar;
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 
 /**
  * @author Roberto E. Escobar
@@ -84,7 +83,6 @@ public final class DslGrammarManager {
       return result;
    }
 
-   @Nullable
    public static DslGrammar getGrammar(IAttributeType attributeType) throws OseeCoreException {
       Conditions.checkNotNull(attributeType, "attributeType");
 
@@ -145,18 +143,18 @@ public final class DslGrammarManager {
                List<DslGrammar> grammars = extensions.getObjects();
                ImmutableMap<String, DslGrammar> idToGrammar =
                   Maps.uniqueIndex(grammars, new Function<DslGrammar, String>() {
-                  @Override
-                  public String apply(DslGrammar grammar) {
-                     return grammar.getGrammarId();
-                  }
-               });
+                     @Override
+                     public String apply(DslGrammar grammar) {
+                        return grammar.getGrammarId();
+                     }
+                  });
                ImmutableMap<String, DslGrammar> extensionToGrammar =
                   Maps.uniqueIndex(grammars, new Function<DslGrammar, String>() {
-                  @Override
-                  public String apply(DslGrammar grammar) {
-                     return grammar.getExtension();
-                  }
-               });
+                     @Override
+                     public String apply(DslGrammar grammar) {
+                        return grammar.getExtension();
+                     }
+                  });
                return new DslGrammarRegistry(idToGrammar, extensionToGrammar);
             }
 

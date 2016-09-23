@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.util.StringNameSorter;
+import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
 import org.eclipse.swt.SWT;
@@ -35,7 +35,7 @@ public class SprintFilteredListDialog extends FilteredTreeDialog {
 
    public SprintFilteredListDialog(String dialogTitle, String dialogMessage, Collection<? extends IAgileSprint> values) {
       super(dialogTitle, dialogMessage, new ArrayTreeContentProvider(), new StringLabelProvider(),
-         new StringNameSorter());
+         new StringNameComparator());
    }
 
    @Override

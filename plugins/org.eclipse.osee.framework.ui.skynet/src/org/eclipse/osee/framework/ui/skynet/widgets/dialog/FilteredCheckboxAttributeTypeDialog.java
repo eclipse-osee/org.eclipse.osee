@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.util.AttributeTypeNameSorter;
+import org.eclipse.osee.framework.ui.skynet.util.AttributeTypeNameComparator;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -48,7 +48,7 @@ public class FilteredCheckboxAttributeTypeDialog extends FilteredCheckboxTreeDia
    }
 
    public FilteredCheckboxAttributeTypeDialog(String title, String message, Collection<? extends IAttributeType> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider) {
-      super(title, message, contentProvider, labelProvider, new AttributeTypeNameSorter());
+      super(title, message, contentProvider, labelProvider, new AttributeTypeNameComparator());
       this.selectable = selectable;
    }
 

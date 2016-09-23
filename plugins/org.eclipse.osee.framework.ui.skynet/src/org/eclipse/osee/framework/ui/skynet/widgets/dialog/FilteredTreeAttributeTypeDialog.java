@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.util.AttributeTypeNameSorter;
+import org.eclipse.osee.framework.ui.skynet.util.AttributeTypeNameComparator;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -41,11 +41,11 @@ public class FilteredTreeAttributeTypeDialog extends FilteredTreeDialog {
    }
 
    public FilteredTreeAttributeTypeDialog(String title, String message, Collection<? extends IAttributeType> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider) {
-      this(title, message, selectable, contentProvider, labelProvider, new AttributeTypeNameSorter());
+      this(title, message, selectable, contentProvider, labelProvider, new AttributeTypeNameComparator());
    }
 
-   public FilteredTreeAttributeTypeDialog(String title, String message, Collection<? extends IAttributeType> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider, ViewerSorter sorter) {
-      super(title, message, contentProvider, labelProvider, sorter);
+   public FilteredTreeAttributeTypeDialog(String title, String message, Collection<? extends IAttributeType> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider, ViewerComparator comparator) {
+      super(title, message, contentProvider, labelProvider, comparator);
       this.selectable = selectable;
    }
 
@@ -81,8 +81,8 @@ public class FilteredTreeAttributeTypeDialog extends FilteredTreeDialog {
    }
 
    @Override
-   public void setSorter(ViewerSorter sorter) {
-      getTreeViewer().getViewer().setSorter(sorter);
+   public void setComparator(ViewerComparator comparator) {
+      getTreeViewer().getViewer().setComparator(comparator);
    }
 
 }

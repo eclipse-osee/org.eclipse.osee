@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.core.client.config.IAtsProgramManager;
 import org.eclipse.osee.ats.core.client.config.ProgramManagers;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.util.StringNameSorter;
+import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -35,7 +35,7 @@ public class XAtsProgramComboWidget extends XComboViewer {
       this.atsPrograms = atsPrograms;
       setLabelProvider(new AtsProgramLabelProvider());
       setContentProvider(new ArrayContentProvider());
-      setComparator(new StringNameSorter());
+      setComparator(new StringNameComparator());
    }
 
    public XAtsProgramComboWidget(Collection<? extends IAtsProgram> atsPrograms) throws OseeCoreException {

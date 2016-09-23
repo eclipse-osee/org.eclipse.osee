@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.api.config.AtsConfiguration;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.util.StringNameSorter;
+import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -39,7 +39,7 @@ public class AtsConfigurationDialog extends ListDialog {
    @Override
    protected Control createDialogArea(Composite container) {
       Control c = super.createDialogArea(container);
-      getTableViewer().setSorter(new StringNameSorter());
+      getTableViewer().setComparator(new StringNameComparator());
       return c;
    }
 

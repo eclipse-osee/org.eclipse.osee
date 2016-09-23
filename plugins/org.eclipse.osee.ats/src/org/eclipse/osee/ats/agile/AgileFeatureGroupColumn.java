@@ -56,7 +56,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.osee.framework.ui.skynet.util.StringNameSorter;
+import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -138,7 +138,7 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
       }
 
       FilteredCheckboxTreeDialog dialog = new FilteredCheckboxTreeDialog("Select Feature Group(s)",
-         "Select Feature Group(s)", new ArrayTreeContentProvider(), new StringLabelProvider(), new StringNameSorter());
+         "Select Feature Group(s)", new ArrayTreeContentProvider(), new StringLabelProvider(), new StringNameComparator());
       dialog.setInput(activeFeatureGroups);
       Collection<IAgileFeatureGroup> selectedFeatureGroups = getSelectedFeatureGroups(awas);
       if (!selectedFeatureGroups.isEmpty()) {

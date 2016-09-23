@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.util.StringNameSorter;
+import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -42,10 +42,10 @@ public class FilteredTreeRelationTypeDialog extends FilteredTreeDialog {
    }
 
    public FilteredTreeRelationTypeDialog(String title, String message, Collection<? extends IRelationType> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider) {
-      this(title, message, selectable, contentProvider, labelProvider, new StringNameSorter());
+      this(title, message, selectable, contentProvider, labelProvider, new StringNameComparator());
    }
 
-   public FilteredTreeRelationTypeDialog(String title, String message, Collection<? extends IRelationType> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider, ViewerSorter sorter) {
+   public FilteredTreeRelationTypeDialog(String title, String message, Collection<? extends IRelationType> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider, ViewerComparator sorter) {
       super(title, message, contentProvider, labelProvider, sorter);
       this.selectable = selectable;
    }
@@ -82,8 +82,8 @@ public class FilteredTreeRelationTypeDialog extends FilteredTreeDialog {
    }
 
    @Override
-   public void setSorter(ViewerSorter sorter) {
-      getTreeViewer().getViewer().setSorter(sorter);
+   public void setComparator(ViewerComparator comparator) {
+      getTreeViewer().getViewer().setComparator(comparator);
    }
 
 }

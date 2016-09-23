@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+	 * Copyright (c) 2004, 2007 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -25,7 +24,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -50,7 +48,7 @@ public class FilteredTreeDialog extends MessageDialog {
    private final IContentProvider contentProvider;
    private final IBaseLabelProvider labelProvider;
    private Collection<? extends Object> initialSelections;
-   private ViewerComparator viewerSorter;
+   private ViewerComparator viewerComparator;
    private boolean multiSelect = true;
    private PatternFilter patternFilter;
    List<Object> selected = new ArrayList<>();
@@ -59,12 +57,12 @@ public class FilteredTreeDialog extends MessageDialog {
       this(dialogTitle, dialogMessage, contentProvider, labelProvider, null);
    }
 
-   public FilteredTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerComparator viewerSorter) {
+   public FilteredTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerComparator viewerComparator) {
       super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE,
          new String[] {"OK", "Cancel"}, 0);
       this.contentProvider = contentProvider;
       this.labelProvider = labelProvider;
-      this.viewerSorter = viewerSorter;
+      this.viewerComparator = viewerComparator;
       this.patternFilter = new ToStringContainsPatternFilter();
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
@@ -108,7 +106,7 @@ public class FilteredTreeDialog extends MessageDialog {
    }
 
    @SuppressWarnings("unchecked")
-   public @Nullable <T> T getSelectedFirst() {
+   public <T> T getSelectedFirst() {
       if (selected.size() > 0) {
          return (T) selected.iterator().next();
       }
@@ -136,8 +134,8 @@ public class FilteredTreeDialog extends MessageDialog {
       treeViewer.getViewer().setLabelProvider(labelProvider);
       treeViewer.getViewer().setAutoExpandLevel(0);
       treeViewer.setQuickSelectionMode(true);
-      if (viewerSorter != null) {
-         treeViewer.getViewer().setComparator(viewerSorter);
+      if (viewerComparator != null) {
+         treeViewer.getViewer().setComparator(viewerComparator);
       }
       treeViewer.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
          @Override
@@ -241,8 +239,8 @@ public class FilteredTreeDialog extends MessageDialog {
       return treeViewer;
    }
 
-   public void setSorter(ViewerSorter viewerSorter) {
-      this.viewerSorter = viewerSorter;
+   public void setComparator(ViewerComparator viewerComparator) {
+      this.viewerComparator = viewerComparator;
    }
 
 }
