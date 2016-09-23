@@ -89,7 +89,7 @@ public class WordTemplateProcessor {
    private static final String INSERT_LINK = "INSERT_LINK_HERE";
    private static final String NESTED_TEMPLATE = "NestedTemplate";
    public static final String PGNUMTYPE_START_1 = "<w:pgNumType [^>]*w:start=\"1\"/>";
-   public static final String STYLES = "<w:styles>.*?</w:styles>";
+   public static final String STYLES = "<w:lists>.*?</w:lists><w:styles>.*?</w:styles>";
 
    private static final Pattern headElementsPattern =
       Pattern.compile("<((\\w+:)?(" + ARTIFACT + "))>(.*?)</\\1>|" + INSERT_LINK,
