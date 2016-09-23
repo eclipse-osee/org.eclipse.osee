@@ -16,11 +16,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
+import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -72,7 +75,7 @@ public class RelationOrderParser {
 
       StringBuilder sb = new StringBuilder();
       openRoot(sb);
-      for (Entry<Pair<String, String>, Pair<RelationSorter, List<String>>> entry : data.getOrderedEntrySet()) {
+      for (Entry<Pair<IRelationType, RelationSide>, Pair<RelationSorter, List<String>>> entry : data.getOrderedEntrySet()) {
          writeEntry(sb, entry);
          sb.append("\n");
       }
@@ -92,12 +95,12 @@ public class RelationOrderParser {
       sb.append(">");
    }
 
-   private void writeEntry(StringBuilder sb, Entry<Pair<String, String>, Pair<RelationSorter, List<String>>> entry) {
-      Pair<String, String> key = entry.getKey();
+   private void writeEntry(StringBuilder sb, Entry<Pair<IRelationType, RelationSide>, Pair<RelationSorter, List<String>>> entry) {
+      Pair<IRelationType, RelationSide> key = entry.getKey();
       sb.append("<");
       sb.append("Order ");
       sb.append("relType=\"");
-      sb.append(key.getFirst());
+      sb.append(key.getFirst().getName());
       sb.append("\" side=\"");
       sb.append(key.getSecond());
       sb.append("\" orderType=\"");
@@ -135,18 +138,20 @@ public class RelationOrderParser {
       @Override
       public void startElementFound(String uri, String localName, String qName, Attributes attributes) {
          if ("Order".equals(localName)) {
-            String relationType = attributes.getValue("relType");
+            String relationTypeName = attributes.getValue("relType");
             String relationSide = attributes.getValue("side");
             String orderType = attributes.getValue("orderType");
             String list = attributes.getValue("list");
-            if (relationType != null && orderType != null && relationSide != null) {
+            if (relationTypeName != null && orderType != null && relationSide != null) {
                List<String> guidsList = Collections.emptyList();
                if (list != null) {
                   String[] guids = list.split(",");
                   guidsList = new ArrayList<>();
                   Collections.addAll(guidsList, guids);
                }
-               data.addOrderList(relationType, relationSide, RelationSorter.valueOfGuid(orderType), guidsList);
+
+               data.addOrderList(RelationTypeManager.getType(relationTypeName), RelationSide.valueOf(relationSide),
+                  RelationSorter.valueOfGuid(orderType), guidsList);
             }
          }
       }

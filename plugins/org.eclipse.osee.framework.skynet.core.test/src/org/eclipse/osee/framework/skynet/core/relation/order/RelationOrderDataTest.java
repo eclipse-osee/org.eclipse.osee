@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation.order;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
@@ -18,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -27,9 +30,7 @@ import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -63,9 +64,9 @@ public class RelationOrderDataTest {
 
       RelationTypeCache cache = new RelationTypeCache();
 
-      relationType1 = createRelationType(cache, "Rel 1", USER_DEFINED);
-      relationType2 = createRelationType(cache, "Rel 2", UNORDERED);
-      relationType3 = createRelationType(cache, "Rel 3", LEXICOGRAPHICAL_ASC);
+      relationType1 = createRelationType(1, cache, "Rel 1", USER_DEFINED);
+      relationType2 = createRelationType(2, cache, "Rel 2", UNORDERED);
+      relationType3 = createRelationType(3, cache, "Rel 3", LEXICOGRAPHICAL_ASC);
 
       Assert.assertFalse(data.hasEntries());
       Assert.assertEquals(0, data.size());
@@ -117,19 +118,6 @@ public class RelationOrderDataTest {
    public void testGetCurrentSorterGuid() throws OseeCoreException {
       List<Object[]> expected = new ArrayList<>();
       addData(expected);
-      try {
-         data.getCurrentSorterGuid(relationType1, null);
-         Assert.assertNull("This line should not be executed");
-      } catch (Exception ex) {
-         Assert.assertTrue(ex instanceof OseeArgumentException);
-      }
-
-      try {
-         data.getCurrentSorterGuid(null, RelationSide.SIDE_A);
-         Assert.assertNull("This line should not be executed");
-      } catch (Exception ex) {
-         Assert.assertTrue(ex instanceof OseeArgumentException);
-      }
 
       RelationSorter actualGuid = data.getCurrentSorterGuid(relationType1, RelationSide.SIDE_A);
       Assert.assertEquals(LEXICOGRAPHICAL_ASC, actualGuid);
@@ -150,20 +138,6 @@ public class RelationOrderDataTest {
    public void testGetOrderList() throws OseeCoreException {
       List<Object[]> expected = new ArrayList<>();
       addData(expected);
-
-      try {
-         data.getOrderList(relationType1, null);
-         Assert.assertNull("This line should not be executed");
-      } catch (Exception ex) {
-         Assert.assertTrue(ex instanceof OseeArgumentException);
-      }
-
-      try {
-         data.getOrderList(null, RelationSide.SIDE_A);
-         Assert.assertNull("This line should not be executed");
-      } catch (Exception ex) {
-         Assert.assertTrue(ex instanceof OseeArgumentException);
-      }
 
       List<String> actualGuids = data.getOrderList(relationType1, RelationSide.SIDE_A);
       Assert.assertTrue(Collections.isEqual(Arrays.asList("1", "2", "3"), actualGuids));
@@ -233,15 +207,15 @@ public class RelationOrderDataTest {
    }
 
    private void addData(List<Object[]> expected) {
-      addData(data, expected, relationType1, RelationSide.SIDE_A, RelationSorter.LEXICOGRAPHICAL_ASC, "1", "2", "3");
-      addData(data, expected, relationType2, RelationSide.SIDE_B, RelationSorter.UNORDERED, "4", "5", "6");
+      addData(data, expected, relationType1, SIDE_A, LEXICOGRAPHICAL_ASC, "1", "2", "3");
+      addData(data, expected, relationType2, SIDE_B, UNORDERED, "4", "5", "6");
       checkData(data, expected);
    }
 
    private void checkData(RelationOrderData orderData, List<Object[]> expectedValues) {
       int index = 0;
       Assert.assertEquals(expectedValues.size(), orderData.size());
-      for (Entry<Pair<String, String>, Pair<RelationSorter, List<String>>> entry : orderData.getOrderedEntrySet()) {
+      for (Entry<Pair<IRelationType, RelationSide>, Pair<RelationSorter, List<String>>> entry : orderData.getOrderedEntrySet()) {
          Object[] actual = new Object[] {
             entry.getKey().getFirst(),
             entry.getKey().getSecond(),
@@ -249,16 +223,16 @@ public class RelationOrderDataTest {
             entry.getValue().getSecond()};
          Object[] expected = expectedValues.get(index++);
          Assert.assertEquals(expected.length, actual.length);
-         for (int index2 = 0; index2 < expected.length; index2++) {
-            Assert.assertEquals(expected[index2], actual[index2]);
+         for (int i = 0; i < expected.length; i++) {
+            Assert.assertEquals(expected[i], actual[i]);
          }
       }
    }
 
-   private void addData(RelationOrderData orderData, List<Object[]> expectedData, RelationType relationType, RelationSide side, RelationSorter relationOrderIdGuid, String... guids) {
+   private void addData(RelationOrderData orderData, List<Object[]> expectedData, RelationType relationType, RelationSide side, RelationSorter sorterId, String... guids) {
       List<String> artGuids = Arrays.asList(guids);
-      orderData.addOrderList(relationType.getName(), side.name(), relationOrderIdGuid, artGuids);
-      expectedData.add(new Object[] {relationType.getName(), side.name(), relationOrderIdGuid, artGuids});
+      orderData.addOrderList(relationType, side, sorterId, artGuids);
+      expectedData.add(new Object[] {relationType, side, sorterId, artGuids});
    }
 
    private static IArtifact createArtifact(String name, String guid) {
@@ -268,12 +242,9 @@ public class RelationOrderDataTest {
       return DataFactory.createArtifact(uniqueId, name, guid, branch);
    }
 
-   private static RelationType createRelationType(RelationTypeCache cache, String name, RelationSorter delationRelationOrderGuid) throws OseeCoreException {
-      IArtifactType type1 = new ArtifactType(0x01L, "1", false);
-      IArtifactType type2 = new ArtifactType(0x02L, "2", false);
-      RelationType relationType = new RelationType(0x03L, name, name + "_A", name + "_B", type1, type2,
+   private static RelationType createRelationType(long id, RelationTypeCache cache, String name, RelationSorter delationRelationOrderGuid) throws OseeCoreException {
+      RelationType relationType = new RelationType(id, name, name + "_A", name + "_B", Artifact, Artifact,
          RelationTypeMultiplicity.MANY_TO_MANY, delationRelationOrderGuid);
-      Assert.assertNotNull(relationType);
       cache.cache(relationType);
       return relationType;
    }

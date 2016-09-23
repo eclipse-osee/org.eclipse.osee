@@ -10,17 +10,28 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation.order;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.SupportingInfo_SupportedBy;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
+import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.MANY_TO_MANY;
+import static org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity.ONE_TO_MANY;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
+import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -34,15 +45,27 @@ public class RelationOrderParserTest {
       "<OrderList>\n<Order relType=\"Default Hierarchical\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"AAABDEJ_mIQBf8VXVtGqvA\"/>\n</OrderList>";
 
    private static String twoEntries =
-      "<OrderList>\n<Order relType=\"Default Hierarchical\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"AAABDEJ_mIQBf8VXVtGqvA,AAABDEJ_oQ8Bf8VXLX7U_g\"/>\n" + "<Order relType=\"Some Type\" side=\"SIDE_A\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"AAABDEJ_mIQXf8VXVtGqvA,AAABDEJ_oQVBf8VXLX7U_g\"/>\n</OrderList>";
+      "<OrderList>\n<Order relType=\"Default Hierarchical\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"AAABDEJ_mIQBf8VXVtGqvA,AAABDEJ_oQ8Bf8VXLX7U_g\"/>\n" + "<Order relType=\"Supporting Info\" side=\"SIDE_A\" orderType=\"AAT0xogoMjMBhARkBZQA\" list=\"AAABDEJ_mIQXf8VXVtGqvA,AAABDEJ_oQVBf8VXLX7U_g\"/>\n</OrderList>";
    private static String oneEntryEmptyList =
-      "<OrderList>\n<Order relType=\"X\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\"/>\n</OrderList>";
+      "<OrderList>\n<Order relType=\"Default Hierarchical\" side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\"/>\n</OrderList>";
 
    private static String emptyType =
       "<OrderList>\n<Order side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\"/>\n</OrderList>";
    private static String emptySide =
-      "<OrderList>\n<Order relType=\"X\" orderType=\"AAT0xogoMjMBhARkBZQA\"/>\n</OrderList>";
-   private static String emptyOrderType = "<OrderList>\n<Order relType=\"X\" side=\"SIDE_B\" />\n</OrderList>";
+      "<OrderList>\n<Order relType=\"Default Hierarchical\" orderType=\"AAT0xogoMjMBhARkBZQA\"/>\n</OrderList>";
+   private static String emptyOrderType =
+      "<OrderList>\n<Order relType=\"Default Hierarchical\" side=\"SIDE_B\" />\n</OrderList>";
+
+   @BeforeClass
+   public static void setup() {
+      RelationType dh = new RelationType(DEFAULT_HIERARCHY.getId(), DEFAULT_HIERARCHY.getName(), "parent", "child",
+         Artifact, Artifact, ONE_TO_MANY, LEXICOGRAPHICAL_ASC);
+      RelationType supportingInfo =
+         new RelationType(SupportingInfo_SupportedBy.getId(), SupportingInfo_SupportedBy.getName(), "is supported by",
+            "supporting info", Artifact, Artifact, MANY_TO_MANY, UNORDERED);
+      RelationTypeManager.getCache().cache(dh);
+      RelationTypeManager.getCache().cache(supportingInfo);
+   }
 
    @Test
    public void testExceptions() {
@@ -74,7 +97,7 @@ public class RelationOrderParserTest {
       Assert.assertEquals(1, data.size());
 
       List<Object[]> expectedData = new ArrayList<>();
-      addData(expectedData, "Default Hierarchical", RelationSide.SIDE_B, USER_DEFINED, "AAABDEJ_mIQBf8VXVtGqvA",
+      addData(expectedData, DEFAULT_HIERARCHY, RelationSide.SIDE_B, USER_DEFINED, "AAABDEJ_mIQBf8VXVtGqvA",
          "AAABDEJ_nMkBf8VXVXptpg", "AAABDEJ_oQ8Bf8VXLX7U_g");
 
       checkData(data, expectedData);
@@ -104,9 +127,9 @@ public class RelationOrderParserTest {
       Assert.assertEquals(2, data.size());
 
       List<Object[]> expectedData = new ArrayList<>();
-      addData(expectedData, "Default Hierarchical", RelationSide.SIDE_B, USER_DEFINED, "AAABDEJ_mIQBf8VXVtGqvA",
+      addData(expectedData, DEFAULT_HIERARCHY, RelationSide.SIDE_B, USER_DEFINED, "AAABDEJ_mIQBf8VXVtGqvA",
          "AAABDEJ_oQ8Bf8VXLX7U_g");
-      addData(expectedData, "Some Type", RelationSide.SIDE_A, USER_DEFINED, "AAABDEJ_mIQXf8VXVtGqvA",
+      addData(expectedData, SupportingInfo_SupportedBy, RelationSide.SIDE_A, USER_DEFINED, "AAABDEJ_mIQXf8VXVtGqvA",
          "AAABDEJ_oQVBf8VXLX7U_g");
 
       checkData(data, expectedData);
@@ -125,7 +148,7 @@ public class RelationOrderParserTest {
       Assert.assertEquals(1, data.size());
 
       List<Object[]> expectedData = new ArrayList<>();
-      addData(expectedData, "X", RelationSide.SIDE_B, USER_DEFINED);
+      addData(expectedData, DEFAULT_HIERARCHY, RelationSide.SIDE_B, USER_DEFINED);
       checkData(data, expectedData);
       Assert.assertEquals(oneEntryEmptyList, parser.toXml(data));
    }
@@ -177,14 +200,14 @@ public class RelationOrderParserTest {
       Assert.assertEquals("<OrderList>\n</OrderList>", parser.toXml(data));
    }
 
-   private void addData(List<Object[]> expectedData, String relationType, RelationSide side, RelationSorter relationOrderIdGuid, String... guids) {
-      expectedData.add(new Object[] {relationType, side.name(), relationOrderIdGuid, Arrays.asList(guids)});
+   private void addData(List<Object[]> expectedData, IRelationType relationType, RelationSide side, RelationSorter relationOrderIdGuid, String... guids) {
+      expectedData.add(new Object[] {relationType, side, relationOrderIdGuid, Arrays.asList(guids)});
    }
 
    private void checkData(RelationOrderData orderData, List<Object[]> expectedValues) {
       int index = 0;
       Assert.assertEquals(expectedValues.size(), orderData.size());
-      for (Entry<Pair<String, String>, Pair<RelationSorter, List<String>>> entry : orderData.getOrderedEntrySet()) {
+      for (Entry<Pair<IRelationType, RelationSide>, Pair<RelationSorter, List<String>>> entry : orderData.getOrderedEntrySet()) {
          Object[] actual = new Object[] {
             entry.getKey().getFirst(),
             entry.getKey().getSecond(),

@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
  */
 public class RelationOrderData {
 
-   private final CompositeKeyHashMap<String, String, Pair<RelationSorter, List<String>>> lists;
+   private final CompositeKeyHashMap<IRelationType, RelationSide, Pair<RelationSorter, List<String>>> lists;
    private final IRelationOrderAccessor accessor;
    private final IArtifact artifact;
 
@@ -61,12 +61,13 @@ public class RelationOrderData {
       accessor.load(getIArtifact(), this);
    }
 
-   public Collection<Entry<Pair<String, String>, Pair<RelationSorter, List<String>>>> entrySet() {
+   public Collection<Entry<Pair<IRelationType, RelationSide>, Pair<RelationSorter, List<String>>>> entrySet() {
       return lists.entrySet();
    }
 
-   public Collection<Entry<Pair<String, String>, Pair<RelationSorter, List<String>>>> getOrderedEntrySet() {
-      List<Entry<Pair<String, String>, Pair<RelationSorter, List<String>>>> entries = new ArrayList<>(entrySet());
+   public Collection<Entry<Pair<IRelationType, RelationSide>, Pair<RelationSorter, List<String>>>> getOrderedEntrySet() {
+      List<Entry<Pair<IRelationType, RelationSide>, Pair<RelationSorter, List<String>>>> entries =
+         new ArrayList<>(entrySet());
       Collections.sort(entries, new EntryComparator());
       return entries;
    }
@@ -82,23 +83,17 @@ public class RelationOrderData {
    }
 
    private Pair<RelationSorter, List<String>> getTypeSideEntry(IRelationType type, RelationSide side) throws OseeCoreException {
-      Conditions.checkNotNull(type, "relationType");
-      Conditions.checkNotNull(side, "relationSide");
-      return lists.get(type.getName(), side.name());
+      return lists.get(type, side);
    }
 
-   public void addOrderList(IRelationType type, RelationSide side, RelationSorter sorterId, List<String> guidList) {
-      addOrderList(type.getName(), side.name(), sorterId, guidList);
-   }
-
-   public void addOrderList(String relationType, String relationSide, RelationSorter sorterId, List<String> guidList) {
+   public void addOrderList(IRelationType relationType, RelationSide relationSide, RelationSorter sorterId, List<String> guidList) {
       lists.put(relationType, relationSide, new Pair<RelationSorter, List<String>>(sorterId, guidList));
    }
 
    public void removeOrderList(IRelationType type, RelationSide side) throws OseeCoreException {
       Conditions.checkNotNull(type, "relationType");
       Conditions.checkNotNull(side, "relationSide");
-      lists.removeAndGet(type.getName(), side.name());
+      lists.removeAndGet(type, side);
    }
 
    public boolean hasEntries() {
@@ -154,15 +149,15 @@ public class RelationOrderData {
       return String.format("Relation Order Data for artifact:%s", getIArtifact());
    }
 
-   public List<Pair<String, String>> getAvailableTypeSides() {
+   public List<Pair<IRelationType, RelationSide>> getAvailableTypeSides() {
       return lists.getEnumeratedKeys();
    }
 
-   private final static class EntryComparator implements Serializable, Comparator<Entry<Pair<String, String>, Pair<RelationSorter, List<String>>>> {
+   private final static class EntryComparator implements Serializable, Comparator<Entry<Pair<IRelationType, RelationSide>, Pair<RelationSorter, List<String>>>> {
       private static final long serialVersionUID = 5242452476694174988L;
 
       @Override
-      public int compare(Entry<Pair<String, String>, Pair<RelationSorter, List<String>>> o1, Entry<Pair<String, String>, Pair<RelationSorter, List<String>>> o2) {
+      public int compare(Entry<Pair<IRelationType, RelationSide>, Pair<RelationSorter, List<String>>> o1, Entry<Pair<IRelationType, RelationSide>, Pair<RelationSorter, List<String>>> o2) {
          int result = o1.getKey().getFirst().compareTo(o2.getKey().getFirst());
          if (result == 0) {
             result = o1.getKey().getSecond().compareTo(o2.getKey().getSecond());

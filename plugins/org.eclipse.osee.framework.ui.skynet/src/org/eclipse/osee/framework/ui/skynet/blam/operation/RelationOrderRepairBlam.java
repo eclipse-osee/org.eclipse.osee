@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -88,7 +89,7 @@ public class RelationOrderRepairBlam extends AbstractBlam {
 
    private void resetRelationOrder(Artifact art) throws OseeCoreException, IOException {
       RelationOrderData currentData = new RelationOrderFactory().createRelationOrderData(art);
-      for (Pair<String, String> typeSide : currentData.getAvailableTypeSides()) {
+      for (Pair<IRelationType, RelationSide> typeSide : currentData.getAvailableTypeSides()) {
          RelationType type;
          try {
             type = RelationTypeManager.getType(typeSide.getFirst());
@@ -96,7 +97,7 @@ public class RelationOrderRepairBlam extends AbstractBlam {
             logf("Type [%s] on artifact [%s] does not exist\n", typeSide.getFirst(), art.getName());
             return;
          }
-         RelationSide side = RelationSide.fromString(typeSide.getSecond());
+         RelationSide side = typeSide.getSecond();
          RelationSorter sorterGuid = currentData.getCurrentSorterGuid(type, side);
 
          if (sorterGuid.equals(USER_DEFINED)) {

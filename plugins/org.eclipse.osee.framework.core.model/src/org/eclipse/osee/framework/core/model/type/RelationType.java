@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.type;
 
+import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -110,7 +111,7 @@ public final class RelationType extends AbstractOseeIdType implements IRelationT
    }
 
    public boolean isOrdered() {
-      return !RelationSorter.UNORDERED.equals(getDefaultOrderTypeGuid());
+      return !UNORDERED.equals(getDefaultOrderTypeGuid());
    }
 
    public RelationSorter getDefaultOrderTypeGuid() {

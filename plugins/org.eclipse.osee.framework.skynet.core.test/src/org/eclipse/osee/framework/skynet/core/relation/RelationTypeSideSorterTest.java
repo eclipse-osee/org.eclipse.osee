@@ -243,7 +243,7 @@ public class RelationTypeSideSorterTest {
    private static void checkData(RelationOrderData orderData, List<Object[]> expectedValues) {
       int index = 0;
       Assert.assertEquals(expectedValues.size(), orderData.size());
-      for (Entry<Pair<String, String>, Pair<RelationSorter, List<String>>> entry : orderData.getOrderedEntrySet()) {
+      for (Entry<Pair<IRelationType, RelationSide>, Pair<RelationSorter, List<String>>> entry : orderData.getOrderedEntrySet()) {
          Object[] actual = new Object[] {
             entry.getKey().getFirst(),
             entry.getKey().getSecond(),
@@ -251,19 +251,16 @@ public class RelationTypeSideSorterTest {
             entry.getValue().getSecond()};
          Object[] expected = expectedValues.get(index++);
          Assert.assertEquals(expected.length, actual.length);
-         for (int index2 = 0; index2 < expected.length; index2++) {
-            Assert.assertEquals(expected[index2], actual[index2]);
+         for (int i = 0; i < expected.length; i++) {
+            Assert.assertEquals(expected[i], actual[i]);
          }
       }
    }
 
    private static void addData(RelationOrderData orderData, List<Object[]> expectedData, RelationType relationType, RelationSide side, RelationSorter sorterId, String... guids) {
-      List<String> artGuids = new ArrayList<>();
-      if (guids != null && guids.length > 0) {
-         artGuids.addAll(Arrays.asList(guids));
-      }
-      orderData.addOrderList(relationType.getName(), side.name(), sorterId, artGuids);
-      expectedData.add(new Object[] {relationType.getName(), side.name(), sorterId, artGuids});
+      List<String> artGuids = Arrays.asList(guids);
+      orderData.addOrderList(relationType, side, sorterId, artGuids);
+      expectedData.add(new Object[] {relationType, side, sorterId, artGuids});
    }
 
    private static final class MockArtifactWithRelations extends MockIArtifact {

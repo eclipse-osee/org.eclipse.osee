@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -178,14 +179,14 @@ public class ArtifactPasteOperationTest {
 
       List<Artifact> childArtifacts = artifactToCheck.getChildren();
       Assert.assertEquals(hasChildren, !childArtifacts.isEmpty());
-      for (Entry<Pair<String, String>, Pair<RelationSorter, List<String>>> entry : data.entrySet()) {
-         String relationType = entry.getKey().getFirst();
-         String relationSide = entry.getKey().getSecond();
+      for (Entry<Pair<IRelationType, RelationSide>, Pair<RelationSorter, List<String>>> entry : data.entrySet()) {
+         IRelationType relationTypeId = entry.getKey().getFirst();
+         RelationSide relationSide = entry.getKey().getSecond();
          RelationSorter orderGuid = entry.getValue().getFirst();
          List<String> guids = entry.getValue().getSecond();
 
-         Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getName(), relationType);
-         Assert.assertEquals(RelationSide.SIDE_B.name(), relationSide);
+         Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child, relationTypeId);
+         Assert.assertEquals(RelationSide.SIDE_B, relationSide);
          Assert.assertEquals(expectedOrderType, orderGuid);
          if (hasChildren && expectedOrderType == USER_DEFINED) {
             Assert.assertEquals(childArtifacts.size(), guids.size());

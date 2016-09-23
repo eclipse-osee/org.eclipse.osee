@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
@@ -67,17 +68,16 @@ public class RelationOrderRenderer {
             writer.addTableRow(NO_DATA_TAG);
          } else {
             writer.addTableRow("Relation Type", "Side Name", "Side", "Order Type", "Related Artifacts");
-            for (Entry<Pair<String, String>, Pair<RelationSorter, List<String>>> entry : relationOrderData.getOrderedEntrySet()) {
-               String relationTypeName = entry.getKey().getFirst();
-               String relationSide = entry.getKey().getSecond();
+            for (Entry<Pair<IRelationType, RelationSide>, Pair<RelationSorter, List<String>>> entry : relationOrderData.getOrderedEntrySet()) {
+               IRelationType relationTypeId = entry.getKey().getFirst();
+               RelationSide relationSide = entry.getKey().getSecond();
                RelationSorter sorterGuid = entry.getValue().getFirst();
 
                List<String> guidList = entry.getValue().getSecond();
                List<String> mlLinks = guidResolver.resolveAsOseeLinks(branch, guidList);
-               RelationType relationType = relationCache.getUniqueByName(relationTypeName);
-               RelationSide side = RelationSide.fromString(relationSide);
+               RelationType relationType = relationCache.get(relationTypeId);
                try {
-                  writeTableRow(writer, relationType, side, sorterGuid.toString(), mlLinks);
+                  writeTableRow(writer, relationType, relationSide, sorterGuid.toString(), mlLinks);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }

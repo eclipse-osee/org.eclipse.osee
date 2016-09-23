@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.renderer;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
@@ -19,13 +22,12 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
-import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
@@ -43,54 +45,57 @@ import org.junit.Test;
 public class RelationOrderRendererTest {
 
    private static RelationOrderRenderer renderer;
+   private static RelationType relType1;
+   private static RelationType relType2;
+   private static RelationType relType3;
 
    @BeforeClass
    public static void prepareTest() throws Exception {
       MockArtifactGuidResolver resolver = new MockArtifactGuidResolver(null);
 
       AbstractOseeCache<RelationType> typeCache = new RelationTypeCache();
-      addRelationTypeData(typeCache);
+      relType1 = createRelationType(1, typeCache, "Relation 1", Artifact, Artifact);
+      relType2 = createRelationType(2, typeCache, "Relation 2", Artifact, Artifact);
+      relType3 = createRelationType(3, typeCache, "Relation 3", Artifact, Artifact);
       renderer = new RelationOrderRenderer(typeCache, resolver);
    }
 
    @Test
    public void testRenderingAllValid() throws OseeCoreException {
-      RelationOrderData orderData = new MockRelationOrderData();
+      RelationOrderData orderData = new RelationOrderData(null, null);
       List<Object[]> expectedData = new ArrayList<>();
 
-      addData(orderData, expectedData, "Relation 1", "Relation 1_A", RelationSide.SIDE_A, LEXICOGRAPHICAL_ASC, "1", "2",
-         "3");
-
-      addData(orderData, expectedData, "Relation 2", "Relation 2_B", RelationSide.SIDE_B, //
-         UNORDERED, "4", "5", "6");
-
-      addData(orderData, expectedData, "Relation 3", "Relation 3_B", RelationSide.SIDE_B, //
-         USER_DEFINED, "7", "8", "9");
+      addData(orderData, expectedData, relType1, "Relation 1_A", SIDE_A, LEXICOGRAPHICAL_ASC, "1", "2", "3");
+      addData(orderData, expectedData, relType2, "Relation 2_B", SIDE_B, UNORDERED, "4", "5", "6");
+      addData(orderData, expectedData, relType3, "Relation 3_B", SIDE_B, USER_DEFINED, "7", "8", "9");
 
       checkRelationOrderRenderer(getExpected(expectedData), orderData);
    }
 
    @Test
    public void testRenderingEmptyGuids() throws OseeCoreException {
-      RelationOrderData orderData = new MockRelationOrderData();
+      RelationOrderData orderData = new RelationOrderData(null, null);
       List<Object[]> expectedData = new ArrayList<>();
-      addData(orderData, expectedData, "Relation 1", "Relation 1_A", RelationSide.SIDE_A, USER_DEFINED);
+      addData(orderData, expectedData, relType1, "Relation 1_A", RelationSide.SIDE_A, USER_DEFINED);
       checkRelationOrderRenderer(getExpected(expectedData), orderData);
    }
 
    @Test
    public void testEmptyData() {
-      RelationOrderData orderData = new MockRelationOrderData();
+      RelationOrderData orderData = new RelationOrderData(null, null);
       List<Object[]> expectedData = new ArrayList<>();
       checkRelationOrderRenderer(getExpected(expectedData), orderData);
    }
 
-   private void addData(RelationOrderData orderData, List<Object[]> expectedData, String relationType, String relationSideName, RelationSide side, RelationSorter expectedSorterId, String... guids) throws OseeCoreException {
+   private void addData(RelationOrderData orderData, List<Object[]> expectedData, IRelationType relationType, String relationSideName, RelationSide side, RelationSorter expectedSorterId, String... guids) throws OseeCoreException {
       List<String> guidList = Arrays.asList(guids);
-      orderData.addOrderList(relationType, side.name(), expectedSorterId, guidList);
-
-      expectedData.add(
-         new Object[] {relationType, relationSideName, side.name().toLowerCase(), expectedSorterId, guidList});
+      orderData.addOrderList(relationType, side, expectedSorterId, guidList);
+      expectedData.add(new Object[] {
+         relationType.getName(),
+         relationSideName,
+         side.name().toLowerCase(),
+         expectedSorterId,
+         guidList});
    }
 
    private String getExpected(List<Object[]> data) {
@@ -159,31 +164,11 @@ public class RelationOrderRendererTest {
       Assert.assertEquals(expected, builder.toString());
    }
 
-   private final static void addRelationTypeData(AbstractOseeCache<RelationType> cache) throws OseeCoreException {
-      ArtifactTypeCache artCache = new ArtifactTypeCache();
-      IArtifactType artifactType1 = createArtifactType(artCache, "Artifact 2");
-      IArtifactType artifactType2 = createArtifactType(artCache, "Artifact 1");
-
-      createRelationType(cache, "Relation 1", artifactType1, artifactType2);
-      createRelationType(cache, "Relation 2", artifactType1, artifactType2);
-      createRelationType(cache, "Relation 3", artifactType1, artifactType2);
-   }
-
-   private final static ArtifactType createArtifactType(AbstractOseeCache<ArtifactType> artCache, String name) throws OseeCoreException {
-      ArtifactType artifactType = new ArtifactType(0x00L, name, false);
-      artCache.cache(artifactType);
-      return artifactType;
-   }
-
-   private final static void createRelationType(AbstractOseeCache<RelationType> cache, String name, IArtifactType artifactType1, IArtifactType artifactType2) throws OseeCoreException {
-      RelationType type = new RelationType(0x00L, name, name + "_A", name + "_B", artifactType1, artifactType2,
+   private final static RelationType createRelationType(long id, AbstractOseeCache<RelationType> cache, String name, IArtifactType artifactType1, IArtifactType artifactType2) throws OseeCoreException {
+      RelationType type = new RelationType(id, name, name + "_A", name + "_B", artifactType1, artifactType2,
          RelationTypeMultiplicity.MANY_TO_MANY, null);
       cache.cache(type);
-   }
-   private final static class MockRelationOrderData extends RelationOrderData {
-      public MockRelationOrderData() {
-         super(null, null);
-      }
+      return type;
    }
 
    private static final class MockArtifactGuidResolver extends ArtifactGuidToWordML {
@@ -194,12 +179,7 @@ public class RelationOrderRendererTest {
 
       @Override
       public List<String> resolveAsOseeLinks(BranchId branch, List<String> artifactGuids) {
-         List<String> values = new ArrayList<>();
-         for (String guid : artifactGuids) {
-            values.add(guid);
-         }
-         return values;
+         return artifactGuids;
       }
-
    }
 }
