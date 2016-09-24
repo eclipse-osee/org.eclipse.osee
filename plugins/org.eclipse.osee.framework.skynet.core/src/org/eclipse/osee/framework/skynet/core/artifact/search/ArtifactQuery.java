@@ -310,6 +310,16 @@ public class ArtifactQuery {
       return new ArtifactQueryBuilder(artifactId, transactionId, allowDeleted, ALL).getOrCheckArtifact(QueryType.GET);
    }
 
+   public static Artifact getHistoricalArtifactFromIdOrNull(int artifactId, TransactionToken transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
+      try {
+         return new ArtifactQueryBuilder(artifactId, transactionId, allowDeleted, ALL).getOrCheckArtifact(
+            QueryType.GET);
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+      return null;
+   }
+
    public static Artifact getHistoricalArtifactFromId(String guid, TransactionToken transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(Arrays.asList(guid), transactionId, allowDeleted, ALL).getOrCheckArtifact(
          QueryType.GET);
