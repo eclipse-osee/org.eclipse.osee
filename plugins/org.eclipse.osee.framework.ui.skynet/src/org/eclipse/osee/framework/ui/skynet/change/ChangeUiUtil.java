@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -72,8 +73,17 @@ public final class ChangeUiUtil {
    }
 
    public static ChangeReportEditorInput createInput(BranchId branch, boolean loadOnOpen) throws OseeCoreException {
-      BranchId parentBranch = BranchManager.getParentBranch(branch);
-      return createInput(branch, parentBranch, loadOnOpen);
+      if (BranchManager.isArchived(branch) || BranchManager.getState(branch).equals(BranchState.COMMITTED)) {
+         TransactionToken startTx = BranchManager.getBaseTransaction(branch);
+         TransactionToken endTx = TransactionManager.getHeadTransaction(branch);
+         TransactionDelta txDelta = new TransactionDelta(startTx, endTx);
+         ChangeReportEditorInput input = createInput(CompareType.COMPARE_BASE_TO_HEAD, txDelta, loadOnOpen);
+         input.setBranch(branch);
+         return input;
+      } else {
+         BranchId parentBranch = BranchManager.getParentBranch(branch);
+         return createInput(branch, parentBranch, loadOnOpen);
+      }
    }
 
    public static ChangeReportEditorInput createInput(BranchId branch, BranchId parentBranch, boolean loadOnOpen) throws OseeCoreException {
