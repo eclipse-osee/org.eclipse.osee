@@ -38,7 +38,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link RelationNodeAdjacencies}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class RelationNodeAdjacenciesTest {
@@ -51,7 +51,7 @@ public class RelationNodeAdjacenciesTest {
    @Mock Relation dirty;
    @Mock Relation clean;
    @Mock Relation deleted;
-   
+
    @Mock Relation relation;
    @Mock HasLocalId localId;
    // @formatter:on
@@ -208,19 +208,19 @@ public class RelationNodeAdjacenciesTest {
       collection.add(TYPE_1.getGuid(), relation);
 
       when(localId.getLocalId()).thenReturn(22);
-      Relation actual =
-         collection.getResultSet(TYPE_1, DeletionFlag.EXCLUDE_DELETED, localId, RelationSide.SIDE_A).getOneOrNull();
+      Relation actual = (Relation) collection.getResultSet(TYPE_1, DeletionFlag.EXCLUDE_DELETED, localId,
+         RelationSide.SIDE_A).getOneOrNull();
       assertNull(actual);
-      actual =
-         collection.getResultSet(TYPE_1, DeletionFlag.EXCLUDE_DELETED, localId, RelationSide.SIDE_B).getOneOrNull();
+      actual = (Relation) collection.getResultSet(TYPE_1, DeletionFlag.EXCLUDE_DELETED, localId,
+         RelationSide.SIDE_B).getOneOrNull();
       assertEquals(relation, actual);
 
       when(localId.getLocalId()).thenReturn(11);
-      actual =
-         collection.getResultSet(TYPE_1, DeletionFlag.EXCLUDE_DELETED, localId, RelationSide.SIDE_A).getOneOrNull();
+      actual = (Relation) collection.getResultSet(TYPE_1, DeletionFlag.EXCLUDE_DELETED, localId,
+         RelationSide.SIDE_A).getOneOrNull();
       assertEquals(relation, actual);
-      actual =
-         collection.getResultSet(TYPE_1, DeletionFlag.EXCLUDE_DELETED, localId, RelationSide.SIDE_B).getOneOrNull();
+      actual = (Relation) collection.getResultSet(TYPE_1, DeletionFlag.EXCLUDE_DELETED, localId,
+         RelationSide.SIDE_B).getOneOrNull();
       assertNull(actual);
    }
 
