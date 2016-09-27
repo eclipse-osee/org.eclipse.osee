@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.report.internal.wordupdate;
 
+import java.util.Arrays;
 import java.util.Date;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
@@ -128,13 +129,13 @@ public class SafetyWorkflowEventHandler implements EventHandler {
    private IAtsTeamWorkflow createSafetyAction(IAtsTeamWorkflow teamWf, ArtifactReadable userArt) {
       IAtsTeamWorkflow teamWorkflow = null;
       try {
-         IAtsActionableItem ai = atsServer.getCache().getByUuid(AtsArtifactToken.SafetyActionableItem.getUuid(),
-            IAtsActionableItem.class);
+         IAtsActionableItem ai =
+            atsServer.getCache().getByUuid(AtsArtifactToken.SafetyActionableItem.getUuid(), IAtsActionableItem.class);
          if (ai == null) {
             throw new OseeCoreException("Safety Actionable Item not configured");
          }
-         IAtsTeamDefinition teamDef = atsServer.getCache().getByUuid(
-            AtsArtifactToken.SafetyTeamDefinition.getUuid(), IAtsTeamDefinition.class);
+         IAtsTeamDefinition teamDef =
+            atsServer.getCache().getByUuid(AtsArtifactToken.SafetyTeamDefinition.getUuid(), IAtsTeamDefinition.class);
          if (teamDef == null) {
             throw new OseeCoreException("Safety Team Definition not configured");
          }
@@ -142,16 +143,17 @@ public class SafetyWorkflowEventHandler implements EventHandler {
          IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet("Create System Safety Workflow",
             atsServer.getUserService().getUserById(userArt.getSoleAttributeAsString(CoreAttributeTypes.UserId)));
          IAtsAction action = atsServer.getActionFactory().getAction(teamWf);
-         teamWorkflow = atsServer.getActionFactory().createTeamWorkflow(action, teamDef,
-            java.util.Collections.singleton(ai), null, changes, new Date(), createdBy, new NewActionAdapter() {
+         teamWorkflow =
+            atsServer.getActionFactory().createTeamWorkflow(action, teamDef, java.util.Collections.singleton(ai),
+               Arrays.asList(AtsCoreUsers.UNASSIGNED_USER), changes, new Date(), createdBy, new NewActionAdapter() {
 
-               @Override
-               public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) throws OseeCoreException {
-                  changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.Description,
-                     "Review System Safety Changes for the associated RPCR to Complete the Workflow");
-               }
+                  @Override
+                  public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) throws OseeCoreException {
+                     changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.Description,
+                        "Review System Safety Changes for the associated RPCR to Complete the Workflow");
+                  }
 
-            });
+               });
          changes.setSoleAttributeValue(teamWorkflow, CoreAttributeTypes.Name,
             "Safety Workflow for " + teamWf.getAtsId());
          changes.execute();

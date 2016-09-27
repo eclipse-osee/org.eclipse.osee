@@ -110,6 +110,9 @@ public class ActionFactory implements IAtsActionFactory {
       List<IAtsTeamWorkflow> teamWfs = new ArrayList<>();
       for (IAtsTeamDefinition teamDef : teamDefs) {
          List<IAtsUser> leads = new LinkedList<>(teamDef.getLeads(actionableItems));
+         if (leads.isEmpty()) {
+            leads.add(AtsCoreUsers.UNASSIGNED_USER);
+         }
          IAtsTeamWorkflow teamWf = createTeamWorkflow(action, teamDef, actionableItems, leads, changes, createdDate,
             createdBy, newActionListener);
          teamWfs.add(teamWf);

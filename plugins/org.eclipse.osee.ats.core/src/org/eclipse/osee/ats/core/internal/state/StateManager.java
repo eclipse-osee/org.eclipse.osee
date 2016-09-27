@@ -193,6 +193,9 @@ public class StateManager implements IAtsStateManager {
          if (AtsCoreUsers.isGuestUser(assignee)) {
             throw new OseeArgumentException("Can not assign workflow to Guest");
          }
+         if (AtsCoreUsers.isSystemUser(assignee)) {
+            throw new OseeArgumentException("Can not assign workflow to System User");
+         }
       }
       WorkState state = getState(stateName);
 
@@ -250,6 +253,10 @@ public class StateManager implements IAtsStateManager {
          if (AtsCoreUsers.isGuestUser(assignee)) {
             throw new OseeArgumentException("Can not assign workflow to Guest");
          }
+         if (AtsCoreUsers.isSystemUser(assignee)) {
+            throw new OseeArgumentException("Can not assign workflow to System User");
+         }
+
       }
 
       // Note: current and next state could be same
@@ -269,6 +276,10 @@ public class StateManager implements IAtsStateManager {
       if (getAssignees().size() > 1 && getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER)) {
          removeAssignee(getCurrentStateName(), AtsCoreUsers.UNASSIGNED_USER);
       }
+      if (getAssignees().size() > 1 && getAssignees().contains(AtsCoreUsers.SYSTEM_USER)) {
+         removeAssignee(getCurrentStateName(), AtsCoreUsers.SYSTEM_USER);
+      }
+
       setDirty(true);
    }
 
