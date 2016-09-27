@@ -136,4 +136,9 @@ public class AtsStoreService implements IAtsStoreService {
       return AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType);
    }
 
+   @Override
+   public boolean isOfType(ArtifactId artifact, IArtifactType artifactType) {
+      return ((Artifact) artifact).isOfType(artifactType);
+   }
+
 }

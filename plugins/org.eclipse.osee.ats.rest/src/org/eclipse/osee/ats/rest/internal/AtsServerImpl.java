@@ -244,7 +244,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
          }
 
       };
-      atsQueryService = new AtsQueryServiceImpl(this);
+      atsQueryService = new AtsQueryServiceImpl(this, jdbcService);
       actionableItemManager = new ActionableItemManager(attributeResolverService, atsStoreService, this);
       actionFactory = new ActionFactory(workItemFactory, utilService, sequenceProvider, actionableItemManager,
          attributeResolverService, atsStateFactory, getServices());

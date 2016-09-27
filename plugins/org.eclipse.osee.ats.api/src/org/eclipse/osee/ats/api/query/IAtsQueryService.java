@@ -12,9 +12,12 @@ package org.eclipse.osee.ats.api.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 
 /**
@@ -23,6 +26,8 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 public interface IAtsQueryService {
 
    IAtsQuery createQuery(WorkItemType workItemType, WorkItemType... workItemTypes);
+
+   Collection<IAtsWorkItem> runQuery(String query, Object... data);
 
    IAtsWorkItemFilter createFilter(Collection<? extends IAtsWorkItem> workItems);
 
@@ -39,5 +44,7 @@ public interface IAtsQueryService {
    AtsSearchData createSearchData(String namespace, String searchName);
 
    IAtsConfigQuery createQuery(IArtifactType artifactType);
+
+   Collection<ArtifactId> getArtifacts(List<Integer> ids, BranchId branch);
 
 }

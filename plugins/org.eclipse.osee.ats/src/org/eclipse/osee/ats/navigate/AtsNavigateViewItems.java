@@ -48,6 +48,7 @@ import org.eclipse.osee.ats.operation.MoveTeamWorkflowsBlam;
 import org.eclipse.osee.ats.search.AtsQuickSearchOperationFactory;
 import org.eclipse.osee.ats.search.AtsSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.util.AtsEditor;
+import org.eclipse.osee.ats.util.CleanupOseeSystemAssignedWorkflows;
 import org.eclipse.osee.ats.util.CreateActionUsingAllActionableItems;
 import org.eclipse.osee.ats.util.DoesNotWorkItemAts;
 import org.eclipse.osee.ats.util.Import.ImportActionsViaSpreadsheetBlam;
@@ -217,13 +218,14 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          new DoesNotWorkItemAts(adminItems);
          new XNavigateItemAction(adminItems, new OpenChangeReportByTransactionIdAction(), FrameworkImage.BRANCH_CHANGE);
          new XNavigateItemAction(adminItems, new OpenArtifactEditorById(), FrameworkImage.ARTIFACT_EDITOR);
-         new XNavigateItemAction(adminItems, new OpenOrphanedTasks(), AtsImage.TASK);
          new XNavigateItemAction(adminItems, new PurgeTransactionAction(), FrameworkImage.PURGE);
 
          XNavigateItem healthItems = new XNavigateItemFolder(adminItems, "Health");
          new ValidateAtsDatabase(healthItems);
          new ValidateAtsConfiguration(healthItems);
          new ValidateWorkspaceToDatabaseWorkDefinitions(healthItems);
+         new CleanupOseeSystemAssignedWorkflows(healthItems);
+         new XNavigateItemAction(adminItems, new OpenOrphanedTasks(), AtsImage.TASK);
 
          XNavigateItem extra = new XNavigateItemFolder(adminItems, "Other");
          Set<XNavigateExtensionPointData> extraItems =

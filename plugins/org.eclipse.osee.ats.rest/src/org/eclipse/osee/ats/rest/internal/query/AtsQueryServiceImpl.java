@@ -12,26 +12,33 @@ package org.eclipse.osee.ats.rest.internal.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
-import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.core.query.AbstractAtsQueryService;
 import org.eclipse.osee.ats.core.query.AtsWorkItemFilter;
 import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.jdbc.JdbcService;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsQueryServiceImpl implements IAtsQueryService {
+public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    private final IAtsServer atsServer;
 
-   public AtsQueryServiceImpl(IAtsServer atsServer) {
+   public AtsQueryServiceImpl(IAtsServer atsServer, JdbcService jdbcService) {
+      super(jdbcService, atsServer.getServices());
       this.atsServer = atsServer;
    }
 
@@ -85,6 +92,16 @@ public class AtsQueryServiceImpl implements IAtsQueryService {
    @Override
    public AtsSearchData createSearchData(String namespace, String searchName) {
       throw new UnsupportedOperationException("Unsupported on the server");
+   }
+
+   @Override
+   public Collection<ArtifactId> getArtifacts(List<Integer> ids, BranchId branch) {
+      List<Long> uuids = new LinkedList<>();
+      for (Integer id : ids) {
+         uuids.add(Long.valueOf(id));
+      }
+      return Collections.castAll(
+         atsServer.getOrcsApi().getQueryFactory().fromBranch(branch).andUuids(uuids).getResults().getList());
    }
 
 }

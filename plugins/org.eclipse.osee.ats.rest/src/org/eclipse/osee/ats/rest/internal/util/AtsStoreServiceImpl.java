@@ -129,4 +129,9 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
       return atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().isDateType(attributeType);
    }
 
+   @Override
+   public boolean isOfType(ArtifactId artifact, IArtifactType artifactType) {
+      return ((ArtifactReadable) artifact).isOfType(artifactType);
+   }
+
 }

@@ -237,7 +237,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       atsStateFactory = AtsCoreFactory.newStateFactory(getServices(), atsLogFactory);
       atsStoreService = new AtsStoreService(workItemFactory);
 
-      atsQueryService = new AtsQueryServiceImpl(this);
+      atsQueryService = new AtsQueryServiceImpl(this, jdbcService);
       actionableItemManager = new ActionableItemManager(attributeResolverService, atsStoreService, this);
       sequenceProvider = new ISequenceProvider() {
 
@@ -770,6 +770,11 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    @Override
    public void clearConfigurationsCaches() {
       configProvider.clearConfigurationsCaches();
+   }
+
+   @Override
+   public IAtsChangeSet createAtsChangeSet(String comment) {
+      return getStoreService().createAtsChangeSet(comment, getUserService().getCurrentUser());
    }
 
 }

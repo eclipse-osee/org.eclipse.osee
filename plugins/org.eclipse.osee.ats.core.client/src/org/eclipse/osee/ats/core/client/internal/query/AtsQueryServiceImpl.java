@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.client.internal.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,7 +21,6 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
-import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
 import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -29,23 +29,29 @@ import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.query.AbstractAtsQueryService;
 import org.eclipse.osee.ats.core.query.AtsWorkItemFilter;
 import org.eclipse.osee.ats.core.util.AtsJsonFactory;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.jdbc.JdbcService;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsQueryServiceImpl implements IAtsQueryService {
+public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    private final IAtsClient atsClient;
    private static final Pattern namespacePattern = Pattern.compile("\"namespace\":\"(.*?)\"");
 
-   public AtsQueryServiceImpl(IAtsClient atsClient) {
+   public AtsQueryServiceImpl(IAtsClient atsClient, JdbcService jdbcService) {
+      super(jdbcService, atsClient.getServices());
       this.atsClient = atsClient;
    }
 
@@ -219,6 +225,11 @@ public class AtsQueryServiceImpl implements IAtsQueryService {
             "Can't create ATS Quick Search namespace [%s] and searchName [%s]", namespace, searchName);
       }
       return data;
+   }
+
+   @Override
+   public Collection<ArtifactId> getArtifacts(List<Integer> ids, BranchId branch) {
+      return Collections.castAll(ArtifactQuery.getArtifactListFromIds(ids, branch));
    }
 
 }

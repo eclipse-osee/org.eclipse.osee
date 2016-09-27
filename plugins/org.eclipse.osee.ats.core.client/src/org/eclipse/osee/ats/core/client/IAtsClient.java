@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsEventService;
 import org.eclipse.osee.ats.api.version.IAtsVersionServiceProvider;
 import org.eclipse.osee.ats.api.version.IVersionFactory;
@@ -126,5 +127,7 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
    void reloadConfigCache(boolean pend);
 
    void reloadUserCache(boolean pend);
+
+   IAtsChangeSet createAtsChangeSet(String comment);
 
 }
