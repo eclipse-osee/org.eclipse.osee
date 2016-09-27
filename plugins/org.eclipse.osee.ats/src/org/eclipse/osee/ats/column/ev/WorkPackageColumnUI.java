@@ -59,8 +59,9 @@ public class WorkPackageColumnUI extends XViewerAtsColumn implements IMultiColum
    }
 
    private WorkPackageColumnUI() {
-      super(AtsColumnId.ActivityId.getId(), "Work Pacakge", 80, XViewerAlign.Left, false, SortDataType.String, true,
-         "Provides Activity Id and Name from the selected Work Package related to the selected workflow.");
+      super(AtsColumnId.ActivityId.getId(), "Work Package (EV)", 80, XViewerAlign.Left, false, SortDataType.String,
+         true,
+         "Provides Work Package dialog from the configured Work Packages related to the selected workflow's Team Definitions.");
    }
 
    /**
