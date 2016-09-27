@@ -118,50 +118,52 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
 
    private Color getColor(Object element, boolean background, int columnIndex) {
       Color resultColor = null;
-      String hexColor = null;
-      if (background) {
-         hexColor = elementToBackgroundColor.get(element);
-      } else {
-         hexColor = elementToForegroundColor.get(element);
-      }
-      if (!Strings.isValid(hexColor)) {
-         Color color = hexColorToColor.get(hexColor);
-         if (color != null) {
-            resultColor = color;
+      if (isColorColumn()) {
+         String hexColor = null;
+         if (background) {
+            hexColor = elementToBackgroundColor.get(element);
          } else {
-            try {
-               String value = null;
-               if (this instanceof IXViewerPreComputedColumn) {
-                  IXViewerPreComputedColumn ixViewerPreComputedColumn = (IXViewerPreComputedColumn) this;
-                  value = ixViewerPreComputedColumn.getText(element, ixViewerPreComputedColumn.getKey(element), "");
-               } else if (this instanceof IXViewerValueColumn) {
-                  IXViewerValueColumn valueColumn = (IXViewerValueColumn) this;
-                  value = valueColumn.getColumnText(element, this, columnIndex);
-               } else {
-                  value = getStyledText(element, this, 0).getString();
-               }
-               if (Strings.isValid(value)) {
-                  if (background) {
-                     hexColor = colorColumn.getBackgroundColorHex(value);
+            hexColor = elementToForegroundColor.get(element);
+         }
+         if (!Strings.isValid(hexColor)) {
+            Color color = hexColorToColor.get(hexColor);
+            if (color != null) {
+               resultColor = color;
+            } else {
+               try {
+                  String value = null;
+                  if (this instanceof IXViewerPreComputedColumn) {
+                     IXViewerPreComputedColumn ixViewerPreComputedColumn = (IXViewerPreComputedColumn) this;
+                     value = ixViewerPreComputedColumn.getText(element, ixViewerPreComputedColumn.getKey(element), "");
+                  } else if (this instanceof IXViewerValueColumn) {
+                     IXViewerValueColumn valueColumn = (IXViewerValueColumn) this;
+                     value = valueColumn.getColumnText(element, this, columnIndex);
                   } else {
-                     hexColor = colorColumn.getForgroundColorHex(value);
+                     value = getStyledText(element, this, 0).getString();
                   }
+                  if (Strings.isValid(value)) {
+                     if (background) {
+                        hexColor = colorColumn.getBackgroundColorHex(value);
+                     } else {
+                        hexColor = colorColumn.getForgroundColorHex(value);
+                     }
+                  }
+               } catch (Exception ex) {
+                  // do nothing
                }
-            } catch (Exception ex) {
-               // do nothing
             }
          }
-      }
-      if (Strings.isValid(hexColor)) {
-         resultColor = hexColorToColor.get(hexColor);
-         if (resultColor == null) {
-            resultColor = Displays.getColor(Integer.valueOf(hexColor.substring(1, 3), 16),
-               Integer.valueOf(hexColor.substring(3, 5), 16), Integer.valueOf(hexColor.substring(5, 7), 16));
-            hexColorToColor.put(hexColor, resultColor);
-            if (background) {
-               elementToBackgroundColor.put(element, hexColor);
-            } else {
-               elementToForegroundColor.put(element, hexColor);
+         if (Strings.isValid(hexColor)) {
+            resultColor = hexColorToColor.get(hexColor);
+            if (resultColor == null) {
+               resultColor = Displays.getColor(Integer.valueOf(hexColor.substring(1, 3), 16),
+                  Integer.valueOf(hexColor.substring(3, 5), 16), Integer.valueOf(hexColor.substring(5, 7), 16));
+               hexColorToColor.put(hexColor, resultColor);
+               if (background) {
+                  elementToBackgroundColor.put(element, hexColor);
+               } else {
+                  elementToForegroundColor.put(element, hexColor);
+               }
             }
          }
       }
@@ -184,7 +186,7 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
    public Boolean isActionRollup() {
       return actionRollup;
    }
-   
+
    public void setHasColorColumn(Boolean hasColorColumn, ColorColumn colorColumn) {
       this.hasColorColumn = hasColorColumn;
       this.colorColumn = colorColumn;
