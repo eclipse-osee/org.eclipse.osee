@@ -10,15 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation.order;
 
-import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.USER_DEFINED;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;

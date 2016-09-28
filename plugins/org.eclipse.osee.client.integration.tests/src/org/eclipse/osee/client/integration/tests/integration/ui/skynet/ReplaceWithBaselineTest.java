@@ -12,6 +12,9 @@ package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,13 +27,12 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -100,8 +102,8 @@ public final class ReplaceWithBaselineTest {
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   private static final RelationSorter ascOrder = RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC;
-   private static final RelationSorter descOrder = RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
+   private static final RelationSorter ascOrder = LEXICOGRAPHICAL_ASC;
+   private static final RelationSorter descOrder = LEXICOGRAPHICAL_DESC;
 
    /**
     * Refer to table for Case 10*
@@ -260,7 +262,7 @@ public final class ReplaceWithBaselineTest {
                      testData.setbArtifactId(child.getArtId());
                      testData.setcArtId(newParent.getArtId());
 
-                     parent.addChild(RelationOrderBaseTypes.USER_DEFINED, child);
+                     parent.addChild(USER_DEFINED, child);
 
                      parent.persist(testName);
 
@@ -413,7 +415,7 @@ public final class ReplaceWithBaselineTest {
 
                      parent.deleteRelations(CoreRelationTypes.Default_Hierarchical__Child);
                      parent.persist(testName);
-                     newParent.addChild(RelationOrderBaseTypes.USER_DEFINED, child);
+                     newParent.addChild(USER_DEFINED, child);
                      newParent.persist(testName);
 
                      //This is to revert the child artifact

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.data;
+package org.eclipse.osee.framework.core.enums;
 
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 

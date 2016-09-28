@@ -12,6 +12,8 @@ package org.eclipse.osee.orcs.core.internal.relation.impl;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import static org.eclipse.osee.framework.jdk.core.util.Conditions.checkNotNull;
@@ -34,12 +36,11 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -215,12 +216,12 @@ public class RelationManagerImpl implements RelationManager {
 
    @Override
    public void relate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode) throws OseeCoreException {
-      relate(session, aNode, type, bNode, emptyString(), RelationOrderBaseTypes.PREEXISTING);
+      relate(session, aNode, type, bNode, emptyString(), PREEXISTING);
    }
 
    @Override
    public void relate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, String rationale) throws OseeCoreException {
-      relate(session, aNode, type, bNode, rationale, RelationOrderBaseTypes.PREEXISTING);
+      relate(session, aNode, type, bNode, rationale, PREEXISTING);
    }
 
    @Override
@@ -427,7 +428,7 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    private void order(OrcsSession session, IRelationType type, RelationNode node1, RelationSide side, OrderOp op, Collection<? extends RelationNode> node2) throws OseeCoreException {
-      order(session, type, node1, side, RelationOrderBaseTypes.PREEXISTING, op, node2);
+      order(session, type, node1, side, PREEXISTING, op, node2);
    }
 
    private void order(OrcsSession session, IRelationType type, RelationNode node1, RelationSide side, RelationSorter sorterId, OrderOp op, Collection<? extends RelationNode> node2) throws OseeCoreException {
@@ -436,11 +437,11 @@ public class RelationManagerImpl implements RelationManager {
       RelationSide orderSide = side.oppositeSide();
       IRelationTypeSide key = asTypeSide(type, orderSide);
       RelationSorter sorterIdToUse = sorterId;
-      if (sorterIdToUse == RelationOrderBaseTypes.PREEXISTING) {
+      if (sorterIdToUse == PREEXISTING) {
          sorterIdToUse = orderManager.getSorterId(key);
       }
       List<Identifiable<String>> relatives = Collections.emptyList();
-      if (RelationOrderBaseTypes.USER_DEFINED == sorterIdToUse) {
+      if (USER_DEFINED == sorterIdToUse) {
          ResultSet<RelationNode> arts = getRelated(session, type, node1, side);
          relatives = new LinkedList<>();
          for (RelationNode art : arts) {

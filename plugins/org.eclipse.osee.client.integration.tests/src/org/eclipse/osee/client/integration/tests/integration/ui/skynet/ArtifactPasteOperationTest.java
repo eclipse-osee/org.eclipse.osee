@@ -12,17 +12,17 @@ package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
-import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -107,7 +107,7 @@ public class ArtifactPasteOperationTest {
       String resolvedName = "Empty Parent First";
       try {
          performPaste(false, true, destination, Arrays.asList(parent1), resolvedName);
-         checkPaste(destination, resolvedName, parent1, RelationOrderBaseTypes.USER_DEFINED);
+         checkPaste(destination, resolvedName, parent1, USER_DEFINED);
       } finally {
          Artifact toDelete = destination.getChild(resolvedName);
          delete(toDelete);
@@ -119,11 +119,11 @@ public class ArtifactPasteOperationTest {
       String resolvedName = "Parent No Children";
       try {
          performPaste(false, true, destination, Arrays.asList(parent1), resolvedName);
-         checkPaste(destination, resolvedName, parent1, RelationOrderBaseTypes.USER_DEFINED);
+         checkPaste(destination, resolvedName, parent1, USER_DEFINED);
 
          Artifact newArtifact = destination.getChild(resolvedName);
          performPaste(false, true, newArtifact, Arrays.asList(child1), null);
-         checkPaste(newArtifact, child1.getName(), child1, RelationOrderBaseTypes.USER_DEFINED);
+         checkPaste(newArtifact, child1.getName(), child1, USER_DEFINED);
 
       } finally {
          Artifact toDelete = destination.getChild(resolvedName);
@@ -137,8 +137,7 @@ public class ArtifactPasteOperationTest {
       String resolvedName = "Parent With Children";
       try {
          performPaste(true, true, destination, Arrays.asList(parent1), resolvedName);
-         checkPaste(destination, resolvedName, parent1, RelationOrderBaseTypes.USER_DEFINED, "child_a", "child_c",
-            "child_b");
+         checkPaste(destination, resolvedName, parent1, USER_DEFINED, "child_a", "child_c", "child_b");
       } finally {
          Artifact toDelete = destination.getChild(resolvedName);
          delete(toDelete);
@@ -170,7 +169,7 @@ public class ArtifactPasteOperationTest {
          Assert.assertTrue(childArtifacts.isEmpty());
       }
       checkRelationOrder(newArtifact, expectedOrderType, hasChildren);
-      checkRelationOrder(destination, RelationOrderBaseTypes.USER_DEFINED, true);
+      checkRelationOrder(destination, USER_DEFINED, true);
    }
 
    private void checkRelationOrder(Artifact artifactToCheck, RelationSorter expectedOrderType, boolean hasChildren) throws OseeCoreException {
@@ -188,7 +187,7 @@ public class ArtifactPasteOperationTest {
          Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getName(), relationType);
          Assert.assertEquals(RelationSide.SIDE_B.name(), relationSide);
          Assert.assertEquals(expectedOrderType, orderGuid);
-         if (hasChildren && expectedOrderType == RelationOrderBaseTypes.USER_DEFINED) {
+         if (hasChildren && expectedOrderType == USER_DEFINED) {
             Assert.assertEquals(childArtifacts.size(), guids.size());
             for (int index = 0; index < guids.size(); index++) {
                IArtifact orderedChild = childArtifacts.get(index);

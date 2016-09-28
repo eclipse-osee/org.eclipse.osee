@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation.sorter;
 
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.RelationSorter;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.orcs.utility.NameComparator;
 import org.eclipse.osee.orcs.utility.SortOrder;
@@ -30,9 +31,9 @@ public class LexicographicalSorter implements Sorter {
    public LexicographicalSorter(SortOrder sortOrder) {
       this.comparator = new NameComparator(sortOrder);
       if (sortOrder.isAscending()) {
-         id = RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC;
+         id = LEXICOGRAPHICAL_ASC;
       } else {
-         id = RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
+         id = LEXICOGRAPHICAL_DESC;
       }
    }
 

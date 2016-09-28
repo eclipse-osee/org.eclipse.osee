@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation.order;
 
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,10 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -186,7 +186,7 @@ public class OrderManager implements HasOrderData {
 
    private boolean isRelativeOrderChange(IRelationTypeSide typeAndSide, RelationSorter sorterId, List<String> relativeSequence) throws OseeCoreException {
       boolean result = false;
-      if (sorterId.equals(RelationOrderBaseTypes.USER_DEFINED)) {
+      if (sorterId.equals(USER_DEFINED)) {
          List<String> currentOrder = getOrderIds(typeAndSide);
          result = !areSame(currentOrder, relativeSequence);
       }

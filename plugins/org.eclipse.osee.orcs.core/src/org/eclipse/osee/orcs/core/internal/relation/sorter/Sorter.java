@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.relation.sorter;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.data.RelationSorter;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 
 /**

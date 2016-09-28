@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.types;
 
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import static org.junit.Assert.assertEquals;
@@ -37,7 +40,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -799,8 +801,8 @@ public class OrcsTypesTest {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
       //@formatter:off
-      assertEquals(RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC, relTypes.getDefaultOrderTypeGuid(REQUIREMENT_REL));
-      assertEquals(RelationOrderBaseTypes.UNORDERED, relTypes.getDefaultOrderTypeGuid(ANOTHER_REL));
+      assertEquals(LEXICOGRAPHICAL_ASC, relTypes.getDefaultOrderTypeGuid(REQUIREMENT_REL));
+      assertEquals(UNORDERED, relTypes.getDefaultOrderTypeGuid(ANOTHER_REL));
       //@formatter:on
    }
 
@@ -928,7 +930,7 @@ public class OrcsTypesTest {
       assertEquals(OTHER_ARTIFACT, relTypes.getArtifactType(relation, SIDE_B));
       assertEquals(ARTIFACT, relTypes.getArtifactTypeSideA(relation));
       assertEquals(OTHER_ARTIFACT, relTypes.getArtifactTypeSideB(relation));
-      assertEquals(RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC, relTypes.getDefaultOrderTypeGuid(relation));
+      assertEquals(LEXICOGRAPHICAL_DESC, relTypes.getDefaultOrderTypeGuid(relation));
       assertEquals(RelationTypeMultiplicity.MANY_TO_ONE, relTypes.getMultiplicity(relation));
       assertEquals("dynamic-sideA", relTypes.getSideName(relation, SIDE_A));
       assertEquals("dynamic-sideB", relTypes.getSideName(relation, SIDE_B));

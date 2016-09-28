@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.core.internal.relation.order;
 
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.RelationSorter;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 
 /**
  * @author Roberto E. Escobar

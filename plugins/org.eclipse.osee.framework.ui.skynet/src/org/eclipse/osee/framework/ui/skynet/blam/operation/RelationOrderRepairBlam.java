@@ -10,15 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationSorter;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -99,12 +99,12 @@ public class RelationOrderRepairBlam extends AbstractBlam {
          RelationSide side = RelationSide.fromString(typeSide.getSecond());
          RelationSorter sorterGuid = currentData.getCurrentSorterGuid(type, side);
 
-         if (sorterGuid.equals(RelationOrderBaseTypes.USER_DEFINED)) {
+         if (sorterGuid.equals(USER_DEFINED)) {
             List<String> orderList = currentData.getOrderList(type, side);
             List<String> actualOrder = Artifacts.toGuids(RelationManager.getRelatedArtifacts(art, type, side));
             if (!orderList.equals(actualOrder)) {
                logf("Incorrect order on %s (%s %s)\n", art.getName(), type, side);
-               currentData.storeFromGuids(type, side, RelationOrderBaseTypes.USER_DEFINED, actualOrder);
+               currentData.storeFromGuids(type, side, USER_DEFINED, actualOrder);
                art.persist(transaction);
             }
          }

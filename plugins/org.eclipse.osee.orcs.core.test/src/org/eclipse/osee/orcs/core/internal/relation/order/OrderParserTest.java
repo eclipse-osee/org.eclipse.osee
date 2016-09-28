@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation.order;
 
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -21,12 +24,11 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -66,12 +68,12 @@ public class OrderParserTest {
    private static final String ONE_ENTRY_NO_LIST_PATTERN = String.format("<OrderList>%s</OrderList>", ENTRY_NO_LIST_PATTERN);
    private static final String TWO_ENTRY_PATTERN = String.format("<OrderList>%s%s</OrderList>", ENTRY_PATTERN, ENTRY_PATTERN);
 
-   private static final String DATA_1 = String.format(ONE_ENTRY_PATTERN, REL_TYPE_1_NAME, RelationSide.SIDE_B, RelationOrderBaseTypes.USER_DEFINED.getGuid(), Collections.toString(",", ORDER_LIST_1));
-   private static final String DATA_2 = String.format(ONE_ENTRY_PATTERN, REL_TYPE_1_NAME, RelationSide.SIDE_B, RelationOrderBaseTypes.USER_DEFINED.getGuid(),  Collections.toString(",", ORDER_LIST_2));
+   private static final String DATA_1 = String.format(ONE_ENTRY_PATTERN, REL_TYPE_1_NAME, RelationSide.SIDE_B, USER_DEFINED.getGuid(), Collections.toString(",", ORDER_LIST_1));
+   private static final String DATA_2 = String.format(ONE_ENTRY_PATTERN, REL_TYPE_1_NAME, RelationSide.SIDE_B, USER_DEFINED.getGuid(),  Collections.toString(",", ORDER_LIST_2));
    private static final String DATA_3 = String.format(TWO_ENTRY_PATTERN,
-      REL_TYPE_1_NAME, RelationSide.SIDE_B, RelationOrderBaseTypes.USER_DEFINED.getGuid(), Collections.toString(",", ORDER_LIST_2),
-      REL_TYPE_2_NAME, RelationSide.SIDE_A, RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid(), Collections.toString(",", ORDER_LIST_3));
-   private static final String DATA_4 = String.format(ONE_ENTRY_NO_LIST_PATTERN, REL_TYPE_2_NAME, RelationSide.SIDE_A, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC.getGuid());
+      REL_TYPE_1_NAME, RelationSide.SIDE_B, USER_DEFINED.getGuid(), Collections.toString(",", ORDER_LIST_2),
+      REL_TYPE_2_NAME, RelationSide.SIDE_A, LEXICOGRAPHICAL_ASC.getGuid(), Collections.toString(",", ORDER_LIST_3));
+   private static final String DATA_4 = String.format(ONE_ENTRY_NO_LIST_PATTERN, REL_TYPE_2_NAME, RelationSide.SIDE_A, LEXICOGRAPHICAL_DESC.getGuid());
 
    private static final String EMPTY_TYPE = "<OrderList><Order side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\"></Order></OrderList>";
    private static final String EMPTY_SIDE = "<OrderList><Order relType=\"X\" orderType=\"AAT0xogoMjMBhARkBZQA\"></Order></OrderList>";
@@ -172,7 +174,7 @@ public class OrderParserTest {
 
       verify(hasOrderData, times(1)).add(typeSideCaptor.capture(), orderDataCaptor.capture());
 
-      verifyData(0, REL_TYPE_1_ID, RelationSide.SIDE_B, RelationOrderBaseTypes.USER_DEFINED, ORDER_LIST_1);
+      verifyData(0, REL_TYPE_1_ID, RelationSide.SIDE_B, USER_DEFINED, ORDER_LIST_1);
    }
 
    @Test
@@ -181,7 +183,7 @@ public class OrderParserTest {
 
       verify(hasOrderData, times(1)).add(typeSideCaptor.capture(), orderDataCaptor.capture());
 
-      verifyData(0, REL_TYPE_1_ID, RelationSide.SIDE_B, RelationOrderBaseTypes.USER_DEFINED, ORDER_LIST_2);
+      verifyData(0, REL_TYPE_1_ID, RelationSide.SIDE_B, USER_DEFINED, ORDER_LIST_2);
    }
 
    @Test
@@ -190,8 +192,8 @@ public class OrderParserTest {
 
       verify(hasOrderData, times(2)).add(typeSideCaptor.capture(), orderDataCaptor.capture());
 
-      verifyData(0, REL_TYPE_1_ID, RelationSide.SIDE_B, RelationOrderBaseTypes.USER_DEFINED, ORDER_LIST_2);
-      verifyData(1, REL_TYPE_2_ID, RelationSide.SIDE_A, RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC, ORDER_LIST_3);
+      verifyData(0, REL_TYPE_1_ID, RelationSide.SIDE_B, USER_DEFINED, ORDER_LIST_2);
+      verifyData(1, REL_TYPE_2_ID, RelationSide.SIDE_A, LEXICOGRAPHICAL_ASC, ORDER_LIST_3);
    }
 
    @Test
@@ -200,15 +202,15 @@ public class OrderParserTest {
 
       verify(hasOrderData, times(1)).add(typeSideCaptor.capture(), orderDataCaptor.capture());
 
-      verifyData(0, REL_TYPE_2_ID, RelationSide.SIDE_A, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
+      verifyData(0, REL_TYPE_2_ID, RelationSide.SIDE_A, LEXICOGRAPHICAL_DESC);
    }
 
    @Test
    public void testToXml() throws OseeCoreException {
       //@formatter:off
       Map<IRelationTypeSide, OrderData> data = new LinkedHashMap<>();
-      add(data, REL_TYPE_1_ID, REL_TYPE_1_NAME, RelationSide.SIDE_B, RelationOrderBaseTypes.USER_DEFINED, ORDER_LIST_2);
-      add(data, REL_TYPE_2_ID, REL_TYPE_2_NAME, RelationSide.SIDE_A, RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC, ORDER_LIST_3);
+      add(data, REL_TYPE_1_ID, REL_TYPE_1_NAME, RelationSide.SIDE_B, USER_DEFINED, ORDER_LIST_2);
+      add(data, REL_TYPE_2_ID, REL_TYPE_2_NAME, RelationSide.SIDE_A, LEXICOGRAPHICAL_ASC, ORDER_LIST_3);
       //@formatter:on
 
       when(hasOrderData.iterator()).thenReturn(data.entrySet().iterator());
@@ -229,7 +231,7 @@ public class OrderParserTest {
    @Test
    public void testToXmlEmptyList() throws OseeCoreException {
       Map<IRelationTypeSide, OrderData> data = new LinkedHashMap<>();
-      add(data, REL_TYPE_1_ID, REL_TYPE_2_NAME, RelationSide.SIDE_A, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
+      add(data, REL_TYPE_1_ID, REL_TYPE_2_NAME, RelationSide.SIDE_A, LEXICOGRAPHICAL_DESC);
       when(hasOrderData.iterator()).thenReturn(data.entrySet().iterator());
 
       String actual = parser.toXml(hasOrderData);

@@ -11,6 +11,10 @@
 
 package org.eclipse.osee.framework.skynet.core.relation;
 
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,12 +27,11 @@ import java.util.Random;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
@@ -131,7 +134,7 @@ public class RelationTypeSideSorterTest {
       Assert.assertFalse(actual.equals(expected));
 
       // Set Different sorter id
-      sorter.setOrder(relatives, RelationOrderBaseTypes.USER_DEFINED);
+      sorter.setOrder(relatives, USER_DEFINED);
       actual = orderData.getOrderList(sorter.getRelationType(), sorter.getSide());
       expected = Artifacts.toGuids(relatives);
       Assert.assertTrue(actual.equals(expected));
@@ -155,7 +158,7 @@ public class RelationTypeSideSorterTest {
          RelationSorter sorterId = relationSorter.getSorterId();
          List<IArtifact> itemsToOrder = new ArrayList<>(startingArtifacts);
          itemsToOrder.add(itemToAdd);
-         if (RelationOrderBaseTypes.USER_DEFINED != sorterId) {
+         if (USER_DEFINED != sorterId) {
             relationSorter.sort(itemsToOrder, null);
          }
 
@@ -164,7 +167,7 @@ public class RelationTypeSideSorterTest {
          sorter.addItem(sorterId, itemToAdd);
 
          List<String> currentOrder = orderData.getOrderList(sorter.getRelationType(), sorter.getSide());
-         if (RelationOrderBaseTypes.USER_DEFINED != sorterId) {
+         if (USER_DEFINED != sorterId) {
             Assert.assertTrue(currentOrder.isEmpty());
          } else {
             List<String> expectedOrder = Artifacts.toGuids(itemsToOrder);
@@ -191,8 +194,8 @@ public class RelationTypeSideSorterTest {
 
       RelationTypeCache cache = new RelationTypeCache();
 
-      RelationType relationType1 = createRelationType(cache, "Rel 1", RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
-      RelationType relationType2 = createRelationType(cache, "Rel 2", RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
+      RelationType relationType1 = createRelationType(cache, "Rel 1", LEXICOGRAPHICAL_ASC);
+      RelationType relationType2 = createRelationType(cache, "Rel 2", LEXICOGRAPHICAL_DESC);
       IArtifact art1 = createArtifact("a", GUID.create());
       IArtifact art2 = createArtifact("b", GUID.create());
 
@@ -230,9 +233,9 @@ public class RelationTypeSideSorterTest {
 
    private static void addData(RelationTypeCache cache, RelationOrderData data, List<Object[]> expected) throws OseeCoreException {
       addData(data, expected, cache.getUniqueByName("Rel 1"), RelationSide.SIDE_A, //
-         RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC, "1", "2", "3");
+         LEXICOGRAPHICAL_ASC, "1", "2", "3");
       addData(data, expected, cache.getUniqueByName("Rel 2"), RelationSide.SIDE_B, //
-         RelationOrderBaseTypes.UNORDERED, "4", "5", "6");
+         UNORDERED, "4", "5", "6");
 
       checkData(data, expected);
    }

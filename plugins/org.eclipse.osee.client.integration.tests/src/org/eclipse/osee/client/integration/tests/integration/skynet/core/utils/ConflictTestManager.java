@@ -11,6 +11,7 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core.utils;
 
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -164,11 +164,11 @@ public class ConflictTestManager {
       // Add artifacts onto the destination Branch
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
          if (conflictDefs[i].rootArtifact > 0 && conflictDefs[i].rootArtifact < i) {
-            destArtifacts[i] = destArtifacts[conflictDefs[i].rootArtifact].addNewChild(
-               RelationOrderBaseTypes.USER_DEFINED, conflictDefs[i].artifactType, "Test Artifact Number " + i);
-         } else {
-            destArtifacts[i] = rootArtifact.addNewChild(RelationOrderBaseTypes.USER_DEFINED,
+            destArtifacts[i] = destArtifacts[conflictDefs[i].rootArtifact].addNewChild(USER_DEFINED,
                conflictDefs[i].artifactType, "Test Artifact Number " + i);
+         } else {
+            destArtifacts[i] =
+               rootArtifact.addNewChild(USER_DEFINED, conflictDefs[i].artifactType, "Test Artifact Number " + i);
          }
          for (AttributeValue value : conflictDefs[i].newAttributes) {
             destArtifacts[i].addAttribute(value.attributeType, stringToObject(value.clas, value.sourceValue));
@@ -303,7 +303,7 @@ public class ConflictTestManager {
             rootArtifact = sourceArtifacts[rootArtifactId];
          }
       }
-      Artifact child = rootArtifact.addNewChild(RelationOrderBaseTypes.USER_DEFINED, type, name);
+      Artifact child = rootArtifact.addNewChild(USER_DEFINED, type, name);
       child.persist(ConflictTestManager.class.getSimpleName());
       rootArtifact.persist(ConflictTestManager.class.getSimpleName());
       return child;

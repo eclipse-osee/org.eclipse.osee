@@ -11,6 +11,8 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
@@ -25,7 +27,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -109,8 +110,7 @@ public class RelationOrderingTest {
 
       checkUserDefined();
 
-      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child,
-         RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
+      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, LEXICOGRAPHICAL_ASC);
       Attribute<Object> attribute = parent.getSoleAttribute(CoreAttributeTypes.RelationOrder);
       assertTrue("Setting the attribute back to the default type did not cause an attribute to be deleted",
          attribute == null || attribute.isDeleted());
@@ -141,12 +141,11 @@ public class RelationOrderingTest {
       parent.addRelation(CoreRelationTypes.Users_User, child6);
       parent.persist(transaction);
 
-      parent.setRelationOrder(CoreRelationTypes.Users_User, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
+      parent.setRelationOrder(CoreRelationTypes.Users_User, LEXICOGRAPHICAL_DESC);
 
-      parent.setRelationOrder(CoreRelationTypes.Users_Artifact, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
+      parent.setRelationOrder(CoreRelationTypes.Users_Artifact, LEXICOGRAPHICAL_DESC);
 
-      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child,
-         RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
+      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, LEXICOGRAPHICAL_ASC);
       transaction.execute();
 
       attribute = parent.getSoleAttribute(CoreAttributeTypes.RelationOrder);
@@ -156,8 +155,7 @@ public class RelationOrderingTest {
    }
 
    private void checkAsc() throws OseeCoreException {
-      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child,
-         RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
+      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, LEXICOGRAPHICAL_ASC);
       List<Artifact> children = parent.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child);
       Assert.assertEquals(3, children.size());
       Assert.assertEquals(children.get(0).getName(), "a_child");
@@ -166,8 +164,7 @@ public class RelationOrderingTest {
    }
 
    private void checkDesc() throws OseeCoreException {
-      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child,
-         RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
+      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, LEXICOGRAPHICAL_DESC);
       List<Artifact> children = parent.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child);
       Assert.assertEquals(3, children.size());
       Assert.assertEquals(children.get(0).getName(), "c_child");

@@ -10,15 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact;
 
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -91,7 +91,7 @@ public class ArtifactPasteOperation extends AbstractOperation {
          RelationOrderData data = RelationManager.createRelationOrderData(source);
          RelationSorter order =
             data.getCurrentSorterGuid(RelationTypeManager.getType(relationTypeSide), relationTypeSide.getSide());
-         if (RelationOrderBaseTypes.USER_DEFINED == order) {
+         if (USER_DEFINED == order) {
             newArtifact.setRelationOrder(relationTypeSide, copiedChildren);
          } else {
             newArtifact.setRelationOrder(relationTypeSide, order);

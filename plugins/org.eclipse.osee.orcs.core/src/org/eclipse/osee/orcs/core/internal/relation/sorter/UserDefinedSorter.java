@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation.sorter;
 
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.RelationSorter;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 
 /**
@@ -23,7 +23,7 @@ public class UserDefinedSorter implements Sorter {
 
    @Override
    public RelationSorter getId() {
-      return RelationOrderBaseTypes.USER_DEFINED;
+      return USER_DEFINED;
    }
 
    @Override

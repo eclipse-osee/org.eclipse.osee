@@ -5,13 +5,13 @@
  */
 package org.eclipse.osee.doors.connector.ui.handler;
 
+import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -55,8 +55,7 @@ public class DoorsCreator {
             Artifact rootArtifact = ArtifactQuery.checkArtifactFromTypeAndName(CoreArtifactTypes.RootArtifact,
                "Default Hierarchy Root", branch);
             if (rootArtifact != null) {
-               parentArtifact = rootArtifact.addNewChild(RelationOrderBaseTypes.PREEXISTING, CoreArtifactTypes.Folder,
-                  "Door Requirements");
+               parentArtifact = rootArtifact.addNewChild(PREEXISTING, CoreArtifactTypes.Folder, "Door Requirements");
             }
          }
 
@@ -65,7 +64,7 @@ public class DoorsCreator {
             Artifact artifact =
                ArtifactQuery.checkArtifactFromTypeAndName(DoorsArtifactType.Doors_Artifact, reqName, branch);
             if (artifact == null) {
-               newArtifact = parentArtifact.addNewChild(RelationOrderBaseTypes.PREEXISTING,
+               newArtifact = parentArtifact.addNewChild(PREEXISTING,
                   TokenFactory.createArtifactType(0x5000000000002001L, "DoorsRequirement"), reqName);
                newArtifact.setSoleAttributeFromString(
                   TokenFactory.createAttributeType(0x5000000000002003L, "Door Req Name"), reqName);

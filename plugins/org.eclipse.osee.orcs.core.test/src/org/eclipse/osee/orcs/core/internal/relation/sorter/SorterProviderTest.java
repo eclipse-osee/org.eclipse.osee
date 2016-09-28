@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation.sorter;
 
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
-import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.RelationTypes;
@@ -52,16 +53,15 @@ public class SorterProviderTest {
    @Test
    public void testGetDefaultSorterId() throws OseeCoreException {
       when(relationTypeCache.getDefaultOrderTypeGuid(CoreRelationTypes.Default_Hierarchical__Child)).thenReturn(
-         RelationOrderBaseTypes.USER_DEFINED);
+         USER_DEFINED);
 
       RelationSorter actual1 = provider.getDefaultSorterId(CoreRelationTypes.Default_Hierarchical__Child);
-      assertEquals(RelationOrderBaseTypes.USER_DEFINED, actual1);
+      assertEquals(USER_DEFINED, actual1);
 
-      when(relationTypeCache.getDefaultOrderTypeGuid(CoreRelationTypes.Users_User)).thenReturn(
-         RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
+      when(relationTypeCache.getDefaultOrderTypeGuid(CoreRelationTypes.Users_User)).thenReturn(LEXICOGRAPHICAL_DESC);
 
       RelationSorter actual2 = provider.getDefaultSorterId(CoreRelationTypes.Users_User);
-      assertEquals(RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC, actual2);
+      assertEquals(LEXICOGRAPHICAL_DESC, actual2);
    }
 
    @Test

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.group;
 
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -22,7 +23,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -257,8 +257,8 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                      Artifact targetArtifact = dragOverExplorerItem.getArtifact();
 
                      for (Artifact art : insertArts) {
-                        parentArtifact.addRelation(RelationOrderBaseTypes.USER_DEFINED,
-                           CoreRelationTypes.Universal_Grouping__Members, targetArtifact, isFeedbackAfter, art, "");
+                        parentArtifact.addRelation(USER_DEFINED, CoreRelationTypes.Universal_Grouping__Members,
+                           targetArtifact, isFeedbackAfter, art, "");
                      }
                      parentArtifact.persist(getClass().getSimpleName());
                   }

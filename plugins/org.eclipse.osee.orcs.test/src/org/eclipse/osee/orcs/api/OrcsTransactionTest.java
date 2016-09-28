@@ -17,7 +17,7 @@ import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hi
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Dependency__Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Dependency__Dependency;
-import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
 import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

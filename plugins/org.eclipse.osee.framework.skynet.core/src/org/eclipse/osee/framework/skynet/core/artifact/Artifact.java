@@ -12,6 +12,8 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Child;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -25,12 +27,11 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.Adaptable;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -40,8 +41,8 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.EditState;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
@@ -430,7 +431,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    }
 
    public final void addChild(Artifact artifact) throws OseeCoreException {
-      addChild(RelationOrderBaseTypes.PREEXISTING, artifact);
+      addChild(PREEXISTING, artifact);
    }
 
    public final void addChild(RelationSorter sorterId, Artifact artifact) throws OseeCoreException {
@@ -1272,7 +1273,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    }
 
    public final void addRelation(IRelationTypeSide relationSide, Artifact artifact) throws OseeCoreException {
-      addRelation(RelationOrderBaseTypes.PREEXISTING, relationSide, artifact, null);
+      addRelation(PREEXISTING, relationSide, artifact, null);
    }
 
    public final void addRelation(RelationSorter sorterId, IRelationTypeSide relationSide, Artifact artifact) throws OseeCoreException {
@@ -1289,12 +1290,11 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    }
 
    public final void setRelationOrder(IRelationTypeSide relationSide, List<Artifact> artifactsInNewOrder) throws OseeCoreException {
-      RelationManager.setRelationOrder(this, relationSide, relationSide.getSide(), RelationOrderBaseTypes.USER_DEFINED,
-         artifactsInNewOrder);
+      RelationManager.setRelationOrder(this, relationSide, relationSide.getSide(), USER_DEFINED, artifactsInNewOrder);
    }
 
    public final void setRelationOrder(IRelationTypeSide relationEnumeration, RelationSorter orderId) throws OseeCoreException {
-      if (RelationOrderBaseTypes.USER_DEFINED == orderId) {
+      if (USER_DEFINED == orderId) {
          setRelationOrder(relationEnumeration, getRelatedArtifacts(relationEnumeration));
       } else {
          List<Artifact> empty = java.util.Collections.emptyList();
@@ -1318,8 +1318,8 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
          throw new OseeStateException("Could not set Relation Order");
       }
 
-      RelationManager.setRelationOrder(this, relationEnumeration, relationEnumeration.getSide(),
-         RelationOrderBaseTypes.USER_DEFINED, currentOrder);
+      RelationManager.setRelationOrder(this, relationEnumeration, relationEnumeration.getSide(), USER_DEFINED,
+         currentOrder);
    }
 
    public final void deleteRelation(IRelationTypeSide relationTypeSide, Artifact artifact) throws OseeCoreException {
@@ -1358,7 +1358,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
     * Creates new relations that don't already exist and removes relations to artifacts that are not in collection
     */
    public final void setRelations(IRelationTypeSide relationSide, Collection<? extends Artifact> artifacts) throws OseeCoreException {
-      setRelations(RelationOrderBaseTypes.PREEXISTING, relationSide, artifacts);
+      setRelations(PREEXISTING, relationSide, artifacts);
    }
 
    public final boolean isLinksLoaded() {

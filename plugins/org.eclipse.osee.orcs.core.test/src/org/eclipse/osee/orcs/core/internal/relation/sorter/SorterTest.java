@@ -10,12 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation.sorter;
 
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.RelationSorter;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -94,13 +97,7 @@ public class SorterTest {
       Identifiable<String> art4 = createItem(names[3]);
 
       List<Identifiable<String>> artifacts = Arrays.asList(art1, art2, art3, art4);
-      return new Object[] {
-         "Unordered Test",
-         new UnorderedSorter(),
-         RelationOrderBaseTypes.UNORDERED,
-         null,
-         artifacts,
-         artifacts};
+      return new Object[] {"Unordered Test", new UnorderedSorter(), UNORDERED, null, artifacts, artifacts};
    }
 
    private static Object[] createLexicographicalTest(SortOrder mode, String... names) {
@@ -111,9 +108,9 @@ public class SorterTest {
 
       RelationSorter orderId;
       if (mode.isAscending()) {
-         orderId = RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC;
+         orderId = LEXICOGRAPHICAL_ASC;
       } else {
-         orderId = RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
+         orderId = LEXICOGRAPHICAL_DESC;
       }
 
       List<Identifiable<String>> itemsToOrder = Arrays.asList(art3, art1, art4, art2);
@@ -143,7 +140,7 @@ public class SorterTest {
       return new Object[] {
          "UserDefined",
          new UserDefinedSorter(),
-         RelationOrderBaseTypes.USER_DEFINED,
+         USER_DEFINED,
          relatives,
          itemsToOrder,
          expectedOrder};

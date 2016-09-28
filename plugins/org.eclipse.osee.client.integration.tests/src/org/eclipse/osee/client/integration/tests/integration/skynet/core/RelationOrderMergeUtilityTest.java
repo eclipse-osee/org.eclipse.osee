@@ -12,7 +12,9 @@ package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
-import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.USER_DEFINED;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.List;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.TestUtil;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
@@ -20,11 +22,10 @@ import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -57,8 +58,8 @@ public class RelationOrderMergeUtilityTest {
    public final OseeHousekeepingRule oseeHousekeeping = new OseeHousekeepingRule();
 
    private final IRelationTypeSide defaultHierarchy = CoreRelationTypes.Default_Hierarchical__Child;
-   private final RelationSorter ascOrder = RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC;
-   private final RelationSorter descOrder = RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
+   private final RelationSorter ascOrder = LEXICOGRAPHICAL_ASC;
+   private final RelationSorter descOrder = LEXICOGRAPHICAL_DESC;
 
    private RelationType hierType;
    private RelationSide hierSide;

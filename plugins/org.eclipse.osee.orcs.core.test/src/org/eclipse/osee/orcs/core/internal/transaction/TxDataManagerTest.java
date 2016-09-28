@@ -14,7 +14,7 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.DirectSoft
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Category;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.DEFAULT_HIERARCHY;
 import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.IS_CHILD;

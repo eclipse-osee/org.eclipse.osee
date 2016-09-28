@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation.order;
 
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,9 +20,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.RelationSorter;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.core.model.event.RelationOrderModType;
@@ -141,7 +141,7 @@ public class RelationOrderData {
    }
 
    protected boolean isRelativeOrderChange(IRelationType type, RelationSide side, RelationSorter sorterId, List<String> relativeSequence) throws OseeCoreException {
-      return sorterId.equals(RelationOrderBaseTypes.USER_DEFINED) && !relativeSequence.equals(getOrderList(type, side));
+      return sorterId.equals(USER_DEFINED) && !relativeSequence.equals(getOrderList(type, side));
    }
 
    protected boolean isDifferentSorterId(RelationType type, RelationSide side, RelationSorter sorterId) throws OseeCoreException {

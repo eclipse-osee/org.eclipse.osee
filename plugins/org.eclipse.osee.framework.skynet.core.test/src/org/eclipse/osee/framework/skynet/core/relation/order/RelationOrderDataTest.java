@@ -10,17 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation.order;
 
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
@@ -61,9 +63,9 @@ public class RelationOrderDataTest {
 
       RelationTypeCache cache = new RelationTypeCache();
 
-      relationType1 = createRelationType(cache, "Rel 1", RelationOrderBaseTypes.USER_DEFINED);
-      relationType2 = createRelationType(cache, "Rel 2", RelationOrderBaseTypes.UNORDERED);
-      relationType3 = createRelationType(cache, "Rel 3", RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
+      relationType1 = createRelationType(cache, "Rel 1", USER_DEFINED);
+      relationType2 = createRelationType(cache, "Rel 2", UNORDERED);
+      relationType3 = createRelationType(cache, "Rel 3", LEXICOGRAPHICAL_ASC);
 
       Assert.assertFalse(data.hasEntries());
       Assert.assertEquals(0, data.size());
@@ -130,10 +132,10 @@ public class RelationOrderDataTest {
       }
 
       RelationSorter actualGuid = data.getCurrentSorterGuid(relationType1, RelationSide.SIDE_A);
-      Assert.assertEquals(RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC, actualGuid);
+      Assert.assertEquals(LEXICOGRAPHICAL_ASC, actualGuid);
 
       actualGuid = data.getCurrentSorterGuid(relationType2, RelationSide.SIDE_B);
-      Assert.assertEquals(RelationOrderBaseTypes.UNORDERED, actualGuid);
+      Assert.assertEquals(UNORDERED, actualGuid);
 
       // Pair does not exist
       actualGuid = data.getCurrentSorterGuid(relationType2, RelationSide.SIDE_A);
@@ -211,7 +213,7 @@ public class RelationOrderDataTest {
 
       // No Change -- Current Sorter Id
       List<IArtifact> emptyList = java.util.Collections.emptyList();
-      data.store(relationType1, RelationSide.SIDE_A, RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC, emptyList);
+      data.store(relationType1, RelationSide.SIDE_A, LEXICOGRAPHICAL_ASC, emptyList);
       Assert.assertFalse(accessor.wasStoreCalled());
 
       // Store
@@ -221,7 +223,7 @@ public class RelationOrderDataTest {
 
       // Store
       accessor.clearStoreCalled();
-      data.store(relationType1, RelationSide.SIDE_A, RelationOrderBaseTypes.UNORDERED, emptyList);
+      data.store(relationType1, RelationSide.SIDE_A, UNORDERED, emptyList);
       Assert.assertTrue(accessor.wasStoreCalled());
    }
 

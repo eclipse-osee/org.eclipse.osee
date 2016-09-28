@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.artifact;
 
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -33,7 +33,7 @@ public abstract class CollectorArtifact extends AbstractWorkflowArtifact impleme
    @Override
    public void addMember(Artifact artifact) throws OseeCoreException {
       if (!getMembers().contains(artifact)) {
-         addRelation(RelationOrderBaseTypes.USER_DEFINED, membersRelationType, artifact);
+         addRelation(USER_DEFINED, membersRelationType, artifact);
       }
    }
 

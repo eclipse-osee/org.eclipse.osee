@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation.order;
 
-import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC;
-import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.UNORDERED;
-import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.USER_DEFINED;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -27,9 +28,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.core.data.RelationSorter;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -179,18 +179,18 @@ public class OrderManagerTest {
 
    @Test
    public void testGetSorterId() throws OseeCoreException {
-      when(orderData1.getSorterId()).thenReturn(RelationOrderBaseTypes.USER_DEFINED);
-      when(orderData2.getSorterId()).thenReturn(RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
+      when(orderData1.getSorterId()).thenReturn(USER_DEFINED);
+      when(orderData2.getSorterId()).thenReturn(LEXICOGRAPHICAL_ASC);
 
       orderManager.add(typeSide1, orderData1);
       orderManager.add(typeSide2, orderData2);
 
-      assertEquals(RelationOrderBaseTypes.USER_DEFINED, orderManager.getSorterId(typeSide1));
+      assertEquals(USER_DEFINED, orderManager.getSorterId(typeSide1));
 
-      assertEquals(RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC, orderManager.getSorterId(typeSide2));
+      assertEquals(LEXICOGRAPHICAL_ASC, orderManager.getSorterId(typeSide2));
 
       RelationSorter actual = orderManager.getSorterId(typeSide3);
-      assertEquals(RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC, actual);
+      assertEquals(LEXICOGRAPHICAL_ASC, actual);
    }
 
    @Test
@@ -228,9 +228,9 @@ public class OrderManagerTest {
       when(orderData1.getOrderIds()).thenReturn(relatives1);
       when(orderData2.getOrderIds()).thenReturn(relatives2);
       when(orderData3.getOrderIds()).thenReturn(relatives3);
-      when(orderData1.getSorterId()).thenReturn(RelationOrderBaseTypes.USER_DEFINED);
-      when(orderData2.getSorterId()).thenReturn(RelationOrderBaseTypes.USER_DEFINED);
-      when(orderData3.getSorterId()).thenReturn(RelationOrderBaseTypes.USER_DEFINED);
+      when(orderData1.getSorterId()).thenReturn(USER_DEFINED);
+      when(orderData2.getSorterId()).thenReturn(USER_DEFINED);
+      when(orderData3.getSorterId()).thenReturn(USER_DEFINED);
 
       IRelationTypeSide typeSide4 = mock(IRelationTypeSide.class);
       IRelationTypeSide typeSide5 = mock(IRelationTypeSide.class);
@@ -277,21 +277,21 @@ public class OrderManagerTest {
       when(mock2.getName()).thenReturn("1");
       when(mock3.getName()).thenReturn("c");
 
-      when(orderData1.getSorterId()).thenReturn(RelationOrderBaseTypes.UNORDERED);
+      when(orderData1.getSorterId()).thenReturn(UNORDERED);
       orderManager.sort(typeSide1, items);
       assertOrdered(items, mock1, mock2, mock3);
 
-      when(orderData1.getSorterId()).thenReturn(RelationOrderBaseTypes.USER_DEFINED);
+      when(orderData1.getSorterId()).thenReturn(USER_DEFINED);
       Collections.shuffle(items);
       orderManager.sort(typeSide1, items);
       assertOrdered(items, mock2, mock3, mock1);
 
-      when(orderData1.getSorterId()).thenReturn(RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
+      when(orderData1.getSorterId()).thenReturn(LEXICOGRAPHICAL_ASC);
       Collections.shuffle(items);
       orderManager.sort(typeSide1, items);
       assertOrdered(items, mock2, mock1, mock3);
 
-      when(orderData1.getSorterId()).thenReturn(RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
+      when(orderData1.getSorterId()).thenReturn(LEXICOGRAPHICAL_DESC);
       Collections.shuffle(items);
       orderManager.sort(typeSide1, items);
       assertOrdered(items, mock3, mock1, mock2);
@@ -305,23 +305,22 @@ public class OrderManagerTest {
       when(mock2.getGuid()).thenReturn("1");
       when(mock3.getGuid()).thenReturn("3");
 
-      when(orderData1.getSorterId()).thenReturn(RelationOrderBaseTypes.USER_DEFINED);
+      when(orderData1.getSorterId()).thenReturn(USER_DEFINED);
       when(orderData1.getOrderIds()).thenReturn(relatives1);
 
       orderManager.add(typeSide1, orderData1);
 
-      orderManager.setOrder(typeSide1, RelationOrderBaseTypes.USER_DEFINED, items);
+      orderManager.setOrder(typeSide1, USER_DEFINED, items);
       verify(accessor).store(orderManager, OrderChange.NoChange);
 
-      orderManager.setOrder(typeSide1, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC,
-         Collections.<Identifiable<String>> emptyList());
+      orderManager.setOrder(typeSide1, LEXICOGRAPHICAL_DESC, Collections.<Identifiable<String>> emptyList());
       verify(accessor).store(orderManager, OrderChange.OrderRequest);
-      verify(orderData1).setSorterId(RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
+      verify(orderData1).setSorterId(LEXICOGRAPHICAL_DESC);
       verify(orderData1).setOrderIds(Collections.<String> emptyList());
 
       Collections.shuffle(items);
-      when(orderData1.getSorterId()).thenReturn(RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
-      orderManager.setOrder(typeSide1, RelationOrderBaseTypes.USER_DEFINED, items);
+      when(orderData1.getSorterId()).thenReturn(LEXICOGRAPHICAL_DESC);
+      orderManager.setOrder(typeSide1, USER_DEFINED, items);
       verify(accessor).store(orderManager, OrderChange.SetToDefault);
       assertEquals(0, orderManager.size());
    }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.explorer;
 
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.io.File;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -23,7 +24,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -178,8 +178,8 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                InterArtifactExplorerDropHandlerOperation interDropHandler =
                   new InterArtifactExplorerDropHandlerOperation(parentArtifact, artifactsToBeRelated, true);
                Operations.executeAsJob(interDropHandler, true);
-            } else if (artifactsToBeRelated != null && isValidForArtifactDrop(event) && MessageDialog.openQuestion(viewPart.getViewSite().getShell(),
-               "Confirm Move",
+            } else if (artifactsToBeRelated != null && isValidForArtifactDrop(event) && MessageDialog.openQuestion(
+               viewPart.getViewSite().getShell(), "Confirm Move",
                "Are you sure you want to make each of the selected artifacts a child of " + parentArtifact.getName() + "?")) {
                try {
                   SkynetTransaction transaction =
@@ -191,7 +191,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                         currentParent.deleteRelation(CoreRelationTypes.Default_Hierarchical__Child, artifact);
                         currentParent.persist(transaction);
                      }
-                     parentArtifact.addChild(RelationOrderBaseTypes.USER_DEFINED, artifact);
+                     parentArtifact.addChild(USER_DEFINED, artifact);
                      parentArtifact.persist(transaction);
                   }
                   transaction.execute();

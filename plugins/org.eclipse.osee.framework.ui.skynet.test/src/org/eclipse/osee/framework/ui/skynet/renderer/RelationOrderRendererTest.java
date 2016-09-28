@@ -10,15 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.renderer;
 
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.RelationSorter;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
@@ -56,14 +58,14 @@ public class RelationOrderRendererTest {
       RelationOrderData orderData = new MockRelationOrderData();
       List<Object[]> expectedData = new ArrayList<>();
 
-      addData(orderData, expectedData, "Relation 1", "Relation 1_A", RelationSide.SIDE_A,
-         RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC, "1", "2", "3");
+      addData(orderData, expectedData, "Relation 1", "Relation 1_A", RelationSide.SIDE_A, LEXICOGRAPHICAL_ASC, "1", "2",
+         "3");
 
       addData(orderData, expectedData, "Relation 2", "Relation 2_B", RelationSide.SIDE_B, //
-         RelationOrderBaseTypes.UNORDERED, "4", "5", "6");
+         UNORDERED, "4", "5", "6");
 
       addData(orderData, expectedData, "Relation 3", "Relation 3_B", RelationSide.SIDE_B, //
-         RelationOrderBaseTypes.USER_DEFINED, "7", "8", "9");
+         USER_DEFINED, "7", "8", "9");
 
       checkRelationOrderRenderer(getExpected(expectedData), orderData);
    }
@@ -72,8 +74,7 @@ public class RelationOrderRendererTest {
    public void testRenderingEmptyGuids() throws OseeCoreException {
       RelationOrderData orderData = new MockRelationOrderData();
       List<Object[]> expectedData = new ArrayList<>();
-      addData(orderData, expectedData, "Relation 1", "Relation 1_A", RelationSide.SIDE_A,
-         RelationOrderBaseTypes.USER_DEFINED);
+      addData(orderData, expectedData, "Relation 1", "Relation 1_A", RelationSide.SIDE_A, USER_DEFINED);
       checkRelationOrderRenderer(getExpected(expectedData), orderData);
    }
 

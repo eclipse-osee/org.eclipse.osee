@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation.sorters;
 
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.RelationSorter;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactNameComparator;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
@@ -34,7 +35,7 @@ public class LexicographicalRelationSorter implements IRelationSorter {
    public LexicographicalRelationSorter(SortMode sortMode) {
       boolean isDescending = SortMode.DESCENDING == sortMode;
       this.comparator = new ArtifactNameComparator(isDescending);
-      this.id = isDescending ? RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC : RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC;
+      this.id = isDescending ? LEXICOGRAPHICAL_DESC : LEXICOGRAPHICAL_ASC;
    }
 
    @Override

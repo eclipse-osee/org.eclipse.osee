@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.operations;
 
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.RelationSorter;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -53,7 +53,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
       this.transaction = transaction;
       this.artifactResolver = artifactResolver;
       this.destinationArtifact = destinationArtifact;
-      this.importArtifactOrder = RelationOrderBaseTypes.USER_DEFINED;
+      this.importArtifactOrder = USER_DEFINED;
       this.roughToRealArtifact = new HashMap<>();
       this.deleteUnmatchedArtifacts = deleteUnmatchedArtifacts;
       this.extractor = extractor;

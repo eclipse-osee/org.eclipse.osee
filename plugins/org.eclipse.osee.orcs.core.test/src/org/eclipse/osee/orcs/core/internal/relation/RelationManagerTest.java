@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.core.internal.relation;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
-import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
 import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.DEFAULT_HIERARCHY;
 import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.IS_CHILD;
 import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.IS_PARENT;

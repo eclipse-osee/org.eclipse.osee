@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation.sorter;
 
+import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.RelationSorter;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 
 /**
@@ -22,7 +22,7 @@ public class UnorderedSorter implements Sorter {
 
    @Override
    public RelationSorter getId() {
-      return RelationOrderBaseTypes.UNORDERED;
+      return UNORDERED;
    }
 
    @Override

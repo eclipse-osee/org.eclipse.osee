@@ -11,11 +11,12 @@
 
 package org.eclipse.osee.framework.skynet.core.relation;
 
+import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.RelationSorter;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -90,11 +91,11 @@ public class RelationTypeSideSorter extends RelationTypeSide {
    @SuppressWarnings("unchecked")
    public void addItem(RelationSorter sorterId, IArtifact itemToAdd) throws OseeCoreException {
       RelationSorter sorterIdToUse = sorterId;
-      if (sorterIdToUse == RelationOrderBaseTypes.PREEXISTING) {
+      if (sorterIdToUse == PREEXISTING) {
          sorterIdToUse = getSorterId();
       }
       List<IArtifact> relatives = Collections.emptyList();
-      if (RelationOrderBaseTypes.USER_DEFINED == sorterIdToUse) {
+      if (USER_DEFINED == sorterIdToUse) {
          IArtifact target = getIArtifact();
          relatives = (List<IArtifact>) target.getRelatedArtifacts(this);
          if (relatives.contains(itemToAdd)) {
@@ -112,7 +113,7 @@ public class RelationTypeSideSorter extends RelationTypeSide {
          sorterIdToUse = getSorterId();
       }
       List<IArtifact> relatives = Collections.emptyList();
-      if (RelationOrderBaseTypes.USER_DEFINED == sorterIdToUse) {
+      if (USER_DEFINED == sorterIdToUse) {
          IArtifact target = getIArtifact();
          relatives = (List<IArtifact>) target.getRelatedArtifacts(this);
          if (relatives.contains(itemToRemove)) {

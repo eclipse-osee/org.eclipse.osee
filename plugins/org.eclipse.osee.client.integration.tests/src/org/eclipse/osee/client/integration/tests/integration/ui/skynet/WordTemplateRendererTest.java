@@ -11,6 +11,7 @@
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -703,11 +703,11 @@ public class WordTemplateRendererTest {
       Artifact ventReq = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch, "Ventilation");
 
       swReqFolder.addChild(crewReq);
-      crewReq.addChild(RelationOrderBaseTypes.USER_DEFINED, commReq);
-      crewReq.addChild(RelationOrderBaseTypes.USER_DEFINED, navReq);
-      crewReq.addChild(RelationOrderBaseTypes.USER_DEFINED, airReq);
-      airReq.addChild(RelationOrderBaseTypes.USER_DEFINED, airDrawReq);
-      airReq.addChild(RelationOrderBaseTypes.USER_DEFINED, ventReq);
+      crewReq.addChild(USER_DEFINED, commReq);
+      crewReq.addChild(USER_DEFINED, navReq);
+      crewReq.addChild(USER_DEFINED, airReq);
+      airReq.addChild(USER_DEFINED, airDrawReq);
+      airReq.addChild(USER_DEFINED, ventReq);
 
       commReq.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
          beginWordString + "This is the list of Communication crew station requirements." + endWordString);
