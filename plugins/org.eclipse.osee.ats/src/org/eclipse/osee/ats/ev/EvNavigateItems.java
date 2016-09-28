@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.world.search.AtsSearchWorkPackageSearchItem;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 
 /**
  * @author Donald G. Dunne
@@ -27,6 +28,7 @@ public class EvNavigateItems {
    public static void createSection(XNavigateItem parent, List<XNavigateItem> items) {
       try {
          XNavigateItem evItems = new XNavigateItem(parent, "Earned Value", AtsImage.E_BOXED);
+         new XNavigateItemAction(evItems, new OpenWorkPackageByIdAction(), AtsImage.WORK_PACKAGE);
          new WorkPackageConfigReport(evItems);
          new WorkPackageQBDReport(evItems);
          new SearchNavigateItem(evItems, new AtsSearchWorkPackageSearchItem());
