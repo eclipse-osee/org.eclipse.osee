@@ -380,7 +380,9 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    public void dispose() {
       OseeEventManager.removeListener(this);
       ArtifactExplorerEventManager.remove(this);
-      artifactExplorerMenu.dispose();
+      if (artifactExplorerMenu != null) {
+         artifactExplorerMenu.dispose();
+      }
       super.dispose();
    }
 
