@@ -67,7 +67,7 @@ public class AtsTaskToChangedArtifactReferenceAttributeAdapter implements Attrib
                   TransactionToken earliestTransactionId =
                      AtsClientService.get().getBranchService().getEarliestTransactionId(derivedTeamWf);
                   if (earliestTransactionId != null) {
-                     retArt = ArtifactQuery.getHistoricalArtifactFromId(uuid, earliestTransactionId,
+                     retArt = ArtifactQuery.getHistoricalArtifactFromIdOrNull(uuid, earliestTransactionId,
                         DeletionFlag.INCLUDE_DELETED);
                   }
                }
