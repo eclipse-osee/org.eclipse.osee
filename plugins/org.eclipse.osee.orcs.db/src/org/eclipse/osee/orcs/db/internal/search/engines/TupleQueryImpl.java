@@ -49,6 +49,12 @@ public class TupleQueryImpl implements TupleQuery {
    private static final String SELECT_TUPLE3_GAMMA_FROM_E1 =
       "select app.gamma_id from osee_txs txs, osee_tuple3 app where app.tuple_type = ? and app.gamma_id = txs.gamma_id and branch_id = ? and tx_current = 1 and e1 = ?";
 
+   private static final String SELECT_TUPLE3_E2_FROM_E3 =
+      "select distinct e2 from osee_txs txs, osee_tuple3 app, osee_key_value where app.tuple_type = ? and e3 = ? and app.gamma_id = txs.gamma_id and branch_id = ? and tx_current = 1";
+
+   private static final String SELECT_TUPLE3_COUNT_FROM_E3 =
+      "select count(1) from osee_tuple3 where tuple_type=? and e3 = ?";
+
    private static final String SELECT_APPLIC_FOR_ART =
       "SELECT distinct e2, value FROM osee_artifact art, osee_txs txs1, osee_tuple2 app, osee_txs txs2, osee_key_value WHERE art_id = ? and art.gamma_id = txs1.gamma_id and txs1.branch_id = ? AND txs1.tx_current in (1,2) and tuple_type = 2 AND e2 = txs1.app_id AND app.gamma_id = txs2.gamma_id AND txs2.branch_id = txs1.branch_id AND txs2.tx_current = 1 AND e2 = key";
 
@@ -120,6 +126,16 @@ public class TupleQueryImpl implements TupleQuery {
       runQuery("gamma_id", consumer, SELECT_TUPLE3_GAMMA_FROM_E1, tupleType, e1, branchId);
    }
 
+   @Override
+   public <E1, E2, E3> void getTuple3E2FromE3(Tuple3Type<E1, E2, E3> tupleType, BranchId branchId, Long e3, List<Long> consumer) {
+      runQuery("e2", consumer, SELECT_TUPLE3_E2_FROM_E3, tupleType, e3, branchId);
+   }
+
+   @Override
+   public <E1, E2, E3> boolean doesTuple3E3Exist(Tuple3Type<E1, E2, E3> tupleType, Long e3) {
+      return jdbcClient.fetch(0, SELECT_TUPLE3_COUNT_FROM_E3, tupleType, e3) > 0;
+   }
+
    private void runQuery(BiConsumer<Long, String> consumer, String query, String column, Object... data) {
       jdbcClient.runQuery(stmt -> consumer.accept(stmt.getLong(column), stmt.getString("value")), query, data);
    }
@@ -127,4 +143,5 @@ public class TupleQueryImpl implements TupleQuery {
    private void runQuery(String column, List<Long> consumer, String query, Object... data) {
       jdbcClient.runQuery(stmt -> consumer.add(stmt.getLong(column)), query, data);
    }
+
 }

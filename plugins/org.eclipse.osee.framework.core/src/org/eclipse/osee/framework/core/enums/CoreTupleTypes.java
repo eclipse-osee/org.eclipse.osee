@@ -29,12 +29,12 @@ public final class CoreTupleTypes {
    public static final Tuple2Type<Long, AttributeId> OseeTypeDef = Tuple2Type.valueOf(DefaultFamily, 4L);
 
    // Data Maintenance
-   public static final Tuple3Type<String, Long, String> FixedMaintenanceData = Tuple3Type.valueOf(DefaultFamily, 5L);
-   public static final Tuple3Type<String, Long, String> VariableMaintenanceData = Tuple3Type.valueOf(DefaultFamily, 6L);
-   public static final Tuple3Type<String, Long, String> CrossRefMaintenanceData = Tuple3Type.valueOf(DefaultFamily, 7L);
-   public static final Tuple3Type<String, Long, String> ReversalMaintenanceData = Tuple3Type.valueOf(DefaultFamily, 8L);
-   public static final Tuple3Type<String, Long, String> LruDataTypes = Tuple3Type.valueOf(DefaultFamily, 9L);
-   public static final Tuple3Type<String, Long, String> LruFormatData = Tuple3Type.valueOf(DefaultFamily, 10L);
+   public static final Tuple3Type<String, Long, Long> FixedMaintenanceData = Tuple3Type.valueOf(DefaultFamily, 5L);
+   public static final Tuple3Type<String, Long, Long> VariableMaintenanceData = Tuple3Type.valueOf(DefaultFamily, 6L);
+   public static final Tuple3Type<String, Long, Long> CrossRefMaintenanceData = Tuple3Type.valueOf(DefaultFamily, 7L);
+   public static final Tuple3Type<String, Long, Long> ReversalMaintenanceData = Tuple3Type.valueOf(DefaultFamily, 8L);
+   public static final Tuple3Type<String, Long, Long> LruDataTypes = Tuple3Type.valueOf(DefaultFamily, 9L);
+   public static final Tuple3Type<String, Long, Long> LruFormatData = Tuple3Type.valueOf(DefaultFamily, 10L);
 
    private CoreTupleTypes() {
       // Constants
