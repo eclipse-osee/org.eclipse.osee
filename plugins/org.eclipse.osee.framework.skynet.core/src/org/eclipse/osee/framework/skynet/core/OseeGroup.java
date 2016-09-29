@@ -123,4 +123,8 @@ public class OseeGroup {
    public String toString() {
       return "OseeGroup [groupName=" + token.getName() + "]";
    }
+
+   public boolean isCurrentUserTemporaryOverride() {
+      return isTemporaryOverride(UserManager.getUser());
+   }
 }

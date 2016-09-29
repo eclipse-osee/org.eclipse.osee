@@ -114,7 +114,8 @@ public class AtsUtilClient {
 
    public static boolean isAtsAdmin(boolean useCache) {
       if (!useCache) {
-         atsAdmin = null;
+         atsAdmin = AtsGroup.AtsAdmin.isMember(
+            AtsClientService.get().getUserService().getCurrentUser()) || AtsGroup.AtsAdmin.isCurrentUserTemporaryOverride();
       }
       return isAtsAdmin();
    }

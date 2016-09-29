@@ -83,4 +83,8 @@ public enum AtsGroup {
       }
       return false;
    }
+
+   public boolean isCurrentUserTemporaryOverride() {
+      return group.isCurrentUserTemporaryOverride();
+   }
 }
