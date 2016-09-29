@@ -63,7 +63,7 @@ workDefinition "WorkDef_Team_Demo_SwDesign" {
    }
    peerReviewDefinition "Authorize.None.TransitionTo" {
       title
-      "Auto-created Decision Review from ruleId atsAddPeerToPeerReview.test.addPeerToPeerReview.Authorize.None.TransitionTo"
+      "Auto-created Peer Review from ruleId atsAddPeerToPeerReview.test.addPeerToPeerReview.Authorize.None.TransitionTo"
       description "This is a rule created to test the Review rules."
       relatedToState "Authorize"
       blockingType Transition 
@@ -72,7 +72,7 @@ workDefinition "WorkDef_Team_Demo_SwDesign" {
    }
    peerReviewDefinition "Implement.None.CommitBranch" {
       title
-      "Auto-created Decision Review from ruleId atsAddPeerToPeerReview.test.addPeerToPeerReview.Implement.None.CommitBranch"
+      "Auto-created Peer Review from ruleId atsAddPeerToPeerReview.test.addPeerToPeerReview.Implement.None.CommitBranch"
       description "This is a rule created to test the Review rules."
       relatedToState "Implement"
       blockingType Transition 

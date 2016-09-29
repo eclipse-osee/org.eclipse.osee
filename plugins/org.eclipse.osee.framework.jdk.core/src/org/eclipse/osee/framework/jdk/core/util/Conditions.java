@@ -169,7 +169,7 @@ public final class Conditions {
    }
 
    public static void assertEquals(int value1, int value2, String message, Object... data) {
-      checkExpressionFailOnTrue(value1 != value2, message, data);
+      checkExpressionFailOnTrue(value1 != value2, message + " - Expected %d; Actual %d", data, value1, value2);
    }
 
    public static void assertEquals(int value1, int value2) {

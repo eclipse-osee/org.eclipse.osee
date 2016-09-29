@@ -72,6 +72,8 @@ public class CreateTaskRuleTest {
       AtsTestUtil.cleanupSimpleTest(CREATE_TASK_ACTION_FROM_TEAM_DEF_TITLE);
       AtsTestUtil.cleanupSimpleTest(CREATE_TASK_ACTION_FROM_AI_TITLE);
       AtsTestUtil.cleanupSimpleTest(getClass().getSimpleName());
+
+      AtsClientService.get().getWorkDefinitionAdmin().clearRuleDefinitionsCache();
    }
 
    @Test

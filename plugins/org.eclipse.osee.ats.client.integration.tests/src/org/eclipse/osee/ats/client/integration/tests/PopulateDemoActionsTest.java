@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.demo.PopulateDemoActions;
@@ -40,8 +41,12 @@ import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.ats.demo.api.DemoTeam;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -52,9 +57,20 @@ import org.junit.BeforeClass;
  * @author Donald G. Dunne
  */
 public class PopulateDemoActionsTest {
+
    @BeforeClass
    public static void validateDbInit() throws OseeCoreException {
       DemoUtil.checkDbInitAndPopulateSuccess();
+   }
+
+   @AfterClass
+   public static void cleanup() throws OseeCoreException {
+      IAtsChangeSet changes = AtsClientService.get().createAtsChangeSet("Cleanup PopulateDemoActionsTest");
+      for (Artifact art : ArtifactQuery.getArtifactListFromName("Auto-created", AtsUtilCore.getAtsBranch(),
+         DeletionFlag.EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS)) {
+         changes.deleteArtifact(art);
+      }
+      changes.execute();
    }
 
    @Before
@@ -489,7 +505,7 @@ public class PopulateDemoActionsTest {
       Assert.assertNotNull(peerArt);
       Assert.assertNotNull(decArt);
       testReviewContents(peerArt,
-         "Auto-created Decision Review from ruleId atsAddPeerToPeerReview.test.addPeerToPeerReview.Authorize.None.TransitionTo",
+         "Auto-created Peer Review from ruleId atsAddPeerToPeerReview.test.addPeerToPeerReview.Authorize.None.TransitionTo",
          PeerToPeerReviewState.Prepare.getName(), "UnAssigned");
       testReviewContents(decArt,
          "Auto-created Decision Review from ruleId: atsAddDecisionReview.test.addDecisionReview.Analyze.None.TransitionTo",
