@@ -18,9 +18,9 @@ import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Allocation
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Child;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
-import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.DEFAULT_HIERARCHY;
-import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.IS_CHILD;
-import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.IS_PARENT;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.IS_CHILD;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.IS_PARENT;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;

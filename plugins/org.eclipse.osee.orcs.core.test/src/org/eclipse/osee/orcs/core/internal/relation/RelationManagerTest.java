@@ -11,11 +11,11 @@
 package org.eclipse.osee.orcs.core.internal.relation;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.IS_CHILD;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.IS_PARENT;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
-import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.DEFAULT_HIERARCHY;
-import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.IS_CHILD;
-import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.IS_PARENT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -57,6 +57,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
@@ -205,7 +206,7 @@ public class RelationManagerTest {
       setupAdjacencies(node5, relation4);
       setupAdjacencies(node6);
 
-      when(types.getDefaultOrderTypeGuid(DEFAULT_HIERARCHY)).thenReturn(LEXICOGRAPHICAL_DESC);
+      when(types.getDefaultOrderTypeGuid(Matchers.any())).thenReturn(LEXICOGRAPHICAL_DESC);
       when(types.getAll()).thenReturn(new ArrayList(
          Arrays.asList(CoreRelationTypes.Default_Hierarchical__Child, CoreRelationTypes.Default_Hierarchical__Parent)));
    }

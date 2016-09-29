@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.core.internal.proxy.impl;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
-import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.asRelationType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -35,7 +34,6 @@ import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
-import org.eclipse.osee.orcs.core.internal.relation.RelationUtil;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 
@@ -192,7 +190,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
 
    @Override
    public int getMaximumRelationAllowed(RelationTypeSide typeAndSide) throws OseeCoreException {
-      IRelationType type = asRelationType(typeAndSide);
+      IRelationType type = typeAndSide.getRelationType();
       RelationSide side = whichSideAmIOn(typeAndSide);
       return getRelationManager().getMaximumRelationAllowed(getSession(), type, getProxiedObject(), side);
    }
@@ -250,7 +248,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
 
    @Override
    public ResultSet<ArtifactReadable> getRelated(RelationTypeSide typeAndSide, DeletionFlag deletionFlag) throws OseeCoreException {
-      IRelationType type = asRelationType(typeAndSide);
+      IRelationType type = typeAndSide.getRelationType();
       RelationSide side = whichSideAmIOn(typeAndSide);
       ResultSet<Artifact> related =
          getRelationManager().getRelated(getSession(), type, getProxiedObject(), side, deletionFlag);
@@ -259,21 +257,21 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
 
    @Override
    public int getRelatedCount(RelationTypeSide typeAndSide) throws OseeCoreException {
-      IRelationType type = asRelationType(typeAndSide);
+      IRelationType type = typeAndSide.getRelationType();
       RelationSide side = whichSideAmIOn(typeAndSide);
       return getRelationManager().getRelatedCount(getSession(), type, getProxiedObject(), side);
    }
 
    @Override
    public boolean areRelated(RelationTypeSide typeAndSide, ArtifactReadable readable) throws OseeCoreException {
-      IRelationType type = asRelationType(typeAndSide);
+      IRelationType type = typeAndSide.getRelationType();
       Pair<RelationNode, RelationNode> nodes = asABNodes(typeAndSide.getSide(), readable);
       return getRelationManager().areRelated(getSession(), nodes.getFirst(), type, nodes.getSecond());
    }
 
    @Override
    public String getRationale(RelationTypeSide typeAndSide, ArtifactReadable readable) throws OseeCoreException {
-      IRelationType type = asRelationType(typeAndSide);
+      IRelationType type = typeAndSide.getRelationType();
       Pair<RelationNode, RelationNode> nodes = asABNodes(typeAndSide.getSide(), readable);
       return getRelationManager().getRationale(getSession(), nodes.getFirst(), type, nodes.getSecond());
    }
@@ -281,7 +279,17 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    private Pair<RelationNode, RelationNode> asABNodes(RelationSide side, ArtifactReadable readable) throws OseeCoreException {
       Artifact thisArtifact = getProxiedObject();
       Artifact otherArtifact = getProxyManager().asInternalArtifact(readable);
-      return RelationUtil.asABNodes(thisArtifact, otherArtifact, side);
+
+      RelationNode aNode;
+      RelationNode bNode;
+      if (RelationSide.SIDE_A == side) {
+         aNode = otherArtifact;
+         bNode = thisArtifact;
+      } else {
+         aNode = thisArtifact;
+         bNode = otherArtifact;
+      }
+      return new Pair<RelationNode, RelationNode>(aNode, bNode);
    }
 
    private RelationSide whichSideAmIOn(RelationTypeSide typeAndSide) {

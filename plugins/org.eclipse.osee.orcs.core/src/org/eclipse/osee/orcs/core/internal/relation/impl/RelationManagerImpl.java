@@ -14,14 +14,13 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.IS_CHILD;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.IS_PARENT;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import static org.eclipse.osee.framework.jdk.core.util.Conditions.checkNotNull;
 import static org.eclipse.osee.framework.jdk.core.util.Strings.emptyString;
-import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.DEFAULT_HIERARCHY;
-import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.IS_CHILD;
-import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.IS_PARENT;
-import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.asTypeSide;
 import static org.eclipse.osee.orcs.core.internal.util.OrcsConditions.checkBranch;
 import static org.eclipse.osee.orcs.core.internal.util.OrcsConditions.checkOnGraph;
 import static org.eclipse.osee.orcs.core.internal.util.OrcsConditions.checkRelateSelf;
@@ -180,7 +179,7 @@ public class RelationManagerImpl implements RelationManager {
          result = resolver.resolve(session, graph, links, otherSide);
          if (result.size() > 1) {
             OrderManager orderManager = orderFactory.createOrderManager(node);
-            RelationTypeSide key = asTypeSide(type, otherSide);
+            RelationTypeSide key = RelationTypeSide.create(type, otherSide);
             orderManager.sort(key, result);
          }
       }
@@ -359,7 +358,7 @@ public class RelationManagerImpl implements RelationManager {
                      List<Relation> sideLinks = getRelations(session, type, node, side, EXCLUDE_DELETED);
                      List<RelationNode> nodes = resolver.resolve(session, graph, sideLinks, side);
 
-                     RelationTypeSide asTypeSide = asTypeSide(type, side);
+                     RelationTypeSide asTypeSide = RelationTypeSide.create(type, side);
                      orderManager.setOrder(asTypeSide, nodes);
                   }
                }
@@ -435,7 +434,7 @@ public class RelationManagerImpl implements RelationManager {
       OrderManager orderManager = orderFactory.createOrderManager(node1);
 
       RelationSide orderSide = side.oppositeSide();
-      RelationTypeSide key = asTypeSide(type, orderSide);
+      RelationTypeSide key = RelationTypeSide.create(type, orderSide);
       RelationSorter sorterIdToUse = sorterId;
       if (sorterIdToUse == PREEXISTING) {
          sorterIdToUse = orderManager.getSorterId(key);

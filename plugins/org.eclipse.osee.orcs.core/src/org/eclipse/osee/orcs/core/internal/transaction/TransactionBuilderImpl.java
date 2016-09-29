@@ -36,7 +36,6 @@ import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
-import org.eclipse.osee.orcs.core.internal.relation.RelationUtil;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.TransactionReadable;
@@ -304,7 +303,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public void unrelateFromAll(RelationTypeSide typeAndSide, ArtifactId art) throws OseeCoreException {
-      IRelationType type = RelationUtil.asRelationType(typeAndSide);
+      IRelationType type = typeAndSide.getRelationType();
       txManager.unrelateFromAll(txData, type, art, typeAndSide.getSide());
    }
 

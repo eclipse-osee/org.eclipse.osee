@@ -24,8 +24,8 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WordTempl
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
-import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.DEFAULT_HIERARCHY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
@@ -56,7 +56,6 @@ import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
-import org.eclipse.osee.orcs.core.internal.relation.RelationUtil;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -422,7 +421,7 @@ public class TransactionBuilderImplTest {
 
    @Test
    public void testUnrelateFromAllWithSide() throws OseeCoreException {
-      RelationTypeSide asTypeSide = RelationUtil.asTypeSide(TYPE_1, SIDE_B);
+      RelationTypeSide asTypeSide = RelationTypeSide.create(TYPE_1, SIDE_B);
       factory.unrelateFromAll(asTypeSide, expectedAuthor);
       verify(txDataManager).unrelateFromAll(txData, TYPE_1, expectedAuthor, SIDE_B);
    }

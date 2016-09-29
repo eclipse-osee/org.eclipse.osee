@@ -12,18 +12,18 @@ package org.eclipse.osee.orcs.core.internal.relation.impl;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Child;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.IS_CHILD;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.IS_PARENT;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
-import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
-import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
-import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.DEFAULT_HIERARCHY;
-import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.IS_CHILD;
-import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.IS_PARENT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -62,7 +62,6 @@ import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.core.internal.relation.RelationResolver;
 import org.eclipse.osee.orcs.core.internal.relation.RelationTypeValidity;
-import org.eclipse.osee.orcs.core.internal.relation.RelationUtil;
 import org.eclipse.osee.orcs.core.internal.relation.RelationVisitor;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderManager;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderManagerFactory;
@@ -533,7 +532,7 @@ public class RelationManagerImplTest {
 
       manager.relate(session, node1, TYPE_1, node2, LEXICOGRAPHICAL_ASC);
 
-      RelationTypeSide typeSide = RelationUtil.asTypeSide(TYPE_1, SIDE_B);
+      RelationTypeSide typeSide = RelationTypeSide.create(TYPE_1, SIDE_B);
 
       verify(container1).getRelation(node1, TYPE_1, node2, INCLUDE_DELETED);
       verify(container2).getRelation(node1, TYPE_1, node2, INCLUDE_DELETED);
@@ -552,7 +551,7 @@ public class RelationManagerImplTest {
 
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
-      RelationTypeSide typeSide = RelationUtil.asTypeSide(TYPE_1, SIDE_B);
+      RelationTypeSide typeSide = RelationTypeSide.create(TYPE_1, SIDE_B);
       when(orderManager1.getSorterId(typeSide)).thenReturn(UNORDERED);
 
       when(node1.getArtifactType()).thenReturn(artifactType1);
@@ -599,7 +598,7 @@ public class RelationManagerImplTest {
 
       verify(resolver).resolve(session, graph, toOrder, SIDE_B);
 
-      RelationTypeSide typeSide = RelationUtil.asTypeSide(TYPE_1, SIDE_B);
+      RelationTypeSide typeSide = RelationTypeSide.create(TYPE_1, SIDE_B);
       verify(orderManager1).sort(typeSide, nodesToOrder);
       verify(orderManager1).setOrder(eq(typeSide), eq(USER_DEFINED), sortedListCaptor.capture());
 
@@ -626,8 +625,8 @@ public class RelationManagerImplTest {
 
       when(node1.getArtifactType()).thenReturn(artifactType1);
       when(node2.getArtifactType()).thenReturn(artifactType2);
-      when(validity.getMaximumRelationsAllowed(Default_Hierarchical__Child, artifactType1, SIDE_A)).thenReturn(10);
-      when(validity.getMaximumRelationsAllowed(Default_Hierarchical__Child, artifactType2, SIDE_B)).thenReturn(10);
+      when(validity.getMaximumRelationsAllowed(DEFAULT_HIERARCHY, artifactType1, SIDE_A)).thenReturn(10);
+      when(validity.getMaximumRelationsAllowed(DEFAULT_HIERARCHY, artifactType2, SIDE_B)).thenReturn(10);
 
       manager.addChild(session, node1, node2);
 
@@ -652,8 +651,8 @@ public class RelationManagerImplTest {
 
       when(node1.getArtifactType()).thenReturn(artifactType1);
       when(node2.getArtifactType()).thenReturn(artifactType2);
-      when(validity.getMaximumRelationsAllowed(Default_Hierarchical__Child, artifactType1, SIDE_A)).thenReturn(10);
-      when(validity.getMaximumRelationsAllowed(Default_Hierarchical__Child, artifactType2, SIDE_B)).thenReturn(10);
+      when(validity.getMaximumRelationsAllowed(DEFAULT_HIERARCHY, artifactType1, SIDE_A)).thenReturn(10);
+      when(validity.getMaximumRelationsAllowed(DEFAULT_HIERARCHY, artifactType2, SIDE_B)).thenReturn(10);
 
       List<? extends RelationNode> children = Arrays.asList(node2);
       manager.addChildren(session, node1, children);
@@ -679,8 +678,8 @@ public class RelationManagerImplTest {
 
       when(node1.getArtifactType()).thenReturn(artifactType1);
       when(node2.getArtifactType()).thenReturn(artifactType2);
-      when(validity.getMaximumRelationsAllowed(Default_Hierarchical__Child, artifactType1, SIDE_A)).thenReturn(10);
-      when(validity.getMaximumRelationsAllowed(Default_Hierarchical__Child, artifactType2, SIDE_B)).thenReturn(10);
+      when(validity.getMaximumRelationsAllowed(DEFAULT_HIERARCHY, artifactType1, SIDE_A)).thenReturn(10);
+      when(validity.getMaximumRelationsAllowed(DEFAULT_HIERARCHY, artifactType2, SIDE_B)).thenReturn(10);
 
       manager.addChild(session, node1, node2);
 
