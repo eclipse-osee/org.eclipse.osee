@@ -46,17 +46,17 @@ public class OrcsValidationHelperAdapter implements IOrcsValidationHelper {
 
    @Override
    public boolean isArtifactTypeExist(long artifactTypeUuid) {
-      return orcsApi.getOrcsTypes().getArtifactTypes().getByUuid(artifactTypeUuid) != null;
+      return orcsApi.getOrcsTypes().getArtifactTypes().get(artifactTypeUuid) != null;
    }
 
    @Override
    public boolean isRelationTypeExist(long relationTypeUuid) {
-      return orcsApi.getOrcsTypes().getRelationTypes().getByUuid(relationTypeUuid) != null;
+      return orcsApi.getOrcsTypes().getRelationTypes().get(relationTypeUuid) != null;
    }
 
    @Override
    public boolean isAttributeTypeExists(long attributeTypeUuid) {
-      return orcsApi.getOrcsTypes().getAttributeTypes().getByUuid(attributeTypeUuid) != null;
+      return orcsApi.getOrcsTypes().getAttributeTypes().get(attributeTypeUuid) != null;
    }
 
    @Override

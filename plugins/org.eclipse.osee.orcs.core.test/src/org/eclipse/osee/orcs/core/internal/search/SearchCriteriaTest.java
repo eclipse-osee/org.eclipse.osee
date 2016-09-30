@@ -27,7 +27,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link CriteriaAttributeKeywords}
- * 
+ *
  * @author Megumi Telles
  */
 public class SearchCriteriaTest {
@@ -39,9 +39,9 @@ public class SearchCriteriaTest {
    public void setup() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
 
-      when(cache.getByUuid(CoreAttributeTypes.Name.getGuid())).thenReturn(CoreAttributeTypes.Name);
-      when(cache.getByUuid(CoreAttributeTypes.Active.getGuid())).thenReturn(CoreAttributeTypes.Active);
-      when(cache.getByUuid(CoreAttributeTypes.FavoriteBranch.getGuid())).thenReturn(CoreAttributeTypes.FavoriteBranch);
+      when(cache.get(CoreAttributeTypes.Name)).thenReturn(CoreAttributeTypes.Name);
+      when(cache.get(CoreAttributeTypes.Active)).thenReturn(CoreAttributeTypes.Active);
+      when(cache.get(CoreAttributeTypes.FavoriteBranch)).thenReturn(CoreAttributeTypes.FavoriteBranch);
    }
 
    @Test

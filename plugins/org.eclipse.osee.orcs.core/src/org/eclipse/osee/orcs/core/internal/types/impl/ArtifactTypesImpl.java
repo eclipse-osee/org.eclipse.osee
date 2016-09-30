@@ -14,10 +14,11 @@ import com.google.common.collect.Sets;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
@@ -52,9 +53,13 @@ public class ArtifactTypesImpl implements ArtifactTypes {
    }
 
    @Override
-   public IArtifactType getByUuid(Long uuid) throws OseeCoreException {
-      Conditions.checkNotNull(uuid, "uuid");
-      return getArtifactTypesIndex().getTokenByUuid(uuid);
+   public IArtifactType get(Id id) {
+      return getArtifactTypesIndex().get(id);
+   }
+
+   @Override
+   public IArtifactType get(Long id) {
+      return getArtifactTypesIndex().get(id);
    }
 
    @Override
@@ -123,8 +128,8 @@ public class ArtifactTypesImpl implements ArtifactTypes {
    }
 
    @Override
-   public boolean exists(IArtifactType item) throws OseeCoreException {
-      return getArtifactTypesIndex().existsByUuid(item.getGuid());
+   public boolean exists(Id id) throws OseeCoreException {
+      return getArtifactTypesIndex().exists(id);
    }
 
    @Override

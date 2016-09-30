@@ -112,7 +112,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
    }
 
    private String getTaggerIdByTypeUuid(long typeUuid) throws OseeCoreException {
-      IAttributeType type = attributeTypes.getByUuid(typeUuid);
+      IAttributeType type = attributeTypes.get(typeUuid);
       return attributeTypes.getTaggerId(type);
    }
 

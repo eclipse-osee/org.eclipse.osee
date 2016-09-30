@@ -242,13 +242,13 @@ public class OrcsCollectorWriter {
          }
          throw new OseeArgumentException("Invalid attribute type name [%s]", attributeType);
       }
-      return orcsApi.getOrcsTypes().getAttributeTypes().getByUuid(attributeType.getUuid());
+      return orcsApi.getOrcsTypes().getAttributeTypes().get(attributeType.getUuid());
    }
 
    private void processCreate(XResultData results) {
       for (OwArtifact owArtifact : collector.getCreate()) {
          OwArtifactType owArtType = owArtifact.getType();
-         IArtifactType artType = orcsApi.getOrcsTypes().getArtifactTypes().getByUuid(owArtType.getUuid());
+         IArtifactType artType = orcsApi.getOrcsTypes().getArtifactTypes().get(owArtType.getUuid());
 
          long artifactUuid = owArtifact.getUuid();
          if (artifactUuid > 0L) {
@@ -284,7 +284,7 @@ public class OrcsCollectorWriter {
    private void createMissingRelations(List<OwRelation> relations, ArtifactId artifact, XResultData results) {
       for (OwRelation relation : relations) {
          OwRelationType owRelType = relation.getType();
-         IRelationType relType = orcsApi.getOrcsTypes().getRelationTypes().getByUuid(owRelType.getUuid());
+         IRelationType relType = orcsApi.getOrcsTypes().getRelationTypes().get(owRelType.getUuid());
 
          OwArtifactToken artToken = relation.getArtToken();
          long branchUuid = collector.getBranch().getUuid();

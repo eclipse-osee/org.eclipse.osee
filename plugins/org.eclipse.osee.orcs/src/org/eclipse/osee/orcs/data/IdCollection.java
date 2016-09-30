@@ -12,21 +12,22 @@ package org.eclipse.osee.orcs.data;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface IdCollection<T extends Id> {
 
-   Collection<? extends T> getAll() throws OseeCoreException;
+   Collection<? extends T> getAll();
 
-   T getByUuid(Long typeId) throws OseeCoreException;
+   T get(Id id);
 
-   boolean exists(T item) throws OseeCoreException;
+   T get(Long id);
 
-   boolean isEmpty() throws OseeCoreException;
+   boolean exists(Id id);
 
-   int size() throws OseeCoreException;
+   boolean isEmpty();
+
+   int size();
 
 }

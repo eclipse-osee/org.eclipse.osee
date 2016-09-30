@@ -652,7 +652,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
                toReturn.add(getArtifactType(name));
             } else {
                long typeId = resolver.resolveSingle(Long.class, expression);
-               toReturn.add(orcsTypes.getArtifactTypes().getByUuid(typeId));
+               toReturn.add(orcsTypes.getArtifactTypes().get(typeId));
             }
          }
          return toReturn;
@@ -669,7 +669,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
                toReturn.add(getAttributeType(name));
             } else {
                long typeId = resolver.resolveSingle(Long.class, expression);
-               toReturn.add(orcsTypes.getAttributeTypes().getByUuid(typeId));
+               toReturn.add(orcsTypes.getAttributeTypes().get(typeId));
             }
          }
          return toReturn;
@@ -683,7 +683,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
             toReturn = getRelationType(name);
          } else {
             long typeId = resolver.resolveSingle(Long.class, expression);
-            toReturn = orcsTypes.getRelationTypes().getByUuid(typeId);
+            toReturn = orcsTypes.getRelationTypes().get(typeId);
          }
          return toReturn;
       }

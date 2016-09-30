@@ -10,13 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.indexer.callable.consumer;
 
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.QualificationMethod;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
@@ -76,8 +77,8 @@ public class IndexingTaskDatabaseTxCallableTest {
       ArrayList<IndexedResource> sources = new ArrayList<>();
       sources.add(resource1);
       sources.add(resource2);
-      when(resource1.getTypeUuid()).thenReturn(CoreAttributeTypes.Name.getGuid());
-      when(resource2.getTypeUuid()).thenReturn(CoreAttributeTypes.QualificationMethod.getGuid());
+      when(resource1.getTypeUuid()).thenReturn(Name.getGuid());
+      when(resource2.getTypeUuid()).thenReturn(QualificationMethod.getGuid());
       when(resource1.getGammaId()).thenReturn(1L);
       when(resource2.getGammaId()).thenReturn(2L);
       when(engine.hasTagger("")).thenReturn(false);
@@ -85,11 +86,10 @@ public class IndexingTaskDatabaseTxCallableTest {
       when(engine.getTagger("Tag")).thenReturn(tagger);
 
       when(metaData.getDatabaseProductName()).thenReturn("h2");
-      when(types.getByUuid(CoreAttributeTypes.Name.getGuid())).thenReturn(CoreAttributeTypes.Name);
-      when(types.getByUuid(CoreAttributeTypes.QualificationMethod.getGuid())).thenReturn(
-         CoreAttributeTypes.QualificationMethod);
-      when(types.getTaggerId(CoreAttributeTypes.Name)).thenReturn("Tag");
-      when(types.getTaggerId(CoreAttributeTypes.QualificationMethod)).thenReturn(null);
+      when(types.get(Name.getId())).thenReturn(Name);
+      when(types.get(QualificationMethod.getId())).thenReturn(QualificationMethod);
+      when(types.getTaggerId(Name)).thenReturn("Tag");
+      when(types.getTaggerId(QualificationMethod)).thenReturn(null);
 
       txCallable.handleTxWork(connection);
 

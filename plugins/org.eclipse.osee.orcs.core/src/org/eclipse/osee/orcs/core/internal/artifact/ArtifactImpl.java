@@ -100,7 +100,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
    @Override
    public IArtifactType getArtifactType() throws OseeCoreException {
-      return artifactTypeCache.getByUuid(getOrcsData().getTypeUuid());
+      return artifactTypeCache.get(getOrcsData().getTypeUuid());
    }
 
    @Override

@@ -87,7 +87,7 @@ public class AttributeDataProxyFactoryTest {
       String value = "hello";
       String uri = "theUri";
 
-      Mockito.when(attributeTypeCache.getByUuid(45L)).thenReturn(attributeType);
+      Mockito.when(attributeTypeCache.get(45L)).thenReturn(attributeType);
       Mockito.when(attributeTypeCache.getAttributeProviderId(attributeType)).thenReturn("org.eclipse.proxyfactory");
 
       thrown.expect(OseeArgumentException.class);
@@ -101,7 +101,7 @@ public class AttributeDataProxyFactoryTest {
       String value = "hello";
       String uri = "theUri";
 
-      Mockito.when(attributeTypeCache.getByUuid(45L)).thenReturn(attributeType);
+      Mockito.when(attributeTypeCache.get(45L)).thenReturn(attributeType);
       Mockito.when(attributeTypeCache.getAttributeProviderId(attributeType)).thenReturn("org.eclipse.proxyfactory");
       Mockito.when(proxyProvider.getFactory("proxyfactory")).thenReturn(dataProxyFactory);
       Mockito.when(dataProxyFactory.createInstance("proxyfactory")).thenReturn(proxy);
@@ -118,7 +118,7 @@ public class AttributeDataProxyFactoryTest {
       String value = "hello";
       String uri = null;
 
-      Mockito.when(attributeTypeCache.getByUuid(45L)).thenReturn(attributeType);
+      Mockito.when(attributeTypeCache.get(45L)).thenReturn(attributeType);
       Mockito.when(attributeTypeCache.getAttributeProviderId(attributeType)).thenReturn("org.eclipse.proxyfactory");
       Mockito.when(proxyProvider.getFactory("proxyfactory")).thenReturn(dataProxyFactory);
       Mockito.when(dataProxyFactory.createInstance("proxyfactory")).thenReturn(proxy);
@@ -135,7 +135,7 @@ public class AttributeDataProxyFactoryTest {
       String value = null;
       String uri = "theUri";
 
-      Mockito.when(attributeTypeCache.getByUuid(45L)).thenReturn(attributeType);
+      Mockito.when(attributeTypeCache.get(45L)).thenReturn(attributeType);
       Mockito.when(attributeTypeCache.getAttributeProviderId(attributeType)).thenReturn("org.eclipse.proxyfactory");
       Mockito.when(proxyProvider.getFactory("proxyfactory")).thenReturn(dataProxyFactory);
       Mockito.when(dataProxyFactory.createInstance("proxyfactory")).thenReturn(proxy);
@@ -152,7 +152,7 @@ public class AttributeDataProxyFactoryTest {
       String value = null;
       String uri = null;
 
-      Mockito.when(attributeTypeCache.getByUuid(45L)).thenReturn(attributeType);
+      Mockito.when(attributeTypeCache.get(45L)).thenReturn(attributeType);
       Mockito.when(attributeTypeCache.getAttributeProviderId(attributeType)).thenReturn("org.eclipse.proxyfactory");
       Mockito.when(proxyProvider.getFactory("proxyfactory")).thenReturn(dataProxyFactory);
       Mockito.when(dataProxyFactory.createInstance("proxyfactory")).thenReturn(proxy);

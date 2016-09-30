@@ -84,7 +84,7 @@ public class PurgeArtifactTypeCommand implements ConsoleCommand {
             for (String uuid : typesToPurge) {
                try {
                   Long typeId = HexUtil.toLong(uuid);
-                  IArtifactType type = artifactTypes.getByUuid(typeId);
+                  IArtifactType type = artifactTypes.get(typeId);
                   console.writeln("Type [%s] found. Guid: [0x%X]", type.getName(), type.getGuid());
                   toReturn.add(type);
                } catch (OseeArgumentException ex) {

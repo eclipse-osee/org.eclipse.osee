@@ -89,7 +89,7 @@ public class CriteriaAttributeKeywords extends Criteria {
          if (attributeTypeCache != null) {
             for (IAttributeType type : attributeType) {
                if (!attributeTypeCache.isTaggable(type)) {
-                  notTaggable.add(attributeTypeCache.getByUuid(type.getGuid()).getName());
+                  notTaggable.add(type.getName());
                }
             }
             if (!notTaggable.isEmpty()) {

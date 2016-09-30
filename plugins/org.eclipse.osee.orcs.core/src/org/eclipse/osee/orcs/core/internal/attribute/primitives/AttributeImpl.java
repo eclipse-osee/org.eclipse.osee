@@ -189,7 +189,7 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
     */
    @Override
    public IAttributeType getAttributeType() throws OseeCoreException {
-      return attributeTypeCache.getByUuid(getOrcsData().getTypeUuid());
+      return attributeTypeCache.get(getOrcsData().getTypeUuid());
    }
 
    /**

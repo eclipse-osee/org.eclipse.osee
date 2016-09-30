@@ -46,7 +46,7 @@ public class Relation implements HasOrcsData<RelationData>, OrcsWriteable {
    }
 
    public IRelationType getRelationType() throws OseeCoreException {
-      return relationTypes.getByUuid(getOrcsData().getTypeUuid());
+      return relationTypes.get(getOrcsData().getTypeUuid());
    }
 
    @Override

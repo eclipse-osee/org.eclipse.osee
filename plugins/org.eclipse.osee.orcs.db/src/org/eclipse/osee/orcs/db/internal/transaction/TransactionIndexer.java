@@ -47,7 +47,7 @@ public class TransactionIndexer implements TransactionProcessor {
          txData.getChangeSet().accept(new OrcsVisitorAdapter() {
             @Override
             public void visit(AttributeData data) {
-               IAttributeType type = types.getByUuid(data.getTypeUuid());
+               IAttributeType type = types.get(data.getTypeUuid());
                if (types.isTaggable(type)) {
                   datas.add(data.getVersion().getGammaId());
                }

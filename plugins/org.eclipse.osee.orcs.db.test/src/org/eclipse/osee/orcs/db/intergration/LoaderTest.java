@@ -113,12 +113,12 @@ public class LoaderTest {
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);
 
-      when(artTypes.getByUuid(OseeTypeDefinition.getId())).thenReturn(OseeTypeDefinition);
-      when(artTypes.getByUuid(Folder.getId())).thenReturn(Folder);
+      when(artTypes.get(OseeTypeDefinition.getId())).thenReturn(OseeTypeDefinition);
+      when(artTypes.get(Folder.getId())).thenReturn(Folder);
 
-      when(attrTypes.getByUuid(Name.getId())).thenReturn(Name);
-      when(attrTypes.getByUuid(UriGeneralStringData.getId())).thenReturn(UriGeneralStringData);
-      when(attrTypes.getByUuid(Active.getId())).thenReturn(Active);
+      when(attrTypes.get(Name.getId())).thenReturn(Name);
+      when(attrTypes.get(UriGeneralStringData.getId())).thenReturn(UriGeneralStringData);
+      when(attrTypes.get(Active.getId())).thenReturn(Active);
 
       when(attrTypes.getAttributeProviderId(Name)).thenReturn("DefaultAttributeDataProvider");
       when(attrTypes.getAttributeProviderId(UriGeneralStringData)).thenReturn("DefaultAttributeDataProvider");

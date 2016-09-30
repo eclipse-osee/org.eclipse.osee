@@ -55,7 +55,6 @@ public class ArtifactTest {
    public ExpectedException thrown = ExpectedException.none();
 
    // @formatter:off
-   @Mock private Artifact artifact;
    @Mock private ArtifactData artifactData;
    @Mock private AttributeFactory attributeFactory;
    @Mock private ArtifactTypes types;
@@ -76,6 +75,7 @@ public class ArtifactTest {
    @Mock private GraphData graph;
    // @formatter:on
 
+   private Artifact artifact;
    private final String guid = GUID.create();
    private final IAttributeType attributeType = CoreAttributeTypes.Annotation;
    private final IArtifactType artifactType = CoreArtifactTypes.GeneralData;
@@ -108,8 +108,8 @@ public class ArtifactTest {
       when(deleted.getOrcsData()).thenReturn(attributeData);
       when(differentType.getOrcsData()).thenReturn(attributeData);
 
-      when(types.getByUuid(CoreArtifactTypes.GeneralData.getGuid())).thenReturn(CoreArtifactTypes.GeneralData);
-      when(types.getByUuid(CoreArtifactTypes.CodeUnit.getGuid())).thenReturn(CoreArtifactTypes.CodeUnit);
+      when(types.get(CoreArtifactTypes.GeneralData.getId())).thenReturn(CoreArtifactTypes.GeneralData);
+      when(types.get(CoreArtifactTypes.CodeUnit.getId())).thenReturn(CoreArtifactTypes.CodeUnit);
    }
 
    @Test
@@ -185,7 +185,7 @@ public class ArtifactTest {
    @Test
    public void testArtifactType() throws OseeCoreException {
       artifact.getArtifactType();
-      verify(types).getByUuid(artifactData.getTypeUuid());
+      verify(types).get(artifactData.getTypeUuid());
    }
 
    @Test

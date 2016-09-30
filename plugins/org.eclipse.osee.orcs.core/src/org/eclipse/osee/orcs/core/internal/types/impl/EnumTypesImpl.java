@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.types.impl;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesIndexProvider;
 import org.eclipse.osee.orcs.data.EnumType;
@@ -33,13 +34,18 @@ public class EnumTypesImpl implements EnumTypes {
    }
 
    @Override
-   public EnumType getByUuid(Long typeId) throws OseeCoreException {
-      return getIndex().getTokenByUuid(typeId);
+   public EnumType get(Id id) {
+      return getIndex().get(id);
    }
 
    @Override
-   public boolean exists(EnumType item) throws OseeCoreException {
-      return getIndex().existsByUuid(item.getId());
+   public EnumType get(Long id) {
+      return getIndex().get(id);
+   }
+
+   @Override
+   public boolean exists(Id id) throws OseeCoreException {
+      return getIndex().exists(id);
    }
 
    @Override

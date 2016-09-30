@@ -96,7 +96,7 @@ public class PurgeAttributeTypeCommand implements ConsoleCommand {
                   } else {
                      typeId = HexUtil.toLong(uuid);
                   }
-                  IAttributeType type = attributeTypes.getByUuid(typeId);
+                  IAttributeType type = attributeTypes.get(typeId);
                   console.writeln("Type [%s] found. Guid: [0x%X]", type.getName(), type.getGuid());
                   toReturn.add(type);
                } catch (OseeArgumentException ex) {

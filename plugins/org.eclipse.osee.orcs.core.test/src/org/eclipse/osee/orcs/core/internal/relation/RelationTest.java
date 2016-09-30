@@ -87,7 +87,7 @@ public class RelationTest {
    public void testGetRelationType() throws OseeCoreException {
       relation.getRelationType();
 
-      verify(relationTypes).getByUuid(TYPE_UUID);
+      verify(relationTypes).get(TYPE_UUID);
    }
 
    @Test
@@ -142,7 +142,7 @@ public class RelationTest {
       IRelationType type1 = mock(IRelationType.class);
       IRelationType type2 = mock(IRelationType.class);
 
-      when(relationTypes.getByUuid(TYPE_UUID)).thenReturn(type1);
+      when(relationTypes.get(TYPE_UUID)).thenReturn(type1);
 
       assertTrue(relation.isOfType(type1));
       assertFalse(relation.isOfType(type2));

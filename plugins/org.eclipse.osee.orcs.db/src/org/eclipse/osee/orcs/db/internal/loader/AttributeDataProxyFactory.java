@@ -38,7 +38,7 @@ public class AttributeDataProxyFactory implements ProxyDataFactory {
 
    @Override
    public DataProxy createProxy(long typeUuid, String value, String uri) throws OseeCoreException {
-      IAttributeType attributeType = attributeTypeCache.getByUuid(typeUuid);
+      IAttributeType attributeType = attributeTypeCache.get(typeUuid);
       Conditions.checkNotNull(attributeType, "AttributeType", "Unable to find attributeType for [%s]", typeUuid);
 
       String dataProxyFactoryId = attributeTypeCache.getAttributeProviderId(attributeType);

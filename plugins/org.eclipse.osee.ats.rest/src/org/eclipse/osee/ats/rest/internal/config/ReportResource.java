@@ -139,7 +139,7 @@ public class ReportResource {
 
       // Was a synthetic artifact change added by AddArtifactChangeDataCallable
       for (ChangeItem change : attrChanges) {
-         IAttributeType attrType = attributeTypes.getByUuid(change.getItemTypeId().getId());
+         IAttributeType attrType = attributeTypes.get(change.getItemTypeId());
          if (attrType.matches(WordTemplateContent)) {
             toReturn = true;
             break;

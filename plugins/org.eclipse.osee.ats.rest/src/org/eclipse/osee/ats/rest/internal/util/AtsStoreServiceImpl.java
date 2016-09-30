@@ -106,7 +106,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public IAttributeType getAttributeType(long attrTypeId) {
-      return atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().getByUuid(attrTypeId);
+      return atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().get(attrTypeId);
    }
 
    @Override

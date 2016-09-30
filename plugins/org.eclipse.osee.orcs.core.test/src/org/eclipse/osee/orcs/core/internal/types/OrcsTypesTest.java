@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.types;
 
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
-import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
-import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -175,13 +175,13 @@ public class OrcsTypesTest {
    public void testGetArtifactTypesByUuid() throws OseeCoreException {
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 
-      assertEquals(ARTIFACT, artTypes.getByUuid(ARTIFACT.getGuid()));
-      assertEquals(REQUIREMENT, artTypes.getByUuid(REQUIREMENT.getGuid()));
-      assertEquals(SOFTWARE_REQUIREMENT, artTypes.getByUuid(SOFTWARE_REQUIREMENT.getGuid()));
-      assertEquals(SYSTEM_REQUIREMENT, artTypes.getByUuid(SYSTEM_REQUIREMENT.getGuid()));
-      assertEquals(SUBSYSTEM_REQUIREMENT, artTypes.getByUuid(SUBSYSTEM_REQUIREMENT.getGuid()));
-      assertEquals(OTHER_ARTIFACT, artTypes.getByUuid(OTHER_ARTIFACT.getGuid()));
-      assertEquals(LAST_ARTIFACT, artTypes.getByUuid(LAST_ARTIFACT.getGuid()));
+      assertEquals(ARTIFACT, artTypes.get(ARTIFACT));
+      assertEquals(REQUIREMENT, artTypes.get(REQUIREMENT));
+      assertEquals(SOFTWARE_REQUIREMENT, artTypes.get(SOFTWARE_REQUIREMENT));
+      assertEquals(SYSTEM_REQUIREMENT, artTypes.get(SYSTEM_REQUIREMENT));
+      assertEquals(SUBSYSTEM_REQUIREMENT, artTypes.get(SUBSYSTEM_REQUIREMENT));
+      assertEquals(OTHER_ARTIFACT, artTypes.get(OTHER_ARTIFACT));
+      assertEquals(LAST_ARTIFACT, artTypes.get(LAST_ARTIFACT));
    }
 
    @Test
@@ -380,7 +380,7 @@ public class OrcsTypesTest {
       resources.add(asInput(addTypeDef));
 
       assertEquals(8, artTypes.size());
-      IArtifactType artifactType = artTypes.getByUuid(0x0000000000000023L);
+      IArtifactType artifactType = artTypes.get(0x0000000000000023L);
 
       assertEquals("Added Artifact Type", artifactType.getName());
       assertEquals(Long.valueOf(0x0000000000000023L), artifactType.getGuid());
@@ -464,11 +464,11 @@ public class OrcsTypesTest {
    public void testGetAttributeTypesByUuid() throws OseeCoreException {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
-      assertEquals(NAME, attrTypes.getByUuid(NAME.getGuid()));
-      assertEquals(ANNOTATION, attrTypes.getByUuid(ANNOTATION.getGuid()));
-      assertEquals(WORDML, attrTypes.getByUuid(WORDML.getGuid()));
-      assertEquals(FIELD_1, attrTypes.getByUuid(FIELD_1.getGuid()));
-      assertEquals(FIELD_2, attrTypes.getByUuid(FIELD_2.getGuid()));
+      assertEquals(NAME, attrTypes.get(NAME));
+      assertEquals(ANNOTATION, attrTypes.get(ANNOTATION));
+      assertEquals(WORDML, attrTypes.get(WORDML));
+      assertEquals(FIELD_1, attrTypes.get(FIELD_1));
+      assertEquals(FIELD_2, attrTypes.get(FIELD_2));
    }
 
    @Test
@@ -720,7 +720,7 @@ public class OrcsTypesTest {
 
       assertEquals(6, attrTypes.size());
 
-      IAttributeType attrType = attrTypes.getByUuid(0x1000000000000082L);
+      IAttributeType attrType = attrTypes.get(0x1000000000000082L);
 
       //@formatter:off
       assertEquals("Field 3", attrType.getName());
@@ -757,8 +757,8 @@ public class OrcsTypesTest {
    public void testGetRelationTypesByUuid() throws OseeCoreException {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
-      assertEquals(REQUIREMENT_REL, relTypes.getByUuid(REQUIREMENT_REL.getId()));
-      assertEquals(ANOTHER_REL, relTypes.getByUuid(ANOTHER_REL.getId()));
+      assertEquals(REQUIREMENT_REL, relTypes.get(REQUIREMENT_REL));
+      assertEquals(ANOTHER_REL, relTypes.get(ANOTHER_REL));
    }
 
    @Test
@@ -921,7 +921,7 @@ public class OrcsTypesTest {
 
       assertEquals(3, relTypes.size());
 
-      IRelationType relation = relTypes.getByUuid(0x2000000000000159L);
+      IRelationType relation = relTypes.get(0x2000000000000159L);
 
       assertEquals("Dynamic Relation", relation.getName());
       assertEquals(Long.valueOf(0x2000000000000159L), relation.getId());

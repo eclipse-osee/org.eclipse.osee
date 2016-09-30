@@ -111,7 +111,7 @@ public class ArtifactFactoryTest {
       when(otherArtifactData.getTypeUuid()).thenReturn(65L);
       when(otherArtifactData.getVersion()).thenReturn(artifactVersion);
 
-      when(artifactTypeCache.getByUuid(65L)).thenReturn(artifactType);
+      when(artifactTypeCache.get(65L)).thenReturn(artifactType);
 
    }
 

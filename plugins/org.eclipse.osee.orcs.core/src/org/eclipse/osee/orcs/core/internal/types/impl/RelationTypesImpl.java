@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -48,9 +49,13 @@ public class RelationTypesImpl implements RelationTypes {
    }
 
    @Override
-   public IRelationType getByUuid(Long uuid) throws OseeCoreException {
-      Conditions.checkNotNull(uuid, "uuid");
-      return provider.getRelationTypeIndex().getTokenByUuid(uuid);
+   public IRelationType get(Id id) {
+      return provider.getRelationTypeIndex().get(id);
+   }
+
+   @Override
+   public IRelationType get(Long id) {
+      return provider.getRelationTypeIndex().get(id);
    }
 
    @Override
@@ -136,7 +141,7 @@ public class RelationTypesImpl implements RelationTypes {
    }
 
    @Override
-   public boolean exists(IRelationType item) throws OseeCoreException {
-      return provider.getRelationTypeIndex().existsByUuid(item.getId());
+   public boolean exists(Id id) throws OseeCoreException {
+      return provider.getRelationTypeIndex().exists(id);
    }
 }

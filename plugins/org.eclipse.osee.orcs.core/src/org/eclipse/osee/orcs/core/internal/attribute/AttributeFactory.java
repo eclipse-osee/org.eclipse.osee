@@ -50,7 +50,7 @@ public class AttributeFactory {
    }
 
    private <T> Attribute<T> createAttribute(AttributeContainer container, AttributeData data, boolean isDirty, boolean createWithDefaults) throws OseeCoreException {
-      IAttributeType type = cache.getByUuid(data.getTypeUuid());
+      IAttributeType type = cache.get(data.getTypeUuid());
       Conditions.checkNotNull(type, "attributeType", "Cannot find attribute type with uuid[%s]", data.getTypeUuid());
 
       Attribute<T> attribute = classResolver.createAttribute(type);

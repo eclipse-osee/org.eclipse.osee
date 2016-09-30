@@ -34,14 +34,18 @@ public class TokenTypeIndex<TOKEN extends Id, DSLTYPE> {
       return tokenToType.keySet();
    }
 
-   public TOKEN getTokenByUuid(Long uuid) {
-      return uuidToToken.get(uuid);
+   public TOKEN get(Long id) {
+      return uuidToToken.get(id);
    }
 
-   public DSLTYPE getDslTypeByToken(TOKEN key) {
+   public TOKEN get(Id id) {
+      return uuidToToken.get(id.getId());
+   }
+
+   public DSLTYPE getDslTypeByToken(Id key) {
       DSLTYPE type = tokenToType.get(key);
       if (type == null) {
-         TOKEN tokenByUuid = getTokenByUuid(key.getId());
+         TOKEN tokenByUuid = get(key.getId());
          if (tokenByUuid != null) {
             type = tokenToType.get(tokenByUuid);
          }
@@ -55,6 +59,10 @@ public class TokenTypeIndex<TOKEN extends Id, DSLTYPE> {
 
    public boolean existsByUuid(Long uuid) {
       return uuidToToken.containsKey(uuid);
+   }
+
+   public boolean exists(Id id) {
+      return uuidToToken.containsKey(id.getId());
    }
 
    public void put(TOKEN token, DSLTYPE dslType) {

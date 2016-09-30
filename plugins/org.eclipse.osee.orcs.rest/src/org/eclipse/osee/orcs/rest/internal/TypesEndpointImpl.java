@@ -197,14 +197,14 @@ public class TypesEndpointImpl implements TypesEndpoint {
 
    @Override
    public Response getEnums(Long uuid) {
-      IAttributeType attrType = orcsApi.getOrcsTypes().getAttributeTypes().getByUuid(uuid);
+      IAttributeType attrType = orcsApi.getOrcsTypes().getAttributeTypes().get(uuid);
       JaxEnumAttribute jaxEnumAttribute = createJaxEnumAttribute(orcsApi.getOrcsTypes().getAttributeTypes(), attrType);
       return Response.ok().entity(jaxEnumAttribute).build();
    }
 
    @Override
    public Response getEnumEntries(Long uuid) {
-      IAttributeType attrType = orcsApi.getOrcsTypes().getAttributeTypes().getByUuid(uuid);
+      IAttributeType attrType = orcsApi.getOrcsTypes().getAttributeTypes().get(uuid);
       JaxEnumAttribute jaxEnumAttribute = createJaxEnumAttribute(orcsApi.getOrcsTypes().getAttributeTypes(), attrType);
       return Response.ok().entity(jaxEnumAttribute.getEntries()).build();
    }

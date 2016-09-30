@@ -99,7 +99,7 @@ public class AttributeTypeResource {
             List<AttributeReadable<Object>> attrs = new ArrayList<>();
             if (attributeTypeId > 0) {
                IAttributeType attributeType =
-                  OrcsApplication.getOrcsApi().getOrcsTypes().getAttributeTypes().getByUuid((long) attributeTypeId);
+                  OrcsApplication.getOrcsApi().getOrcsTypes().getAttributeTypes().get((long) attributeTypeId);
                for (AttributeReadable<Object> attr : exactlyOne.getAttributes(attributeType)) {
                   attrs.add(attr);
                }
@@ -136,7 +136,7 @@ public class AttributeTypeResource {
 
             } else {
                IAttributeType attributeType =
-                  OrcsApplication.getOrcsApi().getOrcsTypes().getAttributeTypes().getByUuid((long) attributeTypeId);
+                  OrcsApplication.getOrcsApi().getOrcsTypes().getAttributeTypes().get((long) attributeTypeId);
                return Response.ok(AHTML.simplePage(String.format("No attributes of type [%s][%d] found.",
                   attributeType.getName(), attributeType.getGuid()))).build();
             }

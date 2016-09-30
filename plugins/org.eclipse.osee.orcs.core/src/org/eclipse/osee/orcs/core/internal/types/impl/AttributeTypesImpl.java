@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -55,9 +56,13 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public IAttributeType getByUuid(Long uuid) throws OseeCoreException {
-      Conditions.checkNotNull(uuid, "uuid");
-      return provider.getAttributeTypeIndex().getTokenByUuid(uuid);
+   public IAttributeType get(Id id) {
+      return provider.getAttributeTypeIndex().get(id);
+   }
+
+   @Override
+   public IAttributeType get(Long id) {
+      return provider.getAttributeTypeIndex().get(id);
    }
 
    private String getQualifiedTypeName(String id) {
@@ -175,8 +180,8 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public boolean exists(IAttributeType item) throws OseeCoreException {
-      return provider.getAttributeTypeIndex().existsByUuid(item.getGuid());
+   public boolean exists(Id id) throws OseeCoreException {
+      return provider.getAttributeTypeIndex().exists(id);
    }
 
    @Override

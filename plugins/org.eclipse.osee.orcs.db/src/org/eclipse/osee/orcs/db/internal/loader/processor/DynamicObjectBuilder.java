@@ -275,13 +275,13 @@ public class DynamicObjectBuilder {
          Named typeObject = null;
          switch (parentType) {
             case ARTIFACT:
-               typeObject = orcsTypes.getArtifactTypes().getByUuid(type);
+               typeObject = orcsTypes.getArtifactTypes().get(type);
                break;
             case ATTRIBUTE:
-               typeObject = orcsTypes.getAttributeTypes().getByUuid(type);
+               typeObject = orcsTypes.getAttributeTypes().get(type);
                break;
             case RELATION:
-               typeObject = orcsTypes.getRelationTypes().getByUuid(type);
+               typeObject = orcsTypes.getRelationTypes().get(type);
                break;
             default:
                break;

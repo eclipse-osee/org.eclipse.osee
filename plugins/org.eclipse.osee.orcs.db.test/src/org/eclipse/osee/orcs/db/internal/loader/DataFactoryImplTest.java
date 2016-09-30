@@ -133,7 +133,7 @@ public class DataFactoryImplTest {
    @Test
    public void testCreateArtifactDataUsingAbstratArtifactType() throws OseeCoreException {
       when(artifactTypeToken.toString()).thenReturn("artifactTypeToken");
-      when(artifactCache.getByUuid(artifactTypeToken.getGuid())).thenReturn(artifactTypeToken);
+      when(artifactCache.get(artifactTypeToken)).thenReturn(artifactTypeToken);
       when(artifactCache.isAbstract(artifactTypeToken)).thenReturn(true);
 
       thrown.expect(OseeArgumentException.class);
@@ -143,7 +143,7 @@ public class DataFactoryImplTest {
 
    @Test
    public void testCreateArtifactDataInvalidGuid() throws OseeCoreException {
-      when(artifactCache.getByUuid(artifactTypeToken.getGuid())).thenReturn(artifactTypeToken);
+      when(artifactCache.get(artifactTypeToken)).thenReturn(artifactTypeToken);
       when(artifactCache.isAbstract(artifactTypeToken)).thenReturn(false);
       when(artifactTypeToken.toString()).thenReturn("artifactTypeToken");
 
@@ -185,7 +185,7 @@ public class DataFactoryImplTest {
 
    @Test
    public void testCreateArtifactDataGenerateGuid() throws OseeCoreException {
-      when(artifactCache.getByUuid(artifactTypeToken.getGuid())).thenReturn(artifactTypeToken);
+      when(artifactCache.get(artifactTypeToken)).thenReturn(artifactTypeToken);
       when(artifactTypeToken.getGuid()).thenReturn(4536L);
       when(artifactCache.isAbstract(artifactTypeToken)).thenReturn(false);
       when(idFactory.getUniqueGuid(guid)).thenReturn(guid);

@@ -87,7 +87,7 @@ public class AttributeDataMatcher {
 
    private List<MatchLocation> matchTokenizedValue(HasCancellation cancellation, AttributeData data, Iterable<String> valuesToMatch, Collection<? extends IAttributeType> typesFilter, QueryOption... options) {
       AttributeIndexedResource source = adapt(data);
-      IAttributeType attrType = attrTypes.getByUuid(source.getTypeUuid());
+      IAttributeType attrType = attrTypes.get(source.getTypeUuid());
       if (typesFilter.contains(attrType)) {
          checkCancelled(cancellation);
          String taggerId = attrTypes.getTaggerId(attrType);

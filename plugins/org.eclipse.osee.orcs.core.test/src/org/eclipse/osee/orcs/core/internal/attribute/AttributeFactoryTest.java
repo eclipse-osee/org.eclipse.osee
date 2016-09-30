@@ -67,7 +67,7 @@ public class AttributeFactoryTest {
    // @formatter:on
 
    private AttributeFactory factory;
-   private long expectedGuid;
+   private IAttributeType expectedGuid;
 
    @Before
    public void init() throws OseeCoreException {
@@ -75,20 +75,21 @@ public class AttributeFactoryTest {
 
       factory = new AttributeFactory(classResolver, dataFactory, cache);
 
-      expectedGuid = CoreAttributeTypes.Name.getGuid();
+      expectedGuid = CoreAttributeTypes.Name;
 
-      when(attributeData.getTypeUuid()).thenReturn(expectedGuid);
-      when(cache.getByUuid(expectedGuid)).thenReturn(attributeType);
+      when(attributeData.getTypeUuid()).thenReturn(expectedGuid.getId());
+      when(cache.get(expectedGuid.getId())).thenReturn(attributeType);
       when(classResolver.createAttribute(attributeType)).thenReturn(attribute);
       when(attributeData.getDataProxy()).thenReturn(proxy);
    }
 
    @Test
    public void testCreateAttributeNullType() throws OseeCoreException {
-      when(cache.getByUuid(expectedGuid)).thenReturn(null);
+      when(cache.get(expectedGuid.getId())).thenReturn(null);
 
       thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("attributeType cannot be null - Cannot find attribute type with uuid[" + expectedGuid + "]");
+      thrown.expectMessage(
+         "attributeType cannot be null - Cannot find attribute type with uuid[" + expectedGuid.getId() + "]");
       factory.createAttribute(container, attributeData);
    }
 
@@ -140,7 +141,7 @@ public class AttributeFactoryTest {
       AttributeData copiedAttributeData = mock(AttributeData.class);
 
       when(dataFactory.copy(COMMON, attributeData)).thenReturn(copiedAttributeData);
-      when(copiedAttributeData.getTypeUuid()).thenReturn(expectedGuid);
+      when(copiedAttributeData.getTypeUuid()).thenReturn(expectedGuid.getId());
       when(copiedAttributeData.getDataProxy()).thenReturn(proxy);
 
       ArgumentCaptor<ResourceNameResolver> resolverCapture = ArgumentCaptor.forClass(ResourceNameResolver.class);
@@ -177,7 +178,7 @@ public class AttributeFactoryTest {
       when(attributeData.getLocalId()).thenReturn(12345);
 
       when(dataFactory.introduce(COMMON, attributeData)).thenReturn(introducedAttributeData);
-      when(introducedAttributeData.getTypeUuid()).thenReturn(expectedGuid);
+      when(introducedAttributeData.getTypeUuid()).thenReturn(expectedGuid.getId());
       when(introducedAttributeData.getDataProxy()).thenReturn(proxy);
 
       when(container.getAttributeById(attributeData.getLocalId(), DeletionFlag.INCLUDE_DELETED)).thenReturn(
