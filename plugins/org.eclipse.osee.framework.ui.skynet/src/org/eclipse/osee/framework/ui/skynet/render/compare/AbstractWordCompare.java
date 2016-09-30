@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OperationTimedoutException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -79,31 +80,61 @@ public abstract class AbstractWordCompare implements IComparator {
 
    @Override
    public void compare(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType, ArtifactDelta artifactDelta, String pathPrefix) throws OseeCoreException {
-      Artifact artifact = artifactDelta.getStartArtifact();
-      if (artifact == null) {
-         artifact = artifactDelta.getEndArtifact();
+      boolean invalid = false;
+      Artifact startArt = artifactDelta.getStartArtifact();
+      Artifact endArt = artifactDelta.getEndArtifact();
+      String paraNumStart = null;
+      String paraNumEnd = null;
+      if (startArt != null) {
+         paraNumStart = startArt.getSoleAttributeValueAsString(CoreAttributeTypes.ParagraphNumber, null);
       }
-      IOseeBranch branch = artifact.getBranchToken();
+      if (endArt != null) {
+         paraNumEnd =
+            artifactDelta.getEndArtifact().getSoleAttributeValueAsString(CoreAttributeTypes.ParagraphNumber, null);
+      }
 
-      IVbaDiffGenerator diffGenerator = createGenerator(Collections.singletonList(artifact), branch, presentationType);
+      if (paraNumStart != null && paraNumStart.matches(".*[a-zA-Z].*")) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
+            String.format("Invalid Paragraph Number on Artifact [%s], cannot contain letters",
+               artifactDelta.getEndArtifact().getArtId()));
+         invalid = true;
+      }
+      if (paraNumEnd != null && paraNumEnd.matches(".*[a-zA-Z].*")) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
+            String.format("Invalid Paragraph Number on Artifact [%s], cannot contain letters",
+               artifactDelta.getEndArtifact().getArtId()));
+         invalid = true;
+      }
 
-      String resultPath =
-         getDiffPath(artifactDelta.getStartArtifact(), artifactDelta.getEndArtifact(), presentationType, pathPrefix);
-      String vbsPath = RenderingUtil.getRenderPath(renderer, branch, presentationType, null, "compareDocs", ".vbs");
-
-      CompareData data = new CompareData(resultPath, vbsPath);
-
-      addToCompare(monitor, data, presentationType, artifactDelta);
-      try {
-         diffGenerator.generate(monitor, data);
-      } catch (OperationTimedoutException ex) {
-         if (!skipDialogs) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, String.format(
-               "The View Word Change Report Timed-out for Artifact(s) [%s] on Branch [%s]", artifact, branch));
+      if (!invalid) {
+         Artifact artifact = artifactDelta.getStartArtifact();
+         if (artifact == null) {
+            artifact = artifactDelta.getEndArtifact();
          }
+         IOseeBranch branch = artifact.getBranchToken();
+
+         IVbaDiffGenerator diffGenerator =
+            createGenerator(Collections.singletonList(artifact), branch, presentationType);
+
+         String resultPath =
+            getDiffPath(artifactDelta.getStartArtifact(), artifactDelta.getEndArtifact(), presentationType, pathPrefix);
+         String vbsPath = RenderingUtil.getRenderPath(renderer, branch, presentationType, null, "compareDocs", ".vbs");
+
+         CompareData data = new CompareData(resultPath, vbsPath);
+
+         addToCompare(monitor, data, presentationType, artifactDelta);
+         try {
+            diffGenerator.generate(monitor, data);
+         } catch (OperationTimedoutException ex) {
+            if (!skipDialogs) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, String.format(
+                  "The View Word Change Report Timed-out for Artifact(s) [%s] on Branch [%s]", artifact, branch));
+            }
+         }
+
+         collector.onCompare(data);
       }
 
-      collector.onCompare(data);
    }
 
    @Override

@@ -37,8 +37,7 @@ public final class WordUiUtil {
                "\t\nInvalid Link: artifact with guid: " + unknownGuid + " does not exist on this branch.";
          }
          displayUnhandledArtifacts(java.util.Collections.singleton(artifact),
-            String.format("\nThe following referenced GUIDs cannot be found:  \n\n%s",
-               invalidLinkMessage));
+            String.format("\nThe following referenced GUIDs cannot be found:  \n\n%s", invalidLinkMessage));
       }
    }
 

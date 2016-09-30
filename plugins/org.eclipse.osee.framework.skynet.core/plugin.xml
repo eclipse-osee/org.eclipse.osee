@@ -212,6 +212,12 @@
            </OseeValidator>
         </extension>
         <extension
+              point="org.eclipse.osee.framework.skynet.core.OseeValidator">
+           <OseeValidator
+                 classname="org.eclipse.osee.framework.skynet.core.attribute.ParagraphNumberAttributeValidation">
+           </OseeValidator>
+        </extension>
+        <extension
               point="org.eclipse.osee.framework.skynet.core.HttpServerRequest">
            <IHttpServerRequest
                  classname="org.eclipse.osee.framework.skynet.core.httpRequests.ClientDashboardRequestHandler">

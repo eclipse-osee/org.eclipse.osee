@@ -50,7 +50,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Roberto E. Escobar
  */
-public class XStackedDam extends XStackedWidget<String>implements IAttributeWidget {
+public class XStackedDam extends XStackedWidget<String> implements IAttributeWidget {
    private Artifact artifact;
    private IAttributeType attributeType;
    private final Map<String, XWidget> xWidgets;
@@ -331,5 +331,22 @@ public class XStackedDam extends XStackedWidget<String>implements IAttributeWidg
             sText.setBackground(Displays.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
          }
       }
+
+      @Override
+      public IStatus isValid() {
+         IStatus status = super.isValid();
+         if (status.isOK()) {
+            try {
+               if (getArtifact() != null && getAttributeType() != null) {
+                  status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(), getAttributeType(),
+                     get());
+               }
+            } catch (OseeCoreException ex) {
+               status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error getting Artifact", ex);
+            }
+         }
+         return status;
+      }
+
    }
 }
