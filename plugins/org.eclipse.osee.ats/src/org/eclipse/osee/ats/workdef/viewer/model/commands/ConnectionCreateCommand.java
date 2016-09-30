@@ -74,7 +74,7 @@ public class ConnectionCreateCommand extends Command {
       // return false, if the source -> target connection exists already
       for (Iterator<?> iter = source.getSourceConnections().iterator(); iter.hasNext();) {
          Connection conn = (Connection) iter.next();
-         if (conn.getTarget().equals(target)) {
+         if (conn != null && conn.getTarget().equals(target)) {
             return false;
          }
       }

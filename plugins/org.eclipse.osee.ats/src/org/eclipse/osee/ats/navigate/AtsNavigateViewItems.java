@@ -377,8 +377,10 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
             try {
                Object obj = bundle.loadClass(classname).newInstance();
                IAtsNavigateItem task = (IAtsNavigateItem) obj;
-               for (XNavigateItem navItem : task.getNavigateItems(parentItem)) {
-                  nameToNavItem.put(navItem.getName(), navItem);
+               if (task != null) {
+                  for (XNavigateItem navItem : task.getNavigateItems(parentItem)) {
+                     nameToNavItem.put(navItem.getName(), navItem);
+                  }
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, "Error loading AtsNavigateItem extension", ex);

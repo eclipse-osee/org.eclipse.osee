@@ -89,7 +89,7 @@ public class ConnectionReconnectCommand extends Command {
          Connection conn = (Connection) iter.next();
          // return false if a newSource -> oldTarget connection exists already
          // and it is a different instance than the connection-field
-         if (conn.getTarget().equals(oldTarget) && !conn.equals(connection)) {
+         if (conn != null && conn.getTarget().equals(oldTarget) && !conn.equals(connection)) {
             return false;
          }
       }
@@ -109,7 +109,7 @@ public class ConnectionReconnectCommand extends Command {
          Connection conn = (Connection) iter.next();
          // return false if a oldSource -> newTarget connection exists already
          // and it is a differenct instance that the connection-field
-         if (conn.getSource().equals(oldSource) && !conn.equals(connection)) {
+         if (conn != null && conn.getSource().equals(oldSource) && !conn.equals(connection)) {
             return false;
          }
       }
