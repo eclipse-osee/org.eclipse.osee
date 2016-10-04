@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.osee.client.ote.rdt.feature_0.24.1.qualifier.jar" id="org.eclipse.osee.client.ote.rdt.feature" version="0.24.1.qualifier">
+   <feature url="features/org.eclipse.osee.client.ote.rdt.feature_0.24.2.qualifier.jar" id="org.eclipse.osee.client.ote.rdt.feature" version="0.24.2.qualifier">
       <category name="org.eclipse.osee.ote"/>
    </feature>
-   <feature url="features/org.eclipse.osee.client.ote.rdt.feature.source_0.24.1.qualifier.jar" id="org.eclipse.osee.client.ote.rdt.feature.source" version="0.24.1.qualifier">
+   <feature url="features/org.eclipse.osee.client.ote.rdt.feature.source_0.24.2.qualifier.jar" id="org.eclipse.osee.client.ote.rdt.feature.source" version="0.24.2.qualifier">
       <category name="org.eclipse.osee.ote"/>
    </feature>
-   <feature url="features/org.eclipse.osee.ote.feature_0.24.1.qualifier.jar" id="org.eclipse.osee.ote.feature" version="0.24.1.qualifier">
+   <feature url="features/org.eclipse.osee.ote.feature_0.24.2.qualifier.jar" id="org.eclipse.osee.ote.feature" version="0.24.2.qualifier">
       <category name="org.eclipse.osee.ote"/>
    </feature>
-   <feature url="features/org.eclipse.osee.ote.feature.source_0.24.1.qualifier.jar" id="org.eclipse.osee.ote.feature.source" version="0.24.1.qualifier">
+   <feature url="features/org.eclipse.osee.ote.feature.source_0.24.2.qualifier.jar" id="org.eclipse.osee.ote.feature.source" version="0.24.2.qualifier">
       <category name="org.eclipse.osee.ote"/>
    </feature>
    <category-def name="org.eclipse.osee.ote" label="Eclipse OSEE OTE - (Incubation)">
