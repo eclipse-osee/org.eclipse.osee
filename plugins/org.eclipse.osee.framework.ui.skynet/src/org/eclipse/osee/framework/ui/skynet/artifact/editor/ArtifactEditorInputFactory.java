@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.ui.IElementFactory;
 import org.eclipse.ui.IMemento;
 
@@ -47,12 +48,15 @@ public class ArtifactEditorInputFactory implements IElementFactory {
 
    public static void saveState(IMemento memento, ArtifactEditorInput input) {
       String title = input.getName();
-      String artUuid = input.getArtifact().getUuid().toString();
-      long branchUuid = input.getArtifact().getBranchId();
-      if (Strings.isValid(artUuid) && branchUuid > 0 && Strings.isValid(title)) {
-         memento.putString(BRANCH_KEY, String.valueOf(branchUuid));
-         memento.putString(ART_UUID, artUuid);
-         memento.putString(TITLE, title);
+      Artifact artifact = input.getArtifact();
+      if (artifact != null) {
+         String artUuid = artifact.getUuid().toString();
+         long branchUuid = artifact.getBranchId();
+         if (Strings.isValid(artUuid) && branchUuid > 0 && Strings.isValid(title)) {
+            memento.putString(BRANCH_KEY, String.valueOf(branchUuid));
+            memento.putString(ART_UUID, artUuid);
+            memento.putString(TITLE, title);
+         }
       }
    }
 

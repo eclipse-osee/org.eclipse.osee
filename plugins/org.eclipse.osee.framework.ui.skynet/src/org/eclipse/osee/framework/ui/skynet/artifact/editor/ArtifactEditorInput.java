@@ -30,6 +30,7 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
    private Long savedBranchUuid;
    private Long savedArtUuid;
    private String savedTitle;
+   private boolean attemptedReload = false;
 
    public ArtifactEditorInput(Artifact artifact) {
       this.artifact = artifact;
@@ -87,7 +88,7 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
          if (type.isAssignableFrom(getClass())) {
             return (T) getArtifact();
          } else if (type.isAssignableFrom(Artifact.class)) {
-            return (T) artifact;
+            return (T) getArtifact();
          }
       }
       Object obj = null;
@@ -96,11 +97,11 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
    }
 
    public Artifact getArtifact() {
-      return artifact;
+      return loadArtifact();
    }
 
    public boolean isReadOnly() {
-      return artifact == null || artifact.isReadOnly();
+      return getArtifact() == null || getArtifact().isReadOnly();
    }
 
    public void setArtifact(Artifact art) {
@@ -118,9 +119,16 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
    }
 
    public Artifact loadArtifact() {
-      if (artifact == null) {
-         artifact =
-            ArtifactQuery.getArtifactFromId(savedArtUuid.intValue(), TokenFactory.createBranch(savedBranchUuid));
+      if (artifact == null && !attemptedReload) {
+         if (savedArtUuid != null && savedBranchUuid != null) {
+            try {
+               artifact =
+                  ArtifactQuery.getArtifactFromId(savedArtUuid.intValue(), TokenFactory.createBranch(savedBranchUuid));
+            } catch (Exception ex) {
+               // do nothing
+            }
+         }
+         attemptedReload = true;
       }
       return artifact;
    }
