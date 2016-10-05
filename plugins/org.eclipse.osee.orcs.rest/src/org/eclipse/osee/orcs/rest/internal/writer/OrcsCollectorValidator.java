@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -37,6 +38,7 @@ public class OrcsCollectorValidator {
    private final Set<Long> artifactsExist;
    private final IOrcsValidationHelper helper;
    private boolean branchValid;
+   private OrcsApi orcsApi;
 
    public OrcsCollectorValidator(OwCollector collector, IOrcsValidationHelper helper) {
       this.collector = collector;
@@ -47,6 +49,7 @@ public class OrcsCollectorValidator {
 
    public OrcsCollectorValidator(OrcsApi orcsApi, OwCollector collector2) {
       this(collector2, new OrcsValidationHelperAdapter(orcsApi));
+      this.orcsApi = orcsApi;
    }
 
    public XResultData run() {
@@ -180,15 +183,25 @@ public class OrcsCollectorValidator {
          results.errorf("Artifact [%s] does not have Name attribute.\n", artifact);
       }
       for (OwAttribute attribute : artifact.getAttributes()) {
-         OwAttributeType attrType = attribute.getType();
+         OwAttributeType owAttrType = attribute.getType();
 
+         IAttributeType attrType = OrcsCollectorWriter.getAttributeType(orcsApi, owAttrType);
          if (attrType == null) {
-            results.errorf("Invalid Attribute Type for artifact [%s].\n", artifact);
-         } else if (attrType.getUuid() <= 0L && !helper.isAttributeTypeExists(attrType.getName())) {
-            results.errorf("Invalid Attribute Type uuid [%s] for artifact [%s].\n", attrType, artifact);
-         } else if (attrType.getUuid() > 0L && !helper.isAttributeTypeExists(attrType.getUuid())) {
-            results.errorf("Attribute Type [%s] does not exist for artifact [%s].\n", attrType, artifact);
+            results.errorf("Invalid Attribute Type [%s] for artifact [%s].\n", owAttrType, artifact);
          }
+
+         if (orcsApi.getOrcsTypes().getAttributeTypes().isBooleanType(attrType)) {
+            if (attribute.values.size() > 1) {
+               results.errorf("Cannot have multiple values for Boolean Attribute [%s] for artifact [%s].\n",
+                  attribute, artifact);
+            }
+         } else if (orcsApi.getOrcsTypes().getAttributeTypes().isDateType(attrType)) {
+            if (attribute.values.size() > 1) {
+               results.errorf("Cannot have multiple attributes Date Attribute [%s] for artifact [%s]", attribute,
+                  artifact);
+            }
+         }
+
       }
    }
 

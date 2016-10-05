@@ -110,7 +110,7 @@ public class OrcsCollectorWriter {
 
          try {
             for (OwAttribute owAttribute : owArtifact.getAttributes()) {
-               IAttributeType attrType = getAttributeType(owAttribute.getType());
+               IAttributeType attrType = getAttributeType(orcsApi, owAttribute.getType());
 
                if (artifact.getAttributeCount(attrType) <= 1 && owAttribute.getValues().size() <= 1) {
                   String currValue = artifact.getSoleAttributeAsString(attrType, null);
@@ -234,7 +234,7 @@ public class OrcsCollectorWriter {
       return null;
    }
 
-   private IAttributeType getAttributeType(OwAttributeType attributeType) {
+   protected static IAttributeType getAttributeType(OrcsApi orcsApi, OwAttributeType attributeType) {
       if (attributeType.getUuid() <= 0L) {
          for (IAttributeType type : orcsApi.getOrcsTypes().getAttributeTypes().getAll()) {
             if (type.getName().equals(attributeType.getName())) {
@@ -318,7 +318,7 @@ public class OrcsCollectorWriter {
       for (OwAttribute owAttribute : owArtifact.getAttributes()) {
          if (!CoreAttributeTypes.Name.getGuid().equals(owAttribute.getType().getUuid())) {
             OwAttributeType owAttrType = owAttribute.getType();
-            IAttributeType attrType = getAttributeType(owAttrType);
+            IAttributeType attrType = getAttributeType(orcsApi, owAttrType);
 
             List<Object> values = owAttribute.getValues();
             for (Object value : values) {
