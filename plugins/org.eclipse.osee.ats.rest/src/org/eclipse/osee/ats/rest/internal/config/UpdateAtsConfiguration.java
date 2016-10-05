@@ -187,7 +187,7 @@ public class UpdateAtsConfiguration {
 
    private void createUpdateValidStateAttributes(ArtifactReadable atsConfigArt, ArtifactReadable userArt, XResultData rd) {
       Collection<String> validStateNames = atsServer.getWorkDefService().getAllValidStateNames(new XResultData());
-      atsServer.setConfigValue(VIEWS_KEY, Collections.toString(",", validStateNames));
+      atsServer.setConfigValue(VALID_STATE_NAMES_KEY, Collections.toString(",", validStateNames));
    }
 
    @SuppressWarnings("unchecked")
