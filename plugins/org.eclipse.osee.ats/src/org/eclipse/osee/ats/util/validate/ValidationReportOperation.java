@@ -18,15 +18,19 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
+import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
@@ -84,24 +88,28 @@ public class ValidationReportOperation extends AbstractOperation {
                   lastTitle = currentTitle;
                }
 
-               int artIndex = 1;
-               for (Artifact art : changedArtifacts) {
-                  monitor.setTaskName(String.format("Validating: Rule[%s of %s] Artifact[%s of %s]", ruleIndex,
-                     rules.size(), artIndex, changedArtifacts.size()));
-                  checkForCancelledStatus(monitor);
+               if (isSkipRelationCheck(rule.getRuleTitle())) {
+                  logf("INFO: Relations Check skipped:  detected committed branches.");
+               } else {
+                  int artIndex = 1;
+                  for (Artifact art : changedArtifacts) {
+                     monitor.setTaskName(String.format("Validating: Rule[%s of %s] Artifact[%s of %s]", ruleIndex,
+                        rules.size(), artIndex, changedArtifacts.size()));
+                     checkForCancelledStatus(monitor);
 
-                  ValidationResult result = rule.validate(art, monitor);
-                  if (!result.didValidationPass()) {
-                     for (String errorMsg : result.getErrorMessages()) {
-                        if (art.isOfType(CoreArtifactTypes.DirectSoftwareRequirement)) {
-                           logf("Error: %s", errorMsg);
-                        } else {
-                           warnings.add(String.format("Warning: %s", errorMsg));
+                     ValidationResult result = rule.validate(art, monitor);
+                     if (!result.didValidationPass()) {
+                        for (String errorMsg : result.getErrorMessages()) {
+                           if (art.isOfType(CoreArtifactTypes.DirectSoftwareRequirement)) {
+                              logf("Error: %s", errorMsg);
+                           } else {
+                              warnings.add(String.format("Warning: %s", errorMsg));
+                           }
                         }
                      }
+                     monitor.worked(workAmount);
+                     artIndex++;
                   }
-                  monitor.worked(workAmount);
-                  artIndex++;
                }
                ruleIndex++;
             }
@@ -117,6 +125,14 @@ public class ValidationReportOperation extends AbstractOperation {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          logf("Error: %s", ex.getLocalizedMessage());
       }
+   }
+
+   private boolean isSkipRelationCheck(String ruleTitle) {
+      IAtsClient atsClient = AtsClientService.get();
+      Conditions.checkNotNull(atsClient, "AtsClientService");
+      IAtsBranchService branchService = atsClient.getBranchService();
+      Conditions.checkNotNull(branchService, "AtsBranchService");
+      return branchService.isBranchesAllCommitted(teamArt) && ruleTitle.equals("Relations Check:");
    }
 
    private final class ValidationRuleComparator implements Comparator<AbstractValidationRule> {
