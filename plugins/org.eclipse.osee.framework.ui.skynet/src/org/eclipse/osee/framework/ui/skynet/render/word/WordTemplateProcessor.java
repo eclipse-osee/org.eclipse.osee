@@ -569,7 +569,8 @@ public class WordTemplateProcessor {
    private void populateRequest(List<Artifact> artifacts, DataRightInput request) {
       if (request.isEmpty()) {
          List<Artifact> allArtifacts = new ArrayList<>();
-         if (recurseChildren) {
+         if (recurseChildren || (renderer.getBooleanOption(
+            RECURSE_ON_LOAD) && !renderer.getBooleanOption("Orig Publish As Diff"))) {
             for (Artifact art : artifacts) {
                allArtifacts.add(art);
                if (!art.isHistorical()) {
@@ -585,7 +586,8 @@ public class WordTemplateProcessor {
          for (Artifact artifact : allArtifacts) {
 
             String classification = null;
-            if (overrideClassification != null && ITemplateRenderer.DataRightsClassification.isValid(overrideClassification)) {
+            if (overrideClassification != null && ITemplateRenderer.DataRightsClassification.isValid(
+               overrideClassification)) {
                classification = overrideClassification;
             } else {
                classification = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.DataRightsClassification, "");
