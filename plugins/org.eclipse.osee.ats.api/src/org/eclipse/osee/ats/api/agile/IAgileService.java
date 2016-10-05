@@ -80,4 +80,6 @@ public interface IAgileService {
 
    Collection<IAgileItem> getItems(IAgileSprint sprint);
 
+   IAgileTeam getAgileTeam(IAgileItem item);
+
 }

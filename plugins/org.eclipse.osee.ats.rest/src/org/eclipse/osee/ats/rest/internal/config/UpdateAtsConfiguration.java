@@ -143,7 +143,6 @@ public class UpdateAtsConfiguration {
       return VIEWS_EQUAL_KEY + gson.toJson(defaultViews);
    }
 
-   @SuppressWarnings("unchecked")
    public ArtifactId getOrCreateConfigFolder(ArtifactId userArt, XResultData rd) {
       ArtifactReadable configFolderArt =
          atsServer.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(
@@ -162,7 +161,6 @@ public class UpdateAtsConfiguration {
       return configFolderArt;
    }
 
-   @SuppressWarnings("unchecked")
    public ArtifactId getOrCreateAtsConfig(ArtifactReadable userArt, XResultData rd) {
       ArtifactReadable atsConfigArt = atsServer.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(
          AtsArtifactToken.AtsConfig).getResults().getAtMostOneOrNull();
@@ -190,7 +188,6 @@ public class UpdateAtsConfiguration {
       atsServer.setConfigValue(VALID_STATE_NAMES_KEY, Collections.toString(",", validStateNames));
    }
 
-   @SuppressWarnings("unchecked")
    public ArtifactId getOrCreateConfigsFolder(ArtifactId userArt, XResultData rd) {
       ArtifactId configFolderArt = getOrCreateConfigFolder(userArt, rd);
       ArtifactId configsFolderArt = atsServer.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(

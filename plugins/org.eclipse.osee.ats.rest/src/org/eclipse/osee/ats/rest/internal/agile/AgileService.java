@@ -360,4 +360,26 @@ public class AgileService implements IAgileService {
       }
    }
 
+   @Override
+   public IAgileTeam getAgileTeam(IAgileItem item) {
+      ArtifactReadable itemArt = atsServer.getArtifact(item);
+      ArtifactReadable backlogArt = itemArt.getRelated(AtsRelationTypes.Goal_Member).getAtMostOneOrNull();
+      if (backlogArt != null) {
+         ArtifactReadable teamArt =
+            backlogArt.getRelated(AtsRelationTypes.AgileTeamToBacklog_AgileTeam).getAtMostOneOrNull();
+         if (teamArt != null) {
+            return atsServer.getConfigItemFactory().getAgileTeam(teamArt);
+         }
+      }
+      ArtifactReadable sprintArt = itemArt.getRelated(AtsRelationTypes.AgileSprintToItem_Sprint).getAtMostOneOrNull();
+      if (sprintArt != null) {
+         ArtifactReadable teamArt =
+            sprintArt.getRelated(AtsRelationTypes.AgileTeamToSprint_AgileTeam).getAtMostOneOrNull();
+         if (teamArt != null) {
+            return atsServer.getConfigItemFactory().getAgileTeam(teamArt);
+         }
+      }
+      return null;
+   }
+
 }

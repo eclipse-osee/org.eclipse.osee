@@ -43,6 +43,7 @@ import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -723,5 +724,10 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    @Override
    public IOseeBranch getAtsBranch() {
       return AtsUtilCore.getAtsBranch();
+   }
+
+   @Override
+   public IAtsChangeSet createChangeSet(String comment, IAtsUser user) {
+      return getStoreService().createAtsChangeSet(comment, user);
    }
 }

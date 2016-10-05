@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.agile;
 
 import java.util.List;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.ats.api.agile.AgileBurndown;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.JaxAgileBacklog;
 import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
@@ -21,7 +22,10 @@ import org.eclipse.osee.ats.api.agile.JaxNewAgileBacklog;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.After;
@@ -173,6 +177,58 @@ public class AgileEndpointTest {
       Assert.assertEquals(teamUuid, newBacklog.getTeamUuid());
       Assert.assertTrue(newBacklog.isActive());
       Assert.assertEquals(uuid.longValue(), newBacklog.getUuid().longValue());
+   }
+
+   private Pair<Artifact, Artifact> getTeamSprint() {
+      Artifact sawCodeArt = AtsClientService.get().getArtifact(DemoArtifactToken.SAW_Code);
+      Assert.assertNotNull(sawCodeArt);
+      Artifact agileTeam = sawCodeArt.getRelatedArtifact(AtsRelationTypes.AgileTeamToAtsTeam_AgileTeam);
+      Assert.assertNotNull(agileTeam);
+      Artifact sprint2 = null;
+      for (Artifact sprint : agileTeam.getRelatedArtifacts(AtsRelationTypes.AgileTeamToSprint_Sprint)) {
+         if (sprint.getName().equals("Sprint 02")) {
+            sprint2 = sprint;
+            break;
+         }
+      }
+      Assert.assertNotNull(sprint2);
+      return new Pair<>(agileTeam, sprint2);
+   }
+
+   @Test
+   public void testGetSprintBurndown() {
+      Pair<Artifact, Artifact> teamSprint = getTeamSprint();
+      Artifact agileTeam = teamSprint.getFirst();
+      Artifact sprint2 = teamSprint.getSecond();
+      Response response = agile.getSprintBurndown(agileTeam.getUuid(), sprint2.getUuid());
+      Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+
+      AgileBurndown burndown = response.readEntity(AgileBurndown.class);
+      Assert.assertNotNull(burndown);
+      Assert.assertEquals("SAW Agile Team", burndown.getAgileTeamName());
+      Assert.assertEquals("Sprint 02", burndown.getSprintName());
+      Assert.assertEquals(2, burndown.getHolidays().size());
+      Assert.assertEquals("ats.Points", burndown.getPointsAttrTypeName());
+      Assert.assertEquals(new Integer(200), burndown.getPlannedPoints());
+      Assert.assertEquals(new Integer(45), burndown.getUnPlannedPoints());
+      Assert.assertEquals(20, burndown.getDates().size());
+   }
+
+   @Test
+   public void testGetSprintBurndownUi() {
+      Pair<Artifact, Artifact> teamSprint = getTeamSprint();
+      Artifact agileTeam = teamSprint.getFirst();
+      Artifact sprint2 = teamSprint.getSecond();
+      Response response = agile.getSprintBurndownUi(agileTeam.getUuid(), sprint2.getUuid());
+      Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+
+      String html = response.readEntity(String.class);
+      Assert.assertNotNull(html);
+      Assert.assertTrue(html.contains("Sprint 02"));
+      Assert.assertTrue(html.contains("200"));
+      Assert.assertTrue(html.contains("45"));
+      Assert.assertTrue(html.contains("Planned Complete"));
+      Assert.assertTrue(html.contains("Total Remaining"));
    }
 
 }

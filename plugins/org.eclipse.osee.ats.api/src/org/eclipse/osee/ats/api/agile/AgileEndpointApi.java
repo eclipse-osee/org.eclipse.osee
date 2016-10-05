@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.agile;
 
-import java.util.Collection;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -22,7 +21,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.workflow.JaxAtsObjects;
 
 /**
  * @author Donald G. Dunne
@@ -86,7 +85,7 @@ public interface AgileEndpointApi {
    @GET
    @Path("team/{teamUuid}/sprint/{sprintUuid}/world")
    @Produces(MediaType.APPLICATION_JSON)
-   public Collection<IAtsWorkItem> getSprintItems(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+   public JaxAtsObjects getSprintItemsAsJax(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
 
    @GET
    @Path("team/{teamUuid}/sprint/{sprintUuid}/world/ui")
@@ -157,5 +156,20 @@ public interface AgileEndpointApi {
    @DELETE
    @Path("team/{teamUuid}")
    public Response deleteTeam(@PathParam("teamUuid") long teamUuid);
+
+   @PUT
+   @Path("item/{itemId}/feature")
+   public Response addFeatureGroup(@PathParam("itemId") long itemId, String featureGroupName);
+
+   @PUT
+   @Path("item/{itemId}/unplanned")
+   public Response setUnPlanned(@PathParam("itemId") long itemId, boolean unPlanned);
+
+   /**
+    * Set points based on points attribute type configured in Agile Team. ats.Points is default.
+    */
+   @PUT
+   @Path("item/{itemId}/points")
+   public Response setPoints(@PathParam("itemId") long itemId, String points);
 
 }

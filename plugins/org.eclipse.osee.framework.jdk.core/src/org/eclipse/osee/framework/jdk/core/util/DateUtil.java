@@ -43,6 +43,10 @@ public class DateUtil {
       return getWorkingDaysBetween(getCalendar(fromDate), getCalendar(toDate));
    }
 
+   public static boolean isWeekDay(Calendar cal) {
+      return cal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && cal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY;
+   }
+
    public static Date getDate(String format, String value) throws ParseException {
       SimpleDateFormat formatter = new SimpleDateFormat(format);
       Date date = formatter.parse(value);

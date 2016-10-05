@@ -43,7 +43,7 @@ workDefinition "WorkDef_Sprint" {
 	}
 
 	widgetDefinition "Run Sprint Summary" {
-		xWidgetName "XRunSprintReportButton"
+		xWidgetName "XRunSprintSummaryButton"
 	}
 
 	state "Cancelled" {

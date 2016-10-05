@@ -17,6 +17,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -44,10 +47,15 @@ import org.eclipse.osee.ats.api.agile.JaxNewAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.JaxAtsObjects;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.ats.rest.internal.world.WorldResource;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.ClassBasedResourceToken;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
@@ -488,6 +496,16 @@ public class AgileEndpointImpl implements AgileEndpointApi {
     ** Sprint Reporting
     ***********************************/
    @Override
+   public JaxAtsObjects getSprintItemsAsJax(long teamUuid, long sprintUuid) {
+      ArtifactReadable sprintArt = atsServer.getArtifact(sprintUuid);
+      JaxAtsObjects objs = new JaxAtsObjects();
+      for (IAtsWorkItem workItem : atsServer.getWorkItemFactory().getWorkItems(
+         sprintArt.getRelated(AtsRelationTypes.AgileSprintToItem_AtsItem).getList())) {
+         objs.getAtsObjects().add(JaxAtsObjects.create(workItem));
+      }
+      return objs;
+   }
+
    public Collection<IAtsWorkItem> getSprintItems(long teamUuid, long sprintUuid) {
       ArtifactReadable sprintArt = atsServer.getArtifact(sprintUuid);
       return atsServer.getWorkItemFactory().getWorkItems(
@@ -537,6 +555,65 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          mapper.setDateFormat(new SimpleDateFormat("MMM d, yyyy h:mm:ss aa"));
       }
       return mapper;
+   }
+
+   @Override
+   @PUT
+   @Path("item/{itemId}/feature")
+   public Response addFeatureGroup(@PathParam("itemId") long itemId, String featureGroupName) {
+      ArtifactReadable itemArt = atsServer.getArtifact(itemId);
+      Conditions.assertNotNull(itemArt, "Work Item not found with id %s", itemId);
+      IAgileItem item = atsServer.getWorkItemFactory().getAgileItem(itemArt);
+      boolean found = false;
+      // check to make sure item is not already related
+      for (IAgileFeatureGroup feature : atsServer.getAgileService().getFeatureGroups(item)) {
+         if (feature.getName().equals(featureGroupName)) {
+            found = true;
+            break;
+         }
+      }
+      if (!found) {
+         IAgileTeam team = atsServer.getAgileService().getAgileTeam(item);
+         for (ArtifactReadable featureArt : ((ArtifactReadable) team.getStoreObject()).getRelated(
+            AtsRelationTypes.AgileTeamToFeatureGroup_FeatureGroup)) {
+            if (featureArt.getName().equals(featureGroupName)) {
+               IAtsChangeSet changes =
+                  atsServer.createChangeSet("Add Feature Group to WorkItem", AtsCoreUsers.SYSTEM_USER);
+               changes.relate(featureArt, AtsRelationTypes.AgileFeatureToItem_AtsItem, item);
+               changes.execute();
+               return Response.ok().build();
+            }
+         }
+      }
+      return Response.notModified().build();
+   }
+
+   @Override
+   @PUT
+   @Path("item/{itemId}/unplanned")
+   public Response setUnPlanned(@PathParam("itemId") long itemId, boolean unPlanned) {
+      ArtifactReadable itemArt = atsServer.getArtifact(itemId);
+      Conditions.assertNotNull(itemArt, "Work Item not found with id %s", itemId);
+      IAgileItem item = atsServer.getWorkItemFactory().getAgileItem(itemArt);
+      IAtsChangeSet changes = atsServer.createChangeSet("Set Agile UnPlanned", AtsCoreUsers.SYSTEM_USER);
+      changes.setSoleAttributeValue(item, AtsAttributeTypes.UnPlannedWork, unPlanned);
+      changes.execute();
+      return Response.ok().build();
+   }
+
+   @Override
+   @PUT
+   @Path("item/{itemId}/points")
+   public Response setPoints(@PathParam("itemId") long itemId, String points) {
+      ArtifactReadable itemArt = atsServer.getArtifact(itemId);
+      Conditions.assertNotNull(itemArt, "Work Item not found with id %s", itemId);
+      IAgileItem item = atsServer.getWorkItemFactory().getAgileItem(itemArt);
+      IAgileTeam team = atsServer.getAgileService().getAgileTeam(item);
+      IAttributeType agileTeamPointsAttributeType = atsServer.getAgileService().getAgileTeamPointsAttributeType(team);
+      IAtsChangeSet changes = atsServer.createChangeSet("Set Points", AtsCoreUsers.SYSTEM_USER);
+      changes.setSoleAttributeValue(item, agileTeamPointsAttributeType, points);
+      changes.execute();
+      return Response.ok().build();
    }
 
 }
