@@ -21,15 +21,29 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeRow;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.RelationRow;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -70,6 +84,18 @@ public final class TransactionManager {
       "select * from osee_tx_details where transaction_id = (select max(transaction_id) from osee_tx_details where branch_id = ? and transaction_id < ?) and branch_id = ?";
 
    private static final String TX_GET_TRANSACTION_BY_ID = "SELECT * FROM osee_tx_details WHERE transaction_id = ?";
+
+   private static final String TX_GET_TRANSACTION_FROM_ATTR_ID =
+      "select transaction_id from osee_attribute attr, osee_txs txs where txs.branch_id = ? and attr.gamma_id = ? and attr.gamma_id = txs.gamma_id";
+
+   private static final String SELECT_ATTRIBUTES_FROM_ART_IN_TRANS_ID =
+      "select * from osee_attribute attr, osee_txs txs where txs.branch_id = ? and attr.ART_ID = ? and txs.TRANSACTION_ID = ? and attr.gamma_id = txs.GAMMA_ID";
+
+   private static final String SELECT_RELATIONS_FROM_ART_IN_TRANS_ID =
+      "select * from osee_relation_link rel, osee_txs txs where txs.branch_id = ? and (rel.a_art_id = ? or rel.b_art_id = ?) and txs.TRANSACTION_ID = ? and rel.gamma_id = txs.GAMMA_ID";
+
+   private static final String SELECT_ART_TRANSACTION_IDS =
+      "select distinct txs.transaction_id from osee_attribute attr, osee_txs txs where txs.branch_id = ? and art_id = ? and attr.GAMMA_ID = txs.gamma_id order by txs.transaction_id desc";
 
    private static final TxMonitorImpl<BranchId> txMonitor = new TxMonitorImpl<>(new TxMonitorCache<>());
    private static final HashCollection<ArtifactId, TransactionRecord> commitArtifactIdMap =
@@ -225,4 +251,163 @@ public final class TransactionManager {
       }
       return transactions;
    }
+
+   public static TransactionId getTransaction(BranchId branch, Attribute<Object> attr) {
+      JdbcClient jdbcClient = ConnectionHandler.getJdbcClient();
+      return jdbcClient.fetchOrException(
+         () -> new TransactionDoesNotExist("A transaction from attr gamma id %d was not found.", attr.getGammaId()),
+         stmt -> TransactionId.valueOf(stmt.getLong("transaction_id")), TX_GET_TRANSACTION_FROM_ATTR_ID, branch.getId(),
+         attr.getGammaId());
+   }
+
+   /**
+    * This method will attempt to revert the changes made to the given artifact in the revertTransaction. It does not
+    * handle ARTIFACT_DELETED or relations and only handles NEW and MODIFIED ModTypes. Those cases should be added as
+    * needed.
+    *
+    * @param results - contains the changes that need to be made (if persist == false) or changes that were made (if
+    * persist == true)
+    * @param persist - if true, changes will be made to attributes and artifact and added to persistTransaction
+    * @return true if changes were found
+    */
+   public static boolean revertArtifactFromTransaction(Artifact art, TransactionId revertTransaction, XResultData results, boolean persist, SkynetTransaction persistTransaction) {
+      List<AttributeRow> attributesFromArtifactAndTransaction =
+         getAttributesFromArtifactAndTransaction(art, revertTransaction);
+      for (AttributeRow attr : attributesFromArtifactAndTransaction) {
+         if (attr.getModType() == ModificationType.ARTIFACT_DELETED) {
+            throw new UnsupportedOperationException(
+               "Revert of Artifact Deleted is not supported (but could be added as needed)");
+         }
+      }
+
+      List<RelationRow> relations = getRelationsFromArtifactAndTransaction(art, revertTransaction);
+      if (!relations.isEmpty()) {
+         throw new UnsupportedOperationException(
+            "Revert of Relations Modified is not supported (but could be added as needed)");
+      }
+
+      TransactionId prevTransId = getPreviousTransactionId(art, revertTransaction);
+      Artifact prevArt = ArtifactQuery.getHistoricalArtifactFromId(art.getId().intValue(),
+         TransactionToken.valueOf(prevTransId, art.getBranch()), DeletionFlag.EXCLUDE_DELETED);
+
+      boolean changed = false;
+      for (AttributeRow attr : attributesFromArtifactAndTransaction) {
+         AttributeType type = AttributeTypeManager.getType(attr.getAttributeType());
+         if (attr.getModType() == ModificationType.NEW) {
+            changed = true;
+            if (persist) {
+               art.deleteAttribute(attr.getAttrId());
+            }
+            results.logf("Deleting created attribute type [%s]\n", type);
+         } else if (attr.getModType() == ModificationType.MODIFIED) {
+            if (type.getMaxOccurrences() == 1) {
+               Object curValue = art.getSoleAttributeValue(type, null);
+               Object prevValue = getPreviousValue(prevArt, attr.getAttrId());
+               changed = true;
+               if (persist) {
+                  art.setSoleAttributeValue(type, prevValue);
+               }
+               String currValueAsText = curValue.toString();
+               currValueAsText = AHTML.textToHtml(currValueAsText);
+               String prevValueAsText = prevValue.toString();
+               prevValueAsText = AHTML.textToHtml(prevValueAsText);
+               results.logf("Setting modified type [%s] from [%s] to [%s]\n", type, currValueAsText, prevValueAsText);
+            } else {
+               results.errorf("Max Occurrences > 1 not supported for attribute %s (but could be added as needed)\n",
+                  attr);
+            }
+         } else {
+            results.errorf("Mod Type %s not supported for attribute %s (but could be added as needed)\n",
+               attr.getModType(), attr);
+         }
+      }
+      if (persist && changed) {
+         art.persist(persistTransaction);
+      }
+      return changed;
+   }
+
+   private static Object getPreviousValue(Artifact prevArt, Integer attrId) {
+      for (Attribute<?> attr : prevArt.getAttributes()) {
+         if (attrId.equals(attr.getId())) {
+            return attr.getValue();
+         }
+      }
+      return null;
+   }
+
+   public static TransactionId getPreviousTransactionId(Artifact art, TransactionId trans) {
+      boolean found = false;
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
+      try {
+         chStmt.runPreparedQuery(SELECT_ART_TRANSACTION_IDS, art.getBranch().getId(), art.getArtId());
+         while (chStmt.next()) {
+            Integer transId = chStmt.getInt("transaction_id");
+            if (transId.equals(trans.getId().intValue())) {
+               found = true;
+            }
+            if (found && !transId.equals(trans.getId().intValue())) {
+               return TransactionId.valueOf(transId);
+            }
+         }
+      } finally {
+         chStmt.close();
+      }
+      return null;
+   }
+
+   public static List<RelationRow> getRelationsFromArtifactAndTransaction(Artifact art, TransactionId trans) {
+      List<RelationRow> relationChanges = new LinkedList<RelationRow>();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
+      try {
+         chStmt.runPreparedQuery(SELECT_RELATIONS_FROM_ART_IN_TRANS_ID, art.getBranch().getId(), art.getArtId(),
+            art.getArtId(), trans.getId());
+         while (chStmt.next()) {
+            relationChanges.add(loadRelationChange(chStmt));
+         }
+      } finally {
+         chStmt.close();
+      }
+      return relationChanges;
+
+   }
+
+   public static List<AttributeRow> getAttributesFromArtifactAndTransaction(Artifact art, TransactionId trans) {
+      List<AttributeRow> attributeChanges = new LinkedList<AttributeRow>();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
+      try {
+         chStmt.runPreparedQuery(SELECT_ATTRIBUTES_FROM_ART_IN_TRANS_ID, art.getBranch().getId(), art.getArtId(),
+            trans.getId());
+         while (chStmt.next()) {
+            attributeChanges.add(loadAttributeChange(chStmt));
+         }
+      } finally {
+         chStmt.close();
+      }
+      return attributeChanges;
+
+   }
+
+   private static RelationRow loadRelationChange(JdbcStatement chStmt) {
+      IRelationType relationType = RelationTypeManager.getTypeByGuid(chStmt.getLong("rel_link_type_id"));
+      BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
+      Long gammaId = Long.valueOf(chStmt.getLong("gamma_id"));
+      Long aArtId = Long.valueOf(chStmt.getInt("a_art_id"));
+      Long bArtId = Long.valueOf(chStmt.getInt("b_art_id"));
+      Long relId = Long.valueOf(chStmt.getInt("rel_link_id"));
+      String rationale = chStmt.getString("rationale");
+      return new RelationRow(branch, relId, relationType, aArtId, bArtId, rationale, gammaId);
+   }
+
+   private static AttributeRow loadAttributeChange(JdbcStatement chStmt) {
+      IAttributeType attributeType = AttributeTypeManager.getTypeByGuid(chStmt.getLong("attr_type_id"));
+      BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
+      Long gammaId = Long.valueOf(chStmt.getLong("gamma_id"));
+      Integer artId = Integer.valueOf(chStmt.getInt("art_id"));
+      ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
+      Integer attrId = Integer.valueOf(chStmt.getInt("attr_id"));
+      String value = chStmt.getString("value");
+      return new AttributeRow(branch, gammaId, artId, modType, value, attrId, attributeType);
+   }
+
 }

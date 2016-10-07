@@ -28,6 +28,8 @@ import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.actions.NewGoal;
 import org.eclipse.osee.ats.actions.OpenArtifactEditorById;
 import org.eclipse.osee.ats.actions.OpenOrphanedTasks;
+import org.eclipse.osee.ats.actions.RevertDuplicateTransitionByIdAction;
+import org.eclipse.osee.ats.actions.RevertDuplicateTransitionsAction;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -226,6 +228,8 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          new ValidateWorkspaceToDatabaseWorkDefinitions(healthItems);
          new CleanupOseeSystemAssignedWorkflows(healthItems);
          new XNavigateItemAction(adminItems, new OpenOrphanedTasks(), AtsImage.TASK);
+         new XNavigateItemAction(adminItems, new RevertDuplicateTransitionByIdAction(), AtsImage.TASK);
+         new XNavigateItemAction(adminItems, new RevertDuplicateTransitionsAction(), AtsImage.TASK);
 
          XNavigateItem extra = new XNavigateItemFolder(adminItems, "Other");
          Set<XNavigateExtensionPointData> extraItems =
