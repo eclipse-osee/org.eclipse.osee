@@ -480,7 +480,7 @@ public class JdbcPoolConfig {
          setPoolMaxActiveConnections(getIntObj(props, "maxActive", DEFAULT_JDBC_POOL__MAX_ACTIVE_CONNECTIONS));
          setPoolMaxActivePreparedStatements( getIntObj(props, "maxActivePreparedStatements", DEFAULT_JDBC_POOL__MAX_ACTIVE_PREPARED_STATEMENTS));
          setPoolMaxIdleConnections(getIntObj(props, "maxIdle", DEFAULT_JDBC_POOL__MAX_IDLE_CONNECTIONS));
-         setPoolMaxIdlePreparedStatements(getIntObj(props, "maxIdlePreparedStatements", DEFAULT_JDBC_POOL__MIN_IDLE_PREPARED_STATEMENTS));
+         setPoolMaxIdlePreparedStatements(getIntObj(props, "maxIdlePreparedStatements", DEFAULT_JDBC_POOL__MAX_IDLE_PREPARED_STATEMENTS));
          setPoolMaxTotalPreparedStatements(getIntObj(props, "maxTotalPreparedStatements", DEFAULT_JDBC_POOL__MAX_TOTAL_PREPARED_STATEMENTS));
          setPoolMaxWaitForConnection(getLongObj(props, "maxWait", DEFAULT_JDBC_POOL__MAX_WAIT_CONNECTIONS));
          setPoolMaxWaitPreparedStatements( getLongObj(props, "maxWaitPreparedStatements", DEFAULT_JDBC_POOL__MAX_WAIT_PREPARED_STATEMENTS));

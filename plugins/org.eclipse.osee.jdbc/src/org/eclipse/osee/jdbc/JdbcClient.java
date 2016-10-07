@@ -31,7 +31,11 @@ public interface JdbcClient {
 
    int runQuery(Consumer<JdbcStatement> consumer, String query, Object... data);
 
+   int runQuery(JdbcConnection connection, Consumer<JdbcStatement> consumer, String query, Object... data);
+
    int runQuery(Consumer<JdbcStatement> consumer, int fetchSize, String query, Object... data);
+
+   int runQuery(JdbcConnection connection, Consumer<JdbcStatement> consumer, int fetchSize, String query, Object... data);
 
    int runQueryWithLimit(Consumer<JdbcStatement> consumer, int limit, String query, Object... data);
 

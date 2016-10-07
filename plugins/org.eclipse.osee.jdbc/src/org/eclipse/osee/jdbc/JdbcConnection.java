@@ -22,8 +22,6 @@ public interface JdbcConnection extends AutoCloseable {
 
    boolean isClosed();
 
-   boolean isStale();
-
    DatabaseMetaData getMetaData();
 
 }

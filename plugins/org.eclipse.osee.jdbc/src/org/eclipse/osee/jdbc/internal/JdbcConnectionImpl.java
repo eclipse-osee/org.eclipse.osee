@@ -25,23 +25,11 @@ import org.eclipse.osee.jdbc.JdbcException;
  */
 public class JdbcConnectionImpl implements JdbcConnection {
 
-   private static final int STALE_CONNECTION_TIMEOUT = 60000;
    private final Connection conn;
 
    public JdbcConnectionImpl(Connection conn) {
       super();
       this.conn = conn;
-   }
-
-   @Override
-   public boolean isStale() {
-      boolean result = true;
-      try {
-         result = !conn.isValid(STALE_CONNECTION_TIMEOUT);
-      } catch (SQLException ex) {
-         // do nothing
-      }
-      return result;
    }
 
    @Override

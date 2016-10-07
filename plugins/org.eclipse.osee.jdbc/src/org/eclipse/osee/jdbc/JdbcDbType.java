@@ -99,6 +99,8 @@ public class JdbcDbType extends BaseId {
    public String getValidationSql() {
       if (matches(oracle, h2)) {
          return "select 1 from dual";
+      } else if (matches(hsql)) {
+         return "SELECT 1 FROM INFORMATION_SCHEMA.SYSTEM_USERS";
       }
       return "select 1";
    }

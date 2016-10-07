@@ -204,11 +204,8 @@ public final class JdbcClientImpl implements JdbcClient {
 
    @Override
    public int runPreparedUpdate(String query, Object... data) throws JdbcException {
-      JdbcConnection connection = getConnection();
-      try {
+      try (JdbcConnection connection = getConnection()) {
          return runPreparedUpdate(connection, query, data);
-      } finally {
-         connection.close();
       }
    }
 
@@ -219,8 +216,7 @@ public final class JdbcClientImpl implements JdbcClient {
          throw newJdbcException("defaultValue cannot be null");
       }
       String sql = getDbType().getFunctionCallSql(function);
-      JdbcConnectionImpl connection = getConnection();
-      try {
+      try (JdbcConnectionImpl connection = getConnection()) {
          CallableStatement stmt = null;
          try {
             stmt = connection.prepareCall(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
@@ -305,8 +301,6 @@ public final class JdbcClientImpl implements JdbcClient {
          } finally {
             JdbcUtil.close(stmt);
          }
-      } finally {
-         connection.close();
       }
    }
 
@@ -316,14 +310,26 @@ public final class JdbcClientImpl implements JdbcClient {
    }
 
    @Override
+   public int runQuery(JdbcConnection connection, Consumer<JdbcStatement> consumer, String query, Object... data) {
+      return runQuery(connection, consumer, 0, query, data);
+   }
+
+   @Override
    public int runQuery(Consumer<JdbcStatement> consumer, String query, Object... data) {
       return runQuery(consumer, 0, query, data);
    }
 
    @Override
    public int runQuery(Consumer<JdbcStatement> consumer, int fetchSize, String query, Object... data) {
+      try (JdbcConnection conn = getConnection()) {
+         return runQuery(conn, consumer, fetchSize, query, data);
+      }
+   }
+
+   @Override
+   public int runQuery(JdbcConnection connection, Consumer<JdbcStatement> consumer, int fetchSize, String query, Object... data) {
       int rowCount = 0;
-      try (JdbcStatement stmt = getStatement()) {
+      try (JdbcStatement stmt = getStatement(connection)) {
          stmt.runPreparedQuery(fetchSize, query, data);
          while (stmt.next()) {
             consumer.accept(stmt);
