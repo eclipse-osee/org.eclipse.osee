@@ -8,12 +8,6 @@ workDefinition "WorkDef_Sprint" {
 		option REQUIRED_FOR_TRANSITION
 	}
 
-	widgetDefinition "Holiday" {
-		attributeName "ats.Holiday"
-		description "Holidays during Agile Sprint"
-		xWidgetName "XDateDam"
-	}
-
 	widgetDefinition "Un-Planned Points" {
 		attributeName "ats.Un-Planned Points"
 		xWidgetName "XIntegerDam"
@@ -46,6 +40,10 @@ workDefinition "WorkDef_Sprint" {
 		xWidgetName "XRunSprintSummaryButton"
 	}
 
+	widgetDefinition "Open Sprint Burndown" {
+		xWidgetName "XOpenSprintBurndownButton"
+	}
+
 	state "Cancelled" {
 		type Cancelled
 		ordinal 3
@@ -64,11 +62,11 @@ workDefinition "WorkDef_Sprint" {
 				widget "End Date"
 				widget "Run Sprint Summary"
 			}
-			widget "Holiday"
 			composite {
-				numColumns 4
+				numColumns 6
 				widget "Planned Points"
 				widget "Un-Planned Points"
+			   widget "Open Sprint Burndown"
 			}
 			widget "Title"
 			widget "Description"

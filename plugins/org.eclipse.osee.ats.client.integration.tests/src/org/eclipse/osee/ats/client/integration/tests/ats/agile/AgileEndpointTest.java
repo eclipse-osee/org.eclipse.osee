@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.agile.JaxAgileBacklog;
 import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxAgileTeam;
+import org.eclipse.osee.ats.api.agile.JaxBurndownExcel;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileBacklog;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileSprint;
@@ -25,6 +26,8 @@ import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -229,6 +232,51 @@ public class AgileEndpointTest {
       Assert.assertTrue(html.contains("45"));
       Assert.assertTrue(html.contains("Planned Complete"));
       Assert.assertTrue(html.contains("Total Remaining"));
+   }
+
+   @Test
+   public void testGetSprintBurndownExcel() {
+      Pair<Artifact, Artifact> teamSprint = getTeamSprint();
+      Artifact agileTeam = teamSprint.getFirst();
+      Artifact sprint2 = teamSprint.getSecond();
+      Assert.assertEquals(0, sprint2.getChildren().size());
+      Response response = agile.getSprintBurndownExcel(agileTeam.getUuid(), sprint2.getUuid());
+      Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+
+      JaxBurndownExcel report = response.readEntity(JaxBurndownExcel.class);
+      Assert.assertNotNull(report);
+
+      sprint2.reloadAttributesAndRelations();
+      Assert.assertEquals(2, sprint2.getChildren().size());
+
+      Long excelSheetUuid = report.getExcelSheetUuid();
+      Assert.assertNotNull(excelSheetUuid);
+      Artifact excelArt = AtsClientService.get().getArtifact(excelSheetUuid);
+      Assert.assertNotNull(excelSheetUuid);
+      Assert.assertEquals("xls", excelArt.getSoleAttributeValue(CoreAttributeTypes.Extension, null));
+      Assert.assertNotNull(excelArt.getSoleAttributeValue(CoreAttributeTypes.NativeContent, null));
+      Assert.assertEquals(CoreArtifactTypes.GeneralDocument, excelArt.getArtifactType());
+
+      Long excelQueryUuid = report.getExcelQueryUuid();
+      Assert.assertNotNull(excelQueryUuid);
+      Artifact excelQueryArt = AtsClientService.get().getArtifact(excelQueryUuid);
+      Assert.assertNotNull(excelQueryUuid);
+      Assert.assertEquals("iqy", excelQueryArt.getSoleAttributeValue(CoreAttributeTypes.Extension, null));
+      Assert.assertNotNull(excelQueryArt.getSoleAttributeValue(CoreAttributeTypes.NativeContent, null));
+      Assert.assertEquals(CoreArtifactTypes.GeneralDocument, excelQueryArt.getArtifactType());
+
+      // Ensure that successive calls return same uuids and do not create new artifacts
+      response = agile.getSprintBurndownExcel(agileTeam.getUuid(), sprint2.getUuid());
+      Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+
+      JaxBurndownExcel report2 = response.readEntity(JaxBurndownExcel.class);
+      Assert.assertNotNull(report2);
+
+      sprint2.reloadAttributesAndRelations();
+      Assert.assertEquals(2, sprint2.getChildren().size());
+      Assert.assertEquals(report.getExcelQueryUuid(), report2.getExcelQueryUuid());
+      Assert.assertEquals(report.getExcelSheetUuid(), report2.getExcelSheetUuid());
+
    }
 
 }

@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
+import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
@@ -63,7 +64,13 @@ public class AttributeResourceNameResolver implements ResourceNameResolver {
 
       builder.append(getStorageName());
 
-      String fileTypeExtension = getExtension(attribute);
+      String fileTypeExtension = null;
+      if (identity instanceof ArtifactImpl) {
+         fileTypeExtension = ((ArtifactImpl) identity).getSoleAttributeValue(CoreAttributeTypes.Extension, null);
+      }
+      if (!Strings.isValid(fileTypeExtension)) {
+         fileTypeExtension = getExtension(attribute);
+      }
       if (Strings.isValid(fileTypeExtension)) {
          builder.append(".");
          builder.append(fileTypeExtension);

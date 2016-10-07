@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.util.widgets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.agile.XOpenSprintBurndownButton;
 import org.eclipse.osee.ats.agile.XRunSprintSummaryButton;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.column.OperationalImpactWithWorkaroundXWidget;
@@ -142,6 +143,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XProgramSelectionWidget();
       } else if (widgetName.equals(XRunSprintSummaryButton.WIDGET_ID)) {
          return new XRunSprintSummaryButton();
+      } else if (widgetName.equals(XOpenSprintBurndownButton.WIDGET_ID)) {
+         return new XOpenSprintBurndownButton();
       } else if (widgetName.equals(XWorkPackageWidget.WIDGET_ID)) {
          return new XWorkPackageWidget();
       }

@@ -1,6 +1,6 @@
 WEB
 1
-http://a5481444.sw.nos.boeing.com:8092/ats/agile/team/6915488/sprint/1226060751/burndown/ui
+BASE_URI/agile/team/TEAM_ID/sprint/SPRINT_ID/burndown/ui
 
 Selection=AllTables
 Formatting=None

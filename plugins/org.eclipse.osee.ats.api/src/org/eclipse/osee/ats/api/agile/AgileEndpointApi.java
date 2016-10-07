@@ -172,4 +172,13 @@ public interface AgileEndpointApi {
    @Path("item/{itemId}/points")
    public Response setPoints(@PathParam("itemId") long itemId, String points);
 
+   /**
+    * If missing, creates artifacts OSEE_Sprint_Burndown.iqy and OSEE_Sprint_Burndown.xls as children of sprint or
+    * returns existing if already exist
+    */
+   @GET
+   @Path("team/{teamUuid}/sprint/{sprintUuid}/burndownExcel")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response getSprintBurndownExcel(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+
 }

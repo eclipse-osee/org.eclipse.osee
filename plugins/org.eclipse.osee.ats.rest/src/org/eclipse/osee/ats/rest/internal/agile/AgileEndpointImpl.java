@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.agile;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,10 +19,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
@@ -42,6 +47,7 @@ import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxAgileItem;
 import org.eclipse.osee.ats.api.agile.JaxAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxAgileTeam;
+import org.eclipse.osee.ats.api.agile.JaxBurndownExcel;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileBacklog;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileSprint;
@@ -55,8 +61,12 @@ import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.ats.rest.internal.world.WorldResource;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.ClassBasedResourceToken;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -614,6 +624,89 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       changes.setSoleAttributeValue(item, agileTeamPointsAttributeType, points);
       changes.execute();
       return Response.ok().build();
+   }
+
+   @Override
+   @GET
+   @Path("team/{teamUuid}/sprint/{sprintUuid}/burndownExcel")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response getSprintBurndownExcel(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid) {
+      JaxBurndownExcel report = new JaxBurndownExcel();
+      ArtifactReadable sprintArt = atsServer.getArtifact(sprintUuid);
+      IAgileSprint sprint = atsServer.getWorkItemFactory().getAgileSprint(sprintArt);
+      Conditions.assertNotNull(sprintArt, "Sprint not found with id %s", sprintUuid);
+      ArtifactReadable burndownExcel = null, burndownQuery = null;
+      for (ArtifactReadable art : sprintArt.getChildren()) {
+         if (art.getName().equals(
+            "OSEE_Sprint_Burndown") && art.getSoleAttributeValue(CoreAttributeTypes.Extension, "").equals("xls")) {
+            burndownExcel = art;
+         } else if (art.getName().equals(
+            "OSEE_Sprint_Burndown") && art.getSoleAttributeValue(CoreAttributeTypes.Extension, "").equals("iqy")) {
+            burndownQuery = art;
+         }
+      }
+      if ((burndownExcel != null && burndownQuery == null) || (burndownExcel == null && burndownQuery != null)) {
+         report.setError(
+            "Either OSEE_Sprint_Burndown.xls or OSEE_Sprint_Burndown.iqy was found.  Both need to be found or none.  Names must match exactly.");
+         return Response.ok(report).build();
+      }
+      try {
+         // If not found, create and save artifacts related to this burndown
+         if (burndownExcel == null) {
+            IAtsChangeSet changes = atsServer.createChangeSet("Create Burndown Artifacts", AtsCoreUsers.SYSTEM_USER);
+
+            // Store xls file to OSEE databasePlugin
+            File burndownXls = RestUtil.getResourceAsFile("support/OSEE_Sprint_Burndown.xls");
+            FileInputStream burndownFileInputStream = new FileInputStream(burndownXls);
+
+            ArtifactId burndownExcelArt =
+               changes.createArtifact(CoreArtifactTypes.GeneralDocument, "OSEE_Sprint_Burndown");
+            changes.setSoleAttributeValue(burndownExcelArt, CoreAttributeTypes.Extension, "xls");
+            changes.setSoleAttributeFromStream(burndownExcelArt, CoreAttributeTypes.NativeContent,
+               burndownFileInputStream);
+            changes.relate(sprint, CoreRelationTypes.Default_Hierarchical__Child, burndownExcelArt);
+            report.setExcelSheetUuid(burndownExcelArt.getUuid());
+
+            // Store query file to OSEE database
+            String burndownqry = RestUtil.getResource("support/OSEE_Sprint_Burndown.iqy");
+            burndownqry = burndownqry.replace("BASE_URI", uriInfo.getBaseUri().toString());
+            IAgileTeam team =
+               atsServer.getConfigItemFactory().getAgileTeam(atsServer.getArtifact(sprint.getTeamUuid()));
+            burndownqry = burndownqry.replace("TEAM_ID", team.getId().toString());
+            burndownqry = burndownqry.replace("SPRINT_ID", sprintArt.getId().toString());
+            ArtifactId burndownQryArt =
+               changes.createArtifact(CoreArtifactTypes.GeneralDocument, "OSEE_Sprint_Burndown");
+            changes.setSoleAttributeValue(burndownQryArt, CoreAttributeTypes.Extension, "iqy");
+            changes.setSoleAttributeFromStream(burndownQryArt, CoreAttributeTypes.NativeContent,
+               Lib.stringToInputStream(burndownqry));
+            changes.relate(sprint, CoreRelationTypes.Default_Hierarchical__Child, burndownQryArt);
+            report.setExcelQueryUuid(burndownQryArt.getUuid());
+
+            changes.execute();
+         }
+         // Else if found
+         else {
+            ArtifactReadable excelArt = null, queryArt = null;
+            for (ArtifactReadable child : sprintArt.getChildren()) {
+               if (child.getSoleAttributeValue(CoreAttributeTypes.Extension, "").equals("xls")) {
+                  excelArt = child;
+                  report.setExcelSheetUuid(excelArt.getUuid());
+               } else if (child.getSoleAttributeValue(CoreAttributeTypes.Extension, "").equals("iqy")) {
+                  queryArt = child;
+                  report.setExcelQueryUuid(queryArt.getUuid());
+               }
+            }
+            if (excelArt == null) {
+               report.setError("Could not access Excel burndown artifact.");
+            }
+            if (queryArt == null) {
+               report.setError(report.getError() + "\nCould not access Excel Query burndown artifact.");
+            }
+         }
+      } catch (Exception ex) {
+         throw new OseeWebApplicationException(ex, Status.INTERNAL_SERVER_ERROR);
+      }
+      return Response.ok(report).build();
    }
 
 }

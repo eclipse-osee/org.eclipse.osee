@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.util;
 
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -127,5 +128,7 @@ public interface IAtsChangeSet {
    void setSoleAttributeFromString(ArtifactId artifact, IAttributeType attrType, String value);
 
    void setSoleAttributeFromString(IAtsObject atsObject, IAttributeType attributeType, String value);
+
+   void setSoleAttributeFromStream(ArtifactId artifact, IAttributeType attributeType, InputStream inputStream);
 
 }

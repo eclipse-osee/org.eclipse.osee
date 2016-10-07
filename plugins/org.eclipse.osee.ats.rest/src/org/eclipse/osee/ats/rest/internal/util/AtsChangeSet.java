@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.util;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -350,6 +351,13 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    public void setSoleAttributeFromString(ArtifactId artifact, IAttributeType attrType, String value) {
       ArtifactReadable art = getArtifact(artifact);
       getTransaction().setSoleAttributeFromString(artifact, attrType, value);
+      add(art);
+   }
+
+   @Override
+   public void setSoleAttributeFromStream(ArtifactId artifact, IAttributeType attributeType, InputStream inputStream) {
+      ArtifactReadable art = getArtifact(artifact);
+      getTransaction().setSoleAttributeFromStream(art, attributeType, inputStream);
       add(art);
    }
 

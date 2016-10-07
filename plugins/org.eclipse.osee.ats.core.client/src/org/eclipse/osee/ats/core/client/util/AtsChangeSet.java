@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.client.util;
 
 import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -390,6 +391,13 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    public void setSoleAttributeFromString(ArtifactId artifact, IAttributeType attrType, String value) {
       Artifact art = getArtifact(artifact);
       art.setSoleAttributeFromString(attrType, value);
+      add(art);
+   }
+
+   @Override
+   public void setSoleAttributeFromStream(ArtifactId artifact, IAttributeType attributeType, InputStream inputStream) {
+      Artifact art = getArtifact(artifact);
+      art.setSoleAttributeFromStream(attributeType, inputStream);
       add(art);
    }
 
