@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
-import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import java.util.Collection;
+import java.util.Map;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 /**
  * @author Donald G. Dunne
  */
-public class ParentIdColumn extends XViewerAtsColumn implements IXViewerValueColumn {
+public class ParentIdColumn extends XViewerAtsColumn implements IAtsXViewerPreComputedColumn {
 
    public static ParentIdColumn instance = new ParentIdColumn();
 
@@ -33,8 +33,8 @@ public class ParentIdColumn extends XViewerAtsColumn implements IXViewerValueCol
    }
 
    private ParentIdColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".parentid", "Parent Id", 75, XViewerAlign.Left, false, SortDataType.String,
-         false, "ID of Parent Action or Team Workflow");
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".parentid", "Parent Id", 75, XViewerAlign.Left, false,
+         SortDataType.String, false, "ID of Parent Action or Team Workflow");
    }
 
    /**
@@ -48,8 +48,7 @@ public class ParentIdColumn extends XViewerAtsColumn implements IXViewerValueCol
       return newXCol;
    }
 
-   @Override
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
+   public String getText(Object element) {
       try {
          if (element instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) element).getParentAWA() != null) {
             return TeamWorkFlowManager.getPcrId(((AbstractWorkflowArtifact) element).getParentAWA());
@@ -59,4 +58,12 @@ public class ParentIdColumn extends XViewerAtsColumn implements IXViewerValueCol
       }
       return "";
    }
+
+   @Override
+   public void populateCachedValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
+      for (Object obj : objects) {
+         preComputedValueMap.put(getKey(obj), getText(obj));
+      }
+   }
+
 }
