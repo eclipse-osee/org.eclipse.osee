@@ -43,6 +43,9 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       BiConsumer<Long, String> consumer = (id, name) -> result.add(new ApplicabilityToken(id, name));
       tupleQuery.getTupleType2ForArtifactId(artId, branch, consumer);
 
+      if (result.size() == 0) {
+         result.add(ApplicabilityToken.BASE);
+      }
       return result.get(0);
    }
 
