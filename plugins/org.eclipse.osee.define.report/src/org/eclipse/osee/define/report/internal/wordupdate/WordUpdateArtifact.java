@@ -145,24 +145,26 @@ public class WordUpdateArtifact {
                 * at least one textual change (if the MUTI_EDIT_SAVE_ALL_CHANGES preference is not set).
                 */
                boolean multiSave = data.isMultiEdit() || hasChangedContent(artifact, content);
-               if (!hasTrackedChanges && (singleArtifact || multiSave)) {
-                  if (extractorData.getParentEelement().getNodeName().endsWith("body")) {
-                     /*
-                      * This code pulls out all of the stuff after the inserted listnum reordering stuff. This needs to
-                      * be here so that we remove unwanted template information from single editing
-                      */
-                     content = content.replace(WordUtilities.LISTNUM_FIELD_HEAD, "");
+               if (singleArtifact || multiSave) {
+                  if (!hasTrackedChanges) {
+                     if (extractorData.getParentEelement().getNodeName().endsWith("body")) {
+                        /*
+                         * This code pulls out all of the stuff after the inserted listnum reordering stuff. This needs
+                         * to be here so that we remove unwanted template information from single editing
+                         */
+                        content = content.replace(WordUtilities.LISTNUM_FIELD_HEAD, "");
+                     }
+                     LinkType linkType = LinkType.OSEE_SERVER_LINK;
+                     content = WordMlLinkHandler.unlink(queryFactory, linkType, artifact, content);
+                     txBuilder.setSoleAttributeValue(artifact, CoreAttributeTypes.WordTemplateContent, content);
+                     artChange.setChanged(true);
+                     if (!containsWordData) {
+                        artChange.setCreated(true);
+                     }
+                     artChange.addChangedAttrType(CoreAttributeTypes.WordTemplateContent.getGuid());
+                  } else {
+                     updateChange.setTrackedChangeArts(artifact.getId(), artifact.getName());
                   }
-                  LinkType linkType = LinkType.OSEE_SERVER_LINK;
-                  content = WordMlLinkHandler.unlink(queryFactory, linkType, artifact, content);
-                  txBuilder.setSoleAttributeValue(artifact, CoreAttributeTypes.WordTemplateContent, content);
-                  artChange.setChanged(true);
-                  if (!containsWordData) {
-                     artChange.setCreated(true);
-                  }
-                  artChange.addChangedAttrType(CoreAttributeTypes.WordTemplateContent.getGuid());
-               } else {
-                  updateChange.setTrackedChangeArts(artifact.getId(), artifact.getName());
                }
                if (artChange.isChanged()) {
                   artChange.setSafetyRelated(checkIfSafetyRelated(artifact,
