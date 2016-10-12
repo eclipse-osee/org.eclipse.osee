@@ -36,6 +36,7 @@ public enum WorkType {
    ICDs,
    PIDS,
    SSDD,
+   Maintenance,
    All,
    Custom("Custom Work Type that doesn't match a WorkType enum"),
    None;
