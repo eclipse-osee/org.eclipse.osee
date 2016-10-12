@@ -10,13 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.client.demo.internal;
 
+import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.client.demo.DemoSubsystems;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -36,6 +40,9 @@ public abstract class AbstractAddRequirementsBranch implements IDbInitialization
    @Override
    public void run() throws OseeCoreException {
       BranchId requirementsBranch = BranchManager.createTopLevelBranch(branch);
+
+      AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), requirementsBranch,
+         PermissionEnum.FULLACCESS);
 
       Artifact sawProduct =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.Component, requirementsBranch, "SAW Product Decomposition");

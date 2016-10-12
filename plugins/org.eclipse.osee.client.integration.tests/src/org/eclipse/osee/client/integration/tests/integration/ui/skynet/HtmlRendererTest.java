@@ -15,16 +15,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -79,6 +83,9 @@ public class HtmlRendererTest {
 
       String branchName = method.getQualifiedTestName();
       rootBranch = BranchManager.createTopLevelBranch(branchName);
+      AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), rootBranch,
+         PermissionEnum.FULLACCESS);
+
       Artifact programRoot = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(rootBranch);
 
       Folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, rootBranch, "Folder");

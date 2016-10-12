@@ -13,15 +13,19 @@ package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -63,6 +67,8 @@ public class RelationIntegrityCheckTest {
    @Before
    public void setUp() throws Exception {
       parentBranch = BranchManager.createTopLevelBranch("1");
+      AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), parentBranch,
+         PermissionEnum.FULLACCESS);
 
       Artifact art_A = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, parentBranch, "A");
       art_A.persist(getClass().getSimpleName());

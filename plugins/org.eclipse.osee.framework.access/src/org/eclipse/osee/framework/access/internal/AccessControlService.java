@@ -64,6 +64,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
@@ -334,7 +335,8 @@ public class AccessControlService implements IAccessControlService {
          if (o instanceof BranchId) {
             key.add(String.valueOf(((BranchId) o).getGuid()));
          } else if (o instanceof Artifact) {
-            key.add(((Artifact) o).getGuid() + ((Artifact) o).getBranchId());
+            key.add(((Artifact) o).getGuid());
+            key.add(String.valueOf(((Artifact) o).getBranch().getGuid()));
          } else {
             key.add(GUID.create());
          }
@@ -386,7 +388,10 @@ public class AccessControlService implements IAccessControlService {
       PermissionEnum userPermission = null;
       AccessObject accessObject = BranchAccessObject.getBranchAccessObjectFromCache(branch);
 
-      if (accessObject == null) {
+      if (accessObject == null && (!CoreBranches.COMMON.getId().equals(branch.getId()) && BranchManager.getType(
+         branch).isBaselineBranch())) {
+         userPermission = PermissionEnum.READ;
+      } else if (accessObject == null) {
          userPermission = PermissionEnum.FULLACCESS;
       } else {
          userPermission = acquirePermissionRank(subject, accessObject);
@@ -430,13 +435,9 @@ public class AccessControlService implements IAccessControlService {
 
    private PermissionEnum acquirePermissionRank(IBasicArtifact<?> subject, AccessObject accessObject) {
       ensurePopulated();
-      PermissionEnum userPermission = PermissionEnum.FULLACCESS;
       int subjectId = subject.getArtId();
 
-      userPermission = accessControlListCache.get(subjectId, accessObject);
-      if (userPermission == null) {
-         userPermission = PermissionEnum.FULLACCESS;
-      }
+      PermissionEnum userPermission = accessControlListCache.get(subjectId, accessObject);
 
       if (subjectToGroupCache.containsKey(subjectId)) {
          for (int groupPermissionId : subjectToGroupCache.getValues(subjectId)) {
@@ -445,18 +446,21 @@ public class AccessControlService implements IAccessControlService {
             if (groupPermission != null) {
                if (userPermission == null) {
                   userPermission = groupPermission;
-               }
-
-               if (groupPermission.getRank() > userPermission.getRank()) {
+               } else if (groupPermission.getRank() > userPermission.getRank()) {
                   userPermission = groupPermission;
                }
             }
-
-            if (userPermission == null) {
-               userPermission = PermissionEnum.DENY;
-            }
          }
       }
+      if (userPermission == null) {
+         if (!CoreBranches.COMMON.getId().equals(accessObject.getBranchId()) && BranchManager.getType(
+            BranchId.valueOf(accessObject.getBranchId())).isBaselineBranch()) {
+            userPermission = PermissionEnum.READ;
+         } else {
+            userPermission = PermissionEnum.FULLACCESS;
+         }
+      }
+
       return userPermission;
    }
 

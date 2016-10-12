@@ -115,7 +115,7 @@ public class GlobalMenu {
             }
             if (purgeMenuItem != null) {
                purgeMenuItem.setEnabled(
-                  !artifacts.isEmpty() && permiss.isHasArtifacts() && AccessControlManager.isOseeAdmin());
+                  !artifacts.isEmpty() && permiss.isHasArtifacts() && permiss.isWritePermission() && AccessControlManager.isOseeAdmin());
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

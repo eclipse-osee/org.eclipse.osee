@@ -18,14 +18,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -162,6 +164,9 @@ public class WordTemplateRendererTest {
 
       String branchName = method.getQualifiedTestName();
       rootBranch = BranchManager.createTopLevelBranch(branchName);
+      AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), rootBranch,
+         PermissionEnum.FULLACCESS);
+
       Artifact programRoot = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(rootBranch);
 
       templateFolder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, rootBranch, "Templates");
@@ -199,6 +204,8 @@ public class WordTemplateRendererTest {
    @Test
    public void testBlankWordTemplateContent() {
       BranchId rootBr = BranchManager.createTopLevelBranch("Root Branch");
+      AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), rootBr, PermissionEnum.FULLACCESS);
+
       SkynetTransaction tx =
          TransactionManager.createTransaction(rootBr, String.format("%s", method.getQualifiedTestName()));
       Artifact vol4 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMSWord, rootBr, "Volume 4");

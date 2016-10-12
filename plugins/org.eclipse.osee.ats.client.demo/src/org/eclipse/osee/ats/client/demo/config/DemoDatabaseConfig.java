@@ -36,8 +36,10 @@ import org.eclipse.osee.ats.demo.api.DemoProgram;
 import org.eclipse.osee.ats.demo.api.DemoSubsystems;
 import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -74,6 +76,11 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
 
       AtsGroup.AtsTempAdmin.addMember(UserManager.getUser(DemoUsers.Joe_Smith));
       AtsGroup.AtsTempAdmin.getArtifact().persist("Set Joe as Temp Admin");
+
+      AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), SAW_Bld_1,
+         PermissionEnum.FULLACCESS);
+      AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), CIS_Bld_1,
+         PermissionEnum.FULLACCESS);
 
       AtsDatabaseConfig.organizePrograms(AtsArtifactTypes.Program, DemoArtifactToken.DemoPrograms);
 

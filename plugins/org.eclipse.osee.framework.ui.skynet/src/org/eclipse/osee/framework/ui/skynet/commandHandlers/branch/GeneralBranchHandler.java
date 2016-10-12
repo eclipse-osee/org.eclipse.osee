@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -57,12 +58,30 @@ public abstract class GeneralBranchHandler extends CommandHandler {
 
       Iterator<IOseeBranch> iterator = selectedBranches.iterator();
       List<BranchId> hasChildren = new LinkedList<>();
+      List<BranchId> hasNoPermission = new LinkedList<>();
       while (iterator.hasNext()) {
          BranchId branch = iterator.next();
-         if (BranchManager.hasChildren(branch)) {
+         boolean removed = false;
+         if (!AccessControlManager.hasPermission(branch, PermissionEnum.WRITE)) {
             iterator.remove();
+            hasNoPermission.add(branch);
+            removed = true;
+         }
+         if (BranchManager.hasChildren(branch)) {
+            if (!removed) {
+               iterator.remove();
+            }
             hasChildren.add(branch);
          }
+      }
+
+      if (!hasNoPermission.isEmpty()) {
+         StringBuilder noPermission = new StringBuilder();
+         noPermission.append(String.format(
+            "User does not have permission on the following branches and cannot be %sd:\n", type.dialogType));
+         noPermission.append(String.format("%s", hasNoPermission.toString()));
+
+         MessageDialog.openError(Displays.getActiveShell(), type.dialogTitle, noPermission.toString());
       }
 
       if (!hasChildren.isEmpty()) {

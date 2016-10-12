@@ -22,9 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -32,6 +34,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
@@ -39,6 +42,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -179,6 +183,8 @@ public class ArtifactQueryTest {
    public void testGetOrCreate() throws Exception {
       String guid = GUID.create();
       BranchId branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
+      AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), branch, PermissionEnum.FULLACCESS);
+
       Artifact artifact1 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
       Assert.assertNotNull(artifact1);
       Artifact artifact2 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
@@ -191,6 +197,8 @@ public class ArtifactQueryTest {
    public void testLargeAttributeIndexing() throws Exception {
       String guid = GUID.create();
       BranchId branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
+      AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), branch, PermissionEnum.FULLACCESS);
+
       Artifact artifact1 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
       artifact1.setSoleAttributeFromString(CoreAttributeTypes.Name, longStr());
       artifact1.persist(testInfo.getTestName());
@@ -206,6 +214,7 @@ public class ArtifactQueryTest {
    @Test
    public void testQueryById() throws OseeCoreException {
       BranchId branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
+      AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), branch, PermissionEnum.FULLACCESS);
 
       List<Integer> newIdsInOrder = new LinkedList<>();
       Map<Integer, TransactionToken> idToTxId = new HashMap<>();
