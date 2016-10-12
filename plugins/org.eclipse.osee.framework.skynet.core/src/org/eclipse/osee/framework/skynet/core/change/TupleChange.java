@@ -74,6 +74,6 @@ public class TupleChange extends Change {
 
    @Override
    public LoadChangeType getChangeType() {
-      return LoadChangeType.attribute;
+      return LoadChangeType.tuple;
    }
 }
