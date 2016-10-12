@@ -10,12 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
+import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.DefaultFamily;
+import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.ProductLineFamily;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.Tuple3Type;
+import org.eclipse.osee.framework.core.data.Tuple4Type;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -39,6 +43,20 @@ public class TupleResource {
    public TupleResource(OrcsApi orcsApi, BranchId branch) {
       this.orcsApi = orcsApi;
       this.branch = branch;
+   }
+
+   @Path("init")
+   @POST
+   public void addTuples() {
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, getUser(), "Init Tuples");
+
+      Tuple3Type<Long, Long, Long> ViewApplicability22 = Tuple3Type.valueOf(ProductLineFamily, 20L);
+      Tuple4Type<Long, Long, Long, Long> OseeTypeDef22 = Tuple4Type.valueOf(DefaultFamily, 40L);
+
+      tx.addTuple3(ViewApplicability22, 412215L, 466L, 4L);
+      tx.addTuple4(OseeTypeDef22, 222112L, 44L, 54445L, 66L);
+
+      tx.commit();
    }
 
    @Path("/tuple2")

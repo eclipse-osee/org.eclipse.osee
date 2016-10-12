@@ -158,6 +158,20 @@ public final class ArtifactImageManager {
             }
          }
       }
+      if (change.getItemKind().equals("Tuple")) {
+         modType = change.getModificationType();
+         if (ChangeImageType.CHANGE_TYPE == changeImageType) {
+            keyedImage = FrameworkImage.TUPLE;
+         } else {
+            ChangeItem changeItem = change.getChangeItem();
+            if (changeItem != null && isArtDeletedOnDestination(changeItem.getIgnoreType())) {
+               keyedImage = FrameworkImage.DELETE;
+               modType = ModificationType.DELETED_ON_DESTINATION;
+            } else {
+               keyedImage = FrameworkImage.RELATION;
+            }
+         }
+      }
       if (keyedImage != null && modType != null) {
          KeyedImage overlay = FrameworkImage.valueOf("OUTGOING_" + modType.toString());
          toReturn = ImageManager.getImage(ImageManager.setupImageWithOverlay(keyedImage, overlay, Location.TOP_LEFT));

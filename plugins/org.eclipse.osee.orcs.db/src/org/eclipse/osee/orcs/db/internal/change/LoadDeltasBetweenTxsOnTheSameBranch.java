@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -53,14 +54,23 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
   // @formatter:off
    private static final String SELECT_ITEMS_BETWEEN_TRANSACTIONS =
       "with txsOuter as (select gamma_id, mod_type, app_id from osee_txs%s where branch_id = ? and transaction_id > ? and transaction_id <= ?) \n" +
-      "SELECT 1 as table_type, attr_type_id as item_type_id, attr_id as item_id, art_id as item_first, 0 as item_second, value as item_value, item.gamma_id, mod_type, app_id \n" +
+      "SELECT 1 as table_type, attr_type_id as item_type_id, attr_id as item_id, art_id as item_first, 0 as item_second, 0 as item_third, 0 as item_fourth, value as item_value, item.gamma_id, mod_type, app_id \n" +
       "FROM osee_attribute item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
       "UNION ALL\n" +
-      "SELECT 2 as table_type, art_type_id as item_type_id, art_id as item_id, 0 as item_first, 0 as item_second, 'na' as item_value, item.gamma_id, mod_type, app_id \n" +
+      "SELECT 2 as table_type, art_type_id as item_type_id, art_id as item_id, 0 as item_first, 0 as item_second, 0 as item_third, 0 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id \n" +
       "FROM osee_artifact item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
       "UNION ALL\n" +
-      "SELECT 3 as table_type, rel_link_type_id as item_type_id, rel_link_id as item_id,  a_art_id as item_first, b_art_id as item_second, rationale as item_value, item.gamma_id, mod_type, app_id \n" +
-      "FROM osee_relation_link item, txsOuter where txsOuter.gamma_id = item.gamma_id";
+      "SELECT 3 as table_type, rel_link_type_id as item_type_id, rel_link_id as item_id,  a_art_id as item_first, b_art_id as item_second, 0 as item_third, 0 as item_fourth, rationale as item_value, item.gamma_id, mod_type, app_id \n" +
+      "FROM osee_relation_link item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
+      "UNION ALL\n" +
+      "SELECT 4 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, 0 as item_third, 0 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id \n" +
+      "from osee_tuple2 item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
+      "UNION ALL\n" +
+      "SELECT 5 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, e3 as item_third, 0 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id \n" +
+      "from osee_tuple3 item, txsOuter where txsOuter.gamma_id = item.gamma_id\n" +
+      "UNION ALL\n" +
+      "SELECT 6 as table_type, tuple_type as item_type_id, 0 as item_id, e1 as item_first, e2 as item_second, e3 as item_third, e4 as item_fourth, 'na' as item_value, item.gamma_id, mod_type, app_id \n" +
+      "from osee_tuple4 item, txsOuter where txsOuter.gamma_id = item.gamma_id";
    // @formatter:on
    private static final String SELECT_IS_BRANCH_ARCHIVED = "select archived from osee_branch where branch_id = ?";
 
@@ -137,6 +147,30 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
                hashChangeData.put(3, itemId,
                   ChangeItemUtil.newRelationChange(RelationId.valueOf(itemId), RelationTypeId.valueOf(itemTypeId),
                      gammaId, modType, aArtId, bArtId, rationale, getApplicabilityToken(appId)));
+               break;
+            }
+            case 4: {
+               long e1 = stmt.getLong("item_first");
+               long e2 = stmt.getLong("item_second");
+               hashChangeData.put(4, gammaId.getId(), ChangeItemUtil.newTupleChange(TupleTypeId.valueOf(itemTypeId),
+                  gammaId, getApplicabilityToken(appId), e1, e2));
+               break;
+            }
+            case 5: {
+               long e1 = stmt.getLong("item_first");
+               long e2 = stmt.getLong("item_second");
+               long e3 = stmt.getLong("item_third");
+               hashChangeData.put(5, gammaId.getId(), ChangeItemUtil.newTupleChange(TupleTypeId.valueOf(itemTypeId),
+                  gammaId, getApplicabilityToken(appId), e1, e2, e3));
+               break;
+            }
+            case 6: {
+               long e1 = stmt.getLong("item_first");
+               long e2 = stmt.getLong("item_second");
+               long e3 = stmt.getLong("item_third");
+               long e4 = stmt.getLong("item_fourth");
+               hashChangeData.put(6, gammaId.getId(), ChangeItemUtil.newTupleChange(TupleTypeId.valueOf(itemTypeId),
+                  gammaId, getApplicabilityToken(appId), e1, e2, e3, e4));
                break;
             }
          }

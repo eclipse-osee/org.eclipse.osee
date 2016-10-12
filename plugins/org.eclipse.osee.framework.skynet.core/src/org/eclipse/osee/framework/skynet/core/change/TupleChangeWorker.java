@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Boeing.
+ * Copyright (c) 2016 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,14 +8,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.revision;
+package org.eclipse.osee.framework.skynet.core.change;
+
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
- * @author Jeff C. Phillips
+ * @author Angel Avila
  */
-public enum LoadChangeType {
-   attribute,
-   artifact,
-   relation,
-   tuple;
+public class TupleChangeWorker implements IChangeWorker {
+
+   private final Change change;
+
+   public TupleChangeWorker(Change change) {
+      this.change = change;
+   }
+
+   @Override
+   public void revert() throws OseeCoreException {
+      // Currenlty no ability to revert Tuple changes
+   }
 }

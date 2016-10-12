@@ -129,13 +129,16 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       for (ChangeItem change : changes) {
          switch (change.getChangeType()) {
             case ARTIFACT_CHANGE:
-               updater.addArtifact(change.getItemId().getId().intValue());
+               updater.addArtifact(change.getItemId());
                break;
             case ATTRIBUTE_CHANGE:
-               updater.addAttribute(change.getItemId().getId().intValue());
+               updater.addAttribute(change.getItemId());
                break;
             case RELATION_CHANGE:
-               updater.addRelation(change.getItemId().getId().intValue());
+               updater.addRelation(change.getItemId());
+               break;
+            case TUPLE_CHANGE:
+               updater.addTuple(change.getCurrentVersion().getGammaId());
                break;
             default:
                throw new OseeStateException("Unexpected change type");

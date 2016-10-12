@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -25,6 +26,7 @@ import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.change.ChangeIgnoreType;
@@ -48,6 +50,7 @@ import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ErrorChange;
 import org.eclipse.osee.framework.skynet.core.change.RelationChange;
+import org.eclipse.osee.framework.skynet.core.change.TupleChange;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -173,17 +176,21 @@ public class ChangeDataLoader extends AbstractOperation {
       Change change = null;
       try {
          ArtifactId artId = item.getArtId();
-         Artifact startTxArtifact;
-         Artifact endTxArtifact;
-         if (txDelta.areOnTheSameBranch()) {
-            startTxArtifact = bulkLoaded.get(txDelta.getStartTx(), artId);
-            endTxArtifact = bulkLoaded.get(txDelta.getEndTx(), artId);
-         } else {
-            startTxArtifact = bulkLoaded.get(BranchManager.getBaseTransaction(txDelta.getStartTx().getBranch()), artId);
-            endTxArtifact = bulkLoaded.get(txDelta.getStartTx(), artId);
+         ArtifactDelta artifactDelta = null;
+         if (!artId.equals(ArtifactId.valueOf(-1L))) {
+            Artifact startTxArtifact;
+            Artifact endTxArtifact;
+            if (txDelta.areOnTheSameBranch()) {
+               startTxArtifact = bulkLoaded.get(txDelta.getStartTx(), artId);
+               endTxArtifact = bulkLoaded.get(txDelta.getEndTx(), artId);
+            } else {
+               startTxArtifact =
+                  bulkLoaded.get(BranchManager.getBaseTransaction(txDelta.getStartTx().getBranch()), artId);
+               endTxArtifact = bulkLoaded.get(txDelta.getStartTx(), artId);
+            }
+            artifactDelta = new ArtifactDelta(txDelta, startTxArtifact, endTxArtifact);
          }
 
-         ArtifactDelta artifactDelta = new ArtifactDelta(txDelta, startTxArtifact, endTxArtifact);
          change = createChangeObject(bulkLoaded, item, txDelta, startTxBranch, artifactDelta);
          change.setChangeItem(item);
 
@@ -206,7 +213,10 @@ public class ChangeDataLoader extends AbstractOperation {
       // When we are comparing two different branches, the displayed artifact should be the start artifact or the artifact from the
       // source branch. When we are comparing items from the same branch, the displayed artifact should be the artifact in the end transaction
       // since that is the resulting change artifact.
-      Artifact changeArtifact = artifactDelta.getEndArtifact();
+      Artifact changeArtifact = null;
+      if (artifactDelta != null) {
+         changeArtifact = artifactDelta.getEndArtifact();
+      }
       boolean isHistorical = txDelta.areOnTheSameBranch();
 
       switch (item.getChangeType()) {
@@ -281,6 +291,23 @@ public class ChangeDataLoader extends AbstractOperation {
                   ArtifactId.valueOf(endTxBArtifact.getArtId()), RelationId.valueOf(itemId), rationale, "",
                   relationType, isHistorical, changeArtifact, artifactDelta, endTxBArtifact);
             }
+            break;
+         case TUPLE_CHANGE:
+            TupleTypeId tupleTypeId = TupleTypeId.valueOf(item.getItemTypeId().getId());
+            String value = item.getCurrentVersion().getValue();
+            StringTokenizer tok = new StringTokenizer(value, "|");
+
+            String itemKind = "";
+            String tupleIsValue = "";
+
+            if (tok.hasMoreTokens()) {
+               itemKind = tok.nextToken();
+            }
+            if (tok.hasMoreElements()) {
+               tupleIsValue = tok.nextToken();
+            }
+            change = new TupleChange(startTxBranch, itemGammaId, ModificationType.MODIFIED, tupleTypeId, tupleIsValue,
+               "?", itemKind, isHistorical);
             break;
          default:
             throw new OseeCoreException("The change item must map to either an artifact, attribute or relation change");

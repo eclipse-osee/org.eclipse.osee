@@ -12,9 +12,10 @@ package org.eclipse.osee.orcs.db.internal.accessor;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
@@ -29,6 +30,8 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 public class UpdatePreviousTxCurrent {
    private static final String UPDATE_TXS_NOT_CURRENT =
       "update osee_txs SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " where branch_id = ? AND gamma_id = ? and transaction_id = ?";
+   private static final String UPDATE_TXS_NOT_CURRENT_NO_TX =
+      "update osee_txs SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " where branch_id = ? AND gamma_id = ?";
    private static final String SELECT_TXS_AND_GAMMAS =
       "SELECT txs.transaction_id, txs.gamma_id FROM osee_join_id idj, %s item, osee_txs txs WHERE idj.query_id = ? and idj.id = item.%s AND item.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> ?";
 // @formatter:off
@@ -50,6 +53,7 @@ public class UpdatePreviousTxCurrent {
    private IdJoinQuery artifactJoin;
    private IdJoinQuery attributeJoin;
    private IdJoinQuery relationJoin;
+   private List<Long> tuplesToUpdate;
 
    public UpdatePreviousTxCurrent(JdbcClient jdbcClient, SqlJoinFactory joinFactory, JdbcConnection connection, BranchId branch) {
       this.jdbcClient = jdbcClient;
@@ -58,31 +62,50 @@ public class UpdatePreviousTxCurrent {
       this.connection = connection;
    }
 
-   public void addAttribute(int attributeId) {
+   public void addAttribute(Id attributeId) {
       if (attributeJoin == null) {
          attributeJoin = joinFactory.createIdJoinQuery();
       }
-      attributeJoin.add(attributeId);
+      attributeJoin.add(attributeId.getId());
    }
 
-   public void addArtifact(int artifactId) {
+   public void addArtifact(Id artifactId) {
       if (artifactJoin == null) {
          artifactJoin = joinFactory.createIdJoinQuery();
       }
-      artifactJoin.add(artifactId);
+      artifactJoin.add(artifactId.getId());
    }
 
-   public void addRelation(int relationId) {
+   public void addRelation(Id relationId) {
       if (relationJoin == null) {
          relationJoin = joinFactory.createIdJoinQuery();
       }
-      relationJoin.add(relationId);
+      relationJoin.add(relationId.getId());
+   }
+
+   public void addTuple(Id tupleId) {
+      if (tuplesToUpdate == null) {
+         tuplesToUpdate = new ArrayList<>();
+      }
+      tuplesToUpdate.add(tupleId.getId());
    }
 
    public void updateTxNotCurrents() throws OseeCoreException {
       updateTxNotCurrents("osee_artifact", "art_id", artifactJoin);
       updateTxNotCurrents("osee_attribute", "attr_id", attributeJoin);
       updateTxNotCurrents("osee_relation_link", "rel_link_id", relationJoin);
+      updateTxNotCurrentsTuple("osee_tuple2", "e1", tuplesToUpdate);
+   }
+
+   private void updateTxNotCurrentsTuple(String tableName, String columnName, List<Long> tuplesToUpdate) throws OseeCoreException {
+      if (tuplesToUpdate != null) {
+         List<Object[]> updateData = new ArrayList<>();
+         for (Long tuple : tuplesToUpdate) {
+            updateData.add(new Object[] {branch, tuple});
+         }
+
+         jdbcClient.runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT_NO_TX, updateData);
+      }
    }
 
    private void updateTxNotCurrents(String tableName, String columnName, IdJoinQuery idJoin) throws OseeCoreException {

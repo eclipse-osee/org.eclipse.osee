@@ -17,6 +17,7 @@ public enum ChangeType {
    ARTIFACT_CHANGE,
    ATTRIBUTE_CHANGE,
    RELATION_CHANGE,
+   TUPLE_CHANGE,
    UNKNOWN_CHANGE;
 
    public boolean isArtifactChange() {
@@ -29,5 +30,9 @@ public enum ChangeType {
 
    public boolean isRelationChange() {
       return this == RELATION_CHANGE;
+   }
+
+   public boolean isTupleChange() {
+      return this == TUPLE_CHANGE;
    }
 }

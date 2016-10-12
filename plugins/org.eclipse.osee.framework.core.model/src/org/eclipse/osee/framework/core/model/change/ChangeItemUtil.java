@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
+import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -84,6 +85,29 @@ public final class ChangeItemUtil {
       item.setArtId(aArtId);
       item.setArtIdB(bArtId);
       item.getCurrentVersion().setValue(rationale);
+      return item;
+   }
+
+   public static ChangeItem newTupleChange(TupleTypeId tupleTypeId, GammaId gammaId, ApplicabilityToken appToken, Long... e) {
+      ChangeItem item = new ChangeItem();
+      item.setChangeType(ChangeType.TUPLE_CHANGE);
+
+      item.setItemId(gammaId);
+      item.setItemTypeId(tupleTypeId);
+      item.setSynthetic(false);
+
+      ChangeVersion current = item.getCurrentVersion();
+      current.setGammaId(gammaId);
+      current.setModType(ModificationType.MODIFIED);
+      current.setApplicabilityToken(appToken);
+
+      if (e.length == 2) {
+         item.getCurrentVersion().setValue(String.format("Tuple2|%s, %s", e[0], e[1]));
+      } else if (e.length == 3) {
+         item.getCurrentVersion().setValue(String.format("Tuple3|%s, %s, %s", e[0], e[1], e[2]));
+      } else if (e.length == 4) {
+         item.getCurrentVersion().setValue(String.format("Tuple4|%s, %s, %s, %s", e[0], e[1], e[2], e[3]));
+      }
       return item;
    }
 
