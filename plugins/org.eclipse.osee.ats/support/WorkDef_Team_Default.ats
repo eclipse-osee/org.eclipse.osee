@@ -2,12 +2,6 @@ workDefinition "WorkDef_Team_Default" {
 	id "WorkDef_Team_Default"
    startState "Endorse" 
 
-   widgetDefinition "Work Package" {
-      attributeName "ats.Work Package"
-      xWidgetName "XTextDam"
-      option HORIZONTAL_LABEL
-   }
-
    widgetDefinition "Problem" { 
       attributeName "ats.Problem" 
       xWidgetName "XTextDam"
@@ -80,8 +74,7 @@ workDefinition "WorkDef_Team_Default" {
       ordinal 1
       to "Cancelled"
       to "Analyze" AsDefault
-      rule RequireStateHourSpentPrompt
-      percentWeight 5
+      rule AllowAssigneeToAll
       layout {
          widget "Title"
          widget "Description"
@@ -93,7 +86,6 @@ workDefinition "WorkDef_Team_Default" {
             widget "Need By"
          }
          widget "Validation Required"
-         widget "Work Package"
       }
    }
 
@@ -103,10 +95,8 @@ workDefinition "WorkDef_Team_Default" {
       to "Cancelled"
       to "Authorize" AsDefault
       to "Endorse" OverrideAttributeValidation 
-      rule RequireStateHourSpentPrompt
-      percentWeight 10
+      rule AllowAssigneeToAll
       layout {
-         widget "Work Package"
          widget "Problem"
          widget "Proposed Resolution"
          composite {
@@ -125,9 +115,8 @@ workDefinition "WorkDef_Team_Default" {
       to "Cancelled"
       to "Implement" AsDefault
       to "Analyze" OverrideAttributeValidation
-      percentWeight 5
+      rule AllowAssigneeToAll
       layout {
-         widget "Work Package"
          widget "Estimated Completion Date"
       }
    }
@@ -139,10 +128,8 @@ workDefinition "WorkDef_Team_Default" {
       to "Completed" AsDefault
       to "Analyze" OverrideAttributeValidation
       to "Authorize" OverrideAttributeValidation
-      rule RequireStateHourSpentPrompt
-      percentWeight 79
+      rule AllowAssigneeToAll
       layout {
-         widget "Work Package"
          widget "Estimated Completion Date"
          widget "Resolution"
       }
@@ -153,7 +140,7 @@ workDefinition "WorkDef_Team_Default" {
       ordinal 5
       to "Implement" OverrideAttributeValidation
       rule AddDecisionValidateBlockingReview
-      percentWeight 1
+      color DARK_GREEN
    }
 
    state "Cancelled" {
@@ -163,6 +150,7 @@ workDefinition "WorkDef_Team_Default" {
       to "Authorize" OverrideAttributeValidation
       to "Implement" OverrideAttributeValidation
       to "Endorse" OverrideAttributeValidation
+      color DARK_GREEN
    }
 
 }

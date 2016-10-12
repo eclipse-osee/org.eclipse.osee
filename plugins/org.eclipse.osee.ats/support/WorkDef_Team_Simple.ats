@@ -44,7 +44,6 @@ workDefinition "WorkDef_Team_Simple" {
             attributeWidget "ats.Need By"
          }
          attributeWidget "ats.Validation Required"
-         attributeWidget "ats.Work Package"
       }
    }
 

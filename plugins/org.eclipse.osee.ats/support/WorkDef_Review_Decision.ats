@@ -102,6 +102,7 @@ workDefinition "WorkDef_Review_Decision" {
       to "Decision" OverrideAttributeValidation
       to "Followup" OverrideAttributeValidation
       to "Prepare" OverrideAttributeValidation
+      color DARK_GREEN
    }
 
    state "Completed" {
@@ -110,6 +111,7 @@ workDefinition "WorkDef_Review_Decision" {
       to "Decision" OverrideAttributeValidation
       to "Followup" OverrideAttributeValidation
       rule AddDecisionValidateBlockingReview
+      color DARK_GREEN
       layout {
          widget "Question"
          widget "Decision"

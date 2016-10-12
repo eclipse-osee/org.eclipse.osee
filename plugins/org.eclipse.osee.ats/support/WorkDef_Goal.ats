@@ -18,6 +18,7 @@ workDefinition "WorkDef_Goal" {
       type Cancelled
       ordinal 3
       to "InWork" OverrideAttributeValidation
+      color DARK_GREEN
    }
 
    state "InWork" {
@@ -36,5 +37,6 @@ workDefinition "WorkDef_Goal" {
       ordinal 2
       to "InWork" OverrideAttributeValidation
       rule AddDecisionValidateBlockingReview
+      color DARK_GREEN
    }
 }
