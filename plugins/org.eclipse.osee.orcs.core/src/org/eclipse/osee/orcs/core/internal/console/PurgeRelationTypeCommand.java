@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.HexUtil;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.data.RelationTypes;
@@ -84,7 +83,7 @@ public class PurgeRelationTypeCommand implements ConsoleCommand {
             Set<IRelationType> toReturn = new HashSet<>();
             for (String uuid : typesToPurge) {
                try {
-                  Long typeId = HexUtil.toLong(uuid);
+                  Long typeId = Long.valueOf(uuid);
                   RelationTypeToken type = relationTypes.get(typeId);
                   console.writeln("Type [%s] found. Id: [%s]", type.getName(), type.getId());
                   toReturn.add(type);

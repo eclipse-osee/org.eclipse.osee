@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.HexUtil;
 import org.junit.Assert;
 
 /**
@@ -105,9 +104,9 @@ public final class MockModel {
    public static XArtifactType createXArtifactType(long uuid, String name) throws OseeCoreException {
       XArtifactType toReturn = OseeDslFactory.eINSTANCE.createXArtifactType();
       Assert.assertNotNull(toReturn);
-      toReturn.setUuid(HexUtil.toString(uuid));
+      toReturn.setId(String.valueOf(uuid));
       toReturn.setName(name);
-      Assert.assertEquals(uuid, HexUtil.toLong(toReturn.getUuid()));
+      Assert.assertEquals(uuid, Long.valueOf(toReturn.getId()).longValue());
       Assert.assertEquals(name, toReturn.getName());
       return toReturn;
    }
@@ -115,9 +114,9 @@ public final class MockModel {
    public static XAttributeType createXAttributeType(long uuid, String name) throws OseeCoreException {
       XAttributeType toReturn = OseeDslFactory.eINSTANCE.createXAttributeType();
       Assert.assertNotNull(toReturn);
-      toReturn.setUuid(HexUtil.toString(uuid));
+      toReturn.setId(String.valueOf(uuid));
       toReturn.setName(name);
-      Assert.assertEquals(uuid, HexUtil.toLong(toReturn.getUuid()));
+      Assert.assertEquals(uuid, Long.valueOf(toReturn.getId()).longValue());
       Assert.assertEquals(name, toReturn.getName());
       return toReturn;
    }
@@ -127,9 +126,9 @@ public final class MockModel {
       long id = type.getId();
       XRelationType toReturn = OseeDslFactory.eINSTANCE.createXRelationType();
       Assert.assertNotNull(toReturn);
-      toReturn.setUuid(HexUtil.toString(id));
+      toReturn.setId(String.valueOf(id));
       toReturn.setName(name);
-      Assert.assertEquals(id, HexUtil.toLong(toReturn.getUuid()));
+      Assert.assertEquals(id, Long.valueOf(toReturn.getId()).longValue());
       Assert.assertEquals(name, toReturn.getName());
       return toReturn;
    }

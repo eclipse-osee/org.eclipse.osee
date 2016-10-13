@@ -3,8 +3,8 @@
     xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.osee.framework.core.dsl/src-gen" editDirectory="/org.eclipse.osee.framework.core.dsl.edit/src"
     editorDirectory="/org.eclipse.osee.framework.core.dsl.editor/src" modelPluginID="org.eclipse.osee.framework.core.dsl"
     forceOverwrite="true" modelName="OseeDsl" updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
-    complianceLevel="5.0" copyrightFields="false" editPluginID="org.eclipse.osee.framework.core.dsl.edit"
-    editorPluginID="org.eclipse.osee.framework.core.dsl.editor" runtimeVersion="2.9">
+    complianceLevel="6.0" copyrightFields="false" editPluginID="org.eclipse.osee.framework.core.dsl.edit"
+    editorPluginID="org.eclipse.osee.framework.core.dsl.editor" runtimeVersion="2.12">
   <genPackages prefix="OseeDsl" basePackage="org.eclipse.osee.framework.core.dsl"
       disposableProviderFactory="true" ecorePackage="OseeDsl.ecore#/">
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="OseeDsl.ecore#//RelationMultiplicityEnum">
@@ -58,7 +58,7 @@
     <genClasses ecoreClass="OseeDsl.ecore#//OseeType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//OseeType/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//OseeType/typeGuid"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//OseeType/uuid"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//OseeType/id"/>
     </genClasses>
     <genClasses ecoreClass="OseeDsl.ecore#//XArtifactType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//XArtifactType/abstract"/>

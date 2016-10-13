@@ -1,20 +1,20 @@
 import
 "platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
 artifactType "Test Case" extends "Test Unit" {
-   uuid 0x0000000000000052
+   id 82
 }
 
 artifactType "Test Support" extends "Test Unit" {
-   uuid 0x0000000000000053
+   id 83
 }
 
 artifactType "Test Run Disposition" extends "Artifact" {
-   uuid 0x0000000000000054
+   id 84
    attribute "Disposition"
 }
 
 artifactType "Test Run" extends "Abstract Test Result" {
-   uuid 0x0000000000000055
+   id 85
    attribute "Test Script GUID"
    attribute "Test Script URL"
    attribute "Outfile URL"
@@ -47,7 +47,7 @@ artifactType "Test Run" extends "Abstract Test Result" {
 }
 
 attributeType "Outfile URL" extends StringAttribute {
-   uuid 0x1000000000000131
+   id 1152921504606847281
    dataProvider org.eclipse.osee.ote.define.MappedAttributeDataProvider
    min 1
    max 1 description "Test Run Content"
@@ -56,7 +56,7 @@ attributeType "Outfile URL" extends StringAttribute {
 }
 
 attributeType "Test Script URL" extends StringAttribute {
-   uuid 0x1000000000000132
+   id 1152921504606847282
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Url of the test script used"
@@ -64,7 +64,7 @@ attributeType "Test Script URL" extends StringAttribute {
 }
 
 attributeType "Revision" extends StringAttribute {
-   uuid 0x1000000000000133
+   id 1152921504606847283
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Version"
@@ -72,7 +72,7 @@ attributeType "Revision" extends StringAttribute {
 }
 
 attributeType "Modified Flag" extends StringAttribute {
-   uuid 0x1000000000000134
+   id 1152921504606847284
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "File Modification Flag from Repository"
@@ -80,7 +80,7 @@ attributeType "Modified Flag" extends StringAttribute {
 }
 
 attributeType "Last Author" extends StringAttribute {
-   uuid 0x1000000000000135
+   id 1152921504606847285
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -89,7 +89,7 @@ attributeType "Last Author" extends StringAttribute {
 }
 
 attributeType "Last Modified Date" extends DateAttribute {
-   uuid 0x1000000000000136
+   id 1152921504606847286
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Last Modified"
@@ -97,7 +97,7 @@ attributeType "Last Modified Date" extends DateAttribute {
 }
 
 attributeType "OS Architecture" extends StringAttribute {
-   uuid 0x1000000000000137
+   id 1152921504606847287
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -106,7 +106,7 @@ attributeType "OS Architecture" extends StringAttribute {
 }
 
 attributeType "OS Name" extends StringAttribute {
-   uuid 0x1000000000000138
+   id 1152921504606847288
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "OS Name"
@@ -114,7 +114,7 @@ attributeType "OS Name" extends StringAttribute {
 }
 
 attributeType "OS Version" extends StringAttribute {
-   uuid 0x1000000000000139
+   id 1152921504606847289
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "OS Version"
@@ -122,7 +122,7 @@ attributeType "OS Version" extends StringAttribute {
 }
 
 attributeType "OSEE Version" extends StringAttribute {
-   uuid 0x100000000000013A
+   id 1152921504606847290
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "OSEE Version"
@@ -130,7 +130,7 @@ attributeType "OSEE Version" extends StringAttribute {
 }
 
 attributeType "OSEE Server Title" extends StringAttribute {
-   uuid 0x100000000000013B
+   id 1152921504606847291
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "OSEE Server Title"
@@ -138,7 +138,7 @@ attributeType "OSEE Server Title" extends StringAttribute {
 }
 
 attributeType "OSEE Server Jar Version" extends StringAttribute {
-   uuid 0x100000000000013C
+   id 1152921504606847292
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "OSEE Server Jar Version"
@@ -146,7 +146,7 @@ attributeType "OSEE Server Jar Version" extends StringAttribute {
 }
 
 attributeType "Processor ID" extends StringAttribute {
-   uuid 0x100000000000013D
+   id 1152921504606847293
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Processor ID"
@@ -154,7 +154,7 @@ attributeType "Processor ID" extends StringAttribute {
 }
 
 attributeType "Start Date" extends DateAttribute {
-   uuid 0x100000000000013E
+   id 1152921504606847294
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Start Date"
@@ -162,7 +162,7 @@ attributeType "Start Date" extends DateAttribute {
 }
 
 attributeType "End Date" extends DateAttribute {
-   uuid 0x100000000000013F
+   id 1152921504606847295
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Stop Date"
@@ -170,7 +170,7 @@ attributeType "End Date" extends DateAttribute {
 }
 
 attributeType "Elapsed Date" extends StringAttribute {
-   uuid 0x1000000000000140
+   id 1152921504606847296
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Time Elapsed from the start to the end of the script"
@@ -178,7 +178,7 @@ attributeType "Elapsed Date" extends StringAttribute {
 }
 
 attributeType "Passed" extends IntegerAttribute {
-   uuid 0x1000000000000141
+   id 1152921504606847297
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1 description "Number of test points that passed"
@@ -187,7 +187,7 @@ attributeType "Passed" extends IntegerAttribute {
 }
 
 attributeType "Failed" extends IntegerAttribute {
-   uuid 0x1000000000000142
+   id 1152921504606847298
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1 description "Number of test points that failed"
@@ -196,7 +196,7 @@ attributeType "Failed" extends IntegerAttribute {
 }
 
 attributeType "Total Test Points" extends IntegerAttribute {
-   uuid 0x1000000000000143
+   id 1152921504606847299
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1 description "Total test points"
@@ -205,7 +205,7 @@ attributeType "Total Test Points" extends IntegerAttribute {
 }
 
 attributeType "Script Aborted" extends BooleanAttribute {
-   uuid 0x1000000000000144
+   id 1152921504606847300
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1
@@ -215,7 +215,7 @@ attributeType "Script Aborted" extends BooleanAttribute {
 }
 
 attributeType "Test Script GUID" extends StringAttribute {
-   uuid 0x1000000000000145
+   id 1152921504606847301
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Test Case GUID"
@@ -223,7 +223,7 @@ attributeType "Test Script GUID" extends StringAttribute {
 }
 
 attributeType "Ran In Batch Mode" extends BooleanAttribute {
-   uuid 0x1000000000000146
+   id 1152921504606847302
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1 description "Run was performed as part of a batch"
@@ -232,7 +232,7 @@ attributeType "Ran In Batch Mode" extends BooleanAttribute {
 }
 
 attributeType "Is Batch Mode Allowed" extends BooleanAttribute {
-   uuid 0x1000000000000147
+   id 1152921504606847303
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1 description "Whether Test Script is allowed to run as part of a batch"
@@ -241,7 +241,7 @@ attributeType "Is Batch Mode Allowed" extends BooleanAttribute {
 }
 
 attributeType "Last Date Uploaded" extends DateAttribute {
-   uuid 0x1000000000000148
+   id 1152921504606847304
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Last time outfile was uploaded"
@@ -249,7 +249,7 @@ attributeType "Last Date Uploaded" extends DateAttribute {
 }
 
 attributeType "Qualification Level" extends StringAttribute {
-   uuid 0x1000000000000149
+   id 1152921504606847305
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -259,7 +259,7 @@ attributeType "Qualification Level" extends StringAttribute {
 }
 
 attributeType "Build Id" extends StringAttribute {
-   uuid 0x100000000000014A
+   id 1152921504606847306
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -269,7 +269,7 @@ attributeType "Build Id" extends StringAttribute {
 }
 
 attributeType "Checksum" extends StringAttribute {
-   uuid 0x100000000000014B
+   id 1152921504606847307
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Test Case Checksum"
@@ -277,7 +277,7 @@ attributeType "Checksum" extends StringAttribute {
 }
 
 attributeType "Disposition" extends StringAttribute {
-   uuid 0x100000000000014C
+   id 1152921504606847308
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Disposition"
@@ -285,7 +285,7 @@ attributeType "Disposition" extends StringAttribute {
 }
 
 oseeEnumType "enum.test.run.status" {
-   uuid 0x3000000000000194
+   id 3458764513820541332
    entry "Pass" entryGuid "CArJmMNCPUkt72j8fGgA"
    entry "Fail" entryGuid "CArJmMOtrEWczci+BkwA"
    entry "Aborted" entryGuid "CArJmMQc80VqSa4AWZAA"
@@ -293,7 +293,7 @@ oseeEnumType "enum.test.run.status" {
 }
 
 attributeType "Test Status" extends EnumeratedAttribute {
-   uuid 0x100000000000014D
+   id 1152921504606847309
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -303,7 +303,7 @@ attributeType "Test Status" extends EnumeratedAttribute {
 }
 
 attributeType "Test Pass" extends IntegerAttribute {
-   uuid 0x100000000000014E
+   id 1152921504606847310
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1
@@ -312,7 +312,7 @@ attributeType "Test Pass" extends IntegerAttribute {
 }
 
 attributeType "Test Fail" extends IntegerAttribute {
-   uuid 0x100000000000014F
+   id 1152921504606847311
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1
@@ -321,7 +321,7 @@ attributeType "Test Fail" extends IntegerAttribute {
 }
 
 attributeType "Version" extends StringAttribute {
-   uuid 0x1000000000000150
+   id 1152921504606847312
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Version"
@@ -329,7 +329,7 @@ attributeType "Version" extends StringAttribute {
 }
 
 attributeType "Repository Type" extends StringAttribute {
-   uuid 0x1000000000000151
+   id 1152921504606847313
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Repository Type"
@@ -337,7 +337,7 @@ attributeType "Repository Type" extends StringAttribute {
 }
 
 attributeType "Modification Flag" extends StringAttribute {
-   uuid 0x1000000000000152
+   id 1152921504606847314
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "File Modification Flag from Repository"
@@ -345,7 +345,7 @@ attributeType "Modification Flag" extends StringAttribute {
 }
 
 attributeType "Test Log" extends CompressedContentAttribute {
-   uuid 0x1000000000000153
+   id 1152921504606847315
    dataProvider UriAttributeDataProvider
    min 0
    max 1 description "Compressed Data" fileExtension "txt"
@@ -353,7 +353,7 @@ attributeType "Test Log" extends CompressedContentAttribute {
 }
 
 relationType "Test Case to Run Relation" {
-   uuid 0x2000000000000176
+   id 2305843009213694326
    sideAName "Test Case"
    sideAArtifactType "Test Case"
    sideBName "Test Run"
@@ -363,7 +363,7 @@ relationType "Test Case to Run Relation" {
 }
 
 relationType "Uses" {
-   uuid 0x2000000000000177
+   id 2305843009213694327
    sideAName "requirement"
    sideAArtifactType "Requirement"
    sideBName "Test Unit"

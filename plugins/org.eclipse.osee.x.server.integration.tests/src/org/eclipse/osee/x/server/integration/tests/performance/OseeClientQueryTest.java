@@ -120,7 +120,7 @@ public class OseeClientQueryTest {
 
    @Test
    public void searchForArtifactType() throws OseeCoreException {
-      final int EXPECTED_RESULTS = 7;
+      final int EXPECTED_RESULTS = 8;
       SearchResult results =
          createClient.createQueryBuilder(SAW_Bld_1).andTypeEquals(Folder).getSearchResult(RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());

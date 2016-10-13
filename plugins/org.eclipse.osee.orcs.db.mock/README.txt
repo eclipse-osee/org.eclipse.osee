@@ -16,4 +16,4 @@ To do so:
 Note: These database files are written out to users home directory in a dir named after test
 
 All canned-db test bundles should be updated with the same zip files and tests updated accordingly. 
-- search for hsql.db for all locations
+- search for hsql.zip for all locations

@@ -2,17 +2,17 @@ import
 "platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
 
 artifactType "Demo Artifact With Selective Partition" extends "Artifact" {
-	uuid 0x0000000000000056
+	id 86
 	attribute "Partition" branchUuid 3
 }
 
 artifactType "Demo DSL Artifact" extends "Artifact" {
-	uuid 0x0000BA0400000022
+	id 204526342635554
 	attribute "Demo DSL Attribute"
 }
 
 attributeType "Demo DSL Attribute" extends StringAttribute {
-	uuid 0x1000BA00000001CF
+	id 1153126013769613775
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited

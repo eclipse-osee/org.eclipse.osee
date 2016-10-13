@@ -1,6 +1,5 @@
 attributeType "Name" extends StringAttribute {
-	guid "AAMFEcF1AzV7PKuHmxwA"
-	uuid 0x1000000000000070
+	guid "AAMFEcF1AzV7PKuHmxwA" id 1152921504606847088
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
@@ -11,8 +10,7 @@ attributeType "Name" extends StringAttribute {
 }
 
 attributeType "Annotation" extends CompressedContentAttribute {
-	guid "AAMFEcWy0xc4e3tcemQA"
-	uuid 0x1000000000000076
+	guid "AAMFEcWy0xc4e3tcemQA" id 1152921504606847094
 	dataProvider UriAttributeDataProvider
 	min 0
 	max unlimited
@@ -22,8 +20,7 @@ attributeType "Annotation" extends CompressedContentAttribute {
 }
 
 attributeType "WordML" extends WordAttribute {
-	guid "AAMFEcfcGS2V3SqQN2wA"
-	uuid 0x100000000000007A
+	guid "AAMFEcfcGS2V3SqQN2wA" id 1152921504606847098
 	dataProvider UriAttributeDataProvider
 	min 0
 	max 1
@@ -35,8 +32,7 @@ attributeType "WordML" extends WordAttribute {
 }
 
 relationType "Requirement Relation" {
-	guid "BOkzi3U9VTe2fcUz_9gA"
-	uuid 0x2000000000000157
+	guid "BOkzi3U9VTe2fcUz_9gA" id 2305843009213694295
 	sideAName "requirement-sideA"
 	sideAArtifactType "Requirement"
 	sideBName "subsystem-sideB"
@@ -46,29 +42,24 @@ relationType "Requirement Relation" {
 }
 
 artifactType "Artifact" {
-	guid "AAMFDh6S7gRLupAMwywA"
-	uuid 0x0000000000000001
+	guid "AAMFDh6S7gRLupAMwywA" id 1
 	attribute "Name"
 	attribute "Annotation"
 }
 
 abstract artifactType "Requirement" extends "Artifact" {
-	guid "BOm4NmAq+HC1O2hkMagA"
-	uuid 0x0000000000000015
+	guid "BOm4NmAq+HC1O2hkMagA" id 21
 	attribute "WordML"
 }
 
 artifactType "Software Requirement" extends "Requirement" {
-	guid "BOm+AIG2snNbAM5FFcwA"
-	uuid 0x0000000000000018
+	guid "BOm+AIG2snNbAM5FFcwA" id 24
 }
 
 artifactType "System Requirement" extends "Requirement" {
-	guid "BOnAaYTBOG68_Tw5Y_AA"
-	uuid 0x000000000000001E
+	guid "BOnAaYTBOG68_Tw5Y_AA" id 30
 }
 
 artifactType "SubSystem Requirement" extends "Requirement" {
-	guid "BOnBhJ1XAFGKcrku3LgA"
-	uuid 0x000000000000001D
+	guid "BOnBhJ1XAFGKcrku3LgA" id 29
 }

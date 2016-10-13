@@ -92,7 +92,7 @@ public final class DataRightsSwReqAndCodeResource {
       return pageUtil.realizeApplet(resourceRegistry, "dataRightsReport.html", getClass());
    }
 
-   private static final IArtifactType WCAFE = TokenFactory.createArtifactType(0x0000BA000000001FL, "WCAFE");
+   private static final IArtifactType WCAFE = TokenFactory.createArtifactType(204509162766367L, "WCAFE");
 
    /**
     * Checks the Data Rights on the provided branch in the important subsystems: Controls and Displays, Mission System

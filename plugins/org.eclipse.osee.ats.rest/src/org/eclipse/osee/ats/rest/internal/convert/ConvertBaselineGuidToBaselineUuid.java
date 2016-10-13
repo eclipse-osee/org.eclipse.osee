@@ -35,7 +35,7 @@ public class ConvertBaselineGuidToBaselineUuid extends AbstractConvertGuidToUuid
 
    // Leave this attribute definition and conversion for other OSEE sites to convert
    private static final IAttributeType BaselineBranchGuid =
-      TokenFactory.createAttributeType(0x10000000000000A9L, "ats.Baseline Branch Guid");
+      TokenFactory.createAttributeType(1152921504606847145L, "ats.Baseline Branch Guid");
 
    public ConvertBaselineGuidToBaselineUuid(Log logger, JdbcClient jdbcClient, OrcsApi orcsApi, IAtsServer atsServer) {
       super(logger, jdbcClient, orcsApi, atsServer);

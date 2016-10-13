@@ -1,5 +1,5 @@
 artifactType "Artifact" {
-	uuid 0x0000000000000001
+	id 1
 	attribute "Name"
 	attribute "Annotation"
 	attribute "Content URL"
@@ -8,34 +8,34 @@ artifactType "Artifact" {
 }
 
 artifactType "Access Control Model" extends "General Data" {
-	uuid 0x0000000000000002
+	id 2
 }
 
 artifactType "Enumerated Artifact" extends "Artifact" {
-	uuid 0x401B08C5219804F3
+	id 4619295485563766003
 }
 
 artifactType "Branch View" extends "Artifact" {
-	uuid 0x512C19B4108793E2
+	id 5849078277209560034
 }
 
 artifactType "Feature Definition" extends "General Data" {
-	uuid 0x512C19B7102793A2
+	id 5849078290088170402
 }
 
 artifactType "Osee Type Enum" extends "Enumerated Artifact" {
-	uuid 0x4B9A7DCF0856C368
+	id 5447805027409642344
 	attribute "Id Value"
 }
 
 artifactType "Global Preferences" extends "Artifact" {
-	uuid 0x0000000000000003
+	id 3
 	attribute "Dictionary"
 	attribute "osee.config.Default Mail Server"
 }
 
 attributeType "Id Value" extends StringAttribute {
-	uuid 0x100004651100057
+	id 72057896045641815
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
@@ -45,7 +45,7 @@ attributeType "Id Value" extends StringAttribute {
 }
 
 attributeType "Artifact Reference" extends ArtifactReferenceAttribute {
-	uuid 0x1000BA00000000F8
+	id 1153126013769613560
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -55,7 +55,7 @@ attributeType "Artifact Reference" extends ArtifactReferenceAttribute {
 }
 
 attributeType "Branch Reference" extends BranchReferenceAttribute {
-	uuid 0x1000BA00000000FB
+	id 1153126013769613563
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -65,7 +65,7 @@ attributeType "Branch Reference" extends BranchReferenceAttribute {
 }
 
 attributeType "osee.config.Default Mail Server" extends StringAttribute {
-	uuid 0x1000000000000057
+	id 1152921504606847063
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -76,11 +76,11 @@ attributeType "osee.config.Default Mail Server" extends StringAttribute {
 }
 
 abstract artifactType "Test Unit" extends "Artifact" {
-	uuid 0x0000000000000004
+	id 4
 }
 
 attributeType "Extension" extends StringAttribute {
-	uuid 0x1000000000000058
+	id 1152921504606847064
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -88,7 +88,7 @@ attributeType "Extension" extends StringAttribute {
 }
 
 artifactType "User" extends "Artifact" {
-	uuid 0x0000000000000005
+	id 5
 	attribute "Active"
 	attribute "City"
 	attribute "Company Title"
@@ -113,7 +113,7 @@ artifactType "User" extends "Artifact" {
 }
 
 attributeType "Active" extends BooleanAttribute {
-	uuid 0x1000000000000059
+	id 1152921504606847065
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
@@ -122,7 +122,7 @@ attributeType "Active" extends BooleanAttribute {
 }
 
 attributeType "Company" extends StringAttribute {
-	uuid 0x100000000000005A
+	id 1152921504606847066
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -131,7 +131,7 @@ attributeType "Company" extends StringAttribute {
 }
 
 attributeType "Company Title" extends StringAttribute {
-	uuid 0x100000000000005B
+	id 1152921504606847067
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -140,7 +140,7 @@ attributeType "Company Title" extends StringAttribute {
 }
 
 attributeType "City" extends StringAttribute {
-	uuid 0x100000000000005C
+	id 1152921504606847068
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -149,7 +149,7 @@ attributeType "City" extends StringAttribute {
 }
 
 attributeType "Street" extends StringAttribute {
-	uuid 0x100000000000005D
+	id 1152921504606847069
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -158,7 +158,7 @@ attributeType "Street" extends StringAttribute {
 }
 
 attributeType "State" extends StringAttribute {
-	uuid 0x100000000000005E
+	id 1152921504606847070
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -167,7 +167,7 @@ attributeType "State" extends StringAttribute {
 }
 
 attributeType "Zip" extends StringAttribute {
-	uuid 0x100000000000005F
+	id 1152921504606847071
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -175,7 +175,7 @@ attributeType "Zip" extends StringAttribute {
 }
 
 attributeType "Country" extends StringAttribute {
-	uuid 0x1000000000000060
+	id 1152921504606847072
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -184,7 +184,7 @@ attributeType "Country" extends StringAttribute {
 }
 
 attributeType "User Id" extends StringAttribute {
-	uuid 0x1000000000000061
+	id 1152921504606847073
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -193,7 +193,7 @@ attributeType "User Id" extends StringAttribute {
 }
 
 attributeType "Favorite Branch" extends StringAttribute {
-	uuid 0x1000000000000062
+	id 1152921504606847074
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
@@ -201,7 +201,7 @@ attributeType "Favorite Branch" extends StringAttribute {
 }
 
 oseeEnumType "enum.test.proc.status" {
-	uuid 0x3000000000000178
+	id 3458764513820541304
 	entry "Not Performed"
 	entryGuid "APt7jzRPv2HBlrjQZXAA"
 	entry "Completed -- Analysis in Work"
@@ -217,7 +217,7 @@ oseeEnumType "enum.test.proc.status" {
 }
 
 attributeType "Test Procedure Status" extends EnumeratedAttribute {
-	uuid 0x1000000000000063
+	id 1152921504606847075
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -226,7 +226,7 @@ attributeType "Test Procedure Status" extends EnumeratedAttribute {
 }
 
 attributeType "User Settings" extends StringAttribute {
-	uuid 0x1000000000000064
+	id 1152921504606847076
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -235,7 +235,7 @@ attributeType "User Settings" extends StringAttribute {
 }
 
 attributeType "Web Preferences" extends StringAttribute {
-	uuid 0x100000000000019A
+	id 1152921504606847386
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -245,7 +245,7 @@ attributeType "Web Preferences" extends StringAttribute {
 
 
 attributeType "XViewer Customization" extends StringAttribute {
-	uuid 0x1000000000000065
+	id 1152921504606847077
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
@@ -254,7 +254,7 @@ attributeType "XViewer Customization" extends StringAttribute {
 }
 
 attributeType "XViewer Defaults" extends StringAttribute {
-	uuid 0x1000000000000066
+	id 1152921504606847078
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
@@ -262,7 +262,7 @@ attributeType "XViewer Defaults" extends StringAttribute {
 }
 
 attributeType "Phone" extends StringAttribute {
-	uuid 0x1000000000000067
+	id 1152921504606847079
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -270,7 +270,7 @@ attributeType "Phone" extends StringAttribute {
 }
 
 attributeType "Mobile Phone" extends StringAttribute {
-	uuid 0x1000000000000068
+	id 1152921504606847080
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -278,7 +278,7 @@ attributeType "Mobile Phone" extends StringAttribute {
 }
 
 attributeType "Fax Phone" extends StringAttribute {
-	uuid 0x1000000000000069
+	id 1152921504606847081
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -286,7 +286,7 @@ attributeType "Fax Phone" extends StringAttribute {
 }
 
 attributeType "Email" extends StringAttribute {
-	uuid 0x100000000000006A
+	id 1152921504606847082
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -295,7 +295,7 @@ attributeType "Email" extends StringAttribute {
 }
 
 attributeType "Dictionary" extends StringAttribute {
-	uuid 0x100000000000006B
+	id 1152921504606847083
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -304,7 +304,7 @@ attributeType "Dictionary" extends StringAttribute {
 }
 
 attributeType "Website" extends StringAttribute {
-	uuid 0x100000000000006C
+	id 1152921504606847084
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -313,7 +313,7 @@ attributeType "Website" extends StringAttribute {
 }
 
 attributeType "Notes" extends StringAttribute {
-	uuid 0x100000000000006D
+	id 1152921504606847085
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
@@ -322,11 +322,11 @@ attributeType "Notes" extends StringAttribute {
 }
 
 artifactType "Group Artifact" extends "Artifact" {
-	uuid 0x0000000000000006
+	id 6
 }
 
 attributeType "Default Group" extends BooleanAttribute {
-	uuid 0x100000000000006E
+	id 1152921504606847086
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -337,27 +337,27 @@ attributeType "Default Group" extends BooleanAttribute {
 }
 
 artifactType "User Group" extends "Abstract Access Controlled" , "Group Artifact" {
-	uuid 0x0000000000000007
+	id 7
 	attribute "Default Group"
 }
 
 artifactType "Subscription Group" extends "User Group" {
-	uuid 0x5DB7BB0492404DE8
+	id 6753071794573299176
 }
 
 artifactType "Universal Group" extends "Group Artifact" {
-	uuid 0x0000000000000008
+	id 8
 	attribute "Description"
 }
 
 artifactType "Renderer Template" extends "MS Word Whole Document" {
-	uuid 0x0000000000000009
+	id 9
 	attribute "Template Match Criteria"
 	attribute "Renderer Options"
 }
 
 attributeType "Template Match Criteria" extends StringAttribute {
-	uuid 0x100000000000006F
+	id 1152921504606847087
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
@@ -367,7 +367,7 @@ attributeType "Template Match Criteria" extends StringAttribute {
 }
 
 attributeType "Renderer Options" extends StringAttribute {
-	uuid 0x0000000000000388
+	id 904
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1
@@ -378,7 +378,7 @@ attributeType "Renderer Options" extends StringAttribute {
 }
 
 relationType "Default Hierarchical" {
-	uuid 0x2000000000000154
+	id 2305843009213694292
 	sideAName "parent"
 	sideAArtifactType "Artifact"
 	sideBName "child"
@@ -388,34 +388,34 @@ relationType "Default Hierarchical" {
 }
 
 artifactType "Root Artifact" extends "Artifact" {
-	uuid 0x000000000000000A
+	id 10
 }
 
 artifactType "Folder" extends "Artifact" {
-	uuid 0x000000000000000B
+	id 11
 }
 
 artifactType "General Data" extends "Artifact" {
-	uuid 0x000000000000000C
+	id 12
 	attribute "General String Data"
 	attribute "PublishInline"
 }
 
 artifactType "Support Document" extends "MS Word Template" {
-	uuid 0x000000000000000D
+	id 13
 }
 
 artifactType "General Document" extends "Native Artifact" {
-	uuid 0x000000000000000E
+	id 14
 }
 
 artifactType "Url" extends "Artifact" {
-	uuid 0x000000000000000F
+	id 15
 	attribute "Description"
 }
 
 attributeType "Name" extends StringAttribute {
-	uuid 0x1000000000000070
+	id 1152921504606847088
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
@@ -426,7 +426,7 @@ attributeType "Name" extends StringAttribute {
 }
 
 attributeType "Relation Order" extends StringAttribute {
-	uuid 0x1000000000000071
+	id 1152921504606847089
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -435,7 +435,7 @@ attributeType "Relation Order" extends StringAttribute {
 }
 
 attributeType "Description" extends StringAttribute {
-	uuid 0x1000000000000072
+	id 1152921504606847090
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -444,7 +444,7 @@ attributeType "Description" extends StringAttribute {
 }
 
 oseeEnumType "enum.doc.page.type" {
-	uuid 0x3000000000000179
+	id 3458764513820541305
 	entry "Portrait"
 	entryGuid "CArJmR0aZl3A8pWTQ8AA"
 	entry "Landscape"
@@ -452,7 +452,7 @@ oseeEnumType "enum.doc.page.type" {
 }
 
 attributeType "Page Type" extends EnumeratedAttribute {
-	uuid 0x1000000000000073
+	id 1152921504606847091
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -464,7 +464,7 @@ attributeType "Page Type" extends EnumeratedAttribute {
 }
 
 attributeType "Word Ole Data" extends StringAttribute {
-	uuid 0x1000000000000074
+	id 1152921504606847092
 	dataProvider UriAttributeDataProvider
 	min 0
 	max 1
@@ -474,7 +474,7 @@ attributeType "Word Ole Data" extends StringAttribute {
 }
 
 attributeType "Workflow Definition" extends StringAttribute {
-	uuid 0x1000000000000075
+	id 1152921504606847093
 	dataProvider UriAttributeDataProvider
 	min 0
 	max 1
@@ -484,7 +484,7 @@ attributeType "Workflow Definition" extends StringAttribute {
 }
 
 attributeType "Annotation" extends StringAttribute {
-	uuid 0x1000000000000076
+	id 1152921504606847094
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
@@ -493,7 +493,7 @@ attributeType "Annotation" extends StringAttribute {
 }
 
 attributeType "Static Id" extends StringAttribute {
-	uuid 0x1000000000000077
+	id 1152921504606847095
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
@@ -502,7 +502,7 @@ attributeType "Static Id" extends StringAttribute {
 }
 
 attributeType "General String Data" extends StringAttribute {
-	uuid 0x1000000000000078
+	id 1152921504606847096
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
@@ -510,7 +510,7 @@ attributeType "General String Data" extends StringAttribute {
 }
 
 attributeType "Native Content" extends CompressedContentAttribute {
-	uuid 0x1000000000000079
+	id 1152921504606847097
 	dataProvider UriAttributeDataProvider
 	min 0
 	max 1
@@ -520,7 +520,7 @@ attributeType "Native Content" extends CompressedContentAttribute {
 }
 
 attributeType "Image Content" extends CompressedContentAttribute {
-	uuid 0x100000000000037C
+	id 1152921504606847868
 	dataProvider UriAttributeDataProvider
 	min 0
 	max unlimited
@@ -530,7 +530,7 @@ attributeType "Image Content" extends CompressedContentAttribute {
 }
    
 attributeType "Plain Text Content" extends StringAttribute {
-	uuid 0x100000000000037A
+	id 1152921504606847866
 	dataProvider UriAttributeDataProvider
 	min 0
 	max 1
@@ -541,7 +541,7 @@ attributeType "Plain Text Content" extends StringAttribute {
 }
 
 attributeType "HTML Content" extends StringAttribute {
-	uuid 0x100000000000037D
+	id 1152921504606847869
 	dataProvider UriAttributeDataProvider
 	min 0
 	max unlimited
@@ -552,7 +552,7 @@ attributeType "HTML Content" extends StringAttribute {
 }
 
 attributeType "Word Template Content" extends WordAttribute {
-	uuid 0x100000000000007A
+	id 1152921504606847098
 	dataProvider UriAttributeDataProvider
 	min 0
 	max 1
@@ -564,7 +564,7 @@ attributeType "Word Template Content" extends WordAttribute {
 }
 
 attributeType "Whole Word Content" extends WordAttribute {
-	uuid 0x100000000000007B
+	id 1152921504606847099
 	dataProvider UriAttributeDataProvider
 	min 0
 	max 1
@@ -577,7 +577,7 @@ attributeType "Whole Word Content" extends WordAttribute {
 }
 
 relationType "Dependency" {
-	uuid 0x2000000000000155
+	id 2305843009213694293
 	sideAName "artifact"
 	sideAArtifactType "Artifact"
 	sideBName "dependency"
@@ -587,7 +587,7 @@ relationType "Dependency" {
 }
 
 relationType "Universal Grouping" {
-	uuid 0x2000000000000156
+	id 2305843009213694294
 	sideAName "group"
 	sideAArtifactType "Universal Group"
 	sideBName "members"
@@ -597,27 +597,27 @@ relationType "Universal Grouping" {
 }
 
 abstract artifactType "MS Word" extends "Artifact" {
-	uuid 0x0000000000000010
+	id 16
 	attribute "Paragraph Number"
 }
 
 abstract artifactType "Abstract Access Controlled" extends "Artifact" {
-	uuid 0x0000000000000011
+	id 17
 	attribute "Access Context Id"
 }
 
 
 artifactType "MS Word Whole Document" extends "MS Word" {
-	uuid 0x0000000000000012
+	id 18
 	attribute "Whole Word Content"
 }
 
 artifactType "MS Word Styles" extends "MS Word Whole Document" {
-	uuid 0x0000000000000A12
+	id 2578
 }
 
 artifactType "MS Word Template" extends "MS Word" {
-	uuid 0x0000000000000013
+	id 19
 	attribute "Word Ole Data"
 	attribute "Page Type"
 	attribute "Word Template Content"
@@ -625,14 +625,14 @@ artifactType "MS Word Template" extends "MS Word" {
 }
 
 abstract artifactType "Native Artifact" extends "Artifact" {
-	uuid 0x0000000000000014
+	id 20
 	attribute "Extension"
 	attribute "Description"
 	attribute "Native Content"
 }
 
 artifactType "HTML Artifact" extends "Artifact" {
-	uuid 0x000000000000031E
+	id 798
 	attribute "Paragraph Number"
 	attribute "HTML Content"
 	attribute "Image Content"
@@ -640,13 +640,13 @@ artifactType "HTML Artifact" extends "Artifact" {
 }
 
 artifactType "Image Artifact" extends "Artifact" {
-	uuid 0x0000000000000320
+	id 800
 	attribute "Paragraph Number"
 	attribute "Image Content"
 }
 
 attributeType "Content URL" extends StringAttribute {
-	uuid 0x100000000000007C
+	id 1152921504606847100
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -654,7 +654,7 @@ attributeType "Content URL" extends StringAttribute {
 }
 
 attributeType "Paragraph Number" extends OutlineNumberAttribute {
-	uuid 0x100000000000007D
+	id 1152921504606847101
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -665,7 +665,7 @@ attributeType "Paragraph Number" extends OutlineNumberAttribute {
 }
 
 attributeType "Access Context Id" extends StringAttribute {
-	uuid 0x100000000000007E
+	id 1152921504606847102
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
@@ -673,14 +673,14 @@ attributeType "Access Context Id" extends StringAttribute {
 }
 
 artifactType "Requirement" extends "Artifact" {
-	uuid 0x0000000000000015	
+	id 21
 	attribute "Data Rights Classification"
 	attribute "Data Rights Basis"
 	attribute "Subject Matter Expert"
 }
 
 artifactType "Abstract Spec Requirement" extends "Requirement" {
-	uuid 0x00D0040000000015
+	id 58551193202327573
 	attribute "Legacy DAL"
 	attribute "Qualification Method"
 	attribute "Subsystem"
@@ -688,7 +688,7 @@ artifactType "Abstract Spec Requirement" extends "Requirement" {
 }
 
 attributeType "Test Frequency" extends EnumeratedAttribute {
-	uuid 0x100000000000007F
+	id 1152921504606847103
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -698,7 +698,7 @@ attributeType "Test Frequency" extends EnumeratedAttribute {
 }
 
 oseeEnumType "enum.req.test.frequency" {
-	uuid 0x300000000000017A
+	id 3458764513820541306
 	entry "One Time"
 	entryGuid "AS7P7QAx8CQb1qp8BqwA"
 	entry "Recurring"
@@ -706,7 +706,7 @@ oseeEnumType "enum.req.test.frequency" {
 }
 
 attributeType "Data Rights Classification" extends EnumeratedAttribute {
-	uuid 0x1000000000000155
+	id 1152921504606847317
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -718,7 +718,7 @@ attributeType "Data Rights Classification" extends EnumeratedAttribute {
 }
 
 attributeType "Data Rights Basis" extends StringAttribute {
-	uuid 0x100000000000154
+	id 72057594037928276
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -728,7 +728,7 @@ attributeType "Data Rights Basis" extends StringAttribute {
 }
 
 attributeType "Subject Matter Expert" extends StringAttribute {
-	uuid 0x100000000000153
+	id 72057594037928275
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -738,7 +738,7 @@ attributeType "Subject Matter Expert" extends StringAttribute {
 }
 
 oseeEnumType "enum.data.rights.classification" {
-	uuid 0x3000000000000205
+	id 3458764513820541445
 	entry "Restricted Rights"
 	entryGuid "ABcLZ6zfUUzjdDa8p7wA"
 	entry "Government Purpose Rights"
@@ -752,11 +752,11 @@ oseeEnumType "enum.data.rights.classification" {
 }
 
 abstract artifactType "Direct Software Requirement" extends "Abstract Software Requirement" {
-	uuid 0x0000000000000016
+	id 22
 }
 
 abstract artifactType "Abstract Software Requirement" extends "Abstract Spec Requirement" {
-	uuid 0x0000000000000017
+	id 23
 	attribute "CSCI"
 	attribute "Partition"
 	attribute "Category"
@@ -764,7 +764,7 @@ abstract artifactType "Abstract Software Requirement" extends "Abstract Spec Req
 }
 
 artifactType "Software Requirement" extends "MS Word Template" , "Direct Software Requirement" {
-	uuid 0x0000000000000018
+	id 24
 	attribute "IDAL"
 	attribute "IDAL Rationale"
 	attribute "Software Control Category"
@@ -772,57 +772,57 @@ artifactType "Software Requirement" extends "MS Word Template" , "Direct Softwar
 }
 
 artifactType "Plain Text" extends "Artifact" {
-	uuid 0x0000000000000310
+	id 784
 	attribute "Paragraph Number"
 	attribute "Plain Text Content"
 }
 
 artifactType "Software Requirement Plain Text" extends "Plain Text" , "Direct Software Requirement" {
-	uuid 0x000000000000318
+	id 792
 }
 
 artifactType "Indirect Software Requirement" extends "Abstract Software Requirement" , "MS Word Template" {
-	uuid 0x0000000000000019
+	id 25
 }
 
 artifactType "Implementation Details" extends "Indirect Software Requirement" {
-	uuid 0x000000000000001A
+	id 26
 }
 
 artifactType "Implementation Details Procedure" extends "Implementation Details" {
-	uuid 0x000000000001111A
+	id 69914
 }
 
 artifactType "Implementation Details Function" extends "Implementation Details" {
-	uuid 0x000000000002221A
+	id 139802
 }
 
 artifactType "Implementation Details Drawing" extends "Implementation Details" {
-	uuid 0x000000000003331A
+	id 209690
 }
 
 artifactType "Implementation Details Data Definition" extends "Implementation Details" {
-	uuid 0x000000000004441A
+	id 279578
 }
 
 artifactType "Software Requirement Procedure" extends "Indirect Software Requirement" {
-	uuid 0x000000000000001B
+	id 27
 }
 
 artifactType "Software Requirement Function" extends "Indirect Software Requirement" {
-	uuid 0x000000000000001C
+	id 28
 }
 
 artifactType "Software Requirement Drawing" extends "Indirect Software Requirement" {
-	uuid 0x000000000000001D
+	id 29
 }
 
 artifactType "Software Requirement Data Definition" extends "Indirect Software Requirement" {
-	uuid 0x0000000000000319
+	id 793
 }
 
 abstract artifactType "Abstract System Requirement" extends "Abstract Spec Requirement" {
-	uuid 0x000000000000031C
+	id 796
 	attribute "Legacy Id"
 	attribute "Verification Level"
 	attribute "Effectivity"
@@ -831,15 +831,15 @@ abstract artifactType "Abstract System Requirement" extends "Abstract Spec Requi
 }
 
 artifactType "System Requirement - MS Word" extends "Abstract System Requirement" , "MS Word Template" {
-	uuid 0x000000000000001E
+	id 30
 }
 
 artifactType "System Requirement - HTML" extends "Abstract System Requirement" , "HTML Artifact" {
-	uuid 0x000000000000031A
+	id 794
 }
 
 abstract artifactType "Abstract Subsystem Requirement" extends "Abstract Spec Requirement" {
-	uuid 0x000000000000031D
+	id 797
 	attribute "Legacy Id"
 	attribute "Verification Level"
 	attribute "Verification Event"
@@ -849,24 +849,24 @@ abstract artifactType "Abstract Subsystem Requirement" extends "Abstract Spec Re
 }
 
 artifactType "Subsystem Requirement - MS Word" extends "Abstract Subsystem Requirement" , "MS Word Template" {
-	uuid 0x000000000000001F
+	id 31
 }
 
 artifactType "Subsystem Requirement - HTML" extends "Abstract Subsystem Requirement" , "HTML Artifact" {
-	uuid 0x000000000000031B
+	id 795
 }
 
 artifactType "Interface Requirement" extends "Abstract Spec Requirement" , "MS Word Template" {
-	uuid 0x0000000000000020
+	id 32
 	attribute "Component"
 }
 
 artifactType "Hardware Requirement" extends "Abstract Spec Requirement" , "MS Word Template" {
-	uuid 0x0000000000000021
+	id 33
 }
 
 abstract artifactType "Function" extends "MS Word Template" {
-	uuid 0x0000000000000022
+	id 34
 	attribute "Severity Category"
 	attribute "Software Safety Impact"
 	attribute "FDAL"
@@ -874,12 +874,12 @@ abstract artifactType "Function" extends "MS Word Template" {
 }
 
 artifactType "System Function" extends "Function" , "System Design" {
-	uuid 0x0000000000000023
+	id 35
 	attribute "Functional Category"
 }
 
 attributeType "Functional Category" extends StringAttribute {
-	uuid 0x100000000000037F
+	id 1152921504606847871
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -888,34 +888,34 @@ attributeType "Functional Category" extends StringAttribute {
 }
 
 artifactType "Subsystem Function" extends "Function" , "Subsystem Design" {
-	uuid 0x0000000000000024
+	id 36
 }
 
 artifactType "Test Plan Element" extends "MS Word Template" {
-	uuid 0x0000000000000025
+	id 37
 }
 
 abstract artifactType "Abstract Test Result" extends "Artifact" {
-	uuid 0x0000000000000026
+	id 38
 }
 
 artifactType "Test Result Native" extends "Abstract Test Result" , "Native Artifact" {
-	uuid 0x0000000000000027
+	id 39
 }
 
 artifactType "Test Result WML" extends "Abstract Test Result" , "MS Word Whole Document" {
-	uuid 0x0000000000000028
+	id 40
 }
 
 artifactType "Test Information Sheet" extends "MS Word Template" , "Test Unit" {
-	uuid 0x0000000000000029
+	id 41
 	attribute "TIS Test Number"
 	attribute "TIS Test Type"
 	attribute "TIS Test Category"
 }
 
 artifactType "Design" extends "MS Word Template" {
-	uuid 0x000000000000015A
+	id 346
 	attribute "Legacy DAL"
 	attribute "Severity Category"
 	attribute "Data Rights Classification"
@@ -924,38 +924,38 @@ artifactType "Design" extends "MS Word Template" {
 }
 
 artifactType "Subsystem Design" extends "Design" {
-	uuid 0x000000000000002B
+	id 43
 	attribute "Subsystem"
 }
 
 artifactType "System Design" extends "Design" {
-	uuid 0x000000000000002C
+	id 44
 }
 
 artifactType "Software Design" extends "Design" {
-	uuid 0x000000000000002D
+	id 45
 }
 
 artifactType "Test Procedure" extends "Test Unit" {
-	uuid 0x000000000000002E
+	id 46
 	attribute "Subsystem"
 	attribute "Test Procedure Status"
 }
 
 artifactType "Test Procedure WML" extends "Test Procedure" , "MS Word Whole Document" {
-	uuid 0x000000000000002F
+	id 47
 }
 
 artifactType "Test Procedure Native" extends "Test Procedure" , "Native Artifact" {
-	uuid 0x0000000000000030
+	id 48
 }
 
 artifactType "Supporting Content" extends "Url" {
-	uuid 0x0000000000000031
+	id 49
 }
 
 attributeType "Common NAL Requirement" extends BooleanAttribute {
-	uuid 0x1000000000000081
+	id 1152921504606847105
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -966,7 +966,7 @@ attributeType "Common NAL Requirement" extends BooleanAttribute {
 }
 
 attributeType "Crew Interface Requirement" extends BooleanAttribute {
-	uuid 0x1000000000000082
+	id 1152921504606847106
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -975,7 +975,7 @@ attributeType "Crew Interface Requirement" extends BooleanAttribute {
 }
 
 attributeType "Legacy Id" extends StringAttribute {
-	uuid 0x1000000000000083
+	id 1152921504606847107
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -984,7 +984,7 @@ attributeType "Legacy Id" extends StringAttribute {
 }
 
 attributeType "Effectivity" extends StringAttribute {
-	uuid 0x1000000000000084
+	id 1152921504606847108
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -993,7 +993,7 @@ attributeType "Effectivity" extends StringAttribute {
 }
 
 attributeType "System Security Requirement" extends BooleanAttribute {
-	uuid 0x1000000000000085
+	id 1152921504606847109
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1002,7 +1002,7 @@ attributeType "System Security Requirement" extends BooleanAttribute {
 }
 
 attributeType "Training Effectivity" extends BooleanAttribute {
-	uuid 0x1000000000000086
+	id 1152921504606847110
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1011,7 +1011,7 @@ attributeType "Training Effectivity" extends BooleanAttribute {
 }
 
 oseeEnumType "enum.req.partition" {
-	uuid 0x300000000000017D
+	id 3458764513820541309
 	entry "Graphics Handler"
 	entryGuid "AHggI+3RUnQwf1KtsqAA"
 	entry "Communication"
@@ -1027,7 +1027,7 @@ oseeEnumType "enum.req.partition" {
 }
 
 attributeType "Partition" extends EnumeratedAttribute {
-	uuid 0x1000000000000087
+	id 1152921504606847111
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max unlimited
@@ -1038,7 +1038,7 @@ attributeType "Partition" extends EnumeratedAttribute {
 }
 
 oseeEnumType "enum.req.subsystem" {
-	uuid 0x300000000000017E
+	id 3458764513820541310
 	entry "Robot_API"
 	entryGuid "AHjfb6Ot_Atsy5Hj5xAA"
 	entry "Robot_Survivability_Equipment"
@@ -1070,7 +1070,7 @@ oseeEnumType "enum.req.subsystem" {
 }
 
 attributeType "Subsystem" extends EnumeratedAttribute {
-	uuid 0x1000000000000088
+	id 1152921504606847112
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
@@ -1081,7 +1081,7 @@ attributeType "Subsystem" extends EnumeratedAttribute {
 }
 
 oseeEnumType "enum.req.qualification.method" {
-	uuid 0x300000000000017F
+	id 3458764513820541311
 	entry "Demonstration"
 	entryGuid "CArJmMA53UpBedWUq2wA"
 	entry "Test"
@@ -1102,7 +1102,7 @@ oseeEnumType "enum.req.qualification.method" {
 }
 
 attributeType "Qualification Method" extends EnumeratedAttribute {
-	uuid 0x1000000000000089
+	id 1152921504606847113
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max unlimited
@@ -1115,7 +1115,7 @@ attributeType "Qualification Method" extends EnumeratedAttribute {
 }
 
 oseeEnumType "enum.req.severity.category" {
-	uuid 0x3000000000000180
+	id 3458764513820541312
 	entry "I"
 	entryGuid "CArJmMT4W0M7RHz21FQA"
 	entry "II"
@@ -1131,7 +1131,7 @@ oseeEnumType "enum.req.severity.category" {
 }
 
 attributeType "Severity Category" extends EnumeratedAttribute {
-	uuid 0x100000000000008A
+	id 1152921504606847114
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
@@ -1143,7 +1143,7 @@ attributeType "Severity Category" extends EnumeratedAttribute {
 }
 
 oseeEnumType "enum.req.software.control.category" {
-	uuid 0x344479B3ADA36B79
+	id 3766269001007852409
 	entry "1(AT)"
 	entryGuid ""
 	entry "2(SAT)"
@@ -1159,7 +1159,7 @@ oseeEnumType "enum.req.software.control.category" {
 }
 
 attributeType "Software Control Category" extends EnumeratedAttribute {
-	uuid 0x1B2DA4398EAB9207
+	id 1958401980089733639
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
@@ -1171,7 +1171,7 @@ attributeType "Software Control Category" extends EnumeratedAttribute {
 }
 
 attributeType "Software Control Category Rationale" extends StringAttribute {
-	uuid 0x0A6BD62623697536
+	id 750929222178534710
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1179,7 +1179,7 @@ attributeType "Software Control Category Rationale" extends StringAttribute {
 }
 
 attributeType "Software Safety Impact" extends BooleanAttribute {
-	uuid 0x7372557095E8C6DD
+	id 8318805403746485981
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1188,7 +1188,7 @@ attributeType "Software Safety Impact" extends BooleanAttribute {
 }
 
 oseeEnumType "enum.req.verification.level" {
-	uuid 0x3000000000000181
+	id 3458764513820541313
 	entry "System"
 	entryGuid "AHgseTiNRW1AhGHenkAA"
 	entry "Subsystem"
@@ -1202,7 +1202,7 @@ oseeEnumType "enum.req.verification.level" {
 }
 
 attributeType "Verification Level" extends EnumeratedAttribute {
-	uuid 0x100000000000008B
+	id 1152921504606847115
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1213,7 +1213,7 @@ attributeType "Verification Level" extends EnumeratedAttribute {
 }
 
 attributeType "TIS Test Number" extends StringAttribute {
-	uuid 0x100000000000008C
+	id 1152921504606847116
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1222,7 +1222,7 @@ attributeType "TIS Test Number" extends StringAttribute {
 }
 
 attributeType "Verification Acceptance Criteria" extends StringAttribute {
-	uuid 0x100000000000008D
+	id 1152921504606847117
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1230,7 +1230,7 @@ attributeType "Verification Acceptance Criteria" extends StringAttribute {
 }
 
 oseeEnumType "enum.test.tis.type" {
-	uuid 0x3000000000000182
+	id 3458764513820541314
 	entry "Stationary Vehicle"
 	entryGuid "AHj4p6gxxxlUbouQY4gA"
 	entry "In Operation"
@@ -1238,7 +1238,7 @@ oseeEnumType "enum.test.tis.type" {
 }
 
 attributeType "TIS Test Type" extends EnumeratedAttribute {
-	uuid 0x100000000000008E
+	id 1152921504606847118
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max unlimited
@@ -1249,7 +1249,7 @@ attributeType "TIS Test Type" extends EnumeratedAttribute {
 }
 
 oseeEnumType "enum.test.tis.category" {
-	uuid 0x3000000000000183
+	id 3458764513820541315
 	entry "SPEC_COMP"
 	entryGuid "CArJmMeaR3xHDdsfMmQA"
 	entry "DEV"
@@ -1259,7 +1259,7 @@ oseeEnumType "enum.test.tis.category" {
 }
 
 attributeType "TIS Test Category" extends EnumeratedAttribute {
-	uuid 0x100000000000008F
+	id 1152921504606847119
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
@@ -1270,7 +1270,7 @@ attributeType "TIS Test Category" extends EnumeratedAttribute {
 }
 
 oseeEnumType "enum.req.development.assurance.level" {
-	uuid 0x3000000000000184
+	id 3458764513820541316
 	entry "A"
 	entryGuid "CArJmQghfXnRkiCKD5AA"
 	entry "B"
@@ -1286,7 +1286,7 @@ oseeEnumType "enum.req.development.assurance.level" {
 }
 
 attributeType "Legacy DAL" extends EnumeratedAttribute {
-	uuid 0x1000000000000090
+	id 1152921504606847120
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1297,7 +1297,7 @@ attributeType "Legacy DAL" extends EnumeratedAttribute {
 }
 
 attributeType "FDAL" extends EnumeratedAttribute {
-	uuid 0x6F21FCC037B495A4
+	id 8007959514939954596
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
@@ -1308,7 +1308,7 @@ attributeType "FDAL" extends EnumeratedAttribute {
 }
 
 attributeType "FDAL Rationale" extends StringAttribute {
-	uuid 0x0CDAC9ABD75FE496
+	id 926274413268034710
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1316,7 +1316,7 @@ attributeType "FDAL Rationale" extends StringAttribute {
 }
 
 attributeType "IDAL" extends EnumeratedAttribute {
-	uuid 0x2442AB12730CE62B
+	id 2612838829556295211
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
@@ -1327,7 +1327,7 @@ attributeType "IDAL" extends EnumeratedAttribute {
 }
 
 attributeType "IDAL Rationale" extends StringAttribute {
-	uuid 0x22F0D27FE668912D
+	id 2517743638468399405
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1335,7 +1335,7 @@ attributeType "IDAL Rationale" extends StringAttribute {
 }
 
 attributeType "Category" extends StringAttribute {
-	uuid 0x1000000000000091
+	id 1152921504606847121
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1344,7 +1344,7 @@ attributeType "Category" extends StringAttribute {
 }
 
 attributeType "PublishInline" extends BooleanAttribute {
-	uuid 0x1000000000000092
+	id 1152921504606847122
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1353,7 +1353,7 @@ attributeType "PublishInline" extends BooleanAttribute {
 }
 
 attributeType "Technical Performance Parameter" extends BooleanAttribute {
-	uuid 0x1000000000000093
+	id 1152921504606847123
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
@@ -1362,13 +1362,13 @@ attributeType "Technical Performance Parameter" extends BooleanAttribute {
 }
 
 oseeEnumType "enum.req.verification.event" {
-	uuid 0x3000000000000185
+	id 3458764513820541317
 	entry "Unspecified"
 	entryGuid "AHgx7FoBjTj1Gjx2lwwA"
 }
 
 attributeType "Verification Event" extends EnumeratedAttribute {
-	uuid 0x1000000000000094
+	id 1152921504606847124
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max unlimited
@@ -1378,7 +1378,7 @@ attributeType "Verification Event" extends EnumeratedAttribute {
 }
 
 oseeEnumType "enum.req.component" {
-	uuid 0x3000000000000186
+	id 3458764513820541318
 	entry "Top level product component"
 	entryGuid "AHgx7E8De1cxZ5soXEwA"
 	entry "Unspecified"
@@ -1386,7 +1386,7 @@ oseeEnumType "enum.req.component" {
 }
 
 attributeType "Component" extends EnumeratedAttribute {
-	uuid 0x1000000000000095
+	id 1152921504606847125
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
@@ -1397,7 +1397,7 @@ attributeType "Component" extends EnumeratedAttribute {
 }
 
 relationType "Allocation" {
-	uuid 0x2000000000000157
+	id 2305843009213694295
 	sideAName "requirement"
 	sideAArtifactType "Requirement"
 	sideBName "component"
@@ -1407,7 +1407,7 @@ relationType "Allocation" {
 }
 
 relationType "Code-Requirement" {
-	uuid 0x2000000000000158
+	id 2305843009213694296
 	sideAName "code"
 	sideAArtifactType "Code Unit"
 	sideBName "requirement"
@@ -1417,7 +1417,7 @@ relationType "Code-Requirement" {
 }
 
 relationType "Component-Requirement" {
-	uuid 0x2000000000000159
+	id 2305843009213694297
 	sideAName "component"
 	sideAArtifactType "Component"
 	sideBName "requirement"
@@ -1427,7 +1427,7 @@ relationType "Component-Requirement" {
 }
 
 relationType "Design" {
-	uuid 0x200000000000015A
+	id 2305843009213694298
 	sideAName "requirement"
 	sideAArtifactType "Requirement"
 	sideBName "design"
@@ -1437,7 +1437,7 @@ relationType "Design" {
 }
 
 relationType "Developmental Verification" {
-	uuid 0x20000000000DE15B
+	id 2305843009214603611
 	sideAName "requirement"
 	sideAArtifactType "Abstract Software Requirement"
 	sideBName "developmental verifier"
@@ -1447,7 +1447,7 @@ relationType "Developmental Verification" {
 }
 
 relationType "Verification" {
-	uuid 0x200000000000015B
+	id 2305843009213694299
 	sideAName "requirement"
 	sideAArtifactType "Requirement"
 	sideBName "verifier"
@@ -1457,7 +1457,7 @@ relationType "Verification" {
 }
 
 relationType "Verification Plan" {
-	uuid 0x200000000000015C
+	id 2305843009213694300
 	sideAName "requirement"
 	sideAArtifactType "Requirement"
 	sideBName "test plan element"
@@ -1467,7 +1467,7 @@ relationType "Verification Plan" {
 }
 
 relationType "Verification Procedure" {
-	uuid 0x200000000000015D
+	id 2305843009213694301
 	sideAName "test information sheet"
 	sideAArtifactType "Test Information Sheet"
 	sideBName "test procedure"
@@ -1477,7 +1477,7 @@ relationType "Verification Procedure" {
 }
 
 relationType "Executes" {
-	uuid 0x200000000000015E
+	id 2305843009213694302
 	sideAName "test plan element"
 	sideAArtifactType "Test Plan Element"
 	sideBName "test procedure"
@@ -1487,7 +1487,7 @@ relationType "Executes" {
 }
 
 relationType "Requirement Trace" {
-	uuid 0x200000000000015F
+	id 2305843009213694303
 	sideAName "higher-level requirement"
 	sideAArtifactType "Requirement"
 	sideBName "lower-level requirement"
@@ -1497,7 +1497,7 @@ relationType "Requirement Trace" {
 }
 
 relationType "Validation" {
-	uuid 0x2000000000000160
+	id 2305843009213694304
 	sideAName "requirement"
 	sideAArtifactType "Requirement"
 	sideBName "validator"
@@ -1507,7 +1507,7 @@ relationType "Validation" {
 }
 
 relationType "Specifying" {
-	uuid 0x2000000000000161
+	id 2305843009213694305
 	sideAName "function"
 	sideAArtifactType "Subsystem Function"
 	sideBName "requirement"
@@ -1517,7 +1517,7 @@ relationType "Specifying" {
 }
 
 abstract artifactType "Work Item Definition" extends "Artifact" {
-	uuid 0x0000000000000032
+	id 50
 	attribute "osee.wi.Work Id"
 	attribute "osee.wi.Work Type"
 	attribute "osee.wi.Work Parent Id"
@@ -1526,33 +1526,33 @@ abstract artifactType "Work Item Definition" extends "Artifact" {
 }
 
 artifactType "Work Page Definition" extends "Work Item Definition" {
-	uuid 0x0000000000000033
+	id 51
 	attribute "osee.wi.Work Page Name"
 	attribute "osee.wi.Work Page Type"
 	attribute "osee.wi.Work Page Ordinal"
 }
 
 artifactType "Work Flow Definition" extends "Work Item Definition" {
-	uuid 0x0000000000000034
+	id 52
 	attribute "osee.wi.Start Page"
 	attribute "osee.wi.Transition"
 }
 
 artifactType "Work Rule Definition" extends "Work Item Definition" {
-	uuid 0x0000000000000035
+	id 53
 }
 
 artifactType "Work Widget Definition" extends "Work Item Definition" {
-	uuid 0x0000000000000036
+	id 54
 }
 
 artifactType "XViewer Global Customization" extends "Artifact" {
-	uuid 0x0000000000000037
+	id 55
 	attribute "XViewer Customization"
 }
 
 attributeType "osee.wi.Work Data" extends StringAttribute {
-	uuid 0x1000000000000096
+	id 1152921504606847126
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
@@ -1561,7 +1561,7 @@ attributeType "osee.wi.Work Data" extends StringAttribute {
 }
 
 attributeType "osee.wi.Work Id" extends StringAttribute {
-	uuid 0x1000000000000097
+	id 1152921504606847127
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1569,7 +1569,7 @@ attributeType "osee.wi.Work Id" extends StringAttribute {
 }
 
 attributeType "osee.wi.Work Type" extends StringAttribute {
-	uuid 0x1000000000000098
+	id 1152921504606847128
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1577,7 +1577,7 @@ attributeType "osee.wi.Work Type" extends StringAttribute {
 }
 
 attributeType "osee.wi.Work Description" extends StringAttribute {
-	uuid 0x1000000000000099
+	id 1152921504606847129
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1585,7 +1585,7 @@ attributeType "osee.wi.Work Description" extends StringAttribute {
 }
 
 attributeType "osee.wi.Work Parent Id" extends StringAttribute {
-	uuid 0x100000000000009A
+	id 1152921504606847130
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1593,7 +1593,7 @@ attributeType "osee.wi.Work Parent Id" extends StringAttribute {
 }
 
 attributeType "osee.wi.Work Page Name" extends StringAttribute {
-	uuid 0x100000000000009B
+	id 1152921504606847131
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
@@ -1601,7 +1601,7 @@ attributeType "osee.wi.Work Page Name" extends StringAttribute {
 }
 
 attributeType "osee.wi.Work Page Ordinal" extends IntegerAttribute {
-	uuid 0x100000000000009C
+	id 1152921504606847132
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1609,7 +1609,7 @@ attributeType "osee.wi.Work Page Ordinal" extends IntegerAttribute {
 }
 
 attributeType "osee.wi.Transition" extends StringAttribute {
-	uuid 0x100000000000009D
+	id 1152921504606847133
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
@@ -1617,7 +1617,7 @@ attributeType "osee.wi.Transition" extends StringAttribute {
 }
 
 attributeType "osee.wi.Work Page Type" extends StringAttribute {
-	uuid 0x100000000000009E
+	id 1152921504606847134
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1625,7 +1625,7 @@ attributeType "osee.wi.Work Page Type" extends StringAttribute {
 }
 
 attributeType "osee.wi.Start Page" extends StringAttribute {
-	uuid 0x100000000000009F
+	id 1152921504606847135
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1633,7 +1633,7 @@ attributeType "osee.wi.Start Page" extends StringAttribute {
 }
 
 relationType "Work Item" {
-	uuid 0x2000000000000162
+	id 2305843009213694306
 	sideAName "Parent"
 	sideAArtifactType "Artifact"
 	sideBName "Child"
@@ -1643,7 +1643,7 @@ relationType "Work Item" {
 }
 
 relationType "User Grouping" {
-	uuid 0x2000000000000163
+	id 2305843009213694307
 	sideAName "group"
 	sideAArtifactType "User Group"
 	sideBName "users"
@@ -1653,7 +1653,7 @@ relationType "User Grouping" {
 }
 
 relationType "Users" {
-	uuid 0x2000000000000164
+	id 2305843009213694308
 	sideAName "Artifact"
 	sideAArtifactType "Artifact"
 	sideBName "User"
@@ -1663,7 +1663,7 @@ relationType "Users" {
 }
 
 relationType "Supercedes" {
-	uuid 0x2000000000000165
+	id 2305843009213694309
 	sideAName "supercedes"
 	sideAArtifactType "Artifact"
 	sideBName "superceded by"
@@ -1673,7 +1673,7 @@ relationType "Supercedes" {
 }
 
 oseeEnumType "enum.req.csci" {
-	uuid 0x3000000000000187
+	id 3458764513820541319
 	entry "CoreUnit"
 	entryGuid "AHkD1ZWRgG65kO2xGawA"
 	entry "Framework"
@@ -1689,7 +1689,7 @@ oseeEnumType "enum.req.csci" {
 }
 
 attributeType "CSCI" extends EnumeratedAttribute {
-	uuid 0x10000000000000A0
+	id 1152921504606847136
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max unlimited
@@ -1700,7 +1700,7 @@ attributeType "CSCI" extends EnumeratedAttribute {
 }
 
 relationType "Supporting Info" {
-	uuid 0x2000000000000166
+	id 2305843009213694310
 	sideAName "is supported by"
 	sideAArtifactType "Artifact"
 	sideBName "supporting info"
@@ -1710,7 +1710,7 @@ relationType "Supporting Info" {
 }
 
 relationType "Supporting Requirement" {
-    uuid 0x200000000000017C
+    id 2305843009213694332
     sideAName "higher-level requirement"
     sideAArtifactType "Requirement"
     sideBName "lower-level requirement"
@@ -1720,38 +1720,38 @@ relationType "Supporting Requirement" {
 }
 
 artifactType "Heading - MS Word" extends "Abstract Heading", "MS Word Template" {
-	uuid 0x0000000000000038
+	id 56
 }
 
 artifactType "Heading - HTML" extends "Abstract Heading", "HTML Artifact" {  
- 	uuid 0x0000000000000324   
+ 	id 804
 }  
     
 abstract artifactType "Abstract Heading" extends "Artifact" {   
-	uuid 0x0000000000000325   
+	id 805
 }  
    
 artifactType "Component" extends "Artifact" {
-	uuid 0x0000000000000039
+	id 57
 	attribute "Developmental"
 	attribute "GFE / CFE"
 }
 
 artifactType "Code Unit" extends "Artifact" {
-	uuid 0x000000000000003A
+	id 58
 	attribute "Data Rights Classification"
 	attribute "Data Rights Basis"
 	attribute "Subject Matter Expert"
 }
 
 artifactType "Safety Assessment" extends "Artifact" {
-	uuid 0x000000000000003B
+	id 59
 	attribute "Paragraph Number"
 	attribute "SFHA"
 }
 
 relationType "Assessment" {
-	uuid 0x2000000000000180
+	id 2305843009213694336
 	sideAName "Assessments"
 	sideAArtifactType "Safety Assessment"
 	sideBName "System Functions"
@@ -1761,7 +1761,7 @@ relationType "Assessment" {
 }
 
 attributeType "Developmental" extends BooleanAttribute {
-	uuid 0x10000000000000A1
+	id 1152921504606847137
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
@@ -1770,7 +1770,7 @@ attributeType "Developmental" extends BooleanAttribute {
 }
 
 attributeType "Hazard" extends StringAttribute {
-	uuid 0x10000000000000A2
+	id 1152921504606847138
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1779,7 +1779,7 @@ attributeType "Hazard" extends StringAttribute {
 }
 
 attributeType "AFHA" extends StringAttribute {
-	uuid 0x10000000000000A3
+	id 1152921504606847139
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1788,7 +1788,7 @@ attributeType "AFHA" extends StringAttribute {
 }
 
 attributeType "SFHA" extends StringAttribute {
-	uuid 0x10000000000000A4
+	id 1152921504606847140
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1797,7 +1797,7 @@ attributeType "SFHA" extends StringAttribute {
 }
 
 oseeEnumType "enum.req.hazard.severity" {
-	uuid 0x3000000000000188
+	id 3458764513820541320
 	entry "Catastrophic, I"
 	entryGuid "CArJmKAfM2LFVagvdyAA"
 	entry "Severe-Major, II"
@@ -1819,7 +1819,7 @@ oseeEnumType "enum.req.hazard.severity" {
 }
 
 attributeType "Hazard Severity" extends EnumeratedAttribute {
-	uuid 0x10000000000000A5
+	id 1152921504606847141
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1829,7 +1829,7 @@ attributeType "Hazard Severity" extends EnumeratedAttribute {
 }
 
 attributeType "Safety Objective" extends FloatingPointAttribute {
-	uuid 0x10000000000000A6
+	id 1152921504606847142
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1838,7 +1838,7 @@ attributeType "Safety Objective" extends FloatingPointAttribute {
 }
 
 attributeType "FTA Results" extends FloatingPointAttribute {
-	uuid 0x10000000000000A7
+	id 1152921504606847143
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -1847,7 +1847,7 @@ attributeType "FTA Results" extends FloatingPointAttribute {
 }
 
 oseeEnumType "enum.req.gfe.cfe" {
-	uuid 0x3000000000000189
+	id 3458764513820541321
 	entry "CFE"
 	entryGuid "CArJmKSDJmlB5eQJFdQA"
 	entry "GFE"
@@ -1857,7 +1857,7 @@ oseeEnumType "enum.req.gfe.cfe" {
 }
 
 attributeType "GFE / CFE" extends EnumeratedAttribute {
-	uuid 0x10000000000000A8
+	id 1152921504606847144
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
@@ -1868,7 +1868,7 @@ attributeType "GFE / CFE" extends EnumeratedAttribute {
 }
 
 relationType "Functional decomposition " {
-	uuid 0x2000000000000167
+	id 2305843009213694311
 	sideAName "higher-level component"
 	sideAArtifactType "Component"
 	sideBName "lower-level component"
@@ -1878,7 +1878,7 @@ relationType "Functional decomposition " {
 }
 
 relationType "Results Data" {
-	uuid 0x2000000000000168
+	id 2305843009213694312
 	sideAName "test unit"
 	sideAArtifactType "Test Unit"
 	sideBName "test result"
@@ -1888,7 +1888,7 @@ relationType "Results Data" {
 }
 
 attributeType "Uri General String Data" extends StringAttribute {
-	uuid 0x1000000000000195
+	id 1152921504606847381
 	dataProvider UriAttributeDataProvider
 	min 0
 	max unlimited
@@ -1896,18 +1896,18 @@ attributeType "Uri General String Data" extends StringAttribute {
 }
 
 artifactType "Osee Type Definition" extends "Artifact" {
-	uuid 0x000000000000003C
+	id 60
 	attribute "Active"
 	attribute "Uri General String Data"
 }
 
 artifactType "Feature" extends "Artifact" {
-	uuid 0x0000000000000057
+	id 87
 	attribute "Description"
 }
 
 relationType "Related Feature" {
-	uuid 0x0000000000000058
+	id 88
 	sideAName "feature"
 	sideAArtifactType "Feature"
 	sideBName "artifact"
@@ -1917,7 +1917,7 @@ relationType "Related Feature" {
 }
 
 artifactType "Breaker" extends "Artifact" {
-   uuid 0x0000AB6700000034
+   id 188458869981236
    attribute "Display Text"
    attribute "Description"
    attribute "Circuit Breaker ID"
@@ -1925,7 +1925,7 @@ artifactType "Breaker" extends "Artifact" {
 }
 
 attributeType "Display Text" extends StringAttribute {
-	uuid 0x0000AB6700000035
+	id 188458869981237
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
@@ -1935,7 +1935,7 @@ attributeType "Display Text" extends StringAttribute {
 
 
 attributeType "Circuit Breaker ID" extends IntegerAttribute {
-	uuid 0x0000AB6700000036
+	id 188458869981238
         dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
@@ -1944,7 +1944,7 @@ attributeType "Circuit Breaker ID" extends IntegerAttribute {
 }
 
 attributeType "Require Confirmation" extends BooleanAttribute {
-	uuid 0x0000AB6700000037
+	id 188458869981239
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
@@ -1953,12 +1953,12 @@ attributeType "Require Confirmation" extends BooleanAttribute {
 }
 
 artifactType "Model Diagram" extends "Artifact" {
-   uuid 0x0000000000000062
+   id 98
    attribute "Graphiti Diagram"
 }
 
 attributeType "Graphiti Diagram" extends StringAttribute {
-	uuid 0x1000000000000157
+	id 1152921504606847319
 	dataProvider UriAttributeDataProvider
 	min 1
 	max 1

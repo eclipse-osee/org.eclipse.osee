@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 public class OpenWorkPackageByIdAction extends Action {
 
    public static final IAttributeType FinancialSystemId =
-      TokenFactory.createAttributeType(0x1000555145600EEL, "Financial System Id");
+      TokenFactory.createAttributeType(72063457009467630L, "Financial System Id");
 
    public OpenWorkPackageByIdAction() {
       this("Open Work Package by ID(s)");

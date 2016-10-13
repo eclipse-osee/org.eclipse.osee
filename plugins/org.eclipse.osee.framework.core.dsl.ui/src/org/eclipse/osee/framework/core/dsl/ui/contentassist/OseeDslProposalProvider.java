@@ -76,26 +76,26 @@ public class OseeDslProposalProvider extends AbstractOseeDslProposalProvider {
    //   }
 
    @Override
-   public void completeXArtifactType_Uuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-      super.completeXArtifactType_Uuid(model, assignment, context, acceptor);
+   public void completeXArtifactType_Id(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+      super.completeXArtifactType_Id(model, assignment, context, acceptor);
       completeRemoteTypeIdGeneration(context, acceptor);
    }
 
    @Override
-   public void completeXAttributeType_Uuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-      super.completeXAttributeType_Uuid(model, assignment, context, acceptor);
+   public void completeXAttributeType_Id(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+      super.completeXAttributeType_Id(model, assignment, context, acceptor);
       completeRemoteTypeIdGeneration(context, acceptor);
    }
 
    @Override
-   public void completeXOseeEnumType_Uuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-      super.completeXOseeEnumType_Uuid(model, assignment, context, acceptor);
+   public void completeXOseeEnumType_Id(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+      super.completeXOseeEnumType_Id(model, assignment, context, acceptor);
       completeRemoteTypeIdGeneration(context, acceptor);
    }
 
    @Override
-   public void completeXRelationType_Uuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-      super.completeXRelationType_Uuid(model, assignment, context, acceptor);
+   public void completeXRelationType_Id(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+      super.completeXRelationType_Id(model, assignment, context, acceptor);
       completeRemoteTypeIdGeneration(context, acceptor);
    }
 

@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.HexUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -81,7 +80,7 @@ public class RelationTypeRestrictionHandler implements RestrictionHandler<Relati
             ArtifactType artifactType = artifactProxy.getArtifactType();
             if (artifactTypeRef != null && artifactType != null) {
                IArtifactType ruleType =
-                  TokenFactory.createArtifactType(HexUtil.toLong(artifactTypeRef.getUuid()), artifactTypeRef.getName());
+                  TokenFactory.createArtifactType(Long.valueOf(artifactTypeRef.getId()), artifactTypeRef.getName());
                if (artifactType.inheritsFrom(ruleType)) {
                   toUse = scope.clone().addSubPath(artifactProxy.getName());
                }

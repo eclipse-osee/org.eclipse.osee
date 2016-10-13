@@ -64,7 +64,6 @@ import org.eclipse.osee.framework.core.model.type.OseeEnumTypeFactory;
 import org.eclipse.osee.framework.core.model.type.RelationTypeFactory;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.HexUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -144,7 +143,7 @@ public class DslToTypeLoader implements TypesLoader {
    }
 
    private void handleXArtifactTypeCrossRef(TypeBuffer buffer, BranchCache branchCache, XArtifactType xArtifactType) throws OseeCoreException {
-      ArtifactType targetArtifactType = buffer.getArtTypes().getByGuid(HexUtil.toLong(xArtifactType.getUuid()));
+      ArtifactType targetArtifactType = buffer.getArtTypes().getByGuid(Long.valueOf(xArtifactType.getId()));
       translateSuperTypes(buffer, targetArtifactType, xArtifactType);
       Map<BranchId, Collection<AttributeType>> validAttributesPerBranch =
          getOseeAttributes(buffer, branchCache, xArtifactType);
@@ -169,7 +168,7 @@ public class DslToTypeLoader implements TypesLoader {
       for (XAttributeTypeRef xAttributeTypeRef : xArtifactType.getValidAttributeTypes()) {
          XAttributeType xAttributeType = xAttributeTypeRef.getValidAttributeType();
          BranchId branch = getAttributeBranch(branchCache, xAttributeTypeRef);
-         Long attrUuid = HexUtil.toLong(xAttributeType.getUuid());
+         Long attrUuid = Long.valueOf(xAttributeType.getId());
          AttributeType oseeAttributeType = buffer.getAttrTypes().getByGuid(attrUuid);
          if (oseeAttributeType != null) {
             Collection<AttributeType> listOfAllowedAttributes = validAttributes.get(branch);
@@ -213,10 +212,10 @@ public class DslToTypeLoader implements TypesLoader {
          @Override
          public Void caseRemoveAttribute(RemoveAttribute removeOption) {
             XAttributeType attribute = removeOption.getAttribute();
-            String guidToMatch = attribute.getUuid();
+            String guidToMatch = attribute.getId();
             List<XAttributeTypeRef> toRemove = new LinkedList<>();
             for (XAttributeTypeRef xAttributeTypeRef : validAttributeTypes) {
-               String itemGuid = xAttributeTypeRef.getValidAttributeType().getUuid();
+               String itemGuid = xAttributeTypeRef.getValidAttributeType().getId();
                if (guidToMatch.equals(itemGuid)) {
                   toRemove.add(xAttributeTypeRef);
                }
@@ -228,10 +227,10 @@ public class DslToTypeLoader implements TypesLoader {
          @Override
          public Void caseUpdateAttribute(UpdateAttribute updateAttribute) {
             XAttributeTypeRef refToUpdate = updateAttribute.getAttribute();
-            String guidToMatch = refToUpdate.getValidAttributeType().getUuid();
+            String guidToMatch = refToUpdate.getValidAttributeType().getId();
             List<XAttributeTypeRef> toRemove = new LinkedList<>();
             for (XAttributeTypeRef xAttributeTypeRef : validAttributeTypes) {
-               String itemGuid = xAttributeTypeRef.getValidAttributeType().getUuid();
+               String itemGuid = xAttributeTypeRef.getValidAttributeType().getId();
                if (guidToMatch.equals(itemGuid)) {
                   toRemove.add(xAttributeTypeRef);
                }
@@ -250,13 +249,13 @@ public class DslToTypeLoader implements TypesLoader {
 
    private void translateXArtifactType(TypeBuffer buffer, XArtifactType xArtifactType) throws OseeCoreException {
       String artifactTypeName = xArtifactType.getName();
-      Long artUuid = HexUtil.toLong(xArtifactType.getUuid());
+      Long artUuid = Long.valueOf(xArtifactType.getId());
       artTypeFactory.createOrUpdate(buffer.getArtTypes(), artUuid, xArtifactType.isAbstract(), artifactTypeName);
    }
 
    private void translateXEnumType(TypeBuffer buffer, XOseeEnumType xEnumType) throws OseeCoreException {
       String enumTypeName = xEnumType.getName();
-      Long enumUuid = HexUtil.toLong(xEnumType.getUuid());
+      Long enumUuid = Long.valueOf(xEnumType.getId());
       OseeEnumType oseeEnumType = enumTypeFactory.createOrUpdate(buffer.getEnumTypes(), enumUuid, enumTypeName);
 
       int lastOrdinal = 0;
@@ -326,11 +325,11 @@ public class DslToTypeLoader implements TypesLoader {
       XOseeEnumType xEnumType = xAttributeType.getEnumType();
       OseeEnumType oseeEnumType = null;
       if (xEnumType != null) {
-         Long enumUuid = HexUtil.toLong(xEnumType.getUuid());
+         Long enumUuid = Long.valueOf(xEnumType.getId());
          oseeEnumType = buffer.getEnumTypes().getByGuid(enumUuid);
       }
 
-      Long attrUuid = HexUtil.toLong(xAttributeType.getUuid());
+      Long attrUuid = Long.valueOf(xAttributeType.getId());
       attrTypeFactory.createOrUpdate(buffer.getAttrTypes(), //
          attrUuid, //
          xAttributeType.getName(), //
@@ -364,7 +363,7 @@ public class DslToTypeLoader implements TypesLoader {
       ArtifactType sideAType = buffer.getArtTypes().getUniqueByName(sideATypeName);
       ArtifactType sideBType = buffer.getArtTypes().getUniqueByName(sideBTypeName);
 
-      Long relUuid = HexUtil.toLong(xRelationType.getUuid());
+      Long relUuid = Long.valueOf(xRelationType.getId());
       relTypeFactory.createOrUpdate(buffer.getRelTypes(), //
          relUuid, //
          xRelationType.getName(), //

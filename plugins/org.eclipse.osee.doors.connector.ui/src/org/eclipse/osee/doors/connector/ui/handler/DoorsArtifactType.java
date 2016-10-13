@@ -19,7 +19,7 @@ public class DoorsArtifactType {
   /**
    * Doors Artifact type
    */
-  public static final IArtifactType Doors_Artifact = TokenFactory.createArtifactType(0x5000000000002001L,
+  public static final IArtifactType Doors_Artifact = TokenFactory.createArtifactType(5764607523034243073L,
       "DoorsArtifact");
 
 }

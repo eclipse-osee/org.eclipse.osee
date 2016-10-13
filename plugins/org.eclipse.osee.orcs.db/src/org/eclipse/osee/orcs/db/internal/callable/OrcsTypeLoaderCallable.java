@@ -17,12 +17,11 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import org.eclipse.osee.framework.core.data.OrcsTypesData;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -33,19 +32,12 @@ import org.eclipse.osee.framework.resource.management.StandardOptions;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.OrcsTypes;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OrcsTypeLoaderCallable extends AbstractDatastoreCallable<IResource> {
-
-   /**
-    * e2 stores
-    */
-   private static final String LOAD_OSEE_TYPE_DEF_URIS =
-      "select uri from osee_tuple2 t2, osee_txs txs1, osee_attribute attr, osee_txs txs2 where tuple_type = ? and " //
-      + "t2.gamma_id = txs1.gamma_id and txs1.branch_id = ? and txs1.tx_current = ? and e1 = ? and e2 = attr.attr_id and " //
-      + "attr.gamma_id = txs2.gamma_id and txs2.branch_id = txs1.branch_id and txs2.tx_current = ?";
 
    private final IResourceManager resourceManager;
 
@@ -70,7 +62,7 @@ public class OrcsTypeLoaderCallable extends AbstractDatastoreCallable<IResource>
       getJdbcClient().runQuery(stmt -> {
          String uri = stmt.getString("uri");
          paths.add(uri);
-      } , LOAD_OSEE_TYPE_DEF_URIS, CoreTupleTypes.OseeTypeDef, CoreBranches.COMMON,
+      }, OrcsTypes.LOAD_OSEE_TYPE_DEF_URIS, CoreTupleTypes.OseeTypeDef, CoreBranches.COMMON,
          TxChange.CURRENT.getValue(), OrcsTypesData.OSEE_TYPE_VERSION, TxChange.CURRENT.getValue());
       return paths;
    }
@@ -109,11 +101,14 @@ public class OrcsTypeLoaderCallable extends AbstractDatastoreCallable<IResource>
       private InputStream asInputStream(Collection<String> resources) throws OseeCoreException {
          PropertyStore options = new PropertyStore();
          options.put(StandardOptions.DecompressOnAquire.name(), "true");
-
+         getLogger().info("osee types uri [" + uri + "] resources [" + resources + "]");
          StringBuilder builder = new StringBuilder();
          for (String path : resources) {
             IResourceLocator locator = resourceManager.getResourceLocator(path);
             IResource resource = resourceManager.acquire(locator, options);
+            if (resource == null) {
+               throw new OseeStateException("Types resource can not be null for %s", path);
+            }
 
             InputStream inputStream = null;
             try {

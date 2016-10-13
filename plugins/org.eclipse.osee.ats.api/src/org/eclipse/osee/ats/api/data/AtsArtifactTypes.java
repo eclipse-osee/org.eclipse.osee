@@ -19,32 +19,32 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 public final class AtsArtifactTypes {
 
    // @formatter:off
-   public static final IArtifactType Action = TokenFactory.createArtifactType(0x0000000000000043L, "Action");
-   public static final IArtifactType ActionableItem = TokenFactory.createArtifactType(0x0000000000000045L, "Actionable Item");
-   public static final IArtifactType Configuration = TokenFactory.createArtifactType(0x000055500000003FL, "ATS Configuration");
-   public static final IArtifactType DecisionReview = TokenFactory.createArtifactType(0x0000000000000042L, "Decision Review");
-   public static final IArtifactType PeerToPeerReview = TokenFactory.createArtifactType(0x0000000000000041L, "PeerToPeer Review");
-   public static final IArtifactType Task = TokenFactory.createArtifactType(0x000000000000004AL, "Task");
-   public static final IArtifactType AbstractWorkflowArtifact = TokenFactory.createArtifactType(0x0000000000000047L, "Abstract State Machine Artifact");
-   public static final IArtifactType ReviewArtifact = TokenFactory.createArtifactType(0x0000000000000040L, "Abstract Review Artifact");
-   public static final IArtifactType TeamDefinition = TokenFactory.createArtifactType(0x0000000000000044L, "Team Definition");
-   public static final IArtifactType TeamWorkflow = TokenFactory.createArtifactType(0x0000000000000049L, "Team Workflow");
-   public static final IArtifactType Version = TokenFactory.createArtifactType(0x0000000000000046L, "Version");
-   public static final IArtifactType Goal = TokenFactory.createArtifactType(0x0000000000000048L, "Goal");
-   public static final IArtifactType AtsArtifact = TokenFactory.createArtifactType(0x000000000000003FL, "ats.Ats Artifact");
-   public static final IArtifactType WorkDefinition = TokenFactory.createArtifactType(0x000000000000003EL, "Work Definition");
-   public static final IArtifactType WorkPackage = TokenFactory.createArtifactType(0x0000000000000322L, "Work Package");
-   public static final IArtifactType Program = TokenFactory.createArtifactType(0x0000BA123443210004L, "Program");
-   public static final IArtifactType Country = TokenFactory.createArtifactType(0x44C69E6EBB2D8324L, "Country");
+   public static final IArtifactType Action = TokenFactory.createArtifactType(67, "Action");
+   public static final IArtifactType ActionableItem = TokenFactory.createArtifactType(69, "Actionable Item");
+   public static final IArtifactType Configuration = TokenFactory.createArtifactType(93802085744703L, "ATS Configuration");
+   public static final IArtifactType DecisionReview = TokenFactory.createArtifactType(66, "Decision Review");
+   public static final IArtifactType PeerToPeerReview = TokenFactory.createArtifactType(65, "PeerToPeer Review");
+   public static final IArtifactType Task = TokenFactory.createArtifactType(74, "Task");
+   public static final IArtifactType AbstractWorkflowArtifact = TokenFactory.createArtifactType(71, "Abstract State Machine Artifact");
+   public static final IArtifactType ReviewArtifact = TokenFactory.createArtifactType(64, "Abstract Review Artifact");
+   public static final IArtifactType TeamDefinition = TokenFactory.createArtifactType(68, "Team Definition");
+   public static final IArtifactType TeamWorkflow = TokenFactory.createArtifactType(73, "Team Workflow");
+   public static final IArtifactType Version = TokenFactory.createArtifactType(70, "Version");
+   public static final IArtifactType Goal = TokenFactory.createArtifactType(72, "Goal");
+   public static final IArtifactType AtsArtifact = TokenFactory.createArtifactType(63, "ats.Ats Artifact");
+   public static final IArtifactType WorkDefinition = TokenFactory.createArtifactType(62, "Work Definition");
+   public static final IArtifactType WorkPackage = TokenFactory.createArtifactType(802, "Work Package");
+   public static final IArtifactType Program = TokenFactory.createArtifactType(52374361342017540L, "Program");
+   public static final IArtifactType Country = TokenFactory.createArtifactType(4955822638391722788L, "Country");
 
-   public static final IArtifactType AgileTeam = TokenFactory.createArtifactType(0x68D469C51DA01041L, "Agile Team");
-   public static final IArtifactType AgileFeatureGroup = TokenFactory.createArtifactType(0x07C6AA0E42EE7661L, "Agile Feature Group");
-   public static final IArtifactType AgileSprint = TokenFactory.createArtifactType(0x7E213FC7506C5E43L, "Agile Sprint");
+   public static final IArtifactType AgileTeam = TokenFactory.createArtifactType(7553778770333667393L, "Agile Team");
+   public static final IArtifactType AgileFeatureGroup = TokenFactory.createArtifactType(560322181883393633L, "Agile Feature Group");
+   public static final IArtifactType AgileSprint = TokenFactory.createArtifactType(9088615648290692675L, "Agile Sprint");
 
-   public static final IArtifactType Insertion = TokenFactory.createArtifactType(0x18160B4E220FEDD8L, "Insertion");
-   public static final IArtifactType InsertionActivity = TokenFactory.createArtifactType(0x36B9D38A2B7789FCL, "Insertion Activity");
+   public static final IArtifactType Insertion = TokenFactory.createArtifactType(1735587136604728792L, "Insertion");
+   public static final IArtifactType InsertionActivity = TokenFactory.createArtifactType(3943415539127781884L, "Insertion Activity");
 
-   public static final IArtifactType RuleDefinition = TokenFactory.createArtifactType   (0x586836F761A0982EL, "Rule Definition");
+   public static final IArtifactType RuleDefinition = TokenFactory.createArtifactType(6370402109038303278L, "Rule Definition");
 
    // @formatter:on
 

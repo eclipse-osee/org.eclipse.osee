@@ -1,7 +1,7 @@
 import "platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
 
 artifactType "OAuth Client" extends "Artifact" {
-	uuid 0x0A811854041F8326
+	id 756912961500447526
 	attribute "Description"
 	attribute "Website URI"
 	attribute "Logo URI"
@@ -15,7 +15,7 @@ artifactType "OAuth Client" extends "Artifact" {
 }
 
 attributeType "Website URI" extends StringAttribute {
-	uuid 0x6C96C4E7AA77D058
+	id 7824657901879283800
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -23,7 +23,7 @@ attributeType "Website URI" extends StringAttribute {
 }
 
 attributeType "Logo URI" extends StringAttribute {
-	uuid 0x6CDB5B52A133AFB1
+	id 7843963586445815729
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -31,7 +31,7 @@ attributeType "Logo URI" extends StringAttribute {
 }
 
 attributeType "Is Confidential" extends BooleanAttribute {
-	uuid 0x0774F815D1F9E731
+	id 537327028164749105
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
@@ -40,7 +40,7 @@ attributeType "Is Confidential" extends BooleanAttribute {
 }
 
 attributeType "Authorized Grant Type" extends EnumeratedAttribute {
-	uuid 0x1ADA826121357000
+	id 1935002343589638144
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 4
@@ -50,7 +50,7 @@ attributeType "Authorized Grant Type" extends EnumeratedAttribute {
 }
 
 oseeEnumType "oauth.grant.type" {
-	uuid 0x1471F8E388582611
+	id 1473232209255605777
 	entry "Authorization Code Grant"
 	entry "Implicit Grant"
 	entry "Resource Owner Password Credentials Grant"
@@ -58,7 +58,7 @@ oseeEnumType "oauth.grant.type" {
 }
 
 attributeType "Authorized Redirect URI" extends StringAttribute {
-	uuid 0x4B4665B8E1002F28
+	id 5424134645937614632
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
@@ -66,7 +66,7 @@ attributeType "Authorized Redirect URI" extends StringAttribute {
 }
 
 attributeType "Authorized Scope" extends StringAttribute {
-	uuid 0x315964489A850F7A
+	id 3555983643778551674
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
@@ -75,7 +75,7 @@ attributeType "Authorized Scope" extends StringAttribute {
 }
 
 attributeType "Authorized Audience" extends StringAttribute {
-	uuid 0x635EBFA0D4A82E22
+	id 7160371155049131554
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
@@ -84,7 +84,7 @@ attributeType "Authorized Audience" extends StringAttribute {
 }
 
 attributeType "Properties" extends StringAttribute {
-	uuid 0x4E2EA052F480510A
+	id 5633616462036881674
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1

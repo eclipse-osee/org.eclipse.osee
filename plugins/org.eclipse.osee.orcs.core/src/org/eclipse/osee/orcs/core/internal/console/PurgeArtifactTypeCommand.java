@@ -19,7 +19,6 @@ import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.HexUtil;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
@@ -83,7 +82,7 @@ public class PurgeArtifactTypeCommand implements ConsoleCommand {
             Set<IArtifactType> toReturn = new HashSet<>();
             for (String uuid : typesToPurge) {
                try {
-                  Long typeId = HexUtil.toLong(uuid);
+                  Long typeId = Long.valueOf(uuid);
                   IArtifactType type = artifactTypes.get(typeId);
                   console.writeln("Type [%s] found. Guid: [0x%X]", type.getName(), type.getGuid());
                   toReturn.add(type);

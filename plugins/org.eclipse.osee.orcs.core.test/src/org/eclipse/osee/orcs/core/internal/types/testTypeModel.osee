@@ -1,6 +1,6 @@
 attributeType "Name" extends StringAttribute {
 	guid "AAMFEcF1AzV7PKuHmxwA"
-	uuid 0x1000000000000070
+	id 1152921504606847088
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
@@ -12,7 +12,7 @@ attributeType "Name" extends StringAttribute {
 
 attributeType "Annotation" extends CompressedContentAttribute {
 	guid "AAMFEcWy0xc4e3tcemQA"
-	uuid 0x1000000000000076
+	id 1152921504606847094
 	dataProvider UriAttributeDataProvider
 	min 0
 	max unlimited
@@ -23,7 +23,7 @@ attributeType "Annotation" extends CompressedContentAttribute {
 
 attributeType "WordML" extends WordAttribute {
 	guid "AAMFEcfcGS2V3SqQN2wA"
-	uuid 0x100000000000007A
+	id 1152921504606847098
 	dataProvider UriAttributeDataProvider
 	min 0
 	max 1
@@ -36,7 +36,7 @@ attributeType "WordML" extends WordAttribute {
 
 attributeType "Field 1" extends EnumeratedAttribute {
 	guid "AU1W_RDAbiHjGBUHyNQA"
-	uuid 0x1000000000000080
+	id 1152921504606847104
 	dataProvider DefaultAttributeDataProvider
 	min 2
 	max 3
@@ -47,7 +47,7 @@ attributeType "Field 1" extends EnumeratedAttribute {
 
 oseeEnumType "enum.test.proc.status" {
 	guid "AKkmjINR11UDdTOE1WAA"
-	uuid 0x3000000000000178
+	id 3458764513820541304
 	entry "Not Performed"
 	entryGuid "APt7jzRPv2HBlrjQZXAA"
 	description "it was not performed"
@@ -66,7 +66,7 @@ oseeEnumType "enum.test.proc.status" {
 
 attributeType "Field 2" extends DateAttribute {
 	guid "AU1tcZpvAgWKt9wooVQA"
-	uuid 0x1000000000000081
+	id 1152921504606847105
 	dataProvider UriAttributeDataProvider
 	min 1
 	max 1
@@ -79,7 +79,7 @@ attributeType "Field 2" extends DateAttribute {
 
 relationType "Requirement Relation" {
 	guid "BOkzi3U9VTe2fcUz_9gA"
-	uuid 0x2000000000000157
+	id 2305843009213694295
 	sideAName "requirement-sideA"
 	sideAArtifactType "Requirement"
 	sideBName "subsystem-sideB"
@@ -90,7 +90,7 @@ relationType "Requirement Relation" {
 
 relationType "Another Relation" {
 	guid "AVM9fT1Ue2QhFnt30FQA"
-	uuid 0x2000000000000158
+	id 2305843009213694296
 	sideAName "other-sideA"
 	sideAArtifactType "Other Artifact"
 	sideBName "last-sideB"
@@ -101,40 +101,40 @@ relationType "Another Relation" {
 
 artifactType "Artifact" {
 	guid "AAMFDh6S7gRLupAMwywA"
-	uuid 0x0000000000000001
+	id 1
 	attribute "Name"
 	attribute "Annotation"
 }
 
 abstract artifactType "Requirement" extends "Artifact" {
 	guid "BOm4NmAq+HC1O2hkMagA"
-	uuid 0x0000000000000015
+	id 21
 	attribute "WordML"
 }
 
 artifactType "Software Requirement" extends "Requirement" {
 	guid "BOm+AIG2snNbAM5FFcwA"
-	uuid 0x0000000000000018
+	id 24
 }
 
 artifactType "System Requirement" extends "Requirement" {
 	guid "BOnAaYTBOG68_Tw5Y_AA"
-	uuid 0x000000000000001E
+	id 30
 }
 
 artifactType "Other Artifact" extends "Artifact" {
 	guid "AUStoi43TWac2EHzNIAA"
-	uuid 0x0000000000000020
+	id 32
 }
 
 artifactType "SubSystem Requirement" extends "Requirement" , "Other Artifact" {
 	guid "BOnBhJ1XAFGKcrku3LgA"
-	uuid 0x000000000000001D
+	id 29
 	attribute "Field 1" branchUuid 3458234234
 }
 
 abstract artifactType "Last Artifact" extends "SubSystem Requirement" {
 	guid "AUqqRktDXW9r6YXq0WQA"
-	uuid 0x0000000000000021
+	id 33
 	attribute "Field 2" branchUuid 9993245332
 }

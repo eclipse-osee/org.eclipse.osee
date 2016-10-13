@@ -20,6 +20,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.OrcsTypesData;
+import org.eclipse.osee.framework.core.data.OrcsTypesVersion;
 
 /**
  * @author Roberto E. Escobar
@@ -30,6 +31,22 @@ public interface TypesEndpoint {
    @GET
    @Produces({OrcsMediaType.APPLICATION_ORCS_TYPES, MediaType.TEXT_PLAIN})
    Response getTypes();
+
+   @GET
+   @Path("config")
+   @Produces({MediaType.APPLICATION_JSON})
+   Response getConfig();
+
+   @GET
+   @Path("config/sheet")
+   @Produces({MediaType.APPLICATION_JSON})
+   Response getConfigSheets();
+
+   @POST
+   @Path("config/sheet")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   Response setConfigSheets(OrcsTypesVersion version);
 
    @GET
    @Path("attribute/enum")

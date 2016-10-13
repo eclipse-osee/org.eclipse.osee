@@ -50,7 +50,6 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.util.OseeDslSwitch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.HexUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResource;
@@ -172,7 +171,7 @@ public class OrcsTypesIndexer {
    private IArtifactType getOrCreateToken(ArtifactTypeIndex index, XArtifactType dslType) throws OseeCoreException {
       IArtifactType token = index.getTokenByDslType(dslType);
       if (token == null) {
-         long id = HexUtil.toLong(dslType.getUuid());
+         long id = Long.valueOf(dslType.getId());
          token = TokenFactory.createArtifactType(id, dslType.getName());
          index.put(token, dslType);
       }
@@ -182,7 +181,7 @@ public class OrcsTypesIndexer {
    private IAttributeType getOrCreateToken(AttributeTypeIndex index, XAttributeType dslType) throws OseeCoreException {
       IAttributeType token = index.getTokenByDslType(dslType);
       if (token == null) {
-         long id = HexUtil.toLong(dslType.getUuid());
+         long id = Long.valueOf(dslType.getId());
          token = TokenFactory.createAttributeType(id, dslType.getName());
          index.put(token, dslType);
       }
@@ -192,7 +191,7 @@ public class OrcsTypesIndexer {
    private IRelationType getOrCreateToken(RelationTypeIndex index, XRelationType dslType) throws OseeCoreException {
       RelationTypeToken token = index.getTokenByDslType(dslType);
       if (token == null) {
-         long id = HexUtil.toLong(dslType.getUuid());
+         long id = Long.valueOf(dslType.getId());
          token = TokenFactory.createRelationType(id, dslType.getName());
          index.put(token, dslType);
       }
@@ -227,7 +226,7 @@ public class OrcsTypesIndexer {
          lastOrdinal++;
       }
       Collections.sort(entries);
-      Long uuid = HexUtil.toLong(dslType.getUuid());
+      Long uuid = Long.valueOf(dslType.getId());
       return new EnumTypeImpl(uuid, dslType.getName(), entries);
    }
 
@@ -261,10 +260,10 @@ public class OrcsTypesIndexer {
          @Override
          public Void caseRemoveAttribute(RemoveAttribute removeOption) {
             XAttributeType attribute = removeOption.getAttribute();
-            String guidToMatch = attribute.getUuid();
+            String guidToMatch = attribute.getId();
             List<XAttributeTypeRef> toRemove = new LinkedList<>();
             for (XAttributeTypeRef xAttributeTypeRef : validAttributeTypes) {
-               String itemGuid = xAttributeTypeRef.getValidAttributeType().getUuid();
+               String itemGuid = xAttributeTypeRef.getValidAttributeType().getId();
                if (guidToMatch.equals(itemGuid)) {
                   toRemove.add(xAttributeTypeRef);
                }
@@ -276,10 +275,10 @@ public class OrcsTypesIndexer {
          @Override
          public Void caseUpdateAttribute(UpdateAttribute updateAttribute) {
             XAttributeTypeRef refToUpdate = updateAttribute.getAttribute();
-            String guidToMatch = refToUpdate.getValidAttributeType().getUuid();
+            String guidToMatch = refToUpdate.getValidAttributeType().getId();
             List<XAttributeTypeRef> toRemove = new LinkedList<>();
             for (XAttributeTypeRef xAttributeTypeRef : validAttributeTypes) {
-               String itemGuid = xAttributeTypeRef.getValidAttributeType().getUuid();
+               String itemGuid = xAttributeTypeRef.getValidAttributeType().getId();
                if (guidToMatch.equals(itemGuid)) {
                   toRemove.add(xAttributeTypeRef);
                }

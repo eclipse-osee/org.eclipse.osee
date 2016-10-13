@@ -12,7 +12,7 @@
 
 	<artifactId>org.eclipse.osee.x.server.integration.tests</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
-	<name>OSEE Server Integration Tests (Incubation)</name>
+	<name>OSEE X Server Integration Tests (Incubation)</name>
 
 	<build>
 		<plugins>

@@ -26,9 +26,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -46,7 +50,9 @@ import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.LoadDescription;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
 import org.eclipse.osee.orcs.core.ds.RelationData;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.junit.Before;
@@ -85,10 +91,12 @@ public class LoaderTest {
 
    private HasCancellation cancellation;
    private DataLoaderFactory loaderFactory;
-   private final int OseeTypesFrameworkId = 518481167;
-   private final String OseeTypesFrameworkGuid = "AQjoNk+tfwaBTmnl1IQA";
-   private final int OseeTypesDemoId = 466104557;
-   private final String OseeTypesDemoGuid = "AQjoNnwNdyjicTck2UwA";
+   private ArtifactReadable OseeTypesFrameworkArt;
+   private int OseeTypesFrameworkId;
+   private String OseeTypesFrameworkGuid;
+   private ArtifactReadable OseeTypesClientDemoArt;
+   private int OseeTypesClientDemoId;
+   private String OseeTypesClientDemoGuid;
    private final int UserGroupsId = CoreArtifactTokens.UserGroups.getUuid().intValue();
    private final String UserGroupsGuid = CoreArtifactTokens.UserGroups.getGuid();
    private final TransactionId tx5 = TransactionId.valueOf(5);
@@ -98,6 +106,19 @@ public class LoaderTest {
    @Before
    public void setUp() throws OseeCoreException {
       JdbcClient jdbcClient = jdbcService.getClient();
+
+      for (ArtifactReadable art : orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(
+         CoreArtifactTypes.OseeTypeDefinition).getResults()) {
+         if (art.getName().contains("Framework")) {
+            OseeTypesFrameworkId = art.getId().intValue();
+            OseeTypesFrameworkGuid = art.getGuid();
+            OseeTypesFrameworkArt = art;
+         } else if (art.getName().contains("OseeTypes_ClientDemo")) {
+            OseeTypesClientDemoId = art.getId().intValue();
+            OseeTypesClientDemoGuid = art.getGuid();
+            OseeTypesClientDemoArt = art;
+         }
+      }
 
       if (jdbcClient.getConfig().isProduction()) {
          throw new OseeStateException("Test should not be run against a Production Database");
@@ -129,7 +150,7 @@ public class LoaderTest {
    @org.junit.Test
    public void testLoad() throws OseeCoreException {
       DataLoader loader =
-         loaderFactory.newDataLoaderFromIds(session, COMMON, OseeTypesFrameworkId, OseeTypesDemoId, UserGroupsId);
+         loaderFactory.newDataLoaderFromIds(session, COMMON, OseeTypesFrameworkId, OseeTypesClientDemoId, UserGroupsId);
       loader.withLoadLevel(LoadLevel.ALL);
       verifyArtsAttrAndRelData(loader);
    }
@@ -157,17 +178,19 @@ public class LoaderTest {
       sort(attributeCaptor.getAllValues());
       Iterator<AttributeData> attrs = attributeCaptor.getAllValues().iterator();
 
-      // @formatter:off
-      verifyData(attrs.next(), 4, OseeTypesFrameworkId, NEW, Active.getId(), COMMON,tx5, 13L, "true", "");
-      verifyData(attrs.next(), 5, OseeTypesFrameworkId, NEW, Name.getId(), COMMON,tx5, 14L, "org.eclipse.osee.framework.skynet.core.OseeTypes_Framework", "");
-      verifyData(attrs.next(), 6, OseeTypesFrameworkId, NEW, UriGeneralStringData.getId(), COMMON,tx5, 15L, "", "attr://15/"+OseeTypesFrameworkGuid+".zip");
+      verifyData(attrs.next(), 4, OseeTypesFrameworkId, NEW, Active.getId(), COMMON, tx5, 13L, "true", "");
+      verifyData(attrs.next(), 5, OseeTypesFrameworkId, NEW, Name.getId(), COMMON, tx5, 14L,
+         "org.eclipse.osee.framework.skynet.core.OseeTypes_Framework", "");
+      verifyData(attrs.next(), 6, OseeTypesFrameworkId, NEW, UriGeneralStringData.getId(), COMMON, tx5, 15L, "",
+         "attr://15/" + OseeTypesFrameworkGuid + ".zip");
 
-      verifyData(attrs.next(), 10, OseeTypesDemoId, NEW, Active.getId(), COMMON,tx5, 19L, "true", "");
-      verifyData(attrs.next(), 11, OseeTypesDemoId, NEW, Name.getId(), COMMON,tx5, 20L, "org.eclipse.osee.client.demo.OseeTypes_ClientDemo", "");
-      verifyData(attrs.next(), 12, OseeTypesDemoId, NEW, UriGeneralStringData.getId(), COMMON,tx5, 21L, "", "attr://21/"+OseeTypesDemoGuid+".zip");
+      verifyData(attrs.next(), 7, OseeTypesClientDemoId, NEW, Active.getId(), COMMON, tx5, 16L, "true", "");
+      verifyData(attrs.next(), 8, OseeTypesClientDemoId, NEW, Name.getId(), COMMON, tx5, 17L,
+         "org.eclipse.osee.client.demo.OseeTypes_ClientDemo", "");
+      verifyData(attrs.next(), 9, OseeTypesClientDemoId, NEW, UriGeneralStringData.getId(), COMMON, tx5, 18L, "",
+         "attr://18/" + OseeTypesClientDemoGuid + ".zip");
 
-      verifyData(attrs.next(), 20, UserGroupsId, NEW, Name.getId(), COMMON, tx7, 70L, "User Groups", "");
-      // @formatter:on
+      verifyData(attrs.next(), 20, UserGroupsId, NEW, Name.getId(), COMMON, tx7, 49L, "User Groups", "");
 
       sort(relationCaptor.getAllValues());
       Iterator<RelationData> rels = relationCaptor.getAllValues().iterator();
@@ -177,30 +200,31 @@ public class LoaderTest {
 
    private void verifyRels(Iterator<RelationData> rels) {
       verifyData(rels.next(), 1, UserGroupsId, 48656, "", NEW, Default_Hierarchical__Parent.getGuid(), COMMON, tx7,
-         40L);
+         41L);
       verifyData(rels.next(), 2, 197818, UserGroupsId, "", NEW, Default_Hierarchical__Parent.getGuid(), COMMON, tx7,
+         40L);
+      verifyData(rels.next(), 3, UserGroupsId, 52247, "", NEW, Default_Hierarchical__Parent.getGuid(), COMMON, tx7,
          39L);
-      verifyData(rels.next(), 3, UserGroupsId, 52247, "", NEW, Default_Hierarchical__Parent.getGuid(), COMMON, tx7, 6L);
       verifyData(rels.next(), 9, UserGroupsId, 8033605, "", NEW, Default_Hierarchical__Parent.getGuid(), COMMON, tx10,
-         107L);
+         110L);
       verifyData(rels.next(), 10, UserGroupsId, 136750, "", NEW, Default_Hierarchical__Parent.getGuid(), COMMON, tx10,
-         106L);
+         108L);
       verifyData(rels.next(), 11, UserGroupsId, 5367074, "", NEW, Default_Hierarchical__Parent.getGuid(), COMMON, tx10,
-         105L);
+         107L);
    }
 
    private void verifyArts(Iterator<ArtifactData> arts) {
-      // @formatter:off
-      verifyData(arts.next(), UserGroupsId, UserGroupsGuid, NEW, Folder.getId(), COMMON, tx7, 47L);
-      verifyData(arts.next(), OseeTypesDemoId, OseeTypesDemoGuid, NEW, OseeTypeDefinition.getId(), COMMON, tx5, 10L);
-      verifyData(arts.next(), OseeTypesFrameworkId, OseeTypesFrameworkGuid, NEW, OseeTypeDefinition.getId(), COMMON, tx5, 8L);
-      // @formatter:on
+      verifyData(arts.next(), UserGroupsId, UserGroupsGuid, NEW, Folder.getId(), COMMON, tx7, 42L);
+      verifyData(arts.next(), OseeTypesClientDemoId, OseeTypesClientDemoGuid, NEW, OseeTypeDefinition.getId(), COMMON,
+         tx5, 9L);
+      verifyData(arts.next(), OseeTypesFrameworkId, OseeTypesFrameworkGuid, NEW, OseeTypeDefinition.getId(), COMMON,
+         tx5, 8L);
    }
 
    @org.junit.Test
    public void testLoadByTypes() throws OseeCoreException {
       DataLoader loader =
-         loaderFactory.newDataLoaderFromIds(session, COMMON, OseeTypesFrameworkId, OseeTypesDemoId, UserGroupsId);
+         loaderFactory.newDataLoaderFromIds(session, COMMON, OseeTypesFrameworkId, OseeTypesClientDemoId, UserGroupsId);
       loader.withLoadLevel(LoadLevel.ALL);
 
       loader.withAttributeTypes(Name);
@@ -227,11 +251,11 @@ public class LoaderTest {
       sort(attributeCaptor.getAllValues());
       Iterator<AttributeData> attrs = attributeCaptor.getAllValues().iterator();
 
-      // @formatter:off
-      verifyData(attrs.next(), 5, OseeTypesFrameworkId, NEW, Name.getId(), COMMON,tx5, 14L, "org.eclipse.osee.framework.skynet.core.OseeTypes_Framework", "");
-      verifyData(attrs.next(), 11, OseeTypesDemoId, NEW, Name.getId(), COMMON,tx5, 20L, "org.eclipse.osee.client.demo.OseeTypes_ClientDemo", "");
-      verifyData(attrs.next(), 20, UserGroupsId, NEW, Name.getId(), COMMON, tx7, 70L, "User Groups", "");
-      // @formatter:on
+      verifyData(attrs.next(), 5, OseeTypesFrameworkId, NEW, Name.getId(), COMMON, tx5, 14L,
+         "org.eclipse.osee.framework.skynet.core.OseeTypes_Framework", "");
+      verifyData(attrs.next(), 8, OseeTypesClientDemoId, NEW, Name.getId(), COMMON, tx5, 17L,
+         "org.eclipse.osee.client.demo.OseeTypes_ClientDemo", "");
+      verifyData(attrs.next(), 20, UserGroupsId, NEW, Name.getId(), COMMON, tx7, 49L, "User Groups", "");
 
       sort(relationCaptor.getAllValues());
       Iterator<RelationData> rels = relationCaptor.getAllValues().iterator();
@@ -242,10 +266,18 @@ public class LoaderTest {
    @org.junit.Test
    public void testLoadByIds() throws OseeCoreException {
       DataLoader loader =
-         loaderFactory.newDataLoaderFromIds(session, COMMON, OseeTypesFrameworkId, OseeTypesDemoId, UserGroupsId);
+         loaderFactory.newDataLoaderFromIds(session, COMMON, OseeTypesFrameworkId, OseeTypesClientDemoId, UserGroupsId);
       loader.withLoadLevel(LoadLevel.ALL);
 
-      loader.withAttributeIds(4, 10);
+      List<Integer> activeAttrIds = new LinkedList<>();
+      AttributeReadable<Object> frameworkActiveAttr = getActiveAttr(OseeTypesFrameworkArt);
+      Integer frameworkActiveAttrId = frameworkActiveAttr.getId().intValue();
+      activeAttrIds.add(frameworkActiveAttrId);
+      AttributeReadable<Object> clientDemoActiveAttr = getActiveAttr(OseeTypesClientDemoArt);
+      Integer clientDemoActiveAttrId = clientDemoActiveAttr.getId().intValue();
+      activeAttrIds.add(clientDemoActiveAttrId);
+      loader.withAttributeIds(activeAttrIds);
+
       loader.withRelationIds(2, 3);
 
       loader.load(cancellation, builder);
@@ -269,25 +301,32 @@ public class LoaderTest {
       sort(attributeCaptor.getAllValues());
       Iterator<AttributeData> attrs = attributeCaptor.getAllValues().iterator();
 
-      // @formatter:off
-      verifyData(attrs.next(), 4, OseeTypesFrameworkId, NEW, Active.getId(), COMMON,tx5, 13L, "true", "");
-      verifyData(attrs.next(), 10, OseeTypesDemoId, NEW, Active.getId(), COMMON,tx5, 19L, "true", "");
-      // @formatter:on
+      verifyData(attrs.next(), frameworkActiveAttrId, OseeTypesFrameworkId, NEW, Active.getId(), COMMON, tx5,
+         frameworkActiveAttr.getGammaId(), "true", "");
+      verifyData(attrs.next(), clientDemoActiveAttrId, OseeTypesClientDemoId, NEW, Active.getId(), COMMON, tx5,
+         clientDemoActiveAttr.getGammaId(), "true", "");
 
       sort(relationCaptor.getAllValues());
       Iterator<RelationData> rels = relationCaptor.getAllValues().iterator();
 
-      // @formatter:off
       verifyData(rels.next(), 2, 197818, UserGroupsId, "", NEW, Default_Hierarchical__Parent.getGuid(), COMMON, tx7,
-         39L);
+         40L);
       verifyData(rels.next(), 3, UserGroupsId, 52247, "", NEW, Default_Hierarchical__Parent.getGuid(), COMMON, tx7,
-         6L);
-      // @formatter:on
+         39L);
+   }
+
+   private AttributeReadable<Object> getActiveAttr(ArtifactReadable artifact) {
+      for (AttributeReadable<Object> attr : artifact.getAttributes()) {
+         if (attr.getAttributeType().equals(Active)) {
+            return attr;
+         }
+      }
+      return null;
    }
 
    @org.junit.Test
    public void testLoadByGuids() throws OseeCoreException {
-      String[] ids = new String[] {OseeTypesFrameworkGuid, OseeTypesDemoGuid, UserGroupsGuid};
+      String[] ids = new String[] {OseeTypesFrameworkGuid, OseeTypesClientDemoGuid, UserGroupsGuid};
       DataLoader loader = loaderFactory.newDataLoaderFromGuids(session, COMMON, ids);
       loader.withLoadLevel(LoadLevel.ALL);
       verifyArtsAttrAndRelData(loader);

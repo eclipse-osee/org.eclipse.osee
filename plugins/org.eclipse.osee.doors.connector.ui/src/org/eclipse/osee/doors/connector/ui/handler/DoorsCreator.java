@@ -65,9 +65,9 @@ public class DoorsCreator {
                ArtifactQuery.checkArtifactFromTypeAndName(DoorsArtifactType.Doors_Artifact, reqName, branch);
             if (artifact == null) {
                newArtifact = parentArtifact.addNewChild(PREEXISTING,
-                  TokenFactory.createArtifactType(0x5000000000002001L, "DoorsRequirement"), reqName);
+                  TokenFactory.createArtifactType(5764607523034243073L, "DoorsRequirement"), reqName);
                newArtifact.setSoleAttributeFromString(
-                  TokenFactory.createAttributeType(0x5000000000002003L, "Door Req Name"), reqName);
+                  TokenFactory.createAttributeType(5764607523034243075L, "Door Req Name"), reqName);
                newArtifact.setSoleAttributeFromString(
                   TokenFactory.createAttributeType(0x0000000000002006, "Door Req URL"), url);
 
@@ -76,7 +76,7 @@ public class DoorsCreator {
                trans.execute();
             } else {
                artifact.setSoleAttributeFromString(
-                  TokenFactory.createAttributeType(0x5000000000002003L, "Door Req Name"), reqName);
+                  TokenFactory.createAttributeType(5764607523034243075L, "Door Req Name"), reqName);
                artifact.setSoleAttributeFromString(TokenFactory.createAttributeType(0x0000000000002006, "Door Req URL"),
                   url);
 

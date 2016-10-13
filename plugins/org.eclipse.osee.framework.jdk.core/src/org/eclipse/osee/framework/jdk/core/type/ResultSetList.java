@@ -27,7 +27,7 @@ public class ResultSetList<T> implements ResultSet<T> {
       this.data = Collections.emptyList();
    }
 
-   protected ResultSetList(List<T> data) {
+   public ResultSetList(List<T> data) {
       super();
       this.data = data;
    }

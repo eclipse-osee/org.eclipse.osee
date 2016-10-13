@@ -28,6 +28,8 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.type.ResultSetList;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
@@ -36,6 +38,7 @@ import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
+import org.eclipse.osee.orcs.data.RelationReadable;
 
 /**
  * @author Megumi Telles
@@ -247,6 +250,12 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
+   public ResultSet<RelationReadable<Object>> getRelations(RelationTypeSide typeAndSide) {
+      return new ResultSetList<RelationReadable<Object>>(Collections.castAll(
+         getRelationManager().getRelations(getSession(), getProxiedObject(), DeletionFlag.EXCLUDE_DELETED)));
+   }
+
+   @Override
    public ResultSet<ArtifactReadable> getRelated(RelationTypeSide typeAndSide, DeletionFlag deletionFlag) throws OseeCoreException {
       IRelationType type = typeAndSide.getRelationType();
       RelationSide side = whichSideAmIOn(typeAndSide);
@@ -316,4 +325,5 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    public ModificationType getModificationType() {
       return getProxiedObject().getModificationType();
    }
+
 }

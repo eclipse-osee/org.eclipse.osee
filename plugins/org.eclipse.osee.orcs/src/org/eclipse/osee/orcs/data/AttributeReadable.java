@@ -23,6 +23,7 @@ public interface AttributeReadable<T> extends AttributeId, OrcsReadable {
 
    long getGammaId();
 
+   @Override
    ModificationType getModificationType();
 
    IAttributeType getAttributeType() throws OseeCoreException;

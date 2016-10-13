@@ -24,7 +24,6 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
 import org.eclipse.osee.framework.jdk.core.util.ChecksumUtil;
-import org.eclipse.osee.framework.jdk.core.util.HexUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.template.engine.OseeTemplateTokens;
@@ -180,9 +179,9 @@ public class TemplateRegistryImpl implements TemplateRegistry, IResourceRegistry
       boolean isActive = false;
       boolean isStopping = false;
       if (state == Bundle.ACTIVE //
-      || state == Bundle.STARTING //
-      || state == Bundle.INSTALLED //
-      || state == Bundle.RESOLVED) {
+         || state == Bundle.STARTING //
+         || state == Bundle.INSTALLED //
+         || state == Bundle.RESOLVED) {
          isActive = true;
       } else if (state == Bundle.STOPPING) {
          isStopping = true;
@@ -228,7 +227,7 @@ public class TemplateRegistryImpl implements TemplateRegistry, IResourceRegistry
                if (Strings.isValid(uuidAttribute)) {
                   if (isValidUuid(uuidAttribute)) {
                      URL url = resourceUrls.iterator().next();
-                     Long uuid = HexUtil.toLong(uuidAttribute);
+                     Long uuid = Long.valueOf(uuidAttribute);
                      addEntry(bundle, headerValue, tokens, url, uuid);
                   } else {
                      logger.error("Invalid uuidAttribute [%s] for manifest element [%s] in bundle [%s]", uuidAttribute,
@@ -248,7 +247,7 @@ public class TemplateRegistryImpl implements TemplateRegistry, IResourceRegistry
    }
 
    private boolean isValidUuid(String value) {
-      return HexUtil.isHexString(value);
+      return Strings.isNumeric(value);
    }
 
    private void addEntry(Bundle bundle, String headerValue, TemplateResources tokens, URL url, Long uuidSpecified) {

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -36,6 +37,9 @@ public class TupleQueryImpl implements TupleQuery {
 
    private static final String SELECT_E2_BY_TUPLE_TYPE =
       "select distinct e2, value from osee_txs txs, osee_tuple2 app, osee_key_value where tuple_type = ? and app.gamma_id = txs.gamma_id and branch_id = ? and tx_current = 1 and e2 = key";
+
+   private static final String SELECT_E2_BY_TUPLE_TYPE_RAW =
+      "select distinct e2 from osee_txs txs, osee_tuple2 app where tuple_type = ? and app.gamma_id = txs.gamma_id and branch_id = ? and tx_current = 1 and e1 = ?";
 
    private static final String SELECT_KEY_VALUE_FROM_BRANCH_VIEW =
       "SELECT distinct e2, value from osee_tuple2 app, osee_txs txs1, osee_key_value where app.e1 = ? and tuple_type = ? and app.gamma_id = txs1.gamma_id and txs1.branch_id = ? AND txs1.tx_current = 1 and app.e2 = key";
@@ -79,7 +83,9 @@ public class TupleQueryImpl implements TupleQuery {
 
    @Override
    public <E1, E2> Iterable<Long> getTuple2Raw(Tuple2Type<E1, E2> tupleType, BranchId branchId, E1 e1) {
-      return null;
+      List<Long> consumer = new ArrayList<Long>();
+      runQuery("e2", consumer, SELECT_E2_BY_TUPLE_TYPE_RAW, tupleType, branchId, e1);
+      return consumer;
    }
 
    @Override

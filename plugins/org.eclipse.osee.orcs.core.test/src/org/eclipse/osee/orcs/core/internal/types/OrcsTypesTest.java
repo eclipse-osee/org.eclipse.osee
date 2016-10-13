@@ -38,6 +38,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -75,22 +76,22 @@ public class OrcsTypesTest {
 
    private static final String TEST_TYPE_MODEL = "testTypeModel.osee";
 
-   private static final IArtifactType ARTIFACT = TokenFactory.createArtifactType(0x0000000000000001L, "Artifact");
-   private static final IArtifactType REQUIREMENT = TokenFactory.createArtifactType(0x0000000000000015L, "Requirement");
-   private static final IArtifactType SOFTWARE_REQUIREMENT = TokenFactory.createArtifactType(0x0000000000000018L, "Software Requirement");
-   private static final IArtifactType SYSTEM_REQUIREMENT = TokenFactory.createArtifactType(0x000000000000001EL, "System Requirement");
-   private static final IArtifactType SUBSYSTEM_REQUIREMENT = TokenFactory.createArtifactType(0x000000000000001DL, "SubSystem Requirement");
-   private static final IArtifactType OTHER_ARTIFACT = TokenFactory.createArtifactType(0x0000000000000020L, "Other Artifact");
-   private static final IArtifactType LAST_ARTIFACT = TokenFactory.createArtifactType(0x0000000000000021L, "Last Artifact");
+   private static final IArtifactType ARTIFACT = TokenFactory.createArtifactType(1, "Artifact");
+   private static final IArtifactType REQUIREMENT = TokenFactory.createArtifactType(21, "Requirement");
+   private static final IArtifactType SOFTWARE_REQUIREMENT = TokenFactory.createArtifactType(24, "Software Requirement");
+   private static final IArtifactType SYSTEM_REQUIREMENT = TokenFactory.createArtifactType(30, "System Requirement");
+   private static final IArtifactType SUBSYSTEM_REQUIREMENT = TokenFactory.createArtifactType(29, "SubSystem Requirement");
+   private static final IArtifactType OTHER_ARTIFACT = TokenFactory.createArtifactType(32, "Other Artifact");
+   private static final IArtifactType LAST_ARTIFACT = TokenFactory.createArtifactType(33, "Last Artifact");
 
-   private static final IAttributeType NAME = TokenFactory.createAttributeType(0x1000000000000070L, "Name");
-   private static final IAttributeType ANNOTATION = TokenFactory.createAttributeType(0x1000000000000076L, "Annotation");
-   private static final IAttributeType WORDML = TokenFactory.createAttributeType(0x100000000000007AL, "WordML");
-   private static final IAttributeType FIELD_1 = TokenFactory.createAttributeType(0x1000000000000080L, "Field 1");
-   private static final IAttributeType FIELD_2 = TokenFactory.createAttributeType(0x1000000000000081L, "Field 2");
+   private static final IAttributeType NAME = TokenFactory.createAttributeType(1152921504606847088L, "Name");
+   private static final IAttributeType ANNOTATION = TokenFactory.createAttributeType(1152921504606847094L, "Annotation");
+   private static final IAttributeType WORDML = TokenFactory.createAttributeType(1152921504606847098L, "WordML");
+   private static final IAttributeType FIELD_1 = TokenFactory.createAttributeType(1152921504606847104L, "Field 1");
+   private static final IAttributeType FIELD_2 = TokenFactory.createAttributeType(1152921504606847105L, "Field 2");
 
-   private static final RelationTypeToken REQUIREMENT_REL = TokenFactory.createRelationType(0x2000000000000157L, "Requirement Relation");
-   private static final RelationTypeToken ANOTHER_REL = TokenFactory.createRelationType(0x2000000000000158L, "Another Relation");
+   private static final IRelationType REQUIREMENT_REL = TokenFactory.createRelationType(2305843009213694295L, "Requirement Relation");
+   private static final IRelationType ANOTHER_REL = TokenFactory.createRelationType(2305843009213694296L, "Another Relation");
 
    static long BRANCH_A_UUID = 3458234234L;
    static long BRANCH_B_UUID = 9993245332L;
@@ -369,7 +370,7 @@ public class OrcsTypesTest {
    public void testReloadAddArtifactType() throws OseeCoreException {
       String addTypeDef = "artifactType \"Added Artifact Type\" extends \"Other Artifact\" {\n" + //
          "guid \"AUsuRi68hVhYLH76ENgA\" \n" + //
-         "uuid 0x0000000000000023 \n" + //
+         "id 35 \n" + //
          "}";
 
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
@@ -381,10 +382,10 @@ public class OrcsTypesTest {
       resources.add(asInput(addTypeDef));
 
       assertEquals(8, artTypes.size());
-      IArtifactType artifactType = artTypes.get(0x0000000000000023L);
+      IArtifactType artifactType = artTypes.get(35L);
 
       assertEquals("Added Artifact Type", artifactType.getName());
-      assertEquals(Long.valueOf(0x0000000000000023L), artifactType.getGuid());
+      assertEquals(Long.valueOf(35), artifactType.getGuid());
 
       assertEquals(false, artTypes.isAbstract(artifactType));
       assertEquals(true, artTypes.inheritsFrom(artifactType, OTHER_ARTIFACT));
@@ -615,7 +616,7 @@ public class OrcsTypesTest {
       EnumType enumType = attrTypes.getEnumType(FIELD_1);
 
       assertEquals("enum.test.proc.status", enumType.getName());
-      assertEquals(Long.valueOf(0x3000000000000178L), enumType.getId());
+      assertEquals(Long.valueOf(3458764513820541304L), enumType.getId());
 
       EnumEntry[] values = enumType.values();
 
@@ -675,7 +676,7 @@ public class OrcsTypesTest {
       EnumType enumType = attrTypes.getEnumType(FIELD_1);
 
       assertEquals("enum.test.proc.status", enumType.getName());
-      assertEquals(Long.valueOf(0x3000000000000178L), enumType.getId());
+      assertEquals(Long.valueOf(3458764513820541304L), enumType.getId());
 
       Iterator<String> iterator = enumType.valuesAsOrderedStringSet().iterator();
       assertEquals("Completed -- Analysis in Work", iterator.next());
@@ -708,7 +709,7 @@ public class OrcsTypesTest {
       //@formatter:off
       String addAttributeType = "attributeType \"Field 3\" extends DateAttribute {" +
         "guid \"AizLp7tWSgr9HNzdmUAA\" \n" +
-        "uuid 0x1000000000000082 \n" +
+        "id 1152921504606847106 \n" +
         "dataProvider DefaultAttributeDataProvider \n" +
         "min 1 \n" +
         "max 1 \n" +
@@ -721,11 +722,11 @@ public class OrcsTypesTest {
 
       assertEquals(6, attrTypes.size());
 
-      IAttributeType attrType = attrTypes.get(0x1000000000000082L);
+      IAttributeType attrType = attrTypes.get(1152921504606847106L);
 
       //@formatter:off
       assertEquals("Field 3", attrType.getName());
-      assertEquals(Long.valueOf(0x1000000000000082L), attrType.getGuid());
+      assertEquals(Long.valueOf(1152921504606847106L), attrType.getGuid());
       assertEquals("org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider", attrTypes.getAttributeProviderId(attrType));
       assertEquals("org.eclipse.osee.framework.skynet.core.DateAttribute", attrTypes.getBaseAttributeTypeId(attrType));
       assertEquals(null, attrTypes.getDefaultValue(attrType));
@@ -908,7 +909,7 @@ public class OrcsTypesTest {
       //@formatter:off
       String addType = "relationType \"Dynamic Relation\" {\n"+
           "guid \"Ai1n5tou4mr0pqXEPgQA\" \n"+
-          "uuid 0x2000000000000159 \n"+
+          "id 2305843009213694297 \n"+
           "sideAName \"dynamic-sideA\" \n"+
           "sideAArtifactType \"Artifact\" \n"+
           "sideBName \"dynamic-sideB\" \n"+
@@ -922,10 +923,10 @@ public class OrcsTypesTest {
 
       assertEquals(3, relTypes.size());
 
-      RelationTypeToken relation = relTypes.get(0x2000000000000159L);
+      RelationTypeToken relation = relTypes.get(2305843009213694297L);
 
       assertEquals("Dynamic Relation", relation.getName());
-      assertEquals(Long.valueOf(0x2000000000000159L), relation.getId());
+      assertEquals(Long.valueOf(2305843009213694297L), relation.getId());
 
       assertEquals(ARTIFACT, relTypes.getArtifactType(relation, SIDE_A));
       assertEquals(OTHER_ARTIFACT, relTypes.getArtifactType(relation, SIDE_B));

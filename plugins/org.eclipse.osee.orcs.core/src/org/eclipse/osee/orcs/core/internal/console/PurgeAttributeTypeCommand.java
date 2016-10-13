@@ -19,8 +19,6 @@ import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.HexUtil;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
@@ -90,12 +88,7 @@ public class PurgeAttributeTypeCommand implements ConsoleCommand {
             Set<IAttributeType> toReturn = new HashSet<>();
             for (String uuid : typesToPurge) {
                try {
-                  Long typeId = -1L;
-                  if (Strings.isNumeric(uuid)) {
-                     typeId = Long.valueOf(uuid);
-                  } else {
-                     typeId = HexUtil.toLong(uuid);
-                  }
+                  Long typeId = Long.valueOf(uuid);
                   IAttributeType type = attributeTypes.get(typeId);
                   console.writeln("Type [%s] found. Guid: [0x%X]", type.getName(), type.getGuid());
                   toReturn.add(type);

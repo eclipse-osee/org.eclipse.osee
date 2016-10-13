@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.HexUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -61,15 +60,15 @@ public class OseeTypeModifier implements AttributeModifier {
       }
 
       Set<Long> uuids = new HashSet<>();
-      
-      if(oseeDsl != null) {
+
+      if (oseeDsl != null) {
          for (EObject object : oseeDsl.eContents()) {
             if (object instanceof OseeType) {
                addUuid(uuids, (OseeType) object);
             }
          }
       }
-      
+
       Conditions.checkExpressionFailOnTrue(uuids.contains(0L), "Uuid of 0L is not allowed");
 
       InputStream inputStream = null;
@@ -82,7 +81,7 @@ public class OseeTypeModifier implements AttributeModifier {
    }
 
    private void addUuid(Set<Long> set, OseeType type) throws OseeCoreException {
-      Long uuid = HexUtil.toLong(type.getUuid());
+      Long uuid = Long.valueOf(type.getId());
       boolean wasAdded = set.add(uuid);
       Conditions.checkExpressionFailOnTrue(!wasAdded, "Duplicate uuid found: [0x%X]", uuid);
    }

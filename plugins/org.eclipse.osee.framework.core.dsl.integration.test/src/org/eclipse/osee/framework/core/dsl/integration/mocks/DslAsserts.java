@@ -88,7 +88,7 @@ public final class DslAsserts {
 
    public static void assertEquals(XArtifactType artifactType, String expName, String expGuid, String[] inheritsFrom, String... attributeNames) {
       Assert.assertEquals(expName, artifactType.getName());
-      Assert.assertEquals(expGuid, artifactType.getUuid());
+      Assert.assertEquals(expGuid, artifactType.getId());
 
       int index = 0;
       Assert.assertEquals(inheritsFrom.length, artifactType.getSuperArtifactTypes().size());
@@ -105,7 +105,7 @@ public final class DslAsserts {
 
    public static void assertEquals(XAttributeType type, String expName, String expGuid, String baseType, String dataProvider, String min, String max, String tagger, String description, String defaultValue, String ext) {
       Assert.assertEquals(expName, type.getName());
-      Assert.assertEquals(expGuid, type.getUuid());
+      Assert.assertEquals(expGuid, type.getId());
 
       Assert.assertEquals(baseType, type.getBaseAttributeType());
       Assert.assertEquals(dataProvider, type.getDataProvider());
@@ -119,17 +119,17 @@ public final class DslAsserts {
 
    public static void assertEquals(XRelationType type, String expName, String expGuid, String sideA, String aName, String aGuid, String sideB, String bName, String bGuid, String orderType, RelationMultiplicityEnum mult) {
       Assert.assertEquals(expName, type.getName());
-      Assert.assertEquals(expGuid, type.getUuid());
+      Assert.assertEquals(expGuid, type.getId());
 
       XArtifactType aArt = type.getSideAArtifactType();
       Assert.assertEquals(sideA, type.getSideAName());
       Assert.assertEquals(aName, aArt.getName());
-      Assert.assertEquals(aGuid, aArt.getUuid());
+      Assert.assertEquals(aGuid, aArt.getId());
 
       XArtifactType bArt = type.getSideBArtifactType();
       Assert.assertEquals(sideB, type.getSideBName());
       Assert.assertEquals(bName, bArt.getName());
-      Assert.assertEquals(bGuid, bArt.getUuid());
+      Assert.assertEquals(bGuid, bArt.getId());
 
       Assert.assertEquals(orderType, type.getDefaultOrderType());
       Assert.assertEquals(mult, type.getMultiplicity());

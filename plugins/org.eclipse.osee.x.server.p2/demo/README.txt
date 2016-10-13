@@ -8,4 +8,4 @@ To do so:
 5) Follow instructions in org.eclpise.osee.x.server.integration.test/README
 
 All canned-db test bundles should be updated with the same zip files, there are 
-- search for hsql.db for all locations
+- search for hsql.zip for all locations

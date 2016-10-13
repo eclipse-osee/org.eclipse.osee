@@ -21,7 +21,6 @@ import java.math.BigInteger;
 import java.sql.Timestamp;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
-import org.eclipse.osee.framework.jdk.core.util.HexUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
@@ -217,7 +216,7 @@ public class DbTableExportItem extends AbstractXmlExportItem {
       } else {
          throw new OseeCoreException("Undefined Type [%s]", value != null ? value.getClass().getSimpleName() : value);
       }
-      String uuidString = HexUtil.toString(typeId);
+      String uuidString = String.valueOf(typeId);
       ExportImportXml.addXmlAttribute(appendable, ExportImportXml.TYPE_GUID, uuidString);
    }
 

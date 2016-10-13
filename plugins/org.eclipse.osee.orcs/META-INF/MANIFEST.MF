@@ -23,6 +23,7 @@ Import-Package: com.google.gson;version="2.1.0",
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.io.xml,
  org.eclipse.osee.framework.resource.management,
+ org.eclipse.osee.orcs.rest.model,
  org.json
 Export-Package: org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.data,

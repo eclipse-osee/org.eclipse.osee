@@ -2,7 +2,7 @@ import
 "platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
 
 artifactType "Disposition Set" extends "Artifact" {
-   uuid 0x0000000000000327
+   id 807
    attribute "Active"
    attribute "dispo.Import Path"
    attribute "dispo.Notes JSON"
@@ -14,7 +14,7 @@ artifactType "Disposition Set" extends "Artifact" {
 }
 
 artifactType "dispo.Dispositionable Item" extends "Artifact" {
-   uuid 0x0000000000000328//need to get actual uuids
+   id 808
    attribute "Active"
    attribute "dispo.Annotations JSON"
    attribute "dispo.Discrepancies JSON"
@@ -37,7 +37,7 @@ artifactType "dispo.Dispositionable Item" extends "Artifact" {
 }
 
 attributeType "dispo.Annotations JSON" extends StringAttribute {
-	uuid 0x1000000000000386
+	id 1152921504606847878
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1
@@ -48,7 +48,7 @@ attributeType "dispo.Annotations JSON" extends StringAttribute {
 }
 
 attributeType "dispo.Discrepancies JSON" extends StringAttribute {
-	uuid 0x1000000000000387
+	id 1152921504606847879
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -59,7 +59,7 @@ attributeType "dispo.Discrepancies JSON" extends StringAttribute {
 }
 
 attributeType "dispo.Notes JSON" extends StringAttribute {
-	uuid 0x1000000000000388
+	id 1152921504606847880
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -71,7 +71,7 @@ attributeType "dispo.Notes JSON" extends StringAttribute {
 
 
 attributeType "dispo.Dispo Config" extends StringAttribute {
-	uuid 0x1000000000000395
+	id 1152921504606847893
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -80,7 +80,7 @@ attributeType "dispo.Dispo Config" extends StringAttribute {
 }
 
 attributeType "dispo.Operation Summary" extends StringAttribute {
-	uuid 0x1000000000000397
+	id 1152921504606847895
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -90,7 +90,7 @@ attributeType "dispo.Operation Summary" extends StringAttribute {
 
 
 attributeType "dispo.Import Path" extends StringAttribute {
-	uuid 0x1000000000000389
+	id 1152921504606847881
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -99,7 +99,7 @@ attributeType "dispo.Import Path" extends StringAttribute {
 }
 
 attributeType "dispo.Summary Count" extends StringAttribute {
-	uuid 0x1000000000000203
+	id 1152921504606847491
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -108,7 +108,7 @@ attributeType "dispo.Summary Count" extends StringAttribute {
 }
 
 attributeType "dispo.Import State" extends EnumeratedAttribute {
-	uuid 0x3000000000000196
+	id 3458764513820541334
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -118,7 +118,7 @@ attributeType "dispo.Import State" extends EnumeratedAttribute {
 }
 
 oseeEnumType "enum.dispo.imported state" {
-	uuid 0x3000000000000197
+	id 3458764513820541335
 	entry "None"
 	entryGuid "AHkD1ZWRgG65kO3xVB"
 	entry "No Change"
@@ -134,7 +134,7 @@ oseeEnumType "enum.dispo.imported state" {
 }
 
 attributeType "dispo.Item Status" extends EnumeratedAttribute {
-	uuid 0x3000000000000198
+	id 3458764513820541336
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -145,7 +145,7 @@ attributeType "dispo.Item Status" extends EnumeratedAttribute {
 }
 
 attributeType "dispo.Total Points" extends StringAttribute {
-	uuid 0x3000000000000203
+	id 3458764513820541443
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -155,7 +155,7 @@ attributeType "dispo.Total Points" extends StringAttribute {
 }
 
 attributeType "dispo.Needs Rerun" extends BooleanAttribute {
-	uuid 0x3000000000000204
+	id 3458764513820541444
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
@@ -164,7 +164,7 @@ attributeType "dispo.Needs Rerun" extends BooleanAttribute {
 }
 
 attributeType "dispo.Item Version" extends StringAttribute {
-	uuid 0x3000000000000200
+	id 3458764513820541440
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -174,7 +174,7 @@ attributeType "dispo.Item Version" extends StringAttribute {
 }
 
 attributeType "dispo.Assignee" extends StringAttribute {
-	uuid 0x3000000000000201
+	id 3458764513820541441
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -184,7 +184,7 @@ attributeType "dispo.Assignee" extends StringAttribute {
 }
 
 attributeType "dispo.Category" extends StringAttribute {
-	uuid 0x3000000000000202
+	id 3458764513820541442
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -194,7 +194,7 @@ attributeType "dispo.Category" extends StringAttribute {
 }
 
 attributeType "dispo.Machine" extends StringAttribute {
-	uuid 0x3000000000000206
+	id 3458764513820541446
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -204,7 +204,7 @@ attributeType "dispo.Machine" extends StringAttribute {
 }
 
 attributeType "dispo.Elapsed Time" extends StringAttribute {
-	uuid 0x3000000000000207
+	id 3458764513820541447
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -214,7 +214,7 @@ attributeType "dispo.Elapsed Time" extends StringAttribute {
 }
 
 attributeType "dispo.Aborted" extends BooleanAttribute {
-   uuid 0x3000000000000208
+   id 3458764513820541448
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1
@@ -224,7 +224,7 @@ attributeType "dispo.Aborted" extends BooleanAttribute {
 }
 
 attributeType "dispo.Percent Complete" extends StringAttribute {
-   uuid 0x3000000000000209
+   id 3458764513820541449
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -234,7 +234,7 @@ attributeType "dispo.Percent Complete" extends StringAttribute {
 }
 
 attributeType "dispo.Item Notes" extends StringAttribute {
-   uuid 0x3000000000000210
+   id 3458764513820541456
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -244,7 +244,7 @@ attributeType "dispo.Item Notes" extends StringAttribute {
 }
 
 attributeType "dispo.Needs Review" extends BooleanAttribute {
-	uuid 0x284999EFDC29513A
+	id 2903020690286924090
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
@@ -253,7 +253,7 @@ attributeType "dispo.Needs Review" extends BooleanAttribute {
 }
 
 attributeType "dispo.File Number" extends StringAttribute {
-	uuid 0x3000000000000313
+	id 3458764513820541715
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -262,7 +262,7 @@ attributeType "dispo.File Number" extends StringAttribute {
 }
 
 attributeType "dispo.Method Number" extends StringAttribute {
-	uuid 0x3000000000000214
+	id 3458764513820541460
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
@@ -271,7 +271,7 @@ attributeType "dispo.Method Number" extends StringAttribute {
 }
 
 oseeEnumType "enum.dispo.item status" {
-	uuid 0x3000000000000199
+	id 3458764513820541337
 	entry "PASS"
 	entryGuid "AHkD1ZWRgG95kO2xwA"
 	entry "INCOMPLETE"
@@ -284,7 +284,7 @@ oseeEnumType "enum.dispo.item status" {
 
 
 attributeType "dispo.Date Created" extends DateAttribute {
-	uuid 0x1000000000000391
+	id 1152921504606847889
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -292,7 +292,7 @@ attributeType "dispo.Date Created" extends DateAttribute {
 }
 
 attributeType "dispo.Last Updated" extends DateAttribute {
-	uuid 0x1000000000000392
+	id 1152921504606847890
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1

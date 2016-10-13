@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.HexUtil;
 
 /**
  * @author John R. Misinco
@@ -80,8 +79,6 @@ public class PredicateHandlerUtil {
    private static long parseUuid(String uuid) throws OseeCoreException {
       if (uuid.matches("-?\\d+")) {
          return Long.parseLong(uuid);
-      } else if (HexUtil.isHexString(uuid)) {
-         return HexUtil.toLong(uuid);
       }
       return -1L;
    }

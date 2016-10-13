@@ -59,7 +59,7 @@ angular
 							};
 
 							$scope.updateTeams = function() {
-								$scope.teams = null;
+								$scope.sheets = null;
 								var loadingModal = PopupService
 								.showLoadingModal();
 								AgileFactory.getTeams().$promise

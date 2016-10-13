@@ -52,7 +52,7 @@ public final class DataRightsStreamingOutput implements StreamingOutput {
    private final List<ArtifactReadable> noTraceReqs = new ArrayList<ArtifactReadable>();
    private ExcelXmlWriter writer;
    private final Log logger;
-   private static final IArtifactType WCAFE = TokenFactory.createArtifactType(0x0000BA000000001FL, "WCAFE");
+   private static final IArtifactType WCAFE = TokenFactory.createArtifactType(204509162766367L, "WCAFE");
 
    public DataRightsStreamingOutput(OrcsApi orcsApi, long branchUuid, String codeRoot, TraceAccumulator traceAccumulator, Log logger) {
       this.queryFactory = orcsApi.getQueryFactory();

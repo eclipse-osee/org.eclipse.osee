@@ -28,7 +28,7 @@ public class CoverageUtil {
    public static final IArtifactType CoverageFolder = TokenFactory.createArtifactType(0x000000000000004D, "Coverage Folder");
 
    // Attributes
-   public static final IAttributeType Item = TokenFactory.createAttributeType(0x1000000000000104L, "coverage.Coverage Item");
+   public static final IAttributeType Item = TokenFactory.createAttributeType(1152921504606847236L, "coverage.Coverage Item");
 
    //@formatter:on
 

@@ -1,6 +1,6 @@
 import "platform:/plugin/org.eclipse.osee.ats/support/OseeTypes_ATS.osee"
 artifactType "Demo Code Team Workflow" extends "Team Workflow" {
-   uuid 0x000000000000004F
+   id 79
    attribute "demo.code.Change Type"
    attribute "demo.code.Action"
    attribute "demo.code.Category"
@@ -48,15 +48,15 @@ artifactType "Demo Code Team Workflow" extends "Team Workflow" {
 }
 
 artifactType "Demo Req Team Workflow" extends "Team Workflow" {
-   uuid 0x0000000000000050
+   id 80
 }
 
 artifactType "Demo Test Team Workflow" extends "Team Workflow" {
-   uuid 0x0000000000000051
+   id 81
 }
 
 oseeEnumType "enum.demo.code.category" {
-   uuid 0x3000000000000190
+   id 3458764513820541328
    entry "Code Problem" entryGuid "AHgPZbKmc3ysmzFjpZgA"
    entry "Design/Implementation" entryGuid "AHgPZbUNIwI2P31Om0gA"
    entry "Comment Change Only" entryGuid "AHgPZbadTBlE5CI67iwA"
@@ -65,7 +65,7 @@ oseeEnumType "enum.demo.code.category" {
 }
 
 attributeType "demo.code.Category" extends EnumeratedAttribute {
-   uuid 0x1000000000000106
+   id 1152921504606847238
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -74,7 +74,7 @@ attributeType "demo.code.Category" extends EnumeratedAttribute {
 }
 
 attributeType "demo.code.Close Detection" extends StringAttribute {
-   uuid 0x1000000000000107
+   id 1152921504606847239
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -83,7 +83,7 @@ attributeType "demo.code.Close Detection" extends StringAttribute {
 }
 
 attributeType "demo.code.Code Change Req" extends StringAttribute {
-   uuid 0x1000000000000108
+   id 1152921504606847240
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -92,7 +92,7 @@ attributeType "demo.code.Code Change Req" extends StringAttribute {
 }
 
 attributeType "demo.code.CSCI" extends StringAttribute {
-   uuid 0x1000000000000109
+   id 1152921504606847241
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -101,7 +101,7 @@ attributeType "demo.code.CSCI" extends StringAttribute {
 }
 
 oseeEnumType "enum.demo.code.defect.code" {
-   uuid 0x3000000000000191
+   id 3458764513820541329
    entry "CL01 - Requirements Implemented Incorrectly" entryGuid "AHfrvF6LB3l2ASR0vEAA"
    entry "CL02 - Initialization Error" entryGuid "AHfrwIxoUhI9nSogT6QA"
    entry "CL03 - Out of Range Error" entryGuid "AHfzRJVB30_q_so4ppQA"
@@ -125,7 +125,7 @@ oseeEnumType "enum.demo.code.defect.code" {
 }
 
 attributeType "demo.code.Defect Code" extends EnumeratedAttribute {
-   uuid 0x100000000000010A
+   id 1152921504606847242
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -134,7 +134,7 @@ attributeType "demo.code.Defect Code" extends EnumeratedAttribute {
 }
 
 oseeEnumType "enum.demo.code.detection" {
-   uuid 0x3000000000000192
+   id 3458764513820541330
    entry "Test Script(s)" entryGuid "AHfYTFIxP2WjivgIf5AA"
    entry "Inspection (Test)" entryGuid "AHfYUIExngyljHlV5NwA"
    entry "Hot Bench" entryGuid "AHfYUIIBaHndjAnnDVQA"
@@ -145,7 +145,7 @@ oseeEnumType "enum.demo.code.detection" {
 }
 
 attributeType "demo.code.Detection" extends EnumeratedAttribute {
-   uuid 0x100000000000010B
+   id 1152921504606847243
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -154,7 +154,7 @@ attributeType "demo.code.Detection" extends EnumeratedAttribute {
 }
 
 attributeType "demo.code.Include Build" extends StringAttribute {
-   uuid 0x100000000000010C
+   id 1152921504606847244
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -163,7 +163,7 @@ attributeType "demo.code.Include Build" extends StringAttribute {
 }
 
 attributeType "demo.code.LOC Affected" extends IntegerAttribute {
-   uuid 0x100000000000010D
+   id 1152921504606847245
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -171,7 +171,7 @@ attributeType "demo.code.LOC Affected" extends IntegerAttribute {
 }
 
 attributeType "demo.code.Originating Build" extends StringAttribute {
-   uuid 0x100000000000010E
+   id 1152921504606847246
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -180,7 +180,7 @@ attributeType "demo.code.Originating Build" extends StringAttribute {
 }
 
 oseeEnumType "enum.demo.code.req.doc" {
-   uuid 0x3000000000000193
+   id 3458764513820541331
    entry "Unknown" entryGuid "AHfFYLyC6lm5ycsW5SQA"
    entry "SubDD" entryGuid "AHfFYMLZl2C6DnGN8lgA"
    entry "CSID" entryGuid "AHfFYMOhyQ7tbByHMcgA"
@@ -189,7 +189,7 @@ oseeEnumType "enum.demo.code.req.doc" {
 }
 
 attributeType "demo.code.Req Doc" extends EnumeratedAttribute {
-   uuid 0x100000000000010F
+   id 1152921504606847247
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -198,7 +198,7 @@ attributeType "demo.code.Req Doc" extends EnumeratedAttribute {
 }
 
 attributeType "demo.code.Subsystem" extends StringAttribute {
-   uuid 0x1000000000000110
+   id 1152921504606847248
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -207,7 +207,7 @@ attributeType "demo.code.Subsystem" extends StringAttribute {
 }
 
 attributeType "demo.code.Test Build" extends StringAttribute {
-   uuid 0x1000000000000111
+   id 1152921504606847249
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -216,7 +216,7 @@ attributeType "demo.code.Test Build" extends StringAttribute {
 }
 
 attributeType "demo.code.Test Mode" extends StringAttribute {
-   uuid 0x1000000000000112
+   id 1152921504606847250
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -225,7 +225,7 @@ attributeType "demo.code.Test Mode" extends StringAttribute {
 }
 
 attributeType "demo.code.Test Notes" extends StringAttribute {
-   uuid 0x1000000000000113
+   id 1152921504606847251
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -234,7 +234,7 @@ attributeType "demo.code.Test Notes" extends StringAttribute {
 }
 
 attributeType "demo.code.Test Script" extends StringAttribute {
-   uuid 0x1000000000000114
+   id 1152921504606847252
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -243,7 +243,7 @@ attributeType "demo.code.Test Script" extends StringAttribute {
 }
 
 attributeType "demo.code.Change Type" extends StringAttribute {
-   uuid 0x1000000000000115
+   id 1152921504606847253
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -252,7 +252,7 @@ attributeType "demo.code.Change Type" extends StringAttribute {
 }
 
 attributeType "demo.code.Action" extends StringAttribute {
-   uuid 0x1000000000000116
+   id 1152921504606847254
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -261,7 +261,7 @@ attributeType "demo.code.Action" extends StringAttribute {
 }
 
 attributeType "demo.code.Volume" extends IntegerAttribute {
-   uuid 0x1000000000000117
+   id 1152921504606847255
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -270,7 +270,7 @@ attributeType "demo.code.Volume" extends IntegerAttribute {
 }
 
 attributeType "demo.code.Verify Date" extends StringAttribute {
-   uuid 0x1000000000000118
+   id 1152921504606847256
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -278,7 +278,7 @@ attributeType "demo.code.Verify Date" extends StringAttribute {
 }
 
 attributeType "demo.code.Verifyer" extends StringAttribute {
-   uuid 0x1000000000000119
+   id 1152921504606847257
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -287,7 +287,7 @@ attributeType "demo.code.Verifyer" extends StringAttribute {
 }
 
 attributeType "demo.code.Verify Note" extends StringAttribute {
-   uuid 0x100000000000011A
+   id 1152921504606847258
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -296,7 +296,7 @@ attributeType "demo.code.Verify Note" extends StringAttribute {
 }
 
 attributeType "demo.code.Verify Detection" extends StringAttribute {
-   uuid 0x100000000000011B
+   id 1152921504606847259
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -305,7 +305,7 @@ attributeType "demo.code.Verify Detection" extends StringAttribute {
 }
 
 attributeType "demo.code.Hold Start" extends StringAttribute {
-   uuid 0x100000000000011C
+   id 1152921504606847260
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -313,7 +313,7 @@ attributeType "demo.code.Hold Start" extends StringAttribute {
 }
 
 attributeType "demo.code.Hold End" extends StringAttribute {
-   uuid 0x100000000000011D
+   id 1152921504606847261
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -321,7 +321,7 @@ attributeType "demo.code.Hold End" extends StringAttribute {
 }
 
 attributeType "demo.code.Verify Mode" extends StringAttribute {
-   uuid 0x100000000000011E
+   id 1152921504606847262
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -330,7 +330,7 @@ attributeType "demo.code.Verify Mode" extends StringAttribute {
 }
 
 attributeType "demo.code.Verified Build" extends StringAttribute {
-   uuid 0x100000000000011F
+   id 1152921504606847263
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -339,7 +339,7 @@ attributeType "demo.code.Verified Build" extends StringAttribute {
 }
 
 attributeType "demo.code.Peer Review Reqd" extends StringAttribute {
-   uuid 0x1000000000000120
+   id 1152921504606847264
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -347,7 +347,7 @@ attributeType "demo.code.Peer Review Reqd" extends StringAttribute {
 }
 
 attributeType "demo.code.Peer Review Id" extends StringAttribute {
-   uuid 0x1000000000000121
+   id 1152921504606847265
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -355,7 +355,7 @@ attributeType "demo.code.Peer Review Id" extends StringAttribute {
 }
 
 attributeType "demo.code.Ref PCR" extends StringAttribute {
-   uuid 0x1000000000000122
+   id 1152921504606847266
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -363,7 +363,7 @@ attributeType "demo.code.Ref PCR" extends StringAttribute {
 }
 
 attributeType "demo.code.References" extends StringAttribute {
-   uuid 0x1000000000000123
+   id 1152921504606847267
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -372,7 +372,7 @@ attributeType "demo.code.References" extends StringAttribute {
 }
 
 attributeType "demo.code.Requirement Id" extends StringAttribute {
-   uuid 0x1000000000000124
+   id 1152921504606847268
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -380,7 +380,7 @@ attributeType "demo.code.Requirement Id" extends StringAttribute {
 }
 
 attributeType "demo.code.Dup CPCR No" extends StringAttribute {
-   uuid 0x1000000000000125
+   id 1152921504606847269
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -388,7 +388,7 @@ attributeType "demo.code.Dup CPCR No" extends StringAttribute {
 }
 
 attributeType "demo.code.Dup CSCI" extends StringAttribute {
-   uuid 0x1000000000000126
+   id 1152921504606847270
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -396,7 +396,7 @@ attributeType "demo.code.Dup CSCI" extends StringAttribute {
 }
 
 attributeType "demo.code.Dup CPCR Type" extends StringAttribute {
-   uuid 0x1000000000000127
+   id 1152921504606847271
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -404,7 +404,7 @@ attributeType "demo.code.Dup CPCR Type" extends StringAttribute {
 }
 
 attributeType "demo.code.Dup of CPCR no seq" extends StringAttribute {
-   uuid 0x1000000000000128
+   id 1152921504606847272
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -412,7 +412,7 @@ attributeType "demo.code.Dup of CPCR no seq" extends StringAttribute {
 }
 
 attributeType "demo.code.Librarian" extends StringAttribute {
-   uuid 0x1000000000000129
+   id 1152921504606847273
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -421,7 +421,7 @@ attributeType "demo.code.Librarian" extends StringAttribute {
 }
 
 attributeType "demo.code.Promote Date" extends StringAttribute {
-   uuid 0x100000000000012A
+   id 1152921504606847274
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -429,7 +429,7 @@ attributeType "demo.code.Promote Date" extends StringAttribute {
 }
 
 attributeType "demo.code.Authorization Notes" extends StringAttribute {
-   uuid 0x100000000000012B
+   id 1152921504606847275
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -438,7 +438,7 @@ attributeType "demo.code.Authorization Notes" extends StringAttribute {
 }
 
 attributeType "demo.code.Rework Letter" extends StringAttribute {
-   uuid 0x100000000000012C
+   id 1152921504606847276
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -446,7 +446,7 @@ attributeType "demo.code.Rework Letter" extends StringAttribute {
 }
 
 attributeType "demo.code.Problem No" extends StringAttribute {
-   uuid 0x100000000000012D
+   id 1152921504606847277
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -454,7 +454,7 @@ attributeType "demo.code.Problem No" extends StringAttribute {
 }
 
 attributeType "demo.code.DP Effectivity" extends BooleanAttribute {
-   uuid 0x100000000000012E
+   id 1152921504606847278
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -462,7 +462,7 @@ attributeType "demo.code.DP Effectivity" extends BooleanAttribute {
 }
 
 attributeType "demo.code.SP Effectivity" extends BooleanAttribute {
-   uuid 0x100000000000012F
+   id 1152921504606847279
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -470,7 +470,7 @@ attributeType "demo.code.SP Effectivity" extends BooleanAttribute {
 }
 
 attributeType "demo.code.WP Effectivity" extends BooleanAttribute {
-   uuid 0x1000000000000130
+   id 1152921504606847280
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1

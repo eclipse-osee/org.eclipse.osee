@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.HexUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -84,7 +83,7 @@ public class OseeUtilTest {
       Object actual = OseeUtil.toToken(type);
       Assert.assertEquals(expected, actual);
 
-      type.setUuid("0x1111111111111111");
+      type.setId("1111111111111111");
       actual = OseeUtil.toToken(type);
       Assert.assertFalse(expected.equals(actual));
    }
@@ -99,7 +98,7 @@ public class OseeUtilTest {
       Object actual = OseeUtil.toToken(type);
       Assert.assertEquals(expected, actual);
 
-      type.setUuid("0x1111111111111111");
+      type.setId("1111111111111111");
       actual = OseeUtil.toToken(type);
       Assert.assertFalse(expected.equals(actual));
    }
@@ -114,7 +113,7 @@ public class OseeUtilTest {
       Object actual = OseeUtil.toToken(type);
       Assert.assertEquals(expected, actual);
 
-      type.setUuid("0x1111111111111111");
+      type.setId("1111111111111111");
       actual = OseeUtil.toToken(type);
       Assert.assertFalse(expected.equals(actual));
    }
@@ -122,12 +121,12 @@ public class OseeUtilTest {
    private static void setupToToken(OseeType typeToCheck, Id expected) throws OseeCoreException {
       String name = "bogus name"; // This should not affect equality
       typeToCheck.setName(name);
-      String uuid = HexUtil.toString(expected.getId());
-      typeToCheck.setUuid(uuid);
+      String uuid = String.valueOf(expected.getId());
+      typeToCheck.setId(uuid);
 
       Assert.assertEquals(name, typeToCheck.getName());
-      Assert.assertEquals(expected.getId().longValue(), HexUtil.toLong(typeToCheck.getUuid()));
-      Assert.assertEquals(uuid, typeToCheck.getUuid());
+      Assert.assertEquals(expected.getId().longValue(), Long.valueOf(typeToCheck.getId()).longValue());
+      Assert.assertEquals(uuid, typeToCheck.getId());
    }
 
    private static void checkIsRestricted(XRelationSideEnum side, boolean expectedSideA, boolean expectedSideB) throws OseeCoreException {

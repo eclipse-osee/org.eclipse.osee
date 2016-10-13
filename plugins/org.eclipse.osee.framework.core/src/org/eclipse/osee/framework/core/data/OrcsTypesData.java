@@ -25,9 +25,10 @@ public class OrcsTypesData {
     * attribute ids of the types to load. This provides for production code to access an over version of the types
     * model/sheets while the current code base works of this specified version.</br>
     * </br>
-    * Version 1 = Corresponds to 0.23.1 and earlier code base
+    * Version 1 = Corresponds to 0.23.1 and earlier code base</br>
+    * Version 2 = Corresponds to 0.24.0 code base
     */
-   public static final Long OSEE_TYPE_VERSION = 2L; // Corresponds to 0.24.0 code base
+   public static final Long OSEE_TYPE_VERSION = 3L; // Corresponds to 0.25.0 code base
 
    private List<OrcsTypeSheet> sheets = new ArrayList<>();
 

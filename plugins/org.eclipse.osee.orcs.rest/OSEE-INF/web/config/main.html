@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8"></meta>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+
+<link rel="stylesheet" type="text/css"
+	href="/ajax/libs/bootstrap/3.3.2/css/bootstrap.min.css"></link>
+<link rel="stylesheet" type="text/css" href="config.css"></link>
+
+<title>OSEE - ORCS Config</title>
+<script src="/ajax/libs/angularjs/1.2.28/angular.min.js"></script>
+<script src="/ajax/libs/angularjs/1.2.28/angular-resource.min.js"></script>
+<script
+	src="http://vitalets.github.io/checklist-model/checklist-model.js"></script>
+<script src="orcsConfig.js"></script>
+<script type="text/ng-template" id="loadingModal.html">
+        <div id="loadingModal" class="alert alert-info">Loading...</div></script>
+
+</head>
+
+<body>
+	<div ng-app="app" class="row" ng-controller="appCtrl">
+
+
+		<nav class="navbar navbar-default" role="navigation">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse"
+						data-target="#bs-example-navbar-collapse-1">
+						<span class="sr-only">Toggle navigation</span> <span
+							class="icon-bar"></span> <span class="icon-bar"></span> <span
+							class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="../ui/main.html">OSEE - ORCS
+						Configuration</a>
+				</div>
+				<div class="collapse navbar-collapse" ng-controller="appCtrl">
+					<ul class="nav navbar-nav navbar-right">
+						<li ng-class="home"><a href="../ui/main.html">Home</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+
+		<div class="container">
+			<p>
+				<b> ORCS Config provides the ability to set the OSEE Types
+					version and sheets.<br />
+					<ul>
+						<li>Select code version</li>
+						<li>Select OSEE Types Artifacts</li>
+						<li>Click Execute</li>
+					</ul>
+				</b>
+			</p>
+		</div>
+
+		<div class="container">
+			<label>Input: </label><br /> <br />
+			<div class="form-group">
+				<label>Version: </label>
+				<textarea class="form-control" rows="1"
+					placeholder="code version number" ng-model="formData.version"
+					title="Version"></textarea>
+				<br />
+
+				<div class="col-xs-24 col-sm-12">
+					<label>OSEE Type Artifacts: </label> <label
+						ng-repeat="sheet in sheets"> <input type="checkbox"
+						checklist-model="formData.sheets" checklist-value="sheet.attrId">
+						{{sheet.name}}
+					</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="container">
+			<div class="form-group">
+				<button type="submit" class="btn btn-primary" ng-click="run()">Execute</button>
+			</div>
+
+			<div class="container-fluid well" ng-show="message">
+				<textarea rows="30" class="form-control">{{ message }}</textarea>
+			</div>
+
+		</div>
+	</div>
+</body>
+</html>

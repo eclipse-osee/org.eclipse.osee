@@ -19,12 +19,13 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.HasOrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.internal.util.OrcsWriteable;
+import org.eclipse.osee.orcs.data.RelationReadable;
 import org.eclipse.osee.orcs.data.RelationTypes;
 
 /**
  * @author Roberto E. Escobar
  */
-public class Relation implements HasOrcsData<RelationData>, OrcsWriteable {
+public class Relation implements RelationReadable, HasOrcsData<RelationData>, OrcsWriteable {
 
    private final RelationTypes relationTypes;
 
@@ -46,6 +47,7 @@ public class Relation implements HasOrcsData<RelationData>, OrcsWriteable {
       this.relationData = data;
    }
 
+   @Override
    public RelationTypeToken getRelationType() throws OseeCoreException {
       return relationTypes.get(getOrcsData().getTypeUuid());
    }
@@ -86,6 +88,7 @@ public class Relation implements HasOrcsData<RelationData>, OrcsWriteable {
       return getOrcsData().getRationale();
    }
 
+   @Override
    public boolean isOfType(IRelationType oseeType) throws OseeCoreException {
       return getRelationType().equals(oseeType);
    }
@@ -166,6 +169,16 @@ public class Relation implements HasOrcsData<RelationData>, OrcsWriteable {
    @Override
    public String toString() {
       return "Relation [relationData=" + relationData + ", isDirty=" + getOrcsData().isDirty() + "]";
+   }
+
+   @Override
+   public Long getId() {
+      return Long.valueOf(getOrcsData().getLocalId());
+   }
+
+   @Override
+   public long getGammaId() {
+      return getOrcsData().getVersion().getGammaId();
    }
 
 }

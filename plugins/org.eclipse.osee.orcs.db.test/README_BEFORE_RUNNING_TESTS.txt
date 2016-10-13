@@ -1,6 +1,7 @@
 This test bundle contains both JUnit and Integration test suites. Please read before running.
 
-OrcsDb_JUnit_TestSuites and all suites in /internal can be run as JUnit with right-click > Debug As > JUnit
+OrcsDb_JUnit_TestSuites and all suites in /internal can be run as JUnit with right-click > 
+Debug As > JUnit
 
 OrcsDb_All_TestSuite
 

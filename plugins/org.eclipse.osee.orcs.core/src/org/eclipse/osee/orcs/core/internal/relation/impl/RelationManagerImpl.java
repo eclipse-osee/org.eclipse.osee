@@ -413,7 +413,8 @@ public class RelationManagerImpl implements RelationManager {
       return adjacencies.getList(type, includeDeleted, node, side);
    }
 
-   private List<Relation> getRelations(OrcsSession session, RelationNode node, DeletionFlag includeDeleted) throws OseeCoreException {
+   @Override
+   public List<Relation> getRelations(OrcsSession session, RelationNode node, DeletionFlag includeDeleted) throws OseeCoreException {
       checkNotNull(session, "session");
       GraphData graph = node.getGraph();
       ensureRelationsInitialized(session, graph, node);
@@ -525,4 +526,5 @@ public class RelationManagerImpl implements RelationManager {
       }
       return null;
    }
+
 }

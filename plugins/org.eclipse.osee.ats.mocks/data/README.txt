@@ -3,9 +3,20 @@ To do so:
 
 1) Delete C:/Users/<account>/hsql and C:/Users/<account>/attr
 2) Do a normal AtsClient_Integration_TestSuite, stop before ClientResourceTest
-3) Zip up hsql dir to hsql.zip and copy to this directory
-4) Zip up attr to binary_data.zip and copy to this directory
-5) Re-run AtsServer_Integration_TestSuite and fix any errors
+3) Re-launch the application server to prime the database
+4) Zip up hsql dir to hsql.zip and copy to this directory
+5) Zip up attr to binary_data.zip and copy to this directory
+6) Re-run AtsServer_Integration_TestSuite and fix any errors
 
-All canned-db test bundles should be updated with the same zip files, there are 
-- search for hsql.db for all locations
+All canned-db test bundles should be updated with the same zip files
+
+Run the following in a git bash
+cd /c/UserData/git_fix/org.eclipse.osee/plugins/org.eclipse.osee.ats.mocks/data
+
+Paste the following in git bash
+cp binary_data.zip ../../../../lba.osee/plugins/lba.osee.x.server.p2/demo/
+cp hsql.zip ../../../../lba.osee/plugins/lba.osee.x.server.p2/demo/
+cp binary_data.zip ../../org.eclipse.osee.orcs.db.mock/data
+cp hsql.zip ../../org.eclipse.osee.orcs.db.mock/data
+cp binary_data.zip ../../org.eclipse.osee.x.server.p2/demo
+cp hsql.zip ../../org.eclipse.osee.x.server.p2/demo

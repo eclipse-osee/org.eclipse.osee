@@ -59,7 +59,10 @@ public class TestDatabase {
       String tempDir = System.getProperty("user.home");
       String folderName = String.format("%s_%s_%s", className, methodName, Lib.getDateTimeString());
       File tempFolder = new File(tempDir, folderName);
-      tempFolder.mkdir();
+      if (tempFolder.mkdir()) {
+         System.out.println(
+            String.format("Successfully made test database temp folder [%s]", tempFolder.getAbsolutePath()));
+      }
       return tempFolder;
    }
 
@@ -128,7 +131,7 @@ public class TestDatabase {
 
    private void checkExist(File tempFolder, String name) {
       File toCheck = new File(tempFolder, name);
-      Assert.assertTrue(String.format("%s does not exist", name), toCheck.exists());
+      Assert.assertTrue(String.format("directory [%s] does not exist", name), toCheck.exists());
    }
 
    private void addResource(File targetDirectory, Bundle bundle, String resource) throws IOException {

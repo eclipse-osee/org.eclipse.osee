@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.HexUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -38,9 +37,9 @@ public final class OseeUtil {
    }
 
    private static long checkAndGetUuid(OseeType type) throws OseeCoreException {
-      String uuid = type.getUuid();
+      String uuid = type.getId();
       Conditions.checkNotNull(uuid, "uuid", "for type [%s]", type.getName());
-      return HexUtil.toLong(uuid);
+      return Long.valueOf(uuid);
    }
 
    public static IArtifactType toToken(XArtifactType model) throws OseeCoreException {

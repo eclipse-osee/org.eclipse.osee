@@ -90,5 +90,7 @@ public interface RelationManager {
 
    void setApplicabilityId(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, ApplicabilityId applicId);
 
+   List<Relation> getRelations(OrcsSession session, RelationNode node, DeletionFlag includeDeleted) throws OseeCoreException;
+
    ///////////////////////////////////////
 }

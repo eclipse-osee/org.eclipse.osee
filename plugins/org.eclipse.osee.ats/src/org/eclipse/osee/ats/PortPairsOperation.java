@@ -101,7 +101,7 @@ public final class PortPairsOperation extends AbstractOperation {
    }
 
    private TeamWorkFlowArtifact getWorkflowFromRpcr(String workflowId) throws OseeCoreException {
-      IArtifactType LbaReqTeamWorkflow = TokenFactory.createArtifactType(0x0000BA000000000BL, "Lba Req Team Workflow");
+      IArtifactType LbaReqTeamWorkflow = TokenFactory.createArtifactType(204509162766347L, "Lba Req Team Workflow");
 
       return (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndAttribute(LbaReqTeamWorkflow,
          AtsAttributeTypes.LegacyPcrId, workflowId, AtsUtilCore.getAtsBranch());
@@ -109,7 +109,7 @@ public final class PortPairsOperation extends AbstractOperation {
 
    private TeamWorkFlowArtifact getWorkflowFromAtsID(String atsID) throws OseeCoreException {
       IArtifactType LbaSubSystemsTeamWorkflow =
-         TokenFactory.createArtifactType(0x0000BA0000000009L, "Lba SubSystems Team Workflow");
+         TokenFactory.createArtifactType(204509162766345L, "Lba SubSystems Team Workflow");
 
       return (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndAttribute(LbaSubSystemsTeamWorkflow,
          AtsAttributeTypes.AtsId, atsID, AtsUtilCore.getAtsBranch());

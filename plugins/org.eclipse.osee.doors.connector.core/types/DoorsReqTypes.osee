@@ -4,7 +4,7 @@ import
 /* Artifact Type */
 artifactType "DoorsRequirement" extends "Requirement" {
    guid "AN1Narw8KQTnUk7A8iwA"
-   uuid 0x5000000000002001
+   id 5764607523034243073
    attribute "Door Req ID"
    attribute "Door Req Name"
    attribute "Door Req Module Name"
@@ -15,7 +15,7 @@ artifactType "DoorsRequirement" extends "Requirement" {
 /* Attribute Type for Display ID*/
 attributeType "Door Req ID" extends StringAttribute {
     guid "AN1oPHV6UVqbYoewVNgA"
-    uuid 0x5000000000002002
+    id 5764607523034243074
     dataProvider DefaultAttributeDataProvider
     min 0
     max 1
@@ -26,7 +26,7 @@ attributeType "Door Req ID" extends StringAttribute {
 /* Attribute Type for Display name*/
 attributeType "Door Req Name" extends StringAttribute {
     guid "AN18o5N6ShSHyIFuZBAA"
-    uuid 0x5000000000002003
+    id 5764607523034243075
     dataProvider DefaultAttributeDataProvider
     min 0
     max 1
@@ -37,7 +37,7 @@ attributeType "Door Req Name" extends StringAttribute {
 /* Attribute Type for Display Module Name*/
 attributeType "Door Req Module Name" extends StringAttribute {
     guid "AN46ZJ+pZnkFaVg81+AA"
-    uuid 0x5000000000002004
+    id 5764607523034243076
     dataProvider DefaultAttributeDataProvider
     min 0
     max 1
@@ -48,7 +48,7 @@ attributeType "Door Req Module Name" extends StringAttribute {
 /* Attribute Type for Display Module Name*/
 attributeType "Door Req Database Name" extends StringAttribute {
     guid "AN5cSoiBA2eP7QXp9zgA"
-    uuid 0x0000000000002005
+    id 8197
     dataProvider DefaultAttributeDataProvider
     min 0
     max 1
@@ -58,7 +58,7 @@ attributeType "Door Req Database Name" extends StringAttribute {
 /* Attribute Type for Display Module Url*/
 attributeType "Door Req Url" extends StringAttribute {
     guid "AFM5Di19mGX1OLysrIwA"
-    uuid 0x0000000000002006
+    id 8198
     dataProvider DefaultAttributeDataProvider
     min 0
     max 1

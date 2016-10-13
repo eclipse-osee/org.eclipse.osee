@@ -43,16 +43,16 @@ public class IntegrationUtil {
 
    public static void verifyData(ArtifactData data, Object... values) {
       int index = 0;
-      assertEquals(data.getLocalId(), values[index++]);
-      assertEquals(data.getGuid(), values[index++]);
+      assertEquals(values[index++], data.getLocalId());
+      assertEquals(values[index++], data.getGuid());
 
       verifyData(data, index, values);
    }
 
    public static void verifyData(AttributeData data, Object... values) throws OseeCoreException {
       int index = 0;
-      assertEquals(data.getLocalId(), values[index++]);
-      assertEquals(data.getArtifactId(), values[index++]);
+      assertEquals(values[index++], data.getLocalId());
+      assertEquals(values[index++], data.getArtifactId());
 
       index = verifyData(data, index, values);
 
@@ -63,24 +63,24 @@ public class IntegrationUtil {
 
    public static void verifyData(RelationData data, Object... values) {
       int index = 0;
-      assertEquals(data.getLocalId(), values[index++]);
+      assertEquals(values[index++], data.getLocalId());
 
-      assertEquals(data.getArtIdA(), values[index++]);
-      assertEquals(data.getArtIdB(), values[index++]);
-      assertEquals(data.getRationale(), values[index++]);
+      assertEquals(values[index++], data.getArtIdA());
+      assertEquals(values[index++], data.getArtIdB());
+      assertEquals(values[index++], data.getRationale());
 
       verifyData(data, index, values);
    }
 
    private static int verifyData(OrcsData orcsData, int index, Object... values) {
-      assertEquals(orcsData.getModType(), values[index++]);
-      assertEquals(orcsData.getTypeUuid(), values[index++]);
+      assertEquals(values[index++], orcsData.getModType());
+      assertEquals(values[index++], orcsData.getTypeUuid());
 
       VersionData version = orcsData.getVersion();
-      assertEquals(version.getBranch(), values[index++]);
-      assertEquals(version.getTransactionId(), values[index++]);
-      assertEquals(version.getStripeId(), TransactionId.SENTINEL);
-      assertEquals(version.getGammaId(), values[index++]);
+      assertEquals(values[index++], version.getBranch());
+      assertEquals(values[index++], version.getTransactionId());
+      assertEquals(TransactionId.SENTINEL, version.getStripeId());
+      assertEquals(values[index++], version.getGammaId());
       return index;
    }
 
