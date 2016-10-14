@@ -21,7 +21,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -50,7 +50,7 @@ import org.eclipse.ui.PlatformUI;
 public class WasIsCompareEditorAction extends Action {
 
    private static String ATTRIBUTE_TRANSACTIONS_QUERY_DESC =
-      "SELECT txs.transaction_id, txs.gamma_id FROM osee_attribute atr, osee_txs txs WHERE atr.attr_id = ? AND atr.gamma_id = txs.gamma_id AND txs.branch_id = ? order by gamma_id desc";
+      "SELECT txs.transaction_id, txs.gamma_id FROM osee_attribute atr, osee_txs txs WHERE atr.attr_id = ? AND atr.gamma_id = txs.gamma_id AND txs.branch_id = ? order by transaction_id desc";
 
    public WasIsCompareEditorAction() {
       super("View Was/Is Comparison");
@@ -75,9 +75,12 @@ public class WasIsCompareEditorAction extends Action {
                return;
             }
             Change change = localChanges.iterator().next();
-            List<TransactionToken> transactionsFromStructuredSelection =
-               Handlers.getTransactionsFromStructuredSelection(structuredSelection);
-            TransactionId transactionId = transactionsFromStructuredSelection.iterator().next();
+            if (change.getModificationType() != ModificationType.MODIFIED) {
+               AWorkbench.popup(String.format("Can only show Was/Is for modified attributes, not %s",
+                  change.getModificationType().toString()));
+               return;
+            }
+            TransactionId transactionId = change.getTxDelta().getEndTx();
             List<Artifact> artifactsFromStructuredSelection =
                Handlers.getArtifactsFromStructuredSelection(structuredSelection);
             Artifact artifact = artifactsFromStructuredSelection.iterator().next();
@@ -128,12 +131,12 @@ public class WasIsCompareEditorAction extends Action {
       return previousTransaction;
    }
 
-   private String loadAttributeValue(int attrId, TransactionId transactionId, Artifact artifact) {
+   protected String loadAttributeValue(int attrId, TransactionId transactionId, Artifact artifact) {
       String appServer = OseeClientProperties.getOseeApplicationServer();
       URI uri =
          UriBuilder.fromUri(appServer).path("orcs").path("branch").path(String.valueOf(artifact.getBranchId())).path(
             "artifact").path(artifact.getUuid().toString()).path("attribute").path(String.valueOf(attrId)).path(
-               "version").path(String.valueOf(transactionId)).build();
+               String.valueOf(transactionId)).build();
       try {
          return JaxRsClient.newClient().target(uri).request(MediaType.TEXT_PLAIN).get(String.class);
       } catch (Exception ex) {
@@ -142,7 +145,7 @@ public class WasIsCompareEditorAction extends Action {
 
    }
 
-   private static ISelectionProvider getSelectionProvider() {
+   protected static ISelectionProvider getSelectionProvider() {
       ISelectionProvider selectionProvider = null;
       IWorkbench workbench = PlatformUI.getWorkbench();
       if (!workbench.isStarting() && !workbench.isClosing()) {
@@ -170,7 +173,21 @@ public class WasIsCompareEditorAction extends Action {
       if (selectionProvider != null) {
          ISelection selection = selectionProvider.getSelection();
          if (selection instanceof IStructuredSelection) {
-            isEnabled = ((IStructuredSelection) selection).size() == 1;
+            IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+            isEnabled = structuredSelection.size() == 1;
+            if (isEnabled) {
+               List<Change> localChanges = Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
+               if (localChanges.isEmpty() || localChanges.size() > 1) {
+                  isEnabled = false;
+               } else {
+                  Change change = localChanges.iterator().next();
+                  if (change instanceof AttributeChange) {
+                     isEnabled = true;
+                  } else {
+                     isEnabled = false;
+                  }
+               }
+            }
          }
       }
       return isEnabled;

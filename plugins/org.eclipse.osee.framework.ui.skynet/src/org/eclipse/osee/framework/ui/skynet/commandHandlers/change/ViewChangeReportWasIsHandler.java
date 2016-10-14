@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.change;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.osee.framework.ui.skynet.action.WasIsCompareEditorAction;
+import org.eclipse.osee.framework.ui.skynet.action.WasIsCompareEditorChangeAction;
 
 /**
  * @author Donald G. Dunne
@@ -21,7 +22,7 @@ public class ViewChangeReportWasIsHandler extends AbstractHandler {
 
    @Override
    public Object execute(ExecutionEvent event) {
-      new WasIsCompareEditorAction().run();
+      new WasIsCompareEditorChangeAction().run();
       return null;
    }
 

@@ -186,7 +186,9 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
       new ActionContributionItem(action).fill(popupMenu, 3);
 
       new ActionContributionItem(new EditTransactionComment(this)).fill(popupMenu, 3);
+
       new ActionContributionItem(new WasIsCompareEditorAction()).fill(popupMenu, 3);
+      openListener.add(popupMenu.getItem(3));
 
       XViewerCustomMenu xMenu = new XViewerCustomMenu(xHistoryWidget.getXViewer());
       new MenuItem(popupMenu, SWT.SEPARATOR);
@@ -211,6 +213,9 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
       public void menuShown(MenuEvent e) {
          for (MenuItem item : items) {
             item.setEnabled(!xHistoryWidget.getXViewer().getSelection().isEmpty());
+            if (item.getText().startsWith("View Was")) {
+               item.setEnabled(WasIsCompareEditorAction.isEnabledStatic());
+            }
          }
       }
 

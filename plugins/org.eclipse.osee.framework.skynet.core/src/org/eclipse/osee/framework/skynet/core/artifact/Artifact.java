@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -1166,10 +1167,10 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       RelationManager.prepareRelationsForReload(this);
    }
 
-   public final void persist(String comment) throws OseeCoreException {
+   public final TransactionId persist(String comment) throws OseeCoreException {
       SkynetTransaction transaction = TransactionManager.createTransaction(branch, comment);
       persist(transaction);
-      transaction.execute();
+      return transaction.execute();
    }
 
    /**

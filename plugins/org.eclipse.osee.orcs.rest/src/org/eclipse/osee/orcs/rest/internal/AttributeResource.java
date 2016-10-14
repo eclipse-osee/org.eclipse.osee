@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.rest.internal;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.common.net.MediaType;
 import java.net.URLEncoder;
 import javax.ws.rs.GET;
 import javax.ws.rs.WebApplicationException;
@@ -22,7 +23,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
-import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -45,6 +45,7 @@ public class AttributeResource {
    private final Long artifactUuid;
    private final int attrId;
    private final TransactionId transactionId;
+   private boolean textOut = false;
 
    public AttributeResource(UriInfo uriInfo, Request request, Long branchUuid, Long artifactUuid, int attributeId) {
       this(uriInfo, request, branchUuid, artifactUuid, attributeId, TransactionId.SENTINEL);
@@ -57,6 +58,10 @@ public class AttributeResource {
       this.artifactUuid = artifactUuid;
       this.attrId = attributeId;
       this.transactionId = transactionId;
+   }
+
+   public void setTextOut(boolean value) {
+      textOut = value;
    }
 
    @GET
@@ -88,8 +93,9 @@ public class AttributeResource {
                String fileExtension =
                   OrcsApplication.getOrcsApi().getOrcsTypes().getAttributeTypes().getFileTypeExtension(
                      attribute.getAttributeType());
-               if (mediaType.isEmpty() || mediaType.startsWith("text")) {
+               if (mediaType.isEmpty() || mediaType.startsWith("text") || textOut) {
                   builder.entity(attribute.getDisplayableString());
+                  builder.header("Content-type", MediaType.PLAIN_TEXT_UTF_8);
                } else {
                   ResultSet<? extends AttributeReadable<Object>> results =
                      exactlyOne.getAttributes(CoreAttributeTypes.Extension);

@@ -51,8 +51,14 @@ public class AttributesResource {
       return new AttributeResource(uriInfo, request, branchUuid, artifactUuid, attributeId);
    }
 
-   @GET
-   @Produces(MediaType.TEXT_HTML)
+   @Path("{attributeId}/version/{transactionId}/text")
+   public AttributeResource getAttributeWithGammaAsText(@PathParam("attributeId") int attributeId, @PathParam("transactionId") TransactionId transactionId) {
+      AttributeResource toReturn =
+         new AttributeResource(uriInfo, request, branchUuid, artifactUuid, attributeId, transactionId);
+      toReturn.setTextOut(true);
+      return toReturn;
+   }
+
    @Path("{attributeId}/version/{transactionId}")
    public AttributeResource getAttributeWithGamma(@PathParam("attributeId") int attributeId, @PathParam("transactionId") TransactionId transactionId) {
       return new AttributeResource(uriInfo, request, branchUuid, artifactUuid, attributeId, transactionId);
