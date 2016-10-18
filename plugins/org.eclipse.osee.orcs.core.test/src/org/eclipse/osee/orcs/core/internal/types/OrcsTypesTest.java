@@ -369,7 +369,6 @@ public class OrcsTypesTest {
    @Test
    public void testReloadAddArtifactType() throws OseeCoreException {
       String addTypeDef = "artifactType \"Added Artifact Type\" extends \"Other Artifact\" {\n" + //
-         "guid \"AUsuRi68hVhYLH76ENgA\" \n" + //
          "id 35 \n" + //
          "}";
 
@@ -708,7 +707,6 @@ public class OrcsTypesTest {
 
       //@formatter:off
       String addAttributeType = "attributeType \"Field 3\" extends DateAttribute {" +
-        "guid \"AizLp7tWSgr9HNzdmUAA\" \n" +
         "id 1152921504606847106 \n" +
         "dataProvider DefaultAttributeDataProvider \n" +
         "min 1 \n" +
@@ -908,7 +906,6 @@ public class OrcsTypesTest {
 
       //@formatter:off
       String addType = "relationType \"Dynamic Relation\" {\n"+
-          "guid \"Ai1n5tou4mr0pqXEPgQA\" \n"+
           "id 2305843009213694297 \n"+
           "sideAName \"dynamic-sideA\" \n"+
           "sideAArtifactType \"Artifact\" \n"+

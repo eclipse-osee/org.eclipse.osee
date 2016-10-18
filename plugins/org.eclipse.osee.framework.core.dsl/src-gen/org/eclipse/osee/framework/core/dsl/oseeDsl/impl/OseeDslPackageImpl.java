@@ -601,19 +601,9 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getOseeType_TypeGuid()
-  {
-    return (EAttribute)oseeTypeEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EAttribute getOseeType_Id()
   {
-    return (EAttribute)oseeTypeEClass.getEStructuralFeatures().get(2);
+    return (EAttribute)oseeTypeEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -1835,7 +1825,6 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
 
     oseeTypeEClass = createEClass(OSEE_TYPE);
     createEAttribute(oseeTypeEClass, OSEE_TYPE__NAME);
-    createEAttribute(oseeTypeEClass, OSEE_TYPE__TYPE_GUID);
     createEAttribute(oseeTypeEClass, OSEE_TYPE__ID);
 
     xArtifactTypeEClass = createEClass(XARTIFACT_TYPE);
@@ -2060,7 +2049,6 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
 
     initEClass(oseeTypeEClass, OseeType.class, "OseeType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getOseeType_Name(), ecorePackage.getEString(), "name", null, 0, 1, OseeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getOseeType_TypeGuid(), ecorePackage.getEString(), "typeGuid", null, 0, 1, OseeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getOseeType_Id(), ecorePackage.getEString(), "id", null, 0, 1, OseeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(xArtifactTypeEClass, XArtifactType.class, "XArtifactType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -2223,7 +2211,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
 
     initEEnum(matchFieldEEnum, MatchField.class, "MatchField");
     addEEnumLiteral(matchFieldEEnum, MatchField.ARTIFACT_NAME);
-    addEEnumLiteral(matchFieldEEnum, MatchField.ARTIFACT_GUID);
+    addEEnumLiteral(matchFieldEEnum, MatchField.ARTIFACT_ID);
     addEEnumLiteral(matchFieldEEnum, MatchField.BRANCH_NAME);
     addEEnumLiteral(matchFieldEEnum, MatchField.BRANCH_UUID);
 

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 @SuppressWarnings("all")
 public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_WHOLE_NUM_STR", "RULE_ID", "RULE_STRING", "RULE_INT", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'ALL'", "'DefaultAttributeDataProvider'", "'UriAttributeDataProvider'", "'unlimited'", "'DefaultAttributeTaggerProvider'", "'BooleanAttribute'", "'CompressedContentAttribute'", "'DateAttribute'", "'EnumeratedAttribute'", "'FloatingPointAttribute'", "'IntegerAttribute'", "'LongAttribute'", "'JavaObjectAttribute'", "'StringAttribute'", "'ArtifactReferenceAttribute'", "'BranchReferenceAttribute'", "'WordAttribute'", "'OutlineNumberAttribute'", "'Lexicographical_Ascending'", "'Lexicographical_Descending'", "'Unordered'", "'ONE_TO_ONE'", "'ONE_TO_MANY'", "'MANY_TO_ONE'", "'MANY_TO_MANY'", "'EQ'", "'LIKE'", "'AND'", "'OR'", "'artifactName'", "'artifactGuid'", "'branchName'", "'branchUuid'", "'ALLOW'", "'DENY'", "'SIDE_A'", "'SIDE_B'", "'BOTH'", "'import'", "'.'", "'artifactType'", "'{'", "'id'", "'}'", "'extends'", "','", "'guid'", "'attribute'", "'attributeType'", "'dataProvider'", "'min'", "'max'", "'overrides'", "'taggerId'", "'enumType'", "'description'", "'defaultValue'", "'fileExtension'", "'mediaType'", "'oseeEnumType'", "'entry'", "'entryGuid'", "'overrides enum'", "'add'", "'remove'", "'overrides artifactType'", "'update'", "'relationType'", "'sideAName'", "'sideAArtifactType'", "'sideBName'", "'sideBArtifactType'", "'defaultOrderType'", "'multiplicity'", "'('", "')'", "'artifactMatcher'", "'where'", "';'", "'role'", "'accessContext'", "'childrenOf'", "'artifact'", "'edit'", "'of'", "'abstract'", "'inheritAll'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_WHOLE_NUM_STR", "RULE_ID", "RULE_STRING", "RULE_INT", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'ALL'", "'DefaultAttributeDataProvider'", "'UriAttributeDataProvider'", "'unlimited'", "'DefaultAttributeTaggerProvider'", "'BooleanAttribute'", "'CompressedContentAttribute'", "'DateAttribute'", "'EnumeratedAttribute'", "'FloatingPointAttribute'", "'IntegerAttribute'", "'LongAttribute'", "'JavaObjectAttribute'", "'StringAttribute'", "'ArtifactReferenceAttribute'", "'BranchReferenceAttribute'", "'WordAttribute'", "'OutlineNumberAttribute'", "'Lexicographical_Ascending'", "'Lexicographical_Descending'", "'Unordered'", "'ONE_TO_ONE'", "'ONE_TO_MANY'", "'MANY_TO_ONE'", "'MANY_TO_MANY'", "'EQ'", "'LIKE'", "'AND'", "'OR'", "'artifactName'", "'artifactId'", "'branchName'", "'branchUuid'", "'ALLOW'", "'DENY'", "'SIDE_A'", "'SIDE_B'", "'BOTH'", "'import'", "'.'", "'artifactType'", "'{'", "'id'", "'}'", "'extends'", "','", "'attribute'", "'attributeType'", "'dataProvider'", "'min'", "'max'", "'overrides'", "'taggerId'", "'enumType'", "'description'", "'defaultValue'", "'fileExtension'", "'mediaType'", "'oseeEnumType'", "'entry'", "'entryGuid'", "'overrides enum'", "'add'", "'remove'", "'overrides artifactType'", "'update'", "'relationType'", "'sideAName'", "'sideAArtifactType'", "'sideBName'", "'sideBArtifactType'", "'defaultOrderType'", "'multiplicity'", "'('", "')'", "'artifactMatcher'", "'where'", "';'", "'role'", "'accessContext'", "'guid'", "'childrenOf'", "'artifact'", "'edit'", "'of'", "'abstract'", "'inheritAll'"
     };
     public static final int T__50=50;
     public static final int T__59=59;
@@ -3425,27 +3425,27 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
                 alt1=1;
                 }
                 break;
-            case 79:
+            case 78:
                 {
                 alt1=2;
                 }
                 break;
-            case 60:
+            case 59:
                 {
                 alt1=3;
                 }
                 break;
-            case 71:
+            case 70:
                 {
                 alt1=4;
                 }
                 break;
-            case 74:
+            case 73:
                 {
                 alt1=5;
                 }
                 break;
-            case 77:
+            case 76:
                 {
                 alt1=6;
                 }
@@ -3635,17 +3635,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
             // InternalOseeDsl.g:1314:1: ( ( ( rule__OseeDsl__ArtifactMatchRefsAssignment_2_0 ) ) | ( ( rule__OseeDsl__AccessDeclarationsAssignment_2_1 ) ) | ( ( rule__OseeDsl__RoleDeclarationsAssignment_2_2 ) ) )
             int alt2=3;
             switch ( input.LA(1) ) {
-            case 88:
+            case 87:
                 {
                 alt2=1;
                 }
                 break;
-            case 92:
+            case 91:
                 {
                 alt2=2;
                 }
                 break;
-            case 91:
+            case 90:
                 {
                 alt2=3;
                 }
@@ -3766,17 +3766,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
                 alt3=1;
                 }
                 break;
-            case 79:
+            case 78:
                 {
                 alt3=2;
                 }
                 break;
-            case 60:
+            case 59:
                 {
                 alt3=3;
                 }
                 break;
-            case 71:
+            case 70:
                 {
                 alt3=4;
                 }
@@ -3882,9 +3882,9 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
     // $ANTLR end "rule__OseeType__Alternatives"
 
 
-    // $ANTLR start "rule__XAttributeType__DataProviderAlternatives_9_0"
-    // InternalOseeDsl.g:1373:1: rule__XAttributeType__DataProviderAlternatives_9_0 : ( ( 'DefaultAttributeDataProvider' ) | ( 'UriAttributeDataProvider' ) | ( ruleQUALIFIED_NAME ) );
-    public final void rule__XAttributeType__DataProviderAlternatives_9_0() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__DataProviderAlternatives_8_0"
+    // InternalOseeDsl.g:1373:1: rule__XAttributeType__DataProviderAlternatives_8_0 : ( ( 'DefaultAttributeDataProvider' ) | ( 'UriAttributeDataProvider' ) | ( ruleQUALIFIED_NAME ) );
+    public final void rule__XAttributeType__DataProviderAlternatives_8_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
@@ -3921,9 +3921,9 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
                     // InternalOseeDsl.g:1378:1: ( 'DefaultAttributeDataProvider' )
                     // InternalOseeDsl.g:1379:1: 'DefaultAttributeDataProvider'
                     {
-                     before(grammarAccess.getXAttributeTypeAccess().getDataProviderDefaultAttributeDataProviderKeyword_9_0_0()); 
+                     before(grammarAccess.getXAttributeTypeAccess().getDataProviderDefaultAttributeDataProviderKeyword_8_0_0()); 
                     match(input,13,FOLLOW_2); 
-                     after(grammarAccess.getXAttributeTypeAccess().getDataProviderDefaultAttributeDataProviderKeyword_9_0_0()); 
+                     after(grammarAccess.getXAttributeTypeAccess().getDataProviderDefaultAttributeDataProviderKeyword_8_0_0()); 
 
                     }
 
@@ -3936,9 +3936,9 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
                     // InternalOseeDsl.g:1386:6: ( 'UriAttributeDataProvider' )
                     // InternalOseeDsl.g:1387:1: 'UriAttributeDataProvider'
                     {
-                     before(grammarAccess.getXAttributeTypeAccess().getDataProviderUriAttributeDataProviderKeyword_9_0_1()); 
+                     before(grammarAccess.getXAttributeTypeAccess().getDataProviderUriAttributeDataProviderKeyword_8_0_1()); 
                     match(input,14,FOLLOW_2); 
-                     after(grammarAccess.getXAttributeTypeAccess().getDataProviderUriAttributeDataProviderKeyword_9_0_1()); 
+                     after(grammarAccess.getXAttributeTypeAccess().getDataProviderUriAttributeDataProviderKeyword_8_0_1()); 
 
                     }
 
@@ -3951,13 +3951,13 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
                     // InternalOseeDsl.g:1394:6: ( ruleQUALIFIED_NAME )
                     // InternalOseeDsl.g:1395:1: ruleQUALIFIED_NAME
                     {
-                     before(grammarAccess.getXAttributeTypeAccess().getDataProviderQUALIFIED_NAMEParserRuleCall_9_0_2()); 
+                     before(grammarAccess.getXAttributeTypeAccess().getDataProviderQUALIFIED_NAMEParserRuleCall_8_0_2()); 
                     pushFollow(FOLLOW_2);
                     ruleQUALIFIED_NAME();
 
                     state._fsp--;
 
-                     after(grammarAccess.getXAttributeTypeAccess().getDataProviderQUALIFIED_NAMEParserRuleCall_9_0_2()); 
+                     after(grammarAccess.getXAttributeTypeAccess().getDataProviderQUALIFIED_NAMEParserRuleCall_8_0_2()); 
 
                     }
 
@@ -3978,12 +3978,12 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__DataProviderAlternatives_9_0"
+    // $ANTLR end "rule__XAttributeType__DataProviderAlternatives_8_0"
 
 
-    // $ANTLR start "rule__XAttributeType__MaxAlternatives_13_0"
-    // InternalOseeDsl.g:1405:1: rule__XAttributeType__MaxAlternatives_13_0 : ( ( RULE_WHOLE_NUM_STR ) | ( 'unlimited' ) );
-    public final void rule__XAttributeType__MaxAlternatives_13_0() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__MaxAlternatives_12_0"
+    // InternalOseeDsl.g:1405:1: rule__XAttributeType__MaxAlternatives_12_0 : ( ( RULE_WHOLE_NUM_STR ) | ( 'unlimited' ) );
+    public final void rule__XAttributeType__MaxAlternatives_12_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
@@ -4011,9 +4011,9 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
                     // InternalOseeDsl.g:1410:1: ( RULE_WHOLE_NUM_STR )
                     // InternalOseeDsl.g:1411:1: RULE_WHOLE_NUM_STR
                     {
-                     before(grammarAccess.getXAttributeTypeAccess().getMaxWHOLE_NUM_STRTerminalRuleCall_13_0_0()); 
+                     before(grammarAccess.getXAttributeTypeAccess().getMaxWHOLE_NUM_STRTerminalRuleCall_12_0_0()); 
                     match(input,RULE_WHOLE_NUM_STR,FOLLOW_2); 
-                     after(grammarAccess.getXAttributeTypeAccess().getMaxWHOLE_NUM_STRTerminalRuleCall_13_0_0()); 
+                     after(grammarAccess.getXAttributeTypeAccess().getMaxWHOLE_NUM_STRTerminalRuleCall_12_0_0()); 
 
                     }
 
@@ -4026,9 +4026,9 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
                     // InternalOseeDsl.g:1416:6: ( 'unlimited' )
                     // InternalOseeDsl.g:1417:1: 'unlimited'
                     {
-                     before(grammarAccess.getXAttributeTypeAccess().getMaxUnlimitedKeyword_13_0_1()); 
+                     before(grammarAccess.getXAttributeTypeAccess().getMaxUnlimitedKeyword_12_0_1()); 
                     match(input,15,FOLLOW_2); 
-                     after(grammarAccess.getXAttributeTypeAccess().getMaxUnlimitedKeyword_13_0_1()); 
+                     after(grammarAccess.getXAttributeTypeAccess().getMaxUnlimitedKeyword_12_0_1()); 
 
                     }
 
@@ -4049,12 +4049,12 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__MaxAlternatives_13_0"
+    // $ANTLR end "rule__XAttributeType__MaxAlternatives_12_0"
 
 
-    // $ANTLR start "rule__XAttributeType__TaggerIdAlternatives_14_0_1_0"
-    // InternalOseeDsl.g:1429:1: rule__XAttributeType__TaggerIdAlternatives_14_0_1_0 : ( ( 'DefaultAttributeTaggerProvider' ) | ( ruleQUALIFIED_NAME ) );
-    public final void rule__XAttributeType__TaggerIdAlternatives_14_0_1_0() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__TaggerIdAlternatives_13_0_1_0"
+    // InternalOseeDsl.g:1429:1: rule__XAttributeType__TaggerIdAlternatives_13_0_1_0 : ( ( 'DefaultAttributeTaggerProvider' ) | ( ruleQUALIFIED_NAME ) );
+    public final void rule__XAttributeType__TaggerIdAlternatives_13_0_1_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
@@ -4082,9 +4082,9 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
                     // InternalOseeDsl.g:1434:1: ( 'DefaultAttributeTaggerProvider' )
                     // InternalOseeDsl.g:1435:1: 'DefaultAttributeTaggerProvider'
                     {
-                     before(grammarAccess.getXAttributeTypeAccess().getTaggerIdDefaultAttributeTaggerProviderKeyword_14_0_1_0_0()); 
+                     before(grammarAccess.getXAttributeTypeAccess().getTaggerIdDefaultAttributeTaggerProviderKeyword_13_0_1_0_0()); 
                     match(input,16,FOLLOW_2); 
-                     after(grammarAccess.getXAttributeTypeAccess().getTaggerIdDefaultAttributeTaggerProviderKeyword_14_0_1_0_0()); 
+                     after(grammarAccess.getXAttributeTypeAccess().getTaggerIdDefaultAttributeTaggerProviderKeyword_13_0_1_0_0()); 
 
                     }
 
@@ -4097,13 +4097,13 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
                     // InternalOseeDsl.g:1442:6: ( ruleQUALIFIED_NAME )
                     // InternalOseeDsl.g:1443:1: ruleQUALIFIED_NAME
                     {
-                     before(grammarAccess.getXAttributeTypeAccess().getTaggerIdQUALIFIED_NAMEParserRuleCall_14_0_1_0_1()); 
+                     before(grammarAccess.getXAttributeTypeAccess().getTaggerIdQUALIFIED_NAMEParserRuleCall_13_0_1_0_1()); 
                     pushFollow(FOLLOW_2);
                     ruleQUALIFIED_NAME();
 
                     state._fsp--;
 
-                     after(grammarAccess.getXAttributeTypeAccess().getTaggerIdQUALIFIED_NAMEParserRuleCall_14_0_1_0_1()); 
+                     after(grammarAccess.getXAttributeTypeAccess().getTaggerIdQUALIFIED_NAMEParserRuleCall_13_0_1_0_1()); 
 
                     }
 
@@ -4124,7 +4124,7 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__TaggerIdAlternatives_14_0_1_0"
+    // $ANTLR end "rule__XAttributeType__TaggerIdAlternatives_13_0_1_0"
 
 
     // $ANTLR start "rule__AttributeBaseType__Alternatives"
@@ -4457,10 +4457,10 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
             int alt8=2;
             int LA8_0 = input.LA(1);
 
-            if ( (LA8_0==75) ) {
+            if ( (LA8_0==74) ) {
                 alt8=1;
             }
-            else if ( (LA8_0==76) ) {
+            else if ( (LA8_0==75) ) {
                 alt8=2;
             }
             else {
@@ -4535,17 +4535,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
             // InternalOseeDsl.g:1599:1: ( ( ruleAddAttribute ) | ( ruleRemoveAttribute ) | ( ruleUpdateAttribute ) )
             int alt9=3;
             switch ( input.LA(1) ) {
-            case 75:
+            case 74:
                 {
                 alt9=1;
                 }
                 break;
-            case 76:
+            case 75:
                 {
                 alt9=2;
                 }
                 break;
-            case 78:
+            case 77:
                 {
                 alt9=3;
                 }
@@ -4761,7 +4761,7 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
             if ( ((LA11_0>=41 && LA11_0<=44)) ) {
                 alt11=1;
             }
-            else if ( (LA11_0==86) ) {
+            else if ( (LA11_0==85) ) {
                 alt11=2;
             }
             else {
@@ -4837,10 +4837,10 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
             int alt12=2;
             int LA12_0 = input.LA(1);
 
-            if ( (LA12_0==58) ) {
+            if ( (LA12_0==92) ) {
                 alt12=1;
             }
-            else if ( (LA12_0==92) ) {
+            else if ( (LA12_0==91) ) {
                 alt12=2;
             }
             else {
@@ -5103,16 +5103,6 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
                 if ( (LA15_1==95) ) {
                     switch ( input.LA(3) ) {
-                    case 79:
-                        {
-                        alt15=3;
-                        }
-                        break;
-                    case 60:
-                        {
-                        alt15=4;
-                        }
-                        break;
                     case 52:
                         {
                         alt15=2;
@@ -5121,6 +5111,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
                     case 94:
                         {
                         alt15=1;
+                        }
+                        break;
+                    case 78:
+                        {
+                        alt15=3;
+                        }
+                        break;
+                    case 59:
+                        {
+                        alt15=4;
                         }
                         break;
                     default:
@@ -5143,16 +5143,6 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
                 if ( (LA15_2==95) ) {
                     switch ( input.LA(3) ) {
-                    case 79:
-                        {
-                        alt15=3;
-                        }
-                        break;
-                    case 60:
-                        {
-                        alt15=4;
-                        }
-                        break;
                     case 52:
                         {
                         alt15=2;
@@ -5161,6 +5151,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
                     case 94:
                         {
                         alt15=1;
+                        }
+                        break;
+                    case 78:
+                        {
+                        alt15=3;
+                        }
+                        break;
+                    case 59:
+                        {
+                        alt15=4;
                         }
                         break;
                     default:
@@ -5675,13 +5675,13 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__MatchField__Alternatives"
-    // InternalOseeDsl.g:1894:1: rule__MatchField__Alternatives : ( ( ( 'artifactName' ) ) | ( ( 'artifactGuid' ) ) | ( ( 'branchName' ) ) | ( ( 'branchUuid' ) ) );
+    // InternalOseeDsl.g:1894:1: rule__MatchField__Alternatives : ( ( ( 'artifactName' ) ) | ( ( 'artifactId' ) ) | ( ( 'branchName' ) ) | ( ( 'branchUuid' ) ) );
     public final void rule__MatchField__Alternatives() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:1898:1: ( ( ( 'artifactName' ) ) | ( ( 'artifactGuid' ) ) | ( ( 'branchName' ) ) | ( ( 'branchUuid' ) ) )
+            // InternalOseeDsl.g:1898:1: ( ( ( 'artifactName' ) ) | ( ( 'artifactId' ) ) | ( ( 'branchName' ) ) | ( ( 'branchUuid' ) ) )
             int alt20=4;
             switch ( input.LA(1) ) {
             case 41:
@@ -5734,20 +5734,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
                     }
                     break;
                 case 2 :
-                    // InternalOseeDsl.g:1906:6: ( ( 'artifactGuid' ) )
+                    // InternalOseeDsl.g:1906:6: ( ( 'artifactId' ) )
                     {
-                    // InternalOseeDsl.g:1906:6: ( ( 'artifactGuid' ) )
-                    // InternalOseeDsl.g:1907:1: ( 'artifactGuid' )
+                    // InternalOseeDsl.g:1906:6: ( ( 'artifactId' ) )
+                    // InternalOseeDsl.g:1907:1: ( 'artifactId' )
                     {
-                     before(grammarAccess.getMatchFieldAccess().getArtifactGuidEnumLiteralDeclaration_1()); 
-                    // InternalOseeDsl.g:1908:1: ( 'artifactGuid' )
-                    // InternalOseeDsl.g:1908:3: 'artifactGuid'
+                     before(grammarAccess.getMatchFieldAccess().getArtifactIdEnumLiteralDeclaration_1()); 
+                    // InternalOseeDsl.g:1908:1: ( 'artifactId' )
+                    // InternalOseeDsl.g:1908:3: 'artifactId'
                     {
                     match(input,42,FOLLOW_2); 
 
                     }
 
-                     after(grammarAccess.getMatchFieldAccess().getArtifactGuidEnumLiteralDeclaration_1()); 
+                     after(grammarAccess.getMatchFieldAccess().getArtifactIdEnumLiteralDeclaration_1()); 
 
                     }
 
@@ -6170,7 +6170,7 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
                 int alt24=2;
                 int LA24_0 = input.LA(1);
 
-                if ( (LA24_0==52||LA24_0==60||LA24_0==71||LA24_0==74||LA24_0==77||LA24_0==79||LA24_0==97) ) {
+                if ( (LA24_0==52||LA24_0==59||LA24_0==70||LA24_0==73||LA24_0==76||LA24_0==78||LA24_0==97) ) {
                     alt24=1;
                 }
 
@@ -6268,7 +6268,7 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
                 int alt25=2;
                 int LA25_0 = input.LA(1);
 
-                if ( (LA25_0==88||(LA25_0>=91 && LA25_0<=92)) ) {
+                if ( (LA25_0==87||(LA25_0>=90 && LA25_0<=91)) ) {
                     alt25=1;
                 }
 
@@ -7223,7 +7223,7 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
             // InternalOseeDsl.g:2421:1: ( rule__XArtifactType__Group__5__Impl rule__XArtifactType__Group__6 )
             // InternalOseeDsl.g:2422:2: rule__XArtifactType__Group__5__Impl rule__XArtifactType__Group__6
             {
-            pushFollow(FOLLOW_13);
+            pushFollow(FOLLOW_14);
             rule__XArtifactType__Group__5__Impl();
 
             state._fsp--;
@@ -7252,42 +7252,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactType__Group__5__Impl"
-    // InternalOseeDsl.g:2429:1: rule__XArtifactType__Group__5__Impl : ( ( rule__XArtifactType__Group_5__0 )? ) ;
+    // InternalOseeDsl.g:2429:1: rule__XArtifactType__Group__5__Impl : ( 'id' ) ;
     public final void rule__XArtifactType__Group__5__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2433:1: ( ( ( rule__XArtifactType__Group_5__0 )? ) )
-            // InternalOseeDsl.g:2434:1: ( ( rule__XArtifactType__Group_5__0 )? )
+            // InternalOseeDsl.g:2433:1: ( ( 'id' ) )
+            // InternalOseeDsl.g:2434:1: ( 'id' )
             {
-            // InternalOseeDsl.g:2434:1: ( ( rule__XArtifactType__Group_5__0 )? )
-            // InternalOseeDsl.g:2435:1: ( rule__XArtifactType__Group_5__0 )?
+            // InternalOseeDsl.g:2434:1: ( 'id' )
+            // InternalOseeDsl.g:2435:1: 'id'
             {
-             before(grammarAccess.getXArtifactTypeAccess().getGroup_5()); 
-            // InternalOseeDsl.g:2436:1: ( rule__XArtifactType__Group_5__0 )?
-            int alt29=2;
-            int LA29_0 = input.LA(1);
-
-            if ( (LA29_0==58) ) {
-                alt29=1;
-            }
-            switch (alt29) {
-                case 1 :
-                    // InternalOseeDsl.g:2436:2: rule__XArtifactType__Group_5__0
-                    {
-                    pushFollow(FOLLOW_2);
-                    rule__XArtifactType__Group_5__0();
-
-                    state._fsp--;
-
-
-                    }
-                    break;
-
-            }
-
-             after(grammarAccess.getXArtifactTypeAccess().getGroup_5()); 
+             before(grammarAccess.getXArtifactTypeAccess().getIdKeyword_5()); 
+            match(input,54,FOLLOW_2); 
+             after(grammarAccess.getXArtifactTypeAccess().getIdKeyword_5()); 
 
             }
 
@@ -7310,16 +7289,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactType__Group__6"
-    // InternalOseeDsl.g:2446:1: rule__XArtifactType__Group__6 : rule__XArtifactType__Group__6__Impl rule__XArtifactType__Group__7 ;
+    // InternalOseeDsl.g:2448:1: rule__XArtifactType__Group__6 : rule__XArtifactType__Group__6__Impl rule__XArtifactType__Group__7 ;
     public final void rule__XArtifactType__Group__6() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2450:1: ( rule__XArtifactType__Group__6__Impl rule__XArtifactType__Group__7 )
-            // InternalOseeDsl.g:2451:2: rule__XArtifactType__Group__6__Impl rule__XArtifactType__Group__7
+            // InternalOseeDsl.g:2452:1: ( rule__XArtifactType__Group__6__Impl rule__XArtifactType__Group__7 )
+            // InternalOseeDsl.g:2453:2: rule__XArtifactType__Group__6__Impl rule__XArtifactType__Group__7
             {
-            pushFollow(FOLLOW_14);
+            pushFollow(FOLLOW_15);
             rule__XArtifactType__Group__6__Impl();
 
             state._fsp--;
@@ -7348,21 +7327,31 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactType__Group__6__Impl"
-    // InternalOseeDsl.g:2458:1: rule__XArtifactType__Group__6__Impl : ( 'id' ) ;
+    // InternalOseeDsl.g:2460:1: rule__XArtifactType__Group__6__Impl : ( ( rule__XArtifactType__IdAssignment_6 ) ) ;
     public final void rule__XArtifactType__Group__6__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2462:1: ( ( 'id' ) )
-            // InternalOseeDsl.g:2463:1: ( 'id' )
+            // InternalOseeDsl.g:2464:1: ( ( ( rule__XArtifactType__IdAssignment_6 ) ) )
+            // InternalOseeDsl.g:2465:1: ( ( rule__XArtifactType__IdAssignment_6 ) )
             {
-            // InternalOseeDsl.g:2463:1: ( 'id' )
-            // InternalOseeDsl.g:2464:1: 'id'
+            // InternalOseeDsl.g:2465:1: ( ( rule__XArtifactType__IdAssignment_6 ) )
+            // InternalOseeDsl.g:2466:1: ( rule__XArtifactType__IdAssignment_6 )
             {
-             before(grammarAccess.getXArtifactTypeAccess().getIdKeyword_6()); 
-            match(input,54,FOLLOW_2); 
-             after(grammarAccess.getXArtifactTypeAccess().getIdKeyword_6()); 
+             before(grammarAccess.getXArtifactTypeAccess().getIdAssignment_6()); 
+            // InternalOseeDsl.g:2467:1: ( rule__XArtifactType__IdAssignment_6 )
+            // InternalOseeDsl.g:2467:2: rule__XArtifactType__IdAssignment_6
+            {
+            pushFollow(FOLLOW_2);
+            rule__XArtifactType__IdAssignment_6();
+
+            state._fsp--;
+
+
+            }
+
+             after(grammarAccess.getXArtifactTypeAccess().getIdAssignment_6()); 
 
             }
 
@@ -7423,31 +7412,49 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactType__Group__7__Impl"
-    // InternalOseeDsl.g:2489:1: rule__XArtifactType__Group__7__Impl : ( ( rule__XArtifactType__IdAssignment_7 ) ) ;
+    // InternalOseeDsl.g:2489:1: rule__XArtifactType__Group__7__Impl : ( ( rule__XArtifactType__ValidAttributeTypesAssignment_7 )* ) ;
     public final void rule__XArtifactType__Group__7__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2493:1: ( ( ( rule__XArtifactType__IdAssignment_7 ) ) )
-            // InternalOseeDsl.g:2494:1: ( ( rule__XArtifactType__IdAssignment_7 ) )
+            // InternalOseeDsl.g:2493:1: ( ( ( rule__XArtifactType__ValidAttributeTypesAssignment_7 )* ) )
+            // InternalOseeDsl.g:2494:1: ( ( rule__XArtifactType__ValidAttributeTypesAssignment_7 )* )
             {
-            // InternalOseeDsl.g:2494:1: ( ( rule__XArtifactType__IdAssignment_7 ) )
-            // InternalOseeDsl.g:2495:1: ( rule__XArtifactType__IdAssignment_7 )
+            // InternalOseeDsl.g:2494:1: ( ( rule__XArtifactType__ValidAttributeTypesAssignment_7 )* )
+            // InternalOseeDsl.g:2495:1: ( rule__XArtifactType__ValidAttributeTypesAssignment_7 )*
             {
-             before(grammarAccess.getXArtifactTypeAccess().getIdAssignment_7()); 
-            // InternalOseeDsl.g:2496:1: ( rule__XArtifactType__IdAssignment_7 )
-            // InternalOseeDsl.g:2496:2: rule__XArtifactType__IdAssignment_7
-            {
-            pushFollow(FOLLOW_2);
-            rule__XArtifactType__IdAssignment_7();
+             before(grammarAccess.getXArtifactTypeAccess().getValidAttributeTypesAssignment_7()); 
+            // InternalOseeDsl.g:2496:1: ( rule__XArtifactType__ValidAttributeTypesAssignment_7 )*
+            loop29:
+            do {
+                int alt29=2;
+                int LA29_0 = input.LA(1);
 
-            state._fsp--;
+                if ( (LA29_0==58) ) {
+                    alt29=1;
+                }
 
 
-            }
+                switch (alt29) {
+            	case 1 :
+            	    // InternalOseeDsl.g:2496:2: rule__XArtifactType__ValidAttributeTypesAssignment_7
+            	    {
+            	    pushFollow(FOLLOW_16);
+            	    rule__XArtifactType__ValidAttributeTypesAssignment_7();
 
-             after(grammarAccess.getXArtifactTypeAccess().getIdAssignment_7()); 
+            	    state._fsp--;
+
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop29;
+                }
+            } while (true);
+
+             after(grammarAccess.getXArtifactTypeAccess().getValidAttributeTypesAssignment_7()); 
 
             }
 
@@ -7470,22 +7477,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactType__Group__8"
-    // InternalOseeDsl.g:2506:1: rule__XArtifactType__Group__8 : rule__XArtifactType__Group__8__Impl rule__XArtifactType__Group__9 ;
+    // InternalOseeDsl.g:2506:1: rule__XArtifactType__Group__8 : rule__XArtifactType__Group__8__Impl ;
     public final void rule__XArtifactType__Group__8() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2510:1: ( rule__XArtifactType__Group__8__Impl rule__XArtifactType__Group__9 )
-            // InternalOseeDsl.g:2511:2: rule__XArtifactType__Group__8__Impl rule__XArtifactType__Group__9
+            // InternalOseeDsl.g:2510:1: ( rule__XArtifactType__Group__8__Impl )
+            // InternalOseeDsl.g:2511:2: rule__XArtifactType__Group__8__Impl
             {
-            pushFollow(FOLLOW_15);
-            rule__XArtifactType__Group__8__Impl();
-
-            state._fsp--;
-
             pushFollow(FOLLOW_2);
-            rule__XArtifactType__Group__9();
+            rule__XArtifactType__Group__8__Impl();
 
             state._fsp--;
 
@@ -7508,49 +7510,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactType__Group__8__Impl"
-    // InternalOseeDsl.g:2518:1: rule__XArtifactType__Group__8__Impl : ( ( rule__XArtifactType__ValidAttributeTypesAssignment_8 )* ) ;
+    // InternalOseeDsl.g:2517:1: rule__XArtifactType__Group__8__Impl : ( '}' ) ;
     public final void rule__XArtifactType__Group__8__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2522:1: ( ( ( rule__XArtifactType__ValidAttributeTypesAssignment_8 )* ) )
-            // InternalOseeDsl.g:2523:1: ( ( rule__XArtifactType__ValidAttributeTypesAssignment_8 )* )
+            // InternalOseeDsl.g:2521:1: ( ( '}' ) )
+            // InternalOseeDsl.g:2522:1: ( '}' )
             {
-            // InternalOseeDsl.g:2523:1: ( ( rule__XArtifactType__ValidAttributeTypesAssignment_8 )* )
-            // InternalOseeDsl.g:2524:1: ( rule__XArtifactType__ValidAttributeTypesAssignment_8 )*
+            // InternalOseeDsl.g:2522:1: ( '}' )
+            // InternalOseeDsl.g:2523:1: '}'
             {
-             before(grammarAccess.getXArtifactTypeAccess().getValidAttributeTypesAssignment_8()); 
-            // InternalOseeDsl.g:2525:1: ( rule__XArtifactType__ValidAttributeTypesAssignment_8 )*
-            loop30:
-            do {
-                int alt30=2;
-                int LA30_0 = input.LA(1);
-
-                if ( (LA30_0==59) ) {
-                    alt30=1;
-                }
-
-
-                switch (alt30) {
-            	case 1 :
-            	    // InternalOseeDsl.g:2525:2: rule__XArtifactType__ValidAttributeTypesAssignment_8
-            	    {
-            	    pushFollow(FOLLOW_16);
-            	    rule__XArtifactType__ValidAttributeTypesAssignment_8();
-
-            	    state._fsp--;
-
-
-            	    }
-            	    break;
-
-            	default :
-            	    break loop30;
-                }
-            } while (true);
-
-             after(grammarAccess.getXArtifactTypeAccess().getValidAttributeTypesAssignment_8()); 
+             before(grammarAccess.getXArtifactTypeAccess().getRightCurlyBracketKeyword_8()); 
+            match(input,55,FOLLOW_2); 
+             after(grammarAccess.getXArtifactTypeAccess().getRightCurlyBracketKeyword_8()); 
 
             }
 
@@ -7572,85 +7546,15 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
     // $ANTLR end "rule__XArtifactType__Group__8__Impl"
 
 
-    // $ANTLR start "rule__XArtifactType__Group__9"
-    // InternalOseeDsl.g:2535:1: rule__XArtifactType__Group__9 : rule__XArtifactType__Group__9__Impl ;
-    public final void rule__XArtifactType__Group__9() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:2539:1: ( rule__XArtifactType__Group__9__Impl )
-            // InternalOseeDsl.g:2540:2: rule__XArtifactType__Group__9__Impl
-            {
-            pushFollow(FOLLOW_2);
-            rule__XArtifactType__Group__9__Impl();
-
-            state._fsp--;
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XArtifactType__Group__9"
-
-
-    // $ANTLR start "rule__XArtifactType__Group__9__Impl"
-    // InternalOseeDsl.g:2546:1: rule__XArtifactType__Group__9__Impl : ( '}' ) ;
-    public final void rule__XArtifactType__Group__9__Impl() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:2550:1: ( ( '}' ) )
-            // InternalOseeDsl.g:2551:1: ( '}' )
-            {
-            // InternalOseeDsl.g:2551:1: ( '}' )
-            // InternalOseeDsl.g:2552:1: '}'
-            {
-             before(grammarAccess.getXArtifactTypeAccess().getRightCurlyBracketKeyword_9()); 
-            match(input,55,FOLLOW_2); 
-             after(grammarAccess.getXArtifactTypeAccess().getRightCurlyBracketKeyword_9()); 
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XArtifactType__Group__9__Impl"
-
-
     // $ANTLR start "rule__XArtifactType__Group_3__0"
-    // InternalOseeDsl.g:2585:1: rule__XArtifactType__Group_3__0 : rule__XArtifactType__Group_3__0__Impl rule__XArtifactType__Group_3__1 ;
+    // InternalOseeDsl.g:2554:1: rule__XArtifactType__Group_3__0 : rule__XArtifactType__Group_3__0__Impl rule__XArtifactType__Group_3__1 ;
     public final void rule__XArtifactType__Group_3__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2589:1: ( rule__XArtifactType__Group_3__0__Impl rule__XArtifactType__Group_3__1 )
-            // InternalOseeDsl.g:2590:2: rule__XArtifactType__Group_3__0__Impl rule__XArtifactType__Group_3__1
+            // InternalOseeDsl.g:2558:1: ( rule__XArtifactType__Group_3__0__Impl rule__XArtifactType__Group_3__1 )
+            // InternalOseeDsl.g:2559:2: rule__XArtifactType__Group_3__0__Impl rule__XArtifactType__Group_3__1
             {
             pushFollow(FOLLOW_7);
             rule__XArtifactType__Group_3__0__Impl();
@@ -7681,17 +7585,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactType__Group_3__0__Impl"
-    // InternalOseeDsl.g:2597:1: rule__XArtifactType__Group_3__0__Impl : ( 'extends' ) ;
+    // InternalOseeDsl.g:2566:1: rule__XArtifactType__Group_3__0__Impl : ( 'extends' ) ;
     public final void rule__XArtifactType__Group_3__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2601:1: ( ( 'extends' ) )
-            // InternalOseeDsl.g:2602:1: ( 'extends' )
+            // InternalOseeDsl.g:2570:1: ( ( 'extends' ) )
+            // InternalOseeDsl.g:2571:1: ( 'extends' )
             {
-            // InternalOseeDsl.g:2602:1: ( 'extends' )
-            // InternalOseeDsl.g:2603:1: 'extends'
+            // InternalOseeDsl.g:2571:1: ( 'extends' )
+            // InternalOseeDsl.g:2572:1: 'extends'
             {
              before(grammarAccess.getXArtifactTypeAccess().getExtendsKeyword_3_0()); 
             match(input,56,FOLLOW_2); 
@@ -7718,14 +7622,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactType__Group_3__1"
-    // InternalOseeDsl.g:2616:1: rule__XArtifactType__Group_3__1 : rule__XArtifactType__Group_3__1__Impl rule__XArtifactType__Group_3__2 ;
+    // InternalOseeDsl.g:2585:1: rule__XArtifactType__Group_3__1 : rule__XArtifactType__Group_3__1__Impl rule__XArtifactType__Group_3__2 ;
     public final void rule__XArtifactType__Group_3__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2620:1: ( rule__XArtifactType__Group_3__1__Impl rule__XArtifactType__Group_3__2 )
-            // InternalOseeDsl.g:2621:2: rule__XArtifactType__Group_3__1__Impl rule__XArtifactType__Group_3__2
+            // InternalOseeDsl.g:2589:1: ( rule__XArtifactType__Group_3__1__Impl rule__XArtifactType__Group_3__2 )
+            // InternalOseeDsl.g:2590:2: rule__XArtifactType__Group_3__1__Impl rule__XArtifactType__Group_3__2
             {
             pushFollow(FOLLOW_17);
             rule__XArtifactType__Group_3__1__Impl();
@@ -7756,21 +7660,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactType__Group_3__1__Impl"
-    // InternalOseeDsl.g:2628:1: rule__XArtifactType__Group_3__1__Impl : ( ( rule__XArtifactType__SuperArtifactTypesAssignment_3_1 ) ) ;
+    // InternalOseeDsl.g:2597:1: rule__XArtifactType__Group_3__1__Impl : ( ( rule__XArtifactType__SuperArtifactTypesAssignment_3_1 ) ) ;
     public final void rule__XArtifactType__Group_3__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2632:1: ( ( ( rule__XArtifactType__SuperArtifactTypesAssignment_3_1 ) ) )
-            // InternalOseeDsl.g:2633:1: ( ( rule__XArtifactType__SuperArtifactTypesAssignment_3_1 ) )
+            // InternalOseeDsl.g:2601:1: ( ( ( rule__XArtifactType__SuperArtifactTypesAssignment_3_1 ) ) )
+            // InternalOseeDsl.g:2602:1: ( ( rule__XArtifactType__SuperArtifactTypesAssignment_3_1 ) )
             {
-            // InternalOseeDsl.g:2633:1: ( ( rule__XArtifactType__SuperArtifactTypesAssignment_3_1 ) )
-            // InternalOseeDsl.g:2634:1: ( rule__XArtifactType__SuperArtifactTypesAssignment_3_1 )
+            // InternalOseeDsl.g:2602:1: ( ( rule__XArtifactType__SuperArtifactTypesAssignment_3_1 ) )
+            // InternalOseeDsl.g:2603:1: ( rule__XArtifactType__SuperArtifactTypesAssignment_3_1 )
             {
              before(grammarAccess.getXArtifactTypeAccess().getSuperArtifactTypesAssignment_3_1()); 
-            // InternalOseeDsl.g:2635:1: ( rule__XArtifactType__SuperArtifactTypesAssignment_3_1 )
-            // InternalOseeDsl.g:2635:2: rule__XArtifactType__SuperArtifactTypesAssignment_3_1
+            // InternalOseeDsl.g:2604:1: ( rule__XArtifactType__SuperArtifactTypesAssignment_3_1 )
+            // InternalOseeDsl.g:2604:2: rule__XArtifactType__SuperArtifactTypesAssignment_3_1
             {
             pushFollow(FOLLOW_2);
             rule__XArtifactType__SuperArtifactTypesAssignment_3_1();
@@ -7803,14 +7707,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactType__Group_3__2"
-    // InternalOseeDsl.g:2645:1: rule__XArtifactType__Group_3__2 : rule__XArtifactType__Group_3__2__Impl ;
+    // InternalOseeDsl.g:2614:1: rule__XArtifactType__Group_3__2 : rule__XArtifactType__Group_3__2__Impl ;
     public final void rule__XArtifactType__Group_3__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2649:1: ( rule__XArtifactType__Group_3__2__Impl )
-            // InternalOseeDsl.g:2650:2: rule__XArtifactType__Group_3__2__Impl
+            // InternalOseeDsl.g:2618:1: ( rule__XArtifactType__Group_3__2__Impl )
+            // InternalOseeDsl.g:2619:2: rule__XArtifactType__Group_3__2__Impl
             {
             pushFollow(FOLLOW_2);
             rule__XArtifactType__Group_3__2__Impl();
@@ -7836,33 +7740,33 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactType__Group_3__2__Impl"
-    // InternalOseeDsl.g:2656:1: rule__XArtifactType__Group_3__2__Impl : ( ( rule__XArtifactType__Group_3_2__0 )* ) ;
+    // InternalOseeDsl.g:2625:1: rule__XArtifactType__Group_3__2__Impl : ( ( rule__XArtifactType__Group_3_2__0 )* ) ;
     public final void rule__XArtifactType__Group_3__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2660:1: ( ( ( rule__XArtifactType__Group_3_2__0 )* ) )
-            // InternalOseeDsl.g:2661:1: ( ( rule__XArtifactType__Group_3_2__0 )* )
+            // InternalOseeDsl.g:2629:1: ( ( ( rule__XArtifactType__Group_3_2__0 )* ) )
+            // InternalOseeDsl.g:2630:1: ( ( rule__XArtifactType__Group_3_2__0 )* )
             {
-            // InternalOseeDsl.g:2661:1: ( ( rule__XArtifactType__Group_3_2__0 )* )
-            // InternalOseeDsl.g:2662:1: ( rule__XArtifactType__Group_3_2__0 )*
+            // InternalOseeDsl.g:2630:1: ( ( rule__XArtifactType__Group_3_2__0 )* )
+            // InternalOseeDsl.g:2631:1: ( rule__XArtifactType__Group_3_2__0 )*
             {
              before(grammarAccess.getXArtifactTypeAccess().getGroup_3_2()); 
-            // InternalOseeDsl.g:2663:1: ( rule__XArtifactType__Group_3_2__0 )*
-            loop31:
+            // InternalOseeDsl.g:2632:1: ( rule__XArtifactType__Group_3_2__0 )*
+            loop30:
             do {
-                int alt31=2;
-                int LA31_0 = input.LA(1);
+                int alt30=2;
+                int LA30_0 = input.LA(1);
 
-                if ( (LA31_0==57) ) {
-                    alt31=1;
+                if ( (LA30_0==57) ) {
+                    alt30=1;
                 }
 
 
-                switch (alt31) {
+                switch (alt30) {
             	case 1 :
-            	    // InternalOseeDsl.g:2663:2: rule__XArtifactType__Group_3_2__0
+            	    // InternalOseeDsl.g:2632:2: rule__XArtifactType__Group_3_2__0
             	    {
             	    pushFollow(FOLLOW_18);
             	    rule__XArtifactType__Group_3_2__0();
@@ -7874,7 +7778,7 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
             	    break;
 
             	default :
-            	    break loop31;
+            	    break loop30;
                 }
             } while (true);
 
@@ -7901,14 +7805,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactType__Group_3_2__0"
-    // InternalOseeDsl.g:2679:1: rule__XArtifactType__Group_3_2__0 : rule__XArtifactType__Group_3_2__0__Impl rule__XArtifactType__Group_3_2__1 ;
+    // InternalOseeDsl.g:2648:1: rule__XArtifactType__Group_3_2__0 : rule__XArtifactType__Group_3_2__0__Impl rule__XArtifactType__Group_3_2__1 ;
     public final void rule__XArtifactType__Group_3_2__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2683:1: ( rule__XArtifactType__Group_3_2__0__Impl rule__XArtifactType__Group_3_2__1 )
-            // InternalOseeDsl.g:2684:2: rule__XArtifactType__Group_3_2__0__Impl rule__XArtifactType__Group_3_2__1
+            // InternalOseeDsl.g:2652:1: ( rule__XArtifactType__Group_3_2__0__Impl rule__XArtifactType__Group_3_2__1 )
+            // InternalOseeDsl.g:2653:2: rule__XArtifactType__Group_3_2__0__Impl rule__XArtifactType__Group_3_2__1
             {
             pushFollow(FOLLOW_7);
             rule__XArtifactType__Group_3_2__0__Impl();
@@ -7939,17 +7843,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactType__Group_3_2__0__Impl"
-    // InternalOseeDsl.g:2691:1: rule__XArtifactType__Group_3_2__0__Impl : ( ',' ) ;
+    // InternalOseeDsl.g:2660:1: rule__XArtifactType__Group_3_2__0__Impl : ( ',' ) ;
     public final void rule__XArtifactType__Group_3_2__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2695:1: ( ( ',' ) )
-            // InternalOseeDsl.g:2696:1: ( ',' )
+            // InternalOseeDsl.g:2664:1: ( ( ',' ) )
+            // InternalOseeDsl.g:2665:1: ( ',' )
             {
-            // InternalOseeDsl.g:2696:1: ( ',' )
-            // InternalOseeDsl.g:2697:1: ','
+            // InternalOseeDsl.g:2665:1: ( ',' )
+            // InternalOseeDsl.g:2666:1: ','
             {
              before(grammarAccess.getXArtifactTypeAccess().getCommaKeyword_3_2_0()); 
             match(input,57,FOLLOW_2); 
@@ -7976,14 +7880,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactType__Group_3_2__1"
-    // InternalOseeDsl.g:2710:1: rule__XArtifactType__Group_3_2__1 : rule__XArtifactType__Group_3_2__1__Impl ;
+    // InternalOseeDsl.g:2679:1: rule__XArtifactType__Group_3_2__1 : rule__XArtifactType__Group_3_2__1__Impl ;
     public final void rule__XArtifactType__Group_3_2__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2714:1: ( rule__XArtifactType__Group_3_2__1__Impl )
-            // InternalOseeDsl.g:2715:2: rule__XArtifactType__Group_3_2__1__Impl
+            // InternalOseeDsl.g:2683:1: ( rule__XArtifactType__Group_3_2__1__Impl )
+            // InternalOseeDsl.g:2684:2: rule__XArtifactType__Group_3_2__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__XArtifactType__Group_3_2__1__Impl();
@@ -8009,21 +7913,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactType__Group_3_2__1__Impl"
-    // InternalOseeDsl.g:2721:1: rule__XArtifactType__Group_3_2__1__Impl : ( ( rule__XArtifactType__SuperArtifactTypesAssignment_3_2_1 ) ) ;
+    // InternalOseeDsl.g:2690:1: rule__XArtifactType__Group_3_2__1__Impl : ( ( rule__XArtifactType__SuperArtifactTypesAssignment_3_2_1 ) ) ;
     public final void rule__XArtifactType__Group_3_2__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2725:1: ( ( ( rule__XArtifactType__SuperArtifactTypesAssignment_3_2_1 ) ) )
-            // InternalOseeDsl.g:2726:1: ( ( rule__XArtifactType__SuperArtifactTypesAssignment_3_2_1 ) )
+            // InternalOseeDsl.g:2694:1: ( ( ( rule__XArtifactType__SuperArtifactTypesAssignment_3_2_1 ) ) )
+            // InternalOseeDsl.g:2695:1: ( ( rule__XArtifactType__SuperArtifactTypesAssignment_3_2_1 ) )
             {
-            // InternalOseeDsl.g:2726:1: ( ( rule__XArtifactType__SuperArtifactTypesAssignment_3_2_1 ) )
-            // InternalOseeDsl.g:2727:1: ( rule__XArtifactType__SuperArtifactTypesAssignment_3_2_1 )
+            // InternalOseeDsl.g:2695:1: ( ( rule__XArtifactType__SuperArtifactTypesAssignment_3_2_1 ) )
+            // InternalOseeDsl.g:2696:1: ( rule__XArtifactType__SuperArtifactTypesAssignment_3_2_1 )
             {
              before(grammarAccess.getXArtifactTypeAccess().getSuperArtifactTypesAssignment_3_2_1()); 
-            // InternalOseeDsl.g:2728:1: ( rule__XArtifactType__SuperArtifactTypesAssignment_3_2_1 )
-            // InternalOseeDsl.g:2728:2: rule__XArtifactType__SuperArtifactTypesAssignment_3_2_1
+            // InternalOseeDsl.g:2697:1: ( rule__XArtifactType__SuperArtifactTypesAssignment_3_2_1 )
+            // InternalOseeDsl.g:2697:2: rule__XArtifactType__SuperArtifactTypesAssignment_3_2_1
             {
             pushFollow(FOLLOW_2);
             rule__XArtifactType__SuperArtifactTypesAssignment_3_2_1();
@@ -8055,170 +7959,15 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
     // $ANTLR end "rule__XArtifactType__Group_3_2__1__Impl"
 
 
-    // $ANTLR start "rule__XArtifactType__Group_5__0"
-    // InternalOseeDsl.g:2742:1: rule__XArtifactType__Group_5__0 : rule__XArtifactType__Group_5__0__Impl rule__XArtifactType__Group_5__1 ;
-    public final void rule__XArtifactType__Group_5__0() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:2746:1: ( rule__XArtifactType__Group_5__0__Impl rule__XArtifactType__Group_5__1 )
-            // InternalOseeDsl.g:2747:2: rule__XArtifactType__Group_5__0__Impl rule__XArtifactType__Group_5__1
-            {
-            pushFollow(FOLLOW_7);
-            rule__XArtifactType__Group_5__0__Impl();
-
-            state._fsp--;
-
-            pushFollow(FOLLOW_2);
-            rule__XArtifactType__Group_5__1();
-
-            state._fsp--;
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XArtifactType__Group_5__0"
-
-
-    // $ANTLR start "rule__XArtifactType__Group_5__0__Impl"
-    // InternalOseeDsl.g:2754:1: rule__XArtifactType__Group_5__0__Impl : ( 'guid' ) ;
-    public final void rule__XArtifactType__Group_5__0__Impl() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:2758:1: ( ( 'guid' ) )
-            // InternalOseeDsl.g:2759:1: ( 'guid' )
-            {
-            // InternalOseeDsl.g:2759:1: ( 'guid' )
-            // InternalOseeDsl.g:2760:1: 'guid'
-            {
-             before(grammarAccess.getXArtifactTypeAccess().getGuidKeyword_5_0()); 
-            match(input,58,FOLLOW_2); 
-             after(grammarAccess.getXArtifactTypeAccess().getGuidKeyword_5_0()); 
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XArtifactType__Group_5__0__Impl"
-
-
-    // $ANTLR start "rule__XArtifactType__Group_5__1"
-    // InternalOseeDsl.g:2773:1: rule__XArtifactType__Group_5__1 : rule__XArtifactType__Group_5__1__Impl ;
-    public final void rule__XArtifactType__Group_5__1() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:2777:1: ( rule__XArtifactType__Group_5__1__Impl )
-            // InternalOseeDsl.g:2778:2: rule__XArtifactType__Group_5__1__Impl
-            {
-            pushFollow(FOLLOW_2);
-            rule__XArtifactType__Group_5__1__Impl();
-
-            state._fsp--;
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XArtifactType__Group_5__1"
-
-
-    // $ANTLR start "rule__XArtifactType__Group_5__1__Impl"
-    // InternalOseeDsl.g:2784:1: rule__XArtifactType__Group_5__1__Impl : ( ( rule__XArtifactType__TypeGuidAssignment_5_1 ) ) ;
-    public final void rule__XArtifactType__Group_5__1__Impl() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:2788:1: ( ( ( rule__XArtifactType__TypeGuidAssignment_5_1 ) ) )
-            // InternalOseeDsl.g:2789:1: ( ( rule__XArtifactType__TypeGuidAssignment_5_1 ) )
-            {
-            // InternalOseeDsl.g:2789:1: ( ( rule__XArtifactType__TypeGuidAssignment_5_1 ) )
-            // InternalOseeDsl.g:2790:1: ( rule__XArtifactType__TypeGuidAssignment_5_1 )
-            {
-             before(grammarAccess.getXArtifactTypeAccess().getTypeGuidAssignment_5_1()); 
-            // InternalOseeDsl.g:2791:1: ( rule__XArtifactType__TypeGuidAssignment_5_1 )
-            // InternalOseeDsl.g:2791:2: rule__XArtifactType__TypeGuidAssignment_5_1
-            {
-            pushFollow(FOLLOW_2);
-            rule__XArtifactType__TypeGuidAssignment_5_1();
-
-            state._fsp--;
-
-
-            }
-
-             after(grammarAccess.getXArtifactTypeAccess().getTypeGuidAssignment_5_1()); 
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XArtifactType__Group_5__1__Impl"
-
-
     // $ANTLR start "rule__XAttributeTypeRef__Group__0"
-    // InternalOseeDsl.g:2805:1: rule__XAttributeTypeRef__Group__0 : rule__XAttributeTypeRef__Group__0__Impl rule__XAttributeTypeRef__Group__1 ;
+    // InternalOseeDsl.g:2711:1: rule__XAttributeTypeRef__Group__0 : rule__XAttributeTypeRef__Group__0__Impl rule__XAttributeTypeRef__Group__1 ;
     public final void rule__XAttributeTypeRef__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2809:1: ( rule__XAttributeTypeRef__Group__0__Impl rule__XAttributeTypeRef__Group__1 )
-            // InternalOseeDsl.g:2810:2: rule__XAttributeTypeRef__Group__0__Impl rule__XAttributeTypeRef__Group__1
+            // InternalOseeDsl.g:2715:1: ( rule__XAttributeTypeRef__Group__0__Impl rule__XAttributeTypeRef__Group__1 )
+            // InternalOseeDsl.g:2716:2: rule__XAttributeTypeRef__Group__0__Impl rule__XAttributeTypeRef__Group__1
             {
             pushFollow(FOLLOW_7);
             rule__XAttributeTypeRef__Group__0__Impl();
@@ -8249,20 +7998,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeTypeRef__Group__0__Impl"
-    // InternalOseeDsl.g:2817:1: rule__XAttributeTypeRef__Group__0__Impl : ( 'attribute' ) ;
+    // InternalOseeDsl.g:2723:1: rule__XAttributeTypeRef__Group__0__Impl : ( 'attribute' ) ;
     public final void rule__XAttributeTypeRef__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2821:1: ( ( 'attribute' ) )
-            // InternalOseeDsl.g:2822:1: ( 'attribute' )
+            // InternalOseeDsl.g:2727:1: ( ( 'attribute' ) )
+            // InternalOseeDsl.g:2728:1: ( 'attribute' )
             {
-            // InternalOseeDsl.g:2822:1: ( 'attribute' )
-            // InternalOseeDsl.g:2823:1: 'attribute'
+            // InternalOseeDsl.g:2728:1: ( 'attribute' )
+            // InternalOseeDsl.g:2729:1: 'attribute'
             {
              before(grammarAccess.getXAttributeTypeRefAccess().getAttributeKeyword_0()); 
-            match(input,59,FOLLOW_2); 
+            match(input,58,FOLLOW_2); 
              after(grammarAccess.getXAttributeTypeRefAccess().getAttributeKeyword_0()); 
 
             }
@@ -8286,14 +8035,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeTypeRef__Group__1"
-    // InternalOseeDsl.g:2836:1: rule__XAttributeTypeRef__Group__1 : rule__XAttributeTypeRef__Group__1__Impl rule__XAttributeTypeRef__Group__2 ;
+    // InternalOseeDsl.g:2742:1: rule__XAttributeTypeRef__Group__1 : rule__XAttributeTypeRef__Group__1__Impl rule__XAttributeTypeRef__Group__2 ;
     public final void rule__XAttributeTypeRef__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2840:1: ( rule__XAttributeTypeRef__Group__1__Impl rule__XAttributeTypeRef__Group__2 )
-            // InternalOseeDsl.g:2841:2: rule__XAttributeTypeRef__Group__1__Impl rule__XAttributeTypeRef__Group__2
+            // InternalOseeDsl.g:2746:1: ( rule__XAttributeTypeRef__Group__1__Impl rule__XAttributeTypeRef__Group__2 )
+            // InternalOseeDsl.g:2747:2: rule__XAttributeTypeRef__Group__1__Impl rule__XAttributeTypeRef__Group__2
             {
             pushFollow(FOLLOW_19);
             rule__XAttributeTypeRef__Group__1__Impl();
@@ -8324,21 +8073,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeTypeRef__Group__1__Impl"
-    // InternalOseeDsl.g:2848:1: rule__XAttributeTypeRef__Group__1__Impl : ( ( rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1 ) ) ;
+    // InternalOseeDsl.g:2754:1: rule__XAttributeTypeRef__Group__1__Impl : ( ( rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1 ) ) ;
     public final void rule__XAttributeTypeRef__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2852:1: ( ( ( rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1 ) ) )
-            // InternalOseeDsl.g:2853:1: ( ( rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1 ) )
+            // InternalOseeDsl.g:2758:1: ( ( ( rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1 ) ) )
+            // InternalOseeDsl.g:2759:1: ( ( rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1 ) )
             {
-            // InternalOseeDsl.g:2853:1: ( ( rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1 ) )
-            // InternalOseeDsl.g:2854:1: ( rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1 )
+            // InternalOseeDsl.g:2759:1: ( ( rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1 ) )
+            // InternalOseeDsl.g:2760:1: ( rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1 )
             {
              before(grammarAccess.getXAttributeTypeRefAccess().getValidAttributeTypeAssignment_1()); 
-            // InternalOseeDsl.g:2855:1: ( rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1 )
-            // InternalOseeDsl.g:2855:2: rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1
+            // InternalOseeDsl.g:2761:1: ( rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1 )
+            // InternalOseeDsl.g:2761:2: rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1
             {
             pushFollow(FOLLOW_2);
             rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1();
@@ -8371,14 +8120,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeTypeRef__Group__2"
-    // InternalOseeDsl.g:2865:1: rule__XAttributeTypeRef__Group__2 : rule__XAttributeTypeRef__Group__2__Impl ;
+    // InternalOseeDsl.g:2771:1: rule__XAttributeTypeRef__Group__2 : rule__XAttributeTypeRef__Group__2__Impl ;
     public final void rule__XAttributeTypeRef__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2869:1: ( rule__XAttributeTypeRef__Group__2__Impl )
-            // InternalOseeDsl.g:2870:2: rule__XAttributeTypeRef__Group__2__Impl
+            // InternalOseeDsl.g:2775:1: ( rule__XAttributeTypeRef__Group__2__Impl )
+            // InternalOseeDsl.g:2776:2: rule__XAttributeTypeRef__Group__2__Impl
             {
             pushFollow(FOLLOW_2);
             rule__XAttributeTypeRef__Group__2__Impl();
@@ -8404,29 +8153,29 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeTypeRef__Group__2__Impl"
-    // InternalOseeDsl.g:2876:1: rule__XAttributeTypeRef__Group__2__Impl : ( ( rule__XAttributeTypeRef__Group_2__0 )? ) ;
+    // InternalOseeDsl.g:2782:1: rule__XAttributeTypeRef__Group__2__Impl : ( ( rule__XAttributeTypeRef__Group_2__0 )? ) ;
     public final void rule__XAttributeTypeRef__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2880:1: ( ( ( rule__XAttributeTypeRef__Group_2__0 )? ) )
-            // InternalOseeDsl.g:2881:1: ( ( rule__XAttributeTypeRef__Group_2__0 )? )
+            // InternalOseeDsl.g:2786:1: ( ( ( rule__XAttributeTypeRef__Group_2__0 )? ) )
+            // InternalOseeDsl.g:2787:1: ( ( rule__XAttributeTypeRef__Group_2__0 )? )
             {
-            // InternalOseeDsl.g:2881:1: ( ( rule__XAttributeTypeRef__Group_2__0 )? )
-            // InternalOseeDsl.g:2882:1: ( rule__XAttributeTypeRef__Group_2__0 )?
+            // InternalOseeDsl.g:2787:1: ( ( rule__XAttributeTypeRef__Group_2__0 )? )
+            // InternalOseeDsl.g:2788:1: ( rule__XAttributeTypeRef__Group_2__0 )?
             {
              before(grammarAccess.getXAttributeTypeRefAccess().getGroup_2()); 
-            // InternalOseeDsl.g:2883:1: ( rule__XAttributeTypeRef__Group_2__0 )?
-            int alt32=2;
-            int LA32_0 = input.LA(1);
+            // InternalOseeDsl.g:2789:1: ( rule__XAttributeTypeRef__Group_2__0 )?
+            int alt31=2;
+            int LA31_0 = input.LA(1);
 
-            if ( (LA32_0==44) ) {
-                alt32=1;
+            if ( (LA31_0==44) ) {
+                alt31=1;
             }
-            switch (alt32) {
+            switch (alt31) {
                 case 1 :
-                    // InternalOseeDsl.g:2883:2: rule__XAttributeTypeRef__Group_2__0
+                    // InternalOseeDsl.g:2789:2: rule__XAttributeTypeRef__Group_2__0
                     {
                     pushFollow(FOLLOW_2);
                     rule__XAttributeTypeRef__Group_2__0();
@@ -8462,14 +8211,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeTypeRef__Group_2__0"
-    // InternalOseeDsl.g:2899:1: rule__XAttributeTypeRef__Group_2__0 : rule__XAttributeTypeRef__Group_2__0__Impl rule__XAttributeTypeRef__Group_2__1 ;
+    // InternalOseeDsl.g:2805:1: rule__XAttributeTypeRef__Group_2__0 : rule__XAttributeTypeRef__Group_2__0__Impl rule__XAttributeTypeRef__Group_2__1 ;
     public final void rule__XAttributeTypeRef__Group_2__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2903:1: ( rule__XAttributeTypeRef__Group_2__0__Impl rule__XAttributeTypeRef__Group_2__1 )
-            // InternalOseeDsl.g:2904:2: rule__XAttributeTypeRef__Group_2__0__Impl rule__XAttributeTypeRef__Group_2__1
+            // InternalOseeDsl.g:2809:1: ( rule__XAttributeTypeRef__Group_2__0__Impl rule__XAttributeTypeRef__Group_2__1 )
+            // InternalOseeDsl.g:2810:2: rule__XAttributeTypeRef__Group_2__0__Impl rule__XAttributeTypeRef__Group_2__1
             {
             pushFollow(FOLLOW_14);
             rule__XAttributeTypeRef__Group_2__0__Impl();
@@ -8500,17 +8249,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeTypeRef__Group_2__0__Impl"
-    // InternalOseeDsl.g:2911:1: rule__XAttributeTypeRef__Group_2__0__Impl : ( 'branchUuid' ) ;
+    // InternalOseeDsl.g:2817:1: rule__XAttributeTypeRef__Group_2__0__Impl : ( 'branchUuid' ) ;
     public final void rule__XAttributeTypeRef__Group_2__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2915:1: ( ( 'branchUuid' ) )
-            // InternalOseeDsl.g:2916:1: ( 'branchUuid' )
+            // InternalOseeDsl.g:2821:1: ( ( 'branchUuid' ) )
+            // InternalOseeDsl.g:2822:1: ( 'branchUuid' )
             {
-            // InternalOseeDsl.g:2916:1: ( 'branchUuid' )
-            // InternalOseeDsl.g:2917:1: 'branchUuid'
+            // InternalOseeDsl.g:2822:1: ( 'branchUuid' )
+            // InternalOseeDsl.g:2823:1: 'branchUuid'
             {
              before(grammarAccess.getXAttributeTypeRefAccess().getBranchUuidKeyword_2_0()); 
             match(input,44,FOLLOW_2); 
@@ -8537,14 +8286,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeTypeRef__Group_2__1"
-    // InternalOseeDsl.g:2930:1: rule__XAttributeTypeRef__Group_2__1 : rule__XAttributeTypeRef__Group_2__1__Impl ;
+    // InternalOseeDsl.g:2836:1: rule__XAttributeTypeRef__Group_2__1 : rule__XAttributeTypeRef__Group_2__1__Impl ;
     public final void rule__XAttributeTypeRef__Group_2__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2934:1: ( rule__XAttributeTypeRef__Group_2__1__Impl )
-            // InternalOseeDsl.g:2935:2: rule__XAttributeTypeRef__Group_2__1__Impl
+            // InternalOseeDsl.g:2840:1: ( rule__XAttributeTypeRef__Group_2__1__Impl )
+            // InternalOseeDsl.g:2841:2: rule__XAttributeTypeRef__Group_2__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__XAttributeTypeRef__Group_2__1__Impl();
@@ -8570,21 +8319,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeTypeRef__Group_2__1__Impl"
-    // InternalOseeDsl.g:2941:1: rule__XAttributeTypeRef__Group_2__1__Impl : ( ( rule__XAttributeTypeRef__BranchUuidAssignment_2_1 ) ) ;
+    // InternalOseeDsl.g:2847:1: rule__XAttributeTypeRef__Group_2__1__Impl : ( ( rule__XAttributeTypeRef__BranchUuidAssignment_2_1 ) ) ;
     public final void rule__XAttributeTypeRef__Group_2__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2945:1: ( ( ( rule__XAttributeTypeRef__BranchUuidAssignment_2_1 ) ) )
-            // InternalOseeDsl.g:2946:1: ( ( rule__XAttributeTypeRef__BranchUuidAssignment_2_1 ) )
+            // InternalOseeDsl.g:2851:1: ( ( ( rule__XAttributeTypeRef__BranchUuidAssignment_2_1 ) ) )
+            // InternalOseeDsl.g:2852:1: ( ( rule__XAttributeTypeRef__BranchUuidAssignment_2_1 ) )
             {
-            // InternalOseeDsl.g:2946:1: ( ( rule__XAttributeTypeRef__BranchUuidAssignment_2_1 ) )
-            // InternalOseeDsl.g:2947:1: ( rule__XAttributeTypeRef__BranchUuidAssignment_2_1 )
+            // InternalOseeDsl.g:2852:1: ( ( rule__XAttributeTypeRef__BranchUuidAssignment_2_1 ) )
+            // InternalOseeDsl.g:2853:1: ( rule__XAttributeTypeRef__BranchUuidAssignment_2_1 )
             {
              before(grammarAccess.getXAttributeTypeRefAccess().getBranchUuidAssignment_2_1()); 
-            // InternalOseeDsl.g:2948:1: ( rule__XAttributeTypeRef__BranchUuidAssignment_2_1 )
-            // InternalOseeDsl.g:2948:2: rule__XAttributeTypeRef__BranchUuidAssignment_2_1
+            // InternalOseeDsl.g:2854:1: ( rule__XAttributeTypeRef__BranchUuidAssignment_2_1 )
+            // InternalOseeDsl.g:2854:2: rule__XAttributeTypeRef__BranchUuidAssignment_2_1
             {
             pushFollow(FOLLOW_2);
             rule__XAttributeTypeRef__BranchUuidAssignment_2_1();
@@ -8617,14 +8366,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__0"
-    // InternalOseeDsl.g:2962:1: rule__XAttributeType__Group__0 : rule__XAttributeType__Group__0__Impl rule__XAttributeType__Group__1 ;
+    // InternalOseeDsl.g:2868:1: rule__XAttributeType__Group__0 : rule__XAttributeType__Group__0__Impl rule__XAttributeType__Group__1 ;
     public final void rule__XAttributeType__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2966:1: ( rule__XAttributeType__Group__0__Impl rule__XAttributeType__Group__1 )
-            // InternalOseeDsl.g:2967:2: rule__XAttributeType__Group__0__Impl rule__XAttributeType__Group__1
+            // InternalOseeDsl.g:2872:1: ( rule__XAttributeType__Group__0__Impl rule__XAttributeType__Group__1 )
+            // InternalOseeDsl.g:2873:2: rule__XAttributeType__Group__0__Impl rule__XAttributeType__Group__1
             {
             pushFollow(FOLLOW_7);
             rule__XAttributeType__Group__0__Impl();
@@ -8655,20 +8404,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__0__Impl"
-    // InternalOseeDsl.g:2974:1: rule__XAttributeType__Group__0__Impl : ( 'attributeType' ) ;
+    // InternalOseeDsl.g:2880:1: rule__XAttributeType__Group__0__Impl : ( 'attributeType' ) ;
     public final void rule__XAttributeType__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2978:1: ( ( 'attributeType' ) )
-            // InternalOseeDsl.g:2979:1: ( 'attributeType' )
+            // InternalOseeDsl.g:2884:1: ( ( 'attributeType' ) )
+            // InternalOseeDsl.g:2885:1: ( 'attributeType' )
             {
-            // InternalOseeDsl.g:2979:1: ( 'attributeType' )
-            // InternalOseeDsl.g:2980:1: 'attributeType'
+            // InternalOseeDsl.g:2885:1: ( 'attributeType' )
+            // InternalOseeDsl.g:2886:1: 'attributeType'
             {
              before(grammarAccess.getXAttributeTypeAccess().getAttributeTypeKeyword_0()); 
-            match(input,60,FOLLOW_2); 
+            match(input,59,FOLLOW_2); 
              after(grammarAccess.getXAttributeTypeAccess().getAttributeTypeKeyword_0()); 
 
             }
@@ -8692,14 +8441,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__1"
-    // InternalOseeDsl.g:2993:1: rule__XAttributeType__Group__1 : rule__XAttributeType__Group__1__Impl rule__XAttributeType__Group__2 ;
+    // InternalOseeDsl.g:2899:1: rule__XAttributeType__Group__1 : rule__XAttributeType__Group__1__Impl rule__XAttributeType__Group__2 ;
     public final void rule__XAttributeType__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:2997:1: ( rule__XAttributeType__Group__1__Impl rule__XAttributeType__Group__2 )
-            // InternalOseeDsl.g:2998:2: rule__XAttributeType__Group__1__Impl rule__XAttributeType__Group__2
+            // InternalOseeDsl.g:2903:1: ( rule__XAttributeType__Group__1__Impl rule__XAttributeType__Group__2 )
+            // InternalOseeDsl.g:2904:2: rule__XAttributeType__Group__1__Impl rule__XAttributeType__Group__2
             {
             pushFollow(FOLLOW_20);
             rule__XAttributeType__Group__1__Impl();
@@ -8730,21 +8479,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__1__Impl"
-    // InternalOseeDsl.g:3005:1: rule__XAttributeType__Group__1__Impl : ( ( rule__XAttributeType__NameAssignment_1 ) ) ;
+    // InternalOseeDsl.g:2911:1: rule__XAttributeType__Group__1__Impl : ( ( rule__XAttributeType__NameAssignment_1 ) ) ;
     public final void rule__XAttributeType__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3009:1: ( ( ( rule__XAttributeType__NameAssignment_1 ) ) )
-            // InternalOseeDsl.g:3010:1: ( ( rule__XAttributeType__NameAssignment_1 ) )
+            // InternalOseeDsl.g:2915:1: ( ( ( rule__XAttributeType__NameAssignment_1 ) ) )
+            // InternalOseeDsl.g:2916:1: ( ( rule__XAttributeType__NameAssignment_1 ) )
             {
-            // InternalOseeDsl.g:3010:1: ( ( rule__XAttributeType__NameAssignment_1 ) )
-            // InternalOseeDsl.g:3011:1: ( rule__XAttributeType__NameAssignment_1 )
+            // InternalOseeDsl.g:2916:1: ( ( rule__XAttributeType__NameAssignment_1 ) )
+            // InternalOseeDsl.g:2917:1: ( rule__XAttributeType__NameAssignment_1 )
             {
              before(grammarAccess.getXAttributeTypeAccess().getNameAssignment_1()); 
-            // InternalOseeDsl.g:3012:1: ( rule__XAttributeType__NameAssignment_1 )
-            // InternalOseeDsl.g:3012:2: rule__XAttributeType__NameAssignment_1
+            // InternalOseeDsl.g:2918:1: ( rule__XAttributeType__NameAssignment_1 )
+            // InternalOseeDsl.g:2918:2: rule__XAttributeType__NameAssignment_1
             {
             pushFollow(FOLLOW_2);
             rule__XAttributeType__NameAssignment_1();
@@ -8777,14 +8526,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__2"
-    // InternalOseeDsl.g:3022:1: rule__XAttributeType__Group__2 : rule__XAttributeType__Group__2__Impl rule__XAttributeType__Group__3 ;
+    // InternalOseeDsl.g:2928:1: rule__XAttributeType__Group__2 : rule__XAttributeType__Group__2__Impl rule__XAttributeType__Group__3 ;
     public final void rule__XAttributeType__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3026:1: ( rule__XAttributeType__Group__2__Impl rule__XAttributeType__Group__3 )
-            // InternalOseeDsl.g:3027:2: rule__XAttributeType__Group__2__Impl rule__XAttributeType__Group__3
+            // InternalOseeDsl.g:2932:1: ( rule__XAttributeType__Group__2__Impl rule__XAttributeType__Group__3 )
+            // InternalOseeDsl.g:2933:2: rule__XAttributeType__Group__2__Impl rule__XAttributeType__Group__3
             {
             pushFollow(FOLLOW_21);
             rule__XAttributeType__Group__2__Impl();
@@ -8815,21 +8564,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__2__Impl"
-    // InternalOseeDsl.g:3034:1: rule__XAttributeType__Group__2__Impl : ( ( rule__XAttributeType__Group_2__0 ) ) ;
+    // InternalOseeDsl.g:2940:1: rule__XAttributeType__Group__2__Impl : ( ( rule__XAttributeType__Group_2__0 ) ) ;
     public final void rule__XAttributeType__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3038:1: ( ( ( rule__XAttributeType__Group_2__0 ) ) )
-            // InternalOseeDsl.g:3039:1: ( ( rule__XAttributeType__Group_2__0 ) )
+            // InternalOseeDsl.g:2944:1: ( ( ( rule__XAttributeType__Group_2__0 ) ) )
+            // InternalOseeDsl.g:2945:1: ( ( rule__XAttributeType__Group_2__0 ) )
             {
-            // InternalOseeDsl.g:3039:1: ( ( rule__XAttributeType__Group_2__0 ) )
-            // InternalOseeDsl.g:3040:1: ( rule__XAttributeType__Group_2__0 )
+            // InternalOseeDsl.g:2945:1: ( ( rule__XAttributeType__Group_2__0 ) )
+            // InternalOseeDsl.g:2946:1: ( rule__XAttributeType__Group_2__0 )
             {
              before(grammarAccess.getXAttributeTypeAccess().getGroup_2()); 
-            // InternalOseeDsl.g:3041:1: ( rule__XAttributeType__Group_2__0 )
-            // InternalOseeDsl.g:3041:2: rule__XAttributeType__Group_2__0
+            // InternalOseeDsl.g:2947:1: ( rule__XAttributeType__Group_2__0 )
+            // InternalOseeDsl.g:2947:2: rule__XAttributeType__Group_2__0
             {
             pushFollow(FOLLOW_2);
             rule__XAttributeType__Group_2__0();
@@ -8862,14 +8611,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__3"
-    // InternalOseeDsl.g:3051:1: rule__XAttributeType__Group__3 : rule__XAttributeType__Group__3__Impl rule__XAttributeType__Group__4 ;
+    // InternalOseeDsl.g:2957:1: rule__XAttributeType__Group__3 : rule__XAttributeType__Group__3__Impl rule__XAttributeType__Group__4 ;
     public final void rule__XAttributeType__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3055:1: ( rule__XAttributeType__Group__3__Impl rule__XAttributeType__Group__4 )
-            // InternalOseeDsl.g:3056:2: rule__XAttributeType__Group__3__Impl rule__XAttributeType__Group__4
+            // InternalOseeDsl.g:2961:1: ( rule__XAttributeType__Group__3__Impl rule__XAttributeType__Group__4 )
+            // InternalOseeDsl.g:2962:2: rule__XAttributeType__Group__3__Impl rule__XAttributeType__Group__4
             {
             pushFollow(FOLLOW_21);
             rule__XAttributeType__Group__3__Impl();
@@ -8900,29 +8649,29 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__3__Impl"
-    // InternalOseeDsl.g:3063:1: rule__XAttributeType__Group__3__Impl : ( ( rule__XAttributeType__Group_3__0 )? ) ;
+    // InternalOseeDsl.g:2969:1: rule__XAttributeType__Group__3__Impl : ( ( rule__XAttributeType__Group_3__0 )? ) ;
     public final void rule__XAttributeType__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3067:1: ( ( ( rule__XAttributeType__Group_3__0 )? ) )
-            // InternalOseeDsl.g:3068:1: ( ( rule__XAttributeType__Group_3__0 )? )
+            // InternalOseeDsl.g:2973:1: ( ( ( rule__XAttributeType__Group_3__0 )? ) )
+            // InternalOseeDsl.g:2974:1: ( ( rule__XAttributeType__Group_3__0 )? )
             {
-            // InternalOseeDsl.g:3068:1: ( ( rule__XAttributeType__Group_3__0 )? )
-            // InternalOseeDsl.g:3069:1: ( rule__XAttributeType__Group_3__0 )?
+            // InternalOseeDsl.g:2974:1: ( ( rule__XAttributeType__Group_3__0 )? )
+            // InternalOseeDsl.g:2975:1: ( rule__XAttributeType__Group_3__0 )?
             {
              before(grammarAccess.getXAttributeTypeAccess().getGroup_3()); 
-            // InternalOseeDsl.g:3070:1: ( rule__XAttributeType__Group_3__0 )?
-            int alt33=2;
-            int LA33_0 = input.LA(1);
+            // InternalOseeDsl.g:2976:1: ( rule__XAttributeType__Group_3__0 )?
+            int alt32=2;
+            int LA32_0 = input.LA(1);
 
-            if ( (LA33_0==64) ) {
-                alt33=1;
+            if ( (LA32_0==63) ) {
+                alt32=1;
             }
-            switch (alt33) {
+            switch (alt32) {
                 case 1 :
-                    // InternalOseeDsl.g:3070:2: rule__XAttributeType__Group_3__0
+                    // InternalOseeDsl.g:2976:2: rule__XAttributeType__Group_3__0
                     {
                     pushFollow(FOLLOW_2);
                     rule__XAttributeType__Group_3__0();
@@ -8958,14 +8707,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__4"
-    // InternalOseeDsl.g:3080:1: rule__XAttributeType__Group__4 : rule__XAttributeType__Group__4__Impl rule__XAttributeType__Group__5 ;
+    // InternalOseeDsl.g:2986:1: rule__XAttributeType__Group__4 : rule__XAttributeType__Group__4__Impl rule__XAttributeType__Group__5 ;
     public final void rule__XAttributeType__Group__4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3084:1: ( rule__XAttributeType__Group__4__Impl rule__XAttributeType__Group__5 )
-            // InternalOseeDsl.g:3085:2: rule__XAttributeType__Group__4__Impl rule__XAttributeType__Group__5
+            // InternalOseeDsl.g:2990:1: ( rule__XAttributeType__Group__4__Impl rule__XAttributeType__Group__5 )
+            // InternalOseeDsl.g:2991:2: rule__XAttributeType__Group__4__Impl rule__XAttributeType__Group__5
             {
             pushFollow(FOLLOW_13);
             rule__XAttributeType__Group__4__Impl();
@@ -8996,17 +8745,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__4__Impl"
-    // InternalOseeDsl.g:3092:1: rule__XAttributeType__Group__4__Impl : ( '{' ) ;
+    // InternalOseeDsl.g:2998:1: rule__XAttributeType__Group__4__Impl : ( '{' ) ;
     public final void rule__XAttributeType__Group__4__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3096:1: ( ( '{' ) )
-            // InternalOseeDsl.g:3097:1: ( '{' )
+            // InternalOseeDsl.g:3002:1: ( ( '{' ) )
+            // InternalOseeDsl.g:3003:1: ( '{' )
             {
-            // InternalOseeDsl.g:3097:1: ( '{' )
-            // InternalOseeDsl.g:3098:1: '{'
+            // InternalOseeDsl.g:3003:1: ( '{' )
+            // InternalOseeDsl.g:3004:1: '{'
             {
              before(grammarAccess.getXAttributeTypeAccess().getLeftCurlyBracketKeyword_4()); 
             match(input,53,FOLLOW_2); 
@@ -9033,16 +8782,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__5"
-    // InternalOseeDsl.g:3111:1: rule__XAttributeType__Group__5 : rule__XAttributeType__Group__5__Impl rule__XAttributeType__Group__6 ;
+    // InternalOseeDsl.g:3017:1: rule__XAttributeType__Group__5 : rule__XAttributeType__Group__5__Impl rule__XAttributeType__Group__6 ;
     public final void rule__XAttributeType__Group__5() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3115:1: ( rule__XAttributeType__Group__5__Impl rule__XAttributeType__Group__6 )
-            // InternalOseeDsl.g:3116:2: rule__XAttributeType__Group__5__Impl rule__XAttributeType__Group__6
+            // InternalOseeDsl.g:3021:1: ( rule__XAttributeType__Group__5__Impl rule__XAttributeType__Group__6 )
+            // InternalOseeDsl.g:3022:2: rule__XAttributeType__Group__5__Impl rule__XAttributeType__Group__6
             {
-            pushFollow(FOLLOW_13);
+            pushFollow(FOLLOW_14);
             rule__XAttributeType__Group__5__Impl();
 
             state._fsp--;
@@ -9071,42 +8820,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__5__Impl"
-    // InternalOseeDsl.g:3123:1: rule__XAttributeType__Group__5__Impl : ( ( rule__XAttributeType__Group_5__0 )? ) ;
+    // InternalOseeDsl.g:3029:1: rule__XAttributeType__Group__5__Impl : ( 'id' ) ;
     public final void rule__XAttributeType__Group__5__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3127:1: ( ( ( rule__XAttributeType__Group_5__0 )? ) )
-            // InternalOseeDsl.g:3128:1: ( ( rule__XAttributeType__Group_5__0 )? )
+            // InternalOseeDsl.g:3033:1: ( ( 'id' ) )
+            // InternalOseeDsl.g:3034:1: ( 'id' )
             {
-            // InternalOseeDsl.g:3128:1: ( ( rule__XAttributeType__Group_5__0 )? )
-            // InternalOseeDsl.g:3129:1: ( rule__XAttributeType__Group_5__0 )?
+            // InternalOseeDsl.g:3034:1: ( 'id' )
+            // InternalOseeDsl.g:3035:1: 'id'
             {
-             before(grammarAccess.getXAttributeTypeAccess().getGroup_5()); 
-            // InternalOseeDsl.g:3130:1: ( rule__XAttributeType__Group_5__0 )?
-            int alt34=2;
-            int LA34_0 = input.LA(1);
-
-            if ( (LA34_0==58) ) {
-                alt34=1;
-            }
-            switch (alt34) {
-                case 1 :
-                    // InternalOseeDsl.g:3130:2: rule__XAttributeType__Group_5__0
-                    {
-                    pushFollow(FOLLOW_2);
-                    rule__XAttributeType__Group_5__0();
-
-                    state._fsp--;
-
-
-                    }
-                    break;
-
-            }
-
-             after(grammarAccess.getXAttributeTypeAccess().getGroup_5()); 
+             before(grammarAccess.getXAttributeTypeAccess().getIdKeyword_5()); 
+            match(input,54,FOLLOW_2); 
+             after(grammarAccess.getXAttributeTypeAccess().getIdKeyword_5()); 
 
             }
 
@@ -9129,16 +8857,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__6"
-    // InternalOseeDsl.g:3140:1: rule__XAttributeType__Group__6 : rule__XAttributeType__Group__6__Impl rule__XAttributeType__Group__7 ;
+    // InternalOseeDsl.g:3048:1: rule__XAttributeType__Group__6 : rule__XAttributeType__Group__6__Impl rule__XAttributeType__Group__7 ;
     public final void rule__XAttributeType__Group__6() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3144:1: ( rule__XAttributeType__Group__6__Impl rule__XAttributeType__Group__7 )
-            // InternalOseeDsl.g:3145:2: rule__XAttributeType__Group__6__Impl rule__XAttributeType__Group__7
+            // InternalOseeDsl.g:3052:1: ( rule__XAttributeType__Group__6__Impl rule__XAttributeType__Group__7 )
+            // InternalOseeDsl.g:3053:2: rule__XAttributeType__Group__6__Impl rule__XAttributeType__Group__7
             {
-            pushFollow(FOLLOW_14);
+            pushFollow(FOLLOW_22);
             rule__XAttributeType__Group__6__Impl();
 
             state._fsp--;
@@ -9167,21 +8895,31 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__6__Impl"
-    // InternalOseeDsl.g:3152:1: rule__XAttributeType__Group__6__Impl : ( 'id' ) ;
+    // InternalOseeDsl.g:3060:1: rule__XAttributeType__Group__6__Impl : ( ( rule__XAttributeType__IdAssignment_6 ) ) ;
     public final void rule__XAttributeType__Group__6__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3156:1: ( ( 'id' ) )
-            // InternalOseeDsl.g:3157:1: ( 'id' )
+            // InternalOseeDsl.g:3064:1: ( ( ( rule__XAttributeType__IdAssignment_6 ) ) )
+            // InternalOseeDsl.g:3065:1: ( ( rule__XAttributeType__IdAssignment_6 ) )
             {
-            // InternalOseeDsl.g:3157:1: ( 'id' )
-            // InternalOseeDsl.g:3158:1: 'id'
+            // InternalOseeDsl.g:3065:1: ( ( rule__XAttributeType__IdAssignment_6 ) )
+            // InternalOseeDsl.g:3066:1: ( rule__XAttributeType__IdAssignment_6 )
             {
-             before(grammarAccess.getXAttributeTypeAccess().getIdKeyword_6()); 
-            match(input,54,FOLLOW_2); 
-             after(grammarAccess.getXAttributeTypeAccess().getIdKeyword_6()); 
+             before(grammarAccess.getXAttributeTypeAccess().getIdAssignment_6()); 
+            // InternalOseeDsl.g:3067:1: ( rule__XAttributeType__IdAssignment_6 )
+            // InternalOseeDsl.g:3067:2: rule__XAttributeType__IdAssignment_6
+            {
+            pushFollow(FOLLOW_2);
+            rule__XAttributeType__IdAssignment_6();
+
+            state._fsp--;
+
+
+            }
+
+             after(grammarAccess.getXAttributeTypeAccess().getIdAssignment_6()); 
 
             }
 
@@ -9204,16 +8942,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__7"
-    // InternalOseeDsl.g:3171:1: rule__XAttributeType__Group__7 : rule__XAttributeType__Group__7__Impl rule__XAttributeType__Group__8 ;
+    // InternalOseeDsl.g:3077:1: rule__XAttributeType__Group__7 : rule__XAttributeType__Group__7__Impl rule__XAttributeType__Group__8 ;
     public final void rule__XAttributeType__Group__7() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3175:1: ( rule__XAttributeType__Group__7__Impl rule__XAttributeType__Group__8 )
-            // InternalOseeDsl.g:3176:2: rule__XAttributeType__Group__7__Impl rule__XAttributeType__Group__8
+            // InternalOseeDsl.g:3081:1: ( rule__XAttributeType__Group__7__Impl rule__XAttributeType__Group__8 )
+            // InternalOseeDsl.g:3082:2: rule__XAttributeType__Group__7__Impl rule__XAttributeType__Group__8
             {
-            pushFollow(FOLLOW_22);
+            pushFollow(FOLLOW_23);
             rule__XAttributeType__Group__7__Impl();
 
             state._fsp--;
@@ -9242,31 +8980,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__7__Impl"
-    // InternalOseeDsl.g:3183:1: rule__XAttributeType__Group__7__Impl : ( ( rule__XAttributeType__IdAssignment_7 ) ) ;
+    // InternalOseeDsl.g:3089:1: rule__XAttributeType__Group__7__Impl : ( 'dataProvider' ) ;
     public final void rule__XAttributeType__Group__7__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3187:1: ( ( ( rule__XAttributeType__IdAssignment_7 ) ) )
-            // InternalOseeDsl.g:3188:1: ( ( rule__XAttributeType__IdAssignment_7 ) )
+            // InternalOseeDsl.g:3093:1: ( ( 'dataProvider' ) )
+            // InternalOseeDsl.g:3094:1: ( 'dataProvider' )
             {
-            // InternalOseeDsl.g:3188:1: ( ( rule__XAttributeType__IdAssignment_7 ) )
-            // InternalOseeDsl.g:3189:1: ( rule__XAttributeType__IdAssignment_7 )
+            // InternalOseeDsl.g:3094:1: ( 'dataProvider' )
+            // InternalOseeDsl.g:3095:1: 'dataProvider'
             {
-             before(grammarAccess.getXAttributeTypeAccess().getIdAssignment_7()); 
-            // InternalOseeDsl.g:3190:1: ( rule__XAttributeType__IdAssignment_7 )
-            // InternalOseeDsl.g:3190:2: rule__XAttributeType__IdAssignment_7
-            {
-            pushFollow(FOLLOW_2);
-            rule__XAttributeType__IdAssignment_7();
-
-            state._fsp--;
-
-
-            }
-
-             after(grammarAccess.getXAttributeTypeAccess().getIdAssignment_7()); 
+             before(grammarAccess.getXAttributeTypeAccess().getDataProviderKeyword_7()); 
+            match(input,60,FOLLOW_2); 
+             after(grammarAccess.getXAttributeTypeAccess().getDataProviderKeyword_7()); 
 
             }
 
@@ -9289,16 +9017,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__8"
-    // InternalOseeDsl.g:3200:1: rule__XAttributeType__Group__8 : rule__XAttributeType__Group__8__Impl rule__XAttributeType__Group__9 ;
+    // InternalOseeDsl.g:3108:1: rule__XAttributeType__Group__8 : rule__XAttributeType__Group__8__Impl rule__XAttributeType__Group__9 ;
     public final void rule__XAttributeType__Group__8() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3204:1: ( rule__XAttributeType__Group__8__Impl rule__XAttributeType__Group__9 )
-            // InternalOseeDsl.g:3205:2: rule__XAttributeType__Group__8__Impl rule__XAttributeType__Group__9
+            // InternalOseeDsl.g:3112:1: ( rule__XAttributeType__Group__8__Impl rule__XAttributeType__Group__9 )
+            // InternalOseeDsl.g:3113:2: rule__XAttributeType__Group__8__Impl rule__XAttributeType__Group__9
             {
-            pushFollow(FOLLOW_23);
+            pushFollow(FOLLOW_24);
             rule__XAttributeType__Group__8__Impl();
 
             state._fsp--;
@@ -9327,21 +9055,31 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__8__Impl"
-    // InternalOseeDsl.g:3212:1: rule__XAttributeType__Group__8__Impl : ( 'dataProvider' ) ;
+    // InternalOseeDsl.g:3120:1: rule__XAttributeType__Group__8__Impl : ( ( rule__XAttributeType__DataProviderAssignment_8 ) ) ;
     public final void rule__XAttributeType__Group__8__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3216:1: ( ( 'dataProvider' ) )
-            // InternalOseeDsl.g:3217:1: ( 'dataProvider' )
+            // InternalOseeDsl.g:3124:1: ( ( ( rule__XAttributeType__DataProviderAssignment_8 ) ) )
+            // InternalOseeDsl.g:3125:1: ( ( rule__XAttributeType__DataProviderAssignment_8 ) )
             {
-            // InternalOseeDsl.g:3217:1: ( 'dataProvider' )
-            // InternalOseeDsl.g:3218:1: 'dataProvider'
+            // InternalOseeDsl.g:3125:1: ( ( rule__XAttributeType__DataProviderAssignment_8 ) )
+            // InternalOseeDsl.g:3126:1: ( rule__XAttributeType__DataProviderAssignment_8 )
             {
-             before(grammarAccess.getXAttributeTypeAccess().getDataProviderKeyword_8()); 
-            match(input,61,FOLLOW_2); 
-             after(grammarAccess.getXAttributeTypeAccess().getDataProviderKeyword_8()); 
+             before(grammarAccess.getXAttributeTypeAccess().getDataProviderAssignment_8()); 
+            // InternalOseeDsl.g:3127:1: ( rule__XAttributeType__DataProviderAssignment_8 )
+            // InternalOseeDsl.g:3127:2: rule__XAttributeType__DataProviderAssignment_8
+            {
+            pushFollow(FOLLOW_2);
+            rule__XAttributeType__DataProviderAssignment_8();
+
+            state._fsp--;
+
+
+            }
+
+             after(grammarAccess.getXAttributeTypeAccess().getDataProviderAssignment_8()); 
 
             }
 
@@ -9364,16 +9102,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__9"
-    // InternalOseeDsl.g:3231:1: rule__XAttributeType__Group__9 : rule__XAttributeType__Group__9__Impl rule__XAttributeType__Group__10 ;
+    // InternalOseeDsl.g:3137:1: rule__XAttributeType__Group__9 : rule__XAttributeType__Group__9__Impl rule__XAttributeType__Group__10 ;
     public final void rule__XAttributeType__Group__9() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3235:1: ( rule__XAttributeType__Group__9__Impl rule__XAttributeType__Group__10 )
-            // InternalOseeDsl.g:3236:2: rule__XAttributeType__Group__9__Impl rule__XAttributeType__Group__10
+            // InternalOseeDsl.g:3141:1: ( rule__XAttributeType__Group__9__Impl rule__XAttributeType__Group__10 )
+            // InternalOseeDsl.g:3142:2: rule__XAttributeType__Group__9__Impl rule__XAttributeType__Group__10
             {
-            pushFollow(FOLLOW_24);
+            pushFollow(FOLLOW_14);
             rule__XAttributeType__Group__9__Impl();
 
             state._fsp--;
@@ -9402,31 +9140,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__9__Impl"
-    // InternalOseeDsl.g:3243:1: rule__XAttributeType__Group__9__Impl : ( ( rule__XAttributeType__DataProviderAssignment_9 ) ) ;
+    // InternalOseeDsl.g:3149:1: rule__XAttributeType__Group__9__Impl : ( 'min' ) ;
     public final void rule__XAttributeType__Group__9__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3247:1: ( ( ( rule__XAttributeType__DataProviderAssignment_9 ) ) )
-            // InternalOseeDsl.g:3248:1: ( ( rule__XAttributeType__DataProviderAssignment_9 ) )
+            // InternalOseeDsl.g:3153:1: ( ( 'min' ) )
+            // InternalOseeDsl.g:3154:1: ( 'min' )
             {
-            // InternalOseeDsl.g:3248:1: ( ( rule__XAttributeType__DataProviderAssignment_9 ) )
-            // InternalOseeDsl.g:3249:1: ( rule__XAttributeType__DataProviderAssignment_9 )
+            // InternalOseeDsl.g:3154:1: ( 'min' )
+            // InternalOseeDsl.g:3155:1: 'min'
             {
-             before(grammarAccess.getXAttributeTypeAccess().getDataProviderAssignment_9()); 
-            // InternalOseeDsl.g:3250:1: ( rule__XAttributeType__DataProviderAssignment_9 )
-            // InternalOseeDsl.g:3250:2: rule__XAttributeType__DataProviderAssignment_9
-            {
-            pushFollow(FOLLOW_2);
-            rule__XAttributeType__DataProviderAssignment_9();
-
-            state._fsp--;
-
-
-            }
-
-             after(grammarAccess.getXAttributeTypeAccess().getDataProviderAssignment_9()); 
+             before(grammarAccess.getXAttributeTypeAccess().getMinKeyword_9()); 
+            match(input,61,FOLLOW_2); 
+             after(grammarAccess.getXAttributeTypeAccess().getMinKeyword_9()); 
 
             }
 
@@ -9449,16 +9177,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__10"
-    // InternalOseeDsl.g:3260:1: rule__XAttributeType__Group__10 : rule__XAttributeType__Group__10__Impl rule__XAttributeType__Group__11 ;
+    // InternalOseeDsl.g:3168:1: rule__XAttributeType__Group__10 : rule__XAttributeType__Group__10__Impl rule__XAttributeType__Group__11 ;
     public final void rule__XAttributeType__Group__10() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3264:1: ( rule__XAttributeType__Group__10__Impl rule__XAttributeType__Group__11 )
-            // InternalOseeDsl.g:3265:2: rule__XAttributeType__Group__10__Impl rule__XAttributeType__Group__11
+            // InternalOseeDsl.g:3172:1: ( rule__XAttributeType__Group__10__Impl rule__XAttributeType__Group__11 )
+            // InternalOseeDsl.g:3173:2: rule__XAttributeType__Group__10__Impl rule__XAttributeType__Group__11
             {
-            pushFollow(FOLLOW_14);
+            pushFollow(FOLLOW_25);
             rule__XAttributeType__Group__10__Impl();
 
             state._fsp--;
@@ -9487,21 +9215,31 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__10__Impl"
-    // InternalOseeDsl.g:3272:1: rule__XAttributeType__Group__10__Impl : ( 'min' ) ;
+    // InternalOseeDsl.g:3180:1: rule__XAttributeType__Group__10__Impl : ( ( rule__XAttributeType__MinAssignment_10 ) ) ;
     public final void rule__XAttributeType__Group__10__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3276:1: ( ( 'min' ) )
-            // InternalOseeDsl.g:3277:1: ( 'min' )
+            // InternalOseeDsl.g:3184:1: ( ( ( rule__XAttributeType__MinAssignment_10 ) ) )
+            // InternalOseeDsl.g:3185:1: ( ( rule__XAttributeType__MinAssignment_10 ) )
             {
-            // InternalOseeDsl.g:3277:1: ( 'min' )
-            // InternalOseeDsl.g:3278:1: 'min'
+            // InternalOseeDsl.g:3185:1: ( ( rule__XAttributeType__MinAssignment_10 ) )
+            // InternalOseeDsl.g:3186:1: ( rule__XAttributeType__MinAssignment_10 )
             {
-             before(grammarAccess.getXAttributeTypeAccess().getMinKeyword_10()); 
-            match(input,62,FOLLOW_2); 
-             after(grammarAccess.getXAttributeTypeAccess().getMinKeyword_10()); 
+             before(grammarAccess.getXAttributeTypeAccess().getMinAssignment_10()); 
+            // InternalOseeDsl.g:3187:1: ( rule__XAttributeType__MinAssignment_10 )
+            // InternalOseeDsl.g:3187:2: rule__XAttributeType__MinAssignment_10
+            {
+            pushFollow(FOLLOW_2);
+            rule__XAttributeType__MinAssignment_10();
+
+            state._fsp--;
+
+
+            }
+
+             after(grammarAccess.getXAttributeTypeAccess().getMinAssignment_10()); 
 
             }
 
@@ -9524,16 +9262,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__11"
-    // InternalOseeDsl.g:3291:1: rule__XAttributeType__Group__11 : rule__XAttributeType__Group__11__Impl rule__XAttributeType__Group__12 ;
+    // InternalOseeDsl.g:3197:1: rule__XAttributeType__Group__11 : rule__XAttributeType__Group__11__Impl rule__XAttributeType__Group__12 ;
     public final void rule__XAttributeType__Group__11() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3295:1: ( rule__XAttributeType__Group__11__Impl rule__XAttributeType__Group__12 )
-            // InternalOseeDsl.g:3296:2: rule__XAttributeType__Group__11__Impl rule__XAttributeType__Group__12
+            // InternalOseeDsl.g:3201:1: ( rule__XAttributeType__Group__11__Impl rule__XAttributeType__Group__12 )
+            // InternalOseeDsl.g:3202:2: rule__XAttributeType__Group__11__Impl rule__XAttributeType__Group__12
             {
-            pushFollow(FOLLOW_25);
+            pushFollow(FOLLOW_26);
             rule__XAttributeType__Group__11__Impl();
 
             state._fsp--;
@@ -9562,31 +9300,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__11__Impl"
-    // InternalOseeDsl.g:3303:1: rule__XAttributeType__Group__11__Impl : ( ( rule__XAttributeType__MinAssignment_11 ) ) ;
+    // InternalOseeDsl.g:3209:1: rule__XAttributeType__Group__11__Impl : ( 'max' ) ;
     public final void rule__XAttributeType__Group__11__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3307:1: ( ( ( rule__XAttributeType__MinAssignment_11 ) ) )
-            // InternalOseeDsl.g:3308:1: ( ( rule__XAttributeType__MinAssignment_11 ) )
+            // InternalOseeDsl.g:3213:1: ( ( 'max' ) )
+            // InternalOseeDsl.g:3214:1: ( 'max' )
             {
-            // InternalOseeDsl.g:3308:1: ( ( rule__XAttributeType__MinAssignment_11 ) )
-            // InternalOseeDsl.g:3309:1: ( rule__XAttributeType__MinAssignment_11 )
+            // InternalOseeDsl.g:3214:1: ( 'max' )
+            // InternalOseeDsl.g:3215:1: 'max'
             {
-             before(grammarAccess.getXAttributeTypeAccess().getMinAssignment_11()); 
-            // InternalOseeDsl.g:3310:1: ( rule__XAttributeType__MinAssignment_11 )
-            // InternalOseeDsl.g:3310:2: rule__XAttributeType__MinAssignment_11
-            {
-            pushFollow(FOLLOW_2);
-            rule__XAttributeType__MinAssignment_11();
-
-            state._fsp--;
-
-
-            }
-
-             after(grammarAccess.getXAttributeTypeAccess().getMinAssignment_11()); 
+             before(grammarAccess.getXAttributeTypeAccess().getMaxKeyword_11()); 
+            match(input,62,FOLLOW_2); 
+             after(grammarAccess.getXAttributeTypeAccess().getMaxKeyword_11()); 
 
             }
 
@@ -9609,16 +9337,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__12"
-    // InternalOseeDsl.g:3320:1: rule__XAttributeType__Group__12 : rule__XAttributeType__Group__12__Impl rule__XAttributeType__Group__13 ;
+    // InternalOseeDsl.g:3228:1: rule__XAttributeType__Group__12 : rule__XAttributeType__Group__12__Impl rule__XAttributeType__Group__13 ;
     public final void rule__XAttributeType__Group__12() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3324:1: ( rule__XAttributeType__Group__12__Impl rule__XAttributeType__Group__13 )
-            // InternalOseeDsl.g:3325:2: rule__XAttributeType__Group__12__Impl rule__XAttributeType__Group__13
+            // InternalOseeDsl.g:3232:1: ( rule__XAttributeType__Group__12__Impl rule__XAttributeType__Group__13 )
+            // InternalOseeDsl.g:3233:2: rule__XAttributeType__Group__12__Impl rule__XAttributeType__Group__13
             {
-            pushFollow(FOLLOW_26);
+            pushFollow(FOLLOW_27);
             rule__XAttributeType__Group__12__Impl();
 
             state._fsp--;
@@ -9647,21 +9375,31 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__12__Impl"
-    // InternalOseeDsl.g:3332:1: rule__XAttributeType__Group__12__Impl : ( 'max' ) ;
+    // InternalOseeDsl.g:3240:1: rule__XAttributeType__Group__12__Impl : ( ( rule__XAttributeType__MaxAssignment_12 ) ) ;
     public final void rule__XAttributeType__Group__12__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3336:1: ( ( 'max' ) )
-            // InternalOseeDsl.g:3337:1: ( 'max' )
+            // InternalOseeDsl.g:3244:1: ( ( ( rule__XAttributeType__MaxAssignment_12 ) ) )
+            // InternalOseeDsl.g:3245:1: ( ( rule__XAttributeType__MaxAssignment_12 ) )
             {
-            // InternalOseeDsl.g:3337:1: ( 'max' )
-            // InternalOseeDsl.g:3338:1: 'max'
+            // InternalOseeDsl.g:3245:1: ( ( rule__XAttributeType__MaxAssignment_12 ) )
+            // InternalOseeDsl.g:3246:1: ( rule__XAttributeType__MaxAssignment_12 )
             {
-             before(grammarAccess.getXAttributeTypeAccess().getMaxKeyword_12()); 
-            match(input,63,FOLLOW_2); 
-             after(grammarAccess.getXAttributeTypeAccess().getMaxKeyword_12()); 
+             before(grammarAccess.getXAttributeTypeAccess().getMaxAssignment_12()); 
+            // InternalOseeDsl.g:3247:1: ( rule__XAttributeType__MaxAssignment_12 )
+            // InternalOseeDsl.g:3247:2: rule__XAttributeType__MaxAssignment_12
+            {
+            pushFollow(FOLLOW_2);
+            rule__XAttributeType__MaxAssignment_12();
+
+            state._fsp--;
+
+
+            }
+
+             after(grammarAccess.getXAttributeTypeAccess().getMaxAssignment_12()); 
 
             }
 
@@ -9684,16 +9422,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__13"
-    // InternalOseeDsl.g:3351:1: rule__XAttributeType__Group__13 : rule__XAttributeType__Group__13__Impl rule__XAttributeType__Group__14 ;
+    // InternalOseeDsl.g:3257:1: rule__XAttributeType__Group__13 : rule__XAttributeType__Group__13__Impl rule__XAttributeType__Group__14 ;
     public final void rule__XAttributeType__Group__13() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3355:1: ( rule__XAttributeType__Group__13__Impl rule__XAttributeType__Group__14 )
-            // InternalOseeDsl.g:3356:2: rule__XAttributeType__Group__13__Impl rule__XAttributeType__Group__14
+            // InternalOseeDsl.g:3261:1: ( rule__XAttributeType__Group__13__Impl rule__XAttributeType__Group__14 )
+            // InternalOseeDsl.g:3262:2: rule__XAttributeType__Group__13__Impl rule__XAttributeType__Group__14
             {
-            pushFollow(FOLLOW_27);
+            pushFollow(FOLLOW_28);
             rule__XAttributeType__Group__13__Impl();
 
             state._fsp--;
@@ -9722,31 +9460,31 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__13__Impl"
-    // InternalOseeDsl.g:3363:1: rule__XAttributeType__Group__13__Impl : ( ( rule__XAttributeType__MaxAssignment_13 ) ) ;
+    // InternalOseeDsl.g:3269:1: rule__XAttributeType__Group__13__Impl : ( ( rule__XAttributeType__UnorderedGroup_13 ) ) ;
     public final void rule__XAttributeType__Group__13__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3367:1: ( ( ( rule__XAttributeType__MaxAssignment_13 ) ) )
-            // InternalOseeDsl.g:3368:1: ( ( rule__XAttributeType__MaxAssignment_13 ) )
+            // InternalOseeDsl.g:3273:1: ( ( ( rule__XAttributeType__UnorderedGroup_13 ) ) )
+            // InternalOseeDsl.g:3274:1: ( ( rule__XAttributeType__UnorderedGroup_13 ) )
             {
-            // InternalOseeDsl.g:3368:1: ( ( rule__XAttributeType__MaxAssignment_13 ) )
-            // InternalOseeDsl.g:3369:1: ( rule__XAttributeType__MaxAssignment_13 )
+            // InternalOseeDsl.g:3274:1: ( ( rule__XAttributeType__UnorderedGroup_13 ) )
+            // InternalOseeDsl.g:3275:1: ( rule__XAttributeType__UnorderedGroup_13 )
             {
-             before(grammarAccess.getXAttributeTypeAccess().getMaxAssignment_13()); 
-            // InternalOseeDsl.g:3370:1: ( rule__XAttributeType__MaxAssignment_13 )
-            // InternalOseeDsl.g:3370:2: rule__XAttributeType__MaxAssignment_13
+             before(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13()); 
+            // InternalOseeDsl.g:3276:1: ( rule__XAttributeType__UnorderedGroup_13 )
+            // InternalOseeDsl.g:3276:2: rule__XAttributeType__UnorderedGroup_13
             {
             pushFollow(FOLLOW_2);
-            rule__XAttributeType__MaxAssignment_13();
+            rule__XAttributeType__UnorderedGroup_13();
 
             state._fsp--;
 
 
             }
 
-             after(grammarAccess.getXAttributeTypeAccess().getMaxAssignment_13()); 
+             after(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13()); 
 
             }
 
@@ -9769,22 +9507,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__14"
-    // InternalOseeDsl.g:3380:1: rule__XAttributeType__Group__14 : rule__XAttributeType__Group__14__Impl rule__XAttributeType__Group__15 ;
+    // InternalOseeDsl.g:3286:1: rule__XAttributeType__Group__14 : rule__XAttributeType__Group__14__Impl ;
     public final void rule__XAttributeType__Group__14() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3384:1: ( rule__XAttributeType__Group__14__Impl rule__XAttributeType__Group__15 )
-            // InternalOseeDsl.g:3385:2: rule__XAttributeType__Group__14__Impl rule__XAttributeType__Group__15
+            // InternalOseeDsl.g:3290:1: ( rule__XAttributeType__Group__14__Impl )
+            // InternalOseeDsl.g:3291:2: rule__XAttributeType__Group__14__Impl
             {
-            pushFollow(FOLLOW_28);
-            rule__XAttributeType__Group__14__Impl();
-
-            state._fsp--;
-
             pushFollow(FOLLOW_2);
-            rule__XAttributeType__Group__15();
+            rule__XAttributeType__Group__14__Impl();
 
             state._fsp--;
 
@@ -9807,31 +9540,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group__14__Impl"
-    // InternalOseeDsl.g:3392:1: rule__XAttributeType__Group__14__Impl : ( ( rule__XAttributeType__UnorderedGroup_14 ) ) ;
+    // InternalOseeDsl.g:3297:1: rule__XAttributeType__Group__14__Impl : ( '}' ) ;
     public final void rule__XAttributeType__Group__14__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3396:1: ( ( ( rule__XAttributeType__UnorderedGroup_14 ) ) )
-            // InternalOseeDsl.g:3397:1: ( ( rule__XAttributeType__UnorderedGroup_14 ) )
+            // InternalOseeDsl.g:3301:1: ( ( '}' ) )
+            // InternalOseeDsl.g:3302:1: ( '}' )
             {
-            // InternalOseeDsl.g:3397:1: ( ( rule__XAttributeType__UnorderedGroup_14 ) )
-            // InternalOseeDsl.g:3398:1: ( rule__XAttributeType__UnorderedGroup_14 )
+            // InternalOseeDsl.g:3302:1: ( '}' )
+            // InternalOseeDsl.g:3303:1: '}'
             {
-             before(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14()); 
-            // InternalOseeDsl.g:3399:1: ( rule__XAttributeType__UnorderedGroup_14 )
-            // InternalOseeDsl.g:3399:2: rule__XAttributeType__UnorderedGroup_14
-            {
-            pushFollow(FOLLOW_2);
-            rule__XAttributeType__UnorderedGroup_14();
-
-            state._fsp--;
-
-
-            }
-
-             after(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14()); 
+             before(grammarAccess.getXAttributeTypeAccess().getRightCurlyBracketKeyword_14()); 
+            match(input,55,FOLLOW_2); 
+             after(grammarAccess.getXAttributeTypeAccess().getRightCurlyBracketKeyword_14()); 
 
             }
 
@@ -9853,85 +9576,15 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
     // $ANTLR end "rule__XAttributeType__Group__14__Impl"
 
 
-    // $ANTLR start "rule__XAttributeType__Group__15"
-    // InternalOseeDsl.g:3409:1: rule__XAttributeType__Group__15 : rule__XAttributeType__Group__15__Impl ;
-    public final void rule__XAttributeType__Group__15() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:3413:1: ( rule__XAttributeType__Group__15__Impl )
-            // InternalOseeDsl.g:3414:2: rule__XAttributeType__Group__15__Impl
-            {
-            pushFollow(FOLLOW_2);
-            rule__XAttributeType__Group__15__Impl();
-
-            state._fsp--;
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XAttributeType__Group__15"
-
-
-    // $ANTLR start "rule__XAttributeType__Group__15__Impl"
-    // InternalOseeDsl.g:3420:1: rule__XAttributeType__Group__15__Impl : ( '}' ) ;
-    public final void rule__XAttributeType__Group__15__Impl() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:3424:1: ( ( '}' ) )
-            // InternalOseeDsl.g:3425:1: ( '}' )
-            {
-            // InternalOseeDsl.g:3425:1: ( '}' )
-            // InternalOseeDsl.g:3426:1: '}'
-            {
-             before(grammarAccess.getXAttributeTypeAccess().getRightCurlyBracketKeyword_15()); 
-            match(input,55,FOLLOW_2); 
-             after(grammarAccess.getXAttributeTypeAccess().getRightCurlyBracketKeyword_15()); 
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XAttributeType__Group__15__Impl"
-
-
     // $ANTLR start "rule__XAttributeType__Group_2__0"
-    // InternalOseeDsl.g:3471:1: rule__XAttributeType__Group_2__0 : rule__XAttributeType__Group_2__0__Impl rule__XAttributeType__Group_2__1 ;
+    // InternalOseeDsl.g:3346:1: rule__XAttributeType__Group_2__0 : rule__XAttributeType__Group_2__0__Impl rule__XAttributeType__Group_2__1 ;
     public final void rule__XAttributeType__Group_2__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3475:1: ( rule__XAttributeType__Group_2__0__Impl rule__XAttributeType__Group_2__1 )
-            // InternalOseeDsl.g:3476:2: rule__XAttributeType__Group_2__0__Impl rule__XAttributeType__Group_2__1
+            // InternalOseeDsl.g:3350:1: ( rule__XAttributeType__Group_2__0__Impl rule__XAttributeType__Group_2__1 )
+            // InternalOseeDsl.g:3351:2: rule__XAttributeType__Group_2__0__Impl rule__XAttributeType__Group_2__1
             {
             pushFollow(FOLLOW_29);
             rule__XAttributeType__Group_2__0__Impl();
@@ -9962,17 +9615,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group_2__0__Impl"
-    // InternalOseeDsl.g:3483:1: rule__XAttributeType__Group_2__0__Impl : ( 'extends' ) ;
+    // InternalOseeDsl.g:3358:1: rule__XAttributeType__Group_2__0__Impl : ( 'extends' ) ;
     public final void rule__XAttributeType__Group_2__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3487:1: ( ( 'extends' ) )
-            // InternalOseeDsl.g:3488:1: ( 'extends' )
+            // InternalOseeDsl.g:3362:1: ( ( 'extends' ) )
+            // InternalOseeDsl.g:3363:1: ( 'extends' )
             {
-            // InternalOseeDsl.g:3488:1: ( 'extends' )
-            // InternalOseeDsl.g:3489:1: 'extends'
+            // InternalOseeDsl.g:3363:1: ( 'extends' )
+            // InternalOseeDsl.g:3364:1: 'extends'
             {
              before(grammarAccess.getXAttributeTypeAccess().getExtendsKeyword_2_0()); 
             match(input,56,FOLLOW_2); 
@@ -9999,14 +9652,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group_2__1"
-    // InternalOseeDsl.g:3502:1: rule__XAttributeType__Group_2__1 : rule__XAttributeType__Group_2__1__Impl ;
+    // InternalOseeDsl.g:3377:1: rule__XAttributeType__Group_2__1 : rule__XAttributeType__Group_2__1__Impl ;
     public final void rule__XAttributeType__Group_2__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3506:1: ( rule__XAttributeType__Group_2__1__Impl )
-            // InternalOseeDsl.g:3507:2: rule__XAttributeType__Group_2__1__Impl
+            // InternalOseeDsl.g:3381:1: ( rule__XAttributeType__Group_2__1__Impl )
+            // InternalOseeDsl.g:3382:2: rule__XAttributeType__Group_2__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__XAttributeType__Group_2__1__Impl();
@@ -10032,21 +9685,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group_2__1__Impl"
-    // InternalOseeDsl.g:3513:1: rule__XAttributeType__Group_2__1__Impl : ( ( rule__XAttributeType__BaseAttributeTypeAssignment_2_1 ) ) ;
+    // InternalOseeDsl.g:3388:1: rule__XAttributeType__Group_2__1__Impl : ( ( rule__XAttributeType__BaseAttributeTypeAssignment_2_1 ) ) ;
     public final void rule__XAttributeType__Group_2__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3517:1: ( ( ( rule__XAttributeType__BaseAttributeTypeAssignment_2_1 ) ) )
-            // InternalOseeDsl.g:3518:1: ( ( rule__XAttributeType__BaseAttributeTypeAssignment_2_1 ) )
+            // InternalOseeDsl.g:3392:1: ( ( ( rule__XAttributeType__BaseAttributeTypeAssignment_2_1 ) ) )
+            // InternalOseeDsl.g:3393:1: ( ( rule__XAttributeType__BaseAttributeTypeAssignment_2_1 ) )
             {
-            // InternalOseeDsl.g:3518:1: ( ( rule__XAttributeType__BaseAttributeTypeAssignment_2_1 ) )
-            // InternalOseeDsl.g:3519:1: ( rule__XAttributeType__BaseAttributeTypeAssignment_2_1 )
+            // InternalOseeDsl.g:3393:1: ( ( rule__XAttributeType__BaseAttributeTypeAssignment_2_1 ) )
+            // InternalOseeDsl.g:3394:1: ( rule__XAttributeType__BaseAttributeTypeAssignment_2_1 )
             {
              before(grammarAccess.getXAttributeTypeAccess().getBaseAttributeTypeAssignment_2_1()); 
-            // InternalOseeDsl.g:3520:1: ( rule__XAttributeType__BaseAttributeTypeAssignment_2_1 )
-            // InternalOseeDsl.g:3520:2: rule__XAttributeType__BaseAttributeTypeAssignment_2_1
+            // InternalOseeDsl.g:3395:1: ( rule__XAttributeType__BaseAttributeTypeAssignment_2_1 )
+            // InternalOseeDsl.g:3395:2: rule__XAttributeType__BaseAttributeTypeAssignment_2_1
             {
             pushFollow(FOLLOW_2);
             rule__XAttributeType__BaseAttributeTypeAssignment_2_1();
@@ -10079,14 +9732,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group_3__0"
-    // InternalOseeDsl.g:3534:1: rule__XAttributeType__Group_3__0 : rule__XAttributeType__Group_3__0__Impl rule__XAttributeType__Group_3__1 ;
+    // InternalOseeDsl.g:3409:1: rule__XAttributeType__Group_3__0 : rule__XAttributeType__Group_3__0__Impl rule__XAttributeType__Group_3__1 ;
     public final void rule__XAttributeType__Group_3__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3538:1: ( rule__XAttributeType__Group_3__0__Impl rule__XAttributeType__Group_3__1 )
-            // InternalOseeDsl.g:3539:2: rule__XAttributeType__Group_3__0__Impl rule__XAttributeType__Group_3__1
+            // InternalOseeDsl.g:3413:1: ( rule__XAttributeType__Group_3__0__Impl rule__XAttributeType__Group_3__1 )
+            // InternalOseeDsl.g:3414:2: rule__XAttributeType__Group_3__0__Impl rule__XAttributeType__Group_3__1
             {
             pushFollow(FOLLOW_7);
             rule__XAttributeType__Group_3__0__Impl();
@@ -10117,20 +9770,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group_3__0__Impl"
-    // InternalOseeDsl.g:3546:1: rule__XAttributeType__Group_3__0__Impl : ( 'overrides' ) ;
+    // InternalOseeDsl.g:3421:1: rule__XAttributeType__Group_3__0__Impl : ( 'overrides' ) ;
     public final void rule__XAttributeType__Group_3__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3550:1: ( ( 'overrides' ) )
-            // InternalOseeDsl.g:3551:1: ( 'overrides' )
+            // InternalOseeDsl.g:3425:1: ( ( 'overrides' ) )
+            // InternalOseeDsl.g:3426:1: ( 'overrides' )
             {
-            // InternalOseeDsl.g:3551:1: ( 'overrides' )
-            // InternalOseeDsl.g:3552:1: 'overrides'
+            // InternalOseeDsl.g:3426:1: ( 'overrides' )
+            // InternalOseeDsl.g:3427:1: 'overrides'
             {
              before(grammarAccess.getXAttributeTypeAccess().getOverridesKeyword_3_0()); 
-            match(input,64,FOLLOW_2); 
+            match(input,63,FOLLOW_2); 
              after(grammarAccess.getXAttributeTypeAccess().getOverridesKeyword_3_0()); 
 
             }
@@ -10154,14 +9807,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group_3__1"
-    // InternalOseeDsl.g:3565:1: rule__XAttributeType__Group_3__1 : rule__XAttributeType__Group_3__1__Impl ;
+    // InternalOseeDsl.g:3440:1: rule__XAttributeType__Group_3__1 : rule__XAttributeType__Group_3__1__Impl ;
     public final void rule__XAttributeType__Group_3__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3569:1: ( rule__XAttributeType__Group_3__1__Impl )
-            // InternalOseeDsl.g:3570:2: rule__XAttributeType__Group_3__1__Impl
+            // InternalOseeDsl.g:3444:1: ( rule__XAttributeType__Group_3__1__Impl )
+            // InternalOseeDsl.g:3445:2: rule__XAttributeType__Group_3__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__XAttributeType__Group_3__1__Impl();
@@ -10187,21 +9840,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__Group_3__1__Impl"
-    // InternalOseeDsl.g:3576:1: rule__XAttributeType__Group_3__1__Impl : ( ( rule__XAttributeType__OverrideAssignment_3_1 ) ) ;
+    // InternalOseeDsl.g:3451:1: rule__XAttributeType__Group_3__1__Impl : ( ( rule__XAttributeType__OverrideAssignment_3_1 ) ) ;
     public final void rule__XAttributeType__Group_3__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3580:1: ( ( ( rule__XAttributeType__OverrideAssignment_3_1 ) ) )
-            // InternalOseeDsl.g:3581:1: ( ( rule__XAttributeType__OverrideAssignment_3_1 ) )
+            // InternalOseeDsl.g:3455:1: ( ( ( rule__XAttributeType__OverrideAssignment_3_1 ) ) )
+            // InternalOseeDsl.g:3456:1: ( ( rule__XAttributeType__OverrideAssignment_3_1 ) )
             {
-            // InternalOseeDsl.g:3581:1: ( ( rule__XAttributeType__OverrideAssignment_3_1 ) )
-            // InternalOseeDsl.g:3582:1: ( rule__XAttributeType__OverrideAssignment_3_1 )
+            // InternalOseeDsl.g:3456:1: ( ( rule__XAttributeType__OverrideAssignment_3_1 ) )
+            // InternalOseeDsl.g:3457:1: ( rule__XAttributeType__OverrideAssignment_3_1 )
             {
              before(grammarAccess.getXAttributeTypeAccess().getOverrideAssignment_3_1()); 
-            // InternalOseeDsl.g:3583:1: ( rule__XAttributeType__OverrideAssignment_3_1 )
-            // InternalOseeDsl.g:3583:2: rule__XAttributeType__OverrideAssignment_3_1
+            // InternalOseeDsl.g:3458:1: ( rule__XAttributeType__OverrideAssignment_3_1 )
+            // InternalOseeDsl.g:3458:2: rule__XAttributeType__OverrideAssignment_3_1
             {
             pushFollow(FOLLOW_2);
             rule__XAttributeType__OverrideAssignment_3_1();
@@ -10233,178 +9886,23 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
     // $ANTLR end "rule__XAttributeType__Group_3__1__Impl"
 
 
-    // $ANTLR start "rule__XAttributeType__Group_5__0"
-    // InternalOseeDsl.g:3597:1: rule__XAttributeType__Group_5__0 : rule__XAttributeType__Group_5__0__Impl rule__XAttributeType__Group_5__1 ;
-    public final void rule__XAttributeType__Group_5__0() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__Group_13_0__0"
+    // InternalOseeDsl.g:3472:1: rule__XAttributeType__Group_13_0__0 : rule__XAttributeType__Group_13_0__0__Impl rule__XAttributeType__Group_13_0__1 ;
+    public final void rule__XAttributeType__Group_13_0__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3601:1: ( rule__XAttributeType__Group_5__0__Impl rule__XAttributeType__Group_5__1 )
-            // InternalOseeDsl.g:3602:2: rule__XAttributeType__Group_5__0__Impl rule__XAttributeType__Group_5__1
-            {
-            pushFollow(FOLLOW_7);
-            rule__XAttributeType__Group_5__0__Impl();
-
-            state._fsp--;
-
-            pushFollow(FOLLOW_2);
-            rule__XAttributeType__Group_5__1();
-
-            state._fsp--;
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XAttributeType__Group_5__0"
-
-
-    // $ANTLR start "rule__XAttributeType__Group_5__0__Impl"
-    // InternalOseeDsl.g:3609:1: rule__XAttributeType__Group_5__0__Impl : ( 'guid' ) ;
-    public final void rule__XAttributeType__Group_5__0__Impl() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:3613:1: ( ( 'guid' ) )
-            // InternalOseeDsl.g:3614:1: ( 'guid' )
-            {
-            // InternalOseeDsl.g:3614:1: ( 'guid' )
-            // InternalOseeDsl.g:3615:1: 'guid'
-            {
-             before(grammarAccess.getXAttributeTypeAccess().getGuidKeyword_5_0()); 
-            match(input,58,FOLLOW_2); 
-             after(grammarAccess.getXAttributeTypeAccess().getGuidKeyword_5_0()); 
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XAttributeType__Group_5__0__Impl"
-
-
-    // $ANTLR start "rule__XAttributeType__Group_5__1"
-    // InternalOseeDsl.g:3628:1: rule__XAttributeType__Group_5__1 : rule__XAttributeType__Group_5__1__Impl ;
-    public final void rule__XAttributeType__Group_5__1() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:3632:1: ( rule__XAttributeType__Group_5__1__Impl )
-            // InternalOseeDsl.g:3633:2: rule__XAttributeType__Group_5__1__Impl
-            {
-            pushFollow(FOLLOW_2);
-            rule__XAttributeType__Group_5__1__Impl();
-
-            state._fsp--;
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XAttributeType__Group_5__1"
-
-
-    // $ANTLR start "rule__XAttributeType__Group_5__1__Impl"
-    // InternalOseeDsl.g:3639:1: rule__XAttributeType__Group_5__1__Impl : ( ( rule__XAttributeType__TypeGuidAssignment_5_1 ) ) ;
-    public final void rule__XAttributeType__Group_5__1__Impl() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:3643:1: ( ( ( rule__XAttributeType__TypeGuidAssignment_5_1 ) ) )
-            // InternalOseeDsl.g:3644:1: ( ( rule__XAttributeType__TypeGuidAssignment_5_1 ) )
-            {
-            // InternalOseeDsl.g:3644:1: ( ( rule__XAttributeType__TypeGuidAssignment_5_1 ) )
-            // InternalOseeDsl.g:3645:1: ( rule__XAttributeType__TypeGuidAssignment_5_1 )
-            {
-             before(grammarAccess.getXAttributeTypeAccess().getTypeGuidAssignment_5_1()); 
-            // InternalOseeDsl.g:3646:1: ( rule__XAttributeType__TypeGuidAssignment_5_1 )
-            // InternalOseeDsl.g:3646:2: rule__XAttributeType__TypeGuidAssignment_5_1
-            {
-            pushFollow(FOLLOW_2);
-            rule__XAttributeType__TypeGuidAssignment_5_1();
-
-            state._fsp--;
-
-
-            }
-
-             after(grammarAccess.getXAttributeTypeAccess().getTypeGuidAssignment_5_1()); 
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XAttributeType__Group_5__1__Impl"
-
-
-    // $ANTLR start "rule__XAttributeType__Group_14_0__0"
-    // InternalOseeDsl.g:3660:1: rule__XAttributeType__Group_14_0__0 : rule__XAttributeType__Group_14_0__0__Impl rule__XAttributeType__Group_14_0__1 ;
-    public final void rule__XAttributeType__Group_14_0__0() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:3664:1: ( rule__XAttributeType__Group_14_0__0__Impl rule__XAttributeType__Group_14_0__1 )
-            // InternalOseeDsl.g:3665:2: rule__XAttributeType__Group_14_0__0__Impl rule__XAttributeType__Group_14_0__1
+            // InternalOseeDsl.g:3476:1: ( rule__XAttributeType__Group_13_0__0__Impl rule__XAttributeType__Group_13_0__1 )
+            // InternalOseeDsl.g:3477:2: rule__XAttributeType__Group_13_0__0__Impl rule__XAttributeType__Group_13_0__1
             {
             pushFollow(FOLLOW_30);
-            rule__XAttributeType__Group_14_0__0__Impl();
+            rule__XAttributeType__Group_13_0__0__Impl();
 
             state._fsp--;
 
             pushFollow(FOLLOW_2);
-            rule__XAttributeType__Group_14_0__1();
+            rule__XAttributeType__Group_13_0__1();
 
             state._fsp--;
 
@@ -10423,25 +9921,180 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__Group_14_0__0"
+    // $ANTLR end "rule__XAttributeType__Group_13_0__0"
 
 
-    // $ANTLR start "rule__XAttributeType__Group_14_0__0__Impl"
-    // InternalOseeDsl.g:3672:1: rule__XAttributeType__Group_14_0__0__Impl : ( 'taggerId' ) ;
-    public final void rule__XAttributeType__Group_14_0__0__Impl() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__Group_13_0__0__Impl"
+    // InternalOseeDsl.g:3484:1: rule__XAttributeType__Group_13_0__0__Impl : ( 'taggerId' ) ;
+    public final void rule__XAttributeType__Group_13_0__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3676:1: ( ( 'taggerId' ) )
-            // InternalOseeDsl.g:3677:1: ( 'taggerId' )
+            // InternalOseeDsl.g:3488:1: ( ( 'taggerId' ) )
+            // InternalOseeDsl.g:3489:1: ( 'taggerId' )
             {
-            // InternalOseeDsl.g:3677:1: ( 'taggerId' )
-            // InternalOseeDsl.g:3678:1: 'taggerId'
+            // InternalOseeDsl.g:3489:1: ( 'taggerId' )
+            // InternalOseeDsl.g:3490:1: 'taggerId'
             {
-             before(grammarAccess.getXAttributeTypeAccess().getTaggerIdKeyword_14_0_0()); 
+             before(grammarAccess.getXAttributeTypeAccess().getTaggerIdKeyword_13_0_0()); 
+            match(input,64,FOLLOW_2); 
+             after(grammarAccess.getXAttributeTypeAccess().getTaggerIdKeyword_13_0_0()); 
+
+            }
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+
+            	restoreStackSize(stackSize);
+
+        }
+        return ;
+    }
+    // $ANTLR end "rule__XAttributeType__Group_13_0__0__Impl"
+
+
+    // $ANTLR start "rule__XAttributeType__Group_13_0__1"
+    // InternalOseeDsl.g:3503:1: rule__XAttributeType__Group_13_0__1 : rule__XAttributeType__Group_13_0__1__Impl ;
+    public final void rule__XAttributeType__Group_13_0__1() throws RecognitionException {
+
+        		int stackSize = keepStackSize();
+            
+        try {
+            // InternalOseeDsl.g:3507:1: ( rule__XAttributeType__Group_13_0__1__Impl )
+            // InternalOseeDsl.g:3508:2: rule__XAttributeType__Group_13_0__1__Impl
+            {
+            pushFollow(FOLLOW_2);
+            rule__XAttributeType__Group_13_0__1__Impl();
+
+            state._fsp--;
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+
+            	restoreStackSize(stackSize);
+
+        }
+        return ;
+    }
+    // $ANTLR end "rule__XAttributeType__Group_13_0__1"
+
+
+    // $ANTLR start "rule__XAttributeType__Group_13_0__1__Impl"
+    // InternalOseeDsl.g:3514:1: rule__XAttributeType__Group_13_0__1__Impl : ( ( rule__XAttributeType__TaggerIdAssignment_13_0_1 ) ) ;
+    public final void rule__XAttributeType__Group_13_0__1__Impl() throws RecognitionException {
+
+        		int stackSize = keepStackSize();
+            
+        try {
+            // InternalOseeDsl.g:3518:1: ( ( ( rule__XAttributeType__TaggerIdAssignment_13_0_1 ) ) )
+            // InternalOseeDsl.g:3519:1: ( ( rule__XAttributeType__TaggerIdAssignment_13_0_1 ) )
+            {
+            // InternalOseeDsl.g:3519:1: ( ( rule__XAttributeType__TaggerIdAssignment_13_0_1 ) )
+            // InternalOseeDsl.g:3520:1: ( rule__XAttributeType__TaggerIdAssignment_13_0_1 )
+            {
+             before(grammarAccess.getXAttributeTypeAccess().getTaggerIdAssignment_13_0_1()); 
+            // InternalOseeDsl.g:3521:1: ( rule__XAttributeType__TaggerIdAssignment_13_0_1 )
+            // InternalOseeDsl.g:3521:2: rule__XAttributeType__TaggerIdAssignment_13_0_1
+            {
+            pushFollow(FOLLOW_2);
+            rule__XAttributeType__TaggerIdAssignment_13_0_1();
+
+            state._fsp--;
+
+
+            }
+
+             after(grammarAccess.getXAttributeTypeAccess().getTaggerIdAssignment_13_0_1()); 
+
+            }
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+
+            	restoreStackSize(stackSize);
+
+        }
+        return ;
+    }
+    // $ANTLR end "rule__XAttributeType__Group_13_0__1__Impl"
+
+
+    // $ANTLR start "rule__XAttributeType__Group_13_1__0"
+    // InternalOseeDsl.g:3535:1: rule__XAttributeType__Group_13_1__0 : rule__XAttributeType__Group_13_1__0__Impl rule__XAttributeType__Group_13_1__1 ;
+    public final void rule__XAttributeType__Group_13_1__0() throws RecognitionException {
+
+        		int stackSize = keepStackSize();
+            
+        try {
+            // InternalOseeDsl.g:3539:1: ( rule__XAttributeType__Group_13_1__0__Impl rule__XAttributeType__Group_13_1__1 )
+            // InternalOseeDsl.g:3540:2: rule__XAttributeType__Group_13_1__0__Impl rule__XAttributeType__Group_13_1__1
+            {
+            pushFollow(FOLLOW_7);
+            rule__XAttributeType__Group_13_1__0__Impl();
+
+            state._fsp--;
+
+            pushFollow(FOLLOW_2);
+            rule__XAttributeType__Group_13_1__1();
+
+            state._fsp--;
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+
+            	restoreStackSize(stackSize);
+
+        }
+        return ;
+    }
+    // $ANTLR end "rule__XAttributeType__Group_13_1__0"
+
+
+    // $ANTLR start "rule__XAttributeType__Group_13_1__0__Impl"
+    // InternalOseeDsl.g:3547:1: rule__XAttributeType__Group_13_1__0__Impl : ( 'enumType' ) ;
+    public final void rule__XAttributeType__Group_13_1__0__Impl() throws RecognitionException {
+
+        		int stackSize = keepStackSize();
+            
+        try {
+            // InternalOseeDsl.g:3551:1: ( ( 'enumType' ) )
+            // InternalOseeDsl.g:3552:1: ( 'enumType' )
+            {
+            // InternalOseeDsl.g:3552:1: ( 'enumType' )
+            // InternalOseeDsl.g:3553:1: 'enumType'
+            {
+             before(grammarAccess.getXAttributeTypeAccess().getEnumTypeKeyword_13_1_0()); 
             match(input,65,FOLLOW_2); 
-             after(grammarAccess.getXAttributeTypeAccess().getTaggerIdKeyword_14_0_0()); 
+             after(grammarAccess.getXAttributeTypeAccess().getEnumTypeKeyword_13_1_0()); 
 
             }
 
@@ -10460,21 +10113,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__Group_14_0__0__Impl"
+    // $ANTLR end "rule__XAttributeType__Group_13_1__0__Impl"
 
 
-    // $ANTLR start "rule__XAttributeType__Group_14_0__1"
-    // InternalOseeDsl.g:3691:1: rule__XAttributeType__Group_14_0__1 : rule__XAttributeType__Group_14_0__1__Impl ;
-    public final void rule__XAttributeType__Group_14_0__1() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__Group_13_1__1"
+    // InternalOseeDsl.g:3566:1: rule__XAttributeType__Group_13_1__1 : rule__XAttributeType__Group_13_1__1__Impl ;
+    public final void rule__XAttributeType__Group_13_1__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3695:1: ( rule__XAttributeType__Group_14_0__1__Impl )
-            // InternalOseeDsl.g:3696:2: rule__XAttributeType__Group_14_0__1__Impl
+            // InternalOseeDsl.g:3570:1: ( rule__XAttributeType__Group_13_1__1__Impl )
+            // InternalOseeDsl.g:3571:2: rule__XAttributeType__Group_13_1__1__Impl
             {
             pushFollow(FOLLOW_2);
-            rule__XAttributeType__Group_14_0__1__Impl();
+            rule__XAttributeType__Group_13_1__1__Impl();
 
             state._fsp--;
 
@@ -10493,35 +10146,35 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__Group_14_0__1"
+    // $ANTLR end "rule__XAttributeType__Group_13_1__1"
 
 
-    // $ANTLR start "rule__XAttributeType__Group_14_0__1__Impl"
-    // InternalOseeDsl.g:3702:1: rule__XAttributeType__Group_14_0__1__Impl : ( ( rule__XAttributeType__TaggerIdAssignment_14_0_1 ) ) ;
-    public final void rule__XAttributeType__Group_14_0__1__Impl() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__Group_13_1__1__Impl"
+    // InternalOseeDsl.g:3577:1: rule__XAttributeType__Group_13_1__1__Impl : ( ( rule__XAttributeType__EnumTypeAssignment_13_1_1 ) ) ;
+    public final void rule__XAttributeType__Group_13_1__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3706:1: ( ( ( rule__XAttributeType__TaggerIdAssignment_14_0_1 ) ) )
-            // InternalOseeDsl.g:3707:1: ( ( rule__XAttributeType__TaggerIdAssignment_14_0_1 ) )
+            // InternalOseeDsl.g:3581:1: ( ( ( rule__XAttributeType__EnumTypeAssignment_13_1_1 ) ) )
+            // InternalOseeDsl.g:3582:1: ( ( rule__XAttributeType__EnumTypeAssignment_13_1_1 ) )
             {
-            // InternalOseeDsl.g:3707:1: ( ( rule__XAttributeType__TaggerIdAssignment_14_0_1 ) )
-            // InternalOseeDsl.g:3708:1: ( rule__XAttributeType__TaggerIdAssignment_14_0_1 )
+            // InternalOseeDsl.g:3582:1: ( ( rule__XAttributeType__EnumTypeAssignment_13_1_1 ) )
+            // InternalOseeDsl.g:3583:1: ( rule__XAttributeType__EnumTypeAssignment_13_1_1 )
             {
-             before(grammarAccess.getXAttributeTypeAccess().getTaggerIdAssignment_14_0_1()); 
-            // InternalOseeDsl.g:3709:1: ( rule__XAttributeType__TaggerIdAssignment_14_0_1 )
-            // InternalOseeDsl.g:3709:2: rule__XAttributeType__TaggerIdAssignment_14_0_1
+             before(grammarAccess.getXAttributeTypeAccess().getEnumTypeAssignment_13_1_1()); 
+            // InternalOseeDsl.g:3584:1: ( rule__XAttributeType__EnumTypeAssignment_13_1_1 )
+            // InternalOseeDsl.g:3584:2: rule__XAttributeType__EnumTypeAssignment_13_1_1
             {
             pushFollow(FOLLOW_2);
-            rule__XAttributeType__TaggerIdAssignment_14_0_1();
+            rule__XAttributeType__EnumTypeAssignment_13_1_1();
 
             state._fsp--;
 
 
             }
 
-             after(grammarAccess.getXAttributeTypeAccess().getTaggerIdAssignment_14_0_1()); 
+             after(grammarAccess.getXAttributeTypeAccess().getEnumTypeAssignment_13_1_1()); 
 
             }
 
@@ -10540,26 +10193,26 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__Group_14_0__1__Impl"
+    // $ANTLR end "rule__XAttributeType__Group_13_1__1__Impl"
 
 
-    // $ANTLR start "rule__XAttributeType__Group_14_1__0"
-    // InternalOseeDsl.g:3723:1: rule__XAttributeType__Group_14_1__0 : rule__XAttributeType__Group_14_1__0__Impl rule__XAttributeType__Group_14_1__1 ;
-    public final void rule__XAttributeType__Group_14_1__0() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__Group_13_2__0"
+    // InternalOseeDsl.g:3598:1: rule__XAttributeType__Group_13_2__0 : rule__XAttributeType__Group_13_2__0__Impl rule__XAttributeType__Group_13_2__1 ;
+    public final void rule__XAttributeType__Group_13_2__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3727:1: ( rule__XAttributeType__Group_14_1__0__Impl rule__XAttributeType__Group_14_1__1 )
-            // InternalOseeDsl.g:3728:2: rule__XAttributeType__Group_14_1__0__Impl rule__XAttributeType__Group_14_1__1
+            // InternalOseeDsl.g:3602:1: ( rule__XAttributeType__Group_13_2__0__Impl rule__XAttributeType__Group_13_2__1 )
+            // InternalOseeDsl.g:3603:2: rule__XAttributeType__Group_13_2__0__Impl rule__XAttributeType__Group_13_2__1
             {
             pushFollow(FOLLOW_7);
-            rule__XAttributeType__Group_14_1__0__Impl();
+            rule__XAttributeType__Group_13_2__0__Impl();
 
             state._fsp--;
 
             pushFollow(FOLLOW_2);
-            rule__XAttributeType__Group_14_1__1();
+            rule__XAttributeType__Group_13_2__1();
 
             state._fsp--;
 
@@ -10578,25 +10231,25 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__Group_14_1__0"
+    // $ANTLR end "rule__XAttributeType__Group_13_2__0"
 
 
-    // $ANTLR start "rule__XAttributeType__Group_14_1__0__Impl"
-    // InternalOseeDsl.g:3735:1: rule__XAttributeType__Group_14_1__0__Impl : ( 'enumType' ) ;
-    public final void rule__XAttributeType__Group_14_1__0__Impl() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__Group_13_2__0__Impl"
+    // InternalOseeDsl.g:3610:1: rule__XAttributeType__Group_13_2__0__Impl : ( 'description' ) ;
+    public final void rule__XAttributeType__Group_13_2__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3739:1: ( ( 'enumType' ) )
-            // InternalOseeDsl.g:3740:1: ( 'enumType' )
+            // InternalOseeDsl.g:3614:1: ( ( 'description' ) )
+            // InternalOseeDsl.g:3615:1: ( 'description' )
             {
-            // InternalOseeDsl.g:3740:1: ( 'enumType' )
-            // InternalOseeDsl.g:3741:1: 'enumType'
+            // InternalOseeDsl.g:3615:1: ( 'description' )
+            // InternalOseeDsl.g:3616:1: 'description'
             {
-             before(grammarAccess.getXAttributeTypeAccess().getEnumTypeKeyword_14_1_0()); 
+             before(grammarAccess.getXAttributeTypeAccess().getDescriptionKeyword_13_2_0()); 
             match(input,66,FOLLOW_2); 
-             after(grammarAccess.getXAttributeTypeAccess().getEnumTypeKeyword_14_1_0()); 
+             after(grammarAccess.getXAttributeTypeAccess().getDescriptionKeyword_13_2_0()); 
 
             }
 
@@ -10615,21 +10268,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__Group_14_1__0__Impl"
+    // $ANTLR end "rule__XAttributeType__Group_13_2__0__Impl"
 
 
-    // $ANTLR start "rule__XAttributeType__Group_14_1__1"
-    // InternalOseeDsl.g:3754:1: rule__XAttributeType__Group_14_1__1 : rule__XAttributeType__Group_14_1__1__Impl ;
-    public final void rule__XAttributeType__Group_14_1__1() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__Group_13_2__1"
+    // InternalOseeDsl.g:3629:1: rule__XAttributeType__Group_13_2__1 : rule__XAttributeType__Group_13_2__1__Impl ;
+    public final void rule__XAttributeType__Group_13_2__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3758:1: ( rule__XAttributeType__Group_14_1__1__Impl )
-            // InternalOseeDsl.g:3759:2: rule__XAttributeType__Group_14_1__1__Impl
+            // InternalOseeDsl.g:3633:1: ( rule__XAttributeType__Group_13_2__1__Impl )
+            // InternalOseeDsl.g:3634:2: rule__XAttributeType__Group_13_2__1__Impl
             {
             pushFollow(FOLLOW_2);
-            rule__XAttributeType__Group_14_1__1__Impl();
+            rule__XAttributeType__Group_13_2__1__Impl();
 
             state._fsp--;
 
@@ -10648,35 +10301,35 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__Group_14_1__1"
+    // $ANTLR end "rule__XAttributeType__Group_13_2__1"
 
 
-    // $ANTLR start "rule__XAttributeType__Group_14_1__1__Impl"
-    // InternalOseeDsl.g:3765:1: rule__XAttributeType__Group_14_1__1__Impl : ( ( rule__XAttributeType__EnumTypeAssignment_14_1_1 ) ) ;
-    public final void rule__XAttributeType__Group_14_1__1__Impl() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__Group_13_2__1__Impl"
+    // InternalOseeDsl.g:3640:1: rule__XAttributeType__Group_13_2__1__Impl : ( ( rule__XAttributeType__DescriptionAssignment_13_2_1 ) ) ;
+    public final void rule__XAttributeType__Group_13_2__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3769:1: ( ( ( rule__XAttributeType__EnumTypeAssignment_14_1_1 ) ) )
-            // InternalOseeDsl.g:3770:1: ( ( rule__XAttributeType__EnumTypeAssignment_14_1_1 ) )
+            // InternalOseeDsl.g:3644:1: ( ( ( rule__XAttributeType__DescriptionAssignment_13_2_1 ) ) )
+            // InternalOseeDsl.g:3645:1: ( ( rule__XAttributeType__DescriptionAssignment_13_2_1 ) )
             {
-            // InternalOseeDsl.g:3770:1: ( ( rule__XAttributeType__EnumTypeAssignment_14_1_1 ) )
-            // InternalOseeDsl.g:3771:1: ( rule__XAttributeType__EnumTypeAssignment_14_1_1 )
+            // InternalOseeDsl.g:3645:1: ( ( rule__XAttributeType__DescriptionAssignment_13_2_1 ) )
+            // InternalOseeDsl.g:3646:1: ( rule__XAttributeType__DescriptionAssignment_13_2_1 )
             {
-             before(grammarAccess.getXAttributeTypeAccess().getEnumTypeAssignment_14_1_1()); 
-            // InternalOseeDsl.g:3772:1: ( rule__XAttributeType__EnumTypeAssignment_14_1_1 )
-            // InternalOseeDsl.g:3772:2: rule__XAttributeType__EnumTypeAssignment_14_1_1
+             before(grammarAccess.getXAttributeTypeAccess().getDescriptionAssignment_13_2_1()); 
+            // InternalOseeDsl.g:3647:1: ( rule__XAttributeType__DescriptionAssignment_13_2_1 )
+            // InternalOseeDsl.g:3647:2: rule__XAttributeType__DescriptionAssignment_13_2_1
             {
             pushFollow(FOLLOW_2);
-            rule__XAttributeType__EnumTypeAssignment_14_1_1();
+            rule__XAttributeType__DescriptionAssignment_13_2_1();
 
             state._fsp--;
 
 
             }
 
-             after(grammarAccess.getXAttributeTypeAccess().getEnumTypeAssignment_14_1_1()); 
+             after(grammarAccess.getXAttributeTypeAccess().getDescriptionAssignment_13_2_1()); 
 
             }
 
@@ -10695,26 +10348,26 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__Group_14_1__1__Impl"
+    // $ANTLR end "rule__XAttributeType__Group_13_2__1__Impl"
 
 
-    // $ANTLR start "rule__XAttributeType__Group_14_2__0"
-    // InternalOseeDsl.g:3786:1: rule__XAttributeType__Group_14_2__0 : rule__XAttributeType__Group_14_2__0__Impl rule__XAttributeType__Group_14_2__1 ;
-    public final void rule__XAttributeType__Group_14_2__0() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__Group_13_3__0"
+    // InternalOseeDsl.g:3661:1: rule__XAttributeType__Group_13_3__0 : rule__XAttributeType__Group_13_3__0__Impl rule__XAttributeType__Group_13_3__1 ;
+    public final void rule__XAttributeType__Group_13_3__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3790:1: ( rule__XAttributeType__Group_14_2__0__Impl rule__XAttributeType__Group_14_2__1 )
-            // InternalOseeDsl.g:3791:2: rule__XAttributeType__Group_14_2__0__Impl rule__XAttributeType__Group_14_2__1
+            // InternalOseeDsl.g:3665:1: ( rule__XAttributeType__Group_13_3__0__Impl rule__XAttributeType__Group_13_3__1 )
+            // InternalOseeDsl.g:3666:2: rule__XAttributeType__Group_13_3__0__Impl rule__XAttributeType__Group_13_3__1
             {
             pushFollow(FOLLOW_7);
-            rule__XAttributeType__Group_14_2__0__Impl();
+            rule__XAttributeType__Group_13_3__0__Impl();
 
             state._fsp--;
 
             pushFollow(FOLLOW_2);
-            rule__XAttributeType__Group_14_2__1();
+            rule__XAttributeType__Group_13_3__1();
 
             state._fsp--;
 
@@ -10733,25 +10386,25 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__Group_14_2__0"
+    // $ANTLR end "rule__XAttributeType__Group_13_3__0"
 
 
-    // $ANTLR start "rule__XAttributeType__Group_14_2__0__Impl"
-    // InternalOseeDsl.g:3798:1: rule__XAttributeType__Group_14_2__0__Impl : ( 'description' ) ;
-    public final void rule__XAttributeType__Group_14_2__0__Impl() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__Group_13_3__0__Impl"
+    // InternalOseeDsl.g:3673:1: rule__XAttributeType__Group_13_3__0__Impl : ( 'defaultValue' ) ;
+    public final void rule__XAttributeType__Group_13_3__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3802:1: ( ( 'description' ) )
-            // InternalOseeDsl.g:3803:1: ( 'description' )
+            // InternalOseeDsl.g:3677:1: ( ( 'defaultValue' ) )
+            // InternalOseeDsl.g:3678:1: ( 'defaultValue' )
             {
-            // InternalOseeDsl.g:3803:1: ( 'description' )
-            // InternalOseeDsl.g:3804:1: 'description'
+            // InternalOseeDsl.g:3678:1: ( 'defaultValue' )
+            // InternalOseeDsl.g:3679:1: 'defaultValue'
             {
-             before(grammarAccess.getXAttributeTypeAccess().getDescriptionKeyword_14_2_0()); 
+             before(grammarAccess.getXAttributeTypeAccess().getDefaultValueKeyword_13_3_0()); 
             match(input,67,FOLLOW_2); 
-             after(grammarAccess.getXAttributeTypeAccess().getDescriptionKeyword_14_2_0()); 
+             after(grammarAccess.getXAttributeTypeAccess().getDefaultValueKeyword_13_3_0()); 
 
             }
 
@@ -10770,21 +10423,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__Group_14_2__0__Impl"
+    // $ANTLR end "rule__XAttributeType__Group_13_3__0__Impl"
 
 
-    // $ANTLR start "rule__XAttributeType__Group_14_2__1"
-    // InternalOseeDsl.g:3817:1: rule__XAttributeType__Group_14_2__1 : rule__XAttributeType__Group_14_2__1__Impl ;
-    public final void rule__XAttributeType__Group_14_2__1() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__Group_13_3__1"
+    // InternalOseeDsl.g:3692:1: rule__XAttributeType__Group_13_3__1 : rule__XAttributeType__Group_13_3__1__Impl ;
+    public final void rule__XAttributeType__Group_13_3__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3821:1: ( rule__XAttributeType__Group_14_2__1__Impl )
-            // InternalOseeDsl.g:3822:2: rule__XAttributeType__Group_14_2__1__Impl
+            // InternalOseeDsl.g:3696:1: ( rule__XAttributeType__Group_13_3__1__Impl )
+            // InternalOseeDsl.g:3697:2: rule__XAttributeType__Group_13_3__1__Impl
             {
             pushFollow(FOLLOW_2);
-            rule__XAttributeType__Group_14_2__1__Impl();
+            rule__XAttributeType__Group_13_3__1__Impl();
 
             state._fsp--;
 
@@ -10803,35 +10456,35 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__Group_14_2__1"
+    // $ANTLR end "rule__XAttributeType__Group_13_3__1"
 
 
-    // $ANTLR start "rule__XAttributeType__Group_14_2__1__Impl"
-    // InternalOseeDsl.g:3828:1: rule__XAttributeType__Group_14_2__1__Impl : ( ( rule__XAttributeType__DescriptionAssignment_14_2_1 ) ) ;
-    public final void rule__XAttributeType__Group_14_2__1__Impl() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__Group_13_3__1__Impl"
+    // InternalOseeDsl.g:3703:1: rule__XAttributeType__Group_13_3__1__Impl : ( ( rule__XAttributeType__DefaultValueAssignment_13_3_1 ) ) ;
+    public final void rule__XAttributeType__Group_13_3__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3832:1: ( ( ( rule__XAttributeType__DescriptionAssignment_14_2_1 ) ) )
-            // InternalOseeDsl.g:3833:1: ( ( rule__XAttributeType__DescriptionAssignment_14_2_1 ) )
+            // InternalOseeDsl.g:3707:1: ( ( ( rule__XAttributeType__DefaultValueAssignment_13_3_1 ) ) )
+            // InternalOseeDsl.g:3708:1: ( ( rule__XAttributeType__DefaultValueAssignment_13_3_1 ) )
             {
-            // InternalOseeDsl.g:3833:1: ( ( rule__XAttributeType__DescriptionAssignment_14_2_1 ) )
-            // InternalOseeDsl.g:3834:1: ( rule__XAttributeType__DescriptionAssignment_14_2_1 )
+            // InternalOseeDsl.g:3708:1: ( ( rule__XAttributeType__DefaultValueAssignment_13_3_1 ) )
+            // InternalOseeDsl.g:3709:1: ( rule__XAttributeType__DefaultValueAssignment_13_3_1 )
             {
-             before(grammarAccess.getXAttributeTypeAccess().getDescriptionAssignment_14_2_1()); 
-            // InternalOseeDsl.g:3835:1: ( rule__XAttributeType__DescriptionAssignment_14_2_1 )
-            // InternalOseeDsl.g:3835:2: rule__XAttributeType__DescriptionAssignment_14_2_1
+             before(grammarAccess.getXAttributeTypeAccess().getDefaultValueAssignment_13_3_1()); 
+            // InternalOseeDsl.g:3710:1: ( rule__XAttributeType__DefaultValueAssignment_13_3_1 )
+            // InternalOseeDsl.g:3710:2: rule__XAttributeType__DefaultValueAssignment_13_3_1
             {
             pushFollow(FOLLOW_2);
-            rule__XAttributeType__DescriptionAssignment_14_2_1();
+            rule__XAttributeType__DefaultValueAssignment_13_3_1();
 
             state._fsp--;
 
 
             }
 
-             after(grammarAccess.getXAttributeTypeAccess().getDescriptionAssignment_14_2_1()); 
+             after(grammarAccess.getXAttributeTypeAccess().getDefaultValueAssignment_13_3_1()); 
 
             }
 
@@ -10850,26 +10503,26 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__Group_14_2__1__Impl"
+    // $ANTLR end "rule__XAttributeType__Group_13_3__1__Impl"
 
 
-    // $ANTLR start "rule__XAttributeType__Group_14_3__0"
-    // InternalOseeDsl.g:3849:1: rule__XAttributeType__Group_14_3__0 : rule__XAttributeType__Group_14_3__0__Impl rule__XAttributeType__Group_14_3__1 ;
-    public final void rule__XAttributeType__Group_14_3__0() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__Group_13_4__0"
+    // InternalOseeDsl.g:3724:1: rule__XAttributeType__Group_13_4__0 : rule__XAttributeType__Group_13_4__0__Impl rule__XAttributeType__Group_13_4__1 ;
+    public final void rule__XAttributeType__Group_13_4__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3853:1: ( rule__XAttributeType__Group_14_3__0__Impl rule__XAttributeType__Group_14_3__1 )
-            // InternalOseeDsl.g:3854:2: rule__XAttributeType__Group_14_3__0__Impl rule__XAttributeType__Group_14_3__1
+            // InternalOseeDsl.g:3728:1: ( rule__XAttributeType__Group_13_4__0__Impl rule__XAttributeType__Group_13_4__1 )
+            // InternalOseeDsl.g:3729:2: rule__XAttributeType__Group_13_4__0__Impl rule__XAttributeType__Group_13_4__1
             {
             pushFollow(FOLLOW_7);
-            rule__XAttributeType__Group_14_3__0__Impl();
+            rule__XAttributeType__Group_13_4__0__Impl();
 
             state._fsp--;
 
             pushFollow(FOLLOW_2);
-            rule__XAttributeType__Group_14_3__1();
+            rule__XAttributeType__Group_13_4__1();
 
             state._fsp--;
 
@@ -10888,25 +10541,25 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__Group_14_3__0"
+    // $ANTLR end "rule__XAttributeType__Group_13_4__0"
 
 
-    // $ANTLR start "rule__XAttributeType__Group_14_3__0__Impl"
-    // InternalOseeDsl.g:3861:1: rule__XAttributeType__Group_14_3__0__Impl : ( 'defaultValue' ) ;
-    public final void rule__XAttributeType__Group_14_3__0__Impl() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__Group_13_4__0__Impl"
+    // InternalOseeDsl.g:3736:1: rule__XAttributeType__Group_13_4__0__Impl : ( 'fileExtension' ) ;
+    public final void rule__XAttributeType__Group_13_4__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3865:1: ( ( 'defaultValue' ) )
-            // InternalOseeDsl.g:3866:1: ( 'defaultValue' )
+            // InternalOseeDsl.g:3740:1: ( ( 'fileExtension' ) )
+            // InternalOseeDsl.g:3741:1: ( 'fileExtension' )
             {
-            // InternalOseeDsl.g:3866:1: ( 'defaultValue' )
-            // InternalOseeDsl.g:3867:1: 'defaultValue'
+            // InternalOseeDsl.g:3741:1: ( 'fileExtension' )
+            // InternalOseeDsl.g:3742:1: 'fileExtension'
             {
-             before(grammarAccess.getXAttributeTypeAccess().getDefaultValueKeyword_14_3_0()); 
+             before(grammarAccess.getXAttributeTypeAccess().getFileExtensionKeyword_13_4_0()); 
             match(input,68,FOLLOW_2); 
-             after(grammarAccess.getXAttributeTypeAccess().getDefaultValueKeyword_14_3_0()); 
+             after(grammarAccess.getXAttributeTypeAccess().getFileExtensionKeyword_13_4_0()); 
 
             }
 
@@ -10925,21 +10578,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__Group_14_3__0__Impl"
+    // $ANTLR end "rule__XAttributeType__Group_13_4__0__Impl"
 
 
-    // $ANTLR start "rule__XAttributeType__Group_14_3__1"
-    // InternalOseeDsl.g:3880:1: rule__XAttributeType__Group_14_3__1 : rule__XAttributeType__Group_14_3__1__Impl ;
-    public final void rule__XAttributeType__Group_14_3__1() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__Group_13_4__1"
+    // InternalOseeDsl.g:3755:1: rule__XAttributeType__Group_13_4__1 : rule__XAttributeType__Group_13_4__1__Impl ;
+    public final void rule__XAttributeType__Group_13_4__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3884:1: ( rule__XAttributeType__Group_14_3__1__Impl )
-            // InternalOseeDsl.g:3885:2: rule__XAttributeType__Group_14_3__1__Impl
+            // InternalOseeDsl.g:3759:1: ( rule__XAttributeType__Group_13_4__1__Impl )
+            // InternalOseeDsl.g:3760:2: rule__XAttributeType__Group_13_4__1__Impl
             {
             pushFollow(FOLLOW_2);
-            rule__XAttributeType__Group_14_3__1__Impl();
+            rule__XAttributeType__Group_13_4__1__Impl();
 
             state._fsp--;
 
@@ -10958,35 +10611,35 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__Group_14_3__1"
+    // $ANTLR end "rule__XAttributeType__Group_13_4__1"
 
 
-    // $ANTLR start "rule__XAttributeType__Group_14_3__1__Impl"
-    // InternalOseeDsl.g:3891:1: rule__XAttributeType__Group_14_3__1__Impl : ( ( rule__XAttributeType__DefaultValueAssignment_14_3_1 ) ) ;
-    public final void rule__XAttributeType__Group_14_3__1__Impl() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__Group_13_4__1__Impl"
+    // InternalOseeDsl.g:3766:1: rule__XAttributeType__Group_13_4__1__Impl : ( ( rule__XAttributeType__FileExtensionAssignment_13_4_1 ) ) ;
+    public final void rule__XAttributeType__Group_13_4__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3895:1: ( ( ( rule__XAttributeType__DefaultValueAssignment_14_3_1 ) ) )
-            // InternalOseeDsl.g:3896:1: ( ( rule__XAttributeType__DefaultValueAssignment_14_3_1 ) )
+            // InternalOseeDsl.g:3770:1: ( ( ( rule__XAttributeType__FileExtensionAssignment_13_4_1 ) ) )
+            // InternalOseeDsl.g:3771:1: ( ( rule__XAttributeType__FileExtensionAssignment_13_4_1 ) )
             {
-            // InternalOseeDsl.g:3896:1: ( ( rule__XAttributeType__DefaultValueAssignment_14_3_1 ) )
-            // InternalOseeDsl.g:3897:1: ( rule__XAttributeType__DefaultValueAssignment_14_3_1 )
+            // InternalOseeDsl.g:3771:1: ( ( rule__XAttributeType__FileExtensionAssignment_13_4_1 ) )
+            // InternalOseeDsl.g:3772:1: ( rule__XAttributeType__FileExtensionAssignment_13_4_1 )
             {
-             before(grammarAccess.getXAttributeTypeAccess().getDefaultValueAssignment_14_3_1()); 
-            // InternalOseeDsl.g:3898:1: ( rule__XAttributeType__DefaultValueAssignment_14_3_1 )
-            // InternalOseeDsl.g:3898:2: rule__XAttributeType__DefaultValueAssignment_14_3_1
+             before(grammarAccess.getXAttributeTypeAccess().getFileExtensionAssignment_13_4_1()); 
+            // InternalOseeDsl.g:3773:1: ( rule__XAttributeType__FileExtensionAssignment_13_4_1 )
+            // InternalOseeDsl.g:3773:2: rule__XAttributeType__FileExtensionAssignment_13_4_1
             {
             pushFollow(FOLLOW_2);
-            rule__XAttributeType__DefaultValueAssignment_14_3_1();
+            rule__XAttributeType__FileExtensionAssignment_13_4_1();
 
             state._fsp--;
 
 
             }
 
-             after(grammarAccess.getXAttributeTypeAccess().getDefaultValueAssignment_14_3_1()); 
+             after(grammarAccess.getXAttributeTypeAccess().getFileExtensionAssignment_13_4_1()); 
 
             }
 
@@ -11005,26 +10658,26 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__Group_14_3__1__Impl"
+    // $ANTLR end "rule__XAttributeType__Group_13_4__1__Impl"
 
 
-    // $ANTLR start "rule__XAttributeType__Group_14_4__0"
-    // InternalOseeDsl.g:3912:1: rule__XAttributeType__Group_14_4__0 : rule__XAttributeType__Group_14_4__0__Impl rule__XAttributeType__Group_14_4__1 ;
-    public final void rule__XAttributeType__Group_14_4__0() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__Group_13_5__0"
+    // InternalOseeDsl.g:3787:1: rule__XAttributeType__Group_13_5__0 : rule__XAttributeType__Group_13_5__0__Impl rule__XAttributeType__Group_13_5__1 ;
+    public final void rule__XAttributeType__Group_13_5__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3916:1: ( rule__XAttributeType__Group_14_4__0__Impl rule__XAttributeType__Group_14_4__1 )
-            // InternalOseeDsl.g:3917:2: rule__XAttributeType__Group_14_4__0__Impl rule__XAttributeType__Group_14_4__1
+            // InternalOseeDsl.g:3791:1: ( rule__XAttributeType__Group_13_5__0__Impl rule__XAttributeType__Group_13_5__1 )
+            // InternalOseeDsl.g:3792:2: rule__XAttributeType__Group_13_5__0__Impl rule__XAttributeType__Group_13_5__1
             {
             pushFollow(FOLLOW_7);
-            rule__XAttributeType__Group_14_4__0__Impl();
+            rule__XAttributeType__Group_13_5__0__Impl();
 
             state._fsp--;
 
             pushFollow(FOLLOW_2);
-            rule__XAttributeType__Group_14_4__1();
+            rule__XAttributeType__Group_13_5__1();
 
             state._fsp--;
 
@@ -11043,25 +10696,25 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__Group_14_4__0"
+    // $ANTLR end "rule__XAttributeType__Group_13_5__0"
 
 
-    // $ANTLR start "rule__XAttributeType__Group_14_4__0__Impl"
-    // InternalOseeDsl.g:3924:1: rule__XAttributeType__Group_14_4__0__Impl : ( 'fileExtension' ) ;
-    public final void rule__XAttributeType__Group_14_4__0__Impl() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__Group_13_5__0__Impl"
+    // InternalOseeDsl.g:3799:1: rule__XAttributeType__Group_13_5__0__Impl : ( 'mediaType' ) ;
+    public final void rule__XAttributeType__Group_13_5__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3928:1: ( ( 'fileExtension' ) )
-            // InternalOseeDsl.g:3929:1: ( 'fileExtension' )
+            // InternalOseeDsl.g:3803:1: ( ( 'mediaType' ) )
+            // InternalOseeDsl.g:3804:1: ( 'mediaType' )
             {
-            // InternalOseeDsl.g:3929:1: ( 'fileExtension' )
-            // InternalOseeDsl.g:3930:1: 'fileExtension'
+            // InternalOseeDsl.g:3804:1: ( 'mediaType' )
+            // InternalOseeDsl.g:3805:1: 'mediaType'
             {
-             before(grammarAccess.getXAttributeTypeAccess().getFileExtensionKeyword_14_4_0()); 
+             before(grammarAccess.getXAttributeTypeAccess().getMediaTypeKeyword_13_5_0()); 
             match(input,69,FOLLOW_2); 
-             after(grammarAccess.getXAttributeTypeAccess().getFileExtensionKeyword_14_4_0()); 
+             after(grammarAccess.getXAttributeTypeAccess().getMediaTypeKeyword_13_5_0()); 
 
             }
 
@@ -11080,21 +10733,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__Group_14_4__0__Impl"
+    // $ANTLR end "rule__XAttributeType__Group_13_5__0__Impl"
 
 
-    // $ANTLR start "rule__XAttributeType__Group_14_4__1"
-    // InternalOseeDsl.g:3943:1: rule__XAttributeType__Group_14_4__1 : rule__XAttributeType__Group_14_4__1__Impl ;
-    public final void rule__XAttributeType__Group_14_4__1() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__Group_13_5__1"
+    // InternalOseeDsl.g:3818:1: rule__XAttributeType__Group_13_5__1 : rule__XAttributeType__Group_13_5__1__Impl ;
+    public final void rule__XAttributeType__Group_13_5__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3947:1: ( rule__XAttributeType__Group_14_4__1__Impl )
-            // InternalOseeDsl.g:3948:2: rule__XAttributeType__Group_14_4__1__Impl
+            // InternalOseeDsl.g:3822:1: ( rule__XAttributeType__Group_13_5__1__Impl )
+            // InternalOseeDsl.g:3823:2: rule__XAttributeType__Group_13_5__1__Impl
             {
             pushFollow(FOLLOW_2);
-            rule__XAttributeType__Group_14_4__1__Impl();
+            rule__XAttributeType__Group_13_5__1__Impl();
 
             state._fsp--;
 
@@ -11113,35 +10766,35 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__Group_14_4__1"
+    // $ANTLR end "rule__XAttributeType__Group_13_5__1"
 
 
-    // $ANTLR start "rule__XAttributeType__Group_14_4__1__Impl"
-    // InternalOseeDsl.g:3954:1: rule__XAttributeType__Group_14_4__1__Impl : ( ( rule__XAttributeType__FileExtensionAssignment_14_4_1 ) ) ;
-    public final void rule__XAttributeType__Group_14_4__1__Impl() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__Group_13_5__1__Impl"
+    // InternalOseeDsl.g:3829:1: rule__XAttributeType__Group_13_5__1__Impl : ( ( rule__XAttributeType__MediaTypeAssignment_13_5_1 ) ) ;
+    public final void rule__XAttributeType__Group_13_5__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:3958:1: ( ( ( rule__XAttributeType__FileExtensionAssignment_14_4_1 ) ) )
-            // InternalOseeDsl.g:3959:1: ( ( rule__XAttributeType__FileExtensionAssignment_14_4_1 ) )
+            // InternalOseeDsl.g:3833:1: ( ( ( rule__XAttributeType__MediaTypeAssignment_13_5_1 ) ) )
+            // InternalOseeDsl.g:3834:1: ( ( rule__XAttributeType__MediaTypeAssignment_13_5_1 ) )
             {
-            // InternalOseeDsl.g:3959:1: ( ( rule__XAttributeType__FileExtensionAssignment_14_4_1 ) )
-            // InternalOseeDsl.g:3960:1: ( rule__XAttributeType__FileExtensionAssignment_14_4_1 )
+            // InternalOseeDsl.g:3834:1: ( ( rule__XAttributeType__MediaTypeAssignment_13_5_1 ) )
+            // InternalOseeDsl.g:3835:1: ( rule__XAttributeType__MediaTypeAssignment_13_5_1 )
             {
-             before(grammarAccess.getXAttributeTypeAccess().getFileExtensionAssignment_14_4_1()); 
-            // InternalOseeDsl.g:3961:1: ( rule__XAttributeType__FileExtensionAssignment_14_4_1 )
-            // InternalOseeDsl.g:3961:2: rule__XAttributeType__FileExtensionAssignment_14_4_1
+             before(grammarAccess.getXAttributeTypeAccess().getMediaTypeAssignment_13_5_1()); 
+            // InternalOseeDsl.g:3836:1: ( rule__XAttributeType__MediaTypeAssignment_13_5_1 )
+            // InternalOseeDsl.g:3836:2: rule__XAttributeType__MediaTypeAssignment_13_5_1
             {
             pushFollow(FOLLOW_2);
-            rule__XAttributeType__FileExtensionAssignment_14_4_1();
+            rule__XAttributeType__MediaTypeAssignment_13_5_1();
 
             state._fsp--;
 
 
             }
 
-             after(grammarAccess.getXAttributeTypeAccess().getFileExtensionAssignment_14_4_1()); 
+             after(grammarAccess.getXAttributeTypeAccess().getMediaTypeAssignment_13_5_1()); 
 
             }
 
@@ -11160,173 +10813,18 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__Group_14_4__1__Impl"
-
-
-    // $ANTLR start "rule__XAttributeType__Group_14_5__0"
-    // InternalOseeDsl.g:3975:1: rule__XAttributeType__Group_14_5__0 : rule__XAttributeType__Group_14_5__0__Impl rule__XAttributeType__Group_14_5__1 ;
-    public final void rule__XAttributeType__Group_14_5__0() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:3979:1: ( rule__XAttributeType__Group_14_5__0__Impl rule__XAttributeType__Group_14_5__1 )
-            // InternalOseeDsl.g:3980:2: rule__XAttributeType__Group_14_5__0__Impl rule__XAttributeType__Group_14_5__1
-            {
-            pushFollow(FOLLOW_7);
-            rule__XAttributeType__Group_14_5__0__Impl();
-
-            state._fsp--;
-
-            pushFollow(FOLLOW_2);
-            rule__XAttributeType__Group_14_5__1();
-
-            state._fsp--;
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XAttributeType__Group_14_5__0"
-
-
-    // $ANTLR start "rule__XAttributeType__Group_14_5__0__Impl"
-    // InternalOseeDsl.g:3987:1: rule__XAttributeType__Group_14_5__0__Impl : ( 'mediaType' ) ;
-    public final void rule__XAttributeType__Group_14_5__0__Impl() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:3991:1: ( ( 'mediaType' ) )
-            // InternalOseeDsl.g:3992:1: ( 'mediaType' )
-            {
-            // InternalOseeDsl.g:3992:1: ( 'mediaType' )
-            // InternalOseeDsl.g:3993:1: 'mediaType'
-            {
-             before(grammarAccess.getXAttributeTypeAccess().getMediaTypeKeyword_14_5_0()); 
-            match(input,70,FOLLOW_2); 
-             after(grammarAccess.getXAttributeTypeAccess().getMediaTypeKeyword_14_5_0()); 
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XAttributeType__Group_14_5__0__Impl"
-
-
-    // $ANTLR start "rule__XAttributeType__Group_14_5__1"
-    // InternalOseeDsl.g:4006:1: rule__XAttributeType__Group_14_5__1 : rule__XAttributeType__Group_14_5__1__Impl ;
-    public final void rule__XAttributeType__Group_14_5__1() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:4010:1: ( rule__XAttributeType__Group_14_5__1__Impl )
-            // InternalOseeDsl.g:4011:2: rule__XAttributeType__Group_14_5__1__Impl
-            {
-            pushFollow(FOLLOW_2);
-            rule__XAttributeType__Group_14_5__1__Impl();
-
-            state._fsp--;
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XAttributeType__Group_14_5__1"
-
-
-    // $ANTLR start "rule__XAttributeType__Group_14_5__1__Impl"
-    // InternalOseeDsl.g:4017:1: rule__XAttributeType__Group_14_5__1__Impl : ( ( rule__XAttributeType__MediaTypeAssignment_14_5_1 ) ) ;
-    public final void rule__XAttributeType__Group_14_5__1__Impl() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:4021:1: ( ( ( rule__XAttributeType__MediaTypeAssignment_14_5_1 ) ) )
-            // InternalOseeDsl.g:4022:1: ( ( rule__XAttributeType__MediaTypeAssignment_14_5_1 ) )
-            {
-            // InternalOseeDsl.g:4022:1: ( ( rule__XAttributeType__MediaTypeAssignment_14_5_1 ) )
-            // InternalOseeDsl.g:4023:1: ( rule__XAttributeType__MediaTypeAssignment_14_5_1 )
-            {
-             before(grammarAccess.getXAttributeTypeAccess().getMediaTypeAssignment_14_5_1()); 
-            // InternalOseeDsl.g:4024:1: ( rule__XAttributeType__MediaTypeAssignment_14_5_1 )
-            // InternalOseeDsl.g:4024:2: rule__XAttributeType__MediaTypeAssignment_14_5_1
-            {
-            pushFollow(FOLLOW_2);
-            rule__XAttributeType__MediaTypeAssignment_14_5_1();
-
-            state._fsp--;
-
-
-            }
-
-             after(grammarAccess.getXAttributeTypeAccess().getMediaTypeAssignment_14_5_1()); 
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XAttributeType__Group_14_5__1__Impl"
+    // $ANTLR end "rule__XAttributeType__Group_13_5__1__Impl"
 
 
     // $ANTLR start "rule__XOseeEnumType__Group__0"
-    // InternalOseeDsl.g:4038:1: rule__XOseeEnumType__Group__0 : rule__XOseeEnumType__Group__0__Impl rule__XOseeEnumType__Group__1 ;
+    // InternalOseeDsl.g:3850:1: rule__XOseeEnumType__Group__0 : rule__XOseeEnumType__Group__0__Impl rule__XOseeEnumType__Group__1 ;
     public final void rule__XOseeEnumType__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4042:1: ( rule__XOseeEnumType__Group__0__Impl rule__XOseeEnumType__Group__1 )
-            // InternalOseeDsl.g:4043:2: rule__XOseeEnumType__Group__0__Impl rule__XOseeEnumType__Group__1
+            // InternalOseeDsl.g:3854:1: ( rule__XOseeEnumType__Group__0__Impl rule__XOseeEnumType__Group__1 )
+            // InternalOseeDsl.g:3855:2: rule__XOseeEnumType__Group__0__Impl rule__XOseeEnumType__Group__1
             {
             pushFollow(FOLLOW_7);
             rule__XOseeEnumType__Group__0__Impl();
@@ -11357,20 +10855,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumType__Group__0__Impl"
-    // InternalOseeDsl.g:4050:1: rule__XOseeEnumType__Group__0__Impl : ( 'oseeEnumType' ) ;
+    // InternalOseeDsl.g:3862:1: rule__XOseeEnumType__Group__0__Impl : ( 'oseeEnumType' ) ;
     public final void rule__XOseeEnumType__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4054:1: ( ( 'oseeEnumType' ) )
-            // InternalOseeDsl.g:4055:1: ( 'oseeEnumType' )
+            // InternalOseeDsl.g:3866:1: ( ( 'oseeEnumType' ) )
+            // InternalOseeDsl.g:3867:1: ( 'oseeEnumType' )
             {
-            // InternalOseeDsl.g:4055:1: ( 'oseeEnumType' )
-            // InternalOseeDsl.g:4056:1: 'oseeEnumType'
+            // InternalOseeDsl.g:3867:1: ( 'oseeEnumType' )
+            // InternalOseeDsl.g:3868:1: 'oseeEnumType'
             {
              before(grammarAccess.getXOseeEnumTypeAccess().getOseeEnumTypeKeyword_0()); 
-            match(input,71,FOLLOW_2); 
+            match(input,70,FOLLOW_2); 
              after(grammarAccess.getXOseeEnumTypeAccess().getOseeEnumTypeKeyword_0()); 
 
             }
@@ -11394,14 +10892,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumType__Group__1"
-    // InternalOseeDsl.g:4069:1: rule__XOseeEnumType__Group__1 : rule__XOseeEnumType__Group__1__Impl rule__XOseeEnumType__Group__2 ;
+    // InternalOseeDsl.g:3881:1: rule__XOseeEnumType__Group__1 : rule__XOseeEnumType__Group__1__Impl rule__XOseeEnumType__Group__2 ;
     public final void rule__XOseeEnumType__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4073:1: ( rule__XOseeEnumType__Group__1__Impl rule__XOseeEnumType__Group__2 )
-            // InternalOseeDsl.g:4074:2: rule__XOseeEnumType__Group__1__Impl rule__XOseeEnumType__Group__2
+            // InternalOseeDsl.g:3885:1: ( rule__XOseeEnumType__Group__1__Impl rule__XOseeEnumType__Group__2 )
+            // InternalOseeDsl.g:3886:2: rule__XOseeEnumType__Group__1__Impl rule__XOseeEnumType__Group__2
             {
             pushFollow(FOLLOW_31);
             rule__XOseeEnumType__Group__1__Impl();
@@ -11432,21 +10930,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumType__Group__1__Impl"
-    // InternalOseeDsl.g:4081:1: rule__XOseeEnumType__Group__1__Impl : ( ( rule__XOseeEnumType__NameAssignment_1 ) ) ;
+    // InternalOseeDsl.g:3893:1: rule__XOseeEnumType__Group__1__Impl : ( ( rule__XOseeEnumType__NameAssignment_1 ) ) ;
     public final void rule__XOseeEnumType__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4085:1: ( ( ( rule__XOseeEnumType__NameAssignment_1 ) ) )
-            // InternalOseeDsl.g:4086:1: ( ( rule__XOseeEnumType__NameAssignment_1 ) )
+            // InternalOseeDsl.g:3897:1: ( ( ( rule__XOseeEnumType__NameAssignment_1 ) ) )
+            // InternalOseeDsl.g:3898:1: ( ( rule__XOseeEnumType__NameAssignment_1 ) )
             {
-            // InternalOseeDsl.g:4086:1: ( ( rule__XOseeEnumType__NameAssignment_1 ) )
-            // InternalOseeDsl.g:4087:1: ( rule__XOseeEnumType__NameAssignment_1 )
+            // InternalOseeDsl.g:3898:1: ( ( rule__XOseeEnumType__NameAssignment_1 ) )
+            // InternalOseeDsl.g:3899:1: ( rule__XOseeEnumType__NameAssignment_1 )
             {
              before(grammarAccess.getXOseeEnumTypeAccess().getNameAssignment_1()); 
-            // InternalOseeDsl.g:4088:1: ( rule__XOseeEnumType__NameAssignment_1 )
-            // InternalOseeDsl.g:4088:2: rule__XOseeEnumType__NameAssignment_1
+            // InternalOseeDsl.g:3900:1: ( rule__XOseeEnumType__NameAssignment_1 )
+            // InternalOseeDsl.g:3900:2: rule__XOseeEnumType__NameAssignment_1
             {
             pushFollow(FOLLOW_2);
             rule__XOseeEnumType__NameAssignment_1();
@@ -11479,14 +10977,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumType__Group__2"
-    // InternalOseeDsl.g:4098:1: rule__XOseeEnumType__Group__2 : rule__XOseeEnumType__Group__2__Impl rule__XOseeEnumType__Group__3 ;
+    // InternalOseeDsl.g:3910:1: rule__XOseeEnumType__Group__2 : rule__XOseeEnumType__Group__2__Impl rule__XOseeEnumType__Group__3 ;
     public final void rule__XOseeEnumType__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4102:1: ( rule__XOseeEnumType__Group__2__Impl rule__XOseeEnumType__Group__3 )
-            // InternalOseeDsl.g:4103:2: rule__XOseeEnumType__Group__2__Impl rule__XOseeEnumType__Group__3
+            // InternalOseeDsl.g:3914:1: ( rule__XOseeEnumType__Group__2__Impl rule__XOseeEnumType__Group__3 )
+            // InternalOseeDsl.g:3915:2: rule__XOseeEnumType__Group__2__Impl rule__XOseeEnumType__Group__3
             {
             pushFollow(FOLLOW_13);
             rule__XOseeEnumType__Group__2__Impl();
@@ -11517,17 +11015,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumType__Group__2__Impl"
-    // InternalOseeDsl.g:4110:1: rule__XOseeEnumType__Group__2__Impl : ( '{' ) ;
+    // InternalOseeDsl.g:3922:1: rule__XOseeEnumType__Group__2__Impl : ( '{' ) ;
     public final void rule__XOseeEnumType__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4114:1: ( ( '{' ) )
-            // InternalOseeDsl.g:4115:1: ( '{' )
+            // InternalOseeDsl.g:3926:1: ( ( '{' ) )
+            // InternalOseeDsl.g:3927:1: ( '{' )
             {
-            // InternalOseeDsl.g:4115:1: ( '{' )
-            // InternalOseeDsl.g:4116:1: '{'
+            // InternalOseeDsl.g:3927:1: ( '{' )
+            // InternalOseeDsl.g:3928:1: '{'
             {
              before(grammarAccess.getXOseeEnumTypeAccess().getLeftCurlyBracketKeyword_2()); 
             match(input,53,FOLLOW_2); 
@@ -11554,16 +11052,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumType__Group__3"
-    // InternalOseeDsl.g:4129:1: rule__XOseeEnumType__Group__3 : rule__XOseeEnumType__Group__3__Impl rule__XOseeEnumType__Group__4 ;
+    // InternalOseeDsl.g:3941:1: rule__XOseeEnumType__Group__3 : rule__XOseeEnumType__Group__3__Impl rule__XOseeEnumType__Group__4 ;
     public final void rule__XOseeEnumType__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4133:1: ( rule__XOseeEnumType__Group__3__Impl rule__XOseeEnumType__Group__4 )
-            // InternalOseeDsl.g:4134:2: rule__XOseeEnumType__Group__3__Impl rule__XOseeEnumType__Group__4
+            // InternalOseeDsl.g:3945:1: ( rule__XOseeEnumType__Group__3__Impl rule__XOseeEnumType__Group__4 )
+            // InternalOseeDsl.g:3946:2: rule__XOseeEnumType__Group__3__Impl rule__XOseeEnumType__Group__4
             {
-            pushFollow(FOLLOW_13);
+            pushFollow(FOLLOW_14);
             rule__XOseeEnumType__Group__3__Impl();
 
             state._fsp--;
@@ -11592,42 +11090,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumType__Group__3__Impl"
-    // InternalOseeDsl.g:4141:1: rule__XOseeEnumType__Group__3__Impl : ( ( rule__XOseeEnumType__Group_3__0 )? ) ;
+    // InternalOseeDsl.g:3953:1: rule__XOseeEnumType__Group__3__Impl : ( 'id' ) ;
     public final void rule__XOseeEnumType__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4145:1: ( ( ( rule__XOseeEnumType__Group_3__0 )? ) )
-            // InternalOseeDsl.g:4146:1: ( ( rule__XOseeEnumType__Group_3__0 )? )
+            // InternalOseeDsl.g:3957:1: ( ( 'id' ) )
+            // InternalOseeDsl.g:3958:1: ( 'id' )
             {
-            // InternalOseeDsl.g:4146:1: ( ( rule__XOseeEnumType__Group_3__0 )? )
-            // InternalOseeDsl.g:4147:1: ( rule__XOseeEnumType__Group_3__0 )?
+            // InternalOseeDsl.g:3958:1: ( 'id' )
+            // InternalOseeDsl.g:3959:1: 'id'
             {
-             before(grammarAccess.getXOseeEnumTypeAccess().getGroup_3()); 
-            // InternalOseeDsl.g:4148:1: ( rule__XOseeEnumType__Group_3__0 )?
-            int alt35=2;
-            int LA35_0 = input.LA(1);
-
-            if ( (LA35_0==58) ) {
-                alt35=1;
-            }
-            switch (alt35) {
-                case 1 :
-                    // InternalOseeDsl.g:4148:2: rule__XOseeEnumType__Group_3__0
-                    {
-                    pushFollow(FOLLOW_2);
-                    rule__XOseeEnumType__Group_3__0();
-
-                    state._fsp--;
-
-
-                    }
-                    break;
-
-            }
-
-             after(grammarAccess.getXOseeEnumTypeAccess().getGroup_3()); 
+             before(grammarAccess.getXOseeEnumTypeAccess().getIdKeyword_3()); 
+            match(input,54,FOLLOW_2); 
+             after(grammarAccess.getXOseeEnumTypeAccess().getIdKeyword_3()); 
 
             }
 
@@ -11650,16 +11127,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumType__Group__4"
-    // InternalOseeDsl.g:4158:1: rule__XOseeEnumType__Group__4 : rule__XOseeEnumType__Group__4__Impl rule__XOseeEnumType__Group__5 ;
+    // InternalOseeDsl.g:3972:1: rule__XOseeEnumType__Group__4 : rule__XOseeEnumType__Group__4__Impl rule__XOseeEnumType__Group__5 ;
     public final void rule__XOseeEnumType__Group__4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4162:1: ( rule__XOseeEnumType__Group__4__Impl rule__XOseeEnumType__Group__5 )
-            // InternalOseeDsl.g:4163:2: rule__XOseeEnumType__Group__4__Impl rule__XOseeEnumType__Group__5
+            // InternalOseeDsl.g:3976:1: ( rule__XOseeEnumType__Group__4__Impl rule__XOseeEnumType__Group__5 )
+            // InternalOseeDsl.g:3977:2: rule__XOseeEnumType__Group__4__Impl rule__XOseeEnumType__Group__5
             {
-            pushFollow(FOLLOW_14);
+            pushFollow(FOLLOW_32);
             rule__XOseeEnumType__Group__4__Impl();
 
             state._fsp--;
@@ -11688,21 +11165,31 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumType__Group__4__Impl"
-    // InternalOseeDsl.g:4170:1: rule__XOseeEnumType__Group__4__Impl : ( 'id' ) ;
+    // InternalOseeDsl.g:3984:1: rule__XOseeEnumType__Group__4__Impl : ( ( rule__XOseeEnumType__IdAssignment_4 ) ) ;
     public final void rule__XOseeEnumType__Group__4__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4174:1: ( ( 'id' ) )
-            // InternalOseeDsl.g:4175:1: ( 'id' )
+            // InternalOseeDsl.g:3988:1: ( ( ( rule__XOseeEnumType__IdAssignment_4 ) ) )
+            // InternalOseeDsl.g:3989:1: ( ( rule__XOseeEnumType__IdAssignment_4 ) )
             {
-            // InternalOseeDsl.g:4175:1: ( 'id' )
-            // InternalOseeDsl.g:4176:1: 'id'
+            // InternalOseeDsl.g:3989:1: ( ( rule__XOseeEnumType__IdAssignment_4 ) )
+            // InternalOseeDsl.g:3990:1: ( rule__XOseeEnumType__IdAssignment_4 )
             {
-             before(grammarAccess.getXOseeEnumTypeAccess().getIdKeyword_4()); 
-            match(input,54,FOLLOW_2); 
-             after(grammarAccess.getXOseeEnumTypeAccess().getIdKeyword_4()); 
+             before(grammarAccess.getXOseeEnumTypeAccess().getIdAssignment_4()); 
+            // InternalOseeDsl.g:3991:1: ( rule__XOseeEnumType__IdAssignment_4 )
+            // InternalOseeDsl.g:3991:2: rule__XOseeEnumType__IdAssignment_4
+            {
+            pushFollow(FOLLOW_2);
+            rule__XOseeEnumType__IdAssignment_4();
+
+            state._fsp--;
+
+
+            }
+
+             after(grammarAccess.getXOseeEnumTypeAccess().getIdAssignment_4()); 
 
             }
 
@@ -11725,14 +11212,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumType__Group__5"
-    // InternalOseeDsl.g:4189:1: rule__XOseeEnumType__Group__5 : rule__XOseeEnumType__Group__5__Impl rule__XOseeEnumType__Group__6 ;
+    // InternalOseeDsl.g:4001:1: rule__XOseeEnumType__Group__5 : rule__XOseeEnumType__Group__5__Impl rule__XOseeEnumType__Group__6 ;
     public final void rule__XOseeEnumType__Group__5() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4193:1: ( rule__XOseeEnumType__Group__5__Impl rule__XOseeEnumType__Group__6 )
-            // InternalOseeDsl.g:4194:2: rule__XOseeEnumType__Group__5__Impl rule__XOseeEnumType__Group__6
+            // InternalOseeDsl.g:4005:1: ( rule__XOseeEnumType__Group__5__Impl rule__XOseeEnumType__Group__6 )
+            // InternalOseeDsl.g:4006:2: rule__XOseeEnumType__Group__5__Impl rule__XOseeEnumType__Group__6
             {
             pushFollow(FOLLOW_32);
             rule__XOseeEnumType__Group__5__Impl();
@@ -11763,31 +11250,49 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumType__Group__5__Impl"
-    // InternalOseeDsl.g:4201:1: rule__XOseeEnumType__Group__5__Impl : ( ( rule__XOseeEnumType__IdAssignment_5 ) ) ;
+    // InternalOseeDsl.g:4013:1: rule__XOseeEnumType__Group__5__Impl : ( ( rule__XOseeEnumType__EnumEntriesAssignment_5 )* ) ;
     public final void rule__XOseeEnumType__Group__5__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4205:1: ( ( ( rule__XOseeEnumType__IdAssignment_5 ) ) )
-            // InternalOseeDsl.g:4206:1: ( ( rule__XOseeEnumType__IdAssignment_5 ) )
+            // InternalOseeDsl.g:4017:1: ( ( ( rule__XOseeEnumType__EnumEntriesAssignment_5 )* ) )
+            // InternalOseeDsl.g:4018:1: ( ( rule__XOseeEnumType__EnumEntriesAssignment_5 )* )
             {
-            // InternalOseeDsl.g:4206:1: ( ( rule__XOseeEnumType__IdAssignment_5 ) )
-            // InternalOseeDsl.g:4207:1: ( rule__XOseeEnumType__IdAssignment_5 )
+            // InternalOseeDsl.g:4018:1: ( ( rule__XOseeEnumType__EnumEntriesAssignment_5 )* )
+            // InternalOseeDsl.g:4019:1: ( rule__XOseeEnumType__EnumEntriesAssignment_5 )*
             {
-             before(grammarAccess.getXOseeEnumTypeAccess().getIdAssignment_5()); 
-            // InternalOseeDsl.g:4208:1: ( rule__XOseeEnumType__IdAssignment_5 )
-            // InternalOseeDsl.g:4208:2: rule__XOseeEnumType__IdAssignment_5
-            {
-            pushFollow(FOLLOW_2);
-            rule__XOseeEnumType__IdAssignment_5();
+             before(grammarAccess.getXOseeEnumTypeAccess().getEnumEntriesAssignment_5()); 
+            // InternalOseeDsl.g:4020:1: ( rule__XOseeEnumType__EnumEntriesAssignment_5 )*
+            loop33:
+            do {
+                int alt33=2;
+                int LA33_0 = input.LA(1);
 
-            state._fsp--;
+                if ( (LA33_0==71) ) {
+                    alt33=1;
+                }
 
 
-            }
+                switch (alt33) {
+            	case 1 :
+            	    // InternalOseeDsl.g:4020:2: rule__XOseeEnumType__EnumEntriesAssignment_5
+            	    {
+            	    pushFollow(FOLLOW_33);
+            	    rule__XOseeEnumType__EnumEntriesAssignment_5();
 
-             after(grammarAccess.getXOseeEnumTypeAccess().getIdAssignment_5()); 
+            	    state._fsp--;
+
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop33;
+                }
+            } while (true);
+
+             after(grammarAccess.getXOseeEnumTypeAccess().getEnumEntriesAssignment_5()); 
 
             }
 
@@ -11810,22 +11315,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumType__Group__6"
-    // InternalOseeDsl.g:4218:1: rule__XOseeEnumType__Group__6 : rule__XOseeEnumType__Group__6__Impl rule__XOseeEnumType__Group__7 ;
+    // InternalOseeDsl.g:4030:1: rule__XOseeEnumType__Group__6 : rule__XOseeEnumType__Group__6__Impl ;
     public final void rule__XOseeEnumType__Group__6() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4222:1: ( rule__XOseeEnumType__Group__6__Impl rule__XOseeEnumType__Group__7 )
-            // InternalOseeDsl.g:4223:2: rule__XOseeEnumType__Group__6__Impl rule__XOseeEnumType__Group__7
+            // InternalOseeDsl.g:4034:1: ( rule__XOseeEnumType__Group__6__Impl )
+            // InternalOseeDsl.g:4035:2: rule__XOseeEnumType__Group__6__Impl
             {
-            pushFollow(FOLLOW_32);
-            rule__XOseeEnumType__Group__6__Impl();
-
-            state._fsp--;
-
             pushFollow(FOLLOW_2);
-            rule__XOseeEnumType__Group__7();
+            rule__XOseeEnumType__Group__6__Impl();
 
             state._fsp--;
 
@@ -11848,49 +11348,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumType__Group__6__Impl"
-    // InternalOseeDsl.g:4230:1: rule__XOseeEnumType__Group__6__Impl : ( ( rule__XOseeEnumType__EnumEntriesAssignment_6 )* ) ;
+    // InternalOseeDsl.g:4041:1: rule__XOseeEnumType__Group__6__Impl : ( '}' ) ;
     public final void rule__XOseeEnumType__Group__6__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4234:1: ( ( ( rule__XOseeEnumType__EnumEntriesAssignment_6 )* ) )
-            // InternalOseeDsl.g:4235:1: ( ( rule__XOseeEnumType__EnumEntriesAssignment_6 )* )
+            // InternalOseeDsl.g:4045:1: ( ( '}' ) )
+            // InternalOseeDsl.g:4046:1: ( '}' )
             {
-            // InternalOseeDsl.g:4235:1: ( ( rule__XOseeEnumType__EnumEntriesAssignment_6 )* )
-            // InternalOseeDsl.g:4236:1: ( rule__XOseeEnumType__EnumEntriesAssignment_6 )*
+            // InternalOseeDsl.g:4046:1: ( '}' )
+            // InternalOseeDsl.g:4047:1: '}'
             {
-             before(grammarAccess.getXOseeEnumTypeAccess().getEnumEntriesAssignment_6()); 
-            // InternalOseeDsl.g:4237:1: ( rule__XOseeEnumType__EnumEntriesAssignment_6 )*
-            loop36:
-            do {
-                int alt36=2;
-                int LA36_0 = input.LA(1);
-
-                if ( (LA36_0==72) ) {
-                    alt36=1;
-                }
-
-
-                switch (alt36) {
-            	case 1 :
-            	    // InternalOseeDsl.g:4237:2: rule__XOseeEnumType__EnumEntriesAssignment_6
-            	    {
-            	    pushFollow(FOLLOW_33);
-            	    rule__XOseeEnumType__EnumEntriesAssignment_6();
-
-            	    state._fsp--;
-
-
-            	    }
-            	    break;
-
-            	default :
-            	    break loop36;
-                }
-            } while (true);
-
-             after(grammarAccess.getXOseeEnumTypeAccess().getEnumEntriesAssignment_6()); 
+             before(grammarAccess.getXOseeEnumTypeAccess().getRightCurlyBracketKeyword_6()); 
+            match(input,55,FOLLOW_2); 
+             after(grammarAccess.getXOseeEnumTypeAccess().getRightCurlyBracketKeyword_6()); 
 
             }
 
@@ -11912,240 +11384,15 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
     // $ANTLR end "rule__XOseeEnumType__Group__6__Impl"
 
 
-    // $ANTLR start "rule__XOseeEnumType__Group__7"
-    // InternalOseeDsl.g:4247:1: rule__XOseeEnumType__Group__7 : rule__XOseeEnumType__Group__7__Impl ;
-    public final void rule__XOseeEnumType__Group__7() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:4251:1: ( rule__XOseeEnumType__Group__7__Impl )
-            // InternalOseeDsl.g:4252:2: rule__XOseeEnumType__Group__7__Impl
-            {
-            pushFollow(FOLLOW_2);
-            rule__XOseeEnumType__Group__7__Impl();
-
-            state._fsp--;
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XOseeEnumType__Group__7"
-
-
-    // $ANTLR start "rule__XOseeEnumType__Group__7__Impl"
-    // InternalOseeDsl.g:4258:1: rule__XOseeEnumType__Group__7__Impl : ( '}' ) ;
-    public final void rule__XOseeEnumType__Group__7__Impl() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:4262:1: ( ( '}' ) )
-            // InternalOseeDsl.g:4263:1: ( '}' )
-            {
-            // InternalOseeDsl.g:4263:1: ( '}' )
-            // InternalOseeDsl.g:4264:1: '}'
-            {
-             before(grammarAccess.getXOseeEnumTypeAccess().getRightCurlyBracketKeyword_7()); 
-            match(input,55,FOLLOW_2); 
-             after(grammarAccess.getXOseeEnumTypeAccess().getRightCurlyBracketKeyword_7()); 
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XOseeEnumType__Group__7__Impl"
-
-
-    // $ANTLR start "rule__XOseeEnumType__Group_3__0"
-    // InternalOseeDsl.g:4293:1: rule__XOseeEnumType__Group_3__0 : rule__XOseeEnumType__Group_3__0__Impl rule__XOseeEnumType__Group_3__1 ;
-    public final void rule__XOseeEnumType__Group_3__0() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:4297:1: ( rule__XOseeEnumType__Group_3__0__Impl rule__XOseeEnumType__Group_3__1 )
-            // InternalOseeDsl.g:4298:2: rule__XOseeEnumType__Group_3__0__Impl rule__XOseeEnumType__Group_3__1
-            {
-            pushFollow(FOLLOW_7);
-            rule__XOseeEnumType__Group_3__0__Impl();
-
-            state._fsp--;
-
-            pushFollow(FOLLOW_2);
-            rule__XOseeEnumType__Group_3__1();
-
-            state._fsp--;
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XOseeEnumType__Group_3__0"
-
-
-    // $ANTLR start "rule__XOseeEnumType__Group_3__0__Impl"
-    // InternalOseeDsl.g:4305:1: rule__XOseeEnumType__Group_3__0__Impl : ( 'guid' ) ;
-    public final void rule__XOseeEnumType__Group_3__0__Impl() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:4309:1: ( ( 'guid' ) )
-            // InternalOseeDsl.g:4310:1: ( 'guid' )
-            {
-            // InternalOseeDsl.g:4310:1: ( 'guid' )
-            // InternalOseeDsl.g:4311:1: 'guid'
-            {
-             before(grammarAccess.getXOseeEnumTypeAccess().getGuidKeyword_3_0()); 
-            match(input,58,FOLLOW_2); 
-             after(grammarAccess.getXOseeEnumTypeAccess().getGuidKeyword_3_0()); 
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XOseeEnumType__Group_3__0__Impl"
-
-
-    // $ANTLR start "rule__XOseeEnumType__Group_3__1"
-    // InternalOseeDsl.g:4324:1: rule__XOseeEnumType__Group_3__1 : rule__XOseeEnumType__Group_3__1__Impl ;
-    public final void rule__XOseeEnumType__Group_3__1() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:4328:1: ( rule__XOseeEnumType__Group_3__1__Impl )
-            // InternalOseeDsl.g:4329:2: rule__XOseeEnumType__Group_3__1__Impl
-            {
-            pushFollow(FOLLOW_2);
-            rule__XOseeEnumType__Group_3__1__Impl();
-
-            state._fsp--;
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XOseeEnumType__Group_3__1"
-
-
-    // $ANTLR start "rule__XOseeEnumType__Group_3__1__Impl"
-    // InternalOseeDsl.g:4335:1: rule__XOseeEnumType__Group_3__1__Impl : ( ( rule__XOseeEnumType__TypeGuidAssignment_3_1 ) ) ;
-    public final void rule__XOseeEnumType__Group_3__1__Impl() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:4339:1: ( ( ( rule__XOseeEnumType__TypeGuidAssignment_3_1 ) ) )
-            // InternalOseeDsl.g:4340:1: ( ( rule__XOseeEnumType__TypeGuidAssignment_3_1 ) )
-            {
-            // InternalOseeDsl.g:4340:1: ( ( rule__XOseeEnumType__TypeGuidAssignment_3_1 ) )
-            // InternalOseeDsl.g:4341:1: ( rule__XOseeEnumType__TypeGuidAssignment_3_1 )
-            {
-             before(grammarAccess.getXOseeEnumTypeAccess().getTypeGuidAssignment_3_1()); 
-            // InternalOseeDsl.g:4342:1: ( rule__XOseeEnumType__TypeGuidAssignment_3_1 )
-            // InternalOseeDsl.g:4342:2: rule__XOseeEnumType__TypeGuidAssignment_3_1
-            {
-            pushFollow(FOLLOW_2);
-            rule__XOseeEnumType__TypeGuidAssignment_3_1();
-
-            state._fsp--;
-
-
-            }
-
-             after(grammarAccess.getXOseeEnumTypeAccess().getTypeGuidAssignment_3_1()); 
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XOseeEnumType__Group_3__1__Impl"
-
-
     // $ANTLR start "rule__XOseeEnumEntry__Group__0"
-    // InternalOseeDsl.g:4356:1: rule__XOseeEnumEntry__Group__0 : rule__XOseeEnumEntry__Group__0__Impl rule__XOseeEnumEntry__Group__1 ;
+    // InternalOseeDsl.g:4074:1: rule__XOseeEnumEntry__Group__0 : rule__XOseeEnumEntry__Group__0__Impl rule__XOseeEnumEntry__Group__1 ;
     public final void rule__XOseeEnumEntry__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4360:1: ( rule__XOseeEnumEntry__Group__0__Impl rule__XOseeEnumEntry__Group__1 )
-            // InternalOseeDsl.g:4361:2: rule__XOseeEnumEntry__Group__0__Impl rule__XOseeEnumEntry__Group__1
+            // InternalOseeDsl.g:4078:1: ( rule__XOseeEnumEntry__Group__0__Impl rule__XOseeEnumEntry__Group__1 )
+            // InternalOseeDsl.g:4079:2: rule__XOseeEnumEntry__Group__0__Impl rule__XOseeEnumEntry__Group__1
             {
             pushFollow(FOLLOW_7);
             rule__XOseeEnumEntry__Group__0__Impl();
@@ -12176,20 +11423,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumEntry__Group__0__Impl"
-    // InternalOseeDsl.g:4368:1: rule__XOseeEnumEntry__Group__0__Impl : ( 'entry' ) ;
+    // InternalOseeDsl.g:4086:1: rule__XOseeEnumEntry__Group__0__Impl : ( 'entry' ) ;
     public final void rule__XOseeEnumEntry__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4372:1: ( ( 'entry' ) )
-            // InternalOseeDsl.g:4373:1: ( 'entry' )
+            // InternalOseeDsl.g:4090:1: ( ( 'entry' ) )
+            // InternalOseeDsl.g:4091:1: ( 'entry' )
             {
-            // InternalOseeDsl.g:4373:1: ( 'entry' )
-            // InternalOseeDsl.g:4374:1: 'entry'
+            // InternalOseeDsl.g:4091:1: ( 'entry' )
+            // InternalOseeDsl.g:4092:1: 'entry'
             {
              before(grammarAccess.getXOseeEnumEntryAccess().getEntryKeyword_0()); 
-            match(input,72,FOLLOW_2); 
+            match(input,71,FOLLOW_2); 
              after(grammarAccess.getXOseeEnumEntryAccess().getEntryKeyword_0()); 
 
             }
@@ -12213,14 +11460,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumEntry__Group__1"
-    // InternalOseeDsl.g:4387:1: rule__XOseeEnumEntry__Group__1 : rule__XOseeEnumEntry__Group__1__Impl rule__XOseeEnumEntry__Group__2 ;
+    // InternalOseeDsl.g:4105:1: rule__XOseeEnumEntry__Group__1 : rule__XOseeEnumEntry__Group__1__Impl rule__XOseeEnumEntry__Group__2 ;
     public final void rule__XOseeEnumEntry__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4391:1: ( rule__XOseeEnumEntry__Group__1__Impl rule__XOseeEnumEntry__Group__2 )
-            // InternalOseeDsl.g:4392:2: rule__XOseeEnumEntry__Group__1__Impl rule__XOseeEnumEntry__Group__2
+            // InternalOseeDsl.g:4109:1: ( rule__XOseeEnumEntry__Group__1__Impl rule__XOseeEnumEntry__Group__2 )
+            // InternalOseeDsl.g:4110:2: rule__XOseeEnumEntry__Group__1__Impl rule__XOseeEnumEntry__Group__2
             {
             pushFollow(FOLLOW_34);
             rule__XOseeEnumEntry__Group__1__Impl();
@@ -12251,21 +11498,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumEntry__Group__1__Impl"
-    // InternalOseeDsl.g:4399:1: rule__XOseeEnumEntry__Group__1__Impl : ( ( rule__XOseeEnumEntry__NameAssignment_1 ) ) ;
+    // InternalOseeDsl.g:4117:1: rule__XOseeEnumEntry__Group__1__Impl : ( ( rule__XOseeEnumEntry__NameAssignment_1 ) ) ;
     public final void rule__XOseeEnumEntry__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4403:1: ( ( ( rule__XOseeEnumEntry__NameAssignment_1 ) ) )
-            // InternalOseeDsl.g:4404:1: ( ( rule__XOseeEnumEntry__NameAssignment_1 ) )
+            // InternalOseeDsl.g:4121:1: ( ( ( rule__XOseeEnumEntry__NameAssignment_1 ) ) )
+            // InternalOseeDsl.g:4122:1: ( ( rule__XOseeEnumEntry__NameAssignment_1 ) )
             {
-            // InternalOseeDsl.g:4404:1: ( ( rule__XOseeEnumEntry__NameAssignment_1 ) )
-            // InternalOseeDsl.g:4405:1: ( rule__XOseeEnumEntry__NameAssignment_1 )
+            // InternalOseeDsl.g:4122:1: ( ( rule__XOseeEnumEntry__NameAssignment_1 ) )
+            // InternalOseeDsl.g:4123:1: ( rule__XOseeEnumEntry__NameAssignment_1 )
             {
              before(grammarAccess.getXOseeEnumEntryAccess().getNameAssignment_1()); 
-            // InternalOseeDsl.g:4406:1: ( rule__XOseeEnumEntry__NameAssignment_1 )
-            // InternalOseeDsl.g:4406:2: rule__XOseeEnumEntry__NameAssignment_1
+            // InternalOseeDsl.g:4124:1: ( rule__XOseeEnumEntry__NameAssignment_1 )
+            // InternalOseeDsl.g:4124:2: rule__XOseeEnumEntry__NameAssignment_1
             {
             pushFollow(FOLLOW_2);
             rule__XOseeEnumEntry__NameAssignment_1();
@@ -12298,14 +11545,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumEntry__Group__2"
-    // InternalOseeDsl.g:4416:1: rule__XOseeEnumEntry__Group__2 : rule__XOseeEnumEntry__Group__2__Impl rule__XOseeEnumEntry__Group__3 ;
+    // InternalOseeDsl.g:4134:1: rule__XOseeEnumEntry__Group__2 : rule__XOseeEnumEntry__Group__2__Impl rule__XOseeEnumEntry__Group__3 ;
     public final void rule__XOseeEnumEntry__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4420:1: ( rule__XOseeEnumEntry__Group__2__Impl rule__XOseeEnumEntry__Group__3 )
-            // InternalOseeDsl.g:4421:2: rule__XOseeEnumEntry__Group__2__Impl rule__XOseeEnumEntry__Group__3
+            // InternalOseeDsl.g:4138:1: ( rule__XOseeEnumEntry__Group__2__Impl rule__XOseeEnumEntry__Group__3 )
+            // InternalOseeDsl.g:4139:2: rule__XOseeEnumEntry__Group__2__Impl rule__XOseeEnumEntry__Group__3
             {
             pushFollow(FOLLOW_34);
             rule__XOseeEnumEntry__Group__2__Impl();
@@ -12336,29 +11583,29 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumEntry__Group__2__Impl"
-    // InternalOseeDsl.g:4428:1: rule__XOseeEnumEntry__Group__2__Impl : ( ( rule__XOseeEnumEntry__OrdinalAssignment_2 )? ) ;
+    // InternalOseeDsl.g:4146:1: rule__XOseeEnumEntry__Group__2__Impl : ( ( rule__XOseeEnumEntry__OrdinalAssignment_2 )? ) ;
     public final void rule__XOseeEnumEntry__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4432:1: ( ( ( rule__XOseeEnumEntry__OrdinalAssignment_2 )? ) )
-            // InternalOseeDsl.g:4433:1: ( ( rule__XOseeEnumEntry__OrdinalAssignment_2 )? )
+            // InternalOseeDsl.g:4150:1: ( ( ( rule__XOseeEnumEntry__OrdinalAssignment_2 )? ) )
+            // InternalOseeDsl.g:4151:1: ( ( rule__XOseeEnumEntry__OrdinalAssignment_2 )? )
             {
-            // InternalOseeDsl.g:4433:1: ( ( rule__XOseeEnumEntry__OrdinalAssignment_2 )? )
-            // InternalOseeDsl.g:4434:1: ( rule__XOseeEnumEntry__OrdinalAssignment_2 )?
+            // InternalOseeDsl.g:4151:1: ( ( rule__XOseeEnumEntry__OrdinalAssignment_2 )? )
+            // InternalOseeDsl.g:4152:1: ( rule__XOseeEnumEntry__OrdinalAssignment_2 )?
             {
              before(grammarAccess.getXOseeEnumEntryAccess().getOrdinalAssignment_2()); 
-            // InternalOseeDsl.g:4435:1: ( rule__XOseeEnumEntry__OrdinalAssignment_2 )?
-            int alt37=2;
-            int LA37_0 = input.LA(1);
+            // InternalOseeDsl.g:4153:1: ( rule__XOseeEnumEntry__OrdinalAssignment_2 )?
+            int alt34=2;
+            int LA34_0 = input.LA(1);
 
-            if ( (LA37_0==RULE_WHOLE_NUM_STR) ) {
-                alt37=1;
+            if ( (LA34_0==RULE_WHOLE_NUM_STR) ) {
+                alt34=1;
             }
-            switch (alt37) {
+            switch (alt34) {
                 case 1 :
-                    // InternalOseeDsl.g:4435:2: rule__XOseeEnumEntry__OrdinalAssignment_2
+                    // InternalOseeDsl.g:4153:2: rule__XOseeEnumEntry__OrdinalAssignment_2
                     {
                     pushFollow(FOLLOW_2);
                     rule__XOseeEnumEntry__OrdinalAssignment_2();
@@ -12394,14 +11641,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumEntry__Group__3"
-    // InternalOseeDsl.g:4445:1: rule__XOseeEnumEntry__Group__3 : rule__XOseeEnumEntry__Group__3__Impl rule__XOseeEnumEntry__Group__4 ;
+    // InternalOseeDsl.g:4163:1: rule__XOseeEnumEntry__Group__3 : rule__XOseeEnumEntry__Group__3__Impl rule__XOseeEnumEntry__Group__4 ;
     public final void rule__XOseeEnumEntry__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4449:1: ( rule__XOseeEnumEntry__Group__3__Impl rule__XOseeEnumEntry__Group__4 )
-            // InternalOseeDsl.g:4450:2: rule__XOseeEnumEntry__Group__3__Impl rule__XOseeEnumEntry__Group__4
+            // InternalOseeDsl.g:4167:1: ( rule__XOseeEnumEntry__Group__3__Impl rule__XOseeEnumEntry__Group__4 )
+            // InternalOseeDsl.g:4168:2: rule__XOseeEnumEntry__Group__3__Impl rule__XOseeEnumEntry__Group__4
             {
             pushFollow(FOLLOW_34);
             rule__XOseeEnumEntry__Group__3__Impl();
@@ -12432,29 +11679,29 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumEntry__Group__3__Impl"
-    // InternalOseeDsl.g:4457:1: rule__XOseeEnumEntry__Group__3__Impl : ( ( rule__XOseeEnumEntry__Group_3__0 )? ) ;
+    // InternalOseeDsl.g:4175:1: rule__XOseeEnumEntry__Group__3__Impl : ( ( rule__XOseeEnumEntry__Group_3__0 )? ) ;
     public final void rule__XOseeEnumEntry__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4461:1: ( ( ( rule__XOseeEnumEntry__Group_3__0 )? ) )
-            // InternalOseeDsl.g:4462:1: ( ( rule__XOseeEnumEntry__Group_3__0 )? )
+            // InternalOseeDsl.g:4179:1: ( ( ( rule__XOseeEnumEntry__Group_3__0 )? ) )
+            // InternalOseeDsl.g:4180:1: ( ( rule__XOseeEnumEntry__Group_3__0 )? )
             {
-            // InternalOseeDsl.g:4462:1: ( ( rule__XOseeEnumEntry__Group_3__0 )? )
-            // InternalOseeDsl.g:4463:1: ( rule__XOseeEnumEntry__Group_3__0 )?
+            // InternalOseeDsl.g:4180:1: ( ( rule__XOseeEnumEntry__Group_3__0 )? )
+            // InternalOseeDsl.g:4181:1: ( rule__XOseeEnumEntry__Group_3__0 )?
             {
              before(grammarAccess.getXOseeEnumEntryAccess().getGroup_3()); 
-            // InternalOseeDsl.g:4464:1: ( rule__XOseeEnumEntry__Group_3__0 )?
-            int alt38=2;
-            int LA38_0 = input.LA(1);
+            // InternalOseeDsl.g:4182:1: ( rule__XOseeEnumEntry__Group_3__0 )?
+            int alt35=2;
+            int LA35_0 = input.LA(1);
 
-            if ( (LA38_0==73) ) {
-                alt38=1;
+            if ( (LA35_0==72) ) {
+                alt35=1;
             }
-            switch (alt38) {
+            switch (alt35) {
                 case 1 :
-                    // InternalOseeDsl.g:4464:2: rule__XOseeEnumEntry__Group_3__0
+                    // InternalOseeDsl.g:4182:2: rule__XOseeEnumEntry__Group_3__0
                     {
                     pushFollow(FOLLOW_2);
                     rule__XOseeEnumEntry__Group_3__0();
@@ -12490,14 +11737,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumEntry__Group__4"
-    // InternalOseeDsl.g:4474:1: rule__XOseeEnumEntry__Group__4 : rule__XOseeEnumEntry__Group__4__Impl ;
+    // InternalOseeDsl.g:4192:1: rule__XOseeEnumEntry__Group__4 : rule__XOseeEnumEntry__Group__4__Impl ;
     public final void rule__XOseeEnumEntry__Group__4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4478:1: ( rule__XOseeEnumEntry__Group__4__Impl )
-            // InternalOseeDsl.g:4479:2: rule__XOseeEnumEntry__Group__4__Impl
+            // InternalOseeDsl.g:4196:1: ( rule__XOseeEnumEntry__Group__4__Impl )
+            // InternalOseeDsl.g:4197:2: rule__XOseeEnumEntry__Group__4__Impl
             {
             pushFollow(FOLLOW_2);
             rule__XOseeEnumEntry__Group__4__Impl();
@@ -12523,29 +11770,29 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumEntry__Group__4__Impl"
-    // InternalOseeDsl.g:4485:1: rule__XOseeEnumEntry__Group__4__Impl : ( ( rule__XOseeEnumEntry__Group_4__0 )? ) ;
+    // InternalOseeDsl.g:4203:1: rule__XOseeEnumEntry__Group__4__Impl : ( ( rule__XOseeEnumEntry__Group_4__0 )? ) ;
     public final void rule__XOseeEnumEntry__Group__4__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4489:1: ( ( ( rule__XOseeEnumEntry__Group_4__0 )? ) )
-            // InternalOseeDsl.g:4490:1: ( ( rule__XOseeEnumEntry__Group_4__0 )? )
+            // InternalOseeDsl.g:4207:1: ( ( ( rule__XOseeEnumEntry__Group_4__0 )? ) )
+            // InternalOseeDsl.g:4208:1: ( ( rule__XOseeEnumEntry__Group_4__0 )? )
             {
-            // InternalOseeDsl.g:4490:1: ( ( rule__XOseeEnumEntry__Group_4__0 )? )
-            // InternalOseeDsl.g:4491:1: ( rule__XOseeEnumEntry__Group_4__0 )?
+            // InternalOseeDsl.g:4208:1: ( ( rule__XOseeEnumEntry__Group_4__0 )? )
+            // InternalOseeDsl.g:4209:1: ( rule__XOseeEnumEntry__Group_4__0 )?
             {
              before(grammarAccess.getXOseeEnumEntryAccess().getGroup_4()); 
-            // InternalOseeDsl.g:4492:1: ( rule__XOseeEnumEntry__Group_4__0 )?
-            int alt39=2;
-            int LA39_0 = input.LA(1);
+            // InternalOseeDsl.g:4210:1: ( rule__XOseeEnumEntry__Group_4__0 )?
+            int alt36=2;
+            int LA36_0 = input.LA(1);
 
-            if ( (LA39_0==67) ) {
-                alt39=1;
+            if ( (LA36_0==66) ) {
+                alt36=1;
             }
-            switch (alt39) {
+            switch (alt36) {
                 case 1 :
-                    // InternalOseeDsl.g:4492:2: rule__XOseeEnumEntry__Group_4__0
+                    // InternalOseeDsl.g:4210:2: rule__XOseeEnumEntry__Group_4__0
                     {
                     pushFollow(FOLLOW_2);
                     rule__XOseeEnumEntry__Group_4__0();
@@ -12581,14 +11828,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumEntry__Group_3__0"
-    // InternalOseeDsl.g:4512:1: rule__XOseeEnumEntry__Group_3__0 : rule__XOseeEnumEntry__Group_3__0__Impl rule__XOseeEnumEntry__Group_3__1 ;
+    // InternalOseeDsl.g:4230:1: rule__XOseeEnumEntry__Group_3__0 : rule__XOseeEnumEntry__Group_3__0__Impl rule__XOseeEnumEntry__Group_3__1 ;
     public final void rule__XOseeEnumEntry__Group_3__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4516:1: ( rule__XOseeEnumEntry__Group_3__0__Impl rule__XOseeEnumEntry__Group_3__1 )
-            // InternalOseeDsl.g:4517:2: rule__XOseeEnumEntry__Group_3__0__Impl rule__XOseeEnumEntry__Group_3__1
+            // InternalOseeDsl.g:4234:1: ( rule__XOseeEnumEntry__Group_3__0__Impl rule__XOseeEnumEntry__Group_3__1 )
+            // InternalOseeDsl.g:4235:2: rule__XOseeEnumEntry__Group_3__0__Impl rule__XOseeEnumEntry__Group_3__1
             {
             pushFollow(FOLLOW_7);
             rule__XOseeEnumEntry__Group_3__0__Impl();
@@ -12619,20 +11866,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumEntry__Group_3__0__Impl"
-    // InternalOseeDsl.g:4524:1: rule__XOseeEnumEntry__Group_3__0__Impl : ( 'entryGuid' ) ;
+    // InternalOseeDsl.g:4242:1: rule__XOseeEnumEntry__Group_3__0__Impl : ( 'entryGuid' ) ;
     public final void rule__XOseeEnumEntry__Group_3__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4528:1: ( ( 'entryGuid' ) )
-            // InternalOseeDsl.g:4529:1: ( 'entryGuid' )
+            // InternalOseeDsl.g:4246:1: ( ( 'entryGuid' ) )
+            // InternalOseeDsl.g:4247:1: ( 'entryGuid' )
             {
-            // InternalOseeDsl.g:4529:1: ( 'entryGuid' )
-            // InternalOseeDsl.g:4530:1: 'entryGuid'
+            // InternalOseeDsl.g:4247:1: ( 'entryGuid' )
+            // InternalOseeDsl.g:4248:1: 'entryGuid'
             {
              before(grammarAccess.getXOseeEnumEntryAccess().getEntryGuidKeyword_3_0()); 
-            match(input,73,FOLLOW_2); 
+            match(input,72,FOLLOW_2); 
              after(grammarAccess.getXOseeEnumEntryAccess().getEntryGuidKeyword_3_0()); 
 
             }
@@ -12656,14 +11903,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumEntry__Group_3__1"
-    // InternalOseeDsl.g:4543:1: rule__XOseeEnumEntry__Group_3__1 : rule__XOseeEnumEntry__Group_3__1__Impl ;
+    // InternalOseeDsl.g:4261:1: rule__XOseeEnumEntry__Group_3__1 : rule__XOseeEnumEntry__Group_3__1__Impl ;
     public final void rule__XOseeEnumEntry__Group_3__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4547:1: ( rule__XOseeEnumEntry__Group_3__1__Impl )
-            // InternalOseeDsl.g:4548:2: rule__XOseeEnumEntry__Group_3__1__Impl
+            // InternalOseeDsl.g:4265:1: ( rule__XOseeEnumEntry__Group_3__1__Impl )
+            // InternalOseeDsl.g:4266:2: rule__XOseeEnumEntry__Group_3__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__XOseeEnumEntry__Group_3__1__Impl();
@@ -12689,21 +11936,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumEntry__Group_3__1__Impl"
-    // InternalOseeDsl.g:4554:1: rule__XOseeEnumEntry__Group_3__1__Impl : ( ( rule__XOseeEnumEntry__EntryGuidAssignment_3_1 ) ) ;
+    // InternalOseeDsl.g:4272:1: rule__XOseeEnumEntry__Group_3__1__Impl : ( ( rule__XOseeEnumEntry__EntryGuidAssignment_3_1 ) ) ;
     public final void rule__XOseeEnumEntry__Group_3__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4558:1: ( ( ( rule__XOseeEnumEntry__EntryGuidAssignment_3_1 ) ) )
-            // InternalOseeDsl.g:4559:1: ( ( rule__XOseeEnumEntry__EntryGuidAssignment_3_1 ) )
+            // InternalOseeDsl.g:4276:1: ( ( ( rule__XOseeEnumEntry__EntryGuidAssignment_3_1 ) ) )
+            // InternalOseeDsl.g:4277:1: ( ( rule__XOseeEnumEntry__EntryGuidAssignment_3_1 ) )
             {
-            // InternalOseeDsl.g:4559:1: ( ( rule__XOseeEnumEntry__EntryGuidAssignment_3_1 ) )
-            // InternalOseeDsl.g:4560:1: ( rule__XOseeEnumEntry__EntryGuidAssignment_3_1 )
+            // InternalOseeDsl.g:4277:1: ( ( rule__XOseeEnumEntry__EntryGuidAssignment_3_1 ) )
+            // InternalOseeDsl.g:4278:1: ( rule__XOseeEnumEntry__EntryGuidAssignment_3_1 )
             {
              before(grammarAccess.getXOseeEnumEntryAccess().getEntryGuidAssignment_3_1()); 
-            // InternalOseeDsl.g:4561:1: ( rule__XOseeEnumEntry__EntryGuidAssignment_3_1 )
-            // InternalOseeDsl.g:4561:2: rule__XOseeEnumEntry__EntryGuidAssignment_3_1
+            // InternalOseeDsl.g:4279:1: ( rule__XOseeEnumEntry__EntryGuidAssignment_3_1 )
+            // InternalOseeDsl.g:4279:2: rule__XOseeEnumEntry__EntryGuidAssignment_3_1
             {
             pushFollow(FOLLOW_2);
             rule__XOseeEnumEntry__EntryGuidAssignment_3_1();
@@ -12736,14 +11983,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumEntry__Group_4__0"
-    // InternalOseeDsl.g:4575:1: rule__XOseeEnumEntry__Group_4__0 : rule__XOseeEnumEntry__Group_4__0__Impl rule__XOseeEnumEntry__Group_4__1 ;
+    // InternalOseeDsl.g:4293:1: rule__XOseeEnumEntry__Group_4__0 : rule__XOseeEnumEntry__Group_4__0__Impl rule__XOseeEnumEntry__Group_4__1 ;
     public final void rule__XOseeEnumEntry__Group_4__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4579:1: ( rule__XOseeEnumEntry__Group_4__0__Impl rule__XOseeEnumEntry__Group_4__1 )
-            // InternalOseeDsl.g:4580:2: rule__XOseeEnumEntry__Group_4__0__Impl rule__XOseeEnumEntry__Group_4__1
+            // InternalOseeDsl.g:4297:1: ( rule__XOseeEnumEntry__Group_4__0__Impl rule__XOseeEnumEntry__Group_4__1 )
+            // InternalOseeDsl.g:4298:2: rule__XOseeEnumEntry__Group_4__0__Impl rule__XOseeEnumEntry__Group_4__1
             {
             pushFollow(FOLLOW_7);
             rule__XOseeEnumEntry__Group_4__0__Impl();
@@ -12774,20 +12021,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumEntry__Group_4__0__Impl"
-    // InternalOseeDsl.g:4587:1: rule__XOseeEnumEntry__Group_4__0__Impl : ( 'description' ) ;
+    // InternalOseeDsl.g:4305:1: rule__XOseeEnumEntry__Group_4__0__Impl : ( 'description' ) ;
     public final void rule__XOseeEnumEntry__Group_4__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4591:1: ( ( 'description' ) )
-            // InternalOseeDsl.g:4592:1: ( 'description' )
+            // InternalOseeDsl.g:4309:1: ( ( 'description' ) )
+            // InternalOseeDsl.g:4310:1: ( 'description' )
             {
-            // InternalOseeDsl.g:4592:1: ( 'description' )
-            // InternalOseeDsl.g:4593:1: 'description'
+            // InternalOseeDsl.g:4310:1: ( 'description' )
+            // InternalOseeDsl.g:4311:1: 'description'
             {
              before(grammarAccess.getXOseeEnumEntryAccess().getDescriptionKeyword_4_0()); 
-            match(input,67,FOLLOW_2); 
+            match(input,66,FOLLOW_2); 
              after(grammarAccess.getXOseeEnumEntryAccess().getDescriptionKeyword_4_0()); 
 
             }
@@ -12811,14 +12058,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumEntry__Group_4__1"
-    // InternalOseeDsl.g:4606:1: rule__XOseeEnumEntry__Group_4__1 : rule__XOseeEnumEntry__Group_4__1__Impl ;
+    // InternalOseeDsl.g:4324:1: rule__XOseeEnumEntry__Group_4__1 : rule__XOseeEnumEntry__Group_4__1__Impl ;
     public final void rule__XOseeEnumEntry__Group_4__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4610:1: ( rule__XOseeEnumEntry__Group_4__1__Impl )
-            // InternalOseeDsl.g:4611:2: rule__XOseeEnumEntry__Group_4__1__Impl
+            // InternalOseeDsl.g:4328:1: ( rule__XOseeEnumEntry__Group_4__1__Impl )
+            // InternalOseeDsl.g:4329:2: rule__XOseeEnumEntry__Group_4__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__XOseeEnumEntry__Group_4__1__Impl();
@@ -12844,21 +12091,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumEntry__Group_4__1__Impl"
-    // InternalOseeDsl.g:4617:1: rule__XOseeEnumEntry__Group_4__1__Impl : ( ( rule__XOseeEnumEntry__DescriptionAssignment_4_1 ) ) ;
+    // InternalOseeDsl.g:4335:1: rule__XOseeEnumEntry__Group_4__1__Impl : ( ( rule__XOseeEnumEntry__DescriptionAssignment_4_1 ) ) ;
     public final void rule__XOseeEnumEntry__Group_4__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4621:1: ( ( ( rule__XOseeEnumEntry__DescriptionAssignment_4_1 ) ) )
-            // InternalOseeDsl.g:4622:1: ( ( rule__XOseeEnumEntry__DescriptionAssignment_4_1 ) )
+            // InternalOseeDsl.g:4339:1: ( ( ( rule__XOseeEnumEntry__DescriptionAssignment_4_1 ) ) )
+            // InternalOseeDsl.g:4340:1: ( ( rule__XOseeEnumEntry__DescriptionAssignment_4_1 ) )
             {
-            // InternalOseeDsl.g:4622:1: ( ( rule__XOseeEnumEntry__DescriptionAssignment_4_1 ) )
-            // InternalOseeDsl.g:4623:1: ( rule__XOseeEnumEntry__DescriptionAssignment_4_1 )
+            // InternalOseeDsl.g:4340:1: ( ( rule__XOseeEnumEntry__DescriptionAssignment_4_1 ) )
+            // InternalOseeDsl.g:4341:1: ( rule__XOseeEnumEntry__DescriptionAssignment_4_1 )
             {
              before(grammarAccess.getXOseeEnumEntryAccess().getDescriptionAssignment_4_1()); 
-            // InternalOseeDsl.g:4624:1: ( rule__XOseeEnumEntry__DescriptionAssignment_4_1 )
-            // InternalOseeDsl.g:4624:2: rule__XOseeEnumEntry__DescriptionAssignment_4_1
+            // InternalOseeDsl.g:4342:1: ( rule__XOseeEnumEntry__DescriptionAssignment_4_1 )
+            // InternalOseeDsl.g:4342:2: rule__XOseeEnumEntry__DescriptionAssignment_4_1
             {
             pushFollow(FOLLOW_2);
             rule__XOseeEnumEntry__DescriptionAssignment_4_1();
@@ -12891,14 +12138,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumOverride__Group__0"
-    // InternalOseeDsl.g:4638:1: rule__XOseeEnumOverride__Group__0 : rule__XOseeEnumOverride__Group__0__Impl rule__XOseeEnumOverride__Group__1 ;
+    // InternalOseeDsl.g:4356:1: rule__XOseeEnumOverride__Group__0 : rule__XOseeEnumOverride__Group__0__Impl rule__XOseeEnumOverride__Group__1 ;
     public final void rule__XOseeEnumOverride__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4642:1: ( rule__XOseeEnumOverride__Group__0__Impl rule__XOseeEnumOverride__Group__1 )
-            // InternalOseeDsl.g:4643:2: rule__XOseeEnumOverride__Group__0__Impl rule__XOseeEnumOverride__Group__1
+            // InternalOseeDsl.g:4360:1: ( rule__XOseeEnumOverride__Group__0__Impl rule__XOseeEnumOverride__Group__1 )
+            // InternalOseeDsl.g:4361:2: rule__XOseeEnumOverride__Group__0__Impl rule__XOseeEnumOverride__Group__1
             {
             pushFollow(FOLLOW_7);
             rule__XOseeEnumOverride__Group__0__Impl();
@@ -12929,20 +12176,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumOverride__Group__0__Impl"
-    // InternalOseeDsl.g:4650:1: rule__XOseeEnumOverride__Group__0__Impl : ( 'overrides enum' ) ;
+    // InternalOseeDsl.g:4368:1: rule__XOseeEnumOverride__Group__0__Impl : ( 'overrides enum' ) ;
     public final void rule__XOseeEnumOverride__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4654:1: ( ( 'overrides enum' ) )
-            // InternalOseeDsl.g:4655:1: ( 'overrides enum' )
+            // InternalOseeDsl.g:4372:1: ( ( 'overrides enum' ) )
+            // InternalOseeDsl.g:4373:1: ( 'overrides enum' )
             {
-            // InternalOseeDsl.g:4655:1: ( 'overrides enum' )
-            // InternalOseeDsl.g:4656:1: 'overrides enum'
+            // InternalOseeDsl.g:4373:1: ( 'overrides enum' )
+            // InternalOseeDsl.g:4374:1: 'overrides enum'
             {
              before(grammarAccess.getXOseeEnumOverrideAccess().getOverridesEnumKeyword_0()); 
-            match(input,74,FOLLOW_2); 
+            match(input,73,FOLLOW_2); 
              after(grammarAccess.getXOseeEnumOverrideAccess().getOverridesEnumKeyword_0()); 
 
             }
@@ -12966,14 +12213,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumOverride__Group__1"
-    // InternalOseeDsl.g:4669:1: rule__XOseeEnumOverride__Group__1 : rule__XOseeEnumOverride__Group__1__Impl rule__XOseeEnumOverride__Group__2 ;
+    // InternalOseeDsl.g:4387:1: rule__XOseeEnumOverride__Group__1 : rule__XOseeEnumOverride__Group__1__Impl rule__XOseeEnumOverride__Group__2 ;
     public final void rule__XOseeEnumOverride__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4673:1: ( rule__XOseeEnumOverride__Group__1__Impl rule__XOseeEnumOverride__Group__2 )
-            // InternalOseeDsl.g:4674:2: rule__XOseeEnumOverride__Group__1__Impl rule__XOseeEnumOverride__Group__2
+            // InternalOseeDsl.g:4391:1: ( rule__XOseeEnumOverride__Group__1__Impl rule__XOseeEnumOverride__Group__2 )
+            // InternalOseeDsl.g:4392:2: rule__XOseeEnumOverride__Group__1__Impl rule__XOseeEnumOverride__Group__2
             {
             pushFollow(FOLLOW_31);
             rule__XOseeEnumOverride__Group__1__Impl();
@@ -13004,21 +12251,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumOverride__Group__1__Impl"
-    // InternalOseeDsl.g:4681:1: rule__XOseeEnumOverride__Group__1__Impl : ( ( rule__XOseeEnumOverride__OverridenEnumTypeAssignment_1 ) ) ;
+    // InternalOseeDsl.g:4399:1: rule__XOseeEnumOverride__Group__1__Impl : ( ( rule__XOseeEnumOverride__OverridenEnumTypeAssignment_1 ) ) ;
     public final void rule__XOseeEnumOverride__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4685:1: ( ( ( rule__XOseeEnumOverride__OverridenEnumTypeAssignment_1 ) ) )
-            // InternalOseeDsl.g:4686:1: ( ( rule__XOseeEnumOverride__OverridenEnumTypeAssignment_1 ) )
+            // InternalOseeDsl.g:4403:1: ( ( ( rule__XOseeEnumOverride__OverridenEnumTypeAssignment_1 ) ) )
+            // InternalOseeDsl.g:4404:1: ( ( rule__XOseeEnumOverride__OverridenEnumTypeAssignment_1 ) )
             {
-            // InternalOseeDsl.g:4686:1: ( ( rule__XOseeEnumOverride__OverridenEnumTypeAssignment_1 ) )
-            // InternalOseeDsl.g:4687:1: ( rule__XOseeEnumOverride__OverridenEnumTypeAssignment_1 )
+            // InternalOseeDsl.g:4404:1: ( ( rule__XOseeEnumOverride__OverridenEnumTypeAssignment_1 ) )
+            // InternalOseeDsl.g:4405:1: ( rule__XOseeEnumOverride__OverridenEnumTypeAssignment_1 )
             {
              before(grammarAccess.getXOseeEnumOverrideAccess().getOverridenEnumTypeAssignment_1()); 
-            // InternalOseeDsl.g:4688:1: ( rule__XOseeEnumOverride__OverridenEnumTypeAssignment_1 )
-            // InternalOseeDsl.g:4688:2: rule__XOseeEnumOverride__OverridenEnumTypeAssignment_1
+            // InternalOseeDsl.g:4406:1: ( rule__XOseeEnumOverride__OverridenEnumTypeAssignment_1 )
+            // InternalOseeDsl.g:4406:2: rule__XOseeEnumOverride__OverridenEnumTypeAssignment_1
             {
             pushFollow(FOLLOW_2);
             rule__XOseeEnumOverride__OverridenEnumTypeAssignment_1();
@@ -13051,14 +12298,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumOverride__Group__2"
-    // InternalOseeDsl.g:4698:1: rule__XOseeEnumOverride__Group__2 : rule__XOseeEnumOverride__Group__2__Impl rule__XOseeEnumOverride__Group__3 ;
+    // InternalOseeDsl.g:4416:1: rule__XOseeEnumOverride__Group__2 : rule__XOseeEnumOverride__Group__2__Impl rule__XOseeEnumOverride__Group__3 ;
     public final void rule__XOseeEnumOverride__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4702:1: ( rule__XOseeEnumOverride__Group__2__Impl rule__XOseeEnumOverride__Group__3 )
-            // InternalOseeDsl.g:4703:2: rule__XOseeEnumOverride__Group__2__Impl rule__XOseeEnumOverride__Group__3
+            // InternalOseeDsl.g:4420:1: ( rule__XOseeEnumOverride__Group__2__Impl rule__XOseeEnumOverride__Group__3 )
+            // InternalOseeDsl.g:4421:2: rule__XOseeEnumOverride__Group__2__Impl rule__XOseeEnumOverride__Group__3
             {
             pushFollow(FOLLOW_35);
             rule__XOseeEnumOverride__Group__2__Impl();
@@ -13089,17 +12336,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumOverride__Group__2__Impl"
-    // InternalOseeDsl.g:4710:1: rule__XOseeEnumOverride__Group__2__Impl : ( '{' ) ;
+    // InternalOseeDsl.g:4428:1: rule__XOseeEnumOverride__Group__2__Impl : ( '{' ) ;
     public final void rule__XOseeEnumOverride__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4714:1: ( ( '{' ) )
-            // InternalOseeDsl.g:4715:1: ( '{' )
+            // InternalOseeDsl.g:4432:1: ( ( '{' ) )
+            // InternalOseeDsl.g:4433:1: ( '{' )
             {
-            // InternalOseeDsl.g:4715:1: ( '{' )
-            // InternalOseeDsl.g:4716:1: '{'
+            // InternalOseeDsl.g:4433:1: ( '{' )
+            // InternalOseeDsl.g:4434:1: '{'
             {
              before(grammarAccess.getXOseeEnumOverrideAccess().getLeftCurlyBracketKeyword_2()); 
             match(input,53,FOLLOW_2); 
@@ -13126,14 +12373,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumOverride__Group__3"
-    // InternalOseeDsl.g:4729:1: rule__XOseeEnumOverride__Group__3 : rule__XOseeEnumOverride__Group__3__Impl rule__XOseeEnumOverride__Group__4 ;
+    // InternalOseeDsl.g:4447:1: rule__XOseeEnumOverride__Group__3 : rule__XOseeEnumOverride__Group__3__Impl rule__XOseeEnumOverride__Group__4 ;
     public final void rule__XOseeEnumOverride__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4733:1: ( rule__XOseeEnumOverride__Group__3__Impl rule__XOseeEnumOverride__Group__4 )
-            // InternalOseeDsl.g:4734:2: rule__XOseeEnumOverride__Group__3__Impl rule__XOseeEnumOverride__Group__4
+            // InternalOseeDsl.g:4451:1: ( rule__XOseeEnumOverride__Group__3__Impl rule__XOseeEnumOverride__Group__4 )
+            // InternalOseeDsl.g:4452:2: rule__XOseeEnumOverride__Group__3__Impl rule__XOseeEnumOverride__Group__4
             {
             pushFollow(FOLLOW_35);
             rule__XOseeEnumOverride__Group__3__Impl();
@@ -13164,29 +12411,29 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumOverride__Group__3__Impl"
-    // InternalOseeDsl.g:4741:1: rule__XOseeEnumOverride__Group__3__Impl : ( ( rule__XOseeEnumOverride__InheritAllAssignment_3 )? ) ;
+    // InternalOseeDsl.g:4459:1: rule__XOseeEnumOverride__Group__3__Impl : ( ( rule__XOseeEnumOverride__InheritAllAssignment_3 )? ) ;
     public final void rule__XOseeEnumOverride__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4745:1: ( ( ( rule__XOseeEnumOverride__InheritAllAssignment_3 )? ) )
-            // InternalOseeDsl.g:4746:1: ( ( rule__XOseeEnumOverride__InheritAllAssignment_3 )? )
+            // InternalOseeDsl.g:4463:1: ( ( ( rule__XOseeEnumOverride__InheritAllAssignment_3 )? ) )
+            // InternalOseeDsl.g:4464:1: ( ( rule__XOseeEnumOverride__InheritAllAssignment_3 )? )
             {
-            // InternalOseeDsl.g:4746:1: ( ( rule__XOseeEnumOverride__InheritAllAssignment_3 )? )
-            // InternalOseeDsl.g:4747:1: ( rule__XOseeEnumOverride__InheritAllAssignment_3 )?
+            // InternalOseeDsl.g:4464:1: ( ( rule__XOseeEnumOverride__InheritAllAssignment_3 )? )
+            // InternalOseeDsl.g:4465:1: ( rule__XOseeEnumOverride__InheritAllAssignment_3 )?
             {
              before(grammarAccess.getXOseeEnumOverrideAccess().getInheritAllAssignment_3()); 
-            // InternalOseeDsl.g:4748:1: ( rule__XOseeEnumOverride__InheritAllAssignment_3 )?
-            int alt40=2;
-            int LA40_0 = input.LA(1);
+            // InternalOseeDsl.g:4466:1: ( rule__XOseeEnumOverride__InheritAllAssignment_3 )?
+            int alt37=2;
+            int LA37_0 = input.LA(1);
 
-            if ( (LA40_0==98) ) {
-                alt40=1;
+            if ( (LA37_0==98) ) {
+                alt37=1;
             }
-            switch (alt40) {
+            switch (alt37) {
                 case 1 :
-                    // InternalOseeDsl.g:4748:2: rule__XOseeEnumOverride__InheritAllAssignment_3
+                    // InternalOseeDsl.g:4466:2: rule__XOseeEnumOverride__InheritAllAssignment_3
                     {
                     pushFollow(FOLLOW_2);
                     rule__XOseeEnumOverride__InheritAllAssignment_3();
@@ -13222,14 +12469,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumOverride__Group__4"
-    // InternalOseeDsl.g:4758:1: rule__XOseeEnumOverride__Group__4 : rule__XOseeEnumOverride__Group__4__Impl rule__XOseeEnumOverride__Group__5 ;
+    // InternalOseeDsl.g:4476:1: rule__XOseeEnumOverride__Group__4 : rule__XOseeEnumOverride__Group__4__Impl rule__XOseeEnumOverride__Group__5 ;
     public final void rule__XOseeEnumOverride__Group__4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4762:1: ( rule__XOseeEnumOverride__Group__4__Impl rule__XOseeEnumOverride__Group__5 )
-            // InternalOseeDsl.g:4763:2: rule__XOseeEnumOverride__Group__4__Impl rule__XOseeEnumOverride__Group__5
+            // InternalOseeDsl.g:4480:1: ( rule__XOseeEnumOverride__Group__4__Impl rule__XOseeEnumOverride__Group__5 )
+            // InternalOseeDsl.g:4481:2: rule__XOseeEnumOverride__Group__4__Impl rule__XOseeEnumOverride__Group__5
             {
             pushFollow(FOLLOW_35);
             rule__XOseeEnumOverride__Group__4__Impl();
@@ -13260,33 +12507,33 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumOverride__Group__4__Impl"
-    // InternalOseeDsl.g:4770:1: rule__XOseeEnumOverride__Group__4__Impl : ( ( rule__XOseeEnumOverride__OverrideOptionsAssignment_4 )* ) ;
+    // InternalOseeDsl.g:4488:1: rule__XOseeEnumOverride__Group__4__Impl : ( ( rule__XOseeEnumOverride__OverrideOptionsAssignment_4 )* ) ;
     public final void rule__XOseeEnumOverride__Group__4__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4774:1: ( ( ( rule__XOseeEnumOverride__OverrideOptionsAssignment_4 )* ) )
-            // InternalOseeDsl.g:4775:1: ( ( rule__XOseeEnumOverride__OverrideOptionsAssignment_4 )* )
+            // InternalOseeDsl.g:4492:1: ( ( ( rule__XOseeEnumOverride__OverrideOptionsAssignment_4 )* ) )
+            // InternalOseeDsl.g:4493:1: ( ( rule__XOseeEnumOverride__OverrideOptionsAssignment_4 )* )
             {
-            // InternalOseeDsl.g:4775:1: ( ( rule__XOseeEnumOverride__OverrideOptionsAssignment_4 )* )
-            // InternalOseeDsl.g:4776:1: ( rule__XOseeEnumOverride__OverrideOptionsAssignment_4 )*
+            // InternalOseeDsl.g:4493:1: ( ( rule__XOseeEnumOverride__OverrideOptionsAssignment_4 )* )
+            // InternalOseeDsl.g:4494:1: ( rule__XOseeEnumOverride__OverrideOptionsAssignment_4 )*
             {
              before(grammarAccess.getXOseeEnumOverrideAccess().getOverrideOptionsAssignment_4()); 
-            // InternalOseeDsl.g:4777:1: ( rule__XOseeEnumOverride__OverrideOptionsAssignment_4 )*
-            loop41:
+            // InternalOseeDsl.g:4495:1: ( rule__XOseeEnumOverride__OverrideOptionsAssignment_4 )*
+            loop38:
             do {
-                int alt41=2;
-                int LA41_0 = input.LA(1);
+                int alt38=2;
+                int LA38_0 = input.LA(1);
 
-                if ( ((LA41_0>=75 && LA41_0<=76)) ) {
-                    alt41=1;
+                if ( ((LA38_0>=74 && LA38_0<=75)) ) {
+                    alt38=1;
                 }
 
 
-                switch (alt41) {
+                switch (alt38) {
             	case 1 :
-            	    // InternalOseeDsl.g:4777:2: rule__XOseeEnumOverride__OverrideOptionsAssignment_4
+            	    // InternalOseeDsl.g:4495:2: rule__XOseeEnumOverride__OverrideOptionsAssignment_4
             	    {
             	    pushFollow(FOLLOW_36);
             	    rule__XOseeEnumOverride__OverrideOptionsAssignment_4();
@@ -13298,7 +12545,7 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
             	    break;
 
             	default :
-            	    break loop41;
+            	    break loop38;
                 }
             } while (true);
 
@@ -13325,14 +12572,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumOverride__Group__5"
-    // InternalOseeDsl.g:4787:1: rule__XOseeEnumOverride__Group__5 : rule__XOseeEnumOverride__Group__5__Impl ;
+    // InternalOseeDsl.g:4505:1: rule__XOseeEnumOverride__Group__5 : rule__XOseeEnumOverride__Group__5__Impl ;
     public final void rule__XOseeEnumOverride__Group__5() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4791:1: ( rule__XOseeEnumOverride__Group__5__Impl )
-            // InternalOseeDsl.g:4792:2: rule__XOseeEnumOverride__Group__5__Impl
+            // InternalOseeDsl.g:4509:1: ( rule__XOseeEnumOverride__Group__5__Impl )
+            // InternalOseeDsl.g:4510:2: rule__XOseeEnumOverride__Group__5__Impl
             {
             pushFollow(FOLLOW_2);
             rule__XOseeEnumOverride__Group__5__Impl();
@@ -13358,17 +12605,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumOverride__Group__5__Impl"
-    // InternalOseeDsl.g:4798:1: rule__XOseeEnumOverride__Group__5__Impl : ( '}' ) ;
+    // InternalOseeDsl.g:4516:1: rule__XOseeEnumOverride__Group__5__Impl : ( '}' ) ;
     public final void rule__XOseeEnumOverride__Group__5__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4802:1: ( ( '}' ) )
-            // InternalOseeDsl.g:4803:1: ( '}' )
+            // InternalOseeDsl.g:4520:1: ( ( '}' ) )
+            // InternalOseeDsl.g:4521:1: ( '}' )
             {
-            // InternalOseeDsl.g:4803:1: ( '}' )
-            // InternalOseeDsl.g:4804:1: '}'
+            // InternalOseeDsl.g:4521:1: ( '}' )
+            // InternalOseeDsl.g:4522:1: '}'
             {
              before(grammarAccess.getXOseeEnumOverrideAccess().getRightCurlyBracketKeyword_5()); 
             match(input,55,FOLLOW_2); 
@@ -13395,14 +12642,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddEnum__Group__0"
-    // InternalOseeDsl.g:4829:1: rule__AddEnum__Group__0 : rule__AddEnum__Group__0__Impl rule__AddEnum__Group__1 ;
+    // InternalOseeDsl.g:4547:1: rule__AddEnum__Group__0 : rule__AddEnum__Group__0__Impl rule__AddEnum__Group__1 ;
     public final void rule__AddEnum__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4833:1: ( rule__AddEnum__Group__0__Impl rule__AddEnum__Group__1 )
-            // InternalOseeDsl.g:4834:2: rule__AddEnum__Group__0__Impl rule__AddEnum__Group__1
+            // InternalOseeDsl.g:4551:1: ( rule__AddEnum__Group__0__Impl rule__AddEnum__Group__1 )
+            // InternalOseeDsl.g:4552:2: rule__AddEnum__Group__0__Impl rule__AddEnum__Group__1
             {
             pushFollow(FOLLOW_7);
             rule__AddEnum__Group__0__Impl();
@@ -13433,20 +12680,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddEnum__Group__0__Impl"
-    // InternalOseeDsl.g:4841:1: rule__AddEnum__Group__0__Impl : ( 'add' ) ;
+    // InternalOseeDsl.g:4559:1: rule__AddEnum__Group__0__Impl : ( 'add' ) ;
     public final void rule__AddEnum__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4845:1: ( ( 'add' ) )
-            // InternalOseeDsl.g:4846:1: ( 'add' )
+            // InternalOseeDsl.g:4563:1: ( ( 'add' ) )
+            // InternalOseeDsl.g:4564:1: ( 'add' )
             {
-            // InternalOseeDsl.g:4846:1: ( 'add' )
-            // InternalOseeDsl.g:4847:1: 'add'
+            // InternalOseeDsl.g:4564:1: ( 'add' )
+            // InternalOseeDsl.g:4565:1: 'add'
             {
              before(grammarAccess.getAddEnumAccess().getAddKeyword_0()); 
-            match(input,75,FOLLOW_2); 
+            match(input,74,FOLLOW_2); 
              after(grammarAccess.getAddEnumAccess().getAddKeyword_0()); 
 
             }
@@ -13470,14 +12717,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddEnum__Group__1"
-    // InternalOseeDsl.g:4860:1: rule__AddEnum__Group__1 : rule__AddEnum__Group__1__Impl rule__AddEnum__Group__2 ;
+    // InternalOseeDsl.g:4578:1: rule__AddEnum__Group__1 : rule__AddEnum__Group__1__Impl rule__AddEnum__Group__2 ;
     public final void rule__AddEnum__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4864:1: ( rule__AddEnum__Group__1__Impl rule__AddEnum__Group__2 )
-            // InternalOseeDsl.g:4865:2: rule__AddEnum__Group__1__Impl rule__AddEnum__Group__2
+            // InternalOseeDsl.g:4582:1: ( rule__AddEnum__Group__1__Impl rule__AddEnum__Group__2 )
+            // InternalOseeDsl.g:4583:2: rule__AddEnum__Group__1__Impl rule__AddEnum__Group__2
             {
             pushFollow(FOLLOW_34);
             rule__AddEnum__Group__1__Impl();
@@ -13508,21 +12755,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddEnum__Group__1__Impl"
-    // InternalOseeDsl.g:4872:1: rule__AddEnum__Group__1__Impl : ( ( rule__AddEnum__EnumEntryAssignment_1 ) ) ;
+    // InternalOseeDsl.g:4590:1: rule__AddEnum__Group__1__Impl : ( ( rule__AddEnum__EnumEntryAssignment_1 ) ) ;
     public final void rule__AddEnum__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4876:1: ( ( ( rule__AddEnum__EnumEntryAssignment_1 ) ) )
-            // InternalOseeDsl.g:4877:1: ( ( rule__AddEnum__EnumEntryAssignment_1 ) )
+            // InternalOseeDsl.g:4594:1: ( ( ( rule__AddEnum__EnumEntryAssignment_1 ) ) )
+            // InternalOseeDsl.g:4595:1: ( ( rule__AddEnum__EnumEntryAssignment_1 ) )
             {
-            // InternalOseeDsl.g:4877:1: ( ( rule__AddEnum__EnumEntryAssignment_1 ) )
-            // InternalOseeDsl.g:4878:1: ( rule__AddEnum__EnumEntryAssignment_1 )
+            // InternalOseeDsl.g:4595:1: ( ( rule__AddEnum__EnumEntryAssignment_1 ) )
+            // InternalOseeDsl.g:4596:1: ( rule__AddEnum__EnumEntryAssignment_1 )
             {
              before(grammarAccess.getAddEnumAccess().getEnumEntryAssignment_1()); 
-            // InternalOseeDsl.g:4879:1: ( rule__AddEnum__EnumEntryAssignment_1 )
-            // InternalOseeDsl.g:4879:2: rule__AddEnum__EnumEntryAssignment_1
+            // InternalOseeDsl.g:4597:1: ( rule__AddEnum__EnumEntryAssignment_1 )
+            // InternalOseeDsl.g:4597:2: rule__AddEnum__EnumEntryAssignment_1
             {
             pushFollow(FOLLOW_2);
             rule__AddEnum__EnumEntryAssignment_1();
@@ -13555,14 +12802,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddEnum__Group__2"
-    // InternalOseeDsl.g:4889:1: rule__AddEnum__Group__2 : rule__AddEnum__Group__2__Impl rule__AddEnum__Group__3 ;
+    // InternalOseeDsl.g:4607:1: rule__AddEnum__Group__2 : rule__AddEnum__Group__2__Impl rule__AddEnum__Group__3 ;
     public final void rule__AddEnum__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4893:1: ( rule__AddEnum__Group__2__Impl rule__AddEnum__Group__3 )
-            // InternalOseeDsl.g:4894:2: rule__AddEnum__Group__2__Impl rule__AddEnum__Group__3
+            // InternalOseeDsl.g:4611:1: ( rule__AddEnum__Group__2__Impl rule__AddEnum__Group__3 )
+            // InternalOseeDsl.g:4612:2: rule__AddEnum__Group__2__Impl rule__AddEnum__Group__3
             {
             pushFollow(FOLLOW_34);
             rule__AddEnum__Group__2__Impl();
@@ -13593,29 +12840,29 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddEnum__Group__2__Impl"
-    // InternalOseeDsl.g:4901:1: rule__AddEnum__Group__2__Impl : ( ( rule__AddEnum__OrdinalAssignment_2 )? ) ;
+    // InternalOseeDsl.g:4619:1: rule__AddEnum__Group__2__Impl : ( ( rule__AddEnum__OrdinalAssignment_2 )? ) ;
     public final void rule__AddEnum__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4905:1: ( ( ( rule__AddEnum__OrdinalAssignment_2 )? ) )
-            // InternalOseeDsl.g:4906:1: ( ( rule__AddEnum__OrdinalAssignment_2 )? )
+            // InternalOseeDsl.g:4623:1: ( ( ( rule__AddEnum__OrdinalAssignment_2 )? ) )
+            // InternalOseeDsl.g:4624:1: ( ( rule__AddEnum__OrdinalAssignment_2 )? )
             {
-            // InternalOseeDsl.g:4906:1: ( ( rule__AddEnum__OrdinalAssignment_2 )? )
-            // InternalOseeDsl.g:4907:1: ( rule__AddEnum__OrdinalAssignment_2 )?
+            // InternalOseeDsl.g:4624:1: ( ( rule__AddEnum__OrdinalAssignment_2 )? )
+            // InternalOseeDsl.g:4625:1: ( rule__AddEnum__OrdinalAssignment_2 )?
             {
              before(grammarAccess.getAddEnumAccess().getOrdinalAssignment_2()); 
-            // InternalOseeDsl.g:4908:1: ( rule__AddEnum__OrdinalAssignment_2 )?
-            int alt42=2;
-            int LA42_0 = input.LA(1);
+            // InternalOseeDsl.g:4626:1: ( rule__AddEnum__OrdinalAssignment_2 )?
+            int alt39=2;
+            int LA39_0 = input.LA(1);
 
-            if ( (LA42_0==RULE_WHOLE_NUM_STR) ) {
-                alt42=1;
+            if ( (LA39_0==RULE_WHOLE_NUM_STR) ) {
+                alt39=1;
             }
-            switch (alt42) {
+            switch (alt39) {
                 case 1 :
-                    // InternalOseeDsl.g:4908:2: rule__AddEnum__OrdinalAssignment_2
+                    // InternalOseeDsl.g:4626:2: rule__AddEnum__OrdinalAssignment_2
                     {
                     pushFollow(FOLLOW_2);
                     rule__AddEnum__OrdinalAssignment_2();
@@ -13651,14 +12898,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddEnum__Group__3"
-    // InternalOseeDsl.g:4918:1: rule__AddEnum__Group__3 : rule__AddEnum__Group__3__Impl rule__AddEnum__Group__4 ;
+    // InternalOseeDsl.g:4636:1: rule__AddEnum__Group__3 : rule__AddEnum__Group__3__Impl rule__AddEnum__Group__4 ;
     public final void rule__AddEnum__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4922:1: ( rule__AddEnum__Group__3__Impl rule__AddEnum__Group__4 )
-            // InternalOseeDsl.g:4923:2: rule__AddEnum__Group__3__Impl rule__AddEnum__Group__4
+            // InternalOseeDsl.g:4640:1: ( rule__AddEnum__Group__3__Impl rule__AddEnum__Group__4 )
+            // InternalOseeDsl.g:4641:2: rule__AddEnum__Group__3__Impl rule__AddEnum__Group__4
             {
             pushFollow(FOLLOW_34);
             rule__AddEnum__Group__3__Impl();
@@ -13689,29 +12936,29 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddEnum__Group__3__Impl"
-    // InternalOseeDsl.g:4930:1: rule__AddEnum__Group__3__Impl : ( ( rule__AddEnum__Group_3__0 )? ) ;
+    // InternalOseeDsl.g:4648:1: rule__AddEnum__Group__3__Impl : ( ( rule__AddEnum__Group_3__0 )? ) ;
     public final void rule__AddEnum__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4934:1: ( ( ( rule__AddEnum__Group_3__0 )? ) )
-            // InternalOseeDsl.g:4935:1: ( ( rule__AddEnum__Group_3__0 )? )
+            // InternalOseeDsl.g:4652:1: ( ( ( rule__AddEnum__Group_3__0 )? ) )
+            // InternalOseeDsl.g:4653:1: ( ( rule__AddEnum__Group_3__0 )? )
             {
-            // InternalOseeDsl.g:4935:1: ( ( rule__AddEnum__Group_3__0 )? )
-            // InternalOseeDsl.g:4936:1: ( rule__AddEnum__Group_3__0 )?
+            // InternalOseeDsl.g:4653:1: ( ( rule__AddEnum__Group_3__0 )? )
+            // InternalOseeDsl.g:4654:1: ( rule__AddEnum__Group_3__0 )?
             {
              before(grammarAccess.getAddEnumAccess().getGroup_3()); 
-            // InternalOseeDsl.g:4937:1: ( rule__AddEnum__Group_3__0 )?
-            int alt43=2;
-            int LA43_0 = input.LA(1);
+            // InternalOseeDsl.g:4655:1: ( rule__AddEnum__Group_3__0 )?
+            int alt40=2;
+            int LA40_0 = input.LA(1);
 
-            if ( (LA43_0==73) ) {
-                alt43=1;
+            if ( (LA40_0==72) ) {
+                alt40=1;
             }
-            switch (alt43) {
+            switch (alt40) {
                 case 1 :
-                    // InternalOseeDsl.g:4937:2: rule__AddEnum__Group_3__0
+                    // InternalOseeDsl.g:4655:2: rule__AddEnum__Group_3__0
                     {
                     pushFollow(FOLLOW_2);
                     rule__AddEnum__Group_3__0();
@@ -13747,14 +12994,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddEnum__Group__4"
-    // InternalOseeDsl.g:4947:1: rule__AddEnum__Group__4 : rule__AddEnum__Group__4__Impl ;
+    // InternalOseeDsl.g:4665:1: rule__AddEnum__Group__4 : rule__AddEnum__Group__4__Impl ;
     public final void rule__AddEnum__Group__4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4951:1: ( rule__AddEnum__Group__4__Impl )
-            // InternalOseeDsl.g:4952:2: rule__AddEnum__Group__4__Impl
+            // InternalOseeDsl.g:4669:1: ( rule__AddEnum__Group__4__Impl )
+            // InternalOseeDsl.g:4670:2: rule__AddEnum__Group__4__Impl
             {
             pushFollow(FOLLOW_2);
             rule__AddEnum__Group__4__Impl();
@@ -13780,29 +13027,29 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddEnum__Group__4__Impl"
-    // InternalOseeDsl.g:4958:1: rule__AddEnum__Group__4__Impl : ( ( rule__AddEnum__Group_4__0 )? ) ;
+    // InternalOseeDsl.g:4676:1: rule__AddEnum__Group__4__Impl : ( ( rule__AddEnum__Group_4__0 )? ) ;
     public final void rule__AddEnum__Group__4__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4962:1: ( ( ( rule__AddEnum__Group_4__0 )? ) )
-            // InternalOseeDsl.g:4963:1: ( ( rule__AddEnum__Group_4__0 )? )
+            // InternalOseeDsl.g:4680:1: ( ( ( rule__AddEnum__Group_4__0 )? ) )
+            // InternalOseeDsl.g:4681:1: ( ( rule__AddEnum__Group_4__0 )? )
             {
-            // InternalOseeDsl.g:4963:1: ( ( rule__AddEnum__Group_4__0 )? )
-            // InternalOseeDsl.g:4964:1: ( rule__AddEnum__Group_4__0 )?
+            // InternalOseeDsl.g:4681:1: ( ( rule__AddEnum__Group_4__0 )? )
+            // InternalOseeDsl.g:4682:1: ( rule__AddEnum__Group_4__0 )?
             {
              before(grammarAccess.getAddEnumAccess().getGroup_4()); 
-            // InternalOseeDsl.g:4965:1: ( rule__AddEnum__Group_4__0 )?
-            int alt44=2;
-            int LA44_0 = input.LA(1);
+            // InternalOseeDsl.g:4683:1: ( rule__AddEnum__Group_4__0 )?
+            int alt41=2;
+            int LA41_0 = input.LA(1);
 
-            if ( (LA44_0==67) ) {
-                alt44=1;
+            if ( (LA41_0==66) ) {
+                alt41=1;
             }
-            switch (alt44) {
+            switch (alt41) {
                 case 1 :
-                    // InternalOseeDsl.g:4965:2: rule__AddEnum__Group_4__0
+                    // InternalOseeDsl.g:4683:2: rule__AddEnum__Group_4__0
                     {
                     pushFollow(FOLLOW_2);
                     rule__AddEnum__Group_4__0();
@@ -13838,14 +13085,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddEnum__Group_3__0"
-    // InternalOseeDsl.g:4985:1: rule__AddEnum__Group_3__0 : rule__AddEnum__Group_3__0__Impl rule__AddEnum__Group_3__1 ;
+    // InternalOseeDsl.g:4703:1: rule__AddEnum__Group_3__0 : rule__AddEnum__Group_3__0__Impl rule__AddEnum__Group_3__1 ;
     public final void rule__AddEnum__Group_3__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:4989:1: ( rule__AddEnum__Group_3__0__Impl rule__AddEnum__Group_3__1 )
-            // InternalOseeDsl.g:4990:2: rule__AddEnum__Group_3__0__Impl rule__AddEnum__Group_3__1
+            // InternalOseeDsl.g:4707:1: ( rule__AddEnum__Group_3__0__Impl rule__AddEnum__Group_3__1 )
+            // InternalOseeDsl.g:4708:2: rule__AddEnum__Group_3__0__Impl rule__AddEnum__Group_3__1
             {
             pushFollow(FOLLOW_7);
             rule__AddEnum__Group_3__0__Impl();
@@ -13876,20 +13123,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddEnum__Group_3__0__Impl"
-    // InternalOseeDsl.g:4997:1: rule__AddEnum__Group_3__0__Impl : ( 'entryGuid' ) ;
+    // InternalOseeDsl.g:4715:1: rule__AddEnum__Group_3__0__Impl : ( 'entryGuid' ) ;
     public final void rule__AddEnum__Group_3__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5001:1: ( ( 'entryGuid' ) )
-            // InternalOseeDsl.g:5002:1: ( 'entryGuid' )
+            // InternalOseeDsl.g:4719:1: ( ( 'entryGuid' ) )
+            // InternalOseeDsl.g:4720:1: ( 'entryGuid' )
             {
-            // InternalOseeDsl.g:5002:1: ( 'entryGuid' )
-            // InternalOseeDsl.g:5003:1: 'entryGuid'
+            // InternalOseeDsl.g:4720:1: ( 'entryGuid' )
+            // InternalOseeDsl.g:4721:1: 'entryGuid'
             {
              before(grammarAccess.getAddEnumAccess().getEntryGuidKeyword_3_0()); 
-            match(input,73,FOLLOW_2); 
+            match(input,72,FOLLOW_2); 
              after(grammarAccess.getAddEnumAccess().getEntryGuidKeyword_3_0()); 
 
             }
@@ -13913,14 +13160,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddEnum__Group_3__1"
-    // InternalOseeDsl.g:5016:1: rule__AddEnum__Group_3__1 : rule__AddEnum__Group_3__1__Impl ;
+    // InternalOseeDsl.g:4734:1: rule__AddEnum__Group_3__1 : rule__AddEnum__Group_3__1__Impl ;
     public final void rule__AddEnum__Group_3__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5020:1: ( rule__AddEnum__Group_3__1__Impl )
-            // InternalOseeDsl.g:5021:2: rule__AddEnum__Group_3__1__Impl
+            // InternalOseeDsl.g:4738:1: ( rule__AddEnum__Group_3__1__Impl )
+            // InternalOseeDsl.g:4739:2: rule__AddEnum__Group_3__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__AddEnum__Group_3__1__Impl();
@@ -13946,21 +13193,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddEnum__Group_3__1__Impl"
-    // InternalOseeDsl.g:5027:1: rule__AddEnum__Group_3__1__Impl : ( ( rule__AddEnum__EntryGuidAssignment_3_1 ) ) ;
+    // InternalOseeDsl.g:4745:1: rule__AddEnum__Group_3__1__Impl : ( ( rule__AddEnum__EntryGuidAssignment_3_1 ) ) ;
     public final void rule__AddEnum__Group_3__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5031:1: ( ( ( rule__AddEnum__EntryGuidAssignment_3_1 ) ) )
-            // InternalOseeDsl.g:5032:1: ( ( rule__AddEnum__EntryGuidAssignment_3_1 ) )
+            // InternalOseeDsl.g:4749:1: ( ( ( rule__AddEnum__EntryGuidAssignment_3_1 ) ) )
+            // InternalOseeDsl.g:4750:1: ( ( rule__AddEnum__EntryGuidAssignment_3_1 ) )
             {
-            // InternalOseeDsl.g:5032:1: ( ( rule__AddEnum__EntryGuidAssignment_3_1 ) )
-            // InternalOseeDsl.g:5033:1: ( rule__AddEnum__EntryGuidAssignment_3_1 )
+            // InternalOseeDsl.g:4750:1: ( ( rule__AddEnum__EntryGuidAssignment_3_1 ) )
+            // InternalOseeDsl.g:4751:1: ( rule__AddEnum__EntryGuidAssignment_3_1 )
             {
              before(grammarAccess.getAddEnumAccess().getEntryGuidAssignment_3_1()); 
-            // InternalOseeDsl.g:5034:1: ( rule__AddEnum__EntryGuidAssignment_3_1 )
-            // InternalOseeDsl.g:5034:2: rule__AddEnum__EntryGuidAssignment_3_1
+            // InternalOseeDsl.g:4752:1: ( rule__AddEnum__EntryGuidAssignment_3_1 )
+            // InternalOseeDsl.g:4752:2: rule__AddEnum__EntryGuidAssignment_3_1
             {
             pushFollow(FOLLOW_2);
             rule__AddEnum__EntryGuidAssignment_3_1();
@@ -13993,14 +13240,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddEnum__Group_4__0"
-    // InternalOseeDsl.g:5048:1: rule__AddEnum__Group_4__0 : rule__AddEnum__Group_4__0__Impl rule__AddEnum__Group_4__1 ;
+    // InternalOseeDsl.g:4766:1: rule__AddEnum__Group_4__0 : rule__AddEnum__Group_4__0__Impl rule__AddEnum__Group_4__1 ;
     public final void rule__AddEnum__Group_4__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5052:1: ( rule__AddEnum__Group_4__0__Impl rule__AddEnum__Group_4__1 )
-            // InternalOseeDsl.g:5053:2: rule__AddEnum__Group_4__0__Impl rule__AddEnum__Group_4__1
+            // InternalOseeDsl.g:4770:1: ( rule__AddEnum__Group_4__0__Impl rule__AddEnum__Group_4__1 )
+            // InternalOseeDsl.g:4771:2: rule__AddEnum__Group_4__0__Impl rule__AddEnum__Group_4__1
             {
             pushFollow(FOLLOW_7);
             rule__AddEnum__Group_4__0__Impl();
@@ -14031,20 +13278,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddEnum__Group_4__0__Impl"
-    // InternalOseeDsl.g:5060:1: rule__AddEnum__Group_4__0__Impl : ( 'description' ) ;
+    // InternalOseeDsl.g:4778:1: rule__AddEnum__Group_4__0__Impl : ( 'description' ) ;
     public final void rule__AddEnum__Group_4__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5064:1: ( ( 'description' ) )
-            // InternalOseeDsl.g:5065:1: ( 'description' )
+            // InternalOseeDsl.g:4782:1: ( ( 'description' ) )
+            // InternalOseeDsl.g:4783:1: ( 'description' )
             {
-            // InternalOseeDsl.g:5065:1: ( 'description' )
-            // InternalOseeDsl.g:5066:1: 'description'
+            // InternalOseeDsl.g:4783:1: ( 'description' )
+            // InternalOseeDsl.g:4784:1: 'description'
             {
              before(grammarAccess.getAddEnumAccess().getDescriptionKeyword_4_0()); 
-            match(input,67,FOLLOW_2); 
+            match(input,66,FOLLOW_2); 
              after(grammarAccess.getAddEnumAccess().getDescriptionKeyword_4_0()); 
 
             }
@@ -14068,14 +13315,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddEnum__Group_4__1"
-    // InternalOseeDsl.g:5079:1: rule__AddEnum__Group_4__1 : rule__AddEnum__Group_4__1__Impl ;
+    // InternalOseeDsl.g:4797:1: rule__AddEnum__Group_4__1 : rule__AddEnum__Group_4__1__Impl ;
     public final void rule__AddEnum__Group_4__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5083:1: ( rule__AddEnum__Group_4__1__Impl )
-            // InternalOseeDsl.g:5084:2: rule__AddEnum__Group_4__1__Impl
+            // InternalOseeDsl.g:4801:1: ( rule__AddEnum__Group_4__1__Impl )
+            // InternalOseeDsl.g:4802:2: rule__AddEnum__Group_4__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__AddEnum__Group_4__1__Impl();
@@ -14101,21 +13348,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddEnum__Group_4__1__Impl"
-    // InternalOseeDsl.g:5090:1: rule__AddEnum__Group_4__1__Impl : ( ( rule__AddEnum__DescriptionAssignment_4_1 ) ) ;
+    // InternalOseeDsl.g:4808:1: rule__AddEnum__Group_4__1__Impl : ( ( rule__AddEnum__DescriptionAssignment_4_1 ) ) ;
     public final void rule__AddEnum__Group_4__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5094:1: ( ( ( rule__AddEnum__DescriptionAssignment_4_1 ) ) )
-            // InternalOseeDsl.g:5095:1: ( ( rule__AddEnum__DescriptionAssignment_4_1 ) )
+            // InternalOseeDsl.g:4812:1: ( ( ( rule__AddEnum__DescriptionAssignment_4_1 ) ) )
+            // InternalOseeDsl.g:4813:1: ( ( rule__AddEnum__DescriptionAssignment_4_1 ) )
             {
-            // InternalOseeDsl.g:5095:1: ( ( rule__AddEnum__DescriptionAssignment_4_1 ) )
-            // InternalOseeDsl.g:5096:1: ( rule__AddEnum__DescriptionAssignment_4_1 )
+            // InternalOseeDsl.g:4813:1: ( ( rule__AddEnum__DescriptionAssignment_4_1 ) )
+            // InternalOseeDsl.g:4814:1: ( rule__AddEnum__DescriptionAssignment_4_1 )
             {
              before(grammarAccess.getAddEnumAccess().getDescriptionAssignment_4_1()); 
-            // InternalOseeDsl.g:5097:1: ( rule__AddEnum__DescriptionAssignment_4_1 )
-            // InternalOseeDsl.g:5097:2: rule__AddEnum__DescriptionAssignment_4_1
+            // InternalOseeDsl.g:4815:1: ( rule__AddEnum__DescriptionAssignment_4_1 )
+            // InternalOseeDsl.g:4815:2: rule__AddEnum__DescriptionAssignment_4_1
             {
             pushFollow(FOLLOW_2);
             rule__AddEnum__DescriptionAssignment_4_1();
@@ -14148,14 +13395,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RemoveEnum__Group__0"
-    // InternalOseeDsl.g:5111:1: rule__RemoveEnum__Group__0 : rule__RemoveEnum__Group__0__Impl rule__RemoveEnum__Group__1 ;
+    // InternalOseeDsl.g:4829:1: rule__RemoveEnum__Group__0 : rule__RemoveEnum__Group__0__Impl rule__RemoveEnum__Group__1 ;
     public final void rule__RemoveEnum__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5115:1: ( rule__RemoveEnum__Group__0__Impl rule__RemoveEnum__Group__1 )
-            // InternalOseeDsl.g:5116:2: rule__RemoveEnum__Group__0__Impl rule__RemoveEnum__Group__1
+            // InternalOseeDsl.g:4833:1: ( rule__RemoveEnum__Group__0__Impl rule__RemoveEnum__Group__1 )
+            // InternalOseeDsl.g:4834:2: rule__RemoveEnum__Group__0__Impl rule__RemoveEnum__Group__1
             {
             pushFollow(FOLLOW_7);
             rule__RemoveEnum__Group__0__Impl();
@@ -14186,20 +13433,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RemoveEnum__Group__0__Impl"
-    // InternalOseeDsl.g:5123:1: rule__RemoveEnum__Group__0__Impl : ( 'remove' ) ;
+    // InternalOseeDsl.g:4841:1: rule__RemoveEnum__Group__0__Impl : ( 'remove' ) ;
     public final void rule__RemoveEnum__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5127:1: ( ( 'remove' ) )
-            // InternalOseeDsl.g:5128:1: ( 'remove' )
+            // InternalOseeDsl.g:4845:1: ( ( 'remove' ) )
+            // InternalOseeDsl.g:4846:1: ( 'remove' )
             {
-            // InternalOseeDsl.g:5128:1: ( 'remove' )
-            // InternalOseeDsl.g:5129:1: 'remove'
+            // InternalOseeDsl.g:4846:1: ( 'remove' )
+            // InternalOseeDsl.g:4847:1: 'remove'
             {
              before(grammarAccess.getRemoveEnumAccess().getRemoveKeyword_0()); 
-            match(input,76,FOLLOW_2); 
+            match(input,75,FOLLOW_2); 
              after(grammarAccess.getRemoveEnumAccess().getRemoveKeyword_0()); 
 
             }
@@ -14223,14 +13470,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RemoveEnum__Group__1"
-    // InternalOseeDsl.g:5142:1: rule__RemoveEnum__Group__1 : rule__RemoveEnum__Group__1__Impl ;
+    // InternalOseeDsl.g:4860:1: rule__RemoveEnum__Group__1 : rule__RemoveEnum__Group__1__Impl ;
     public final void rule__RemoveEnum__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5146:1: ( rule__RemoveEnum__Group__1__Impl )
-            // InternalOseeDsl.g:5147:2: rule__RemoveEnum__Group__1__Impl
+            // InternalOseeDsl.g:4864:1: ( rule__RemoveEnum__Group__1__Impl )
+            // InternalOseeDsl.g:4865:2: rule__RemoveEnum__Group__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__RemoveEnum__Group__1__Impl();
@@ -14256,21 +13503,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RemoveEnum__Group__1__Impl"
-    // InternalOseeDsl.g:5153:1: rule__RemoveEnum__Group__1__Impl : ( ( rule__RemoveEnum__EnumEntryAssignment_1 ) ) ;
+    // InternalOseeDsl.g:4871:1: rule__RemoveEnum__Group__1__Impl : ( ( rule__RemoveEnum__EnumEntryAssignment_1 ) ) ;
     public final void rule__RemoveEnum__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5157:1: ( ( ( rule__RemoveEnum__EnumEntryAssignment_1 ) ) )
-            // InternalOseeDsl.g:5158:1: ( ( rule__RemoveEnum__EnumEntryAssignment_1 ) )
+            // InternalOseeDsl.g:4875:1: ( ( ( rule__RemoveEnum__EnumEntryAssignment_1 ) ) )
+            // InternalOseeDsl.g:4876:1: ( ( rule__RemoveEnum__EnumEntryAssignment_1 ) )
             {
-            // InternalOseeDsl.g:5158:1: ( ( rule__RemoveEnum__EnumEntryAssignment_1 ) )
-            // InternalOseeDsl.g:5159:1: ( rule__RemoveEnum__EnumEntryAssignment_1 )
+            // InternalOseeDsl.g:4876:1: ( ( rule__RemoveEnum__EnumEntryAssignment_1 ) )
+            // InternalOseeDsl.g:4877:1: ( rule__RemoveEnum__EnumEntryAssignment_1 )
             {
              before(grammarAccess.getRemoveEnumAccess().getEnumEntryAssignment_1()); 
-            // InternalOseeDsl.g:5160:1: ( rule__RemoveEnum__EnumEntryAssignment_1 )
-            // InternalOseeDsl.g:5160:2: rule__RemoveEnum__EnumEntryAssignment_1
+            // InternalOseeDsl.g:4878:1: ( rule__RemoveEnum__EnumEntryAssignment_1 )
+            // InternalOseeDsl.g:4878:2: rule__RemoveEnum__EnumEntryAssignment_1
             {
             pushFollow(FOLLOW_2);
             rule__RemoveEnum__EnumEntryAssignment_1();
@@ -14303,14 +13550,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeArtifactTypeOverride__Group__0"
-    // InternalOseeDsl.g:5174:1: rule__XOseeArtifactTypeOverride__Group__0 : rule__XOseeArtifactTypeOverride__Group__0__Impl rule__XOseeArtifactTypeOverride__Group__1 ;
+    // InternalOseeDsl.g:4892:1: rule__XOseeArtifactTypeOverride__Group__0 : rule__XOseeArtifactTypeOverride__Group__0__Impl rule__XOseeArtifactTypeOverride__Group__1 ;
     public final void rule__XOseeArtifactTypeOverride__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5178:1: ( rule__XOseeArtifactTypeOverride__Group__0__Impl rule__XOseeArtifactTypeOverride__Group__1 )
-            // InternalOseeDsl.g:5179:2: rule__XOseeArtifactTypeOverride__Group__0__Impl rule__XOseeArtifactTypeOverride__Group__1
+            // InternalOseeDsl.g:4896:1: ( rule__XOseeArtifactTypeOverride__Group__0__Impl rule__XOseeArtifactTypeOverride__Group__1 )
+            // InternalOseeDsl.g:4897:2: rule__XOseeArtifactTypeOverride__Group__0__Impl rule__XOseeArtifactTypeOverride__Group__1
             {
             pushFollow(FOLLOW_7);
             rule__XOseeArtifactTypeOverride__Group__0__Impl();
@@ -14341,20 +13588,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeArtifactTypeOverride__Group__0__Impl"
-    // InternalOseeDsl.g:5186:1: rule__XOseeArtifactTypeOverride__Group__0__Impl : ( 'overrides artifactType' ) ;
+    // InternalOseeDsl.g:4904:1: rule__XOseeArtifactTypeOverride__Group__0__Impl : ( 'overrides artifactType' ) ;
     public final void rule__XOseeArtifactTypeOverride__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5190:1: ( ( 'overrides artifactType' ) )
-            // InternalOseeDsl.g:5191:1: ( 'overrides artifactType' )
+            // InternalOseeDsl.g:4908:1: ( ( 'overrides artifactType' ) )
+            // InternalOseeDsl.g:4909:1: ( 'overrides artifactType' )
             {
-            // InternalOseeDsl.g:5191:1: ( 'overrides artifactType' )
-            // InternalOseeDsl.g:5192:1: 'overrides artifactType'
+            // InternalOseeDsl.g:4909:1: ( 'overrides artifactType' )
+            // InternalOseeDsl.g:4910:1: 'overrides artifactType'
             {
              before(grammarAccess.getXOseeArtifactTypeOverrideAccess().getOverridesArtifactTypeKeyword_0()); 
-            match(input,77,FOLLOW_2); 
+            match(input,76,FOLLOW_2); 
              after(grammarAccess.getXOseeArtifactTypeOverrideAccess().getOverridesArtifactTypeKeyword_0()); 
 
             }
@@ -14378,14 +13625,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeArtifactTypeOverride__Group__1"
-    // InternalOseeDsl.g:5205:1: rule__XOseeArtifactTypeOverride__Group__1 : rule__XOseeArtifactTypeOverride__Group__1__Impl rule__XOseeArtifactTypeOverride__Group__2 ;
+    // InternalOseeDsl.g:4923:1: rule__XOseeArtifactTypeOverride__Group__1 : rule__XOseeArtifactTypeOverride__Group__1__Impl rule__XOseeArtifactTypeOverride__Group__2 ;
     public final void rule__XOseeArtifactTypeOverride__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5209:1: ( rule__XOseeArtifactTypeOverride__Group__1__Impl rule__XOseeArtifactTypeOverride__Group__2 )
-            // InternalOseeDsl.g:5210:2: rule__XOseeArtifactTypeOverride__Group__1__Impl rule__XOseeArtifactTypeOverride__Group__2
+            // InternalOseeDsl.g:4927:1: ( rule__XOseeArtifactTypeOverride__Group__1__Impl rule__XOseeArtifactTypeOverride__Group__2 )
+            // InternalOseeDsl.g:4928:2: rule__XOseeArtifactTypeOverride__Group__1__Impl rule__XOseeArtifactTypeOverride__Group__2
             {
             pushFollow(FOLLOW_31);
             rule__XOseeArtifactTypeOverride__Group__1__Impl();
@@ -14416,21 +13663,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeArtifactTypeOverride__Group__1__Impl"
-    // InternalOseeDsl.g:5217:1: rule__XOseeArtifactTypeOverride__Group__1__Impl : ( ( rule__XOseeArtifactTypeOverride__OverridenArtifactTypeAssignment_1 ) ) ;
+    // InternalOseeDsl.g:4935:1: rule__XOseeArtifactTypeOverride__Group__1__Impl : ( ( rule__XOseeArtifactTypeOverride__OverridenArtifactTypeAssignment_1 ) ) ;
     public final void rule__XOseeArtifactTypeOverride__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5221:1: ( ( ( rule__XOseeArtifactTypeOverride__OverridenArtifactTypeAssignment_1 ) ) )
-            // InternalOseeDsl.g:5222:1: ( ( rule__XOseeArtifactTypeOverride__OverridenArtifactTypeAssignment_1 ) )
+            // InternalOseeDsl.g:4939:1: ( ( ( rule__XOseeArtifactTypeOverride__OverridenArtifactTypeAssignment_1 ) ) )
+            // InternalOseeDsl.g:4940:1: ( ( rule__XOseeArtifactTypeOverride__OverridenArtifactTypeAssignment_1 ) )
             {
-            // InternalOseeDsl.g:5222:1: ( ( rule__XOseeArtifactTypeOverride__OverridenArtifactTypeAssignment_1 ) )
-            // InternalOseeDsl.g:5223:1: ( rule__XOseeArtifactTypeOverride__OverridenArtifactTypeAssignment_1 )
+            // InternalOseeDsl.g:4940:1: ( ( rule__XOseeArtifactTypeOverride__OverridenArtifactTypeAssignment_1 ) )
+            // InternalOseeDsl.g:4941:1: ( rule__XOseeArtifactTypeOverride__OverridenArtifactTypeAssignment_1 )
             {
              before(grammarAccess.getXOseeArtifactTypeOverrideAccess().getOverridenArtifactTypeAssignment_1()); 
-            // InternalOseeDsl.g:5224:1: ( rule__XOseeArtifactTypeOverride__OverridenArtifactTypeAssignment_1 )
-            // InternalOseeDsl.g:5224:2: rule__XOseeArtifactTypeOverride__OverridenArtifactTypeAssignment_1
+            // InternalOseeDsl.g:4942:1: ( rule__XOseeArtifactTypeOverride__OverridenArtifactTypeAssignment_1 )
+            // InternalOseeDsl.g:4942:2: rule__XOseeArtifactTypeOverride__OverridenArtifactTypeAssignment_1
             {
             pushFollow(FOLLOW_2);
             rule__XOseeArtifactTypeOverride__OverridenArtifactTypeAssignment_1();
@@ -14463,14 +13710,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeArtifactTypeOverride__Group__2"
-    // InternalOseeDsl.g:5234:1: rule__XOseeArtifactTypeOverride__Group__2 : rule__XOseeArtifactTypeOverride__Group__2__Impl rule__XOseeArtifactTypeOverride__Group__3 ;
+    // InternalOseeDsl.g:4952:1: rule__XOseeArtifactTypeOverride__Group__2 : rule__XOseeArtifactTypeOverride__Group__2__Impl rule__XOseeArtifactTypeOverride__Group__3 ;
     public final void rule__XOseeArtifactTypeOverride__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5238:1: ( rule__XOseeArtifactTypeOverride__Group__2__Impl rule__XOseeArtifactTypeOverride__Group__3 )
-            // InternalOseeDsl.g:5239:2: rule__XOseeArtifactTypeOverride__Group__2__Impl rule__XOseeArtifactTypeOverride__Group__3
+            // InternalOseeDsl.g:4956:1: ( rule__XOseeArtifactTypeOverride__Group__2__Impl rule__XOseeArtifactTypeOverride__Group__3 )
+            // InternalOseeDsl.g:4957:2: rule__XOseeArtifactTypeOverride__Group__2__Impl rule__XOseeArtifactTypeOverride__Group__3
             {
             pushFollow(FOLLOW_37);
             rule__XOseeArtifactTypeOverride__Group__2__Impl();
@@ -14501,17 +13748,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeArtifactTypeOverride__Group__2__Impl"
-    // InternalOseeDsl.g:5246:1: rule__XOseeArtifactTypeOverride__Group__2__Impl : ( '{' ) ;
+    // InternalOseeDsl.g:4964:1: rule__XOseeArtifactTypeOverride__Group__2__Impl : ( '{' ) ;
     public final void rule__XOseeArtifactTypeOverride__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5250:1: ( ( '{' ) )
-            // InternalOseeDsl.g:5251:1: ( '{' )
+            // InternalOseeDsl.g:4968:1: ( ( '{' ) )
+            // InternalOseeDsl.g:4969:1: ( '{' )
             {
-            // InternalOseeDsl.g:5251:1: ( '{' )
-            // InternalOseeDsl.g:5252:1: '{'
+            // InternalOseeDsl.g:4969:1: ( '{' )
+            // InternalOseeDsl.g:4970:1: '{'
             {
              before(grammarAccess.getXOseeArtifactTypeOverrideAccess().getLeftCurlyBracketKeyword_2()); 
             match(input,53,FOLLOW_2); 
@@ -14538,14 +13785,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeArtifactTypeOverride__Group__3"
-    // InternalOseeDsl.g:5265:1: rule__XOseeArtifactTypeOverride__Group__3 : rule__XOseeArtifactTypeOverride__Group__3__Impl rule__XOseeArtifactTypeOverride__Group__4 ;
+    // InternalOseeDsl.g:4983:1: rule__XOseeArtifactTypeOverride__Group__3 : rule__XOseeArtifactTypeOverride__Group__3__Impl rule__XOseeArtifactTypeOverride__Group__4 ;
     public final void rule__XOseeArtifactTypeOverride__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5269:1: ( rule__XOseeArtifactTypeOverride__Group__3__Impl rule__XOseeArtifactTypeOverride__Group__4 )
-            // InternalOseeDsl.g:5270:2: rule__XOseeArtifactTypeOverride__Group__3__Impl rule__XOseeArtifactTypeOverride__Group__4
+            // InternalOseeDsl.g:4987:1: ( rule__XOseeArtifactTypeOverride__Group__3__Impl rule__XOseeArtifactTypeOverride__Group__4 )
+            // InternalOseeDsl.g:4988:2: rule__XOseeArtifactTypeOverride__Group__3__Impl rule__XOseeArtifactTypeOverride__Group__4
             {
             pushFollow(FOLLOW_37);
             rule__XOseeArtifactTypeOverride__Group__3__Impl();
@@ -14576,29 +13823,29 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeArtifactTypeOverride__Group__3__Impl"
-    // InternalOseeDsl.g:5277:1: rule__XOseeArtifactTypeOverride__Group__3__Impl : ( ( rule__XOseeArtifactTypeOverride__InheritAllAssignment_3 )? ) ;
+    // InternalOseeDsl.g:4995:1: rule__XOseeArtifactTypeOverride__Group__3__Impl : ( ( rule__XOseeArtifactTypeOverride__InheritAllAssignment_3 )? ) ;
     public final void rule__XOseeArtifactTypeOverride__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5281:1: ( ( ( rule__XOseeArtifactTypeOverride__InheritAllAssignment_3 )? ) )
-            // InternalOseeDsl.g:5282:1: ( ( rule__XOseeArtifactTypeOverride__InheritAllAssignment_3 )? )
+            // InternalOseeDsl.g:4999:1: ( ( ( rule__XOseeArtifactTypeOverride__InheritAllAssignment_3 )? ) )
+            // InternalOseeDsl.g:5000:1: ( ( rule__XOseeArtifactTypeOverride__InheritAllAssignment_3 )? )
             {
-            // InternalOseeDsl.g:5282:1: ( ( rule__XOseeArtifactTypeOverride__InheritAllAssignment_3 )? )
-            // InternalOseeDsl.g:5283:1: ( rule__XOseeArtifactTypeOverride__InheritAllAssignment_3 )?
+            // InternalOseeDsl.g:5000:1: ( ( rule__XOseeArtifactTypeOverride__InheritAllAssignment_3 )? )
+            // InternalOseeDsl.g:5001:1: ( rule__XOseeArtifactTypeOverride__InheritAllAssignment_3 )?
             {
              before(grammarAccess.getXOseeArtifactTypeOverrideAccess().getInheritAllAssignment_3()); 
-            // InternalOseeDsl.g:5284:1: ( rule__XOseeArtifactTypeOverride__InheritAllAssignment_3 )?
-            int alt45=2;
-            int LA45_0 = input.LA(1);
+            // InternalOseeDsl.g:5002:1: ( rule__XOseeArtifactTypeOverride__InheritAllAssignment_3 )?
+            int alt42=2;
+            int LA42_0 = input.LA(1);
 
-            if ( (LA45_0==98) ) {
-                alt45=1;
+            if ( (LA42_0==98) ) {
+                alt42=1;
             }
-            switch (alt45) {
+            switch (alt42) {
                 case 1 :
-                    // InternalOseeDsl.g:5284:2: rule__XOseeArtifactTypeOverride__InheritAllAssignment_3
+                    // InternalOseeDsl.g:5002:2: rule__XOseeArtifactTypeOverride__InheritAllAssignment_3
                     {
                     pushFollow(FOLLOW_2);
                     rule__XOseeArtifactTypeOverride__InheritAllAssignment_3();
@@ -14634,14 +13881,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeArtifactTypeOverride__Group__4"
-    // InternalOseeDsl.g:5294:1: rule__XOseeArtifactTypeOverride__Group__4 : rule__XOseeArtifactTypeOverride__Group__4__Impl rule__XOseeArtifactTypeOverride__Group__5 ;
+    // InternalOseeDsl.g:5012:1: rule__XOseeArtifactTypeOverride__Group__4 : rule__XOseeArtifactTypeOverride__Group__4__Impl rule__XOseeArtifactTypeOverride__Group__5 ;
     public final void rule__XOseeArtifactTypeOverride__Group__4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5298:1: ( rule__XOseeArtifactTypeOverride__Group__4__Impl rule__XOseeArtifactTypeOverride__Group__5 )
-            // InternalOseeDsl.g:5299:2: rule__XOseeArtifactTypeOverride__Group__4__Impl rule__XOseeArtifactTypeOverride__Group__5
+            // InternalOseeDsl.g:5016:1: ( rule__XOseeArtifactTypeOverride__Group__4__Impl rule__XOseeArtifactTypeOverride__Group__5 )
+            // InternalOseeDsl.g:5017:2: rule__XOseeArtifactTypeOverride__Group__4__Impl rule__XOseeArtifactTypeOverride__Group__5
             {
             pushFollow(FOLLOW_28);
             rule__XOseeArtifactTypeOverride__Group__4__Impl();
@@ -14672,24 +13919,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeArtifactTypeOverride__Group__4__Impl"
-    // InternalOseeDsl.g:5306:1: rule__XOseeArtifactTypeOverride__Group__4__Impl : ( ( ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 ) ) ( ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 )* ) ) ;
+    // InternalOseeDsl.g:5024:1: rule__XOseeArtifactTypeOverride__Group__4__Impl : ( ( ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 ) ) ( ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 )* ) ) ;
     public final void rule__XOseeArtifactTypeOverride__Group__4__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5310:1: ( ( ( ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 ) ) ( ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 )* ) ) )
-            // InternalOseeDsl.g:5311:1: ( ( ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 ) ) ( ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 )* ) )
+            // InternalOseeDsl.g:5028:1: ( ( ( ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 ) ) ( ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 )* ) ) )
+            // InternalOseeDsl.g:5029:1: ( ( ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 ) ) ( ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 )* ) )
             {
-            // InternalOseeDsl.g:5311:1: ( ( ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 ) ) ( ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 )* ) )
-            // InternalOseeDsl.g:5312:1: ( ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 ) ) ( ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 )* )
+            // InternalOseeDsl.g:5029:1: ( ( ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 ) ) ( ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 )* ) )
+            // InternalOseeDsl.g:5030:1: ( ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 ) ) ( ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 )* )
             {
-            // InternalOseeDsl.g:5312:1: ( ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 ) )
-            // InternalOseeDsl.g:5313:1: ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 )
+            // InternalOseeDsl.g:5030:1: ( ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 ) )
+            // InternalOseeDsl.g:5031:1: ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 )
             {
              before(grammarAccess.getXOseeArtifactTypeOverrideAccess().getOverrideOptionsAssignment_4()); 
-            // InternalOseeDsl.g:5314:1: ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 )
-            // InternalOseeDsl.g:5314:2: rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4
+            // InternalOseeDsl.g:5032:1: ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 )
+            // InternalOseeDsl.g:5032:2: rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4
             {
             pushFollow(FOLLOW_38);
             rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4();
@@ -14703,24 +13950,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
             }
 
-            // InternalOseeDsl.g:5317:1: ( ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 )* )
-            // InternalOseeDsl.g:5318:1: ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 )*
+            // InternalOseeDsl.g:5035:1: ( ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 )* )
+            // InternalOseeDsl.g:5036:1: ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 )*
             {
              before(grammarAccess.getXOseeArtifactTypeOverrideAccess().getOverrideOptionsAssignment_4()); 
-            // InternalOseeDsl.g:5319:1: ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 )*
-            loop46:
+            // InternalOseeDsl.g:5037:1: ( rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 )*
+            loop43:
             do {
-                int alt46=2;
-                int LA46_0 = input.LA(1);
+                int alt43=2;
+                int LA43_0 = input.LA(1);
 
-                if ( ((LA46_0>=75 && LA46_0<=76)||LA46_0==78) ) {
-                    alt46=1;
+                if ( ((LA43_0>=74 && LA43_0<=75)||LA43_0==77) ) {
+                    alt43=1;
                 }
 
 
-                switch (alt46) {
+                switch (alt43) {
             	case 1 :
-            	    // InternalOseeDsl.g:5319:2: rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4
+            	    // InternalOseeDsl.g:5037:2: rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4
             	    {
             	    pushFollow(FOLLOW_38);
             	    rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4();
@@ -14732,7 +13979,7 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
             	    break;
 
             	default :
-            	    break loop46;
+            	    break loop43;
                 }
             } while (true);
 
@@ -14762,14 +14009,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeArtifactTypeOverride__Group__5"
-    // InternalOseeDsl.g:5330:1: rule__XOseeArtifactTypeOverride__Group__5 : rule__XOseeArtifactTypeOverride__Group__5__Impl ;
+    // InternalOseeDsl.g:5048:1: rule__XOseeArtifactTypeOverride__Group__5 : rule__XOseeArtifactTypeOverride__Group__5__Impl ;
     public final void rule__XOseeArtifactTypeOverride__Group__5() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5334:1: ( rule__XOseeArtifactTypeOverride__Group__5__Impl )
-            // InternalOseeDsl.g:5335:2: rule__XOseeArtifactTypeOverride__Group__5__Impl
+            // InternalOseeDsl.g:5052:1: ( rule__XOseeArtifactTypeOverride__Group__5__Impl )
+            // InternalOseeDsl.g:5053:2: rule__XOseeArtifactTypeOverride__Group__5__Impl
             {
             pushFollow(FOLLOW_2);
             rule__XOseeArtifactTypeOverride__Group__5__Impl();
@@ -14795,17 +14042,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeArtifactTypeOverride__Group__5__Impl"
-    // InternalOseeDsl.g:5341:1: rule__XOseeArtifactTypeOverride__Group__5__Impl : ( '}' ) ;
+    // InternalOseeDsl.g:5059:1: rule__XOseeArtifactTypeOverride__Group__5__Impl : ( '}' ) ;
     public final void rule__XOseeArtifactTypeOverride__Group__5__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5345:1: ( ( '}' ) )
-            // InternalOseeDsl.g:5346:1: ( '}' )
+            // InternalOseeDsl.g:5063:1: ( ( '}' ) )
+            // InternalOseeDsl.g:5064:1: ( '}' )
             {
-            // InternalOseeDsl.g:5346:1: ( '}' )
-            // InternalOseeDsl.g:5347:1: '}'
+            // InternalOseeDsl.g:5064:1: ( '}' )
+            // InternalOseeDsl.g:5065:1: '}'
             {
              before(grammarAccess.getXOseeArtifactTypeOverrideAccess().getRightCurlyBracketKeyword_5()); 
             match(input,55,FOLLOW_2); 
@@ -14832,14 +14079,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddAttribute__Group__0"
-    // InternalOseeDsl.g:5372:1: rule__AddAttribute__Group__0 : rule__AddAttribute__Group__0__Impl rule__AddAttribute__Group__1 ;
+    // InternalOseeDsl.g:5090:1: rule__AddAttribute__Group__0 : rule__AddAttribute__Group__0__Impl rule__AddAttribute__Group__1 ;
     public final void rule__AddAttribute__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5376:1: ( rule__AddAttribute__Group__0__Impl rule__AddAttribute__Group__1 )
-            // InternalOseeDsl.g:5377:2: rule__AddAttribute__Group__0__Impl rule__AddAttribute__Group__1
+            // InternalOseeDsl.g:5094:1: ( rule__AddAttribute__Group__0__Impl rule__AddAttribute__Group__1 )
+            // InternalOseeDsl.g:5095:2: rule__AddAttribute__Group__0__Impl rule__AddAttribute__Group__1
             {
             pushFollow(FOLLOW_39);
             rule__AddAttribute__Group__0__Impl();
@@ -14870,20 +14117,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddAttribute__Group__0__Impl"
-    // InternalOseeDsl.g:5384:1: rule__AddAttribute__Group__0__Impl : ( 'add' ) ;
+    // InternalOseeDsl.g:5102:1: rule__AddAttribute__Group__0__Impl : ( 'add' ) ;
     public final void rule__AddAttribute__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5388:1: ( ( 'add' ) )
-            // InternalOseeDsl.g:5389:1: ( 'add' )
+            // InternalOseeDsl.g:5106:1: ( ( 'add' ) )
+            // InternalOseeDsl.g:5107:1: ( 'add' )
             {
-            // InternalOseeDsl.g:5389:1: ( 'add' )
-            // InternalOseeDsl.g:5390:1: 'add'
+            // InternalOseeDsl.g:5107:1: ( 'add' )
+            // InternalOseeDsl.g:5108:1: 'add'
             {
              before(grammarAccess.getAddAttributeAccess().getAddKeyword_0()); 
-            match(input,75,FOLLOW_2); 
+            match(input,74,FOLLOW_2); 
              after(grammarAccess.getAddAttributeAccess().getAddKeyword_0()); 
 
             }
@@ -14907,14 +14154,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddAttribute__Group__1"
-    // InternalOseeDsl.g:5403:1: rule__AddAttribute__Group__1 : rule__AddAttribute__Group__1__Impl ;
+    // InternalOseeDsl.g:5121:1: rule__AddAttribute__Group__1 : rule__AddAttribute__Group__1__Impl ;
     public final void rule__AddAttribute__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5407:1: ( rule__AddAttribute__Group__1__Impl )
-            // InternalOseeDsl.g:5408:2: rule__AddAttribute__Group__1__Impl
+            // InternalOseeDsl.g:5125:1: ( rule__AddAttribute__Group__1__Impl )
+            // InternalOseeDsl.g:5126:2: rule__AddAttribute__Group__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__AddAttribute__Group__1__Impl();
@@ -14940,21 +14187,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddAttribute__Group__1__Impl"
-    // InternalOseeDsl.g:5414:1: rule__AddAttribute__Group__1__Impl : ( ( rule__AddAttribute__AttributeAssignment_1 ) ) ;
+    // InternalOseeDsl.g:5132:1: rule__AddAttribute__Group__1__Impl : ( ( rule__AddAttribute__AttributeAssignment_1 ) ) ;
     public final void rule__AddAttribute__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5418:1: ( ( ( rule__AddAttribute__AttributeAssignment_1 ) ) )
-            // InternalOseeDsl.g:5419:1: ( ( rule__AddAttribute__AttributeAssignment_1 ) )
+            // InternalOseeDsl.g:5136:1: ( ( ( rule__AddAttribute__AttributeAssignment_1 ) ) )
+            // InternalOseeDsl.g:5137:1: ( ( rule__AddAttribute__AttributeAssignment_1 ) )
             {
-            // InternalOseeDsl.g:5419:1: ( ( rule__AddAttribute__AttributeAssignment_1 ) )
-            // InternalOseeDsl.g:5420:1: ( rule__AddAttribute__AttributeAssignment_1 )
+            // InternalOseeDsl.g:5137:1: ( ( rule__AddAttribute__AttributeAssignment_1 ) )
+            // InternalOseeDsl.g:5138:1: ( rule__AddAttribute__AttributeAssignment_1 )
             {
              before(grammarAccess.getAddAttributeAccess().getAttributeAssignment_1()); 
-            // InternalOseeDsl.g:5421:1: ( rule__AddAttribute__AttributeAssignment_1 )
-            // InternalOseeDsl.g:5421:2: rule__AddAttribute__AttributeAssignment_1
+            // InternalOseeDsl.g:5139:1: ( rule__AddAttribute__AttributeAssignment_1 )
+            // InternalOseeDsl.g:5139:2: rule__AddAttribute__AttributeAssignment_1
             {
             pushFollow(FOLLOW_2);
             rule__AddAttribute__AttributeAssignment_1();
@@ -14987,14 +14234,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RemoveAttribute__Group__0"
-    // InternalOseeDsl.g:5435:1: rule__RemoveAttribute__Group__0 : rule__RemoveAttribute__Group__0__Impl rule__RemoveAttribute__Group__1 ;
+    // InternalOseeDsl.g:5153:1: rule__RemoveAttribute__Group__0 : rule__RemoveAttribute__Group__0__Impl rule__RemoveAttribute__Group__1 ;
     public final void rule__RemoveAttribute__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5439:1: ( rule__RemoveAttribute__Group__0__Impl rule__RemoveAttribute__Group__1 )
-            // InternalOseeDsl.g:5440:2: rule__RemoveAttribute__Group__0__Impl rule__RemoveAttribute__Group__1
+            // InternalOseeDsl.g:5157:1: ( rule__RemoveAttribute__Group__0__Impl rule__RemoveAttribute__Group__1 )
+            // InternalOseeDsl.g:5158:2: rule__RemoveAttribute__Group__0__Impl rule__RemoveAttribute__Group__1
             {
             pushFollow(FOLLOW_39);
             rule__RemoveAttribute__Group__0__Impl();
@@ -15025,20 +14272,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RemoveAttribute__Group__0__Impl"
-    // InternalOseeDsl.g:5447:1: rule__RemoveAttribute__Group__0__Impl : ( 'remove' ) ;
+    // InternalOseeDsl.g:5165:1: rule__RemoveAttribute__Group__0__Impl : ( 'remove' ) ;
     public final void rule__RemoveAttribute__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5451:1: ( ( 'remove' ) )
-            // InternalOseeDsl.g:5452:1: ( 'remove' )
+            // InternalOseeDsl.g:5169:1: ( ( 'remove' ) )
+            // InternalOseeDsl.g:5170:1: ( 'remove' )
             {
-            // InternalOseeDsl.g:5452:1: ( 'remove' )
-            // InternalOseeDsl.g:5453:1: 'remove'
+            // InternalOseeDsl.g:5170:1: ( 'remove' )
+            // InternalOseeDsl.g:5171:1: 'remove'
             {
              before(grammarAccess.getRemoveAttributeAccess().getRemoveKeyword_0()); 
-            match(input,76,FOLLOW_2); 
+            match(input,75,FOLLOW_2); 
              after(grammarAccess.getRemoveAttributeAccess().getRemoveKeyword_0()); 
 
             }
@@ -15062,14 +14309,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RemoveAttribute__Group__1"
-    // InternalOseeDsl.g:5466:1: rule__RemoveAttribute__Group__1 : rule__RemoveAttribute__Group__1__Impl rule__RemoveAttribute__Group__2 ;
+    // InternalOseeDsl.g:5184:1: rule__RemoveAttribute__Group__1 : rule__RemoveAttribute__Group__1__Impl rule__RemoveAttribute__Group__2 ;
     public final void rule__RemoveAttribute__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5470:1: ( rule__RemoveAttribute__Group__1__Impl rule__RemoveAttribute__Group__2 )
-            // InternalOseeDsl.g:5471:2: rule__RemoveAttribute__Group__1__Impl rule__RemoveAttribute__Group__2
+            // InternalOseeDsl.g:5188:1: ( rule__RemoveAttribute__Group__1__Impl rule__RemoveAttribute__Group__2 )
+            // InternalOseeDsl.g:5189:2: rule__RemoveAttribute__Group__1__Impl rule__RemoveAttribute__Group__2
             {
             pushFollow(FOLLOW_7);
             rule__RemoveAttribute__Group__1__Impl();
@@ -15100,20 +14347,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RemoveAttribute__Group__1__Impl"
-    // InternalOseeDsl.g:5478:1: rule__RemoveAttribute__Group__1__Impl : ( 'attribute' ) ;
+    // InternalOseeDsl.g:5196:1: rule__RemoveAttribute__Group__1__Impl : ( 'attribute' ) ;
     public final void rule__RemoveAttribute__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5482:1: ( ( 'attribute' ) )
-            // InternalOseeDsl.g:5483:1: ( 'attribute' )
+            // InternalOseeDsl.g:5200:1: ( ( 'attribute' ) )
+            // InternalOseeDsl.g:5201:1: ( 'attribute' )
             {
-            // InternalOseeDsl.g:5483:1: ( 'attribute' )
-            // InternalOseeDsl.g:5484:1: 'attribute'
+            // InternalOseeDsl.g:5201:1: ( 'attribute' )
+            // InternalOseeDsl.g:5202:1: 'attribute'
             {
              before(grammarAccess.getRemoveAttributeAccess().getAttributeKeyword_1()); 
-            match(input,59,FOLLOW_2); 
+            match(input,58,FOLLOW_2); 
              after(grammarAccess.getRemoveAttributeAccess().getAttributeKeyword_1()); 
 
             }
@@ -15137,14 +14384,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RemoveAttribute__Group__2"
-    // InternalOseeDsl.g:5497:1: rule__RemoveAttribute__Group__2 : rule__RemoveAttribute__Group__2__Impl ;
+    // InternalOseeDsl.g:5215:1: rule__RemoveAttribute__Group__2 : rule__RemoveAttribute__Group__2__Impl ;
     public final void rule__RemoveAttribute__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5501:1: ( rule__RemoveAttribute__Group__2__Impl )
-            // InternalOseeDsl.g:5502:2: rule__RemoveAttribute__Group__2__Impl
+            // InternalOseeDsl.g:5219:1: ( rule__RemoveAttribute__Group__2__Impl )
+            // InternalOseeDsl.g:5220:2: rule__RemoveAttribute__Group__2__Impl
             {
             pushFollow(FOLLOW_2);
             rule__RemoveAttribute__Group__2__Impl();
@@ -15170,21 +14417,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RemoveAttribute__Group__2__Impl"
-    // InternalOseeDsl.g:5508:1: rule__RemoveAttribute__Group__2__Impl : ( ( rule__RemoveAttribute__AttributeAssignment_2 ) ) ;
+    // InternalOseeDsl.g:5226:1: rule__RemoveAttribute__Group__2__Impl : ( ( rule__RemoveAttribute__AttributeAssignment_2 ) ) ;
     public final void rule__RemoveAttribute__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5512:1: ( ( ( rule__RemoveAttribute__AttributeAssignment_2 ) ) )
-            // InternalOseeDsl.g:5513:1: ( ( rule__RemoveAttribute__AttributeAssignment_2 ) )
+            // InternalOseeDsl.g:5230:1: ( ( ( rule__RemoveAttribute__AttributeAssignment_2 ) ) )
+            // InternalOseeDsl.g:5231:1: ( ( rule__RemoveAttribute__AttributeAssignment_2 ) )
             {
-            // InternalOseeDsl.g:5513:1: ( ( rule__RemoveAttribute__AttributeAssignment_2 ) )
-            // InternalOseeDsl.g:5514:1: ( rule__RemoveAttribute__AttributeAssignment_2 )
+            // InternalOseeDsl.g:5231:1: ( ( rule__RemoveAttribute__AttributeAssignment_2 ) )
+            // InternalOseeDsl.g:5232:1: ( rule__RemoveAttribute__AttributeAssignment_2 )
             {
              before(grammarAccess.getRemoveAttributeAccess().getAttributeAssignment_2()); 
-            // InternalOseeDsl.g:5515:1: ( rule__RemoveAttribute__AttributeAssignment_2 )
-            // InternalOseeDsl.g:5515:2: rule__RemoveAttribute__AttributeAssignment_2
+            // InternalOseeDsl.g:5233:1: ( rule__RemoveAttribute__AttributeAssignment_2 )
+            // InternalOseeDsl.g:5233:2: rule__RemoveAttribute__AttributeAssignment_2
             {
             pushFollow(FOLLOW_2);
             rule__RemoveAttribute__AttributeAssignment_2();
@@ -15217,14 +14464,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__UpdateAttribute__Group__0"
-    // InternalOseeDsl.g:5531:1: rule__UpdateAttribute__Group__0 : rule__UpdateAttribute__Group__0__Impl rule__UpdateAttribute__Group__1 ;
+    // InternalOseeDsl.g:5249:1: rule__UpdateAttribute__Group__0 : rule__UpdateAttribute__Group__0__Impl rule__UpdateAttribute__Group__1 ;
     public final void rule__UpdateAttribute__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5535:1: ( rule__UpdateAttribute__Group__0__Impl rule__UpdateAttribute__Group__1 )
-            // InternalOseeDsl.g:5536:2: rule__UpdateAttribute__Group__0__Impl rule__UpdateAttribute__Group__1
+            // InternalOseeDsl.g:5253:1: ( rule__UpdateAttribute__Group__0__Impl rule__UpdateAttribute__Group__1 )
+            // InternalOseeDsl.g:5254:2: rule__UpdateAttribute__Group__0__Impl rule__UpdateAttribute__Group__1
             {
             pushFollow(FOLLOW_39);
             rule__UpdateAttribute__Group__0__Impl();
@@ -15255,20 +14502,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__UpdateAttribute__Group__0__Impl"
-    // InternalOseeDsl.g:5543:1: rule__UpdateAttribute__Group__0__Impl : ( 'update' ) ;
+    // InternalOseeDsl.g:5261:1: rule__UpdateAttribute__Group__0__Impl : ( 'update' ) ;
     public final void rule__UpdateAttribute__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5547:1: ( ( 'update' ) )
-            // InternalOseeDsl.g:5548:1: ( 'update' )
+            // InternalOseeDsl.g:5265:1: ( ( 'update' ) )
+            // InternalOseeDsl.g:5266:1: ( 'update' )
             {
-            // InternalOseeDsl.g:5548:1: ( 'update' )
-            // InternalOseeDsl.g:5549:1: 'update'
+            // InternalOseeDsl.g:5266:1: ( 'update' )
+            // InternalOseeDsl.g:5267:1: 'update'
             {
              before(grammarAccess.getUpdateAttributeAccess().getUpdateKeyword_0()); 
-            match(input,78,FOLLOW_2); 
+            match(input,77,FOLLOW_2); 
              after(grammarAccess.getUpdateAttributeAccess().getUpdateKeyword_0()); 
 
             }
@@ -15292,14 +14539,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__UpdateAttribute__Group__1"
-    // InternalOseeDsl.g:5562:1: rule__UpdateAttribute__Group__1 : rule__UpdateAttribute__Group__1__Impl ;
+    // InternalOseeDsl.g:5280:1: rule__UpdateAttribute__Group__1 : rule__UpdateAttribute__Group__1__Impl ;
     public final void rule__UpdateAttribute__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5566:1: ( rule__UpdateAttribute__Group__1__Impl )
-            // InternalOseeDsl.g:5567:2: rule__UpdateAttribute__Group__1__Impl
+            // InternalOseeDsl.g:5284:1: ( rule__UpdateAttribute__Group__1__Impl )
+            // InternalOseeDsl.g:5285:2: rule__UpdateAttribute__Group__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__UpdateAttribute__Group__1__Impl();
@@ -15325,21 +14572,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__UpdateAttribute__Group__1__Impl"
-    // InternalOseeDsl.g:5573:1: rule__UpdateAttribute__Group__1__Impl : ( ( rule__UpdateAttribute__AttributeAssignment_1 ) ) ;
+    // InternalOseeDsl.g:5291:1: rule__UpdateAttribute__Group__1__Impl : ( ( rule__UpdateAttribute__AttributeAssignment_1 ) ) ;
     public final void rule__UpdateAttribute__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5577:1: ( ( ( rule__UpdateAttribute__AttributeAssignment_1 ) ) )
-            // InternalOseeDsl.g:5578:1: ( ( rule__UpdateAttribute__AttributeAssignment_1 ) )
+            // InternalOseeDsl.g:5295:1: ( ( ( rule__UpdateAttribute__AttributeAssignment_1 ) ) )
+            // InternalOseeDsl.g:5296:1: ( ( rule__UpdateAttribute__AttributeAssignment_1 ) )
             {
-            // InternalOseeDsl.g:5578:1: ( ( rule__UpdateAttribute__AttributeAssignment_1 ) )
-            // InternalOseeDsl.g:5579:1: ( rule__UpdateAttribute__AttributeAssignment_1 )
+            // InternalOseeDsl.g:5296:1: ( ( rule__UpdateAttribute__AttributeAssignment_1 ) )
+            // InternalOseeDsl.g:5297:1: ( rule__UpdateAttribute__AttributeAssignment_1 )
             {
              before(grammarAccess.getUpdateAttributeAccess().getAttributeAssignment_1()); 
-            // InternalOseeDsl.g:5580:1: ( rule__UpdateAttribute__AttributeAssignment_1 )
-            // InternalOseeDsl.g:5580:2: rule__UpdateAttribute__AttributeAssignment_1
+            // InternalOseeDsl.g:5298:1: ( rule__UpdateAttribute__AttributeAssignment_1 )
+            // InternalOseeDsl.g:5298:2: rule__UpdateAttribute__AttributeAssignment_1
             {
             pushFollow(FOLLOW_2);
             rule__UpdateAttribute__AttributeAssignment_1();
@@ -15372,14 +14619,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__0"
-    // InternalOseeDsl.g:5594:1: rule__XRelationType__Group__0 : rule__XRelationType__Group__0__Impl rule__XRelationType__Group__1 ;
+    // InternalOseeDsl.g:5312:1: rule__XRelationType__Group__0 : rule__XRelationType__Group__0__Impl rule__XRelationType__Group__1 ;
     public final void rule__XRelationType__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5598:1: ( rule__XRelationType__Group__0__Impl rule__XRelationType__Group__1 )
-            // InternalOseeDsl.g:5599:2: rule__XRelationType__Group__0__Impl rule__XRelationType__Group__1
+            // InternalOseeDsl.g:5316:1: ( rule__XRelationType__Group__0__Impl rule__XRelationType__Group__1 )
+            // InternalOseeDsl.g:5317:2: rule__XRelationType__Group__0__Impl rule__XRelationType__Group__1
             {
             pushFollow(FOLLOW_7);
             rule__XRelationType__Group__0__Impl();
@@ -15410,20 +14657,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__0__Impl"
-    // InternalOseeDsl.g:5606:1: rule__XRelationType__Group__0__Impl : ( 'relationType' ) ;
+    // InternalOseeDsl.g:5324:1: rule__XRelationType__Group__0__Impl : ( 'relationType' ) ;
     public final void rule__XRelationType__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5610:1: ( ( 'relationType' ) )
-            // InternalOseeDsl.g:5611:1: ( 'relationType' )
+            // InternalOseeDsl.g:5328:1: ( ( 'relationType' ) )
+            // InternalOseeDsl.g:5329:1: ( 'relationType' )
             {
-            // InternalOseeDsl.g:5611:1: ( 'relationType' )
-            // InternalOseeDsl.g:5612:1: 'relationType'
+            // InternalOseeDsl.g:5329:1: ( 'relationType' )
+            // InternalOseeDsl.g:5330:1: 'relationType'
             {
              before(grammarAccess.getXRelationTypeAccess().getRelationTypeKeyword_0()); 
-            match(input,79,FOLLOW_2); 
+            match(input,78,FOLLOW_2); 
              after(grammarAccess.getXRelationTypeAccess().getRelationTypeKeyword_0()); 
 
             }
@@ -15447,14 +14694,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__1"
-    // InternalOseeDsl.g:5625:1: rule__XRelationType__Group__1 : rule__XRelationType__Group__1__Impl rule__XRelationType__Group__2 ;
+    // InternalOseeDsl.g:5343:1: rule__XRelationType__Group__1 : rule__XRelationType__Group__1__Impl rule__XRelationType__Group__2 ;
     public final void rule__XRelationType__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5629:1: ( rule__XRelationType__Group__1__Impl rule__XRelationType__Group__2 )
-            // InternalOseeDsl.g:5630:2: rule__XRelationType__Group__1__Impl rule__XRelationType__Group__2
+            // InternalOseeDsl.g:5347:1: ( rule__XRelationType__Group__1__Impl rule__XRelationType__Group__2 )
+            // InternalOseeDsl.g:5348:2: rule__XRelationType__Group__1__Impl rule__XRelationType__Group__2
             {
             pushFollow(FOLLOW_31);
             rule__XRelationType__Group__1__Impl();
@@ -15485,21 +14732,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__1__Impl"
-    // InternalOseeDsl.g:5637:1: rule__XRelationType__Group__1__Impl : ( ( rule__XRelationType__NameAssignment_1 ) ) ;
+    // InternalOseeDsl.g:5355:1: rule__XRelationType__Group__1__Impl : ( ( rule__XRelationType__NameAssignment_1 ) ) ;
     public final void rule__XRelationType__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5641:1: ( ( ( rule__XRelationType__NameAssignment_1 ) ) )
-            // InternalOseeDsl.g:5642:1: ( ( rule__XRelationType__NameAssignment_1 ) )
+            // InternalOseeDsl.g:5359:1: ( ( ( rule__XRelationType__NameAssignment_1 ) ) )
+            // InternalOseeDsl.g:5360:1: ( ( rule__XRelationType__NameAssignment_1 ) )
             {
-            // InternalOseeDsl.g:5642:1: ( ( rule__XRelationType__NameAssignment_1 ) )
-            // InternalOseeDsl.g:5643:1: ( rule__XRelationType__NameAssignment_1 )
+            // InternalOseeDsl.g:5360:1: ( ( rule__XRelationType__NameAssignment_1 ) )
+            // InternalOseeDsl.g:5361:1: ( rule__XRelationType__NameAssignment_1 )
             {
              before(grammarAccess.getXRelationTypeAccess().getNameAssignment_1()); 
-            // InternalOseeDsl.g:5644:1: ( rule__XRelationType__NameAssignment_1 )
-            // InternalOseeDsl.g:5644:2: rule__XRelationType__NameAssignment_1
+            // InternalOseeDsl.g:5362:1: ( rule__XRelationType__NameAssignment_1 )
+            // InternalOseeDsl.g:5362:2: rule__XRelationType__NameAssignment_1
             {
             pushFollow(FOLLOW_2);
             rule__XRelationType__NameAssignment_1();
@@ -15532,14 +14779,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__2"
-    // InternalOseeDsl.g:5654:1: rule__XRelationType__Group__2 : rule__XRelationType__Group__2__Impl rule__XRelationType__Group__3 ;
+    // InternalOseeDsl.g:5372:1: rule__XRelationType__Group__2 : rule__XRelationType__Group__2__Impl rule__XRelationType__Group__3 ;
     public final void rule__XRelationType__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5658:1: ( rule__XRelationType__Group__2__Impl rule__XRelationType__Group__3 )
-            // InternalOseeDsl.g:5659:2: rule__XRelationType__Group__2__Impl rule__XRelationType__Group__3
+            // InternalOseeDsl.g:5376:1: ( rule__XRelationType__Group__2__Impl rule__XRelationType__Group__3 )
+            // InternalOseeDsl.g:5377:2: rule__XRelationType__Group__2__Impl rule__XRelationType__Group__3
             {
             pushFollow(FOLLOW_13);
             rule__XRelationType__Group__2__Impl();
@@ -15570,17 +14817,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__2__Impl"
-    // InternalOseeDsl.g:5666:1: rule__XRelationType__Group__2__Impl : ( '{' ) ;
+    // InternalOseeDsl.g:5384:1: rule__XRelationType__Group__2__Impl : ( '{' ) ;
     public final void rule__XRelationType__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5670:1: ( ( '{' ) )
-            // InternalOseeDsl.g:5671:1: ( '{' )
+            // InternalOseeDsl.g:5388:1: ( ( '{' ) )
+            // InternalOseeDsl.g:5389:1: ( '{' )
             {
-            // InternalOseeDsl.g:5671:1: ( '{' )
-            // InternalOseeDsl.g:5672:1: '{'
+            // InternalOseeDsl.g:5389:1: ( '{' )
+            // InternalOseeDsl.g:5390:1: '{'
             {
              before(grammarAccess.getXRelationTypeAccess().getLeftCurlyBracketKeyword_2()); 
             match(input,53,FOLLOW_2); 
@@ -15607,16 +14854,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__3"
-    // InternalOseeDsl.g:5685:1: rule__XRelationType__Group__3 : rule__XRelationType__Group__3__Impl rule__XRelationType__Group__4 ;
+    // InternalOseeDsl.g:5403:1: rule__XRelationType__Group__3 : rule__XRelationType__Group__3__Impl rule__XRelationType__Group__4 ;
     public final void rule__XRelationType__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5689:1: ( rule__XRelationType__Group__3__Impl rule__XRelationType__Group__4 )
-            // InternalOseeDsl.g:5690:2: rule__XRelationType__Group__3__Impl rule__XRelationType__Group__4
+            // InternalOseeDsl.g:5407:1: ( rule__XRelationType__Group__3__Impl rule__XRelationType__Group__4 )
+            // InternalOseeDsl.g:5408:2: rule__XRelationType__Group__3__Impl rule__XRelationType__Group__4
             {
-            pushFollow(FOLLOW_13);
+            pushFollow(FOLLOW_14);
             rule__XRelationType__Group__3__Impl();
 
             state._fsp--;
@@ -15645,42 +14892,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__3__Impl"
-    // InternalOseeDsl.g:5697:1: rule__XRelationType__Group__3__Impl : ( ( rule__XRelationType__Group_3__0 )? ) ;
+    // InternalOseeDsl.g:5415:1: rule__XRelationType__Group__3__Impl : ( 'id' ) ;
     public final void rule__XRelationType__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5701:1: ( ( ( rule__XRelationType__Group_3__0 )? ) )
-            // InternalOseeDsl.g:5702:1: ( ( rule__XRelationType__Group_3__0 )? )
+            // InternalOseeDsl.g:5419:1: ( ( 'id' ) )
+            // InternalOseeDsl.g:5420:1: ( 'id' )
             {
-            // InternalOseeDsl.g:5702:1: ( ( rule__XRelationType__Group_3__0 )? )
-            // InternalOseeDsl.g:5703:1: ( rule__XRelationType__Group_3__0 )?
+            // InternalOseeDsl.g:5420:1: ( 'id' )
+            // InternalOseeDsl.g:5421:1: 'id'
             {
-             before(grammarAccess.getXRelationTypeAccess().getGroup_3()); 
-            // InternalOseeDsl.g:5704:1: ( rule__XRelationType__Group_3__0 )?
-            int alt47=2;
-            int LA47_0 = input.LA(1);
-
-            if ( (LA47_0==58) ) {
-                alt47=1;
-            }
-            switch (alt47) {
-                case 1 :
-                    // InternalOseeDsl.g:5704:2: rule__XRelationType__Group_3__0
-                    {
-                    pushFollow(FOLLOW_2);
-                    rule__XRelationType__Group_3__0();
-
-                    state._fsp--;
-
-
-                    }
-                    break;
-
-            }
-
-             after(grammarAccess.getXRelationTypeAccess().getGroup_3()); 
+             before(grammarAccess.getXRelationTypeAccess().getIdKeyword_3()); 
+            match(input,54,FOLLOW_2); 
+             after(grammarAccess.getXRelationTypeAccess().getIdKeyword_3()); 
 
             }
 
@@ -15703,16 +14929,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__4"
-    // InternalOseeDsl.g:5714:1: rule__XRelationType__Group__4 : rule__XRelationType__Group__4__Impl rule__XRelationType__Group__5 ;
+    // InternalOseeDsl.g:5434:1: rule__XRelationType__Group__4 : rule__XRelationType__Group__4__Impl rule__XRelationType__Group__5 ;
     public final void rule__XRelationType__Group__4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5718:1: ( rule__XRelationType__Group__4__Impl rule__XRelationType__Group__5 )
-            // InternalOseeDsl.g:5719:2: rule__XRelationType__Group__4__Impl rule__XRelationType__Group__5
+            // InternalOseeDsl.g:5438:1: ( rule__XRelationType__Group__4__Impl rule__XRelationType__Group__5 )
+            // InternalOseeDsl.g:5439:2: rule__XRelationType__Group__4__Impl rule__XRelationType__Group__5
             {
-            pushFollow(FOLLOW_14);
+            pushFollow(FOLLOW_40);
             rule__XRelationType__Group__4__Impl();
 
             state._fsp--;
@@ -15741,21 +14967,31 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__4__Impl"
-    // InternalOseeDsl.g:5726:1: rule__XRelationType__Group__4__Impl : ( 'id' ) ;
+    // InternalOseeDsl.g:5446:1: rule__XRelationType__Group__4__Impl : ( ( rule__XRelationType__IdAssignment_4 ) ) ;
     public final void rule__XRelationType__Group__4__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5730:1: ( ( 'id' ) )
-            // InternalOseeDsl.g:5731:1: ( 'id' )
+            // InternalOseeDsl.g:5450:1: ( ( ( rule__XRelationType__IdAssignment_4 ) ) )
+            // InternalOseeDsl.g:5451:1: ( ( rule__XRelationType__IdAssignment_4 ) )
             {
-            // InternalOseeDsl.g:5731:1: ( 'id' )
-            // InternalOseeDsl.g:5732:1: 'id'
+            // InternalOseeDsl.g:5451:1: ( ( rule__XRelationType__IdAssignment_4 ) )
+            // InternalOseeDsl.g:5452:1: ( rule__XRelationType__IdAssignment_4 )
             {
-             before(grammarAccess.getXRelationTypeAccess().getIdKeyword_4()); 
-            match(input,54,FOLLOW_2); 
-             after(grammarAccess.getXRelationTypeAccess().getIdKeyword_4()); 
+             before(grammarAccess.getXRelationTypeAccess().getIdAssignment_4()); 
+            // InternalOseeDsl.g:5453:1: ( rule__XRelationType__IdAssignment_4 )
+            // InternalOseeDsl.g:5453:2: rule__XRelationType__IdAssignment_4
+            {
+            pushFollow(FOLLOW_2);
+            rule__XRelationType__IdAssignment_4();
+
+            state._fsp--;
+
+
+            }
+
+             after(grammarAccess.getXRelationTypeAccess().getIdAssignment_4()); 
 
             }
 
@@ -15778,16 +15014,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__5"
-    // InternalOseeDsl.g:5745:1: rule__XRelationType__Group__5 : rule__XRelationType__Group__5__Impl rule__XRelationType__Group__6 ;
+    // InternalOseeDsl.g:5463:1: rule__XRelationType__Group__5 : rule__XRelationType__Group__5__Impl rule__XRelationType__Group__6 ;
     public final void rule__XRelationType__Group__5() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5749:1: ( rule__XRelationType__Group__5__Impl rule__XRelationType__Group__6 )
-            // InternalOseeDsl.g:5750:2: rule__XRelationType__Group__5__Impl rule__XRelationType__Group__6
+            // InternalOseeDsl.g:5467:1: ( rule__XRelationType__Group__5__Impl rule__XRelationType__Group__6 )
+            // InternalOseeDsl.g:5468:2: rule__XRelationType__Group__5__Impl rule__XRelationType__Group__6
             {
-            pushFollow(FOLLOW_40);
+            pushFollow(FOLLOW_7);
             rule__XRelationType__Group__5__Impl();
 
             state._fsp--;
@@ -15816,31 +15052,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__5__Impl"
-    // InternalOseeDsl.g:5757:1: rule__XRelationType__Group__5__Impl : ( ( rule__XRelationType__IdAssignment_5 ) ) ;
+    // InternalOseeDsl.g:5475:1: rule__XRelationType__Group__5__Impl : ( 'sideAName' ) ;
     public final void rule__XRelationType__Group__5__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5761:1: ( ( ( rule__XRelationType__IdAssignment_5 ) ) )
-            // InternalOseeDsl.g:5762:1: ( ( rule__XRelationType__IdAssignment_5 ) )
+            // InternalOseeDsl.g:5479:1: ( ( 'sideAName' ) )
+            // InternalOseeDsl.g:5480:1: ( 'sideAName' )
             {
-            // InternalOseeDsl.g:5762:1: ( ( rule__XRelationType__IdAssignment_5 ) )
-            // InternalOseeDsl.g:5763:1: ( rule__XRelationType__IdAssignment_5 )
+            // InternalOseeDsl.g:5480:1: ( 'sideAName' )
+            // InternalOseeDsl.g:5481:1: 'sideAName'
             {
-             before(grammarAccess.getXRelationTypeAccess().getIdAssignment_5()); 
-            // InternalOseeDsl.g:5764:1: ( rule__XRelationType__IdAssignment_5 )
-            // InternalOseeDsl.g:5764:2: rule__XRelationType__IdAssignment_5
-            {
-            pushFollow(FOLLOW_2);
-            rule__XRelationType__IdAssignment_5();
-
-            state._fsp--;
-
-
-            }
-
-             after(grammarAccess.getXRelationTypeAccess().getIdAssignment_5()); 
+             before(grammarAccess.getXRelationTypeAccess().getSideANameKeyword_5()); 
+            match(input,79,FOLLOW_2); 
+             after(grammarAccess.getXRelationTypeAccess().getSideANameKeyword_5()); 
 
             }
 
@@ -15863,16 +15089,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__6"
-    // InternalOseeDsl.g:5774:1: rule__XRelationType__Group__6 : rule__XRelationType__Group__6__Impl rule__XRelationType__Group__7 ;
+    // InternalOseeDsl.g:5494:1: rule__XRelationType__Group__6 : rule__XRelationType__Group__6__Impl rule__XRelationType__Group__7 ;
     public final void rule__XRelationType__Group__6() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5778:1: ( rule__XRelationType__Group__6__Impl rule__XRelationType__Group__7 )
-            // InternalOseeDsl.g:5779:2: rule__XRelationType__Group__6__Impl rule__XRelationType__Group__7
+            // InternalOseeDsl.g:5498:1: ( rule__XRelationType__Group__6__Impl rule__XRelationType__Group__7 )
+            // InternalOseeDsl.g:5499:2: rule__XRelationType__Group__6__Impl rule__XRelationType__Group__7
             {
-            pushFollow(FOLLOW_7);
+            pushFollow(FOLLOW_41);
             rule__XRelationType__Group__6__Impl();
 
             state._fsp--;
@@ -15901,21 +15127,31 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__6__Impl"
-    // InternalOseeDsl.g:5786:1: rule__XRelationType__Group__6__Impl : ( 'sideAName' ) ;
+    // InternalOseeDsl.g:5506:1: rule__XRelationType__Group__6__Impl : ( ( rule__XRelationType__SideANameAssignment_6 ) ) ;
     public final void rule__XRelationType__Group__6__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5790:1: ( ( 'sideAName' ) )
-            // InternalOseeDsl.g:5791:1: ( 'sideAName' )
+            // InternalOseeDsl.g:5510:1: ( ( ( rule__XRelationType__SideANameAssignment_6 ) ) )
+            // InternalOseeDsl.g:5511:1: ( ( rule__XRelationType__SideANameAssignment_6 ) )
             {
-            // InternalOseeDsl.g:5791:1: ( 'sideAName' )
-            // InternalOseeDsl.g:5792:1: 'sideAName'
+            // InternalOseeDsl.g:5511:1: ( ( rule__XRelationType__SideANameAssignment_6 ) )
+            // InternalOseeDsl.g:5512:1: ( rule__XRelationType__SideANameAssignment_6 )
             {
-             before(grammarAccess.getXRelationTypeAccess().getSideANameKeyword_6()); 
-            match(input,80,FOLLOW_2); 
-             after(grammarAccess.getXRelationTypeAccess().getSideANameKeyword_6()); 
+             before(grammarAccess.getXRelationTypeAccess().getSideANameAssignment_6()); 
+            // InternalOseeDsl.g:5513:1: ( rule__XRelationType__SideANameAssignment_6 )
+            // InternalOseeDsl.g:5513:2: rule__XRelationType__SideANameAssignment_6
+            {
+            pushFollow(FOLLOW_2);
+            rule__XRelationType__SideANameAssignment_6();
+
+            state._fsp--;
+
+
+            }
+
+             after(grammarAccess.getXRelationTypeAccess().getSideANameAssignment_6()); 
 
             }
 
@@ -15938,16 +15174,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__7"
-    // InternalOseeDsl.g:5805:1: rule__XRelationType__Group__7 : rule__XRelationType__Group__7__Impl rule__XRelationType__Group__8 ;
+    // InternalOseeDsl.g:5523:1: rule__XRelationType__Group__7 : rule__XRelationType__Group__7__Impl rule__XRelationType__Group__8 ;
     public final void rule__XRelationType__Group__7() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5809:1: ( rule__XRelationType__Group__7__Impl rule__XRelationType__Group__8 )
-            // InternalOseeDsl.g:5810:2: rule__XRelationType__Group__7__Impl rule__XRelationType__Group__8
+            // InternalOseeDsl.g:5527:1: ( rule__XRelationType__Group__7__Impl rule__XRelationType__Group__8 )
+            // InternalOseeDsl.g:5528:2: rule__XRelationType__Group__7__Impl rule__XRelationType__Group__8
             {
-            pushFollow(FOLLOW_41);
+            pushFollow(FOLLOW_7);
             rule__XRelationType__Group__7__Impl();
 
             state._fsp--;
@@ -15976,31 +15212,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__7__Impl"
-    // InternalOseeDsl.g:5817:1: rule__XRelationType__Group__7__Impl : ( ( rule__XRelationType__SideANameAssignment_7 ) ) ;
+    // InternalOseeDsl.g:5535:1: rule__XRelationType__Group__7__Impl : ( 'sideAArtifactType' ) ;
     public final void rule__XRelationType__Group__7__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5821:1: ( ( ( rule__XRelationType__SideANameAssignment_7 ) ) )
-            // InternalOseeDsl.g:5822:1: ( ( rule__XRelationType__SideANameAssignment_7 ) )
+            // InternalOseeDsl.g:5539:1: ( ( 'sideAArtifactType' ) )
+            // InternalOseeDsl.g:5540:1: ( 'sideAArtifactType' )
             {
-            // InternalOseeDsl.g:5822:1: ( ( rule__XRelationType__SideANameAssignment_7 ) )
-            // InternalOseeDsl.g:5823:1: ( rule__XRelationType__SideANameAssignment_7 )
+            // InternalOseeDsl.g:5540:1: ( 'sideAArtifactType' )
+            // InternalOseeDsl.g:5541:1: 'sideAArtifactType'
             {
-             before(grammarAccess.getXRelationTypeAccess().getSideANameAssignment_7()); 
-            // InternalOseeDsl.g:5824:1: ( rule__XRelationType__SideANameAssignment_7 )
-            // InternalOseeDsl.g:5824:2: rule__XRelationType__SideANameAssignment_7
-            {
-            pushFollow(FOLLOW_2);
-            rule__XRelationType__SideANameAssignment_7();
-
-            state._fsp--;
-
-
-            }
-
-             after(grammarAccess.getXRelationTypeAccess().getSideANameAssignment_7()); 
+             before(grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeKeyword_7()); 
+            match(input,80,FOLLOW_2); 
+             after(grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeKeyword_7()); 
 
             }
 
@@ -16023,16 +15249,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__8"
-    // InternalOseeDsl.g:5834:1: rule__XRelationType__Group__8 : rule__XRelationType__Group__8__Impl rule__XRelationType__Group__9 ;
+    // InternalOseeDsl.g:5554:1: rule__XRelationType__Group__8 : rule__XRelationType__Group__8__Impl rule__XRelationType__Group__9 ;
     public final void rule__XRelationType__Group__8() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5838:1: ( rule__XRelationType__Group__8__Impl rule__XRelationType__Group__9 )
-            // InternalOseeDsl.g:5839:2: rule__XRelationType__Group__8__Impl rule__XRelationType__Group__9
+            // InternalOseeDsl.g:5558:1: ( rule__XRelationType__Group__8__Impl rule__XRelationType__Group__9 )
+            // InternalOseeDsl.g:5559:2: rule__XRelationType__Group__8__Impl rule__XRelationType__Group__9
             {
-            pushFollow(FOLLOW_7);
+            pushFollow(FOLLOW_42);
             rule__XRelationType__Group__8__Impl();
 
             state._fsp--;
@@ -16061,21 +15287,31 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__8__Impl"
-    // InternalOseeDsl.g:5846:1: rule__XRelationType__Group__8__Impl : ( 'sideAArtifactType' ) ;
+    // InternalOseeDsl.g:5566:1: rule__XRelationType__Group__8__Impl : ( ( rule__XRelationType__SideAArtifactTypeAssignment_8 ) ) ;
     public final void rule__XRelationType__Group__8__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5850:1: ( ( 'sideAArtifactType' ) )
-            // InternalOseeDsl.g:5851:1: ( 'sideAArtifactType' )
+            // InternalOseeDsl.g:5570:1: ( ( ( rule__XRelationType__SideAArtifactTypeAssignment_8 ) ) )
+            // InternalOseeDsl.g:5571:1: ( ( rule__XRelationType__SideAArtifactTypeAssignment_8 ) )
             {
-            // InternalOseeDsl.g:5851:1: ( 'sideAArtifactType' )
-            // InternalOseeDsl.g:5852:1: 'sideAArtifactType'
+            // InternalOseeDsl.g:5571:1: ( ( rule__XRelationType__SideAArtifactTypeAssignment_8 ) )
+            // InternalOseeDsl.g:5572:1: ( rule__XRelationType__SideAArtifactTypeAssignment_8 )
             {
-             before(grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeKeyword_8()); 
-            match(input,81,FOLLOW_2); 
-             after(grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeKeyword_8()); 
+             before(grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeAssignment_8()); 
+            // InternalOseeDsl.g:5573:1: ( rule__XRelationType__SideAArtifactTypeAssignment_8 )
+            // InternalOseeDsl.g:5573:2: rule__XRelationType__SideAArtifactTypeAssignment_8
+            {
+            pushFollow(FOLLOW_2);
+            rule__XRelationType__SideAArtifactTypeAssignment_8();
+
+            state._fsp--;
+
+
+            }
+
+             after(grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeAssignment_8()); 
 
             }
 
@@ -16098,16 +15334,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__9"
-    // InternalOseeDsl.g:5865:1: rule__XRelationType__Group__9 : rule__XRelationType__Group__9__Impl rule__XRelationType__Group__10 ;
+    // InternalOseeDsl.g:5583:1: rule__XRelationType__Group__9 : rule__XRelationType__Group__9__Impl rule__XRelationType__Group__10 ;
     public final void rule__XRelationType__Group__9() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5869:1: ( rule__XRelationType__Group__9__Impl rule__XRelationType__Group__10 )
-            // InternalOseeDsl.g:5870:2: rule__XRelationType__Group__9__Impl rule__XRelationType__Group__10
+            // InternalOseeDsl.g:5587:1: ( rule__XRelationType__Group__9__Impl rule__XRelationType__Group__10 )
+            // InternalOseeDsl.g:5588:2: rule__XRelationType__Group__9__Impl rule__XRelationType__Group__10
             {
-            pushFollow(FOLLOW_42);
+            pushFollow(FOLLOW_7);
             rule__XRelationType__Group__9__Impl();
 
             state._fsp--;
@@ -16136,31 +15372,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__9__Impl"
-    // InternalOseeDsl.g:5877:1: rule__XRelationType__Group__9__Impl : ( ( rule__XRelationType__SideAArtifactTypeAssignment_9 ) ) ;
+    // InternalOseeDsl.g:5595:1: rule__XRelationType__Group__9__Impl : ( 'sideBName' ) ;
     public final void rule__XRelationType__Group__9__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5881:1: ( ( ( rule__XRelationType__SideAArtifactTypeAssignment_9 ) ) )
-            // InternalOseeDsl.g:5882:1: ( ( rule__XRelationType__SideAArtifactTypeAssignment_9 ) )
+            // InternalOseeDsl.g:5599:1: ( ( 'sideBName' ) )
+            // InternalOseeDsl.g:5600:1: ( 'sideBName' )
             {
-            // InternalOseeDsl.g:5882:1: ( ( rule__XRelationType__SideAArtifactTypeAssignment_9 ) )
-            // InternalOseeDsl.g:5883:1: ( rule__XRelationType__SideAArtifactTypeAssignment_9 )
+            // InternalOseeDsl.g:5600:1: ( 'sideBName' )
+            // InternalOseeDsl.g:5601:1: 'sideBName'
             {
-             before(grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeAssignment_9()); 
-            // InternalOseeDsl.g:5884:1: ( rule__XRelationType__SideAArtifactTypeAssignment_9 )
-            // InternalOseeDsl.g:5884:2: rule__XRelationType__SideAArtifactTypeAssignment_9
-            {
-            pushFollow(FOLLOW_2);
-            rule__XRelationType__SideAArtifactTypeAssignment_9();
-
-            state._fsp--;
-
-
-            }
-
-             after(grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeAssignment_9()); 
+             before(grammarAccess.getXRelationTypeAccess().getSideBNameKeyword_9()); 
+            match(input,81,FOLLOW_2); 
+             after(grammarAccess.getXRelationTypeAccess().getSideBNameKeyword_9()); 
 
             }
 
@@ -16183,16 +15409,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__10"
-    // InternalOseeDsl.g:5894:1: rule__XRelationType__Group__10 : rule__XRelationType__Group__10__Impl rule__XRelationType__Group__11 ;
+    // InternalOseeDsl.g:5614:1: rule__XRelationType__Group__10 : rule__XRelationType__Group__10__Impl rule__XRelationType__Group__11 ;
     public final void rule__XRelationType__Group__10() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5898:1: ( rule__XRelationType__Group__10__Impl rule__XRelationType__Group__11 )
-            // InternalOseeDsl.g:5899:2: rule__XRelationType__Group__10__Impl rule__XRelationType__Group__11
+            // InternalOseeDsl.g:5618:1: ( rule__XRelationType__Group__10__Impl rule__XRelationType__Group__11 )
+            // InternalOseeDsl.g:5619:2: rule__XRelationType__Group__10__Impl rule__XRelationType__Group__11
             {
-            pushFollow(FOLLOW_7);
+            pushFollow(FOLLOW_43);
             rule__XRelationType__Group__10__Impl();
 
             state._fsp--;
@@ -16221,21 +15447,31 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__10__Impl"
-    // InternalOseeDsl.g:5906:1: rule__XRelationType__Group__10__Impl : ( 'sideBName' ) ;
+    // InternalOseeDsl.g:5626:1: rule__XRelationType__Group__10__Impl : ( ( rule__XRelationType__SideBNameAssignment_10 ) ) ;
     public final void rule__XRelationType__Group__10__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5910:1: ( ( 'sideBName' ) )
-            // InternalOseeDsl.g:5911:1: ( 'sideBName' )
+            // InternalOseeDsl.g:5630:1: ( ( ( rule__XRelationType__SideBNameAssignment_10 ) ) )
+            // InternalOseeDsl.g:5631:1: ( ( rule__XRelationType__SideBNameAssignment_10 ) )
             {
-            // InternalOseeDsl.g:5911:1: ( 'sideBName' )
-            // InternalOseeDsl.g:5912:1: 'sideBName'
+            // InternalOseeDsl.g:5631:1: ( ( rule__XRelationType__SideBNameAssignment_10 ) )
+            // InternalOseeDsl.g:5632:1: ( rule__XRelationType__SideBNameAssignment_10 )
             {
-             before(grammarAccess.getXRelationTypeAccess().getSideBNameKeyword_10()); 
-            match(input,82,FOLLOW_2); 
-             after(grammarAccess.getXRelationTypeAccess().getSideBNameKeyword_10()); 
+             before(grammarAccess.getXRelationTypeAccess().getSideBNameAssignment_10()); 
+            // InternalOseeDsl.g:5633:1: ( rule__XRelationType__SideBNameAssignment_10 )
+            // InternalOseeDsl.g:5633:2: rule__XRelationType__SideBNameAssignment_10
+            {
+            pushFollow(FOLLOW_2);
+            rule__XRelationType__SideBNameAssignment_10();
+
+            state._fsp--;
+
+
+            }
+
+             after(grammarAccess.getXRelationTypeAccess().getSideBNameAssignment_10()); 
 
             }
 
@@ -16258,16 +15494,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__11"
-    // InternalOseeDsl.g:5925:1: rule__XRelationType__Group__11 : rule__XRelationType__Group__11__Impl rule__XRelationType__Group__12 ;
+    // InternalOseeDsl.g:5643:1: rule__XRelationType__Group__11 : rule__XRelationType__Group__11__Impl rule__XRelationType__Group__12 ;
     public final void rule__XRelationType__Group__11() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5929:1: ( rule__XRelationType__Group__11__Impl rule__XRelationType__Group__12 )
-            // InternalOseeDsl.g:5930:2: rule__XRelationType__Group__11__Impl rule__XRelationType__Group__12
+            // InternalOseeDsl.g:5647:1: ( rule__XRelationType__Group__11__Impl rule__XRelationType__Group__12 )
+            // InternalOseeDsl.g:5648:2: rule__XRelationType__Group__11__Impl rule__XRelationType__Group__12
             {
-            pushFollow(FOLLOW_43);
+            pushFollow(FOLLOW_7);
             rule__XRelationType__Group__11__Impl();
 
             state._fsp--;
@@ -16296,31 +15532,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__11__Impl"
-    // InternalOseeDsl.g:5937:1: rule__XRelationType__Group__11__Impl : ( ( rule__XRelationType__SideBNameAssignment_11 ) ) ;
+    // InternalOseeDsl.g:5655:1: rule__XRelationType__Group__11__Impl : ( 'sideBArtifactType' ) ;
     public final void rule__XRelationType__Group__11__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5941:1: ( ( ( rule__XRelationType__SideBNameAssignment_11 ) ) )
-            // InternalOseeDsl.g:5942:1: ( ( rule__XRelationType__SideBNameAssignment_11 ) )
+            // InternalOseeDsl.g:5659:1: ( ( 'sideBArtifactType' ) )
+            // InternalOseeDsl.g:5660:1: ( 'sideBArtifactType' )
             {
-            // InternalOseeDsl.g:5942:1: ( ( rule__XRelationType__SideBNameAssignment_11 ) )
-            // InternalOseeDsl.g:5943:1: ( rule__XRelationType__SideBNameAssignment_11 )
+            // InternalOseeDsl.g:5660:1: ( 'sideBArtifactType' )
+            // InternalOseeDsl.g:5661:1: 'sideBArtifactType'
             {
-             before(grammarAccess.getXRelationTypeAccess().getSideBNameAssignment_11()); 
-            // InternalOseeDsl.g:5944:1: ( rule__XRelationType__SideBNameAssignment_11 )
-            // InternalOseeDsl.g:5944:2: rule__XRelationType__SideBNameAssignment_11
-            {
-            pushFollow(FOLLOW_2);
-            rule__XRelationType__SideBNameAssignment_11();
-
-            state._fsp--;
-
-
-            }
-
-             after(grammarAccess.getXRelationTypeAccess().getSideBNameAssignment_11()); 
+             before(grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeKeyword_11()); 
+            match(input,82,FOLLOW_2); 
+             after(grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeKeyword_11()); 
 
             }
 
@@ -16343,16 +15569,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__12"
-    // InternalOseeDsl.g:5954:1: rule__XRelationType__Group__12 : rule__XRelationType__Group__12__Impl rule__XRelationType__Group__13 ;
+    // InternalOseeDsl.g:5674:1: rule__XRelationType__Group__12 : rule__XRelationType__Group__12__Impl rule__XRelationType__Group__13 ;
     public final void rule__XRelationType__Group__12() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5958:1: ( rule__XRelationType__Group__12__Impl rule__XRelationType__Group__13 )
-            // InternalOseeDsl.g:5959:2: rule__XRelationType__Group__12__Impl rule__XRelationType__Group__13
+            // InternalOseeDsl.g:5678:1: ( rule__XRelationType__Group__12__Impl rule__XRelationType__Group__13 )
+            // InternalOseeDsl.g:5679:2: rule__XRelationType__Group__12__Impl rule__XRelationType__Group__13
             {
-            pushFollow(FOLLOW_7);
+            pushFollow(FOLLOW_44);
             rule__XRelationType__Group__12__Impl();
 
             state._fsp--;
@@ -16381,21 +15607,31 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__12__Impl"
-    // InternalOseeDsl.g:5966:1: rule__XRelationType__Group__12__Impl : ( 'sideBArtifactType' ) ;
+    // InternalOseeDsl.g:5686:1: rule__XRelationType__Group__12__Impl : ( ( rule__XRelationType__SideBArtifactTypeAssignment_12 ) ) ;
     public final void rule__XRelationType__Group__12__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5970:1: ( ( 'sideBArtifactType' ) )
-            // InternalOseeDsl.g:5971:1: ( 'sideBArtifactType' )
+            // InternalOseeDsl.g:5690:1: ( ( ( rule__XRelationType__SideBArtifactTypeAssignment_12 ) ) )
+            // InternalOseeDsl.g:5691:1: ( ( rule__XRelationType__SideBArtifactTypeAssignment_12 ) )
             {
-            // InternalOseeDsl.g:5971:1: ( 'sideBArtifactType' )
-            // InternalOseeDsl.g:5972:1: 'sideBArtifactType'
+            // InternalOseeDsl.g:5691:1: ( ( rule__XRelationType__SideBArtifactTypeAssignment_12 ) )
+            // InternalOseeDsl.g:5692:1: ( rule__XRelationType__SideBArtifactTypeAssignment_12 )
             {
-             before(grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeKeyword_12()); 
-            match(input,83,FOLLOW_2); 
-             after(grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeKeyword_12()); 
+             before(grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeAssignment_12()); 
+            // InternalOseeDsl.g:5693:1: ( rule__XRelationType__SideBArtifactTypeAssignment_12 )
+            // InternalOseeDsl.g:5693:2: rule__XRelationType__SideBArtifactTypeAssignment_12
+            {
+            pushFollow(FOLLOW_2);
+            rule__XRelationType__SideBArtifactTypeAssignment_12();
+
+            state._fsp--;
+
+
+            }
+
+             after(grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeAssignment_12()); 
 
             }
 
@@ -16418,16 +15654,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__13"
-    // InternalOseeDsl.g:5985:1: rule__XRelationType__Group__13 : rule__XRelationType__Group__13__Impl rule__XRelationType__Group__14 ;
+    // InternalOseeDsl.g:5703:1: rule__XRelationType__Group__13 : rule__XRelationType__Group__13__Impl rule__XRelationType__Group__14 ;
     public final void rule__XRelationType__Group__13() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:5989:1: ( rule__XRelationType__Group__13__Impl rule__XRelationType__Group__14 )
-            // InternalOseeDsl.g:5990:2: rule__XRelationType__Group__13__Impl rule__XRelationType__Group__14
+            // InternalOseeDsl.g:5707:1: ( rule__XRelationType__Group__13__Impl rule__XRelationType__Group__14 )
+            // InternalOseeDsl.g:5708:2: rule__XRelationType__Group__13__Impl rule__XRelationType__Group__14
             {
-            pushFollow(FOLLOW_44);
+            pushFollow(FOLLOW_45);
             rule__XRelationType__Group__13__Impl();
 
             state._fsp--;
@@ -16456,31 +15692,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__13__Impl"
-    // InternalOseeDsl.g:5997:1: rule__XRelationType__Group__13__Impl : ( ( rule__XRelationType__SideBArtifactTypeAssignment_13 ) ) ;
+    // InternalOseeDsl.g:5715:1: rule__XRelationType__Group__13__Impl : ( 'defaultOrderType' ) ;
     public final void rule__XRelationType__Group__13__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6001:1: ( ( ( rule__XRelationType__SideBArtifactTypeAssignment_13 ) ) )
-            // InternalOseeDsl.g:6002:1: ( ( rule__XRelationType__SideBArtifactTypeAssignment_13 ) )
+            // InternalOseeDsl.g:5719:1: ( ( 'defaultOrderType' ) )
+            // InternalOseeDsl.g:5720:1: ( 'defaultOrderType' )
             {
-            // InternalOseeDsl.g:6002:1: ( ( rule__XRelationType__SideBArtifactTypeAssignment_13 ) )
-            // InternalOseeDsl.g:6003:1: ( rule__XRelationType__SideBArtifactTypeAssignment_13 )
+            // InternalOseeDsl.g:5720:1: ( 'defaultOrderType' )
+            // InternalOseeDsl.g:5721:1: 'defaultOrderType'
             {
-             before(grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeAssignment_13()); 
-            // InternalOseeDsl.g:6004:1: ( rule__XRelationType__SideBArtifactTypeAssignment_13 )
-            // InternalOseeDsl.g:6004:2: rule__XRelationType__SideBArtifactTypeAssignment_13
-            {
-            pushFollow(FOLLOW_2);
-            rule__XRelationType__SideBArtifactTypeAssignment_13();
-
-            state._fsp--;
-
-
-            }
-
-             after(grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeAssignment_13()); 
+             before(grammarAccess.getXRelationTypeAccess().getDefaultOrderTypeKeyword_13()); 
+            match(input,83,FOLLOW_2); 
+             after(grammarAccess.getXRelationTypeAccess().getDefaultOrderTypeKeyword_13()); 
 
             }
 
@@ -16503,16 +15729,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__14"
-    // InternalOseeDsl.g:6014:1: rule__XRelationType__Group__14 : rule__XRelationType__Group__14__Impl rule__XRelationType__Group__15 ;
+    // InternalOseeDsl.g:5734:1: rule__XRelationType__Group__14 : rule__XRelationType__Group__14__Impl rule__XRelationType__Group__15 ;
     public final void rule__XRelationType__Group__14() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6018:1: ( rule__XRelationType__Group__14__Impl rule__XRelationType__Group__15 )
-            // InternalOseeDsl.g:6019:2: rule__XRelationType__Group__14__Impl rule__XRelationType__Group__15
+            // InternalOseeDsl.g:5738:1: ( rule__XRelationType__Group__14__Impl rule__XRelationType__Group__15 )
+            // InternalOseeDsl.g:5739:2: rule__XRelationType__Group__14__Impl rule__XRelationType__Group__15
             {
-            pushFollow(FOLLOW_45);
+            pushFollow(FOLLOW_46);
             rule__XRelationType__Group__14__Impl();
 
             state._fsp--;
@@ -16541,21 +15767,31 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__14__Impl"
-    // InternalOseeDsl.g:6026:1: rule__XRelationType__Group__14__Impl : ( 'defaultOrderType' ) ;
+    // InternalOseeDsl.g:5746:1: rule__XRelationType__Group__14__Impl : ( ( rule__XRelationType__DefaultOrderTypeAssignment_14 ) ) ;
     public final void rule__XRelationType__Group__14__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6030:1: ( ( 'defaultOrderType' ) )
-            // InternalOseeDsl.g:6031:1: ( 'defaultOrderType' )
+            // InternalOseeDsl.g:5750:1: ( ( ( rule__XRelationType__DefaultOrderTypeAssignment_14 ) ) )
+            // InternalOseeDsl.g:5751:1: ( ( rule__XRelationType__DefaultOrderTypeAssignment_14 ) )
             {
-            // InternalOseeDsl.g:6031:1: ( 'defaultOrderType' )
-            // InternalOseeDsl.g:6032:1: 'defaultOrderType'
+            // InternalOseeDsl.g:5751:1: ( ( rule__XRelationType__DefaultOrderTypeAssignment_14 ) )
+            // InternalOseeDsl.g:5752:1: ( rule__XRelationType__DefaultOrderTypeAssignment_14 )
             {
-             before(grammarAccess.getXRelationTypeAccess().getDefaultOrderTypeKeyword_14()); 
-            match(input,84,FOLLOW_2); 
-             after(grammarAccess.getXRelationTypeAccess().getDefaultOrderTypeKeyword_14()); 
+             before(grammarAccess.getXRelationTypeAccess().getDefaultOrderTypeAssignment_14()); 
+            // InternalOseeDsl.g:5753:1: ( rule__XRelationType__DefaultOrderTypeAssignment_14 )
+            // InternalOseeDsl.g:5753:2: rule__XRelationType__DefaultOrderTypeAssignment_14
+            {
+            pushFollow(FOLLOW_2);
+            rule__XRelationType__DefaultOrderTypeAssignment_14();
+
+            state._fsp--;
+
+
+            }
+
+             after(grammarAccess.getXRelationTypeAccess().getDefaultOrderTypeAssignment_14()); 
 
             }
 
@@ -16578,16 +15814,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__15"
-    // InternalOseeDsl.g:6045:1: rule__XRelationType__Group__15 : rule__XRelationType__Group__15__Impl rule__XRelationType__Group__16 ;
+    // InternalOseeDsl.g:5763:1: rule__XRelationType__Group__15 : rule__XRelationType__Group__15__Impl rule__XRelationType__Group__16 ;
     public final void rule__XRelationType__Group__15() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6049:1: ( rule__XRelationType__Group__15__Impl rule__XRelationType__Group__16 )
-            // InternalOseeDsl.g:6050:2: rule__XRelationType__Group__15__Impl rule__XRelationType__Group__16
+            // InternalOseeDsl.g:5767:1: ( rule__XRelationType__Group__15__Impl rule__XRelationType__Group__16 )
+            // InternalOseeDsl.g:5768:2: rule__XRelationType__Group__15__Impl rule__XRelationType__Group__16
             {
-            pushFollow(FOLLOW_46);
+            pushFollow(FOLLOW_47);
             rule__XRelationType__Group__15__Impl();
 
             state._fsp--;
@@ -16616,31 +15852,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__15__Impl"
-    // InternalOseeDsl.g:6057:1: rule__XRelationType__Group__15__Impl : ( ( rule__XRelationType__DefaultOrderTypeAssignment_15 ) ) ;
+    // InternalOseeDsl.g:5775:1: rule__XRelationType__Group__15__Impl : ( 'multiplicity' ) ;
     public final void rule__XRelationType__Group__15__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6061:1: ( ( ( rule__XRelationType__DefaultOrderTypeAssignment_15 ) ) )
-            // InternalOseeDsl.g:6062:1: ( ( rule__XRelationType__DefaultOrderTypeAssignment_15 ) )
+            // InternalOseeDsl.g:5779:1: ( ( 'multiplicity' ) )
+            // InternalOseeDsl.g:5780:1: ( 'multiplicity' )
             {
-            // InternalOseeDsl.g:6062:1: ( ( rule__XRelationType__DefaultOrderTypeAssignment_15 ) )
-            // InternalOseeDsl.g:6063:1: ( rule__XRelationType__DefaultOrderTypeAssignment_15 )
+            // InternalOseeDsl.g:5780:1: ( 'multiplicity' )
+            // InternalOseeDsl.g:5781:1: 'multiplicity'
             {
-             before(grammarAccess.getXRelationTypeAccess().getDefaultOrderTypeAssignment_15()); 
-            // InternalOseeDsl.g:6064:1: ( rule__XRelationType__DefaultOrderTypeAssignment_15 )
-            // InternalOseeDsl.g:6064:2: rule__XRelationType__DefaultOrderTypeAssignment_15
-            {
-            pushFollow(FOLLOW_2);
-            rule__XRelationType__DefaultOrderTypeAssignment_15();
-
-            state._fsp--;
-
-
-            }
-
-             after(grammarAccess.getXRelationTypeAccess().getDefaultOrderTypeAssignment_15()); 
+             before(grammarAccess.getXRelationTypeAccess().getMultiplicityKeyword_15()); 
+            match(input,84,FOLLOW_2); 
+             after(grammarAccess.getXRelationTypeAccess().getMultiplicityKeyword_15()); 
 
             }
 
@@ -16663,16 +15889,16 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__16"
-    // InternalOseeDsl.g:6074:1: rule__XRelationType__Group__16 : rule__XRelationType__Group__16__Impl rule__XRelationType__Group__17 ;
+    // InternalOseeDsl.g:5794:1: rule__XRelationType__Group__16 : rule__XRelationType__Group__16__Impl rule__XRelationType__Group__17 ;
     public final void rule__XRelationType__Group__16() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6078:1: ( rule__XRelationType__Group__16__Impl rule__XRelationType__Group__17 )
-            // InternalOseeDsl.g:6079:2: rule__XRelationType__Group__16__Impl rule__XRelationType__Group__17
+            // InternalOseeDsl.g:5798:1: ( rule__XRelationType__Group__16__Impl rule__XRelationType__Group__17 )
+            // InternalOseeDsl.g:5799:2: rule__XRelationType__Group__16__Impl rule__XRelationType__Group__17
             {
-            pushFollow(FOLLOW_47);
+            pushFollow(FOLLOW_28);
             rule__XRelationType__Group__16__Impl();
 
             state._fsp--;
@@ -16701,21 +15927,31 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__16__Impl"
-    // InternalOseeDsl.g:6086:1: rule__XRelationType__Group__16__Impl : ( 'multiplicity' ) ;
+    // InternalOseeDsl.g:5806:1: rule__XRelationType__Group__16__Impl : ( ( rule__XRelationType__MultiplicityAssignment_16 ) ) ;
     public final void rule__XRelationType__Group__16__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6090:1: ( ( 'multiplicity' ) )
-            // InternalOseeDsl.g:6091:1: ( 'multiplicity' )
+            // InternalOseeDsl.g:5810:1: ( ( ( rule__XRelationType__MultiplicityAssignment_16 ) ) )
+            // InternalOseeDsl.g:5811:1: ( ( rule__XRelationType__MultiplicityAssignment_16 ) )
             {
-            // InternalOseeDsl.g:6091:1: ( 'multiplicity' )
-            // InternalOseeDsl.g:6092:1: 'multiplicity'
+            // InternalOseeDsl.g:5811:1: ( ( rule__XRelationType__MultiplicityAssignment_16 ) )
+            // InternalOseeDsl.g:5812:1: ( rule__XRelationType__MultiplicityAssignment_16 )
             {
-             before(grammarAccess.getXRelationTypeAccess().getMultiplicityKeyword_16()); 
-            match(input,85,FOLLOW_2); 
-             after(grammarAccess.getXRelationTypeAccess().getMultiplicityKeyword_16()); 
+             before(grammarAccess.getXRelationTypeAccess().getMultiplicityAssignment_16()); 
+            // InternalOseeDsl.g:5813:1: ( rule__XRelationType__MultiplicityAssignment_16 )
+            // InternalOseeDsl.g:5813:2: rule__XRelationType__MultiplicityAssignment_16
+            {
+            pushFollow(FOLLOW_2);
+            rule__XRelationType__MultiplicityAssignment_16();
+
+            state._fsp--;
+
+
+            }
+
+             after(grammarAccess.getXRelationTypeAccess().getMultiplicityAssignment_16()); 
 
             }
 
@@ -16738,22 +15974,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__17"
-    // InternalOseeDsl.g:6105:1: rule__XRelationType__Group__17 : rule__XRelationType__Group__17__Impl rule__XRelationType__Group__18 ;
+    // InternalOseeDsl.g:5823:1: rule__XRelationType__Group__17 : rule__XRelationType__Group__17__Impl ;
     public final void rule__XRelationType__Group__17() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6109:1: ( rule__XRelationType__Group__17__Impl rule__XRelationType__Group__18 )
-            // InternalOseeDsl.g:6110:2: rule__XRelationType__Group__17__Impl rule__XRelationType__Group__18
+            // InternalOseeDsl.g:5827:1: ( rule__XRelationType__Group__17__Impl )
+            // InternalOseeDsl.g:5828:2: rule__XRelationType__Group__17__Impl
             {
-            pushFollow(FOLLOW_28);
-            rule__XRelationType__Group__17__Impl();
-
-            state._fsp--;
-
             pushFollow(FOLLOW_2);
-            rule__XRelationType__Group__18();
+            rule__XRelationType__Group__17__Impl();
 
             state._fsp--;
 
@@ -16776,31 +16007,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__Group__17__Impl"
-    // InternalOseeDsl.g:6117:1: rule__XRelationType__Group__17__Impl : ( ( rule__XRelationType__MultiplicityAssignment_17 ) ) ;
+    // InternalOseeDsl.g:5834:1: rule__XRelationType__Group__17__Impl : ( '}' ) ;
     public final void rule__XRelationType__Group__17__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6121:1: ( ( ( rule__XRelationType__MultiplicityAssignment_17 ) ) )
-            // InternalOseeDsl.g:6122:1: ( ( rule__XRelationType__MultiplicityAssignment_17 ) )
+            // InternalOseeDsl.g:5838:1: ( ( '}' ) )
+            // InternalOseeDsl.g:5839:1: ( '}' )
             {
-            // InternalOseeDsl.g:6122:1: ( ( rule__XRelationType__MultiplicityAssignment_17 ) )
-            // InternalOseeDsl.g:6123:1: ( rule__XRelationType__MultiplicityAssignment_17 )
+            // InternalOseeDsl.g:5839:1: ( '}' )
+            // InternalOseeDsl.g:5840:1: '}'
             {
-             before(grammarAccess.getXRelationTypeAccess().getMultiplicityAssignment_17()); 
-            // InternalOseeDsl.g:6124:1: ( rule__XRelationType__MultiplicityAssignment_17 )
-            // InternalOseeDsl.g:6124:2: rule__XRelationType__MultiplicityAssignment_17
-            {
-            pushFollow(FOLLOW_2);
-            rule__XRelationType__MultiplicityAssignment_17();
-
-            state._fsp--;
-
-
-            }
-
-             after(grammarAccess.getXRelationTypeAccess().getMultiplicityAssignment_17()); 
+             before(grammarAccess.getXRelationTypeAccess().getRightCurlyBracketKeyword_17()); 
+            match(input,55,FOLLOW_2); 
+             after(grammarAccess.getXRelationTypeAccess().getRightCurlyBracketKeyword_17()); 
 
             }
 
@@ -16822,240 +16043,15 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
     // $ANTLR end "rule__XRelationType__Group__17__Impl"
 
 
-    // $ANTLR start "rule__XRelationType__Group__18"
-    // InternalOseeDsl.g:6134:1: rule__XRelationType__Group__18 : rule__XRelationType__Group__18__Impl ;
-    public final void rule__XRelationType__Group__18() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:6138:1: ( rule__XRelationType__Group__18__Impl )
-            // InternalOseeDsl.g:6139:2: rule__XRelationType__Group__18__Impl
-            {
-            pushFollow(FOLLOW_2);
-            rule__XRelationType__Group__18__Impl();
-
-            state._fsp--;
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XRelationType__Group__18"
-
-
-    // $ANTLR start "rule__XRelationType__Group__18__Impl"
-    // InternalOseeDsl.g:6145:1: rule__XRelationType__Group__18__Impl : ( '}' ) ;
-    public final void rule__XRelationType__Group__18__Impl() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:6149:1: ( ( '}' ) )
-            // InternalOseeDsl.g:6150:1: ( '}' )
-            {
-            // InternalOseeDsl.g:6150:1: ( '}' )
-            // InternalOseeDsl.g:6151:1: '}'
-            {
-             before(grammarAccess.getXRelationTypeAccess().getRightCurlyBracketKeyword_18()); 
-            match(input,55,FOLLOW_2); 
-             after(grammarAccess.getXRelationTypeAccess().getRightCurlyBracketKeyword_18()); 
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XRelationType__Group__18__Impl"
-
-
-    // $ANTLR start "rule__XRelationType__Group_3__0"
-    // InternalOseeDsl.g:6202:1: rule__XRelationType__Group_3__0 : rule__XRelationType__Group_3__0__Impl rule__XRelationType__Group_3__1 ;
-    public final void rule__XRelationType__Group_3__0() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:6206:1: ( rule__XRelationType__Group_3__0__Impl rule__XRelationType__Group_3__1 )
-            // InternalOseeDsl.g:6207:2: rule__XRelationType__Group_3__0__Impl rule__XRelationType__Group_3__1
-            {
-            pushFollow(FOLLOW_7);
-            rule__XRelationType__Group_3__0__Impl();
-
-            state._fsp--;
-
-            pushFollow(FOLLOW_2);
-            rule__XRelationType__Group_3__1();
-
-            state._fsp--;
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XRelationType__Group_3__0"
-
-
-    // $ANTLR start "rule__XRelationType__Group_3__0__Impl"
-    // InternalOseeDsl.g:6214:1: rule__XRelationType__Group_3__0__Impl : ( 'guid' ) ;
-    public final void rule__XRelationType__Group_3__0__Impl() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:6218:1: ( ( 'guid' ) )
-            // InternalOseeDsl.g:6219:1: ( 'guid' )
-            {
-            // InternalOseeDsl.g:6219:1: ( 'guid' )
-            // InternalOseeDsl.g:6220:1: 'guid'
-            {
-             before(grammarAccess.getXRelationTypeAccess().getGuidKeyword_3_0()); 
-            match(input,58,FOLLOW_2); 
-             after(grammarAccess.getXRelationTypeAccess().getGuidKeyword_3_0()); 
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XRelationType__Group_3__0__Impl"
-
-
-    // $ANTLR start "rule__XRelationType__Group_3__1"
-    // InternalOseeDsl.g:6233:1: rule__XRelationType__Group_3__1 : rule__XRelationType__Group_3__1__Impl ;
-    public final void rule__XRelationType__Group_3__1() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:6237:1: ( rule__XRelationType__Group_3__1__Impl )
-            // InternalOseeDsl.g:6238:2: rule__XRelationType__Group_3__1__Impl
-            {
-            pushFollow(FOLLOW_2);
-            rule__XRelationType__Group_3__1__Impl();
-
-            state._fsp--;
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XRelationType__Group_3__1"
-
-
-    // $ANTLR start "rule__XRelationType__Group_3__1__Impl"
-    // InternalOseeDsl.g:6244:1: rule__XRelationType__Group_3__1__Impl : ( ( rule__XRelationType__TypeGuidAssignment_3_1 ) ) ;
-    public final void rule__XRelationType__Group_3__1__Impl() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:6248:1: ( ( ( rule__XRelationType__TypeGuidAssignment_3_1 ) ) )
-            // InternalOseeDsl.g:6249:1: ( ( rule__XRelationType__TypeGuidAssignment_3_1 ) )
-            {
-            // InternalOseeDsl.g:6249:1: ( ( rule__XRelationType__TypeGuidAssignment_3_1 ) )
-            // InternalOseeDsl.g:6250:1: ( rule__XRelationType__TypeGuidAssignment_3_1 )
-            {
-             before(grammarAccess.getXRelationTypeAccess().getTypeGuidAssignment_3_1()); 
-            // InternalOseeDsl.g:6251:1: ( rule__XRelationType__TypeGuidAssignment_3_1 )
-            // InternalOseeDsl.g:6251:2: rule__XRelationType__TypeGuidAssignment_3_1
-            {
-            pushFollow(FOLLOW_2);
-            rule__XRelationType__TypeGuidAssignment_3_1();
-
-            state._fsp--;
-
-
-            }
-
-             after(grammarAccess.getXRelationTypeAccess().getTypeGuidAssignment_3_1()); 
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XRelationType__Group_3__1__Impl"
-
-
     // $ANTLR start "rule__SimpleCondition__Group__0"
-    // InternalOseeDsl.g:6265:1: rule__SimpleCondition__Group__0 : rule__SimpleCondition__Group__0__Impl rule__SimpleCondition__Group__1 ;
+    // InternalOseeDsl.g:5889:1: rule__SimpleCondition__Group__0 : rule__SimpleCondition__Group__0__Impl rule__SimpleCondition__Group__1 ;
     public final void rule__SimpleCondition__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6269:1: ( rule__SimpleCondition__Group__0__Impl rule__SimpleCondition__Group__1 )
-            // InternalOseeDsl.g:6270:2: rule__SimpleCondition__Group__0__Impl rule__SimpleCondition__Group__1
+            // InternalOseeDsl.g:5893:1: ( rule__SimpleCondition__Group__0__Impl rule__SimpleCondition__Group__1 )
+            // InternalOseeDsl.g:5894:2: rule__SimpleCondition__Group__0__Impl rule__SimpleCondition__Group__1
             {
             pushFollow(FOLLOW_48);
             rule__SimpleCondition__Group__0__Impl();
@@ -17086,21 +16082,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__SimpleCondition__Group__0__Impl"
-    // InternalOseeDsl.g:6277:1: rule__SimpleCondition__Group__0__Impl : ( ( rule__SimpleCondition__FieldAssignment_0 ) ) ;
+    // InternalOseeDsl.g:5901:1: rule__SimpleCondition__Group__0__Impl : ( ( rule__SimpleCondition__FieldAssignment_0 ) ) ;
     public final void rule__SimpleCondition__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6281:1: ( ( ( rule__SimpleCondition__FieldAssignment_0 ) ) )
-            // InternalOseeDsl.g:6282:1: ( ( rule__SimpleCondition__FieldAssignment_0 ) )
+            // InternalOseeDsl.g:5905:1: ( ( ( rule__SimpleCondition__FieldAssignment_0 ) ) )
+            // InternalOseeDsl.g:5906:1: ( ( rule__SimpleCondition__FieldAssignment_0 ) )
             {
-            // InternalOseeDsl.g:6282:1: ( ( rule__SimpleCondition__FieldAssignment_0 ) )
-            // InternalOseeDsl.g:6283:1: ( rule__SimpleCondition__FieldAssignment_0 )
+            // InternalOseeDsl.g:5906:1: ( ( rule__SimpleCondition__FieldAssignment_0 ) )
+            // InternalOseeDsl.g:5907:1: ( rule__SimpleCondition__FieldAssignment_0 )
             {
              before(grammarAccess.getSimpleConditionAccess().getFieldAssignment_0()); 
-            // InternalOseeDsl.g:6284:1: ( rule__SimpleCondition__FieldAssignment_0 )
-            // InternalOseeDsl.g:6284:2: rule__SimpleCondition__FieldAssignment_0
+            // InternalOseeDsl.g:5908:1: ( rule__SimpleCondition__FieldAssignment_0 )
+            // InternalOseeDsl.g:5908:2: rule__SimpleCondition__FieldAssignment_0
             {
             pushFollow(FOLLOW_2);
             rule__SimpleCondition__FieldAssignment_0();
@@ -17133,14 +16129,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__SimpleCondition__Group__1"
-    // InternalOseeDsl.g:6294:1: rule__SimpleCondition__Group__1 : rule__SimpleCondition__Group__1__Impl rule__SimpleCondition__Group__2 ;
+    // InternalOseeDsl.g:5918:1: rule__SimpleCondition__Group__1 : rule__SimpleCondition__Group__1__Impl rule__SimpleCondition__Group__2 ;
     public final void rule__SimpleCondition__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6298:1: ( rule__SimpleCondition__Group__1__Impl rule__SimpleCondition__Group__2 )
-            // InternalOseeDsl.g:6299:2: rule__SimpleCondition__Group__1__Impl rule__SimpleCondition__Group__2
+            // InternalOseeDsl.g:5922:1: ( rule__SimpleCondition__Group__1__Impl rule__SimpleCondition__Group__2 )
+            // InternalOseeDsl.g:5923:2: rule__SimpleCondition__Group__1__Impl rule__SimpleCondition__Group__2
             {
             pushFollow(FOLLOW_7);
             rule__SimpleCondition__Group__1__Impl();
@@ -17171,21 +16167,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__SimpleCondition__Group__1__Impl"
-    // InternalOseeDsl.g:6306:1: rule__SimpleCondition__Group__1__Impl : ( ( rule__SimpleCondition__OpAssignment_1 ) ) ;
+    // InternalOseeDsl.g:5930:1: rule__SimpleCondition__Group__1__Impl : ( ( rule__SimpleCondition__OpAssignment_1 ) ) ;
     public final void rule__SimpleCondition__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6310:1: ( ( ( rule__SimpleCondition__OpAssignment_1 ) ) )
-            // InternalOseeDsl.g:6311:1: ( ( rule__SimpleCondition__OpAssignment_1 ) )
+            // InternalOseeDsl.g:5934:1: ( ( ( rule__SimpleCondition__OpAssignment_1 ) ) )
+            // InternalOseeDsl.g:5935:1: ( ( rule__SimpleCondition__OpAssignment_1 ) )
             {
-            // InternalOseeDsl.g:6311:1: ( ( rule__SimpleCondition__OpAssignment_1 ) )
-            // InternalOseeDsl.g:6312:1: ( rule__SimpleCondition__OpAssignment_1 )
+            // InternalOseeDsl.g:5935:1: ( ( rule__SimpleCondition__OpAssignment_1 ) )
+            // InternalOseeDsl.g:5936:1: ( rule__SimpleCondition__OpAssignment_1 )
             {
              before(grammarAccess.getSimpleConditionAccess().getOpAssignment_1()); 
-            // InternalOseeDsl.g:6313:1: ( rule__SimpleCondition__OpAssignment_1 )
-            // InternalOseeDsl.g:6313:2: rule__SimpleCondition__OpAssignment_1
+            // InternalOseeDsl.g:5937:1: ( rule__SimpleCondition__OpAssignment_1 )
+            // InternalOseeDsl.g:5937:2: rule__SimpleCondition__OpAssignment_1
             {
             pushFollow(FOLLOW_2);
             rule__SimpleCondition__OpAssignment_1();
@@ -17218,14 +16214,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__SimpleCondition__Group__2"
-    // InternalOseeDsl.g:6323:1: rule__SimpleCondition__Group__2 : rule__SimpleCondition__Group__2__Impl ;
+    // InternalOseeDsl.g:5947:1: rule__SimpleCondition__Group__2 : rule__SimpleCondition__Group__2__Impl ;
     public final void rule__SimpleCondition__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6327:1: ( rule__SimpleCondition__Group__2__Impl )
-            // InternalOseeDsl.g:6328:2: rule__SimpleCondition__Group__2__Impl
+            // InternalOseeDsl.g:5951:1: ( rule__SimpleCondition__Group__2__Impl )
+            // InternalOseeDsl.g:5952:2: rule__SimpleCondition__Group__2__Impl
             {
             pushFollow(FOLLOW_2);
             rule__SimpleCondition__Group__2__Impl();
@@ -17251,21 +16247,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__SimpleCondition__Group__2__Impl"
-    // InternalOseeDsl.g:6334:1: rule__SimpleCondition__Group__2__Impl : ( ( rule__SimpleCondition__ExpressionAssignment_2 ) ) ;
+    // InternalOseeDsl.g:5958:1: rule__SimpleCondition__Group__2__Impl : ( ( rule__SimpleCondition__ExpressionAssignment_2 ) ) ;
     public final void rule__SimpleCondition__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6338:1: ( ( ( rule__SimpleCondition__ExpressionAssignment_2 ) ) )
-            // InternalOseeDsl.g:6339:1: ( ( rule__SimpleCondition__ExpressionAssignment_2 ) )
+            // InternalOseeDsl.g:5962:1: ( ( ( rule__SimpleCondition__ExpressionAssignment_2 ) ) )
+            // InternalOseeDsl.g:5963:1: ( ( rule__SimpleCondition__ExpressionAssignment_2 ) )
             {
-            // InternalOseeDsl.g:6339:1: ( ( rule__SimpleCondition__ExpressionAssignment_2 ) )
-            // InternalOseeDsl.g:6340:1: ( rule__SimpleCondition__ExpressionAssignment_2 )
+            // InternalOseeDsl.g:5963:1: ( ( rule__SimpleCondition__ExpressionAssignment_2 ) )
+            // InternalOseeDsl.g:5964:1: ( rule__SimpleCondition__ExpressionAssignment_2 )
             {
              before(grammarAccess.getSimpleConditionAccess().getExpressionAssignment_2()); 
-            // InternalOseeDsl.g:6341:1: ( rule__SimpleCondition__ExpressionAssignment_2 )
-            // InternalOseeDsl.g:6341:2: rule__SimpleCondition__ExpressionAssignment_2
+            // InternalOseeDsl.g:5965:1: ( rule__SimpleCondition__ExpressionAssignment_2 )
+            // InternalOseeDsl.g:5965:2: rule__SimpleCondition__ExpressionAssignment_2
             {
             pushFollow(FOLLOW_2);
             rule__SimpleCondition__ExpressionAssignment_2();
@@ -17298,14 +16294,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__CompoundCondition__Group__0"
-    // InternalOseeDsl.g:6357:1: rule__CompoundCondition__Group__0 : rule__CompoundCondition__Group__0__Impl rule__CompoundCondition__Group__1 ;
+    // InternalOseeDsl.g:5981:1: rule__CompoundCondition__Group__0 : rule__CompoundCondition__Group__0__Impl rule__CompoundCondition__Group__1 ;
     public final void rule__CompoundCondition__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6361:1: ( rule__CompoundCondition__Group__0__Impl rule__CompoundCondition__Group__1 )
-            // InternalOseeDsl.g:6362:2: rule__CompoundCondition__Group__0__Impl rule__CompoundCondition__Group__1
+            // InternalOseeDsl.g:5985:1: ( rule__CompoundCondition__Group__0__Impl rule__CompoundCondition__Group__1 )
+            // InternalOseeDsl.g:5986:2: rule__CompoundCondition__Group__0__Impl rule__CompoundCondition__Group__1
             {
             pushFollow(FOLLOW_49);
             rule__CompoundCondition__Group__0__Impl();
@@ -17336,20 +16332,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__CompoundCondition__Group__0__Impl"
-    // InternalOseeDsl.g:6369:1: rule__CompoundCondition__Group__0__Impl : ( '(' ) ;
+    // InternalOseeDsl.g:5993:1: rule__CompoundCondition__Group__0__Impl : ( '(' ) ;
     public final void rule__CompoundCondition__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6373:1: ( ( '(' ) )
-            // InternalOseeDsl.g:6374:1: ( '(' )
+            // InternalOseeDsl.g:5997:1: ( ( '(' ) )
+            // InternalOseeDsl.g:5998:1: ( '(' )
             {
-            // InternalOseeDsl.g:6374:1: ( '(' )
-            // InternalOseeDsl.g:6375:1: '('
+            // InternalOseeDsl.g:5998:1: ( '(' )
+            // InternalOseeDsl.g:5999:1: '('
             {
              before(grammarAccess.getCompoundConditionAccess().getLeftParenthesisKeyword_0()); 
-            match(input,86,FOLLOW_2); 
+            match(input,85,FOLLOW_2); 
              after(grammarAccess.getCompoundConditionAccess().getLeftParenthesisKeyword_0()); 
 
             }
@@ -17373,14 +16369,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__CompoundCondition__Group__1"
-    // InternalOseeDsl.g:6388:1: rule__CompoundCondition__Group__1 : rule__CompoundCondition__Group__1__Impl rule__CompoundCondition__Group__2 ;
+    // InternalOseeDsl.g:6012:1: rule__CompoundCondition__Group__1 : rule__CompoundCondition__Group__1__Impl rule__CompoundCondition__Group__2 ;
     public final void rule__CompoundCondition__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6392:1: ( rule__CompoundCondition__Group__1__Impl rule__CompoundCondition__Group__2 )
-            // InternalOseeDsl.g:6393:2: rule__CompoundCondition__Group__1__Impl rule__CompoundCondition__Group__2
+            // InternalOseeDsl.g:6016:1: ( rule__CompoundCondition__Group__1__Impl rule__CompoundCondition__Group__2 )
+            // InternalOseeDsl.g:6017:2: rule__CompoundCondition__Group__1__Impl rule__CompoundCondition__Group__2
             {
             pushFollow(FOLLOW_50);
             rule__CompoundCondition__Group__1__Impl();
@@ -17411,21 +16407,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__CompoundCondition__Group__1__Impl"
-    // InternalOseeDsl.g:6400:1: rule__CompoundCondition__Group__1__Impl : ( ( rule__CompoundCondition__ConditionsAssignment_1 ) ) ;
+    // InternalOseeDsl.g:6024:1: rule__CompoundCondition__Group__1__Impl : ( ( rule__CompoundCondition__ConditionsAssignment_1 ) ) ;
     public final void rule__CompoundCondition__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6404:1: ( ( ( rule__CompoundCondition__ConditionsAssignment_1 ) ) )
-            // InternalOseeDsl.g:6405:1: ( ( rule__CompoundCondition__ConditionsAssignment_1 ) )
+            // InternalOseeDsl.g:6028:1: ( ( ( rule__CompoundCondition__ConditionsAssignment_1 ) ) )
+            // InternalOseeDsl.g:6029:1: ( ( rule__CompoundCondition__ConditionsAssignment_1 ) )
             {
-            // InternalOseeDsl.g:6405:1: ( ( rule__CompoundCondition__ConditionsAssignment_1 ) )
-            // InternalOseeDsl.g:6406:1: ( rule__CompoundCondition__ConditionsAssignment_1 )
+            // InternalOseeDsl.g:6029:1: ( ( rule__CompoundCondition__ConditionsAssignment_1 ) )
+            // InternalOseeDsl.g:6030:1: ( rule__CompoundCondition__ConditionsAssignment_1 )
             {
              before(grammarAccess.getCompoundConditionAccess().getConditionsAssignment_1()); 
-            // InternalOseeDsl.g:6407:1: ( rule__CompoundCondition__ConditionsAssignment_1 )
-            // InternalOseeDsl.g:6407:2: rule__CompoundCondition__ConditionsAssignment_1
+            // InternalOseeDsl.g:6031:1: ( rule__CompoundCondition__ConditionsAssignment_1 )
+            // InternalOseeDsl.g:6031:2: rule__CompoundCondition__ConditionsAssignment_1
             {
             pushFollow(FOLLOW_2);
             rule__CompoundCondition__ConditionsAssignment_1();
@@ -17458,14 +16454,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__CompoundCondition__Group__2"
-    // InternalOseeDsl.g:6417:1: rule__CompoundCondition__Group__2 : rule__CompoundCondition__Group__2__Impl rule__CompoundCondition__Group__3 ;
+    // InternalOseeDsl.g:6041:1: rule__CompoundCondition__Group__2 : rule__CompoundCondition__Group__2__Impl rule__CompoundCondition__Group__3 ;
     public final void rule__CompoundCondition__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6421:1: ( rule__CompoundCondition__Group__2__Impl rule__CompoundCondition__Group__3 )
-            // InternalOseeDsl.g:6422:2: rule__CompoundCondition__Group__2__Impl rule__CompoundCondition__Group__3
+            // InternalOseeDsl.g:6045:1: ( rule__CompoundCondition__Group__2__Impl rule__CompoundCondition__Group__3 )
+            // InternalOseeDsl.g:6046:2: rule__CompoundCondition__Group__2__Impl rule__CompoundCondition__Group__3
             {
             pushFollow(FOLLOW_51);
             rule__CompoundCondition__Group__2__Impl();
@@ -17496,24 +16492,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__CompoundCondition__Group__2__Impl"
-    // InternalOseeDsl.g:6429:1: rule__CompoundCondition__Group__2__Impl : ( ( ( rule__CompoundCondition__Group_2__0 ) ) ( ( rule__CompoundCondition__Group_2__0 )* ) ) ;
+    // InternalOseeDsl.g:6053:1: rule__CompoundCondition__Group__2__Impl : ( ( ( rule__CompoundCondition__Group_2__0 ) ) ( ( rule__CompoundCondition__Group_2__0 )* ) ) ;
     public final void rule__CompoundCondition__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6433:1: ( ( ( ( rule__CompoundCondition__Group_2__0 ) ) ( ( rule__CompoundCondition__Group_2__0 )* ) ) )
-            // InternalOseeDsl.g:6434:1: ( ( ( rule__CompoundCondition__Group_2__0 ) ) ( ( rule__CompoundCondition__Group_2__0 )* ) )
+            // InternalOseeDsl.g:6057:1: ( ( ( ( rule__CompoundCondition__Group_2__0 ) ) ( ( rule__CompoundCondition__Group_2__0 )* ) ) )
+            // InternalOseeDsl.g:6058:1: ( ( ( rule__CompoundCondition__Group_2__0 ) ) ( ( rule__CompoundCondition__Group_2__0 )* ) )
             {
-            // InternalOseeDsl.g:6434:1: ( ( ( rule__CompoundCondition__Group_2__0 ) ) ( ( rule__CompoundCondition__Group_2__0 )* ) )
-            // InternalOseeDsl.g:6435:1: ( ( rule__CompoundCondition__Group_2__0 ) ) ( ( rule__CompoundCondition__Group_2__0 )* )
+            // InternalOseeDsl.g:6058:1: ( ( ( rule__CompoundCondition__Group_2__0 ) ) ( ( rule__CompoundCondition__Group_2__0 )* ) )
+            // InternalOseeDsl.g:6059:1: ( ( rule__CompoundCondition__Group_2__0 ) ) ( ( rule__CompoundCondition__Group_2__0 )* )
             {
-            // InternalOseeDsl.g:6435:1: ( ( rule__CompoundCondition__Group_2__0 ) )
-            // InternalOseeDsl.g:6436:1: ( rule__CompoundCondition__Group_2__0 )
+            // InternalOseeDsl.g:6059:1: ( ( rule__CompoundCondition__Group_2__0 ) )
+            // InternalOseeDsl.g:6060:1: ( rule__CompoundCondition__Group_2__0 )
             {
              before(grammarAccess.getCompoundConditionAccess().getGroup_2()); 
-            // InternalOseeDsl.g:6437:1: ( rule__CompoundCondition__Group_2__0 )
-            // InternalOseeDsl.g:6437:2: rule__CompoundCondition__Group_2__0
+            // InternalOseeDsl.g:6061:1: ( rule__CompoundCondition__Group_2__0 )
+            // InternalOseeDsl.g:6061:2: rule__CompoundCondition__Group_2__0
             {
             pushFollow(FOLLOW_52);
             rule__CompoundCondition__Group_2__0();
@@ -17527,24 +16523,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
             }
 
-            // InternalOseeDsl.g:6440:1: ( ( rule__CompoundCondition__Group_2__0 )* )
-            // InternalOseeDsl.g:6441:1: ( rule__CompoundCondition__Group_2__0 )*
+            // InternalOseeDsl.g:6064:1: ( ( rule__CompoundCondition__Group_2__0 )* )
+            // InternalOseeDsl.g:6065:1: ( rule__CompoundCondition__Group_2__0 )*
             {
              before(grammarAccess.getCompoundConditionAccess().getGroup_2()); 
-            // InternalOseeDsl.g:6442:1: ( rule__CompoundCondition__Group_2__0 )*
-            loop48:
+            // InternalOseeDsl.g:6066:1: ( rule__CompoundCondition__Group_2__0 )*
+            loop44:
             do {
-                int alt48=2;
-                int LA48_0 = input.LA(1);
+                int alt44=2;
+                int LA44_0 = input.LA(1);
 
-                if ( ((LA48_0>=39 && LA48_0<=40)) ) {
-                    alt48=1;
+                if ( ((LA44_0>=39 && LA44_0<=40)) ) {
+                    alt44=1;
                 }
 
 
-                switch (alt48) {
+                switch (alt44) {
             	case 1 :
-            	    // InternalOseeDsl.g:6442:2: rule__CompoundCondition__Group_2__0
+            	    // InternalOseeDsl.g:6066:2: rule__CompoundCondition__Group_2__0
             	    {
             	    pushFollow(FOLLOW_52);
             	    rule__CompoundCondition__Group_2__0();
@@ -17556,7 +16552,7 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
             	    break;
 
             	default :
-            	    break loop48;
+            	    break loop44;
                 }
             } while (true);
 
@@ -17586,14 +16582,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__CompoundCondition__Group__3"
-    // InternalOseeDsl.g:6453:1: rule__CompoundCondition__Group__3 : rule__CompoundCondition__Group__3__Impl ;
+    // InternalOseeDsl.g:6077:1: rule__CompoundCondition__Group__3 : rule__CompoundCondition__Group__3__Impl ;
     public final void rule__CompoundCondition__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6457:1: ( rule__CompoundCondition__Group__3__Impl )
-            // InternalOseeDsl.g:6458:2: rule__CompoundCondition__Group__3__Impl
+            // InternalOseeDsl.g:6081:1: ( rule__CompoundCondition__Group__3__Impl )
+            // InternalOseeDsl.g:6082:2: rule__CompoundCondition__Group__3__Impl
             {
             pushFollow(FOLLOW_2);
             rule__CompoundCondition__Group__3__Impl();
@@ -17619,20 +16615,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__CompoundCondition__Group__3__Impl"
-    // InternalOseeDsl.g:6464:1: rule__CompoundCondition__Group__3__Impl : ( ')' ) ;
+    // InternalOseeDsl.g:6088:1: rule__CompoundCondition__Group__3__Impl : ( ')' ) ;
     public final void rule__CompoundCondition__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6468:1: ( ( ')' ) )
-            // InternalOseeDsl.g:6469:1: ( ')' )
+            // InternalOseeDsl.g:6092:1: ( ( ')' ) )
+            // InternalOseeDsl.g:6093:1: ( ')' )
             {
-            // InternalOseeDsl.g:6469:1: ( ')' )
-            // InternalOseeDsl.g:6470:1: ')'
+            // InternalOseeDsl.g:6093:1: ( ')' )
+            // InternalOseeDsl.g:6094:1: ')'
             {
              before(grammarAccess.getCompoundConditionAccess().getRightParenthesisKeyword_3()); 
-            match(input,87,FOLLOW_2); 
+            match(input,86,FOLLOW_2); 
              after(grammarAccess.getCompoundConditionAccess().getRightParenthesisKeyword_3()); 
 
             }
@@ -17656,14 +16652,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__CompoundCondition__Group_2__0"
-    // InternalOseeDsl.g:6491:1: rule__CompoundCondition__Group_2__0 : rule__CompoundCondition__Group_2__0__Impl rule__CompoundCondition__Group_2__1 ;
+    // InternalOseeDsl.g:6115:1: rule__CompoundCondition__Group_2__0 : rule__CompoundCondition__Group_2__0__Impl rule__CompoundCondition__Group_2__1 ;
     public final void rule__CompoundCondition__Group_2__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6495:1: ( rule__CompoundCondition__Group_2__0__Impl rule__CompoundCondition__Group_2__1 )
-            // InternalOseeDsl.g:6496:2: rule__CompoundCondition__Group_2__0__Impl rule__CompoundCondition__Group_2__1
+            // InternalOseeDsl.g:6119:1: ( rule__CompoundCondition__Group_2__0__Impl rule__CompoundCondition__Group_2__1 )
+            // InternalOseeDsl.g:6120:2: rule__CompoundCondition__Group_2__0__Impl rule__CompoundCondition__Group_2__1
             {
             pushFollow(FOLLOW_49);
             rule__CompoundCondition__Group_2__0__Impl();
@@ -17694,21 +16690,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__CompoundCondition__Group_2__0__Impl"
-    // InternalOseeDsl.g:6503:1: rule__CompoundCondition__Group_2__0__Impl : ( ( rule__CompoundCondition__OperatorsAssignment_2_0 ) ) ;
+    // InternalOseeDsl.g:6127:1: rule__CompoundCondition__Group_2__0__Impl : ( ( rule__CompoundCondition__OperatorsAssignment_2_0 ) ) ;
     public final void rule__CompoundCondition__Group_2__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6507:1: ( ( ( rule__CompoundCondition__OperatorsAssignment_2_0 ) ) )
-            // InternalOseeDsl.g:6508:1: ( ( rule__CompoundCondition__OperatorsAssignment_2_0 ) )
+            // InternalOseeDsl.g:6131:1: ( ( ( rule__CompoundCondition__OperatorsAssignment_2_0 ) ) )
+            // InternalOseeDsl.g:6132:1: ( ( rule__CompoundCondition__OperatorsAssignment_2_0 ) )
             {
-            // InternalOseeDsl.g:6508:1: ( ( rule__CompoundCondition__OperatorsAssignment_2_0 ) )
-            // InternalOseeDsl.g:6509:1: ( rule__CompoundCondition__OperatorsAssignment_2_0 )
+            // InternalOseeDsl.g:6132:1: ( ( rule__CompoundCondition__OperatorsAssignment_2_0 ) )
+            // InternalOseeDsl.g:6133:1: ( rule__CompoundCondition__OperatorsAssignment_2_0 )
             {
              before(grammarAccess.getCompoundConditionAccess().getOperatorsAssignment_2_0()); 
-            // InternalOseeDsl.g:6510:1: ( rule__CompoundCondition__OperatorsAssignment_2_0 )
-            // InternalOseeDsl.g:6510:2: rule__CompoundCondition__OperatorsAssignment_2_0
+            // InternalOseeDsl.g:6134:1: ( rule__CompoundCondition__OperatorsAssignment_2_0 )
+            // InternalOseeDsl.g:6134:2: rule__CompoundCondition__OperatorsAssignment_2_0
             {
             pushFollow(FOLLOW_2);
             rule__CompoundCondition__OperatorsAssignment_2_0();
@@ -17741,14 +16737,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__CompoundCondition__Group_2__1"
-    // InternalOseeDsl.g:6520:1: rule__CompoundCondition__Group_2__1 : rule__CompoundCondition__Group_2__1__Impl ;
+    // InternalOseeDsl.g:6144:1: rule__CompoundCondition__Group_2__1 : rule__CompoundCondition__Group_2__1__Impl ;
     public final void rule__CompoundCondition__Group_2__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6524:1: ( rule__CompoundCondition__Group_2__1__Impl )
-            // InternalOseeDsl.g:6525:2: rule__CompoundCondition__Group_2__1__Impl
+            // InternalOseeDsl.g:6148:1: ( rule__CompoundCondition__Group_2__1__Impl )
+            // InternalOseeDsl.g:6149:2: rule__CompoundCondition__Group_2__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__CompoundCondition__Group_2__1__Impl();
@@ -17774,21 +16770,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__CompoundCondition__Group_2__1__Impl"
-    // InternalOseeDsl.g:6531:1: rule__CompoundCondition__Group_2__1__Impl : ( ( rule__CompoundCondition__ConditionsAssignment_2_1 ) ) ;
+    // InternalOseeDsl.g:6155:1: rule__CompoundCondition__Group_2__1__Impl : ( ( rule__CompoundCondition__ConditionsAssignment_2_1 ) ) ;
     public final void rule__CompoundCondition__Group_2__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6535:1: ( ( ( rule__CompoundCondition__ConditionsAssignment_2_1 ) ) )
-            // InternalOseeDsl.g:6536:1: ( ( rule__CompoundCondition__ConditionsAssignment_2_1 ) )
+            // InternalOseeDsl.g:6159:1: ( ( ( rule__CompoundCondition__ConditionsAssignment_2_1 ) ) )
+            // InternalOseeDsl.g:6160:1: ( ( rule__CompoundCondition__ConditionsAssignment_2_1 ) )
             {
-            // InternalOseeDsl.g:6536:1: ( ( rule__CompoundCondition__ConditionsAssignment_2_1 ) )
-            // InternalOseeDsl.g:6537:1: ( rule__CompoundCondition__ConditionsAssignment_2_1 )
+            // InternalOseeDsl.g:6160:1: ( ( rule__CompoundCondition__ConditionsAssignment_2_1 ) )
+            // InternalOseeDsl.g:6161:1: ( rule__CompoundCondition__ConditionsAssignment_2_1 )
             {
              before(grammarAccess.getCompoundConditionAccess().getConditionsAssignment_2_1()); 
-            // InternalOseeDsl.g:6538:1: ( rule__CompoundCondition__ConditionsAssignment_2_1 )
-            // InternalOseeDsl.g:6538:2: rule__CompoundCondition__ConditionsAssignment_2_1
+            // InternalOseeDsl.g:6162:1: ( rule__CompoundCondition__ConditionsAssignment_2_1 )
+            // InternalOseeDsl.g:6162:2: rule__CompoundCondition__ConditionsAssignment_2_1
             {
             pushFollow(FOLLOW_2);
             rule__CompoundCondition__ConditionsAssignment_2_1();
@@ -17821,14 +16817,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactMatcher__Group__0"
-    // InternalOseeDsl.g:6552:1: rule__XArtifactMatcher__Group__0 : rule__XArtifactMatcher__Group__0__Impl rule__XArtifactMatcher__Group__1 ;
+    // InternalOseeDsl.g:6176:1: rule__XArtifactMatcher__Group__0 : rule__XArtifactMatcher__Group__0__Impl rule__XArtifactMatcher__Group__1 ;
     public final void rule__XArtifactMatcher__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6556:1: ( rule__XArtifactMatcher__Group__0__Impl rule__XArtifactMatcher__Group__1 )
-            // InternalOseeDsl.g:6557:2: rule__XArtifactMatcher__Group__0__Impl rule__XArtifactMatcher__Group__1
+            // InternalOseeDsl.g:6180:1: ( rule__XArtifactMatcher__Group__0__Impl rule__XArtifactMatcher__Group__1 )
+            // InternalOseeDsl.g:6181:2: rule__XArtifactMatcher__Group__0__Impl rule__XArtifactMatcher__Group__1
             {
             pushFollow(FOLLOW_7);
             rule__XArtifactMatcher__Group__0__Impl();
@@ -17859,20 +16855,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactMatcher__Group__0__Impl"
-    // InternalOseeDsl.g:6564:1: rule__XArtifactMatcher__Group__0__Impl : ( 'artifactMatcher' ) ;
+    // InternalOseeDsl.g:6188:1: rule__XArtifactMatcher__Group__0__Impl : ( 'artifactMatcher' ) ;
     public final void rule__XArtifactMatcher__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6568:1: ( ( 'artifactMatcher' ) )
-            // InternalOseeDsl.g:6569:1: ( 'artifactMatcher' )
+            // InternalOseeDsl.g:6192:1: ( ( 'artifactMatcher' ) )
+            // InternalOseeDsl.g:6193:1: ( 'artifactMatcher' )
             {
-            // InternalOseeDsl.g:6569:1: ( 'artifactMatcher' )
-            // InternalOseeDsl.g:6570:1: 'artifactMatcher'
+            // InternalOseeDsl.g:6193:1: ( 'artifactMatcher' )
+            // InternalOseeDsl.g:6194:1: 'artifactMatcher'
             {
              before(grammarAccess.getXArtifactMatcherAccess().getArtifactMatcherKeyword_0()); 
-            match(input,88,FOLLOW_2); 
+            match(input,87,FOLLOW_2); 
              after(grammarAccess.getXArtifactMatcherAccess().getArtifactMatcherKeyword_0()); 
 
             }
@@ -17896,14 +16892,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactMatcher__Group__1"
-    // InternalOseeDsl.g:6583:1: rule__XArtifactMatcher__Group__1 : rule__XArtifactMatcher__Group__1__Impl rule__XArtifactMatcher__Group__2 ;
+    // InternalOseeDsl.g:6207:1: rule__XArtifactMatcher__Group__1 : rule__XArtifactMatcher__Group__1__Impl rule__XArtifactMatcher__Group__2 ;
     public final void rule__XArtifactMatcher__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6587:1: ( rule__XArtifactMatcher__Group__1__Impl rule__XArtifactMatcher__Group__2 )
-            // InternalOseeDsl.g:6588:2: rule__XArtifactMatcher__Group__1__Impl rule__XArtifactMatcher__Group__2
+            // InternalOseeDsl.g:6211:1: ( rule__XArtifactMatcher__Group__1__Impl rule__XArtifactMatcher__Group__2 )
+            // InternalOseeDsl.g:6212:2: rule__XArtifactMatcher__Group__1__Impl rule__XArtifactMatcher__Group__2
             {
             pushFollow(FOLLOW_53);
             rule__XArtifactMatcher__Group__1__Impl();
@@ -17934,21 +16930,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactMatcher__Group__1__Impl"
-    // InternalOseeDsl.g:6595:1: rule__XArtifactMatcher__Group__1__Impl : ( ( rule__XArtifactMatcher__NameAssignment_1 ) ) ;
+    // InternalOseeDsl.g:6219:1: rule__XArtifactMatcher__Group__1__Impl : ( ( rule__XArtifactMatcher__NameAssignment_1 ) ) ;
     public final void rule__XArtifactMatcher__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6599:1: ( ( ( rule__XArtifactMatcher__NameAssignment_1 ) ) )
-            // InternalOseeDsl.g:6600:1: ( ( rule__XArtifactMatcher__NameAssignment_1 ) )
+            // InternalOseeDsl.g:6223:1: ( ( ( rule__XArtifactMatcher__NameAssignment_1 ) ) )
+            // InternalOseeDsl.g:6224:1: ( ( rule__XArtifactMatcher__NameAssignment_1 ) )
             {
-            // InternalOseeDsl.g:6600:1: ( ( rule__XArtifactMatcher__NameAssignment_1 ) )
-            // InternalOseeDsl.g:6601:1: ( rule__XArtifactMatcher__NameAssignment_1 )
+            // InternalOseeDsl.g:6224:1: ( ( rule__XArtifactMatcher__NameAssignment_1 ) )
+            // InternalOseeDsl.g:6225:1: ( rule__XArtifactMatcher__NameAssignment_1 )
             {
              before(grammarAccess.getXArtifactMatcherAccess().getNameAssignment_1()); 
-            // InternalOseeDsl.g:6602:1: ( rule__XArtifactMatcher__NameAssignment_1 )
-            // InternalOseeDsl.g:6602:2: rule__XArtifactMatcher__NameAssignment_1
+            // InternalOseeDsl.g:6226:1: ( rule__XArtifactMatcher__NameAssignment_1 )
+            // InternalOseeDsl.g:6226:2: rule__XArtifactMatcher__NameAssignment_1
             {
             pushFollow(FOLLOW_2);
             rule__XArtifactMatcher__NameAssignment_1();
@@ -17981,14 +16977,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactMatcher__Group__2"
-    // InternalOseeDsl.g:6612:1: rule__XArtifactMatcher__Group__2 : rule__XArtifactMatcher__Group__2__Impl rule__XArtifactMatcher__Group__3 ;
+    // InternalOseeDsl.g:6236:1: rule__XArtifactMatcher__Group__2 : rule__XArtifactMatcher__Group__2__Impl rule__XArtifactMatcher__Group__3 ;
     public final void rule__XArtifactMatcher__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6616:1: ( rule__XArtifactMatcher__Group__2__Impl rule__XArtifactMatcher__Group__3 )
-            // InternalOseeDsl.g:6617:2: rule__XArtifactMatcher__Group__2__Impl rule__XArtifactMatcher__Group__3
+            // InternalOseeDsl.g:6240:1: ( rule__XArtifactMatcher__Group__2__Impl rule__XArtifactMatcher__Group__3 )
+            // InternalOseeDsl.g:6241:2: rule__XArtifactMatcher__Group__2__Impl rule__XArtifactMatcher__Group__3
             {
             pushFollow(FOLLOW_54);
             rule__XArtifactMatcher__Group__2__Impl();
@@ -18019,20 +17015,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactMatcher__Group__2__Impl"
-    // InternalOseeDsl.g:6624:1: rule__XArtifactMatcher__Group__2__Impl : ( 'where' ) ;
+    // InternalOseeDsl.g:6248:1: rule__XArtifactMatcher__Group__2__Impl : ( 'where' ) ;
     public final void rule__XArtifactMatcher__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6628:1: ( ( 'where' ) )
-            // InternalOseeDsl.g:6629:1: ( 'where' )
+            // InternalOseeDsl.g:6252:1: ( ( 'where' ) )
+            // InternalOseeDsl.g:6253:1: ( 'where' )
             {
-            // InternalOseeDsl.g:6629:1: ( 'where' )
-            // InternalOseeDsl.g:6630:1: 'where'
+            // InternalOseeDsl.g:6253:1: ( 'where' )
+            // InternalOseeDsl.g:6254:1: 'where'
             {
              before(grammarAccess.getXArtifactMatcherAccess().getWhereKeyword_2()); 
-            match(input,89,FOLLOW_2); 
+            match(input,88,FOLLOW_2); 
              after(grammarAccess.getXArtifactMatcherAccess().getWhereKeyword_2()); 
 
             }
@@ -18056,14 +17052,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactMatcher__Group__3"
-    // InternalOseeDsl.g:6643:1: rule__XArtifactMatcher__Group__3 : rule__XArtifactMatcher__Group__3__Impl rule__XArtifactMatcher__Group__4 ;
+    // InternalOseeDsl.g:6267:1: rule__XArtifactMatcher__Group__3 : rule__XArtifactMatcher__Group__3__Impl rule__XArtifactMatcher__Group__4 ;
     public final void rule__XArtifactMatcher__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6647:1: ( rule__XArtifactMatcher__Group__3__Impl rule__XArtifactMatcher__Group__4 )
-            // InternalOseeDsl.g:6648:2: rule__XArtifactMatcher__Group__3__Impl rule__XArtifactMatcher__Group__4
+            // InternalOseeDsl.g:6271:1: ( rule__XArtifactMatcher__Group__3__Impl rule__XArtifactMatcher__Group__4 )
+            // InternalOseeDsl.g:6272:2: rule__XArtifactMatcher__Group__3__Impl rule__XArtifactMatcher__Group__4
             {
             pushFollow(FOLLOW_55);
             rule__XArtifactMatcher__Group__3__Impl();
@@ -18094,21 +17090,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactMatcher__Group__3__Impl"
-    // InternalOseeDsl.g:6655:1: rule__XArtifactMatcher__Group__3__Impl : ( ( rule__XArtifactMatcher__ConditionsAssignment_3 ) ) ;
+    // InternalOseeDsl.g:6279:1: rule__XArtifactMatcher__Group__3__Impl : ( ( rule__XArtifactMatcher__ConditionsAssignment_3 ) ) ;
     public final void rule__XArtifactMatcher__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6659:1: ( ( ( rule__XArtifactMatcher__ConditionsAssignment_3 ) ) )
-            // InternalOseeDsl.g:6660:1: ( ( rule__XArtifactMatcher__ConditionsAssignment_3 ) )
+            // InternalOseeDsl.g:6283:1: ( ( ( rule__XArtifactMatcher__ConditionsAssignment_3 ) ) )
+            // InternalOseeDsl.g:6284:1: ( ( rule__XArtifactMatcher__ConditionsAssignment_3 ) )
             {
-            // InternalOseeDsl.g:6660:1: ( ( rule__XArtifactMatcher__ConditionsAssignment_3 ) )
-            // InternalOseeDsl.g:6661:1: ( rule__XArtifactMatcher__ConditionsAssignment_3 )
+            // InternalOseeDsl.g:6284:1: ( ( rule__XArtifactMatcher__ConditionsAssignment_3 ) )
+            // InternalOseeDsl.g:6285:1: ( rule__XArtifactMatcher__ConditionsAssignment_3 )
             {
              before(grammarAccess.getXArtifactMatcherAccess().getConditionsAssignment_3()); 
-            // InternalOseeDsl.g:6662:1: ( rule__XArtifactMatcher__ConditionsAssignment_3 )
-            // InternalOseeDsl.g:6662:2: rule__XArtifactMatcher__ConditionsAssignment_3
+            // InternalOseeDsl.g:6286:1: ( rule__XArtifactMatcher__ConditionsAssignment_3 )
+            // InternalOseeDsl.g:6286:2: rule__XArtifactMatcher__ConditionsAssignment_3
             {
             pushFollow(FOLLOW_2);
             rule__XArtifactMatcher__ConditionsAssignment_3();
@@ -18141,14 +17137,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactMatcher__Group__4"
-    // InternalOseeDsl.g:6672:1: rule__XArtifactMatcher__Group__4 : rule__XArtifactMatcher__Group__4__Impl rule__XArtifactMatcher__Group__5 ;
+    // InternalOseeDsl.g:6296:1: rule__XArtifactMatcher__Group__4 : rule__XArtifactMatcher__Group__4__Impl rule__XArtifactMatcher__Group__5 ;
     public final void rule__XArtifactMatcher__Group__4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6676:1: ( rule__XArtifactMatcher__Group__4__Impl rule__XArtifactMatcher__Group__5 )
-            // InternalOseeDsl.g:6677:2: rule__XArtifactMatcher__Group__4__Impl rule__XArtifactMatcher__Group__5
+            // InternalOseeDsl.g:6300:1: ( rule__XArtifactMatcher__Group__4__Impl rule__XArtifactMatcher__Group__5 )
+            // InternalOseeDsl.g:6301:2: rule__XArtifactMatcher__Group__4__Impl rule__XArtifactMatcher__Group__5
             {
             pushFollow(FOLLOW_55);
             rule__XArtifactMatcher__Group__4__Impl();
@@ -18179,33 +17175,33 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactMatcher__Group__4__Impl"
-    // InternalOseeDsl.g:6684:1: rule__XArtifactMatcher__Group__4__Impl : ( ( rule__XArtifactMatcher__Group_4__0 )* ) ;
+    // InternalOseeDsl.g:6308:1: rule__XArtifactMatcher__Group__4__Impl : ( ( rule__XArtifactMatcher__Group_4__0 )* ) ;
     public final void rule__XArtifactMatcher__Group__4__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6688:1: ( ( ( rule__XArtifactMatcher__Group_4__0 )* ) )
-            // InternalOseeDsl.g:6689:1: ( ( rule__XArtifactMatcher__Group_4__0 )* )
+            // InternalOseeDsl.g:6312:1: ( ( ( rule__XArtifactMatcher__Group_4__0 )* ) )
+            // InternalOseeDsl.g:6313:1: ( ( rule__XArtifactMatcher__Group_4__0 )* )
             {
-            // InternalOseeDsl.g:6689:1: ( ( rule__XArtifactMatcher__Group_4__0 )* )
-            // InternalOseeDsl.g:6690:1: ( rule__XArtifactMatcher__Group_4__0 )*
+            // InternalOseeDsl.g:6313:1: ( ( rule__XArtifactMatcher__Group_4__0 )* )
+            // InternalOseeDsl.g:6314:1: ( rule__XArtifactMatcher__Group_4__0 )*
             {
              before(grammarAccess.getXArtifactMatcherAccess().getGroup_4()); 
-            // InternalOseeDsl.g:6691:1: ( rule__XArtifactMatcher__Group_4__0 )*
-            loop49:
+            // InternalOseeDsl.g:6315:1: ( rule__XArtifactMatcher__Group_4__0 )*
+            loop45:
             do {
-                int alt49=2;
-                int LA49_0 = input.LA(1);
+                int alt45=2;
+                int LA45_0 = input.LA(1);
 
-                if ( ((LA49_0>=39 && LA49_0<=40)) ) {
-                    alt49=1;
+                if ( ((LA45_0>=39 && LA45_0<=40)) ) {
+                    alt45=1;
                 }
 
 
-                switch (alt49) {
+                switch (alt45) {
             	case 1 :
-            	    // InternalOseeDsl.g:6691:2: rule__XArtifactMatcher__Group_4__0
+            	    // InternalOseeDsl.g:6315:2: rule__XArtifactMatcher__Group_4__0
             	    {
             	    pushFollow(FOLLOW_52);
             	    rule__XArtifactMatcher__Group_4__0();
@@ -18217,7 +17213,7 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
             	    break;
 
             	default :
-            	    break loop49;
+            	    break loop45;
                 }
             } while (true);
 
@@ -18244,14 +17240,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactMatcher__Group__5"
-    // InternalOseeDsl.g:6701:1: rule__XArtifactMatcher__Group__5 : rule__XArtifactMatcher__Group__5__Impl ;
+    // InternalOseeDsl.g:6325:1: rule__XArtifactMatcher__Group__5 : rule__XArtifactMatcher__Group__5__Impl ;
     public final void rule__XArtifactMatcher__Group__5() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6705:1: ( rule__XArtifactMatcher__Group__5__Impl )
-            // InternalOseeDsl.g:6706:2: rule__XArtifactMatcher__Group__5__Impl
+            // InternalOseeDsl.g:6329:1: ( rule__XArtifactMatcher__Group__5__Impl )
+            // InternalOseeDsl.g:6330:2: rule__XArtifactMatcher__Group__5__Impl
             {
             pushFollow(FOLLOW_2);
             rule__XArtifactMatcher__Group__5__Impl();
@@ -18277,20 +17273,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactMatcher__Group__5__Impl"
-    // InternalOseeDsl.g:6712:1: rule__XArtifactMatcher__Group__5__Impl : ( ';' ) ;
+    // InternalOseeDsl.g:6336:1: rule__XArtifactMatcher__Group__5__Impl : ( ';' ) ;
     public final void rule__XArtifactMatcher__Group__5__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6716:1: ( ( ';' ) )
-            // InternalOseeDsl.g:6717:1: ( ';' )
+            // InternalOseeDsl.g:6340:1: ( ( ';' ) )
+            // InternalOseeDsl.g:6341:1: ( ';' )
             {
-            // InternalOseeDsl.g:6717:1: ( ';' )
-            // InternalOseeDsl.g:6718:1: ';'
+            // InternalOseeDsl.g:6341:1: ( ';' )
+            // InternalOseeDsl.g:6342:1: ';'
             {
              before(grammarAccess.getXArtifactMatcherAccess().getSemicolonKeyword_5()); 
-            match(input,90,FOLLOW_2); 
+            match(input,89,FOLLOW_2); 
              after(grammarAccess.getXArtifactMatcherAccess().getSemicolonKeyword_5()); 
 
             }
@@ -18314,14 +17310,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactMatcher__Group_4__0"
-    // InternalOseeDsl.g:6743:1: rule__XArtifactMatcher__Group_4__0 : rule__XArtifactMatcher__Group_4__0__Impl rule__XArtifactMatcher__Group_4__1 ;
+    // InternalOseeDsl.g:6367:1: rule__XArtifactMatcher__Group_4__0 : rule__XArtifactMatcher__Group_4__0__Impl rule__XArtifactMatcher__Group_4__1 ;
     public final void rule__XArtifactMatcher__Group_4__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6747:1: ( rule__XArtifactMatcher__Group_4__0__Impl rule__XArtifactMatcher__Group_4__1 )
-            // InternalOseeDsl.g:6748:2: rule__XArtifactMatcher__Group_4__0__Impl rule__XArtifactMatcher__Group_4__1
+            // InternalOseeDsl.g:6371:1: ( rule__XArtifactMatcher__Group_4__0__Impl rule__XArtifactMatcher__Group_4__1 )
+            // InternalOseeDsl.g:6372:2: rule__XArtifactMatcher__Group_4__0__Impl rule__XArtifactMatcher__Group_4__1
             {
             pushFollow(FOLLOW_54);
             rule__XArtifactMatcher__Group_4__0__Impl();
@@ -18352,21 +17348,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactMatcher__Group_4__0__Impl"
-    // InternalOseeDsl.g:6755:1: rule__XArtifactMatcher__Group_4__0__Impl : ( ( rule__XArtifactMatcher__OperatorsAssignment_4_0 ) ) ;
+    // InternalOseeDsl.g:6379:1: rule__XArtifactMatcher__Group_4__0__Impl : ( ( rule__XArtifactMatcher__OperatorsAssignment_4_0 ) ) ;
     public final void rule__XArtifactMatcher__Group_4__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6759:1: ( ( ( rule__XArtifactMatcher__OperatorsAssignment_4_0 ) ) )
-            // InternalOseeDsl.g:6760:1: ( ( rule__XArtifactMatcher__OperatorsAssignment_4_0 ) )
+            // InternalOseeDsl.g:6383:1: ( ( ( rule__XArtifactMatcher__OperatorsAssignment_4_0 ) ) )
+            // InternalOseeDsl.g:6384:1: ( ( rule__XArtifactMatcher__OperatorsAssignment_4_0 ) )
             {
-            // InternalOseeDsl.g:6760:1: ( ( rule__XArtifactMatcher__OperatorsAssignment_4_0 ) )
-            // InternalOseeDsl.g:6761:1: ( rule__XArtifactMatcher__OperatorsAssignment_4_0 )
+            // InternalOseeDsl.g:6384:1: ( ( rule__XArtifactMatcher__OperatorsAssignment_4_0 ) )
+            // InternalOseeDsl.g:6385:1: ( rule__XArtifactMatcher__OperatorsAssignment_4_0 )
             {
              before(grammarAccess.getXArtifactMatcherAccess().getOperatorsAssignment_4_0()); 
-            // InternalOseeDsl.g:6762:1: ( rule__XArtifactMatcher__OperatorsAssignment_4_0 )
-            // InternalOseeDsl.g:6762:2: rule__XArtifactMatcher__OperatorsAssignment_4_0
+            // InternalOseeDsl.g:6386:1: ( rule__XArtifactMatcher__OperatorsAssignment_4_0 )
+            // InternalOseeDsl.g:6386:2: rule__XArtifactMatcher__OperatorsAssignment_4_0
             {
             pushFollow(FOLLOW_2);
             rule__XArtifactMatcher__OperatorsAssignment_4_0();
@@ -18399,14 +17395,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactMatcher__Group_4__1"
-    // InternalOseeDsl.g:6772:1: rule__XArtifactMatcher__Group_4__1 : rule__XArtifactMatcher__Group_4__1__Impl ;
+    // InternalOseeDsl.g:6396:1: rule__XArtifactMatcher__Group_4__1 : rule__XArtifactMatcher__Group_4__1__Impl ;
     public final void rule__XArtifactMatcher__Group_4__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6776:1: ( rule__XArtifactMatcher__Group_4__1__Impl )
-            // InternalOseeDsl.g:6777:2: rule__XArtifactMatcher__Group_4__1__Impl
+            // InternalOseeDsl.g:6400:1: ( rule__XArtifactMatcher__Group_4__1__Impl )
+            // InternalOseeDsl.g:6401:2: rule__XArtifactMatcher__Group_4__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__XArtifactMatcher__Group_4__1__Impl();
@@ -18432,21 +17428,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactMatcher__Group_4__1__Impl"
-    // InternalOseeDsl.g:6783:1: rule__XArtifactMatcher__Group_4__1__Impl : ( ( rule__XArtifactMatcher__ConditionsAssignment_4_1 ) ) ;
+    // InternalOseeDsl.g:6407:1: rule__XArtifactMatcher__Group_4__1__Impl : ( ( rule__XArtifactMatcher__ConditionsAssignment_4_1 ) ) ;
     public final void rule__XArtifactMatcher__Group_4__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6787:1: ( ( ( rule__XArtifactMatcher__ConditionsAssignment_4_1 ) ) )
-            // InternalOseeDsl.g:6788:1: ( ( rule__XArtifactMatcher__ConditionsAssignment_4_1 ) )
+            // InternalOseeDsl.g:6411:1: ( ( ( rule__XArtifactMatcher__ConditionsAssignment_4_1 ) ) )
+            // InternalOseeDsl.g:6412:1: ( ( rule__XArtifactMatcher__ConditionsAssignment_4_1 ) )
             {
-            // InternalOseeDsl.g:6788:1: ( ( rule__XArtifactMatcher__ConditionsAssignment_4_1 ) )
-            // InternalOseeDsl.g:6789:1: ( rule__XArtifactMatcher__ConditionsAssignment_4_1 )
+            // InternalOseeDsl.g:6412:1: ( ( rule__XArtifactMatcher__ConditionsAssignment_4_1 ) )
+            // InternalOseeDsl.g:6413:1: ( rule__XArtifactMatcher__ConditionsAssignment_4_1 )
             {
              before(grammarAccess.getXArtifactMatcherAccess().getConditionsAssignment_4_1()); 
-            // InternalOseeDsl.g:6790:1: ( rule__XArtifactMatcher__ConditionsAssignment_4_1 )
-            // InternalOseeDsl.g:6790:2: rule__XArtifactMatcher__ConditionsAssignment_4_1
+            // InternalOseeDsl.g:6414:1: ( rule__XArtifactMatcher__ConditionsAssignment_4_1 )
+            // InternalOseeDsl.g:6414:2: rule__XArtifactMatcher__ConditionsAssignment_4_1
             {
             pushFollow(FOLLOW_2);
             rule__XArtifactMatcher__ConditionsAssignment_4_1();
@@ -18479,14 +17475,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__Role__Group__0"
-    // InternalOseeDsl.g:6804:1: rule__Role__Group__0 : rule__Role__Group__0__Impl rule__Role__Group__1 ;
+    // InternalOseeDsl.g:6428:1: rule__Role__Group__0 : rule__Role__Group__0__Impl rule__Role__Group__1 ;
     public final void rule__Role__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6808:1: ( rule__Role__Group__0__Impl rule__Role__Group__1 )
-            // InternalOseeDsl.g:6809:2: rule__Role__Group__0__Impl rule__Role__Group__1
+            // InternalOseeDsl.g:6432:1: ( rule__Role__Group__0__Impl rule__Role__Group__1 )
+            // InternalOseeDsl.g:6433:2: rule__Role__Group__0__Impl rule__Role__Group__1
             {
             pushFollow(FOLLOW_7);
             rule__Role__Group__0__Impl();
@@ -18517,20 +17513,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__Role__Group__0__Impl"
-    // InternalOseeDsl.g:6816:1: rule__Role__Group__0__Impl : ( 'role' ) ;
+    // InternalOseeDsl.g:6440:1: rule__Role__Group__0__Impl : ( 'role' ) ;
     public final void rule__Role__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6820:1: ( ( 'role' ) )
-            // InternalOseeDsl.g:6821:1: ( 'role' )
+            // InternalOseeDsl.g:6444:1: ( ( 'role' ) )
+            // InternalOseeDsl.g:6445:1: ( 'role' )
             {
-            // InternalOseeDsl.g:6821:1: ( 'role' )
-            // InternalOseeDsl.g:6822:1: 'role'
+            // InternalOseeDsl.g:6445:1: ( 'role' )
+            // InternalOseeDsl.g:6446:1: 'role'
             {
              before(grammarAccess.getRoleAccess().getRoleKeyword_0()); 
-            match(input,91,FOLLOW_2); 
+            match(input,90,FOLLOW_2); 
              after(grammarAccess.getRoleAccess().getRoleKeyword_0()); 
 
             }
@@ -18554,14 +17550,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__Role__Group__1"
-    // InternalOseeDsl.g:6835:1: rule__Role__Group__1 : rule__Role__Group__1__Impl rule__Role__Group__2 ;
+    // InternalOseeDsl.g:6459:1: rule__Role__Group__1 : rule__Role__Group__1__Impl rule__Role__Group__2 ;
     public final void rule__Role__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6839:1: ( rule__Role__Group__1__Impl rule__Role__Group__2 )
-            // InternalOseeDsl.g:6840:2: rule__Role__Group__1__Impl rule__Role__Group__2
+            // InternalOseeDsl.g:6463:1: ( rule__Role__Group__1__Impl rule__Role__Group__2 )
+            // InternalOseeDsl.g:6464:2: rule__Role__Group__1__Impl rule__Role__Group__2
             {
             pushFollow(FOLLOW_12);
             rule__Role__Group__1__Impl();
@@ -18592,21 +17588,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__Role__Group__1__Impl"
-    // InternalOseeDsl.g:6847:1: rule__Role__Group__1__Impl : ( ( rule__Role__NameAssignment_1 ) ) ;
+    // InternalOseeDsl.g:6471:1: rule__Role__Group__1__Impl : ( ( rule__Role__NameAssignment_1 ) ) ;
     public final void rule__Role__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6851:1: ( ( ( rule__Role__NameAssignment_1 ) ) )
-            // InternalOseeDsl.g:6852:1: ( ( rule__Role__NameAssignment_1 ) )
+            // InternalOseeDsl.g:6475:1: ( ( ( rule__Role__NameAssignment_1 ) ) )
+            // InternalOseeDsl.g:6476:1: ( ( rule__Role__NameAssignment_1 ) )
             {
-            // InternalOseeDsl.g:6852:1: ( ( rule__Role__NameAssignment_1 ) )
-            // InternalOseeDsl.g:6853:1: ( rule__Role__NameAssignment_1 )
+            // InternalOseeDsl.g:6476:1: ( ( rule__Role__NameAssignment_1 ) )
+            // InternalOseeDsl.g:6477:1: ( rule__Role__NameAssignment_1 )
             {
              before(grammarAccess.getRoleAccess().getNameAssignment_1()); 
-            // InternalOseeDsl.g:6854:1: ( rule__Role__NameAssignment_1 )
-            // InternalOseeDsl.g:6854:2: rule__Role__NameAssignment_1
+            // InternalOseeDsl.g:6478:1: ( rule__Role__NameAssignment_1 )
+            // InternalOseeDsl.g:6478:2: rule__Role__NameAssignment_1
             {
             pushFollow(FOLLOW_2);
             rule__Role__NameAssignment_1();
@@ -18639,14 +17635,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__Role__Group__2"
-    // InternalOseeDsl.g:6864:1: rule__Role__Group__2 : rule__Role__Group__2__Impl rule__Role__Group__3 ;
+    // InternalOseeDsl.g:6488:1: rule__Role__Group__2 : rule__Role__Group__2__Impl rule__Role__Group__3 ;
     public final void rule__Role__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6868:1: ( rule__Role__Group__2__Impl rule__Role__Group__3 )
-            // InternalOseeDsl.g:6869:2: rule__Role__Group__2__Impl rule__Role__Group__3
+            // InternalOseeDsl.g:6492:1: ( rule__Role__Group__2__Impl rule__Role__Group__3 )
+            // InternalOseeDsl.g:6493:2: rule__Role__Group__2__Impl rule__Role__Group__3
             {
             pushFollow(FOLLOW_12);
             rule__Role__Group__2__Impl();
@@ -18677,29 +17673,29 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__Role__Group__2__Impl"
-    // InternalOseeDsl.g:6876:1: rule__Role__Group__2__Impl : ( ( rule__Role__Group_2__0 )? ) ;
+    // InternalOseeDsl.g:6500:1: rule__Role__Group__2__Impl : ( ( rule__Role__Group_2__0 )? ) ;
     public final void rule__Role__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6880:1: ( ( ( rule__Role__Group_2__0 )? ) )
-            // InternalOseeDsl.g:6881:1: ( ( rule__Role__Group_2__0 )? )
+            // InternalOseeDsl.g:6504:1: ( ( ( rule__Role__Group_2__0 )? ) )
+            // InternalOseeDsl.g:6505:1: ( ( rule__Role__Group_2__0 )? )
             {
-            // InternalOseeDsl.g:6881:1: ( ( rule__Role__Group_2__0 )? )
-            // InternalOseeDsl.g:6882:1: ( rule__Role__Group_2__0 )?
+            // InternalOseeDsl.g:6505:1: ( ( rule__Role__Group_2__0 )? )
+            // InternalOseeDsl.g:6506:1: ( rule__Role__Group_2__0 )?
             {
              before(grammarAccess.getRoleAccess().getGroup_2()); 
-            // InternalOseeDsl.g:6883:1: ( rule__Role__Group_2__0 )?
-            int alt50=2;
-            int LA50_0 = input.LA(1);
+            // InternalOseeDsl.g:6507:1: ( rule__Role__Group_2__0 )?
+            int alt46=2;
+            int LA46_0 = input.LA(1);
 
-            if ( (LA50_0==56) ) {
-                alt50=1;
+            if ( (LA46_0==56) ) {
+                alt46=1;
             }
-            switch (alt50) {
+            switch (alt46) {
                 case 1 :
-                    // InternalOseeDsl.g:6883:2: rule__Role__Group_2__0
+                    // InternalOseeDsl.g:6507:2: rule__Role__Group_2__0
                     {
                     pushFollow(FOLLOW_2);
                     rule__Role__Group_2__0();
@@ -18735,14 +17731,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__Role__Group__3"
-    // InternalOseeDsl.g:6893:1: rule__Role__Group__3 : rule__Role__Group__3__Impl rule__Role__Group__4 ;
+    // InternalOseeDsl.g:6517:1: rule__Role__Group__3 : rule__Role__Group__3__Impl rule__Role__Group__4 ;
     public final void rule__Role__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6897:1: ( rule__Role__Group__3__Impl rule__Role__Group__4 )
-            // InternalOseeDsl.g:6898:2: rule__Role__Group__3__Impl rule__Role__Group__4
+            // InternalOseeDsl.g:6521:1: ( rule__Role__Group__3__Impl rule__Role__Group__4 )
+            // InternalOseeDsl.g:6522:2: rule__Role__Group__3__Impl rule__Role__Group__4
             {
             pushFollow(FOLLOW_56);
             rule__Role__Group__3__Impl();
@@ -18773,17 +17769,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__Role__Group__3__Impl"
-    // InternalOseeDsl.g:6905:1: rule__Role__Group__3__Impl : ( '{' ) ;
+    // InternalOseeDsl.g:6529:1: rule__Role__Group__3__Impl : ( '{' ) ;
     public final void rule__Role__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6909:1: ( ( '{' ) )
-            // InternalOseeDsl.g:6910:1: ( '{' )
+            // InternalOseeDsl.g:6533:1: ( ( '{' ) )
+            // InternalOseeDsl.g:6534:1: ( '{' )
             {
-            // InternalOseeDsl.g:6910:1: ( '{' )
-            // InternalOseeDsl.g:6911:1: '{'
+            // InternalOseeDsl.g:6534:1: ( '{' )
+            // InternalOseeDsl.g:6535:1: '{'
             {
              before(grammarAccess.getRoleAccess().getLeftCurlyBracketKeyword_3()); 
             match(input,53,FOLLOW_2); 
@@ -18810,14 +17806,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__Role__Group__4"
-    // InternalOseeDsl.g:6924:1: rule__Role__Group__4 : rule__Role__Group__4__Impl rule__Role__Group__5 ;
+    // InternalOseeDsl.g:6548:1: rule__Role__Group__4 : rule__Role__Group__4__Impl rule__Role__Group__5 ;
     public final void rule__Role__Group__4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6928:1: ( rule__Role__Group__4__Impl rule__Role__Group__5 )
-            // InternalOseeDsl.g:6929:2: rule__Role__Group__4__Impl rule__Role__Group__5
+            // InternalOseeDsl.g:6552:1: ( rule__Role__Group__4__Impl rule__Role__Group__5 )
+            // InternalOseeDsl.g:6553:2: rule__Role__Group__4__Impl rule__Role__Group__5
             {
             pushFollow(FOLLOW_28);
             rule__Role__Group__4__Impl();
@@ -18848,24 +17844,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__Role__Group__4__Impl"
-    // InternalOseeDsl.g:6936:1: rule__Role__Group__4__Impl : ( ( ( rule__Role__Alternatives_4 ) ) ( ( rule__Role__Alternatives_4 )* ) ) ;
+    // InternalOseeDsl.g:6560:1: rule__Role__Group__4__Impl : ( ( ( rule__Role__Alternatives_4 ) ) ( ( rule__Role__Alternatives_4 )* ) ) ;
     public final void rule__Role__Group__4__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6940:1: ( ( ( ( rule__Role__Alternatives_4 ) ) ( ( rule__Role__Alternatives_4 )* ) ) )
-            // InternalOseeDsl.g:6941:1: ( ( ( rule__Role__Alternatives_4 ) ) ( ( rule__Role__Alternatives_4 )* ) )
+            // InternalOseeDsl.g:6564:1: ( ( ( ( rule__Role__Alternatives_4 ) ) ( ( rule__Role__Alternatives_4 )* ) ) )
+            // InternalOseeDsl.g:6565:1: ( ( ( rule__Role__Alternatives_4 ) ) ( ( rule__Role__Alternatives_4 )* ) )
             {
-            // InternalOseeDsl.g:6941:1: ( ( ( rule__Role__Alternatives_4 ) ) ( ( rule__Role__Alternatives_4 )* ) )
-            // InternalOseeDsl.g:6942:1: ( ( rule__Role__Alternatives_4 ) ) ( ( rule__Role__Alternatives_4 )* )
+            // InternalOseeDsl.g:6565:1: ( ( ( rule__Role__Alternatives_4 ) ) ( ( rule__Role__Alternatives_4 )* ) )
+            // InternalOseeDsl.g:6566:1: ( ( rule__Role__Alternatives_4 ) ) ( ( rule__Role__Alternatives_4 )* )
             {
-            // InternalOseeDsl.g:6942:1: ( ( rule__Role__Alternatives_4 ) )
-            // InternalOseeDsl.g:6943:1: ( rule__Role__Alternatives_4 )
+            // InternalOseeDsl.g:6566:1: ( ( rule__Role__Alternatives_4 ) )
+            // InternalOseeDsl.g:6567:1: ( rule__Role__Alternatives_4 )
             {
              before(grammarAccess.getRoleAccess().getAlternatives_4()); 
-            // InternalOseeDsl.g:6944:1: ( rule__Role__Alternatives_4 )
-            // InternalOseeDsl.g:6944:2: rule__Role__Alternatives_4
+            // InternalOseeDsl.g:6568:1: ( rule__Role__Alternatives_4 )
+            // InternalOseeDsl.g:6568:2: rule__Role__Alternatives_4
             {
             pushFollow(FOLLOW_57);
             rule__Role__Alternatives_4();
@@ -18879,24 +17875,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
             }
 
-            // InternalOseeDsl.g:6947:1: ( ( rule__Role__Alternatives_4 )* )
-            // InternalOseeDsl.g:6948:1: ( rule__Role__Alternatives_4 )*
+            // InternalOseeDsl.g:6571:1: ( ( rule__Role__Alternatives_4 )* )
+            // InternalOseeDsl.g:6572:1: ( rule__Role__Alternatives_4 )*
             {
              before(grammarAccess.getRoleAccess().getAlternatives_4()); 
-            // InternalOseeDsl.g:6949:1: ( rule__Role__Alternatives_4 )*
-            loop51:
+            // InternalOseeDsl.g:6573:1: ( rule__Role__Alternatives_4 )*
+            loop47:
             do {
-                int alt51=2;
-                int LA51_0 = input.LA(1);
+                int alt47=2;
+                int LA47_0 = input.LA(1);
 
-                if ( (LA51_0==58||LA51_0==92) ) {
-                    alt51=1;
+                if ( ((LA47_0>=91 && LA47_0<=92)) ) {
+                    alt47=1;
                 }
 
 
-                switch (alt51) {
+                switch (alt47) {
             	case 1 :
-            	    // InternalOseeDsl.g:6949:2: rule__Role__Alternatives_4
+            	    // InternalOseeDsl.g:6573:2: rule__Role__Alternatives_4
             	    {
             	    pushFollow(FOLLOW_57);
             	    rule__Role__Alternatives_4();
@@ -18908,7 +17904,7 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
             	    break;
 
             	default :
-            	    break loop51;
+            	    break loop47;
                 }
             } while (true);
 
@@ -18938,14 +17934,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__Role__Group__5"
-    // InternalOseeDsl.g:6960:1: rule__Role__Group__5 : rule__Role__Group__5__Impl ;
+    // InternalOseeDsl.g:6584:1: rule__Role__Group__5 : rule__Role__Group__5__Impl ;
     public final void rule__Role__Group__5() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6964:1: ( rule__Role__Group__5__Impl )
-            // InternalOseeDsl.g:6965:2: rule__Role__Group__5__Impl
+            // InternalOseeDsl.g:6588:1: ( rule__Role__Group__5__Impl )
+            // InternalOseeDsl.g:6589:2: rule__Role__Group__5__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Role__Group__5__Impl();
@@ -18971,17 +17967,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__Role__Group__5__Impl"
-    // InternalOseeDsl.g:6971:1: rule__Role__Group__5__Impl : ( '}' ) ;
+    // InternalOseeDsl.g:6595:1: rule__Role__Group__5__Impl : ( '}' ) ;
     public final void rule__Role__Group__5__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:6975:1: ( ( '}' ) )
-            // InternalOseeDsl.g:6976:1: ( '}' )
+            // InternalOseeDsl.g:6599:1: ( ( '}' ) )
+            // InternalOseeDsl.g:6600:1: ( '}' )
             {
-            // InternalOseeDsl.g:6976:1: ( '}' )
-            // InternalOseeDsl.g:6977:1: '}'
+            // InternalOseeDsl.g:6600:1: ( '}' )
+            // InternalOseeDsl.g:6601:1: '}'
             {
              before(grammarAccess.getRoleAccess().getRightCurlyBracketKeyword_5()); 
             match(input,55,FOLLOW_2); 
@@ -19008,14 +18004,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__Role__Group_2__0"
-    // InternalOseeDsl.g:7002:1: rule__Role__Group_2__0 : rule__Role__Group_2__0__Impl rule__Role__Group_2__1 ;
+    // InternalOseeDsl.g:6626:1: rule__Role__Group_2__0 : rule__Role__Group_2__0__Impl rule__Role__Group_2__1 ;
     public final void rule__Role__Group_2__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7006:1: ( rule__Role__Group_2__0__Impl rule__Role__Group_2__1 )
-            // InternalOseeDsl.g:7007:2: rule__Role__Group_2__0__Impl rule__Role__Group_2__1
+            // InternalOseeDsl.g:6630:1: ( rule__Role__Group_2__0__Impl rule__Role__Group_2__1 )
+            // InternalOseeDsl.g:6631:2: rule__Role__Group_2__0__Impl rule__Role__Group_2__1
             {
             pushFollow(FOLLOW_7);
             rule__Role__Group_2__0__Impl();
@@ -19046,17 +18042,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__Role__Group_2__0__Impl"
-    // InternalOseeDsl.g:7014:1: rule__Role__Group_2__0__Impl : ( 'extends' ) ;
+    // InternalOseeDsl.g:6638:1: rule__Role__Group_2__0__Impl : ( 'extends' ) ;
     public final void rule__Role__Group_2__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7018:1: ( ( 'extends' ) )
-            // InternalOseeDsl.g:7019:1: ( 'extends' )
+            // InternalOseeDsl.g:6642:1: ( ( 'extends' ) )
+            // InternalOseeDsl.g:6643:1: ( 'extends' )
             {
-            // InternalOseeDsl.g:7019:1: ( 'extends' )
-            // InternalOseeDsl.g:7020:1: 'extends'
+            // InternalOseeDsl.g:6643:1: ( 'extends' )
+            // InternalOseeDsl.g:6644:1: 'extends'
             {
              before(grammarAccess.getRoleAccess().getExtendsKeyword_2_0()); 
             match(input,56,FOLLOW_2); 
@@ -19083,14 +18079,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__Role__Group_2__1"
-    // InternalOseeDsl.g:7033:1: rule__Role__Group_2__1 : rule__Role__Group_2__1__Impl ;
+    // InternalOseeDsl.g:6657:1: rule__Role__Group_2__1 : rule__Role__Group_2__1__Impl ;
     public final void rule__Role__Group_2__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7037:1: ( rule__Role__Group_2__1__Impl )
-            // InternalOseeDsl.g:7038:2: rule__Role__Group_2__1__Impl
+            // InternalOseeDsl.g:6661:1: ( rule__Role__Group_2__1__Impl )
+            // InternalOseeDsl.g:6662:2: rule__Role__Group_2__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__Role__Group_2__1__Impl();
@@ -19116,21 +18112,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__Role__Group_2__1__Impl"
-    // InternalOseeDsl.g:7044:1: rule__Role__Group_2__1__Impl : ( ( rule__Role__SuperRolesAssignment_2_1 ) ) ;
+    // InternalOseeDsl.g:6668:1: rule__Role__Group_2__1__Impl : ( ( rule__Role__SuperRolesAssignment_2_1 ) ) ;
     public final void rule__Role__Group_2__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7048:1: ( ( ( rule__Role__SuperRolesAssignment_2_1 ) ) )
-            // InternalOseeDsl.g:7049:1: ( ( rule__Role__SuperRolesAssignment_2_1 ) )
+            // InternalOseeDsl.g:6672:1: ( ( ( rule__Role__SuperRolesAssignment_2_1 ) ) )
+            // InternalOseeDsl.g:6673:1: ( ( rule__Role__SuperRolesAssignment_2_1 ) )
             {
-            // InternalOseeDsl.g:7049:1: ( ( rule__Role__SuperRolesAssignment_2_1 ) )
-            // InternalOseeDsl.g:7050:1: ( rule__Role__SuperRolesAssignment_2_1 )
+            // InternalOseeDsl.g:6673:1: ( ( rule__Role__SuperRolesAssignment_2_1 ) )
+            // InternalOseeDsl.g:6674:1: ( rule__Role__SuperRolesAssignment_2_1 )
             {
              before(grammarAccess.getRoleAccess().getSuperRolesAssignment_2_1()); 
-            // InternalOseeDsl.g:7051:1: ( rule__Role__SuperRolesAssignment_2_1 )
-            // InternalOseeDsl.g:7051:2: rule__Role__SuperRolesAssignment_2_1
+            // InternalOseeDsl.g:6675:1: ( rule__Role__SuperRolesAssignment_2_1 )
+            // InternalOseeDsl.g:6675:2: rule__Role__SuperRolesAssignment_2_1
             {
             pushFollow(FOLLOW_2);
             rule__Role__SuperRolesAssignment_2_1();
@@ -19163,14 +18159,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ReferencedContext__Group__0"
-    // InternalOseeDsl.g:7065:1: rule__ReferencedContext__Group__0 : rule__ReferencedContext__Group__0__Impl rule__ReferencedContext__Group__1 ;
+    // InternalOseeDsl.g:6689:1: rule__ReferencedContext__Group__0 : rule__ReferencedContext__Group__0__Impl rule__ReferencedContext__Group__1 ;
     public final void rule__ReferencedContext__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7069:1: ( rule__ReferencedContext__Group__0__Impl rule__ReferencedContext__Group__1 )
-            // InternalOseeDsl.g:7070:2: rule__ReferencedContext__Group__0__Impl rule__ReferencedContext__Group__1
+            // InternalOseeDsl.g:6693:1: ( rule__ReferencedContext__Group__0__Impl rule__ReferencedContext__Group__1 )
+            // InternalOseeDsl.g:6694:2: rule__ReferencedContext__Group__0__Impl rule__ReferencedContext__Group__1
             {
             pushFollow(FOLLOW_7);
             rule__ReferencedContext__Group__0__Impl();
@@ -19201,20 +18197,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ReferencedContext__Group__0__Impl"
-    // InternalOseeDsl.g:7077:1: rule__ReferencedContext__Group__0__Impl : ( 'accessContext' ) ;
+    // InternalOseeDsl.g:6701:1: rule__ReferencedContext__Group__0__Impl : ( 'accessContext' ) ;
     public final void rule__ReferencedContext__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7081:1: ( ( 'accessContext' ) )
-            // InternalOseeDsl.g:7082:1: ( 'accessContext' )
+            // InternalOseeDsl.g:6705:1: ( ( 'accessContext' ) )
+            // InternalOseeDsl.g:6706:1: ( 'accessContext' )
             {
-            // InternalOseeDsl.g:7082:1: ( 'accessContext' )
-            // InternalOseeDsl.g:7083:1: 'accessContext'
+            // InternalOseeDsl.g:6706:1: ( 'accessContext' )
+            // InternalOseeDsl.g:6707:1: 'accessContext'
             {
              before(grammarAccess.getReferencedContextAccess().getAccessContextKeyword_0()); 
-            match(input,92,FOLLOW_2); 
+            match(input,91,FOLLOW_2); 
              after(grammarAccess.getReferencedContextAccess().getAccessContextKeyword_0()); 
 
             }
@@ -19238,14 +18234,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ReferencedContext__Group__1"
-    // InternalOseeDsl.g:7096:1: rule__ReferencedContext__Group__1 : rule__ReferencedContext__Group__1__Impl rule__ReferencedContext__Group__2 ;
+    // InternalOseeDsl.g:6720:1: rule__ReferencedContext__Group__1 : rule__ReferencedContext__Group__1__Impl rule__ReferencedContext__Group__2 ;
     public final void rule__ReferencedContext__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7100:1: ( rule__ReferencedContext__Group__1__Impl rule__ReferencedContext__Group__2 )
-            // InternalOseeDsl.g:7101:2: rule__ReferencedContext__Group__1__Impl rule__ReferencedContext__Group__2
+            // InternalOseeDsl.g:6724:1: ( rule__ReferencedContext__Group__1__Impl rule__ReferencedContext__Group__2 )
+            // InternalOseeDsl.g:6725:2: rule__ReferencedContext__Group__1__Impl rule__ReferencedContext__Group__2
             {
             pushFollow(FOLLOW_58);
             rule__ReferencedContext__Group__1__Impl();
@@ -19276,21 +18272,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ReferencedContext__Group__1__Impl"
-    // InternalOseeDsl.g:7108:1: rule__ReferencedContext__Group__1__Impl : ( ( rule__ReferencedContext__AccessContextRefAssignment_1 ) ) ;
+    // InternalOseeDsl.g:6732:1: rule__ReferencedContext__Group__1__Impl : ( ( rule__ReferencedContext__AccessContextRefAssignment_1 ) ) ;
     public final void rule__ReferencedContext__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7112:1: ( ( ( rule__ReferencedContext__AccessContextRefAssignment_1 ) ) )
-            // InternalOseeDsl.g:7113:1: ( ( rule__ReferencedContext__AccessContextRefAssignment_1 ) )
+            // InternalOseeDsl.g:6736:1: ( ( ( rule__ReferencedContext__AccessContextRefAssignment_1 ) ) )
+            // InternalOseeDsl.g:6737:1: ( ( rule__ReferencedContext__AccessContextRefAssignment_1 ) )
             {
-            // InternalOseeDsl.g:7113:1: ( ( rule__ReferencedContext__AccessContextRefAssignment_1 ) )
-            // InternalOseeDsl.g:7114:1: ( rule__ReferencedContext__AccessContextRefAssignment_1 )
+            // InternalOseeDsl.g:6737:1: ( ( rule__ReferencedContext__AccessContextRefAssignment_1 ) )
+            // InternalOseeDsl.g:6738:1: ( rule__ReferencedContext__AccessContextRefAssignment_1 )
             {
              before(grammarAccess.getReferencedContextAccess().getAccessContextRefAssignment_1()); 
-            // InternalOseeDsl.g:7115:1: ( rule__ReferencedContext__AccessContextRefAssignment_1 )
-            // InternalOseeDsl.g:7115:2: rule__ReferencedContext__AccessContextRefAssignment_1
+            // InternalOseeDsl.g:6739:1: ( rule__ReferencedContext__AccessContextRefAssignment_1 )
+            // InternalOseeDsl.g:6739:2: rule__ReferencedContext__AccessContextRefAssignment_1
             {
             pushFollow(FOLLOW_2);
             rule__ReferencedContext__AccessContextRefAssignment_1();
@@ -19323,14 +18319,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ReferencedContext__Group__2"
-    // InternalOseeDsl.g:7125:1: rule__ReferencedContext__Group__2 : rule__ReferencedContext__Group__2__Impl ;
+    // InternalOseeDsl.g:6749:1: rule__ReferencedContext__Group__2 : rule__ReferencedContext__Group__2__Impl ;
     public final void rule__ReferencedContext__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7129:1: ( rule__ReferencedContext__Group__2__Impl )
-            // InternalOseeDsl.g:7130:2: rule__ReferencedContext__Group__2__Impl
+            // InternalOseeDsl.g:6753:1: ( rule__ReferencedContext__Group__2__Impl )
+            // InternalOseeDsl.g:6754:2: rule__ReferencedContext__Group__2__Impl
             {
             pushFollow(FOLLOW_2);
             rule__ReferencedContext__Group__2__Impl();
@@ -19356,20 +18352,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ReferencedContext__Group__2__Impl"
-    // InternalOseeDsl.g:7136:1: rule__ReferencedContext__Group__2__Impl : ( ';' ) ;
+    // InternalOseeDsl.g:6760:1: rule__ReferencedContext__Group__2__Impl : ( ';' ) ;
     public final void rule__ReferencedContext__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7140:1: ( ( ';' ) )
-            // InternalOseeDsl.g:7141:1: ( ';' )
+            // InternalOseeDsl.g:6764:1: ( ( ';' ) )
+            // InternalOseeDsl.g:6765:1: ( ';' )
             {
-            // InternalOseeDsl.g:7141:1: ( ';' )
-            // InternalOseeDsl.g:7142:1: ';'
+            // InternalOseeDsl.g:6765:1: ( ';' )
+            // InternalOseeDsl.g:6766:1: ';'
             {
              before(grammarAccess.getReferencedContextAccess().getSemicolonKeyword_2()); 
-            match(input,90,FOLLOW_2); 
+            match(input,89,FOLLOW_2); 
              after(grammarAccess.getReferencedContextAccess().getSemicolonKeyword_2()); 
 
             }
@@ -19393,14 +18389,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__UsersAndGroups__Group__0"
-    // InternalOseeDsl.g:7161:1: rule__UsersAndGroups__Group__0 : rule__UsersAndGroups__Group__0__Impl rule__UsersAndGroups__Group__1 ;
+    // InternalOseeDsl.g:6785:1: rule__UsersAndGroups__Group__0 : rule__UsersAndGroups__Group__0__Impl rule__UsersAndGroups__Group__1 ;
     public final void rule__UsersAndGroups__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7165:1: ( rule__UsersAndGroups__Group__0__Impl rule__UsersAndGroups__Group__1 )
-            // InternalOseeDsl.g:7166:2: rule__UsersAndGroups__Group__0__Impl rule__UsersAndGroups__Group__1
+            // InternalOseeDsl.g:6789:1: ( rule__UsersAndGroups__Group__0__Impl rule__UsersAndGroups__Group__1 )
+            // InternalOseeDsl.g:6790:2: rule__UsersAndGroups__Group__0__Impl rule__UsersAndGroups__Group__1
             {
             pushFollow(FOLLOW_7);
             rule__UsersAndGroups__Group__0__Impl();
@@ -19431,20 +18427,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__UsersAndGroups__Group__0__Impl"
-    // InternalOseeDsl.g:7173:1: rule__UsersAndGroups__Group__0__Impl : ( 'guid' ) ;
+    // InternalOseeDsl.g:6797:1: rule__UsersAndGroups__Group__0__Impl : ( 'guid' ) ;
     public final void rule__UsersAndGroups__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7177:1: ( ( 'guid' ) )
-            // InternalOseeDsl.g:7178:1: ( 'guid' )
+            // InternalOseeDsl.g:6801:1: ( ( 'guid' ) )
+            // InternalOseeDsl.g:6802:1: ( 'guid' )
             {
-            // InternalOseeDsl.g:7178:1: ( 'guid' )
-            // InternalOseeDsl.g:7179:1: 'guid'
+            // InternalOseeDsl.g:6802:1: ( 'guid' )
+            // InternalOseeDsl.g:6803:1: 'guid'
             {
              before(grammarAccess.getUsersAndGroupsAccess().getGuidKeyword_0()); 
-            match(input,58,FOLLOW_2); 
+            match(input,92,FOLLOW_2); 
              after(grammarAccess.getUsersAndGroupsAccess().getGuidKeyword_0()); 
 
             }
@@ -19468,14 +18464,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__UsersAndGroups__Group__1"
-    // InternalOseeDsl.g:7192:1: rule__UsersAndGroups__Group__1 : rule__UsersAndGroups__Group__1__Impl rule__UsersAndGroups__Group__2 ;
+    // InternalOseeDsl.g:6816:1: rule__UsersAndGroups__Group__1 : rule__UsersAndGroups__Group__1__Impl rule__UsersAndGroups__Group__2 ;
     public final void rule__UsersAndGroups__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7196:1: ( rule__UsersAndGroups__Group__1__Impl rule__UsersAndGroups__Group__2 )
-            // InternalOseeDsl.g:7197:2: rule__UsersAndGroups__Group__1__Impl rule__UsersAndGroups__Group__2
+            // InternalOseeDsl.g:6820:1: ( rule__UsersAndGroups__Group__1__Impl rule__UsersAndGroups__Group__2 )
+            // InternalOseeDsl.g:6821:2: rule__UsersAndGroups__Group__1__Impl rule__UsersAndGroups__Group__2
             {
             pushFollow(FOLLOW_58);
             rule__UsersAndGroups__Group__1__Impl();
@@ -19506,21 +18502,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__UsersAndGroups__Group__1__Impl"
-    // InternalOseeDsl.g:7204:1: rule__UsersAndGroups__Group__1__Impl : ( ( rule__UsersAndGroups__UserOrGroupGuidAssignment_1 ) ) ;
+    // InternalOseeDsl.g:6828:1: rule__UsersAndGroups__Group__1__Impl : ( ( rule__UsersAndGroups__UserOrGroupGuidAssignment_1 ) ) ;
     public final void rule__UsersAndGroups__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7208:1: ( ( ( rule__UsersAndGroups__UserOrGroupGuidAssignment_1 ) ) )
-            // InternalOseeDsl.g:7209:1: ( ( rule__UsersAndGroups__UserOrGroupGuidAssignment_1 ) )
+            // InternalOseeDsl.g:6832:1: ( ( ( rule__UsersAndGroups__UserOrGroupGuidAssignment_1 ) ) )
+            // InternalOseeDsl.g:6833:1: ( ( rule__UsersAndGroups__UserOrGroupGuidAssignment_1 ) )
             {
-            // InternalOseeDsl.g:7209:1: ( ( rule__UsersAndGroups__UserOrGroupGuidAssignment_1 ) )
-            // InternalOseeDsl.g:7210:1: ( rule__UsersAndGroups__UserOrGroupGuidAssignment_1 )
+            // InternalOseeDsl.g:6833:1: ( ( rule__UsersAndGroups__UserOrGroupGuidAssignment_1 ) )
+            // InternalOseeDsl.g:6834:1: ( rule__UsersAndGroups__UserOrGroupGuidAssignment_1 )
             {
              before(grammarAccess.getUsersAndGroupsAccess().getUserOrGroupGuidAssignment_1()); 
-            // InternalOseeDsl.g:7211:1: ( rule__UsersAndGroups__UserOrGroupGuidAssignment_1 )
-            // InternalOseeDsl.g:7211:2: rule__UsersAndGroups__UserOrGroupGuidAssignment_1
+            // InternalOseeDsl.g:6835:1: ( rule__UsersAndGroups__UserOrGroupGuidAssignment_1 )
+            // InternalOseeDsl.g:6835:2: rule__UsersAndGroups__UserOrGroupGuidAssignment_1
             {
             pushFollow(FOLLOW_2);
             rule__UsersAndGroups__UserOrGroupGuidAssignment_1();
@@ -19553,14 +18549,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__UsersAndGroups__Group__2"
-    // InternalOseeDsl.g:7221:1: rule__UsersAndGroups__Group__2 : rule__UsersAndGroups__Group__2__Impl ;
+    // InternalOseeDsl.g:6845:1: rule__UsersAndGroups__Group__2 : rule__UsersAndGroups__Group__2__Impl ;
     public final void rule__UsersAndGroups__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7225:1: ( rule__UsersAndGroups__Group__2__Impl )
-            // InternalOseeDsl.g:7226:2: rule__UsersAndGroups__Group__2__Impl
+            // InternalOseeDsl.g:6849:1: ( rule__UsersAndGroups__Group__2__Impl )
+            // InternalOseeDsl.g:6850:2: rule__UsersAndGroups__Group__2__Impl
             {
             pushFollow(FOLLOW_2);
             rule__UsersAndGroups__Group__2__Impl();
@@ -19586,20 +18582,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__UsersAndGroups__Group__2__Impl"
-    // InternalOseeDsl.g:7232:1: rule__UsersAndGroups__Group__2__Impl : ( ';' ) ;
+    // InternalOseeDsl.g:6856:1: rule__UsersAndGroups__Group__2__Impl : ( ';' ) ;
     public final void rule__UsersAndGroups__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7236:1: ( ( ';' ) )
-            // InternalOseeDsl.g:7237:1: ( ';' )
+            // InternalOseeDsl.g:6860:1: ( ( ';' ) )
+            // InternalOseeDsl.g:6861:1: ( ';' )
             {
-            // InternalOseeDsl.g:7237:1: ( ';' )
-            // InternalOseeDsl.g:7238:1: ';'
+            // InternalOseeDsl.g:6861:1: ( ';' )
+            // InternalOseeDsl.g:6862:1: ';'
             {
              before(grammarAccess.getUsersAndGroupsAccess().getSemicolonKeyword_2()); 
-            match(input,90,FOLLOW_2); 
+            match(input,89,FOLLOW_2); 
              after(grammarAccess.getUsersAndGroupsAccess().getSemicolonKeyword_2()); 
 
             }
@@ -19623,14 +18619,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__Group__0"
-    // InternalOseeDsl.g:7257:1: rule__AccessContext__Group__0 : rule__AccessContext__Group__0__Impl rule__AccessContext__Group__1 ;
+    // InternalOseeDsl.g:6881:1: rule__AccessContext__Group__0 : rule__AccessContext__Group__0__Impl rule__AccessContext__Group__1 ;
     public final void rule__AccessContext__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7261:1: ( rule__AccessContext__Group__0__Impl rule__AccessContext__Group__1 )
-            // InternalOseeDsl.g:7262:2: rule__AccessContext__Group__0__Impl rule__AccessContext__Group__1
+            // InternalOseeDsl.g:6885:1: ( rule__AccessContext__Group__0__Impl rule__AccessContext__Group__1 )
+            // InternalOseeDsl.g:6886:2: rule__AccessContext__Group__0__Impl rule__AccessContext__Group__1
             {
             pushFollow(FOLLOW_7);
             rule__AccessContext__Group__0__Impl();
@@ -19661,20 +18657,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__Group__0__Impl"
-    // InternalOseeDsl.g:7269:1: rule__AccessContext__Group__0__Impl : ( 'accessContext' ) ;
+    // InternalOseeDsl.g:6893:1: rule__AccessContext__Group__0__Impl : ( 'accessContext' ) ;
     public final void rule__AccessContext__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7273:1: ( ( 'accessContext' ) )
-            // InternalOseeDsl.g:7274:1: ( 'accessContext' )
+            // InternalOseeDsl.g:6897:1: ( ( 'accessContext' ) )
+            // InternalOseeDsl.g:6898:1: ( 'accessContext' )
             {
-            // InternalOseeDsl.g:7274:1: ( 'accessContext' )
-            // InternalOseeDsl.g:7275:1: 'accessContext'
+            // InternalOseeDsl.g:6898:1: ( 'accessContext' )
+            // InternalOseeDsl.g:6899:1: 'accessContext'
             {
              before(grammarAccess.getAccessContextAccess().getAccessContextKeyword_0()); 
-            match(input,92,FOLLOW_2); 
+            match(input,91,FOLLOW_2); 
              after(grammarAccess.getAccessContextAccess().getAccessContextKeyword_0()); 
 
             }
@@ -19698,14 +18694,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__Group__1"
-    // InternalOseeDsl.g:7288:1: rule__AccessContext__Group__1 : rule__AccessContext__Group__1__Impl rule__AccessContext__Group__2 ;
+    // InternalOseeDsl.g:6912:1: rule__AccessContext__Group__1 : rule__AccessContext__Group__1__Impl rule__AccessContext__Group__2 ;
     public final void rule__AccessContext__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7292:1: ( rule__AccessContext__Group__1__Impl rule__AccessContext__Group__2 )
-            // InternalOseeDsl.g:7293:2: rule__AccessContext__Group__1__Impl rule__AccessContext__Group__2
+            // InternalOseeDsl.g:6916:1: ( rule__AccessContext__Group__1__Impl rule__AccessContext__Group__2 )
+            // InternalOseeDsl.g:6917:2: rule__AccessContext__Group__1__Impl rule__AccessContext__Group__2
             {
             pushFollow(FOLLOW_12);
             rule__AccessContext__Group__1__Impl();
@@ -19736,21 +18732,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__Group__1__Impl"
-    // InternalOseeDsl.g:7300:1: rule__AccessContext__Group__1__Impl : ( ( rule__AccessContext__NameAssignment_1 ) ) ;
+    // InternalOseeDsl.g:6924:1: rule__AccessContext__Group__1__Impl : ( ( rule__AccessContext__NameAssignment_1 ) ) ;
     public final void rule__AccessContext__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7304:1: ( ( ( rule__AccessContext__NameAssignment_1 ) ) )
-            // InternalOseeDsl.g:7305:1: ( ( rule__AccessContext__NameAssignment_1 ) )
+            // InternalOseeDsl.g:6928:1: ( ( ( rule__AccessContext__NameAssignment_1 ) ) )
+            // InternalOseeDsl.g:6929:1: ( ( rule__AccessContext__NameAssignment_1 ) )
             {
-            // InternalOseeDsl.g:7305:1: ( ( rule__AccessContext__NameAssignment_1 ) )
-            // InternalOseeDsl.g:7306:1: ( rule__AccessContext__NameAssignment_1 )
+            // InternalOseeDsl.g:6929:1: ( ( rule__AccessContext__NameAssignment_1 ) )
+            // InternalOseeDsl.g:6930:1: ( rule__AccessContext__NameAssignment_1 )
             {
              before(grammarAccess.getAccessContextAccess().getNameAssignment_1()); 
-            // InternalOseeDsl.g:7307:1: ( rule__AccessContext__NameAssignment_1 )
-            // InternalOseeDsl.g:7307:2: rule__AccessContext__NameAssignment_1
+            // InternalOseeDsl.g:6931:1: ( rule__AccessContext__NameAssignment_1 )
+            // InternalOseeDsl.g:6931:2: rule__AccessContext__NameAssignment_1
             {
             pushFollow(FOLLOW_2);
             rule__AccessContext__NameAssignment_1();
@@ -19783,14 +18779,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__Group__2"
-    // InternalOseeDsl.g:7317:1: rule__AccessContext__Group__2 : rule__AccessContext__Group__2__Impl rule__AccessContext__Group__3 ;
+    // InternalOseeDsl.g:6941:1: rule__AccessContext__Group__2 : rule__AccessContext__Group__2__Impl rule__AccessContext__Group__3 ;
     public final void rule__AccessContext__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7321:1: ( rule__AccessContext__Group__2__Impl rule__AccessContext__Group__3 )
-            // InternalOseeDsl.g:7322:2: rule__AccessContext__Group__2__Impl rule__AccessContext__Group__3
+            // InternalOseeDsl.g:6945:1: ( rule__AccessContext__Group__2__Impl rule__AccessContext__Group__3 )
+            // InternalOseeDsl.g:6946:2: rule__AccessContext__Group__2__Impl rule__AccessContext__Group__3
             {
             pushFollow(FOLLOW_12);
             rule__AccessContext__Group__2__Impl();
@@ -19821,29 +18817,29 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__Group__2__Impl"
-    // InternalOseeDsl.g:7329:1: rule__AccessContext__Group__2__Impl : ( ( rule__AccessContext__Group_2__0 )? ) ;
+    // InternalOseeDsl.g:6953:1: rule__AccessContext__Group__2__Impl : ( ( rule__AccessContext__Group_2__0 )? ) ;
     public final void rule__AccessContext__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7333:1: ( ( ( rule__AccessContext__Group_2__0 )? ) )
-            // InternalOseeDsl.g:7334:1: ( ( rule__AccessContext__Group_2__0 )? )
+            // InternalOseeDsl.g:6957:1: ( ( ( rule__AccessContext__Group_2__0 )? ) )
+            // InternalOseeDsl.g:6958:1: ( ( rule__AccessContext__Group_2__0 )? )
             {
-            // InternalOseeDsl.g:7334:1: ( ( rule__AccessContext__Group_2__0 )? )
-            // InternalOseeDsl.g:7335:1: ( rule__AccessContext__Group_2__0 )?
+            // InternalOseeDsl.g:6958:1: ( ( rule__AccessContext__Group_2__0 )? )
+            // InternalOseeDsl.g:6959:1: ( rule__AccessContext__Group_2__0 )?
             {
              before(grammarAccess.getAccessContextAccess().getGroup_2()); 
-            // InternalOseeDsl.g:7336:1: ( rule__AccessContext__Group_2__0 )?
-            int alt52=2;
-            int LA52_0 = input.LA(1);
+            // InternalOseeDsl.g:6960:1: ( rule__AccessContext__Group_2__0 )?
+            int alt48=2;
+            int LA48_0 = input.LA(1);
 
-            if ( (LA52_0==56) ) {
-                alt52=1;
+            if ( (LA48_0==56) ) {
+                alt48=1;
             }
-            switch (alt52) {
+            switch (alt48) {
                 case 1 :
-                    // InternalOseeDsl.g:7336:2: rule__AccessContext__Group_2__0
+                    // InternalOseeDsl.g:6960:2: rule__AccessContext__Group_2__0
                     {
                     pushFollow(FOLLOW_2);
                     rule__AccessContext__Group_2__0();
@@ -19879,14 +18875,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__Group__3"
-    // InternalOseeDsl.g:7346:1: rule__AccessContext__Group__3 : rule__AccessContext__Group__3__Impl rule__AccessContext__Group__4 ;
+    // InternalOseeDsl.g:6970:1: rule__AccessContext__Group__3 : rule__AccessContext__Group__3__Impl rule__AccessContext__Group__4 ;
     public final void rule__AccessContext__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7350:1: ( rule__AccessContext__Group__3__Impl rule__AccessContext__Group__4 )
-            // InternalOseeDsl.g:7351:2: rule__AccessContext__Group__3__Impl rule__AccessContext__Group__4
+            // InternalOseeDsl.g:6974:1: ( rule__AccessContext__Group__3__Impl rule__AccessContext__Group__4 )
+            // InternalOseeDsl.g:6975:2: rule__AccessContext__Group__3__Impl rule__AccessContext__Group__4
             {
             pushFollow(FOLLOW_59);
             rule__AccessContext__Group__3__Impl();
@@ -19917,17 +18913,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__Group__3__Impl"
-    // InternalOseeDsl.g:7358:1: rule__AccessContext__Group__3__Impl : ( '{' ) ;
+    // InternalOseeDsl.g:6982:1: rule__AccessContext__Group__3__Impl : ( '{' ) ;
     public final void rule__AccessContext__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7362:1: ( ( '{' ) )
-            // InternalOseeDsl.g:7363:1: ( '{' )
+            // InternalOseeDsl.g:6986:1: ( ( '{' ) )
+            // InternalOseeDsl.g:6987:1: ( '{' )
             {
-            // InternalOseeDsl.g:7363:1: ( '{' )
-            // InternalOseeDsl.g:7364:1: '{'
+            // InternalOseeDsl.g:6987:1: ( '{' )
+            // InternalOseeDsl.g:6988:1: '{'
             {
              before(grammarAccess.getAccessContextAccess().getLeftCurlyBracketKeyword_3()); 
             match(input,53,FOLLOW_2); 
@@ -19954,14 +18950,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__Group__4"
-    // InternalOseeDsl.g:7377:1: rule__AccessContext__Group__4 : rule__AccessContext__Group__4__Impl rule__AccessContext__Group__5 ;
+    // InternalOseeDsl.g:7001:1: rule__AccessContext__Group__4 : rule__AccessContext__Group__4__Impl rule__AccessContext__Group__5 ;
     public final void rule__AccessContext__Group__4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7381:1: ( rule__AccessContext__Group__4__Impl rule__AccessContext__Group__5 )
-            // InternalOseeDsl.g:7382:2: rule__AccessContext__Group__4__Impl rule__AccessContext__Group__5
+            // InternalOseeDsl.g:7005:1: ( rule__AccessContext__Group__4__Impl rule__AccessContext__Group__5 )
+            // InternalOseeDsl.g:7006:2: rule__AccessContext__Group__4__Impl rule__AccessContext__Group__5
             {
             pushFollow(FOLLOW_7);
             rule__AccessContext__Group__4__Impl();
@@ -19992,20 +18988,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__Group__4__Impl"
-    // InternalOseeDsl.g:7389:1: rule__AccessContext__Group__4__Impl : ( 'guid' ) ;
+    // InternalOseeDsl.g:7013:1: rule__AccessContext__Group__4__Impl : ( 'guid' ) ;
     public final void rule__AccessContext__Group__4__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7393:1: ( ( 'guid' ) )
-            // InternalOseeDsl.g:7394:1: ( 'guid' )
+            // InternalOseeDsl.g:7017:1: ( ( 'guid' ) )
+            // InternalOseeDsl.g:7018:1: ( 'guid' )
             {
-            // InternalOseeDsl.g:7394:1: ( 'guid' )
-            // InternalOseeDsl.g:7395:1: 'guid'
+            // InternalOseeDsl.g:7018:1: ( 'guid' )
+            // InternalOseeDsl.g:7019:1: 'guid'
             {
              before(grammarAccess.getAccessContextAccess().getGuidKeyword_4()); 
-            match(input,58,FOLLOW_2); 
+            match(input,92,FOLLOW_2); 
              after(grammarAccess.getAccessContextAccess().getGuidKeyword_4()); 
 
             }
@@ -20029,14 +19025,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__Group__5"
-    // InternalOseeDsl.g:7408:1: rule__AccessContext__Group__5 : rule__AccessContext__Group__5__Impl rule__AccessContext__Group__6 ;
+    // InternalOseeDsl.g:7032:1: rule__AccessContext__Group__5 : rule__AccessContext__Group__5__Impl rule__AccessContext__Group__6 ;
     public final void rule__AccessContext__Group__5() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7412:1: ( rule__AccessContext__Group__5__Impl rule__AccessContext__Group__6 )
-            // InternalOseeDsl.g:7413:2: rule__AccessContext__Group__5__Impl rule__AccessContext__Group__6
+            // InternalOseeDsl.g:7036:1: ( rule__AccessContext__Group__5__Impl rule__AccessContext__Group__6 )
+            // InternalOseeDsl.g:7037:2: rule__AccessContext__Group__5__Impl rule__AccessContext__Group__6
             {
             pushFollow(FOLLOW_58);
             rule__AccessContext__Group__5__Impl();
@@ -20067,21 +19063,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__Group__5__Impl"
-    // InternalOseeDsl.g:7420:1: rule__AccessContext__Group__5__Impl : ( ( rule__AccessContext__GuidAssignment_5 ) ) ;
+    // InternalOseeDsl.g:7044:1: rule__AccessContext__Group__5__Impl : ( ( rule__AccessContext__GuidAssignment_5 ) ) ;
     public final void rule__AccessContext__Group__5__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7424:1: ( ( ( rule__AccessContext__GuidAssignment_5 ) ) )
-            // InternalOseeDsl.g:7425:1: ( ( rule__AccessContext__GuidAssignment_5 ) )
+            // InternalOseeDsl.g:7048:1: ( ( ( rule__AccessContext__GuidAssignment_5 ) ) )
+            // InternalOseeDsl.g:7049:1: ( ( rule__AccessContext__GuidAssignment_5 ) )
             {
-            // InternalOseeDsl.g:7425:1: ( ( rule__AccessContext__GuidAssignment_5 ) )
-            // InternalOseeDsl.g:7426:1: ( rule__AccessContext__GuidAssignment_5 )
+            // InternalOseeDsl.g:7049:1: ( ( rule__AccessContext__GuidAssignment_5 ) )
+            // InternalOseeDsl.g:7050:1: ( rule__AccessContext__GuidAssignment_5 )
             {
              before(grammarAccess.getAccessContextAccess().getGuidAssignment_5()); 
-            // InternalOseeDsl.g:7427:1: ( rule__AccessContext__GuidAssignment_5 )
-            // InternalOseeDsl.g:7427:2: rule__AccessContext__GuidAssignment_5
+            // InternalOseeDsl.g:7051:1: ( rule__AccessContext__GuidAssignment_5 )
+            // InternalOseeDsl.g:7051:2: rule__AccessContext__GuidAssignment_5
             {
             pushFollow(FOLLOW_2);
             rule__AccessContext__GuidAssignment_5();
@@ -20114,14 +19110,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__Group__6"
-    // InternalOseeDsl.g:7437:1: rule__AccessContext__Group__6 : rule__AccessContext__Group__6__Impl rule__AccessContext__Group__7 ;
+    // InternalOseeDsl.g:7061:1: rule__AccessContext__Group__6 : rule__AccessContext__Group__6__Impl rule__AccessContext__Group__7 ;
     public final void rule__AccessContext__Group__6() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7441:1: ( rule__AccessContext__Group__6__Impl rule__AccessContext__Group__7 )
-            // InternalOseeDsl.g:7442:2: rule__AccessContext__Group__6__Impl rule__AccessContext__Group__7
+            // InternalOseeDsl.g:7065:1: ( rule__AccessContext__Group__6__Impl rule__AccessContext__Group__7 )
+            // InternalOseeDsl.g:7066:2: rule__AccessContext__Group__6__Impl rule__AccessContext__Group__7
             {
             pushFollow(FOLLOW_60);
             rule__AccessContext__Group__6__Impl();
@@ -20152,20 +19148,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__Group__6__Impl"
-    // InternalOseeDsl.g:7449:1: rule__AccessContext__Group__6__Impl : ( ';' ) ;
+    // InternalOseeDsl.g:7073:1: rule__AccessContext__Group__6__Impl : ( ';' ) ;
     public final void rule__AccessContext__Group__6__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7453:1: ( ( ';' ) )
-            // InternalOseeDsl.g:7454:1: ( ';' )
+            // InternalOseeDsl.g:7077:1: ( ( ';' ) )
+            // InternalOseeDsl.g:7078:1: ( ';' )
             {
-            // InternalOseeDsl.g:7454:1: ( ';' )
-            // InternalOseeDsl.g:7455:1: ';'
+            // InternalOseeDsl.g:7078:1: ( ';' )
+            // InternalOseeDsl.g:7079:1: ';'
             {
              before(grammarAccess.getAccessContextAccess().getSemicolonKeyword_6()); 
-            match(input,90,FOLLOW_2); 
+            match(input,89,FOLLOW_2); 
              after(grammarAccess.getAccessContextAccess().getSemicolonKeyword_6()); 
 
             }
@@ -20189,14 +19185,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__Group__7"
-    // InternalOseeDsl.g:7468:1: rule__AccessContext__Group__7 : rule__AccessContext__Group__7__Impl rule__AccessContext__Group__8 ;
+    // InternalOseeDsl.g:7092:1: rule__AccessContext__Group__7 : rule__AccessContext__Group__7__Impl rule__AccessContext__Group__8 ;
     public final void rule__AccessContext__Group__7() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7472:1: ( rule__AccessContext__Group__7__Impl rule__AccessContext__Group__8 )
-            // InternalOseeDsl.g:7473:2: rule__AccessContext__Group__7__Impl rule__AccessContext__Group__8
+            // InternalOseeDsl.g:7096:1: ( rule__AccessContext__Group__7__Impl rule__AccessContext__Group__8 )
+            // InternalOseeDsl.g:7097:2: rule__AccessContext__Group__7__Impl rule__AccessContext__Group__8
             {
             pushFollow(FOLLOW_28);
             rule__AccessContext__Group__7__Impl();
@@ -20227,24 +19223,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__Group__7__Impl"
-    // InternalOseeDsl.g:7480:1: rule__AccessContext__Group__7__Impl : ( ( ( rule__AccessContext__Alternatives_7 ) ) ( ( rule__AccessContext__Alternatives_7 )* ) ) ;
+    // InternalOseeDsl.g:7104:1: rule__AccessContext__Group__7__Impl : ( ( ( rule__AccessContext__Alternatives_7 ) ) ( ( rule__AccessContext__Alternatives_7 )* ) ) ;
     public final void rule__AccessContext__Group__7__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7484:1: ( ( ( ( rule__AccessContext__Alternatives_7 ) ) ( ( rule__AccessContext__Alternatives_7 )* ) ) )
-            // InternalOseeDsl.g:7485:1: ( ( ( rule__AccessContext__Alternatives_7 ) ) ( ( rule__AccessContext__Alternatives_7 )* ) )
+            // InternalOseeDsl.g:7108:1: ( ( ( ( rule__AccessContext__Alternatives_7 ) ) ( ( rule__AccessContext__Alternatives_7 )* ) ) )
+            // InternalOseeDsl.g:7109:1: ( ( ( rule__AccessContext__Alternatives_7 ) ) ( ( rule__AccessContext__Alternatives_7 )* ) )
             {
-            // InternalOseeDsl.g:7485:1: ( ( ( rule__AccessContext__Alternatives_7 ) ) ( ( rule__AccessContext__Alternatives_7 )* ) )
-            // InternalOseeDsl.g:7486:1: ( ( rule__AccessContext__Alternatives_7 ) ) ( ( rule__AccessContext__Alternatives_7 )* )
+            // InternalOseeDsl.g:7109:1: ( ( ( rule__AccessContext__Alternatives_7 ) ) ( ( rule__AccessContext__Alternatives_7 )* ) )
+            // InternalOseeDsl.g:7110:1: ( ( rule__AccessContext__Alternatives_7 ) ) ( ( rule__AccessContext__Alternatives_7 )* )
             {
-            // InternalOseeDsl.g:7486:1: ( ( rule__AccessContext__Alternatives_7 ) )
-            // InternalOseeDsl.g:7487:1: ( rule__AccessContext__Alternatives_7 )
+            // InternalOseeDsl.g:7110:1: ( ( rule__AccessContext__Alternatives_7 ) )
+            // InternalOseeDsl.g:7111:1: ( rule__AccessContext__Alternatives_7 )
             {
              before(grammarAccess.getAccessContextAccess().getAlternatives_7()); 
-            // InternalOseeDsl.g:7488:1: ( rule__AccessContext__Alternatives_7 )
-            // InternalOseeDsl.g:7488:2: rule__AccessContext__Alternatives_7
+            // InternalOseeDsl.g:7112:1: ( rule__AccessContext__Alternatives_7 )
+            // InternalOseeDsl.g:7112:2: rule__AccessContext__Alternatives_7
             {
             pushFollow(FOLLOW_61);
             rule__AccessContext__Alternatives_7();
@@ -20258,24 +19254,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
             }
 
-            // InternalOseeDsl.g:7491:1: ( ( rule__AccessContext__Alternatives_7 )* )
-            // InternalOseeDsl.g:7492:1: ( rule__AccessContext__Alternatives_7 )*
+            // InternalOseeDsl.g:7115:1: ( ( rule__AccessContext__Alternatives_7 )* )
+            // InternalOseeDsl.g:7116:1: ( rule__AccessContext__Alternatives_7 )*
             {
              before(grammarAccess.getAccessContextAccess().getAlternatives_7()); 
-            // InternalOseeDsl.g:7493:1: ( rule__AccessContext__Alternatives_7 )*
-            loop53:
+            // InternalOseeDsl.g:7117:1: ( rule__AccessContext__Alternatives_7 )*
+            loop49:
             do {
-                int alt53=2;
-                int LA53_0 = input.LA(1);
+                int alt49=2;
+                int LA49_0 = input.LA(1);
 
-                if ( ((LA53_0>=45 && LA53_0<=46)||LA53_0==93) ) {
-                    alt53=1;
+                if ( ((LA49_0>=45 && LA49_0<=46)||LA49_0==93) ) {
+                    alt49=1;
                 }
 
 
-                switch (alt53) {
+                switch (alt49) {
             	case 1 :
-            	    // InternalOseeDsl.g:7493:2: rule__AccessContext__Alternatives_7
+            	    // InternalOseeDsl.g:7117:2: rule__AccessContext__Alternatives_7
             	    {
             	    pushFollow(FOLLOW_61);
             	    rule__AccessContext__Alternatives_7();
@@ -20287,7 +19283,7 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
             	    break;
 
             	default :
-            	    break loop53;
+            	    break loop49;
                 }
             } while (true);
 
@@ -20317,14 +19313,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__Group__8"
-    // InternalOseeDsl.g:7504:1: rule__AccessContext__Group__8 : rule__AccessContext__Group__8__Impl ;
+    // InternalOseeDsl.g:7128:1: rule__AccessContext__Group__8 : rule__AccessContext__Group__8__Impl ;
     public final void rule__AccessContext__Group__8() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7508:1: ( rule__AccessContext__Group__8__Impl )
-            // InternalOseeDsl.g:7509:2: rule__AccessContext__Group__8__Impl
+            // InternalOseeDsl.g:7132:1: ( rule__AccessContext__Group__8__Impl )
+            // InternalOseeDsl.g:7133:2: rule__AccessContext__Group__8__Impl
             {
             pushFollow(FOLLOW_2);
             rule__AccessContext__Group__8__Impl();
@@ -20350,17 +19346,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__Group__8__Impl"
-    // InternalOseeDsl.g:7515:1: rule__AccessContext__Group__8__Impl : ( '}' ) ;
+    // InternalOseeDsl.g:7139:1: rule__AccessContext__Group__8__Impl : ( '}' ) ;
     public final void rule__AccessContext__Group__8__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7519:1: ( ( '}' ) )
-            // InternalOseeDsl.g:7520:1: ( '}' )
+            // InternalOseeDsl.g:7143:1: ( ( '}' ) )
+            // InternalOseeDsl.g:7144:1: ( '}' )
             {
-            // InternalOseeDsl.g:7520:1: ( '}' )
-            // InternalOseeDsl.g:7521:1: '}'
+            // InternalOseeDsl.g:7144:1: ( '}' )
+            // InternalOseeDsl.g:7145:1: '}'
             {
              before(grammarAccess.getAccessContextAccess().getRightCurlyBracketKeyword_8()); 
             match(input,55,FOLLOW_2); 
@@ -20387,14 +19383,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__Group_2__0"
-    // InternalOseeDsl.g:7552:1: rule__AccessContext__Group_2__0 : rule__AccessContext__Group_2__0__Impl rule__AccessContext__Group_2__1 ;
+    // InternalOseeDsl.g:7176:1: rule__AccessContext__Group_2__0 : rule__AccessContext__Group_2__0__Impl rule__AccessContext__Group_2__1 ;
     public final void rule__AccessContext__Group_2__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7556:1: ( rule__AccessContext__Group_2__0__Impl rule__AccessContext__Group_2__1 )
-            // InternalOseeDsl.g:7557:2: rule__AccessContext__Group_2__0__Impl rule__AccessContext__Group_2__1
+            // InternalOseeDsl.g:7180:1: ( rule__AccessContext__Group_2__0__Impl rule__AccessContext__Group_2__1 )
+            // InternalOseeDsl.g:7181:2: rule__AccessContext__Group_2__0__Impl rule__AccessContext__Group_2__1
             {
             pushFollow(FOLLOW_7);
             rule__AccessContext__Group_2__0__Impl();
@@ -20425,17 +19421,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__Group_2__0__Impl"
-    // InternalOseeDsl.g:7564:1: rule__AccessContext__Group_2__0__Impl : ( 'extends' ) ;
+    // InternalOseeDsl.g:7188:1: rule__AccessContext__Group_2__0__Impl : ( 'extends' ) ;
     public final void rule__AccessContext__Group_2__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7568:1: ( ( 'extends' ) )
-            // InternalOseeDsl.g:7569:1: ( 'extends' )
+            // InternalOseeDsl.g:7192:1: ( ( 'extends' ) )
+            // InternalOseeDsl.g:7193:1: ( 'extends' )
             {
-            // InternalOseeDsl.g:7569:1: ( 'extends' )
-            // InternalOseeDsl.g:7570:1: 'extends'
+            // InternalOseeDsl.g:7193:1: ( 'extends' )
+            // InternalOseeDsl.g:7194:1: 'extends'
             {
              before(grammarAccess.getAccessContextAccess().getExtendsKeyword_2_0()); 
             match(input,56,FOLLOW_2); 
@@ -20462,14 +19458,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__Group_2__1"
-    // InternalOseeDsl.g:7583:1: rule__AccessContext__Group_2__1 : rule__AccessContext__Group_2__1__Impl ;
+    // InternalOseeDsl.g:7207:1: rule__AccessContext__Group_2__1 : rule__AccessContext__Group_2__1__Impl ;
     public final void rule__AccessContext__Group_2__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7587:1: ( rule__AccessContext__Group_2__1__Impl )
-            // InternalOseeDsl.g:7588:2: rule__AccessContext__Group_2__1__Impl
+            // InternalOseeDsl.g:7211:1: ( rule__AccessContext__Group_2__1__Impl )
+            // InternalOseeDsl.g:7212:2: rule__AccessContext__Group_2__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__AccessContext__Group_2__1__Impl();
@@ -20495,21 +19491,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__Group_2__1__Impl"
-    // InternalOseeDsl.g:7594:1: rule__AccessContext__Group_2__1__Impl : ( ( rule__AccessContext__SuperAccessContextsAssignment_2_1 ) ) ;
+    // InternalOseeDsl.g:7218:1: rule__AccessContext__Group_2__1__Impl : ( ( rule__AccessContext__SuperAccessContextsAssignment_2_1 ) ) ;
     public final void rule__AccessContext__Group_2__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7598:1: ( ( ( rule__AccessContext__SuperAccessContextsAssignment_2_1 ) ) )
-            // InternalOseeDsl.g:7599:1: ( ( rule__AccessContext__SuperAccessContextsAssignment_2_1 ) )
+            // InternalOseeDsl.g:7222:1: ( ( ( rule__AccessContext__SuperAccessContextsAssignment_2_1 ) ) )
+            // InternalOseeDsl.g:7223:1: ( ( rule__AccessContext__SuperAccessContextsAssignment_2_1 ) )
             {
-            // InternalOseeDsl.g:7599:1: ( ( rule__AccessContext__SuperAccessContextsAssignment_2_1 ) )
-            // InternalOseeDsl.g:7600:1: ( rule__AccessContext__SuperAccessContextsAssignment_2_1 )
+            // InternalOseeDsl.g:7223:1: ( ( rule__AccessContext__SuperAccessContextsAssignment_2_1 ) )
+            // InternalOseeDsl.g:7224:1: ( rule__AccessContext__SuperAccessContextsAssignment_2_1 )
             {
              before(grammarAccess.getAccessContextAccess().getSuperAccessContextsAssignment_2_1()); 
-            // InternalOseeDsl.g:7601:1: ( rule__AccessContext__SuperAccessContextsAssignment_2_1 )
-            // InternalOseeDsl.g:7601:2: rule__AccessContext__SuperAccessContextsAssignment_2_1
+            // InternalOseeDsl.g:7225:1: ( rule__AccessContext__SuperAccessContextsAssignment_2_1 )
+            // InternalOseeDsl.g:7225:2: rule__AccessContext__SuperAccessContextsAssignment_2_1
             {
             pushFollow(FOLLOW_2);
             rule__AccessContext__SuperAccessContextsAssignment_2_1();
@@ -20542,14 +19538,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__HierarchyRestriction__Group__0"
-    // InternalOseeDsl.g:7615:1: rule__HierarchyRestriction__Group__0 : rule__HierarchyRestriction__Group__0__Impl rule__HierarchyRestriction__Group__1 ;
+    // InternalOseeDsl.g:7239:1: rule__HierarchyRestriction__Group__0 : rule__HierarchyRestriction__Group__0__Impl rule__HierarchyRestriction__Group__1 ;
     public final void rule__HierarchyRestriction__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7619:1: ( rule__HierarchyRestriction__Group__0__Impl rule__HierarchyRestriction__Group__1 )
-            // InternalOseeDsl.g:7620:2: rule__HierarchyRestriction__Group__0__Impl rule__HierarchyRestriction__Group__1
+            // InternalOseeDsl.g:7243:1: ( rule__HierarchyRestriction__Group__0__Impl rule__HierarchyRestriction__Group__1 )
+            // InternalOseeDsl.g:7244:2: rule__HierarchyRestriction__Group__0__Impl rule__HierarchyRestriction__Group__1
             {
             pushFollow(FOLLOW_7);
             rule__HierarchyRestriction__Group__0__Impl();
@@ -20580,17 +19576,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__HierarchyRestriction__Group__0__Impl"
-    // InternalOseeDsl.g:7627:1: rule__HierarchyRestriction__Group__0__Impl : ( 'childrenOf' ) ;
+    // InternalOseeDsl.g:7251:1: rule__HierarchyRestriction__Group__0__Impl : ( 'childrenOf' ) ;
     public final void rule__HierarchyRestriction__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7631:1: ( ( 'childrenOf' ) )
-            // InternalOseeDsl.g:7632:1: ( 'childrenOf' )
+            // InternalOseeDsl.g:7255:1: ( ( 'childrenOf' ) )
+            // InternalOseeDsl.g:7256:1: ( 'childrenOf' )
             {
-            // InternalOseeDsl.g:7632:1: ( 'childrenOf' )
-            // InternalOseeDsl.g:7633:1: 'childrenOf'
+            // InternalOseeDsl.g:7256:1: ( 'childrenOf' )
+            // InternalOseeDsl.g:7257:1: 'childrenOf'
             {
              before(grammarAccess.getHierarchyRestrictionAccess().getChildrenOfKeyword_0()); 
             match(input,93,FOLLOW_2); 
@@ -20617,14 +19613,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__HierarchyRestriction__Group__1"
-    // InternalOseeDsl.g:7646:1: rule__HierarchyRestriction__Group__1 : rule__HierarchyRestriction__Group__1__Impl rule__HierarchyRestriction__Group__2 ;
+    // InternalOseeDsl.g:7270:1: rule__HierarchyRestriction__Group__1 : rule__HierarchyRestriction__Group__1__Impl rule__HierarchyRestriction__Group__2 ;
     public final void rule__HierarchyRestriction__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7650:1: ( rule__HierarchyRestriction__Group__1__Impl rule__HierarchyRestriction__Group__2 )
-            // InternalOseeDsl.g:7651:2: rule__HierarchyRestriction__Group__1__Impl rule__HierarchyRestriction__Group__2
+            // InternalOseeDsl.g:7274:1: ( rule__HierarchyRestriction__Group__1__Impl rule__HierarchyRestriction__Group__2 )
+            // InternalOseeDsl.g:7275:2: rule__HierarchyRestriction__Group__1__Impl rule__HierarchyRestriction__Group__2
             {
             pushFollow(FOLLOW_31);
             rule__HierarchyRestriction__Group__1__Impl();
@@ -20655,21 +19651,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__HierarchyRestriction__Group__1__Impl"
-    // InternalOseeDsl.g:7658:1: rule__HierarchyRestriction__Group__1__Impl : ( ( rule__HierarchyRestriction__ArtifactMatcherRefAssignment_1 ) ) ;
+    // InternalOseeDsl.g:7282:1: rule__HierarchyRestriction__Group__1__Impl : ( ( rule__HierarchyRestriction__ArtifactMatcherRefAssignment_1 ) ) ;
     public final void rule__HierarchyRestriction__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7662:1: ( ( ( rule__HierarchyRestriction__ArtifactMatcherRefAssignment_1 ) ) )
-            // InternalOseeDsl.g:7663:1: ( ( rule__HierarchyRestriction__ArtifactMatcherRefAssignment_1 ) )
+            // InternalOseeDsl.g:7286:1: ( ( ( rule__HierarchyRestriction__ArtifactMatcherRefAssignment_1 ) ) )
+            // InternalOseeDsl.g:7287:1: ( ( rule__HierarchyRestriction__ArtifactMatcherRefAssignment_1 ) )
             {
-            // InternalOseeDsl.g:7663:1: ( ( rule__HierarchyRestriction__ArtifactMatcherRefAssignment_1 ) )
-            // InternalOseeDsl.g:7664:1: ( rule__HierarchyRestriction__ArtifactMatcherRefAssignment_1 )
+            // InternalOseeDsl.g:7287:1: ( ( rule__HierarchyRestriction__ArtifactMatcherRefAssignment_1 ) )
+            // InternalOseeDsl.g:7288:1: ( rule__HierarchyRestriction__ArtifactMatcherRefAssignment_1 )
             {
              before(grammarAccess.getHierarchyRestrictionAccess().getArtifactMatcherRefAssignment_1()); 
-            // InternalOseeDsl.g:7665:1: ( rule__HierarchyRestriction__ArtifactMatcherRefAssignment_1 )
-            // InternalOseeDsl.g:7665:2: rule__HierarchyRestriction__ArtifactMatcherRefAssignment_1
+            // InternalOseeDsl.g:7289:1: ( rule__HierarchyRestriction__ArtifactMatcherRefAssignment_1 )
+            // InternalOseeDsl.g:7289:2: rule__HierarchyRestriction__ArtifactMatcherRefAssignment_1
             {
             pushFollow(FOLLOW_2);
             rule__HierarchyRestriction__ArtifactMatcherRefAssignment_1();
@@ -20702,14 +19698,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__HierarchyRestriction__Group__2"
-    // InternalOseeDsl.g:7675:1: rule__HierarchyRestriction__Group__2 : rule__HierarchyRestriction__Group__2__Impl rule__HierarchyRestriction__Group__3 ;
+    // InternalOseeDsl.g:7299:1: rule__HierarchyRestriction__Group__2 : rule__HierarchyRestriction__Group__2__Impl rule__HierarchyRestriction__Group__3 ;
     public final void rule__HierarchyRestriction__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7679:1: ( rule__HierarchyRestriction__Group__2__Impl rule__HierarchyRestriction__Group__3 )
-            // InternalOseeDsl.g:7680:2: rule__HierarchyRestriction__Group__2__Impl rule__HierarchyRestriction__Group__3
+            // InternalOseeDsl.g:7303:1: ( rule__HierarchyRestriction__Group__2__Impl rule__HierarchyRestriction__Group__3 )
+            // InternalOseeDsl.g:7304:2: rule__HierarchyRestriction__Group__2__Impl rule__HierarchyRestriction__Group__3
             {
             pushFollow(FOLLOW_62);
             rule__HierarchyRestriction__Group__2__Impl();
@@ -20740,17 +19736,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__HierarchyRestriction__Group__2__Impl"
-    // InternalOseeDsl.g:7687:1: rule__HierarchyRestriction__Group__2__Impl : ( '{' ) ;
+    // InternalOseeDsl.g:7311:1: rule__HierarchyRestriction__Group__2__Impl : ( '{' ) ;
     public final void rule__HierarchyRestriction__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7691:1: ( ( '{' ) )
-            // InternalOseeDsl.g:7692:1: ( '{' )
+            // InternalOseeDsl.g:7315:1: ( ( '{' ) )
+            // InternalOseeDsl.g:7316:1: ( '{' )
             {
-            // InternalOseeDsl.g:7692:1: ( '{' )
-            // InternalOseeDsl.g:7693:1: '{'
+            // InternalOseeDsl.g:7316:1: ( '{' )
+            // InternalOseeDsl.g:7317:1: '{'
             {
              before(grammarAccess.getHierarchyRestrictionAccess().getLeftCurlyBracketKeyword_2()); 
             match(input,53,FOLLOW_2); 
@@ -20777,14 +19773,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__HierarchyRestriction__Group__3"
-    // InternalOseeDsl.g:7706:1: rule__HierarchyRestriction__Group__3 : rule__HierarchyRestriction__Group__3__Impl rule__HierarchyRestriction__Group__4 ;
+    // InternalOseeDsl.g:7330:1: rule__HierarchyRestriction__Group__3 : rule__HierarchyRestriction__Group__3__Impl rule__HierarchyRestriction__Group__4 ;
     public final void rule__HierarchyRestriction__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7710:1: ( rule__HierarchyRestriction__Group__3__Impl rule__HierarchyRestriction__Group__4 )
-            // InternalOseeDsl.g:7711:2: rule__HierarchyRestriction__Group__3__Impl rule__HierarchyRestriction__Group__4
+            // InternalOseeDsl.g:7334:1: ( rule__HierarchyRestriction__Group__3__Impl rule__HierarchyRestriction__Group__4 )
+            // InternalOseeDsl.g:7335:2: rule__HierarchyRestriction__Group__3__Impl rule__HierarchyRestriction__Group__4
             {
             pushFollow(FOLLOW_28);
             rule__HierarchyRestriction__Group__3__Impl();
@@ -20815,24 +19811,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__HierarchyRestriction__Group__3__Impl"
-    // InternalOseeDsl.g:7718:1: rule__HierarchyRestriction__Group__3__Impl : ( ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 ) ) ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 )* ) ) ;
+    // InternalOseeDsl.g:7342:1: rule__HierarchyRestriction__Group__3__Impl : ( ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 ) ) ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 )* ) ) ;
     public final void rule__HierarchyRestriction__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7722:1: ( ( ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 ) ) ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 )* ) ) )
-            // InternalOseeDsl.g:7723:1: ( ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 ) ) ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 )* ) )
+            // InternalOseeDsl.g:7346:1: ( ( ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 ) ) ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 )* ) ) )
+            // InternalOseeDsl.g:7347:1: ( ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 ) ) ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 )* ) )
             {
-            // InternalOseeDsl.g:7723:1: ( ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 ) ) ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 )* ) )
-            // InternalOseeDsl.g:7724:1: ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 ) ) ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 )* )
+            // InternalOseeDsl.g:7347:1: ( ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 ) ) ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 )* ) )
+            // InternalOseeDsl.g:7348:1: ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 ) ) ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 )* )
             {
-            // InternalOseeDsl.g:7724:1: ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 ) )
-            // InternalOseeDsl.g:7725:1: ( rule__HierarchyRestriction__AccessRulesAssignment_3 )
+            // InternalOseeDsl.g:7348:1: ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 ) )
+            // InternalOseeDsl.g:7349:1: ( rule__HierarchyRestriction__AccessRulesAssignment_3 )
             {
              before(grammarAccess.getHierarchyRestrictionAccess().getAccessRulesAssignment_3()); 
-            // InternalOseeDsl.g:7726:1: ( rule__HierarchyRestriction__AccessRulesAssignment_3 )
-            // InternalOseeDsl.g:7726:2: rule__HierarchyRestriction__AccessRulesAssignment_3
+            // InternalOseeDsl.g:7350:1: ( rule__HierarchyRestriction__AccessRulesAssignment_3 )
+            // InternalOseeDsl.g:7350:2: rule__HierarchyRestriction__AccessRulesAssignment_3
             {
             pushFollow(FOLLOW_63);
             rule__HierarchyRestriction__AccessRulesAssignment_3();
@@ -20846,24 +19842,24 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
             }
 
-            // InternalOseeDsl.g:7729:1: ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 )* )
-            // InternalOseeDsl.g:7730:1: ( rule__HierarchyRestriction__AccessRulesAssignment_3 )*
+            // InternalOseeDsl.g:7353:1: ( ( rule__HierarchyRestriction__AccessRulesAssignment_3 )* )
+            // InternalOseeDsl.g:7354:1: ( rule__HierarchyRestriction__AccessRulesAssignment_3 )*
             {
              before(grammarAccess.getHierarchyRestrictionAccess().getAccessRulesAssignment_3()); 
-            // InternalOseeDsl.g:7731:1: ( rule__HierarchyRestriction__AccessRulesAssignment_3 )*
-            loop54:
+            // InternalOseeDsl.g:7355:1: ( rule__HierarchyRestriction__AccessRulesAssignment_3 )*
+            loop50:
             do {
-                int alt54=2;
-                int LA54_0 = input.LA(1);
+                int alt50=2;
+                int LA50_0 = input.LA(1);
 
-                if ( ((LA54_0>=45 && LA54_0<=46)) ) {
-                    alt54=1;
+                if ( ((LA50_0>=45 && LA50_0<=46)) ) {
+                    alt50=1;
                 }
 
 
-                switch (alt54) {
+                switch (alt50) {
             	case 1 :
-            	    // InternalOseeDsl.g:7731:2: rule__HierarchyRestriction__AccessRulesAssignment_3
+            	    // InternalOseeDsl.g:7355:2: rule__HierarchyRestriction__AccessRulesAssignment_3
             	    {
             	    pushFollow(FOLLOW_63);
             	    rule__HierarchyRestriction__AccessRulesAssignment_3();
@@ -20875,7 +19871,7 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
             	    break;
 
             	default :
-            	    break loop54;
+            	    break loop50;
                 }
             } while (true);
 
@@ -20905,14 +19901,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__HierarchyRestriction__Group__4"
-    // InternalOseeDsl.g:7742:1: rule__HierarchyRestriction__Group__4 : rule__HierarchyRestriction__Group__4__Impl ;
+    // InternalOseeDsl.g:7366:1: rule__HierarchyRestriction__Group__4 : rule__HierarchyRestriction__Group__4__Impl ;
     public final void rule__HierarchyRestriction__Group__4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7746:1: ( rule__HierarchyRestriction__Group__4__Impl )
-            // InternalOseeDsl.g:7747:2: rule__HierarchyRestriction__Group__4__Impl
+            // InternalOseeDsl.g:7370:1: ( rule__HierarchyRestriction__Group__4__Impl )
+            // InternalOseeDsl.g:7371:2: rule__HierarchyRestriction__Group__4__Impl
             {
             pushFollow(FOLLOW_2);
             rule__HierarchyRestriction__Group__4__Impl();
@@ -20938,17 +19934,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__HierarchyRestriction__Group__4__Impl"
-    // InternalOseeDsl.g:7753:1: rule__HierarchyRestriction__Group__4__Impl : ( '}' ) ;
+    // InternalOseeDsl.g:7377:1: rule__HierarchyRestriction__Group__4__Impl : ( '}' ) ;
     public final void rule__HierarchyRestriction__Group__4__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7757:1: ( ( '}' ) )
-            // InternalOseeDsl.g:7758:1: ( '}' )
+            // InternalOseeDsl.g:7381:1: ( ( '}' ) )
+            // InternalOseeDsl.g:7382:1: ( '}' )
             {
-            // InternalOseeDsl.g:7758:1: ( '}' )
-            // InternalOseeDsl.g:7759:1: '}'
+            // InternalOseeDsl.g:7382:1: ( '}' )
+            // InternalOseeDsl.g:7383:1: '}'
             {
              before(grammarAccess.getHierarchyRestrictionAccess().getRightCurlyBracketKeyword_4()); 
             match(input,55,FOLLOW_2); 
@@ -20975,14 +19971,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeArtifactTypePredicate__Group__0"
-    // InternalOseeDsl.g:7782:1: rule__RelationTypeArtifactTypePredicate__Group__0 : rule__RelationTypeArtifactTypePredicate__Group__0__Impl rule__RelationTypeArtifactTypePredicate__Group__1 ;
+    // InternalOseeDsl.g:7406:1: rule__RelationTypeArtifactTypePredicate__Group__0 : rule__RelationTypeArtifactTypePredicate__Group__0__Impl rule__RelationTypeArtifactTypePredicate__Group__1 ;
     public final void rule__RelationTypeArtifactTypePredicate__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7786:1: ( rule__RelationTypeArtifactTypePredicate__Group__0__Impl rule__RelationTypeArtifactTypePredicate__Group__1 )
-            // InternalOseeDsl.g:7787:2: rule__RelationTypeArtifactTypePredicate__Group__0__Impl rule__RelationTypeArtifactTypePredicate__Group__1
+            // InternalOseeDsl.g:7410:1: ( rule__RelationTypeArtifactTypePredicate__Group__0__Impl rule__RelationTypeArtifactTypePredicate__Group__1 )
+            // InternalOseeDsl.g:7411:2: rule__RelationTypeArtifactTypePredicate__Group__0__Impl rule__RelationTypeArtifactTypePredicate__Group__1
             {
             pushFollow(FOLLOW_7);
             rule__RelationTypeArtifactTypePredicate__Group__0__Impl();
@@ -21013,17 +20009,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeArtifactTypePredicate__Group__0__Impl"
-    // InternalOseeDsl.g:7794:1: rule__RelationTypeArtifactTypePredicate__Group__0__Impl : ( 'artifactType' ) ;
+    // InternalOseeDsl.g:7418:1: rule__RelationTypeArtifactTypePredicate__Group__0__Impl : ( 'artifactType' ) ;
     public final void rule__RelationTypeArtifactTypePredicate__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7798:1: ( ( 'artifactType' ) )
-            // InternalOseeDsl.g:7799:1: ( 'artifactType' )
+            // InternalOseeDsl.g:7422:1: ( ( 'artifactType' ) )
+            // InternalOseeDsl.g:7423:1: ( 'artifactType' )
             {
-            // InternalOseeDsl.g:7799:1: ( 'artifactType' )
-            // InternalOseeDsl.g:7800:1: 'artifactType'
+            // InternalOseeDsl.g:7423:1: ( 'artifactType' )
+            // InternalOseeDsl.g:7424:1: 'artifactType'
             {
              before(grammarAccess.getRelationTypeArtifactTypePredicateAccess().getArtifactTypeKeyword_0()); 
             match(input,52,FOLLOW_2); 
@@ -21050,14 +20046,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeArtifactTypePredicate__Group__1"
-    // InternalOseeDsl.g:7813:1: rule__RelationTypeArtifactTypePredicate__Group__1 : rule__RelationTypeArtifactTypePredicate__Group__1__Impl ;
+    // InternalOseeDsl.g:7437:1: rule__RelationTypeArtifactTypePredicate__Group__1 : rule__RelationTypeArtifactTypePredicate__Group__1__Impl ;
     public final void rule__RelationTypeArtifactTypePredicate__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7817:1: ( rule__RelationTypeArtifactTypePredicate__Group__1__Impl )
-            // InternalOseeDsl.g:7818:2: rule__RelationTypeArtifactTypePredicate__Group__1__Impl
+            // InternalOseeDsl.g:7441:1: ( rule__RelationTypeArtifactTypePredicate__Group__1__Impl )
+            // InternalOseeDsl.g:7442:2: rule__RelationTypeArtifactTypePredicate__Group__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__RelationTypeArtifactTypePredicate__Group__1__Impl();
@@ -21083,21 +20079,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeArtifactTypePredicate__Group__1__Impl"
-    // InternalOseeDsl.g:7824:1: rule__RelationTypeArtifactTypePredicate__Group__1__Impl : ( ( rule__RelationTypeArtifactTypePredicate__ArtifactTypeRefAssignment_1 ) ) ;
+    // InternalOseeDsl.g:7448:1: rule__RelationTypeArtifactTypePredicate__Group__1__Impl : ( ( rule__RelationTypeArtifactTypePredicate__ArtifactTypeRefAssignment_1 ) ) ;
     public final void rule__RelationTypeArtifactTypePredicate__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7828:1: ( ( ( rule__RelationTypeArtifactTypePredicate__ArtifactTypeRefAssignment_1 ) ) )
-            // InternalOseeDsl.g:7829:1: ( ( rule__RelationTypeArtifactTypePredicate__ArtifactTypeRefAssignment_1 ) )
+            // InternalOseeDsl.g:7452:1: ( ( ( rule__RelationTypeArtifactTypePredicate__ArtifactTypeRefAssignment_1 ) ) )
+            // InternalOseeDsl.g:7453:1: ( ( rule__RelationTypeArtifactTypePredicate__ArtifactTypeRefAssignment_1 ) )
             {
-            // InternalOseeDsl.g:7829:1: ( ( rule__RelationTypeArtifactTypePredicate__ArtifactTypeRefAssignment_1 ) )
-            // InternalOseeDsl.g:7830:1: ( rule__RelationTypeArtifactTypePredicate__ArtifactTypeRefAssignment_1 )
+            // InternalOseeDsl.g:7453:1: ( ( rule__RelationTypeArtifactTypePredicate__ArtifactTypeRefAssignment_1 ) )
+            // InternalOseeDsl.g:7454:1: ( rule__RelationTypeArtifactTypePredicate__ArtifactTypeRefAssignment_1 )
             {
              before(grammarAccess.getRelationTypeArtifactTypePredicateAccess().getArtifactTypeRefAssignment_1()); 
-            // InternalOseeDsl.g:7831:1: ( rule__RelationTypeArtifactTypePredicate__ArtifactTypeRefAssignment_1 )
-            // InternalOseeDsl.g:7831:2: rule__RelationTypeArtifactTypePredicate__ArtifactTypeRefAssignment_1
+            // InternalOseeDsl.g:7455:1: ( rule__RelationTypeArtifactTypePredicate__ArtifactTypeRefAssignment_1 )
+            // InternalOseeDsl.g:7455:2: rule__RelationTypeArtifactTypePredicate__ArtifactTypeRefAssignment_1
             {
             pushFollow(FOLLOW_2);
             rule__RelationTypeArtifactTypePredicate__ArtifactTypeRefAssignment_1();
@@ -21130,14 +20126,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeArtifactPredicate__Group__0"
-    // InternalOseeDsl.g:7845:1: rule__RelationTypeArtifactPredicate__Group__0 : rule__RelationTypeArtifactPredicate__Group__0__Impl rule__RelationTypeArtifactPredicate__Group__1 ;
+    // InternalOseeDsl.g:7469:1: rule__RelationTypeArtifactPredicate__Group__0 : rule__RelationTypeArtifactPredicate__Group__0__Impl rule__RelationTypeArtifactPredicate__Group__1 ;
     public final void rule__RelationTypeArtifactPredicate__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7849:1: ( rule__RelationTypeArtifactPredicate__Group__0__Impl rule__RelationTypeArtifactPredicate__Group__1 )
-            // InternalOseeDsl.g:7850:2: rule__RelationTypeArtifactPredicate__Group__0__Impl rule__RelationTypeArtifactPredicate__Group__1
+            // InternalOseeDsl.g:7473:1: ( rule__RelationTypeArtifactPredicate__Group__0__Impl rule__RelationTypeArtifactPredicate__Group__1 )
+            // InternalOseeDsl.g:7474:2: rule__RelationTypeArtifactPredicate__Group__0__Impl rule__RelationTypeArtifactPredicate__Group__1
             {
             pushFollow(FOLLOW_7);
             rule__RelationTypeArtifactPredicate__Group__0__Impl();
@@ -21168,17 +20164,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeArtifactPredicate__Group__0__Impl"
-    // InternalOseeDsl.g:7857:1: rule__RelationTypeArtifactPredicate__Group__0__Impl : ( 'artifact' ) ;
+    // InternalOseeDsl.g:7481:1: rule__RelationTypeArtifactPredicate__Group__0__Impl : ( 'artifact' ) ;
     public final void rule__RelationTypeArtifactPredicate__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7861:1: ( ( 'artifact' ) )
-            // InternalOseeDsl.g:7862:1: ( 'artifact' )
+            // InternalOseeDsl.g:7485:1: ( ( 'artifact' ) )
+            // InternalOseeDsl.g:7486:1: ( 'artifact' )
             {
-            // InternalOseeDsl.g:7862:1: ( 'artifact' )
-            // InternalOseeDsl.g:7863:1: 'artifact'
+            // InternalOseeDsl.g:7486:1: ( 'artifact' )
+            // InternalOseeDsl.g:7487:1: 'artifact'
             {
              before(grammarAccess.getRelationTypeArtifactPredicateAccess().getArtifactKeyword_0()); 
             match(input,94,FOLLOW_2); 
@@ -21205,14 +20201,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeArtifactPredicate__Group__1"
-    // InternalOseeDsl.g:7876:1: rule__RelationTypeArtifactPredicate__Group__1 : rule__RelationTypeArtifactPredicate__Group__1__Impl ;
+    // InternalOseeDsl.g:7500:1: rule__RelationTypeArtifactPredicate__Group__1 : rule__RelationTypeArtifactPredicate__Group__1__Impl ;
     public final void rule__RelationTypeArtifactPredicate__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7880:1: ( rule__RelationTypeArtifactPredicate__Group__1__Impl )
-            // InternalOseeDsl.g:7881:2: rule__RelationTypeArtifactPredicate__Group__1__Impl
+            // InternalOseeDsl.g:7504:1: ( rule__RelationTypeArtifactPredicate__Group__1__Impl )
+            // InternalOseeDsl.g:7505:2: rule__RelationTypeArtifactPredicate__Group__1__Impl
             {
             pushFollow(FOLLOW_2);
             rule__RelationTypeArtifactPredicate__Group__1__Impl();
@@ -21238,21 +20234,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeArtifactPredicate__Group__1__Impl"
-    // InternalOseeDsl.g:7887:1: rule__RelationTypeArtifactPredicate__Group__1__Impl : ( ( rule__RelationTypeArtifactPredicate__ArtifactMatcherRefAssignment_1 ) ) ;
+    // InternalOseeDsl.g:7511:1: rule__RelationTypeArtifactPredicate__Group__1__Impl : ( ( rule__RelationTypeArtifactPredicate__ArtifactMatcherRefAssignment_1 ) ) ;
     public final void rule__RelationTypeArtifactPredicate__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7891:1: ( ( ( rule__RelationTypeArtifactPredicate__ArtifactMatcherRefAssignment_1 ) ) )
-            // InternalOseeDsl.g:7892:1: ( ( rule__RelationTypeArtifactPredicate__ArtifactMatcherRefAssignment_1 ) )
+            // InternalOseeDsl.g:7515:1: ( ( ( rule__RelationTypeArtifactPredicate__ArtifactMatcherRefAssignment_1 ) ) )
+            // InternalOseeDsl.g:7516:1: ( ( rule__RelationTypeArtifactPredicate__ArtifactMatcherRefAssignment_1 ) )
             {
-            // InternalOseeDsl.g:7892:1: ( ( rule__RelationTypeArtifactPredicate__ArtifactMatcherRefAssignment_1 ) )
-            // InternalOseeDsl.g:7893:1: ( rule__RelationTypeArtifactPredicate__ArtifactMatcherRefAssignment_1 )
+            // InternalOseeDsl.g:7516:1: ( ( rule__RelationTypeArtifactPredicate__ArtifactMatcherRefAssignment_1 ) )
+            // InternalOseeDsl.g:7517:1: ( rule__RelationTypeArtifactPredicate__ArtifactMatcherRefAssignment_1 )
             {
              before(grammarAccess.getRelationTypeArtifactPredicateAccess().getArtifactMatcherRefAssignment_1()); 
-            // InternalOseeDsl.g:7894:1: ( rule__RelationTypeArtifactPredicate__ArtifactMatcherRefAssignment_1 )
-            // InternalOseeDsl.g:7894:2: rule__RelationTypeArtifactPredicate__ArtifactMatcherRefAssignment_1
+            // InternalOseeDsl.g:7518:1: ( rule__RelationTypeArtifactPredicate__ArtifactMatcherRefAssignment_1 )
+            // InternalOseeDsl.g:7518:2: rule__RelationTypeArtifactPredicate__ArtifactMatcherRefAssignment_1
             {
             pushFollow(FOLLOW_2);
             rule__RelationTypeArtifactPredicate__ArtifactMatcherRefAssignment_1();
@@ -21285,14 +20281,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ArtifactMatchRestriction__Group__0"
-    // InternalOseeDsl.g:7908:1: rule__ArtifactMatchRestriction__Group__0 : rule__ArtifactMatchRestriction__Group__0__Impl rule__ArtifactMatchRestriction__Group__1 ;
+    // InternalOseeDsl.g:7532:1: rule__ArtifactMatchRestriction__Group__0 : rule__ArtifactMatchRestriction__Group__0__Impl rule__ArtifactMatchRestriction__Group__1 ;
     public final void rule__ArtifactMatchRestriction__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7912:1: ( rule__ArtifactMatchRestriction__Group__0__Impl rule__ArtifactMatchRestriction__Group__1 )
-            // InternalOseeDsl.g:7913:2: rule__ArtifactMatchRestriction__Group__0__Impl rule__ArtifactMatchRestriction__Group__1
+            // InternalOseeDsl.g:7536:1: ( rule__ArtifactMatchRestriction__Group__0__Impl rule__ArtifactMatchRestriction__Group__1 )
+            // InternalOseeDsl.g:7537:2: rule__ArtifactMatchRestriction__Group__0__Impl rule__ArtifactMatchRestriction__Group__1
             {
             pushFollow(FOLLOW_64);
             rule__ArtifactMatchRestriction__Group__0__Impl();
@@ -21323,21 +20319,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ArtifactMatchRestriction__Group__0__Impl"
-    // InternalOseeDsl.g:7920:1: rule__ArtifactMatchRestriction__Group__0__Impl : ( ( rule__ArtifactMatchRestriction__PermissionAssignment_0 ) ) ;
+    // InternalOseeDsl.g:7544:1: rule__ArtifactMatchRestriction__Group__0__Impl : ( ( rule__ArtifactMatchRestriction__PermissionAssignment_0 ) ) ;
     public final void rule__ArtifactMatchRestriction__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7924:1: ( ( ( rule__ArtifactMatchRestriction__PermissionAssignment_0 ) ) )
-            // InternalOseeDsl.g:7925:1: ( ( rule__ArtifactMatchRestriction__PermissionAssignment_0 ) )
+            // InternalOseeDsl.g:7548:1: ( ( ( rule__ArtifactMatchRestriction__PermissionAssignment_0 ) ) )
+            // InternalOseeDsl.g:7549:1: ( ( rule__ArtifactMatchRestriction__PermissionAssignment_0 ) )
             {
-            // InternalOseeDsl.g:7925:1: ( ( rule__ArtifactMatchRestriction__PermissionAssignment_0 ) )
-            // InternalOseeDsl.g:7926:1: ( rule__ArtifactMatchRestriction__PermissionAssignment_0 )
+            // InternalOseeDsl.g:7549:1: ( ( rule__ArtifactMatchRestriction__PermissionAssignment_0 ) )
+            // InternalOseeDsl.g:7550:1: ( rule__ArtifactMatchRestriction__PermissionAssignment_0 )
             {
              before(grammarAccess.getArtifactMatchRestrictionAccess().getPermissionAssignment_0()); 
-            // InternalOseeDsl.g:7927:1: ( rule__ArtifactMatchRestriction__PermissionAssignment_0 )
-            // InternalOseeDsl.g:7927:2: rule__ArtifactMatchRestriction__PermissionAssignment_0
+            // InternalOseeDsl.g:7551:1: ( rule__ArtifactMatchRestriction__PermissionAssignment_0 )
+            // InternalOseeDsl.g:7551:2: rule__ArtifactMatchRestriction__PermissionAssignment_0
             {
             pushFollow(FOLLOW_2);
             rule__ArtifactMatchRestriction__PermissionAssignment_0();
@@ -21370,14 +20366,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ArtifactMatchRestriction__Group__1"
-    // InternalOseeDsl.g:7937:1: rule__ArtifactMatchRestriction__Group__1 : rule__ArtifactMatchRestriction__Group__1__Impl rule__ArtifactMatchRestriction__Group__2 ;
+    // InternalOseeDsl.g:7561:1: rule__ArtifactMatchRestriction__Group__1 : rule__ArtifactMatchRestriction__Group__1__Impl rule__ArtifactMatchRestriction__Group__2 ;
     public final void rule__ArtifactMatchRestriction__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7941:1: ( rule__ArtifactMatchRestriction__Group__1__Impl rule__ArtifactMatchRestriction__Group__2 )
-            // InternalOseeDsl.g:7942:2: rule__ArtifactMatchRestriction__Group__1__Impl rule__ArtifactMatchRestriction__Group__2
+            // InternalOseeDsl.g:7565:1: ( rule__ArtifactMatchRestriction__Group__1__Impl rule__ArtifactMatchRestriction__Group__2 )
+            // InternalOseeDsl.g:7566:2: rule__ArtifactMatchRestriction__Group__1__Impl rule__ArtifactMatchRestriction__Group__2
             {
             pushFollow(FOLLOW_65);
             rule__ArtifactMatchRestriction__Group__1__Impl();
@@ -21408,17 +20404,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ArtifactMatchRestriction__Group__1__Impl"
-    // InternalOseeDsl.g:7949:1: rule__ArtifactMatchRestriction__Group__1__Impl : ( 'edit' ) ;
+    // InternalOseeDsl.g:7573:1: rule__ArtifactMatchRestriction__Group__1__Impl : ( 'edit' ) ;
     public final void rule__ArtifactMatchRestriction__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7953:1: ( ( 'edit' ) )
-            // InternalOseeDsl.g:7954:1: ( 'edit' )
+            // InternalOseeDsl.g:7577:1: ( ( 'edit' ) )
+            // InternalOseeDsl.g:7578:1: ( 'edit' )
             {
-            // InternalOseeDsl.g:7954:1: ( 'edit' )
-            // InternalOseeDsl.g:7955:1: 'edit'
+            // InternalOseeDsl.g:7578:1: ( 'edit' )
+            // InternalOseeDsl.g:7579:1: 'edit'
             {
              before(grammarAccess.getArtifactMatchRestrictionAccess().getEditKeyword_1()); 
             match(input,95,FOLLOW_2); 
@@ -21445,14 +20441,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ArtifactMatchRestriction__Group__2"
-    // InternalOseeDsl.g:7968:1: rule__ArtifactMatchRestriction__Group__2 : rule__ArtifactMatchRestriction__Group__2__Impl rule__ArtifactMatchRestriction__Group__3 ;
+    // InternalOseeDsl.g:7592:1: rule__ArtifactMatchRestriction__Group__2 : rule__ArtifactMatchRestriction__Group__2__Impl rule__ArtifactMatchRestriction__Group__3 ;
     public final void rule__ArtifactMatchRestriction__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7972:1: ( rule__ArtifactMatchRestriction__Group__2__Impl rule__ArtifactMatchRestriction__Group__3 )
-            // InternalOseeDsl.g:7973:2: rule__ArtifactMatchRestriction__Group__2__Impl rule__ArtifactMatchRestriction__Group__3
+            // InternalOseeDsl.g:7596:1: ( rule__ArtifactMatchRestriction__Group__2__Impl rule__ArtifactMatchRestriction__Group__3 )
+            // InternalOseeDsl.g:7597:2: rule__ArtifactMatchRestriction__Group__2__Impl rule__ArtifactMatchRestriction__Group__3
             {
             pushFollow(FOLLOW_7);
             rule__ArtifactMatchRestriction__Group__2__Impl();
@@ -21483,17 +20479,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ArtifactMatchRestriction__Group__2__Impl"
-    // InternalOseeDsl.g:7980:1: rule__ArtifactMatchRestriction__Group__2__Impl : ( 'artifact' ) ;
+    // InternalOseeDsl.g:7604:1: rule__ArtifactMatchRestriction__Group__2__Impl : ( 'artifact' ) ;
     public final void rule__ArtifactMatchRestriction__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:7984:1: ( ( 'artifact' ) )
-            // InternalOseeDsl.g:7985:1: ( 'artifact' )
+            // InternalOseeDsl.g:7608:1: ( ( 'artifact' ) )
+            // InternalOseeDsl.g:7609:1: ( 'artifact' )
             {
-            // InternalOseeDsl.g:7985:1: ( 'artifact' )
-            // InternalOseeDsl.g:7986:1: 'artifact'
+            // InternalOseeDsl.g:7609:1: ( 'artifact' )
+            // InternalOseeDsl.g:7610:1: 'artifact'
             {
              before(grammarAccess.getArtifactMatchRestrictionAccess().getArtifactKeyword_2()); 
             match(input,94,FOLLOW_2); 
@@ -21520,14 +20516,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ArtifactMatchRestriction__Group__3"
-    // InternalOseeDsl.g:7999:1: rule__ArtifactMatchRestriction__Group__3 : rule__ArtifactMatchRestriction__Group__3__Impl rule__ArtifactMatchRestriction__Group__4 ;
+    // InternalOseeDsl.g:7623:1: rule__ArtifactMatchRestriction__Group__3 : rule__ArtifactMatchRestriction__Group__3__Impl rule__ArtifactMatchRestriction__Group__4 ;
     public final void rule__ArtifactMatchRestriction__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8003:1: ( rule__ArtifactMatchRestriction__Group__3__Impl rule__ArtifactMatchRestriction__Group__4 )
-            // InternalOseeDsl.g:8004:2: rule__ArtifactMatchRestriction__Group__3__Impl rule__ArtifactMatchRestriction__Group__4
+            // InternalOseeDsl.g:7627:1: ( rule__ArtifactMatchRestriction__Group__3__Impl rule__ArtifactMatchRestriction__Group__4 )
+            // InternalOseeDsl.g:7628:2: rule__ArtifactMatchRestriction__Group__3__Impl rule__ArtifactMatchRestriction__Group__4
             {
             pushFollow(FOLLOW_58);
             rule__ArtifactMatchRestriction__Group__3__Impl();
@@ -21558,21 +20554,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ArtifactMatchRestriction__Group__3__Impl"
-    // InternalOseeDsl.g:8011:1: rule__ArtifactMatchRestriction__Group__3__Impl : ( ( rule__ArtifactMatchRestriction__ArtifactMatcherRefAssignment_3 ) ) ;
+    // InternalOseeDsl.g:7635:1: rule__ArtifactMatchRestriction__Group__3__Impl : ( ( rule__ArtifactMatchRestriction__ArtifactMatcherRefAssignment_3 ) ) ;
     public final void rule__ArtifactMatchRestriction__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8015:1: ( ( ( rule__ArtifactMatchRestriction__ArtifactMatcherRefAssignment_3 ) ) )
-            // InternalOseeDsl.g:8016:1: ( ( rule__ArtifactMatchRestriction__ArtifactMatcherRefAssignment_3 ) )
+            // InternalOseeDsl.g:7639:1: ( ( ( rule__ArtifactMatchRestriction__ArtifactMatcherRefAssignment_3 ) ) )
+            // InternalOseeDsl.g:7640:1: ( ( rule__ArtifactMatchRestriction__ArtifactMatcherRefAssignment_3 ) )
             {
-            // InternalOseeDsl.g:8016:1: ( ( rule__ArtifactMatchRestriction__ArtifactMatcherRefAssignment_3 ) )
-            // InternalOseeDsl.g:8017:1: ( rule__ArtifactMatchRestriction__ArtifactMatcherRefAssignment_3 )
+            // InternalOseeDsl.g:7640:1: ( ( rule__ArtifactMatchRestriction__ArtifactMatcherRefAssignment_3 ) )
+            // InternalOseeDsl.g:7641:1: ( rule__ArtifactMatchRestriction__ArtifactMatcherRefAssignment_3 )
             {
              before(grammarAccess.getArtifactMatchRestrictionAccess().getArtifactMatcherRefAssignment_3()); 
-            // InternalOseeDsl.g:8018:1: ( rule__ArtifactMatchRestriction__ArtifactMatcherRefAssignment_3 )
-            // InternalOseeDsl.g:8018:2: rule__ArtifactMatchRestriction__ArtifactMatcherRefAssignment_3
+            // InternalOseeDsl.g:7642:1: ( rule__ArtifactMatchRestriction__ArtifactMatcherRefAssignment_3 )
+            // InternalOseeDsl.g:7642:2: rule__ArtifactMatchRestriction__ArtifactMatcherRefAssignment_3
             {
             pushFollow(FOLLOW_2);
             rule__ArtifactMatchRestriction__ArtifactMatcherRefAssignment_3();
@@ -21605,14 +20601,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ArtifactMatchRestriction__Group__4"
-    // InternalOseeDsl.g:8028:1: rule__ArtifactMatchRestriction__Group__4 : rule__ArtifactMatchRestriction__Group__4__Impl ;
+    // InternalOseeDsl.g:7652:1: rule__ArtifactMatchRestriction__Group__4 : rule__ArtifactMatchRestriction__Group__4__Impl ;
     public final void rule__ArtifactMatchRestriction__Group__4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8032:1: ( rule__ArtifactMatchRestriction__Group__4__Impl )
-            // InternalOseeDsl.g:8033:2: rule__ArtifactMatchRestriction__Group__4__Impl
+            // InternalOseeDsl.g:7656:1: ( rule__ArtifactMatchRestriction__Group__4__Impl )
+            // InternalOseeDsl.g:7657:2: rule__ArtifactMatchRestriction__Group__4__Impl
             {
             pushFollow(FOLLOW_2);
             rule__ArtifactMatchRestriction__Group__4__Impl();
@@ -21638,20 +20634,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ArtifactMatchRestriction__Group__4__Impl"
-    // InternalOseeDsl.g:8039:1: rule__ArtifactMatchRestriction__Group__4__Impl : ( ';' ) ;
+    // InternalOseeDsl.g:7663:1: rule__ArtifactMatchRestriction__Group__4__Impl : ( ';' ) ;
     public final void rule__ArtifactMatchRestriction__Group__4__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8043:1: ( ( ';' ) )
-            // InternalOseeDsl.g:8044:1: ( ';' )
+            // InternalOseeDsl.g:7667:1: ( ( ';' ) )
+            // InternalOseeDsl.g:7668:1: ( ';' )
             {
-            // InternalOseeDsl.g:8044:1: ( ';' )
-            // InternalOseeDsl.g:8045:1: ';'
+            // InternalOseeDsl.g:7668:1: ( ';' )
+            // InternalOseeDsl.g:7669:1: ';'
             {
              before(grammarAccess.getArtifactMatchRestrictionAccess().getSemicolonKeyword_4()); 
-            match(input,90,FOLLOW_2); 
+            match(input,89,FOLLOW_2); 
              after(grammarAccess.getArtifactMatchRestrictionAccess().getSemicolonKeyword_4()); 
 
             }
@@ -21675,14 +20671,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ArtifactTypeRestriction__Group__0"
-    // InternalOseeDsl.g:8068:1: rule__ArtifactTypeRestriction__Group__0 : rule__ArtifactTypeRestriction__Group__0__Impl rule__ArtifactTypeRestriction__Group__1 ;
+    // InternalOseeDsl.g:7692:1: rule__ArtifactTypeRestriction__Group__0 : rule__ArtifactTypeRestriction__Group__0__Impl rule__ArtifactTypeRestriction__Group__1 ;
     public final void rule__ArtifactTypeRestriction__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8072:1: ( rule__ArtifactTypeRestriction__Group__0__Impl rule__ArtifactTypeRestriction__Group__1 )
-            // InternalOseeDsl.g:8073:2: rule__ArtifactTypeRestriction__Group__0__Impl rule__ArtifactTypeRestriction__Group__1
+            // InternalOseeDsl.g:7696:1: ( rule__ArtifactTypeRestriction__Group__0__Impl rule__ArtifactTypeRestriction__Group__1 )
+            // InternalOseeDsl.g:7697:2: rule__ArtifactTypeRestriction__Group__0__Impl rule__ArtifactTypeRestriction__Group__1
             {
             pushFollow(FOLLOW_64);
             rule__ArtifactTypeRestriction__Group__0__Impl();
@@ -21713,21 +20709,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ArtifactTypeRestriction__Group__0__Impl"
-    // InternalOseeDsl.g:8080:1: rule__ArtifactTypeRestriction__Group__0__Impl : ( ( rule__ArtifactTypeRestriction__PermissionAssignment_0 ) ) ;
+    // InternalOseeDsl.g:7704:1: rule__ArtifactTypeRestriction__Group__0__Impl : ( ( rule__ArtifactTypeRestriction__PermissionAssignment_0 ) ) ;
     public final void rule__ArtifactTypeRestriction__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8084:1: ( ( ( rule__ArtifactTypeRestriction__PermissionAssignment_0 ) ) )
-            // InternalOseeDsl.g:8085:1: ( ( rule__ArtifactTypeRestriction__PermissionAssignment_0 ) )
+            // InternalOseeDsl.g:7708:1: ( ( ( rule__ArtifactTypeRestriction__PermissionAssignment_0 ) ) )
+            // InternalOseeDsl.g:7709:1: ( ( rule__ArtifactTypeRestriction__PermissionAssignment_0 ) )
             {
-            // InternalOseeDsl.g:8085:1: ( ( rule__ArtifactTypeRestriction__PermissionAssignment_0 ) )
-            // InternalOseeDsl.g:8086:1: ( rule__ArtifactTypeRestriction__PermissionAssignment_0 )
+            // InternalOseeDsl.g:7709:1: ( ( rule__ArtifactTypeRestriction__PermissionAssignment_0 ) )
+            // InternalOseeDsl.g:7710:1: ( rule__ArtifactTypeRestriction__PermissionAssignment_0 )
             {
              before(grammarAccess.getArtifactTypeRestrictionAccess().getPermissionAssignment_0()); 
-            // InternalOseeDsl.g:8087:1: ( rule__ArtifactTypeRestriction__PermissionAssignment_0 )
-            // InternalOseeDsl.g:8087:2: rule__ArtifactTypeRestriction__PermissionAssignment_0
+            // InternalOseeDsl.g:7711:1: ( rule__ArtifactTypeRestriction__PermissionAssignment_0 )
+            // InternalOseeDsl.g:7711:2: rule__ArtifactTypeRestriction__PermissionAssignment_0
             {
             pushFollow(FOLLOW_2);
             rule__ArtifactTypeRestriction__PermissionAssignment_0();
@@ -21760,14 +20756,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ArtifactTypeRestriction__Group__1"
-    // InternalOseeDsl.g:8097:1: rule__ArtifactTypeRestriction__Group__1 : rule__ArtifactTypeRestriction__Group__1__Impl rule__ArtifactTypeRestriction__Group__2 ;
+    // InternalOseeDsl.g:7721:1: rule__ArtifactTypeRestriction__Group__1 : rule__ArtifactTypeRestriction__Group__1__Impl rule__ArtifactTypeRestriction__Group__2 ;
     public final void rule__ArtifactTypeRestriction__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8101:1: ( rule__ArtifactTypeRestriction__Group__1__Impl rule__ArtifactTypeRestriction__Group__2 )
-            // InternalOseeDsl.g:8102:2: rule__ArtifactTypeRestriction__Group__1__Impl rule__ArtifactTypeRestriction__Group__2
+            // InternalOseeDsl.g:7725:1: ( rule__ArtifactTypeRestriction__Group__1__Impl rule__ArtifactTypeRestriction__Group__2 )
+            // InternalOseeDsl.g:7726:2: rule__ArtifactTypeRestriction__Group__1__Impl rule__ArtifactTypeRestriction__Group__2
             {
             pushFollow(FOLLOW_66);
             rule__ArtifactTypeRestriction__Group__1__Impl();
@@ -21798,17 +20794,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ArtifactTypeRestriction__Group__1__Impl"
-    // InternalOseeDsl.g:8109:1: rule__ArtifactTypeRestriction__Group__1__Impl : ( 'edit' ) ;
+    // InternalOseeDsl.g:7733:1: rule__ArtifactTypeRestriction__Group__1__Impl : ( 'edit' ) ;
     public final void rule__ArtifactTypeRestriction__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8113:1: ( ( 'edit' ) )
-            // InternalOseeDsl.g:8114:1: ( 'edit' )
+            // InternalOseeDsl.g:7737:1: ( ( 'edit' ) )
+            // InternalOseeDsl.g:7738:1: ( 'edit' )
             {
-            // InternalOseeDsl.g:8114:1: ( 'edit' )
-            // InternalOseeDsl.g:8115:1: 'edit'
+            // InternalOseeDsl.g:7738:1: ( 'edit' )
+            // InternalOseeDsl.g:7739:1: 'edit'
             {
              before(grammarAccess.getArtifactTypeRestrictionAccess().getEditKeyword_1()); 
             match(input,95,FOLLOW_2); 
@@ -21835,14 +20831,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ArtifactTypeRestriction__Group__2"
-    // InternalOseeDsl.g:8128:1: rule__ArtifactTypeRestriction__Group__2 : rule__ArtifactTypeRestriction__Group__2__Impl rule__ArtifactTypeRestriction__Group__3 ;
+    // InternalOseeDsl.g:7752:1: rule__ArtifactTypeRestriction__Group__2 : rule__ArtifactTypeRestriction__Group__2__Impl rule__ArtifactTypeRestriction__Group__3 ;
     public final void rule__ArtifactTypeRestriction__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8132:1: ( rule__ArtifactTypeRestriction__Group__2__Impl rule__ArtifactTypeRestriction__Group__3 )
-            // InternalOseeDsl.g:8133:2: rule__ArtifactTypeRestriction__Group__2__Impl rule__ArtifactTypeRestriction__Group__3
+            // InternalOseeDsl.g:7756:1: ( rule__ArtifactTypeRestriction__Group__2__Impl rule__ArtifactTypeRestriction__Group__3 )
+            // InternalOseeDsl.g:7757:2: rule__ArtifactTypeRestriction__Group__2__Impl rule__ArtifactTypeRestriction__Group__3
             {
             pushFollow(FOLLOW_7);
             rule__ArtifactTypeRestriction__Group__2__Impl();
@@ -21873,17 +20869,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ArtifactTypeRestriction__Group__2__Impl"
-    // InternalOseeDsl.g:8140:1: rule__ArtifactTypeRestriction__Group__2__Impl : ( 'artifactType' ) ;
+    // InternalOseeDsl.g:7764:1: rule__ArtifactTypeRestriction__Group__2__Impl : ( 'artifactType' ) ;
     public final void rule__ArtifactTypeRestriction__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8144:1: ( ( 'artifactType' ) )
-            // InternalOseeDsl.g:8145:1: ( 'artifactType' )
+            // InternalOseeDsl.g:7768:1: ( ( 'artifactType' ) )
+            // InternalOseeDsl.g:7769:1: ( 'artifactType' )
             {
-            // InternalOseeDsl.g:8145:1: ( 'artifactType' )
-            // InternalOseeDsl.g:8146:1: 'artifactType'
+            // InternalOseeDsl.g:7769:1: ( 'artifactType' )
+            // InternalOseeDsl.g:7770:1: 'artifactType'
             {
              before(grammarAccess.getArtifactTypeRestrictionAccess().getArtifactTypeKeyword_2()); 
             match(input,52,FOLLOW_2); 
@@ -21910,14 +20906,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ArtifactTypeRestriction__Group__3"
-    // InternalOseeDsl.g:8159:1: rule__ArtifactTypeRestriction__Group__3 : rule__ArtifactTypeRestriction__Group__3__Impl rule__ArtifactTypeRestriction__Group__4 ;
+    // InternalOseeDsl.g:7783:1: rule__ArtifactTypeRestriction__Group__3 : rule__ArtifactTypeRestriction__Group__3__Impl rule__ArtifactTypeRestriction__Group__4 ;
     public final void rule__ArtifactTypeRestriction__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8163:1: ( rule__ArtifactTypeRestriction__Group__3__Impl rule__ArtifactTypeRestriction__Group__4 )
-            // InternalOseeDsl.g:8164:2: rule__ArtifactTypeRestriction__Group__3__Impl rule__ArtifactTypeRestriction__Group__4
+            // InternalOseeDsl.g:7787:1: ( rule__ArtifactTypeRestriction__Group__3__Impl rule__ArtifactTypeRestriction__Group__4 )
+            // InternalOseeDsl.g:7788:2: rule__ArtifactTypeRestriction__Group__3__Impl rule__ArtifactTypeRestriction__Group__4
             {
             pushFollow(FOLLOW_58);
             rule__ArtifactTypeRestriction__Group__3__Impl();
@@ -21948,21 +20944,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ArtifactTypeRestriction__Group__3__Impl"
-    // InternalOseeDsl.g:8171:1: rule__ArtifactTypeRestriction__Group__3__Impl : ( ( rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 ) ) ;
+    // InternalOseeDsl.g:7795:1: rule__ArtifactTypeRestriction__Group__3__Impl : ( ( rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 ) ) ;
     public final void rule__ArtifactTypeRestriction__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8175:1: ( ( ( rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 ) ) )
-            // InternalOseeDsl.g:8176:1: ( ( rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 ) )
+            // InternalOseeDsl.g:7799:1: ( ( ( rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 ) ) )
+            // InternalOseeDsl.g:7800:1: ( ( rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 ) )
             {
-            // InternalOseeDsl.g:8176:1: ( ( rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 ) )
-            // InternalOseeDsl.g:8177:1: ( rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 )
+            // InternalOseeDsl.g:7800:1: ( ( rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 ) )
+            // InternalOseeDsl.g:7801:1: ( rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 )
             {
              before(grammarAccess.getArtifactTypeRestrictionAccess().getArtifactTypeRefAssignment_3()); 
-            // InternalOseeDsl.g:8178:1: ( rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 )
-            // InternalOseeDsl.g:8178:2: rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3
+            // InternalOseeDsl.g:7802:1: ( rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 )
+            // InternalOseeDsl.g:7802:2: rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3
             {
             pushFollow(FOLLOW_2);
             rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3();
@@ -21995,14 +20991,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ArtifactTypeRestriction__Group__4"
-    // InternalOseeDsl.g:8188:1: rule__ArtifactTypeRestriction__Group__4 : rule__ArtifactTypeRestriction__Group__4__Impl ;
+    // InternalOseeDsl.g:7812:1: rule__ArtifactTypeRestriction__Group__4 : rule__ArtifactTypeRestriction__Group__4__Impl ;
     public final void rule__ArtifactTypeRestriction__Group__4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8192:1: ( rule__ArtifactTypeRestriction__Group__4__Impl )
-            // InternalOseeDsl.g:8193:2: rule__ArtifactTypeRestriction__Group__4__Impl
+            // InternalOseeDsl.g:7816:1: ( rule__ArtifactTypeRestriction__Group__4__Impl )
+            // InternalOseeDsl.g:7817:2: rule__ArtifactTypeRestriction__Group__4__Impl
             {
             pushFollow(FOLLOW_2);
             rule__ArtifactTypeRestriction__Group__4__Impl();
@@ -22028,20 +21024,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ArtifactTypeRestriction__Group__4__Impl"
-    // InternalOseeDsl.g:8199:1: rule__ArtifactTypeRestriction__Group__4__Impl : ( ';' ) ;
+    // InternalOseeDsl.g:7823:1: rule__ArtifactTypeRestriction__Group__4__Impl : ( ';' ) ;
     public final void rule__ArtifactTypeRestriction__Group__4__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8203:1: ( ( ';' ) )
-            // InternalOseeDsl.g:8204:1: ( ';' )
+            // InternalOseeDsl.g:7827:1: ( ( ';' ) )
+            // InternalOseeDsl.g:7828:1: ( ';' )
             {
-            // InternalOseeDsl.g:8204:1: ( ';' )
-            // InternalOseeDsl.g:8205:1: ';'
+            // InternalOseeDsl.g:7828:1: ( ';' )
+            // InternalOseeDsl.g:7829:1: ';'
             {
              before(grammarAccess.getArtifactTypeRestrictionAccess().getSemicolonKeyword_4()); 
-            match(input,90,FOLLOW_2); 
+            match(input,89,FOLLOW_2); 
              after(grammarAccess.getArtifactTypeRestrictionAccess().getSemicolonKeyword_4()); 
 
             }
@@ -22065,14 +21061,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AttributeTypeRestriction__Group__0"
-    // InternalOseeDsl.g:8228:1: rule__AttributeTypeRestriction__Group__0 : rule__AttributeTypeRestriction__Group__0__Impl rule__AttributeTypeRestriction__Group__1 ;
+    // InternalOseeDsl.g:7852:1: rule__AttributeTypeRestriction__Group__0 : rule__AttributeTypeRestriction__Group__0__Impl rule__AttributeTypeRestriction__Group__1 ;
     public final void rule__AttributeTypeRestriction__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8232:1: ( rule__AttributeTypeRestriction__Group__0__Impl rule__AttributeTypeRestriction__Group__1 )
-            // InternalOseeDsl.g:8233:2: rule__AttributeTypeRestriction__Group__0__Impl rule__AttributeTypeRestriction__Group__1
+            // InternalOseeDsl.g:7856:1: ( rule__AttributeTypeRestriction__Group__0__Impl rule__AttributeTypeRestriction__Group__1 )
+            // InternalOseeDsl.g:7857:2: rule__AttributeTypeRestriction__Group__0__Impl rule__AttributeTypeRestriction__Group__1
             {
             pushFollow(FOLLOW_64);
             rule__AttributeTypeRestriction__Group__0__Impl();
@@ -22103,21 +21099,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AttributeTypeRestriction__Group__0__Impl"
-    // InternalOseeDsl.g:8240:1: rule__AttributeTypeRestriction__Group__0__Impl : ( ( rule__AttributeTypeRestriction__PermissionAssignment_0 ) ) ;
+    // InternalOseeDsl.g:7864:1: rule__AttributeTypeRestriction__Group__0__Impl : ( ( rule__AttributeTypeRestriction__PermissionAssignment_0 ) ) ;
     public final void rule__AttributeTypeRestriction__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8244:1: ( ( ( rule__AttributeTypeRestriction__PermissionAssignment_0 ) ) )
-            // InternalOseeDsl.g:8245:1: ( ( rule__AttributeTypeRestriction__PermissionAssignment_0 ) )
+            // InternalOseeDsl.g:7868:1: ( ( ( rule__AttributeTypeRestriction__PermissionAssignment_0 ) ) )
+            // InternalOseeDsl.g:7869:1: ( ( rule__AttributeTypeRestriction__PermissionAssignment_0 ) )
             {
-            // InternalOseeDsl.g:8245:1: ( ( rule__AttributeTypeRestriction__PermissionAssignment_0 ) )
-            // InternalOseeDsl.g:8246:1: ( rule__AttributeTypeRestriction__PermissionAssignment_0 )
+            // InternalOseeDsl.g:7869:1: ( ( rule__AttributeTypeRestriction__PermissionAssignment_0 ) )
+            // InternalOseeDsl.g:7870:1: ( rule__AttributeTypeRestriction__PermissionAssignment_0 )
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getPermissionAssignment_0()); 
-            // InternalOseeDsl.g:8247:1: ( rule__AttributeTypeRestriction__PermissionAssignment_0 )
-            // InternalOseeDsl.g:8247:2: rule__AttributeTypeRestriction__PermissionAssignment_0
+            // InternalOseeDsl.g:7871:1: ( rule__AttributeTypeRestriction__PermissionAssignment_0 )
+            // InternalOseeDsl.g:7871:2: rule__AttributeTypeRestriction__PermissionAssignment_0
             {
             pushFollow(FOLLOW_2);
             rule__AttributeTypeRestriction__PermissionAssignment_0();
@@ -22150,14 +21146,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AttributeTypeRestriction__Group__1"
-    // InternalOseeDsl.g:8257:1: rule__AttributeTypeRestriction__Group__1 : rule__AttributeTypeRestriction__Group__1__Impl rule__AttributeTypeRestriction__Group__2 ;
+    // InternalOseeDsl.g:7881:1: rule__AttributeTypeRestriction__Group__1 : rule__AttributeTypeRestriction__Group__1__Impl rule__AttributeTypeRestriction__Group__2 ;
     public final void rule__AttributeTypeRestriction__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8261:1: ( rule__AttributeTypeRestriction__Group__1__Impl rule__AttributeTypeRestriction__Group__2 )
-            // InternalOseeDsl.g:8262:2: rule__AttributeTypeRestriction__Group__1__Impl rule__AttributeTypeRestriction__Group__2
+            // InternalOseeDsl.g:7885:1: ( rule__AttributeTypeRestriction__Group__1__Impl rule__AttributeTypeRestriction__Group__2 )
+            // InternalOseeDsl.g:7886:2: rule__AttributeTypeRestriction__Group__1__Impl rule__AttributeTypeRestriction__Group__2
             {
             pushFollow(FOLLOW_67);
             rule__AttributeTypeRestriction__Group__1__Impl();
@@ -22188,17 +21184,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AttributeTypeRestriction__Group__1__Impl"
-    // InternalOseeDsl.g:8269:1: rule__AttributeTypeRestriction__Group__1__Impl : ( 'edit' ) ;
+    // InternalOseeDsl.g:7893:1: rule__AttributeTypeRestriction__Group__1__Impl : ( 'edit' ) ;
     public final void rule__AttributeTypeRestriction__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8273:1: ( ( 'edit' ) )
-            // InternalOseeDsl.g:8274:1: ( 'edit' )
+            // InternalOseeDsl.g:7897:1: ( ( 'edit' ) )
+            // InternalOseeDsl.g:7898:1: ( 'edit' )
             {
-            // InternalOseeDsl.g:8274:1: ( 'edit' )
-            // InternalOseeDsl.g:8275:1: 'edit'
+            // InternalOseeDsl.g:7898:1: ( 'edit' )
+            // InternalOseeDsl.g:7899:1: 'edit'
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getEditKeyword_1()); 
             match(input,95,FOLLOW_2); 
@@ -22225,14 +21221,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AttributeTypeRestriction__Group__2"
-    // InternalOseeDsl.g:8288:1: rule__AttributeTypeRestriction__Group__2 : rule__AttributeTypeRestriction__Group__2__Impl rule__AttributeTypeRestriction__Group__3 ;
+    // InternalOseeDsl.g:7912:1: rule__AttributeTypeRestriction__Group__2 : rule__AttributeTypeRestriction__Group__2__Impl rule__AttributeTypeRestriction__Group__3 ;
     public final void rule__AttributeTypeRestriction__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8292:1: ( rule__AttributeTypeRestriction__Group__2__Impl rule__AttributeTypeRestriction__Group__3 )
-            // InternalOseeDsl.g:8293:2: rule__AttributeTypeRestriction__Group__2__Impl rule__AttributeTypeRestriction__Group__3
+            // InternalOseeDsl.g:7916:1: ( rule__AttributeTypeRestriction__Group__2__Impl rule__AttributeTypeRestriction__Group__3 )
+            // InternalOseeDsl.g:7917:2: rule__AttributeTypeRestriction__Group__2__Impl rule__AttributeTypeRestriction__Group__3
             {
             pushFollow(FOLLOW_7);
             rule__AttributeTypeRestriction__Group__2__Impl();
@@ -22263,20 +21259,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AttributeTypeRestriction__Group__2__Impl"
-    // InternalOseeDsl.g:8300:1: rule__AttributeTypeRestriction__Group__2__Impl : ( 'attributeType' ) ;
+    // InternalOseeDsl.g:7924:1: rule__AttributeTypeRestriction__Group__2__Impl : ( 'attributeType' ) ;
     public final void rule__AttributeTypeRestriction__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8304:1: ( ( 'attributeType' ) )
-            // InternalOseeDsl.g:8305:1: ( 'attributeType' )
+            // InternalOseeDsl.g:7928:1: ( ( 'attributeType' ) )
+            // InternalOseeDsl.g:7929:1: ( 'attributeType' )
             {
-            // InternalOseeDsl.g:8305:1: ( 'attributeType' )
-            // InternalOseeDsl.g:8306:1: 'attributeType'
+            // InternalOseeDsl.g:7929:1: ( 'attributeType' )
+            // InternalOseeDsl.g:7930:1: 'attributeType'
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getAttributeTypeKeyword_2()); 
-            match(input,60,FOLLOW_2); 
+            match(input,59,FOLLOW_2); 
              after(grammarAccess.getAttributeTypeRestrictionAccess().getAttributeTypeKeyword_2()); 
 
             }
@@ -22300,14 +21296,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AttributeTypeRestriction__Group__3"
-    // InternalOseeDsl.g:8319:1: rule__AttributeTypeRestriction__Group__3 : rule__AttributeTypeRestriction__Group__3__Impl rule__AttributeTypeRestriction__Group__4 ;
+    // InternalOseeDsl.g:7943:1: rule__AttributeTypeRestriction__Group__3 : rule__AttributeTypeRestriction__Group__3__Impl rule__AttributeTypeRestriction__Group__4 ;
     public final void rule__AttributeTypeRestriction__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8323:1: ( rule__AttributeTypeRestriction__Group__3__Impl rule__AttributeTypeRestriction__Group__4 )
-            // InternalOseeDsl.g:8324:2: rule__AttributeTypeRestriction__Group__3__Impl rule__AttributeTypeRestriction__Group__4
+            // InternalOseeDsl.g:7947:1: ( rule__AttributeTypeRestriction__Group__3__Impl rule__AttributeTypeRestriction__Group__4 )
+            // InternalOseeDsl.g:7948:2: rule__AttributeTypeRestriction__Group__3__Impl rule__AttributeTypeRestriction__Group__4
             {
             pushFollow(FOLLOW_68);
             rule__AttributeTypeRestriction__Group__3__Impl();
@@ -22338,21 +21334,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AttributeTypeRestriction__Group__3__Impl"
-    // InternalOseeDsl.g:8331:1: rule__AttributeTypeRestriction__Group__3__Impl : ( ( rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 ) ) ;
+    // InternalOseeDsl.g:7955:1: rule__AttributeTypeRestriction__Group__3__Impl : ( ( rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 ) ) ;
     public final void rule__AttributeTypeRestriction__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8335:1: ( ( ( rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 ) ) )
-            // InternalOseeDsl.g:8336:1: ( ( rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 ) )
+            // InternalOseeDsl.g:7959:1: ( ( ( rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 ) ) )
+            // InternalOseeDsl.g:7960:1: ( ( rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 ) )
             {
-            // InternalOseeDsl.g:8336:1: ( ( rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 ) )
-            // InternalOseeDsl.g:8337:1: ( rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 )
+            // InternalOseeDsl.g:7960:1: ( ( rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 ) )
+            // InternalOseeDsl.g:7961:1: ( rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 )
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getAttributeTypeRefAssignment_3()); 
-            // InternalOseeDsl.g:8338:1: ( rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 )
-            // InternalOseeDsl.g:8338:2: rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3
+            // InternalOseeDsl.g:7962:1: ( rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 )
+            // InternalOseeDsl.g:7962:2: rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3
             {
             pushFollow(FOLLOW_2);
             rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3();
@@ -22385,14 +21381,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AttributeTypeRestriction__Group__4"
-    // InternalOseeDsl.g:8348:1: rule__AttributeTypeRestriction__Group__4 : rule__AttributeTypeRestriction__Group__4__Impl rule__AttributeTypeRestriction__Group__5 ;
+    // InternalOseeDsl.g:7972:1: rule__AttributeTypeRestriction__Group__4 : rule__AttributeTypeRestriction__Group__4__Impl rule__AttributeTypeRestriction__Group__5 ;
     public final void rule__AttributeTypeRestriction__Group__4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8352:1: ( rule__AttributeTypeRestriction__Group__4__Impl rule__AttributeTypeRestriction__Group__5 )
-            // InternalOseeDsl.g:8353:2: rule__AttributeTypeRestriction__Group__4__Impl rule__AttributeTypeRestriction__Group__5
+            // InternalOseeDsl.g:7976:1: ( rule__AttributeTypeRestriction__Group__4__Impl rule__AttributeTypeRestriction__Group__5 )
+            // InternalOseeDsl.g:7977:2: rule__AttributeTypeRestriction__Group__4__Impl rule__AttributeTypeRestriction__Group__5
             {
             pushFollow(FOLLOW_68);
             rule__AttributeTypeRestriction__Group__4__Impl();
@@ -22423,29 +21419,29 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AttributeTypeRestriction__Group__4__Impl"
-    // InternalOseeDsl.g:8360:1: rule__AttributeTypeRestriction__Group__4__Impl : ( ( rule__AttributeTypeRestriction__Group_4__0 )? ) ;
+    // InternalOseeDsl.g:7984:1: rule__AttributeTypeRestriction__Group__4__Impl : ( ( rule__AttributeTypeRestriction__Group_4__0 )? ) ;
     public final void rule__AttributeTypeRestriction__Group__4__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8364:1: ( ( ( rule__AttributeTypeRestriction__Group_4__0 )? ) )
-            // InternalOseeDsl.g:8365:1: ( ( rule__AttributeTypeRestriction__Group_4__0 )? )
+            // InternalOseeDsl.g:7988:1: ( ( ( rule__AttributeTypeRestriction__Group_4__0 )? ) )
+            // InternalOseeDsl.g:7989:1: ( ( rule__AttributeTypeRestriction__Group_4__0 )? )
             {
-            // InternalOseeDsl.g:8365:1: ( ( rule__AttributeTypeRestriction__Group_4__0 )? )
-            // InternalOseeDsl.g:8366:1: ( rule__AttributeTypeRestriction__Group_4__0 )?
+            // InternalOseeDsl.g:7989:1: ( ( rule__AttributeTypeRestriction__Group_4__0 )? )
+            // InternalOseeDsl.g:7990:1: ( rule__AttributeTypeRestriction__Group_4__0 )?
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getGroup_4()); 
-            // InternalOseeDsl.g:8367:1: ( rule__AttributeTypeRestriction__Group_4__0 )?
-            int alt55=2;
-            int LA55_0 = input.LA(1);
+            // InternalOseeDsl.g:7991:1: ( rule__AttributeTypeRestriction__Group_4__0 )?
+            int alt51=2;
+            int LA51_0 = input.LA(1);
 
-            if ( (LA55_0==96) ) {
-                alt55=1;
+            if ( (LA51_0==96) ) {
+                alt51=1;
             }
-            switch (alt55) {
+            switch (alt51) {
                 case 1 :
-                    // InternalOseeDsl.g:8367:2: rule__AttributeTypeRestriction__Group_4__0
+                    // InternalOseeDsl.g:7991:2: rule__AttributeTypeRestriction__Group_4__0
                     {
                     pushFollow(FOLLOW_2);
                     rule__AttributeTypeRestriction__Group_4__0();
@@ -22481,14 +21477,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AttributeTypeRestriction__Group__5"
-    // InternalOseeDsl.g:8377:1: rule__AttributeTypeRestriction__Group__5 : rule__AttributeTypeRestriction__Group__5__Impl ;
+    // InternalOseeDsl.g:8001:1: rule__AttributeTypeRestriction__Group__5 : rule__AttributeTypeRestriction__Group__5__Impl ;
     public final void rule__AttributeTypeRestriction__Group__5() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8381:1: ( rule__AttributeTypeRestriction__Group__5__Impl )
-            // InternalOseeDsl.g:8382:2: rule__AttributeTypeRestriction__Group__5__Impl
+            // InternalOseeDsl.g:8005:1: ( rule__AttributeTypeRestriction__Group__5__Impl )
+            // InternalOseeDsl.g:8006:2: rule__AttributeTypeRestriction__Group__5__Impl
             {
             pushFollow(FOLLOW_2);
             rule__AttributeTypeRestriction__Group__5__Impl();
@@ -22514,20 +21510,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AttributeTypeRestriction__Group__5__Impl"
-    // InternalOseeDsl.g:8388:1: rule__AttributeTypeRestriction__Group__5__Impl : ( ';' ) ;
+    // InternalOseeDsl.g:8012:1: rule__AttributeTypeRestriction__Group__5__Impl : ( ';' ) ;
     public final void rule__AttributeTypeRestriction__Group__5__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8392:1: ( ( ';' ) )
-            // InternalOseeDsl.g:8393:1: ( ';' )
+            // InternalOseeDsl.g:8016:1: ( ( ';' ) )
+            // InternalOseeDsl.g:8017:1: ( ';' )
             {
-            // InternalOseeDsl.g:8393:1: ( ';' )
-            // InternalOseeDsl.g:8394:1: ';'
+            // InternalOseeDsl.g:8017:1: ( ';' )
+            // InternalOseeDsl.g:8018:1: ';'
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getSemicolonKeyword_5()); 
-            match(input,90,FOLLOW_2); 
+            match(input,89,FOLLOW_2); 
              after(grammarAccess.getAttributeTypeRestrictionAccess().getSemicolonKeyword_5()); 
 
             }
@@ -22551,14 +21547,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AttributeTypeRestriction__Group_4__0"
-    // InternalOseeDsl.g:8419:1: rule__AttributeTypeRestriction__Group_4__0 : rule__AttributeTypeRestriction__Group_4__0__Impl rule__AttributeTypeRestriction__Group_4__1 ;
+    // InternalOseeDsl.g:8043:1: rule__AttributeTypeRestriction__Group_4__0 : rule__AttributeTypeRestriction__Group_4__0__Impl rule__AttributeTypeRestriction__Group_4__1 ;
     public final void rule__AttributeTypeRestriction__Group_4__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8423:1: ( rule__AttributeTypeRestriction__Group_4__0__Impl rule__AttributeTypeRestriction__Group_4__1 )
-            // InternalOseeDsl.g:8424:2: rule__AttributeTypeRestriction__Group_4__0__Impl rule__AttributeTypeRestriction__Group_4__1
+            // InternalOseeDsl.g:8047:1: ( rule__AttributeTypeRestriction__Group_4__0__Impl rule__AttributeTypeRestriction__Group_4__1 )
+            // InternalOseeDsl.g:8048:2: rule__AttributeTypeRestriction__Group_4__0__Impl rule__AttributeTypeRestriction__Group_4__1
             {
             pushFollow(FOLLOW_66);
             rule__AttributeTypeRestriction__Group_4__0__Impl();
@@ -22589,17 +21585,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AttributeTypeRestriction__Group_4__0__Impl"
-    // InternalOseeDsl.g:8431:1: rule__AttributeTypeRestriction__Group_4__0__Impl : ( 'of' ) ;
+    // InternalOseeDsl.g:8055:1: rule__AttributeTypeRestriction__Group_4__0__Impl : ( 'of' ) ;
     public final void rule__AttributeTypeRestriction__Group_4__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8435:1: ( ( 'of' ) )
-            // InternalOseeDsl.g:8436:1: ( 'of' )
+            // InternalOseeDsl.g:8059:1: ( ( 'of' ) )
+            // InternalOseeDsl.g:8060:1: ( 'of' )
             {
-            // InternalOseeDsl.g:8436:1: ( 'of' )
-            // InternalOseeDsl.g:8437:1: 'of'
+            // InternalOseeDsl.g:8060:1: ( 'of' )
+            // InternalOseeDsl.g:8061:1: 'of'
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getOfKeyword_4_0()); 
             match(input,96,FOLLOW_2); 
@@ -22626,14 +21622,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AttributeTypeRestriction__Group_4__1"
-    // InternalOseeDsl.g:8450:1: rule__AttributeTypeRestriction__Group_4__1 : rule__AttributeTypeRestriction__Group_4__1__Impl rule__AttributeTypeRestriction__Group_4__2 ;
+    // InternalOseeDsl.g:8074:1: rule__AttributeTypeRestriction__Group_4__1 : rule__AttributeTypeRestriction__Group_4__1__Impl rule__AttributeTypeRestriction__Group_4__2 ;
     public final void rule__AttributeTypeRestriction__Group_4__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8454:1: ( rule__AttributeTypeRestriction__Group_4__1__Impl rule__AttributeTypeRestriction__Group_4__2 )
-            // InternalOseeDsl.g:8455:2: rule__AttributeTypeRestriction__Group_4__1__Impl rule__AttributeTypeRestriction__Group_4__2
+            // InternalOseeDsl.g:8078:1: ( rule__AttributeTypeRestriction__Group_4__1__Impl rule__AttributeTypeRestriction__Group_4__2 )
+            // InternalOseeDsl.g:8079:2: rule__AttributeTypeRestriction__Group_4__1__Impl rule__AttributeTypeRestriction__Group_4__2
             {
             pushFollow(FOLLOW_7);
             rule__AttributeTypeRestriction__Group_4__1__Impl();
@@ -22664,17 +21660,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AttributeTypeRestriction__Group_4__1__Impl"
-    // InternalOseeDsl.g:8462:1: rule__AttributeTypeRestriction__Group_4__1__Impl : ( 'artifactType' ) ;
+    // InternalOseeDsl.g:8086:1: rule__AttributeTypeRestriction__Group_4__1__Impl : ( 'artifactType' ) ;
     public final void rule__AttributeTypeRestriction__Group_4__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8466:1: ( ( 'artifactType' ) )
-            // InternalOseeDsl.g:8467:1: ( 'artifactType' )
+            // InternalOseeDsl.g:8090:1: ( ( 'artifactType' ) )
+            // InternalOseeDsl.g:8091:1: ( 'artifactType' )
             {
-            // InternalOseeDsl.g:8467:1: ( 'artifactType' )
-            // InternalOseeDsl.g:8468:1: 'artifactType'
+            // InternalOseeDsl.g:8091:1: ( 'artifactType' )
+            // InternalOseeDsl.g:8092:1: 'artifactType'
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getArtifactTypeKeyword_4_1()); 
             match(input,52,FOLLOW_2); 
@@ -22701,14 +21697,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AttributeTypeRestriction__Group_4__2"
-    // InternalOseeDsl.g:8481:1: rule__AttributeTypeRestriction__Group_4__2 : rule__AttributeTypeRestriction__Group_4__2__Impl ;
+    // InternalOseeDsl.g:8105:1: rule__AttributeTypeRestriction__Group_4__2 : rule__AttributeTypeRestriction__Group_4__2__Impl ;
     public final void rule__AttributeTypeRestriction__Group_4__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8485:1: ( rule__AttributeTypeRestriction__Group_4__2__Impl )
-            // InternalOseeDsl.g:8486:2: rule__AttributeTypeRestriction__Group_4__2__Impl
+            // InternalOseeDsl.g:8109:1: ( rule__AttributeTypeRestriction__Group_4__2__Impl )
+            // InternalOseeDsl.g:8110:2: rule__AttributeTypeRestriction__Group_4__2__Impl
             {
             pushFollow(FOLLOW_2);
             rule__AttributeTypeRestriction__Group_4__2__Impl();
@@ -22734,21 +21730,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AttributeTypeRestriction__Group_4__2__Impl"
-    // InternalOseeDsl.g:8492:1: rule__AttributeTypeRestriction__Group_4__2__Impl : ( ( rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 ) ) ;
+    // InternalOseeDsl.g:8116:1: rule__AttributeTypeRestriction__Group_4__2__Impl : ( ( rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 ) ) ;
     public final void rule__AttributeTypeRestriction__Group_4__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8496:1: ( ( ( rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 ) ) )
-            // InternalOseeDsl.g:8497:1: ( ( rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 ) )
+            // InternalOseeDsl.g:8120:1: ( ( ( rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 ) ) )
+            // InternalOseeDsl.g:8121:1: ( ( rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 ) )
             {
-            // InternalOseeDsl.g:8497:1: ( ( rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 ) )
-            // InternalOseeDsl.g:8498:1: ( rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 )
+            // InternalOseeDsl.g:8121:1: ( ( rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 ) )
+            // InternalOseeDsl.g:8122:1: ( rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 )
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getArtifactTypeRefAssignment_4_2()); 
-            // InternalOseeDsl.g:8499:1: ( rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 )
-            // InternalOseeDsl.g:8499:2: rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2
+            // InternalOseeDsl.g:8123:1: ( rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 )
+            // InternalOseeDsl.g:8123:2: rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2
             {
             pushFollow(FOLLOW_2);
             rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2();
@@ -22781,14 +21777,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeRestriction__Group__0"
-    // InternalOseeDsl.g:8517:1: rule__RelationTypeRestriction__Group__0 : rule__RelationTypeRestriction__Group__0__Impl rule__RelationTypeRestriction__Group__1 ;
+    // InternalOseeDsl.g:8141:1: rule__RelationTypeRestriction__Group__0 : rule__RelationTypeRestriction__Group__0__Impl rule__RelationTypeRestriction__Group__1 ;
     public final void rule__RelationTypeRestriction__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8521:1: ( rule__RelationTypeRestriction__Group__0__Impl rule__RelationTypeRestriction__Group__1 )
-            // InternalOseeDsl.g:8522:2: rule__RelationTypeRestriction__Group__0__Impl rule__RelationTypeRestriction__Group__1
+            // InternalOseeDsl.g:8145:1: ( rule__RelationTypeRestriction__Group__0__Impl rule__RelationTypeRestriction__Group__1 )
+            // InternalOseeDsl.g:8146:2: rule__RelationTypeRestriction__Group__0__Impl rule__RelationTypeRestriction__Group__1
             {
             pushFollow(FOLLOW_64);
             rule__RelationTypeRestriction__Group__0__Impl();
@@ -22819,21 +21815,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeRestriction__Group__0__Impl"
-    // InternalOseeDsl.g:8529:1: rule__RelationTypeRestriction__Group__0__Impl : ( ( rule__RelationTypeRestriction__PermissionAssignment_0 ) ) ;
+    // InternalOseeDsl.g:8153:1: rule__RelationTypeRestriction__Group__0__Impl : ( ( rule__RelationTypeRestriction__PermissionAssignment_0 ) ) ;
     public final void rule__RelationTypeRestriction__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8533:1: ( ( ( rule__RelationTypeRestriction__PermissionAssignment_0 ) ) )
-            // InternalOseeDsl.g:8534:1: ( ( rule__RelationTypeRestriction__PermissionAssignment_0 ) )
+            // InternalOseeDsl.g:8157:1: ( ( ( rule__RelationTypeRestriction__PermissionAssignment_0 ) ) )
+            // InternalOseeDsl.g:8158:1: ( ( rule__RelationTypeRestriction__PermissionAssignment_0 ) )
             {
-            // InternalOseeDsl.g:8534:1: ( ( rule__RelationTypeRestriction__PermissionAssignment_0 ) )
-            // InternalOseeDsl.g:8535:1: ( rule__RelationTypeRestriction__PermissionAssignment_0 )
+            // InternalOseeDsl.g:8158:1: ( ( rule__RelationTypeRestriction__PermissionAssignment_0 ) )
+            // InternalOseeDsl.g:8159:1: ( rule__RelationTypeRestriction__PermissionAssignment_0 )
             {
              before(grammarAccess.getRelationTypeRestrictionAccess().getPermissionAssignment_0()); 
-            // InternalOseeDsl.g:8536:1: ( rule__RelationTypeRestriction__PermissionAssignment_0 )
-            // InternalOseeDsl.g:8536:2: rule__RelationTypeRestriction__PermissionAssignment_0
+            // InternalOseeDsl.g:8160:1: ( rule__RelationTypeRestriction__PermissionAssignment_0 )
+            // InternalOseeDsl.g:8160:2: rule__RelationTypeRestriction__PermissionAssignment_0
             {
             pushFollow(FOLLOW_2);
             rule__RelationTypeRestriction__PermissionAssignment_0();
@@ -22866,14 +21862,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeRestriction__Group__1"
-    // InternalOseeDsl.g:8546:1: rule__RelationTypeRestriction__Group__1 : rule__RelationTypeRestriction__Group__1__Impl rule__RelationTypeRestriction__Group__2 ;
+    // InternalOseeDsl.g:8170:1: rule__RelationTypeRestriction__Group__1 : rule__RelationTypeRestriction__Group__1__Impl rule__RelationTypeRestriction__Group__2 ;
     public final void rule__RelationTypeRestriction__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8550:1: ( rule__RelationTypeRestriction__Group__1__Impl rule__RelationTypeRestriction__Group__2 )
-            // InternalOseeDsl.g:8551:2: rule__RelationTypeRestriction__Group__1__Impl rule__RelationTypeRestriction__Group__2
+            // InternalOseeDsl.g:8174:1: ( rule__RelationTypeRestriction__Group__1__Impl rule__RelationTypeRestriction__Group__2 )
+            // InternalOseeDsl.g:8175:2: rule__RelationTypeRestriction__Group__1__Impl rule__RelationTypeRestriction__Group__2
             {
             pushFollow(FOLLOW_69);
             rule__RelationTypeRestriction__Group__1__Impl();
@@ -22904,17 +21900,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeRestriction__Group__1__Impl"
-    // InternalOseeDsl.g:8558:1: rule__RelationTypeRestriction__Group__1__Impl : ( 'edit' ) ;
+    // InternalOseeDsl.g:8182:1: rule__RelationTypeRestriction__Group__1__Impl : ( 'edit' ) ;
     public final void rule__RelationTypeRestriction__Group__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8562:1: ( ( 'edit' ) )
-            // InternalOseeDsl.g:8563:1: ( 'edit' )
+            // InternalOseeDsl.g:8186:1: ( ( 'edit' ) )
+            // InternalOseeDsl.g:8187:1: ( 'edit' )
             {
-            // InternalOseeDsl.g:8563:1: ( 'edit' )
-            // InternalOseeDsl.g:8564:1: 'edit'
+            // InternalOseeDsl.g:8187:1: ( 'edit' )
+            // InternalOseeDsl.g:8188:1: 'edit'
             {
              before(grammarAccess.getRelationTypeRestrictionAccess().getEditKeyword_1()); 
             match(input,95,FOLLOW_2); 
@@ -22941,14 +21937,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeRestriction__Group__2"
-    // InternalOseeDsl.g:8577:1: rule__RelationTypeRestriction__Group__2 : rule__RelationTypeRestriction__Group__2__Impl rule__RelationTypeRestriction__Group__3 ;
+    // InternalOseeDsl.g:8201:1: rule__RelationTypeRestriction__Group__2 : rule__RelationTypeRestriction__Group__2__Impl rule__RelationTypeRestriction__Group__3 ;
     public final void rule__RelationTypeRestriction__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8581:1: ( rule__RelationTypeRestriction__Group__2__Impl rule__RelationTypeRestriction__Group__3 )
-            // InternalOseeDsl.g:8582:2: rule__RelationTypeRestriction__Group__2__Impl rule__RelationTypeRestriction__Group__3
+            // InternalOseeDsl.g:8205:1: ( rule__RelationTypeRestriction__Group__2__Impl rule__RelationTypeRestriction__Group__3 )
+            // InternalOseeDsl.g:8206:2: rule__RelationTypeRestriction__Group__2__Impl rule__RelationTypeRestriction__Group__3
             {
             pushFollow(FOLLOW_70);
             rule__RelationTypeRestriction__Group__2__Impl();
@@ -22979,20 +21975,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeRestriction__Group__2__Impl"
-    // InternalOseeDsl.g:8589:1: rule__RelationTypeRestriction__Group__2__Impl : ( 'relationType' ) ;
+    // InternalOseeDsl.g:8213:1: rule__RelationTypeRestriction__Group__2__Impl : ( 'relationType' ) ;
     public final void rule__RelationTypeRestriction__Group__2__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8593:1: ( ( 'relationType' ) )
-            // InternalOseeDsl.g:8594:1: ( 'relationType' )
+            // InternalOseeDsl.g:8217:1: ( ( 'relationType' ) )
+            // InternalOseeDsl.g:8218:1: ( 'relationType' )
             {
-            // InternalOseeDsl.g:8594:1: ( 'relationType' )
-            // InternalOseeDsl.g:8595:1: 'relationType'
+            // InternalOseeDsl.g:8218:1: ( 'relationType' )
+            // InternalOseeDsl.g:8219:1: 'relationType'
             {
              before(grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeKeyword_2()); 
-            match(input,79,FOLLOW_2); 
+            match(input,78,FOLLOW_2); 
              after(grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeKeyword_2()); 
 
             }
@@ -23016,14 +22012,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeRestriction__Group__3"
-    // InternalOseeDsl.g:8608:1: rule__RelationTypeRestriction__Group__3 : rule__RelationTypeRestriction__Group__3__Impl rule__RelationTypeRestriction__Group__4 ;
+    // InternalOseeDsl.g:8232:1: rule__RelationTypeRestriction__Group__3 : rule__RelationTypeRestriction__Group__3__Impl rule__RelationTypeRestriction__Group__4 ;
     public final void rule__RelationTypeRestriction__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8612:1: ( rule__RelationTypeRestriction__Group__3__Impl rule__RelationTypeRestriction__Group__4 )
-            // InternalOseeDsl.g:8613:2: rule__RelationTypeRestriction__Group__3__Impl rule__RelationTypeRestriction__Group__4
+            // InternalOseeDsl.g:8236:1: ( rule__RelationTypeRestriction__Group__3__Impl rule__RelationTypeRestriction__Group__4 )
+            // InternalOseeDsl.g:8237:2: rule__RelationTypeRestriction__Group__3__Impl rule__RelationTypeRestriction__Group__4
             {
             pushFollow(FOLLOW_71);
             rule__RelationTypeRestriction__Group__3__Impl();
@@ -23054,21 +22050,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeRestriction__Group__3__Impl"
-    // InternalOseeDsl.g:8620:1: rule__RelationTypeRestriction__Group__3__Impl : ( ( rule__RelationTypeRestriction__Alternatives_3 ) ) ;
+    // InternalOseeDsl.g:8244:1: rule__RelationTypeRestriction__Group__3__Impl : ( ( rule__RelationTypeRestriction__Alternatives_3 ) ) ;
     public final void rule__RelationTypeRestriction__Group__3__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8624:1: ( ( ( rule__RelationTypeRestriction__Alternatives_3 ) ) )
-            // InternalOseeDsl.g:8625:1: ( ( rule__RelationTypeRestriction__Alternatives_3 ) )
+            // InternalOseeDsl.g:8248:1: ( ( ( rule__RelationTypeRestriction__Alternatives_3 ) ) )
+            // InternalOseeDsl.g:8249:1: ( ( rule__RelationTypeRestriction__Alternatives_3 ) )
             {
-            // InternalOseeDsl.g:8625:1: ( ( rule__RelationTypeRestriction__Alternatives_3 ) )
-            // InternalOseeDsl.g:8626:1: ( rule__RelationTypeRestriction__Alternatives_3 )
+            // InternalOseeDsl.g:8249:1: ( ( rule__RelationTypeRestriction__Alternatives_3 ) )
+            // InternalOseeDsl.g:8250:1: ( rule__RelationTypeRestriction__Alternatives_3 )
             {
              before(grammarAccess.getRelationTypeRestrictionAccess().getAlternatives_3()); 
-            // InternalOseeDsl.g:8627:1: ( rule__RelationTypeRestriction__Alternatives_3 )
-            // InternalOseeDsl.g:8627:2: rule__RelationTypeRestriction__Alternatives_3
+            // InternalOseeDsl.g:8251:1: ( rule__RelationTypeRestriction__Alternatives_3 )
+            // InternalOseeDsl.g:8251:2: rule__RelationTypeRestriction__Alternatives_3
             {
             pushFollow(FOLLOW_2);
             rule__RelationTypeRestriction__Alternatives_3();
@@ -23101,14 +22097,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeRestriction__Group__4"
-    // InternalOseeDsl.g:8637:1: rule__RelationTypeRestriction__Group__4 : rule__RelationTypeRestriction__Group__4__Impl rule__RelationTypeRestriction__Group__5 ;
+    // InternalOseeDsl.g:8261:1: rule__RelationTypeRestriction__Group__4 : rule__RelationTypeRestriction__Group__4__Impl rule__RelationTypeRestriction__Group__5 ;
     public final void rule__RelationTypeRestriction__Group__4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8641:1: ( rule__RelationTypeRestriction__Group__4__Impl rule__RelationTypeRestriction__Group__5 )
-            // InternalOseeDsl.g:8642:2: rule__RelationTypeRestriction__Group__4__Impl rule__RelationTypeRestriction__Group__5
+            // InternalOseeDsl.g:8265:1: ( rule__RelationTypeRestriction__Group__4__Impl rule__RelationTypeRestriction__Group__5 )
+            // InternalOseeDsl.g:8266:2: rule__RelationTypeRestriction__Group__4__Impl rule__RelationTypeRestriction__Group__5
             {
             pushFollow(FOLLOW_72);
             rule__RelationTypeRestriction__Group__4__Impl();
@@ -23139,21 +22135,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeRestriction__Group__4__Impl"
-    // InternalOseeDsl.g:8649:1: rule__RelationTypeRestriction__Group__4__Impl : ( ( rule__RelationTypeRestriction__RestrictedToSideAssignment_4 ) ) ;
+    // InternalOseeDsl.g:8273:1: rule__RelationTypeRestriction__Group__4__Impl : ( ( rule__RelationTypeRestriction__RestrictedToSideAssignment_4 ) ) ;
     public final void rule__RelationTypeRestriction__Group__4__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8653:1: ( ( ( rule__RelationTypeRestriction__RestrictedToSideAssignment_4 ) ) )
-            // InternalOseeDsl.g:8654:1: ( ( rule__RelationTypeRestriction__RestrictedToSideAssignment_4 ) )
+            // InternalOseeDsl.g:8277:1: ( ( ( rule__RelationTypeRestriction__RestrictedToSideAssignment_4 ) ) )
+            // InternalOseeDsl.g:8278:1: ( ( rule__RelationTypeRestriction__RestrictedToSideAssignment_4 ) )
             {
-            // InternalOseeDsl.g:8654:1: ( ( rule__RelationTypeRestriction__RestrictedToSideAssignment_4 ) )
-            // InternalOseeDsl.g:8655:1: ( rule__RelationTypeRestriction__RestrictedToSideAssignment_4 )
+            // InternalOseeDsl.g:8278:1: ( ( rule__RelationTypeRestriction__RestrictedToSideAssignment_4 ) )
+            // InternalOseeDsl.g:8279:1: ( rule__RelationTypeRestriction__RestrictedToSideAssignment_4 )
             {
              before(grammarAccess.getRelationTypeRestrictionAccess().getRestrictedToSideAssignment_4()); 
-            // InternalOseeDsl.g:8656:1: ( rule__RelationTypeRestriction__RestrictedToSideAssignment_4 )
-            // InternalOseeDsl.g:8656:2: rule__RelationTypeRestriction__RestrictedToSideAssignment_4
+            // InternalOseeDsl.g:8280:1: ( rule__RelationTypeRestriction__RestrictedToSideAssignment_4 )
+            // InternalOseeDsl.g:8280:2: rule__RelationTypeRestriction__RestrictedToSideAssignment_4
             {
             pushFollow(FOLLOW_2);
             rule__RelationTypeRestriction__RestrictedToSideAssignment_4();
@@ -23186,14 +22182,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeRestriction__Group__5"
-    // InternalOseeDsl.g:8666:1: rule__RelationTypeRestriction__Group__5 : rule__RelationTypeRestriction__Group__5__Impl rule__RelationTypeRestriction__Group__6 ;
+    // InternalOseeDsl.g:8290:1: rule__RelationTypeRestriction__Group__5 : rule__RelationTypeRestriction__Group__5__Impl rule__RelationTypeRestriction__Group__6 ;
     public final void rule__RelationTypeRestriction__Group__5() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8670:1: ( rule__RelationTypeRestriction__Group__5__Impl rule__RelationTypeRestriction__Group__6 )
-            // InternalOseeDsl.g:8671:2: rule__RelationTypeRestriction__Group__5__Impl rule__RelationTypeRestriction__Group__6
+            // InternalOseeDsl.g:8294:1: ( rule__RelationTypeRestriction__Group__5__Impl rule__RelationTypeRestriction__Group__6 )
+            // InternalOseeDsl.g:8295:2: rule__RelationTypeRestriction__Group__5__Impl rule__RelationTypeRestriction__Group__6
             {
             pushFollow(FOLLOW_72);
             rule__RelationTypeRestriction__Group__5__Impl();
@@ -23224,29 +22220,29 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeRestriction__Group__5__Impl"
-    // InternalOseeDsl.g:8678:1: rule__RelationTypeRestriction__Group__5__Impl : ( ( rule__RelationTypeRestriction__PredicateAssignment_5 )? ) ;
+    // InternalOseeDsl.g:8302:1: rule__RelationTypeRestriction__Group__5__Impl : ( ( rule__RelationTypeRestriction__PredicateAssignment_5 )? ) ;
     public final void rule__RelationTypeRestriction__Group__5__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8682:1: ( ( ( rule__RelationTypeRestriction__PredicateAssignment_5 )? ) )
-            // InternalOseeDsl.g:8683:1: ( ( rule__RelationTypeRestriction__PredicateAssignment_5 )? )
+            // InternalOseeDsl.g:8306:1: ( ( ( rule__RelationTypeRestriction__PredicateAssignment_5 )? ) )
+            // InternalOseeDsl.g:8307:1: ( ( rule__RelationTypeRestriction__PredicateAssignment_5 )? )
             {
-            // InternalOseeDsl.g:8683:1: ( ( rule__RelationTypeRestriction__PredicateAssignment_5 )? )
-            // InternalOseeDsl.g:8684:1: ( rule__RelationTypeRestriction__PredicateAssignment_5 )?
+            // InternalOseeDsl.g:8307:1: ( ( rule__RelationTypeRestriction__PredicateAssignment_5 )? )
+            // InternalOseeDsl.g:8308:1: ( rule__RelationTypeRestriction__PredicateAssignment_5 )?
             {
              before(grammarAccess.getRelationTypeRestrictionAccess().getPredicateAssignment_5()); 
-            // InternalOseeDsl.g:8685:1: ( rule__RelationTypeRestriction__PredicateAssignment_5 )?
-            int alt56=2;
-            int LA56_0 = input.LA(1);
+            // InternalOseeDsl.g:8309:1: ( rule__RelationTypeRestriction__PredicateAssignment_5 )?
+            int alt52=2;
+            int LA52_0 = input.LA(1);
 
-            if ( (LA56_0==52||LA56_0==94) ) {
-                alt56=1;
+            if ( (LA52_0==52||LA52_0==94) ) {
+                alt52=1;
             }
-            switch (alt56) {
+            switch (alt52) {
                 case 1 :
-                    // InternalOseeDsl.g:8685:2: rule__RelationTypeRestriction__PredicateAssignment_5
+                    // InternalOseeDsl.g:8309:2: rule__RelationTypeRestriction__PredicateAssignment_5
                     {
                     pushFollow(FOLLOW_2);
                     rule__RelationTypeRestriction__PredicateAssignment_5();
@@ -23282,14 +22278,14 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeRestriction__Group__6"
-    // InternalOseeDsl.g:8695:1: rule__RelationTypeRestriction__Group__6 : rule__RelationTypeRestriction__Group__6__Impl ;
+    // InternalOseeDsl.g:8319:1: rule__RelationTypeRestriction__Group__6 : rule__RelationTypeRestriction__Group__6__Impl ;
     public final void rule__RelationTypeRestriction__Group__6() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8699:1: ( rule__RelationTypeRestriction__Group__6__Impl )
-            // InternalOseeDsl.g:8700:2: rule__RelationTypeRestriction__Group__6__Impl
+            // InternalOseeDsl.g:8323:1: ( rule__RelationTypeRestriction__Group__6__Impl )
+            // InternalOseeDsl.g:8324:2: rule__RelationTypeRestriction__Group__6__Impl
             {
             pushFollow(FOLLOW_2);
             rule__RelationTypeRestriction__Group__6__Impl();
@@ -23315,20 +22311,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeRestriction__Group__6__Impl"
-    // InternalOseeDsl.g:8706:1: rule__RelationTypeRestriction__Group__6__Impl : ( ';' ) ;
+    // InternalOseeDsl.g:8330:1: rule__RelationTypeRestriction__Group__6__Impl : ( ';' ) ;
     public final void rule__RelationTypeRestriction__Group__6__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8710:1: ( ( ';' ) )
-            // InternalOseeDsl.g:8711:1: ( ';' )
+            // InternalOseeDsl.g:8334:1: ( ( ';' ) )
+            // InternalOseeDsl.g:8335:1: ( ';' )
             {
-            // InternalOseeDsl.g:8711:1: ( ';' )
-            // InternalOseeDsl.g:8712:1: ';'
+            // InternalOseeDsl.g:8335:1: ( ';' )
+            // InternalOseeDsl.g:8336:1: ';'
             {
              before(grammarAccess.getRelationTypeRestrictionAccess().getSemicolonKeyword_6()); 
-            match(input,90,FOLLOW_2); 
+            match(input,89,FOLLOW_2); 
              after(grammarAccess.getRelationTypeRestrictionAccess().getSemicolonKeyword_6()); 
 
             }
@@ -23351,45 +22347,45 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
     // $ANTLR end "rule__RelationTypeRestriction__Group__6__Impl"
 
 
-    // $ANTLR start "rule__XAttributeType__UnorderedGroup_14"
-    // InternalOseeDsl.g:8740:1: rule__XAttributeType__UnorderedGroup_14 : ( rule__XAttributeType__UnorderedGroup_14__0 )? ;
-    public final void rule__XAttributeType__UnorderedGroup_14() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__UnorderedGroup_13"
+    // InternalOseeDsl.g:8364:1: rule__XAttributeType__UnorderedGroup_13 : ( rule__XAttributeType__UnorderedGroup_13__0 )? ;
+    public final void rule__XAttributeType__UnorderedGroup_13() throws RecognitionException {
 
             	int stackSize = keepStackSize();
-        		getUnorderedGroupHelper().enter(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14());
+        		getUnorderedGroupHelper().enter(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13());
             
         try {
-            // InternalOseeDsl.g:8745:1: ( ( rule__XAttributeType__UnorderedGroup_14__0 )? )
-            // InternalOseeDsl.g:8746:2: ( rule__XAttributeType__UnorderedGroup_14__0 )?
+            // InternalOseeDsl.g:8369:1: ( ( rule__XAttributeType__UnorderedGroup_13__0 )? )
+            // InternalOseeDsl.g:8370:2: ( rule__XAttributeType__UnorderedGroup_13__0 )?
             {
-            // InternalOseeDsl.g:8746:2: ( rule__XAttributeType__UnorderedGroup_14__0 )?
-            int alt57=2;
-            int LA57_0 = input.LA(1);
+            // InternalOseeDsl.g:8370:2: ( rule__XAttributeType__UnorderedGroup_13__0 )?
+            int alt53=2;
+            int LA53_0 = input.LA(1);
 
-            if ( LA57_0 == 65 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 0) ) {
-                alt57=1;
+            if ( LA53_0 == 64 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 0) ) {
+                alt53=1;
             }
-            else if ( LA57_0 == 66 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 1) ) {
-                alt57=1;
+            else if ( LA53_0 == 65 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 1) ) {
+                alt53=1;
             }
-            else if ( LA57_0 == 67 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 2) ) {
-                alt57=1;
+            else if ( LA53_0 == 66 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 2) ) {
+                alt53=1;
             }
-            else if ( LA57_0 == 68 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 3) ) {
-                alt57=1;
+            else if ( LA53_0 == 67 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 3) ) {
+                alt53=1;
             }
-            else if ( LA57_0 == 69 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 4) ) {
-                alt57=1;
+            else if ( LA53_0 == 68 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 4) ) {
+                alt53=1;
             }
-            else if ( LA57_0 == 70 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 5) ) {
-                alt57=1;
+            else if ( LA53_0 == 69 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 5) ) {
+                alt53=1;
             }
-            switch (alt57) {
+            switch (alt53) {
                 case 1 :
-                    // InternalOseeDsl.g:8746:2: rule__XAttributeType__UnorderedGroup_14__0
+                    // InternalOseeDsl.g:8370:2: rule__XAttributeType__UnorderedGroup_13__0
                     {
                     pushFollow(FOLLOW_2);
-                    rule__XAttributeType__UnorderedGroup_14__0();
+                    rule__XAttributeType__UnorderedGroup_13__0();
 
                     state._fsp--;
 
@@ -23409,89 +22405,89 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         finally {
 
-            	getUnorderedGroupHelper().leave(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14());
+            	getUnorderedGroupHelper().leave(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13());
             	restoreStackSize(stackSize);
 
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__UnorderedGroup_14"
+    // $ANTLR end "rule__XAttributeType__UnorderedGroup_13"
 
 
-    // $ANTLR start "rule__XAttributeType__UnorderedGroup_14__Impl"
-    // InternalOseeDsl.g:8756:1: rule__XAttributeType__UnorderedGroup_14__Impl : ( ({...}? => ( ( ( rule__XAttributeType__Group_14_0__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_14_1__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_14_2__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_14_3__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_14_4__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_14_5__0 ) ) ) ) ) ;
-    public final void rule__XAttributeType__UnorderedGroup_14__Impl() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__UnorderedGroup_13__Impl"
+    // InternalOseeDsl.g:8380:1: rule__XAttributeType__UnorderedGroup_13__Impl : ( ({...}? => ( ( ( rule__XAttributeType__Group_13_0__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_13_1__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_13_2__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_13_3__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_13_4__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_13_5__0 ) ) ) ) ) ;
+    public final void rule__XAttributeType__UnorderedGroup_13__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
         		boolean selected = false;
             
         try {
-            // InternalOseeDsl.g:8761:1: ( ( ({...}? => ( ( ( rule__XAttributeType__Group_14_0__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_14_1__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_14_2__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_14_3__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_14_4__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_14_5__0 ) ) ) ) ) )
-            // InternalOseeDsl.g:8762:3: ( ({...}? => ( ( ( rule__XAttributeType__Group_14_0__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_14_1__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_14_2__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_14_3__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_14_4__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_14_5__0 ) ) ) ) )
+            // InternalOseeDsl.g:8385:1: ( ( ({...}? => ( ( ( rule__XAttributeType__Group_13_0__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_13_1__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_13_2__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_13_3__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_13_4__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_13_5__0 ) ) ) ) ) )
+            // InternalOseeDsl.g:8386:3: ( ({...}? => ( ( ( rule__XAttributeType__Group_13_0__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_13_1__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_13_2__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_13_3__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_13_4__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_13_5__0 ) ) ) ) )
             {
-            // InternalOseeDsl.g:8762:3: ( ({...}? => ( ( ( rule__XAttributeType__Group_14_0__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_14_1__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_14_2__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_14_3__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_14_4__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_14_5__0 ) ) ) ) )
-            int alt58=6;
-            int LA58_0 = input.LA(1);
+            // InternalOseeDsl.g:8386:3: ( ({...}? => ( ( ( rule__XAttributeType__Group_13_0__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_13_1__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_13_2__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_13_3__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_13_4__0 ) ) ) ) | ({...}? => ( ( ( rule__XAttributeType__Group_13_5__0 ) ) ) ) )
+            int alt54=6;
+            int LA54_0 = input.LA(1);
 
-            if ( LA58_0 == 65 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 0) ) {
-                alt58=1;
+            if ( LA54_0 == 64 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 0) ) {
+                alt54=1;
             }
-            else if ( LA58_0 == 66 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 1) ) {
-                alt58=2;
+            else if ( LA54_0 == 65 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 1) ) {
+                alt54=2;
             }
-            else if ( LA58_0 == 67 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 2) ) {
-                alt58=3;
+            else if ( LA54_0 == 66 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 2) ) {
+                alt54=3;
             }
-            else if ( LA58_0 == 68 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 3) ) {
-                alt58=4;
+            else if ( LA54_0 == 67 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 3) ) {
+                alt54=4;
             }
-            else if ( LA58_0 == 69 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 4) ) {
-                alt58=5;
+            else if ( LA54_0 == 68 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 4) ) {
+                alt54=5;
             }
-            else if ( LA58_0 == 70 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 5) ) {
-                alt58=6;
+            else if ( LA54_0 == 69 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 5) ) {
+                alt54=6;
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("", 58, 0, input);
+                    new NoViableAltException("", 54, 0, input);
 
                 throw nvae;
             }
-            switch (alt58) {
+            switch (alt54) {
                 case 1 :
-                    // InternalOseeDsl.g:8764:4: ({...}? => ( ( ( rule__XAttributeType__Group_14_0__0 ) ) ) )
+                    // InternalOseeDsl.g:8388:4: ({...}? => ( ( ( rule__XAttributeType__Group_13_0__0 ) ) ) )
                     {
-                    // InternalOseeDsl.g:8764:4: ({...}? => ( ( ( rule__XAttributeType__Group_14_0__0 ) ) ) )
-                    // InternalOseeDsl.g:8765:5: {...}? => ( ( ( rule__XAttributeType__Group_14_0__0 ) ) )
+                    // InternalOseeDsl.g:8388:4: ({...}? => ( ( ( rule__XAttributeType__Group_13_0__0 ) ) ) )
+                    // InternalOseeDsl.g:8389:5: {...}? => ( ( ( rule__XAttributeType__Group_13_0__0 ) ) )
                     {
-                    if ( ! getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 0) ) {
-                        throw new FailedPredicateException(input, "rule__XAttributeType__UnorderedGroup_14__Impl", "getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 0)");
+                    if ( ! getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 0) ) {
+                        throw new FailedPredicateException(input, "rule__XAttributeType__UnorderedGroup_13__Impl", "getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 0)");
                     }
-                    // InternalOseeDsl.g:8765:112: ( ( ( rule__XAttributeType__Group_14_0__0 ) ) )
-                    // InternalOseeDsl.g:8766:6: ( ( rule__XAttributeType__Group_14_0__0 ) )
+                    // InternalOseeDsl.g:8389:112: ( ( ( rule__XAttributeType__Group_13_0__0 ) ) )
+                    // InternalOseeDsl.g:8390:6: ( ( rule__XAttributeType__Group_13_0__0 ) )
                     {
                      
-                    	 				  getUnorderedGroupHelper().select(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 0);
+                    	 				  getUnorderedGroupHelper().select(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 0);
                     	 				
 
                     	 				  selected = true;
                     	 				
-                    // InternalOseeDsl.g:8772:6: ( ( rule__XAttributeType__Group_14_0__0 ) )
-                    // InternalOseeDsl.g:8774:7: ( rule__XAttributeType__Group_14_0__0 )
+                    // InternalOseeDsl.g:8396:6: ( ( rule__XAttributeType__Group_13_0__0 ) )
+                    // InternalOseeDsl.g:8398:7: ( rule__XAttributeType__Group_13_0__0 )
                     {
-                     before(grammarAccess.getXAttributeTypeAccess().getGroup_14_0()); 
-                    // InternalOseeDsl.g:8775:7: ( rule__XAttributeType__Group_14_0__0 )
-                    // InternalOseeDsl.g:8775:8: rule__XAttributeType__Group_14_0__0
+                     before(grammarAccess.getXAttributeTypeAccess().getGroup_13_0()); 
+                    // InternalOseeDsl.g:8399:7: ( rule__XAttributeType__Group_13_0__0 )
+                    // InternalOseeDsl.g:8399:8: rule__XAttributeType__Group_13_0__0
                     {
                     pushFollow(FOLLOW_2);
-                    rule__XAttributeType__Group_14_0__0();
+                    rule__XAttributeType__Group_13_0__0();
 
                     state._fsp--;
 
 
                     }
 
-                     after(grammarAccess.getXAttributeTypeAccess().getGroup_14_0()); 
+                     after(grammarAccess.getXAttributeTypeAccess().getGroup_13_0()); 
 
                     }
 
@@ -23505,39 +22501,39 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
                     }
                     break;
                 case 2 :
-                    // InternalOseeDsl.g:8781:4: ({...}? => ( ( ( rule__XAttributeType__Group_14_1__0 ) ) ) )
+                    // InternalOseeDsl.g:8405:4: ({...}? => ( ( ( rule__XAttributeType__Group_13_1__0 ) ) ) )
                     {
-                    // InternalOseeDsl.g:8781:4: ({...}? => ( ( ( rule__XAttributeType__Group_14_1__0 ) ) ) )
-                    // InternalOseeDsl.g:8782:5: {...}? => ( ( ( rule__XAttributeType__Group_14_1__0 ) ) )
+                    // InternalOseeDsl.g:8405:4: ({...}? => ( ( ( rule__XAttributeType__Group_13_1__0 ) ) ) )
+                    // InternalOseeDsl.g:8406:5: {...}? => ( ( ( rule__XAttributeType__Group_13_1__0 ) ) )
                     {
-                    if ( ! getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 1) ) {
-                        throw new FailedPredicateException(input, "rule__XAttributeType__UnorderedGroup_14__Impl", "getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 1)");
+                    if ( ! getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 1) ) {
+                        throw new FailedPredicateException(input, "rule__XAttributeType__UnorderedGroup_13__Impl", "getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 1)");
                     }
-                    // InternalOseeDsl.g:8782:112: ( ( ( rule__XAttributeType__Group_14_1__0 ) ) )
-                    // InternalOseeDsl.g:8783:6: ( ( rule__XAttributeType__Group_14_1__0 ) )
+                    // InternalOseeDsl.g:8406:112: ( ( ( rule__XAttributeType__Group_13_1__0 ) ) )
+                    // InternalOseeDsl.g:8407:6: ( ( rule__XAttributeType__Group_13_1__0 ) )
                     {
                      
-                    	 				  getUnorderedGroupHelper().select(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 1);
+                    	 				  getUnorderedGroupHelper().select(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 1);
                     	 				
 
                     	 				  selected = true;
                     	 				
-                    // InternalOseeDsl.g:8789:6: ( ( rule__XAttributeType__Group_14_1__0 ) )
-                    // InternalOseeDsl.g:8791:7: ( rule__XAttributeType__Group_14_1__0 )
+                    // InternalOseeDsl.g:8413:6: ( ( rule__XAttributeType__Group_13_1__0 ) )
+                    // InternalOseeDsl.g:8415:7: ( rule__XAttributeType__Group_13_1__0 )
                     {
-                     before(grammarAccess.getXAttributeTypeAccess().getGroup_14_1()); 
-                    // InternalOseeDsl.g:8792:7: ( rule__XAttributeType__Group_14_1__0 )
-                    // InternalOseeDsl.g:8792:8: rule__XAttributeType__Group_14_1__0
+                     before(grammarAccess.getXAttributeTypeAccess().getGroup_13_1()); 
+                    // InternalOseeDsl.g:8416:7: ( rule__XAttributeType__Group_13_1__0 )
+                    // InternalOseeDsl.g:8416:8: rule__XAttributeType__Group_13_1__0
                     {
                     pushFollow(FOLLOW_2);
-                    rule__XAttributeType__Group_14_1__0();
+                    rule__XAttributeType__Group_13_1__0();
 
                     state._fsp--;
 
 
                     }
 
-                     after(grammarAccess.getXAttributeTypeAccess().getGroup_14_1()); 
+                     after(grammarAccess.getXAttributeTypeAccess().getGroup_13_1()); 
 
                     }
 
@@ -23551,39 +22547,39 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
                     }
                     break;
                 case 3 :
-                    // InternalOseeDsl.g:8798:4: ({...}? => ( ( ( rule__XAttributeType__Group_14_2__0 ) ) ) )
+                    // InternalOseeDsl.g:8422:4: ({...}? => ( ( ( rule__XAttributeType__Group_13_2__0 ) ) ) )
                     {
-                    // InternalOseeDsl.g:8798:4: ({...}? => ( ( ( rule__XAttributeType__Group_14_2__0 ) ) ) )
-                    // InternalOseeDsl.g:8799:5: {...}? => ( ( ( rule__XAttributeType__Group_14_2__0 ) ) )
+                    // InternalOseeDsl.g:8422:4: ({...}? => ( ( ( rule__XAttributeType__Group_13_2__0 ) ) ) )
+                    // InternalOseeDsl.g:8423:5: {...}? => ( ( ( rule__XAttributeType__Group_13_2__0 ) ) )
                     {
-                    if ( ! getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 2) ) {
-                        throw new FailedPredicateException(input, "rule__XAttributeType__UnorderedGroup_14__Impl", "getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 2)");
+                    if ( ! getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 2) ) {
+                        throw new FailedPredicateException(input, "rule__XAttributeType__UnorderedGroup_13__Impl", "getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 2)");
                     }
-                    // InternalOseeDsl.g:8799:112: ( ( ( rule__XAttributeType__Group_14_2__0 ) ) )
-                    // InternalOseeDsl.g:8800:6: ( ( rule__XAttributeType__Group_14_2__0 ) )
+                    // InternalOseeDsl.g:8423:112: ( ( ( rule__XAttributeType__Group_13_2__0 ) ) )
+                    // InternalOseeDsl.g:8424:6: ( ( rule__XAttributeType__Group_13_2__0 ) )
                     {
                      
-                    	 				  getUnorderedGroupHelper().select(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 2);
+                    	 				  getUnorderedGroupHelper().select(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 2);
                     	 				
 
                     	 				  selected = true;
                     	 				
-                    // InternalOseeDsl.g:8806:6: ( ( rule__XAttributeType__Group_14_2__0 ) )
-                    // InternalOseeDsl.g:8808:7: ( rule__XAttributeType__Group_14_2__0 )
+                    // InternalOseeDsl.g:8430:6: ( ( rule__XAttributeType__Group_13_2__0 ) )
+                    // InternalOseeDsl.g:8432:7: ( rule__XAttributeType__Group_13_2__0 )
                     {
-                     before(grammarAccess.getXAttributeTypeAccess().getGroup_14_2()); 
-                    // InternalOseeDsl.g:8809:7: ( rule__XAttributeType__Group_14_2__0 )
-                    // InternalOseeDsl.g:8809:8: rule__XAttributeType__Group_14_2__0
+                     before(grammarAccess.getXAttributeTypeAccess().getGroup_13_2()); 
+                    // InternalOseeDsl.g:8433:7: ( rule__XAttributeType__Group_13_2__0 )
+                    // InternalOseeDsl.g:8433:8: rule__XAttributeType__Group_13_2__0
                     {
                     pushFollow(FOLLOW_2);
-                    rule__XAttributeType__Group_14_2__0();
+                    rule__XAttributeType__Group_13_2__0();
 
                     state._fsp--;
 
 
                     }
 
-                     after(grammarAccess.getXAttributeTypeAccess().getGroup_14_2()); 
+                     after(grammarAccess.getXAttributeTypeAccess().getGroup_13_2()); 
 
                     }
 
@@ -23597,39 +22593,39 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
                     }
                     break;
                 case 4 :
-                    // InternalOseeDsl.g:8815:4: ({...}? => ( ( ( rule__XAttributeType__Group_14_3__0 ) ) ) )
+                    // InternalOseeDsl.g:8439:4: ({...}? => ( ( ( rule__XAttributeType__Group_13_3__0 ) ) ) )
                     {
-                    // InternalOseeDsl.g:8815:4: ({...}? => ( ( ( rule__XAttributeType__Group_14_3__0 ) ) ) )
-                    // InternalOseeDsl.g:8816:5: {...}? => ( ( ( rule__XAttributeType__Group_14_3__0 ) ) )
+                    // InternalOseeDsl.g:8439:4: ({...}? => ( ( ( rule__XAttributeType__Group_13_3__0 ) ) ) )
+                    // InternalOseeDsl.g:8440:5: {...}? => ( ( ( rule__XAttributeType__Group_13_3__0 ) ) )
                     {
-                    if ( ! getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 3) ) {
-                        throw new FailedPredicateException(input, "rule__XAttributeType__UnorderedGroup_14__Impl", "getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 3)");
+                    if ( ! getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 3) ) {
+                        throw new FailedPredicateException(input, "rule__XAttributeType__UnorderedGroup_13__Impl", "getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 3)");
                     }
-                    // InternalOseeDsl.g:8816:112: ( ( ( rule__XAttributeType__Group_14_3__0 ) ) )
-                    // InternalOseeDsl.g:8817:6: ( ( rule__XAttributeType__Group_14_3__0 ) )
+                    // InternalOseeDsl.g:8440:112: ( ( ( rule__XAttributeType__Group_13_3__0 ) ) )
+                    // InternalOseeDsl.g:8441:6: ( ( rule__XAttributeType__Group_13_3__0 ) )
                     {
                      
-                    	 				  getUnorderedGroupHelper().select(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 3);
+                    	 				  getUnorderedGroupHelper().select(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 3);
                     	 				
 
                     	 				  selected = true;
                     	 				
-                    // InternalOseeDsl.g:8823:6: ( ( rule__XAttributeType__Group_14_3__0 ) )
-                    // InternalOseeDsl.g:8825:7: ( rule__XAttributeType__Group_14_3__0 )
+                    // InternalOseeDsl.g:8447:6: ( ( rule__XAttributeType__Group_13_3__0 ) )
+                    // InternalOseeDsl.g:8449:7: ( rule__XAttributeType__Group_13_3__0 )
                     {
-                     before(grammarAccess.getXAttributeTypeAccess().getGroup_14_3()); 
-                    // InternalOseeDsl.g:8826:7: ( rule__XAttributeType__Group_14_3__0 )
-                    // InternalOseeDsl.g:8826:8: rule__XAttributeType__Group_14_3__0
+                     before(grammarAccess.getXAttributeTypeAccess().getGroup_13_3()); 
+                    // InternalOseeDsl.g:8450:7: ( rule__XAttributeType__Group_13_3__0 )
+                    // InternalOseeDsl.g:8450:8: rule__XAttributeType__Group_13_3__0
                     {
                     pushFollow(FOLLOW_2);
-                    rule__XAttributeType__Group_14_3__0();
+                    rule__XAttributeType__Group_13_3__0();
 
                     state._fsp--;
 
 
                     }
 
-                     after(grammarAccess.getXAttributeTypeAccess().getGroup_14_3()); 
+                     after(grammarAccess.getXAttributeTypeAccess().getGroup_13_3()); 
 
                     }
 
@@ -23643,39 +22639,39 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
                     }
                     break;
                 case 5 :
-                    // InternalOseeDsl.g:8832:4: ({...}? => ( ( ( rule__XAttributeType__Group_14_4__0 ) ) ) )
+                    // InternalOseeDsl.g:8456:4: ({...}? => ( ( ( rule__XAttributeType__Group_13_4__0 ) ) ) )
                     {
-                    // InternalOseeDsl.g:8832:4: ({...}? => ( ( ( rule__XAttributeType__Group_14_4__0 ) ) ) )
-                    // InternalOseeDsl.g:8833:5: {...}? => ( ( ( rule__XAttributeType__Group_14_4__0 ) ) )
+                    // InternalOseeDsl.g:8456:4: ({...}? => ( ( ( rule__XAttributeType__Group_13_4__0 ) ) ) )
+                    // InternalOseeDsl.g:8457:5: {...}? => ( ( ( rule__XAttributeType__Group_13_4__0 ) ) )
                     {
-                    if ( ! getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 4) ) {
-                        throw new FailedPredicateException(input, "rule__XAttributeType__UnorderedGroup_14__Impl", "getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 4)");
+                    if ( ! getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 4) ) {
+                        throw new FailedPredicateException(input, "rule__XAttributeType__UnorderedGroup_13__Impl", "getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 4)");
                     }
-                    // InternalOseeDsl.g:8833:112: ( ( ( rule__XAttributeType__Group_14_4__0 ) ) )
-                    // InternalOseeDsl.g:8834:6: ( ( rule__XAttributeType__Group_14_4__0 ) )
+                    // InternalOseeDsl.g:8457:112: ( ( ( rule__XAttributeType__Group_13_4__0 ) ) )
+                    // InternalOseeDsl.g:8458:6: ( ( rule__XAttributeType__Group_13_4__0 ) )
                     {
                      
-                    	 				  getUnorderedGroupHelper().select(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 4);
+                    	 				  getUnorderedGroupHelper().select(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 4);
                     	 				
 
                     	 				  selected = true;
                     	 				
-                    // InternalOseeDsl.g:8840:6: ( ( rule__XAttributeType__Group_14_4__0 ) )
-                    // InternalOseeDsl.g:8842:7: ( rule__XAttributeType__Group_14_4__0 )
+                    // InternalOseeDsl.g:8464:6: ( ( rule__XAttributeType__Group_13_4__0 ) )
+                    // InternalOseeDsl.g:8466:7: ( rule__XAttributeType__Group_13_4__0 )
                     {
-                     before(grammarAccess.getXAttributeTypeAccess().getGroup_14_4()); 
-                    // InternalOseeDsl.g:8843:7: ( rule__XAttributeType__Group_14_4__0 )
-                    // InternalOseeDsl.g:8843:8: rule__XAttributeType__Group_14_4__0
+                     before(grammarAccess.getXAttributeTypeAccess().getGroup_13_4()); 
+                    // InternalOseeDsl.g:8467:7: ( rule__XAttributeType__Group_13_4__0 )
+                    // InternalOseeDsl.g:8467:8: rule__XAttributeType__Group_13_4__0
                     {
                     pushFollow(FOLLOW_2);
-                    rule__XAttributeType__Group_14_4__0();
+                    rule__XAttributeType__Group_13_4__0();
 
                     state._fsp--;
 
 
                     }
 
-                     after(grammarAccess.getXAttributeTypeAccess().getGroup_14_4()); 
+                     after(grammarAccess.getXAttributeTypeAccess().getGroup_13_4()); 
 
                     }
 
@@ -23689,39 +22685,39 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
                     }
                     break;
                 case 6 :
-                    // InternalOseeDsl.g:8849:4: ({...}? => ( ( ( rule__XAttributeType__Group_14_5__0 ) ) ) )
+                    // InternalOseeDsl.g:8473:4: ({...}? => ( ( ( rule__XAttributeType__Group_13_5__0 ) ) ) )
                     {
-                    // InternalOseeDsl.g:8849:4: ({...}? => ( ( ( rule__XAttributeType__Group_14_5__0 ) ) ) )
-                    // InternalOseeDsl.g:8850:5: {...}? => ( ( ( rule__XAttributeType__Group_14_5__0 ) ) )
+                    // InternalOseeDsl.g:8473:4: ({...}? => ( ( ( rule__XAttributeType__Group_13_5__0 ) ) ) )
+                    // InternalOseeDsl.g:8474:5: {...}? => ( ( ( rule__XAttributeType__Group_13_5__0 ) ) )
                     {
-                    if ( ! getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 5) ) {
-                        throw new FailedPredicateException(input, "rule__XAttributeType__UnorderedGroup_14__Impl", "getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 5)");
+                    if ( ! getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 5) ) {
+                        throw new FailedPredicateException(input, "rule__XAttributeType__UnorderedGroup_13__Impl", "getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 5)");
                     }
-                    // InternalOseeDsl.g:8850:112: ( ( ( rule__XAttributeType__Group_14_5__0 ) ) )
-                    // InternalOseeDsl.g:8851:6: ( ( rule__XAttributeType__Group_14_5__0 ) )
+                    // InternalOseeDsl.g:8474:112: ( ( ( rule__XAttributeType__Group_13_5__0 ) ) )
+                    // InternalOseeDsl.g:8475:6: ( ( rule__XAttributeType__Group_13_5__0 ) )
                     {
                      
-                    	 				  getUnorderedGroupHelper().select(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 5);
+                    	 				  getUnorderedGroupHelper().select(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 5);
                     	 				
 
                     	 				  selected = true;
                     	 				
-                    // InternalOseeDsl.g:8857:6: ( ( rule__XAttributeType__Group_14_5__0 ) )
-                    // InternalOseeDsl.g:8859:7: ( rule__XAttributeType__Group_14_5__0 )
+                    // InternalOseeDsl.g:8481:6: ( ( rule__XAttributeType__Group_13_5__0 ) )
+                    // InternalOseeDsl.g:8483:7: ( rule__XAttributeType__Group_13_5__0 )
                     {
-                     before(grammarAccess.getXAttributeTypeAccess().getGroup_14_5()); 
-                    // InternalOseeDsl.g:8860:7: ( rule__XAttributeType__Group_14_5__0 )
-                    // InternalOseeDsl.g:8860:8: rule__XAttributeType__Group_14_5__0
+                     before(grammarAccess.getXAttributeTypeAccess().getGroup_13_5()); 
+                    // InternalOseeDsl.g:8484:7: ( rule__XAttributeType__Group_13_5__0 )
+                    // InternalOseeDsl.g:8484:8: rule__XAttributeType__Group_13_5__0
                     {
                     pushFollow(FOLLOW_2);
-                    rule__XAttributeType__Group_14_5__0();
+                    rule__XAttributeType__Group_13_5__0();
 
                     state._fsp--;
 
 
                     }
 
-                     after(grammarAccess.getXAttributeTypeAccess().getGroup_14_5()); 
+                     after(grammarAccess.getXAttributeTypeAccess().getGroup_13_5()); 
 
                     }
 
@@ -23748,58 +22744,338 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         finally {
 
             	if (selected)
-            		getUnorderedGroupHelper().returnFromSelection(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14());
+            		getUnorderedGroupHelper().returnFromSelection(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13());
             	restoreStackSize(stackSize);
 
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__UnorderedGroup_14__Impl"
+    // $ANTLR end "rule__XAttributeType__UnorderedGroup_13__Impl"
 
 
-    // $ANTLR start "rule__XAttributeType__UnorderedGroup_14__0"
-    // InternalOseeDsl.g:8875:1: rule__XAttributeType__UnorderedGroup_14__0 : rule__XAttributeType__UnorderedGroup_14__Impl ( rule__XAttributeType__UnorderedGroup_14__1 )? ;
-    public final void rule__XAttributeType__UnorderedGroup_14__0() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__UnorderedGroup_13__0"
+    // InternalOseeDsl.g:8499:1: rule__XAttributeType__UnorderedGroup_13__0 : rule__XAttributeType__UnorderedGroup_13__Impl ( rule__XAttributeType__UnorderedGroup_13__1 )? ;
+    public final void rule__XAttributeType__UnorderedGroup_13__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8879:1: ( rule__XAttributeType__UnorderedGroup_14__Impl ( rule__XAttributeType__UnorderedGroup_14__1 )? )
-            // InternalOseeDsl.g:8880:2: rule__XAttributeType__UnorderedGroup_14__Impl ( rule__XAttributeType__UnorderedGroup_14__1 )?
+            // InternalOseeDsl.g:8503:1: ( rule__XAttributeType__UnorderedGroup_13__Impl ( rule__XAttributeType__UnorderedGroup_13__1 )? )
+            // InternalOseeDsl.g:8504:2: rule__XAttributeType__UnorderedGroup_13__Impl ( rule__XAttributeType__UnorderedGroup_13__1 )?
             {
             pushFollow(FOLLOW_73);
-            rule__XAttributeType__UnorderedGroup_14__Impl();
+            rule__XAttributeType__UnorderedGroup_13__Impl();
 
             state._fsp--;
 
-            // InternalOseeDsl.g:8881:2: ( rule__XAttributeType__UnorderedGroup_14__1 )?
+            // InternalOseeDsl.g:8505:2: ( rule__XAttributeType__UnorderedGroup_13__1 )?
+            int alt55=2;
+            int LA55_0 = input.LA(1);
+
+            if ( LA55_0 == 64 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 0) ) {
+                alt55=1;
+            }
+            else if ( LA55_0 == 65 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 1) ) {
+                alt55=1;
+            }
+            else if ( LA55_0 == 66 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 2) ) {
+                alt55=1;
+            }
+            else if ( LA55_0 == 67 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 3) ) {
+                alt55=1;
+            }
+            else if ( LA55_0 == 68 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 4) ) {
+                alt55=1;
+            }
+            else if ( LA55_0 == 69 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 5) ) {
+                alt55=1;
+            }
+            switch (alt55) {
+                case 1 :
+                    // InternalOseeDsl.g:8505:2: rule__XAttributeType__UnorderedGroup_13__1
+                    {
+                    pushFollow(FOLLOW_2);
+                    rule__XAttributeType__UnorderedGroup_13__1();
+
+                    state._fsp--;
+
+
+                    }
+                    break;
+
+            }
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+
+            	restoreStackSize(stackSize);
+
+        }
+        return ;
+    }
+    // $ANTLR end "rule__XAttributeType__UnorderedGroup_13__0"
+
+
+    // $ANTLR start "rule__XAttributeType__UnorderedGroup_13__1"
+    // InternalOseeDsl.g:8512:1: rule__XAttributeType__UnorderedGroup_13__1 : rule__XAttributeType__UnorderedGroup_13__Impl ( rule__XAttributeType__UnorderedGroup_13__2 )? ;
+    public final void rule__XAttributeType__UnorderedGroup_13__1() throws RecognitionException {
+
+        		int stackSize = keepStackSize();
+            
+        try {
+            // InternalOseeDsl.g:8516:1: ( rule__XAttributeType__UnorderedGroup_13__Impl ( rule__XAttributeType__UnorderedGroup_13__2 )? )
+            // InternalOseeDsl.g:8517:2: rule__XAttributeType__UnorderedGroup_13__Impl ( rule__XAttributeType__UnorderedGroup_13__2 )?
+            {
+            pushFollow(FOLLOW_73);
+            rule__XAttributeType__UnorderedGroup_13__Impl();
+
+            state._fsp--;
+
+            // InternalOseeDsl.g:8518:2: ( rule__XAttributeType__UnorderedGroup_13__2 )?
+            int alt56=2;
+            int LA56_0 = input.LA(1);
+
+            if ( LA56_0 == 64 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 0) ) {
+                alt56=1;
+            }
+            else if ( LA56_0 == 65 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 1) ) {
+                alt56=1;
+            }
+            else if ( LA56_0 == 66 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 2) ) {
+                alt56=1;
+            }
+            else if ( LA56_0 == 67 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 3) ) {
+                alt56=1;
+            }
+            else if ( LA56_0 == 68 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 4) ) {
+                alt56=1;
+            }
+            else if ( LA56_0 == 69 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 5) ) {
+                alt56=1;
+            }
+            switch (alt56) {
+                case 1 :
+                    // InternalOseeDsl.g:8518:2: rule__XAttributeType__UnorderedGroup_13__2
+                    {
+                    pushFollow(FOLLOW_2);
+                    rule__XAttributeType__UnorderedGroup_13__2();
+
+                    state._fsp--;
+
+
+                    }
+                    break;
+
+            }
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+
+            	restoreStackSize(stackSize);
+
+        }
+        return ;
+    }
+    // $ANTLR end "rule__XAttributeType__UnorderedGroup_13__1"
+
+
+    // $ANTLR start "rule__XAttributeType__UnorderedGroup_13__2"
+    // InternalOseeDsl.g:8525:1: rule__XAttributeType__UnorderedGroup_13__2 : rule__XAttributeType__UnorderedGroup_13__Impl ( rule__XAttributeType__UnorderedGroup_13__3 )? ;
+    public final void rule__XAttributeType__UnorderedGroup_13__2() throws RecognitionException {
+
+        		int stackSize = keepStackSize();
+            
+        try {
+            // InternalOseeDsl.g:8529:1: ( rule__XAttributeType__UnorderedGroup_13__Impl ( rule__XAttributeType__UnorderedGroup_13__3 )? )
+            // InternalOseeDsl.g:8530:2: rule__XAttributeType__UnorderedGroup_13__Impl ( rule__XAttributeType__UnorderedGroup_13__3 )?
+            {
+            pushFollow(FOLLOW_73);
+            rule__XAttributeType__UnorderedGroup_13__Impl();
+
+            state._fsp--;
+
+            // InternalOseeDsl.g:8531:2: ( rule__XAttributeType__UnorderedGroup_13__3 )?
+            int alt57=2;
+            int LA57_0 = input.LA(1);
+
+            if ( LA57_0 == 64 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 0) ) {
+                alt57=1;
+            }
+            else if ( LA57_0 == 65 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 1) ) {
+                alt57=1;
+            }
+            else if ( LA57_0 == 66 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 2) ) {
+                alt57=1;
+            }
+            else if ( LA57_0 == 67 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 3) ) {
+                alt57=1;
+            }
+            else if ( LA57_0 == 68 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 4) ) {
+                alt57=1;
+            }
+            else if ( LA57_0 == 69 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 5) ) {
+                alt57=1;
+            }
+            switch (alt57) {
+                case 1 :
+                    // InternalOseeDsl.g:8531:2: rule__XAttributeType__UnorderedGroup_13__3
+                    {
+                    pushFollow(FOLLOW_2);
+                    rule__XAttributeType__UnorderedGroup_13__3();
+
+                    state._fsp--;
+
+
+                    }
+                    break;
+
+            }
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+
+            	restoreStackSize(stackSize);
+
+        }
+        return ;
+    }
+    // $ANTLR end "rule__XAttributeType__UnorderedGroup_13__2"
+
+
+    // $ANTLR start "rule__XAttributeType__UnorderedGroup_13__3"
+    // InternalOseeDsl.g:8538:1: rule__XAttributeType__UnorderedGroup_13__3 : rule__XAttributeType__UnorderedGroup_13__Impl ( rule__XAttributeType__UnorderedGroup_13__4 )? ;
+    public final void rule__XAttributeType__UnorderedGroup_13__3() throws RecognitionException {
+
+        		int stackSize = keepStackSize();
+            
+        try {
+            // InternalOseeDsl.g:8542:1: ( rule__XAttributeType__UnorderedGroup_13__Impl ( rule__XAttributeType__UnorderedGroup_13__4 )? )
+            // InternalOseeDsl.g:8543:2: rule__XAttributeType__UnorderedGroup_13__Impl ( rule__XAttributeType__UnorderedGroup_13__4 )?
+            {
+            pushFollow(FOLLOW_73);
+            rule__XAttributeType__UnorderedGroup_13__Impl();
+
+            state._fsp--;
+
+            // InternalOseeDsl.g:8544:2: ( rule__XAttributeType__UnorderedGroup_13__4 )?
+            int alt58=2;
+            int LA58_0 = input.LA(1);
+
+            if ( LA58_0 == 64 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 0) ) {
+                alt58=1;
+            }
+            else if ( LA58_0 == 65 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 1) ) {
+                alt58=1;
+            }
+            else if ( LA58_0 == 66 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 2) ) {
+                alt58=1;
+            }
+            else if ( LA58_0 == 67 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 3) ) {
+                alt58=1;
+            }
+            else if ( LA58_0 == 68 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 4) ) {
+                alt58=1;
+            }
+            else if ( LA58_0 == 69 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 5) ) {
+                alt58=1;
+            }
+            switch (alt58) {
+                case 1 :
+                    // InternalOseeDsl.g:8544:2: rule__XAttributeType__UnorderedGroup_13__4
+                    {
+                    pushFollow(FOLLOW_2);
+                    rule__XAttributeType__UnorderedGroup_13__4();
+
+                    state._fsp--;
+
+
+                    }
+                    break;
+
+            }
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+
+            	restoreStackSize(stackSize);
+
+        }
+        return ;
+    }
+    // $ANTLR end "rule__XAttributeType__UnorderedGroup_13__3"
+
+
+    // $ANTLR start "rule__XAttributeType__UnorderedGroup_13__4"
+    // InternalOseeDsl.g:8551:1: rule__XAttributeType__UnorderedGroup_13__4 : rule__XAttributeType__UnorderedGroup_13__Impl ( rule__XAttributeType__UnorderedGroup_13__5 )? ;
+    public final void rule__XAttributeType__UnorderedGroup_13__4() throws RecognitionException {
+
+        		int stackSize = keepStackSize();
+            
+        try {
+            // InternalOseeDsl.g:8555:1: ( rule__XAttributeType__UnorderedGroup_13__Impl ( rule__XAttributeType__UnorderedGroup_13__5 )? )
+            // InternalOseeDsl.g:8556:2: rule__XAttributeType__UnorderedGroup_13__Impl ( rule__XAttributeType__UnorderedGroup_13__5 )?
+            {
+            pushFollow(FOLLOW_73);
+            rule__XAttributeType__UnorderedGroup_13__Impl();
+
+            state._fsp--;
+
+            // InternalOseeDsl.g:8557:2: ( rule__XAttributeType__UnorderedGroup_13__5 )?
             int alt59=2;
             int LA59_0 = input.LA(1);
 
-            if ( LA59_0 == 65 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 0) ) {
+            if ( LA59_0 == 64 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 0) ) {
                 alt59=1;
             }
-            else if ( LA59_0 == 66 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 1) ) {
+            else if ( LA59_0 == 65 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 1) ) {
                 alt59=1;
             }
-            else if ( LA59_0 == 67 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 2) ) {
+            else if ( LA59_0 == 66 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 2) ) {
                 alt59=1;
             }
-            else if ( LA59_0 == 68 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 3) ) {
+            else if ( LA59_0 == 67 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 3) ) {
                 alt59=1;
             }
-            else if ( LA59_0 == 69 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 4) ) {
+            else if ( LA59_0 == 68 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 4) ) {
                 alt59=1;
             }
-            else if ( LA59_0 == 70 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 5) ) {
+            else if ( LA59_0 == 69 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 5) ) {
                 alt59=1;
             }
             switch (alt59) {
                 case 1 :
-                    // InternalOseeDsl.g:8881:2: rule__XAttributeType__UnorderedGroup_14__1
+                    // InternalOseeDsl.g:8557:2: rule__XAttributeType__UnorderedGroup_13__5
                     {
                     pushFollow(FOLLOW_2);
-                    rule__XAttributeType__UnorderedGroup_14__1();
+                    rule__XAttributeType__UnorderedGroup_13__5();
 
                     state._fsp--;
 
@@ -23824,301 +23100,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__UnorderedGroup_14__0"
+    // $ANTLR end "rule__XAttributeType__UnorderedGroup_13__4"
 
 
-    // $ANTLR start "rule__XAttributeType__UnorderedGroup_14__1"
-    // InternalOseeDsl.g:8888:1: rule__XAttributeType__UnorderedGroup_14__1 : rule__XAttributeType__UnorderedGroup_14__Impl ( rule__XAttributeType__UnorderedGroup_14__2 )? ;
-    public final void rule__XAttributeType__UnorderedGroup_14__1() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:8892:1: ( rule__XAttributeType__UnorderedGroup_14__Impl ( rule__XAttributeType__UnorderedGroup_14__2 )? )
-            // InternalOseeDsl.g:8893:2: rule__XAttributeType__UnorderedGroup_14__Impl ( rule__XAttributeType__UnorderedGroup_14__2 )?
-            {
-            pushFollow(FOLLOW_73);
-            rule__XAttributeType__UnorderedGroup_14__Impl();
-
-            state._fsp--;
-
-            // InternalOseeDsl.g:8894:2: ( rule__XAttributeType__UnorderedGroup_14__2 )?
-            int alt60=2;
-            int LA60_0 = input.LA(1);
-
-            if ( LA60_0 == 65 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 0) ) {
-                alt60=1;
-            }
-            else if ( LA60_0 == 66 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 1) ) {
-                alt60=1;
-            }
-            else if ( LA60_0 == 67 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 2) ) {
-                alt60=1;
-            }
-            else if ( LA60_0 == 68 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 3) ) {
-                alt60=1;
-            }
-            else if ( LA60_0 == 69 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 4) ) {
-                alt60=1;
-            }
-            else if ( LA60_0 == 70 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 5) ) {
-                alt60=1;
-            }
-            switch (alt60) {
-                case 1 :
-                    // InternalOseeDsl.g:8894:2: rule__XAttributeType__UnorderedGroup_14__2
-                    {
-                    pushFollow(FOLLOW_2);
-                    rule__XAttributeType__UnorderedGroup_14__2();
-
-                    state._fsp--;
-
-
-                    }
-                    break;
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XAttributeType__UnorderedGroup_14__1"
-
-
-    // $ANTLR start "rule__XAttributeType__UnorderedGroup_14__2"
-    // InternalOseeDsl.g:8901:1: rule__XAttributeType__UnorderedGroup_14__2 : rule__XAttributeType__UnorderedGroup_14__Impl ( rule__XAttributeType__UnorderedGroup_14__3 )? ;
-    public final void rule__XAttributeType__UnorderedGroup_14__2() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__UnorderedGroup_13__5"
+    // InternalOseeDsl.g:8564:1: rule__XAttributeType__UnorderedGroup_13__5 : rule__XAttributeType__UnorderedGroup_13__Impl ;
+    public final void rule__XAttributeType__UnorderedGroup_13__5() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8905:1: ( rule__XAttributeType__UnorderedGroup_14__Impl ( rule__XAttributeType__UnorderedGroup_14__3 )? )
-            // InternalOseeDsl.g:8906:2: rule__XAttributeType__UnorderedGroup_14__Impl ( rule__XAttributeType__UnorderedGroup_14__3 )?
-            {
-            pushFollow(FOLLOW_73);
-            rule__XAttributeType__UnorderedGroup_14__Impl();
-
-            state._fsp--;
-
-            // InternalOseeDsl.g:8907:2: ( rule__XAttributeType__UnorderedGroup_14__3 )?
-            int alt61=2;
-            int LA61_0 = input.LA(1);
-
-            if ( LA61_0 == 65 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 0) ) {
-                alt61=1;
-            }
-            else if ( LA61_0 == 66 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 1) ) {
-                alt61=1;
-            }
-            else if ( LA61_0 == 67 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 2) ) {
-                alt61=1;
-            }
-            else if ( LA61_0 == 68 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 3) ) {
-                alt61=1;
-            }
-            else if ( LA61_0 == 69 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 4) ) {
-                alt61=1;
-            }
-            else if ( LA61_0 == 70 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 5) ) {
-                alt61=1;
-            }
-            switch (alt61) {
-                case 1 :
-                    // InternalOseeDsl.g:8907:2: rule__XAttributeType__UnorderedGroup_14__3
-                    {
-                    pushFollow(FOLLOW_2);
-                    rule__XAttributeType__UnorderedGroup_14__3();
-
-                    state._fsp--;
-
-
-                    }
-                    break;
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XAttributeType__UnorderedGroup_14__2"
-
-
-    // $ANTLR start "rule__XAttributeType__UnorderedGroup_14__3"
-    // InternalOseeDsl.g:8914:1: rule__XAttributeType__UnorderedGroup_14__3 : rule__XAttributeType__UnorderedGroup_14__Impl ( rule__XAttributeType__UnorderedGroup_14__4 )? ;
-    public final void rule__XAttributeType__UnorderedGroup_14__3() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:8918:1: ( rule__XAttributeType__UnorderedGroup_14__Impl ( rule__XAttributeType__UnorderedGroup_14__4 )? )
-            // InternalOseeDsl.g:8919:2: rule__XAttributeType__UnorderedGroup_14__Impl ( rule__XAttributeType__UnorderedGroup_14__4 )?
-            {
-            pushFollow(FOLLOW_73);
-            rule__XAttributeType__UnorderedGroup_14__Impl();
-
-            state._fsp--;
-
-            // InternalOseeDsl.g:8920:2: ( rule__XAttributeType__UnorderedGroup_14__4 )?
-            int alt62=2;
-            int LA62_0 = input.LA(1);
-
-            if ( LA62_0 == 65 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 0) ) {
-                alt62=1;
-            }
-            else if ( LA62_0 == 66 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 1) ) {
-                alt62=1;
-            }
-            else if ( LA62_0 == 67 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 2) ) {
-                alt62=1;
-            }
-            else if ( LA62_0 == 68 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 3) ) {
-                alt62=1;
-            }
-            else if ( LA62_0 == 69 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 4) ) {
-                alt62=1;
-            }
-            else if ( LA62_0 == 70 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 5) ) {
-                alt62=1;
-            }
-            switch (alt62) {
-                case 1 :
-                    // InternalOseeDsl.g:8920:2: rule__XAttributeType__UnorderedGroup_14__4
-                    {
-                    pushFollow(FOLLOW_2);
-                    rule__XAttributeType__UnorderedGroup_14__4();
-
-                    state._fsp--;
-
-
-                    }
-                    break;
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XAttributeType__UnorderedGroup_14__3"
-
-
-    // $ANTLR start "rule__XAttributeType__UnorderedGroup_14__4"
-    // InternalOseeDsl.g:8927:1: rule__XAttributeType__UnorderedGroup_14__4 : rule__XAttributeType__UnorderedGroup_14__Impl ( rule__XAttributeType__UnorderedGroup_14__5 )? ;
-    public final void rule__XAttributeType__UnorderedGroup_14__4() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:8931:1: ( rule__XAttributeType__UnorderedGroup_14__Impl ( rule__XAttributeType__UnorderedGroup_14__5 )? )
-            // InternalOseeDsl.g:8932:2: rule__XAttributeType__UnorderedGroup_14__Impl ( rule__XAttributeType__UnorderedGroup_14__5 )?
-            {
-            pushFollow(FOLLOW_73);
-            rule__XAttributeType__UnorderedGroup_14__Impl();
-
-            state._fsp--;
-
-            // InternalOseeDsl.g:8933:2: ( rule__XAttributeType__UnorderedGroup_14__5 )?
-            int alt63=2;
-            int LA63_0 = input.LA(1);
-
-            if ( LA63_0 == 65 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 0) ) {
-                alt63=1;
-            }
-            else if ( LA63_0 == 66 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 1) ) {
-                alt63=1;
-            }
-            else if ( LA63_0 == 67 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 2) ) {
-                alt63=1;
-            }
-            else if ( LA63_0 == 68 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 3) ) {
-                alt63=1;
-            }
-            else if ( LA63_0 == 69 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 4) ) {
-                alt63=1;
-            }
-            else if ( LA63_0 == 70 && getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 5) ) {
-                alt63=1;
-            }
-            switch (alt63) {
-                case 1 :
-                    // InternalOseeDsl.g:8933:2: rule__XAttributeType__UnorderedGroup_14__5
-                    {
-                    pushFollow(FOLLOW_2);
-                    rule__XAttributeType__UnorderedGroup_14__5();
-
-                    state._fsp--;
-
-
-                    }
-                    break;
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XAttributeType__UnorderedGroup_14__4"
-
-
-    // $ANTLR start "rule__XAttributeType__UnorderedGroup_14__5"
-    // InternalOseeDsl.g:8940:1: rule__XAttributeType__UnorderedGroup_14__5 : rule__XAttributeType__UnorderedGroup_14__Impl ;
-    public final void rule__XAttributeType__UnorderedGroup_14__5() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:8944:1: ( rule__XAttributeType__UnorderedGroup_14__Impl )
-            // InternalOseeDsl.g:8945:2: rule__XAttributeType__UnorderedGroup_14__Impl
+            // InternalOseeDsl.g:8568:1: ( rule__XAttributeType__UnorderedGroup_13__Impl )
+            // InternalOseeDsl.g:8569:2: rule__XAttributeType__UnorderedGroup_13__Impl
             {
             pushFollow(FOLLOW_2);
-            rule__XAttributeType__UnorderedGroup_14__Impl();
+            rule__XAttributeType__UnorderedGroup_13__Impl();
 
             state._fsp--;
 
@@ -24137,21 +23133,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__UnorderedGroup_14__5"
+    // $ANTLR end "rule__XAttributeType__UnorderedGroup_13__5"
 
 
     // $ANTLR start "rule__OseeDsl__ImportsAssignment_0"
-    // InternalOseeDsl.g:8964:1: rule__OseeDsl__ImportsAssignment_0 : ( ruleImport ) ;
+    // InternalOseeDsl.g:8588:1: rule__OseeDsl__ImportsAssignment_0 : ( ruleImport ) ;
     public final void rule__OseeDsl__ImportsAssignment_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8968:1: ( ( ruleImport ) )
-            // InternalOseeDsl.g:8969:1: ( ruleImport )
+            // InternalOseeDsl.g:8592:1: ( ( ruleImport ) )
+            // InternalOseeDsl.g:8593:1: ( ruleImport )
             {
-            // InternalOseeDsl.g:8969:1: ( ruleImport )
-            // InternalOseeDsl.g:8970:1: ruleImport
+            // InternalOseeDsl.g:8593:1: ( ruleImport )
+            // InternalOseeDsl.g:8594:1: ruleImport
             {
              before(grammarAccess.getOseeDslAccess().getImportsImportParserRuleCall_0_0()); 
             pushFollow(FOLLOW_2);
@@ -24182,17 +23178,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__OseeDsl__ArtifactTypesAssignment_1_0"
-    // InternalOseeDsl.g:8979:1: rule__OseeDsl__ArtifactTypesAssignment_1_0 : ( ruleXArtifactType ) ;
+    // InternalOseeDsl.g:8603:1: rule__OseeDsl__ArtifactTypesAssignment_1_0 : ( ruleXArtifactType ) ;
     public final void rule__OseeDsl__ArtifactTypesAssignment_1_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8983:1: ( ( ruleXArtifactType ) )
-            // InternalOseeDsl.g:8984:1: ( ruleXArtifactType )
+            // InternalOseeDsl.g:8607:1: ( ( ruleXArtifactType ) )
+            // InternalOseeDsl.g:8608:1: ( ruleXArtifactType )
             {
-            // InternalOseeDsl.g:8984:1: ( ruleXArtifactType )
-            // InternalOseeDsl.g:8985:1: ruleXArtifactType
+            // InternalOseeDsl.g:8608:1: ( ruleXArtifactType )
+            // InternalOseeDsl.g:8609:1: ruleXArtifactType
             {
              before(grammarAccess.getOseeDslAccess().getArtifactTypesXArtifactTypeParserRuleCall_1_0_0()); 
             pushFollow(FOLLOW_2);
@@ -24223,17 +23219,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__OseeDsl__RelationTypesAssignment_1_1"
-    // InternalOseeDsl.g:8994:1: rule__OseeDsl__RelationTypesAssignment_1_1 : ( ruleXRelationType ) ;
+    // InternalOseeDsl.g:8618:1: rule__OseeDsl__RelationTypesAssignment_1_1 : ( ruleXRelationType ) ;
     public final void rule__OseeDsl__RelationTypesAssignment_1_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:8998:1: ( ( ruleXRelationType ) )
-            // InternalOseeDsl.g:8999:1: ( ruleXRelationType )
+            // InternalOseeDsl.g:8622:1: ( ( ruleXRelationType ) )
+            // InternalOseeDsl.g:8623:1: ( ruleXRelationType )
             {
-            // InternalOseeDsl.g:8999:1: ( ruleXRelationType )
-            // InternalOseeDsl.g:9000:1: ruleXRelationType
+            // InternalOseeDsl.g:8623:1: ( ruleXRelationType )
+            // InternalOseeDsl.g:8624:1: ruleXRelationType
             {
              before(grammarAccess.getOseeDslAccess().getRelationTypesXRelationTypeParserRuleCall_1_1_0()); 
             pushFollow(FOLLOW_2);
@@ -24264,17 +23260,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__OseeDsl__AttributeTypesAssignment_1_2"
-    // InternalOseeDsl.g:9009:1: rule__OseeDsl__AttributeTypesAssignment_1_2 : ( ruleXAttributeType ) ;
+    // InternalOseeDsl.g:8633:1: rule__OseeDsl__AttributeTypesAssignment_1_2 : ( ruleXAttributeType ) ;
     public final void rule__OseeDsl__AttributeTypesAssignment_1_2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9013:1: ( ( ruleXAttributeType ) )
-            // InternalOseeDsl.g:9014:1: ( ruleXAttributeType )
+            // InternalOseeDsl.g:8637:1: ( ( ruleXAttributeType ) )
+            // InternalOseeDsl.g:8638:1: ( ruleXAttributeType )
             {
-            // InternalOseeDsl.g:9014:1: ( ruleXAttributeType )
-            // InternalOseeDsl.g:9015:1: ruleXAttributeType
+            // InternalOseeDsl.g:8638:1: ( ruleXAttributeType )
+            // InternalOseeDsl.g:8639:1: ruleXAttributeType
             {
              before(grammarAccess.getOseeDslAccess().getAttributeTypesXAttributeTypeParserRuleCall_1_2_0()); 
             pushFollow(FOLLOW_2);
@@ -24305,17 +23301,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__OseeDsl__EnumTypesAssignment_1_3"
-    // InternalOseeDsl.g:9024:1: rule__OseeDsl__EnumTypesAssignment_1_3 : ( ruleXOseeEnumType ) ;
+    // InternalOseeDsl.g:8648:1: rule__OseeDsl__EnumTypesAssignment_1_3 : ( ruleXOseeEnumType ) ;
     public final void rule__OseeDsl__EnumTypesAssignment_1_3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9028:1: ( ( ruleXOseeEnumType ) )
-            // InternalOseeDsl.g:9029:1: ( ruleXOseeEnumType )
+            // InternalOseeDsl.g:8652:1: ( ( ruleXOseeEnumType ) )
+            // InternalOseeDsl.g:8653:1: ( ruleXOseeEnumType )
             {
-            // InternalOseeDsl.g:9029:1: ( ruleXOseeEnumType )
-            // InternalOseeDsl.g:9030:1: ruleXOseeEnumType
+            // InternalOseeDsl.g:8653:1: ( ruleXOseeEnumType )
+            // InternalOseeDsl.g:8654:1: ruleXOseeEnumType
             {
              before(grammarAccess.getOseeDslAccess().getEnumTypesXOseeEnumTypeParserRuleCall_1_3_0()); 
             pushFollow(FOLLOW_2);
@@ -24346,17 +23342,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__OseeDsl__EnumOverridesAssignment_1_4"
-    // InternalOseeDsl.g:9039:1: rule__OseeDsl__EnumOverridesAssignment_1_4 : ( ruleXOseeEnumOverride ) ;
+    // InternalOseeDsl.g:8663:1: rule__OseeDsl__EnumOverridesAssignment_1_4 : ( ruleXOseeEnumOverride ) ;
     public final void rule__OseeDsl__EnumOverridesAssignment_1_4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9043:1: ( ( ruleXOseeEnumOverride ) )
-            // InternalOseeDsl.g:9044:1: ( ruleXOseeEnumOverride )
+            // InternalOseeDsl.g:8667:1: ( ( ruleXOseeEnumOverride ) )
+            // InternalOseeDsl.g:8668:1: ( ruleXOseeEnumOverride )
             {
-            // InternalOseeDsl.g:9044:1: ( ruleXOseeEnumOverride )
-            // InternalOseeDsl.g:9045:1: ruleXOseeEnumOverride
+            // InternalOseeDsl.g:8668:1: ( ruleXOseeEnumOverride )
+            // InternalOseeDsl.g:8669:1: ruleXOseeEnumOverride
             {
              before(grammarAccess.getOseeDslAccess().getEnumOverridesXOseeEnumOverrideParserRuleCall_1_4_0()); 
             pushFollow(FOLLOW_2);
@@ -24387,17 +23383,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__OseeDsl__ArtifactTypeOverridesAssignment_1_5"
-    // InternalOseeDsl.g:9054:1: rule__OseeDsl__ArtifactTypeOverridesAssignment_1_5 : ( ruleXOseeArtifactTypeOverride ) ;
+    // InternalOseeDsl.g:8678:1: rule__OseeDsl__ArtifactTypeOverridesAssignment_1_5 : ( ruleXOseeArtifactTypeOverride ) ;
     public final void rule__OseeDsl__ArtifactTypeOverridesAssignment_1_5() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9058:1: ( ( ruleXOseeArtifactTypeOverride ) )
-            // InternalOseeDsl.g:9059:1: ( ruleXOseeArtifactTypeOverride )
+            // InternalOseeDsl.g:8682:1: ( ( ruleXOseeArtifactTypeOverride ) )
+            // InternalOseeDsl.g:8683:1: ( ruleXOseeArtifactTypeOverride )
             {
-            // InternalOseeDsl.g:9059:1: ( ruleXOseeArtifactTypeOverride )
-            // InternalOseeDsl.g:9060:1: ruleXOseeArtifactTypeOverride
+            // InternalOseeDsl.g:8683:1: ( ruleXOseeArtifactTypeOverride )
+            // InternalOseeDsl.g:8684:1: ruleXOseeArtifactTypeOverride
             {
              before(grammarAccess.getOseeDslAccess().getArtifactTypeOverridesXOseeArtifactTypeOverrideParserRuleCall_1_5_0()); 
             pushFollow(FOLLOW_2);
@@ -24428,17 +23424,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__OseeDsl__ArtifactMatchRefsAssignment_2_0"
-    // InternalOseeDsl.g:9069:1: rule__OseeDsl__ArtifactMatchRefsAssignment_2_0 : ( ruleXArtifactMatcher ) ;
+    // InternalOseeDsl.g:8693:1: rule__OseeDsl__ArtifactMatchRefsAssignment_2_0 : ( ruleXArtifactMatcher ) ;
     public final void rule__OseeDsl__ArtifactMatchRefsAssignment_2_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9073:1: ( ( ruleXArtifactMatcher ) )
-            // InternalOseeDsl.g:9074:1: ( ruleXArtifactMatcher )
+            // InternalOseeDsl.g:8697:1: ( ( ruleXArtifactMatcher ) )
+            // InternalOseeDsl.g:8698:1: ( ruleXArtifactMatcher )
             {
-            // InternalOseeDsl.g:9074:1: ( ruleXArtifactMatcher )
-            // InternalOseeDsl.g:9075:1: ruleXArtifactMatcher
+            // InternalOseeDsl.g:8698:1: ( ruleXArtifactMatcher )
+            // InternalOseeDsl.g:8699:1: ruleXArtifactMatcher
             {
              before(grammarAccess.getOseeDslAccess().getArtifactMatchRefsXArtifactMatcherParserRuleCall_2_0_0()); 
             pushFollow(FOLLOW_2);
@@ -24469,17 +23465,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__OseeDsl__AccessDeclarationsAssignment_2_1"
-    // InternalOseeDsl.g:9084:1: rule__OseeDsl__AccessDeclarationsAssignment_2_1 : ( ruleAccessContext ) ;
+    // InternalOseeDsl.g:8708:1: rule__OseeDsl__AccessDeclarationsAssignment_2_1 : ( ruleAccessContext ) ;
     public final void rule__OseeDsl__AccessDeclarationsAssignment_2_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9088:1: ( ( ruleAccessContext ) )
-            // InternalOseeDsl.g:9089:1: ( ruleAccessContext )
+            // InternalOseeDsl.g:8712:1: ( ( ruleAccessContext ) )
+            // InternalOseeDsl.g:8713:1: ( ruleAccessContext )
             {
-            // InternalOseeDsl.g:9089:1: ( ruleAccessContext )
-            // InternalOseeDsl.g:9090:1: ruleAccessContext
+            // InternalOseeDsl.g:8713:1: ( ruleAccessContext )
+            // InternalOseeDsl.g:8714:1: ruleAccessContext
             {
              before(grammarAccess.getOseeDslAccess().getAccessDeclarationsAccessContextParserRuleCall_2_1_0()); 
             pushFollow(FOLLOW_2);
@@ -24510,17 +23506,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__OseeDsl__RoleDeclarationsAssignment_2_2"
-    // InternalOseeDsl.g:9099:1: rule__OseeDsl__RoleDeclarationsAssignment_2_2 : ( ruleRole ) ;
+    // InternalOseeDsl.g:8723:1: rule__OseeDsl__RoleDeclarationsAssignment_2_2 : ( ruleRole ) ;
     public final void rule__OseeDsl__RoleDeclarationsAssignment_2_2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9103:1: ( ( ruleRole ) )
-            // InternalOseeDsl.g:9104:1: ( ruleRole )
+            // InternalOseeDsl.g:8727:1: ( ( ruleRole ) )
+            // InternalOseeDsl.g:8728:1: ( ruleRole )
             {
-            // InternalOseeDsl.g:9104:1: ( ruleRole )
-            // InternalOseeDsl.g:9105:1: ruleRole
+            // InternalOseeDsl.g:8728:1: ( ruleRole )
+            // InternalOseeDsl.g:8729:1: ruleRole
             {
              before(grammarAccess.getOseeDslAccess().getRoleDeclarationsRoleParserRuleCall_2_2_0()); 
             pushFollow(FOLLOW_2);
@@ -24551,17 +23547,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__Import__ImportURIAssignment_1"
-    // InternalOseeDsl.g:9114:1: rule__Import__ImportURIAssignment_1 : ( RULE_STRING ) ;
+    // InternalOseeDsl.g:8738:1: rule__Import__ImportURIAssignment_1 : ( RULE_STRING ) ;
     public final void rule__Import__ImportURIAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9118:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9119:1: ( RULE_STRING )
+            // InternalOseeDsl.g:8742:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:8743:1: ( RULE_STRING )
             {
-            // InternalOseeDsl.g:9119:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9120:1: RULE_STRING
+            // InternalOseeDsl.g:8743:1: ( RULE_STRING )
+            // InternalOseeDsl.g:8744:1: RULE_STRING
             {
              before(grammarAccess.getImportAccess().getImportURISTRINGTerminalRuleCall_1_0()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -24588,21 +23584,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactType__AbstractAssignment_0"
-    // InternalOseeDsl.g:9129:1: rule__XArtifactType__AbstractAssignment_0 : ( ( 'abstract' ) ) ;
+    // InternalOseeDsl.g:8753:1: rule__XArtifactType__AbstractAssignment_0 : ( ( 'abstract' ) ) ;
     public final void rule__XArtifactType__AbstractAssignment_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9133:1: ( ( ( 'abstract' ) ) )
-            // InternalOseeDsl.g:9134:1: ( ( 'abstract' ) )
+            // InternalOseeDsl.g:8757:1: ( ( ( 'abstract' ) ) )
+            // InternalOseeDsl.g:8758:1: ( ( 'abstract' ) )
             {
-            // InternalOseeDsl.g:9134:1: ( ( 'abstract' ) )
-            // InternalOseeDsl.g:9135:1: ( 'abstract' )
+            // InternalOseeDsl.g:8758:1: ( ( 'abstract' ) )
+            // InternalOseeDsl.g:8759:1: ( 'abstract' )
             {
              before(grammarAccess.getXArtifactTypeAccess().getAbstractAbstractKeyword_0_0()); 
-            // InternalOseeDsl.g:9136:1: ( 'abstract' )
-            // InternalOseeDsl.g:9137:1: 'abstract'
+            // InternalOseeDsl.g:8760:1: ( 'abstract' )
+            // InternalOseeDsl.g:8761:1: 'abstract'
             {
              before(grammarAccess.getXArtifactTypeAccess().getAbstractAbstractKeyword_0_0()); 
             match(input,97,FOLLOW_2); 
@@ -24633,17 +23629,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactType__NameAssignment_2"
-    // InternalOseeDsl.g:9152:1: rule__XArtifactType__NameAssignment_2 : ( RULE_STRING ) ;
+    // InternalOseeDsl.g:8776:1: rule__XArtifactType__NameAssignment_2 : ( RULE_STRING ) ;
     public final void rule__XArtifactType__NameAssignment_2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9156:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9157:1: ( RULE_STRING )
+            // InternalOseeDsl.g:8780:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:8781:1: ( RULE_STRING )
             {
-            // InternalOseeDsl.g:9157:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9158:1: RULE_STRING
+            // InternalOseeDsl.g:8781:1: ( RULE_STRING )
+            // InternalOseeDsl.g:8782:1: RULE_STRING
             {
              before(grammarAccess.getXArtifactTypeAccess().getNameSTRINGTerminalRuleCall_2_0()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -24670,21 +23666,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactType__SuperArtifactTypesAssignment_3_1"
-    // InternalOseeDsl.g:9167:1: rule__XArtifactType__SuperArtifactTypesAssignment_3_1 : ( ( RULE_STRING ) ) ;
+    // InternalOseeDsl.g:8791:1: rule__XArtifactType__SuperArtifactTypesAssignment_3_1 : ( ( RULE_STRING ) ) ;
     public final void rule__XArtifactType__SuperArtifactTypesAssignment_3_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9171:1: ( ( ( RULE_STRING ) ) )
-            // InternalOseeDsl.g:9172:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:8795:1: ( ( ( RULE_STRING ) ) )
+            // InternalOseeDsl.g:8796:1: ( ( RULE_STRING ) )
             {
-            // InternalOseeDsl.g:9172:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9173:1: ( RULE_STRING )
+            // InternalOseeDsl.g:8796:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:8797:1: ( RULE_STRING )
             {
              before(grammarAccess.getXArtifactTypeAccess().getSuperArtifactTypesXArtifactTypeCrossReference_3_1_0()); 
-            // InternalOseeDsl.g:9174:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9175:1: RULE_STRING
+            // InternalOseeDsl.g:8798:1: ( RULE_STRING )
+            // InternalOseeDsl.g:8799:1: RULE_STRING
             {
              before(grammarAccess.getXArtifactTypeAccess().getSuperArtifactTypesXArtifactTypeSTRINGTerminalRuleCall_3_1_0_1()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -24715,21 +23711,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactType__SuperArtifactTypesAssignment_3_2_1"
-    // InternalOseeDsl.g:9186:1: rule__XArtifactType__SuperArtifactTypesAssignment_3_2_1 : ( ( RULE_STRING ) ) ;
+    // InternalOseeDsl.g:8810:1: rule__XArtifactType__SuperArtifactTypesAssignment_3_2_1 : ( ( RULE_STRING ) ) ;
     public final void rule__XArtifactType__SuperArtifactTypesAssignment_3_2_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9190:1: ( ( ( RULE_STRING ) ) )
-            // InternalOseeDsl.g:9191:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:8814:1: ( ( ( RULE_STRING ) ) )
+            // InternalOseeDsl.g:8815:1: ( ( RULE_STRING ) )
             {
-            // InternalOseeDsl.g:9191:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9192:1: ( RULE_STRING )
+            // InternalOseeDsl.g:8815:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:8816:1: ( RULE_STRING )
             {
              before(grammarAccess.getXArtifactTypeAccess().getSuperArtifactTypesXArtifactTypeCrossReference_3_2_1_0()); 
-            // InternalOseeDsl.g:9193:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9194:1: RULE_STRING
+            // InternalOseeDsl.g:8817:1: ( RULE_STRING )
+            // InternalOseeDsl.g:8818:1: RULE_STRING
             {
              before(grammarAccess.getXArtifactTypeAccess().getSuperArtifactTypesXArtifactTypeSTRINGTerminalRuleCall_3_2_1_0_1()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -24759,59 +23755,22 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
     // $ANTLR end "rule__XArtifactType__SuperArtifactTypesAssignment_3_2_1"
 
 
-    // $ANTLR start "rule__XArtifactType__TypeGuidAssignment_5_1"
-    // InternalOseeDsl.g:9205:1: rule__XArtifactType__TypeGuidAssignment_5_1 : ( RULE_STRING ) ;
-    public final void rule__XArtifactType__TypeGuidAssignment_5_1() throws RecognitionException {
+    // $ANTLR start "rule__XArtifactType__IdAssignment_6"
+    // InternalOseeDsl.g:8829:1: rule__XArtifactType__IdAssignment_6 : ( RULE_WHOLE_NUM_STR ) ;
+    public final void rule__XArtifactType__IdAssignment_6() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9209:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9210:1: ( RULE_STRING )
+            // InternalOseeDsl.g:8833:1: ( ( RULE_WHOLE_NUM_STR ) )
+            // InternalOseeDsl.g:8834:1: ( RULE_WHOLE_NUM_STR )
             {
-            // InternalOseeDsl.g:9210:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9211:1: RULE_STRING
+            // InternalOseeDsl.g:8834:1: ( RULE_WHOLE_NUM_STR )
+            // InternalOseeDsl.g:8835:1: RULE_WHOLE_NUM_STR
             {
-             before(grammarAccess.getXArtifactTypeAccess().getTypeGuidSTRINGTerminalRuleCall_5_1_0()); 
-            match(input,RULE_STRING,FOLLOW_2); 
-             after(grammarAccess.getXArtifactTypeAccess().getTypeGuidSTRINGTerminalRuleCall_5_1_0()); 
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XArtifactType__TypeGuidAssignment_5_1"
-
-
-    // $ANTLR start "rule__XArtifactType__IdAssignment_7"
-    // InternalOseeDsl.g:9220:1: rule__XArtifactType__IdAssignment_7 : ( RULE_WHOLE_NUM_STR ) ;
-    public final void rule__XArtifactType__IdAssignment_7() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:9224:1: ( ( RULE_WHOLE_NUM_STR ) )
-            // InternalOseeDsl.g:9225:1: ( RULE_WHOLE_NUM_STR )
-            {
-            // InternalOseeDsl.g:9225:1: ( RULE_WHOLE_NUM_STR )
-            // InternalOseeDsl.g:9226:1: RULE_WHOLE_NUM_STR
-            {
-             before(grammarAccess.getXArtifactTypeAccess().getIdWHOLE_NUM_STRTerminalRuleCall_7_0()); 
+             before(grammarAccess.getXArtifactTypeAccess().getIdWHOLE_NUM_STRTerminalRuleCall_6_0()); 
             match(input,RULE_WHOLE_NUM_STR,FOLLOW_2); 
-             after(grammarAccess.getXArtifactTypeAccess().getIdWHOLE_NUM_STRTerminalRuleCall_7_0()); 
+             after(grammarAccess.getXArtifactTypeAccess().getIdWHOLE_NUM_STRTerminalRuleCall_6_0()); 
 
             }
 
@@ -24830,29 +23789,29 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XArtifactType__IdAssignment_7"
+    // $ANTLR end "rule__XArtifactType__IdAssignment_6"
 
 
-    // $ANTLR start "rule__XArtifactType__ValidAttributeTypesAssignment_8"
-    // InternalOseeDsl.g:9235:1: rule__XArtifactType__ValidAttributeTypesAssignment_8 : ( ruleXAttributeTypeRef ) ;
-    public final void rule__XArtifactType__ValidAttributeTypesAssignment_8() throws RecognitionException {
+    // $ANTLR start "rule__XArtifactType__ValidAttributeTypesAssignment_7"
+    // InternalOseeDsl.g:8844:1: rule__XArtifactType__ValidAttributeTypesAssignment_7 : ( ruleXAttributeTypeRef ) ;
+    public final void rule__XArtifactType__ValidAttributeTypesAssignment_7() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9239:1: ( ( ruleXAttributeTypeRef ) )
-            // InternalOseeDsl.g:9240:1: ( ruleXAttributeTypeRef )
+            // InternalOseeDsl.g:8848:1: ( ( ruleXAttributeTypeRef ) )
+            // InternalOseeDsl.g:8849:1: ( ruleXAttributeTypeRef )
             {
-            // InternalOseeDsl.g:9240:1: ( ruleXAttributeTypeRef )
-            // InternalOseeDsl.g:9241:1: ruleXAttributeTypeRef
+            // InternalOseeDsl.g:8849:1: ( ruleXAttributeTypeRef )
+            // InternalOseeDsl.g:8850:1: ruleXAttributeTypeRef
             {
-             before(grammarAccess.getXArtifactTypeAccess().getValidAttributeTypesXAttributeTypeRefParserRuleCall_8_0()); 
+             before(grammarAccess.getXArtifactTypeAccess().getValidAttributeTypesXAttributeTypeRefParserRuleCall_7_0()); 
             pushFollow(FOLLOW_2);
             ruleXAttributeTypeRef();
 
             state._fsp--;
 
-             after(grammarAccess.getXArtifactTypeAccess().getValidAttributeTypesXAttributeTypeRefParserRuleCall_8_0()); 
+             after(grammarAccess.getXArtifactTypeAccess().getValidAttributeTypesXAttributeTypeRefParserRuleCall_7_0()); 
 
             }
 
@@ -24871,25 +23830,25 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XArtifactType__ValidAttributeTypesAssignment_8"
+    // $ANTLR end "rule__XArtifactType__ValidAttributeTypesAssignment_7"
 
 
     // $ANTLR start "rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1"
-    // InternalOseeDsl.g:9250:1: rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1 : ( ( RULE_STRING ) ) ;
+    // InternalOseeDsl.g:8859:1: rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1 : ( ( RULE_STRING ) ) ;
     public final void rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9254:1: ( ( ( RULE_STRING ) ) )
-            // InternalOseeDsl.g:9255:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:8863:1: ( ( ( RULE_STRING ) ) )
+            // InternalOseeDsl.g:8864:1: ( ( RULE_STRING ) )
             {
-            // InternalOseeDsl.g:9255:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9256:1: ( RULE_STRING )
+            // InternalOseeDsl.g:8864:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:8865:1: ( RULE_STRING )
             {
              before(grammarAccess.getXAttributeTypeRefAccess().getValidAttributeTypeXAttributeTypeCrossReference_1_0()); 
-            // InternalOseeDsl.g:9257:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9258:1: RULE_STRING
+            // InternalOseeDsl.g:8866:1: ( RULE_STRING )
+            // InternalOseeDsl.g:8867:1: RULE_STRING
             {
              before(grammarAccess.getXAttributeTypeRefAccess().getValidAttributeTypeXAttributeTypeSTRINGTerminalRuleCall_1_0_1()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -24920,17 +23879,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeTypeRef__BranchUuidAssignment_2_1"
-    // InternalOseeDsl.g:9269:1: rule__XAttributeTypeRef__BranchUuidAssignment_2_1 : ( RULE_WHOLE_NUM_STR ) ;
+    // InternalOseeDsl.g:8878:1: rule__XAttributeTypeRef__BranchUuidAssignment_2_1 : ( RULE_WHOLE_NUM_STR ) ;
     public final void rule__XAttributeTypeRef__BranchUuidAssignment_2_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9273:1: ( ( RULE_WHOLE_NUM_STR ) )
-            // InternalOseeDsl.g:9274:1: ( RULE_WHOLE_NUM_STR )
+            // InternalOseeDsl.g:8882:1: ( ( RULE_WHOLE_NUM_STR ) )
+            // InternalOseeDsl.g:8883:1: ( RULE_WHOLE_NUM_STR )
             {
-            // InternalOseeDsl.g:9274:1: ( RULE_WHOLE_NUM_STR )
-            // InternalOseeDsl.g:9275:1: RULE_WHOLE_NUM_STR
+            // InternalOseeDsl.g:8883:1: ( RULE_WHOLE_NUM_STR )
+            // InternalOseeDsl.g:8884:1: RULE_WHOLE_NUM_STR
             {
              before(grammarAccess.getXAttributeTypeRefAccess().getBranchUuidWHOLE_NUM_STRTerminalRuleCall_2_1_0()); 
             match(input,RULE_WHOLE_NUM_STR,FOLLOW_2); 
@@ -24957,17 +23916,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__NameAssignment_1"
-    // InternalOseeDsl.g:9284:1: rule__XAttributeType__NameAssignment_1 : ( RULE_STRING ) ;
+    // InternalOseeDsl.g:8893:1: rule__XAttributeType__NameAssignment_1 : ( RULE_STRING ) ;
     public final void rule__XAttributeType__NameAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9288:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9289:1: ( RULE_STRING )
+            // InternalOseeDsl.g:8897:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:8898:1: ( RULE_STRING )
             {
-            // InternalOseeDsl.g:9289:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9290:1: RULE_STRING
+            // InternalOseeDsl.g:8898:1: ( RULE_STRING )
+            // InternalOseeDsl.g:8899:1: RULE_STRING
             {
              before(grammarAccess.getXAttributeTypeAccess().getNameSTRINGTerminalRuleCall_1_0()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -24994,17 +23953,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__BaseAttributeTypeAssignment_2_1"
-    // InternalOseeDsl.g:9299:1: rule__XAttributeType__BaseAttributeTypeAssignment_2_1 : ( ruleAttributeBaseType ) ;
+    // InternalOseeDsl.g:8908:1: rule__XAttributeType__BaseAttributeTypeAssignment_2_1 : ( ruleAttributeBaseType ) ;
     public final void rule__XAttributeType__BaseAttributeTypeAssignment_2_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9303:1: ( ( ruleAttributeBaseType ) )
-            // InternalOseeDsl.g:9304:1: ( ruleAttributeBaseType )
+            // InternalOseeDsl.g:8912:1: ( ( ruleAttributeBaseType ) )
+            // InternalOseeDsl.g:8913:1: ( ruleAttributeBaseType )
             {
-            // InternalOseeDsl.g:9304:1: ( ruleAttributeBaseType )
-            // InternalOseeDsl.g:9305:1: ruleAttributeBaseType
+            // InternalOseeDsl.g:8913:1: ( ruleAttributeBaseType )
+            // InternalOseeDsl.g:8914:1: ruleAttributeBaseType
             {
              before(grammarAccess.getXAttributeTypeAccess().getBaseAttributeTypeAttributeBaseTypeParserRuleCall_2_1_0()); 
             pushFollow(FOLLOW_2);
@@ -25035,21 +23994,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeType__OverrideAssignment_3_1"
-    // InternalOseeDsl.g:9314:1: rule__XAttributeType__OverrideAssignment_3_1 : ( ( RULE_STRING ) ) ;
+    // InternalOseeDsl.g:8923:1: rule__XAttributeType__OverrideAssignment_3_1 : ( ( RULE_STRING ) ) ;
     public final void rule__XAttributeType__OverrideAssignment_3_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9318:1: ( ( ( RULE_STRING ) ) )
-            // InternalOseeDsl.g:9319:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:8927:1: ( ( ( RULE_STRING ) ) )
+            // InternalOseeDsl.g:8928:1: ( ( RULE_STRING ) )
             {
-            // InternalOseeDsl.g:9319:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9320:1: ( RULE_STRING )
+            // InternalOseeDsl.g:8928:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:8929:1: ( RULE_STRING )
             {
              before(grammarAccess.getXAttributeTypeAccess().getOverrideXAttributeTypeCrossReference_3_1_0()); 
-            // InternalOseeDsl.g:9321:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9322:1: RULE_STRING
+            // InternalOseeDsl.g:8930:1: ( RULE_STRING )
+            // InternalOseeDsl.g:8931:1: RULE_STRING
             {
              before(grammarAccess.getXAttributeTypeAccess().getOverrideXAttributeTypeSTRINGTerminalRuleCall_3_1_0_1()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -25079,59 +24038,22 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
     // $ANTLR end "rule__XAttributeType__OverrideAssignment_3_1"
 
 
-    // $ANTLR start "rule__XAttributeType__TypeGuidAssignment_5_1"
-    // InternalOseeDsl.g:9333:1: rule__XAttributeType__TypeGuidAssignment_5_1 : ( RULE_STRING ) ;
-    public final void rule__XAttributeType__TypeGuidAssignment_5_1() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__IdAssignment_6"
+    // InternalOseeDsl.g:8942:1: rule__XAttributeType__IdAssignment_6 : ( RULE_WHOLE_NUM_STR ) ;
+    public final void rule__XAttributeType__IdAssignment_6() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9337:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9338:1: ( RULE_STRING )
+            // InternalOseeDsl.g:8946:1: ( ( RULE_WHOLE_NUM_STR ) )
+            // InternalOseeDsl.g:8947:1: ( RULE_WHOLE_NUM_STR )
             {
-            // InternalOseeDsl.g:9338:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9339:1: RULE_STRING
+            // InternalOseeDsl.g:8947:1: ( RULE_WHOLE_NUM_STR )
+            // InternalOseeDsl.g:8948:1: RULE_WHOLE_NUM_STR
             {
-             before(grammarAccess.getXAttributeTypeAccess().getTypeGuidSTRINGTerminalRuleCall_5_1_0()); 
-            match(input,RULE_STRING,FOLLOW_2); 
-             after(grammarAccess.getXAttributeTypeAccess().getTypeGuidSTRINGTerminalRuleCall_5_1_0()); 
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XAttributeType__TypeGuidAssignment_5_1"
-
-
-    // $ANTLR start "rule__XAttributeType__IdAssignment_7"
-    // InternalOseeDsl.g:9348:1: rule__XAttributeType__IdAssignment_7 : ( RULE_WHOLE_NUM_STR ) ;
-    public final void rule__XAttributeType__IdAssignment_7() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:9352:1: ( ( RULE_WHOLE_NUM_STR ) )
-            // InternalOseeDsl.g:9353:1: ( RULE_WHOLE_NUM_STR )
-            {
-            // InternalOseeDsl.g:9353:1: ( RULE_WHOLE_NUM_STR )
-            // InternalOseeDsl.g:9354:1: RULE_WHOLE_NUM_STR
-            {
-             before(grammarAccess.getXAttributeTypeAccess().getIdWHOLE_NUM_STRTerminalRuleCall_7_0()); 
+             before(grammarAccess.getXAttributeTypeAccess().getIdWHOLE_NUM_STRTerminalRuleCall_6_0()); 
             match(input,RULE_WHOLE_NUM_STR,FOLLOW_2); 
-             after(grammarAccess.getXAttributeTypeAccess().getIdWHOLE_NUM_STRTerminalRuleCall_7_0()); 
+             after(grammarAccess.getXAttributeTypeAccess().getIdWHOLE_NUM_STRTerminalRuleCall_6_0()); 
 
             }
 
@@ -25150,35 +24072,35 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__IdAssignment_7"
+    // $ANTLR end "rule__XAttributeType__IdAssignment_6"
 
 
-    // $ANTLR start "rule__XAttributeType__DataProviderAssignment_9"
-    // InternalOseeDsl.g:9363:1: rule__XAttributeType__DataProviderAssignment_9 : ( ( rule__XAttributeType__DataProviderAlternatives_9_0 ) ) ;
-    public final void rule__XAttributeType__DataProviderAssignment_9() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__DataProviderAssignment_8"
+    // InternalOseeDsl.g:8957:1: rule__XAttributeType__DataProviderAssignment_8 : ( ( rule__XAttributeType__DataProviderAlternatives_8_0 ) ) ;
+    public final void rule__XAttributeType__DataProviderAssignment_8() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9367:1: ( ( ( rule__XAttributeType__DataProviderAlternatives_9_0 ) ) )
-            // InternalOseeDsl.g:9368:1: ( ( rule__XAttributeType__DataProviderAlternatives_9_0 ) )
+            // InternalOseeDsl.g:8961:1: ( ( ( rule__XAttributeType__DataProviderAlternatives_8_0 ) ) )
+            // InternalOseeDsl.g:8962:1: ( ( rule__XAttributeType__DataProviderAlternatives_8_0 ) )
             {
-            // InternalOseeDsl.g:9368:1: ( ( rule__XAttributeType__DataProviderAlternatives_9_0 ) )
-            // InternalOseeDsl.g:9369:1: ( rule__XAttributeType__DataProviderAlternatives_9_0 )
+            // InternalOseeDsl.g:8962:1: ( ( rule__XAttributeType__DataProviderAlternatives_8_0 ) )
+            // InternalOseeDsl.g:8963:1: ( rule__XAttributeType__DataProviderAlternatives_8_0 )
             {
-             before(grammarAccess.getXAttributeTypeAccess().getDataProviderAlternatives_9_0()); 
-            // InternalOseeDsl.g:9370:1: ( rule__XAttributeType__DataProviderAlternatives_9_0 )
-            // InternalOseeDsl.g:9370:2: rule__XAttributeType__DataProviderAlternatives_9_0
+             before(grammarAccess.getXAttributeTypeAccess().getDataProviderAlternatives_8_0()); 
+            // InternalOseeDsl.g:8964:1: ( rule__XAttributeType__DataProviderAlternatives_8_0 )
+            // InternalOseeDsl.g:8964:2: rule__XAttributeType__DataProviderAlternatives_8_0
             {
             pushFollow(FOLLOW_2);
-            rule__XAttributeType__DataProviderAlternatives_9_0();
+            rule__XAttributeType__DataProviderAlternatives_8_0();
 
             state._fsp--;
 
 
             }
 
-             after(grammarAccess.getXAttributeTypeAccess().getDataProviderAlternatives_9_0()); 
+             after(grammarAccess.getXAttributeTypeAccess().getDataProviderAlternatives_8_0()); 
 
             }
 
@@ -25197,25 +24119,25 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__DataProviderAssignment_9"
+    // $ANTLR end "rule__XAttributeType__DataProviderAssignment_8"
 
 
-    // $ANTLR start "rule__XAttributeType__MinAssignment_11"
-    // InternalOseeDsl.g:9379:1: rule__XAttributeType__MinAssignment_11 : ( RULE_WHOLE_NUM_STR ) ;
-    public final void rule__XAttributeType__MinAssignment_11() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__MinAssignment_10"
+    // InternalOseeDsl.g:8973:1: rule__XAttributeType__MinAssignment_10 : ( RULE_WHOLE_NUM_STR ) ;
+    public final void rule__XAttributeType__MinAssignment_10() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9383:1: ( ( RULE_WHOLE_NUM_STR ) )
-            // InternalOseeDsl.g:9384:1: ( RULE_WHOLE_NUM_STR )
+            // InternalOseeDsl.g:8977:1: ( ( RULE_WHOLE_NUM_STR ) )
+            // InternalOseeDsl.g:8978:1: ( RULE_WHOLE_NUM_STR )
             {
-            // InternalOseeDsl.g:9384:1: ( RULE_WHOLE_NUM_STR )
-            // InternalOseeDsl.g:9385:1: RULE_WHOLE_NUM_STR
+            // InternalOseeDsl.g:8978:1: ( RULE_WHOLE_NUM_STR )
+            // InternalOseeDsl.g:8979:1: RULE_WHOLE_NUM_STR
             {
-             before(grammarAccess.getXAttributeTypeAccess().getMinWHOLE_NUM_STRTerminalRuleCall_11_0()); 
+             before(grammarAccess.getXAttributeTypeAccess().getMinWHOLE_NUM_STRTerminalRuleCall_10_0()); 
             match(input,RULE_WHOLE_NUM_STR,FOLLOW_2); 
-             after(grammarAccess.getXAttributeTypeAccess().getMinWHOLE_NUM_STRTerminalRuleCall_11_0()); 
+             after(grammarAccess.getXAttributeTypeAccess().getMinWHOLE_NUM_STRTerminalRuleCall_10_0()); 
 
             }
 
@@ -25234,35 +24156,35 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__MinAssignment_11"
+    // $ANTLR end "rule__XAttributeType__MinAssignment_10"
 
 
-    // $ANTLR start "rule__XAttributeType__MaxAssignment_13"
-    // InternalOseeDsl.g:9394:1: rule__XAttributeType__MaxAssignment_13 : ( ( rule__XAttributeType__MaxAlternatives_13_0 ) ) ;
-    public final void rule__XAttributeType__MaxAssignment_13() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__MaxAssignment_12"
+    // InternalOseeDsl.g:8988:1: rule__XAttributeType__MaxAssignment_12 : ( ( rule__XAttributeType__MaxAlternatives_12_0 ) ) ;
+    public final void rule__XAttributeType__MaxAssignment_12() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9398:1: ( ( ( rule__XAttributeType__MaxAlternatives_13_0 ) ) )
-            // InternalOseeDsl.g:9399:1: ( ( rule__XAttributeType__MaxAlternatives_13_0 ) )
+            // InternalOseeDsl.g:8992:1: ( ( ( rule__XAttributeType__MaxAlternatives_12_0 ) ) )
+            // InternalOseeDsl.g:8993:1: ( ( rule__XAttributeType__MaxAlternatives_12_0 ) )
             {
-            // InternalOseeDsl.g:9399:1: ( ( rule__XAttributeType__MaxAlternatives_13_0 ) )
-            // InternalOseeDsl.g:9400:1: ( rule__XAttributeType__MaxAlternatives_13_0 )
+            // InternalOseeDsl.g:8993:1: ( ( rule__XAttributeType__MaxAlternatives_12_0 ) )
+            // InternalOseeDsl.g:8994:1: ( rule__XAttributeType__MaxAlternatives_12_0 )
             {
-             before(grammarAccess.getXAttributeTypeAccess().getMaxAlternatives_13_0()); 
-            // InternalOseeDsl.g:9401:1: ( rule__XAttributeType__MaxAlternatives_13_0 )
-            // InternalOseeDsl.g:9401:2: rule__XAttributeType__MaxAlternatives_13_0
+             before(grammarAccess.getXAttributeTypeAccess().getMaxAlternatives_12_0()); 
+            // InternalOseeDsl.g:8995:1: ( rule__XAttributeType__MaxAlternatives_12_0 )
+            // InternalOseeDsl.g:8995:2: rule__XAttributeType__MaxAlternatives_12_0
             {
             pushFollow(FOLLOW_2);
-            rule__XAttributeType__MaxAlternatives_13_0();
+            rule__XAttributeType__MaxAlternatives_12_0();
 
             state._fsp--;
 
 
             }
 
-             after(grammarAccess.getXAttributeTypeAccess().getMaxAlternatives_13_0()); 
+             after(grammarAccess.getXAttributeTypeAccess().getMaxAlternatives_12_0()); 
 
             }
 
@@ -25281,35 +24203,35 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__MaxAssignment_13"
+    // $ANTLR end "rule__XAttributeType__MaxAssignment_12"
 
 
-    // $ANTLR start "rule__XAttributeType__TaggerIdAssignment_14_0_1"
-    // InternalOseeDsl.g:9410:1: rule__XAttributeType__TaggerIdAssignment_14_0_1 : ( ( rule__XAttributeType__TaggerIdAlternatives_14_0_1_0 ) ) ;
-    public final void rule__XAttributeType__TaggerIdAssignment_14_0_1() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__TaggerIdAssignment_13_0_1"
+    // InternalOseeDsl.g:9004:1: rule__XAttributeType__TaggerIdAssignment_13_0_1 : ( ( rule__XAttributeType__TaggerIdAlternatives_13_0_1_0 ) ) ;
+    public final void rule__XAttributeType__TaggerIdAssignment_13_0_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9414:1: ( ( ( rule__XAttributeType__TaggerIdAlternatives_14_0_1_0 ) ) )
-            // InternalOseeDsl.g:9415:1: ( ( rule__XAttributeType__TaggerIdAlternatives_14_0_1_0 ) )
+            // InternalOseeDsl.g:9008:1: ( ( ( rule__XAttributeType__TaggerIdAlternatives_13_0_1_0 ) ) )
+            // InternalOseeDsl.g:9009:1: ( ( rule__XAttributeType__TaggerIdAlternatives_13_0_1_0 ) )
             {
-            // InternalOseeDsl.g:9415:1: ( ( rule__XAttributeType__TaggerIdAlternatives_14_0_1_0 ) )
-            // InternalOseeDsl.g:9416:1: ( rule__XAttributeType__TaggerIdAlternatives_14_0_1_0 )
+            // InternalOseeDsl.g:9009:1: ( ( rule__XAttributeType__TaggerIdAlternatives_13_0_1_0 ) )
+            // InternalOseeDsl.g:9010:1: ( rule__XAttributeType__TaggerIdAlternatives_13_0_1_0 )
             {
-             before(grammarAccess.getXAttributeTypeAccess().getTaggerIdAlternatives_14_0_1_0()); 
-            // InternalOseeDsl.g:9417:1: ( rule__XAttributeType__TaggerIdAlternatives_14_0_1_0 )
-            // InternalOseeDsl.g:9417:2: rule__XAttributeType__TaggerIdAlternatives_14_0_1_0
+             before(grammarAccess.getXAttributeTypeAccess().getTaggerIdAlternatives_13_0_1_0()); 
+            // InternalOseeDsl.g:9011:1: ( rule__XAttributeType__TaggerIdAlternatives_13_0_1_0 )
+            // InternalOseeDsl.g:9011:2: rule__XAttributeType__TaggerIdAlternatives_13_0_1_0
             {
             pushFollow(FOLLOW_2);
-            rule__XAttributeType__TaggerIdAlternatives_14_0_1_0();
+            rule__XAttributeType__TaggerIdAlternatives_13_0_1_0();
 
             state._fsp--;
 
 
             }
 
-             after(grammarAccess.getXAttributeTypeAccess().getTaggerIdAlternatives_14_0_1_0()); 
+             after(grammarAccess.getXAttributeTypeAccess().getTaggerIdAlternatives_13_0_1_0()); 
 
             }
 
@@ -25328,33 +24250,33 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__TaggerIdAssignment_14_0_1"
+    // $ANTLR end "rule__XAttributeType__TaggerIdAssignment_13_0_1"
 
 
-    // $ANTLR start "rule__XAttributeType__EnumTypeAssignment_14_1_1"
-    // InternalOseeDsl.g:9426:1: rule__XAttributeType__EnumTypeAssignment_14_1_1 : ( ( RULE_STRING ) ) ;
-    public final void rule__XAttributeType__EnumTypeAssignment_14_1_1() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__EnumTypeAssignment_13_1_1"
+    // InternalOseeDsl.g:9020:1: rule__XAttributeType__EnumTypeAssignment_13_1_1 : ( ( RULE_STRING ) ) ;
+    public final void rule__XAttributeType__EnumTypeAssignment_13_1_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9430:1: ( ( ( RULE_STRING ) ) )
-            // InternalOseeDsl.g:9431:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9024:1: ( ( ( RULE_STRING ) ) )
+            // InternalOseeDsl.g:9025:1: ( ( RULE_STRING ) )
             {
-            // InternalOseeDsl.g:9431:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9432:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9025:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9026:1: ( RULE_STRING )
             {
-             before(grammarAccess.getXAttributeTypeAccess().getEnumTypeXOseeEnumTypeCrossReference_14_1_1_0()); 
-            // InternalOseeDsl.g:9433:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9434:1: RULE_STRING
+             before(grammarAccess.getXAttributeTypeAccess().getEnumTypeXOseeEnumTypeCrossReference_13_1_1_0()); 
+            // InternalOseeDsl.g:9027:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9028:1: RULE_STRING
             {
-             before(grammarAccess.getXAttributeTypeAccess().getEnumTypeXOseeEnumTypeSTRINGTerminalRuleCall_14_1_1_0_1()); 
+             before(grammarAccess.getXAttributeTypeAccess().getEnumTypeXOseeEnumTypeSTRINGTerminalRuleCall_13_1_1_0_1()); 
             match(input,RULE_STRING,FOLLOW_2); 
-             after(grammarAccess.getXAttributeTypeAccess().getEnumTypeXOseeEnumTypeSTRINGTerminalRuleCall_14_1_1_0_1()); 
+             after(grammarAccess.getXAttributeTypeAccess().getEnumTypeXOseeEnumTypeSTRINGTerminalRuleCall_13_1_1_0_1()); 
 
             }
 
-             after(grammarAccess.getXAttributeTypeAccess().getEnumTypeXOseeEnumTypeCrossReference_14_1_1_0()); 
+             after(grammarAccess.getXAttributeTypeAccess().getEnumTypeXOseeEnumTypeCrossReference_13_1_1_0()); 
 
             }
 
@@ -25373,25 +24295,25 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__EnumTypeAssignment_14_1_1"
+    // $ANTLR end "rule__XAttributeType__EnumTypeAssignment_13_1_1"
 
 
-    // $ANTLR start "rule__XAttributeType__DescriptionAssignment_14_2_1"
-    // InternalOseeDsl.g:9445:1: rule__XAttributeType__DescriptionAssignment_14_2_1 : ( RULE_STRING ) ;
-    public final void rule__XAttributeType__DescriptionAssignment_14_2_1() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__DescriptionAssignment_13_2_1"
+    // InternalOseeDsl.g:9039:1: rule__XAttributeType__DescriptionAssignment_13_2_1 : ( RULE_STRING ) ;
+    public final void rule__XAttributeType__DescriptionAssignment_13_2_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9449:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9450:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9043:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9044:1: ( RULE_STRING )
             {
-            // InternalOseeDsl.g:9450:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9451:1: RULE_STRING
+            // InternalOseeDsl.g:9044:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9045:1: RULE_STRING
             {
-             before(grammarAccess.getXAttributeTypeAccess().getDescriptionSTRINGTerminalRuleCall_14_2_1_0()); 
+             before(grammarAccess.getXAttributeTypeAccess().getDescriptionSTRINGTerminalRuleCall_13_2_1_0()); 
             match(input,RULE_STRING,FOLLOW_2); 
-             after(grammarAccess.getXAttributeTypeAccess().getDescriptionSTRINGTerminalRuleCall_14_2_1_0()); 
+             after(grammarAccess.getXAttributeTypeAccess().getDescriptionSTRINGTerminalRuleCall_13_2_1_0()); 
 
             }
 
@@ -25410,25 +24332,25 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__DescriptionAssignment_14_2_1"
+    // $ANTLR end "rule__XAttributeType__DescriptionAssignment_13_2_1"
 
 
-    // $ANTLR start "rule__XAttributeType__DefaultValueAssignment_14_3_1"
-    // InternalOseeDsl.g:9460:1: rule__XAttributeType__DefaultValueAssignment_14_3_1 : ( RULE_STRING ) ;
-    public final void rule__XAttributeType__DefaultValueAssignment_14_3_1() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__DefaultValueAssignment_13_3_1"
+    // InternalOseeDsl.g:9054:1: rule__XAttributeType__DefaultValueAssignment_13_3_1 : ( RULE_STRING ) ;
+    public final void rule__XAttributeType__DefaultValueAssignment_13_3_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9464:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9465:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9058:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9059:1: ( RULE_STRING )
             {
-            // InternalOseeDsl.g:9465:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9466:1: RULE_STRING
+            // InternalOseeDsl.g:9059:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9060:1: RULE_STRING
             {
-             before(grammarAccess.getXAttributeTypeAccess().getDefaultValueSTRINGTerminalRuleCall_14_3_1_0()); 
+             before(grammarAccess.getXAttributeTypeAccess().getDefaultValueSTRINGTerminalRuleCall_13_3_1_0()); 
             match(input,RULE_STRING,FOLLOW_2); 
-             after(grammarAccess.getXAttributeTypeAccess().getDefaultValueSTRINGTerminalRuleCall_14_3_1_0()); 
+             after(grammarAccess.getXAttributeTypeAccess().getDefaultValueSTRINGTerminalRuleCall_13_3_1_0()); 
 
             }
 
@@ -25447,25 +24369,25 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__DefaultValueAssignment_14_3_1"
+    // $ANTLR end "rule__XAttributeType__DefaultValueAssignment_13_3_1"
 
 
-    // $ANTLR start "rule__XAttributeType__FileExtensionAssignment_14_4_1"
-    // InternalOseeDsl.g:9475:1: rule__XAttributeType__FileExtensionAssignment_14_4_1 : ( RULE_STRING ) ;
-    public final void rule__XAttributeType__FileExtensionAssignment_14_4_1() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__FileExtensionAssignment_13_4_1"
+    // InternalOseeDsl.g:9069:1: rule__XAttributeType__FileExtensionAssignment_13_4_1 : ( RULE_STRING ) ;
+    public final void rule__XAttributeType__FileExtensionAssignment_13_4_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9479:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9480:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9073:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9074:1: ( RULE_STRING )
             {
-            // InternalOseeDsl.g:9480:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9481:1: RULE_STRING
+            // InternalOseeDsl.g:9074:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9075:1: RULE_STRING
             {
-             before(grammarAccess.getXAttributeTypeAccess().getFileExtensionSTRINGTerminalRuleCall_14_4_1_0()); 
+             before(grammarAccess.getXAttributeTypeAccess().getFileExtensionSTRINGTerminalRuleCall_13_4_1_0()); 
             match(input,RULE_STRING,FOLLOW_2); 
-             after(grammarAccess.getXAttributeTypeAccess().getFileExtensionSTRINGTerminalRuleCall_14_4_1_0()); 
+             after(grammarAccess.getXAttributeTypeAccess().getFileExtensionSTRINGTerminalRuleCall_13_4_1_0()); 
 
             }
 
@@ -25484,25 +24406,25 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__FileExtensionAssignment_14_4_1"
+    // $ANTLR end "rule__XAttributeType__FileExtensionAssignment_13_4_1"
 
 
-    // $ANTLR start "rule__XAttributeType__MediaTypeAssignment_14_5_1"
-    // InternalOseeDsl.g:9490:1: rule__XAttributeType__MediaTypeAssignment_14_5_1 : ( RULE_STRING ) ;
-    public final void rule__XAttributeType__MediaTypeAssignment_14_5_1() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeType__MediaTypeAssignment_13_5_1"
+    // InternalOseeDsl.g:9084:1: rule__XAttributeType__MediaTypeAssignment_13_5_1 : ( RULE_STRING ) ;
+    public final void rule__XAttributeType__MediaTypeAssignment_13_5_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9494:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9495:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9088:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9089:1: ( RULE_STRING )
             {
-            // InternalOseeDsl.g:9495:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9496:1: RULE_STRING
+            // InternalOseeDsl.g:9089:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9090:1: RULE_STRING
             {
-             before(grammarAccess.getXAttributeTypeAccess().getMediaTypeSTRINGTerminalRuleCall_14_5_1_0()); 
+             before(grammarAccess.getXAttributeTypeAccess().getMediaTypeSTRINGTerminalRuleCall_13_5_1_0()); 
             match(input,RULE_STRING,FOLLOW_2); 
-             after(grammarAccess.getXAttributeTypeAccess().getMediaTypeSTRINGTerminalRuleCall_14_5_1_0()); 
+             after(grammarAccess.getXAttributeTypeAccess().getMediaTypeSTRINGTerminalRuleCall_13_5_1_0()); 
 
             }
 
@@ -25521,21 +24443,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeType__MediaTypeAssignment_14_5_1"
+    // $ANTLR end "rule__XAttributeType__MediaTypeAssignment_13_5_1"
 
 
     // $ANTLR start "rule__XOseeEnumType__NameAssignment_1"
-    // InternalOseeDsl.g:9505:1: rule__XOseeEnumType__NameAssignment_1 : ( RULE_STRING ) ;
+    // InternalOseeDsl.g:9099:1: rule__XOseeEnumType__NameAssignment_1 : ( RULE_STRING ) ;
     public final void rule__XOseeEnumType__NameAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9509:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9510:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9103:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9104:1: ( RULE_STRING )
             {
-            // InternalOseeDsl.g:9510:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9511:1: RULE_STRING
+            // InternalOseeDsl.g:9104:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9105:1: RULE_STRING
             {
              before(grammarAccess.getXOseeEnumTypeAccess().getNameSTRINGTerminalRuleCall_1_0()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -25561,59 +24483,22 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
     // $ANTLR end "rule__XOseeEnumType__NameAssignment_1"
 
 
-    // $ANTLR start "rule__XOseeEnumType__TypeGuidAssignment_3_1"
-    // InternalOseeDsl.g:9520:1: rule__XOseeEnumType__TypeGuidAssignment_3_1 : ( RULE_STRING ) ;
-    public final void rule__XOseeEnumType__TypeGuidAssignment_3_1() throws RecognitionException {
+    // $ANTLR start "rule__XOseeEnumType__IdAssignment_4"
+    // InternalOseeDsl.g:9114:1: rule__XOseeEnumType__IdAssignment_4 : ( RULE_WHOLE_NUM_STR ) ;
+    public final void rule__XOseeEnumType__IdAssignment_4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9524:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9525:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9118:1: ( ( RULE_WHOLE_NUM_STR ) )
+            // InternalOseeDsl.g:9119:1: ( RULE_WHOLE_NUM_STR )
             {
-            // InternalOseeDsl.g:9525:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9526:1: RULE_STRING
+            // InternalOseeDsl.g:9119:1: ( RULE_WHOLE_NUM_STR )
+            // InternalOseeDsl.g:9120:1: RULE_WHOLE_NUM_STR
             {
-             before(grammarAccess.getXOseeEnumTypeAccess().getTypeGuidSTRINGTerminalRuleCall_3_1_0()); 
-            match(input,RULE_STRING,FOLLOW_2); 
-             after(grammarAccess.getXOseeEnumTypeAccess().getTypeGuidSTRINGTerminalRuleCall_3_1_0()); 
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XOseeEnumType__TypeGuidAssignment_3_1"
-
-
-    // $ANTLR start "rule__XOseeEnumType__IdAssignment_5"
-    // InternalOseeDsl.g:9535:1: rule__XOseeEnumType__IdAssignment_5 : ( RULE_WHOLE_NUM_STR ) ;
-    public final void rule__XOseeEnumType__IdAssignment_5() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:9539:1: ( ( RULE_WHOLE_NUM_STR ) )
-            // InternalOseeDsl.g:9540:1: ( RULE_WHOLE_NUM_STR )
-            {
-            // InternalOseeDsl.g:9540:1: ( RULE_WHOLE_NUM_STR )
-            // InternalOseeDsl.g:9541:1: RULE_WHOLE_NUM_STR
-            {
-             before(grammarAccess.getXOseeEnumTypeAccess().getIdWHOLE_NUM_STRTerminalRuleCall_5_0()); 
+             before(grammarAccess.getXOseeEnumTypeAccess().getIdWHOLE_NUM_STRTerminalRuleCall_4_0()); 
             match(input,RULE_WHOLE_NUM_STR,FOLLOW_2); 
-             after(grammarAccess.getXOseeEnumTypeAccess().getIdWHOLE_NUM_STRTerminalRuleCall_5_0()); 
+             after(grammarAccess.getXOseeEnumTypeAccess().getIdWHOLE_NUM_STRTerminalRuleCall_4_0()); 
 
             }
 
@@ -25632,29 +24517,29 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XOseeEnumType__IdAssignment_5"
+    // $ANTLR end "rule__XOseeEnumType__IdAssignment_4"
 
 
-    // $ANTLR start "rule__XOseeEnumType__EnumEntriesAssignment_6"
-    // InternalOseeDsl.g:9550:1: rule__XOseeEnumType__EnumEntriesAssignment_6 : ( ruleXOseeEnumEntry ) ;
-    public final void rule__XOseeEnumType__EnumEntriesAssignment_6() throws RecognitionException {
+    // $ANTLR start "rule__XOseeEnumType__EnumEntriesAssignment_5"
+    // InternalOseeDsl.g:9129:1: rule__XOseeEnumType__EnumEntriesAssignment_5 : ( ruleXOseeEnumEntry ) ;
+    public final void rule__XOseeEnumType__EnumEntriesAssignment_5() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9554:1: ( ( ruleXOseeEnumEntry ) )
-            // InternalOseeDsl.g:9555:1: ( ruleXOseeEnumEntry )
+            // InternalOseeDsl.g:9133:1: ( ( ruleXOseeEnumEntry ) )
+            // InternalOseeDsl.g:9134:1: ( ruleXOseeEnumEntry )
             {
-            // InternalOseeDsl.g:9555:1: ( ruleXOseeEnumEntry )
-            // InternalOseeDsl.g:9556:1: ruleXOseeEnumEntry
+            // InternalOseeDsl.g:9134:1: ( ruleXOseeEnumEntry )
+            // InternalOseeDsl.g:9135:1: ruleXOseeEnumEntry
             {
-             before(grammarAccess.getXOseeEnumTypeAccess().getEnumEntriesXOseeEnumEntryParserRuleCall_6_0()); 
+             before(grammarAccess.getXOseeEnumTypeAccess().getEnumEntriesXOseeEnumEntryParserRuleCall_5_0()); 
             pushFollow(FOLLOW_2);
             ruleXOseeEnumEntry();
 
             state._fsp--;
 
-             after(grammarAccess.getXOseeEnumTypeAccess().getEnumEntriesXOseeEnumEntryParserRuleCall_6_0()); 
+             after(grammarAccess.getXOseeEnumTypeAccess().getEnumEntriesXOseeEnumEntryParserRuleCall_5_0()); 
 
             }
 
@@ -25673,21 +24558,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XOseeEnumType__EnumEntriesAssignment_6"
+    // $ANTLR end "rule__XOseeEnumType__EnumEntriesAssignment_5"
 
 
     // $ANTLR start "rule__XOseeEnumEntry__NameAssignment_1"
-    // InternalOseeDsl.g:9565:1: rule__XOseeEnumEntry__NameAssignment_1 : ( RULE_STRING ) ;
+    // InternalOseeDsl.g:9144:1: rule__XOseeEnumEntry__NameAssignment_1 : ( RULE_STRING ) ;
     public final void rule__XOseeEnumEntry__NameAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9569:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9570:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9148:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9149:1: ( RULE_STRING )
             {
-            // InternalOseeDsl.g:9570:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9571:1: RULE_STRING
+            // InternalOseeDsl.g:9149:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9150:1: RULE_STRING
             {
              before(grammarAccess.getXOseeEnumEntryAccess().getNameSTRINGTerminalRuleCall_1_0()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -25714,17 +24599,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumEntry__OrdinalAssignment_2"
-    // InternalOseeDsl.g:9580:1: rule__XOseeEnumEntry__OrdinalAssignment_2 : ( RULE_WHOLE_NUM_STR ) ;
+    // InternalOseeDsl.g:9159:1: rule__XOseeEnumEntry__OrdinalAssignment_2 : ( RULE_WHOLE_NUM_STR ) ;
     public final void rule__XOseeEnumEntry__OrdinalAssignment_2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9584:1: ( ( RULE_WHOLE_NUM_STR ) )
-            // InternalOseeDsl.g:9585:1: ( RULE_WHOLE_NUM_STR )
+            // InternalOseeDsl.g:9163:1: ( ( RULE_WHOLE_NUM_STR ) )
+            // InternalOseeDsl.g:9164:1: ( RULE_WHOLE_NUM_STR )
             {
-            // InternalOseeDsl.g:9585:1: ( RULE_WHOLE_NUM_STR )
-            // InternalOseeDsl.g:9586:1: RULE_WHOLE_NUM_STR
+            // InternalOseeDsl.g:9164:1: ( RULE_WHOLE_NUM_STR )
+            // InternalOseeDsl.g:9165:1: RULE_WHOLE_NUM_STR
             {
              before(grammarAccess.getXOseeEnumEntryAccess().getOrdinalWHOLE_NUM_STRTerminalRuleCall_2_0()); 
             match(input,RULE_WHOLE_NUM_STR,FOLLOW_2); 
@@ -25751,17 +24636,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumEntry__EntryGuidAssignment_3_1"
-    // InternalOseeDsl.g:9595:1: rule__XOseeEnumEntry__EntryGuidAssignment_3_1 : ( RULE_STRING ) ;
+    // InternalOseeDsl.g:9174:1: rule__XOseeEnumEntry__EntryGuidAssignment_3_1 : ( RULE_STRING ) ;
     public final void rule__XOseeEnumEntry__EntryGuidAssignment_3_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9599:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9600:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9178:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9179:1: ( RULE_STRING )
             {
-            // InternalOseeDsl.g:9600:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9601:1: RULE_STRING
+            // InternalOseeDsl.g:9179:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9180:1: RULE_STRING
             {
              before(grammarAccess.getXOseeEnumEntryAccess().getEntryGuidSTRINGTerminalRuleCall_3_1_0()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -25788,17 +24673,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumEntry__DescriptionAssignment_4_1"
-    // InternalOseeDsl.g:9610:1: rule__XOseeEnumEntry__DescriptionAssignment_4_1 : ( RULE_STRING ) ;
+    // InternalOseeDsl.g:9189:1: rule__XOseeEnumEntry__DescriptionAssignment_4_1 : ( RULE_STRING ) ;
     public final void rule__XOseeEnumEntry__DescriptionAssignment_4_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9614:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9615:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9193:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9194:1: ( RULE_STRING )
             {
-            // InternalOseeDsl.g:9615:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9616:1: RULE_STRING
+            // InternalOseeDsl.g:9194:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9195:1: RULE_STRING
             {
              before(grammarAccess.getXOseeEnumEntryAccess().getDescriptionSTRINGTerminalRuleCall_4_1_0()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -25825,21 +24710,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumOverride__OverridenEnumTypeAssignment_1"
-    // InternalOseeDsl.g:9625:1: rule__XOseeEnumOverride__OverridenEnumTypeAssignment_1 : ( ( RULE_STRING ) ) ;
+    // InternalOseeDsl.g:9204:1: rule__XOseeEnumOverride__OverridenEnumTypeAssignment_1 : ( ( RULE_STRING ) ) ;
     public final void rule__XOseeEnumOverride__OverridenEnumTypeAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9629:1: ( ( ( RULE_STRING ) ) )
-            // InternalOseeDsl.g:9630:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9208:1: ( ( ( RULE_STRING ) ) )
+            // InternalOseeDsl.g:9209:1: ( ( RULE_STRING ) )
             {
-            // InternalOseeDsl.g:9630:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9631:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9209:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9210:1: ( RULE_STRING )
             {
              before(grammarAccess.getXOseeEnumOverrideAccess().getOverridenEnumTypeXOseeEnumTypeCrossReference_1_0()); 
-            // InternalOseeDsl.g:9632:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9633:1: RULE_STRING
+            // InternalOseeDsl.g:9211:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9212:1: RULE_STRING
             {
              before(grammarAccess.getXOseeEnumOverrideAccess().getOverridenEnumTypeXOseeEnumTypeSTRINGTerminalRuleCall_1_0_1()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -25870,21 +24755,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumOverride__InheritAllAssignment_3"
-    // InternalOseeDsl.g:9644:1: rule__XOseeEnumOverride__InheritAllAssignment_3 : ( ( 'inheritAll' ) ) ;
+    // InternalOseeDsl.g:9223:1: rule__XOseeEnumOverride__InheritAllAssignment_3 : ( ( 'inheritAll' ) ) ;
     public final void rule__XOseeEnumOverride__InheritAllAssignment_3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9648:1: ( ( ( 'inheritAll' ) ) )
-            // InternalOseeDsl.g:9649:1: ( ( 'inheritAll' ) )
+            // InternalOseeDsl.g:9227:1: ( ( ( 'inheritAll' ) ) )
+            // InternalOseeDsl.g:9228:1: ( ( 'inheritAll' ) )
             {
-            // InternalOseeDsl.g:9649:1: ( ( 'inheritAll' ) )
-            // InternalOseeDsl.g:9650:1: ( 'inheritAll' )
+            // InternalOseeDsl.g:9228:1: ( ( 'inheritAll' ) )
+            // InternalOseeDsl.g:9229:1: ( 'inheritAll' )
             {
              before(grammarAccess.getXOseeEnumOverrideAccess().getInheritAllInheritAllKeyword_3_0()); 
-            // InternalOseeDsl.g:9651:1: ( 'inheritAll' )
-            // InternalOseeDsl.g:9652:1: 'inheritAll'
+            // InternalOseeDsl.g:9230:1: ( 'inheritAll' )
+            // InternalOseeDsl.g:9231:1: 'inheritAll'
             {
              before(grammarAccess.getXOseeEnumOverrideAccess().getInheritAllInheritAllKeyword_3_0()); 
             match(input,98,FOLLOW_2); 
@@ -25915,17 +24800,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeEnumOverride__OverrideOptionsAssignment_4"
-    // InternalOseeDsl.g:9667:1: rule__XOseeEnumOverride__OverrideOptionsAssignment_4 : ( ruleOverrideOption ) ;
+    // InternalOseeDsl.g:9246:1: rule__XOseeEnumOverride__OverrideOptionsAssignment_4 : ( ruleOverrideOption ) ;
     public final void rule__XOseeEnumOverride__OverrideOptionsAssignment_4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9671:1: ( ( ruleOverrideOption ) )
-            // InternalOseeDsl.g:9672:1: ( ruleOverrideOption )
+            // InternalOseeDsl.g:9250:1: ( ( ruleOverrideOption ) )
+            // InternalOseeDsl.g:9251:1: ( ruleOverrideOption )
             {
-            // InternalOseeDsl.g:9672:1: ( ruleOverrideOption )
-            // InternalOseeDsl.g:9673:1: ruleOverrideOption
+            // InternalOseeDsl.g:9251:1: ( ruleOverrideOption )
+            // InternalOseeDsl.g:9252:1: ruleOverrideOption
             {
              before(grammarAccess.getXOseeEnumOverrideAccess().getOverrideOptionsOverrideOptionParserRuleCall_4_0()); 
             pushFollow(FOLLOW_2);
@@ -25956,17 +24841,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddEnum__EnumEntryAssignment_1"
-    // InternalOseeDsl.g:9682:1: rule__AddEnum__EnumEntryAssignment_1 : ( RULE_STRING ) ;
+    // InternalOseeDsl.g:9261:1: rule__AddEnum__EnumEntryAssignment_1 : ( RULE_STRING ) ;
     public final void rule__AddEnum__EnumEntryAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9686:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9687:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9265:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9266:1: ( RULE_STRING )
             {
-            // InternalOseeDsl.g:9687:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9688:1: RULE_STRING
+            // InternalOseeDsl.g:9266:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9267:1: RULE_STRING
             {
              before(grammarAccess.getAddEnumAccess().getEnumEntrySTRINGTerminalRuleCall_1_0()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -25993,17 +24878,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddEnum__OrdinalAssignment_2"
-    // InternalOseeDsl.g:9697:1: rule__AddEnum__OrdinalAssignment_2 : ( RULE_WHOLE_NUM_STR ) ;
+    // InternalOseeDsl.g:9276:1: rule__AddEnum__OrdinalAssignment_2 : ( RULE_WHOLE_NUM_STR ) ;
     public final void rule__AddEnum__OrdinalAssignment_2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9701:1: ( ( RULE_WHOLE_NUM_STR ) )
-            // InternalOseeDsl.g:9702:1: ( RULE_WHOLE_NUM_STR )
+            // InternalOseeDsl.g:9280:1: ( ( RULE_WHOLE_NUM_STR ) )
+            // InternalOseeDsl.g:9281:1: ( RULE_WHOLE_NUM_STR )
             {
-            // InternalOseeDsl.g:9702:1: ( RULE_WHOLE_NUM_STR )
-            // InternalOseeDsl.g:9703:1: RULE_WHOLE_NUM_STR
+            // InternalOseeDsl.g:9281:1: ( RULE_WHOLE_NUM_STR )
+            // InternalOseeDsl.g:9282:1: RULE_WHOLE_NUM_STR
             {
              before(grammarAccess.getAddEnumAccess().getOrdinalWHOLE_NUM_STRTerminalRuleCall_2_0()); 
             match(input,RULE_WHOLE_NUM_STR,FOLLOW_2); 
@@ -26030,17 +24915,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddEnum__EntryGuidAssignment_3_1"
-    // InternalOseeDsl.g:9712:1: rule__AddEnum__EntryGuidAssignment_3_1 : ( RULE_STRING ) ;
+    // InternalOseeDsl.g:9291:1: rule__AddEnum__EntryGuidAssignment_3_1 : ( RULE_STRING ) ;
     public final void rule__AddEnum__EntryGuidAssignment_3_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9716:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9717:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9295:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9296:1: ( RULE_STRING )
             {
-            // InternalOseeDsl.g:9717:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9718:1: RULE_STRING
+            // InternalOseeDsl.g:9296:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9297:1: RULE_STRING
             {
              before(grammarAccess.getAddEnumAccess().getEntryGuidSTRINGTerminalRuleCall_3_1_0()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -26067,17 +24952,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddEnum__DescriptionAssignment_4_1"
-    // InternalOseeDsl.g:9727:1: rule__AddEnum__DescriptionAssignment_4_1 : ( RULE_STRING ) ;
+    // InternalOseeDsl.g:9306:1: rule__AddEnum__DescriptionAssignment_4_1 : ( RULE_STRING ) ;
     public final void rule__AddEnum__DescriptionAssignment_4_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9731:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9732:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9310:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9311:1: ( RULE_STRING )
             {
-            // InternalOseeDsl.g:9732:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9733:1: RULE_STRING
+            // InternalOseeDsl.g:9311:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9312:1: RULE_STRING
             {
              before(grammarAccess.getAddEnumAccess().getDescriptionSTRINGTerminalRuleCall_4_1_0()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -26104,21 +24989,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RemoveEnum__EnumEntryAssignment_1"
-    // InternalOseeDsl.g:9742:1: rule__RemoveEnum__EnumEntryAssignment_1 : ( ( RULE_STRING ) ) ;
+    // InternalOseeDsl.g:9321:1: rule__RemoveEnum__EnumEntryAssignment_1 : ( ( RULE_STRING ) ) ;
     public final void rule__RemoveEnum__EnumEntryAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9746:1: ( ( ( RULE_STRING ) ) )
-            // InternalOseeDsl.g:9747:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9325:1: ( ( ( RULE_STRING ) ) )
+            // InternalOseeDsl.g:9326:1: ( ( RULE_STRING ) )
             {
-            // InternalOseeDsl.g:9747:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9748:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9326:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9327:1: ( RULE_STRING )
             {
              before(grammarAccess.getRemoveEnumAccess().getEnumEntryXOseeEnumEntryCrossReference_1_0()); 
-            // InternalOseeDsl.g:9749:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9750:1: RULE_STRING
+            // InternalOseeDsl.g:9328:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9329:1: RULE_STRING
             {
              before(grammarAccess.getRemoveEnumAccess().getEnumEntryXOseeEnumEntrySTRINGTerminalRuleCall_1_0_1()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -26149,21 +25034,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeArtifactTypeOverride__OverridenArtifactTypeAssignment_1"
-    // InternalOseeDsl.g:9761:1: rule__XOseeArtifactTypeOverride__OverridenArtifactTypeAssignment_1 : ( ( RULE_STRING ) ) ;
+    // InternalOseeDsl.g:9340:1: rule__XOseeArtifactTypeOverride__OverridenArtifactTypeAssignment_1 : ( ( RULE_STRING ) ) ;
     public final void rule__XOseeArtifactTypeOverride__OverridenArtifactTypeAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9765:1: ( ( ( RULE_STRING ) ) )
-            // InternalOseeDsl.g:9766:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9344:1: ( ( ( RULE_STRING ) ) )
+            // InternalOseeDsl.g:9345:1: ( ( RULE_STRING ) )
             {
-            // InternalOseeDsl.g:9766:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9767:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9345:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9346:1: ( RULE_STRING )
             {
              before(grammarAccess.getXOseeArtifactTypeOverrideAccess().getOverridenArtifactTypeXArtifactTypeCrossReference_1_0()); 
-            // InternalOseeDsl.g:9768:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9769:1: RULE_STRING
+            // InternalOseeDsl.g:9347:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9348:1: RULE_STRING
             {
              before(grammarAccess.getXOseeArtifactTypeOverrideAccess().getOverridenArtifactTypeXArtifactTypeSTRINGTerminalRuleCall_1_0_1()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -26194,21 +25079,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeArtifactTypeOverride__InheritAllAssignment_3"
-    // InternalOseeDsl.g:9780:1: rule__XOseeArtifactTypeOverride__InheritAllAssignment_3 : ( ( 'inheritAll' ) ) ;
+    // InternalOseeDsl.g:9359:1: rule__XOseeArtifactTypeOverride__InheritAllAssignment_3 : ( ( 'inheritAll' ) ) ;
     public final void rule__XOseeArtifactTypeOverride__InheritAllAssignment_3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9784:1: ( ( ( 'inheritAll' ) ) )
-            // InternalOseeDsl.g:9785:1: ( ( 'inheritAll' ) )
+            // InternalOseeDsl.g:9363:1: ( ( ( 'inheritAll' ) ) )
+            // InternalOseeDsl.g:9364:1: ( ( 'inheritAll' ) )
             {
-            // InternalOseeDsl.g:9785:1: ( ( 'inheritAll' ) )
-            // InternalOseeDsl.g:9786:1: ( 'inheritAll' )
+            // InternalOseeDsl.g:9364:1: ( ( 'inheritAll' ) )
+            // InternalOseeDsl.g:9365:1: ( 'inheritAll' )
             {
              before(grammarAccess.getXOseeArtifactTypeOverrideAccess().getInheritAllInheritAllKeyword_3_0()); 
-            // InternalOseeDsl.g:9787:1: ( 'inheritAll' )
-            // InternalOseeDsl.g:9788:1: 'inheritAll'
+            // InternalOseeDsl.g:9366:1: ( 'inheritAll' )
+            // InternalOseeDsl.g:9367:1: 'inheritAll'
             {
              before(grammarAccess.getXOseeArtifactTypeOverrideAccess().getInheritAllInheritAllKeyword_3_0()); 
             match(input,98,FOLLOW_2); 
@@ -26239,17 +25124,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4"
-    // InternalOseeDsl.g:9803:1: rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 : ( ruleAttributeOverrideOption ) ;
+    // InternalOseeDsl.g:9382:1: rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4 : ( ruleAttributeOverrideOption ) ;
     public final void rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9807:1: ( ( ruleAttributeOverrideOption ) )
-            // InternalOseeDsl.g:9808:1: ( ruleAttributeOverrideOption )
+            // InternalOseeDsl.g:9386:1: ( ( ruleAttributeOverrideOption ) )
+            // InternalOseeDsl.g:9387:1: ( ruleAttributeOverrideOption )
             {
-            // InternalOseeDsl.g:9808:1: ( ruleAttributeOverrideOption )
-            // InternalOseeDsl.g:9809:1: ruleAttributeOverrideOption
+            // InternalOseeDsl.g:9387:1: ( ruleAttributeOverrideOption )
+            // InternalOseeDsl.g:9388:1: ruleAttributeOverrideOption
             {
              before(grammarAccess.getXOseeArtifactTypeOverrideAccess().getOverrideOptionsAttributeOverrideOptionParserRuleCall_4_0()); 
             pushFollow(FOLLOW_2);
@@ -26280,17 +25165,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AddAttribute__AttributeAssignment_1"
-    // InternalOseeDsl.g:9818:1: rule__AddAttribute__AttributeAssignment_1 : ( ruleXAttributeTypeRef ) ;
+    // InternalOseeDsl.g:9397:1: rule__AddAttribute__AttributeAssignment_1 : ( ruleXAttributeTypeRef ) ;
     public final void rule__AddAttribute__AttributeAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9822:1: ( ( ruleXAttributeTypeRef ) )
-            // InternalOseeDsl.g:9823:1: ( ruleXAttributeTypeRef )
+            // InternalOseeDsl.g:9401:1: ( ( ruleXAttributeTypeRef ) )
+            // InternalOseeDsl.g:9402:1: ( ruleXAttributeTypeRef )
             {
-            // InternalOseeDsl.g:9823:1: ( ruleXAttributeTypeRef )
-            // InternalOseeDsl.g:9824:1: ruleXAttributeTypeRef
+            // InternalOseeDsl.g:9402:1: ( ruleXAttributeTypeRef )
+            // InternalOseeDsl.g:9403:1: ruleXAttributeTypeRef
             {
              before(grammarAccess.getAddAttributeAccess().getAttributeXAttributeTypeRefParserRuleCall_1_0()); 
             pushFollow(FOLLOW_2);
@@ -26321,21 +25206,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RemoveAttribute__AttributeAssignment_2"
-    // InternalOseeDsl.g:9833:1: rule__RemoveAttribute__AttributeAssignment_2 : ( ( RULE_STRING ) ) ;
+    // InternalOseeDsl.g:9412:1: rule__RemoveAttribute__AttributeAssignment_2 : ( ( RULE_STRING ) ) ;
     public final void rule__RemoveAttribute__AttributeAssignment_2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9837:1: ( ( ( RULE_STRING ) ) )
-            // InternalOseeDsl.g:9838:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9416:1: ( ( ( RULE_STRING ) ) )
+            // InternalOseeDsl.g:9417:1: ( ( RULE_STRING ) )
             {
-            // InternalOseeDsl.g:9838:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9839:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9417:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9418:1: ( RULE_STRING )
             {
              before(grammarAccess.getRemoveAttributeAccess().getAttributeXAttributeTypeCrossReference_2_0()); 
-            // InternalOseeDsl.g:9840:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9841:1: RULE_STRING
+            // InternalOseeDsl.g:9419:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9420:1: RULE_STRING
             {
              before(grammarAccess.getRemoveAttributeAccess().getAttributeXAttributeTypeSTRINGTerminalRuleCall_2_0_1()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -26366,17 +25251,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__UpdateAttribute__AttributeAssignment_1"
-    // InternalOseeDsl.g:9852:1: rule__UpdateAttribute__AttributeAssignment_1 : ( ruleXAttributeTypeRef ) ;
+    // InternalOseeDsl.g:9431:1: rule__UpdateAttribute__AttributeAssignment_1 : ( ruleXAttributeTypeRef ) ;
     public final void rule__UpdateAttribute__AttributeAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9856:1: ( ( ruleXAttributeTypeRef ) )
-            // InternalOseeDsl.g:9857:1: ( ruleXAttributeTypeRef )
+            // InternalOseeDsl.g:9435:1: ( ( ruleXAttributeTypeRef ) )
+            // InternalOseeDsl.g:9436:1: ( ruleXAttributeTypeRef )
             {
-            // InternalOseeDsl.g:9857:1: ( ruleXAttributeTypeRef )
-            // InternalOseeDsl.g:9858:1: ruleXAttributeTypeRef
+            // InternalOseeDsl.g:9436:1: ( ruleXAttributeTypeRef )
+            // InternalOseeDsl.g:9437:1: ruleXAttributeTypeRef
             {
              before(grammarAccess.getUpdateAttributeAccess().getAttributeXAttributeTypeRefParserRuleCall_1_0()); 
             pushFollow(FOLLOW_2);
@@ -26407,17 +25292,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XRelationType__NameAssignment_1"
-    // InternalOseeDsl.g:9867:1: rule__XRelationType__NameAssignment_1 : ( RULE_STRING ) ;
+    // InternalOseeDsl.g:9446:1: rule__XRelationType__NameAssignment_1 : ( RULE_STRING ) ;
     public final void rule__XRelationType__NameAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9871:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9872:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9450:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9451:1: ( RULE_STRING )
             {
-            // InternalOseeDsl.g:9872:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9873:1: RULE_STRING
+            // InternalOseeDsl.g:9451:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9452:1: RULE_STRING
             {
              before(grammarAccess.getXRelationTypeAccess().getNameSTRINGTerminalRuleCall_1_0()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -26443,59 +25328,22 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
     // $ANTLR end "rule__XRelationType__NameAssignment_1"
 
 
-    // $ANTLR start "rule__XRelationType__TypeGuidAssignment_3_1"
-    // InternalOseeDsl.g:9882:1: rule__XRelationType__TypeGuidAssignment_3_1 : ( RULE_STRING ) ;
-    public final void rule__XRelationType__TypeGuidAssignment_3_1() throws RecognitionException {
+    // $ANTLR start "rule__XRelationType__IdAssignment_4"
+    // InternalOseeDsl.g:9461:1: rule__XRelationType__IdAssignment_4 : ( RULE_WHOLE_NUM_STR ) ;
+    public final void rule__XRelationType__IdAssignment_4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9886:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9887:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9465:1: ( ( RULE_WHOLE_NUM_STR ) )
+            // InternalOseeDsl.g:9466:1: ( RULE_WHOLE_NUM_STR )
             {
-            // InternalOseeDsl.g:9887:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9888:1: RULE_STRING
+            // InternalOseeDsl.g:9466:1: ( RULE_WHOLE_NUM_STR )
+            // InternalOseeDsl.g:9467:1: RULE_WHOLE_NUM_STR
             {
-             before(grammarAccess.getXRelationTypeAccess().getTypeGuidSTRINGTerminalRuleCall_3_1_0()); 
-            match(input,RULE_STRING,FOLLOW_2); 
-             after(grammarAccess.getXRelationTypeAccess().getTypeGuidSTRINGTerminalRuleCall_3_1_0()); 
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__XRelationType__TypeGuidAssignment_3_1"
-
-
-    // $ANTLR start "rule__XRelationType__IdAssignment_5"
-    // InternalOseeDsl.g:9897:1: rule__XRelationType__IdAssignment_5 : ( RULE_WHOLE_NUM_STR ) ;
-    public final void rule__XRelationType__IdAssignment_5() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // InternalOseeDsl.g:9901:1: ( ( RULE_WHOLE_NUM_STR ) )
-            // InternalOseeDsl.g:9902:1: ( RULE_WHOLE_NUM_STR )
-            {
-            // InternalOseeDsl.g:9902:1: ( RULE_WHOLE_NUM_STR )
-            // InternalOseeDsl.g:9903:1: RULE_WHOLE_NUM_STR
-            {
-             before(grammarAccess.getXRelationTypeAccess().getIdWHOLE_NUM_STRTerminalRuleCall_5_0()); 
+             before(grammarAccess.getXRelationTypeAccess().getIdWHOLE_NUM_STRTerminalRuleCall_4_0()); 
             match(input,RULE_WHOLE_NUM_STR,FOLLOW_2); 
-             after(grammarAccess.getXRelationTypeAccess().getIdWHOLE_NUM_STRTerminalRuleCall_5_0()); 
+             after(grammarAccess.getXRelationTypeAccess().getIdWHOLE_NUM_STRTerminalRuleCall_4_0()); 
 
             }
 
@@ -26514,25 +25362,25 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XRelationType__IdAssignment_5"
+    // $ANTLR end "rule__XRelationType__IdAssignment_4"
 
 
-    // $ANTLR start "rule__XRelationType__SideANameAssignment_7"
-    // InternalOseeDsl.g:9912:1: rule__XRelationType__SideANameAssignment_7 : ( RULE_STRING ) ;
-    public final void rule__XRelationType__SideANameAssignment_7() throws RecognitionException {
+    // $ANTLR start "rule__XRelationType__SideANameAssignment_6"
+    // InternalOseeDsl.g:9476:1: rule__XRelationType__SideANameAssignment_6 : ( RULE_STRING ) ;
+    public final void rule__XRelationType__SideANameAssignment_6() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9916:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9917:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9480:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9481:1: ( RULE_STRING )
             {
-            // InternalOseeDsl.g:9917:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9918:1: RULE_STRING
+            // InternalOseeDsl.g:9481:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9482:1: RULE_STRING
             {
-             before(grammarAccess.getXRelationTypeAccess().getSideANameSTRINGTerminalRuleCall_7_0()); 
+             before(grammarAccess.getXRelationTypeAccess().getSideANameSTRINGTerminalRuleCall_6_0()); 
             match(input,RULE_STRING,FOLLOW_2); 
-             after(grammarAccess.getXRelationTypeAccess().getSideANameSTRINGTerminalRuleCall_7_0()); 
+             after(grammarAccess.getXRelationTypeAccess().getSideANameSTRINGTerminalRuleCall_6_0()); 
 
             }
 
@@ -26551,33 +25399,33 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XRelationType__SideANameAssignment_7"
+    // $ANTLR end "rule__XRelationType__SideANameAssignment_6"
 
 
-    // $ANTLR start "rule__XRelationType__SideAArtifactTypeAssignment_9"
-    // InternalOseeDsl.g:9927:1: rule__XRelationType__SideAArtifactTypeAssignment_9 : ( ( RULE_STRING ) ) ;
-    public final void rule__XRelationType__SideAArtifactTypeAssignment_9() throws RecognitionException {
+    // $ANTLR start "rule__XRelationType__SideAArtifactTypeAssignment_8"
+    // InternalOseeDsl.g:9491:1: rule__XRelationType__SideAArtifactTypeAssignment_8 : ( ( RULE_STRING ) ) ;
+    public final void rule__XRelationType__SideAArtifactTypeAssignment_8() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9931:1: ( ( ( RULE_STRING ) ) )
-            // InternalOseeDsl.g:9932:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9495:1: ( ( ( RULE_STRING ) ) )
+            // InternalOseeDsl.g:9496:1: ( ( RULE_STRING ) )
             {
-            // InternalOseeDsl.g:9932:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9933:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9496:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9497:1: ( RULE_STRING )
             {
-             before(grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeXArtifactTypeCrossReference_9_0()); 
-            // InternalOseeDsl.g:9934:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9935:1: RULE_STRING
+             before(grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeXArtifactTypeCrossReference_8_0()); 
+            // InternalOseeDsl.g:9498:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9499:1: RULE_STRING
             {
-             before(grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeXArtifactTypeSTRINGTerminalRuleCall_9_0_1()); 
+             before(grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeXArtifactTypeSTRINGTerminalRuleCall_8_0_1()); 
             match(input,RULE_STRING,FOLLOW_2); 
-             after(grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeXArtifactTypeSTRINGTerminalRuleCall_9_0_1()); 
+             after(grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeXArtifactTypeSTRINGTerminalRuleCall_8_0_1()); 
 
             }
 
-             after(grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeXArtifactTypeCrossReference_9_0()); 
+             after(grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeXArtifactTypeCrossReference_8_0()); 
 
             }
 
@@ -26596,25 +25444,25 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XRelationType__SideAArtifactTypeAssignment_9"
+    // $ANTLR end "rule__XRelationType__SideAArtifactTypeAssignment_8"
 
 
-    // $ANTLR start "rule__XRelationType__SideBNameAssignment_11"
-    // InternalOseeDsl.g:9946:1: rule__XRelationType__SideBNameAssignment_11 : ( RULE_STRING ) ;
-    public final void rule__XRelationType__SideBNameAssignment_11() throws RecognitionException {
+    // $ANTLR start "rule__XRelationType__SideBNameAssignment_10"
+    // InternalOseeDsl.g:9510:1: rule__XRelationType__SideBNameAssignment_10 : ( RULE_STRING ) ;
+    public final void rule__XRelationType__SideBNameAssignment_10() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9950:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9951:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9514:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9515:1: ( RULE_STRING )
             {
-            // InternalOseeDsl.g:9951:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9952:1: RULE_STRING
+            // InternalOseeDsl.g:9515:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9516:1: RULE_STRING
             {
-             before(grammarAccess.getXRelationTypeAccess().getSideBNameSTRINGTerminalRuleCall_11_0()); 
+             before(grammarAccess.getXRelationTypeAccess().getSideBNameSTRINGTerminalRuleCall_10_0()); 
             match(input,RULE_STRING,FOLLOW_2); 
-             after(grammarAccess.getXRelationTypeAccess().getSideBNameSTRINGTerminalRuleCall_11_0()); 
+             after(grammarAccess.getXRelationTypeAccess().getSideBNameSTRINGTerminalRuleCall_10_0()); 
 
             }
 
@@ -26633,33 +25481,33 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XRelationType__SideBNameAssignment_11"
+    // $ANTLR end "rule__XRelationType__SideBNameAssignment_10"
 
 
-    // $ANTLR start "rule__XRelationType__SideBArtifactTypeAssignment_13"
-    // InternalOseeDsl.g:9961:1: rule__XRelationType__SideBArtifactTypeAssignment_13 : ( ( RULE_STRING ) ) ;
-    public final void rule__XRelationType__SideBArtifactTypeAssignment_13() throws RecognitionException {
+    // $ANTLR start "rule__XRelationType__SideBArtifactTypeAssignment_12"
+    // InternalOseeDsl.g:9525:1: rule__XRelationType__SideBArtifactTypeAssignment_12 : ( ( RULE_STRING ) ) ;
+    public final void rule__XRelationType__SideBArtifactTypeAssignment_12() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9965:1: ( ( ( RULE_STRING ) ) )
-            // InternalOseeDsl.g:9966:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9529:1: ( ( ( RULE_STRING ) ) )
+            // InternalOseeDsl.g:9530:1: ( ( RULE_STRING ) )
             {
-            // InternalOseeDsl.g:9966:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:9967:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9530:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9531:1: ( RULE_STRING )
             {
-             before(grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeXArtifactTypeCrossReference_13_0()); 
-            // InternalOseeDsl.g:9968:1: ( RULE_STRING )
-            // InternalOseeDsl.g:9969:1: RULE_STRING
+             before(grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeXArtifactTypeCrossReference_12_0()); 
+            // InternalOseeDsl.g:9532:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9533:1: RULE_STRING
             {
-             before(grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeXArtifactTypeSTRINGTerminalRuleCall_13_0_1()); 
+             before(grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeXArtifactTypeSTRINGTerminalRuleCall_12_0_1()); 
             match(input,RULE_STRING,FOLLOW_2); 
-             after(grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeXArtifactTypeSTRINGTerminalRuleCall_13_0_1()); 
+             after(grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeXArtifactTypeSTRINGTerminalRuleCall_12_0_1()); 
 
             }
 
-             after(grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeXArtifactTypeCrossReference_13_0()); 
+             after(grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeXArtifactTypeCrossReference_12_0()); 
 
             }
 
@@ -26678,29 +25526,29 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XRelationType__SideBArtifactTypeAssignment_13"
+    // $ANTLR end "rule__XRelationType__SideBArtifactTypeAssignment_12"
 
 
-    // $ANTLR start "rule__XRelationType__DefaultOrderTypeAssignment_15"
-    // InternalOseeDsl.g:9980:1: rule__XRelationType__DefaultOrderTypeAssignment_15 : ( ruleRelationOrderType ) ;
-    public final void rule__XRelationType__DefaultOrderTypeAssignment_15() throws RecognitionException {
+    // $ANTLR start "rule__XRelationType__DefaultOrderTypeAssignment_14"
+    // InternalOseeDsl.g:9544:1: rule__XRelationType__DefaultOrderTypeAssignment_14 : ( ruleRelationOrderType ) ;
+    public final void rule__XRelationType__DefaultOrderTypeAssignment_14() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9984:1: ( ( ruleRelationOrderType ) )
-            // InternalOseeDsl.g:9985:1: ( ruleRelationOrderType )
+            // InternalOseeDsl.g:9548:1: ( ( ruleRelationOrderType ) )
+            // InternalOseeDsl.g:9549:1: ( ruleRelationOrderType )
             {
-            // InternalOseeDsl.g:9985:1: ( ruleRelationOrderType )
-            // InternalOseeDsl.g:9986:1: ruleRelationOrderType
+            // InternalOseeDsl.g:9549:1: ( ruleRelationOrderType )
+            // InternalOseeDsl.g:9550:1: ruleRelationOrderType
             {
-             before(grammarAccess.getXRelationTypeAccess().getDefaultOrderTypeRelationOrderTypeParserRuleCall_15_0()); 
+             before(grammarAccess.getXRelationTypeAccess().getDefaultOrderTypeRelationOrderTypeParserRuleCall_14_0()); 
             pushFollow(FOLLOW_2);
             ruleRelationOrderType();
 
             state._fsp--;
 
-             after(grammarAccess.getXRelationTypeAccess().getDefaultOrderTypeRelationOrderTypeParserRuleCall_15_0()); 
+             after(grammarAccess.getXRelationTypeAccess().getDefaultOrderTypeRelationOrderTypeParserRuleCall_14_0()); 
 
             }
 
@@ -26719,29 +25567,29 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XRelationType__DefaultOrderTypeAssignment_15"
+    // $ANTLR end "rule__XRelationType__DefaultOrderTypeAssignment_14"
 
 
-    // $ANTLR start "rule__XRelationType__MultiplicityAssignment_17"
-    // InternalOseeDsl.g:9995:1: rule__XRelationType__MultiplicityAssignment_17 : ( ruleRelationMultiplicityEnum ) ;
-    public final void rule__XRelationType__MultiplicityAssignment_17() throws RecognitionException {
+    // $ANTLR start "rule__XRelationType__MultiplicityAssignment_16"
+    // InternalOseeDsl.g:9559:1: rule__XRelationType__MultiplicityAssignment_16 : ( ruleRelationMultiplicityEnum ) ;
+    public final void rule__XRelationType__MultiplicityAssignment_16() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:9999:1: ( ( ruleRelationMultiplicityEnum ) )
-            // InternalOseeDsl.g:10000:1: ( ruleRelationMultiplicityEnum )
+            // InternalOseeDsl.g:9563:1: ( ( ruleRelationMultiplicityEnum ) )
+            // InternalOseeDsl.g:9564:1: ( ruleRelationMultiplicityEnum )
             {
-            // InternalOseeDsl.g:10000:1: ( ruleRelationMultiplicityEnum )
-            // InternalOseeDsl.g:10001:1: ruleRelationMultiplicityEnum
+            // InternalOseeDsl.g:9564:1: ( ruleRelationMultiplicityEnum )
+            // InternalOseeDsl.g:9565:1: ruleRelationMultiplicityEnum
             {
-             before(grammarAccess.getXRelationTypeAccess().getMultiplicityRelationMultiplicityEnumEnumRuleCall_17_0()); 
+             before(grammarAccess.getXRelationTypeAccess().getMultiplicityRelationMultiplicityEnumEnumRuleCall_16_0()); 
             pushFollow(FOLLOW_2);
             ruleRelationMultiplicityEnum();
 
             state._fsp--;
 
-             after(grammarAccess.getXRelationTypeAccess().getMultiplicityRelationMultiplicityEnumEnumRuleCall_17_0()); 
+             after(grammarAccess.getXRelationTypeAccess().getMultiplicityRelationMultiplicityEnumEnumRuleCall_16_0()); 
 
             }
 
@@ -26760,21 +25608,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XRelationType__MultiplicityAssignment_17"
+    // $ANTLR end "rule__XRelationType__MultiplicityAssignment_16"
 
 
     // $ANTLR start "rule__SimpleCondition__FieldAssignment_0"
-    // InternalOseeDsl.g:10010:1: rule__SimpleCondition__FieldAssignment_0 : ( ruleMatchField ) ;
+    // InternalOseeDsl.g:9574:1: rule__SimpleCondition__FieldAssignment_0 : ( ruleMatchField ) ;
     public final void rule__SimpleCondition__FieldAssignment_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10014:1: ( ( ruleMatchField ) )
-            // InternalOseeDsl.g:10015:1: ( ruleMatchField )
+            // InternalOseeDsl.g:9578:1: ( ( ruleMatchField ) )
+            // InternalOseeDsl.g:9579:1: ( ruleMatchField )
             {
-            // InternalOseeDsl.g:10015:1: ( ruleMatchField )
-            // InternalOseeDsl.g:10016:1: ruleMatchField
+            // InternalOseeDsl.g:9579:1: ( ruleMatchField )
+            // InternalOseeDsl.g:9580:1: ruleMatchField
             {
              before(grammarAccess.getSimpleConditionAccess().getFieldMatchFieldEnumRuleCall_0_0()); 
             pushFollow(FOLLOW_2);
@@ -26805,17 +25653,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__SimpleCondition__OpAssignment_1"
-    // InternalOseeDsl.g:10025:1: rule__SimpleCondition__OpAssignment_1 : ( ruleCompareOp ) ;
+    // InternalOseeDsl.g:9589:1: rule__SimpleCondition__OpAssignment_1 : ( ruleCompareOp ) ;
     public final void rule__SimpleCondition__OpAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10029:1: ( ( ruleCompareOp ) )
-            // InternalOseeDsl.g:10030:1: ( ruleCompareOp )
+            // InternalOseeDsl.g:9593:1: ( ( ruleCompareOp ) )
+            // InternalOseeDsl.g:9594:1: ( ruleCompareOp )
             {
-            // InternalOseeDsl.g:10030:1: ( ruleCompareOp )
-            // InternalOseeDsl.g:10031:1: ruleCompareOp
+            // InternalOseeDsl.g:9594:1: ( ruleCompareOp )
+            // InternalOseeDsl.g:9595:1: ruleCompareOp
             {
              before(grammarAccess.getSimpleConditionAccess().getOpCompareOpEnumRuleCall_1_0()); 
             pushFollow(FOLLOW_2);
@@ -26846,17 +25694,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__SimpleCondition__ExpressionAssignment_2"
-    // InternalOseeDsl.g:10040:1: rule__SimpleCondition__ExpressionAssignment_2 : ( RULE_STRING ) ;
+    // InternalOseeDsl.g:9604:1: rule__SimpleCondition__ExpressionAssignment_2 : ( RULE_STRING ) ;
     public final void rule__SimpleCondition__ExpressionAssignment_2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10044:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:10045:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9608:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9609:1: ( RULE_STRING )
             {
-            // InternalOseeDsl.g:10045:1: ( RULE_STRING )
-            // InternalOseeDsl.g:10046:1: RULE_STRING
+            // InternalOseeDsl.g:9609:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9610:1: RULE_STRING
             {
              before(grammarAccess.getSimpleConditionAccess().getExpressionSTRINGTerminalRuleCall_2_0()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -26883,17 +25731,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__CompoundCondition__ConditionsAssignment_1"
-    // InternalOseeDsl.g:10055:1: rule__CompoundCondition__ConditionsAssignment_1 : ( ruleSimpleCondition ) ;
+    // InternalOseeDsl.g:9619:1: rule__CompoundCondition__ConditionsAssignment_1 : ( ruleSimpleCondition ) ;
     public final void rule__CompoundCondition__ConditionsAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10059:1: ( ( ruleSimpleCondition ) )
-            // InternalOseeDsl.g:10060:1: ( ruleSimpleCondition )
+            // InternalOseeDsl.g:9623:1: ( ( ruleSimpleCondition ) )
+            // InternalOseeDsl.g:9624:1: ( ruleSimpleCondition )
             {
-            // InternalOseeDsl.g:10060:1: ( ruleSimpleCondition )
-            // InternalOseeDsl.g:10061:1: ruleSimpleCondition
+            // InternalOseeDsl.g:9624:1: ( ruleSimpleCondition )
+            // InternalOseeDsl.g:9625:1: ruleSimpleCondition
             {
              before(grammarAccess.getCompoundConditionAccess().getConditionsSimpleConditionParserRuleCall_1_0()); 
             pushFollow(FOLLOW_2);
@@ -26924,17 +25772,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__CompoundCondition__OperatorsAssignment_2_0"
-    // InternalOseeDsl.g:10070:1: rule__CompoundCondition__OperatorsAssignment_2_0 : ( ruleXLogicOperator ) ;
+    // InternalOseeDsl.g:9634:1: rule__CompoundCondition__OperatorsAssignment_2_0 : ( ruleXLogicOperator ) ;
     public final void rule__CompoundCondition__OperatorsAssignment_2_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10074:1: ( ( ruleXLogicOperator ) )
-            // InternalOseeDsl.g:10075:1: ( ruleXLogicOperator )
+            // InternalOseeDsl.g:9638:1: ( ( ruleXLogicOperator ) )
+            // InternalOseeDsl.g:9639:1: ( ruleXLogicOperator )
             {
-            // InternalOseeDsl.g:10075:1: ( ruleXLogicOperator )
-            // InternalOseeDsl.g:10076:1: ruleXLogicOperator
+            // InternalOseeDsl.g:9639:1: ( ruleXLogicOperator )
+            // InternalOseeDsl.g:9640:1: ruleXLogicOperator
             {
              before(grammarAccess.getCompoundConditionAccess().getOperatorsXLogicOperatorEnumRuleCall_2_0_0()); 
             pushFollow(FOLLOW_2);
@@ -26965,17 +25813,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__CompoundCondition__ConditionsAssignment_2_1"
-    // InternalOseeDsl.g:10085:1: rule__CompoundCondition__ConditionsAssignment_2_1 : ( ruleSimpleCondition ) ;
+    // InternalOseeDsl.g:9649:1: rule__CompoundCondition__ConditionsAssignment_2_1 : ( ruleSimpleCondition ) ;
     public final void rule__CompoundCondition__ConditionsAssignment_2_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10089:1: ( ( ruleSimpleCondition ) )
-            // InternalOseeDsl.g:10090:1: ( ruleSimpleCondition )
+            // InternalOseeDsl.g:9653:1: ( ( ruleSimpleCondition ) )
+            // InternalOseeDsl.g:9654:1: ( ruleSimpleCondition )
             {
-            // InternalOseeDsl.g:10090:1: ( ruleSimpleCondition )
-            // InternalOseeDsl.g:10091:1: ruleSimpleCondition
+            // InternalOseeDsl.g:9654:1: ( ruleSimpleCondition )
+            // InternalOseeDsl.g:9655:1: ruleSimpleCondition
             {
              before(grammarAccess.getCompoundConditionAccess().getConditionsSimpleConditionParserRuleCall_2_1_0()); 
             pushFollow(FOLLOW_2);
@@ -27006,17 +25854,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactMatcher__NameAssignment_1"
-    // InternalOseeDsl.g:10100:1: rule__XArtifactMatcher__NameAssignment_1 : ( RULE_STRING ) ;
+    // InternalOseeDsl.g:9664:1: rule__XArtifactMatcher__NameAssignment_1 : ( RULE_STRING ) ;
     public final void rule__XArtifactMatcher__NameAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10104:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:10105:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9668:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9669:1: ( RULE_STRING )
             {
-            // InternalOseeDsl.g:10105:1: ( RULE_STRING )
-            // InternalOseeDsl.g:10106:1: RULE_STRING
+            // InternalOseeDsl.g:9669:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9670:1: RULE_STRING
             {
              before(grammarAccess.getXArtifactMatcherAccess().getNameSTRINGTerminalRuleCall_1_0()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -27043,17 +25891,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactMatcher__ConditionsAssignment_3"
-    // InternalOseeDsl.g:10115:1: rule__XArtifactMatcher__ConditionsAssignment_3 : ( ruleCondition ) ;
+    // InternalOseeDsl.g:9679:1: rule__XArtifactMatcher__ConditionsAssignment_3 : ( ruleCondition ) ;
     public final void rule__XArtifactMatcher__ConditionsAssignment_3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10119:1: ( ( ruleCondition ) )
-            // InternalOseeDsl.g:10120:1: ( ruleCondition )
+            // InternalOseeDsl.g:9683:1: ( ( ruleCondition ) )
+            // InternalOseeDsl.g:9684:1: ( ruleCondition )
             {
-            // InternalOseeDsl.g:10120:1: ( ruleCondition )
-            // InternalOseeDsl.g:10121:1: ruleCondition
+            // InternalOseeDsl.g:9684:1: ( ruleCondition )
+            // InternalOseeDsl.g:9685:1: ruleCondition
             {
              before(grammarAccess.getXArtifactMatcherAccess().getConditionsConditionParserRuleCall_3_0()); 
             pushFollow(FOLLOW_2);
@@ -27084,17 +25932,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactMatcher__OperatorsAssignment_4_0"
-    // InternalOseeDsl.g:10130:1: rule__XArtifactMatcher__OperatorsAssignment_4_0 : ( ruleXLogicOperator ) ;
+    // InternalOseeDsl.g:9694:1: rule__XArtifactMatcher__OperatorsAssignment_4_0 : ( ruleXLogicOperator ) ;
     public final void rule__XArtifactMatcher__OperatorsAssignment_4_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10134:1: ( ( ruleXLogicOperator ) )
-            // InternalOseeDsl.g:10135:1: ( ruleXLogicOperator )
+            // InternalOseeDsl.g:9698:1: ( ( ruleXLogicOperator ) )
+            // InternalOseeDsl.g:9699:1: ( ruleXLogicOperator )
             {
-            // InternalOseeDsl.g:10135:1: ( ruleXLogicOperator )
-            // InternalOseeDsl.g:10136:1: ruleXLogicOperator
+            // InternalOseeDsl.g:9699:1: ( ruleXLogicOperator )
+            // InternalOseeDsl.g:9700:1: ruleXLogicOperator
             {
              before(grammarAccess.getXArtifactMatcherAccess().getOperatorsXLogicOperatorEnumRuleCall_4_0_0()); 
             pushFollow(FOLLOW_2);
@@ -27125,17 +25973,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XArtifactMatcher__ConditionsAssignment_4_1"
-    // InternalOseeDsl.g:10145:1: rule__XArtifactMatcher__ConditionsAssignment_4_1 : ( ruleCondition ) ;
+    // InternalOseeDsl.g:9709:1: rule__XArtifactMatcher__ConditionsAssignment_4_1 : ( ruleCondition ) ;
     public final void rule__XArtifactMatcher__ConditionsAssignment_4_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10149:1: ( ( ruleCondition ) )
-            // InternalOseeDsl.g:10150:1: ( ruleCondition )
+            // InternalOseeDsl.g:9713:1: ( ( ruleCondition ) )
+            // InternalOseeDsl.g:9714:1: ( ruleCondition )
             {
-            // InternalOseeDsl.g:10150:1: ( ruleCondition )
-            // InternalOseeDsl.g:10151:1: ruleCondition
+            // InternalOseeDsl.g:9714:1: ( ruleCondition )
+            // InternalOseeDsl.g:9715:1: ruleCondition
             {
              before(grammarAccess.getXArtifactMatcherAccess().getConditionsConditionParserRuleCall_4_1_0()); 
             pushFollow(FOLLOW_2);
@@ -27166,17 +26014,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__Role__NameAssignment_1"
-    // InternalOseeDsl.g:10160:1: rule__Role__NameAssignment_1 : ( RULE_STRING ) ;
+    // InternalOseeDsl.g:9724:1: rule__Role__NameAssignment_1 : ( RULE_STRING ) ;
     public final void rule__Role__NameAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10164:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:10165:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9728:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9729:1: ( RULE_STRING )
             {
-            // InternalOseeDsl.g:10165:1: ( RULE_STRING )
-            // InternalOseeDsl.g:10166:1: RULE_STRING
+            // InternalOseeDsl.g:9729:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9730:1: RULE_STRING
             {
              before(grammarAccess.getRoleAccess().getNameSTRINGTerminalRuleCall_1_0()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -27203,21 +26051,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__Role__SuperRolesAssignment_2_1"
-    // InternalOseeDsl.g:10175:1: rule__Role__SuperRolesAssignment_2_1 : ( ( RULE_STRING ) ) ;
+    // InternalOseeDsl.g:9739:1: rule__Role__SuperRolesAssignment_2_1 : ( ( RULE_STRING ) ) ;
     public final void rule__Role__SuperRolesAssignment_2_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10179:1: ( ( ( RULE_STRING ) ) )
-            // InternalOseeDsl.g:10180:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9743:1: ( ( ( RULE_STRING ) ) )
+            // InternalOseeDsl.g:9744:1: ( ( RULE_STRING ) )
             {
-            // InternalOseeDsl.g:10180:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:10181:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9744:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9745:1: ( RULE_STRING )
             {
              before(grammarAccess.getRoleAccess().getSuperRolesRoleCrossReference_2_1_0()); 
-            // InternalOseeDsl.g:10182:1: ( RULE_STRING )
-            // InternalOseeDsl.g:10183:1: RULE_STRING
+            // InternalOseeDsl.g:9746:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9747:1: RULE_STRING
             {
              before(grammarAccess.getRoleAccess().getSuperRolesRoleSTRINGTerminalRuleCall_2_1_0_1()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -27248,17 +26096,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__Role__UsersAndGroupsAssignment_4_0"
-    // InternalOseeDsl.g:10194:1: rule__Role__UsersAndGroupsAssignment_4_0 : ( ruleUsersAndGroups ) ;
+    // InternalOseeDsl.g:9758:1: rule__Role__UsersAndGroupsAssignment_4_0 : ( ruleUsersAndGroups ) ;
     public final void rule__Role__UsersAndGroupsAssignment_4_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10198:1: ( ( ruleUsersAndGroups ) )
-            // InternalOseeDsl.g:10199:1: ( ruleUsersAndGroups )
+            // InternalOseeDsl.g:9762:1: ( ( ruleUsersAndGroups ) )
+            // InternalOseeDsl.g:9763:1: ( ruleUsersAndGroups )
             {
-            // InternalOseeDsl.g:10199:1: ( ruleUsersAndGroups )
-            // InternalOseeDsl.g:10200:1: ruleUsersAndGroups
+            // InternalOseeDsl.g:9763:1: ( ruleUsersAndGroups )
+            // InternalOseeDsl.g:9764:1: ruleUsersAndGroups
             {
              before(grammarAccess.getRoleAccess().getUsersAndGroupsUsersAndGroupsParserRuleCall_4_0_0()); 
             pushFollow(FOLLOW_2);
@@ -27289,17 +26137,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__Role__ReferencedContextsAssignment_4_1"
-    // InternalOseeDsl.g:10209:1: rule__Role__ReferencedContextsAssignment_4_1 : ( ruleReferencedContext ) ;
+    // InternalOseeDsl.g:9773:1: rule__Role__ReferencedContextsAssignment_4_1 : ( ruleReferencedContext ) ;
     public final void rule__Role__ReferencedContextsAssignment_4_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10213:1: ( ( ruleReferencedContext ) )
-            // InternalOseeDsl.g:10214:1: ( ruleReferencedContext )
+            // InternalOseeDsl.g:9777:1: ( ( ruleReferencedContext ) )
+            // InternalOseeDsl.g:9778:1: ( ruleReferencedContext )
             {
-            // InternalOseeDsl.g:10214:1: ( ruleReferencedContext )
-            // InternalOseeDsl.g:10215:1: ruleReferencedContext
+            // InternalOseeDsl.g:9778:1: ( ruleReferencedContext )
+            // InternalOseeDsl.g:9779:1: ruleReferencedContext
             {
              before(grammarAccess.getRoleAccess().getReferencedContextsReferencedContextParserRuleCall_4_1_0()); 
             pushFollow(FOLLOW_2);
@@ -27330,17 +26178,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ReferencedContext__AccessContextRefAssignment_1"
-    // InternalOseeDsl.g:10224:1: rule__ReferencedContext__AccessContextRefAssignment_1 : ( RULE_STRING ) ;
+    // InternalOseeDsl.g:9788:1: rule__ReferencedContext__AccessContextRefAssignment_1 : ( RULE_STRING ) ;
     public final void rule__ReferencedContext__AccessContextRefAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10228:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:10229:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9792:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9793:1: ( RULE_STRING )
             {
-            // InternalOseeDsl.g:10229:1: ( RULE_STRING )
-            // InternalOseeDsl.g:10230:1: RULE_STRING
+            // InternalOseeDsl.g:9793:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9794:1: RULE_STRING
             {
              before(grammarAccess.getReferencedContextAccess().getAccessContextRefSTRINGTerminalRuleCall_1_0()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -27367,17 +26215,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__UsersAndGroups__UserOrGroupGuidAssignment_1"
-    // InternalOseeDsl.g:10239:1: rule__UsersAndGroups__UserOrGroupGuidAssignment_1 : ( RULE_STRING ) ;
+    // InternalOseeDsl.g:9803:1: rule__UsersAndGroups__UserOrGroupGuidAssignment_1 : ( RULE_STRING ) ;
     public final void rule__UsersAndGroups__UserOrGroupGuidAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10243:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:10244:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9807:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9808:1: ( RULE_STRING )
             {
-            // InternalOseeDsl.g:10244:1: ( RULE_STRING )
-            // InternalOseeDsl.g:10245:1: RULE_STRING
+            // InternalOseeDsl.g:9808:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9809:1: RULE_STRING
             {
              before(grammarAccess.getUsersAndGroupsAccess().getUserOrGroupGuidSTRINGTerminalRuleCall_1_0()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -27404,17 +26252,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__NameAssignment_1"
-    // InternalOseeDsl.g:10254:1: rule__AccessContext__NameAssignment_1 : ( RULE_STRING ) ;
+    // InternalOseeDsl.g:9818:1: rule__AccessContext__NameAssignment_1 : ( RULE_STRING ) ;
     public final void rule__AccessContext__NameAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10258:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:10259:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9822:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9823:1: ( RULE_STRING )
             {
-            // InternalOseeDsl.g:10259:1: ( RULE_STRING )
-            // InternalOseeDsl.g:10260:1: RULE_STRING
+            // InternalOseeDsl.g:9823:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9824:1: RULE_STRING
             {
              before(grammarAccess.getAccessContextAccess().getNameSTRINGTerminalRuleCall_1_0()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -27441,21 +26289,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__SuperAccessContextsAssignment_2_1"
-    // InternalOseeDsl.g:10269:1: rule__AccessContext__SuperAccessContextsAssignment_2_1 : ( ( RULE_STRING ) ) ;
+    // InternalOseeDsl.g:9833:1: rule__AccessContext__SuperAccessContextsAssignment_2_1 : ( ( RULE_STRING ) ) ;
     public final void rule__AccessContext__SuperAccessContextsAssignment_2_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10273:1: ( ( ( RULE_STRING ) ) )
-            // InternalOseeDsl.g:10274:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9837:1: ( ( ( RULE_STRING ) ) )
+            // InternalOseeDsl.g:9838:1: ( ( RULE_STRING ) )
             {
-            // InternalOseeDsl.g:10274:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:10275:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9838:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9839:1: ( RULE_STRING )
             {
              before(grammarAccess.getAccessContextAccess().getSuperAccessContextsAccessContextCrossReference_2_1_0()); 
-            // InternalOseeDsl.g:10276:1: ( RULE_STRING )
-            // InternalOseeDsl.g:10277:1: RULE_STRING
+            // InternalOseeDsl.g:9840:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9841:1: RULE_STRING
             {
              before(grammarAccess.getAccessContextAccess().getSuperAccessContextsAccessContextSTRINGTerminalRuleCall_2_1_0_1()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -27486,17 +26334,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__GuidAssignment_5"
-    // InternalOseeDsl.g:10288:1: rule__AccessContext__GuidAssignment_5 : ( RULE_STRING ) ;
+    // InternalOseeDsl.g:9852:1: rule__AccessContext__GuidAssignment_5 : ( RULE_STRING ) ;
     public final void rule__AccessContext__GuidAssignment_5() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10292:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:10293:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9856:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9857:1: ( RULE_STRING )
             {
-            // InternalOseeDsl.g:10293:1: ( RULE_STRING )
-            // InternalOseeDsl.g:10294:1: RULE_STRING
+            // InternalOseeDsl.g:9857:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9858:1: RULE_STRING
             {
              before(grammarAccess.getAccessContextAccess().getGuidSTRINGTerminalRuleCall_5_0()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -27523,17 +26371,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__AccessRulesAssignment_7_0"
-    // InternalOseeDsl.g:10303:1: rule__AccessContext__AccessRulesAssignment_7_0 : ( ruleObjectRestriction ) ;
+    // InternalOseeDsl.g:9867:1: rule__AccessContext__AccessRulesAssignment_7_0 : ( ruleObjectRestriction ) ;
     public final void rule__AccessContext__AccessRulesAssignment_7_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10307:1: ( ( ruleObjectRestriction ) )
-            // InternalOseeDsl.g:10308:1: ( ruleObjectRestriction )
+            // InternalOseeDsl.g:9871:1: ( ( ruleObjectRestriction ) )
+            // InternalOseeDsl.g:9872:1: ( ruleObjectRestriction )
             {
-            // InternalOseeDsl.g:10308:1: ( ruleObjectRestriction )
-            // InternalOseeDsl.g:10309:1: ruleObjectRestriction
+            // InternalOseeDsl.g:9872:1: ( ruleObjectRestriction )
+            // InternalOseeDsl.g:9873:1: ruleObjectRestriction
             {
              before(grammarAccess.getAccessContextAccess().getAccessRulesObjectRestrictionParserRuleCall_7_0_0()); 
             pushFollow(FOLLOW_2);
@@ -27564,17 +26412,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AccessContext__HierarchyRestrictionsAssignment_7_1"
-    // InternalOseeDsl.g:10318:1: rule__AccessContext__HierarchyRestrictionsAssignment_7_1 : ( ruleHierarchyRestriction ) ;
+    // InternalOseeDsl.g:9882:1: rule__AccessContext__HierarchyRestrictionsAssignment_7_1 : ( ruleHierarchyRestriction ) ;
     public final void rule__AccessContext__HierarchyRestrictionsAssignment_7_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10322:1: ( ( ruleHierarchyRestriction ) )
-            // InternalOseeDsl.g:10323:1: ( ruleHierarchyRestriction )
+            // InternalOseeDsl.g:9886:1: ( ( ruleHierarchyRestriction ) )
+            // InternalOseeDsl.g:9887:1: ( ruleHierarchyRestriction )
             {
-            // InternalOseeDsl.g:10323:1: ( ruleHierarchyRestriction )
-            // InternalOseeDsl.g:10324:1: ruleHierarchyRestriction
+            // InternalOseeDsl.g:9887:1: ( ruleHierarchyRestriction )
+            // InternalOseeDsl.g:9888:1: ruleHierarchyRestriction
             {
              before(grammarAccess.getAccessContextAccess().getHierarchyRestrictionsHierarchyRestrictionParserRuleCall_7_1_0()); 
             pushFollow(FOLLOW_2);
@@ -27605,21 +26453,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__HierarchyRestriction__ArtifactMatcherRefAssignment_1"
-    // InternalOseeDsl.g:10333:1: rule__HierarchyRestriction__ArtifactMatcherRefAssignment_1 : ( ( RULE_STRING ) ) ;
+    // InternalOseeDsl.g:9897:1: rule__HierarchyRestriction__ArtifactMatcherRefAssignment_1 : ( ( RULE_STRING ) ) ;
     public final void rule__HierarchyRestriction__ArtifactMatcherRefAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10337:1: ( ( ( RULE_STRING ) ) )
-            // InternalOseeDsl.g:10338:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9901:1: ( ( ( RULE_STRING ) ) )
+            // InternalOseeDsl.g:9902:1: ( ( RULE_STRING ) )
             {
-            // InternalOseeDsl.g:10338:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:10339:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9902:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9903:1: ( RULE_STRING )
             {
              before(grammarAccess.getHierarchyRestrictionAccess().getArtifactMatcherRefXArtifactMatcherCrossReference_1_0()); 
-            // InternalOseeDsl.g:10340:1: ( RULE_STRING )
-            // InternalOseeDsl.g:10341:1: RULE_STRING
+            // InternalOseeDsl.g:9904:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9905:1: RULE_STRING
             {
              before(grammarAccess.getHierarchyRestrictionAccess().getArtifactMatcherRefXArtifactMatcherSTRINGTerminalRuleCall_1_0_1()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -27650,17 +26498,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__HierarchyRestriction__AccessRulesAssignment_3"
-    // InternalOseeDsl.g:10352:1: rule__HierarchyRestriction__AccessRulesAssignment_3 : ( ruleObjectRestriction ) ;
+    // InternalOseeDsl.g:9916:1: rule__HierarchyRestriction__AccessRulesAssignment_3 : ( ruleObjectRestriction ) ;
     public final void rule__HierarchyRestriction__AccessRulesAssignment_3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10356:1: ( ( ruleObjectRestriction ) )
-            // InternalOseeDsl.g:10357:1: ( ruleObjectRestriction )
+            // InternalOseeDsl.g:9920:1: ( ( ruleObjectRestriction ) )
+            // InternalOseeDsl.g:9921:1: ( ruleObjectRestriction )
             {
-            // InternalOseeDsl.g:10357:1: ( ruleObjectRestriction )
-            // InternalOseeDsl.g:10358:1: ruleObjectRestriction
+            // InternalOseeDsl.g:9921:1: ( ruleObjectRestriction )
+            // InternalOseeDsl.g:9922:1: ruleObjectRestriction
             {
              before(grammarAccess.getHierarchyRestrictionAccess().getAccessRulesObjectRestrictionParserRuleCall_3_0()); 
             pushFollow(FOLLOW_2);
@@ -27691,21 +26539,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeArtifactTypePredicate__ArtifactTypeRefAssignment_1"
-    // InternalOseeDsl.g:10367:1: rule__RelationTypeArtifactTypePredicate__ArtifactTypeRefAssignment_1 : ( ( RULE_STRING ) ) ;
+    // InternalOseeDsl.g:9931:1: rule__RelationTypeArtifactTypePredicate__ArtifactTypeRefAssignment_1 : ( ( RULE_STRING ) ) ;
     public final void rule__RelationTypeArtifactTypePredicate__ArtifactTypeRefAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10371:1: ( ( ( RULE_STRING ) ) )
-            // InternalOseeDsl.g:10372:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9935:1: ( ( ( RULE_STRING ) ) )
+            // InternalOseeDsl.g:9936:1: ( ( RULE_STRING ) )
             {
-            // InternalOseeDsl.g:10372:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:10373:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9936:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9937:1: ( RULE_STRING )
             {
              before(grammarAccess.getRelationTypeArtifactTypePredicateAccess().getArtifactTypeRefXArtifactTypeCrossReference_1_0()); 
-            // InternalOseeDsl.g:10374:1: ( RULE_STRING )
-            // InternalOseeDsl.g:10375:1: RULE_STRING
+            // InternalOseeDsl.g:9938:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9939:1: RULE_STRING
             {
              before(grammarAccess.getRelationTypeArtifactTypePredicateAccess().getArtifactTypeRefXArtifactTypeSTRINGTerminalRuleCall_1_0_1()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -27736,21 +26584,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeArtifactPredicate__ArtifactMatcherRefAssignment_1"
-    // InternalOseeDsl.g:10386:1: rule__RelationTypeArtifactPredicate__ArtifactMatcherRefAssignment_1 : ( ( RULE_STRING ) ) ;
+    // InternalOseeDsl.g:9950:1: rule__RelationTypeArtifactPredicate__ArtifactMatcherRefAssignment_1 : ( ( RULE_STRING ) ) ;
     public final void rule__RelationTypeArtifactPredicate__ArtifactMatcherRefAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10390:1: ( ( ( RULE_STRING ) ) )
-            // InternalOseeDsl.g:10391:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9954:1: ( ( ( RULE_STRING ) ) )
+            // InternalOseeDsl.g:9955:1: ( ( RULE_STRING ) )
             {
-            // InternalOseeDsl.g:10391:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:10392:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9955:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9956:1: ( RULE_STRING )
             {
              before(grammarAccess.getRelationTypeArtifactPredicateAccess().getArtifactMatcherRefXArtifactMatcherCrossReference_1_0()); 
-            // InternalOseeDsl.g:10393:1: ( RULE_STRING )
-            // InternalOseeDsl.g:10394:1: RULE_STRING
+            // InternalOseeDsl.g:9957:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9958:1: RULE_STRING
             {
              before(grammarAccess.getRelationTypeArtifactPredicateAccess().getArtifactMatcherRefXArtifactMatcherSTRINGTerminalRuleCall_1_0_1()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -27781,17 +26629,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ArtifactMatchRestriction__PermissionAssignment_0"
-    // InternalOseeDsl.g:10405:1: rule__ArtifactMatchRestriction__PermissionAssignment_0 : ( ruleAccessPermissionEnum ) ;
+    // InternalOseeDsl.g:9969:1: rule__ArtifactMatchRestriction__PermissionAssignment_0 : ( ruleAccessPermissionEnum ) ;
     public final void rule__ArtifactMatchRestriction__PermissionAssignment_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10409:1: ( ( ruleAccessPermissionEnum ) )
-            // InternalOseeDsl.g:10410:1: ( ruleAccessPermissionEnum )
+            // InternalOseeDsl.g:9973:1: ( ( ruleAccessPermissionEnum ) )
+            // InternalOseeDsl.g:9974:1: ( ruleAccessPermissionEnum )
             {
-            // InternalOseeDsl.g:10410:1: ( ruleAccessPermissionEnum )
-            // InternalOseeDsl.g:10411:1: ruleAccessPermissionEnum
+            // InternalOseeDsl.g:9974:1: ( ruleAccessPermissionEnum )
+            // InternalOseeDsl.g:9975:1: ruleAccessPermissionEnum
             {
              before(grammarAccess.getArtifactMatchRestrictionAccess().getPermissionAccessPermissionEnumEnumRuleCall_0_0()); 
             pushFollow(FOLLOW_2);
@@ -27822,21 +26670,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ArtifactMatchRestriction__ArtifactMatcherRefAssignment_3"
-    // InternalOseeDsl.g:10420:1: rule__ArtifactMatchRestriction__ArtifactMatcherRefAssignment_3 : ( ( RULE_STRING ) ) ;
+    // InternalOseeDsl.g:9984:1: rule__ArtifactMatchRestriction__ArtifactMatcherRefAssignment_3 : ( ( RULE_STRING ) ) ;
     public final void rule__ArtifactMatchRestriction__ArtifactMatcherRefAssignment_3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10424:1: ( ( ( RULE_STRING ) ) )
-            // InternalOseeDsl.g:10425:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9988:1: ( ( ( RULE_STRING ) ) )
+            // InternalOseeDsl.g:9989:1: ( ( RULE_STRING ) )
             {
-            // InternalOseeDsl.g:10425:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:10426:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9989:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:9990:1: ( RULE_STRING )
             {
              before(grammarAccess.getArtifactMatchRestrictionAccess().getArtifactMatcherRefXArtifactMatcherCrossReference_3_0()); 
-            // InternalOseeDsl.g:10427:1: ( RULE_STRING )
-            // InternalOseeDsl.g:10428:1: RULE_STRING
+            // InternalOseeDsl.g:9991:1: ( RULE_STRING )
+            // InternalOseeDsl.g:9992:1: RULE_STRING
             {
              before(grammarAccess.getArtifactMatchRestrictionAccess().getArtifactMatcherRefXArtifactMatcherSTRINGTerminalRuleCall_3_0_1()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -27867,17 +26715,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ArtifactTypeRestriction__PermissionAssignment_0"
-    // InternalOseeDsl.g:10439:1: rule__ArtifactTypeRestriction__PermissionAssignment_0 : ( ruleAccessPermissionEnum ) ;
+    // InternalOseeDsl.g:10003:1: rule__ArtifactTypeRestriction__PermissionAssignment_0 : ( ruleAccessPermissionEnum ) ;
     public final void rule__ArtifactTypeRestriction__PermissionAssignment_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10443:1: ( ( ruleAccessPermissionEnum ) )
-            // InternalOseeDsl.g:10444:1: ( ruleAccessPermissionEnum )
+            // InternalOseeDsl.g:10007:1: ( ( ruleAccessPermissionEnum ) )
+            // InternalOseeDsl.g:10008:1: ( ruleAccessPermissionEnum )
             {
-            // InternalOseeDsl.g:10444:1: ( ruleAccessPermissionEnum )
-            // InternalOseeDsl.g:10445:1: ruleAccessPermissionEnum
+            // InternalOseeDsl.g:10008:1: ( ruleAccessPermissionEnum )
+            // InternalOseeDsl.g:10009:1: ruleAccessPermissionEnum
             {
              before(grammarAccess.getArtifactTypeRestrictionAccess().getPermissionAccessPermissionEnumEnumRuleCall_0_0()); 
             pushFollow(FOLLOW_2);
@@ -27908,21 +26756,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3"
-    // InternalOseeDsl.g:10454:1: rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 : ( ( RULE_STRING ) ) ;
+    // InternalOseeDsl.g:10018:1: rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3 : ( ( RULE_STRING ) ) ;
     public final void rule__ArtifactTypeRestriction__ArtifactTypeRefAssignment_3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10458:1: ( ( ( RULE_STRING ) ) )
-            // InternalOseeDsl.g:10459:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:10022:1: ( ( ( RULE_STRING ) ) )
+            // InternalOseeDsl.g:10023:1: ( ( RULE_STRING ) )
             {
-            // InternalOseeDsl.g:10459:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:10460:1: ( RULE_STRING )
+            // InternalOseeDsl.g:10023:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:10024:1: ( RULE_STRING )
             {
              before(grammarAccess.getArtifactTypeRestrictionAccess().getArtifactTypeRefXArtifactTypeCrossReference_3_0()); 
-            // InternalOseeDsl.g:10461:1: ( RULE_STRING )
-            // InternalOseeDsl.g:10462:1: RULE_STRING
+            // InternalOseeDsl.g:10025:1: ( RULE_STRING )
+            // InternalOseeDsl.g:10026:1: RULE_STRING
             {
              before(grammarAccess.getArtifactTypeRestrictionAccess().getArtifactTypeRefXArtifactTypeSTRINGTerminalRuleCall_3_0_1()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -27953,17 +26801,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AttributeTypeRestriction__PermissionAssignment_0"
-    // InternalOseeDsl.g:10473:1: rule__AttributeTypeRestriction__PermissionAssignment_0 : ( ruleAccessPermissionEnum ) ;
+    // InternalOseeDsl.g:10037:1: rule__AttributeTypeRestriction__PermissionAssignment_0 : ( ruleAccessPermissionEnum ) ;
     public final void rule__AttributeTypeRestriction__PermissionAssignment_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10477:1: ( ( ruleAccessPermissionEnum ) )
-            // InternalOseeDsl.g:10478:1: ( ruleAccessPermissionEnum )
+            // InternalOseeDsl.g:10041:1: ( ( ruleAccessPermissionEnum ) )
+            // InternalOseeDsl.g:10042:1: ( ruleAccessPermissionEnum )
             {
-            // InternalOseeDsl.g:10478:1: ( ruleAccessPermissionEnum )
-            // InternalOseeDsl.g:10479:1: ruleAccessPermissionEnum
+            // InternalOseeDsl.g:10042:1: ( ruleAccessPermissionEnum )
+            // InternalOseeDsl.g:10043:1: ruleAccessPermissionEnum
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getPermissionAccessPermissionEnumEnumRuleCall_0_0()); 
             pushFollow(FOLLOW_2);
@@ -27994,21 +26842,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3"
-    // InternalOseeDsl.g:10488:1: rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 : ( ( RULE_STRING ) ) ;
+    // InternalOseeDsl.g:10052:1: rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3 : ( ( RULE_STRING ) ) ;
     public final void rule__AttributeTypeRestriction__AttributeTypeRefAssignment_3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10492:1: ( ( ( RULE_STRING ) ) )
-            // InternalOseeDsl.g:10493:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:10056:1: ( ( ( RULE_STRING ) ) )
+            // InternalOseeDsl.g:10057:1: ( ( RULE_STRING ) )
             {
-            // InternalOseeDsl.g:10493:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:10494:1: ( RULE_STRING )
+            // InternalOseeDsl.g:10057:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:10058:1: ( RULE_STRING )
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getAttributeTypeRefXAttributeTypeCrossReference_3_0()); 
-            // InternalOseeDsl.g:10495:1: ( RULE_STRING )
-            // InternalOseeDsl.g:10496:1: RULE_STRING
+            // InternalOseeDsl.g:10059:1: ( RULE_STRING )
+            // InternalOseeDsl.g:10060:1: RULE_STRING
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getAttributeTypeRefXAttributeTypeSTRINGTerminalRuleCall_3_0_1()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -28039,21 +26887,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2"
-    // InternalOseeDsl.g:10507:1: rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 : ( ( RULE_STRING ) ) ;
+    // InternalOseeDsl.g:10071:1: rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2 : ( ( RULE_STRING ) ) ;
     public final void rule__AttributeTypeRestriction__ArtifactTypeRefAssignment_4_2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10511:1: ( ( ( RULE_STRING ) ) )
-            // InternalOseeDsl.g:10512:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:10075:1: ( ( ( RULE_STRING ) ) )
+            // InternalOseeDsl.g:10076:1: ( ( RULE_STRING ) )
             {
-            // InternalOseeDsl.g:10512:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:10513:1: ( RULE_STRING )
+            // InternalOseeDsl.g:10076:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:10077:1: ( RULE_STRING )
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getArtifactTypeRefXArtifactTypeCrossReference_4_2_0()); 
-            // InternalOseeDsl.g:10514:1: ( RULE_STRING )
-            // InternalOseeDsl.g:10515:1: RULE_STRING
+            // InternalOseeDsl.g:10078:1: ( RULE_STRING )
+            // InternalOseeDsl.g:10079:1: RULE_STRING
             {
              before(grammarAccess.getAttributeTypeRestrictionAccess().getArtifactTypeRefXArtifactTypeSTRINGTerminalRuleCall_4_2_0_1()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -28084,17 +26932,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeRestriction__PermissionAssignment_0"
-    // InternalOseeDsl.g:10530:1: rule__RelationTypeRestriction__PermissionAssignment_0 : ( ruleAccessPermissionEnum ) ;
+    // InternalOseeDsl.g:10094:1: rule__RelationTypeRestriction__PermissionAssignment_0 : ( ruleAccessPermissionEnum ) ;
     public final void rule__RelationTypeRestriction__PermissionAssignment_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10534:1: ( ( ruleAccessPermissionEnum ) )
-            // InternalOseeDsl.g:10535:1: ( ruleAccessPermissionEnum )
+            // InternalOseeDsl.g:10098:1: ( ( ruleAccessPermissionEnum ) )
+            // InternalOseeDsl.g:10099:1: ( ruleAccessPermissionEnum )
             {
-            // InternalOseeDsl.g:10535:1: ( ruleAccessPermissionEnum )
-            // InternalOseeDsl.g:10536:1: ruleAccessPermissionEnum
+            // InternalOseeDsl.g:10099:1: ( ruleAccessPermissionEnum )
+            // InternalOseeDsl.g:10100:1: ruleAccessPermissionEnum
             {
              before(grammarAccess.getRelationTypeRestrictionAccess().getPermissionAccessPermissionEnumEnumRuleCall_0_0()); 
             pushFollow(FOLLOW_2);
@@ -28125,17 +26973,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeRestriction__RelationTypeMatchAssignment_3_0"
-    // InternalOseeDsl.g:10545:1: rule__RelationTypeRestriction__RelationTypeMatchAssignment_3_0 : ( ruleRelationTypeMatch ) ;
+    // InternalOseeDsl.g:10109:1: rule__RelationTypeRestriction__RelationTypeMatchAssignment_3_0 : ( ruleRelationTypeMatch ) ;
     public final void rule__RelationTypeRestriction__RelationTypeMatchAssignment_3_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10549:1: ( ( ruleRelationTypeMatch ) )
-            // InternalOseeDsl.g:10550:1: ( ruleRelationTypeMatch )
+            // InternalOseeDsl.g:10113:1: ( ( ruleRelationTypeMatch ) )
+            // InternalOseeDsl.g:10114:1: ( ruleRelationTypeMatch )
             {
-            // InternalOseeDsl.g:10550:1: ( ruleRelationTypeMatch )
-            // InternalOseeDsl.g:10551:1: ruleRelationTypeMatch
+            // InternalOseeDsl.g:10114:1: ( ruleRelationTypeMatch )
+            // InternalOseeDsl.g:10115:1: ruleRelationTypeMatch
             {
              before(grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeMatchRelationTypeMatchEnumRuleCall_3_0_0()); 
             pushFollow(FOLLOW_2);
@@ -28166,21 +27014,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeRestriction__RelationTypeRefAssignment_3_1"
-    // InternalOseeDsl.g:10560:1: rule__RelationTypeRestriction__RelationTypeRefAssignment_3_1 : ( ( RULE_STRING ) ) ;
+    // InternalOseeDsl.g:10124:1: rule__RelationTypeRestriction__RelationTypeRefAssignment_3_1 : ( ( RULE_STRING ) ) ;
     public final void rule__RelationTypeRestriction__RelationTypeRefAssignment_3_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10564:1: ( ( ( RULE_STRING ) ) )
-            // InternalOseeDsl.g:10565:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:10128:1: ( ( ( RULE_STRING ) ) )
+            // InternalOseeDsl.g:10129:1: ( ( RULE_STRING ) )
             {
-            // InternalOseeDsl.g:10565:1: ( ( RULE_STRING ) )
-            // InternalOseeDsl.g:10566:1: ( RULE_STRING )
+            // InternalOseeDsl.g:10129:1: ( ( RULE_STRING ) )
+            // InternalOseeDsl.g:10130:1: ( RULE_STRING )
             {
              before(grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeRefXRelationTypeCrossReference_3_1_0()); 
-            // InternalOseeDsl.g:10567:1: ( RULE_STRING )
-            // InternalOseeDsl.g:10568:1: RULE_STRING
+            // InternalOseeDsl.g:10131:1: ( RULE_STRING )
+            // InternalOseeDsl.g:10132:1: RULE_STRING
             {
              before(grammarAccess.getRelationTypeRestrictionAccess().getRelationTypeRefXRelationTypeSTRINGTerminalRuleCall_3_1_0_1()); 
             match(input,RULE_STRING,FOLLOW_2); 
@@ -28211,17 +27059,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeRestriction__RestrictedToSideAssignment_4"
-    // InternalOseeDsl.g:10579:1: rule__RelationTypeRestriction__RestrictedToSideAssignment_4 : ( ruleXRelationSideEnum ) ;
+    // InternalOseeDsl.g:10143:1: rule__RelationTypeRestriction__RestrictedToSideAssignment_4 : ( ruleXRelationSideEnum ) ;
     public final void rule__RelationTypeRestriction__RestrictedToSideAssignment_4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10583:1: ( ( ruleXRelationSideEnum ) )
-            // InternalOseeDsl.g:10584:1: ( ruleXRelationSideEnum )
+            // InternalOseeDsl.g:10147:1: ( ( ruleXRelationSideEnum ) )
+            // InternalOseeDsl.g:10148:1: ( ruleXRelationSideEnum )
             {
-            // InternalOseeDsl.g:10584:1: ( ruleXRelationSideEnum )
-            // InternalOseeDsl.g:10585:1: ruleXRelationSideEnum
+            // InternalOseeDsl.g:10148:1: ( ruleXRelationSideEnum )
+            // InternalOseeDsl.g:10149:1: ruleXRelationSideEnum
             {
              before(grammarAccess.getRelationTypeRestrictionAccess().getRestrictedToSideXRelationSideEnumEnumRuleCall_4_0()); 
             pushFollow(FOLLOW_2);
@@ -28252,17 +27100,17 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__RelationTypeRestriction__PredicateAssignment_5"
-    // InternalOseeDsl.g:10594:1: rule__RelationTypeRestriction__PredicateAssignment_5 : ( ruleRelationTypePredicate ) ;
+    // InternalOseeDsl.g:10158:1: rule__RelationTypeRestriction__PredicateAssignment_5 : ( ruleRelationTypePredicate ) ;
     public final void rule__RelationTypeRestriction__PredicateAssignment_5() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // InternalOseeDsl.g:10598:1: ( ( ruleRelationTypePredicate ) )
-            // InternalOseeDsl.g:10599:1: ( ruleRelationTypePredicate )
+            // InternalOseeDsl.g:10162:1: ( ( ruleRelationTypePredicate ) )
+            // InternalOseeDsl.g:10163:1: ( ruleRelationTypePredicate )
             {
-            // InternalOseeDsl.g:10599:1: ( ruleRelationTypePredicate )
-            // InternalOseeDsl.g:10600:1: ruleRelationTypePredicate
+            // InternalOseeDsl.g:10163:1: ( ruleRelationTypePredicate )
+            // InternalOseeDsl.g:10164:1: ruleRelationTypePredicate
             {
              before(grammarAccess.getRelationTypeRestrictionAccess().getPredicateRelationTypePredicateParserRuleCall_5_0()); 
             pushFollow(FOLLOW_2);
@@ -28298,63 +27146,63 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
     public static final BitSet FOLLOW_1 = new BitSet(new long[]{0x0000000000000000L});
     public static final BitSet FOLLOW_2 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_3 = new BitSet(new long[]{0x1010000000000000L,0x000000021900A480L});
+    public static final BitSet FOLLOW_3 = new BitSet(new long[]{0x0810000000000000L,0x000000020C805240L});
     public static final BitSet FOLLOW_4 = new BitSet(new long[]{0x0004000000000002L});
-    public static final BitSet FOLLOW_5 = new BitSet(new long[]{0x1010000000000002L,0x000000020000A480L});
-    public static final BitSet FOLLOW_6 = new BitSet(new long[]{0x0000000000000002L,0x0000000019000000L});
+    public static final BitSet FOLLOW_5 = new BitSet(new long[]{0x0810000000000002L,0x0000000200005240L});
+    public static final BitSet FOLLOW_6 = new BitSet(new long[]{0x0000000000000002L,0x000000000C800000L});
     public static final BitSet FOLLOW_7 = new BitSet(new long[]{0x0000000000000040L});
     public static final BitSet FOLLOW_8 = new BitSet(new long[]{0x0008000000000000L});
     public static final BitSet FOLLOW_9 = new BitSet(new long[]{0x0008000000000002L});
     public static final BitSet FOLLOW_10 = new BitSet(new long[]{0x0000000000000020L});
     public static final BitSet FOLLOW_11 = new BitSet(new long[]{0x0010000000000000L,0x0000000200000000L});
     public static final BitSet FOLLOW_12 = new BitSet(new long[]{0x0120000000000000L});
-    public static final BitSet FOLLOW_13 = new BitSet(new long[]{0x0440000000000000L});
+    public static final BitSet FOLLOW_13 = new BitSet(new long[]{0x0040000000000000L});
     public static final BitSet FOLLOW_14 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_15 = new BitSet(new long[]{0x0880000000000000L});
-    public static final BitSet FOLLOW_16 = new BitSet(new long[]{0x0800000000000002L});
+    public static final BitSet FOLLOW_15 = new BitSet(new long[]{0x0480000000000000L});
+    public static final BitSet FOLLOW_16 = new BitSet(new long[]{0x0400000000000002L});
     public static final BitSet FOLLOW_17 = new BitSet(new long[]{0x0200000000000000L});
     public static final BitSet FOLLOW_18 = new BitSet(new long[]{0x0200000000000002L});
     public static final BitSet FOLLOW_19 = new BitSet(new long[]{0x0000100000000000L});
     public static final BitSet FOLLOW_20 = new BitSet(new long[]{0x0100000000000000L});
-    public static final BitSet FOLLOW_21 = new BitSet(new long[]{0x0020000000000000L,0x0000000000000001L});
-    public static final BitSet FOLLOW_22 = new BitSet(new long[]{0x2000000000000000L});
+    public static final BitSet FOLLOW_21 = new BitSet(new long[]{0x8020000000000000L});
+    public static final BitSet FOLLOW_22 = new BitSet(new long[]{0x1000000000000000L});
     public static final BitSet FOLLOW_23 = new BitSet(new long[]{0x0000000000006020L});
-    public static final BitSet FOLLOW_24 = new BitSet(new long[]{0x4000000000000000L});
-    public static final BitSet FOLLOW_25 = new BitSet(new long[]{0x8000000000000000L});
+    public static final BitSet FOLLOW_24 = new BitSet(new long[]{0x2000000000000000L});
+    public static final BitSet FOLLOW_25 = new BitSet(new long[]{0x4000000000000000L});
     public static final BitSet FOLLOW_26 = new BitSet(new long[]{0x0000000000008010L});
-    public static final BitSet FOLLOW_27 = new BitSet(new long[]{0x0000000000000000L,0x000000000000007EL});
+    public static final BitSet FOLLOW_27 = new BitSet(new long[]{0x0000000000000000L,0x000000000000003FL});
     public static final BitSet FOLLOW_28 = new BitSet(new long[]{0x0080000000000000L});
     public static final BitSet FOLLOW_29 = new BitSet(new long[]{0x000000003FFE6020L});
     public static final BitSet FOLLOW_30 = new BitSet(new long[]{0x0000000000016020L});
     public static final BitSet FOLLOW_31 = new BitSet(new long[]{0x0020000000000000L});
-    public static final BitSet FOLLOW_32 = new BitSet(new long[]{0x0080000000000000L,0x0000000000000100L});
-    public static final BitSet FOLLOW_33 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000100L});
-    public static final BitSet FOLLOW_34 = new BitSet(new long[]{0x0000000000000010L,0x0000000000000208L});
-    public static final BitSet FOLLOW_35 = new BitSet(new long[]{0x0080000000000000L,0x0000000400001800L});
-    public static final BitSet FOLLOW_36 = new BitSet(new long[]{0x0000000000000002L,0x0000000000001800L});
-    public static final BitSet FOLLOW_37 = new BitSet(new long[]{0x0000000000000000L,0x0000000400005800L});
-    public static final BitSet FOLLOW_38 = new BitSet(new long[]{0x0000000000000002L,0x0000000400005800L});
-    public static final BitSet FOLLOW_39 = new BitSet(new long[]{0x0800000000000000L});
-    public static final BitSet FOLLOW_40 = new BitSet(new long[]{0x0000000000000000L,0x0000000000010000L});
-    public static final BitSet FOLLOW_41 = new BitSet(new long[]{0x0000000000000000L,0x0000000000020000L});
-    public static final BitSet FOLLOW_42 = new BitSet(new long[]{0x0000000000000000L,0x0000000000040000L});
-    public static final BitSet FOLLOW_43 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
-    public static final BitSet FOLLOW_44 = new BitSet(new long[]{0x0000000000000000L,0x0000000000100000L});
+    public static final BitSet FOLLOW_32 = new BitSet(new long[]{0x0080000000000000L,0x0000000000000080L});
+    public static final BitSet FOLLOW_33 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000080L});
+    public static final BitSet FOLLOW_34 = new BitSet(new long[]{0x0000000000000010L,0x0000000000000104L});
+    public static final BitSet FOLLOW_35 = new BitSet(new long[]{0x0080000000000000L,0x0000000400000C00L});
+    public static final BitSet FOLLOW_36 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000C00L});
+    public static final BitSet FOLLOW_37 = new BitSet(new long[]{0x0000000000000000L,0x0000000400002C00L});
+    public static final BitSet FOLLOW_38 = new BitSet(new long[]{0x0000000000000002L,0x0000000400002C00L});
+    public static final BitSet FOLLOW_39 = new BitSet(new long[]{0x0400000000000000L});
+    public static final BitSet FOLLOW_40 = new BitSet(new long[]{0x0000000000000000L,0x0000000000008000L});
+    public static final BitSet FOLLOW_41 = new BitSet(new long[]{0x0000000000000000L,0x0000000000010000L});
+    public static final BitSet FOLLOW_42 = new BitSet(new long[]{0x0000000000000000L,0x0000000000020000L});
+    public static final BitSet FOLLOW_43 = new BitSet(new long[]{0x0000000000000000L,0x0000000000040000L});
+    public static final BitSet FOLLOW_44 = new BitSet(new long[]{0x0000000000000000L,0x0000000000080000L});
     public static final BitSet FOLLOW_45 = new BitSet(new long[]{0x00000001C0000020L});
-    public static final BitSet FOLLOW_46 = new BitSet(new long[]{0x0000000000000000L,0x0000000000200000L});
+    public static final BitSet FOLLOW_46 = new BitSet(new long[]{0x0000000000000000L,0x0000000000100000L});
     public static final BitSet FOLLOW_47 = new BitSet(new long[]{0x0000001E00000000L});
     public static final BitSet FOLLOW_48 = new BitSet(new long[]{0x0000006000000000L});
     public static final BitSet FOLLOW_49 = new BitSet(new long[]{0x00001E0000000000L});
     public static final BitSet FOLLOW_50 = new BitSet(new long[]{0x0000018000000000L});
-    public static final BitSet FOLLOW_51 = new BitSet(new long[]{0x0000000000000000L,0x0000000000800000L});
+    public static final BitSet FOLLOW_51 = new BitSet(new long[]{0x0000000000000000L,0x0000000000400000L});
     public static final BitSet FOLLOW_52 = new BitSet(new long[]{0x0000018000000002L});
-    public static final BitSet FOLLOW_53 = new BitSet(new long[]{0x0000000000000000L,0x0000000002000000L});
-    public static final BitSet FOLLOW_54 = new BitSet(new long[]{0x00001E0000000000L,0x0000000000400000L});
-    public static final BitSet FOLLOW_55 = new BitSet(new long[]{0x0000018000000000L,0x0000000004000000L});
-    public static final BitSet FOLLOW_56 = new BitSet(new long[]{0x0400000000000000L,0x0000000010000000L});
-    public static final BitSet FOLLOW_57 = new BitSet(new long[]{0x0400000000000002L,0x0000000010000000L});
-    public static final BitSet FOLLOW_58 = new BitSet(new long[]{0x0000000000000000L,0x0000000004000000L});
-    public static final BitSet FOLLOW_59 = new BitSet(new long[]{0x0400000000000000L});
+    public static final BitSet FOLLOW_53 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
+    public static final BitSet FOLLOW_54 = new BitSet(new long[]{0x00001E0000000000L,0x0000000000200000L});
+    public static final BitSet FOLLOW_55 = new BitSet(new long[]{0x0000018000000000L,0x0000000002000000L});
+    public static final BitSet FOLLOW_56 = new BitSet(new long[]{0x0000000000000000L,0x0000000018000000L});
+    public static final BitSet FOLLOW_57 = new BitSet(new long[]{0x0000000000000002L,0x0000000018000000L});
+    public static final BitSet FOLLOW_58 = new BitSet(new long[]{0x0000000000000000L,0x0000000002000000L});
+    public static final BitSet FOLLOW_59 = new BitSet(new long[]{0x0000000000000000L,0x0000000010000000L});
     public static final BitSet FOLLOW_60 = new BitSet(new long[]{0x0000600000000000L,0x0000000020000000L});
     public static final BitSet FOLLOW_61 = new BitSet(new long[]{0x0000600000000002L,0x0000000020000000L});
     public static final BitSet FOLLOW_62 = new BitSet(new long[]{0x0000600000000000L});
@@ -28362,12 +27210,12 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
     public static final BitSet FOLLOW_64 = new BitSet(new long[]{0x0000000000000000L,0x0000000080000000L});
     public static final BitSet FOLLOW_65 = new BitSet(new long[]{0x0000000000000000L,0x0000000040000000L});
     public static final BitSet FOLLOW_66 = new BitSet(new long[]{0x0010000000000000L});
-    public static final BitSet FOLLOW_67 = new BitSet(new long[]{0x1000000000000000L});
-    public static final BitSet FOLLOW_68 = new BitSet(new long[]{0x0000000000000000L,0x0000000104000000L});
-    public static final BitSet FOLLOW_69 = new BitSet(new long[]{0x0000000000000000L,0x0000000000008000L});
+    public static final BitSet FOLLOW_67 = new BitSet(new long[]{0x0800000000000000L});
+    public static final BitSet FOLLOW_68 = new BitSet(new long[]{0x0000000000000000L,0x0000000102000000L});
+    public static final BitSet FOLLOW_69 = new BitSet(new long[]{0x0000000000000000L,0x0000000000004000L});
     public static final BitSet FOLLOW_70 = new BitSet(new long[]{0x0000000000001040L});
     public static final BitSet FOLLOW_71 = new BitSet(new long[]{0x0003800000000000L});
-    public static final BitSet FOLLOW_72 = new BitSet(new long[]{0x0010000000000000L,0x0000000044000000L});
-    public static final BitSet FOLLOW_73 = new BitSet(new long[]{0x0000000000000002L,0x000000000000007EL});
+    public static final BitSet FOLLOW_72 = new BitSet(new long[]{0x0010000000000000L,0x0000000042000000L});
+    public static final BitSet FOLLOW_73 = new BitSet(new long[]{0x0000000000000002L,0x000000000000003FL});
 
 }

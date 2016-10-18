@@ -82,12 +82,12 @@ public class ArtifactMatchInterpreterTest {
    }
 
    @Test
-   public void testArtifactGuidEq() throws OseeCoreException {
+   public void testartifactIdEq() throws OseeCoreException {
       String guid = GUID.create();
       XArtifactMatcher matcher =
-         MockModel.createMatcher("artifactMatcher \"Test\" where artifactGuid EQ \"" + guid + "\";");
+         MockModel.createMatcher("artifactMatcher \"Test\" where artifactId EQ \"" + guid + "\";");
 
-      DslAsserts.assertEquals(matcher.getConditions().iterator().next(), MatchField.ARTIFACT_GUID, CompareOp.EQ, guid);
+      DslAsserts.assertEquals(matcher.getConditions().iterator().next(), MatchField.ARTIFACT_ID, CompareOp.EQ, guid);
 
       ArtifactProxy proxy = createProxy(guid, "");
       boolean actual = interpreter.matches(matcher, proxy);
@@ -95,10 +95,10 @@ public class ArtifactMatchInterpreterTest {
    }
 
    @Test
-   public void testArtifactGuidLike() throws OseeCoreException {
-      XArtifactMatcher matcher = MockModel.createMatcher("artifactMatcher \"Test\" where artifactGuid LIKE \"\\w+\";");
+   public void testartifactIdLike() throws OseeCoreException {
+      XArtifactMatcher matcher = MockModel.createMatcher("artifactMatcher \"Test\" where artifactId LIKE \"\\w+\";");
 
-      DslAsserts.assertEquals(matcher.getConditions().iterator().next(), MatchField.ARTIFACT_GUID, CompareOp.LIKE,
+      DslAsserts.assertEquals(matcher.getConditions().iterator().next(), MatchField.ARTIFACT_ID, CompareOp.LIKE,
          "\\w+");
 
       ArtifactProxy proxy = createProxy("ABCDEFGHIJK123456789", "");
@@ -164,20 +164,20 @@ public class ArtifactMatchInterpreterTest {
    @Test
    public void testCompoundCondition1() throws OseeCoreException {
       XArtifactMatcher andMatcher = MockModel.createMatcher(
-         "artifactMatcher \"Test\" where artifactGuid EQ \"ABCDEFGHIJK123456789\" AND artifactName EQ \"myArtifact\";");
+         "artifactMatcher \"Test\" where artifactId EQ \"ABCDEFGHIJK123456789\" AND artifactName EQ \"myArtifact\";");
 
       Iterator<Condition> iterator = andMatcher.getConditions().iterator();
-      DslAsserts.assertEquals(iterator.next(), MatchField.ARTIFACT_GUID, CompareOp.EQ, "ABCDEFGHIJK123456789");
+      DslAsserts.assertEquals(iterator.next(), MatchField.ARTIFACT_ID, CompareOp.EQ, "ABCDEFGHIJK123456789");
       DslAsserts.assertEquals(iterator.next(), MatchField.ARTIFACT_NAME, CompareOp.EQ, "myArtifact");
 
       Assert.assertEquals(1, andMatcher.getOperators().size());
       Assert.assertEquals(XLogicOperator.AND, andMatcher.getOperators().iterator().next());
 
       XArtifactMatcher orMatcher = MockModel.createMatcher(
-         "artifactMatcher \"Test\" where artifactGuid EQ \"ABCDEFGHIJK123456789\" OR artifactName EQ \"myArtifact\";");
+         "artifactMatcher \"Test\" where artifactId EQ \"ABCDEFGHIJK123456789\" OR artifactName EQ \"myArtifact\";");
 
       Iterator<Condition> iterator2 = orMatcher.getConditions().iterator();
-      DslAsserts.assertEquals(iterator2.next(), MatchField.ARTIFACT_GUID, CompareOp.EQ, "ABCDEFGHIJK123456789");
+      DslAsserts.assertEquals(iterator2.next(), MatchField.ARTIFACT_ID, CompareOp.EQ, "ABCDEFGHIJK123456789");
       DslAsserts.assertEquals(iterator2.next(), MatchField.ARTIFACT_NAME, CompareOp.EQ, "myArtifact");
 
       Assert.assertEquals(1, orMatcher.getOperators().size());
@@ -202,11 +202,11 @@ public class ArtifactMatchInterpreterTest {
    @Test
    public void testCompoundCondition2() throws OseeCoreException {
       XArtifactMatcher matcher = MockModel.createMatcher(
-         "artifactMatcher \"Test\" where artifactGuid EQ \"ABCDEFGHIJK123456789\" AND (branchName EQ \"myArtifact\" OR branchUuid EQ \"3456789101112131415\");");
+         "artifactMatcher \"Test\" where artifactId EQ \"ABCDEFGHIJK123456789\" AND (branchName EQ \"myArtifact\" OR branchUuid EQ \"3456789101112131415\");");
 
       Assert.assertEquals(2, matcher.getConditions().size());
       Iterator<Condition> iterator = matcher.getConditions().iterator();
-      DslAsserts.assertEquals(iterator.next(), MatchField.ARTIFACT_GUID, CompareOp.EQ, "ABCDEFGHIJK123456789");
+      DslAsserts.assertEquals(iterator.next(), MatchField.ARTIFACT_ID, CompareOp.EQ, "ABCDEFGHIJK123456789");
 
       Assert.assertEquals(1, matcher.getOperators().size());
       Assert.assertEquals(XLogicOperator.AND, matcher.getOperators().iterator().next());

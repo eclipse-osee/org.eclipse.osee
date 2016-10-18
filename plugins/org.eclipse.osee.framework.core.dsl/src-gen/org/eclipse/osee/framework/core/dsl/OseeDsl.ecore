@@ -30,7 +30,6 @@
   <eClassifiers xsi:type="ecore:EClass" name="OseeElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="OseeType" eSuperTypes="#//OseeElement">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeGuid" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="XArtifactType" eSuperTypes="#//OseeType">
@@ -126,7 +125,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="MatchField">
     <eLiterals name="artifactName" literal="artifactName"/>
-    <eLiterals name="artifactGuid" value="1" literal="artifactGuid"/>
+    <eLiterals name="artifactId" value="1" literal="artifactId"/>
     <eLiterals name="branchName" value="2" literal="branchName"/>
     <eLiterals name="branchUuid" value="3" literal="branchUuid"/>
   </eClassifiers>

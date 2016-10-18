@@ -33,7 +33,7 @@ OseeType:
 XArtifactType:
 	(abstract?='abstract')? 'artifactType' name=STRING ('extends'
 	superArtifactTypes+=[XArtifactType|STRING] (','
-	superArtifactTypes+=[XArtifactType|STRING])*)? '{' ('guid' typeGuid=STRING)?
+	superArtifactTypes+=[XArtifactType|STRING])*)? '{'
 	'id' id=WHOLE_NUM_STR
 	(validAttributeTypes+=XAttributeTypeRef)* '}';
 
@@ -42,7 +42,7 @@ XAttributeTypeRef:
 
 XAttributeType:
 	'attributeType' name=STRING ('extends' baseAttributeType=AttributeBaseType) ('overrides'
-	override=[XAttributeType|STRING])? '{' ('guid' typeGuid=STRING)? 'id' id=WHOLE_NUM_STR 'dataProvider'
+	override=[XAttributeType|STRING])? '{' 'id' id=WHOLE_NUM_STR 'dataProvider'
 	dataProvider=('DefaultAttributeDataProvider' | 'UriAttributeDataProvider' | QUALIFIED_NAME) 'min' min=WHOLE_NUM_STR
 	'max' max=(WHOLE_NUM_STR | 'unlimited') (('taggerId' taggerId=('DefaultAttributeTaggerProvider' | QUALIFIED_NAME))? &
 	('enumType' enumType=[XOseeEnumType|STRING])? & ('description' description=STRING)? & ('defaultValue'
@@ -55,7 +55,7 @@ AttributeBaseType:
 	QUALIFIED_NAME;
 
 XOseeEnumType:
-	'oseeEnumType' name=STRING '{' ('guid' typeGuid=STRING)? 'id' id=WHOLE_NUM_STR (enumEntries+=XOseeEnumEntry)* '}';
+	'oseeEnumType' name=STRING '{' 'id' id=WHOLE_NUM_STR (enumEntries+=XOseeEnumEntry)* '}';
 
 XOseeEnumEntry:
 	'entry' name=STRING (ordinal=WHOLE_NUM_STR)? ('entryGuid' entryGuid=STRING)? ('description' description=STRING)?;
@@ -92,7 +92,7 @@ UpdateAttribute:
 	'update' attribute=XAttributeTypeRef;
 
 XRelationType:
-	'relationType' name=STRING '{' ('guid' typeGuid=STRING)? 'id' id=WHOLE_NUM_STR
+	'relationType' name=STRING '{' 'id' id=WHOLE_NUM_STR
 	'sideAName' sideAName=STRING 'sideAArtifactType' sideAArtifactType=[XArtifactType|STRING]
 	'sideBName' sideBName=STRING 'sideBArtifactType' sideBArtifactType=[XArtifactType|STRING]
 	'defaultOrderType' defaultOrderType=RelationOrderType 'multiplicity' multiplicity=RelationMultiplicityEnum '}';
@@ -116,7 +116,7 @@ CONDITION_VALUE:
 	WHOLE_NUM_STR | STRING;
 
 enum MatchField:
-	artifactName | artifactGuid | branchName | branchUuid;
+	artifactName | artifactId | branchName | branchUuid;
 
 Condition:
 	SimpleCondition | CompoundCondition;

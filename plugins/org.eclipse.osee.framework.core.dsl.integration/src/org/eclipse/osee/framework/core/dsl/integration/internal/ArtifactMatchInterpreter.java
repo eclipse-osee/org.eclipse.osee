@@ -100,7 +100,7 @@ public class ArtifactMatchInterpreter {
       String input = null;
       MatchField field = condition.getField();
       switch (field) {
-         case ARTIFACT_GUID:
+         case ARTIFACT_ID:
             input = proxy.getGuid();
             Conditions.checkExpressionFailOnTrue(!GUID.isValid(input), "guid");
             break;

@@ -23,7 +23,7 @@
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="OseeDsl.ecore#//MatchField">
       <genEnumLiterals ecoreEnumLiteral="OseeDsl.ecore#//MatchField/artifactName"/>
-      <genEnumLiterals ecoreEnumLiteral="OseeDsl.ecore#//MatchField/artifactGuid"/>
+      <genEnumLiterals ecoreEnumLiteral="OseeDsl.ecore#//MatchField/artifactId"/>
       <genEnumLiterals ecoreEnumLiteral="OseeDsl.ecore#//MatchField/branchName"/>
       <genEnumLiterals ecoreEnumLiteral="OseeDsl.ecore#//MatchField/branchUuid"/>
     </genEnums>
@@ -57,7 +57,6 @@
     <genClasses ecoreClass="OseeDsl.ecore#//OseeElement"/>
     <genClasses ecoreClass="OseeDsl.ecore#//OseeType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//OseeType/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//OseeType/typeGuid"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//OseeType/id"/>
     </genClasses>
     <genClasses ecoreClass="OseeDsl.ecore#//XArtifactType">

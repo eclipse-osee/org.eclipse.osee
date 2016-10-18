@@ -30,14 +30,14 @@ public enum MatchField implements Enumerator
   ARTIFACT_NAME(0, "artifactName", "artifactName"),
 
   /**
-   * The '<em><b>Artifact Guid</b></em>' literal object.
+   * The '<em><b>Artifact Id</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #ARTIFACT_GUID_VALUE
+   * @see #ARTIFACT_ID_VALUE
    * @generated
    * @ordered
    */
-  ARTIFACT_GUID(1, "artifactGuid", "artifactGuid"),
+  ARTIFACT_ID(1, "artifactId", "artifactId"),
 
   /**
    * The '<em><b>Branch Name</b></em>' literal object.
@@ -75,19 +75,19 @@ public enum MatchField implements Enumerator
   public static final int ARTIFACT_NAME_VALUE = 0;
 
   /**
-   * The '<em><b>Artifact Guid</b></em>' literal value.
+   * The '<em><b>Artifact Id</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of '<em><b>Artifact Guid</b></em>' literal object isn't clear,
+   * If the meaning of '<em><b>Artifact Id</b></em>' literal object isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @see #ARTIFACT_GUID
-   * @model name="artifactGuid"
+   * @see #ARTIFACT_ID
+   * @model name="artifactId"
    * @generated
    * @ordered
    */
-  public static final int ARTIFACT_GUID_VALUE = 1;
+  public static final int ARTIFACT_ID_VALUE = 1;
 
   /**
    * The '<em><b>Branch Name</b></em>' literal value.
@@ -129,7 +129,7 @@ public enum MatchField implements Enumerator
     new MatchField[]
     {
       ARTIFACT_NAME,
-      ARTIFACT_GUID,
+      ARTIFACT_ID,
       BRANCH_NAME,
       BRANCH_UUID,
     };
@@ -197,7 +197,7 @@ public enum MatchField implements Enumerator
     switch (value)
     {
       case ARTIFACT_NAME_VALUE: return ARTIFACT_NAME;
-      case ARTIFACT_GUID_VALUE: return ARTIFACT_GUID;
+      case ARTIFACT_ID_VALUE: return ARTIFACT_ID;
       case BRANCH_NAME_VALUE: return BRANCH_NAME;
       case BRANCH_UUID_VALUE: return BRANCH_UUID;
     }

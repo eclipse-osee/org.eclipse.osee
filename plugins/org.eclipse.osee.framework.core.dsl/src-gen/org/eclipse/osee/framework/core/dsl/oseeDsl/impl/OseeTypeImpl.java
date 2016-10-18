@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeType;
  * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeTypeImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeTypeImpl#getTypeGuid <em>Type Guid</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeTypeImpl#getId <em>Id</em>}</li>
  * </ul>
  *
@@ -47,26 +46,6 @@ public class OseeTypeImpl extends OseeElementImpl implements OseeType
    * @ordered
    */
   protected String name = NAME_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getTypeGuid() <em>Type Guid</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTypeGuid()
-   * @generated
-   * @ordered
-   */
-  protected static final String TYPE_GUID_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getTypeGuid() <em>Type Guid</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getTypeGuid()
-   * @generated
-   * @ordered
-   */
-  protected String typeGuid = TYPE_GUID_EDEFAULT;
 
   /**
    * The default value of the '{@link #getId() <em>Id</em>}' attribute.
@@ -137,29 +116,6 @@ public class OseeTypeImpl extends OseeElementImpl implements OseeType
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getTypeGuid()
-  {
-    return typeGuid;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setTypeGuid(String newTypeGuid)
-  {
-    String oldTypeGuid = typeGuid;
-    typeGuid = newTypeGuid;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.OSEE_TYPE__TYPE_GUID, oldTypeGuid, typeGuid));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public String getId()
   {
     return id;
@@ -190,8 +146,6 @@ public class OseeTypeImpl extends OseeElementImpl implements OseeType
     {
       case OseeDslPackage.OSEE_TYPE__NAME:
         return getName();
-      case OseeDslPackage.OSEE_TYPE__TYPE_GUID:
-        return getTypeGuid();
       case OseeDslPackage.OSEE_TYPE__ID:
         return getId();
     }
@@ -210,9 +164,6 @@ public class OseeTypeImpl extends OseeElementImpl implements OseeType
     {
       case OseeDslPackage.OSEE_TYPE__NAME:
         setName((String)newValue);
-        return;
-      case OseeDslPackage.OSEE_TYPE__TYPE_GUID:
-        setTypeGuid((String)newValue);
         return;
       case OseeDslPackage.OSEE_TYPE__ID:
         setId((String)newValue);
@@ -234,9 +185,6 @@ public class OseeTypeImpl extends OseeElementImpl implements OseeType
       case OseeDslPackage.OSEE_TYPE__NAME:
         setName(NAME_EDEFAULT);
         return;
-      case OseeDslPackage.OSEE_TYPE__TYPE_GUID:
-        setTypeGuid(TYPE_GUID_EDEFAULT);
-        return;
       case OseeDslPackage.OSEE_TYPE__ID:
         setId(ID_EDEFAULT);
         return;
@@ -256,8 +204,6 @@ public class OseeTypeImpl extends OseeElementImpl implements OseeType
     {
       case OseeDslPackage.OSEE_TYPE__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-      case OseeDslPackage.OSEE_TYPE__TYPE_GUID:
-        return TYPE_GUID_EDEFAULT == null ? typeGuid != null : !TYPE_GUID_EDEFAULT.equals(typeGuid);
       case OseeDslPackage.OSEE_TYPE__ID:
         return ID_EDEFAULT == null ? id != null : !ID_EDEFAULT.equals(id);
     }
@@ -277,8 +223,6 @@ public class OseeTypeImpl extends OseeElementImpl implements OseeType
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (name: ");
     result.append(name);
-    result.append(", typeGuid: ");
-    result.append(typeGuid);
     result.append(", id: ");
     result.append(id);
     result.append(')');

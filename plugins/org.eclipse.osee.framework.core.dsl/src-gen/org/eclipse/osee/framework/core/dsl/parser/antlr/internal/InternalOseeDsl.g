@@ -507,37 +507,15 @@ ruleXArtifactType returns [EObject current=null]
     {
     	newLeafNode(otherlv_7, grammarAccess.getXArtifactTypeAccess().getLeftCurlyBracketKeyword_4());
     }
-(	otherlv_8='guid' 
+	otherlv_8='id' 
     {
-    	newLeafNode(otherlv_8, grammarAccess.getXArtifactTypeAccess().getGuidKeyword_5_0());
+    	newLeafNode(otherlv_8, grammarAccess.getXArtifactTypeAccess().getIdKeyword_5());
     }
 (
 (
-		lv_typeGuid_9_0=RULE_STRING
+		lv_id_9_0=RULE_WHOLE_NUM_STR
 		{
-			newLeafNode(lv_typeGuid_9_0, grammarAccess.getXArtifactTypeAccess().getTypeGuidSTRINGTerminalRuleCall_5_1_0()); 
-		}
-		{
-	        if ($current==null) {
-	            $current = createModelElement(grammarAccess.getXArtifactTypeRule());
-	        }
-       		setWithLastConsumed(
-       			$current, 
-       			"typeGuid",
-        		lv_typeGuid_9_0, 
-        		"org.eclipse.osee.framework.core.dsl.OseeDsl.STRING");
-	    }
-
-)
-))?	otherlv_10='id' 
-    {
-    	newLeafNode(otherlv_10, grammarAccess.getXArtifactTypeAccess().getIdKeyword_6());
-    }
-(
-(
-		lv_id_11_0=RULE_WHOLE_NUM_STR
-		{
-			newLeafNode(lv_id_11_0, grammarAccess.getXArtifactTypeAccess().getIdWHOLE_NUM_STRTerminalRuleCall_7_0()); 
+			newLeafNode(lv_id_9_0, grammarAccess.getXArtifactTypeAccess().getIdWHOLE_NUM_STRTerminalRuleCall_6_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -546,7 +524,7 @@ ruleXArtifactType returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"id",
-        		lv_id_11_0, 
+        		lv_id_9_0, 
         		"org.eclipse.osee.framework.core.dsl.OseeDsl.WHOLE_NUM_STR");
 	    }
 
@@ -554,24 +532,24 @@ ruleXArtifactType returns [EObject current=null]
 )(
 (
 		{ 
-	        newCompositeNode(grammarAccess.getXArtifactTypeAccess().getValidAttributeTypesXAttributeTypeRefParserRuleCall_8_0()); 
+	        newCompositeNode(grammarAccess.getXArtifactTypeAccess().getValidAttributeTypesXAttributeTypeRefParserRuleCall_7_0()); 
 	    }
-		lv_validAttributeTypes_12_0=ruleXAttributeTypeRef		{
+		lv_validAttributeTypes_10_0=ruleXAttributeTypeRef		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getXArtifactTypeRule());
 	        }
        		add(
        			$current, 
        			"validAttributeTypes",
-        		lv_validAttributeTypes_12_0, 
+        		lv_validAttributeTypes_10_0, 
         		"org.eclipse.osee.framework.core.dsl.OseeDsl.XAttributeTypeRef");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-)*	otherlv_13='}' 
+)*	otherlv_11='}' 
     {
-    	newLeafNode(otherlv_13, grammarAccess.getXArtifactTypeAccess().getRightCurlyBracketKeyword_9());
+    	newLeafNode(otherlv_11, grammarAccess.getXArtifactTypeAccess().getRightCurlyBracketKeyword_8());
     }
 )
 ;
@@ -719,37 +697,15 @@ ruleXAttributeType returns [EObject current=null]
     {
     	newLeafNode(otherlv_6, grammarAccess.getXAttributeTypeAccess().getLeftCurlyBracketKeyword_4());
     }
-(	otherlv_7='guid' 
+	otherlv_7='id' 
     {
-    	newLeafNode(otherlv_7, grammarAccess.getXAttributeTypeAccess().getGuidKeyword_5_0());
+    	newLeafNode(otherlv_7, grammarAccess.getXAttributeTypeAccess().getIdKeyword_5());
     }
 (
 (
-		lv_typeGuid_8_0=RULE_STRING
+		lv_id_8_0=RULE_WHOLE_NUM_STR
 		{
-			newLeafNode(lv_typeGuid_8_0, grammarAccess.getXAttributeTypeAccess().getTypeGuidSTRINGTerminalRuleCall_5_1_0()); 
-		}
-		{
-	        if ($current==null) {
-	            $current = createModelElement(grammarAccess.getXAttributeTypeRule());
-	        }
-       		setWithLastConsumed(
-       			$current, 
-       			"typeGuid",
-        		lv_typeGuid_8_0, 
-        		"org.eclipse.osee.framework.core.dsl.OseeDsl.STRING");
-	    }
-
-)
-))?	otherlv_9='id' 
-    {
-    	newLeafNode(otherlv_9, grammarAccess.getXAttributeTypeAccess().getIdKeyword_6());
-    }
-(
-(
-		lv_id_10_0=RULE_WHOLE_NUM_STR
-		{
-			newLeafNode(lv_id_10_0, grammarAccess.getXAttributeTypeAccess().getIdWHOLE_NUM_STRTerminalRuleCall_7_0()); 
+			newLeafNode(lv_id_8_0, grammarAccess.getXAttributeTypeAccess().getIdWHOLE_NUM_STRTerminalRuleCall_6_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -758,53 +714,53 @@ ruleXAttributeType returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"id",
-        		lv_id_10_0, 
+        		lv_id_8_0, 
         		"org.eclipse.osee.framework.core.dsl.OseeDsl.WHOLE_NUM_STR");
 	    }
 
 )
-)	otherlv_11='dataProvider' 
+)	otherlv_9='dataProvider' 
     {
-    	newLeafNode(otherlv_11, grammarAccess.getXAttributeTypeAccess().getDataProviderKeyword_8());
+    	newLeafNode(otherlv_9, grammarAccess.getXAttributeTypeAccess().getDataProviderKeyword_7());
     }
 (
 (
 (
-		lv_dataProvider_12_1=	'DefaultAttributeDataProvider' 
+		lv_dataProvider_10_1=	'DefaultAttributeDataProvider' 
     {
-        newLeafNode(lv_dataProvider_12_1, grammarAccess.getXAttributeTypeAccess().getDataProviderDefaultAttributeDataProviderKeyword_9_0_0());
+        newLeafNode(lv_dataProvider_10_1, grammarAccess.getXAttributeTypeAccess().getDataProviderDefaultAttributeDataProviderKeyword_8_0_0());
     }
  
 	    {
 	        if ($current==null) {
 	            $current = createModelElement(grammarAccess.getXAttributeTypeRule());
 	        }
-       		setWithLastConsumed($current, "dataProvider", lv_dataProvider_12_1, null);
+       		setWithLastConsumed($current, "dataProvider", lv_dataProvider_10_1, null);
 	    }
 
-    |		lv_dataProvider_12_2=	'UriAttributeDataProvider' 
+    |		lv_dataProvider_10_2=	'UriAttributeDataProvider' 
     {
-        newLeafNode(lv_dataProvider_12_2, grammarAccess.getXAttributeTypeAccess().getDataProviderUriAttributeDataProviderKeyword_9_0_1());
+        newLeafNode(lv_dataProvider_10_2, grammarAccess.getXAttributeTypeAccess().getDataProviderUriAttributeDataProviderKeyword_8_0_1());
     }
  
 	    {
 	        if ($current==null) {
 	            $current = createModelElement(grammarAccess.getXAttributeTypeRule());
 	        }
-       		setWithLastConsumed($current, "dataProvider", lv_dataProvider_12_2, null);
+       		setWithLastConsumed($current, "dataProvider", lv_dataProvider_10_2, null);
 	    }
 
     |		{ 
-	        newCompositeNode(grammarAccess.getXAttributeTypeAccess().getDataProviderQUALIFIED_NAMEParserRuleCall_9_0_2()); 
+	        newCompositeNode(grammarAccess.getXAttributeTypeAccess().getDataProviderQUALIFIED_NAMEParserRuleCall_8_0_2()); 
 	    }
-		lv_dataProvider_12_3=ruleQUALIFIED_NAME		{
+		lv_dataProvider_10_3=ruleQUALIFIED_NAME		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getXAttributeTypeRule());
 	        }
        		set(
        			$current, 
        			"dataProvider",
-        		lv_dataProvider_12_3, 
+        		lv_dataProvider_10_3, 
         		"org.eclipse.osee.framework.core.dsl.OseeDsl.QUALIFIED_NAME");
 	        afterParserOrEnumRuleCall();
 	    }
@@ -812,15 +768,15 @@ ruleXAttributeType returns [EObject current=null]
 )
 
 )
-)	otherlv_13='min' 
+)	otherlv_11='min' 
     {
-    	newLeafNode(otherlv_13, grammarAccess.getXAttributeTypeAccess().getMinKeyword_10());
+    	newLeafNode(otherlv_11, grammarAccess.getXAttributeTypeAccess().getMinKeyword_9());
     }
 (
 (
-		lv_min_14_0=RULE_WHOLE_NUM_STR
+		lv_min_12_0=RULE_WHOLE_NUM_STR
 		{
-			newLeafNode(lv_min_14_0, grammarAccess.getXAttributeTypeAccess().getMinWHOLE_NUM_STRTerminalRuleCall_11_0()); 
+			newLeafNode(lv_min_12_0, grammarAccess.getXAttributeTypeAccess().getMinWHOLE_NUM_STRTerminalRuleCall_10_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -829,21 +785,21 @@ ruleXAttributeType returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"min",
-        		lv_min_14_0, 
+        		lv_min_12_0, 
         		"org.eclipse.osee.framework.core.dsl.OseeDsl.WHOLE_NUM_STR");
 	    }
 
 )
-)	otherlv_15='max' 
+)	otherlv_13='max' 
     {
-    	newLeafNode(otherlv_15, grammarAccess.getXAttributeTypeAccess().getMaxKeyword_12());
+    	newLeafNode(otherlv_13, grammarAccess.getXAttributeTypeAccess().getMaxKeyword_11());
     }
 (
 (
 (
-		lv_max_16_1=RULE_WHOLE_NUM_STR
+		lv_max_14_1=RULE_WHOLE_NUM_STR
 		{
-			newLeafNode(lv_max_16_1, grammarAccess.getXAttributeTypeAccess().getMaxWHOLE_NUM_STRTerminalRuleCall_13_0_0()); 
+			newLeafNode(lv_max_14_1, grammarAccess.getXAttributeTypeAccess().getMaxWHOLE_NUM_STRTerminalRuleCall_12_0_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -852,20 +808,20 @@ ruleXAttributeType returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"max",
-        		lv_max_16_1, 
+        		lv_max_14_1, 
         		"org.eclipse.osee.framework.core.dsl.OseeDsl.WHOLE_NUM_STR");
 	    }
 
-    |		lv_max_16_2=	'unlimited' 
+    |		lv_max_14_2=	'unlimited' 
     {
-        newLeafNode(lv_max_16_2, grammarAccess.getXAttributeTypeAccess().getMaxUnlimitedKeyword_13_0_1());
+        newLeafNode(lv_max_14_2, grammarAccess.getXAttributeTypeAccess().getMaxUnlimitedKeyword_12_0_1());
     }
  
 	    {
 	        if ($current==null) {
 	            $current = createModelElement(grammarAccess.getXAttributeTypeRule());
 	        }
-       		setWithLastConsumed($current, "max", lv_max_16_2, null);
+       		setWithLastConsumed($current, "max", lv_max_14_2, null);
 	    }
 
 )
@@ -875,46 +831,46 @@ ruleXAttributeType returns [EObject current=null]
 
 (
 	{ 
-	  getUnorderedGroupHelper().enter(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14());
+	  getUnorderedGroupHelper().enter(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13());
 	}
 	(
 		(
 
 			( 
-				{getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 0)}?=>(
+				{getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 0)}?=>(
 					{ 
-	 				  getUnorderedGroupHelper().select(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 0);
+	 				  getUnorderedGroupHelper().select(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 0);
 	 				}
-					({true}?=>(	otherlv_18='taggerId' 
+					({true}?=>(	otherlv_16='taggerId' 
     {
-    	newLeafNode(otherlv_18, grammarAccess.getXAttributeTypeAccess().getTaggerIdKeyword_14_0_0());
+    	newLeafNode(otherlv_16, grammarAccess.getXAttributeTypeAccess().getTaggerIdKeyword_13_0_0());
     }
 (
 (
 (
-		lv_taggerId_19_1=	'DefaultAttributeTaggerProvider' 
+		lv_taggerId_17_1=	'DefaultAttributeTaggerProvider' 
     {
-        newLeafNode(lv_taggerId_19_1, grammarAccess.getXAttributeTypeAccess().getTaggerIdDefaultAttributeTaggerProviderKeyword_14_0_1_0_0());
+        newLeafNode(lv_taggerId_17_1, grammarAccess.getXAttributeTypeAccess().getTaggerIdDefaultAttributeTaggerProviderKeyword_13_0_1_0_0());
     }
  
 	    {
 	        if ($current==null) {
 	            $current = createModelElement(grammarAccess.getXAttributeTypeRule());
 	        }
-       		setWithLastConsumed($current, "taggerId", lv_taggerId_19_1, null);
+       		setWithLastConsumed($current, "taggerId", lv_taggerId_17_1, null);
 	    }
 
     |		{ 
-	        newCompositeNode(grammarAccess.getXAttributeTypeAccess().getTaggerIdQUALIFIED_NAMEParserRuleCall_14_0_1_0_1()); 
+	        newCompositeNode(grammarAccess.getXAttributeTypeAccess().getTaggerIdQUALIFIED_NAMEParserRuleCall_13_0_1_0_1()); 
 	    }
-		lv_taggerId_19_2=ruleQUALIFIED_NAME		{
+		lv_taggerId_17_2=ruleQUALIFIED_NAME		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getXAttributeTypeRule());
 	        }
        		set(
        			$current, 
        			"taggerId",
-        		lv_taggerId_19_2, 
+        		lv_taggerId_17_2, 
         		"org.eclipse.osee.framework.core.dsl.OseeDsl.QUALIFIED_NAME");
 	        afterParserOrEnumRuleCall();
 	    }
@@ -924,19 +880,19 @@ ruleXAttributeType returns [EObject current=null]
 )
 )))
 					{ 
-	 				  getUnorderedGroupHelper().returnFromSelection(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14());
+	 				  getUnorderedGroupHelper().returnFromSelection(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13());
 	 				}
  				)
 			)  |
 
 			( 
-				{getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 1)}?=>(
+				{getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 1)}?=>(
 					{ 
-	 				  getUnorderedGroupHelper().select(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 1);
+	 				  getUnorderedGroupHelper().select(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 1);
 	 				}
-					({true}?=>(	otherlv_20='enumType' 
+					({true}?=>(	otherlv_18='enumType' 
     {
-    	newLeafNode(otherlv_20, grammarAccess.getXAttributeTypeAccess().getEnumTypeKeyword_14_1_0());
+    	newLeafNode(otherlv_18, grammarAccess.getXAttributeTypeAccess().getEnumTypeKeyword_13_1_0());
     }
 (
 (
@@ -945,33 +901,33 @@ ruleXAttributeType returns [EObject current=null]
 	            $current = createModelElement(grammarAccess.getXAttributeTypeRule());
 	        }
         }
-	otherlv_21=RULE_STRING
+	otherlv_19=RULE_STRING
 	{
-		newLeafNode(otherlv_21, grammarAccess.getXAttributeTypeAccess().getEnumTypeXOseeEnumTypeCrossReference_14_1_1_0()); 
+		newLeafNode(otherlv_19, grammarAccess.getXAttributeTypeAccess().getEnumTypeXOseeEnumTypeCrossReference_13_1_1_0()); 
 	}
 
 )
 )))
 					{ 
-	 				  getUnorderedGroupHelper().returnFromSelection(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14());
+	 				  getUnorderedGroupHelper().returnFromSelection(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13());
 	 				}
  				)
 			)  |
 
 			( 
-				{getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 2)}?=>(
+				{getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 2)}?=>(
 					{ 
-	 				  getUnorderedGroupHelper().select(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 2);
+	 				  getUnorderedGroupHelper().select(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 2);
 	 				}
-					({true}?=>(	otherlv_22='description' 
+					({true}?=>(	otherlv_20='description' 
     {
-    	newLeafNode(otherlv_22, grammarAccess.getXAttributeTypeAccess().getDescriptionKeyword_14_2_0());
+    	newLeafNode(otherlv_20, grammarAccess.getXAttributeTypeAccess().getDescriptionKeyword_13_2_0());
     }
 (
 (
-		lv_description_23_0=RULE_STRING
+		lv_description_21_0=RULE_STRING
 		{
-			newLeafNode(lv_description_23_0, grammarAccess.getXAttributeTypeAccess().getDescriptionSTRINGTerminalRuleCall_14_2_1_0()); 
+			newLeafNode(lv_description_21_0, grammarAccess.getXAttributeTypeAccess().getDescriptionSTRINGTerminalRuleCall_13_2_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -980,32 +936,32 @@ ruleXAttributeType returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"description",
-        		lv_description_23_0, 
+        		lv_description_21_0, 
         		"org.eclipse.osee.framework.core.dsl.OseeDsl.STRING");
 	    }
 
 )
 )))
 					{ 
-	 				  getUnorderedGroupHelper().returnFromSelection(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14());
+	 				  getUnorderedGroupHelper().returnFromSelection(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13());
 	 				}
  				)
 			)  |
 
 			( 
-				{getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 3)}?=>(
+				{getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 3)}?=>(
 					{ 
-	 				  getUnorderedGroupHelper().select(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 3);
+	 				  getUnorderedGroupHelper().select(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 3);
 	 				}
-					({true}?=>(	otherlv_24='defaultValue' 
+					({true}?=>(	otherlv_22='defaultValue' 
     {
-    	newLeafNode(otherlv_24, grammarAccess.getXAttributeTypeAccess().getDefaultValueKeyword_14_3_0());
+    	newLeafNode(otherlv_22, grammarAccess.getXAttributeTypeAccess().getDefaultValueKeyword_13_3_0());
     }
 (
 (
-		lv_defaultValue_25_0=RULE_STRING
+		lv_defaultValue_23_0=RULE_STRING
 		{
-			newLeafNode(lv_defaultValue_25_0, grammarAccess.getXAttributeTypeAccess().getDefaultValueSTRINGTerminalRuleCall_14_3_1_0()); 
+			newLeafNode(lv_defaultValue_23_0, grammarAccess.getXAttributeTypeAccess().getDefaultValueSTRINGTerminalRuleCall_13_3_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1014,32 +970,32 @@ ruleXAttributeType returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"defaultValue",
-        		lv_defaultValue_25_0, 
+        		lv_defaultValue_23_0, 
         		"org.eclipse.osee.framework.core.dsl.OseeDsl.STRING");
 	    }
 
 )
 )))
 					{ 
-	 				  getUnorderedGroupHelper().returnFromSelection(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14());
+	 				  getUnorderedGroupHelper().returnFromSelection(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13());
 	 				}
  				)
 			)  |
 
 			( 
-				{getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 4)}?=>(
+				{getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 4)}?=>(
 					{ 
-	 				  getUnorderedGroupHelper().select(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 4);
+	 				  getUnorderedGroupHelper().select(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 4);
 	 				}
-					({true}?=>(	otherlv_26='fileExtension' 
+					({true}?=>(	otherlv_24='fileExtension' 
     {
-    	newLeafNode(otherlv_26, grammarAccess.getXAttributeTypeAccess().getFileExtensionKeyword_14_4_0());
+    	newLeafNode(otherlv_24, grammarAccess.getXAttributeTypeAccess().getFileExtensionKeyword_13_4_0());
     }
 (
 (
-		lv_fileExtension_27_0=RULE_STRING
+		lv_fileExtension_25_0=RULE_STRING
 		{
-			newLeafNode(lv_fileExtension_27_0, grammarAccess.getXAttributeTypeAccess().getFileExtensionSTRINGTerminalRuleCall_14_4_1_0()); 
+			newLeafNode(lv_fileExtension_25_0, grammarAccess.getXAttributeTypeAccess().getFileExtensionSTRINGTerminalRuleCall_13_4_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1048,32 +1004,32 @@ ruleXAttributeType returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"fileExtension",
-        		lv_fileExtension_27_0, 
+        		lv_fileExtension_25_0, 
         		"org.eclipse.osee.framework.core.dsl.OseeDsl.STRING");
 	    }
 
 )
 )))
 					{ 
-	 				  getUnorderedGroupHelper().returnFromSelection(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14());
+	 				  getUnorderedGroupHelper().returnFromSelection(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13());
 	 				}
  				)
 			)  |
 
 			( 
-				{getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 5)}?=>(
+				{getUnorderedGroupHelper().canSelect(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 5)}?=>(
 					{ 
-	 				  getUnorderedGroupHelper().select(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14(), 5);
+	 				  getUnorderedGroupHelper().select(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13(), 5);
 	 				}
-					({true}?=>(	otherlv_28='mediaType' 
+					({true}?=>(	otherlv_26='mediaType' 
     {
-    	newLeafNode(otherlv_28, grammarAccess.getXAttributeTypeAccess().getMediaTypeKeyword_14_5_0());
+    	newLeafNode(otherlv_26, grammarAccess.getXAttributeTypeAccess().getMediaTypeKeyword_13_5_0());
     }
 (
 (
-		lv_mediaType_29_0=RULE_STRING
+		lv_mediaType_27_0=RULE_STRING
 		{
-			newLeafNode(lv_mediaType_29_0, grammarAccess.getXAttributeTypeAccess().getMediaTypeSTRINGTerminalRuleCall_14_5_1_0()); 
+			newLeafNode(lv_mediaType_27_0, grammarAccess.getXAttributeTypeAccess().getMediaTypeSTRINGTerminalRuleCall_13_5_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1082,14 +1038,14 @@ ruleXAttributeType returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"mediaType",
-        		lv_mediaType_29_0, 
+        		lv_mediaType_27_0, 
         		"org.eclipse.osee.framework.core.dsl.OseeDsl.STRING");
 	    }
 
 )
 )))
 					{ 
-	 				  getUnorderedGroupHelper().returnFromSelection(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14());
+	 				  getUnorderedGroupHelper().returnFromSelection(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13());
 	 				}
  				)
 			)  
@@ -1098,12 +1054,12 @@ ruleXAttributeType returns [EObject current=null]
 	)
 )
 	{ 
-	  getUnorderedGroupHelper().leave(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_14());
+	  getUnorderedGroupHelper().leave(grammarAccess.getXAttributeTypeAccess().getUnorderedGroup_13());
 	}
 
-)	otherlv_30='}' 
+)	otherlv_28='}' 
     {
-    	newLeafNode(otherlv_30, grammarAccess.getXAttributeTypeAccess().getRightCurlyBracketKeyword_15());
+    	newLeafNode(otherlv_28, grammarAccess.getXAttributeTypeAccess().getRightCurlyBracketKeyword_14());
     }
 )
 ;
@@ -1275,37 +1231,15 @@ ruleXOseeEnumType returns [EObject current=null]
     {
     	newLeafNode(otherlv_2, grammarAccess.getXOseeEnumTypeAccess().getLeftCurlyBracketKeyword_2());
     }
-(	otherlv_3='guid' 
+	otherlv_3='id' 
     {
-    	newLeafNode(otherlv_3, grammarAccess.getXOseeEnumTypeAccess().getGuidKeyword_3_0());
+    	newLeafNode(otherlv_3, grammarAccess.getXOseeEnumTypeAccess().getIdKeyword_3());
     }
 (
 (
-		lv_typeGuid_4_0=RULE_STRING
+		lv_id_4_0=RULE_WHOLE_NUM_STR
 		{
-			newLeafNode(lv_typeGuid_4_0, grammarAccess.getXOseeEnumTypeAccess().getTypeGuidSTRINGTerminalRuleCall_3_1_0()); 
-		}
-		{
-	        if ($current==null) {
-	            $current = createModelElement(grammarAccess.getXOseeEnumTypeRule());
-	        }
-       		setWithLastConsumed(
-       			$current, 
-       			"typeGuid",
-        		lv_typeGuid_4_0, 
-        		"org.eclipse.osee.framework.core.dsl.OseeDsl.STRING");
-	    }
-
-)
-))?	otherlv_5='id' 
-    {
-    	newLeafNode(otherlv_5, grammarAccess.getXOseeEnumTypeAccess().getIdKeyword_4());
-    }
-(
-(
-		lv_id_6_0=RULE_WHOLE_NUM_STR
-		{
-			newLeafNode(lv_id_6_0, grammarAccess.getXOseeEnumTypeAccess().getIdWHOLE_NUM_STRTerminalRuleCall_5_0()); 
+			newLeafNode(lv_id_4_0, grammarAccess.getXOseeEnumTypeAccess().getIdWHOLE_NUM_STRTerminalRuleCall_4_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1314,7 +1248,7 @@ ruleXOseeEnumType returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"id",
-        		lv_id_6_0, 
+        		lv_id_4_0, 
         		"org.eclipse.osee.framework.core.dsl.OseeDsl.WHOLE_NUM_STR");
 	    }
 
@@ -1322,24 +1256,24 @@ ruleXOseeEnumType returns [EObject current=null]
 )(
 (
 		{ 
-	        newCompositeNode(grammarAccess.getXOseeEnumTypeAccess().getEnumEntriesXOseeEnumEntryParserRuleCall_6_0()); 
+	        newCompositeNode(grammarAccess.getXOseeEnumTypeAccess().getEnumEntriesXOseeEnumEntryParserRuleCall_5_0()); 
 	    }
-		lv_enumEntries_7_0=ruleXOseeEnumEntry		{
+		lv_enumEntries_5_0=ruleXOseeEnumEntry		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getXOseeEnumTypeRule());
 	        }
        		add(
        			$current, 
        			"enumEntries",
-        		lv_enumEntries_7_0, 
+        		lv_enumEntries_5_0, 
         		"org.eclipse.osee.framework.core.dsl.OseeDsl.XOseeEnumEntry");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-)*	otherlv_8='}' 
+)*	otherlv_6='}' 
     {
-    	newLeafNode(otherlv_8, grammarAccess.getXOseeEnumTypeAccess().getRightCurlyBracketKeyword_7());
+    	newLeafNode(otherlv_6, grammarAccess.getXOseeEnumTypeAccess().getRightCurlyBracketKeyword_6());
     }
 )
 ;
@@ -2012,37 +1946,15 @@ ruleXRelationType returns [EObject current=null]
     {
     	newLeafNode(otherlv_2, grammarAccess.getXRelationTypeAccess().getLeftCurlyBracketKeyword_2());
     }
-(	otherlv_3='guid' 
+	otherlv_3='id' 
     {
-    	newLeafNode(otherlv_3, grammarAccess.getXRelationTypeAccess().getGuidKeyword_3_0());
+    	newLeafNode(otherlv_3, grammarAccess.getXRelationTypeAccess().getIdKeyword_3());
     }
 (
 (
-		lv_typeGuid_4_0=RULE_STRING
+		lv_id_4_0=RULE_WHOLE_NUM_STR
 		{
-			newLeafNode(lv_typeGuid_4_0, grammarAccess.getXRelationTypeAccess().getTypeGuidSTRINGTerminalRuleCall_3_1_0()); 
-		}
-		{
-	        if ($current==null) {
-	            $current = createModelElement(grammarAccess.getXRelationTypeRule());
-	        }
-       		setWithLastConsumed(
-       			$current, 
-       			"typeGuid",
-        		lv_typeGuid_4_0, 
-        		"org.eclipse.osee.framework.core.dsl.OseeDsl.STRING");
-	    }
-
-)
-))?	otherlv_5='id' 
-    {
-    	newLeafNode(otherlv_5, grammarAccess.getXRelationTypeAccess().getIdKeyword_4());
-    }
-(
-(
-		lv_id_6_0=RULE_WHOLE_NUM_STR
-		{
-			newLeafNode(lv_id_6_0, grammarAccess.getXRelationTypeAccess().getIdWHOLE_NUM_STRTerminalRuleCall_5_0()); 
+			newLeafNode(lv_id_4_0, grammarAccess.getXRelationTypeAccess().getIdWHOLE_NUM_STRTerminalRuleCall_4_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -2051,20 +1963,20 @@ ruleXRelationType returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"id",
-        		lv_id_6_0, 
+        		lv_id_4_0, 
         		"org.eclipse.osee.framework.core.dsl.OseeDsl.WHOLE_NUM_STR");
 	    }
 
 )
-)	otherlv_7='sideAName' 
+)	otherlv_5='sideAName' 
     {
-    	newLeafNode(otherlv_7, grammarAccess.getXRelationTypeAccess().getSideANameKeyword_6());
+    	newLeafNode(otherlv_5, grammarAccess.getXRelationTypeAccess().getSideANameKeyword_5());
     }
 (
 (
-		lv_sideAName_8_0=RULE_STRING
+		lv_sideAName_6_0=RULE_STRING
 		{
-			newLeafNode(lv_sideAName_8_0, grammarAccess.getXRelationTypeAccess().getSideANameSTRINGTerminalRuleCall_7_0()); 
+			newLeafNode(lv_sideAName_6_0, grammarAccess.getXRelationTypeAccess().getSideANameSTRINGTerminalRuleCall_6_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -2073,14 +1985,14 @@ ruleXRelationType returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"sideAName",
-        		lv_sideAName_8_0, 
+        		lv_sideAName_6_0, 
         		"org.eclipse.osee.framework.core.dsl.OseeDsl.STRING");
 	    }
 
 )
-)	otherlv_9='sideAArtifactType' 
+)	otherlv_7='sideAArtifactType' 
     {
-    	newLeafNode(otherlv_9, grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeKeyword_8());
+    	newLeafNode(otherlv_7, grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeKeyword_7());
     }
 (
 (
@@ -2089,21 +2001,21 @@ ruleXRelationType returns [EObject current=null]
 	            $current = createModelElement(grammarAccess.getXRelationTypeRule());
 	        }
         }
-	otherlv_10=RULE_STRING
+	otherlv_8=RULE_STRING
 	{
-		newLeafNode(otherlv_10, grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeXArtifactTypeCrossReference_9_0()); 
+		newLeafNode(otherlv_8, grammarAccess.getXRelationTypeAccess().getSideAArtifactTypeXArtifactTypeCrossReference_8_0()); 
 	}
 
 )
-)	otherlv_11='sideBName' 
+)	otherlv_9='sideBName' 
     {
-    	newLeafNode(otherlv_11, grammarAccess.getXRelationTypeAccess().getSideBNameKeyword_10());
+    	newLeafNode(otherlv_9, grammarAccess.getXRelationTypeAccess().getSideBNameKeyword_9());
     }
 (
 (
-		lv_sideBName_12_0=RULE_STRING
+		lv_sideBName_10_0=RULE_STRING
 		{
-			newLeafNode(lv_sideBName_12_0, grammarAccess.getXRelationTypeAccess().getSideBNameSTRINGTerminalRuleCall_11_0()); 
+			newLeafNode(lv_sideBName_10_0, grammarAccess.getXRelationTypeAccess().getSideBNameSTRINGTerminalRuleCall_10_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -2112,14 +2024,14 @@ ruleXRelationType returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"sideBName",
-        		lv_sideBName_12_0, 
+        		lv_sideBName_10_0, 
         		"org.eclipse.osee.framework.core.dsl.OseeDsl.STRING");
 	    }
 
 )
-)	otherlv_13='sideBArtifactType' 
+)	otherlv_11='sideBArtifactType' 
     {
-    	newLeafNode(otherlv_13, grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeKeyword_12());
+    	newLeafNode(otherlv_11, grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeKeyword_11());
     }
 (
 (
@@ -2128,59 +2040,59 @@ ruleXRelationType returns [EObject current=null]
 	            $current = createModelElement(grammarAccess.getXRelationTypeRule());
 	        }
         }
-	otherlv_14=RULE_STRING
+	otherlv_12=RULE_STRING
 	{
-		newLeafNode(otherlv_14, grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeXArtifactTypeCrossReference_13_0()); 
+		newLeafNode(otherlv_12, grammarAccess.getXRelationTypeAccess().getSideBArtifactTypeXArtifactTypeCrossReference_12_0()); 
 	}
 
 )
-)	otherlv_15='defaultOrderType' 
+)	otherlv_13='defaultOrderType' 
     {
-    	newLeafNode(otherlv_15, grammarAccess.getXRelationTypeAccess().getDefaultOrderTypeKeyword_14());
+    	newLeafNode(otherlv_13, grammarAccess.getXRelationTypeAccess().getDefaultOrderTypeKeyword_13());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getXRelationTypeAccess().getDefaultOrderTypeRelationOrderTypeParserRuleCall_15_0()); 
+	        newCompositeNode(grammarAccess.getXRelationTypeAccess().getDefaultOrderTypeRelationOrderTypeParserRuleCall_14_0()); 
 	    }
-		lv_defaultOrderType_16_0=ruleRelationOrderType		{
+		lv_defaultOrderType_14_0=ruleRelationOrderType		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getXRelationTypeRule());
 	        }
        		set(
        			$current, 
        			"defaultOrderType",
-        		lv_defaultOrderType_16_0, 
+        		lv_defaultOrderType_14_0, 
         		"org.eclipse.osee.framework.core.dsl.OseeDsl.RelationOrderType");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-)	otherlv_17='multiplicity' 
+)	otherlv_15='multiplicity' 
     {
-    	newLeafNode(otherlv_17, grammarAccess.getXRelationTypeAccess().getMultiplicityKeyword_16());
+    	newLeafNode(otherlv_15, grammarAccess.getXRelationTypeAccess().getMultiplicityKeyword_15());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getXRelationTypeAccess().getMultiplicityRelationMultiplicityEnumEnumRuleCall_17_0()); 
+	        newCompositeNode(grammarAccess.getXRelationTypeAccess().getMultiplicityRelationMultiplicityEnumEnumRuleCall_16_0()); 
 	    }
-		lv_multiplicity_18_0=ruleRelationMultiplicityEnum		{
+		lv_multiplicity_16_0=ruleRelationMultiplicityEnum		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getXRelationTypeRule());
 	        }
        		set(
        			$current, 
        			"multiplicity",
-        		lv_multiplicity_18_0, 
+        		lv_multiplicity_16_0, 
         		"org.eclipse.osee.framework.core.dsl.OseeDsl.RelationMultiplicityEnum");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-)	otherlv_19='}' 
+)	otherlv_17='}' 
     {
-    	newLeafNode(otherlv_19, grammarAccess.getXRelationTypeAccess().getRightCurlyBracketKeyword_18());
+    	newLeafNode(otherlv_17, grammarAccess.getXRelationTypeAccess().getRightCurlyBracketKeyword_17());
     }
 )
 ;
@@ -3526,10 +3438,10 @@ ruleMatchField returns [Enumerator current=null]
         newLeafNode(enumLiteral_0, grammarAccess.getMatchFieldAccess().getArtifactNameEnumLiteralDeclaration_0()); 
     }
 )
-    |(	enumLiteral_1='artifactGuid' 
+    |(	enumLiteral_1='artifactId' 
 	{
-        $current = grammarAccess.getMatchFieldAccess().getArtifactGuidEnumLiteralDeclaration_1().getEnumLiteral().getInstance();
-        newLeafNode(enumLiteral_1, grammarAccess.getMatchFieldAccess().getArtifactGuidEnumLiteralDeclaration_1()); 
+        $current = grammarAccess.getMatchFieldAccess().getArtifactIdEnumLiteralDeclaration_1().getEnumLiteral().getInstance();
+        newLeafNode(enumLiteral_1, grammarAccess.getMatchFieldAccess().getArtifactIdEnumLiteralDeclaration_1()); 
     }
 )
     |(	enumLiteral_2='branchName' 

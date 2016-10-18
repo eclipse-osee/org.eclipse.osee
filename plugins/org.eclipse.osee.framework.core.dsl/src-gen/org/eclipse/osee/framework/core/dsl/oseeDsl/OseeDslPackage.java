@@ -233,22 +233,13 @@ public interface OseeDslPackage extends EPackage
   int OSEE_TYPE__NAME = OSEE_ELEMENT_FEATURE_COUNT + 0;
 
   /**
-   * The feature id for the '<em><b>Type Guid</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int OSEE_TYPE__TYPE_GUID = OSEE_ELEMENT_FEATURE_COUNT + 1;
-
-  /**
    * The feature id for the '<em><b>Id</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int OSEE_TYPE__ID = OSEE_ELEMENT_FEATURE_COUNT + 2;
+  int OSEE_TYPE__ID = OSEE_ELEMENT_FEATURE_COUNT + 1;
 
   /**
    * The number of structural features of the '<em>Osee Type</em>' class.
@@ -257,7 +248,7 @@ public interface OseeDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int OSEE_TYPE_FEATURE_COUNT = OSEE_ELEMENT_FEATURE_COUNT + 3;
+  int OSEE_TYPE_FEATURE_COUNT = OSEE_ELEMENT_FEATURE_COUNT + 2;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XArtifactTypeImpl <em>XArtifact Type</em>}' class.
@@ -277,15 +268,6 @@ public interface OseeDslPackage extends EPackage
    * @ordered
    */
   int XARTIFACT_TYPE__NAME = OSEE_TYPE__NAME;
-
-  /**
-   * The feature id for the '<em><b>Type Guid</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int XARTIFACT_TYPE__TYPE_GUID = OSEE_TYPE__TYPE_GUID;
 
   /**
    * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -387,15 +369,6 @@ public interface OseeDslPackage extends EPackage
    * @ordered
    */
   int XATTRIBUTE_TYPE__NAME = OSEE_TYPE__NAME;
-
-  /**
-   * The feature id for the '<em><b>Type Guid</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int XATTRIBUTE_TYPE__TYPE_GUID = OSEE_TYPE__TYPE_GUID;
 
   /**
    * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -532,15 +505,6 @@ public interface OseeDslPackage extends EPackage
    * @ordered
    */
   int XOSEE_ENUM_TYPE__NAME = OSEE_TYPE__NAME;
-
-  /**
-   * The feature id for the '<em><b>Type Guid</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int XOSEE_ENUM_TYPE__TYPE_GUID = OSEE_TYPE__TYPE_GUID;
 
   /**
    * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -939,15 +903,6 @@ public interface OseeDslPackage extends EPackage
    * @ordered
    */
   int XRELATION_TYPE__NAME = OSEE_TYPE__NAME;
-
-  /**
-   * The feature id for the '<em><b>Type Guid</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int XRELATION_TYPE__TYPE_GUID = OSEE_TYPE__TYPE_GUID;
 
   /**
    * The feature id for the '<em><b>Id</b></em>' attribute.
@@ -1965,17 +1920,6 @@ public interface OseeDslPackage extends EPackage
    * @generated
    */
   EAttribute getOseeType_Name();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeType#getTypeGuid <em>Type Guid</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Type Guid</em>'.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeType#getTypeGuid()
-   * @see #getOseeType()
-   * @generated
-   */
-  EAttribute getOseeType_TypeGuid();
 
   /**
    * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeType#getId <em>Id</em>}'.
@@ -3393,14 +3337,6 @@ public interface OseeDslPackage extends EPackage
      * @generated
      */
     EAttribute OSEE_TYPE__NAME = eINSTANCE.getOseeType_Name();
-
-    /**
-     * The meta object literal for the '<em><b>Type Guid</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute OSEE_TYPE__TYPE_GUID = eINSTANCE.getOseeType_TypeGuid();
 
     /**
      * The meta object literal for the '<em><b>Id</b></em>' attribute feature.

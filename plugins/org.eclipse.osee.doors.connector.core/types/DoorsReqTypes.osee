@@ -3,7 +3,6 @@ import
 
 /* Artifact Type */
 artifactType "DoorsRequirement" extends "Requirement" {
-   guid "AN1Narw8KQTnUk7A8iwA"
    id 5764607523034243073
    attribute "Door Req ID"
    attribute "Door Req Name"
@@ -14,7 +13,6 @@ artifactType "DoorsRequirement" extends "Requirement" {
 
 /* Attribute Type for Display ID*/
 attributeType "Door Req ID" extends StringAttribute {
-    guid "AN1oPHV6UVqbYoewVNgA"
     id 5764607523034243074
     dataProvider DefaultAttributeDataProvider
     min 0
@@ -25,7 +23,6 @@ attributeType "Door Req ID" extends StringAttribute {
 
 /* Attribute Type for Display name*/
 attributeType "Door Req Name" extends StringAttribute {
-    guid "AN18o5N6ShSHyIFuZBAA"
     id 5764607523034243075
     dataProvider DefaultAttributeDataProvider
     min 0
@@ -36,7 +33,6 @@ attributeType "Door Req Name" extends StringAttribute {
 
 /* Attribute Type for Display Module Name*/
 attributeType "Door Req Module Name" extends StringAttribute {
-    guid "AN46ZJ+pZnkFaVg81+AA"
     id 5764607523034243076
     dataProvider DefaultAttributeDataProvider
     min 0
@@ -47,7 +43,6 @@ attributeType "Door Req Module Name" extends StringAttribute {
 
 /* Attribute Type for Display Module Name*/
 attributeType "Door Req Database Name" extends StringAttribute {
-    guid "AN5cSoiBA2eP7QXp9zgA"
     id 8197
     dataProvider DefaultAttributeDataProvider
     min 0
@@ -57,7 +52,6 @@ attributeType "Door Req Database Name" extends StringAttribute {
 
 /* Attribute Type for Display Module Url*/
 attributeType "Door Req Url" extends StringAttribute {
-    guid "AFM5Di19mGX1OLysrIwA"
     id 8198
     dataProvider DefaultAttributeDataProvider
     min 0

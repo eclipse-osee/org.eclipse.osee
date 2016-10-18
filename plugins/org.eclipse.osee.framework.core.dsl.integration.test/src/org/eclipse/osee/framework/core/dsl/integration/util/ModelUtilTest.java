@@ -115,7 +115,7 @@ public class ModelUtilTest {
       // @formatter:off
       XArtifactMatcher matcher = type4.next();
       DslAsserts.assertEquals(matcher, "Software Items");
-      DslAsserts.assertEquals(matcher.getConditions().get(0), MatchField.ARTIFACT_GUID, CompareOp.EQ, "AAMFEcWy0xc4e3tcem99");
+      DslAsserts.assertEquals(matcher.getConditions().get(0), MatchField.ARTIFACT_ID, CompareOp.EQ, "AAMFEcWy0xc4e3tcem99");
       matcher = type4.next();
       DslAsserts.assertEquals(matcher, "Systems");
       DslAsserts.assertEquals(matcher.getConditions().get(0), MatchField.BRANCH_NAME, CompareOp.LIKE, "\\w+");

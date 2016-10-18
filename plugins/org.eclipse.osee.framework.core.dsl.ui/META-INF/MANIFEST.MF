@@ -21,6 +21,7 @@ Import-Package: org.apache.commons.logging,
 Export-Package: org.eclipse.osee.framework.core.dsl.ui,
  org.eclipse.osee.framework.core.dsl.ui.contentassist,
  org.eclipse.osee.framework.core.dsl.ui.contentassist.antlr,
- org.eclipse.osee.framework.core.dsl.ui.quickfix
+ org.eclipse.osee.framework.core.dsl.ui.quickfix,
+ org.eclipse.osee.framework.core.dsl.ui.contentassist.antlr.internal
 Bundle-Activator: org.eclipse.osee.framework.core.dsl.ui.internal.OseeDslActivator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
