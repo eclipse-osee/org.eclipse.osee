@@ -7,7 +7,7 @@
 	<artifactId>org.eclipse.osee.ote.parent</artifactId>
 	<packaging>pom</packaging>
 	<name>OSEE OTE - Parent (Incubation)</name>
-	<version>0.24.2-SNAPSHOT</version>
+	<version>0.24.3-SNAPSHOT</version>
 
 	<modules>
 		<module>../../plugins/org.eclipse.osee.framework.ui.workspacebundleloader</module>
