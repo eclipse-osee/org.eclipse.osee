@@ -22,7 +22,11 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AtsTest_Demo_StateItem_Suite.class, WfePrintTest.class})
+@Suite.SuiteClasses({
+   AtsTest_Demo_StateItem_Suite.class,
+   WfeEditorAddSupportingArtifactsTest.class,
+   WfeEditorAddSupportingFilesTest.class,
+   WfePrintTest.class})
 public class AtsTest_Editor_Suite {
 
    @BeforeClass

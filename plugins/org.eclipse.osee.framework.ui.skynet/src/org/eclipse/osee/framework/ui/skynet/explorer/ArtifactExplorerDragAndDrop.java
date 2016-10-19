@@ -257,7 +257,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
       return isSame;
    }
 
-   private IArtifactExtractor getArtifactExtractor(ArtifactType type) {
+   public static IArtifactExtractor getArtifactExtractor(ArtifactType type) {
       IArtifactExtractor extractor = null;
       if (type.inheritsFrom(CoreArtifactTypes.GeneralDocument)) {
          extractor = new NativeDocumentExtractor();

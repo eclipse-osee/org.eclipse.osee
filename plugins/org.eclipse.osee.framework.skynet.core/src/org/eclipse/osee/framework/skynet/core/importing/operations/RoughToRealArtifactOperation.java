@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.importing.operations;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -41,11 +42,13 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
    private final RoughArtifactCollector rawData;
    private final IArtifactImportResolver artifactResolver;
    private final Map<RoughArtifact, Artifact> roughToRealArtifact;
+   private final Collection<Artifact> createdArtifacts;
    private final Artifact destinationArtifact;
    private final RelationSorter importArtifactOrder;
    private final boolean deleteUnmatchedArtifacts;
    private Collection<Artifact> unmatchedArtifacts;
    private final IArtifactExtractor extractor;
+   private boolean addRelation = true;
 
    public RoughToRealArtifactOperation(SkynetTransaction transaction, Artifact destinationArtifact, RoughArtifactCollector rawData, IArtifactImportResolver artifactResolver, boolean deleteUnmatchedArtifacts, IArtifactExtractor extractor) {
       super("Materialize Artifacts", Activator.PLUGIN_ID);
@@ -55,6 +58,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
       this.destinationArtifact = destinationArtifact;
       this.importArtifactOrder = USER_DEFINED;
       this.roughToRealArtifact = new HashMap<>();
+      this.createdArtifacts = new LinkedList<>();
       this.deleteUnmatchedArtifacts = deleteUnmatchedArtifacts;
       this.extractor = extractor;
       roughToRealArtifact.put(rawData.getParentRoughArtifact(), this.destinationArtifact);
@@ -62,23 +66,32 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      monitor.setTaskName("Creating Artifacts");
+      if (monitor != null) {
+         monitor.setTaskName("Creating Artifacts");
+      }
       this.unmatchedArtifacts = destinationArtifact.getDescendants();
       int totalItems = rawData.getRoughArtifacts().size() + rawData.getRoughRelations().size();
       int unitOfWork = calculateWork(1.0 / totalItems);
 
       for (RoughArtifact roughArtifact : rawData.getParentRoughArtifact().getChildren()) {
          Artifact child = createArtifact(monitor, roughArtifact, destinationArtifact);
-         if (child != null && !child.hasParent()) {
+         createdArtifacts.add(child);
+         if (addRelation && child != null && !child.hasParent()) {
             destinationArtifact.addChild(importArtifactOrder, child);
          }
-         monitor.worked(unitOfWork);
-      }
+         if (monitor != null) {
+            monitor.worked(unitOfWork);
+         }
 
-      monitor.setTaskName("Creating Relations");
-      for (RoughRelation roughRelation : rawData.getRoughRelations()) {
-         createRelation(monitor, roughRelation);
-         monitor.worked(unitOfWork);
+         if (monitor != null) {
+            monitor.setTaskName("Creating Relations");
+         }
+         for (RoughRelation roughRelation : rawData.getRoughRelations()) {
+            createRelation(monitor, roughRelation);
+            if (monitor != null) {
+               monitor.worked(unitOfWork);
+            }
+         }
       }
 
       if (deleteUnmatchedArtifacts) {
@@ -158,13 +171,27 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
          }
       } else {
          try {
-            monitor.subTask(aArt.getName() + " <--> " + bArt.getName());
-            monitor.worked(1);
+            if (monitor != null) {
+               monitor.subTask(aArt.getName() + " <--> " + bArt.getName());
+               monitor.worked(1);
+            }
             RelationManager.addRelation(importArtifactOrder, relationType, aArt, bArt, roughRelation.getRationale());
             aArt.persist(transaction);
          } catch (IllegalArgumentException ex) {
             OseeLog.log(Activator.class, Level.WARNING, ex);
          }
       }
+   }
+
+   public boolean isAddRelation() {
+      return addRelation;
+   }
+
+   public void setAddRelation(boolean addRelation) {
+      this.addRelation = addRelation;
+   }
+
+   public Collection<Artifact> getCreatedArtifacts() {
+      return createdArtifacts;
    }
 }

@@ -83,12 +83,14 @@ import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
+import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -126,6 +128,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    private WfeHistorySection smaHistorySection;
    private LoadingComposite loadingComposite;
    public final static String ID = "ats.workflow.tab";
+   private static Color LIGHT_GREY;
    private final WorkflowEditor editor;
    private final List<WfeUndefinedStateSection> undefinedStateSections = new ArrayList<>();
 
@@ -673,11 +676,17 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       }
    }
 
-   public static void createWorkDefHeader(Composite comp, XFormToolkit toolkit, AbstractWorkflowArtifact sma, int horizontalSpan) {
-      // Display SMA Note
-      IWorkDefinitionMatch workDefMatch = sma.getWorkDefinitionMatch();
-      Label label =
-         FormsUtil.createLabelValue(toolkit, comp, "Work Definition: ", workDefMatch.getWorkDefinition().getName());
+   public static void createWorkDefHeader(Composite comp, XFormToolkit toolkit, AbstractWorkflowArtifact workflow, int horizontalSpan) {
+      Composite headerComp = new Composite(comp, SWT.NONE);
+      GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+      gridData.horizontalSpan = horizontalSpan;
+      headerComp.setLayoutData(gridData);
+      headerComp.setLayout(ALayout.getZeroMarginLayout(6, false));
+      toolkit.adapt(headerComp);
+
+      IWorkDefinitionMatch workDefMatch = workflow.getWorkDefinitionMatch();
+      Label label = FormsUtil.createLabelValue(toolkit, headerComp, "Work Definition: ",
+         workDefMatch.getWorkDefinition().getName());
       label.addListener(SWT.MouseDoubleClick, new Listener() {
 
          @Override
@@ -690,6 +699,19 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
             }
          }
       });
+
+      Label dragDropLabel = new Label(headerComp, SWT.NONE);
+      dragDropLabel.setText("Drag/Drop Related Here: ");
+      FormsUtil.setLabelFonts(dragDropLabel, FontManager.getDefaultLabelFont());
+      dragDropLabel.setLayoutData(new GridData());
+      toolkit.adapt(dragDropLabel, true, true);
+
+      Label dragDropBox = new Label(headerComp, SWT.BORDER);
+      new WfeDragAndDrop(dragDropBox, workflow, WorkflowEditor.EDITOR_ID);
+      dragDropBox.setText("                             ");
+      dragDropBox.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      toolkit.adapt(dragDropBox, true, true);
+      dragDropBox.setBackground(getLightGreyColor());
    }
 
    public static void createSMANotesHeader(Composite comp, XFormToolkit toolkit, AbstractWorkflowArtifact sma, int horizontalSpan) throws OseeCoreException {
@@ -768,4 +790,10 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       return editor.isDisposed();
    }
 
+   private static Color getLightGreyColor() {
+      if (LIGHT_GREY == null) {
+         LIGHT_GREY = Displays.getColor(240, 240, 240);
+      }
+      return LIGHT_GREY;
+   }
 }
