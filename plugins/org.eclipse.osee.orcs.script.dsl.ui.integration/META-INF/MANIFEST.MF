@@ -16,7 +16,7 @@ Import-Package: com.google.inject,
  org.eclipse.osee.framework.core.services,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.type,
- org.eclipse.osee.framework.skynet.core.types,
+ org.eclipse.osee.framework.skynet.core.artifact,
  org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.ui.swt,
  org.osgi.framework

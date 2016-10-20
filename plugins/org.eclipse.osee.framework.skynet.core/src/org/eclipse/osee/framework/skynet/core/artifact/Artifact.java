@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -90,7 +91,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * {@link ArtifactTest}
@@ -98,7 +98,7 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
  * @author Ryan D. Brooks
  */
 
-public class Artifact extends NamedIdBase implements IArtifact, Adaptable, FullyNamed {
+public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, FullyNamed {
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
@@ -260,7 +260,6 @@ public class Artifact extends NamedIdBase implements IArtifact, Adaptable, Fully
       return objs;
    }
 
-   @Override
    public final int getArtId() {
       return getId().intValue();
    }

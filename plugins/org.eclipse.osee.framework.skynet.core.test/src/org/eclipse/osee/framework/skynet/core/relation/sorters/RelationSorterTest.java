@@ -18,12 +18,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.skynet.core.mocks.DataFactory;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.LexicographicalRelationSorter.SortMode;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.junit.Assert;
 import org.junit.Test;
@@ -40,11 +38,11 @@ public class RelationSorterTest {
    private final String message;
    private final IRelationSorter sorter;
    private final RelationSorter expectedOrderId;
-   private final List<IArtifact> expectedOrder;
+   private final List<ArtifactToken> expectedOrder;
    private final List<String> currentItems;
-   private final List<IArtifact> itemsToOrder;
+   private final List<ArtifactToken> itemsToOrder;
 
-   public RelationSorterTest(String message, IRelationSorter sorter, RelationSorter expectedOrderId, List<String> currentItems, List<IArtifact> itemsToOrder, List<IArtifact> expectedOrder) {
+   public RelationSorterTest(String message, IRelationSorter sorter, RelationSorter expectedOrderId, List<String> currentItems, List<ArtifactToken> itemsToOrder, List<ArtifactToken> expectedOrder) {
       this.sorter = sorter;
       this.message = message;
       this.expectedOrderId = expectedOrderId;
@@ -61,14 +59,13 @@ public class RelationSorterTest {
 
    @Test
    public void testSort() {
-      List<IArtifact> actualToOrder = new ArrayList<>();
-      actualToOrder.addAll(itemsToOrder);
+      List<ArtifactToken> actualToOrder = new ArrayList<>(itemsToOrder);
       sorter.sort(actualToOrder, currentItems);
 
       Assert.assertEquals(message, expectedOrder.size(), actualToOrder.size());
       for (int index = 0; index < expectedOrder.size(); index++) {
-         Assert.assertEquals(message + " - index:" + index, expectedOrder.get(index).getName(),
-            actualToOrder.get(index).getName());
+         Assert.assertEquals(message + " - index:" + index, expectedOrder.get(index).getId(),
+            actualToOrder.get(index).getId());
       }
    }
 
@@ -90,25 +87,25 @@ public class RelationSorterTest {
    }
 
    private static Object[] createUnorderedSortTest(String... names) {
-      IArtifact art1 = DataFactory.createArtifact(names[0], GUID.create());
-      IArtifact art2 = DataFactory.createArtifact(names[1], GUID.create());
-      IArtifact art3 = DataFactory.createArtifact(names[2], GUID.create());
-      IArtifact art4 = DataFactory.createArtifact(names[3], GUID.create());
+      ArtifactToken art1 = ArtifactToken.valueOf(1, names[0]);
+      ArtifactToken art2 = ArtifactToken.valueOf(2, names[1]);
+      ArtifactToken art3 = ArtifactToken.valueOf(3, names[2]);
+      ArtifactToken art4 = ArtifactToken.valueOf(4, names[3]);
 
-      List<IArtifact> artifacts = Arrays.asList(art1, art2, art3, art4);
+      List<ArtifactToken> artifacts = Arrays.asList(art1, art2, art3, art4);
       return new Object[] {"Unordered Test", new UnorderedRelationSorter(), UNORDERED, null, artifacts, artifacts};
    }
 
    private static Object[] createLexicographicalTest(SortMode mode, String... names) {
-      IArtifact art1 = DataFactory.createArtifact(names[0], GUID.create());
-      IArtifact art2 = DataFactory.createArtifact(names[1], GUID.create());
-      IArtifact art3 = DataFactory.createArtifact(names[2], GUID.create());
-      IArtifact art4 = DataFactory.createArtifact(names[3], GUID.create());
+      ArtifactToken art1 = ArtifactToken.valueOf(1, names[0]);
+      ArtifactToken art2 = ArtifactToken.valueOf(2, names[1]);
+      ArtifactToken art3 = ArtifactToken.valueOf(3, names[2]);
+      ArtifactToken art4 = ArtifactToken.valueOf(4, names[3]);
 
       RelationSorter orderId = mode == SortMode.ASCENDING ? LEXICOGRAPHICAL_ASC : LEXICOGRAPHICAL_DESC;
 
-      List<IArtifact> itemsToOrder = Arrays.asList(art3, art1, art4, art2);
-      List<IArtifact> expectedOrder = Arrays.asList(art1, art2, art3, art4);
+      List<ArtifactToken> itemsToOrder = Arrays.asList(art3, art1, art4, art2);
+      List<ArtifactToken> expectedOrder = Arrays.asList(art1, art2, art3, art4);
       return new Object[] {
          "Lex Test " + mode.name(),
          new LexicographicalRelationSorter(mode),
@@ -119,13 +116,13 @@ public class RelationSorterTest {
    }
 
    private static Object[] getTestUserDefined(String... names) {
-      IArtifact art1 = DataFactory.createArtifact(names[0], GUID.create());
-      IArtifact art2 = DataFactory.createArtifact(names[1], GUID.create());
-      IArtifact art3 = DataFactory.createArtifact(names[2], GUID.create());
-      IArtifact art4 = DataFactory.createArtifact(names[3], GUID.create());
+      ArtifactToken art1 = ArtifactToken.valueOf(1, names[0]);
+      ArtifactToken art2 = ArtifactToken.valueOf(2, names[1]);
+      ArtifactToken art3 = ArtifactToken.valueOf(3, names[2]);
+      ArtifactToken art4 = ArtifactToken.valueOf(4, names[3]);
 
-      List<IArtifact> itemsToOrder = Arrays.asList(art2, art1, art3, art4);
-      List<IArtifact> expectedOrder = Arrays.asList(art1, art2, art3, art4);
+      List<ArtifactToken> itemsToOrder = Arrays.asList(art2, art1, art3, art4);
+      List<ArtifactToken> expectedOrder = Arrays.asList(art1, art2, art3, art4);
       List<String> relatives = Artifacts.toGuids(Arrays.asList(art1, art2, art3, art4));
       return new Object[] {
          "UserDefined",
@@ -135,5 +132,4 @@ public class RelationSorterTest {
          itemsToOrder,
          expectedOrder};
    }
-
 }

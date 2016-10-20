@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.access;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -20,9 +21,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.mocks.MockArtifact;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -115,11 +114,12 @@ public class AccessDataQueryTest {
       AccessData data = new AccessData();
       IOseeBranch branch = CoreBranches.COMMON;
       IArtifactType artifactType = CoreArtifactTypes.AbstractSoftwareRequirement;
-      ArtifactToken artifact1 = new MockArtifact("1", "one", branch, artifactType, 1);
-      ArtifactToken artifact2 = new MockArtifact("2", "two", branch, artifactType, 2);
 
-      data.add(artifact1, new AccessDetail<ArtifactToken>(artifact1, PermissionEnum.READ, new Scope()));
-      data.add(artifact2, new AccessDetail<ArtifactToken>(artifact2, PermissionEnum.WRITE, new Scope()));
+      ArtifactToken artifact1 = ArtifactToken.valueOf(1, "one", branch, artifactType);
+      ArtifactToken artifact2 = ArtifactToken.valueOf(2, "two", branch, artifactType);
+
+      data.add(artifact1, new AccessDetail<>(artifact1, PermissionEnum.READ, new Scope()));
+      data.add(artifact2, new AccessDetail<>(artifact2, PermissionEnum.WRITE, new Scope()));
 
       AccessDataQuery query = new AccessDataQuery(data);
 
@@ -145,9 +145,9 @@ public class AccessDataQueryTest {
    @Test
    public void testArtifactMatches() {
       IOseeBranch branch = CoreBranches.COMMON;
-      ArtifactToken accessArtifact = new MockArtifact(GUID.create(), "test1", branch, CoreArtifactTypes.Folder, 45);
-      ArtifactToken typeAccessArtifact = new MockArtifact(GUID.create(), "test2", branch, CoreArtifactTypes.Folder, 46);
-      ArtifactToken noAccessArtifact = new MockArtifact(GUID.create(), "test3", branch, CoreArtifactTypes.Folder, 47);
+      ArtifactToken accessArtifact = ArtifactToken.valueOf(45, "test1", branch, Folder);
+      ArtifactToken typeAccessArtifact = ArtifactToken.valueOf(46, "test2", branch, Folder);
+      ArtifactToken noAccessArtifact = ArtifactToken.valueOf(47, "test3", branch, Folder);
       IArtifactType artType = TokenFactory.createArtifactType(1, "Folder");
 
       AccessDetail<?> specificArtDetail = MockDataFactory.createAccessDetails(accessArtifact, PermissionEnum.DENY, "",
@@ -180,11 +180,11 @@ public class AccessDataQueryTest {
    private TestObject getTestData() {
       IOseeBranch branchToCheck = CoreBranches.SYSTEM_ROOT;
       IArtifactType artifactType = CoreArtifactTypes.AbstractSoftwareRequirement;
-      ArtifactToken artifactToCheck = new MockArtifact(GUID.create(), "Hello", branchToCheck, artifactType, 12);
+      ArtifactToken artifactToCheck = ArtifactToken.valueOf(12, "Hello", branchToCheck, artifactType);
       AccessData data = new AccessData();
 
       data.add(branchToCheck, new AccessDetail<BranchId>(branchToCheck, PermissionEnum.WRITE, new Scope()));
-      data.add(artifactToCheck, new AccessDetail<ArtifactToken>(artifactToCheck, PermissionEnum.WRITE, new Scope()));
+      data.add(artifactToCheck, new AccessDetail<>(artifactToCheck, PermissionEnum.WRITE, new Scope()));
       data.add(artifactToCheck, new AccessDetail<IArtifactType>(artifactType, PermissionEnum.WRITE, new Scope()));
 
       return new TestObject(artifactToCheck, data);
