@@ -125,7 +125,7 @@ public class PopulateSawBuild2Actions {
             teamWf.getStateMgr().setAssignees(teamWf.getTeamDefinition().getLeads());
          }
 
-         AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamWf, version);
+         AtsClientService.get().getVersionService().setTargetedVersion(teamWf, version, changes);
          changes.add(teamWf);
       }
       return actionArt;
@@ -196,7 +196,7 @@ public class PopulateSawBuild2Actions {
             teamWf.getStateMgr().setAssignees(teamWf.getTeamDefinition().getLeads());
          }
 
-         AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamWf, version);
+         AtsClientService.get().getVersionService().setTargetedVersion(teamWf, version, changes);
          changes.add(teamWf);
       }
       return actionArt;
@@ -268,7 +268,7 @@ public class PopulateSawBuild2Actions {
             teamWf.getStateMgr().setAssignees(teamWf.getTeamDefinition().getLeads());
          }
 
-         AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamWf, version);
+         AtsClientService.get().getVersionService().setTargetedVersion(teamWf, version, changes);
          changes.add(teamWf);
       }
       return actionArt;
@@ -322,7 +322,7 @@ public class PopulateSawBuild2Actions {
          }
 
          changes.add(teamWf);
-         AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamWf, version);
+         AtsClientService.get().getVersionService().setTargetedVersion(teamWf, version, changes);
       }
       return actionArt;
    }

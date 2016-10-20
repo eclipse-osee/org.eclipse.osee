@@ -23,6 +23,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
@@ -39,7 +40,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -168,10 +168,13 @@ public class TargetedVersionColumnUI extends XViewerAtsColumnIdColumn implements
          }
       }
 
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("ATS Prompt Change Version");
+
       for (TeamWorkFlowArtifact teamArt1 : awas) {
-         AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamArt1, newVersion);
+         AtsClientService.get().getVersionService().setTargetedVersion(teamArt1, newVersion, changes);
       }
-      Artifacts.persistInTransaction("ATS Prompt Change Version", awas);
+      changes.execute();
+
       return true;
    }
 

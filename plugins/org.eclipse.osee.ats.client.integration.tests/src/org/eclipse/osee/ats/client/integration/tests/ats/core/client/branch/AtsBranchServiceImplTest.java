@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -82,13 +81,17 @@ public class AtsBranchServiceImplTest {
       AtsTestUtil.cleanupAndReset(
          AtsBranchServiceImplTest.class.getSimpleName() + ".testGetCommitTransactionsAndConfigItemsForTeamWf_versions");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
+      IAtsChangeSet changes =
+         AtsClientService.get().createChangeSet("testGetCommitTransactionsAndConfigItemsForTeamWf_versions");
+
       //Test Version-based Team Arts
       IAtsVersion version1 = AtsTestUtil.getVerArt1();
       IAtsVersion version2 = AtsTestUtil.getVerArt2();
-      ((Artifact) version1.getStoreObject()).addRelation(AtsRelationTypes.ParallelVersion_Child,
-         (Artifact) version2.getStoreObject());
-      ((Artifact) version1.getStoreObject()).persist(getClass().getSimpleName());
-      AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamArt, version1);
+
+      changes.setRelation(version1.getStoreObject(), AtsRelationTypes.ParallelVersion_Child, version2.getStoreObject());
+      AtsClientService.get().getVersionService().setTargetedVersion(teamArt, version1, changes);
+      changes.execute();
+
       Collection<Object> commitObjs =
          AtsClientService.get().getBranchService().getCommitTransactionsAndConfigItemsForTeamWf(teamArt);
       assertTrue("commitObjs has wrong size", commitObjs.size() == 2);

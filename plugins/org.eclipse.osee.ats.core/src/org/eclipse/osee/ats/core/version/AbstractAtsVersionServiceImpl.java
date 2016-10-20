@@ -78,6 +78,7 @@ public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionServic
    @Override
    public void removeTargetedVersion(IAtsTeamWorkflow teamWf, IAtsChangeSet changes) throws OseeCoreException {
       changes.unrelateAll(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
+
    }
 
    @Override

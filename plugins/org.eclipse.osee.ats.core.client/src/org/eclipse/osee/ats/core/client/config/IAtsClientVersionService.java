@@ -26,10 +26,6 @@ public interface IAtsClientVersionService extends IAtsVersionService {
 
    void removeTargetedVersion(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
-   IAtsVersion setTargetedVersionAndStore(IAtsTeamWorkflow teamWf, IAtsVersion version) throws OseeCoreException;
-
-   IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, IAtsVersion build) throws OseeCoreException;
-
    void setTeamDefinition(IAtsVersion version, IAtsTeamDefinition teamDef) throws OseeCoreException;
 
    BranchId getBranch(IAtsVersion version);

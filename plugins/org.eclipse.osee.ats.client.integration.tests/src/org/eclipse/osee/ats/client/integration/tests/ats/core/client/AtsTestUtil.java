@@ -707,7 +707,7 @@ public class AtsTestUtil {
             AtsClientService.get().getUserService().getCurrentUser(), null, changes);
 
          teamArt4 = actionArt4.getFirstTeam();
-         AtsClientService.get().getVersionService().setTargetedVersion(teamArt4, verArt4);
+         AtsClientService.get().getVersionService().setTargetedVersion(teamArt4, verArt4, changes);
          changes.execute();
       }
       return teamArt4;

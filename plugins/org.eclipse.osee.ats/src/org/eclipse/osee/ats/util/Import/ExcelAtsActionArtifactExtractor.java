@@ -26,6 +26,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -207,15 +208,17 @@ public class ExcelAtsActionArtifactExtractor {
                   TeamWorkFlowArtifact teamWorkflow =
                      ActionManager.createTeamWorkflow(actionArt, entry.getKey(), entry.getValue(), aData.assignees,
                         changes, createdDate, createdBy, null, CreateTeamOption.Duplicate_If_Exists);
-                  teamWorkflow.setSoleAttributeValue(AtsAttributeTypes.Description, aData.desc);
+                  changes.setSoleAttributeValue((IAtsWorkItem) teamWorkflow, AtsAttributeTypes.Description, aData.desc);
                   if (Strings.isValid(aData.priorityStr) && !aData.priorityStr.equals("<Select>")) {
-                     teamWorkflow.setSoleAttributeValue(AtsAttributeTypes.PriorityType, aData.priorityStr);
+                     changes.setSoleAttributeValue((IAtsWorkItem) teamWorkflow, AtsAttributeTypes.PriorityType,
+                        aData.priorityStr);
                   }
-                  teamWorkflow.setSoleAttributeValue(AtsAttributeTypes.ChangeType, aData.changeType);
+                  changes.setSoleAttributeValue((IAtsWorkItem) teamWorkflow, AtsAttributeTypes.ChangeType,
+                     aData.changeType);
 
                   for (JaxAttribute attr : aData.attributes) {
                      IAttributeType attrType = AttributeTypeManager.getType(attr.getAttrTypeName());
-                     teamWorkflow.setAttributeValues(attrType, attr.getValues());
+                     changes.setValues(teamWorkflow, attrType, attr.getValues());
                   }
                   newTeamArts.add(teamWorkflow);
                   addToGoal(Collections.singleton(teamWorkflow), changes);
@@ -229,12 +232,12 @@ public class ExcelAtsActionArtifactExtractor {
                      throw new OseeArgumentException("No version [%s] configured for Team Definition [%s]",
                         aData.version, team.getTeamDefinition());
                   }
-                  AtsClientService.get().getVersionService().setTargetedVersionAndStore(team, version);
+                  AtsClientService.get().getVersionService().setTargetedVersion(team, version, changes);
                }
             }
             if (aData.estimatedHours != null) {
                for (TeamWorkFlowArtifact team : newTeamArts) {
-                  team.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, aData.estimatedHours);
+                  changes.setSoleAttributeValue(team, AtsAttributeTypes.EstimatedHours, aData.estimatedHours);
                }
             }
             if (aData.assigneeStrs.size() > 0) {

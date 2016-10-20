@@ -360,7 +360,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                }
                if (versionToken != null) {
                   IAtsVersion version = AtsClientService.get().getVersionService().getById(versionToken);
-                  AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamWf, version);
+                  AtsClientService.get().getVersionService().setTargetedVersion(teamWf, version, changes);
                }
             }
          }

@@ -162,12 +162,11 @@ public class AtsBranchConfigurationTest {
          ActionableItems.getActionableItems(appendToName(BRANCH_VIA_VERSIONS, "A1"), AtsClientService.get());
       assertFalse(selectedActionableItems.isEmpty());
 
-      changes.clear();
       Artifact actionArt = ActionManager.createAction(null, BRANCH_VIA_VERSIONS.getName() + " Req Changes",
          "description", ChangeType.Problem, "1", false, null, selectedActionableItems, new Date(),
          AtsClientService.get().getUserService().getCurrentUser(), null, changes);
       TeamWorkFlowArtifact teamWf = ActionManager.getTeams(actionArt).iterator().next();
-      AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamWf, versionToTarget);
+      AtsClientService.get().getVersionService().setTargetedVersion(teamWf, versionToTarget, changes);
       changes.execute();
 
       TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get().getServices());

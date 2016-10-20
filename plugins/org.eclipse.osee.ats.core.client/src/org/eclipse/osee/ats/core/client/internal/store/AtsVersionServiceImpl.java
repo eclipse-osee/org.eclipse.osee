@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.IAtsClient;
@@ -72,33 +73,6 @@ public class AtsVersionServiceImpl extends AbstractAtsVersionServiceImpl impleme
    public void removeTargetedVersion(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) teamWf.getStoreObject();
       teamArt.deleteRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
-   }
-
-   @Override
-   public IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, IAtsVersion version) throws OseeCoreException {
-      setTargetedVersionLink(teamWf, version);
-      return version;
-   }
-
-   @Override
-   public IAtsVersion setTargetedVersionAndStore(IAtsTeamWorkflow teamWf, IAtsVersion version) throws OseeCoreException {
-      return setTargetedVersion(teamWf, version);
-   }
-
-   private IAtsTeamWorkflow setTargetedVersionLink(IAtsTeamWorkflow teamWf, IAtsVersion version) throws OseeCoreException {
-      Artifact versionArt = atsClient.checkArtifactFromId(version.getId(), AtsUtilCore.getAtsBranch());
-      if (versionArt != null) {
-         TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) teamWf.getStoreObject();
-         if (teamArt != null) {
-            teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
-               Collections.singleton(versionArt));
-            return teamArt;
-         } else {
-            throw new OseeStateException("Team Workflow artifact does not exist [%s]", teamWf.toStringWithId());
-         }
-      } else {
-         throw new OseeStateException("Version artifact does not exist [%s]", version.toStringWithId());
-      }
    }
 
    @Override

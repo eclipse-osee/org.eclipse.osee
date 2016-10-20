@@ -79,7 +79,8 @@ public class DemoTeamWorkflowTest {
 
       IAtsVersion sawBuild2Version = AtsClientService.get().getCache().getAtsObject(DemoArtifactToken.SAW_Bld_2);
       assertNotNull(sawBuild2Version);
-      AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamWf, sawBuild2Version);
+      AtsClientService.get().getVersionService().setTargetedVersion(teamWf, sawBuild2Version, changes);
+      changes.execute();
 
       //*** Create a new workflow branch
       Job createBranchJob = AtsBranchUtil.createWorkingBranch_Create(teamWf, true);

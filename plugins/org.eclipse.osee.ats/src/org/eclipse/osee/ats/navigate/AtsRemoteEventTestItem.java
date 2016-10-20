@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -194,50 +195,62 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
    private void makeChanges6(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       // Make changes and transition
-      AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamArt, getSawBld2());
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "false");
-      teamArt.persist("Remote Event Test");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes6");
+      AtsClientService.get().getVersionService().setTargetedVersion(teamArt, getSawBld2(), changes);
+      changes.setSoleAttributeFromString(ArtifactId.valueOf(teamArt.getId()), AtsAttributeTypes.ValidationRequired,
+         "false");
+      changes.execute();
    }
 
    private void makeChanges5(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       // Make changes and persist
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "true");
-      teamArt.persist(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes5");
+      changes.setSoleAttributeFromString(ArtifactId.valueOf(teamArt.getId()), AtsAttributeTypes.ValidationRequired,
+         "true");
+      changes.execute();
    }
 
    private void makeChanges4(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       // Make changes and persist
-      teamArt.deleteAttributes(AtsAttributeTypes.ValidationRequired);
-      teamArt.deleteAttributes(AtsAttributeTypes.Resolution);
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.Description, "description 4");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes4");
+      ArtifactId artId = ArtifactId.valueOf(teamArt.getId());
+      changes.deleteAttributes(teamArt, AtsAttributeTypes.ValidationRequired);
+      changes.deleteAttributes(teamArt, AtsAttributeTypes.Resolution);
+      changes.setSoleAttributeFromString(artId, AtsAttributeTypes.Description, "description 4");
       ChangeTypeUtil.setChangeType(teamArt, ChangeType.Support);
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.PriorityType, "3");
-      AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamArt, getSawBld3());
-      teamArt.persist("Remote Event Test");
+      changes.setSoleAttributeFromString(artId, AtsAttributeTypes.PriorityType, "3");
+      AtsClientService.get().getVersionService().setTargetedVersion(teamArt, getSawBld3(), changes);
+      changes.execute();
    }
 
    private void makeChanges3(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       // Make changes and persist
-      AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamArt, getSawBld2());
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "false");
-      teamArt.persist(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes3");
+      AtsClientService.get().getVersionService().setTargetedVersion(teamArt, getSawBld2(), changes);
+      changes.setSoleAttributeFromString(ArtifactId.valueOf(teamArt.getId()), AtsAttributeTypes.ValidationRequired,
+         "false");
+      changes.execute();
    }
 
    private void makeChanges2(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       // Make changes and persist
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.Description, "description 3");
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ProposedResolution, "this is resolution");
-      teamArt.persist(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes2");
+      ArtifactId artId = ArtifactId.valueOf(teamArt.getId());
+      changes.setSoleAttributeFromString(artId, AtsAttributeTypes.Description, "description 3");
+      changes.setSoleAttributeFromString(artId, AtsAttributeTypes.ProposedResolution, "this is resolution");
+      changes.execute();
    }
 
    private void makeChanges1(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       // Make changes and persist
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.Description, "description 2");
-      ChangeTypeUtil.setChangeType(teamArt, ChangeType.Problem);
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.PriorityType, "2");
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "true");
-      AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamArt, getSawBld1());
-      teamArt.persist("Remote Event Test");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes1");
+      ArtifactId artId = ArtifactId.valueOf(teamArt.getId());
+      changes.setSoleAttributeFromString(artId, AtsAttributeTypes.Description, "description 2");
+      changes.setSoleAttributeValue(artId, AtsAttributeTypes.ChangeType, ChangeType.Problem.name());
+      changes.setSoleAttributeFromString(artId, AtsAttributeTypes.PriorityType, "2");
+      changes.setSoleAttributeFromString(artId, AtsAttributeTypes.ValidationRequired, "true");
+      AtsClientService.get().getVersionService().setTargetedVersion(teamArt, getSawBld1(), changes);
+      changes.execute();
    }
 
    private IAtsVersion getSawBld1() throws OseeCoreException {
