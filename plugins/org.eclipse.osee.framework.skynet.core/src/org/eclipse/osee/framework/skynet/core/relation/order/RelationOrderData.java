@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -105,7 +104,7 @@ public class RelationOrderData {
       return lists.size();
    }
 
-   public void store(RelationType type, RelationSide side, RelationSorter requestedSorterId, List<? extends ArtifactId> relativeSequence) {
+   public void store(RelationType type, RelationSide side, RelationSorter requestedSorterId, List<Artifact> relativeSequence) {
       storeFromGuids(type, side, requestedSorterId, Artifacts.toGuids(relativeSequence));
    }
 

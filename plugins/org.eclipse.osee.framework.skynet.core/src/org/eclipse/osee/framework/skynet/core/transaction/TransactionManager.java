@@ -44,7 +44,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeRow;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.RelationRow;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
@@ -148,11 +147,11 @@ public final class TransactionManager {
     * cache the next time it's accessed. This is provided for remote event commits. All other updates to cache should be
     * performed through cacheCommittedArtifactTransaction.
     */
-   public static void clearCommitArtifactCacheForAssociatedArtifact(IArtifact associatedArtifact) {
+   public static void clearCommitArtifactCacheForAssociatedArtifact(ArtifactId associatedArtifact) {
       commitArtifactIdMap.removeValues(associatedArtifact);
    }
 
-   public synchronized static void cacheCommittedArtifactTransaction(IArtifact artifact, TransactionToken transactionId) throws OseeCoreException {
+   public synchronized static void cacheCommittedArtifactTransaction(ArtifactId artifact, TransactionToken transactionId) throws OseeCoreException {
       commitArtifactIdMap.put(artifact, getTransactionRecord(transactionId.getId()));
    }
 

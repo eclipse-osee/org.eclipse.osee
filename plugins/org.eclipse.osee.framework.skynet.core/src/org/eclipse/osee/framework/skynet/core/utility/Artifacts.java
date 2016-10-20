@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * Utility methods for common tasks performed on Artifact's.
@@ -48,10 +47,10 @@ public final class Artifacts {
       // This constructor is private because there is no reason to instantiate this class
    }
 
-   public static Collection<Integer> toIds(Collection<? extends IArtifact> artifacts) {
+   public static Collection<Integer> toIds(Collection<? extends ArtifactId> artifacts) {
       Set<Integer> toReturn = new HashSet<>(artifacts.size());
-      for (IArtifact artifact : artifacts) {
-         toReturn.add(artifact.getArtId());
+      for (ArtifactId artifact : artifacts) {
+         toReturn.add(artifact.getId().intValue());
       }
       return toReturn;
    }
@@ -262,8 +261,8 @@ public final class Artifacts {
 
    public static Collection<Long> toUuids(Set<Artifact> artifacts) {
       List<Long> uuids = new ArrayList<>(artifacts.size());
-      for (IArtifact artifact : artifacts) {
-         uuids.add(artifact.getUuid());
+      for (ArtifactId artifact : artifacts) {
+         uuids.add(artifact.getId());
       }
       return uuids;
    }

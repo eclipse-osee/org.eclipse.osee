@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
 
@@ -53,9 +52,9 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
             if (obj instanceof RelationType) {
                RelationType relationType = (RelationType) obj;
                if (options.isValidRelationType(relationType)) {
-                  for (IArtifact art : artifact.getRelatedArtifacts(relationType)) {
+                  for (Artifact art : artifact.getRelatedArtifacts(relationType)) {
                      if (options.isValidArtifactType(art.getArtifactType()) && displayArtifacts.contains(art)) {
-                        otherItems.add(art.getFullArtifact());
+                        otherItems.add(art);
                      }
                   }
                }
@@ -101,11 +100,10 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
                if (obj instanceof RelationType) {
                   RelationType relationType = (RelationType) obj;
                   if (options.isValidRelationType(relationType)) {
-                     for (IArtifact art : artifact.getRelatedArtifacts(relationType)) {
+                     for (Artifact art : artifact.getRelatedArtifacts(relationType)) {
                         if (options.isValidArtifactType(art.getArtifactType())) {
-                           Artifact relatedArt = art.getFullArtifact();
-                           displayArtifacts.add(relatedArt);
-                           getDescendants(displayArtifacts, relatedArt, level - 1);
+                           displayArtifacts.add(art);
+                           getDescendants(displayArtifacts, art, level - 1);
                         }
                      }
                   }

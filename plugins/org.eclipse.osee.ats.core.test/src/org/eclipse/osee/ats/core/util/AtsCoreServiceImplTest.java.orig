@@ -41,7 +41,13 @@ public class AtsCoreServiceImplTest {
 
    @Test
    public void testGetAtsId() {
-      ArtifactToken artifact = ArtifactToken.valueOf(0, null, COMMON);
+<<<<<<< HEAD
+      ArtifactToken artifact = ArtifactToken.valueOf(0, "guid", null, COMMON, null);
+||||||| parent of be5246f... refactor: Remove more IArtifact usage
+      ArtifactToken artifact = ArtifactToken.valueOf(0, "guid", null, null, null);
+=======
+      ArtifactToken artifact = ArtifactToken.valueOf(0, null, null);
+>>>>>>> be5246f... refactor: Remove more IArtifact usage
       when(attrResolver.getSoleAttributeValue(artifact, AtsAttributeTypes.AtsId, null)).thenReturn(null);
       String result = AtsCoreServiceImpl.getAtsId(attrResolver, artifact);
       assertEquals(result, artifact.getGuid());

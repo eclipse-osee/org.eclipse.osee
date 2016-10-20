@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.artifact;
 
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class ArtifactNameConflictHandler {
 
-   public String resolve(IArtifact source) {
+   public String resolve(ArtifactToken source) {
       final Pair<String, String> beforeAfterNames = new Pair<>("", "");
 
       String startingName = source.getName();

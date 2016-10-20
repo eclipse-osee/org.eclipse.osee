@@ -565,7 +565,7 @@ public class RelationManager {
       return relationOrderFactory.createRelationOrderData(artifact);
    }
 
-   public static void setRelationOrder(Artifact artifact, IRelationType relationType, RelationSide side, RelationSorter orderId, List<? extends Artifact> relatives) throws OseeCoreException {
+   public static void setRelationOrder(Artifact artifact, IRelationType relationType, RelationSide side, RelationSorter orderId, List<Artifact> relatives) throws OseeCoreException {
       RelationTypeSideSorter sorter = createTypeSideSorter(artifact, relationType, side);
       sorter.setOrder(relatives, orderId);
    }

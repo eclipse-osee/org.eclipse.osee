@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -46,7 +47,7 @@ public class RelationCache {
    private final CompositeKeyHashMap<ArtifactKey, IRelationType, List<RelationLink>> relationsByType =
       new CompositeKeyHashMap<ArtifactKey, IRelationType, List<RelationLink>>(1024, true);
 
-   private ArtifactKey getKey(IArtifact artifact) {
+   private ArtifactKey getKey(ArtifactToken artifact) {
       ArtifactKey key = THREAD_SHARED_KEY.get();
       return key.setKey(artifact);
    }
@@ -99,7 +100,7 @@ public class RelationCache {
       selectedRelations.add(newRelation);
    }
 
-   public List<RelationLink> getAll(IArtifact artifact) {
+   public List<RelationLink> getAll(ArtifactToken artifact) {
       return getRelations(artifact, DeletionFlag.INCLUDE_DELETED);
    }
 
@@ -108,7 +109,7 @@ public class RelationCache {
       return relationsByType.get(key, relationType);
    }
 
-   public List<RelationLink> getRelations(IArtifact artifact, DeletionFlag deletionFlag) {
+   public List<RelationLink> getRelations(ArtifactToken artifact, DeletionFlag deletionFlag) {
       ArtifactKey key = getKey(artifact);
       List<RelationLink> linksFound = new ArrayList<>();
       RelationMatcher matcher = RelationFilterUtil.createMatcher(deletionFlag);
@@ -184,7 +185,7 @@ public class RelationCache {
       return size != 0 ? relations.iterator().next() : null;
    }
 
-   public RelationLink getLoadedRelation(IRelationType relationType, final int aArtifactId, final int bArtifactId, BranchId branch) {
+   public RelationLink getLoadedRelation(IRelationType relationType, int aArtifactId, int bArtifactId, BranchId branch) {
       RelationMatcher bArtIdMatcher =
          RelationFilterUtil.createFindFirstRelatedArtIdMatcher(bArtifactId, RelationSide.SIDE_B);
       List<RelationLink> links = new ArrayList<>();

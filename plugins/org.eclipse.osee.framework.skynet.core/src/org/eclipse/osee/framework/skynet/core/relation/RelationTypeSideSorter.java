@@ -16,6 +16,7 @@ import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationSorterProvider;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -69,7 +69,7 @@ public class RelationTypeSideSorter extends RelationTypeSide {
       return orderData.getCurrentSorterGuid(relationType, getSide());
    }
 
-   public void sort(List<? extends IArtifact> listToOrder) throws OseeCoreException {
+   public void sort(List<? extends ArtifactToken> listToOrder) throws OseeCoreException {
       IRelationSorter order = sorterProvider.getRelationOrder(getSorterId());
       List<String> relativeOrder = orderData.getOrderList(getRelationType(), getSide());
       order.sort(listToOrder, relativeOrder);
@@ -104,7 +104,7 @@ public class RelationTypeSideSorter extends RelationTypeSide {
       setOrder(relatives, getSorterId());
    }
 
-   public void setOrder(List<? extends IArtifact> relatives, RelationSorter sorterId) throws OseeCoreException {
+   public void setOrder(List<Artifact> relatives, RelationSorter sorterId) {
       orderData.store(relationType, getSide(), sorterId, relatives);
    }
 

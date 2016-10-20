@@ -145,7 +145,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
     * (or similar variant)
     */
    @Deprecated
-   public final List<? extends IArtifact> getRelatedArtifacts(RelationType relationType) throws OseeCoreException {
+   public final List<Artifact> getRelatedArtifacts(RelationType relationType) throws OseeCoreException {
       return RelationManager.getRelatedArtifacts(this, new RelationTypeSide(relationType, RelationSide.SIDE_B));
    }
 
@@ -1285,7 +1285,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       setRelationOrder(relationEnumeration, targetArtifact, insertAfterTarget, itemToAdd);
    }
 
-   public final void setRelationOrder(RelationTypeSide relationSide, List<? extends Artifact> artifactsInNewOrder) throws OseeCoreException {
+   public final void setRelationOrder(RelationTypeSide relationSide, List<Artifact> artifactsInNewOrder) throws OseeCoreException {
       RelationManager.setRelationOrder(this, relationSide, relationSide.getSide(), USER_DEFINED, artifactsInNewOrder);
    }
 

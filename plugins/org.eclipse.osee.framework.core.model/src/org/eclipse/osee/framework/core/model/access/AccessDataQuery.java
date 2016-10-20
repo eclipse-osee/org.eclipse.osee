@@ -11,9 +11,10 @@
 package org.eclipse.osee.framework.core.model.access;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
@@ -49,7 +50,7 @@ public class AccessDataQuery {
       }
    }
 
-   public void artifactTypeMatches(PermissionEnum permissionToMatch, IBasicArtifact<?> artifact, PermissionStatus permissionStatus) throws OseeCoreException {
+   public void artifactTypeMatches(PermissionEnum permissionToMatch, ArtifactToken artifact, PermissionStatus permissionStatus) throws OseeCoreException {
       IArtifactType typeToMatch = artifact.getArtifactType();
       BranchId branchToMatch = artifact.getBranch();
       branchArtifactTypeMatches(permissionToMatch, branchToMatch, typeToMatch, permissionStatus);
@@ -59,7 +60,7 @@ public class AccessDataQuery {
       }
    }
 
-   public void artifactMatches(PermissionEnum permissionToMatch, final IBasicArtifact<?> artifact, PermissionStatus permissionStatus) throws OseeCoreException {
+   public void artifactMatches(PermissionEnum permissionToMatch, ArtifactToken artifact, PermissionStatus permissionStatus) throws OseeCoreException {
       BranchId branchToMatch = artifact.getBranch();
       branchMatches(permissionToMatch, branchToMatch, permissionStatus);
       if (permissionStatus.matched()) {
@@ -107,7 +108,7 @@ public class AccessDataQuery {
       }
    }
 
-   public void attributeTypeMatches(PermissionEnum permissionToMatch, IBasicArtifact<?> artifact, final IAttributeType attributeType, PermissionStatus permissionStatus) throws OseeCoreException {
+   public void attributeTypeMatches(PermissionEnum permissionToMatch, ArtifactToken artifact, final IAttributeType attributeType, PermissionStatus permissionStatus) throws OseeCoreException {
       artifactMatches(permissionToMatch, artifact, permissionStatus);
       if (permissionStatus.matched()) {
          Collection<AccessDetail<?>> branchAccessDetails = accessData.getAccess(artifact.getBranch());
@@ -137,8 +138,8 @@ public class AccessDataQuery {
    public boolean matchesAll(PermissionEnum permissionToMatch) throws OseeCoreException {
       PermissionStatus permissionStatus = new PermissionStatus();
       for (Object objectKey : accessData.keySet()) {
-         if (objectKey instanceof IBasicArtifact<?>) {
-            artifactMatches(permissionToMatch, (IBasicArtifact<?>) objectKey, permissionStatus);
+         if (objectKey instanceof ArtifactToken) {
+            artifactMatches(permissionToMatch, (ArtifactToken) objectKey, permissionStatus);
          } else if (objectKey instanceof BranchId) {
             branchMatches(permissionToMatch, (BranchId) objectKey, permissionStatus);
          }

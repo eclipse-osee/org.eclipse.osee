@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -33,7 +34,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderFactory;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactNameConflictHandler;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPasteOperation;
@@ -221,18 +221,18 @@ public class ArtifactPasteOperationTest {
    private final static class MockArtifactNameConflictHandler extends ArtifactNameConflictHandler {
 
       private String resolveWith;
-      private IArtifact conflictedArtifact;
+      private ArtifactToken conflictedArtifact;
 
       public MockArtifactNameConflictHandler() {
          resolveWith = null;
          conflictedArtifact = null;
       }
 
-      public void setConflictedArtifact(IArtifact conflictedArtifact) {
+      public void setConflictedArtifact(ArtifactToken conflictedArtifact) {
          this.conflictedArtifact = conflictedArtifact;
       }
 
-      public IArtifact getConflictedArtifact() {
+      public ArtifactToken getConflictedArtifact() {
          return conflictedArtifact;
       }
 
@@ -245,7 +245,7 @@ public class ArtifactPasteOperationTest {
       }
 
       @Override
-      public String resolve(IArtifact artifact) {
+      public String resolve(ArtifactToken artifact) {
          Assert.assertNotNull(artifact);
          Assert.assertEquals(getConflictedArtifact(), artifact);
          return getResolveWith();

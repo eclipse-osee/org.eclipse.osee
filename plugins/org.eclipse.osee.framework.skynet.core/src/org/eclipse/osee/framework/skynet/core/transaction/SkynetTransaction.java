@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -57,7 +58,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTransactionData;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TxMonitorImpl.TxState;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 
 /**
@@ -123,7 +123,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       getAccess().hasArtifactPermission(Collections.singleton(artifact), PermissionEnum.WRITE, Level.FINE);
    }
 
-   private void checkBranch(IArtifact artifact) throws OseeCoreException {
+   private void checkBranch(ArtifactToken artifact) throws OseeCoreException {
       if (!isBranchWritable(artifact.getBranch())) {
          throw new OseeStateException("The artifact [%s] is on a non-editable branch [%s] ", artifact,
             artifact.getBranch());

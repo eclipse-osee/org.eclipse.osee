@@ -183,7 +183,7 @@ public class RelationOrderDataTest {
       accessor.clearStoreCalled();
 
       // No Change -- Current Sorter Id
-      List<IArtifact> emptyList = java.util.Collections.emptyList();
+      List<Artifact> emptyList = java.util.Collections.emptyList();
       data.store(relationType1, RelationSide.SIDE_A, LEXICOGRAPHICAL_ASC, emptyList);
       Assert.assertFalse(accessor.wasStoreCalled());
 
