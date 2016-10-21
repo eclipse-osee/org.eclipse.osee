@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
@@ -82,8 +83,8 @@ public final class ArtifactCache {
     * This method is called by attributes and relations when their dirty state changes. This way, when an artifact is
     * dirty we can hold onto a strong reference and when it is not dirty we can have a weak reference.
     */
-   public static void updateCachedArtifact(int artId, long branchUuid) {
-      ID_CACHE.updateReferenceType(artId, branchUuid);
+   public static void updateCachedArtifact(ArtifactToken artifact) {
+      ID_CACHE.updateReferenceType(artifact);
    }
 
    public static List<Artifact> getArtifactsByType(IArtifactType artifactType) {
@@ -97,14 +98,10 @@ public final class ArtifactCache {
       return artifacts;
    }
 
-   public static Artifact getActive(IBasicGuidArtifact basicGuidArtifact) throws OseeCoreException {
-      return ID_CACHE.getByGuid(basicGuidArtifact.getGuid(), basicGuidArtifact.getBranchId());
-   }
-
    public static Collection<Artifact> getActive(Collection<? extends IBasicGuidArtifact> basicGuidArtifacts) throws OseeCoreException {
       Set<Artifact> artifacts = new HashSet<>();
       for (IBasicGuidArtifact guidArt : basicGuidArtifacts) {
-         Artifact art = getActive(guidArt);
+         Artifact art = ID_CACHE.getByGuid(guidArt.getGuid(), guidArt.getBranch());
          if (art != null) {
             artifacts.add(art);
          }
@@ -113,15 +110,15 @@ public final class ArtifactCache {
    }
 
    public static Artifact getActive(DefaultBasicGuidArtifact guidArt) throws OseeCoreException {
-      return getActive(guidArt.getGuid(), guidArt.getBranchId());
+      return getActive(guidArt.getGuid(), guidArt.getBranch());
    }
 
    private static Artifact getActiveA(IBasicGuidRelation guidRel) throws OseeCoreException {
-      return getActive(guidRel.getArtA().getGuid(), guidRel.getArtA().getBranchId());
+      return getActive(guidRel.getArtA().getGuid(), guidRel.getArtA().getBranch());
    }
 
    private static Artifact getActiveB(IBasicGuidRelation guidRel) throws OseeCoreException {
-      return getActive(guidRel.getArtB().getGuid(), guidRel.getArtB().getBranchId());
+      return getActive(guidRel.getArtB().getGuid(), guidRel.getArtB().getBranch());
    }
 
    /**
@@ -152,28 +149,19 @@ public final class ArtifactCache {
       return arts;
    }
 
-   public static Artifact getActive(Integer artId, BranchId branch) {
-      return getActive(artId, branch.getUuid());
-   }
-
    public static Artifact getActive(ArtifactId artId, BranchId branch) {
-      return getActive(artId.getId(), branch.getUuid());
+      return getActive(ArtifactToken.valueOf(artId, branch));
    }
 
-   public static Artifact getActive(Integer artId, Long branchUuid) {
-      return ID_CACHE.getById(artId, branchUuid);
-   }
-
-   public static Artifact getActive(String artGuid, Long uuid) throws OseeCoreException {
-      return ID_CACHE.getByGuid(artGuid, uuid);
+   public static Artifact getActive(ArtifactToken artifact) {
+      return ID_CACHE.getById(artifact);
    }
 
    public static Artifact getActive(String artGuid, BranchId branch) throws OseeCoreException {
-      return getActive(artGuid, branch.getUuid());
+      return ID_CACHE.getByGuid(artGuid, branch);
    }
 
-   public static Artifact getActive(Long uuid, Long branchUuid) {
-      return ID_CACHE.getById(uuid.intValue(), branchUuid);
+   public static Artifact getActive(Long artId, BranchId branch) {
+      return getActive(ArtifactToken.valueOf(artId, branch));
    }
-
 }

@@ -28,7 +28,7 @@ public interface HasBranch {
    }
 
    default boolean isOnSameBranch(HasBranch other) {
-      return other == null ? false : getBranchId().equals(other.getBranchId());
+      return other == null ? false : getBranch().equals(other.getBranch());
    }
 
    default boolean isOnBranch(BranchId branch) {

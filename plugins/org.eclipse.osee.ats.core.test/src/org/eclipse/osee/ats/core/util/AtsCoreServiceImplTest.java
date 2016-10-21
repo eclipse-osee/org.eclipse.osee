@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.util;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -40,7 +41,7 @@ public class AtsCoreServiceImplTest {
 
    @Test
    public void testGetAtsId() {
-      ArtifactToken artifact = ArtifactToken.valueOf(0, "guid", null, null, null);
+      ArtifactToken artifact = ArtifactToken.valueOf(0, "guid", null, COMMON, null);
       when(attrResolver.getSoleAttributeValue(artifact, AtsAttributeTypes.AtsId, null)).thenReturn(null);
       String result = AtsCoreServiceImpl.getAtsId(attrResolver, artifact);
       assertEquals(result, "guid");

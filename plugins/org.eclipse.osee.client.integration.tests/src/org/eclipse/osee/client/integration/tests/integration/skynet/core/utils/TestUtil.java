@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -90,8 +91,8 @@ public final class TestUtil {
    }
 
    public static RelationLink createRelationLink(int relationId, int artA, int artB, Branch branch, RelationType relationType) {
-      return new RelationLink(artA, artB, branch, relationType, relationId, 0, "relation: " + relationId,
-         ModificationType.MODIFIED, ApplicabilityId.BASE);
+      return new RelationLink(ArtifactToken.valueOf(artA, branch), ArtifactToken.valueOf(artB, branch), branch,
+         relationType, relationId, 0, "relation: " + relationId, ModificationType.MODIFIED, ApplicabilityId.BASE);
    }
 
    public static List<RelationLink> createLinks(int total, Branch branch) {

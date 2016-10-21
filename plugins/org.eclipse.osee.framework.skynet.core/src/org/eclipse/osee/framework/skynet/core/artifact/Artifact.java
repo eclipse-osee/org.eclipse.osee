@@ -1737,4 +1737,9 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    public Long getId() {
       return Long.valueOf(getArtId());
    }
+
+   // TODO: This method should be removed once Artifact extends BaseId
+   public ArtifactToken getHashableToken() {
+      return ArtifactToken.valueOf(getId(), getBranch());
+   }
 }

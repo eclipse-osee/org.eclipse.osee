@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -45,8 +46,7 @@ public class AtsBranchManagerUpdateListener implements IBranchEventListener {
          return;
       }
       try {
-         Integer associatedArtifact =
-            BranchManager.getAssociatedArtifactId(branchEvent.getSourceBranch()).getId().intValue();
+         ArtifactId associatedArtifact = BranchManager.getAssociatedArtifactId(branchEvent.getSourceBranch());
          Artifact assocArtInCache = ArtifactCache.getActive(associatedArtifact, COMMON);
          if (assocArtInCache != null && assocArtInCache instanceof TeamWorkFlowArtifact) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) assocArtInCache;

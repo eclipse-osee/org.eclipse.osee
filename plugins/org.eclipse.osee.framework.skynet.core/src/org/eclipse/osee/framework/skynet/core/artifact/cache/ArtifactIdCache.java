@@ -14,8 +14,10 @@ import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
@@ -24,8 +26,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryMa
  * @author Roberto E. Escobar
  */
 public class ArtifactIdCache {
-   private final CompositeKeyHashMap<Integer, Long, Object> idCache;
-   private final CompositeKeyHashMap<String, Long, Object> guidCache;
+   private final ConcurrentHashMap<ArtifactToken, Object> idCache;
+   private final CompositeKeyHashMap<String, BranchId, Object> guidCache;
 
    private static enum FilterType {
       ONLY_DIRTIES,
@@ -33,42 +35,31 @@ public class ArtifactIdCache {
    }
 
    public ArtifactIdCache(int initialCapacity) {
-      idCache = new CompositeKeyHashMap<>(initialCapacity, true);
+      idCache = new ConcurrentHashMap<>(initialCapacity);
       guidCache = new CompositeKeyHashMap<>(initialCapacity, true);
    }
 
-   private Long getKey2(Artifact artifact) {
-      try {
-         return artifact.getBranchId();
-      } catch (OseeCoreException ex) {
-         return -1L;
+   public Artifact getById(ArtifactToken artifact) {
+      if (artifact instanceof Artifact) {
+         artifact = ((Artifact) artifact).getHashableToken();
       }
+      return asArtifact(idCache.get(artifact));
    }
 
-   public Artifact getById(Integer artId, Long branchUuid) {
-      return asArtifact(getObjectById(artId, branchUuid));
-   }
-
-   public Artifact getByGuid(String artGuid, Long branchUuid) {
-      return asArtifact(getObjectByGuid(artGuid, branchUuid));
-   }
-
-   public Artifact getByUuid(Long uuid, Long branchUuid) {
-      return asArtifact(getObjectById(uuid.intValue(), branchUuid));
+   public Artifact getByGuid(String artGuid, BranchId branch) {
+      return asArtifact(guidCache.get(artGuid, branch));
    }
 
    public Object cache(Artifact artifact) {
       Object object = asCacheObject(artifact);
-      Long key2 = getKey2(artifact);
-      idCache.put(artifact.getArtId(), key2, object);
-      guidCache.put(artifact.getGuid(), key2, object);
+      idCache.put(artifact.getHashableToken(), object);
+      guidCache.put(artifact.getGuid(), artifact.getBranch(), object);
       return object;
    }
 
    public void deCache(Artifact artifact) {
-      Long key2 = getKey2(artifact);
-      idCache.removeAndGet(artifact.getArtId(), key2);
-      guidCache.removeAndGet(artifact.getGuid(), key2);
+      idCache.remove(artifact.getHashableToken());
+      guidCache.removeAndGet(artifact.getGuid(), artifact.getBranch());
    }
 
    public Collection<Artifact> getAll() {
@@ -94,21 +85,13 @@ public class ArtifactIdCache {
 
    private Collection<Artifact> getItems(FilterType filterType) {
       Collection<Artifact> artifacts = new HashSet<>();
-      for (Entry<Pair<String, Long>, Object> entry : guidCache.entrySet()) {
+      for (Entry<Pair<String, BranchId>, Object> entry : guidCache.entrySet()) {
          Artifact art = asArtifact(entry.getValue());
          if (!isFiltered(art, filterType)) {
             artifacts.add(art);
          }
       }
       return artifacts;
-   }
-
-   protected Object getObjectByGuid(String guid, Long key2) {
-      return guidCache.get(guid, key2);
-   }
-
-   protected Object getObjectById(Integer uniqueId, Long key2) {
-      return idCache.get(uniqueId, key2);
    }
 
    private Object asCacheObject(Artifact artifact) {
@@ -135,8 +118,11 @@ public class ArtifactIdCache {
    }
 
    @SuppressWarnings("unchecked")
-   public void updateReferenceType(int artId, long branchUuid) {
-      Object obj = idCache.get(artId, branchUuid);
+   public void updateReferenceType(ArtifactToken token) {
+      if (token instanceof Artifact) {
+         token = ((Artifact) token).getHashableToken();
+      }
+      Object obj = idCache.get(token);
       if (obj != null) {
          if (obj instanceof Artifact) {
             Artifact artifact = (Artifact) obj;

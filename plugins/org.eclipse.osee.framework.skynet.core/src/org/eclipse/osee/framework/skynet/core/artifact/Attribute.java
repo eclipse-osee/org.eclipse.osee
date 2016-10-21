@@ -206,12 +206,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
 
    private void setDirtyFlag(boolean dirty) {
       this.dirty = dirty;
-      try {
-         Artifact artifact = getArtifact();
-         ArtifactCache.updateCachedArtifact(artifact.getArtId(), artifact.getBranchId());
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Attribute.class, Level.SEVERE, ex);
-      }
+      ArtifactCache.updateCachedArtifact(getArtifact());
    }
 
    public Artifact getArtifact() throws OseeStateException {

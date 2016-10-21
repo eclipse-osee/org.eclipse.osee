@@ -181,7 +181,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
                break;
             case attribute:
                // Only reload items that were already in the active cache
-               int artifactId = change.getArtId().getId().intValue();
+               ArtifactId artifactId = change.getArtId();
                Artifact artifact = ArtifactCache.getActive(artifactId, newTransaction.getBranch());
                if (artifact != null) {
                   artifacts.add(artifact);
@@ -190,7 +190,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
                Artifact changedArtifact = change.getChangeArtifact();
                if (changedArtifact != null) {
 
-                  EventModifiedBasicGuidArtifact artEvent = artEventMap.get(artifactId);
+                  EventModifiedBasicGuidArtifact artEvent = artEventMap.get(artifactId.getId().intValue());
                   if (artEvent == null) {
                      artEvent = new EventModifiedBasicGuidArtifact(newTransaction.getBranch(),
                         change.getArtifactType().getGuid(), changedArtifact.getGuid(),

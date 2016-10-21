@@ -119,7 +119,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
          List<Artifact> changedArts = new LinkedList<>();
          for (Long changedUuid : results.getChangedWorkitemUuids()) {
-            Artifact artifact = ArtifactCache.getActive(changedUuid.intValue(), AtsUtilCore.getAtsBranch());
+            Artifact artifact = ArtifactCache.getActive(changedUuid, AtsUtilCore.getAtsBranch());
             if (artifact != null) {
                changedArts.add(artifact);
             }

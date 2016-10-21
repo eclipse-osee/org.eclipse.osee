@@ -83,6 +83,10 @@ public class ArtifactQuery {
       return getArtifactFromId(artifactToken.getUuid(), branch);
    }
 
+   public static Artifact getArtifactFromToken(ArtifactToken artifactToken, DeletionFlag allowDeleted) {
+      return getArtifactFromId(artifactToken.getUuid(), artifactToken.getBranch(), allowDeleted);
+   }
+
    public static Artifact getArtifactFromToken(ArtifactToken artifactToken) {
       return getArtifactFromId(artifactToken.getId(), artifactToken.getBranch());
    }
@@ -134,7 +138,7 @@ public class ArtifactQuery {
       if (artId < 1) {
          throw new OseeArgumentException("Invalid Artifact Id: [%d]", artId);
       }
-      Artifact artifact = ArtifactCache.getActive(artId, branch);
+      Artifact artifact = ArtifactCache.getActive(ArtifactToken.valueOf(artId, branch));
       if (artifact != null) {
          if (artifact.isDeleted() && allowDeleted == EXCLUDE_DELETED) {
             if (queryType == QueryType.CHECK) {

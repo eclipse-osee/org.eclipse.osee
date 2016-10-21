@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -21,6 +22,18 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 public interface ArtifactToken extends ArtifactId, HasArtifactType, HasBranch, Named {
    default ArtifactTypeId getArtifactTypeId() {
       return null;
+   }
+
+   public static ArtifactToken valueOf(Id id, BranchId branch) {
+      return valueOf(id.getId(), GUID.create(), null, branch, null);
+   }
+
+   public static ArtifactToken valueOf(ArtifactId id, BranchId branch) {
+      return valueOf(id.getId(), GUID.create(), null, branch, null);
+   }
+
+   public static ArtifactToken valueOf(long id, BranchId branch) {
+      return valueOf(id, GUID.create(), null, branch, null);
    }
 
    public static ArtifactToken valueOf(long id, String name, BranchId branch) {
@@ -62,6 +75,15 @@ public interface ArtifactToken extends ArtifactId, HasArtifactType, HasBranch, N
          @Override
          public Long getUuid() {
             return getId();
+         }
+
+         @Override
+         public boolean equals(Object obj) {
+            boolean equal = super.equals(obj);
+            if (equal && obj instanceof HasBranch) {
+               return isOnSameBranch((HasBranch) obj);
+            }
+            return equal;
          }
       }
       return new ArtifactTokenImpl(id, guid, name, branch, artifactType);

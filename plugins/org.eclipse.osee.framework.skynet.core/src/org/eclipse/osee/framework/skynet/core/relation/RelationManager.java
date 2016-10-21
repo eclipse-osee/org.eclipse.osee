@@ -24,6 +24,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -160,7 +161,7 @@ public class RelationManager {
       if (relations != null) {
          for (RelationLink rel : relations) {
             if (allowDeleted == INCLUDE_DELETED || allowDeleted == EXCLUDE_DELETED && !rel.isDeleted()) {
-               ret.add(rel.getArtifactId(side));
+               ret.add(rel.getArtifactId(side).getId().intValue());
             }
          }
       }
@@ -208,7 +209,7 @@ public class RelationManager {
                          * since getting relations by type will return the link between this artifact and it's parent,
                          * make sure not to put it in the list of selected relations
                          */
-                        if (rel.getArtifactId(relationEnum.getSide()) != artifact.getArtId()) {
+                        if (rel.getArtifactId(relationEnum.getSide()).notEqual(artifact)) {
                            selectedRelations.add(rel);
                         }
                      }
@@ -601,8 +602,9 @@ public class RelationManager {
          relation = getLoadedRelation(relationType, aArtifactId, bArtifactId, branch);
       }
       if (relation == null) {
-         relation = new RelationLink(aArtifactId, bArtifactId, branch, relationType, relationId, gammaId, rationale,
-            modificationType, applicabilityId);
+         relation =
+            new RelationLink(ArtifactToken.valueOf(aArtifactId, branch), ArtifactToken.valueOf(bArtifactId, branch),
+               branch, relationType, relationId, gammaId, rationale, modificationType, applicabilityId);
       }
       manageRelation(relation, RelationSide.SIDE_A);
       manageRelation(relation, RelationSide.SIDE_B);

@@ -369,8 +369,8 @@ public class RelationCacheTest {
 
       RelationType type = new RelationType(0x00L, "type name", artifactA.getName(), artifactB.getName(),
          CoreArtifactTypes.Artifact, CoreArtifactTypes.Artifact, RelationTypeMultiplicity.MANY_TO_MANY, null);
-      RelationLink link = new RelationLink(artifactA.getArtId(), artifactB.getArtId(), testBranch, type, 77, 88, "",
-         ModificationType.MODIFIED, ApplicabilityId.BASE);
+      RelationLink link =
+         new RelationLink(artifactA, artifactB, testBranch, type, 77, 88, "", ModificationType.MODIFIED, ApplicabilityId.BASE);
       relCache.cache(artifactA, link);
       relCache.cache(artifactB, link);
 

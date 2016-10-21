@@ -21,6 +21,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -112,18 +113,19 @@ public final class ArtifactLoader {
 
          while (iterator.hasNext()) {
             Pair<ArtifactId, BranchId> next = iterator.next();
-            Integer artId = next.getFirst().getId().intValue();
-            Long branchUuid = next.getSecond().getId();
+            ArtifactId artId = next.getFirst();
+            BranchId branch = next.getSecond();
 
             Artifact active = null;
 
             if (reload == LoadType.INCLUDE_CACHE) {
                synchronized (ArtifactCache.class) {
-                  active = ArtifactCache.getActive(artId, branchUuid);
+                  active = ArtifactCache.getActive(artId, branch);
                }
             }
 
-            boolean doNotLoad = determineIfIShouldLoad(artifacts, allowDeleted, locks, artId, branchUuid, active);
+            boolean doNotLoad =
+               determineIfIShouldLoad(artifacts, allowDeleted, locks, artId.getId().intValue(), branch.getId(), active);
 
             if (doNotLoad) {
                iterator.remove();
@@ -189,11 +191,11 @@ public final class ArtifactLoader {
       Iterator<Entry<Pair<Integer, Long>, ReentrantLock>> iterator = locks.entrySet().iterator();
       while (iterator.hasNext()) {
          Entry<Pair<Integer, Long>, ReentrantLock> entry = iterator.next();
-         Integer artId = entry.getKey().getFirst();
-         Long branchUuid = entry.getKey().getSecond();
+         ArtifactId artId = ArtifactId.valueOf(entry.getKey().getFirst());
+         BranchId branch = BranchId.valueOf(entry.getKey().getSecond());
          entry.getValue().lock();
          entry.getValue().unlock();
-         Artifact active = ArtifactCache.getActive(artId, branchUuid);
+         Artifact active = ArtifactCache.getActive(artId, branch);
          if (active != null) {
             artifacts.add(active);
          }
@@ -325,7 +327,7 @@ public final class ArtifactLoader {
     * This method is called only after the cache has been checked
     */
    private static Artifact retrieveShallowArtifact(JdbcStatement chStmt, LoadType reload, boolean historical, boolean isArchived) throws OseeCoreException {
-      int artifactId = chStmt.getInt("art_id");
+      ArtifactId artifactId = ArtifactId.valueOf(chStmt.getLong("art_id"));
       BranchId branch = TokenFactory.createBranch(chStmt.getLong("branch_id"));
       TransactionToken transactionId = TransactionToken.SENTINEL;
       ApplicabilityId appId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
@@ -338,9 +340,8 @@ public final class ArtifactLoader {
          IArtifactType artifactType = ArtifactTypeManager.getTypeByGuid(chStmt.getLong("art_type_id"));
          ArtifactFactory factory = ArtifactTypeManager.getFactory(artifactType);
 
-         artifact =
-            factory.loadExisitingArtifact(artifactId, chStmt.getString("guid"), artifactType, chStmt.getInt("gamma_id"),
-               branch, transactionId, ModificationType.getMod(chStmt.getInt("mod_type")), appId, historical);
+        artifact = factory.loadExisitingArtifact(artifactId.getId().intValue(), chStmt.getString("guid"), artifactType,
+        	chStmt.getInt("gamma_id"), branch, transactionId, ModificationType.getMod(chStmt.getInt("mod_type")), appId, historical);
       }
 
       if (reload == LoadType.RELOAD_CACHE) {

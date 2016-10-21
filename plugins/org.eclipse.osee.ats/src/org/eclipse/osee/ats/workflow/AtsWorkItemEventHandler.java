@@ -21,7 +21,7 @@ import org.osgi.service.event.EventHandler;
 
 /**
  * Event handler to handle refreshing WorkflowEditor when work item is update remotely
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsWorkItemEventHandler implements EventHandler {
@@ -32,7 +32,7 @@ public class AtsWorkItemEventHandler implements EventHandler {
          if (event.getTopic().equals(AtsTopicEvent.WORK_ITEM_MODIFIED)) {
             for (Long workItemUuid : AtsObjects.uuidsToLong(";",
                (String) event.getProperty(AtsTopicEvent.WORK_ITEM_UUDS_KEY))) {
-               Artifact artifact = ArtifactCache.getActive(workItemUuid, AtsUtilCore.getAtsBranch().getUuid());
+               Artifact artifact = ArtifactCache.getActive(workItemUuid, AtsUtilCore.getAtsBranch());
                if (artifact != null) {
                   if (WfeArtifactEventManager.isLoaded(artifact)) {
                      artifact.reloadAttributesAndRelations();
