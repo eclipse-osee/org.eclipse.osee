@@ -12,9 +12,8 @@ package org.eclipse.osee.framework.skynet.core.relation;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
-import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
-import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -46,7 +46,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink.ArtifactLinker;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderFactory;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationSorterProvider;
@@ -525,7 +524,7 @@ public class RelationManager {
          ensureRelationCanBeAdded(relationType, artifactA, artifactB);
 
          relation = getOrCreate(artifactA.getArtId(), artifactB.getArtId(), artifactA.getBranch(),
-            RelationTypeManager.getType(relationType), 0, 0, rationale, ModificationType.NEW, , ApplicabilityId.BASE);
+            RelationTypeManager.getType(relationType), 0, 0, rationale, ModificationType.NEW, ApplicabilityId.BASE);
          relation.setDirty();
          if (relation.isDeleted()) {
             relation.undelete();
@@ -602,8 +601,8 @@ public class RelationManager {
          relation = getLoadedRelation(relationType, aArtifactId, bArtifactId, branch);
       }
       if (relation == null) {
-         relation = new RelationLink(new RelationArtifactLinker(), aArtifactId, bArtifactId, branch, relationType,
-            relationId, gammaId, rationale, modificationType, applicabilityId);
+         relation = new RelationLink(aArtifactId, bArtifactId, branch, relationType, relationId, gammaId, rationale,
+            modificationType, applicabilityId);
       }
       manageRelation(relation, RelationSide.SIDE_A);
       manageRelation(relation, RelationSide.SIDE_B);
@@ -625,42 +624,5 @@ public class RelationManager {
             artifact);
       }
       return relationCache.getRelations(artifact, deletionFlag);
-   }
-
-   private static final class RelationArtifactLinker implements ArtifactLinker {
-
-      @Override
-      public Artifact getArtifact(int artifactId, BranchId branch) throws OseeCoreException {
-         return ArtifactQuery.getArtifactFromId(artifactId, branch, DeletionFlag.INCLUDE_DELETED);
-      }
-
-      @Override
-      public String getLazyArtifactName(int artifactId, BranchId branch) {
-         Artifact artifact = null;
-         try {
-            artifact = ArtifactCache.getActive(artifactId, branch);
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-         return artifact != null ? artifact.getName() : "Unloaded";
-      }
-
-      @Override
-      public void deleteFromRelationOrder(Artifact aArtifact, Artifact bArtifact, IRelationType relationType) throws OseeCoreException {
-         RelationTypeSideSorter aSorter = RelationManager.createTypeSideSorter(aArtifact, relationType, SIDE_B);
-         aSorter.removeItem(bArtifact);
-
-         RelationTypeSideSorter bSorter = RelationManager.createTypeSideSorter(bArtifact, relationType, SIDE_A);
-         bSorter.removeItem(aArtifact);
-      }
-
-      @Override
-      public void updateCachedArtifact(int artId, BranchId branch) {
-         try {
-            ArtifactCache.updateCachedArtifact(artId, branch.getUuid());
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-      }
    }
 }

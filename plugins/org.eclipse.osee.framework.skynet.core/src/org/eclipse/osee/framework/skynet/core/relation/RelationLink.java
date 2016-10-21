@@ -10,8 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
+
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
@@ -27,8 +31,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderFactory;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -38,18 +42,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  * @author Ryan D. Brooks
  */
 public class RelationLink implements HasBranch {
-
-   public static interface ArtifactLinker {
-
-      public void updateCachedArtifact(int artId, BranchId branch);
-
-      public Artifact getArtifact(int ArtId, BranchId branch) throws OseeCoreException;
-
-      public String getLazyArtifactName(int aArtifactId, BranchId branch);
-
-      public void deleteFromRelationOrder(Artifact aArtifact, Artifact bArtifact, IRelationType relationType) throws OseeCoreException;
-   }
-
    private int relationId;
    private int gammaId;
    private String rationale;
@@ -64,11 +56,9 @@ public class RelationLink implements HasBranch {
    private static final boolean SET_DIRTY = true;
    private static final boolean SET_NOT_DIRTY = false;
 
-   private final ArtifactLinker artifactLinker;
    private boolean useBackingData;
 
-   public RelationLink(ArtifactLinker artifactLinker, int aArtifactId, int bArtifactId, BranchId branch, RelationTypeToken relationType, int relationId, int gammaId, String rationale, ModificationType modificationType, ApplicabilityId applicabilityId) {
-      this.artifactLinker = artifactLinker;
+   public RelationLink(ArtifactToken artifactA, ArtifactToken artifactB, BranchId branch, RelationTypeToken relationType, int relationId, int gammaId, String rationale, ModificationType modificationType, ApplicabilityId applicabilityId) {
       this.relationType = relationType;
       this.relationId = relationId;
       this.gammaId = gammaId;
@@ -193,13 +183,14 @@ public class RelationLink implements HasBranch {
    private void internalDelete(boolean reorderRelations, boolean setDirty) {
       if (!isDeleted()) {
          if (reorderRelations) {
-            try {
-               artifactLinker.deleteFromRelationOrder(getArtifactA(), getArtifactB(), getRelationType());
-            } catch (OseeCoreException e) {
-               OseeLog.log(Activator.class, Level.SEVERE, e.getMessage());
-            }
-         }
+            Artifact aArtifact = getArtifactA();
+            Artifact bArtifact = getArtifactB();
+            RelationTypeSideSorter aSorter = RelationManager.createTypeSideSorter(aArtifact, relationType, SIDE_B);
+            aSorter.removeItem(bArtifact);
 
+            RelationTypeSideSorter bSorter = RelationManager.createTypeSideSorter(bArtifact, relationType, SIDE_A);
+            bSorter.removeItem(aArtifact);
+         }
          internalSetModType(ModificationType.DELETED, true, setDirty);
       }
    }
@@ -209,7 +200,7 @@ public class RelationLink implements HasBranch {
    }
 
    public Artifact getArtifact(RelationSide relationSide) throws OseeCoreException {
-      return artifactLinker.getArtifact(getArtifactId(relationSide), getBranch());
+      return ArtifactQuery.getArtifactFromId(getArtifactId(relationSide), branch, DeletionFlag.INCLUDE_DELETED);
    }
 
    public Artifact getArtifactOnOtherSide(Artifact artifact) throws OseeCoreException {
@@ -283,11 +274,8 @@ public class RelationLink implements HasBranch {
 
    @Override
    public String toString() {
-      String artAName = artifactLinker.getLazyArtifactName(getAArtifactId(), getBranch());
-      String artBName = artifactLinker.getLazyArtifactName(getBArtifactId(), getBranch());
-      return String.format("type[%s] id[%d] modType[%s] [%s]: aName[%s] aId[%d] <--> bName[%s] bId[%s]",
-         relationType.getName(), relationId, getModificationType(), isDirty() ? "dirty" : "not dirty", artAName,
-         aArtifactId, artBName, bArtifactId);
+      return String.format("type[%s] id[%d] modType[%s] [%s]: aId[%d] <--> bId[%s]", relationType.getName(), relationId,
+         getModificationType(), isDirty() ? "dirty" : "not dirty", aArtifactId, bArtifactId);
    }
 
    public void setNotDirty() {
@@ -300,8 +288,8 @@ public class RelationLink implements HasBranch {
 
    private void setDirtyFlag(boolean dirty) {
       this.dirty = dirty;
-      artifactLinker.updateCachedArtifact(aArtifactId, getBranch());
-      artifactLinker.updateCachedArtifact(bArtifactId, getBranch());
+      ArtifactCache.updateCachedArtifact(aArtifactId, branch.getId());
+      ArtifactCache.updateCachedArtifact(bArtifactId, branch.getId());
    }
 
    public void internalSetRelationId(int relationId) {

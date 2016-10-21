@@ -90,8 +90,8 @@ public final class TestUtil {
    }
 
    public static RelationLink createRelationLink(int relationId, int artA, int artB, Branch branch, RelationType relationType) {
-      return new RelationLink(new MockLinker("Linker"), artA, artB, branch, relationType, relationId, 0,
-         "relation: " + relationId, ModificationType.MODIFIED, ApplicabilityId.BASE);
+      return new RelationLink(artA, artB, branch, relationType, relationId, 0, "relation: " + relationId,
+         ModificationType.MODIFIED, ApplicabilityId.BASE);
    }
 
    public static List<RelationLink> createLinks(int total, Branch branch) {
