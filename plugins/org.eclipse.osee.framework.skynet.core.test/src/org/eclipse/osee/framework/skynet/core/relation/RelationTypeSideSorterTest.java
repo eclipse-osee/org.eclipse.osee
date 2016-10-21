@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.relation.order.IRelationOrderAcces
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationSorterProvider;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
@@ -257,12 +256,12 @@ public class RelationTypeSideSorterTest {
    private static final class DoNothingAccessor implements IRelationOrderAccessor {
 
       @Override
-      public void load(IArtifact artifact, RelationOrderData orderData) {
+      public void load(Artifact artifact, RelationOrderData orderData) {
          // do nothing
       }
 
       @Override
-      public void store(IArtifact artifact, RelationOrderData orderData, DefaultBasicUuidRelationReorder reorderRecord) {
+      public void store(Artifact artifact, RelationOrderData orderData, DefaultBasicUuidRelationReorder reorderRecord) {
          // do nothing
       }
    }

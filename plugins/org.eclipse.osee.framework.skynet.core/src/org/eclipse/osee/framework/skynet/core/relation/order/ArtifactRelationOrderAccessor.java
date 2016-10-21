@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReord
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * @author Roberto E. Escobar
@@ -29,22 +28,18 @@ public class ArtifactRelationOrderAccessor implements IRelationOrderAccessor {
    }
 
    @Override
-   public void load(IArtifact artifact, RelationOrderData orderData) throws OseeCoreException {
-      Artifact fullArtifact = artifact.getFullArtifact();
-      String value =
-         fullArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.RelationOrder, Strings.emptyString());
-
+   public void load(Artifact artifact, RelationOrderData orderData) throws OseeCoreException {
+      String value = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.RelationOrder, Strings.emptyString());
       parser.loadFromXml(orderData, value);
    }
 
    @Override
-   public void store(IArtifact artifact, RelationOrderData orderData, DefaultBasicUuidRelationReorder relationOrderRecord) throws OseeCoreException {
-      Artifact fullArtifact = artifact.getFullArtifact();
-      fullArtifact.getRelationOrderRecords().add(relationOrderRecord);
-      if (orderData.hasEntries() && !fullArtifact.isDeleted()) {
-         fullArtifact.setSoleAttributeFromString(CoreAttributeTypes.RelationOrder, parser.toXml(orderData));
+   public void store(Artifact artifact, RelationOrderData orderData, DefaultBasicUuidRelationReorder relationOrderRecord) throws OseeCoreException {
+      artifact.getRelationOrderRecords().add(relationOrderRecord);
+      if (orderData.hasEntries() && !artifact.isDeleted()) {
+         artifact.setSoleAttributeFromString(CoreAttributeTypes.RelationOrder, parser.toXml(orderData));
       } else {
-         fullArtifact.deleteSoleAttribute(CoreAttributeTypes.RelationOrder);
+         artifact.deleteSoleAttribute(CoreAttributeTypes.RelationOrder);
       }
    }
 }

@@ -269,14 +269,13 @@ public class RelationOrderDataTest {
       }
 
       @Override
-      public void load(IArtifact artifact, RelationOrderData orderData) {
+      public void load(Artifact artifact, RelationOrderData orderData) {
          wasLoadCalled = true;
       }
 
       @Override
-      public void store(IArtifact artifact, RelationOrderData orderData, DefaultBasicUuidRelationReorder reorderRecord) {
+      public void store(Artifact artifact, RelationOrderData orderData, DefaultBasicUuidRelationReorder reorderRecord) {
          wasStoreCalled = true;
       }
-
    }
 }
