@@ -229,7 +229,10 @@ public class AttributeFormPart extends AbstractFormPart {
       GridLayout layout = ALayout.getZeroMarginLayout(1, false);
       layout.marginLeft = leftMargin;
       internalComposite.setLayout(layout);
-      internalComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
+      gridData.widthHint = 100;
+      gridData.minimumWidth = 100;
+      internalComposite.setLayoutData(gridData);
 
       try {
          IAttributeXWidgetProvider xWidgetProvider = AttributeXWidgetManager.getAttributeXWidgetProvider(attributeType);
@@ -278,7 +281,10 @@ public class AttributeFormPart extends AbstractFormPart {
 
       GridLayout layout = ALayout.getZeroMarginLayout(1, false);
       expandable.setLayout(layout);
-      expandable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+      gridData.widthHint = 100;
+      gridData.minimumWidth = 100;
+      expandable.setLayoutData(gridData);
 
       Artifact artifact = editor.getEditorInput().getArtifact();
 
