@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -74,7 +75,7 @@ public class AtsArtifactQuery {
    }
 
    public static Artifact getArtifactFromId(long uuid) {
-      return ArtifactQuery.getArtifactFromId((int) uuid, AtsClientService.get().getAtsBranch());
+      return ArtifactQuery.getArtifactFromId(ArtifactId.valueOf(uuid), AtsClientService.get().getAtsBranch());
    }
 
    public static List<Artifact> getArtifactListFromIds(List<Long> uuids) {

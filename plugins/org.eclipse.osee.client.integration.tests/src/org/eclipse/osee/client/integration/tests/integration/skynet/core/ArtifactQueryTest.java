@@ -25,6 +25,7 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -104,7 +105,7 @@ public class ArtifactQueryTest {
       }
 
       // Should still exist with allowDeleted
-      searchedArtifact = ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), COMMON, DeletionFlag.INCLUDE_DELETED);
+      searchedArtifact = ArtifactQuery.getArtifactFromId(newArtifact, COMMON, DeletionFlag.INCLUDE_DELETED);
       Assert.assertNotNull(searchedArtifact);
 
    }
