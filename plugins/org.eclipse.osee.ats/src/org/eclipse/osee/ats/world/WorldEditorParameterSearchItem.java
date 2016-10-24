@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.eclipse.osee.ats.api.query.AtsSearchUserType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.search.widget.ActionableItemSearchWidget;
 import org.eclipse.osee.ats.search.widget.ColorTeamSearchWidget;
@@ -72,6 +74,9 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    private final Pattern displayName = Pattern.compile("displayName=\"(.*?)\"");
    private String shortName = "";
    private final List<String> widgetOrder = new LinkedList<>();
+   private static List<WorkItemType> GOAL_SPRINT_BACKLOG_WORKITEMTYPES =
+      Arrays.asList(WorkItemType.AgileBacklog, WorkItemType.AgileSprint, WorkItemType.Goal);
+   private static List<WorkItemType> TEAM_DEF_WORKITEMTYPES = null;
    private TitleSearchWidget title;
    private StateTypeSearchWidget stateType;
    private UserSearchWidget user;
@@ -121,7 +126,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
          if (workItemType != null && workItemType.get().isEmpty()) {
             return new Result("You must select a workflow type.");
          }
-         if ((teamDef != null && teamDef.get().isEmpty()) && (ai != null && ai.get().isEmpty())) {
+         if ((teamDef != null && teamDef.get() != null && teamDef.get().isEmpty()) && (ai != null && ai.get().isEmpty()) && isTeamDefWorkItemTypesSelected()) {
             return new Result("You must select either Actionable Item(s) or Team Definition(s).");
          }
          return Result.TrueResult;
@@ -129,6 +134,26 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return new Result("Exception: " + ex.getLocalizedMessage());
       }
+   }
+
+   private List<WorkItemType> getTeamDefWorkItemTypes() {
+      if (TEAM_DEF_WORKITEMTYPES == null) {
+         TEAM_DEF_WORKITEMTYPES = new LinkedList<>();
+         for (WorkItemType type : WorkItemType.values()) {
+            if (!GOAL_SPRINT_BACKLOG_WORKITEMTYPES.contains(type)) {
+               TEAM_DEF_WORKITEMTYPES.add(type);
+            }
+         }
+      }
+      return TEAM_DEF_WORKITEMTYPES;
+   }
+
+   /**
+    * @return true if any of the work item types are related to team defs and ais
+    */
+   private boolean isTeamDefWorkItemTypesSelected() {
+      boolean sel = !Collections.setIntersection(getTeamDefWorkItemTypes(), workItemType.get()).isEmpty();
+      return sel;
    }
 
    @Override
