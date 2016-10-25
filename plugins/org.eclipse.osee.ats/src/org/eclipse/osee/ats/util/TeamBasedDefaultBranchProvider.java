@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -43,7 +42,7 @@ public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesPr
 
          Collection<BranchId> branches = new LinkedList<>();
          for (IAtsTeamDefinition team : teams) {
-            branches.add(TokenFactory.createBranch(team.getTeamBranchUuid()));
+            branches.add(BranchId.valueOf(team.getTeamBranchUuid()));
          }
 
          return branches;

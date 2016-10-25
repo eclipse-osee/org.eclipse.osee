@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.core.data;
 public interface HasBranch {
 
    default BranchId getBranch() {
-      return TokenFactory.createBranch(getBranchId());
+      return BranchId.valueOf(getBranchId());
    }
 
    default Long getBranchId() {

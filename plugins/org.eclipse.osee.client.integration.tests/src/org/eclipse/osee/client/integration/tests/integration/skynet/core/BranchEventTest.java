@@ -67,7 +67,7 @@ public class BranchEventTest {
    @Before
    public void setup() {
       String topLevelBranchName = String.format("%s_TOP_LEVEL", method.getQualifiedTestName());
-      mainBranch = TokenFactory.createBranch(topLevelBranchName);
+      mainBranch = IOseeBranch.create(topLevelBranchName);
 
       branchEventListener = new BranchEventListener();
    }

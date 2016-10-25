@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -95,11 +96,11 @@ public class OrcsTypesTest {
 
    static long BRANCH_A_UUID = 3458234234L;
    static long BRANCH_B_UUID = 9993245332L;
-   private static final BranchId BRANCH_A = TokenFactory.createBranch(BRANCH_A_UUID, "Branch A");
-   private static final BranchId BRANCH_B = TokenFactory.createBranch(BRANCH_B_UUID, "Branch B");
-   private static final BranchId BRANCH_C = TokenFactory.createBranch("Branch C");
-   private static final BranchId BRANCH_D = TokenFactory.createBranch("Branch D");
-   private static final BranchId BRANCH_E = TokenFactory.createBranch("Branch E");
+   private static final BranchId BRANCH_A = IOseeBranch.create(BRANCH_A_UUID, "Branch A");
+   private static final BranchId BRANCH_B = IOseeBranch.create(BRANCH_B_UUID, "Branch B");
+   private static final BranchId BRANCH_C = IOseeBranch.create("Branch C");
+   private static final BranchId BRANCH_D = IOseeBranch.create("Branch D");
+   private static final BranchId BRANCH_E = IOseeBranch.create("Branch E");
 
    @Mock private Log logger;
    @Mock private OrcsTypesDataStore dataStore;

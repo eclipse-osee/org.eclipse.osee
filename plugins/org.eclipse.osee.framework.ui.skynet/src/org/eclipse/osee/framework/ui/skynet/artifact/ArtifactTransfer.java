@@ -16,12 +16,11 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
@@ -45,7 +44,7 @@ import org.eclipse.swt.dnd.TransferData;
  * A singleton is provided which may be serially reused (see <code>getInstance</code>). It is not intended to be
  * subclassed.
  * </p>
- * 
+ *
  * @see org.eclipse.jface.viewers.StructuredViewer
  * @see org.eclipse.swt.dnd.DropTarget
  * @see org.eclipse.swt.dnd.DragSource
@@ -158,12 +157,12 @@ public class ArtifactTransfer extends ByteArrayTransfer {
    private Artifact readArtifact(DataInputStream dataIn) throws OseeCoreException, IOException {
       int artID = dataIn.readInt();
       long branchUuid = dataIn.readLong();
-      return ArtifactQuery.getArtifactFromId(artID, TokenFactory.createBranch(branchUuid));
+      return ArtifactQuery.getArtifactFromId(artID, BranchId.valueOf(branchUuid));
    }
 
    /**
     * Writes the given resource to the given stream.
-    * 
+    *
     * @throws OseeCoreException
     */
    private void writeArtifact(DataOutputStream dataOut, Artifact artifact) throws IOException, OseeCoreException {

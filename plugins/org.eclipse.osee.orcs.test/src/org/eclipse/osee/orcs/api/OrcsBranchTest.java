@@ -79,7 +79,7 @@ public class OrcsBranchTest {
       int CHANGED_TX_ID = 9; // Transaction containing tested change
 
       // set up the initial branch
-      IOseeBranch branch = TokenFactory.createBranch("PriorBranch");
+      IOseeBranch branch = IOseeBranch.create("PriorBranch");
 
       ArtifactId author = SystemUser.OseeSystem;
 
@@ -105,7 +105,7 @@ public class OrcsBranchTest {
       // user Joe Smith, so if the code is correct, and the copy includes the final
       // transaction, then this will produce the same result as the query of the common branch
       // create the branch with the copied transaction
-      IOseeBranch postbranch = TokenFactory.createBranch("PostBranch");
+      IOseeBranch postbranch = IOseeBranch.create("PostBranch");
 
       TransactionId tx1 = TransactionId.valueOf(CHANGED_TX_ID);
       Callable<BranchReadable> postCallable =
@@ -132,7 +132,7 @@ public class OrcsBranchTest {
       List<ChangeItem> priorItems = callable.call();
 
       // create the branch with the copied transaction
-      IOseeBranch branch = TokenFactory.createBranch("CopiedBranch");
+      IOseeBranch branch = IOseeBranch.create("CopiedBranch");
 
       ArtifactId author = SystemUser.OseeSystem;
 
@@ -151,7 +151,7 @@ public class OrcsBranchTest {
    public void testCommitBranchMissingArtifactsOnDestination() throws Exception {
       ArtifactId author = SystemUser.OseeSystem;
       // set up the initial branch
-      IOseeBranch branch = TokenFactory.createBranch("BaseBranch");
+      IOseeBranch branch = IOseeBranch.create("BaseBranch");
 
       Callable<BranchReadable> callableBranch = branchOps.createTopLevelBranch(branch, author);
       BranchReadable base = callableBranch.call();
@@ -162,7 +162,7 @@ public class OrcsBranchTest {
 
       // create working branch off of base to make some changes
       // set up the child branch
-      IOseeBranch branchName = TokenFactory.createBranch("ChildBranch");
+      IOseeBranch branchName = IOseeBranch.create("ChildBranch");
       Callable<BranchReadable> callableChildBranch =
          branchOps.createWorkingBranch(branchName, author, base, ArtifactId.SENTINEL);
 
@@ -182,7 +182,7 @@ public class OrcsBranchTest {
 
       // create a disjoint working branch from common
 
-      IOseeBranch commonName = TokenFactory.createBranch("ChildFromCommonBranch");
+      IOseeBranch commonName = IOseeBranch.create("ChildFromCommonBranch");
       Callable<BranchReadable> callableBranchFromCommon =
          branchOps.createWorkingBranch(commonName, author, CoreBranches.COMMON, ArtifactId.SENTINEL);
       BranchReadable commonChildBranch = callableBranchFromCommon.call();
@@ -197,7 +197,7 @@ public class OrcsBranchTest {
    public void testBranchUpdateFields() throws Exception {
       String branchName = testName.getMethodName();
 
-      IOseeBranch branch = TokenFactory.createBranch(branchName);
+      IOseeBranch branch = IOseeBranch.create(branchName);
 
       branchOps.createBaselineBranch(branch, SystemUser.OseeSystem, CoreBranches.SYSTEM_ROOT, SENTINEL).call();
 

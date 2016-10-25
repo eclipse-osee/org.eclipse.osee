@@ -11,15 +11,14 @@
 package org.eclipse.osee.framework.core.enums;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 
 /**
  * @author Roberto E. Escobar
  */
 public final class CoreBranches {
 
-   public static final IOseeBranch COMMON = TokenFactory.createBranch(570, "Common");
-   public static final IOseeBranch SYSTEM_ROOT = TokenFactory.createBranch(1, "System Root Branch");
+   public static final IOseeBranch COMMON = IOseeBranch.create(570, "Common");
+   public static final IOseeBranch SYSTEM_ROOT = IOseeBranch.create(1, "System Root Branch");
    public static final Long SYSTEM_ROOT_ID = SYSTEM_ROOT.getUuid();
 
    public CoreBranches() {

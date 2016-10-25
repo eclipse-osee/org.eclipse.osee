@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal.loader.processor;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -41,7 +40,7 @@ public class BranchLoadProcessor extends LoadProcessor<BranchData, BranchObjectF
       BranchType branchType = BranchType.valueOf(chStmt.getInt("branch_type"));
       BranchArchivedState archiveState = BranchArchivedState.valueOf(chStmt.getInt("archived"));
 
-      BranchId parentBranchId = TokenFactory.createBranch(chStmt.getLong("parent_branch_id"));
+      BranchId parentBranchId = BranchId.valueOf(chStmt.getLong("parent_branch_id"));
       TransactionId sourceTx = TransactionId.valueOf(chStmt.getLong("parent_transaction_id"));
       TransactionId baseTx = TransactionId.valueOf(chStmt.getLong("baseline_transaction_id"));
       ArtifactId assocArtId = ArtifactId.valueOf(chStmt.getLong("associated_art_id"));

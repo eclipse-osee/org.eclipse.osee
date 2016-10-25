@@ -15,7 +15,6 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
@@ -46,9 +45,9 @@ public class BranchUuidEventFilterTest {
    public void testIsMatchArtifacts() {
       BranchUuidEventFilter branchFilter = new BranchUuidEventFilter(COMMON);
 
-      EventBasicGuidArtifact guidArtA = new EventBasicGuidArtifact(EventModType.Added, TokenFactory.createBranch(),
+      EventBasicGuidArtifact guidArtA = new EventBasicGuidArtifact(EventModType.Added, BranchId.create(),
          CoreArtifactTypes.Requirement.getGuid(), GUID.create());
-      EventBasicGuidArtifact guidArtB = new EventBasicGuidArtifact(EventModType.Added, TokenFactory.createBranch(),
+      EventBasicGuidArtifact guidArtB = new EventBasicGuidArtifact(EventModType.Added, BranchId.create(),
          CoreArtifactTypes.SoftwareRequirement.getGuid(), GUID.create());
       List<IBasicGuidArtifact> arts = new ArrayList<>();
       arts.add(guidArtB);
@@ -69,9 +68,9 @@ public class BranchUuidEventFilterTest {
    public void testIsMatchRelationArtifacts() {
       BranchUuidEventFilter branchFilter = new BranchUuidEventFilter(COMMON);
 
-      EventBasicGuidArtifact guidArtA = new EventBasicGuidArtifact(EventModType.Added, TokenFactory.createBranch(),
+      EventBasicGuidArtifact guidArtA = new EventBasicGuidArtifact(EventModType.Added, BranchId.create(),
          CoreArtifactTypes.Requirement.getGuid(), GUID.create());
-      EventBasicGuidArtifact guidArtB = new EventBasicGuidArtifact(EventModType.Added, TokenFactory.createBranch(),
+      EventBasicGuidArtifact guidArtB = new EventBasicGuidArtifact(EventModType.Added, BranchId.create(),
          CoreArtifactTypes.SoftwareRequirement.getGuid(), GUID.create());
 
       List<IBasicGuidRelation> relations = new ArrayList<>();

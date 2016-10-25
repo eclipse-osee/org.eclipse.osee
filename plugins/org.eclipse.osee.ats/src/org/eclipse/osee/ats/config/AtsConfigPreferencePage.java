@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -67,7 +66,7 @@ public class AtsConfigPreferencePage extends PreferencePage implements IWorkbenc
 
                if (dialog.open() == 0) {
                   AtsConfiguration config = (AtsConfiguration) dialog.getResult()[0];
-                  BranchId branch = TokenFactory.createBranch(config.getBranchUuid());
+                  BranchId branch = BranchId.valueOf(config.getBranchUuid());
 
                   AtsUtilCore.storeAtsBranch(branch, config.getName());
 

@@ -62,7 +62,7 @@ public class DispoProgramResourceTest {
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noProgramsResponse.getStatus());
       assertEquals("[]", messageActual);
 
-      IOseeBranch branch = TokenFactory.createBranch(id1.getUuid(), "dispotestGetAll");
+      IOseeBranch branch = IOseeBranch.create(id1.getUuid(), "dispotestGetAll");
       List<IOseeBranch> branchList = Collections.singletonList(branch);
 
       when(dispoApi.getDispoPrograms()).thenReturn(branchList);

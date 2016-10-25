@@ -22,11 +22,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -138,8 +137,7 @@ public class ChangeArtifactType {
 
          while (chStmt.next()) {
             int gammaId = chStmt.getInt("gamma_id");
-            long branchUuid = chStmt.getLong("branch_id");
-            BranchId branch = TokenFactory.createBranch(branchUuid);
+            BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
             int artId = gammaToArtId.get(gammaId);
             Artifact artifact = ArtifactQuery.checkArtifactFromId(artId, branch, DeletionFlag.EXCLUDE_DELETED);
             if (artifact != null) {

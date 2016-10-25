@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.internal.event;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
@@ -38,7 +37,7 @@ public class EventListenerRegistryTest {
 
    @Test
    public void testRegistration() {
-      BranchId branch = TokenFactory.createBranch(345L);
+      BranchId branch = BranchId.valueOf(345L);
       EventListenerRegistry registry = new EventListenerRegistry();
       Delegate1 delegate1 = new Delegate1();
       Delegate2 delegate2 = new Delegate2();
@@ -67,8 +66,8 @@ public class EventListenerRegistryTest {
       Assert.assertEquals(1, listener2.size());
       Assert.assertEquals(delegate1, listener2.iterator().next());
 
-      Collection<IEventListener> listener3 = registry.getListeners(EventQosType.NORMAL,
-         new BranchEvent(BranchEventType.Added, TokenFactory.createBranch(3L)));
+      Collection<IEventListener> listener3 =
+         registry.getListeners(EventQosType.NORMAL, new BranchEvent(BranchEventType.Added, BranchId.valueOf(3L)));
       Assert.assertEquals(1, listener3.size());
       Assert.assertEquals(delegate2, listener3.iterator().next());
 

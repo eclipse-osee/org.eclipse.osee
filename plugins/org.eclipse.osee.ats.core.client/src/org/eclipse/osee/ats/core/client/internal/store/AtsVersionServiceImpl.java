@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.version.AbstractAtsVersionServiceImpl;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -122,7 +121,7 @@ public class AtsVersionServiceImpl extends AbstractAtsVersionServiceImpl impleme
       BranchId branch = null;
       Long branchUuid = getBranchId(version);
       if (branchUuid != null && branchUuid > 0) {
-         branch = TokenFactory.createBranch(branchUuid);
+         branch = BranchId.valueOf(branchUuid);
       }
       return branch;
    }

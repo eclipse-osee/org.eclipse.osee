@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -169,7 +169,7 @@ public class ArtifactEditorReloadTab extends FormPage {
       protected IStatus run(IProgressMonitor monitor) {
          if (artUuid > 0) {
             try {
-               artifact = ArtifactQuery.getArtifactFromId(artUuid, TokenFactory.createBranch(branchUuid));
+               artifact = ArtifactQuery.getArtifactFromId(artUuid, BranchId.valueOf(branchUuid));
             } catch (ArtifactDoesNotExist ex) {
                // do nothing
             }

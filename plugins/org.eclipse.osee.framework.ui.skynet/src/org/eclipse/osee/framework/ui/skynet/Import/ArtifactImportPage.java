@@ -20,9 +20,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
@@ -383,7 +383,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
             if (GUID.isValid(guid) && Strings.isNumeric(branchUuidStr)) {
                try {
                   Long bramchUuid = Long.valueOf(branchUuidStr);
-                  Artifact artifact = ArtifactQuery.getArtifactFromId(guid, TokenFactory.createBranch(bramchUuid));
+                  Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchId.valueOf(bramchUuid));
                   artifactSelectPanel.setDefaultItem(artifact);
                } catch (OseeCoreException ex) {
                   OseeLog.logf(Activator.class, Level.SEVERE,

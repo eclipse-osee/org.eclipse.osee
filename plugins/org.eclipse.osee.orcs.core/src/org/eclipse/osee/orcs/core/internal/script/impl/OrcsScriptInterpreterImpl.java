@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -440,7 +439,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       @Override
       public Void caseOsTxHeadOfBranchIdCriteria(OsTxHeadOfBranchIdCriteria object) {
          Long id = resolver.resolveSingle(Long.class, object.getId());
-         getTxQuery().andIsHead(TokenFactory.createBranch(id));
+         getTxQuery().andIsHead(BranchId.valueOf(id));
          return null;
       }
 
@@ -705,7 +704,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
 
       ////////////////////////////// Functions;
       private BranchId asBranch(Long typeId) {
-         return TokenFactory.createBranch(typeId);
+         return BranchId.valueOf(typeId);
       }
 
       private Timestamp asTimestamp(Date date) {

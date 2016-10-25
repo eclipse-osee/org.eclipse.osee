@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
@@ -200,7 +199,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                   return;
                }
                sourceBranchId = Long.parseLong(memento.getString(SOURCE_BRANCH_ID));
-               final BranchId sourceBranch = TokenFactory.createBranch(sourceBranchId);
+               final BranchId sourceBranch = BranchId.valueOf(sourceBranchId);
                if (sourceBranch == null) {
                   OseeLog.log(Activator.class, Level.WARNING,
                      "Merge View can't init due to invalid source branch uuid " + sourceBranchId);
@@ -208,7 +207,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                   return;
                }
                destBranchId = Long.parseLong(memento.getString(DEST_BRANCH_ID));
-               final BranchId destBranch = TokenFactory.createBranch(destBranchId);
+               final BranchId destBranch = BranchId.valueOf(destBranchId);
                if (destBranch == null) {
                   OseeLog.log(Activator.class, Level.WARNING,
                      "Merge View can't init due to invalid destination branch uuid " + sourceBranchId);

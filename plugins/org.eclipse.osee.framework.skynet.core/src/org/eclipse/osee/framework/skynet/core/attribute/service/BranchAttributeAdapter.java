@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -25,7 +24,7 @@ public class BranchAttributeAdapter implements AttributeAdapter<BranchId> {
 
    @Override
    public BranchId adapt(Attribute<?> attribute, Id identity) throws OseeCoreException {
-      return TokenFactory.createBranch(identity.getId());
+      return BranchId.valueOf(identity.getId());
    }
 
    @Override

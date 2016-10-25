@@ -40,7 +40,7 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -167,7 +167,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
       // Create new baseline branch off Root
       Callable<BranchReadable> newBranchCallable =
-         orcsApi.getBranchOps().createTopLevelBranch(TokenFactory.createBranch(newBranchName), user);
+         orcsApi.getBranchOps().createTopLevelBranch(IOseeBranch.create(newBranchName), user);
       BranchReadable newBranch;
       try {
          newBranch = newBranchCallable.call();

@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.OseeDslResource;
 import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AddAttribute;
@@ -189,7 +188,7 @@ public class DslToTypeLoader implements TypesLoader {
       if (branchIdStr == null) {
          return CoreBranches.SYSTEM_ROOT;
       } else {
-         return TokenFactory.createBranch(Long.valueOf(branchIdStr));
+         return BranchId.valueOf(branchIdStr);
       }
    }
 

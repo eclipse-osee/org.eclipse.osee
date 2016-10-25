@@ -20,7 +20,6 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -62,7 +61,7 @@ public class ArtifactPurgeTest {
 
    @Before
    public void setup() throws OseeCoreException {
-      workingBranch = TokenFactory.createBranch(method.getQualifiedTestName());
+      workingBranch = IOseeBranch.create(method.getQualifiedTestName());
       BranchManager.createWorkingBranch(SAW_Bld_2, workingBranch);
    }
 

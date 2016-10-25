@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -129,7 +128,7 @@ public final class ChangeManager {
             chStmt.runPreparedQuery(joinQuery.size() * 2, ServiceUtil.getSql(OseeSql.CHANGE_TX_MODIFYING),
                joinQuery.getQueryId());
             while (chStmt.next()) {
-               BranchId branch = TokenFactory.createBranch(chStmt.getLong("branch_id"));
+               BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
                Artifact artifact = artifactMap.get(chStmt.getInt("art_id"), branch);
                transactionMap.put(artifact, TransactionId.valueOf(chStmt.getLong("transaction_id")));
             }
@@ -172,7 +171,7 @@ public final class ChangeManager {
                joinQuery.getQueryId());
             while (chStmt.next()) {
                if (chStmt.getInt("tx_count") > 0) {
-                  BranchId branch = TokenFactory.createBranch(chStmt.getLong("branch_id"));
+                  BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
                   Artifact artifact = artifactMap.get(chStmt.getInt("art_id"), BranchManager.getParentBranch(branch));
                   branchMap.put(artifact, branch);
                }

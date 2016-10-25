@@ -439,7 +439,7 @@ public final class BranchManager {
          getBranchName(parentTransactionId), parentTransactionId.getId());
 
       CreateBranchHttpRequestOperation operation = new CreateBranchHttpRequestOperation(BranchType.WORKING,
-         parentTransactionId, TokenFactory.createBranch(childBranchName), associatedArtifact, creationComment);
+         parentTransactionId, IOseeBranch.create(childBranchName), associatedArtifact, creationComment);
       operation.setTxCopyBranchType(true);
       Operations.executeWorkAndCheckStatus(operation);
       return operation.getNewBranch();
@@ -450,7 +450,7 @@ public final class BranchManager {
          getBranchName(parentTransactionId), parentTransactionId.getId());
 
       CreateBranchHttpRequestOperation operation = new CreateBranchHttpRequestOperation(BranchType.PORT,
-         parentTransactionId, TokenFactory.createBranch(childBranchName), associatedArtifact, creationComment);
+         parentTransactionId, IOseeBranch.create(childBranchName), associatedArtifact, creationComment);
       operation.setTxCopyBranchType(true);
       Operations.executeWorkAndCheckStatus(operation);
       return operation.getNewBranch();
@@ -471,7 +471,7 @@ public final class BranchManager {
    }
 
    public static IOseeBranch createWorkingBranch(TransactionToken parentTransaction, String branchName, ArtifactId associatedArtifact) throws OseeCoreException {
-      return createBranch(BranchType.WORKING, parentTransaction, TokenFactory.createBranch(branchName),
+      return createBranch(BranchType.WORKING, parentTransaction, IOseeBranch.create(branchName),
          associatedArtifact);
    }
 
@@ -489,7 +489,7 @@ public final class BranchManager {
    }
 
    public static BranchId createTopLevelBranch(final String branchName) throws OseeCoreException {
-      return createTopLevelBranch(TokenFactory.createBranch(branchName));
+      return createTopLevelBranch(IOseeBranch.create(branchName));
    }
 
    private static IOseeBranch createBranch(BranchType branchType, TransactionToken parentTransaction, IOseeBranch childBranch, ArtifactId associatedArtifact) {
@@ -503,7 +503,7 @@ public final class BranchManager {
 
    private static IOseeBranch createBranch(BranchType branchType, TransactionToken parentTransaction, String branchName, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, BranchId destinationBranch) {
       CreateBranchHttpRequestOperation operation =
-         new CreateBranchHttpRequestOperation(branchType, parentTransaction, TokenFactory.createBranch(branchName),
+         new CreateBranchHttpRequestOperation(branchType, parentTransaction, IOseeBranch.create(branchName),
             associatedArtifact, creationComment, mergeAddressingQueryId, destinationBranch);
       Operations.executeWorkAndCheckStatus(operation);
       return operation.getNewBranch();

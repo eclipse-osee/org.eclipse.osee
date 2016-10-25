@@ -118,7 +118,7 @@ public class WordMlLinkHandlerTest {
 
    @Test
    public void testDetectMissingGuids() throws IOException {
-      IOseeBranch workingBranch = TokenFactory.createBranch(method.getQualifiedTestName());
+      IOseeBranch workingBranch = IOseeBranch.create(method.getQualifiedTestName());
       try {
          BranchManager.createWorkingBranch(SAW_Bld_2, workingBranch);
          Artifact addArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch);

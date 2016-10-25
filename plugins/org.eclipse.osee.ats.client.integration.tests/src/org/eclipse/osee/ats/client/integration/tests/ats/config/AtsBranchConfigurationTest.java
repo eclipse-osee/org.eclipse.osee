@@ -39,7 +39,6 @@ import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -72,8 +71,8 @@ import org.junit.Before;
  */
 public class AtsBranchConfigurationTest {
 
-   public static final IOseeBranch BRANCH_VIA_TEAM_DEFINITION = TokenFactory.createBranch("BranchViaTeamDef");
-   public static final IOseeBranch BRANCH_VIA_VERSIONS = TokenFactory.createBranch("BranchViaVersions");
+   public static final IOseeBranch BRANCH_VIA_TEAM_DEFINITION = IOseeBranch.create("BranchViaTeamDef");
+   public static final IOseeBranch BRANCH_VIA_VERSIONS = IOseeBranch.create("BranchViaVersions");
    private final boolean DEBUG = false;
 
    private static Collection<String> appendToName(IOseeBranch branch, String... postFixes) {
@@ -355,8 +354,7 @@ public class AtsBranchConfigurationTest {
       for (Artifact teamDefArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.TeamDefinition,
          branch.getName(), AtsUtilCore.getAtsBranch())) {
          teamDefArt.deleteAndPersist(transaction, false);
-         IAtsTeamDefinition soleByUuid =
-            AtsClientService.get().getCache().getAtsObject(teamDefArt.getId());
+         IAtsTeamDefinition soleByUuid = AtsClientService.get().getCache().getAtsObject(teamDefArt.getId());
          if (soleByUuid != null) {
             AtsClientService.get().getCache().deCacheAtsObject(soleByUuid);
          }
@@ -369,8 +367,7 @@ public class AtsBranchConfigurationTest {
          branch.getName(), AtsUtilCore.getAtsBranch())) {
          for (Artifact childArt : aiaArt.getChildren()) {
             childArt.deleteAndPersist(transaction, false);
-            IAtsActionableItem soleByUuid =
-               AtsClientService.get().getCache().getAtsObject(childArt.getId());
+            IAtsActionableItem soleByUuid = AtsClientService.get().getCache().getAtsObject(childArt.getId());
             if (soleByUuid != null) {
                AtsClientService.get().getCache().deCacheAtsObject(soleByUuid);
             }
@@ -378,8 +375,7 @@ public class AtsBranchConfigurationTest {
 
          aiaArt.deleteAndPersist(transaction, false);
 
-         IAtsActionableItem ai =
-            AtsClientService.get().getCache().getAtsObject(aiaArt.getId());
+         IAtsActionableItem ai = AtsClientService.get().getCache().getAtsObject(aiaArt.getId());
          if (ai != null) {
             AtsClientService.get().getCache().deCacheAtsObject(ai);
          }

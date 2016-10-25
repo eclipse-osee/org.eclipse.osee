@@ -91,7 +91,7 @@ public class BranchCallableQueryFactory {
 
                @Override
                public IOseeBranch createBranch(BranchData data) {
-                  return TokenFactory.createBranch(data.getUuid(), data.getName());
+                  return IOseeBranch.create(data.getUuid(), data.getName());
                }
 
             };

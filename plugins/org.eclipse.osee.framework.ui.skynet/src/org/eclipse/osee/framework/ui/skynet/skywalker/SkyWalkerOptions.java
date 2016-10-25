@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -160,7 +159,7 @@ public final class SkyWalkerOptions {
          String guid = AXml.getTagData(xml, "guid");
          if (Strings.isValid(guid)) {
             String branchUuid = AXml.getTagData(xml, "branchUuid");
-            BranchId branch = TokenFactory.createBranch(Long.parseLong(branchUuid));
+            BranchId branch = BranchId.valueOf(branchUuid);
             Artifact art = ArtifactQuery.getArtifactFromId(guid, branch);
             if (art != null) {
                setArtifact(art);

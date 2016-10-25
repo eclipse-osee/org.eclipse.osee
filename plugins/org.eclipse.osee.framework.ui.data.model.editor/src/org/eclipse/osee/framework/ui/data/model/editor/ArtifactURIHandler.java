@@ -24,12 +24,10 @@ import org.eclipse.emf.ecore.resource.URIConverter;
 import org.eclipse.emf.ecore.resource.impl.URIHandlerImpl;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.StringOutputStream;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
@@ -64,7 +62,7 @@ public class ArtifactURIHandler extends URIHandlerImpl {
 
    private <T> T createStream(URI uri, BiFunction<Artifact, Long, T> function) {
       String[] segments = uri.segments();
-      BranchId branch = TokenFactory.createBranch(Long.parseLong(segments[0]));
+      BranchId branch = BranchId.valueOf(segments[0]);
       Artifact artifact = ArtifactQuery.getArtifactFromId(Long.parseLong(segments[2]), branch);
       Long attributeId = Long.parseLong(segments[4]);
       return function.apply(artifact, attributeId);

@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -176,7 +175,7 @@ public final class TransactionManager {
    }
 
    private static TransactionRecord loadTransaction(JdbcStatement stmt) {
-      return loadTransaction(TokenFactory.createBranch(stmt.getLong("branch_id")), stmt);
+      return loadTransaction(BranchId.valueOf(stmt.getLong("branch_id")), stmt);
    }
 
    private static TransactionRecord loadTransaction(BranchId branch, JdbcStatement stmt) {

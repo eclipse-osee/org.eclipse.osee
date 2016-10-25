@@ -26,7 +26,6 @@ import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.define.traceability.operations.ImportTraceUnitsOperation;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -94,7 +93,7 @@ public final class ImportTraceUnitsOperationTest {
 
    @Before
    public void setup() throws Exception {
-      branch = TokenFactory.createBranch(testInfo.getQualifiedTestName());
+      branch = IOseeBranch.create(testInfo.getQualifiedTestName());
       importToBranch = BranchManager.createWorkingBranch(SAW_Bld_1, branch);
 
       setupDirectoryStructure();

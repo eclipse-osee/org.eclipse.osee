@@ -16,7 +16,6 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -42,7 +41,7 @@ public class MergeManagerHandler extends CommandHandler {
 
          if (!branches.isEmpty()) {
             BranchId selectedBranch = branches.iterator().next();
-            BranchId toBranch = TokenFactory.createBranch(Long.parseLong(event.getParameter(BranchView.BRANCH_ID)));
+            BranchId toBranch = BranchId.valueOf(event.getParameter(BranchView.BRANCH_ID));
             if (selectedBranch != null && toBranch != null) {
                MergeView.openView(selectedBranch, toBranch, BranchManager.getBaseTransaction(selectedBranch));
             }

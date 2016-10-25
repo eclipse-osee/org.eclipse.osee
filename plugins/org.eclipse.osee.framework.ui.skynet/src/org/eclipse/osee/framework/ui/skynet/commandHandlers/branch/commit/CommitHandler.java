@@ -23,7 +23,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -97,8 +96,7 @@ public abstract class CommitHandler extends CommandHandler {
             if (useParentBranch) {
                destinationBranch = BranchManager.getParentBranch(sourceBranch);
             } else {
-               destinationBranch = TokenFactory.createBranch(
-                  Long.parseLong(event.getParameter(BranchOptionsEnum.BRANCH_ID.origKeyName)));
+               destinationBranch = BranchId.valueOf(event.getParameter(BranchOptionsEnum.BRANCH_ID.origKeyName));
             }
             Jobs.startJob(new CommitJob(sourceBranch, destinationBranch,
                Boolean.parseBoolean(event.getParameter(CommitBranchParameter.ARCHIVE_PARENT_BRANCH))));

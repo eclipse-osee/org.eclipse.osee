@@ -235,7 +235,7 @@ public class OrcsTypesIndexer {
       if (Strings.isValid(xAttributeTypeRef.getBranchUuid())) {
          Long branchId = Long.valueOf(xAttributeTypeRef.getBranchUuid());
          if (branchId > 0) {
-            branchToken = TokenFactory.createBranch(branchId);
+            branchToken = BranchId.valueOf(branchId);
          }
       }
       return branchToken;

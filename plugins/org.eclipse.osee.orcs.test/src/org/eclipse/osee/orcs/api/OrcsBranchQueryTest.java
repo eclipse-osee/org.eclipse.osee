@@ -230,7 +230,7 @@ public class OrcsBranchQueryTest {
 
    @Test
    public void zTestGetIncludeArchived() throws Exception {
-      IOseeBranch child = TokenFactory.createBranch(testName.getMethodName());
+      IOseeBranch child = IOseeBranch.create(testName.getMethodName());
 
       BranchQuery query = factory.branchQuery();
       query.andIds(CIS_Bld_1);
@@ -254,7 +254,7 @@ public class OrcsBranchQueryTest {
 
    @Test
    public void zTestGetIncludeDeleted() throws Exception {
-      IOseeBranch child = TokenFactory.createBranch(testName.getMethodName());
+      IOseeBranch child = IOseeBranch.create(testName.getMethodName());
 
       BranchQuery query = factory.branchQuery();
       query.andIds(CIS_Bld_1);
@@ -281,7 +281,7 @@ public class OrcsBranchQueryTest {
 
    @Test
    public void zTestGetWithMultipleConditions1() throws Exception {
-      IOseeBranch child = TokenFactory.createBranch(testName.getMethodName());
+      IOseeBranch child = IOseeBranch.create(testName.getMethodName());
 
       BranchId actual = createBranch(SAW_Bld_2, child);
 

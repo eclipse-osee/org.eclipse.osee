@@ -39,7 +39,6 @@ import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -834,13 +833,13 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
       Long ancestorOf = options.getIsAncestorOf();
       if (ancestorOf > 0) {
-         BranchId ancestorOfToken = TokenFactory.createBranch(ancestorOf);
+         BranchId ancestorOfToken = BranchId.valueOf(ancestorOf);
          query.andIsAncestorOf(ancestorOfToken);
       }
 
       Long childOf = options.getIsChildOf();
       if (childOf > 0) {
-         BranchId childOfToken = TokenFactory.createBranch(ancestorOf);
+         BranchId childOfToken = BranchId.valueOf(ancestorOf);
          query.andIsAncestorOf(childOfToken);
       }
       return query.getResults();

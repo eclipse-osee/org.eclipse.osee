@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -219,7 +218,7 @@ public class OrcsStorageImpl implements Storage {
    public Long createDispoProgram(ArtifactReadable author, String name) {
       String normalizedName = "(DISPO)" + name;
       BranchReadable dispoBranch = getQuery().branchQuery().andNameEquals("Dispo Parent").getResults().getExactlyOne();
-      IOseeBranch branch = TokenFactory.createBranch(normalizedName);
+      IOseeBranch branch = IOseeBranch.create(normalizedName);
 
       try {
          getBranchFactory().createWorkingBranch(branch, author, dispoBranch, ArtifactId.SENTINEL).call();
@@ -419,7 +418,7 @@ public class OrcsStorageImpl implements Storage {
 
    @Override
    public void updateDispoItem(ArtifactReadable author, DispoProgram program, String dispoItemId, DispoItem data) {
-      BranchId branch = TokenFactory.createBranch(program.getUuid());
+      BranchId branch = BranchId.valueOf(program.getUuid());
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Update Dispo Item");
       ArtifactReadable dispoItemArt = findDispoArtifact(program, dispoItemId, DispoConstants.DispoItem);
       updateSingleItem(author, program, dispoItemArt, data, tx, false);
@@ -447,8 +446,7 @@ public class OrcsStorageImpl implements Storage {
          getQuery().branchQuery().andIsOfType(BranchType.WORKING).andIsChildOf(dispoBranch).getResults();
 
       for (BranchReadable branch : dispoBranches) {
-         IOseeBranch newName =
-            TokenFactory.createBranch(branch.getUuid(), branch.getName().replaceFirst("\\(DISPO\\)", ""));
+         IOseeBranch newName = IOseeBranch.create(branch, branch.getName().replaceFirst("\\(DISPO\\)", ""));
 
          dispoBranchesNormalized.add(newName);
       }

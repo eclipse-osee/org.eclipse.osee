@@ -80,7 +80,7 @@ public class WordTemplateProcessorTest {
 
    @Before
    public void setUp() throws Exception {
-      branch = TokenFactory.createBranch(method.getQualifiedTestName());
+      branch = IOseeBranch.create(method.getQualifiedTestName());
 
       BranchManager.createWorkingBranch(SAW_Bld_1, branch);
       myRootArtifact =

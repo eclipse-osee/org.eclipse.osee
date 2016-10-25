@@ -54,7 +54,6 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -666,8 +665,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             continue;
          }
          if (art.isOfType(AtsArtifactTypes.TeamDefinition)) {
-            IAtsTeamDefinition teamDef =
-               AtsClientService.get().getCache().getAtsObject(art.getId());
+            IAtsTeamDefinition teamDef = AtsClientService.get().getCache().getAtsObject(art.getId());
             try {
                long parentBranchUuid = teamDef.getBaselineBranchUuid();
                if (parentBranchUuid > 0) {
@@ -766,7 +764,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    public static void validateBranchUuid(IAtsConfigObject name, long parentBranchUuid, ValidateResults results) {
       Date date = new Date();
       try {
-         BranchId branch = TokenFactory.createBranch(parentBranchUuid);
+         BranchId branch = BranchId.valueOf(parentBranchUuid);
          if (BranchManager.isArchived(branch)) {
             results.log("validateBranchUuid",
                String.format(
@@ -999,8 +997,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
          try {
             if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {
-               IAtsActionableItem aia =
-                  AtsClientService.get().getCache().getAtsObject(artifact.getId());
+               IAtsActionableItem aia = AtsClientService.get().getCache().getAtsObject(artifact.getId());
                if (aia.isActionable() && TeamDefinitions.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
                   results.log(artifact, "testActionableItemToTeamDefinition",
                      "Error: ActionableItem " + XResultDataUI.getHyperlink(artifact.getName(),

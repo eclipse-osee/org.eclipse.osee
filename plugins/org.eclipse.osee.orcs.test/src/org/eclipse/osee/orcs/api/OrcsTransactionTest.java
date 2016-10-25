@@ -220,7 +220,7 @@ public class OrcsTransactionTest {
       assertEquals(SystemUser.Anonymous.getName(), userDup.getName());
 
       // duplicate on different branch
-      IOseeBranch branchToken = TokenFactory.createBranch("DuplicateArtifact tests");
+      IOseeBranch branchToken = IOseeBranch.create("DuplicateArtifact tests");
       Callable<BranchReadable> callableBranch = orcsBranch.createTopLevelBranch(branchToken, userArtifact);
 
       BranchReadable topLevelBranch = callableBranch.call();
@@ -239,7 +239,7 @@ public class OrcsTransactionTest {
    public void testIntroduceArtifact() throws Exception {
       ArtifactReadable user = query.fromBranch(COMMON).andIds(SystemUser.Anonymous).getResults().getExactlyOne();
 
-      IOseeBranch branchToken = TokenFactory.createBranch("IntroduceArtifact tests");
+      IOseeBranch branchToken = IOseeBranch.create("IntroduceArtifact tests");
       BranchReadable topLevelBranch = orcsBranch.createTopLevelBranch(branchToken, userArtifact).call();
 
       TransactionBuilder transaction =

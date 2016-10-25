@@ -28,8 +28,8 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements IB
    }
 
    @Override
-   public Long getBranchId() {
-      return branch.getId();
+   public BranchId getBranch() {
+      return branch;
    }
 
    @Override

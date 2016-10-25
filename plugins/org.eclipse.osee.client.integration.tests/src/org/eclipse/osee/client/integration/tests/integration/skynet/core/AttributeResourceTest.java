@@ -21,7 +21,6 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -56,7 +55,7 @@ public class AttributeResourceTest {
 
    @Before
    public void setup() throws OseeCoreException {
-      workingBranch = TokenFactory.createBranch(testInfo.getQualifiedTestName());
+      workingBranch = IOseeBranch.create(testInfo.getQualifiedTestName());
       BranchManager.createWorkingBranch(SAW_Bld_2, workingBranch);
    }
 

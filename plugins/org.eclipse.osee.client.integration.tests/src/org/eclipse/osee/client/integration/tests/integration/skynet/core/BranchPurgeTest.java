@@ -63,7 +63,7 @@ public class BranchPurgeTest {
 
    @Before
    public void setup() {
-      workingBranch = TokenFactory.createBranch(method.getQualifiedTestName());
+      workingBranch = IOseeBranch.create(method.getQualifiedTestName());
       txEndpoint = ServiceUtil.getOseeClient().getTransactionEndpoint();
    }
 

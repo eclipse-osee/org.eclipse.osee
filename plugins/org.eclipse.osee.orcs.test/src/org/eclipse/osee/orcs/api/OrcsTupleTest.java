@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
@@ -128,8 +127,7 @@ public class OrcsTupleTest {
 
       BiConsumer<Long, String> consumer = (id, name) -> result.add(new ApplicabilityToken(id, name));
       orcsApi.getQueryFactory().tupleQuery().getTuple2KeyValuePair(CoreTupleTypes.ViewApplicability,
-         ArtifactId.valueOf(branchViewArts.getList().get(0).getId()),
-         TokenFactory.createBranch(DemoBranches.SAW_Bld_1.getId()), consumer);
+         ArtifactId.valueOf(branchViewArts.getList().get(0).getId()), DemoBranches.SAW_Bld_1, consumer);
 
       Assert.assertEquals(5, result.size());
    }

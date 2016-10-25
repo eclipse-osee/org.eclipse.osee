@@ -15,7 +15,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 
@@ -94,7 +93,7 @@ public class RemoteBasicGuidArtifact1 extends RemoteEvent {
 
    public BranchId getBranch() {
       if (branch == null && Strings.isNumeric(branchGuid)) {
-         branch = TokenFactory.createBranch(Long.valueOf(branchGuid));
+         branch = BranchId.valueOf(branchGuid);
       }
 
       return branch;

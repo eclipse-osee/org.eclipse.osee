@@ -24,7 +24,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -156,8 +155,7 @@ public class SkyWalkerView extends GenericViewPart {
       // Restore current artifact if stored upon shutdown
       try {
          if (storedGuid != null) {
-            Artifact art =
-               ArtifactQuery.getArtifactFromId(storedGuid, TokenFactory.createBranch(Long.parseLong(storedBrandId)));
+            Artifact art = ArtifactQuery.getArtifactFromId(storedGuid, BranchId.valueOf(storedBrandId));
             if (art != null) {
                explore(art);
             }

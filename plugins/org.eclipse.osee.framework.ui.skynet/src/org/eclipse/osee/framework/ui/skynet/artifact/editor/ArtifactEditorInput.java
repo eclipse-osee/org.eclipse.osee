@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -122,8 +122,7 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
       if (artifact == null && !attemptedReload) {
          if (savedArtUuid != null && savedBranchUuid != null) {
             try {
-               artifact =
-                  ArtifactQuery.getArtifactFromId(savedArtUuid.intValue(), TokenFactory.createBranch(savedBranchUuid));
+               artifact = ArtifactQuery.getArtifactFromId(savedArtUuid, BranchId.valueOf(savedBranchUuid));
             } catch (Exception ex) {
                // do nothing
             }

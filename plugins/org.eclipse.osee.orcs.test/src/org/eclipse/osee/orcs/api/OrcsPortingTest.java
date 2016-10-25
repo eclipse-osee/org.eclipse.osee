@@ -123,7 +123,7 @@ public class OrcsPortingTest {
 
    private TransactionToken createBaselineBranchAndArtifacts() throws Exception {
       // set up the main branch
-      IOseeBranch branch = TokenFactory.createBranch("MainFromBranch");
+      IOseeBranch branch = IOseeBranch.create("MainFromBranch");
       branchApi.createTopLevelBranch(branch, author).call();
 
       // baseline branch - set up artifacts on the main branch, and on the child branch
@@ -151,7 +151,7 @@ public class OrcsPortingTest {
    private TransactionId createWorkingBranchChanges(IOseeBranch parentBranch, ArtifactId artifactToModify) throws Exception {
       // set up the child branch to copy to
 
-      IOseeBranch childBranch = TokenFactory.createBranch("childBranch");
+      IOseeBranch childBranch = IOseeBranch.create("childBranch");
       branchApi.createWorkingBranch(childBranch, author, parentBranch, ArtifactId.SENTINEL).call();
 
       TransactionBuilder tx3 = txFactory.createTransaction(childBranch, author, "update second requirement");
@@ -184,7 +184,7 @@ public class OrcsPortingTest {
 
    private BranchId createCopyFromTransactionBranch(TransactionId transactionToCopy, ArtifactId assocaitedArt) throws Exception {
       // create the branch with the copied transaction
-      IOseeBranch branch = TokenFactory.createBranch(branchString);
+      IOseeBranch branch = IOseeBranch.create(branchString);
 
       // get the setup associated artifact - this is for a later test to make sure the branch is not duplicated
       // there should only be one port branch per associated artifact
@@ -197,7 +197,7 @@ public class OrcsPortingTest {
    }
 
    private TransactionToken commitToDestinationBranch(BranchId copyTxBranch) throws Exception {
-      IOseeBranch destinationBranch = TokenFactory.createBranch("IndepToBranch");
+      IOseeBranch destinationBranch = IOseeBranch.create("IndepToBranch");
       branchApi.createTopLevelBranch(destinationBranch, author).call();
       return branchApi.commitBranch(author, copyTxBranch, destinationBranch).call();
    }

@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 public final class TokenFactory {
 
@@ -69,26 +68,6 @@ public final class TokenFactory {
       return new UserToken(uuid, guid, name, userId, active, admin, email, creationRequired);
    }
 
-   public static IOseeBranch createBranch(String name) {
-      return createBranch(Lib.generateUuid(), name);
-   }
-
-   public static IOseeBranch createBranch(Long branchId, String name) {
-      return new BranchToken(branchId, name);
-   }
-
-   public static IOseeBranch createBranch(long branchId, String name) {
-      return new BranchToken(branchId, name);
-   }
-
-   public static BranchId createBranch(Long branchId) {
-      return new BranchToken(branchId, null);
-   }
-
-   public static BranchId createBranch() {
-      return new BranchToken(Lib.generateUuid(), null);
-   }
-
    private final static class ArtifactTypeToken extends NamedId implements IArtifactType {
       public ArtifactTypeToken(Long id, String name) {
          super(id, name);
@@ -97,12 +76,6 @@ public final class TokenFactory {
       @Override
       public Long getGuid() {
          return getId();
-      }
-   }
-
-   private static final class BranchToken extends NamedId implements IOseeBranch {
-      public BranchToken(Long branchId, String name) {
-         super(branchId, name);
       }
    }
 

@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -111,7 +110,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          if (!AtsClientService.get().getBranchService().isBranchValid(configArt)) {
             return String.format("Branch not configured for [%s]", element);
          } else {
-            branch = TokenFactory.createBranch(configArt.getBaselineBranchUuid());
+            branch = BranchId.valueOf(configArt.getBaselineBranchUuid());
          }
       } else if (element instanceof TransactionToken) {
          TransactionToken txRecord = (TransactionToken) element;

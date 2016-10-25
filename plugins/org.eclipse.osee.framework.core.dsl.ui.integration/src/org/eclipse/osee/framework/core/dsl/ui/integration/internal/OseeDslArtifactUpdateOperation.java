@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeDslSegmentParser;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeDslSegmentParser.OseeDslSegment;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -76,7 +75,7 @@ public class OseeDslArtifactUpdateOperation extends AbstractOperation {
    }
 
    protected void addChanges(Map<BranchId, SkynetTransaction> transactionMap, long branchId, String artifactGuid, String data) throws OseeCoreException {
-      BranchId branch = TokenFactory.createBranch(branchId);
+      BranchId branch = BranchId.valueOf(branchId);
       SkynetTransaction transaction = transactionMap.get(branch);
       if (transaction == null) {
          transaction = TransactionManager.createTransaction(branch, "OseeDslArtifactUpdate");

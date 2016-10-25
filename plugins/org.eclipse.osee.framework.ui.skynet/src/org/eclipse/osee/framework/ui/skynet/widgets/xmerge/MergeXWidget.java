@@ -28,7 +28,6 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -207,7 +206,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
             monitor.beginTask("ApplyingPreviousMerge", conflicts.length);
             for (Conflict conflict : conflicts) {
                try {
-                  BranchId destinationBranch = TokenFactory.createBranch(destBranchId);
+                  BranchId destinationBranch = BranchId.valueOf(destBranchId);
                   IOseeBranch mergeBranch = BranchManager.getMergeBranch(conflict.getSourceBranch(), destinationBranch);
                   conflict.applyPreviousMerge(mergeBranch.getUuid(), destBranchId);
                } catch (OseeCoreException ex) {

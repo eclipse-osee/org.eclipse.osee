@@ -175,7 +175,7 @@ public class ConflictIntroduceTest {
 
    private static IOseeBranch createBranchToken(String name) {
       String branchName = String.format("%s__%s", TESTNAME, name);
-      return TokenFactory.createBranch(branchName);
+      return IOseeBranch.create(branchName);
    }
 
 }

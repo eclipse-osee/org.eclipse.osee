@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -153,7 +152,7 @@ public class TransactionRecordTest {
       Collection<Object[]> data = new ArrayList<>();
       for (int index = 1; index <= 2; index++) {
          int transactionNumber = index * 11;
-         BranchId branch = TokenFactory.createBranch(index * 9L);
+         BranchId branch = BranchId.valueOf(index * 9L);
          String comment = GUID.create();
          Date time = new Date();
          int authorArtId = index * 47;

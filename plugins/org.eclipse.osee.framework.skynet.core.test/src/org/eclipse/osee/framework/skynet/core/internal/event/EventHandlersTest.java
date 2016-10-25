@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.internal.event;
 
-import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBranchEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBroadcastEvent1;
@@ -61,8 +61,7 @@ public class EventHandlersTest {
 
       Assert.assertEquals(local1, handlers.getLocalHandler(new TransactionEvent()));
       Assert.assertEquals(local2, handlers.getLocalHandler(new ArtifactEvent(CoreBranches.COMMON)));
-      Assert.assertNull(
-         handlers.getLocalHandler(new BranchEvent(BranchEventType.Added, TokenFactory.createBranch(345L))));
+      Assert.assertNull(handlers.getLocalHandler(new BranchEvent(BranchEventType.Added, BranchId.valueOf(345L))));
 
       Assert.assertEquals(remote1, handlers.getRemoteHandler(new RemoteTransactionEvent1()));
       Assert.assertEquals(remote2, handlers.getRemoteHandler(new RemoteBranchEvent1()));

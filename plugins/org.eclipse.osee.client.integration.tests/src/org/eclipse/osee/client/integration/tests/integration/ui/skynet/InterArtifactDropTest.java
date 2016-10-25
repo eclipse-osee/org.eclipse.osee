@@ -281,6 +281,6 @@ public class InterArtifactDropTest {
 
    private IOseeBranch createBranchToken(String name) {
       String branchName = String.format("%s__%s", method.getQualifiedTestName(), name);
-      return TokenFactory.createBranch(branchName);
+      return IOseeBranch.create(branchName);
    }
 }

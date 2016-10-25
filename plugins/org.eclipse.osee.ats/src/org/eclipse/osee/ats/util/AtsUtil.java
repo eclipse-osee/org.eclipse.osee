@@ -49,7 +49,7 @@ import org.eclipse.osee.ats.world.WorldEditorUISearchItemProvider;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -173,7 +173,7 @@ public final class AtsUtil {
 
    public static void openArtifact(String guid, Long branchUuid, OseeCmEditor view) {
       try {
-         Artifact artifact = ArtifactQuery.getArtifactFromId(guid, TokenFactory.createBranch(branchUuid));
+         Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchId.valueOf(branchUuid));
          openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

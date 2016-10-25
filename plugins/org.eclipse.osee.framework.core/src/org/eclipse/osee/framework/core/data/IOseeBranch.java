@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -28,8 +29,16 @@ public interface IOseeBranch extends BranchId, Named {
       return Strings.truncate(getName(), length);
    }
 
+   public static IOseeBranch create(String name) {
+      return create(Lib.generateUuid(), name);
+   }
+
    public static IOseeBranch create(BranchId id, String name) {
       return create(id.getId(), name);
+   }
+
+   public static IOseeBranch create(long id, String name) {
+      return create(Long.valueOf(id), name);
    }
 
    public static IOseeBranch create(Long id, String name) {

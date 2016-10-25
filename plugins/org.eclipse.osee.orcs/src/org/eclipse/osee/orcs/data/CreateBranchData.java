@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.data;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchType;
 
 /**
@@ -40,7 +39,7 @@ public class CreateBranchData {
    private BranchId parentBranch;
 
    public CreateBranchData() {
-      this(TokenFactory.createBranch());
+      this(BranchId.create());
    }
 
    public CreateBranchData(BranchId branch) {
