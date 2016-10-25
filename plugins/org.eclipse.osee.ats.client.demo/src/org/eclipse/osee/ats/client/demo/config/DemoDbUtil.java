@@ -27,15 +27,12 @@ import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
@@ -115,10 +112,6 @@ public class DemoDbUtil {
          branch);
    }
 
-   public static User getDemoUser(IUserToken demoUser) throws OseeCoreException {
-      return UserManager.getUserByName(demoUser.getName());
-   }
-
    public static Collection<IAtsActionableItem> getActionableItems(String[] aiasNames) throws OseeCoreException {
       Set<IAtsActionableItem> aias = new HashSet<>();
       for (String str : aiasNames) {
@@ -131,5 +124,4 @@ public class DemoDbUtil {
       }
       return aias;
    }
-
 }

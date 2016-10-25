@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.client.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
@@ -33,6 +32,7 @@ import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.junit.After;
 import org.junit.Test;
 
@@ -57,7 +57,7 @@ public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
       List<IAtsUser> assignees = setupAssignees(teamWf);
 
       IAtsUser originator = AtsClientService.get().getUserServiceClient().getUserFromOseeUser(
-         DemoDbUtil.getDemoUser(DemoUsers.Jason_Michael));
+         UserManager.getUser(DemoUsers.Jason_Michael));
 
       // new workflow
       AtsChangeSet changes = new AtsChangeSet("Duplicate Workflow");
@@ -89,7 +89,7 @@ public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
       List<IAtsUser> assignees = new LinkedList<>();
       assignees.addAll(teamWf.getAssignees());
       IAtsUser lead =
-         AtsClientService.get().getUserServiceClient().getUserFromOseeUser(DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones));
+         AtsClientService.get().getUserServiceClient().getUserFromOseeUser(UserManager.getUser(DemoUsers.Kay_Jones));
       assignees.add(lead);
       return assignees;
    }

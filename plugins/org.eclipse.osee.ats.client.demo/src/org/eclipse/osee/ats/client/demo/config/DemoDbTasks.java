@@ -45,10 +45,10 @@ public class DemoDbTasks {
          NewTaskData newTaskData = NewTaskDataFactory.get("Populate Demo DB - Create Tasks", createdBy, codeArt);
          List<String> assigneeUserIds = new ArrayList<>();
          if (firstTaskWorkflow) {
-            assigneeUserIds.add(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith).getUserId());
-            assigneeUserIds.add(DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones).getUserId());
+            assigneeUserIds.add(DemoUsers.Joe_Smith.getUserId());
+            assigneeUserIds.add(DemoUsers.Kay_Jones.getUserId());
          } else {
-            assigneeUserIds.add(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith).getUserId());
+            assigneeUserIds.add(DemoUsers.Joe_Smith.getUserId());
          }
          for (String title : getTaskTitles(firstTaskWorkflow)) {
             JaxAtsTask task = JaxAtsTaskFactory.get(newTaskData, title, createdBy, createdDate);

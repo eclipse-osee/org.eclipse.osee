@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
@@ -153,7 +154,7 @@ public class DemoDbReviews {
       // Create a PeerToPeer review and transition to Completed
       reviewArt = PeerToPeerReviewManager.createNewPeerToPeerReview(secondCodeArt, "Review new logic",
          secondCodeArt.getStateMgr().getCurrentStateName(), new Date(),
-         AtsClientService.get().getUserServiceClient().getUserFromOseeUser(DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones)),
+         AtsClientService.get().getUserServiceClient().getUserFromOseeUser(UserManager.getUser(DemoUsers.Kay_Jones)),
          changes);
       changes.setSoleAttributeValue((ArtifactId) reviewArt, AtsAttributeTypes.CSCI, "csci");
       changes.setSoleAttributeValue((ArtifactId) reviewArt, AtsAttributeTypes.Description, "description");
