@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -21,7 +22,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -47,13 +47,16 @@ import org.eclipse.ui.PlatformUI;
 
 public abstract class XStackedWidget<T> extends XLabel {
 
-   private StackedControl stackedControl;
+   protected StackedControl stackedControl;
    private StyledText currentPageLabel;
    private Composite container;
    private Label messageLabel;
    private Label messageIcon;
    private int minPage;
    private int maxPage;
+   private Composite mainComp;
+   private int horizontalSpan;
+   protected boolean loadPageValues = true;
 
    public XStackedWidget(String displayLabel) {
       super(displayLabel);
@@ -143,24 +146,36 @@ public abstract class XStackedWidget<T> extends XLabel {
          }
       }
 
-      Composite composite = new Composite(container, SWT.NONE);
+      mainComp = new Composite(container, SWT.NONE);
       GridLayout layout1 = new GridLayout(1, false);
       layout1.marginHeight = 0;
       layout1.marginWidth = 0;
       layout1.verticalSpacing = 0;
       layout1.horizontalSpacing = 0;
-      composite.setLayout(layout1);
-      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      mainComp.setLayout(layout1);
+      mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-      createToolBar(composite);
+      createToolBar(mainComp);
       stackedControl = new StackedControl();
-      stackedControl.createControl(composite);
-      createMessageArea(composite);
+      stackedControl.createControl(mainComp);
 
+      this.horizontalSpan = horizontalSpan;
+      createMessageArea(mainComp);
       addToolTip(container, getToolTip());
-      stackedControl.next();
-      refresh();
+      updateCurrentPageLabel();
+      createPages();
    }
+
+   protected void createPages() {
+      createPages(mainComp, horizontalSpan);
+      if (!stackedControl.getPages().isEmpty()) {
+         stackedControl.setCurrentPage(stackedControl.getPages().iterator().next());
+      }
+   }
+
+   abstract protected void createPages(Composite parent, int horizontalSpan);
+
+   abstract void createPageWidget(XStackedWidgetPage page, Composite parent);
 
    private void createMessageArea(Composite parent) {
       Composite messageArea = new Composite(parent, SWT.BORDER);
@@ -185,7 +200,7 @@ public abstract class XStackedWidget<T> extends XLabel {
 
    private void createToolBar(Composite parent) {
       Composite composite = new Composite(parent, SWT.BORDER);
-      GridLayout layout = new GridLayout(3, false);
+      GridLayout layout = new GridLayout(2, false);
       layout.marginHeight = 0;
       layout.marginLeft = 5;
       layout.marginWidth = 2;
@@ -194,17 +209,12 @@ public abstract class XStackedWidget<T> extends XLabel {
       composite.setBackground(Displays.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
 
       currentPageLabel = new StyledText(composite, SWT.READ_ONLY | SWT.SINGLE | SWT.WRAP);
-      currentPageLabel.setAlignment(SWT.RIGHT);
+      currentPageLabel.setAlignment(SWT.CENTER);
       currentPageLabel.setFont(JFaceResources.getBannerFont());
       GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
       gd.minimumWidth = 10;
       currentPageLabel.setLayoutData(gd);
       currentPageLabel.setText("0 of 0");
-
-      Composite filler = new Composite(composite, SWT.NONE);
-      GridLayout layout1 = new GridLayout(1, false);
-      filler.setLayout(layout1);
-      filler.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
       ToolBar toolbar = new ToolBar(composite, SWT.FLAT | SWT.HORIZONTAL);
       toolbar.setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false));
@@ -235,27 +245,32 @@ public abstract class XStackedWidget<T> extends XLabel {
          public void run() {
             if (Widgets.isAccessible(currentPageLabel)) {
                int totalPages = stackedControl.getTotalPages();
-               int currentPage = stackedControl.getCurrentPageIndex() + 1;
-               if (currentPage > totalPages) {
-                  currentPage = totalPages;
+               int currentPageIndex = stackedControl.getCurrentPageIndex() + 1;
+               if (currentPageIndex > totalPages) {
+                  currentPageIndex = totalPages;
                }
-               currentPageLabel.setText(String.format("Page %s of %s  -  Attribute Id (%s)", currentPage, totalPages,
-                  stackedControl.getCurrentPageId()));
+               currentPageLabel.setText(String.format("Page %s of %s%s", currentPageIndex, totalPages,
+                  getPostfixPageLabel(getCurrentPage())));
             }
          }
+
       });
    }
 
-   public void addPage(T value) {
-      addPage(GUID.create(), value);
+   protected String getPostfixPageLabel(XStackedWidgetPage page) {
+      return "";
    }
 
-   public void addPage(String pageId, T value) {
-      stackedControl.addPage(pageId, value);
+   public void addPage() {
+      addPage(new XStackedWidgetPage());
    }
 
-   protected String getCurrentPageId() {
-      return stackedControl.getCurrentPageId();
+   public void addPage(XStackedWidgetPage page) {
+      stackedControl.addPage(page);
+   }
+
+   protected XStackedWidgetPage getCurrentPage() {
+      return stackedControl.getCurrentPage();
    }
 
    private void setMessage(final int severity, final String format, final Object... args) {
@@ -291,9 +306,15 @@ public abstract class XStackedWidget<T> extends XLabel {
       }
    }
 
-   protected abstract void createPage(String id, Composite parent, T value);
+   protected abstract void onRemovePage(XStackedWidgetPage page);
 
-   protected abstract void onRemovePage(String id) throws OseeCoreException;
+   protected abstract void onPageChange(XStackedWidgetPage page);
+
+   /**
+    * Called upon page change for sub-class to perform whatever operations are needed to ensure the page text is
+    * updated.
+    */
+   protected abstract void updatePageText(XStackedWidgetPage page);
 
    private final class Back extends Action {
       public Back() {
@@ -318,6 +339,7 @@ public abstract class XStackedWidget<T> extends XLabel {
       @Override
       public void run() {
          stackedControl.next();
+         onPageChange(getCurrentPage());
       }
    }
 
@@ -328,15 +350,12 @@ public abstract class XStackedWidget<T> extends XLabel {
          setToolTipText("Adds a page");
       }
 
-      @SuppressWarnings("unchecked")
       @Override
       public void run() {
          if (stackedControl.getTotalPages() >= maxPage) {
             MessageDialog.openError(AWorkbench.getActiveShell(), "Add Attribute", "Already at maximum allowed.");
          } else {
-            Object obj = null;
-            T object = (T) obj;
-            addPage(object);
+            addPage();
          }
       }
    }
@@ -362,19 +381,27 @@ public abstract class XStackedWidget<T> extends XLabel {
       }
    }
 
-   private final class StackedControl {
+   final class StackedControl {
       private StackedViewer stackedViewer;
-      private int currentPage;
-      private final List<String> pageIds;
+      private XStackedWidgetPage currentPage;
+      private final List<XStackedWidgetPage> pages;
 
       public StackedControl() {
          this.stackedViewer = null;
-         this.currentPage = -1;
-         this.pageIds = new ArrayList<>();
+         this.currentPage = null;
+         this.pages = new ArrayList<>();
+      }
+
+      public XStackedWidgetPage getCurrentPage() {
+         return currentPage;
+      }
+
+      public void clearCurrentPage() {
+         currentPage = null;
       }
 
       private void createControl(Composite parent) {
-         pageIds.clear();
+         pages.clear();
          stackedViewer = new StackedViewer(parent, SWT.BORDER);
          stackedViewer.setLayout(ALayout.getZeroMarginLayout());
          GridData gd = new GridData(SWT.FILL, SWT.FILL, false, false);
@@ -386,7 +413,7 @@ public abstract class XStackedWidget<T> extends XLabel {
       }
 
       public void dispose() {
-         pageIds.clear();
+         pages.clear();
          Widgets.disposeWidget(stackedViewer);
       }
 
@@ -400,82 +427,106 @@ public abstract class XStackedWidget<T> extends XLabel {
       }
 
       private int getCurrentPageIndex() {
-         return currentPage;
-      }
-
-      private String getCurrentPageId() {
-         String toReturn = null;
-         int index = getCurrentPageIndex();
-         if (index >= 0 && index < pageIds.size()) {
-            toReturn = pageIds.get(index);
-         }
-         return toReturn;
+         return pages.indexOf(currentPage) > 0 ? pages.indexOf(currentPage) : 0;
       }
 
       private void next() {
-         int next = getCurrentPageIndex();
-         if (next + 1 < getTotalPages()) {
-            next++;
-         } else {
-            next = 0;
+         XStackedWidgetPage next = null;
+         Iterator<XStackedWidgetPage> iterator = pages.iterator();
+         while (iterator.hasNext()) {
+            XStackedWidgetPage page = iterator.next();
+            if (page.getGuid().equals(currentPage.getGuid())) {
+               if (iterator.hasNext()) {
+                  next = iterator.next();
+               } else if (pages.size() > 1) {
+                  next = pages.iterator().next();
+               }
+            }
          }
-         setCurrentPage(next);
+         if (next != null) {
+            setCurrentPage(next);
+         }
       }
 
       private void previous() {
-         int previous = getCurrentPageIndex();
-         if (previous - 1 >= 0) {
-            previous--;
-         } else {
-            previous = getTotalPages() - 1;
+         XStackedWidgetPage previous = null;
+         for (XStackedWidgetPage page : pages) {
+            if (page.getGuid().equals(currentPage.getGuid())) {
+               if (previous == null) {
+                  if (pages.size() > 1) {
+                     previous = pages.get(pages.size() - 1);
+                  }
+               }
+               break;
+            } else {
+               previous = page;
+            }
          }
-         setCurrentPage(previous);
+         if (previous != null) {
+            setCurrentPage(previous);
+         }
       }
 
-      public void setCurrentPage(int index) {
+      public void setCurrentPage(XStackedWidgetPage page) {
          String pageId = null;
          setMessage(IStatus.OK, "");
-         if (index >= 0 && index < pageIds.size()) {
-            pageId = pageIds.get(index);
-            if (pageId == null) {
-               setMessage(IStatus.ERROR, String.format("Page [%s] not found.", index));
-            }
-         } else {
-            setMessage(IStatus.ERROR, String.format("Page [%s] out of bounds.", index));
-         }
-
-         if (pageId == null) {
-            index = 0;
+         if (page == null) {
+            setMessage(IStatus.ERROR, "Page not found.");
             pageId = StackedViewer.DEFAULT_CONTROL;
+         } else {
+            pageId = page.getGuid();
          }
-         this.currentPage = index;
+         this.currentPage = page;
          stackedViewer.setCurrentControl(pageId);
+         if (loadPageValues) {
+            updatePageText(page);
+         }
          updateCurrentPageLabel();
       }
 
-      private void addPage(String pageId, T value) {
-         int numberOfPages = getTotalPages();
-
-         if (pageIds.add(pageId)) {
+      public void addPage(XStackedWidgetPage page) {
+         XStackedWidgetPage existingPage = getPage(page.getGuid());
+         if (existingPage == null) {
             Composite composite = new Composite(stackedViewer.getStackComposite(), SWT.WRAP);
             composite.setLayout(new GridLayout());
             composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
-
-            createPage(pageId, composite, value);
-            stackedViewer.addControl(pageId, composite);
-            setCurrentPage(numberOfPages);
+            createPageWidget(page, composite);
+            pages.add(page);
+            stackedViewer.addControl(page.getGuid(), composite);
+            setCurrentPage(page);
             validate();
             notifyXModifiedListeners();
          } else {
-            setMessage(IStatus.WARNING, "Add page error - page at index [%s] already exists", getCurrentPageIndex());
+            setMessage(IStatus.WARNING, "Add page error - page at index [%s] already exists", page.getGuid());
          }
       }
 
-      private void removePage() throws OseeCoreException {
-         String pageId = pageIds.remove(getCurrentPageIndex());
-         if (pageId != null) {
-            onRemovePage(pageId);
-            Control control = stackedViewer.removeControl(pageId);
+      private XStackedWidgetPage getPage(String pageId) {
+         for (XStackedWidgetPage page : pages) {
+            if (page.getGuid().equals(pageId)) {
+               return page;
+            }
+         }
+         return null;
+      }
+
+      public void removeAllPages() {
+         if (!pages.isEmpty()) {
+            for (XStackedWidgetPage page : pages) {
+               Control control = stackedViewer.removeControl(page.getGuid());
+               Widgets.disposeWidget(control);
+            }
+            pages.clear();
+            validate();
+         }
+      }
+
+      private void removePage() {
+         XStackedWidgetPage currentPage2 = getCurrentPage();
+         boolean removed = pages.remove(currentPage2);
+         if (removed) {
+            onRemovePage(currentPage2);
+            Control control = stackedViewer.removeControl(currentPage2.getGuid());
             Widgets.disposeWidget(control);
             previous();
             validate();
@@ -484,5 +535,15 @@ public abstract class XStackedWidget<T> extends XLabel {
             setMessage(IStatus.WARNING, "Remove page error - page at index [%s] does not exist", getCurrentPageIndex());
          }
       }
+
+      public List<XStackedWidgetPage> getPages() {
+         return pages;
+      }
+
+      public StackedViewer getStackedViewer() {
+         return stackedViewer;
+      }
+
    }
+
 }

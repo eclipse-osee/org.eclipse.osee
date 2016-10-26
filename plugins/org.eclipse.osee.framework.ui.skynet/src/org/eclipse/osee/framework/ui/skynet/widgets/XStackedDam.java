@@ -10,26 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -38,28 +30,35 @@ import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.LongAttribute;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.filter.BranchUuidEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.DslGrammarManager;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.progress.UIJob;
 
 /**
  * @author Roberto E. Escobar
  */
-public class XStackedDam extends XStackedWidget<String> implements IAttributeWidget {
+public class XStackedDam extends XStackedWidget<String> implements IAttributeWidget, IArtifactEventListener {
    private Artifact artifact;
    private IAttributeType attributeType;
-   private final Map<String, XWidget> xWidgets;
    private final XModifiedListener xModifiedListener;
+   private List<BranchUuidEventFilter> eventFilters;
 
    public XStackedDam(String displayLabel) {
       super(displayLabel);
-      this.xWidgets = new LinkedHashMap<>();
       this.artifact = null;
       this.xModifiedListener = new XModifiedListener() {
          @Override
@@ -80,6 +79,14 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
    }
 
    @Override
+   protected String getPostfixPageLabel(XStackedWidgetPage page) {
+      if (page != null && page.getObjectId() != null) {
+         return String.format(" -  Attribute Id (%s)", page.getObjectId().getId());
+      }
+      return "";
+   }
+
+   @Override
    public void setAttributeType(Artifact artifact, IAttributeType attributeType) throws OseeCoreException {
       this.artifact = artifact;
       this.attributeType = attributeType;
@@ -90,83 +97,95 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
          minOccurrence = 1;
       }
       setPageRange(minOccurrence, maxOccurrence);
+      OseeEventManager.addListener(this);
    }
 
+   @SuppressWarnings("deprecation")
    @Override
-   protected void createControls(Composite parent, int horizontalSpan) {
-      super.createControls(parent, horizontalSpan);
-      final Collection<String> values = new ArrayList<>();
+   protected void createPages(Composite parent, int horizontalSpan) {
       try {
-         boolean attributeTypeIsPlainTextEditable = false;
+         setNotificationsAllowed(false);
+         loadPageValues = false;
          for (Attribute<Object> attribute : getArtifact().getAttributes(getAttributeType())) {
-            String value;
-            if (attributeTypeIsPlainTextEditable) {
-               value = attribute.getValue().toString();
-            } else {
-               value = attribute.getDisplayableString();
-            }
-            addPage(String.valueOf(attribute.getId()), value);
-            values.add(value);
+            XStackedWidgetAttrPage page = new XStackedWidgetAttrPage(attribute);
+            addPage(page);
          }
+         setNotificationsAllowed(true);
+         loadPageValues = true;
+         onPageChange(getCurrentPage());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      Job job = new UIJob("Update Stacked XText") {
-
-         @Override
-         public IStatus runInUIThread(IProgressMonitor monitor) {
-            setNotificationsAllowed(false);
-            Iterator<String> dataIterator = values.iterator();
-            Iterator<XWidget> widgetIterator = xWidgets.values().iterator();
-            while (dataIterator.hasNext() && widgetIterator.hasNext()) {
-               XWidget widget = widgetIterator.next();
-               if (widget instanceof XText) {
-                  ((XText) widget).set(dataIterator.next());
-               } else if (widget instanceof XDate) {
-                  ((XDate) widget).setDate(toDate(dataIterator.next()));
-               }
-            }
-            values.clear();
-            setNotificationsAllowed(true);
-            return Status.OK_STATUS;
-         }
-      };
-      Jobs.startJob(job);
-   }
-
-   public List<String> getInput() {
-      List<String> data = new ArrayList<>();
-      for (XWidget widget : xWidgets.values()) {
-         if (widget instanceof XText) {
-            data.add(((XText) widget).get());
-         } else if (widget instanceof XDate) {
-            Date date = ((XDate) widget).getDate();
-            if (date != null) {
-               data.add(String.valueOf(date.getTime()));
-            }
-         }
-      }
-      return data;
-   }
-
-   public Collection<String> getStored() throws OseeCoreException {
-      return getArtifact().getAttributesToStringList(getAttributeType());
    }
 
    @Override
+   public void addPage() {
+      XStackedWidgetAttrPage page = new XStackedWidgetAttrPage();
+      page.setObject(artifact);
+      addPage(page);
+   }
+
+   @Override
+   public void createPageWidget(XStackedWidgetPage page, Composite parent) {
+      XWidget widget = createLazyPage(parent, page);
+      page.setWidget(widget);
+   }
+
+   @Override
+   protected void updatePageText(XStackedWidgetPage page) {
+      Object value = page.getValue();
+      if (value == null) {
+         Attribute<?> attr = ((XStackedWidgetAttrPage) page).getAttribute();
+         if (attr != null) {
+            Object val = setWidgetValue(page.getWidget(), attr);
+            page.setValue(val);
+         }
+      }
+   }
+
+   @SuppressWarnings("deprecation")
+   public Attribute<?> getStored(int attrId) throws OseeCoreException {
+      for (Attribute<?> attribute : artifact.getAttributes(getAttributeType())) {
+         if (attribute.getId() == attrId) {
+            return attribute;
+         }
+      }
+      return null;
+   }
+
+   @SuppressWarnings("deprecation")
+   @Override
    public Result isDirty() throws OseeCoreException {
       if (isEditable()) {
-         try {
-            Collection<String> enteredValues = getInput();
-            Collection<String> storedValues = getStored();
-            if (!Collections.isEqual(enteredValues, storedValues)) {
-               return new Result(true, getAttributeType() + " is dirty");
+         for (XStackedWidgetPage page : stackedControl.getPages()) {
+            if (page.getObjectId() == null) {
+               return new Result(true,
+                  String.format("Attribute Type " + getAttributeType() + " is dirty; attribute added"));
+            } else if (page instanceof XStackedWidgetAttrPage) {
+               XStackedWidgetAttrPage attrPage = (XStackedWidgetAttrPage) page;
+               if (attrPage.getAttribute().isDirty()) {
+                  return new Result(true,
+                     String.format("Attribute Type " + getAttributeType() + " is dirty; attribute modified"));
+               }
+            } else if (artifact.isDirty()) {
+               for (Attribute<?> attr : artifact.getAttributes(attributeType)) {
+                  if (attr.isDeleted()) {
+                     return new Result(true,
+                        String.format("Attribute Type " + getAttributeType() + " is dirty; attribute deleted"));
+                  }
+               }
             }
-         } catch (NumberFormatException ex) {
-            // do nothing
          }
       }
       return Result.FalseResult;
+   }
+
+   @Override
+   public void refresh() {
+      stackedControl.removeAllPages();
+      stackedControl.clearCurrentPage();
+      createPages();
+      validate();
    }
 
    @Override
@@ -176,43 +195,78 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
 
    @Override
    public void saveToArtifact() throws OseeCoreException {
-      getArtifact().setAttributeValues(getAttributeType(), getInput());
+      for (XStackedWidgetPage page : stackedControl.getPages()) {
+         if (page.getObjectId() == null) {
+            artifact.addAttribute(attributeType, page.getWidget().getData());
+         } else if (page instanceof XStackedWidgetAttrPage || page.getObjectId() instanceof AttributeId) {
+            XStackedWidgetAttrPage attrPage = (XStackedWidgetAttrPage) page;
+            attrPage.getAttribute().setFromString(page.getWidget().getData().toString());
+         } else if (artifact.isDirty()) {
+            XStackedWidgetAttrPage attrPage = (XStackedWidgetAttrPage) page;
+            attrPage.getAttribute().delete();
+         }
+      }
+   }
+
+   protected XWidget createLazyPage(Composite parent, XStackedWidgetPage page) {
+      XWidget xWidget = null;
+      try {
+         xWidget = getWidget(getAttributeType(), parent, "");
+         xWidget.setEditable(isEditable());
+         xWidget.addXModifiedListener(xModifiedListener);
+         parent.layout();
+         parent.addDisposeListener(new DisposeListener() {
+
+            @Override
+            public void widgetDisposed(DisposeEvent e) {
+               handleDisposed();
+            }
+
+         });
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return xWidget;
+   }
+
+   private void handleDisposed() {
+      OseeEventManager.removeListener(this);
    }
 
    @Override
-   protected void createPage(String id, Composite parent, String initialInput) {
-      if (!xWidgets.containsKey(id)) {
-         try {
-            XWidget xWidget = getWidget(getAttributeType(), parent, initialInput);
-            xWidget.setEditable(isEditable());
-            xWidgets.put(id, xWidget);
+   public void addPage(XStackedWidgetPage page) {
+      super.addPage(page);
+   }
 
-            xWidget.addXModifiedListener(xModifiedListener);
-            parent.layout();
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+   @Override
+   protected void onPageChange(XStackedWidgetPage page) throws OseeCoreException {
+      if (page != null) {
+         Attribute<?> attr = ((XStackedWidgetAttrPage) page).getAttribute();
+         if (attr != null) {
+            setWidgetValue(page.getWidget(), attr);
          }
       }
    }
 
    @Override
-   protected void onRemovePage(String id) throws OseeCoreException {
-      xWidgets.remove(id);
-      getArtifact().deleteAttribute(AttributeId.valueOf(id));
+   protected void onRemovePage(XStackedWidgetPage page) throws OseeCoreException {
+      getArtifact().deleteAttribute((AttributeId) page.getObjectId());
    }
 
    @Override
    public IStatus isValid() {
       IStatus status = super.isValid();
       if (status.isOK()) {
-         for (XWidget widget : xWidgets.values()) {
-            status = widget.isValid();
-            if (status.isOK()) {
-               status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(), getAttributeType(),
-                  widget.getData());
-            }
-            if (!status.isOK()) {
-               break;
+         for (XStackedWidgetPage page : stackedControl.getPages()) {
+            if (page.getWidget() != null && Widgets.isAccessible(page.getWidget().getControl())) {
+               status = page.getWidget().isValid();
+               if (status.isOK()) {
+                  status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(), getAttributeType(),
+                     page.getWidget().getData());
+               }
+               if (!status.isOK()) {
+                  break;
+               }
             }
          }
       }
@@ -222,9 +276,9 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
    @Override
    public void validate() {
       super.validate();
-      String id = getCurrentPageId();
-      if (Strings.isValid(id)) {
-         XWidget widget = xWidgets.get(id);
+      XStackedWidgetPage page = getCurrentPage();
+      if (page != null) {
+         XWidget widget = page.getWidget();
          widget.validate();
       }
    }
@@ -236,6 +290,30 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return new Date();
+   }
+
+   private Object setWidgetValue(XWidget xWidget, Attribute<?> attribute) {
+      String value = attribute.getDisplayableString();
+      if (Strings.isValid(value)) {
+         xWidget.setNotificationsAllowed(false);
+         if (xWidget instanceof XInteger) {
+            ((XInteger) xWidget).set(value);
+         } else if (xWidget instanceof XLong) {
+            ((XLong) xWidget).set(value);
+         } else if (xWidget instanceof XDate) {
+            ((XDate) xWidget).setDate(toDate(value));
+         } else if (xWidget instanceof XFloat) {
+            ((XFloat) xWidget).setText(value);
+         } else if (xWidget instanceof XLabel) {
+            ((XLabel) xWidget).setLabel(value);
+         } else if (xWidget instanceof XDslEditorWidgetDam) {
+            ((XDslEditorWidgetDam) xWidget).setText(value);
+         } else if (xWidget instanceof XText) {
+            ((XText) xWidget).setText(value);
+         }
+         xWidget.setNotificationsAllowed(true);
+      }
+      return value;
    }
 
    private XWidget getWidget(IAttributeType attributeType, Composite parent, String initialInput) throws OseeCoreException {
@@ -301,6 +379,7 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
          xTextWidget.createWidgets(getManagedForm(), parent, 2);
          xWidget = xTextWidget;
       }
+      parent.layout();
       return xWidget;
    }
 
@@ -349,5 +428,26 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
          return status;
       }
 
+   }
+
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      if (eventFilters == null && artifact != null) {
+         eventFilters = Collections.singletonList(new BranchUuidEventFilter(artifact.getBranch()));
+      }
+      return eventFilters;
+   }
+
+   @Override
+   public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+      if (artifactEvent.isHasEvent(artifact)) {
+         Displays.ensureInDisplayThread(new Runnable() {
+
+            @Override
+            public void run() {
+               refresh();
+            }
+         });
+      }
    }
 }

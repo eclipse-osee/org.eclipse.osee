@@ -89,7 +89,9 @@ public class StackedViewer extends Composite {
          control = compositeMap.get(DEFAULT_CONTROL);
       }
       stackLayout.topControl = control;
-      stackComposite.layout();
+      if (Widgets.isAccessible(stackComposite)) {
+         stackComposite.layout();
+      }
    }
 
    @Override
