@@ -226,7 +226,13 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
          outputCatcher.start();
 
          Long timeoutMs = Long.MAX_VALUE;
-         String timeout = OseeInfo.getValue("osee.vba.word.diff.timeout");
+         String timeout = null;
+         try {
+            timeout = OseeInfo.getValue("osee.vba.word.diff.timeout");
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.INFO, String.format("Timeout lookup failed in %s, set to default %s",
+               this.getClass().getSimpleName(), timeout));
+         }
          if (Strings.isValid(timeout)) {
             timeoutMs = Long.parseLong(timeout);
          }
