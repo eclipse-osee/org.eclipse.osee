@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
-import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.cache.ArtifactIdCache;
@@ -98,9 +97,9 @@ public final class ArtifactCache {
       return artifacts;
    }
 
-   public static Collection<Artifact> getActive(Collection<? extends IBasicGuidArtifact> basicGuidArtifacts) throws OseeCoreException {
+   public static Collection<Artifact> getActive(Collection<? extends DefaultBasicGuidArtifact> basicGuidArtifacts) {
       Set<Artifact> artifacts = new HashSet<>();
-      for (IBasicGuidArtifact guidArt : basicGuidArtifacts) {
+      for (DefaultBasicGuidArtifact guidArt : basicGuidArtifacts) {
          Artifact art = ID_CACHE.getByGuid(guidArt.getGuid(), guidArt.getBranch());
          if (art != null) {
             artifacts.add(art);

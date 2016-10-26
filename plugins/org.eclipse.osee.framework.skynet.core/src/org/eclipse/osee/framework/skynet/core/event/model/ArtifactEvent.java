@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
-import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -106,7 +105,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return isRelAddedChangedDeleted(artifact.getBasicGuidArtifact());
    }
 
-   private boolean isRelAddedChangedDeleted(IBasicGuidArtifact guidArt) {
+   private boolean isRelAddedChangedDeleted(DefaultBasicGuidArtifact guidArt) {
       return isRelChange(guidArt) || isRelAdded(guidArt) || isRelDeletedPurged(guidArt);
    }
 
@@ -114,7 +113,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return isHasEvent(artifact.getBasicGuidArtifact());
    }
 
-   private boolean isHasEvent(IBasicGuidArtifact guidArt) {
+   private boolean isHasEvent(DefaultBasicGuidArtifact guidArt) {
       return isModified(guidArt) || isDeletedPurged(guidArt) || isRelChange(guidArt) || isRelDeletedPurged(
          guidArt) || isRelAdded(guidArt);
    }
@@ -123,7 +122,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return isDeletedPurged(artifact.getBasicGuidArtifact());
    }
 
-   private boolean isDeletedPurged(IBasicGuidArtifact guidArt) {
+   private boolean isDeletedPurged(DefaultBasicGuidArtifact guidArt) {
       for (EventBasicGuidArtifact gArt : artifacts) {
          if (gArt.is(EventModType.Deleted, EventModType.Purged) && gArt.equals(guidArt)) {
             return true;
@@ -183,8 +182,8 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return guidArts;
    }
 
-   private Collection<IBasicGuidArtifact> getRelationsArts(RelationEventType... eventModTypes) {
-      Set<IBasicGuidArtifact> guidArts = new HashSet<>();
+   private Collection<DefaultBasicGuidArtifact> getRelationsArts(RelationEventType... eventModTypes) {
+      Set<DefaultBasicGuidArtifact> guidArts = new HashSet<>();
       for (EventBasicGuidRelation guidRel : getRelations(eventModTypes)) {
          guidArts.add(guidRel.getArtA());
          guidArts.add(guidRel.getArtB());
@@ -208,7 +207,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return isReloaded(artifact.getBasicGuidArtifact());
    }
 
-   private boolean isReloaded(IBasicGuidArtifact guidArt) {
+   private boolean isReloaded(DefaultBasicGuidArtifact guidArt) {
       return get(EventModType.Reloaded).contains(guidArt);
    }
 
@@ -216,7 +215,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return isModified(artifact.getBasicGuidArtifact());
    }
 
-   private boolean isModified(IBasicGuidArtifact guidArt) {
+   private boolean isModified(DefaultBasicGuidArtifact guidArt) {
       return get(EventModType.Modified).contains(guidArt);
    }
 
@@ -224,14 +223,14 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return isModifiedReloaded(artifact.getBasicGuidArtifact());
    }
 
-   private boolean isModifiedReloaded(IBasicGuidArtifact guidArt) {
+   private boolean isModifiedReloaded(DefaultBasicGuidArtifact guidArt) {
       return get(EventModType.Modified, EventModType.Reloaded).contains(guidArt);
    }
 
    /**
     * Relation rationale changed
     */
-   private boolean isRelChange(IBasicGuidArtifact guidArt) {
+   private boolean isRelChange(DefaultBasicGuidArtifact guidArt) {
       for (EventBasicGuidRelation guidRel : getRelations(RelationEventType.ModifiedRationale)) {
          if (guidRel.getArtA().equals(guidArt) || guidRel.getArtB().equals(guidArt)) {
             return true;
@@ -240,7 +239,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return false;
    }
 
-   private boolean isRelDeletedPurged(IBasicGuidArtifact guidArt) {
+   private boolean isRelDeletedPurged(DefaultBasicGuidArtifact guidArt) {
       for (EventBasicGuidRelation guidRel : getRelations(RelationEventType.Deleted, RelationEventType.Purged)) {
          if (guidRel.getArtA().equals(guidArt) || guidRel.getArtB().equals(guidArt)) {
             return true;
@@ -249,7 +248,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return false;
    }
 
-   private boolean isRelAdded(IBasicGuidArtifact guidArt) {
+   private boolean isRelAdded(DefaultBasicGuidArtifact guidArt) {
       for (EventBasicGuidRelation guidRel : getRelations(RelationEventType.Added, RelationEventType.Undeleted)) {
          if (guidRel.getArtA().equals(guidArt) || guidRel.getArtB().equals(guidArt)) {
             return true;

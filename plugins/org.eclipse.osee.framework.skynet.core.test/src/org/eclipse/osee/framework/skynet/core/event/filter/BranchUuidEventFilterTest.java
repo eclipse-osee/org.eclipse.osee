@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
@@ -48,7 +48,7 @@ public class BranchUuidEventFilterTest {
       EventBasicGuidArtifact guidArtA = new EventBasicGuidArtifact(EventModType.Added, BranchId.create(), Requirement);
       EventBasicGuidArtifact guidArtB =
          new EventBasicGuidArtifact(EventModType.Added, BranchId.create(), SoftwareRequirement);
-      List<IBasicGuidArtifact> arts = new ArrayList<>();
+      List<DefaultBasicGuidArtifact> arts = new ArrayList<>();
       arts.add(guidArtB);
       arts.add(guidArtA);
 

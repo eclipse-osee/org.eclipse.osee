@@ -15,7 +15,6 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
-import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.junit.Assert;
@@ -63,7 +62,7 @@ public class EventBasicGuidArtifactTest {
 
       eventArt2 = new EventBasicGuidArtifact(EventModType.Added, COMMON, Artifact);
 
-      Set<IBasicGuidArtifact> toAdd = new HashSet<>();
+      Set<DefaultBasicGuidArtifact> toAdd = new HashSet<>();
       toAdd.add(eventArt2);
       toAdd.add(eventArt1);
       Assert.assertEquals(2, toAdd.size());
@@ -71,7 +70,7 @@ public class EventBasicGuidArtifactTest {
       toAdd.add(eventArt1);
       Assert.assertEquals(2, toAdd.size());
 
-      Set<IBasicGuidArtifact> eventArts = new HashSet<>();
+      Set<DefaultBasicGuidArtifact> eventArts = new HashSet<>();
       eventArts.add(eventArt2);
       eventArts.addAll(toAdd);
       Assert.assertEquals(2, toAdd.size());

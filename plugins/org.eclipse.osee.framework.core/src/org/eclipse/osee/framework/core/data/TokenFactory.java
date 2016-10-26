@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.data;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
@@ -146,6 +147,11 @@ public final class TokenFactory {
       @Override
       public String getGuid() {
          return guid;
+      }
+
+      @Override
+      public BranchId getBranch() {
+         return CoreBranches.COMMON;
       }
    }
 

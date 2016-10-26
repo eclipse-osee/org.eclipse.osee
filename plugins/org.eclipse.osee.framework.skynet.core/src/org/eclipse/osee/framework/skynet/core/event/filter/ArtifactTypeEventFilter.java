@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeProvider;
@@ -47,9 +47,9 @@ public class ArtifactTypeEventFilter implements IEventFilter {
     * Return true if any artifact matches any of the desired artifact types
     */
    @Override
-   public boolean isMatchArtifacts(List<? extends IBasicGuidArtifact> guidArts) {
+   public boolean isMatchArtifacts(List<? extends DefaultBasicGuidArtifact> guidArts) {
       try {
-         for (IBasicGuidArtifact guidArt : guidArts) {
+         for (DefaultBasicGuidArtifact guidArt : guidArts) {
             IArtifactType artType = typeProvider.getTypeByGuid(guidArt.getArtTypeGuid());
             for (IArtifactType artifactType : artifactTypes) {
                if (typeProvider.inheritsFrom(artType, artifactType)) {

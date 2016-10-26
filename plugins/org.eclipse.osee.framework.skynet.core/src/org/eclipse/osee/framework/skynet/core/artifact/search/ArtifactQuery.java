@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -60,7 +59,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -89,14 +87,6 @@ public class ArtifactQuery {
 
    public static Artifact getArtifactFromToken(ArtifactToken artifactToken) {
       return getArtifactFromId(artifactToken.getId(), artifactToken.getBranch());
-   }
-
-   public static Artifact getArtifactFromToken(EventBasicGuidArtifact guidArt) throws OseeCoreException {
-      return getArtifactFromId(guidArt.getGuid(), guidArt.getBranch());
-   }
-
-   public static Artifact getArtifactFromToken(IBasicGuidArtifact guidArt) throws OseeCoreException {
-      return getArtifactFromId(guidArt.getGuid(), guidArt.getBranch());
    }
 
    /**

@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.event.filter;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
 
 /**
@@ -38,11 +38,11 @@ public class BranchUuidEventFilter implements IEventFilter {
    }
 
    @Override
-   public boolean isMatchArtifacts(List<? extends IBasicGuidArtifact> guidArts) {
+   public boolean isMatchArtifacts(List<? extends DefaultBasicGuidArtifact> guidArts) {
       if (guidArts.isEmpty()) {
          return true;
       }
-      for (IBasicGuidArtifact guidArt : guidArts) {
+      for (DefaultBasicGuidArtifact guidArt : guidArts) {
          if (guidArt.isOnBranch(branchToken)) {
             return true;
          }

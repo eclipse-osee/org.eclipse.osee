@@ -53,7 +53,6 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
-import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -91,7 +90,7 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
  * @author Ryan D. Brooks
  */
 
-public class Artifact extends FullyNamedIdentity<String> implements IArtifact, Adaptable, IBasicGuidArtifact {
+public class Artifact extends FullyNamedIdentity<String> implements IArtifact, Adaptable {
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
@@ -1562,8 +1561,8 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
     */
    @Override
    public final boolean equals(Object obj) {
-      if (obj instanceof IBasicGuidArtifact) {
-         IBasicGuidArtifact other = (IBasicGuidArtifact) obj;
+      if (obj instanceof DefaultBasicGuidArtifact) {
+         DefaultBasicGuidArtifact other = (DefaultBasicGuidArtifact) obj;
          boolean result = getGuid().equals(other.getGuid());
          if (result) {
             if (getBranchId() != null && other.getBranchId() != null) {
@@ -1704,11 +1703,6 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
 
    public final DefaultBasicGuidArtifact getBasicGuidArtifact() {
       return new DefaultBasicGuidArtifact(getBranch(), getArtifactTypeId(), this);
-   }
-
-   @Override
-   public final Long getArtTypeGuid() {
-      return getArtifactType().getGuid();
    }
 
    public final Set<DefaultBasicUuidRelationReorder> getRelationOrderRecords() {

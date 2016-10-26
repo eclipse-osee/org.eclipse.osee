@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.model.event;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -20,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 /**
  * @author Donald G. Dunne
  */
-public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements IBasicGuidArtifact {
+public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements HasBranch {
    private final BranchId branch;
    private ArtifactTypeId artifactType;
 
@@ -43,7 +44,6 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements IB
       return branch;
    }
 
-   @Override
    public Long getArtTypeGuid() {
       return artifactType.getId();
    }
@@ -71,8 +71,8 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements IB
    @Override
    public boolean equals(Object obj) {
       boolean equals = super.equals(obj);
-      if (!equals && obj instanceof IBasicGuidArtifact) {
-         IBasicGuidArtifact other = (IBasicGuidArtifact) obj;
+      if (!equals && obj instanceof DefaultBasicGuidArtifact) {
+         DefaultBasicGuidArtifact other = (DefaultBasicGuidArtifact) obj;
 
          if (artifactType == null || other.getArtTypeGuid() == null) {
             equals = false;

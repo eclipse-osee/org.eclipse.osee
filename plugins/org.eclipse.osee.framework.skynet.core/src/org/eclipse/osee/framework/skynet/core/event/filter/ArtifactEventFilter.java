@@ -10,11 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event.filter;
 
-import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
 
 /**
@@ -22,23 +21,21 @@ import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
  */
 public class ArtifactEventFilter implements IEventFilter {
 
-   private final String filterArtifactGuid;
-   private final BranchId filterBranch;
+   private final ArtifactToken artifact;
 
    public ArtifactEventFilter(ArtifactToken artifact) {
-      filterArtifactGuid = artifact.getGuid();
-      filterBranch = artifact.getBranch();
+      this.artifact = artifact;
    }
 
    @Override
    public boolean isMatch(BranchId branch) {
-      return branch.equals(filterBranch);
+      return artifact.isOnBranch(branch);
    }
 
    @Override
-   public boolean isMatchArtifacts(List<? extends IBasicGuidArtifact> guidArts) {
-      for (IBasicGuidArtifact art : guidArts) {
-         if (art.getGuid().equals(filterArtifactGuid) && art.isOnBranch(filterBranch)) {
+   public boolean isMatchArtifacts(List<? extends DefaultBasicGuidArtifact> guidArts) {
+      for (DefaultBasicGuidArtifact art : guidArts) {
+         if (art.equals(artifact)) {
             return true;
          }
       }
@@ -48,7 +45,7 @@ public class ArtifactEventFilter implements IEventFilter {
    @Override
    public boolean isMatchRelationArtifacts(List<? extends IBasicGuidRelation> relations) {
       for (IBasicGuidRelation relation : relations) {
-         if (isMatchArtifacts(Arrays.asList(relation.getArtA(), relation.getArtB()))) {
+         if (relation.getArtA().equals(artifact) || relation.getArtB().equals(artifact)) {
             return true;
          }
       }
