@@ -20,7 +20,10 @@ public class AtsTopicEvent extends AbstractTopicEvent {
 
    public static final AtsTopicEvent WORK_ITEM_MODIFIED =
       new AtsTopicEvent(EventType.LocalAndRemote, "ats/workitem/modified");
-   public static final String WORK_ITEM_UUDS_KEY = "workItemUuids";
+   public static final String WORK_ITEM_UUIDS_KEY = "workItemUuids";
+   public static final String TARGETED_VERSION_MODIFIED = "ats/workitem/targetedversion/modified";
+   public static final String NEW_ATS_VERSION_ID = "atsVersionId";
+   public static final String PREVIOUS_ATS_VERSION_ID = "previousAtsVersionId";
 
    private AtsTopicEvent(EventType eventType, String topic) {
       super(eventType, topic);

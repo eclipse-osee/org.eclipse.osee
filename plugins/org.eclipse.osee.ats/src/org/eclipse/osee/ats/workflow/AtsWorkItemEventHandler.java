@@ -31,8 +31,9 @@ public class AtsWorkItemEventHandler implements EventHandler {
       try {
          if (event.getTopic().equals(AtsTopicEvent.WORK_ITEM_MODIFIED)) {
             for (Long workItemUuid : AtsObjects.uuidsToLong(";",
-               (String) event.getProperty(AtsTopicEvent.WORK_ITEM_UUDS_KEY))) {
+               (String) event.getProperty(AtsTopicEvent.WORK_ITEM_UUIDS_KEY))) {
                Artifact artifact = ArtifactCache.getActive(workItemUuid, AtsClientService.get().getAtsBranch());
+
                if (artifact != null) {
                   if (WfeArtifactEventManager.isLoaded(artifact)) {
                      artifact.reloadAttributesAndRelations();

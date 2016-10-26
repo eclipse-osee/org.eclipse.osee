@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.version;
 
 import java.rmi.activation.Activator;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -22,7 +23,9 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -33,6 +36,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
 
 /**
  * @author Donald G Dunne
@@ -40,10 +45,12 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionService {
 
    private final IAtsServices services;
+   private final EventAdmin eventAdmin;
 
-   public AbstractAtsVersionServiceImpl(IAtsServices services) {
+   public AbstractAtsVersionServiceImpl(IAtsServices services, EventAdmin eventAdmin) {
       super();
       this.services = services;
+      this.eventAdmin = eventAdmin;
    }
 
    @Override
@@ -78,13 +85,42 @@ public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionServic
    @Override
    public void removeTargetedVersion(IAtsTeamWorkflow teamWf, IAtsChangeSet changes) throws OseeCoreException {
       changes.unrelateAll(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
-
    }
 
    @Override
    public IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, IAtsVersion version, IAtsChangeSet changes) {
+      Collection<ArtifactToken> previousVersions =
+         services.getRelationResolver().getRelated(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
+
+      ArtifactId previousVersion = ArtifactId.SENTINEL;
+      if (!previousVersions.isEmpty()) {
+         previousVersion = ArtifactId.valueOf(previousVersions.iterator().next().getId());
+      }
       changes.setRelation(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, version);
+      changes.addExecuteListener(getPostPersistExecutionListener(teamWf, version, previousVersion));
       return version;
+   }
+
+   protected IExecuteListener getPostPersistExecutionListener(IAtsTeamWorkflow teamWf, IAtsVersion newVersion, ArtifactId previousVersion) {
+      return new IExecuteListener() {
+
+         @Override
+         public void changesStored(IAtsChangeSet changes) {
+            try {
+               HashMap<String, Object> properties = new HashMap<String, Object>();
+               properties.put(AtsTopicEvent.WORK_ITEM_UUIDS_KEY, teamWf.getId().toString());
+               properties.put(AtsTopicEvent.NEW_ATS_VERSION_ID, newVersion.getId().toString());
+               properties.put(AtsTopicEvent.PREVIOUS_ATS_VERSION_ID, previousVersion.getId().toString());
+
+               Event event = new Event(AtsTopicEvent.TARGETED_VERSION_MODIFIED, properties);
+
+               eventAdmin.postEvent(event);
+
+            } catch (OseeCoreException ex) {
+               OseeLog.log(getClass(), Level.SEVERE, ex);
+            }
+         }
+      };
    }
 
    /**

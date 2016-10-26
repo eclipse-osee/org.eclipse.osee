@@ -86,6 +86,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
+import org.osgi.service.event.EventAdmin;
 
 /**
  * @author Donald G. Dunne
@@ -98,9 +99,14 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    private ArtifactCollectorsCache<GoalArtifact> goalMembersCache;
    private ArtifactCollectorsCache<SprintArtifact> sprintItemsCache;
    private IAtsEventService eventService;
+   private EventAdmin eventAdmin;
 
    public AtsClientImpl() {
       super();
+   }
+
+   public void setEventAdmin(EventAdmin eventAdmin) {
+      this.eventAdmin = eventAdmin;
    }
 
    @Override
@@ -112,7 +118,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       earnedValueService = new AtsEarnedValueImpl(logger, getServices());
 
       configItemFactory = new ConfigItemFactory(logger, this);
-      versionService = new AtsVersionServiceImpl(this, atsCache);
+      versionService = new AtsVersionServiceImpl(this, atsCache, eventAdmin);
 
       actionableItemFactory = new ActionableItemFactory();
       teamDefFactory = new TeamDefinitionFactory();

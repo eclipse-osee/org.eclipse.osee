@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -174,6 +175,8 @@ public class TargetedVersionColumnUI extends XViewerAtsColumnIdColumn implements
          AtsClientService.get().getVersionService().setTargetedVersion(teamArt1, newVersion, changes);
       }
       changes.execute();
+
+      ArtifactQuery.reloadArtifacts(awas);
 
       return true;
    }

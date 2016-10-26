@@ -74,6 +74,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.osgi.service.event.EventAdmin;
 
 /**
  * @author Donald G Dunne
@@ -94,6 +95,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    private final Map<String, IAtsDatabaseConversion> externalConversions =
       new ConcurrentHashMap<String, IAtsDatabaseConversion>();
    private AtsConfigEndpointImpl configurationsProvider;
+   private EventAdmin eventAdmin;
 
    public AtsServerImpl() {
       super();
@@ -101,6 +103,10 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
+   }
+
+   public void setEventAdmin(EventAdmin eventAdmin) {
+      this.eventAdmin = eventAdmin;
    }
 
    @Override
@@ -151,7 +157,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
       teamDefinitionService = new AtsTeamDefinitionService(this);
 
       agileService = new AgileService(logger, this);
-      versionService = new AtsVersionServiceImpl(getServices());
+      versionService = new AtsVersionServiceImpl(getServices(), eventAdmin);
       taskService = new AtsTaskService(this);
       earnedValueService = new AtsEarnedValueImpl(logger, this);
 

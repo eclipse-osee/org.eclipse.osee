@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.core.client.internal.store;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -19,20 +18,19 @@ import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.config.IAtsClientVersionService;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.version.AbstractAtsVersionServiceImpl;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.osgi.service.event.EventAdmin;
 
 /**
  * @author Donald G Dunne
@@ -42,8 +40,8 @@ public class AtsVersionServiceImpl extends AbstractAtsVersionServiceImpl impleme
    private final IAtsCache cache;
    private final IAtsClient atsClient;
 
-   public AtsVersionServiceImpl(IAtsClient atsClient, IAtsCache cache) {
-      super(atsClient.getServices());
+   public AtsVersionServiceImpl(IAtsClient atsClient, IAtsCache cache, EventAdmin eventAdmin) {
+      super(atsClient.getServices(), eventAdmin);
       this.atsClient = atsClient;
       this.cache = cache;
    }
@@ -118,5 +116,4 @@ public class AtsVersionServiceImpl extends AbstractAtsVersionServiceImpl impleme
    public Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef) {
       return atsClient.getTeamDefinitionService().getVersions(teamDef);
    }
-
 }

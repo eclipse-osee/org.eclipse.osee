@@ -12,14 +12,15 @@ package org.eclipse.osee.ats.rest.internal.workitem;
 
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.core.version.AbstractAtsVersionServiceImpl;
+import org.osgi.service.event.EventAdmin;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsVersionServiceImpl extends AbstractAtsVersionServiceImpl {
 
-   public AtsVersionServiceImpl(IAtsServices services) {
-      super(services);
+   public AtsVersionServiceImpl(IAtsServices services, EventAdmin eventAdmin) {
+      super(services, eventAdmin);
    }
 
 }
