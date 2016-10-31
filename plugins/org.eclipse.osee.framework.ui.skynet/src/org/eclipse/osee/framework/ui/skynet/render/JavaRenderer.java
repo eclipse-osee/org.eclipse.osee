@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FindInWorkspaceOperation;
 import org.eclipse.osee.framework.ui.skynet.FindInWorkspaceOperation.FindInWorkspaceCollector;
@@ -66,10 +65,9 @@ public class JavaRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact, Object... objects) throws OseeCoreException {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Object... objects) throws OseeCoreException {
       int toReturn = NO_MATCH;
-      Artifact aArtifact = artifact.getFullArtifact();
-      if (aArtifact.isOfType(CoreArtifactTypes.TestCase)) {
+      if (artifact.isOfType(CoreArtifactTypes.TestCase)) {
          if (presentationType.matches(PresentationType.SPECIALIZED_EDIT, PresentationType.DEFAULT_OPEN)) {
             toReturn = PRESENTATION_SUBTYPE_MATCH;
          }

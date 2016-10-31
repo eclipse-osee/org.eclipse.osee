@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
@@ -66,9 +65,8 @@ public final class AtsRuleDefinitionDslRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact, Object... objects) throws OseeCoreException {
-      Artifact aArtifact = artifact.getFullArtifact();
-      if (aArtifact.isOfType(AtsArtifactTypes.RuleDefinition) && presentationType != GENERALIZED_EDIT) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Object... objects) throws OseeCoreException {
+      if (artifact.isOfType(AtsArtifactTypes.RuleDefinition) && presentationType != GENERALIZED_EDIT) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;

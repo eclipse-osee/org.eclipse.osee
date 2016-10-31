@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -46,7 +45,7 @@ public class OpenOfficeWriterRenderer extends FileSystemRenderer implements ITem
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact, Object... objects) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Object... objects) {
       return NO_MATCH;
    }
 

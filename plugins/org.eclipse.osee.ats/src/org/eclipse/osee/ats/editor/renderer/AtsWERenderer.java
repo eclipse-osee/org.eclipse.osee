@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
@@ -51,18 +50,16 @@ public class AtsWERenderer extends AbstractAtsRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact, Object... objects) throws OseeCoreException {
-      Artifact aArtifact = artifact.getFullArtifact();
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Object... objects) throws OseeCoreException {
       VariableMap options = new VariableMap();
       options.setValues(objects);
 
-      if (!aArtifact.isHistorical() //
-      && !presentationType.matches(GENERALIZED_EDIT, PRODUCE_ATTRIBUTE) //
-      && aArtifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
+      if (!artifact.isHistorical() && !presentationType.matches(GENERALIZED_EDIT,
+         PRODUCE_ATTRIBUTE) && artifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
 
-         if (Option_WORKFLOW_EDITOR.equals(options.getString(OPEN_OPTION))//
-         && !UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT) //
-         && !UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_ART_EDIT)) {
+         if (Option_WORKFLOW_EDITOR.equals(options.getString(OPEN_OPTION)) && !UserManager.getBooleanSetting(
+            UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT) && !UserManager.getBooleanSetting(
+               UserManager.DOUBLE_CLICK_SETTING_KEY_ART_EDIT)) {
             return SPECIALIZED_MATCH;
          } else {
             return PRESENTATION_SUBTYPE_MATCH;

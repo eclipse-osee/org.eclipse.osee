@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.CompressedContentAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.OutlineNumberAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.utility.NormalizeHtml;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
@@ -98,10 +97,9 @@ public class HTMLRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact, Object... objects) throws OseeCoreException {
-      Artifact aArtifact = artifact.getFullArtifact();
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Object... objects) throws OseeCoreException {
       int toReturn = NO_MATCH;
-      if (aArtifact.isAttributeTypeValid(CoreAttributeTypes.HTMLContent)) {
+      if (artifact.isAttributeTypeValid(CoreAttributeTypes.HTMLContent)) {
          if (presentationType.matches(PresentationType.PREVIEW, PresentationType.DIFF)) {
             toReturn = PRESENTATION_SUBTYPE_MATCH;
          }

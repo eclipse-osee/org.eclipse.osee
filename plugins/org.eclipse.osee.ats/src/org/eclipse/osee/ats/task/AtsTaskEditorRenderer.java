@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
@@ -39,13 +38,11 @@ public class AtsTaskEditorRenderer extends AbstractAtsRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact, Object... objects) throws OseeCoreException {
-      Artifact aArtifact = artifact.getFullArtifact();
-
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Object... objects) throws OseeCoreException {
       VariableMap options = new VariableMap();
       options.setValues(objects);
 
-      if (aArtifact.isOfType(AtsArtifactTypes.Task) && !aArtifact.isHistorical() && !presentationType.matches(
+      if (artifact.isOfType(AtsArtifactTypes.Task) && !artifact.isHistorical() && !presentationType.matches(
          GENERALIZED_EDIT, PRODUCE_ATTRIBUTE)) {
          if (Option_TASK_WORLD_EDITOR.equals(options.getString(OPEN_OPTION))) {
             return SPECIALIZED_KEY_MATCH;

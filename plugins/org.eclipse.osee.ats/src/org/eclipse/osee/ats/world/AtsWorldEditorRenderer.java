@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
@@ -36,15 +35,14 @@ public class AtsWorldEditorRenderer extends AbstractAtsRenderer {
    private static final String Option_WORLD_EDITOR = "world.editor.option";
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact, Object... objects) throws OseeCoreException {
-      Artifact aArtifact = artifact.getFullArtifact();
-      if (aArtifact.isHistorical() || presentationType.matches(GENERALIZED_EDIT, PRODUCE_ATTRIBUTE)) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Object... objects) throws OseeCoreException {
+      if (artifact.isHistorical() || presentationType.matches(GENERALIZED_EDIT, PRODUCE_ATTRIBUTE)) {
          return NO_MATCH;
       }
 
       VariableMap options = new VariableMap();
       options.setValues(objects);
-      if (aArtifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
+      if (artifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
          if (Option_WORLD_EDITOR.equals(options.getString(OPEN_OPTION))) {
             return SPECIALIZED_KEY_MATCH;
          } else {
@@ -52,11 +50,11 @@ public class AtsWorldEditorRenderer extends AbstractAtsRenderer {
          }
       }
 
-      if (aArtifact.isOfType(CoreArtifactTypes.UniversalGroup)) {
-         if (aArtifact.getRelatedArtifactsCount(CoreRelationTypes.Universal_Grouping__Members) == 0) {
+      if (artifact.isOfType(CoreArtifactTypes.UniversalGroup)) {
+         if (artifact.getRelatedArtifactsCount(CoreRelationTypes.Universal_Grouping__Members) == 0) {
             return NO_MATCH;
          }
-         for (Artifact childArt : aArtifact.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
+         for (Artifact childArt : artifact.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
             if (childArt.isOfType(AtsArtifactTypes.AtsArtifact)) {
                return PRESENTATION_SUBTYPE_MATCH;
             }

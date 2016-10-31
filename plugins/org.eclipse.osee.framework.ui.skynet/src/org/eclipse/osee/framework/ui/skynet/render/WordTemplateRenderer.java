@@ -18,6 +18,7 @@ import static org.eclipse.osee.framework.core.enums.PresentationType.GENERALIZED
 import static org.eclipse.osee.framework.core.enums.PresentationType.GENERAL_REQUESTED;
 import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW;
 import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED_EDIT;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
@@ -27,9 +28,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.define.report.api.WordTemplateContentData;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -49,7 +52,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
 import org.eclipse.osee.framework.skynet.core.httpRequests.HttpWordUpdateRequest;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
@@ -134,13 +136,12 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact, Object... objects) throws OseeCoreException {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Object... objects) throws OseeCoreException {
       int rating = NO_MATCH;
-      Artifact aArtifact = artifact.getFullArtifact();
       if (!presentationType.matches(GENERALIZED_EDIT, GENERAL_REQUESTED)) {
-         if (aArtifact.isAttributeTypeValid(WordTemplateContent)) {
+         if (artifact.isAttributeTypeValid(CoreAttributeTypes.WordTemplateContent)) {
             if (presentationType.matches(DEFAULT_OPEN, PREVIEW)) {
-               if (aArtifact.getAttributeCount(WordTemplateContent) > 0) {
+               if (artifact.getAttributeCount(WordTemplateContent) > 0) {
                   rating = PRESENTATION_SUBTYPE_MATCH;
                } else {
                   rating = SUBTYPE_TYPE_MATCH;

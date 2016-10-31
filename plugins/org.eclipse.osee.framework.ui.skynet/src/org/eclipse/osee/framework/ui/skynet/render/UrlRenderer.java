@@ -16,16 +16,13 @@ import static org.eclipse.osee.framework.core.enums.PresentationType.DEFAULT_OPE
 import static org.eclipse.osee.framework.core.enums.PresentationType.GENERALIZED_EDIT;
 import static org.eclipse.osee.framework.core.enums.PresentationType.GENERAL_REQUESTED;
 import static org.eclipse.osee.framework.core.enums.PresentationType.WEB_PREVIEW;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -47,10 +44,9 @@ public class UrlRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact, Object... objects) throws OseeCoreException {
-      Artifact aArtifact = artifact.getFullArtifact();
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Object... objects) throws OseeCoreException {
       if (!presentationType.matches(GENERALIZED_EDIT,
-         GENERAL_REQUESTED) && aArtifact.getAttributeCount(ContentUrl) > 0) {
+         GENERAL_REQUESTED) && artifact.getAttributeCount(ContentUrl) > 0) {
          if (presentationType.equals(WEB_PREVIEW)) {
             return SPECIALIZED_MATCH;
          } else if (presentationType.equals(DEFAULT_OPEN)) {
