@@ -1696,11 +1696,6 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       return modType;
    }
 
-   @Override
-   public final Artifact getFullArtifact() {
-      return this;
-   }
-
    public final DefaultBasicGuidArtifact getBasicGuidArtifact() {
       return new DefaultBasicGuidArtifact(getBranch(), getArtifactTypeId(), this);
    }

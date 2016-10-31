@@ -213,8 +213,7 @@ public class ArtifactFormPage extends FormPage {
       updateTitle(form);
       updateImage(form);
       updateArtifactInfoArea(toolkit, form, true);
-      applPart = new ArtifactFormPageViewApplicability(getEditor().getArtifactFromEditorInput().getFullArtifact(),
-         toolkit, form);
+      applPart = new ArtifactFormPageViewApplicability(getEditor().getArtifactFromEditorInput(), toolkit, form);
       applPart.create();
       addToolBar(toolkit, form, true);
       FormsUtil.addHeadingGradient(toolkit, form, true);

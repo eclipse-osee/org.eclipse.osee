@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * This class allows plugins to provide the base images for artifact types by registering via ImageManger.registerImage.
@@ -28,7 +28,7 @@ public abstract class ArtifactImageProvider {
     * call. Alternatively, providers that wish to defer to the basic implementation should call return
     * super.setupImage()
     */
-   public String setupImage(IArtifact artifact) throws OseeCoreException {
+   public String setupImage(Artifact artifact) throws OseeCoreException {
       return ArtifactImageManager.setupImageNoProviders(artifact);
    }
 

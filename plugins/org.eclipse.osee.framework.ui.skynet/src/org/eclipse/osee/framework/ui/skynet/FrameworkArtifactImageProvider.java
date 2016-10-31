@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.util.DynamicImage;
 import org.eclipse.osee.framework.ui.skynet.util.DynamicImages;
@@ -160,17 +159,16 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
    }
 
    @Override
-   public String setupImage(IArtifact artifact) throws OseeCoreException {
-      Artifact aArtifact = artifact.getFullArtifact();
-      if (aArtifact.isDeleted()) {
+   public String setupImage(Artifact artifact) throws OseeCoreException {
+      if (artifact.isDeleted()) {
          return null;
       }
-      if (aArtifact.isOfType(CoreArtifactTypes.User)) {
-         if (((User) aArtifact).isSystemUser()) {
+      if (artifact.isOfType(CoreArtifactTypes.User)) {
+         if (((User) artifact).isSystemUser()) {
             return ImageManager.setupImage(FrameworkImage.USER_GREY);
-         } else if (!((User) aArtifact).isActive()) {
+         } else if (!((User) artifact).isActive()) {
             return ImageManager.setupImage(FrameworkImage.USER_YELLOW);
-         } else if (((User) aArtifact).equals(UserManager.getUser())) {
+         } else if (((User) artifact).equals(UserManager.getUser())) {
             return ImageManager.setupImage(FrameworkImage.USER_RED);
          }
       }

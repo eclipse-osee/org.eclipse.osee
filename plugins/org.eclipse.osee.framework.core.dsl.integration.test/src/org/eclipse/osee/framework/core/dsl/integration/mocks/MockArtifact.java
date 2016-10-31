@@ -52,13 +52,7 @@ public class MockArtifact extends NamedIdentity<String> implements IBasicArtifac
    }
 
    @Override
-   public Object getFullArtifact() {
-      return null;
-   }
-
-   @Override
    public Long getId() {
       return Long.valueOf(artId);
    }
-
 }

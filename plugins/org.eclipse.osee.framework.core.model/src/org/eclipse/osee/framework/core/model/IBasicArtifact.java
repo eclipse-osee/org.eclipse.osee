@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.model;
 
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
@@ -23,6 +22,4 @@ public interface IBasicArtifact<T> extends ArtifactToken {
 
    @Override
    ArtifactType getArtifactType();
-
-   T getFullArtifact() throws OseeCoreException;
 }

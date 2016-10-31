@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -66,18 +65,17 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
    }
 
    @Override
-   public String setupImage(IArtifact artifact) throws OseeCoreException {
-      Artifact aArtifact = artifact.getFullArtifact();
-      if (aArtifact.isOfType(AtsArtifactTypes.Version)) {
-         if (aArtifact.getSoleAttributeValue(AtsAttributeTypes.NextVersion, false)) {
-            return ArtifactImageManager.setupImage(aArtifact, AtsImage.NEXT, Location.BOT_RIGHT);
+   public String setupImage(Artifact artifact) throws OseeCoreException {
+      if (artifact.isOfType(AtsArtifactTypes.Version)) {
+         if (artifact.getSoleAttributeValue(AtsAttributeTypes.NextVersion, false)) {
+            return ArtifactImageManager.setupImage(artifact, AtsImage.NEXT, Location.BOT_RIGHT);
          }
-         if (aArtifact.getSoleAttributeValue(AtsAttributeTypes.Released, false)) {
-            return ArtifactImageManager.setupImage(aArtifact, AtsImage.RELEASED, Location.TOP_RIGHT);
+         if (artifact.getSoleAttributeValue(AtsAttributeTypes.Released, false)) {
+            return ArtifactImageManager.setupImage(artifact, AtsImage.RELEASED, Location.TOP_RIGHT);
          }
-         if (aArtifact.getSoleAttributeValue(AtsAttributeTypes.VersionLocked,
-            false) && !aArtifact.getSoleAttributeValue(AtsAttributeTypes.Released, false)) {
-            return ArtifactImageManager.setupImage(aArtifact, AtsImage.VERSION_LOCKED, Location.BOT_RIGHT);
+         if (artifact.getSoleAttributeValue(AtsAttributeTypes.VersionLocked,
+            false) && !artifact.getSoleAttributeValue(AtsAttributeTypes.Released, false)) {
+            return ArtifactImageManager.setupImage(artifact, AtsImage.VERSION_LOCKED, Location.BOT_RIGHT);
          }
       }
 
@@ -101,11 +99,11 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
          AbstractWorkflowArtifact stateMachine = (AbstractWorkflowArtifact) artifact;
          if (SubscribeManager.isSubscribed(stateMachine, AtsClientService.get().getUserService().getCurrentUser())) {
             // was 8,6
-            return ArtifactImageManager.setupImage(aArtifact, AtsImage.SUBSCRIBED_OVERLAY, Location.BOT_RIGHT);
+            return ArtifactImageManager.setupImage(artifact, AtsImage.SUBSCRIBED_OVERLAY, Location.BOT_RIGHT);
          }
          if (FavoritesManager.isFavorite(stateMachine, AtsClientService.get().getUserService().getCurrentUser())) {
             // was 7,0
-            return ArtifactImageManager.setupImage(aArtifact, AtsImage.FAVORITE_OVERLAY, Location.TOP_RIGHT);
+            return ArtifactImageManager.setupImage(artifact, AtsImage.FAVORITE_OVERLAY, Location.TOP_RIGHT);
          }
       }
 

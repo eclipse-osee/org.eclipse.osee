@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
@@ -131,7 +130,7 @@ public class AccessPolicyImpl implements AccessPolicy {
    }
 
    @Override
-   public PermissionStatus hasArtifactPermission(Collection<? extends IBasicArtifact<?>> artifacts, PermissionEnum permission, Level level) throws OseeCoreException {
+   public PermissionStatus hasArtifactPermission(Collection<Artifact> artifacts, PermissionEnum permission, Level level) throws OseeCoreException {
       User currentUser = getCurrentUser();
       AccessDataQuery query = getAccessService().getAccessData(currentUser, artifacts);
 
@@ -139,12 +138,9 @@ public class AccessPolicyImpl implements AccessPolicy {
       if (!OseeClientProperties.isInDbInit()) {
          permissionStatus = new PermissionStatus();
          if (artifacts != null) {
-            for (IBasicArtifact<?> artifact : artifacts) {
-               if (artifact instanceof Artifact) {
-                  Artifact fullArtifact = ((Artifact) artifact).getFullArtifact();
-                  if (fullArtifact.isInDb()) {
-                     query.artifactMatches(permission, artifact, permissionStatus);
-                  }
+            for (Artifact artifact : artifacts) {
+               if (artifact.isInDb()) {
+                  query.artifactMatches(permission, artifact, permissionStatus);
                }
                if (printErrorMessage(currentUser, artifacts, permissionStatus, level)) {
                   break;
@@ -183,10 +179,10 @@ public class AccessPolicyImpl implements AccessPolicy {
    }
 
    @Override
-   public PermissionStatus canRelationBeModified(IBasicArtifact<?> subject, Collection<? extends IBasicArtifact<?>> toBeRelated, RelationTypeSide relationTypeSide, Level level) throws OseeCoreException {
+   public PermissionStatus canRelationBeModified(Artifact subject, Collection<Artifact> toBeRelated, RelationTypeSide relationTypeSide, Level level) throws OseeCoreException {
       PermissionStatus subjectPermission = canRelationBeModifiedHelper(subject, null, relationTypeSide, level);
       if (subjectPermission.matched() && toBeRelated != null && !toBeRelated.isEmpty()) {
-         for (IBasicArtifact<?> art : toBeRelated) {
+         for (Artifact art : toBeRelated) {
             RelationSide otherSide = relationTypeSide.getSide().oppositeSide();
             PermissionStatus toBeRelatedPermission =
                canRelationBeModifiedHelper(art, null, new RelationTypeSide(relationTypeSide, otherSide), level);
@@ -198,12 +194,12 @@ public class AccessPolicyImpl implements AccessPolicy {
       return subjectPermission;
    }
 
-   private PermissionStatus canRelationBeModifiedHelper(IBasicArtifact<?> subject, Collection<? extends IBasicArtifact<?>> toBeRelated, RelationTypeSide relationTypeSide, Level level) throws OseeCoreException {
+   private PermissionStatus canRelationBeModifiedHelper(Artifact subject, Collection<Artifact> toBeRelated, RelationTypeSide relationTypeSide, Level level) throws OseeCoreException {
       PermissionStatus status = hasArtifactRelationPermission(java.util.Collections.singleton(subject),
          java.util.Collections.singleton(relationTypeSide), PermissionEnum.WRITE, level);
 
       if (!status.matched()) {
-         ArrayList<IBasicArtifact<?>> artifacts = new ArrayList<>();
+         ArrayList<Artifact> artifacts = new ArrayList<>();
          artifacts.add(subject);
          if (toBeRelated != null) {
             artifacts.addAll(toBeRelated);

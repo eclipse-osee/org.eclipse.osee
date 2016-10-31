@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -33,7 +33,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link ArtifactPromptChange}
- * 
+ *
  * @author Jeff C. Phillips
  */
 public class ArtifactPromptChangeTest {
@@ -78,12 +78,12 @@ public class ArtifactPromptChangeTest {
       }
 
       @Override
-      public PermissionStatus hasArtifactPermission(Collection<? extends IBasicArtifact<?>> artifacts, PermissionEnum permission, Level level) {
+      public PermissionStatus hasArtifactPermission(Collection<Artifact> artifacts, PermissionEnum permission, Level level) {
          return new PermissionStatus();
       }
 
       @Override
-      public PermissionStatus canRelationBeModified(IBasicArtifact<?> subject, Collection<? extends IBasicArtifact<?>> toBeRelated, RelationTypeSide relationTypeSide, Level level) {
+      public PermissionStatus canRelationBeModified(Artifact subject, Collection<Artifact> toBeRelated, RelationTypeSide relationTypeSide, Level level) {
          return new PermissionStatus();
       }
 

@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AttributeAnnotationManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -257,26 +256,25 @@ public final class ArtifactImageManager {
       return ImageManager.getImage(FrameworkImage.INFO_LG);
    }
 
-   public synchronized static Image getImage(IArtifact artifact) {
+   public synchronized static Image getImage(Artifact artifact) {
       return ImageManager.getImage(setupImage(artifact));
    }
 
-   public synchronized static ImageDescriptor getImageDescriptor(IArtifact artifact) {
+   public synchronized static ImageDescriptor getImageDescriptor(Artifact artifact) {
       return ImageManager.getImageDescriptor(setupImage(artifact));
    }
 
-   private synchronized static String setupImage(IArtifact artifact) {
+   private synchronized static String setupImage(Artifact artifact) {
       try {
-         Artifact castedArtifact = artifact.getFullArtifact();
          IArtifactType type = artifact.getArtifactType();
          ArtifactImageProvider imageProvider = providersOverrideImageMap.get(type);
          if (imageProvider != null) {
-            return imageProvider.setupImage(castedArtifact);
+            return imageProvider.setupImage(artifact);
          } else {
             KeyedImage imageKey = artifactTypeImageMap.get(type);
             if (imageKey != null) {
-               if (AccessControlManager.hasLock(castedArtifact)) {
-                  return getLockedImage(imageKey, castedArtifact);
+               if (AccessControlManager.hasLock(artifact)) {
+                  return getLockedImage(imageKey, artifact);
                }
                return ImageManager.setupImage(imageKey);
             }
@@ -288,18 +286,17 @@ public final class ArtifactImageManager {
       return setupImageNoProviders(artifact);
    }
 
-   protected synchronized static String setupImageNoProviders(IArtifact artifact) {
+   protected synchronized static String setupImageNoProviders(Artifact artifact) {
       KeyedImage baseImageEnum = null;
       try {
-         Artifact castedArtifact = artifact.getFullArtifact();
-         baseImageEnum = BaseImage.getBaseImageEnum(castedArtifact);
+         baseImageEnum = BaseImage.getBaseImageEnum(artifact);
 
-         if (AccessControlManager.hasLock(castedArtifact)) {
-            return getLockedImage(baseImageEnum, castedArtifact);
+         if (AccessControlManager.hasLock(artifact)) {
+            return getLockedImage(baseImageEnum, artifact);
          }
 
-         AttributeAnnotationManager.get(castedArtifact);
-         if (AttributeAnnotationManager.isAnnotationWarning(castedArtifact)) {
+         AttributeAnnotationManager.get(artifact);
+         if (AttributeAnnotationManager.isAnnotationWarning(artifact)) {
             return ImageManager.setupImageWithOverlay(baseImageEnum, FrameworkImage.WARNING_OVERLAY,
                Location.BOT_LEFT).getImageKey();
          }
@@ -309,9 +306,9 @@ public final class ArtifactImageManager {
       return ImageManager.setupImage(baseImageEnum);
    }
 
-   private static String getLockedImage(KeyedImage baseImageEnum, Artifact castedArtifact) {
+   private static String getLockedImage(KeyedImage baseImageEnum, Artifact artifact) {
       KeyedImage locked = FrameworkImage.LOCKED_NO_ACCESS;
-      if (AccessControlManager.hasLockAccess(castedArtifact)) {
+      if (AccessControlManager.hasLockAccess(artifact)) {
          locked = FrameworkImage.LOCKED_WITH_ACCESS;
       }
       return ImageManager.setupImageWithOverlay(baseImageEnum, locked, Location.TOP_LEFT).getImageKey();

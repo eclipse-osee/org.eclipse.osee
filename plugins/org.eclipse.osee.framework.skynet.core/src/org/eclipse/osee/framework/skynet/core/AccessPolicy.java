@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.skynet.core;
 
 import java.util.Collection;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
@@ -34,8 +34,8 @@ public interface AccessPolicy {
 
    PermissionStatus hasArtifactTypePermission(BranchId branch, Collection<? extends IArtifactType> artifactTypes, PermissionEnum permission, Level level) throws OseeCoreException;
 
-   PermissionStatus hasArtifactPermission(Collection<? extends IBasicArtifact<?>> artifacts, PermissionEnum permission, Level level) throws OseeCoreException;
+   PermissionStatus hasArtifactPermission(Collection<Artifact> artifacts, PermissionEnum permission, Level level) throws OseeCoreException;
 
-   PermissionStatus canRelationBeModified(IBasicArtifact<?> subject, Collection<? extends IBasicArtifact<?>> toBeRelated, RelationTypeSide relationTypeSide, Level level) throws OseeCoreException;
+   PermissionStatus canRelationBeModified(Artifact subject, Collection<Artifact> toBeRelated, RelationTypeSide relationTypeSide, Level level) throws OseeCoreException;
 
 }

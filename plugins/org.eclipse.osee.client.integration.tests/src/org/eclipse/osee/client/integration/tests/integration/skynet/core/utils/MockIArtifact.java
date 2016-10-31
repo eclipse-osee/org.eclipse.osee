@@ -13,7 +13,6 @@ package org.eclipse.osee.client.integration.tests.integration.skynet.core.utils;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
@@ -56,12 +55,6 @@ public class MockIArtifact extends NamedIdentity<String> implements IArtifact {
    @Override
    public BranchId getBranch() {
       return branch;
-   }
-
-   @Override
-   public Artifact getFullArtifact() {
-      wasGetFullArtifactCalled = true;
-      return null;
    }
 
    @Override

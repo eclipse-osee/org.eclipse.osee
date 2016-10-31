@@ -48,7 +48,6 @@ import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.httpRequests.CommitBranchHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialogNoSave;
@@ -418,7 +417,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
 
    private void refreshAssociatedArtifactItem(BranchId sourceBranch) {
       try {
-         IArtifact branchAssociatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
+         Artifact branchAssociatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
          if (branchAssociatedArtifact != null) {
             openAssociatedArtifactAction.setImageDescriptor(
                ArtifactImageManager.getImageDescriptor(branchAssociatedArtifact));
