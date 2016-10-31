@@ -22,7 +22,7 @@ public class ReportConstants {
    //regex
    public static final String FTR = "<w:ftr[\\s\\S]+?</w:ftr>";
    public static final String PAGE_SZ = "<w:pgSz [^>]*/>";
-   public static final String ENTIRE_FTR_EXTRA_PARA = "<w:pPr><w:spacing w:after=\"[\\d]\"></w:spacing><w:sectPr[^>]*><w:ftr[\\s\\S]+?</w:ftr>[\\s\\S]+?</w:sectPr></w:pPr>";
+   public static final String ENTIRE_FTR_EXTRA_PARA = "<w:p wsp:rsidR=\"[^\"]+\" wsp:rsidRDefault=\"[^\"]+\"><w:pPr><w:spacing w:after=\"[\\d]\"></w:spacing><w:sectPr[^>]*><w:ftr[\\s\\S]+?</w:ftr>[\\s\\S]+?</w:sectPr></w:pPr></w:p>";
    public static final String ENTIRE_FTR = "<w:sectPr[^>]*><w:ftr[\\s\\S]+?</w:ftr>[\\s\\S]+?</w:sectPr>";
    public static final String FULL_PARA_END = "</w:pPr></w:p>";
    public static final String NO_DATA_RIGHTS =

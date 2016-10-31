@@ -175,19 +175,16 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             data = data.replaceAll(ReportConstants.ENTIRE_FTR, "");
             data = data.replaceAll(ReportConstants.NO_DATA_RIGHTS, "");
 
-            // remove extra paragraph inserted
-            if (presentationType == PresentationType.SPECIALIZED_EDIT && !data.contains("<w:tbl>")) {
-               int lastIndex = data.lastIndexOf("<w:p wsp:rsidR=");
-
-               if (lastIndex != -1) {
-                  // temp should equal <w:p wsp:rsidR ..</w:p> ...
-                  String temp = data.substring(lastIndex);
-                  temp = temp.replaceAll("<w:p wsp:rsidR=\".*?\" wsp:rsidRDefault=\".*?\"></w:p>", "");
-                  data = data.substring(0, lastIndex) + temp;
+            // Do not put data rights in if Artifact is empty because a section break with no leading paragraph will cause typing issues
+            // This issue can still occur if the artifact isn't empty but not as likely - Remove data rights on all edits if user support continues
+            if (presentationType == PresentationType.SPECIALIZED_EDIT) {
+               if (!data.equals(
+                  "<w:p xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\"><w:r><w:t></w:t></w:r></w:p>") && !data.isEmpty()) {
+                  data = data.concat(footer);
                }
+            } else {
+               data = data.concat(footer);
             }
-
-            data = data.concat(footer);
          }
 
          if (presentationType == PresentationType.SPECIALIZED_EDIT) {
