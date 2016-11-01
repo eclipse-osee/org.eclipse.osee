@@ -14,13 +14,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.core.services.IAccessControlService;
@@ -106,7 +106,7 @@ public class AccessPolicyImpl implements AccessPolicy {
     * others will write to the log.
     */
    @Override
-   public PermissionStatus hasAttributeTypePermission(Collection<? extends IBasicArtifact<?>> artifacts, IAttributeType attributeType, PermissionEnum permission, Level level) throws OseeCoreException {
+   public PermissionStatus hasAttributeTypePermission(Collection<? extends ArtifactToken> artifacts, IAttributeType attributeType, PermissionEnum permission, Level level) throws OseeCoreException {
       User currentUser = getCurrentUser();
       AccessDataQuery query = getAccessService().getAccessData(currentUser, artifacts);
 
@@ -114,7 +114,7 @@ public class AccessPolicyImpl implements AccessPolicy {
       if (!OseeClientProperties.isInDbInit()) {
          permissionStatus = new PermissionStatus();
          if (artifacts != null) {
-            for (IBasicArtifact<?> artifact : artifacts) {
+            for (ArtifactToken artifact : artifacts) {
                query.attributeTypeMatches(permission, artifact, attributeType, permissionStatus);
 
                if (printErrorMessage(currentUser, artifacts, permissionStatus, level)) {
@@ -209,7 +209,7 @@ public class AccessPolicyImpl implements AccessPolicy {
       return status;
    }
 
-   private PermissionStatus hasArtifactRelationPermission(Collection<? extends IBasicArtifact<?>> artifacts, Collection<? extends RelationTypeSide> relationTypeSides, PermissionEnum permission, Level level) throws OseeCoreException {
+   private PermissionStatus hasArtifactRelationPermission(Collection<? extends ArtifactToken> artifacts, Collection<? extends RelationTypeSide> relationTypeSides, PermissionEnum permission, Level level) throws OseeCoreException {
       AccessDataQuery query = getAccessService().getAccessData(getCurrentUser(), artifacts);
 
       PermissionStatus permissionStatus = null;
@@ -217,7 +217,7 @@ public class AccessPolicyImpl implements AccessPolicy {
          permissionStatus = new PermissionStatus();
          if (!OseeClientProperties.isInDbInit()) {
             permissionStatus = new PermissionStatus();
-            for (IBasicArtifact<?> artifact : artifacts) {
+            for (ArtifactToken artifact : artifacts) {
                for (RelationTypeSide relationTypeSide : relationTypeSides) {
                   query.relationTypeMatches(permission, artifact, relationTypeSide, permissionStatus);
                }

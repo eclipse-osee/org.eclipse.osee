@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.types;
 
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface IArtifact extends IBasicArtifact<Artifact> {
+public interface IArtifact extends ArtifactToken {
    // TODO: delete this interface
+   int getArtId();
 }

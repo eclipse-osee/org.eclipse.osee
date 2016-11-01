@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.access.IAccessProvider;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessData;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.Scope;
@@ -90,7 +89,7 @@ public final class ObjectAccessProviderProxy implements IAccessProvider {
       }
       //artifact.isDeleted()
       accessData.add(artifact,
-         new AccessDetail<IBasicArtifact<Artifact>>(artifact, userPermission, Scope.createLegacyScope(), reason));
+         new AccessDetail<ArtifactToken>(artifact, userPermission, Scope.createLegacyScope(), reason));
    }
 
    private void setBranchAccessData(ArtifactToken userArtifact, BranchId branch, AccessData accessData) throws OseeCoreException {

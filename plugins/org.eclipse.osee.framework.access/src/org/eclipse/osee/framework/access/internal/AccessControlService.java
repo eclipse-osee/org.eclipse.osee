@@ -11,6 +11,8 @@
 
 package org.eclipse.osee.framework.access.internal;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,7 +42,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessData;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
@@ -84,8 +85,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 
 /**
  * @author Jeff C. Phillips
@@ -303,7 +302,7 @@ public class AccessControlService implements IAccessControlService {
       } else {
          objectsToCheck = Collections.singletonList(object);
       }
-      IBasicArtifact<?> subject = UserManager.getUser();
+      ArtifactToken subject = UserManager.getUser();
       AccessDataQuery accessQuery = getAccessData(subject, objectsToCheck);
       result = accessQuery.matchesAll(permission);
       return result;
@@ -313,8 +312,8 @@ public class AccessControlService implements IAccessControlService {
       for (Object obj : objectsToCheck) {
          Artifact subject = getSubjectFromLockedObject(obj);
          if (subject != null && !subject.equals(userArtifact)) {
-            accessData.add(obj, new AccessDetail<IBasicArtifact<?>>((Artifact) obj, PermissionEnum.LOCK,
-               Scope.createArtifactLockScope()));
+            accessData.add(obj,
+               new AccessDetail<ArtifactToken>((Artifact) obj, PermissionEnum.LOCK, Scope.createArtifactLockScope()));
          }
       }
    }

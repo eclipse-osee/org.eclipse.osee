@@ -11,11 +11,11 @@
 package org.eclipse.osee.framework.core.model.cache;
 
 import java.util.function.Predicate;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 
 /**
  * @author Ryan D. Brooks
@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.model.IBasicArtifact;
 public class BranchFilter implements Predicate<Branch> {
    private final BranchArchivedState archivedState;
    private final BranchType[] branchTypes;
-   private IBasicArtifact<?> associatedArtifact;
+   private ArtifactToken associatedArtifact;
 
    private BranchState[] branchStates;
    private BranchState[] negatedBranchStates;
@@ -68,7 +68,7 @@ public class BranchFilter implements Predicate<Branch> {
       return true;
    }
 
-   public void setAssociatedArtifact(IBasicArtifact<?> associatedArtifact) {
+   public void setAssociatedArtifact(ArtifactToken associatedArtifact) {
       this.associatedArtifact = associatedArtifact;
    }
 

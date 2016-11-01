@@ -12,12 +12,12 @@ package org.eclipse.osee.framework.skynet.core;
 
 import java.util.Collection;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -30,7 +30,7 @@ public interface AccessPolicy {
 
    PermissionStatus hasBranchPermission(BranchId branch, PermissionEnum permission, Level level) throws OseeCoreException;
 
-   PermissionStatus hasAttributeTypePermission(Collection<? extends IBasicArtifact<?>> artifacts, IAttributeType attributeType, PermissionEnum permission, Level level) throws OseeCoreException;
+   PermissionStatus hasAttributeTypePermission(Collection<? extends ArtifactToken> artifacts, IAttributeType attributeType, PermissionEnum permission, Level level) throws OseeCoreException;
 
    PermissionStatus hasArtifactTypePermission(BranchId branch, Collection<? extends IArtifactType> artifactTypes, PermissionEnum permission, Level level) throws OseeCoreException;
 

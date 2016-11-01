@@ -221,7 +221,6 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       return objs;
    }
 
-   @Override
    public final int getArtId() {
       return artId;
    }

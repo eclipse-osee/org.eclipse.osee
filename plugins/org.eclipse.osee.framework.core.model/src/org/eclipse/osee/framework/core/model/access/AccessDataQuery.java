@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -124,7 +123,7 @@ public class AccessDataQuery {
       }
    }
 
-   public void relationTypeMatches(PermissionEnum permissionToMatch, IBasicArtifact<?> artifact, RelationTypeSide relationTypeSide, PermissionStatus permissionStatus) throws OseeCoreException {
+   public void relationTypeMatches(PermissionEnum permissionToMatch, ArtifactToken artifact, RelationTypeSide relationTypeSide, PermissionStatus permissionStatus) throws OseeCoreException {
       BranchId branchToMatch = artifact.getBranch();
       branchMatches(permissionToMatch, branchToMatch, permissionStatus);
       if (permissionStatus.matched()) {

@@ -72,7 +72,7 @@ public class RelationCache {
 
    private void removeSingleRelation(IArtifact otherArtifact, RelationLink relation) {
       int artifactId;
-      if (otherArtifact.getArtId() == relation.getBArtifactId()) {
+      if (otherArtifact.getId() == relation.getBArtifactId()) {
          artifactId = relation.getAArtifactId();
       } else {
          artifactId = relation.getBArtifactId();
@@ -95,7 +95,7 @@ public class RelationCache {
       if (selectedRelations.contains(newRelation)) {
          OseeLog.logf(Activator.class, Level.SEVERE,
             "Duplicate relationByType objects for same relation for Relation [%s] Artifact (%s)[%s]", newRelation,
-            artifact.getArtId(), artifact.getName());
+            artifact.getId(), artifact.getName());
       }
       selectedRelations.add(newRelation);
    }
@@ -152,7 +152,7 @@ public class RelationCache {
    public RelationLink getLoadedRelation(IArtifact artifact, int aArtifactId, int bArtifactId, IRelationType relationType, DeletionFlag deletionFlag) {
       Set<RelationLink> itemsFound = new HashSet<>();
 
-      final int artifactId = artifact.getArtId();
+      final int artifactId = artifact.getId().intValue();
       final BranchId branchUuid = artifact.getBranch();
       RelationMatcher artIdMatcher = new RelationMatcher() {
 
@@ -179,7 +179,7 @@ public class RelationCache {
       int size = relations.size();
       if (size > 1) {
          OseeLog.logf(Activator.class, Level.SEVERE,
-            "Artifact A [%s] has [%d] relations of same type [%s] to Artifact B [%s]", artifact.getArtId(),
+            "Artifact A [%s] has [%d] relations of same type [%s] to Artifact B [%s]", artifact.getId(),
             relations.size(), relationType, bArtifactId);
       }
       return size != 0 ? relations.iterator().next() : null;
