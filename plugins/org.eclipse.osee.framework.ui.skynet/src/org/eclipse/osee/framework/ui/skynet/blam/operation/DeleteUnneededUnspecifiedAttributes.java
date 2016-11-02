@@ -14,8 +14,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.IAttribute;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -40,16 +40,16 @@ public class DeleteUnneededUnspecifiedAttributes extends AbstractBlam {
       IOseeBranch branch = variableMap.getBranch("Branch");
       AttributeType attributeType = variableMap.getAttributeType("Attribute Type");
       List<Artifact> artifacts =
-         ArtifactQuery.getArtifactListFromAttribute(attributeType, IAttribute.UNSPECIFIED, branch);
+         ArtifactQuery.getArtifactListFromAttribute(attributeType, AttributeId.UNSPECIFIED, branch);
       SkynetTransaction transaction =
          TransactionManager.createTransaction(branch, "BLAM: Delete unneeded unspecified attributes");
 
       for (Artifact artifact : artifacts) {
          Collection<Attribute<String>> attributes = artifact.getAttributes(attributeType);
          for (Attribute<String> attribute1 : attributes) {
-            if (!attribute1.getValue().equals(IAttribute.UNSPECIFIED)) {
+            if (!attribute1.getValue().equals(AttributeId.UNSPECIFIED)) {
                for (Attribute<String> attribute : attributes) {
-                  if (attribute.getValue().equals(IAttribute.UNSPECIFIED)) {
+                  if (attribute.getValue().equals(AttributeId.UNSPECIFIED)) {
                      attribute.delete();
                   }
                }

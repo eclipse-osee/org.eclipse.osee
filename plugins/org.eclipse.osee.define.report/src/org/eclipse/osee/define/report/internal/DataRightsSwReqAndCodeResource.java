@@ -25,6 +25,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.app.OseeAppletPage;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -32,7 +33,6 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.model.IAttribute;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.logger.Log;
@@ -224,10 +224,10 @@ public final class DataRightsSwReqAndCodeResource {
 
    private void setBestValue(TransactionBuilder txBuilder, ArtifactReadable source, ArtifactReadable dest, IAttributeType attributeType) throws Exception {
       String value = dest.getSoleAttributeValue(attributeType, "");
-      String sourceValue = source.getSoleAttributeValue(attributeType, IAttribute.UNSPECIFIED);
-      if (sourceValue.equals(IAttribute.UNSPECIFIED)) {
+      String sourceValue = source.getSoleAttributeValue(attributeType, AttributeId.UNSPECIFIED);
+      if (sourceValue.equals(AttributeId.UNSPECIFIED)) {
          if (value.isEmpty() && attributeType.equals(CoreAttributeTypes.DataRightsClassification)) {
-            txBuilder.setSoleAttributeValue(dest, attributeType, IAttribute.UNSPECIFIED);
+            txBuilder.setSoleAttributeValue(dest, attributeType, AttributeId.UNSPECIFIED);
          }
       } else {
          if (value.isEmpty()) {

@@ -27,9 +27,9 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.model.IAttribute;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -133,7 +133,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
          ModificationType.MODIFIED)) {
          List<String> attrStrs = modArt.getAttributesToStringList(attributeType);
          if (attrStrs.isEmpty()) {
-            attrStrs.add(IAttribute.UNSPECIFIED);
+            attrStrs.add(AttributeId.UNSPECIFIED);
          }
          for (String attrStr : attrStrs) {
             rd.addRaw(AHTML.addRowMultiColumnTable(
@@ -143,7 +143,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
       for (Artifact artChg : changeData.getArtifacts(KindType.Artifact, ModificationType.DELETED)) {
          List<String> attrStrs = artChg.getAttributesToStringList(attributeType);
          if (attrStrs.isEmpty()) {
-            attrStrs.add(IAttribute.UNSPECIFIED);
+            attrStrs.add(AttributeId.UNSPECIFIED);
          }
          for (String attrStr : attrStrs) {
             rd.addRaw(AHTML.addRowMultiColumnTable(
@@ -154,7 +154,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
          ModificationType.MODIFIED)) {
          List<String> attrStrs = artChg.getAttributesToStringList(attributeType);
          if (attrStrs.isEmpty()) {
-            attrStrs.add(IAttribute.UNSPECIFIED);
+            attrStrs.add(AttributeId.UNSPECIFIED);
          }
          for (String attrStr : attrStrs) {
             rd.addRaw(AHTML.addRowMultiColumnTable(

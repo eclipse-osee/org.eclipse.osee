@@ -21,12 +21,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.define.report.SafetyReportGenerator;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.model.IAttribute;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -191,12 +191,12 @@ public final class SafetyInformationAccumulator {
          return "Error";
       }
 
-      if (IAttribute.UNSPECIFIED.equals(current)) {
-         writer.writeCell(IAttribute.UNSPECIFIED);
-         return IAttribute.UNSPECIFIED;
+      if (AttributeId.UNSPECIFIED.equals(current)) {
+         writer.writeCell(AttributeId.UNSPECIFIED);
+         return AttributeId.UNSPECIFIED;
       }
 
-      if (IAttribute.UNSPECIFIED.equals(criticality)) {
+      if (AttributeId.UNSPECIFIED.equals(criticality)) {
          criticality = "E";
       }
 
@@ -226,13 +226,13 @@ public final class SafetyInformationAccumulator {
       for (ArtifactReadable parent : tracedToRequirements) {
          if (otherType.equals(CoreAttributeTypes.SeverityCategory)) {
             String intermediate = parent.getSoleAttributeAsString(otherType, "NH");
-            if (IAttribute.UNSPECIFIED.equals(intermediate)) {
+            if (AttributeId.UNSPECIFIED.equals(intermediate)) {
                intermediate = "NH";
             }
             parentCritVal = SafetyCriticalityLookup.getSeverityLevel(intermediate);
          } else if (otherType.equals(CoreAttributeTypes.ItemDAL)) {
             String intermediate = parent.getSoleAttributeAsString(otherType, "E");
-            if (IAttribute.UNSPECIFIED.equals(intermediate)) {
+            if (AttributeId.UNSPECIFIED.equals(intermediate)) {
                intermediate = "E";
             }
             parentCritVal = SafetyCriticalityLookup.getDALLevel(intermediate);

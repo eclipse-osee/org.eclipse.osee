@@ -13,11 +13,11 @@ package org.eclipse.osee.define.blam.operation;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.model.IAttribute;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -161,7 +161,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
       }
 
       private boolean isUnspecified() {
-         return verificationLevel.equals(IAttribute.UNSPECIFIED);
+         return verificationLevel.equals(AttributeId.UNSPECIFIED);
       }
    }
 }

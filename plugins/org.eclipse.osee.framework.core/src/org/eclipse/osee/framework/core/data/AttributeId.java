@@ -27,6 +27,8 @@ public interface AttributeId extends HasLocalId<Integer>, Id {
       return valueOf(Long.valueOf(id));
    }
 
+   String UNSPECIFIED = "Unspecified";
+
    @Override
    default Integer getLocalId() {
       return getId().intValue();

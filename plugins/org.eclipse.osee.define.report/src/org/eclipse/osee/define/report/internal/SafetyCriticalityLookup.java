@@ -12,7 +12,7 @@ package org.eclipse.osee.define.report.internal;
 
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.model.IAttribute;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
@@ -34,8 +34,8 @@ public class SafetyCriticalityLookup {
       ImmutableMap.of("I", "A", "II", "B", "III", "C", "IV", "D", "NH", "E");
 
    public static String getDALFromControlCategoryAndSeverity(String controlCategory, String severity) {
-      String toReturn = IAttribute.UNSPECIFIED;
-      if (!IAttribute.UNSPECIFIED.equals(controlCategory) && !IAttribute.UNSPECIFIED.equals(severity)) {
+      String toReturn = AttributeId.UNSPECIFIED;
+      if (!AttributeId.UNSPECIFIED.equals(controlCategory) && !AttributeId.UNSPECIFIED.equals(severity)) {
          toReturn = criticalityMap[getControlLevel(controlCategory)][getSeverityLevel(severity)];
       }
       return toReturn;
@@ -49,8 +49,8 @@ public class SafetyCriticalityLookup {
    }
 
    public static String getDALLevelFromSeverityCategory(String sevCat) {
-      String toReturn = IAttribute.UNSPECIFIED;
-      if (!IAttribute.UNSPECIFIED.equals(sevCat)) {
+      String toReturn = AttributeId.UNSPECIFIED;
+      if (!AttributeId.UNSPECIFIED.equals(sevCat)) {
          if (!safetyCriticalityMap.keySet().contains(sevCat)) {
             throw new OseeArgumentException("Invalid severity category: %s", sevCat);
          }
