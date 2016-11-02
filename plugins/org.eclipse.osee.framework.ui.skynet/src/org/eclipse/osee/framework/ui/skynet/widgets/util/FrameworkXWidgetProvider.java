@@ -49,6 +49,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XButton;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxThreeState;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxThreeStateDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboBooleanDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
@@ -244,6 +246,14 @@ public final class FrameworkXWidgetProvider {
             xWidget = checkBox;
          } else if (xWidgetName.equals("XCheckBoxDam")) {
             XCheckBoxDam checkBox = new XCheckBoxDam(name);
+            checkBox.setLabelAfter(xWidgetLayoutData.getXOptionHandler().contains(XOption.LABEL_AFTER));
+            xWidget = checkBox;
+         } else if (xWidgetName.equals("XCheckBoxThreeState")) {
+            XCheckBoxThreeState checkBox = new XCheckBoxThreeState(name);
+            checkBox.setLabelAfter(xWidgetLayoutData.getXOptionHandler().contains(XOption.LABEL_AFTER));
+            xWidget = checkBox;
+         } else if (xWidgetName.equals("XCheckBoxThreeStateDam")) {
+            XCheckBoxThreeStateDam checkBox = new XCheckBoxThreeStateDam(name);
             checkBox.setLabelAfter(xWidgetLayoutData.getXOptionHandler().contains(XOption.LABEL_AFTER));
             xWidget = checkBox;
          } else if (xWidgetName.startsWith("XComboDam")) {

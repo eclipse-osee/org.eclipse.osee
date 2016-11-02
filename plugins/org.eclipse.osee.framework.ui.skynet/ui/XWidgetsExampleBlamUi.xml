@@ -7,6 +7,8 @@
 		displayLabel="false" />
 	<XWidget xwidgetType="XCheckBox" horizontalLabel="true"
 		labelAfter="false" displayName="XCheckBox" />
+	<XWidget xwidgetType="XCheckBoxThreeState" horizontalLabel="true"
+		labelAfter="false" displayName="XCheckBoxThreeState" />
 	<XWidget xwidgetType="XText" displayName="XText" />
 	<XWidget xwidgetType="XBranchSelectWidget" horizontalLabel="true"
 		displayName="Branch" />
