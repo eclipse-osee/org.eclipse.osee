@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.IArtifactTypeProvider;
@@ -41,7 +40,7 @@ public class ArtifactTypeEventFilter implements IEventFilter {
 
    public ArtifactTypeEventFilter(IArtifactTypeProvider typeProvider, IArtifactType... artifactTypes) {
       this.typeProvider = typeProvider;
-      this.artifactTypes = Collections.getAggregate(artifactTypes);
+      this.artifactTypes = Arrays.asList(artifactTypes);
    }
 
    /**

@@ -278,7 +278,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
 
    @Override
    public IAtsConfigQuery andTag(String... tags) {
-      List<String> values = org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(tags);
+      List<String> values = Arrays.asList(tags);
       return andAttr(CoreAttributeTypes.StaticId, values, QueryOption.EXACT_MATCH_OPTIONS);
    }
 

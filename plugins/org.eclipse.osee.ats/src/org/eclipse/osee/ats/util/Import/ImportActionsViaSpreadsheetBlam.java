@@ -94,8 +94,8 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
    }
 
    public XResultData importActions(File file, IAtsGoal toGoal, ImportOption... importOption) throws Exception {
-      boolean emailPocs = Collections.getAggregate(importOption).contains(ImportOption.EMAIL_POCS);
-      boolean popupReport = Collections.getAggregate(importOption).contains(ImportOption.POPUP_ERROR_REPORT);
+      boolean emailPocs = Arrays.asList(importOption).contains(ImportOption.EMAIL_POCS);
+      boolean popupReport = Arrays.asList(importOption).contains(ImportOption.POPUP_ERROR_REPORT);
       ExcelAtsActionArtifactExtractor extractor = new ExcelAtsActionArtifactExtractor(emailPocs, toGoal);
       extractor.process(file.toURI());
       XResultData rd = extractor.dataIsValid();

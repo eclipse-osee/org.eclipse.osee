@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -21,7 +22,6 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -73,7 +73,7 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
    public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) throws OseeCoreException {
       this.worldEditor = worldEditor;
 
-      boolean pend = Collections.getAggregate(tableLoadOptions).contains(TableLoadOption.ForcePend) || forcePend;
+      boolean pend = Arrays.asList(tableLoadOptions).contains(TableLoadOption.ForcePend) || forcePend;
       worldEditor.getWorldComposite().getXViewer().setForcePend(pend);
 
       if (loading) {

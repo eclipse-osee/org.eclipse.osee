@@ -31,7 +31,7 @@ public class Collections {
 
    /**
     * A flexible alternative for converting a Collection to a String.
-    * 
+    *
     * @param items The Collection to convert to a String
     * @param prefix The String to place at the beginning of the returned String
     * @param separator The String to place in between elements of the Collection c.
@@ -125,7 +125,7 @@ public class Collections {
     * <li>all elements unique to A</li>
     * </ul>
     * </p>
-    * 
+    *
     * @return relative set complement of B in A.
     */
    public static <T> List<T> setComplement(Collection<T> set_A, Collection<T> set_B) {
@@ -183,19 +183,6 @@ public class Collections {
          set.addAll(collection);
       }
       return set;
-   }
-
-   /**
-    * Convert an aggregate list of objects into a List
-    */
-   public static <T> List<T> getAggregate(T... objects) {
-      List<T> objs = new ArrayList<>();
-      if (objects != null) {
-         for (T obj : objects) {
-            objs.add(obj);
-         }
-      }
-      return objs;
    }
 
    /**
@@ -261,7 +248,7 @@ public class Collections {
 
    /**
     * Cast objects to clazz
-    * 
+    *
     * @param castOption if ALL, cast all and throw exception if cast fails; if MATCHING, only cast those of type clazz
     */
    @SuppressWarnings("unchecked")
@@ -338,7 +325,7 @@ public class Collections {
     * Collection<String> input = [[A], B, C, [D , E, [F]]]; <br/>
     * List<String> output = [A, B, C, D, E, F];
     * </p>
-    * 
+    *
     * @param collectionInput
     * @param modList
     */

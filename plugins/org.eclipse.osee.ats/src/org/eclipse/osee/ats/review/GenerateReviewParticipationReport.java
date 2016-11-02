@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.review;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -83,7 +84,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
          }
       }
 
-      boolean forcePend = Collections.getAggregate(tableLoadOptions).contains(TableLoadOption.ForcePend);
+      boolean forcePend = Arrays.asList(tableLoadOptions).contains(TableLoadOption.ForcePend);
       if (useUser != null) {
          ParticipationReportJob job =
             new ParticipationReportJob("Review Participation Report - " + useUser, useUser, forcePend);

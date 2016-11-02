@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.client.artifact;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -45,9 +46,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  */
 public class AtsArtifactChecks extends ArtifactCheck {
 
-   private static final List<Long> Admin_Only_Relation_Type_Ids =
-      org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(
-         AtsRelationTypes.TeamWorkflowToReview_Review.getGuid(), AtsRelationTypes.ActionToWorkflow_Action.getGuid());
+   private static final List<Long> Admin_Only_Relation_Type_Ids = Arrays.asList(
+      AtsRelationTypes.TeamWorkflowToReview_Review.getGuid(), AtsRelationTypes.ActionToWorkflow_Action.getGuid());
    private static boolean deletionChecksEnabled = !AtsUtilCore.isInTest();
 
    @Override

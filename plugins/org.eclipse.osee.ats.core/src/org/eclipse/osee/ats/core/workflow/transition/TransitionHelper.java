@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow.transition;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
@@ -22,7 +24,6 @@ import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -57,22 +58,22 @@ public class TransitionHelper extends TransitionHelperAdapter {
 
    @Override
    public boolean isPrivilegedEditEnabled() {
-      return Collections.getAggregate(transitionOption).contains(TransitionOption.PrivilegedEditEnabled);
+      return Arrays.asList(transitionOption).contains(TransitionOption.PrivilegedEditEnabled);
    }
 
    @Override
    public boolean isOverrideAssigneeCheck() {
-      return Collections.getAggregate(transitionOption).contains(TransitionOption.OverrideAssigneeCheck);
+      return Arrays.asList(transitionOption).contains(TransitionOption.OverrideAssigneeCheck);
    }
 
    @Override
    public boolean isReload() {
-      return !Collections.getAggregate(transitionOption).contains(TransitionOption.OverrideReload);
+      return !Arrays.asList(transitionOption).contains(TransitionOption.OverrideReload);
    }
 
    @Override
    public boolean isOverrideTransitionValidityCheck() {
-      return Collections.getAggregate(transitionOption).contains(TransitionOption.OverrideTransitionValidityCheck);
+      return Arrays.asList(transitionOption).contains(TransitionOption.OverrideTransitionValidityCheck);
    }
 
    @Override
@@ -109,7 +110,7 @@ public class TransitionHelper extends TransitionHelperAdapter {
    }
 
    public void addTransitionOption(TransitionOption transitionOption) {
-      List<TransitionOption> options = Collections.getAggregate(this.transitionOption);
+      List<TransitionOption> options = new ArrayList<TransitionOption>(Arrays.asList(this.transitionOption));
       if (!options.contains(transitionOption)) {
          options.add(transitionOption);
       }
@@ -117,7 +118,7 @@ public class TransitionHelper extends TransitionHelperAdapter {
    }
 
    public void removeTransitionOption(TransitionOption transitionOption) {
-      List<TransitionOption> options = Collections.getAggregate(this.transitionOption);
+      List<TransitionOption> options = new ArrayList<TransitionOption>(Arrays.asList(this.transitionOption));
       if (options.contains(transitionOption)) {
          options.remove(transitionOption);
       }

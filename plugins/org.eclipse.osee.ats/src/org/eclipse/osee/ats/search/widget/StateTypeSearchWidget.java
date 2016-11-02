@@ -17,7 +17,6 @@ import java.util.List;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -57,7 +56,7 @@ public class StateTypeSearchWidget extends AbstractXComboViewerSearchWidget<Stri
    public void set(StateType... stateTypes) {
       String selected = "";
       if (stateTypes != null && stateTypes.length != 0) {
-         List<StateType> states = Collections.getAggregate(stateTypes);
+         List<StateType> states = Arrays.asList(stateTypes);
          if (!states.isEmpty()) {
             boolean isWorking = false, isCompleted = false, isCancelled = false;
             if (states.contains(StateType.Working)) {

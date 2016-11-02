@@ -12,11 +12,11 @@
 package org.eclipse.osee.framework.core.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -60,7 +60,7 @@ public class XResultData {
       this.enableOseeLog = enableOseeLog;
       clear();
       if (listeners != null && listeners.length > 0) {
-         this.listeners = Collections.getAggregate(listeners);
+         this.listeners = Arrays.asList(listeners);
       }
    }
 

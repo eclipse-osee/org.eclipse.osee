@@ -158,7 +158,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
 
    @Override
    public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) {
-      boolean pend = Collections.getAggregate(tableLoadOptions).contains(TableLoadOption.ForcePend) || forcePend;
+      boolean pend = Arrays.asList(tableLoadOptions).contains(TableLoadOption.ForcePend) || forcePend;
       worldEditor.getWorldComposite().getXViewer().setForcePend(pend);
    }
 

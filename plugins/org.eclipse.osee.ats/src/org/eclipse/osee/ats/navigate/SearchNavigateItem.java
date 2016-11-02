@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
+import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -20,7 +21,6 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.ats.world.search.WorldUISearchItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -60,7 +60,7 @@ public class SearchNavigateItem extends XNavigateItem {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      Collection<TableLoadOption> tableLoadOpts = Collections.getAggregate(tableLoadOptions);
+      Collection<TableLoadOption> tableLoadOpts = Arrays.asList(tableLoadOptions);
       boolean dontCopyWsi = tableLoadOpts.contains(TableLoadOption.DontCopySearchItem);
       WorldSearchItem worldSearchItem = getWorldSearchItem();
       if (worldSearchItem.getLoadView() == LoadView.WorldEditor) {

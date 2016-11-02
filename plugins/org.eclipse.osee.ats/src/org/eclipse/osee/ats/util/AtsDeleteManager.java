@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,7 +33,6 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
@@ -54,7 +54,8 @@ public class AtsDeleteManager {
    };
 
    public static void handleDeletePurgeAtsObject(Collection<? extends Artifact> selectedArts, boolean forcePend, DeleteOption... deleteOption) throws OseeCoreException {
-      final Collection<DeleteOption> deleteOptions = Collections.getAggregate(deleteOption);
+      final Collection<DeleteOption> deleteOptions = new ArrayList<DeleteOption>(Arrays.asList(deleteOption));
+      boolean purgeOption = deleteOptions.contains(DeleteOption.Purge);
       List<Artifact> delArts = new ArrayList<>();
       StringBuilder artBuilder = new StringBuilder();
 
@@ -80,7 +81,7 @@ public class AtsDeleteManager {
                "Purge", false, null, null);
          confirmDelete = md.getReturnCode() == 0;
          if (md.getToggleState()) {
-            deleteOptions.add(DeleteOption.Purge);
+            purgeOption = true;
          }
       }
 
@@ -93,8 +94,9 @@ public class AtsDeleteManager {
       final Set<Artifact> allDeleteArts = new HashSet<>(30);
       Map<Artifact, Object> ignoredArts = new HashMap<>();
       getDeleteArtifacts(delArts, delBuilder, allDeleteArts, ignoredArts);
-      final boolean purge = deleteOptions.contains(DeleteOption.Purge);
-      // Get final confirmation of all seleted and related items to delete/purge
+      // Need to have 'final' purge for use in the doWork below
+      final boolean purge = purgeOption;
+      // Get final confirmation of all selected and related items to delete/purge
       if (deleteOptions.contains(DeleteOption.Prompt)) {
          String results =
             (purge ? "Purge" : "Delete") + " ATS objects and related children, Are You Sure?\n" + delBuilder.toString();

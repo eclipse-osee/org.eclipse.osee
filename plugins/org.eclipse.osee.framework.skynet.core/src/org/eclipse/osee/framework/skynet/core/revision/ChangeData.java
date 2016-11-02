@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.revision;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -88,7 +89,7 @@ public class ChangeData {
          return getArtifactsRelationOnly(modificationType);
       }
 
-      Collection<ModificationType> modTypes = Collections.getAggregate(modificationType);
+      Collection<ModificationType> modTypes = Arrays.asList(modificationType);
       Conditions.checkExpressionFailOnTrue(modTypes.isEmpty(), "ModificationType must be specified");
 
       Set<Artifact> artifacts = new HashSet<>();

@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.query;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -484,7 +485,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    @Override
    public IAtsQuery isOfType(IArtifactType... artifactTypes) {
-      this.artifactTypes = org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(artifactTypes);
+      this.artifactTypes = Arrays.asList(artifactTypes);
       return this;
    }
 
@@ -498,7 +499,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    @Override
    public IAtsQuery isOfType(WorkItemType... workItemType) {
-      return isOfType(org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(workItemType));
+      return isOfType(Arrays.asList(workItemType));
    }
 
    @Override
@@ -509,7 +510,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    @Override
    public IAtsQuery andStateType(StateType... stateType) throws OseeCoreException {
-      this.stateTypes = org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(stateType);
+      this.stateTypes = Arrays.asList(stateType);
       return this;
    }
 
@@ -537,7 +538,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    @Override
    public IAtsQuery andUuids(Long... uuids) {
-      this.uuids = org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(uuids);
+      this.uuids = Arrays.asList(uuids);
       return this;
    }
 
@@ -990,7 +991,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    @Override
    public IAtsQuery andTag(String... tags) {
-      List<String> values = org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(tags);
+      List<String> values = Arrays.asList(tags);
       return andAttr(CoreAttributeTypes.StaticId, values, QueryOption.EXACT_MATCH_OPTIONS);
    }
 

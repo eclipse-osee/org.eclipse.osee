@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.tabledataframework.example;
 
+import java.util.Arrays;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
@@ -18,7 +19,6 @@ import org.eclipse.osee.framework.core.model.tabledataframework.TableFormatter;
 import org.eclipse.osee.framework.core.operation.ConsoleLogger;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 //@formatter:off
 /**
@@ -138,7 +138,7 @@ public class TDF_ExampleOperation implements IOperation {
       TableData exTableData2 = new ExampleTableData2();
 
       try {
-         tableFormatter.writeReport(subMonitor, Collections.getAggregate(exTableData1, exTableData2));
+         tableFormatter.writeReport(subMonitor, Arrays.asList(exTableData1, exTableData2));
       } catch (Exception ex) {
          //OseeLog.log(Activator.class, Level.SEVERE, ex.toString());
       }

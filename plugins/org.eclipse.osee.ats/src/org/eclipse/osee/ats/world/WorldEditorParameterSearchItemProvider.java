@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
+import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
@@ -19,7 +20,6 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -96,7 +96,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
       }
       worldParameterSearchItem.setupSearch();
 
-      boolean pend = Collections.getAggregate(tableLoadOptions).contains(TableLoadOption.ForcePend) || forcePend;
+      boolean pend = Arrays.asList(tableLoadOptions).contains(TableLoadOption.ForcePend) || forcePend;
       super.run(worldEditor, searchType, pend);
 
    }
