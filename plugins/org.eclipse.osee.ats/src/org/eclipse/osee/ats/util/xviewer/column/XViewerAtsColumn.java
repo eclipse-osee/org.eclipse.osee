@@ -20,7 +20,10 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.util.ColorColumn;
+import org.eclipse.osee.ats.column.CreatedDateColumnUI;
 import org.eclipse.osee.ats.column.IPersistAltLeftClickProvider;
+import org.eclipse.osee.ats.column.ReleaseDateColumn;
+import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -113,6 +116,11 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
     * Returns the backing data object for operations like sorting
     */
    public Object getBackingData(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
+      if (xCol.getId().equals(AtsColumnId.CreatedDate.getId())) {
+         return CreatedDateColumnUI.getInstance().getBackingData(element, xCol, columnIndex);
+      } else if (xCol.getId().equals(ReleaseDateColumn.getInstance().getId())) {
+         return ReleaseDateColumn.getInstance().getBackingData(element, xCol, columnIndex);
+      }
       return null;
    }
 

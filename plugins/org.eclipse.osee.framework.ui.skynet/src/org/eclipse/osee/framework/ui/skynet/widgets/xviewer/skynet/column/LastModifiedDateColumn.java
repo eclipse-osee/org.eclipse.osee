@@ -59,4 +59,18 @@ public class LastModifiedDateColumn extends XViewerValueColumn {
       return "";
    }
 
+   public static Date getDate(Object object) throws OseeCoreException {
+      Date result = null;
+      if (object instanceof Artifact) {
+         result = ((Artifact) object).getLastModified();
+      } else if (object instanceof Change) {
+         result = ((Change) object).getChangeArtifact().getLastModified();
+      }
+      return result;
+   }
+
+   @Override
+   public Object getBackingData(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
+      return getDate(element);
+   }
 }

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xHistory;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -91,9 +92,15 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
       }
       Change data = (Change) element;
       if (xCol.getId().equals(HistoryTransactionDateColumn.ID)) {
-         Date date =
-            ((HistoryXViewerFactory) ((HistoryXViewer) xCol.getXViewer()).getXViewerFactory()).getHistoryTransactionDateColumn().getTransactionDate(
-               data.getTxDelta().getEndTx().getId());
+         HistoryTransactionDateColumn column =
+            ((HistoryXViewerFactory) ((HistoryXViewer) xCol.getXViewer()).getXViewerFactory()).getHistoryTransactionDateColumn();
+         Date date = column.getTransactionDate(data.getTxDelta().getEndTx().getId());
+
+         if (date == null) {
+            column.populateCachedValues(Collections.singleton(element), column.getPreComputedValueMap());
+            date = column.getTransactionDate(data.getTxDelta().getEndTx().getId());
+         }
+
          return date;
       }
       return super.getBackingData(element, xCol, columnIndex);

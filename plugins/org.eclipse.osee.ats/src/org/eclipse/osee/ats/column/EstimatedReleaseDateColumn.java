@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.column;
 
 import java.util.Date;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -50,4 +51,13 @@ public class EstimatedReleaseDateColumn extends AbstractWorkflowVersionDateColum
          object);
    }
 
+   @Override
+   public Object getBackingData(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
+      Date date = getDateFromWorkflow(element);
+      if (date == null) {
+         date = getDateFromTargetedVersion(element);
+      }
+
+      return date;
+   }
 }

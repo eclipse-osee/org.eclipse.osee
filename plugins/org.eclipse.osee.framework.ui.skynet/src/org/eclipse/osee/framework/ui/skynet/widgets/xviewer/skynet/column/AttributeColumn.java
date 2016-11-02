@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -82,5 +82,14 @@ public class AttributeColumn extends XViewerValueColumn implements IAttributeCol
    @Override
    public void setAttributeType(IAttributeType attributeType) {
       this.attributeType = attributeType;
+   }
+
+   @Override
+   public Object getBackingData(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
+      if (element instanceof Artifact) {
+         Artifact art = (Artifact) element;
+         return art.getSoleAttributeValue(attributeType, null);
+      }
+      return null;
    }
 }

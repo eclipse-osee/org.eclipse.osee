@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
+import java.util.Date;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 
@@ -39,4 +41,14 @@ public class ReleaseDateColumn extends AbstractWorkflowVersionDateColumn {
       return newXCol;
    }
 
+   @Override
+   public Object getBackingData(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
+      Date date = getDateFromWorkflow(getAttributeType(), element);
+
+      if (date == null) {
+         date = getDateFromTargetedVersion(getAttributeType(), element);
+      }
+
+      return date;
+   }
 }
