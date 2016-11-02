@@ -327,7 +327,7 @@ public class ArtifactEventTest {
       Assert.assertEquals(CoreArtifactTypes.HeadingMSWord, guidArt.getArtifactType());
       Assert.assertEquals(CoreArtifactTypes.GeneralData, guidArt.getFromArtTypeGuid());
       // Reload artifact; since artifact cache cleared, it should be loaded as new artifact type
-      Artifact changedArt = ArtifactQuery.getArtifactFromId(newArt.getGuid(), newArt.getBranch());
+      Artifact changedArt = ArtifactQuery.getArtifactFromToken(newArt);
       Assert.assertEquals(CoreArtifactTypes.HeadingMSWord, changedArt.getArtifactType());
    }
 

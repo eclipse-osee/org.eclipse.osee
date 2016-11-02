@@ -40,6 +40,7 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -221,12 +222,12 @@ public class WordTemplateRendererTest {
       tx.execute();
 
       BranchId middleBr = BranchManager.createWorkingBranch(rootBr, "Middle Branch");
-      Artifact middleVol4 = ArtifactQuery.getArtifactFromId(vol4.getGuid(), middleBr);
+      Artifact middleVol4 = ArtifactQuery.getArtifactFromId(vol4, middleBr);
       middleVol4.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent, " ");
       middleVol4.persist("added blank content");
 
       BranchId childBr = BranchManager.createWorkingBranch(middleBr, "Child Branch");
-      vol4 = ArtifactQuery.getArtifactFromId(vol4.getGuid(), childBr);
+      vol4 = ArtifactQuery.getArtifactFromId(vol4, childBr);
 
       modifyOption(BRANCH, childBr);
       modifyOption(PUBLISH_DIFF, true);
@@ -823,16 +824,15 @@ public class WordTemplateRendererTest {
 
       SkynetTransaction onChildTx = TransactionManager.createTransaction(updateBranch, "WORKING UPDATE");
 
-      Artifact background = ArtifactQuery.getArtifactFromId(bckgrd.getGuid(), updateBranch);
+      Artifact background = ArtifactQuery.getArtifactFromId(bckgrd, updateBranch);
       Assert.assertNotNull("Cant find Background on update branch", background);
       background.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
          beginWordString + "This paragraph describes the background of the doc" + endWordString);
       background.persist(onChildTx);
 
       // 3.
-      String guid =
-         folder.getDescendant("Subsystem").getDescendant("Hardware").getDescendant("Hardware Functions").getGuid();
-      Artifact hdwrFunc = ArtifactQuery.getArtifactFromId(guid, updateBranch);
+      Artifact hw = folder.getDescendant("Subsystem").getDescendant("Hardware").getDescendant("Hardware Functions");
+      Artifact hdwrFunc = ArtifactQuery.getArtifactFromId(hw, updateBranch);
       Assert.assertNotNull("Cant find Hardware Functions on update branch", hdwrFunc);
       hdwrFunc.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
          beginWordString + "The first hardware function of importance is the power on switch." + endWordString);
@@ -846,8 +846,7 @@ public class WordTemplateRendererTest {
       SkynetTransaction onChildTx = TransactionManager.createTransaction(updateBranch, "WORKING UPDATE");
       String hdwrGuid =
          docFolder.getDescendant("Subsystem").getDescendant("Hardware").getDescendant("Hardware Functions").getGuid();
-      String notesGuid = docFolder.getDescendant("Notes").getGuid();
-      Artifact notes = ArtifactQuery.getArtifactFromId(notesGuid, updateBranch);
+      Artifact notes = ArtifactQuery.getArtifactFromId(docFolder.getDescendant("Notes"), updateBranch);
       notes.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
          beginWordString + "Notes are great for small topics, and the link " + beginLinkInsert + hdwrGuid + endLinkInsert + " too." + endWordString);
 

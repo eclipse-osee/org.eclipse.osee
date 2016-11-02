@@ -302,7 +302,7 @@ public class BranchStateTest {
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
 
          // Modify same artifact on working branch
-         sameArtifact = ArtifactQuery.getArtifactFromId(baseArtifact.getGuid(), workingBranch);
+         sameArtifact = ArtifactQuery.getArtifactFromId(baseArtifact, workingBranch);
          sameArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation,
             "This is the working branch update annotation");
          sameArtifact.persist(getClass().getSimpleName());

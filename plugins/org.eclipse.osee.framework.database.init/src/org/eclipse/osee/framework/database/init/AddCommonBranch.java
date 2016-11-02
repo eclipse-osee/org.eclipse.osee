@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.data.OrcsTypeSheet;
 import org.eclipse.osee.framework.core.data.OrcsTypesData;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -29,7 +28,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
@@ -105,12 +103,6 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
 
          // Create OseeAdmin group
          SystemGroup.OseeAdmin.getArtifact().persist(transaction);
-
-         // Need to set some Test Unit Table data
-         Artifact art =
-            ArtifactQuery.getOrCreate("Bs+PvSVQf3R5EHSTcyQA", CoreArtifactTypes.Artifact, CoreBranches.COMMON);
-         art.persist(transaction);
-
          transaction.execute();
       }
    }

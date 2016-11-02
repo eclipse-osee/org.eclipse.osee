@@ -33,7 +33,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link OseeDslRoleContextProvider}
- * 
+ *
  * @author John R. Misinco
  */
 public class OseeDslRoleContextProviderTest {
@@ -51,7 +51,7 @@ public class OseeDslRoleContextProviderTest {
       OseeDsl model = OseeDslResourceUtil.loadModel("osee:/text.osee", testSheet).getModel();
       MockDslProvider dslProvider = new MockDslProvider(model);
       OseeDslRoleContextProvider contextProvider = new OseeDslRoleContextProvider(dslProvider);
-      Artifact user = ArtifactQuery.getArtifactFromId(SystemUser.Anonymous.getGuid(), CoreBranches.COMMON);
+      Artifact user = ArtifactQuery.getArtifactFromToken(SystemUser.Anonymous);
       Collection<? extends IAccessContextId> contextIds = contextProvider.getContextId(user);
 
       Assert.assertEquals(1, contextIds.size());
@@ -67,7 +67,7 @@ public class OseeDslRoleContextProviderTest {
       OseeDsl model = OseeDslResourceUtil.loadModel("osee:/text.osee", testSheet).getModel();
       MockDslProvider dslProvider = new MockDslProvider(model);
       OseeDslRoleContextProvider contextProvider = new OseeDslRoleContextProvider(dslProvider);
-      Artifact user = ArtifactQuery.getArtifactFromId(SystemUser.Anonymous.getGuid(), CoreBranches.COMMON);
+      Artifact user = ArtifactQuery.getArtifactFromToken(SystemUser.Anonymous);
       Collection<? extends IAccessContextId> contextIds = contextProvider.getContextId(user);
 
       Assert.assertEquals(1, contextIds.size());

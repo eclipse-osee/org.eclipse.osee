@@ -12,6 +12,8 @@
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.RendererTemplate;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import java.io.File;
 import java.io.IOException;
@@ -26,11 +28,13 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.database.init.DefaultDbInitTasks;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.junit.After;
 import org.junit.Assert;
@@ -87,7 +91,8 @@ public class WordTemplateProcessorTest {
 
       BranchManager.createWorkingBranch(SAW_Bld_1, branch);
 
-      recurseTemplate = ArtifactId.valueOf(200007L);
+      recurseTemplate =
+         ArtifactQuery.getArtifactFromTypeAndName(RendererTemplate, DefaultDbInitTasks.PREVIEW_ALL_RECURSE, COMMON);
       myRootArtifact =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement, branch, "WordTemplateProcessorTest_Root");
 

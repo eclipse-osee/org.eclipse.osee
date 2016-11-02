@@ -57,7 +57,7 @@ public class LinkUtil {
     */
    public static void deleteLink(ArtifactId accountId, Link deleteLink) throws Exception {
       Artifact golbalArtifact = getStoreArtifact(true);
-      Conditions.checkNotNull(golbalArtifact, "Guest accountId: " + SystemUser.Anonymous.getUuid());
+      Conditions.checkNotNull(golbalArtifact, "Guest accountId: " + SystemUser.Anonymous.getIdString());
       deleteLink(deleteLink, true, golbalArtifact);
 
       Artifact userArt = ArtifactQuery.getArtifactFromId(accountId, CoreBranches.COMMON);

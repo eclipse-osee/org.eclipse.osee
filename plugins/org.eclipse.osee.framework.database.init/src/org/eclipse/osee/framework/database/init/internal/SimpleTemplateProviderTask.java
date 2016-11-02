@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.database.init.DefaultDbInitTasks;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -30,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 public class SimpleTemplateProviderTask implements IDbInitializationTask {
-
    private static String EDIT_RENDERER_OPTIONS =
       "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Word Template Content\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
    private static String RECURSIVE_RENDERER_OPTIONS =
@@ -65,7 +65,7 @@ public class SimpleTemplateProviderTask implements IDbInitializationTask {
                if (name.equals("Word Edit Template")) {
                   templateArtifact.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions,
                      EDIT_RENDERER_OPTIONS);
-               } else if (name.equals("PREVIEW_ALL_RECURSE")) {
+               } else if (name.equals(DefaultDbInitTasks.PREVIEW_ALL_RECURSE)) {
                   templateArtifact.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions,
                      RECURSIVE_RENDERER_OPTIONS);
                } else if (name.equals("srsMasterTemplate")) {

@@ -81,6 +81,11 @@ public final class ArtifactLoader {
          BranchManager.isArchived(branch));
    }
 
+   public static List<Artifact> loadArtifacts(List<ArtifactToken> toLoad, BranchId branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionId transactionId) {
+      return loadSelectedArtifacts(toLoad, loadLevel, reload, allowDeleted, transactionId,
+         BranchManager.isArchived(branch));
+   }
+
    private static List<Artifact> loadSelectedArtifacts(List<ArtifactToken> toLoad, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionId transactionId, boolean isArchived) {
       Set<Artifact> artifacts = new LinkedHashSet<>();
       if (transactionId.isValid()) {

@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -40,7 +41,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
 
    private final static String FIND_REPEAT_ENUMS =
-      "select DISTINCT(art1.guid), att1.art_id, att1.value, att1.attr_type_id from osee_attribute att1, osee_attribute att2, osee_txs txs1, osee_txs txs2, osee_artifact art1 where att1.gamma_id = txs1.gamma_id and txs1.branch_id = ? and att2.gamma_id = txs2.gamma_id and txs2.branch_id = ? and att1.art_id = att2.art_id and att1.attr_id <> att2.attr_id and att1.value = att2.value and txs1.tx_current = " + TxChange.CURRENT + " and txs2.tx_current = " + TxChange.CURRENT + " and att1.attr_type_id = att2.attr_type_id and art1.art_id = att1.art_id order by att1.art_id, att1.attr_type_id, att1.value";
+      "select DISTINCT(art1.art_id), att1.art_id, att1.value, att1.attr_type_id from osee_attribute att1, osee_attribute att2, osee_txs txs1, osee_txs txs2, osee_artifact art1 where att1.gamma_id = txs1.gamma_id and txs1.branch_id = ? and att2.gamma_id = txs2.gamma_id and txs2.branch_id = ? and att1.art_id = att2.art_id and att1.attr_id <> att2.attr_id and att1.value = att2.value and txs1.tx_current = " + TxChange.CURRENT + " and txs2.tx_current = " + TxChange.CURRENT + " and att1.attr_type_id = att2.attr_type_id and art1.art_id = att1.art_id order by att1.art_id, att1.attr_type_id, att1.value";
 
    public RepeatEnumerationAttributeValues() {
       super("Repeat Enumeration Attribute Values");
@@ -72,7 +73,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
          appendToDetails(AHTML.addRowSpanMultiColumnTable(branch.getName(), 3));
          for (AttrData attrData : attributesWithErrors.getValues(branch)) {
             appendToDetails(AHTML.addRowMultiColumnTable(new String[] {
-               attrData.getArtifactGuid(),
+               attrData.getArtifactId().toString(),
                AttributeTypeManager.getTypeByGuid(attrData.getAttributeTypeId()).getName(),
                attrData.getValue()}));
          }
@@ -87,16 +88,16 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
       if (isFixOperationEnabled() && hadItemsToFix()) {
          for (IOseeBranch branch : attributesWithErrors.keySet()) {
             Collection<AttrData> attributeData = attributesWithErrors.getValues(branch);
-            List<String> artifactGuids = new ArrayList<>(attributeData.size());
+            List<ArtifactId> artifactIds = new ArrayList<>(attributeData.size());
             for (AttrData attrData : attributeData) {
-               artifactGuids.add(attrData.getArtifactGuid());
+               artifactIds.add(attrData.getArtifactId());
             }
 
-            ArtifactQuery.getArtifactListFromIds(artifactGuids, branch, EXCLUDE_DELETED); // bulk load for speed
+            ArtifactQuery.getArtifactListFrom(artifactIds, branch, EXCLUDE_DELETED); // bulk load for speed
             SkynetTransaction transaction = TransactionManager.createTransaction(branch,
                "Delete Repeat Attribute Values for" + branch.getShortName());
             for (AttrData attrData : attributeData) {
-               Artifact artifact = ArtifactQuery.getArtifactFromId(attrData.getArtifactGuid(), branch);
+               Artifact artifact = ArtifactQuery.getArtifactFromId(attrData.getArtifactId(), branch);
                AttributeType attributeType = AttributeTypeManager.getTypeByGuid(attrData.getAttributeTypeId());
                if (attributeType.isEnumerated()) {
                   artifact.setAttributeValues(attributeType, artifact.getAttributesToStringList(attributeType));
@@ -129,8 +130,8 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
          chStmt.runPreparedQuery(FIND_REPEAT_ENUMS, branch, branch);
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
-            attrData.add(
-               new AttrData(chStmt.getString("guid"), chStmt.getLong("attr_type_id"), chStmt.getString("value")));
+            attrData.add(new AttrData(ArtifactId.valueOf(chStmt.getLong("art_id")), chStmt.getLong("attr_type_id"),
+               chStmt.getString("value")));
          }
       } finally {
          chStmt.close();
@@ -139,19 +140,18 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
    }
 
    private final class AttrData {
-      private final String artifactGuid;
+      private final ArtifactId artifactId;
       private final Long attributeTypeId;
       private final String value;
 
-      public AttrData(String artifactGuid, long attributeTypeId, String value) {
-         super();
-         this.artifactGuid = artifactGuid;
+      public AttrData(ArtifactId artifactId, long attributeTypeId, String value) {
+         this.artifactId = artifactId;
          this.attributeTypeId = attributeTypeId;
          this.value = value;
       }
 
-      public String getArtifactGuid() {
-         return artifactGuid;
+      public ArtifactId getArtifactId() {
+         return artifactId;
       }
 
       public long getAttributeTypeId() {
@@ -160,42 +160,6 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
 
       public String getValue() {
          return value;
-      }
-
-      @Override
-      public int hashCode() {
-         final int prime = 31;
-         int result = 1;
-         result = prime * result + (artifactGuid == null ? 0 : artifactGuid.hashCode());
-         result = prime * result + attributeTypeId.hashCode();
-         result = prime * result + (value == null ? 0 : value.hashCode());
-         return result;
-      }
-
-      @Override
-      public boolean equals(Object obj) {
-         if (this == obj) {
-            return true;
-         }
-         AttrData other = (AttrData) obj;
-         if (artifactGuid == null) {
-            if (other.artifactGuid != null) {
-               return false;
-            }
-         } else if (!artifactGuid.equals(other.artifactGuid)) {
-            return false;
-         }
-         if (attributeTypeId != other.attributeTypeId) {
-            return false;
-         }
-         if (value == null) {
-            if (other.value != null) {
-               return false;
-            }
-         } else if (!value.equals(other.value)) {
-            return false;
-         }
-         return true;
       }
    }
 }

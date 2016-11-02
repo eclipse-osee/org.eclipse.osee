@@ -16,14 +16,11 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -54,36 +51,28 @@ public class AccessControlTest {
    @Test(expected = OseeStateException.class)
    public void testNoWriteOnReadAccessOnBranch() {
       AccessControlManager.setPermission(UserManager.getUser(), branch, PermissionEnum.READ);
-
-      String guid = GUID.create();
-      artifact1 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
+      artifact1 = new Artifact(branch, "New Name");
       artifact1.persist(testInfo.getTestName());
    }
 
    @Test(expected = OseeStateException.class)
    public void testNoWriteOnNoneAccessOnBranch() {
       AccessControlManager.setPermission(UserManager.getUser(), branch, PermissionEnum.NONE);
-
-      String guid = GUID.create();
-      artifact2 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
+      artifact2 = new Artifact(branch, "New Name");
       artifact2.persist(testInfo.getTestName());
    }
 
    @Test
    public void testWriteAccessOnBranch() {
       AccessControlManager.setPermission(UserManager.getUser(), branch, PermissionEnum.WRITE);
-
-      String guid = GUID.create();
-      artifact3 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
+      artifact3 = new Artifact(branch, "New Name");
       artifact3.persist(testInfo.getTestName());
    }
 
    @Test
    public void testWriteOnFullAccessOnBranch() {
       AccessControlManager.setPermission(UserManager.getUser(), branch, PermissionEnum.FULLACCESS);
-
-      String guid = GUID.create();
-      artifact4 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
+      artifact4 = new Artifact(branch, "New Name");
       artifact4.persist(testInfo.getTestName());
    }
 
@@ -91,10 +80,7 @@ public class AccessControlTest {
    public void testNoWriteOnDenyAccessOnBranch() {
       BranchId branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
       AccessControlManager.setPermission(UserManager.getUser(), branch, PermissionEnum.DENY);
-
-      String guid = GUID.create();
-      artifact5 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
-      artifact5.setName("New Name");
+      artifact5 = new Artifact(branch, "New Name");
       artifact5.persist(testInfo.getTestName());
    }
 
@@ -129,5 +115,4 @@ public class AccessControlTest {
          BranchManager.purgeBranch(branch);
       }
    }
-
 }

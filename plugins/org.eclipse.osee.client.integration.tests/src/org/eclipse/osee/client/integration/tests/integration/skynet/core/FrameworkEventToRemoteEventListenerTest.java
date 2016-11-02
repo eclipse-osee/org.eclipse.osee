@@ -104,7 +104,7 @@ public class FrameworkEventToRemoteEventListenerTest {
       }
 
       Assert.assertTrue("Event completion was not received.", listener.wasUpdateReceived());
-      Artifact artifactAfterUpdate = ArtifactQuery.getArtifactFromId(artifact.getGuid(), BRANCH);
+      Artifact artifactAfterUpdate = ArtifactQuery.getArtifactFromToken(artifact);
       Assert.assertEquals(newArtTx, artifactAfterUpdate.getTransaction());
 
       //Reset artifact tx - just to be clean

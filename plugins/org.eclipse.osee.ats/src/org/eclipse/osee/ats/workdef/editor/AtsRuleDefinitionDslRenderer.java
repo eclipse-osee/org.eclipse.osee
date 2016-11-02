@@ -40,7 +40,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
@@ -183,14 +182,11 @@ public final class AtsRuleDefinitionDslRenderer extends FileSystemRenderer {
             return;
          }
          if (artifact.isOfType(AtsArtifactTypes.RuleDefinition)) {
-            Artifact saveArt = ArtifactQuery.getArtifactFromId(artifact.getGuid(), artifact.getBranch());
             String dslStr = Lib.fileToString(file);
-            saveArt.setSoleAttributeValue(AtsAttributeTypes.DslSheet, dslStr);
-            saveArt.persist(getName());
+            artifact.setSoleAttributeValue(AtsAttributeTypes.DslSheet, dslStr);
+            artifact.persist(getName());
             AtsClientService.get().getWorkDefinitionService().clearCaches();
          }
-
       }
-
    }
 }

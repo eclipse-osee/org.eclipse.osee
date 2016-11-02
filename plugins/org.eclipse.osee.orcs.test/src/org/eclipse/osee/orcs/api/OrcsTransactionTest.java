@@ -22,7 +22,6 @@ import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -215,7 +214,7 @@ public class OrcsTransactionTest {
       transaction1.commit();
       ArtifactReadable userDup = query.fromBranch(COMMON).andId(duplicate).getResults().getExactlyOne();
 
-      assertNotSame(SystemUser.Anonymous.getGuid(), userDup.getGuid());
+      assertTrue(SystemUser.Anonymous.notEqual(userDup));
       assertEquals(SystemUser.Anonymous.getName(), userDup.getName());
 
       // duplicate on different branch
@@ -230,7 +229,7 @@ public class OrcsTransactionTest {
       transaction2.commit();
       userDup = query.fromBranch(topLevelBranch).andId(duplicate).getResults().getExactlyOne();
 
-      assertNotSame(SystemUser.Anonymous.getGuid(), userDup.getGuid());
+      assertTrue(SystemUser.Anonymous.notEqual(userDup));
       assertEquals(SystemUser.Anonymous.getName(), userDup.getName());
    }
 

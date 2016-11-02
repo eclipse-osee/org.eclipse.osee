@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -102,24 +103,25 @@ public abstract class AbstractWorkPackageRelatedColumnUI extends XViewerAtsColum
    }
 
    private void openSelectedWorkPackages(Collection<AbstractWorkflowArtifact> awas) {
-      List<String> guids = new ArrayList<>();
+      List<ArtifactId> ids = new ArrayList<>();
       for (AbstractWorkflowArtifact awa : awas) {
          IAtsWorkPackage workPkg = AtsClientService.get().getEarnedValueService().getWorkPackage((IAtsWorkItem) awa);
          if (workPkg != null) {
-            if (!guids.contains(workPkg.getGuid())) {
-               guids.add(workPkg.getGuid());
+            if (!ids.contains(workPkg)) {
+               ids.add(ArtifactId.valueOf(workPkg.getId()));
             }
          }
       }
-      if (guids.isEmpty()) {
+      if (ids.isEmpty()) {
          AWorkbench.popup("No Work Packages set for selected Work Items");
       } else {
-         if (guids.size() == 1) {
-            AtsUtil.openArtifact(guids.iterator().next(), AtsClientService.get().getAtsBranch(),
+         if (ids.size() == 1) {
+            AtsUtil.openArtifact(
+               ArtifactQuery.getArtifactFromId(ids.iterator().next(), AtsClientService.get().getAtsBranch()),
                OseeCmEditor.ArtifactEditor);
          } else {
-            List<Artifact> artifacts =
-               ArtifactQuery.getArtifactListFromIds(guids, AtsClientService.get().getAtsBranch());
+            List<Artifact> artifacts = ArtifactQuery.getArtifactListFrom(ids, AtsClientService.get().getAtsBranch());
+            ArtifactQuery.getArtifactListFrom(ids, AtsClientService.get().getAtsBranch());
             MassArtifactEditor.editArtifacts("Edit Work Packages", artifacts);
          }
       }
