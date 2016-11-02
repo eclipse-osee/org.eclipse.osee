@@ -47,8 +47,8 @@ public class AttributeReadableWrapper<T> implements IAttribute<T> {
    }
 
    @Override
-   public int getId() {
-      return attr.getId().intValue();
+   public Long getId() {
+      return attr.getId();
    }
 
    @Override

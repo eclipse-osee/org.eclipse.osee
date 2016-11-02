@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelation;
 import org.eclipse.osee.framework.core.sql.OseeSql;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
@@ -32,7 +33,7 @@ public class RelationTransactionData extends BaseTransactionData {
    private final RelationEventType relationEventType;
 
    public RelationTransactionData(RelationLink relation, ModificationType modificationType, RelationEventType relationEventType) {
-      super(relation.getId(), modificationType);
+      super(Id.valueOf(relation.getId()), modificationType);
       this.relation = relation;
       this.relationEventType = relationEventType;
    }

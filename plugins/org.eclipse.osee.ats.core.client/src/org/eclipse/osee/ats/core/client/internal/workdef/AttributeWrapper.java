@@ -47,7 +47,7 @@ public class AttributeWrapper<T> implements IAttribute<T> {
    }
 
    @Override
-   public int getId() {
+   public Long getId() {
       return attr.getId();
    }
 
@@ -55,5 +55,4 @@ public class AttributeWrapper<T> implements IAttribute<T> {
    public IAttributeType getAttrType() {
       return attr.getAttributeType();
    }
-
 }

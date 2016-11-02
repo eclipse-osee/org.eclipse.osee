@@ -148,7 +148,7 @@ public class HTMLRenderer extends FileSystemRenderer {
                if (a instanceof CompressedContentAttribute) {
                   CompressedContentAttribute c = (CompressedContentAttribute) a;
                   InputStream stream = c.getValue();
-                  String attrId = Integer.toString(c.getId());
+                  String attrId = c.getId().toString();
                   String workingFileString =
                      RenderingUtil.getRenderPath(this, branch, PresentationType.PREVIEW, "", "", "") + "-" + attrId;
                   fileNameReplace.put(attrId, workingFileString);

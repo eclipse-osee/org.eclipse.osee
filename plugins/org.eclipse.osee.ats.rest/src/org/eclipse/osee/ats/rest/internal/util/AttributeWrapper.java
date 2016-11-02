@@ -48,8 +48,8 @@ public class AttributeWrapper<T> implements IAttribute<T> {
    }
 
    @Override
-   public int getId() {
-      return attr.getLocalId();
+   public Long getId() {
+      return attr.getId();
    }
 
    @Override

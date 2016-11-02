@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -103,7 +104,7 @@ public interface IAtsChangeSet {
 
    String getComment();
 
-   <T> void setAttribute(ArtifactId artifact, int attrId, T value);
+   <T> void setAttribute(ArtifactId artifact, AttributeId attrId, T value);
 
    /**
     * Will check if anything is to be stored, else return quietly.

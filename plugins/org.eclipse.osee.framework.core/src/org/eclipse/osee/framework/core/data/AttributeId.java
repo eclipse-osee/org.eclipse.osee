@@ -21,23 +21,24 @@ import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
  */
 @JsonSerialize(using = IdSerializer.class)
 public interface AttributeId extends HasLocalId<Integer>, Id {
+   AttributeId SENTINEL = valueOf(Id.SENTINEL);
 
    public static AttributeId valueOf(String id) {
       return valueOf(Long.valueOf(id));
    }
 
+   @Override
+   default Integer getLocalId() {
+      return getId().intValue();
+   }
+
    @JsonCreator
    public static AttributeId valueOf(long id) {
-      final class AttributeToken extends BaseId implements AttributeId {
-         public AttributeToken(Long txId) {
+      final class AttributeIdImpl extends BaseId implements AttributeId {
+         public AttributeIdImpl(Long txId) {
             super(txId);
          }
-
-         @Override
-         public Integer getLocalId() {
-            return getId().intValue();
-         }
       }
-      return new AttributeToken(id);
+      return new AttributeIdImpl(id);
    }
 }

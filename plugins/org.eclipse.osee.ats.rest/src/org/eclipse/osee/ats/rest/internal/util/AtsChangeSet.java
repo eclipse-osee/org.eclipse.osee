@@ -305,9 +305,9 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public <T> void setAttribute(ArtifactId artifact, int attrId, T value) {
+   public <T> void setAttribute(ArtifactId artifact, AttributeId attrId, T value) {
       for (AttributeReadable<?> attribute : getArtifact(artifact).getAttributes()) {
-         if (attribute.getLocalId() == attrId) {
+         if (attrId.equals(attribute)) {
             getTransaction().setAttributeById(getArtifact(artifact), attribute, value);
          }
       }
@@ -322,7 +322,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void deleteAttribute(ArtifactId artifact, IAttribute<?> attr) {
-      AttributeId attribute = ((ArtifactReadable) artifact).getAttributeById(attr.getId());
+      AttributeId attribute = ((ArtifactReadable) artifact).getAttributeById(attr);
       getTransaction().deleteByAttributeId(artifact, attribute);
       add(artifact);
    }

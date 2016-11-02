@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -329,9 +330,9 @@ public final class TransactionManager {
       return changed;
    }
 
-   private static Object getPreviousValue(Artifact prevArt, Integer attrId) {
+   private static Object getPreviousValue(Artifact prevArt, AttributeId attrId) {
       for (Attribute<?> attr : prevArt.getAttributes()) {
-         if (attrId.equals(attr.getId())) {
+         if (attrId.equals(attr)) {
             return attr.getValue();
          }
       }
@@ -407,7 +408,7 @@ public final class TransactionManager {
       Long gammaId = Long.valueOf(chStmt.getLong("gamma_id"));
       Integer artId = Integer.valueOf(chStmt.getInt("art_id"));
       ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
-      Integer attrId = Integer.valueOf(chStmt.getInt("attr_id"));
+      AttributeId attrId = AttributeId.valueOf(chStmt.getLong("attr_id"));
       String value = chStmt.getString("value");
       return new AttributeRow(branch, gammaId, artId, modType, value, attrId, attributeType);
    }

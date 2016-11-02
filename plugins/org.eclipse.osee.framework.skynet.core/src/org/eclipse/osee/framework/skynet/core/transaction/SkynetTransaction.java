@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -40,6 +41,7 @@ import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -70,8 +72,8 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
    private static final String ATTR_ID_SEQ = "SKYNET_ATTR_ID_SEQ";
    private static final String REL_LINK_ID_SEQ = "SKYNET_REL_LINK_ID_SEQ";
 
-   private final CompositeKeyHashMap<Class<? extends BaseTransactionData>, Integer, BaseTransactionData> transactionDataItems =
-      new CompositeKeyHashMap<Class<? extends BaseTransactionData>, Integer, BaseTransactionData>();
+   private final CompositeKeyHashMap<Class<? extends BaseTransactionData>, Id, BaseTransactionData> transactionDataItems =
+      new CompositeKeyHashMap<>();
 
    // Used to avoid garbage collection of artifacts until the transaction has been committed and determine attribute events;
    private final Set<Artifact> modifiedArtifacts = new HashSet<>();
@@ -92,8 +94,8 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       this.comment = comment;
    }
 
-   private int getNewAttributeId(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {
-      return (int) ConnectionHandler.getNextSequence(ATTR_ID_SEQ, true);
+   private AttributeId getNewAttributeId(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {
+      return AttributeId.valueOf(ConnectionHandler.getNextSequence(ATTR_ID_SEQ, true));
    }
 
    private int getNewRelationId() throws OseeCoreException {
@@ -236,11 +238,11 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
          setTxState(TxState.MODIFIED);
 
          if (!artifact.isInDb() || artifact.hasDirtyArtifactType() || artifact.getModType().isDeleted() || artifact.getModType() == REPLACED_WITH_VERSION || artifact.isUseBackingdata()) {
-            BaseTransactionData txItem = transactionDataItems.get(ArtifactTransactionData.class, artifact.getArtId());
+            BaseTransactionData txItem = transactionDataItems.get(ArtifactTransactionData.class, artifact);
             if (txItem == null) {
                modifiedArtifacts.add(artifact);
                txItem = new ArtifactTransactionData(artifact);
-               transactionDataItems.put(ArtifactTransactionData.class, artifact.getArtId(), txItem);
+               transactionDataItems.put(ArtifactTransactionData.class, artifact, txItem);
             } else {
                updateTxItem(txItem, artifact.getModType());
             }
@@ -284,14 +286,14 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
 
       checkMultiplicity(artifact, attribute);
 
-      if (attribute.getId() == 0) {
+      if (attribute.isInvalid()) {
          attribute.internalSetAttributeId(getNewAttributeId(artifact, attribute));
       }
 
-      BaseTransactionData txItem = transactionDataItems.get(AttributeTransactionData.class, attribute.getId());
+      BaseTransactionData txItem = transactionDataItems.get(AttributeTransactionData.class, attribute);
       if (txItem == null) {
          txItem = new AttributeTransactionData(attribute);
-         transactionDataItems.put(AttributeTransactionData.class, attribute.getId(), txItem);
+         transactionDataItems.put(AttributeTransactionData.class, attribute, txItem);
       } else {
          updateTxItem(txItem, attribute.getModificationType());
       }
@@ -357,10 +359,11 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
          addArtifact(aArtifact, false);
          addArtifact(bArtifact, false);
 
-         BaseTransactionData txItem = transactionDataItems.get(RelationTransactionData.class, link.getId());
+         Id relId = Id.valueOf(link.getId());
+         BaseTransactionData txItem = transactionDataItems.get(RelationTransactionData.class, relId);
          if (txItem == null) {
             txItem = new RelationTransactionData(link, modificationType, relationEventType);
-            transactionDataItems.put(RelationTransactionData.class, link.getId(), txItem);
+            transactionDataItems.put(RelationTransactionData.class, relId, txItem);
 
             if (aArtifact != null) {
                modifiedArtifacts.add(aArtifact);

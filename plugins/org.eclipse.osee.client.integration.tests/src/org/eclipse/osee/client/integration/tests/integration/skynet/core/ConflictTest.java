@@ -220,7 +220,7 @@ public class ConflictTest {
       List<Attribute<Object>> attributes = onChild1.getAttributes(CoreAttributeTypes.ParagraphNumber);
       Assert.assertTrue(attributes.size() == 1);
       Attribute<Object> attr = attributes.iterator().next();
-      int child1AttrId = attr.getId();
+      int child1AttrId = attr.getId().intValue();
 
       ConflictManagerExternal mgr = new ConflictManagerExternal(parent, child1);
       BranchManager.commitBranch(new NullProgressMonitor(), mgr, true, false);
@@ -233,7 +233,7 @@ public class ConflictTest {
       attributes = onChild2.getAttributes(CoreAttributeTypes.ParagraphNumber);
       Assert.assertTrue(attributes.size() == 1);
       attr = attributes.iterator().next();
-      int child2AttrId = attr.getId();
+      int child2AttrId = attr.getId().intValue();
 
       Assert.assertNotEquals(child1AttrId, child2AttrId);
 

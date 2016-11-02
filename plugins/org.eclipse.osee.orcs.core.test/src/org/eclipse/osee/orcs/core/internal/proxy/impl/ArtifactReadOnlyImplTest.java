@@ -15,12 +15,12 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Annotatio
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Allocation__Requirement;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Child;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.IS_CHILD;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.IS_PARENT;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -79,7 +80,7 @@ public class ArtifactReadOnlyImplTest {
    @Mock private ArtifactReadable readable1;
    @Mock private Artifact artifact1;
 
-   private final Integer attributeId = 12345;
+   private final AttributeId attributeId = AttributeId.valueOf(12345);
 
    @Mock private Attribute<Object> attribute1;
    @Mock private AttributeReadable<Object> attributeReadable1;
@@ -393,13 +394,13 @@ public class ArtifactReadOnlyImplTest {
 
    @Test
    public void testGetAttributeById() throws OseeCoreException {
-      when(proxiedObject.getAttributeById(attributeId)).thenAnswer(answer(attribute1));
+      when(proxiedObject.getAttributeById(attributeId.getId().intValue())).thenAnswer(answer(attribute1));
       when(proxyManager.asExternalAttribute(session, attribute1)).thenReturn(attributeReadable1);
 
       AttributeReadable<Object> actual = readOnly.getAttributeById(attributeId);
 
       assertEquals(attributeReadable1, actual);
-      verify(proxiedObject).getAttributeById(attributeId);
+      verify(proxiedObject).getAttributeById(attributeId.getId().intValue());
       verify(proxyManager).asExternalAttribute(session, attribute1);
    }
 

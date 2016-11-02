@@ -722,7 +722,7 @@ public class ArtifactEventTest {
       RemoteAttributeChange1 remAttrChg = new RemoteAttributeChange1();
 
       // Create modify attribute record
-      int nameAttrId = injectArt.getAttributes().iterator().next().getId();
+      int nameAttrId = injectArt.getAttributes().iterator().next().getId().intValue();
       remAttrChg.setAttributeId(nameAttrId);
       remAttrChg.setGammaId(1000);
       remAttrChg.setAttrTypeGuid(CoreAttributeTypes.Name.getGuid());
@@ -824,7 +824,8 @@ public class ArtifactEventTest {
 
       // Create delete attribute record
       RemoteAttributeChange1 remAttrChg = new RemoteAttributeChange1();
-      int genStrAttrId = injectArt.getAttributes(CoreAttributeTypes.GeneralStringData).iterator().next().getId();
+      int genStrAttrId =
+         injectArt.getAttributes(CoreAttributeTypes.GeneralStringData).iterator().next().getId().intValue();
       remAttrChg.setAttributeId(genStrAttrId);
       remAttrChg.setGammaId(1000);
       remAttrChg.setAttrTypeGuid(CoreAttributeTypes.GeneralStringData.getGuid());

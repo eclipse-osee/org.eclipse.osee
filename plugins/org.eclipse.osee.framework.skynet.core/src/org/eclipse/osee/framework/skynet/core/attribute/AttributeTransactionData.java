@@ -34,7 +34,7 @@ public class AttributeTransactionData extends BaseTransactionData {
    private final DAOToSQL daoToSql;
 
    public AttributeTransactionData(Attribute<?> attribute) {
-      super(attribute.getId(), attribute.getModificationType());
+      super(attribute, attribute.getModificationType());
       this.attribute = attribute;
       this.daoToSql = new DAOToSQL();
    }

@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -197,7 +198,7 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
    @Override
    protected void onRemovePage(String id) throws OseeCoreException {
       xWidgets.remove(id);
-      getArtifact().deleteAttribute(Integer.parseInt(id));
+      getArtifact().deleteAttribute(AttributeId.valueOf(id));
    }
 
    @Override

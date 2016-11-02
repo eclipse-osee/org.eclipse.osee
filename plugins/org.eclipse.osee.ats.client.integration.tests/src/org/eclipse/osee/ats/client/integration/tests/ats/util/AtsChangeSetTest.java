@@ -168,7 +168,7 @@ public class AtsChangeSetTest {
    public void testSetAttributeById_ArtifactId() {
       Attribute<?> staticIdAttr = null;
       for (Attribute<?> attr : folderArt.getAttributes()) {
-         if (attr.getAttributeType().getId().equals(CoreAttributeTypes.StaticId.getGuid())) {
+         if (attr.getAttributeType().equals(CoreAttributeTypes.StaticId)) {
             staticIdAttr = attr;
             break;
          }
@@ -176,7 +176,7 @@ public class AtsChangeSetTest {
       Assert.assertNotNull(staticIdAttr);
 
       IAtsChangeSet changes = createAtsChangeSet();
-      changes.setAttribute(folderArt, staticIdAttr.getId(), "new id");
+      changes.setAttribute(folderArt, staticIdAttr, "new id");
       changes.execute();
 
       folderArt.reloadAttributesAndRelations();

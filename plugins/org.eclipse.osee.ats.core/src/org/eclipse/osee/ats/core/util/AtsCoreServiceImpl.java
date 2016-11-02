@@ -104,7 +104,7 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
          for (IAttribute<Object> attr : attributes) {
             String str = (String) attr.getValue();
             if (str.startsWith(key)) {
-               changes.setAttribute(atsConfig, attr.getId(), keyValue);
+               changes.setAttribute(atsConfig, attr, keyValue);
                found = true;
                break;
             }

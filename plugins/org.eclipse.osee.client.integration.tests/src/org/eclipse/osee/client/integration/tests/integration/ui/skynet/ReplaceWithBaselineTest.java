@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -300,7 +301,7 @@ public final class ReplaceWithBaselineTest {
                   Artifact newArtifact = ArtifactQuery.getArtifactFromId(testData.getArtifactId(), workingBranch);
                   newArtifact.addAttributeFromString(CoreAttributeTypes.ParagraphNumber, "1.0");
                   newArtifact.persist(testName);
-                  testData.setAttrId(newArtifact.getSoleAttribute(CoreAttributeTypes.ParagraphNumber).getId());
+                  testData.setAttrId(newArtifact.getSoleAttribute(CoreAttributeTypes.ParagraphNumber));
 
                }
                break;
@@ -357,14 +358,14 @@ public final class ReplaceWithBaselineTest {
                      attribute.delete();
                      artifact.persist(testName);
 
-                     testData.setAttrId(attribute.getId());
+                     testData.setAttrId(attribute);
                      break;
                   case MODIFIED:
                      artifact = ArtifactQuery.getArtifactFromId(testData.getArtifactId(), workingBranch);
                      attribute = artifact.getSoleAttribute(CoreAttributeTypes.Name);
                      attribute.setFromString("I am changed");
                      artifact.persist(testName);
-                     testData.setAttrId(attribute.getId());
+                     testData.setAttrId(attribute);
                      break;
                }
                break;
@@ -480,7 +481,7 @@ public final class ReplaceWithBaselineTest {
       private RelationTypeSide relationType;
       private int bArtifactId;
 
-      private int attrId;
+      private AttributeId attrId;
 
       private int cArtId;
 
@@ -498,11 +499,11 @@ public final class ReplaceWithBaselineTest {
          this.cArtId = cArtId;
       }
 
-      public int getAttrId() {
+      public AttributeId getAttrId() {
          return attrId;
       }
 
-      public void setAttrId(int attrId) {
+      public void setAttrId(AttributeId attrId) {
          this.attrId = attrId;
       }
 

@@ -18,11 +18,11 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.model.IAttribute;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -37,10 +37,10 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 /**
  * @author Ryan D. Brooks
  */
-public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribute {
+public abstract class Attribute<T> implements Comparable<Attribute<T>>, AttributeId {
    private WeakReference<Artifact> artifactRef;
    private IAttributeDataProvider attributeDataProvider;
-   private int attrId;
+   private AttributeId attrId = AttributeId.SENTINEL;
    private int gammaId;
    private boolean dirty;
    private ModificationType modificationType;
@@ -85,7 +85,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
 
       attributeChange.setAttrTypeGuid(getAttributeType().getGuid());
       attributeChange.setGammaId(gammaId);
-      attributeChange.setAttributeId(attrId);
+      attributeChange.setAttributeId(attrId.getId().intValue());
       attributeChange.setModTypeGuid(AttributeEventModificationType.getType(modificationType).getGuid());
       for (Object obj : attributeDataProvider.getData()) {
          if (obj == null) {
@@ -100,7 +100,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
       return attributeChange;
    }
 
-   public void internalInitialize(IAttributeType attributeType, Artifact artifact, ModificationType modificationType, ApplicabilityId applicabilityId, int attributeId, int gammaId, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
+   public void internalInitialize(IAttributeType attributeType, Artifact artifact, ModificationType modificationType, ApplicabilityId applicabilityId, AttributeId attributeId, int gammaId, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
       internalInitialize(attributeType, artifact, modificationType, applicabilityId, markDirty, setDefaultValue);
       this.attrId = attributeId;
       this.gammaId = gammaId;
@@ -299,8 +299,9 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
    /**
     * @return Returns the attrId.
     */
-   public int getId() {
-      return attrId;
+   @Override
+   public Long getId() {
+      return attrId.getId();
    }
 
    public int getGammaId() {
@@ -315,7 +316,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
       this.gammaId = gammaId;
    }
 
-   public void internalSetAttributeId(int attrId) {
+   public void internalSetAttributeId(AttributeId attrId) {
       this.attrId = attrId;
    }
 

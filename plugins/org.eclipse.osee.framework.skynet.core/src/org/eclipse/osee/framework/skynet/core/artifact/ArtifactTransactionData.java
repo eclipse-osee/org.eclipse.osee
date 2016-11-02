@@ -29,7 +29,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
    private final Artifact artifact;
 
    public ArtifactTransactionData(Artifact artifact) {
-      super(artifact.getArtId(), artifact.getModType());
+      super(artifact, artifact.getModType());
       this.artifact = artifact;
    }
 

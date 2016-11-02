@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Child;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -26,11 +27,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
+
 import org.eclipse.osee.framework.core.data.Adaptable;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -221,6 +227,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       return objs;
    }
 
+   @Override
    public final int getArtId() {
       return artId;
    }
@@ -292,6 +299,10 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       return ancestors;
    }
 
+   public final Attribute<?> getAttributeById(AttributeId attrUuid, boolean includeDeleted) {
+      return getAttributeById(attrUuid.getId(), includeDeleted);
+   }
+
    public final Attribute<?> getAttributeById(long attrUuid, boolean includeDeleted) throws OseeCoreException {
       for (Attribute<?> attribute : getAttributes(includeDeleted)) {
          if (attribute.getId() == attrUuid) {
@@ -305,8 +316,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       List<Integer> items = new ArrayList<>();
       List<Attribute<Object>> data = getAttributes(attributeType);
       for (Attribute<Object> attribute : data) {
-         Integer value = new Integer(attribute.getId());
-         items.add(value);
+         items.add(attribute.getId().intValue());
       }
       return items;
    }
@@ -465,10 +475,14 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       return attribute;
    }
 
-   public final <T> Attribute<T> internalInitializeAttribute(IAttributeType attributeType, int attributeId, int gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty, Object... data) throws OseeCoreException {
+   public final <T> Attribute<T> internalInitializeAttribute(AttributeTypeId attributeType, int attributeId, int gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty, Object... data) {
+      return internalInitializeAttribute(attributeType, AttributeId.valueOf(attributeId), gammaId, modificationType, applicabilityId,
+         markDirty, data);
+   }
+
+   public final <T> Attribute<T> internalInitializeAttribute(IAttributeType attributeType, AttributeId attributeId, int gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty, Object... data) {
       Attribute<T> attribute = createAttribute(attributeType);
-      attribute.internalInitialize(attributeType, this, modificationType, applicabilityId, attributeId, gammaId,
-         markDirty, false);
+      attribute.internalInitialize(attributeType, this, modificationType, applicabilityId, attributeId, gammaId, markDirty, false);
       attribute.getAttributeDataProvider().loadData(data);
       return attribute;
    }
@@ -731,9 +745,9 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       }
    }
 
-   public final void deleteAttribute(int attributeId) throws OseeCoreException {
+   public final void deleteAttribute(AttributeId attributeId) throws OseeCoreException {
       for (Attribute<?> attribute : getAttributes()) {
-         if (attribute.getId() == attributeId) {
+         if (attributeId.equals(attribute)) {
             deleteAttribute(attribute);
             break;
          }

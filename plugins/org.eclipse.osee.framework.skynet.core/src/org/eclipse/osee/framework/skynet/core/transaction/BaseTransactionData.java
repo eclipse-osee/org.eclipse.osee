@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.sql.OseeSql;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
@@ -39,13 +40,12 @@ public abstract class BaseTransactionData {
    private static final String INSERT_INTO_TRANSACTION_TABLE =
       "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id, app_id) VALUES (?, ?, ?, ?, ?, ?)";
 
-   private static final int PRIME_NUMBER = 37;
-   private final int itemId;
+   private final Id itemId;
    private ModificationType modificationType;
    private Integer gammaId;
    private ApplicabilityId applicabilityId;
 
-   public BaseTransactionData(int itemId, ModificationType modificationType) {
+   public BaseTransactionData(Id itemId, ModificationType modificationType) {
       this.modificationType = modificationType;
       this.itemId = itemId;
    }
@@ -53,15 +53,14 @@ public abstract class BaseTransactionData {
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof BaseTransactionData) {
-         BaseTransactionData data = (BaseTransactionData) obj;
-         return data.itemId == this.itemId && data.getClass().equals(this.getClass());
+         return itemId.equals(((BaseTransactionData) obj).itemId);
       }
       return false;
    }
 
    @Override
    public int hashCode() {
-      return itemId * PRIME_NUMBER * this.getClass().hashCode();
+      return itemId.hashCode();
    }
 
    protected void addInsertToBatch(InsertDataCollector collector) throws OseeCoreException {
@@ -70,6 +69,7 @@ public abstract class BaseTransactionData {
       internalAddInsertToBatch(collector, Integer.MAX_VALUE, INSERT_INTO_TRANSACTION_TABLE, collector.getTransaction(),
          getGammaId(), modTypeToStore.getValue(), TxChange.getCurrent(modTypeToStore).getValue(),
          collector.getBranchId(), getApplicId());
+      //TODO: remove hack defaulting to 1
    }
 
    //Replaces the replace_with_version modtype with modification for storage.
@@ -81,7 +81,7 @@ public abstract class BaseTransactionData {
       return modtypeToReturn;
    }
 
-   protected final int getItemId() {
+   protected final Id getItemId() {
       return itemId;
    }
 
