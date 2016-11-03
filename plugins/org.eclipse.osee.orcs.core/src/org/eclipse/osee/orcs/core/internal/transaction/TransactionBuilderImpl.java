@@ -219,32 +219,32 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    @Override
    public <T> void setAttributeById(ArtifactId sourceArtifact, AttributeId attrId, T value) throws OseeCoreException {
       Artifact asArtifact = getForWrite(sourceArtifact);
-      asArtifact.getAttributeById(attrId.getLocalId()).setValue(value);
+      asArtifact.getAttributeById(attrId).setValue(value);
    }
 
    @Override
    public void setAttributeById(ArtifactId sourceArtifact, AttributeId attrId, String value) throws OseeCoreException {
       Artifact asArtifact = getForWrite(sourceArtifact);
-      asArtifact.getAttributeById(attrId.getLocalId()).setFromString(value);
+      asArtifact.getAttributeById(attrId).setFromString(value);
    }
 
    @Override
    public void setAttributeById(ArtifactId sourceArtifact, AttributeId attrId, InputStream stream) throws OseeCoreException {
       Artifact asArtifact = getForWrite(sourceArtifact);
-      asArtifact.getAttributeById(attrId.getLocalId()).setValueFromInputStream(stream);
+      asArtifact.getAttributeById(attrId).setValueFromInputStream(stream);
    }
 
    @Override
    public void setAttributeApplicability(ArtifactId art, AttributeId attrId, ApplicabilityId applicId) {
       Artifact asArtifact = getForWrite(art);
-      Attribute<Object> attribute = asArtifact.getAttributeById(attrId.getLocalId());
+      Attribute<Object> attribute = asArtifact.getAttributeById(attrId);
       attribute.getOrcsData().setApplicabilityId(applicId);
    }
 
    @Override
    public void deleteByAttributeId(ArtifactId sourceArtifact, AttributeId attrId) throws OseeCoreException {
       Artifact asArtifact = getForWrite(sourceArtifact);
-      asArtifact.getAttributeById(attrId.getLocalId()).delete();
+      asArtifact.getAttributeById(attrId).delete();
    }
 
    @Override

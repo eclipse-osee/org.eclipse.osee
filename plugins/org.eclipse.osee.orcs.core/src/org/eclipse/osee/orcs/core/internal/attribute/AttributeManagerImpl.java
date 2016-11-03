@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -141,12 +142,12 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public Attribute<Object> getAttributeById(Integer attributeId) throws OseeCoreException {
+   public Attribute<Object> getAttributeById(AttributeId attributeId) throws OseeCoreException {
       return getAttributeById(attributeId, DeletionFlag.EXCLUDE_DELETED);
    }
 
    @Override
-   public Attribute<Object> getAttributeById(Integer attributeId, DeletionFlag includeDeleted) throws OseeCoreException {
+   public Attribute<Object> getAttributeById(AttributeId attributeId, DeletionFlag includeDeleted) throws OseeCoreException {
       Attribute<Object> attribute = null;
       Optional<Attribute<Object>> tryFind =
          Iterables.tryFind(getAttributes(includeDeleted), OrcsPredicates.attributeId(attributeId));

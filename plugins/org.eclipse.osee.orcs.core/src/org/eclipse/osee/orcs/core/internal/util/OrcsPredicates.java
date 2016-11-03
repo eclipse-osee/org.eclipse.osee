@@ -18,6 +18,7 @@ import static com.google.common.base.Predicates.not;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -120,12 +121,12 @@ public final class OrcsPredicates {
       });
    }
 
-   public static Predicate<Attribute<?>> attributeId(final Integer attributeId) {
+   public static Predicate<Attribute<?>> attributeId(final AttributeId attributeId) {
       return new Predicate<Attribute<?>>() {
 
          @Override
          public boolean apply(Attribute<?> input) {
-            return attributeId.equals(input.getLocalId());
+            return attributeId.equals(input);
          }
       };
    }

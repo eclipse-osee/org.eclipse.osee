@@ -143,7 +143,7 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
    @SuppressWarnings("unchecked")
    private StyledString getLineElementLabel(AttributeLineElement lineElement) {
       String lineNumberString;
-      Attribute<?> attribute = lineElement.getParent().getAttributeById(lineElement.getAttribute(), false);
+      Attribute<?> attribute = lineElement.getParent().getAttributeById(lineElement.getAttribute().getId(), false);
       if (attribute.isOfType(CoreAttributeTypes.WholeWordContent) || attribute.isOfType(
          CoreAttributeTypes.WordTemplateContent)) {
          lineNumberString = "";

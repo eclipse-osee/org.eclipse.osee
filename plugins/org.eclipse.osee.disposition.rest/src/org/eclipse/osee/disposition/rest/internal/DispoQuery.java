@@ -33,8 +33,6 @@ public interface DispoQuery {
 
    ArtifactReadable findUser(String userId);
 
-   ArtifactReadable findUnassignedUser();
-
    boolean isUniqueProgramName(String name);
 
    boolean isUniqueSetName(BranchId branch, String name);

@@ -94,9 +94,8 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
                   ArtifactId artId = match.getItem();
                   localIds.add(artId);
                   for (AttributeReadable<?> attribute : match.getElements()) {
-                     int attrId = attribute.getLocalId();
                      List<MatchLocation> locations = match.getLocation(attribute);
-                     searchMatches.add(new SearchMatch(artId, attrId, locations));
+                     searchMatches.add(new SearchMatch(artId, attribute, locations));
                   }
                }
                result.setIds(localIds);

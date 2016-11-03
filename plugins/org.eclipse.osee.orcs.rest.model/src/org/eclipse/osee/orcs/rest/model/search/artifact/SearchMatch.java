@@ -14,6 +14,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 
 /**
@@ -23,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 public class SearchMatch {
 
    private ArtifactId artId;
-   private int attrId;
+   private AttributeId attrId;
 
    @XmlTransient
    private List<MatchLocation> locations;
@@ -32,7 +33,7 @@ public class SearchMatch {
       // default constructor
    }
 
-   public SearchMatch(ArtifactId artId, int attrId, List<MatchLocation> locations) {
+   public SearchMatch(ArtifactId artId, AttributeId attrId, List<MatchLocation> locations) {
       this.artId = artId;
       this.attrId = attrId;
       this.locations = locations;
@@ -46,11 +47,11 @@ public class SearchMatch {
       this.artId = artId;
    }
 
-   public int getAttrId() {
+   public AttributeId getAttrId() {
       return attrId;
    }
 
-   public void setAttrId(int attrId) {
+   public void setAttrId(AttributeId attrId) {
       this.attrId = attrId;
    }
 

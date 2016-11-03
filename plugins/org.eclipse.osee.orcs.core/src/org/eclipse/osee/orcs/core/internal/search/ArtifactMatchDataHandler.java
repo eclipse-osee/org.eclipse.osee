@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -72,7 +73,7 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
             artifactMatch = new ArtifactMatch();
             matches.put(artId, artifactMatch);
          }
-         artifactMatch.addLocation(data.getLocalId(), match);
+         artifactMatch.addLocation(data, match);
       }
    }
 
@@ -115,7 +116,7 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
 
    private static final class ArtifactMatch implements Match<ArtifactReadable, AttributeReadable<?>> {
 
-      private final ListMultimap<Integer, MatchLocation> matches = newLinkedHashListMultimap();
+      private final ListMultimap<AttributeId, MatchLocation> attributeMatches = newLinkedHashListMultimap();
       private ArtifactReadable item;
 
       public ArtifactMatch() {
@@ -126,13 +127,13 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
          this.item = item;
       }
 
-      public void addLocation(Integer attrId, MatchLocation location) {
-         matches.put(attrId, location);
+      public void addLocation(AttributeId attrId, MatchLocation location) {
+         attributeMatches.put(attrId, location);
       }
 
       @Override
       public boolean hasLocationData() {
-         return !matches.isEmpty();
+         return !attributeMatches.isEmpty();
       }
 
       @Override
@@ -145,7 +146,7 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
          Collection<AttributeReadable<?>> filtered = Lists.newLinkedList();
          // look at all attributes since search already filters on deletion flag
          for (AttributeReadable<?> attribute : item.getAttributes(DeletionFlag.INCLUDE_DELETED)) {
-            if (matches.containsKey(attribute.getLocalId())) {
+            if (attributeMatches.containsKey(attribute)) {
                filtered.add(attribute);
             }
          }
@@ -154,13 +155,13 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
 
       @Override
       public List<MatchLocation> getLocation(AttributeReadable<?> element) {
-         List<MatchLocation> toReturn = matches.get(element.getLocalId());
+         List<MatchLocation> toReturn = attributeMatches.get(element);
          return toReturn != null ? toReturn : Collections.<MatchLocation> emptyList();
       }
 
       @Override
       public String toString() {
-         return "ArtifactMatch [item=" + item + ", matches=" + matches + "]";
+         return "ArtifactMatch [item=" + item + ", matches=" + attributeMatches + "]";
       }
    }
 

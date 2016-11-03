@@ -69,7 +69,7 @@ public class HtmlWriter {
       Map<String, Object> data = new LinkedHashMap<>();
       data.put("Name", attribute.getAttributeType().getName());
 
-      int attrId = attribute.getLocalId();
+      Long attrId = attribute.getId();
       URI uri = uriInfo.getAbsolutePathBuilder().path("{attributeId}").build(attrId);
       data.put("AttributeId", asLink(uri.getPath(), String.valueOf(attrId)));
       return data;
@@ -100,7 +100,7 @@ public class HtmlWriter {
       Collection<AttributeTypeToken> types = artifact.getExistingAttributeTypes();
       for (AttributeTypeToken type : types) {
          for (AttributeReadable<?> attr : artifact.getAttributes(type)) {
-            URI attrUri = uriInfo.getAbsolutePathBuilder().path("/attribute/{attributeId}").build(attr.getLocalId());
+            URI attrUri = uriInfo.getAbsolutePathBuilder().path("/attribute/{attributeId}").build(attr.getId());
             String label = asLink(attrUri.getPath(), type.getName());
             String value = attr.getDisplayableString();
             data.put(label, value == null ? "<NULL>" : value);

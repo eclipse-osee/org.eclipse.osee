@@ -19,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -48,12 +49,12 @@ public class AttributesResource {
    }
 
    @Path("{attributeId}")
-   public AttributeResource getAttribute(@PathParam("attributeId") int attributeId) {
+   public AttributeResource getAttribute(@PathParam("attributeId") AttributeId attributeId) {
       return new AttributeResource(uriInfo, request, branchId, artifactUuid, attributeId);
    }
 
    @Path("{attributeId}/version/{transactionId}/text")
-   public AttributeResource getAttributeWithGammaAsText(@PathParam("attributeId") int attributeId, @PathParam("transactionId") TransactionId transactionId) {
+   public AttributeResource getAttributeWithGammaAsText(@PathParam("attributeId") AttributeId attributeId, @PathParam("transactionId") TransactionId transactionId) {
       AttributeResource toReturn =
          new AttributeResource(uriInfo, request, branchId, artifactUuid, attributeId, transactionId);
       toReturn.setTextOut(true);
@@ -61,7 +62,7 @@ public class AttributesResource {
    }
 
    @Path("{attributeId}/version/{transactionId}")
-   public AttributeResource getAttributeWithGamma(@PathParam("attributeId") int attributeId, @PathParam("transactionId") TransactionId transactionId) {
+   public AttributeResource getAttributeWithGamma(@PathParam("attributeId") AttributeId attributeId, @PathParam("transactionId") TransactionId transactionId) {
       return new AttributeResource(uriInfo, request, branchId, artifactUuid, attributeId, transactionId);
    }
 

@@ -25,6 +25,7 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -254,8 +255,8 @@ public class ArtifactQueryTest {
       boolean found = false;
       for (ArtifactMatch match : matches) {
          if (match.getArtifact().getName().equals("Read-Write Minimum Rate")) {
-            HashCollection<Integer, MatchLocation> matchData = match.getMatchData();
-            for (int attr : matchData.keySet()) {
+            HashCollection<AttributeId, MatchLocation> matchData = match.getMatchData();
+            for (AttributeId attr : matchData.keySet()) {
 
                if (match.getArtifact().getAttributeById(attr, false).isOfType(CoreAttributeTypes.WordTemplateContent)) {
                   found = true;

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.search.page;
 
 import java.util.ArrayList;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchResult;
@@ -22,13 +23,13 @@ import org.eclipse.search.ui.text.Match;
  */
 public class AttributeLineElement implements IAdaptable {
 
-   private final int attribute;
+   private final AttributeId attribute;
    private final Artifact parent;
    private final int lineNumber;
    private final int lineStartOffset;
    private final String lineContents;
 
-   public AttributeLineElement(Artifact parent, int attribute, int lineNumber, int lineStartOffset, String contents) {
+   public AttributeLineElement(Artifact parent, AttributeId attribute, int lineNumber, int lineStartOffset, String contents) {
       this.parent = parent;
       this.attribute = attribute;
       this.lineContents = contents;
@@ -84,7 +85,7 @@ public class AttributeLineElement implements IAdaptable {
       return count;
    }
 
-   public int getAttribute() {
+   public AttributeId getAttribute() {
       return attribute;
    }
 
@@ -94,7 +95,7 @@ public class AttributeLineElement implements IAdaptable {
       if (type == Artifact.class) {
          return (T) getParent();
       } else if (type == Attribute.class) {
-         return (T) Integer.valueOf(getAttribute());
+         return (T) attribute;
       }
 
       Object obj = null;

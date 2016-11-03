@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
  * @author Megumi Telles
  */
 @JsonSerialize(using = IdSerializer.class)
-public interface AttributeId extends HasLocalId<Integer>, Id {
+public interface AttributeId extends Id {
    AttributeId SENTINEL = valueOf(Id.SENTINEL);
 
    public static AttributeId valueOf(String id) {
@@ -30,11 +30,6 @@ public interface AttributeId extends HasLocalId<Integer>, Id {
    }
 
    String UNSPECIFIED = "Unspecified";
-
-   @Override
-   default Integer getLocalId() {
-      return getId().intValue();
-   }
 
    public static AttributeId valueOf(int id) {
       return valueOf(Long.valueOf(id));

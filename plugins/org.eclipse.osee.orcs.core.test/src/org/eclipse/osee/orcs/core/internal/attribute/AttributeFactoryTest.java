@@ -152,8 +152,7 @@ public class AttributeFactoryTest {
       when(introducedAttributeData.getTypeUuid()).thenReturn(attributeType.getId());
       when(introducedAttributeData.getDataProxy()).thenReturn(proxy);
 
-      when(container.getAttributeById(attributeData.getLocalId(), DeletionFlag.INCLUDE_DELETED)).thenReturn(
-         destinationAttribute);
+      when(container.getAttributeById(attributeData, DeletionFlag.INCLUDE_DELETED)).thenReturn(destinationAttribute);
 
       Attribute<Object> actual = factory.introduceAttribute(attributeData, COMMON, container);
       assertNotNull(actual);

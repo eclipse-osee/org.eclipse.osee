@@ -384,13 +384,13 @@ public class ArtifactReadOnlyImplTest {
 
    @Test
    public void testGetAttributeById() throws OseeCoreException {
-      when(proxiedObject.getAttributeById(attributeId.getId().intValue())).thenAnswer(answer(attribute1));
+      when(proxiedObject.getAttributeById(attributeId)).thenAnswer(answer(attribute1));
       when(proxyManager.asExternalAttribute(session, attribute1)).thenReturn(attributeReadable1);
 
       AttributeReadable<Object> actual = readOnly.getAttributeById(attributeId);
 
       assertEquals(attributeReadable1, actual);
-      verify(proxiedObject).getAttributeById(attributeId.getId().intValue());
+      verify(proxiedObject).getAttributeById(attributeId);
       verify(proxyManager).asExternalAttribute(session, attribute1);
    }
 

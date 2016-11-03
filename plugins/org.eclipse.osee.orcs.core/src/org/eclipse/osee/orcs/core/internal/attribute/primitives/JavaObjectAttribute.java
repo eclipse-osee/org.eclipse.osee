@@ -47,8 +47,7 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
                inputStream.reset();
             }
          } catch (IOException ex) {
-            getLogger().error(ex, "Error resetting inputstream for attrId:[%s] gammaId:[%s]", getLocalId(),
-               getGammaId());
+            getLogger().error(ex, "Error resetting inputstream for attrId:[%s] gammaId:[%s]", getId(), getGammaId());
          } finally {
             Lib.close(objectStream);
          }

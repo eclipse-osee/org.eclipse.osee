@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -95,9 +96,9 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
             if (artifactMatch.hasMatchData()) {
                try {
                   Artifact artifact = artifactMatch.getArtifact();
-                  HashCollection<Integer, MatchLocation> matchData = artifactMatch.getMatchData();
+                  HashCollection<AttributeId, MatchLocation> matchData = artifactMatch.getMatchData();
                   if (!matchData.isEmpty()) {
-                     for (Integer attribute : matchData.keySet()) {
+                     for (AttributeId attribute : matchData.keySet()) {
                         for (MatchLocation matchLocation : matchData.getValues(attribute)) {
                            resultCollector.acceptMatchData(artifact, attribute, matchLocation);
                            lineMatches++;
@@ -132,7 +133,7 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
 
       private final AbstractTextSearchResult fResult;
       private ArrayList<Match> fCachedMatches;
-      private final Map<Integer, String> attrContent = new HashMap<>();
+      private final Map<AttributeId, String> attrContent = new HashMap<>();
       private static final int HALF_LINE_CHAR_COUNT = 40;
 
       private ResultCollector(AbstractTextSearchResult result) {
@@ -145,7 +146,7 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
          return true;
       }
 
-      public boolean acceptMatchData(Artifact artifact, int attribute, MatchLocation matchLocation) {
+      public boolean acceptMatchData(Artifact artifact, AttributeId attribute, MatchLocation matchLocation) {
          int matchOffset = matchLocation.getStartPosition() - 1;
          if (matchOffset < 0) {
             matchOffset = 0;
@@ -161,14 +162,14 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
          return true;
       }
 
-      private AttributeLineElement getLineElement(int offset, int matchEnd, Artifact artifact, int attrId) {
+      private AttributeLineElement getLineElement(int offset, int matchEnd, Artifact artifact, AttributeId attrId) {
          int lineNumber = 1;
          int lineStart = 0;
          String content = null;
          if (attrContent.containsKey(attrId)) {
             content = attrContent.get(attrId);
          } else {
-            content = getContentFromAttribute(artifact.getAttributeById(attrId, false));
+            content = getContentFromAttribute(artifact.getAttributeById(attrId.getId(), false));
             attrContent.put(attrId, content);
          }
          if (!fCachedMatches.isEmpty()) {

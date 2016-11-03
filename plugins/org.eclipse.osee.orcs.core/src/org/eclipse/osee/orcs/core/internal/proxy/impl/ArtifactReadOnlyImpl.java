@@ -154,7 +154,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
 
    @Override
    public Long getSoleAttributeId(AttributeTypeId attributeType) {
-      return (long) getProxiedObject().getSoleAttribute(attributeType).getLocalId();
+      return getProxiedObject().getSoleAttribute(attributeType).getId();
    }
 
    @Override
@@ -194,7 +194,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
 
    @Override
    public AttributeReadable<Object> getAttributeById(AttributeId attributeId) throws OseeCoreException {
-      Attribute<Object> attribute = getProxiedObject().getAttributeById(attributeId.getId().intValue());
+      Attribute<Object> attribute = getProxiedObject().getAttributeById(attributeId);
       return getProxyManager().asExternalAttribute(getSession(), attribute);
    }
 

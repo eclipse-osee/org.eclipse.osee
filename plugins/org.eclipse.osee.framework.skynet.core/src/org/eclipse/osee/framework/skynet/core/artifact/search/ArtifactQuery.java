@@ -706,7 +706,6 @@ public class ArtifactQuery {
          Map<Artifact, ArtifactMatch> matches = new HashMap<>();
          for (SearchMatch match : result.getSearchMatches()) {
             ArtifactId artId = match.getArtId();
-            int attrId = match.getAttrId();
             Artifact art = artIdToArtifact.get(artId.getId());
 
             if (art != null) {
@@ -715,7 +714,7 @@ public class ArtifactQuery {
                   toAddTo = new ArtifactMatch(art);
                   matches.put(art, toAddTo);
                }
-               toAddTo.addMatchData(attrId, match.getLocations());
+               toAddTo.addMatchData(match.getAttrId(), match.getLocations());
             }
          }
 

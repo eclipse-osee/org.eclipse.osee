@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -44,15 +45,15 @@ public class AttributeResource {
 
    private final BranchId branchId;
    private final Long artifactUuid;
-   private final int attrId;
+   private final AttributeId attrId;
    private final TransactionId transactionId;
    private boolean textOut = false;
 
-   public AttributeResource(UriInfo uriInfo, Request request, BranchId branchId, Long artifactUuid, int attributeId) {
+   public AttributeResource(UriInfo uriInfo, Request request, BranchId branchId, Long artifactUuid, AttributeId attributeId) {
       this(uriInfo, request, branchId, artifactUuid, attributeId, TransactionId.SENTINEL);
    }
 
-   public AttributeResource(UriInfo uriInfo, Request request, BranchId branchId, Long artifactUuid, int attributeId, TransactionId transactionId) {
+   public AttributeResource(UriInfo uriInfo, Request request, BranchId branchId, Long artifactUuid, AttributeId attributeId, TransactionId transactionId) {
       this.uriInfo = uriInfo;
       this.request = request;
       this.branchId = branchId;
@@ -80,7 +81,7 @@ public class AttributeResource {
             Iterables.tryFind(exactlyOne.getAttributes(), new Predicate<AttributeReadable<Object>>() {
                @Override
                public boolean apply(AttributeReadable<Object> attribute) {
-                  return attribute.getLocalId() == attrId;
+                  return attrId.equals(attribute);
                }
             });
 

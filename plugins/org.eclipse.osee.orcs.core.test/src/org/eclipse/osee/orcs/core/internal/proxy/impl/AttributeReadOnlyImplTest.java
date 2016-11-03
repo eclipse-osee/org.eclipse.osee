@@ -87,17 +87,6 @@ public class AttributeReadOnlyImplTest {
    }
 
    @Test
-   public void testGetLocalId() {
-      int expected = 123;
-      when(proxiedObject.getLocalId()).thenReturn(expected);
-
-      int actual = readOnly.getLocalId();
-
-      assertEquals(expected, actual);
-      verify(proxiedObject).getLocalId();
-   }
-
-   @Test
    public void testGetModificationType() {
       ModificationType expected = ModificationType.ARTIFACT_DELETED;
       when(proxiedObject.getModificationType()).thenReturn(expected);

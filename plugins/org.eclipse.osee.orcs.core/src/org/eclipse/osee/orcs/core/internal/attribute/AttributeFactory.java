@@ -126,7 +126,7 @@ public class AttributeFactory {
       Attribute<T> destinationAttribute = null;
       if (source.getVersion().isInStorage()) {
          try {
-            destinationAttribute = destination.getAttributeById(source.getLocalId(), DeletionFlag.INCLUDE_DELETED);
+            destinationAttribute = destination.getAttributeById(source, DeletionFlag.INCLUDE_DELETED);
             Reference<AttributeContainer> artifactRef = new WeakReference<>(destination);
             destinationAttribute.internalInitialize(cache, artifactRef, attributeData, true, false);
          } catch (AttributeDoesNotExist ex) {
