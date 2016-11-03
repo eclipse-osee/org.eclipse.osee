@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -21,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Roberto E. Escobar
  */
-public interface AttributeContainer extends Identifiable<String>, HasLocalId<Integer> {
+public interface AttributeContainer extends Identifiable<String> {
 
    void add(AttributeTypeId attributeType, Attribute<? extends Object> attribute);
 

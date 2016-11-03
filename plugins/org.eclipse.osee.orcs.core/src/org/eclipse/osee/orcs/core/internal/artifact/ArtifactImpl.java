@@ -40,7 +40,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    private GraphData graph;
 
    public ArtifactImpl(ArtifactTypes artifactTypeCache, ArtifactData artifactData, AttributeFactory attributeFactory) {
-      super(artifactData.getGuid(), attributeFactory);
+      super(artifactData, attributeFactory);
       this.artifactTypeCache = artifactTypeCache;
       this.artifactData = artifactData;
       this.objectEditState = EditState.NO_CHANGE;

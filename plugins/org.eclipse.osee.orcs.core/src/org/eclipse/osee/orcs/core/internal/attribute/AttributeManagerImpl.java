@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
-import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
+import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -43,17 +43,19 @@ import org.eclipse.osee.orcs.core.internal.util.OrcsPredicates;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AttributeManagerImpl extends BaseIdentity<String> implements HasOrcsData<ArtifactData>, AttributeManager, AttributeExceptionFactory {
+public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData<ArtifactData>, AttributeManager, AttributeExceptionFactory {
 
    private final AttributeCollection attributes;
+   private final String guid;
    private boolean isLoaded;
 
    private final AttributeFactory attributeFactory;
 
-   protected AttributeManagerImpl(String guid, AttributeFactory attributeFactory) {
-      super(guid);
+   protected AttributeManagerImpl(ArtifactData artifactData, AttributeFactory attributeFactory) {
+      super(artifactData.getId());
       this.attributeFactory = attributeFactory;
       this.attributes = new AttributeCollection(this);
+      guid = artifactData.getGuid();
    }
 
    protected Collection<Attribute<?>> getAllAttributes() {
@@ -63,7 +65,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    @Override
    public synchronized void add(AttributeTypeId attributeType, Attribute<? extends Object> attribute) {
       attributes.add(attributeType, attribute);
-      attribute.getOrcsData().setArtifactId(getLocalId());
+      attribute.getOrcsData().setArtifactId(getId().intValue());
    }
 
    @Override
@@ -565,12 +567,17 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    @Override
    public AttributeDoesNotExist createDoesNotExistException(AttributeTypeId type) {
       AttributeDoesNotExist toReturn;
-      if (type != null) {
+      if (type == null) {
+         toReturn = new AttributeDoesNotExist("Attribute could not be found on [%s]", getExceptionString());
+      } else {
          toReturn =
             new AttributeDoesNotExist("Attribute of type [%s] could not be found on [%s]", type, getExceptionString());
-      } else {
-         toReturn = new AttributeDoesNotExist("Attribute not be found on [%s]", getExceptionString());
       }
       return toReturn;
+   }
+
+   @Override
+   public String getGuid() {
+      return guid;
    }
 }
