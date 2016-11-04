@@ -51,17 +51,17 @@ public final class AtsWorkDefinitionSheetProviders {
       // Utility Class
    }
 
-   public static void initializeDatabase(XResultData resultData) throws OseeCoreException {
+   public static void initializeDatabase(XResultData resultData, String dbType) throws OseeCoreException {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Import ATS Work Definitions, Teams and AIs");
-      Artifact folder =
-         OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.WorkDefinitionsFolder, AtsClientService.get().getAtsBranch());
+      Artifact folder = OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.WorkDefinitionsFolder,
+         AtsClientService.get().getAtsBranch());
       if (folder.isDirty()) {
          changes.add(folder);
       }
-      List<WorkDefinitionSheet> sheets = getWorkDefinitionSheets();
+      List<WorkDefinitionSheet> sheets = getWorkDefinitionSheets(dbType);
       Set<String> stateNames = new HashSet<>();
       importWorkDefinitionSheets(resultData, changes, folder, sheets, stateNames);
-      importTeamsAndAis(resultData, changes, folder, sheets);
+      importTeamsAndAis(resultData, changes, folder, sheets, dbType);
       changes.execute();
    }
 
@@ -77,17 +77,17 @@ public final class AtsWorkDefinitionSheetProviders {
       }
    }
 
-   public static void importTeamsAndAis(XResultData resultData, IAtsChangeSet changes, Artifact folder, Collection<WorkDefinitionSheet> sheets) throws OseeCoreException {
+   public static void importTeamsAndAis(XResultData resultData, IAtsChangeSet changes, Artifact folder, Collection<WorkDefinitionSheet> sheets, String dbType) throws OseeCoreException {
       for (WorkDefinitionSheet sheet : sheets) {
          OseeLog.logf(Activator.class, Level.INFO, "Importing ATS Teams and AIs [%s]", sheet.getName());
          importAIsAndTeamsToDb(sheet, changes);
       }
    }
 
-   public static void importAIsAndTeamsToDatabase() throws OseeCoreException {
+   public static void importAIsAndTeamsToDatabase(String dbType) throws OseeCoreException {
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Import ATS AIs and Team Definitions");
-      for (WorkDefinitionSheet sheet : getWorkDefinitionSheets()) {
+      for (WorkDefinitionSheet sheet : getWorkDefinitionSheets(dbType)) {
          OseeLog.logf(Activator.class, Level.INFO, "Importing ATS AIs and Teams sheet [%s]", sheet.getName());
          importAIsAndTeamsToDb(sheet, changes);
       }
@@ -101,23 +101,25 @@ public final class AtsWorkDefinitionSheetProviders {
       importer.execute();
    }
 
-   public static List<WorkDefinitionSheet> getWorkDefinitionSheets() {
+   public static List<WorkDefinitionSheet> getWorkDefinitionSheets(String dbType) {
       List<WorkDefinitionSheet> sheets = new ArrayList<>();
-      sheets.add(new WorkDefinitionSheet(WORK_DEF_TEAM_DEFAULT,
-         getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Team_Default.ats")));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Task_Default",
-         getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Task_Default.ats")));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Review_Decision",
-         getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Review_Decision.ats")));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Review_PeerToPeer",
-         getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Review_PeerToPeer.ats")));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_Simple",
-         getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Team_Simple.ats")));
-      sheets.add(
-         new WorkDefinitionSheet("WorkDef_Goal", getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Goal.ats")));
-      sheets.add(
-         new WorkDefinitionSheet("WorkDef_Sprint", getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Sprint.ats")));
-      for (IAtsWorkDefinitionSheetProvider provider : getProviders()) {
+      if (dbType.equals("ats")) {
+         sheets.add(new WorkDefinitionSheet(WORK_DEF_TEAM_DEFAULT,
+            getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Team_Default.ats")));
+         sheets.add(new WorkDefinitionSheet("WorkDef_Task_Default",
+            getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Task_Default.ats")));
+         sheets.add(new WorkDefinitionSheet("WorkDef_Review_Decision",
+            getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Review_Decision.ats")));
+         sheets.add(new WorkDefinitionSheet("WorkDef_Review_PeerToPeer",
+            getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Review_PeerToPeer.ats")));
+         sheets.add(new WorkDefinitionSheet("WorkDef_Team_Simple",
+            getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Team_Simple.ats")));
+         sheets.add(
+            new WorkDefinitionSheet("WorkDef_Goal", getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Goal.ats")));
+         sheets.add(new WorkDefinitionSheet("WorkDef_Sprint",
+            getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Sprint.ats")));
+      }
+      for (IAtsWorkDefinitionSheetProvider provider : getProviders(dbType)) {
          sheets.addAll(provider.getWorkDefinitionSheets());
       }
       return sheets;
@@ -136,10 +138,7 @@ public final class AtsWorkDefinitionSheetProviders {
    /*
     * due to lazy initialization, this function is non-reentrant therefore, the synchronized keyword is necessary
     */
-   private synchronized static Set<IAtsWorkDefinitionSheetProvider> getProviders() {
-      if (teamWorkflowExtensionItems != null) {
-         return teamWorkflowExtensionItems;
-      }
+   private synchronized static Set<IAtsWorkDefinitionSheetProvider> getProviders(String dbType) {
       teamWorkflowExtensionItems = new HashSet<>();
 
       IExtensionPoint point =
@@ -158,15 +157,18 @@ public final class AtsWorkDefinitionSheetProviders {
             if (el.getName().equals("AtsWorkDefinitionSheetProvider")) {
                classname = el.getAttribute("classname");
                bundleName = el.getContributor().getName();
-               if (classname != null && bundleName != null) {
-                  Bundle bundle = Platform.getBundle(bundleName);
-                  try {
-                     Class<?> taskClass = bundle.loadClass(classname);
-                     Object obj = taskClass.newInstance();
-                     teamWorkflowExtensionItems.add((IAtsWorkDefinitionSheetProvider) obj);
-                  } catch (Exception ex) {
-                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
-                        "Error loading AtsWorkDefinitionSheetProvider extension", ex);
+               String actualDbType = el.getAttribute("db_type");
+               if (actualDbType != null && actualDbType.equals(dbType)) {
+                  if (classname != null && bundleName != null) {
+                     Bundle bundle = Platform.getBundle(bundleName);
+                     try {
+                        Class<?> taskClass = bundle.loadClass(classname);
+                        Object obj = taskClass.newInstance();
+                        teamWorkflowExtensionItems.add((IAtsWorkDefinitionSheetProvider) obj);
+                     } catch (Exception ex) {
+                        OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
+                           "Error loading AtsWorkDefinitionSheetProvider extension", ex);
+                     }
                   }
                }
             }

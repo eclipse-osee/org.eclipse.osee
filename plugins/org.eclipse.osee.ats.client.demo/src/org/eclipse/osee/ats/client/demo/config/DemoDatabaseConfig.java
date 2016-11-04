@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.demo.api.DemoInsertionActivity;
 import org.eclipse.osee.ats.demo.api.DemoProgram;
 import org.eclipse.osee.ats.demo.api.DemoSubsystems;
 import org.eclipse.osee.ats.demo.api.DemoUsers;
+import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -41,6 +42,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -66,6 +68,7 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
    @Override
    public void run() throws OseeCoreException {
 
+      AtsWorkDefinitionSheetProviders.initializeDatabase(new XResultData(false), "demo");
       TestUtil.setDemoDb(true);
 
       // Create SAW_Bld_1 branch

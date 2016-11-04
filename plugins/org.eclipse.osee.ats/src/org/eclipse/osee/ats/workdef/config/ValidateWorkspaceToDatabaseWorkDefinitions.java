@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareHandler;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareItem;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -45,42 +46,46 @@ public class ValidateWorkspaceToDatabaseWorkDefinitions extends XNavigateItemAct
       if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) {
          return;
       }
-      Collection<WorkDefinitionSheet> sheets = AtsWorkDefinitionSheetProviders.getWorkDefinitionSheets();
-      XResultData resultData = new XResultData();
-      resultData.log(getName());
-      for (WorkDefinitionSheet sheet : sheets) {
-         resultData.addRaw("Sheet: " + sheet.getName() + "  ");
-         if (sheet.getName().endsWith("AIs_And_Teams")) {
-            resultData.log(" OK - AIs_And_Teams - No Artifact Needed");
-            continue;
-         }
-         Artifact workDefArt = null;
-         try {
-            workDefArt = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, sheet.getName(),
-               AtsClientService.get().getAtsBranch());
-         } catch (ArtifactDoesNotExist ex) {
-            // do nothing;
-         }
-         if (workDefArt == null) {
-            resultData.error(" No Artifact Found with name [" + sheet.getName() + "]");
-            continue;
-         }
-         String sheetText = AtsDslUtil.getString(sheet);
-         sheetText = sheetText.replaceAll("\r\n", "\n");
-         String artText = workDefArt.getSoleAttributeValueAsString(AtsAttributeTypes.DslSheet, "");
-         artText = artText.replaceAll("\r\n", "\n");
-         if (!sheetText.equals(artText)) {
-            resultData.error(" Different (see opened diff editor)");
-            CompareHandler compareHandler =
-               new CompareHandler("Compare [" + sheet.getName() + "] Work Definition file/artifact",
+      EntryDialog dialog = new EntryDialog(getName(), "Enter DB Type");
+      if (dialog.open() == 0) {
+         Collection<WorkDefinitionSheet> sheets =
+            AtsWorkDefinitionSheetProviders.getWorkDefinitionSheets(dialog.getEntry());
+         XResultData resultData = new XResultData();
+         resultData.log(getName());
+         for (WorkDefinitionSheet sheet : sheets) {
+            resultData.addRaw("Sheet: " + sheet.getName() + "  ");
+            if (sheet.getName().endsWith("AIs_And_Teams")) {
+               resultData.log(" OK - AIs_And_Teams - No Artifact Needed");
+               continue;
+            }
+            Artifact workDefArt = null;
+            try {
+               workDefArt = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, sheet.getName(),
+                  AtsClientService.get().getAtsBranch());
+            } catch (ArtifactDoesNotExist ex) {
+               // do nothing;
+            }
+            if (workDefArt == null) {
+               resultData.error(" No Artifact Found with name [" + sheet.getName() + "]");
+               continue;
+            }
+            String sheetText = AtsDslUtil.getString(sheet);
+            sheetText = sheetText.replaceAll("\r\n", "\n");
+            String artText = workDefArt.getSoleAttributeValueAsString(AtsAttributeTypes.DslSheet, "");
+            artText = artText.replaceAll("\r\n", "\n");
+            if (!sheetText.equals(artText)) {
+               resultData.error(" Different (see opened diff editor)");
+               CompareHandler compareHandler = new CompareHandler(
+                  "Compare [" + sheet.getName() + "] Work Definition file/artifact",
                   new CompareItem("File contents", sheetText, System.currentTimeMillis(), true, "file_contents"),
                   new CompareItem("Artifact contents", artText, System.currentTimeMillis(), true, "artifact_contents"),
                   null);
-            compareHandler.compare();
-         } else {
-            resultData.log(" - OK");
+               compareHandler.compare();
+            } else {
+               resultData.log(" - OK");
+            }
          }
+         XResultDataUI.report(resultData, getName());
       }
-      XResultDataUI.report(resultData, getName());
    }
 }

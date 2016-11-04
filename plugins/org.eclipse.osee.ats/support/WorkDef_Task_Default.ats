@@ -48,12 +48,10 @@ workDefinition "WorkDef_Task_Default" {
       type Completed
       ordinal 2
       to "InWork" OverrideAttributeValidation
-      color DARK_GREEN
    }
 
    state "Cancelled" {
       type Cancelled
       ordinal 3
-      color DARK_GREEN
    }
 }

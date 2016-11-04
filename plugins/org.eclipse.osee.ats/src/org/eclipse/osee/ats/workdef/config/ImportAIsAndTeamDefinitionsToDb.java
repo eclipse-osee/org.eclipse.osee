@@ -97,7 +97,8 @@ public class ImportAIsAndTeamDefinitionsToDb {
             changes.add(userArt);
          }
          if (userArt == null) {
-            userArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, AtsClientService.get().getAtsBranch(), dslUserName);
+            userArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, AtsClientService.get().getAtsBranch(),
+               dslUserName);
          }
          if (userArt == null) {
             throw new OseeStateException(
@@ -130,8 +131,8 @@ public class ImportAIsAndTeamDefinitionsToDb {
                   dslTeamDef);
             }
             long uuid = dslTeamDef.getUuid() > 0 ? dslTeamDef.getUuid() : Lib.generateArtifactIdAsInt();
-            newTeam = ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition, AtsClientService.get().getAtsBranch(),
-               dslTeamName, guid, uuid);
+            newTeam = ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition,
+               AtsClientService.get().getAtsBranch(), dslTeamName, guid, uuid);
          }
          if (parentArtifact != null && !parentArtifact.equals(newTeam)) {
             parentArtifact.addChild(newTeam);
@@ -211,8 +212,8 @@ public class ImportAIsAndTeamDefinitionsToDb {
                dslVersionDef);
          }
          long uuid = dslVersionDef.getUuid() > 0 ? dslVersionDef.getUuid() : Lib.generateArtifactIdAsInt();
-         Artifact newVer = ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsClientService.get().getAtsBranch(),
-            dslVerName, guid, uuid);
+         Artifact newVer = ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version,
+            AtsClientService.get().getAtsBranch(), dslVerName, guid, uuid);
 
          teamDef.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, newVer);
          nameToVerArt.put(newVer.getName(), newVer);
@@ -260,8 +261,8 @@ public class ImportAIsAndTeamDefinitionsToDb {
                   guid, dslAIDef);
             }
             long uuid = dslAIDef.getUuid() > 0 ? dslAIDef.getUuid() : Lib.generateArtifactIdAsInt();
-            newAi = ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem, AtsClientService.get().getAtsBranch(),
-               dslAIName, guid, uuid);
+            newAi = ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem,
+               AtsClientService.get().getAtsBranch(), dslAIName, guid, uuid);
          }
          if (parentArtifact != null && !parentArtifact.equals(newAi)) {
             parentArtifact.addChild(newAi);

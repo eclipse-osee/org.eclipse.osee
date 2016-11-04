@@ -55,7 +55,8 @@
          name="DemoWorkDefinitionSheetProvider"
          point="org.eclipse.osee.ats.AtsWorkDefinitionSheetProvider">
       <AtsWorkDefinitionSheetProvider
-            classname="org.eclipse.osee.ats.client.demo.config.DemoWorkDefinitionSheetProvider">
+            classname="org.eclipse.osee.ats.client.demo.config.DemoWorkDefinitionSheetProvider"
+            db_type="demo">
       </AtsWorkDefinitionSheetProvider>
    </extension>
    <extension

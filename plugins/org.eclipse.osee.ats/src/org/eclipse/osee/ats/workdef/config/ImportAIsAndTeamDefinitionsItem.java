@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 
 /**
  * @author Donald G. Dunne
@@ -27,7 +28,10 @@ public class ImportAIsAndTeamDefinitionsItem extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      AtsWorkDefinitionSheetProviders.importAIsAndTeamsToDatabase();
+      EntryDialog dialog = new EntryDialog(getName(), "Enter DB type");
+      if (dialog.open() == 0) {
+         AtsWorkDefinitionSheetProviders.importAIsAndTeamsToDatabase(dialog.getEntry());
+      }
    }
 
 }

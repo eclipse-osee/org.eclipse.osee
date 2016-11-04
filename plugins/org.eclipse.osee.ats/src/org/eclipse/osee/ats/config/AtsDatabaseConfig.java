@@ -72,7 +72,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       changes.setSoleAttributeValue(aia, AtsAttributeTypes.Actionable, false);
       changes.execute();
 
-      AtsWorkDefinitionSheetProviders.initializeDatabase(new XResultData(false));
+      AtsWorkDefinitionSheetProviders.initializeDatabase(new XResultData(false), "ats");
 
       AtsGroup.AtsAdmin.getArtifact().persist(getClass().getSimpleName());
       AtsGroup.AtsTempAdmin.getArtifact().persist(getClass().getSimpleName());

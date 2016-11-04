@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.JunitLaunchConfig">
 <setAttribute key="additional_plugins">
-<setEntry value="org.eclipse.osee.ats.client.integration.tests:0.23.0.qualifier:default:true"/>
-<setEntry value="org.eclipse.osee.client.integration.tests:0.23.0.qualifier:default:true"/>
-<setEntry value="org.eclipse.osee.client.test.framework:0.23.0.qualifier:default:true"/>
+<setEntry value="org.eclipse.osee.ats.client.integration.tests:0.25.0.qualifier:default:true"/>
+<setEntry value="org.eclipse.osee.client.integration.tests:0.25.0.qualifier:default:true"/>
+<setEntry value="org.eclipse.osee.client.test.framework:0.25.0.qualifier:default:true"/>
 <setEntry value="org.hamcrest.core:1.3.0.v201303031735:default:true"/>
 </setAttribute>
 <booleanAttribute key="append.args" value="true"/>

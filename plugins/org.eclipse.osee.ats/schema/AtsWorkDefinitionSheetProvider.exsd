@@ -59,6 +59,13 @@
                </appInfo>
             </annotation>
          </attribute>
+         <attribute name="db_type" type="string" use="required">
+            <annotation>
+               <documentation>
+                  db_type indicates which database will be run during execution
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
