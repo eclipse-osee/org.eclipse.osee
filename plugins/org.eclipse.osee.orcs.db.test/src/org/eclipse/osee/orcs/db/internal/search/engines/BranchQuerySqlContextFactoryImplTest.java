@@ -16,6 +16,7 @@ import static org.eclipse.osee.framework.core.enums.BranchState.CREATED;
 import static org.eclipse.osee.framework.core.enums.BranchState.CREATION_IN_PROGRESS;
 import static org.eclipse.osee.framework.core.enums.BranchType.SYSTEM_ROOT;
 import static org.eclipse.osee.framework.core.enums.BranchType.WORKING;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.DefaultHierarchyRoot;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -459,7 +460,7 @@ public class BranchQuerySqlContextFactoryImplTest {
          "br1.associated_art_id = ?\n" + //
          " ORDER BY br1.branch_id";
 
-      queryData.addCriteria(new CriteriaAssociatedArtId(4));
+      queryData.addCriteria(new CriteriaAssociatedArtId(DefaultHierarchyRoot));
 
       QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
 
@@ -471,7 +472,7 @@ public class BranchQuerySqlContextFactoryImplTest {
       assertEquals(0, joins.size());
 
       Iterator<Object> iterator = parameters.iterator();
-      assertEquals(4, iterator.next());
+      assertEquals(DefaultHierarchyRoot, iterator.next());
    }
 
    private static Criteria ancestorOf(BranchId child) {

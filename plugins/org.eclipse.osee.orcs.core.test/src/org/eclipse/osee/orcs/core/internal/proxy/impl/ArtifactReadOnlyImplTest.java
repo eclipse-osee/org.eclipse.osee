@@ -131,16 +131,6 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testGetLocalId() {
-      when(proxiedObject.getLocalId()).thenReturn(45);
-
-      int actual = readOnly.getLocalId();
-
-      assertEquals(45, actual);
-      verify(proxiedObject).getLocalId();
-   }
-
-   @Test
    public void testGetName() {
       String name = "This is my name";
       when(proxiedObject.getName()).thenReturn(name);

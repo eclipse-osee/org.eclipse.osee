@@ -83,7 +83,7 @@ public class TraceInformationAccumulator {
       int count = 0;
       for (ArtifactReadable ar : items) {
          traceWriter.writeCell(ar.getName(), TraceReportGenerator.SOFTWARE_SHEETREQ_INDEX);
-         traceWriter.writeCell(ar.getLocalId());
+         traceWriter.writeCell(ar.getId());
          traceWriter.endRow();
          count++;
       }
@@ -93,7 +93,7 @@ public class TraceInformationAccumulator {
    private void processSoftwareRequirement(ArtifactReadable softwareRequirement) throws IOException {
       traceWriter.writeCell(handleEquivalentName(softwareRequirement), TraceReportGenerator.SOFTWARE_REQUIREMENT_INDEX);
 
-      traceWriter.writeCell(softwareRequirement.getLocalId());
+      traceWriter.writeCell(softwareRequirement.getId());
 
       traceWriter.writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.SeverityCategory, "none"));
 
@@ -148,7 +148,7 @@ public class TraceInformationAccumulator {
       if (items.size() > 0) {
          for (ArtifactReadable ar : items) {
             traceWriter.writeCell(ar.getName(), location);
-            traceWriter.writeCell(ar.getLocalId());
+            traceWriter.writeCell(ar.getId());
             traceWriter.endRow();
          }
       }

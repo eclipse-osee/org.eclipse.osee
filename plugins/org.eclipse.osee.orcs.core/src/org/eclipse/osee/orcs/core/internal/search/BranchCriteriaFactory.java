@@ -1,6 +1,7 @@
 package org.eclipse.osee.orcs.core.internal.search;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -58,7 +59,7 @@ public class BranchCriteriaFactory {
       return new CriteriaMergeBranchFor(source, destination);
    }
 
-   public Criteria createAssociatedArtIdCriteria(int artId) {
+   public Criteria createAssociatedArtIdCriteria(ArtifactId artId) {
       return new CriteriaAssociatedArtId(artId);
    }
 }

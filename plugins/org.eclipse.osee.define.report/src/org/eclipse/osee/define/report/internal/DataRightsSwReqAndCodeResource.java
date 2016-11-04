@@ -186,8 +186,7 @@ public final class DataRightsSwReqAndCodeResource {
             continue;
          }
 
-         ArtifactReadable source =
-            queryFactory.fromBranch(sourceBranch).andUuid(dest.getLocalId()).getResults().getAtMostOneOrNull();
+         ArtifactReadable source = queryFactory.fromBranch(sourceBranch).andId(dest).getResults().getAtMostOneOrNull();
          if (source == null) {
             String classification = dest.getSoleAttributeValue(CoreAttributeTypes.DataRightsClassification, "");
             String subsystem = dest.getSoleAttributeValue(CoreAttributeTypes.Subsystem, "");
@@ -211,7 +210,7 @@ public final class DataRightsSwReqAndCodeResource {
 
    private void appendDetails(String msg, StringBuilder strb, ArtifactReadable art, String subsystem, String classification) {
       strb.append(
-         msg + "|" + subsystem + "|" + classification + " |" + art.getArtifactType() + "| " + art.getName() + "| " + art.getLocalId() + "| " + art.getLastModifiedTransaction() + "<br />");
+         msg + "|" + subsystem + "|" + classification + " |" + art.getArtifactType() + "| " + art.getName() + "| " + art.getId() + "| " + art.getLastModifiedTransaction() + "<br />");
    }
 
    private TransactionBuilder createTxBuilder(String comment, BranchId branchId) {

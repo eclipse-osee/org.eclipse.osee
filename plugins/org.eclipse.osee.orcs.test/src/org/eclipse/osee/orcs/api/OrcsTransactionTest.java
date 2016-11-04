@@ -249,7 +249,7 @@ public class OrcsTransactionTest {
 
       ArtifactReadable introduced =
          query.fromBranch(topLevelBranch).andIds(SystemUser.Anonymous).getResults().getExactlyOne();
-      assertEquals(user.getLocalId(), introduced.getLocalId());
+      assertEquals(user, introduced);
    }
 
    @Test

@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.TransactionQuery;
@@ -53,12 +52,10 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public IOseeBranch getCommittedWorkingBranch(IAtsTeamWorkflow teamWf) {
-      int assocArtId = ((ArtifactReadable) teamWf.getStoreObject()).getLocalId();
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
-      query =
-         query.andIsOfType(BranchType.WORKING).andStateIs(BranchState.COMMITTED).excludeArchived().andAssociatedArtId(
-            assocArtId);
-      return query.getResults().getOneOrNull();
+      ArtifactId artId = ArtifactId.valueOf(teamWf.getId());
+      return query.andIsOfType(BranchType.WORKING).andStateIs(
+         BranchState.COMMITTED).excludeArchived().andAssociatedArtId(artId).getResults().getOneOrNull();
    }
 
    @Override
@@ -70,7 +67,8 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
          branchQuery.andStateIs(statesToSearch.toArray(new BranchState[statesToSearch.size()]));
       }
       branchQuery.andIsOfType(BranchType.WORKING);
-      branchQuery.andAssociatedArtId(((ArtifactReadable) teamWf.getStoreObject()).getLocalId());
+      ArtifactId artId = ArtifactId.valueOf(teamWf.getId());
+      branchQuery.andAssociatedArtId(artId);
       return branchQuery.getResultsAsId().getOneOrNull();
    }
 
@@ -130,14 +128,14 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public Collection<TransactionRecord> getCommittedArtifactTransactionIds(IAtsTeamWorkflow teamWf) {
-      ArtifactId artifact = teamWf.getStoreObject();
-      if (!commitArtifactIdMap.containsKey(artifact)) {
-         txQuery.andCommitIds(artifact.getId().intValue());
+      ArtifactId artId = ArtifactId.valueOf(teamWf.getId());
+      if (!commitArtifactIdMap.containsKey(artId)) {
+         txQuery.andCommitIds(teamWf.getId().intValue());
          txQuery.getResults().forEach(
-            tx -> commitArtifactIdMap.put(artifact, new TransactionRecord(tx.getId(), tx.getBranch(), tx.getComment(),
+            tx -> commitArtifactIdMap.put(artId, new TransactionRecord(tx.getId(), tx.getBranch(), tx.getComment(),
                tx.getDate(), tx.getAuthor().getId().intValue(), tx.getCommitArt().getId().intValue(), tx.getTxType())));
       }
-      Collection<TransactionRecord> transactions = commitArtifactIdMap.getValues(artifact);
+      Collection<TransactionRecord> transactions = commitArtifactIdMap.getValues(artId);
       return transactions == null ? Collections.emptyList() : transactions;
    }
 

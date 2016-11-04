@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
@@ -31,7 +30,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
  * @author Roberto E. Escobar
  * @author Andrew M. Finkbeiner
  */
-public interface ArtifactReadable extends ArtifactToken, HasLocalId<Integer>, HasTransaction, OrcsReadable {
+public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsReadable {
 
    TransactionId getLastModifiedTransaction();
 

@@ -14,8 +14,6 @@ import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import java.util.HashMap;
-import java.util.Map;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -52,7 +50,6 @@ public class OrcsRelationLoadingTest {
       checkRelationsForSawBranch(orcsApi, queryFactory);
    }
 
-   @SuppressWarnings("unchecked")
    private void checkRelationsForCommonBranch(OrcsApi oseeApi, QueryFactory queryFactory) throws OseeCoreException {
 
       ArtifactReadable art6 =
@@ -106,13 +103,5 @@ public class OrcsRelationLoadingTest {
       assertEquals(1, artifact.getExistingRelationTypes().size());
       assertEquals(3, artifact.getRelated(CoreRelationTypes.Default_Hierarchical__Child).size());
       assertEquals(1, artifact.getRelated(CoreRelationTypes.Default_Hierarchical__Parent).size());
-   }
-
-   private Map<Integer, ArtifactReadable> createLookup(Iterable<ArtifactReadable> arts) {
-      Map<Integer, ArtifactReadable> lookup = new HashMap<>();
-      for (ArtifactReadable artifact : arts) {
-         lookup.put(artifact.getLocalId(), artifact);
-      }
-      return lookup;
    }
 }

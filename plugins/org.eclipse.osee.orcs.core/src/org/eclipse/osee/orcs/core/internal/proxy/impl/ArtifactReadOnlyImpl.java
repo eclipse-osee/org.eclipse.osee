@@ -76,11 +76,6 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public Integer getLocalId() {
-      return getProxiedObject().getLocalId();
-   }
-
-   @Override
    public BranchId getBranch() {
       return getProxiedObject().getBranch();
    }
@@ -311,7 +306,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
 
    @Override
    public Long getId() {
-      return Long.valueOf(getLocalId());
+      return getProxiedObject().getLocalId().longValue();
    }
 
    @Override

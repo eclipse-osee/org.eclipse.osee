@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds.criteria;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
@@ -20,20 +21,19 @@ import org.eclipse.osee.orcs.core.ds.Options;
  */
 public class CriteriaAssociatedArtId extends Criteria implements BranchCriteria {
 
-   private final Integer associatedArtId;
+   private final ArtifactId associatedArtId;
 
-   public CriteriaAssociatedArtId(Integer associatedArtId) {
-      super();
+   public CriteriaAssociatedArtId(ArtifactId associatedArtId) {
       this.associatedArtId = associatedArtId;
    }
 
-   public Integer getAssociatedArtId() {
+   public ArtifactId getAssociatedArtId() {
       return associatedArtId;
    }
 
    @Override
    public void checkValid(Options options) throws OseeCoreException {
-      Conditions.checkExpressionFailOnTrue(associatedArtId == null, "Associated artifact id cannot be null");
+      Conditions.checkExpressionFailOnTrue(associatedArtId.isInvalid(), "Associated artifact id cannot be null");
    }
 
    @Override

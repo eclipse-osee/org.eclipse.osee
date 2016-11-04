@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -171,7 +172,7 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
    }
 
    @Override
-   public T andAssociatedArtId(int artId) {
+   public T andAssociatedArtId(ArtifactId artId) {
       Criteria criteria = criteriaFactory.createAssociatedArtIdCriteria(artId);
       return addAndCheck(getQueryData(), criteria);
    }

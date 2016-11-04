@@ -122,7 +122,7 @@ public class JdbcJaxRsOAuthStorage implements JaxRsOAuthStorage {
 
       long clientId = clientArtId.getUuid();
       ArtifactReadable artifact = clientStorage.getClientByClientUuid(clientId).getExactlyOne();
-      long applicationId = artifact.getLocalId();
+      Long applicationId = artifact.getId();
 
       OAuthClientCredential credential = asCredential(clientId, client, applicationId);
       if (credentialStorage.getByClientIdAndApplicationId(clientId, applicationId) != null) {
@@ -164,9 +164,7 @@ public class JdbcJaxRsOAuthStorage implements JaxRsOAuthStorage {
       ClientStorage clientStorage = getClientStorage();
       ArtifactReadable artifact = clientStorage.getClientByClientGuid(guid).getOneOrNull();
       if (artifact != null) {
-         Integer applicationId = artifact.getLocalId();
-
-         OAuthClientCredential credential = credentialStorage.getByApplicationId(applicationId);
+         OAuthClientCredential credential = credentialStorage.getByApplicationId(artifact.getId());
          client = clientStorage.newClient(artifact, credential);
       }
       return client;
@@ -178,9 +176,7 @@ public class JdbcJaxRsOAuthStorage implements JaxRsOAuthStorage {
       ClientStorage clientStorage = getClientStorage();
       ArtifactReadable artifact = clientStorage.getClientByClientUuid(uuid).getOneOrNull();
       if (artifact != null) {
-         Integer applicationId = artifact.getLocalId();
-
-         OAuthClientCredential credential = credentialStorage.getByApplicationId(applicationId);
+         OAuthClientCredential credential = credentialStorage.getByApplicationId(artifact.getId());
          client = clientStorage.newClient(artifact, credential);
       }
       return client;

@@ -55,13 +55,10 @@ public final class SubscriptionUtil {
    }
 
    public static Subscription fromArtifactData(ArtifactReadable account, ArtifactReadable subscription, boolean isActive) {
-      int accountId = account.getLocalId();
-      ArtifactId artId = ArtifactId.valueOf(accountId);
       String accountName = account.getName();
-      int groupId = subscription.getLocalId();
-      SubscriptionGroupId subcriptionId = new SubscriptionGroupId((long) groupId);
+      SubscriptionGroupId subcriptionId = new SubscriptionGroupId(subscription.getId());
       String subscriptionName = subscription.getName();
-      return fromData(artId, accountName, subcriptionId, subscriptionName, isActive);
+      return fromData(account, accountName, subcriptionId, subscriptionName, isActive);
    }
 
    private static final class DelegatingActiveSubscriptionImpl extends SubscriptionImpl {
