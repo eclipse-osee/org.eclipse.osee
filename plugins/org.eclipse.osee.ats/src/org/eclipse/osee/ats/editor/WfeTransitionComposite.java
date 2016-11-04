@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionToOperation;
@@ -206,7 +205,7 @@ public class WfeTransitionComposite extends Composite {
       final IAtsStateDefinition fromStateDef = awa.getStateDefinition();
       ITransitionHelper helper = new TransitionHelperAdapter(AtsClientService.get().getServices()) {
 
-         private AtsChangeSet changes;
+         private IAtsChangeSet changes;
 
          @Override
          public boolean isPrivilegedEditEnabled() {
@@ -289,7 +288,7 @@ public class WfeTransitionComposite extends Composite {
          @Override
          public IAtsChangeSet getChangeSet() {
             if (changes == null) {
-               changes = new AtsChangeSet(getName());
+               changes = AtsClientService.get().createChangeSet(getName());
             }
             return changes;
          }

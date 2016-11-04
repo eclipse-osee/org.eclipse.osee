@@ -20,6 +20,7 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.ReviewFormalType;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
@@ -30,7 +31,6 @@ import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
@@ -318,7 +318,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                            awas.add(revArt);
                         }
                      }
-                     AtsChangeSet changes = new AtsChangeSet("Admin Auto-Complete Reviews");
+                     IAtsChangeSet changes = AtsClientService.get().createChangeSet("Admin Auto-Complete Reviews");
                      TransitionHelper helper = new TransitionHelper("ATS Auto Complete Reviews", awas,
                         TeamState.Completed.getName(), null, null, changes, AtsClientService.get().getServices(),
                         TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);

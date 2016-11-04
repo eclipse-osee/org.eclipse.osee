@@ -49,4 +49,8 @@ public interface IAtsStoreService {
 
    boolean isOfType(ArtifactId artifact, IArtifactType... artifactType);
 
+   void executeChangeSet(String comment, IAtsObject atsObject);
+
+   void executeChangeSet(String comment, Collection<? extends IAtsObject> atsObjects);
+
 }

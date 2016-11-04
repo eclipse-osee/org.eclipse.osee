@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.client.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,9 +22,10 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
+import org.eclipse.osee.ats.core.client.internal.store.AtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -40,9 +42,11 @@ import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
  */
 public class AtsStoreService implements IAtsStoreService {
    private final IAtsWorkItemFactory workItemFactory;
+   private final IAtsUserService userService;
 
-   public AtsStoreService(IAtsWorkItemFactory workItemFactory) {
+   public AtsStoreService(IAtsWorkItemFactory workItemFactory, IAtsUserService userService) {
       this.workItemFactory = workItemFactory;
+      this.userService = userService;
    }
 
    @Override
@@ -134,6 +138,20 @@ public class AtsStoreService implements IAtsStoreService {
    @Override
    public boolean isOfType(ArtifactId artifact, IArtifactType... artifactType) {
       return ((Artifact) artifact).isOfType(artifactType);
+   }
+
+   @Override
+   public void executeChangeSet(String comment, IAtsObject atsObject) {
+      executeChangeSet(comment, Collections.singleton(atsObject));
+   }
+
+   @Override
+   public void executeChangeSet(String comment, Collection<? extends IAtsObject> atsObjects) {
+      IAtsChangeSet changes = createAtsChangeSet(comment, userService.getCurrentUser());
+      for (IAtsObject atsObject : atsObjects) {
+         changes.add(atsObject);
+      }
+      changes.execute();
    }
 
 }

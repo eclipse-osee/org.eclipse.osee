@@ -43,7 +43,6 @@ import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -55,10 +54,10 @@ import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.ats.util.SubscribeManagerUI;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -267,7 +266,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
    }
 
    private void createNonReqChangeDemoActions() throws Exception {
-      AtsChangeSet changes = new AtsChangeSet("Populate Demo DB - Create Actions");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Populate Demo DB - Create Actions");
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_3");
       }
@@ -296,7 +295,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "createNonReqChangeDemoActions - getGenericActionData");
       }
-      AtsChangeSet changes = new AtsChangeSet("Populate Demo DB - Create Generic Actions");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Populate Demo DB - Create Generic Actions");
       createActions(DemoDbActionData.getGenericActionData(), null, null, changes);
       changes.execute();
    }

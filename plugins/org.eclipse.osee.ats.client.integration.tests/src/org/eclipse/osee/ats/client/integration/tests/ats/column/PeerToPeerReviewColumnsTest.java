@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.review.Role;
 import org.eclipse.osee.ats.api.review.UserRole;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
@@ -33,7 +34,6 @@ import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -56,7 +56,7 @@ public class PeerToPeerReviewColumnsTest {
    @org.junit.Test
    public void testGetColumnText() throws Exception {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
-      AtsChangeSet changes = new AtsChangeSet(PeerToPeerReviewColumnsTest.class.getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(PeerToPeerReviewColumnsTest.class.getSimpleName());
 
       TeamWorkFlowArtifact teamArt =
          DemoTestUtil.createSimpleAction(PeerToPeerReviewColumnsTest.class.getSimpleName(), changes);

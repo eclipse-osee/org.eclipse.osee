@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.insertion.JaxInsertion;
 import org.eclipse.osee.ats.api.insertion.JaxInsertionActivity;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.config.AbstractConfigItemFactory;
 import org.eclipse.osee.ats.core.config.ActionableItem;
@@ -36,7 +37,6 @@ import org.eclipse.osee.ats.core.insertion.InsertionActivity;
 import org.eclipse.osee.ats.core.model.WorkPackage;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
-import org.eclipse.osee.ats.rest.internal.util.AtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -224,7 +224,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       if (uuid <= 0) {
          uuid = Lib.generateArtifactIdAsInt();
       }
-      AtsChangeSet changes = (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Create new Insertion",
+      IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet("Create new Insertion",
          atsServer.getUserService().getCurrentUser());
       ArtifactReadable insertionArt = (ArtifactReadable) changes.createArtifact(AtsArtifactTypes.Insertion,
          newInsertion.getName(), GUID.create(), uuid);
@@ -236,7 +236,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
 
    @Override
    public IAtsInsertion updateInsertion(JaxInsertion updatedInsertion) {
-      AtsChangeSet changes = (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Update Insertion",
+      IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet("Update Insertion",
          atsServer.getUserService().getCurrentUser());
       changes.setSoleAttributeValue(ArtifactId.valueOf(updatedInsertion.getUuid()), CoreAttributeTypes.Name,
          updatedInsertion.getName());
@@ -255,9 +255,8 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       if (uuid <= 0) {
          uuid = Lib.generateArtifactIdAsInt();
       }
-      AtsChangeSet changes =
-         (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Create new Insertion Activity",
-            atsServer.getUserService().getCurrentUser());
+      IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet("Create new Insertion Activity",
+         atsServer.getUserService().getCurrentUser());
       ArtifactReadable insertionActivityArt =
          (ArtifactReadable) changes.createArtifact(AtsArtifactTypes.InsertionActivity, newActivity.getName(),
             GUID.create(), uuid);
@@ -269,13 +268,12 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
 
    @Override
    public IAtsInsertionActivity updateInsertionActivity(JaxInsertionActivity updatedActivity) {
-      AtsChangeSet changes = (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Update Insertion",
+      IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet("Update Insertion",
          atsServer.getUserService().getCurrentUser());
       ArtifactReadable insertionActivityArt =
          atsServer.getQuery().andUuid(updatedActivity.getUuid()).getResults().getExactlyOne();
 
-      changes.getTransaction().setSoleAttributeValue(insertionActivityArt, CoreAttributeTypes.Name,
-         updatedActivity.getName());
+      changes.setSoleAttributeValue(insertionActivityArt, CoreAttributeTypes.Name, updatedActivity.getName());
       changes.setSoleAttributeValue(ArtifactId.valueOf(updatedActivity.getUuid()), CoreAttributeTypes.Name,
          updatedActivity.getName());
       changes.execute();

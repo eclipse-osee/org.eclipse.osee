@@ -14,13 +14,13 @@ import java.util.Date;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
@@ -116,7 +116,7 @@ public class AtsBranchCommitOperation extends AbstractOperation {
          }
          if (branchCommitted) {
             // Create reviews as necessary
-            AtsChangeSet changes = new AtsChangeSet("Create Reviews upon Commit");
+            IAtsChangeSet changes = AtsClientService.get().createChangeSet("Create Reviews upon Commit");
             boolean added = AtsBranchUtil.createNecessaryBranchEventReviews(StateEventType.CommitBranch, teamArt,
                new Date(), AtsCoreUsers.SYSTEM_USER, changes);
             if (added) {

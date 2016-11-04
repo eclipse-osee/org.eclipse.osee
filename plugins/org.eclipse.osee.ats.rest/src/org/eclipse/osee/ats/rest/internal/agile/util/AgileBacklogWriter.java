@@ -17,9 +17,9 @@ import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.agile.JaxAgileBacklog;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.rest.IAtsServer;
-import org.eclipse.osee.ats.rest.internal.util.AtsChangeSet;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -40,8 +40,8 @@ public class AgileBacklogWriter {
    }
 
    public IAgileBacklog write() {
-      AtsChangeSet changes = (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Update Agile Backlog",
-         AtsCoreUsers.SYSTEM_USER);
+      IAtsChangeSet changes =
+         atsServer.getStoreService().createAtsChangeSet("Update Agile Backlog", AtsCoreUsers.SYSTEM_USER);
 
       // Validate backlog exists
       IAgileBacklog currentBacklog = agileService.getAgileBacklog(updatedBacklog.getUuid());
@@ -70,7 +70,7 @@ public class AgileBacklogWriter {
                ArtifactReadable currentTeamArt =
                   updateBacklogArt.getRelated(AtsRelationTypes.AgileTeamToBacklog_AgileTeam).getExactlyOne();
                if (!updatedTeamArt.equals(currentTeamArt)) {
-                  changes.unrelate(currentTeamArt, AtsRelationTypes.AgileTeamToBacklog_Backlog, updatedBacklog);
+                  changes.unrelate(currentTeamArt, AtsRelationTypes.AgileTeamToBacklog_Backlog, updateBacklogArt);
                   changes.add(currentTeamArt);
                }
             }

@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.core.client.review;
 
 import java.util.Arrays;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.JaxAtsWorkDef;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
@@ -26,7 +27,6 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -70,7 +70,7 @@ public class PeerReviewDefinitionManagerTest extends PeerReviewDefinitionManager
          teamArt.getWorkDefinition().getStateByName(TeamState.Implement.getName()).getPeerReviews().size());
       Assert.assertEquals("No reviews should be present", 0, ReviewManager.getReviews(teamArt).size());
 
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
          TeamState.Implement.getName(), Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null,
          changes, TransitionOption.None);

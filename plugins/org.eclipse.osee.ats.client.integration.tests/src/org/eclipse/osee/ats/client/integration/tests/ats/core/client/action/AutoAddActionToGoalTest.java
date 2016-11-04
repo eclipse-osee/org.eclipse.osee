@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.core.client.action;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.artifact.GoalManager;
@@ -21,7 +22,6 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -61,7 +61,7 @@ public class AutoAddActionToGoalTest {
    public void testNoActionAddedToGoal() throws OseeCoreException {
       AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - AutoAddActionToGoalTest - NoAdd");
 
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       GoalArtifact goalArt = GoalManager.createGoal("AutoAddActionToGoalTest - NoActionAddedGoal", changes);
       changes.execute();
       List<Artifact> memArt = goalArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member);
@@ -76,7 +76,7 @@ public class AutoAddActionToGoalTest {
       AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - AddActionWithAI");
 
       IAtsWorkDefinition workDef = AtsTestUtil.getWorkDef();
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       GoalArtifact goalArt = GoalManager.createGoal("AutoAddActionToGoalTest - AddActionToGoalFromAI", changes);
       changes.execute();
 
@@ -112,7 +112,7 @@ public class AutoAddActionToGoalTest {
    public void testAutoAddActionToGoal_TeamWF() throws OseeCoreException {
       AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - AddActionWithTeamDef");
 
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       GoalArtifact goalArt = GoalManager.createGoal("AutoAddActionToGoalTest - AddActionToGoalFromTeamDef", changes);
       IAtsTeamDefinition teamDef = AtsTestUtil.getTestTeamDef();
       for (IAtsVersion version : teamDef.getVersions()) {
@@ -142,7 +142,7 @@ public class AutoAddActionToGoalTest {
 
       IAtsWorkDefinition workDef = AtsTestUtil.getWorkDef();
 
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       IAtsTeamDefinition teamDef = AtsTestUtil.getTestTeamDef();
       for (IAtsVersion version : teamDef.getVersions()) {
          changes.deleteArtifact(version.getStoreObject());
@@ -182,7 +182,7 @@ public class AutoAddActionToGoalTest {
       AtsTestUtil.cleanupAndReset("DecisionReviewManagerTest - UnAssigned");
 
       IAtsWorkDefinition workDef = AtsTestUtil.getWorkDef();
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       GoalArtifact goalArt = GoalManager.createGoal("AutoAddActionToGoalTest - AddTwoActions", changes);
       GoalArtifact goalArt2 = GoalManager.createGoal("AutoAddActionToGoalTest - SecondGoal", changes);
 

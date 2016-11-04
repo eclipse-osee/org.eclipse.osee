@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
@@ -42,7 +43,6 @@ import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.AtsReviewCache;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
@@ -294,7 +294,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                            stateDef.getName(), XResultDataUI.getHyperlink(artifact)));
                      if (stateDef.getStateType() == StateType.Working) {
                         awa.setSoleAttributeFromString(AtsAttributeTypes.CurrentStateType, StateType.Working.name());
-                        AtsChangeSet changes = new AtsChangeSet(ValidateAtsDatabase.class.getSimpleName());
+                        IAtsChangeSet changes = AtsClientService.get().createChangeSet(ValidateAtsDatabase.class.getSimpleName());
                         TransitionManager.logWorkflowUnCompletedEvent(awa, stateDef, changes,
                            AtsClientService.get().getAttributeResolver());
                         TransitionManager.logWorkflowUnCancelledEvent(awa, stateDef, changes,

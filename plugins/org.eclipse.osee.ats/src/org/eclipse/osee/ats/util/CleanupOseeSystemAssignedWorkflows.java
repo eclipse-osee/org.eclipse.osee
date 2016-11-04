@@ -37,7 +37,7 @@ public class CleanupOseeSystemAssignedWorkflows extends XNavigateItemAction {
       XResultData results = new XResultData();
       Collection<IAtsWorkItem> workItems = AtsClientService.get().getQueryService().runQuery(
          "select art_id from osee_attribute where attr_type_id in (1152921504606847192) and value like '%99999999%'");
-      IAtsChangeSet changes = AtsClientService.get().createAtsChangeSet("OSEE System Assignee Cleanup");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("OSEE System Assignee Cleanup");
       for (IAtsWorkItem workItem : workItems) {
          if (workItem.getAssignees().contains(AtsCoreUsers.SYSTEM_USER)) {
             workItem.getStateMgr().removeAssignee(AtsCoreUsers.SYSTEM_USER);

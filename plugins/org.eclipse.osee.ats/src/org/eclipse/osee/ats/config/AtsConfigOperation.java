@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
@@ -119,7 +118,7 @@ public class AtsConfigOperation extends AbstractOperation {
       checkWorkItemNamespaceUnique();
       monitor.worked(calculateWork(0.10));
 
-      AtsChangeSet changes = new AtsChangeSet("Configure ATS for Default Team");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Configure ATS for Default Team");
 
       teamDefinition = createTeamDefinition(changes, AtsClientService.get());
 

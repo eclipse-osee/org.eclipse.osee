@@ -32,11 +32,11 @@ import org.eclipse.osee.ats.actions.DuplicateWorkflowAction;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.CreateTeamData;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.ai.ModifyActionableItems;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitionUtility;
 import org.eclipse.osee.ats.internal.Activator;
@@ -351,7 +351,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
 
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
-         AtsChangeSet changes = new AtsChangeSet(getName());
+         IAtsChangeSet changes = AtsClientService.get().createChangeSet(getName());
          Date createdDate = new Date();
          for (CreateTeamData data : job.getTeamDatas()) {
             TeamWorkFlowArtifact teamArt = ActionManager.createTeamWorkflow(teamWf.getParentActionArtifact(),

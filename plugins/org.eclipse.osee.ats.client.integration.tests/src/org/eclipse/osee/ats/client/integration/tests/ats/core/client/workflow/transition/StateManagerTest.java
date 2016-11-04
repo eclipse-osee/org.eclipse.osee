@@ -11,13 +11,13 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.core.client.workflow.transition;
 
 import java.util.Collections;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -45,7 +45,7 @@ public class StateManagerTest {
 
       teamWf.getStateMgr().updateMetrics(AtsTestUtil.getAnalyzeStateDef(), 1.1, 1, false,
          AtsClientService.get().getUserService().getCurrentUser());
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
 
       ITransitionHelper helper = new MockTransitionHelper("dodad", Collections.singletonList(teamWf),
          AtsTestUtil.getImplementStateDef().getName(),
@@ -69,12 +69,12 @@ public class StateManagerTest {
 
       teamWf.getStateMgr().updateMetrics(AtsTestUtil.getCompletedStateDef(), -2.2, 1, false,
          AtsClientService.get().getUserService().getCurrentUser());
-      AtsChangeSet.execute(getClass().getSimpleName(), teamWf);
+      AtsClientService.get().getStoreService().executeChangeSet(getClass().getSimpleName(), teamWf);
       Assert.assertEquals(1.1, HoursSpentUtil.getHoursSpentTotal(teamWf, AtsClientService.get().getServices()), 0.001);
 
       teamWf.getStateMgr().updateMetrics(AtsTestUtil.getCompletedStateDef(), -2.2, 1, false,
          AtsClientService.get().getUserService().getCurrentUser());
-      AtsChangeSet.execute(getClass().getSimpleName(), teamWf);
+      AtsClientService.get().getStoreService().executeChangeSet(getClass().getSimpleName(), teamWf);
       Assert.assertEquals(0, HoursSpentUtil.getHoursSpentTotal(teamWf, AtsClientService.get().getServices()), 0.001);
 
       AtsTestUtil.cleanup();

@@ -11,12 +11,13 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.core.client.util;
 
 import static org.junit.Assert.assertEquals;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil.AtsTestUtilState;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.CopyActionDetails;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.AfterClass;
@@ -56,7 +57,7 @@ public class CopyActionDetailsTest {
 
    @Test
    public void test03GetDetailsStringForDecisionReview() throws OseeCoreException {
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       DecisionReviewArtifact review =
          AtsTestUtil.getOrCreateDecisionReview(ReviewBlockType.Commit, AtsTestUtilState.Analyze, changes);
       String str = new CopyActionDetails(review).getDetailsString();
@@ -67,7 +68,7 @@ public class CopyActionDetailsTest {
    @Test
    public void test04GetDetailsStringForPeerReview() throws OseeCoreException {
       PeerToPeerReviewArtifact review = AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.None,
-         AtsTestUtilState.Analyze, new AtsChangeSet("test04GetDetailsStringForPeerReview"));
+         AtsTestUtilState.Analyze, AtsClientService.get().createChangeSet("test04GetDetailsStringForPeerReview"));
       String str = new CopyActionDetails(review).getDetailsString();
       assertEquals("\"PeerToPeer Review\" - " + review.getAtsId() + " - \"AtsTestUtil Test Peer Review\"", str);
       review.persist(getClass().getSimpleName());

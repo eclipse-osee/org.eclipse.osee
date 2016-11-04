@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.core.client;
 
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.Result;
@@ -138,7 +138,7 @@ public class AtsTestUtilTest extends AtsTestUtil {
       AtsTestUtil.cleanupAndReset("AtsTestUtilTest.testGetDecisionReview");
       AtsTestUtil.validateArtifactCache();
 
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       Assert.assertNotNull(
          AtsTestUtil.getOrCreateDecisionReview(ReviewBlockType.Commit, AtsTestUtilState.Analyze, changes));
       changes.execute();
@@ -154,7 +154,7 @@ public class AtsTestUtilTest extends AtsTestUtil {
       AtsTestUtil.cleanupAndReset("AtsTestUtilTest.testGetPeerReview");
       AtsTestUtil.validateArtifactCache();
 
-      AtsChangeSet changes = new AtsChangeSet("testGetPeerReview");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("testGetPeerReview");
       Assert.assertNotNull(
          AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.Commit, AtsTestUtilState.Analyze, changes));
       changes.execute();
@@ -172,7 +172,7 @@ public class AtsTestUtilTest extends AtsTestUtil {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Analyze.getName());
 
-      AtsChangeSet changes = new AtsChangeSet("test");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("test");
 
       Result result =
          AtsTestUtil.transitionTo(AtsTestUtilState.Implement, AtsClientService.get().getUserService().getCurrentUser(),
@@ -201,7 +201,7 @@ public class AtsTestUtilTest extends AtsTestUtil {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Analyze.getName());
 
-      AtsChangeSet changes = new AtsChangeSet("test");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("test");
 
       Result result =
          AtsTestUtil.transitionTo(AtsTestUtilState.Cancelled, AtsClientService.get().getUserService().getCurrentUser(),

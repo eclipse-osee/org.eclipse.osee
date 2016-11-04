@@ -56,13 +56,13 @@ public class SubscribeManager {
 
    public static void toggleSubscribe(Collection<AbstractWorkflowArtifact> awas) throws OseeCoreException {
       if (SubscribeManager.amISubscribed(awas.iterator().next())) {
-         AtsChangeSet changes = new AtsChangeSet("Toggle Subscribed");
+         IAtsChangeSet changes = AtsClientService.get().createChangeSet("Toggle Subscribed");
          for (AbstractWorkflowArtifact awa : awas) {
             SubscribeManager.removeSubscribed(awa, AtsClientService.get().getUserService().getCurrentUser(), changes);
          }
          changes.execute();
       } else {
-         AtsChangeSet changes = new AtsChangeSet("Toggle Subscribed");
+         IAtsChangeSet changes = AtsClientService.get().createChangeSet("Toggle Subscribed");
          for (AbstractWorkflowArtifact awa : awas) {
             SubscribeManager.addSubscribed(awa, AtsClientService.get().getUserService().getCurrentUser(), changes);
          }

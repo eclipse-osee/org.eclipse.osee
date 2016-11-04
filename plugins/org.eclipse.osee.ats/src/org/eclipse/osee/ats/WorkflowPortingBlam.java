@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.AtsWorldEditorRenderer;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -51,7 +50,7 @@ public class WorkflowPortingBlam extends AbstractBlam {
          getActionableItems((IAtsActionableItem) variableMap.getValue(ACTIONABLE_ITEM));
       Conditions.checkNotNullOrEmpty(actionableItems, ACTIONABLE_ITEM);
 
-      AtsChangeSet changes = new AtsChangeSet("Create Porting Workflow(s)");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Create Porting Workflow(s)");
       List<Artifact> destinationWorkflows = createDestinationWorkflows(changes, actionableItems);
       changes.execute();
 

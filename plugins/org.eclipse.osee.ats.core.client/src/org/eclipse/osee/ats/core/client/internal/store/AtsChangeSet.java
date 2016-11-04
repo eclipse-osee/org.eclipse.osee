@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.util;
+package org.eclipse.osee.ats.core.client.internal.store;
 
 import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
 import java.io.InputStream;
@@ -21,6 +21,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workdef.RuleEventType;
 import org.eclipse.osee.ats.api.workdef.RunRuleData;
@@ -186,7 +187,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    public static TransactionId execute(String comment, Object object, Object... objects) throws OseeCoreException {
-      AtsChangeSet changes = new AtsChangeSet(comment);
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(comment);
       changes.add(object);
       for (Object obj : objects) {
          changes.add(obj);

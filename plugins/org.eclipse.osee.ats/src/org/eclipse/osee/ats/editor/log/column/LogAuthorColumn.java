@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.editor.log.column;
 
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;

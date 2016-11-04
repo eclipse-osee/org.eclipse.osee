@@ -58,7 +58,6 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
@@ -299,7 +298,7 @@ public class AtsTestUtil {
 
       importWorkDefinition();
 
-      AtsChangeSet changes = new AtsChangeSet(AtsTestUtil.class.getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
 
       String guid = GUID.create();
       testAi = AtsClientService.get().createActionableItem(guid, getTitle("AI", postFixName),
@@ -443,7 +442,7 @@ public class AtsTestUtil {
       reset(name);
    }
 
-   private static void delete(AtsChangeSet changes, Artifact artifact) throws OseeCoreException {
+   private static void delete(IAtsChangeSet changes, Artifact artifact) throws OseeCoreException {
       if (artifact != null) {
          changes.addToDelete(artifact);
       }
@@ -451,7 +450,8 @@ public class AtsTestUtil {
 
    private static void deleteTeamWf(TeamWorkFlowArtifact teamWfToDelete) throws OseeCoreException {
       if (teamWfToDelete != null) {
-         AtsChangeSet changes = new AtsChangeSet(AtsTestUtil.class.getSimpleName() + " - cleanup deleteTeamWf");
+         IAtsChangeSet changes =
+            AtsClientService.get().createChangeSet(AtsTestUtil.class.getSimpleName() + " - cleanup deleteTeamWf");
 
          if (teamWfToDelete.getWorkingBranch() != null) {
             Result result = AtsBranchUtil.deleteWorkingBranch(teamWfToDelete, true);
@@ -489,7 +489,8 @@ public class AtsTestUtil {
          }
       }
 
-      AtsChangeSet changes = new AtsChangeSet(AtsTestUtil.class.getSimpleName() + " - cleanup 1");
+      IAtsChangeSet changes =
+         AtsClientService.get().createChangeSet(AtsTestUtil.class.getSimpleName() + " - cleanup 1");
       delete(changes, peerRevArt);
       delete(changes, decRevArt);
       delete(changes, taskArtWf1);
@@ -664,7 +665,7 @@ public class AtsTestUtil {
    public static TeamWorkFlowArtifact getTeamWf2() throws OseeCoreException {
       ensureLoaded();
       if (teamArt2 == null) {
-         AtsChangeSet changes = new AtsChangeSet(AtsTestUtil.class.getSimpleName());
+         IAtsChangeSet changes = AtsClientService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
          actionArt2 = ActionManager.createAction(null, getTitle("Team WF2", postFixName), "description",
             ChangeType.Improvement, "1", false, null, Arrays.asList(testAi2), new Date(),
             AtsClientService.get().getUserService().getCurrentUser(), null, changes);
@@ -682,7 +683,7 @@ public class AtsTestUtil {
    public static TeamWorkFlowArtifact getTeamWf3() throws OseeCoreException {
       ensureLoaded();
       if (teamArt3 == null) {
-         AtsChangeSet changes = new AtsChangeSet(AtsTestUtil.class.getSimpleName());
+         IAtsChangeSet changes = AtsClientService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
          actionArt3 = ActionManager.createAction(null, getTitle("Team WF3", postFixName), "description",
             ChangeType.Improvement, "1", false, null, Arrays.asList(testAi3), new Date(),
             AtsClientService.get().getUserService().getCurrentUser(), null, changes);
@@ -700,7 +701,7 @@ public class AtsTestUtil {
    public static TeamWorkFlowArtifact getTeamWf4() throws OseeCoreException {
       ensureLoaded();
       if (teamArt4 == null) {
-         AtsChangeSet changes = new AtsChangeSet(AtsTestUtil.class.getSimpleName());
+         IAtsChangeSet changes = AtsClientService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
          actionArt4 = ActionManager.createAction(null, getTitle("Team WF4", postFixName), "description",
             ChangeType.Improvement, "1", false, null, Arrays.asList(testAi4), new Date(),
             AtsClientService.get().getUserService().getCurrentUser(), null, changes);

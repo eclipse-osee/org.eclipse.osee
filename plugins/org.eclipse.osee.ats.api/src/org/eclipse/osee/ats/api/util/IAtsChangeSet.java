@@ -132,4 +132,6 @@ public interface IAtsChangeSet {
 
    void setSoleAttributeFromStream(ArtifactId artifact, IAttributeType attributeType, InputStream inputStream);
 
+   void reset(String string);
+
 }

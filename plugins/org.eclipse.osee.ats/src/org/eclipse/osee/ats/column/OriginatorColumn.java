@@ -23,9 +23,9 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -115,7 +115,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
       int result = ld.open();
       if (result == 0) {
          IAtsUser selectedUser = AtsClientService.get().getUserServiceClient().getUserFromOseeUser(ld.getSelection());
-         AtsChangeSet changes = new AtsChangeSet("ATS Prompt Change Originator");
+         IAtsChangeSet changes = AtsClientService.get().createChangeSet("ATS Prompt Change Originator");
          for (AbstractWorkflowArtifact awa : awas) {
             awa.setCreatedBy(selectedUser, true, null, changes);
             changes.add(awa);

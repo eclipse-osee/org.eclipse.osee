@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
@@ -23,7 +24,6 @@ import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.demo.api.DemoUsers;
@@ -64,7 +64,7 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
          Arrays.asList(AtsClientService.get().getUserService().getCurrentUser().getUserId())));
 
       // create and transition decision review
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       String reviewTitle = "Test Review - " + teamWf.getName();
       DecisionReviewArtifact decRev = DecisionReviewManager.createNewDecisionReviewAndTransitionToDecision(teamWf,
          reviewTitle, "my description", AtsTestUtil.getAnalyzeStateDef().getName(), ReviewBlockType.Transition, options,
@@ -92,7 +92,7 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
          Arrays.asList(AtsClientService.get().getUserService().getCurrentUser().getUserId())));
 
       // create and transition decision review
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       String reviewTitle = "Test Review - " + teamWf.getName();
       DecisionReviewArtifact decRev = DecisionReviewManager.createNewDecisionReviewAndTransitionToDecision(teamWf,
          reviewTitle, "my description", AtsTestUtil.getAnalyzeStateDef().getName(), ReviewBlockType.Transition, options,
@@ -116,7 +116,7 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
       String reviewTitle = "Test Review - " + teamWf.getName();
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       DecisionReviewArtifact decRev =
          DecisionReviewManager.createNewDecisionReview(teamWf, ReviewBlockType.Commit, reviewTitle,
             TeamState.Implement.getName(), "description", DecisionReviewManager.getDefaultDecisionReviewOptions(),
@@ -139,7 +139,7 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
       String reviewTitle = "Test Review - " + teamWf.getName();
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       DecisionReviewArtifact decRev =
          DecisionReviewManager.createNewDecisionReview(teamWf, ReviewBlockType.Commit, reviewTitle,
             TeamState.Implement.getName(), "description", DecisionReviewManager.getDefaultDecisionReviewOptions(),
@@ -157,7 +157,7 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       AtsTestUtil.cleanupAndReset("DecisionReviewManagerTest - Sample");
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       DecisionReviewArtifact decRev = DecisionReviewManager.createNewDecisionReview(teamWf, ReviewBlockType.Commit,
          true, new Date(), AtsClientService.get().getUserService().getCurrentUser(), changes);
       changes.execute();

@@ -14,9 +14,10 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -104,7 +105,7 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
             XResultDataUI.report(rd, "Ats Action Import Errors");
          }
       } else {
-         AtsChangeSet changes = new AtsChangeSet("Import Actions from Spreadsheet");
+         IAtsChangeSet changes = AtsClientService.get().createChangeSet("Import Actions from Spreadsheet");
          extractor.createArtifactsAndNotify(changes);
          changes.execute();
          WorldEditor.open(new WorldEditorSimpleProvider("Imported Action Artifacts", extractor.getActionArts()));

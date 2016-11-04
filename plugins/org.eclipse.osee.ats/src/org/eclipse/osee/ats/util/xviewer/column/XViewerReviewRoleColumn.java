@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.util.xviewer.column;
 
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.ats.api.review.UserRole;

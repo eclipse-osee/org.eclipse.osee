@@ -14,9 +14,9 @@ import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.ats.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 

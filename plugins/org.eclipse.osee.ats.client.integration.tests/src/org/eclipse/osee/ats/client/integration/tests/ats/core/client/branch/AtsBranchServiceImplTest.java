@@ -20,11 +20,11 @@ import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -63,7 +63,7 @@ public class AtsBranchServiceImplTest {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
 
       //Test Team Def-base Team Arts
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchUuid, SAW_Bld_1.getUuid().toString());
       // clear versions to config item is from teamDef
@@ -101,7 +101,7 @@ public class AtsBranchServiceImplTest {
       AtsTestUtil.cleanupAndReset(
          AtsBranchServiceImplTest.class.getSimpleName() + ".testGetCommitTransactionsAndConfigItemsForTeam_txRecords");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchUuid, SAW_Bld_1.getUuid().toString());
       // clear versions to config item is from teamDef

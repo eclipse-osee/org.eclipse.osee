@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
@@ -44,7 +43,7 @@ public class WfePromptChangeStatus {
 
    public static boolean promptChangeStatus(Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) throws OseeCoreException {
       WfePromptChangeStatus promptChangeStatus = new WfePromptChangeStatus(awas);
-      AtsChangeSet changes = new AtsChangeSet("Prompt Change Status");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Prompt Change Status");
       boolean result = promptChangeStatus.promptChangeStatus(changes).isTrue();
       if (result) {
          changes.execute();
@@ -99,7 +98,7 @@ public class WfePromptChangeStatus {
    }
 
    public static void performChangeStatusAndPersist(Collection<? extends IAtsWorkItem> workItems, String selectedOption, double hours, int percent, boolean splitHours) throws OseeCoreException {
-      AtsChangeSet changes = new AtsChangeSet("ATS Prompt Change Status");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("ATS Prompt Change Status");
       performChangeStatus(workItems, selectedOption, hours, percent, splitHours, changes);
       changes.execute();
    }

@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -43,7 +43,7 @@ public class TaskMover {
       }
 
       // Move Tasks
-      IAtsChangeSet changes = new AtsChangeSet("Drop Add Tasks");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Drop Add Tasks");
       for (IAtsTask task : tasks) {
          TaskArtifact taskArt = (TaskArtifact) task;
          taskArt.clearCaches();

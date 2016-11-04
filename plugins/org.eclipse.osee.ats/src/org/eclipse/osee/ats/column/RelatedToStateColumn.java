@@ -23,9 +23,9 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -107,7 +107,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
             } else if (selectedState.equals(NONE)) {
                selectedState = "";
             }
-            AtsChangeSet changes = new AtsChangeSet("ATS Prompt Change Related-to-State");
+            IAtsChangeSet changes = AtsClientService.get().createChangeSet("ATS Prompt Change Related-to-State");
             for (TaskArtifact task : tasks) {
                String state = task.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "");
                if (!state.equals(selectedState)) {

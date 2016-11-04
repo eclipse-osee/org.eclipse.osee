@@ -34,10 +34,10 @@ import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleError;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleValidator;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -297,7 +297,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
          "Delete Roles", "Are You Sure You Wish to Delete the Roles(s):\n\n" + builder.toString());
       if (delete) {
          try {
-            AtsChangeSet changes = new AtsChangeSet("Delete Review Roles");
+            IAtsChangeSet changes = AtsClientService.get().createChangeSet("Delete Review Roles");
             removeUserRoleHelper(items, changes);
             changes.execute();
          } catch (Exception ex) {
@@ -335,7 +335,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
             return;
          }
          try {
-            AtsChangeSet changes = new AtsChangeSet("Add Review Roles");
+            IAtsChangeSet changes = AtsClientService.get().createChangeSet("Add Review Roles");
             for (IAtsUser user : dialog.getUsers()) {
                UserRole userRole = new UserRole(dialog.getRole(), user);
                roleMgr.addOrUpdateUserRole(userRole, reviewArt);

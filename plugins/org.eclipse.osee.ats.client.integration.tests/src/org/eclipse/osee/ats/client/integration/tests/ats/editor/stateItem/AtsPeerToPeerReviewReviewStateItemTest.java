@@ -15,6 +15,7 @@ import java.util.Arrays;
 import org.eclipse.osee.ats.api.review.Role;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
@@ -23,7 +24,6 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.editor.stateItem.AtsPeerToPeerReviewReviewStateItem;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -49,7 +49,7 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
          AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
 
          // setup fake review artifact with decision options set
-         AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+         IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
          peerRevArt = AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.None, AtsTestUtilState.Analyze, changes);
          changes.execute();
       }
@@ -74,7 +74,7 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
       UserRoleManager roleMgr = new UserRoleManager(peerRevArt);
       roleMgr.addOrUpdateUserRole(userRole, peerRevArt);
       userRole = new UserRole(Role.Reviewer, AtsClientService.get().getUserService().getUserByName("Alex Kay"));
-      AtsChangeSet changes = new AtsChangeSet("test transition");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("test transition");
       roleMgr.addOrUpdateUserRole(userRole, peerRevArt);
       roleMgr.saveToArtifact(changes);
       changes.execute();

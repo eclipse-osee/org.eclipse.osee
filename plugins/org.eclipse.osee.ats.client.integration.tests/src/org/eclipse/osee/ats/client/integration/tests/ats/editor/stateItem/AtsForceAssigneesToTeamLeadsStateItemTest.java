@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.editor.stateItem;
 
 import static org.junit.Assert.assertFalse;
 import java.util.Arrays;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
@@ -19,7 +20,6 @@ import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.editor.stateItem.AtsForceAssigneesToTeamLeadsStateItem;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -48,7 +48,7 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
       assertFalse("Test should not be run in production db", AtsUtil.isProductionDb());
 
       if (teamArt == null) {
-         AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+         IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
          teamArt = DemoTestUtil.createSimpleAction(getClass().getSimpleName(), changes);
          changes.execute();
       }
@@ -90,7 +90,7 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
 
       // make call to state item that should set options based on artifact's attribute value
       AtsForceAssigneesToTeamLeadsStateItem stateItem = new AtsForceAssigneesToTeamLeadsStateItem();
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       stateItem.transitioned(teamArt, fromState, toState,
          Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), changes);
       changes.execute();

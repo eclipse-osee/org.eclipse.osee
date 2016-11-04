@@ -11,8 +11,9 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.actions;
 
 import org.eclipse.osee.ats.actions.OpenInAtsWorldAction;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -22,7 +23,7 @@ public class OpenInAtsWorldActionTest2 extends AbstractAtsActionRunTest {
 
    @Override
    public OpenInAtsWorldAction createAction() throws OseeCoreException {
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       OpenInAtsWorldAction action = new OpenInAtsWorldAction(AtsTestUtil.getOrCreateTaskOffTeamWf1());
       if (!changes.isEmpty()) {
          changes.execute();

@@ -17,9 +17,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -72,7 +72,7 @@ public class CreateActionUsingAllActionableItems extends XNavigateItemAction {
          }
       }
 
-      AtsChangeSet changes = new AtsChangeSet("Create Action using all AIs");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Create Action using all AIs");
       ActionArtifact action =
          ActionManager.createAction(null, "Big Action Test - Delete Me", "Description", ChangeType.Improvement, "1",
             false, null, aias, new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);

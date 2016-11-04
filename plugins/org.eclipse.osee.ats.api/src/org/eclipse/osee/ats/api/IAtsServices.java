@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -135,7 +136,7 @@ public interface IAtsServices extends IAtsConfigurationProvider, IWorkDefinition
    IAtsActionFactory getActionFactory();
 
    /**
-    * @param key - key of key/value config pair.  equals sign not accepted
+    * @param key - key of key/value config pair. equals sign not accepted
     */
    String getConfigValue(String key);
 
@@ -146,6 +147,11 @@ public interface IAtsServices extends IAtsConfigurationProvider, IWorkDefinition
    <T> T getConfigItem(String guid);
 
    <T> T getConfigItem(Long uuid);
+
    void setConfigValue(String key, String value);
+
+   IAtsChangeSet createChangeSet(String comment);
+
+   IAtsChangeSet createChangeSet(String comment, IAtsUser user);
 
 }

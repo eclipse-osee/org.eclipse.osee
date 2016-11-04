@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
@@ -86,7 +85,7 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
             boolean modified = promptChangeAssignees(Arrays.asList(awa), isPersistViewer());
             XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
             if (modified && isPersistViewer(xViewer)) {
-               AtsChangeSet.execute("persist assignees via alt-left-click", awa);
+               AtsClientService.get().getStoreService().executeChangeSet("persist assignees via alt-left-click", awa);
             }
             if (modified) {
                xViewer.update(awa, null);
@@ -144,7 +143,7 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
          awa.getStateMgr().setAssignees(users);
       }
       if (persist) {
-         AtsChangeSet.execute("Assignee - Prompt Change", awas);
+         AtsClientService.get().getStoreService().executeChangeSet("Assignee - Prompt Change", awas);
       }
       return true;
    }

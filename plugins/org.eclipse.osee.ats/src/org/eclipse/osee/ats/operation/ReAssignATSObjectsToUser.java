@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -83,7 +83,7 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
                }
                final Collection<Artifact> artsToReAssign = dialog.getChecked();
 
-               AtsChangeSet changes = new AtsChangeSet("ReAssign ATS Object to User");
+               IAtsChangeSet changes = AtsClientService.get().createChangeSet("ReAssign ATS Object to User");
                // Make the changes and persist
                for (Artifact artifact : artsToReAssign) {
                   if (artifact instanceof AbstractWorkflowArtifact) {

@@ -13,12 +13,13 @@ package org.eclipse.osee.ats.core.client.workflow.transition;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -41,7 +42,7 @@ public class TransitionToOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       try {
-         AtsChangeSet changes = new AtsChangeSet(helper.getName() + ".preSave");
+         IAtsChangeSet changes = AtsClientService.get().createChangeSet(helper.getName() + ".preSave");
          for (IAtsWorkItem workItem : helper.getWorkItems()) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) workItem;
             if (awa.isDirty()) {

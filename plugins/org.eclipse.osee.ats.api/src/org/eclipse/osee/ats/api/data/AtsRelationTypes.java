@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.api.data;
 
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 
 /**

@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.column;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -21,7 +22,6 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.column.CancelledDateColumn;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
@@ -48,7 +48,7 @@ public class CancelledDateColumnTest {
    public void testGetDateAndStrAndColumnText() throws Exception {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
 
-      AtsChangeSet changes = new AtsChangeSet(CancelledDateColumnTest.class.getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(CancelledDateColumnTest.class.getSimpleName());
       TeamWorkFlowArtifact teamArt =
          DemoTestUtil.createSimpleAction(CancelledDateColumnTest.class.getSimpleName(), changes);
       changes.execute();

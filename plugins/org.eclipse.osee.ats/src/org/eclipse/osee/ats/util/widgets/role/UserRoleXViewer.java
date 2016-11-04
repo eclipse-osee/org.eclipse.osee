@@ -24,7 +24,7 @@ import org.eclipse.nebula.widgets.xviewer.util.EnumStringSingleSelectionDialog;
 import org.eclipse.osee.ats.api.review.Role;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -252,7 +252,7 @@ public class UserRoleXViewer extends XViewer {
    }
 
    public boolean executeTransaction(Collection<UserRole> userRoles) throws OseeCoreException {
-      AtsChangeSet changes = new AtsChangeSet("Modify Review Roles");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Modify Review Roles");
       for (UserRole userRole : userRoles) {
          xUserRoleViewer.getUserRoleMgr().addOrUpdateUserRole(userRole, xUserRoleViewer.getReviewArt());
          update(userRole, null);

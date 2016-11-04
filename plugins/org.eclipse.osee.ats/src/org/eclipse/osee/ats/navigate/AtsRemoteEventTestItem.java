@@ -24,13 +24,13 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
@@ -128,7 +128,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       TeamWorkFlowArtifact teamArt = ActionManager.getFirstTeam(actionArt);
 
       // Make current user assignee for convenience to developer
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName() + " - set assignee");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " - set assignee");
       teamArt.getStateMgr().addAssignee(AtsClientService.get().getUserService().getCurrentUser());
       changes.add(teamArt);
       changes.execute();
@@ -181,7 +181,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
    }
 
    private void makeChanges7(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      AtsChangeSet changes = new AtsChangeSet("Remote Event Test");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Remote Event Test");
       TransitionHelper helper = new TransitionHelper("Remote Event Test", Arrays.asList(teamArt),
          TeamState.Analyze.getName(), Collections.singleton(AtsClientService.get().getUserService().getCurrentUser()),
          null, changes, AtsClientService.get().getServices(), TransitionOption.None);

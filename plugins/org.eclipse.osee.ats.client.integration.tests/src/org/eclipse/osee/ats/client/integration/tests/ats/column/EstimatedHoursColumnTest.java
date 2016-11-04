@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
@@ -21,7 +22,6 @@ import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.EstimatedHoursUtil;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -46,7 +46,7 @@ public class EstimatedHoursColumnTest {
    public void testGetDateAndStrAndColumnText() throws Exception {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
 
-      AtsChangeSet changes = new AtsChangeSet(EstimatedHoursColumnTest.class.getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(EstimatedHoursColumnTest.class.getSimpleName());
       TeamWorkFlowArtifact teamArt1 =
          DemoTestUtil.createSimpleAction(EstimatedHoursColumnTest.class.getSimpleName(), changes);
 

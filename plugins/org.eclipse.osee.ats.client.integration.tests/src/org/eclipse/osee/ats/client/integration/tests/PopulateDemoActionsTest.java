@@ -65,7 +65,7 @@ public class PopulateDemoActionsTest {
 
    @AfterClass
    public static void cleanup() throws OseeCoreException {
-      IAtsChangeSet changes = AtsClientService.get().createAtsChangeSet("Cleanup PopulateDemoActionsTest");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Cleanup PopulateDemoActionsTest");
       for (Artifact art : ArtifactQuery.getArtifactListFromName("Auto-created", AtsUtilCore.getAtsBranch(),
          DeletionFlag.EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS)) {
          changes.deleteArtifact(art);

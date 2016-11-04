@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.agile.SprintMemberProvider;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
@@ -36,7 +37,6 @@ import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.goal.GoalMemberProvider;
@@ -239,7 +239,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
                if (attributesComposite != null && getActivePage() == attributesPageIndex) {
                   awa.persist("Workflow Editor - Attributes Tab - Save");
                } else {
-                  AtsChangeSet changes = new AtsChangeSet("Workflow Editor - Save");
+                  IAtsChangeSet changes = AtsClientService.get().createChangeSet("Workflow Editor - Save");
                   // If change was made on Attribute tab, persist awa separately.  This is cause attribute
                   // tab changes conflict with XWidget changes
                   // Save widget data to artifact

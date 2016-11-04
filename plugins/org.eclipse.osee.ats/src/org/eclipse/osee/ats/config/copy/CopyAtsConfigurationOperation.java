@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -70,7 +69,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
          if (resultData.isErrors()) {
             return;
          }
-         AtsChangeSet changes = new AtsChangeSet(getName());
+         IAtsChangeSet changes = AtsClientService.get().createChangeSet(getName());
 
          getCopyAtsValidation().validate();
          if (resultData.isErrors()) {
@@ -135,8 +134,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       // Relate new Ais to their TeamDefs just like other config
       for (Artifact fromTeamDefArt : fromAiArt.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_Team,
          Artifact.class)) {
-         IAtsConfigObject fromTeamDef =
-            AtsClientService.get().getCache().getAtsObject(fromTeamDefArt.getId());
+         IAtsConfigObject fromTeamDef = AtsClientService.get().getCache().getAtsObject(fromTeamDefArt.getId());
          IAtsTeamDefinition newTeamDef = fromTeamDefToNewTeamDefMap.get(fromTeamDef);
 
          if (newTeamDef == null) {
@@ -220,7 +218,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       }
    }
 
-   private void persistOrUndoChanges(AtsChangeSet changes) throws OseeCoreException {
+   private void persistOrUndoChanges(IAtsChangeSet changes) throws OseeCoreException {
       if (data.isPersistChanges()) {
          changes.execute();
          AtsClientService.get().invalidateCache();

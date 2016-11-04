@@ -20,11 +20,11 @@ import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.ReviewFormalType;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -66,7 +66,7 @@ public class NewPeerToPeerReviewJob extends Job {
          if (teamParent != null && actionableItem != null) {
             throw new OseeArgumentException("Either Team Workflow or Actionable Item must be null");
          }
-         AtsChangeSet changes = new AtsChangeSet("New Peer To Peer Review");
+         IAtsChangeSet changes = AtsClientService.get().createChangeSet("New Peer To Peer Review");
          PeerToPeerReviewArtifact peerArt = null;
          if (teamParent != null) {
             peerArt = PeerToPeerReviewManager.createNewPeerToPeerReview(teamParent, reviewTitle, againstState, changes);

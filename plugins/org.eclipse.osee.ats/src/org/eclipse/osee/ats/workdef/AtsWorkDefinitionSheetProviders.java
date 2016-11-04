@@ -24,11 +24,11 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.config.ImportAIsAndTeamDefinitionsToDb;
 import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionImporter;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -53,7 +53,7 @@ public final class AtsWorkDefinitionSheetProviders {
    }
 
    public static void initializeDatabase(XResultData resultData) throws OseeCoreException {
-      AtsChangeSet changes = new AtsChangeSet("Import ATS Work Definitions, Teams and AIs");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Import ATS Work Definitions, Teams and AIs");
       Artifact folder =
          OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.WorkDefinitionsFolder, AtsUtilCore.getAtsBranch());
       if (folder.isDirty()) {
@@ -87,7 +87,7 @@ public final class AtsWorkDefinitionSheetProviders {
 
    public static void importAIsAndTeamsToDatabase() throws OseeCoreException {
 
-      AtsChangeSet changes = new AtsChangeSet("Import ATS AIs and Team Definitions");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Import ATS AIs and Team Definitions");
       for (WorkDefinitionSheet sheet : getWorkDefinitionSheets()) {
          OseeLog.logf(Activator.class, Level.INFO, "Importing ATS AIs and Teams sheet [%s]", sheet.getName());
          importAIsAndTeamsToDb(sheet, changes);

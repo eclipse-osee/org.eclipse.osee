@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -66,7 +65,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
          return;
       }
       createdDate = new Date();
-      AtsChangeSet changes = new AtsChangeSet(getName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getName());
       createdBy = AtsClientService.get().getUserService().getCurrentUser();
       GoalArtifact sawCodeGoal = GoalManager.createGoal("SAW Code", changes);
       GoalArtifact sawTestGoal = GoalManager.createGoal("SAW Test", changes);
@@ -93,7 +92,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
       Collection<IAtsTask> createTasks =
          AtsClientService.get().getTaskService().createTasks(new NewTaskDatas(newTaskData));
 
-      changes = new AtsChangeSet(getName());
+      changes = AtsClientService.get().createChangeSet(getName());
       for (IAtsTask task : createTasks) {
          Artifact taskArt = AtsClientService.get().getArtifact(task);
          toolsTeamGoal.addMember(taskArt);
@@ -116,7 +115,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
    }
 
    private TeamWorkFlowArtifact createAction456(GoalArtifact sawCodeGoal, GoalArtifact facilitiesGoal, TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      AtsChangeSet changes = new AtsChangeSet(getName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getName());
       NewTaskDatas newTaskDatas = new NewTaskDatas();
       for (String msaTool : Arrays.asList("Backups", "Computers", "Network")) {
          Artifact action = ActionManager.createAction(null, "Fix " + msaTool + " button", "Description",
@@ -136,7 +135,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
 
       Collection<IAtsTask> createTasks = AtsClientService.get().getTaskService().createTasks(newTaskDatas);
 
-      changes = new AtsChangeSet(getName());
+      changes = AtsClientService.get().createChangeSet(getName());
       for (IAtsTask task : createTasks) {
          facilitiesGoal.addMember((Artifact) task.getStoreObject());
          sawCodeGoal.addMember((Artifact) task.getStoreObject());

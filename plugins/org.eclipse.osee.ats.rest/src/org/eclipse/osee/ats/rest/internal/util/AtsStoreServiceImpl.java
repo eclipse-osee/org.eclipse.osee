@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.rest.internal.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -127,6 +128,20 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    @Override
    public boolean isOfType(ArtifactId artifact, IArtifactType... artifactType) {
       return ((ArtifactReadable) artifact).isOfType(artifactType);
+   }
+
+   @Override
+   public void executeChangeSet(String comment, IAtsObject atsObject) {
+      executeChangeSet(comment, Collections.singleton(atsObject));
+   }
+
+   @Override
+   public void executeChangeSet(String comment, Collection<? extends IAtsObject> atsObjects) {
+      IAtsChangeSet changes = createAtsChangeSet(comment, atsServer.getUserService().getCurrentUser());
+      for (IAtsObject atsObject : atsObjects) {
+         changes.add(atsObject);
+      }
+      changes.execute();
    }
 
 }

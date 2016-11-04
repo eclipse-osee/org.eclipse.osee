@@ -22,11 +22,11 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.internal.Activator;
@@ -122,7 +122,7 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
 
    private void handleCreateActions(Collection<TaskArtifact> tasks, String title, Collection<IAtsActionableItem> aias, ChangeType changeType, String priority, IProgressMonitor monitor) throws OseeCoreException {
       Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<>();
-      AtsChangeSet changes = new AtsChangeSet("Create Actions from Tasks");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Create Actions from Tasks");
       for (TaskArtifact task : tasks) {
          String useTitle = title;
          if (!Strings.isValid(useTitle)) {

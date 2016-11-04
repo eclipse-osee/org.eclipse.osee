@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.editor;
 import java.text.NumberFormat;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.internal.Activator;
@@ -80,7 +79,8 @@ public class WfePercentCompleteHeader extends Composite {
                      if (dialog.open() == 0) {
                         Integer intValue = dialog.getInt();
                         sma.getStateMgr().setPercentCompleteValue(intValue);
-                        AtsChangeSet.execute("ATS Workflow Editor - set Percent Complete", sma);
+                        AtsClientService.get().getStoreService().executeChangeSet(
+                           "ATS Workflow Editor - set Percent Complete", sma);
                      }
                   } catch (Exception ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

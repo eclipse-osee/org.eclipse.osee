@@ -9,6 +9,7 @@ import java.util.HashSet;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
@@ -19,7 +20,6 @@ import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
@@ -53,7 +53,7 @@ public class DemoTeamWorkflowTest {
       aias.add(AtsClientService.get().getCache().getAtsObject(DemoArtifactToken.SAW_Test_AI));
       String title = getClass().getSimpleName() + " testCreateSawTestWf";
 
-      AtsChangeSet changes = new AtsChangeSet("Create SAW Test Action title: " + title);
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Create SAW Test Action title: " + title);
 
       ActionArtifact actionArt = ActionManager.createAction(null, title, title, ChangeType.Improvement, "1", false,
          null, aias, new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);

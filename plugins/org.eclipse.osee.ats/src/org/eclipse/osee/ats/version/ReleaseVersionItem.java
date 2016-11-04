@@ -15,11 +15,11 @@ import java.util.Date;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.internal.Activator;
@@ -92,7 +92,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
                return;
             }
 
-            AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+            IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
             if (version != null) {
                changes.setSoleAttributeValue(version, AtsAttributeTypes.NextVersion, false);
                changes.setSoleAttributeValue(version, AtsAttributeTypes.Released, true);

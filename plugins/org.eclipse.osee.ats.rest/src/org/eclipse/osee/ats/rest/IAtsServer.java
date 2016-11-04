@@ -21,8 +21,6 @@ import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactoryProvider;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
-import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionServiceProvider;
@@ -85,7 +83,5 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
    Collection<CustomizeData> getCustomizations(String namespace);
 
    Collection<CustomizeData> getCustomizationsGlobal(String namespace);
-
-   IAtsChangeSet createChangeSet(String string, IAtsUser systemUser);
 
 }

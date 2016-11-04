@@ -14,10 +14,11 @@ package org.eclipse.osee.ats.config;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -49,7 +50,7 @@ public class AtsConfig2Operation extends AbstractOperation {
       monitor.worked(calculateWork(0.20));
 
       try {
-         AtsChangeSet changes = new AtsChangeSet(getName());
+         IAtsChangeSet changes = AtsClientService.get().createChangeSet(getName());
 
          // Import Work Definition sheets
          data.getResultData().log("Importing Work Definitions");

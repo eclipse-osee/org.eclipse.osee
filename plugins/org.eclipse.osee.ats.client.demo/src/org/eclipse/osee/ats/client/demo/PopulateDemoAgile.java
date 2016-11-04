@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
@@ -37,7 +38,6 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.client.demo.internal.Activator;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
@@ -178,7 +178,7 @@ public class PopulateDemoAgile {
       // Transition First Sprint to completed
       IAtsWorkItem sprint = AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andUuids(
          firstSprintUuid).getItems().iterator().next();
-      AtsChangeSet changes = new AtsChangeSet("Transition Agile Sprint");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Transition Agile Sprint");
       TransitionHelper helper =
          new TransitionHelper("Transition Agile Stprint", Arrays.asList(sprint), TeamState.Completed.getName(), null,
             null, changes, AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck);
@@ -205,7 +205,7 @@ public class PopulateDemoAgile {
       // Transition First Sprint to completed
       IAtsWorkItem sprint = AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andUuids(
          secondSprintUuid).getItems().iterator().next();
-      AtsChangeSet changes = new AtsChangeSet("Setup Sprint 2 for Burndown");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Setup Sprint 2 for Burndown");
 
       Calendar cal = Calendar.getInstance();
       cal.add(Calendar.DAY_OF_YEAR, -5);

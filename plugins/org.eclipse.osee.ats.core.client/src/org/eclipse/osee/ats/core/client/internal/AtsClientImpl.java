@@ -45,6 +45,7 @@ import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -235,7 +236,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
       atsLogFactory = AtsCoreFactory.newLogFactory();
       atsStateFactory = AtsCoreFactory.newStateFactory(getServices(), atsLogFactory);
-      atsStoreService = new AtsStoreService(workItemFactory);
+      atsStoreService = new AtsStoreService(workItemFactory, userServiceClient);
 
       atsQueryService = new AtsQueryServiceImpl(this, jdbcService);
       actionableItemManager = new ActionableItemManager(attributeResolverService, atsStoreService, this);
@@ -774,9 +775,15 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    public IOseeBranch getAtsBranch() {
       return AtsUtilCore.getAtsBranch();
    }
-   
+
    @Override
-   public IAtsChangeSet createAtsChangeSet(String comment) {
+   public IAtsChangeSet createChangeSet(String comment) {
       return getStoreService().createAtsChangeSet(comment, getUserService().getCurrentUser());
    }
+
+   @Override
+   public IAtsChangeSet createChangeSet(String comment, IAtsUser user) {
+      return getStoreService().createAtsChangeSet(comment, user);
+   }
+
 }

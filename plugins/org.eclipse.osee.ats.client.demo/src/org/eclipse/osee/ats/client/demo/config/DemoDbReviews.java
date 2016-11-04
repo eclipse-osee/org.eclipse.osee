@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Dispositi
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.ats.demo.api.DemoUsers;
@@ -52,7 +51,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class DemoDbReviews {
 
    public static void createReviews(boolean DEBUG) throws Exception {
-      AtsChangeSet changes = new AtsChangeSet("Populate Demo DB - Create Reviews");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Populate Demo DB - Create Reviews");
       createPeerToPeerReviews(DEBUG, changes);
       createDecisionReviews(DEBUG, changes);
       changes.execute();

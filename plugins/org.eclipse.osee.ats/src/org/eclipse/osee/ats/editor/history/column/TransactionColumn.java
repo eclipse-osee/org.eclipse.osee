@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.editor.history.column;
 
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 

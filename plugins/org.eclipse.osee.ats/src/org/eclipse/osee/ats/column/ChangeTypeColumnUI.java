@@ -20,9 +20,9 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.internal.Activator;
@@ -87,7 +87,7 @@ public class ChangeTypeColumnUI extends XViewerAtsAttributeValueColumn {
          }
          if (dialog.open() == 0) {
 
-            AtsChangeSet changes = new AtsChangeSet("ATS Prompt Change Type");
+            IAtsChangeSet changes = AtsClientService.get().createChangeSet("ATS Prompt Change Type");
 
             ChangeType newChangeType = dialog.getSelection();
             for (TeamWorkFlowArtifact team : teams) {

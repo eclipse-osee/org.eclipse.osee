@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -157,7 +158,7 @@ public class AgileFactory {
 
    public static IAgileSprint createAgileSprint(Log logger, IAtsServer atsServer, long teamUuid, String name, String guid, Long uuid) {
 
-      AtsChangeSet changes = (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Create new Agile Sprint",
+      IAtsChangeSet changes = (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Create new Agile Sprint",
          AtsCoreUsers.SYSTEM_USER);
 
       ArtifactReadable sprintArt =
@@ -188,7 +189,7 @@ public class AgileFactory {
 
    public static IAgileBacklog createAgileBacklog(Log logger, IAtsServer atsServer, long teamUuid, String name, String guid, Long uuid) {
 
-      AtsChangeSet changes = (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Create new Agile Backlog",
+      IAtsChangeSet changes = (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Create new Agile Backlog",
          AtsCoreUsers.SYSTEM_USER);
 
       ArtifactReadable backlogArt = (ArtifactReadable) changes.createArtifact(AtsArtifactTypes.Goal, name, guid, uuid);

@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.util.AtsRelationChange;
 import org.eclipse.osee.ats.core.util.AtsRelationChange.RelationOperation;
@@ -82,7 +81,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
             newVersionNames.add(str);
          }
          XResultData resultData = new XResultData(false);
-         AtsChangeSet changes = new AtsChangeSet("Create New Version(s)");
+         IAtsChangeSet changes = AtsClientService.get().createChangeSet("Create New Version(s)");
          Collection<IAtsVersion> newVersions =
             createVersions(resultData, changes, teamDefHoldingVersions, newVersionNames);
          if (resultData.isErrors()) {

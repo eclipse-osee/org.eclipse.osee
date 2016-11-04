@@ -23,11 +23,11 @@ import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.demo.api.DemoUsers;
@@ -60,7 +60,7 @@ public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
          UserManager.getUser(DemoUsers.Jason_Michael));
 
       // new workflow
-      AtsChangeSet changes = new AtsChangeSet("Duplicate Workflow");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Duplicate Workflow");
       newTeamArt = ActionManager.createTeamWorkflow(teamWf.getParentActionArtifact(), teamWf.getTeamDefinition(),
          AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(teamWf), assignees,
          changes, new Date(), originator, null, CreateTeamOption.Duplicate_If_Exists);

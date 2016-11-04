@@ -22,14 +22,14 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.AtsActivity;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -60,7 +60,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       Artifact topTeamDefArt =
          ArtifactQuery.getArtifactFromToken(AtsArtifactToken.TopTeamDefinition, AtsUtilCore.getAtsBranch());
       IAtsTeamDefinition teamDef = AtsClientService.get().getConfigItem(topTeamDefArt);
-      AtsChangeSet changes = new AtsChangeSet("Set Top Team Work Definition");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Set Top Team Work Definition");
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.WorkflowDefinition,
          IAtsWorkDefinitionAdmin.TeamWorkflowDefaultDefinitionId);
       changes.execute();

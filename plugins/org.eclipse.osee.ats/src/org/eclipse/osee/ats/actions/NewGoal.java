@@ -11,10 +11,11 @@
 package org.eclipse.osee.ats.actions;
 
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.editor.WorkflowEditor;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -43,7 +44,7 @@ public class NewGoal extends AbstractAtsAction {
          }
       }
       if (Strings.isValid(title)) {
-         AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+         IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
          GoalArtifact goalArt = GoalManager.createGoal(title, changes);
          changes.execute();
          WorkflowEditor.editArtifact(goalArt);

@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxAgileItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.AtsChangeSet;
@@ -39,7 +40,7 @@ public class AgileItemWriter {
    }
 
    public JaxAgileItem write() {
-      AtsChangeSet changes = (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Update new Agile Item",
+      IAtsChangeSet changes = (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Update new Agile Item",
          AtsCoreUsers.SYSTEM_USER);
 
       if (newItem.isSetFeatures()) {

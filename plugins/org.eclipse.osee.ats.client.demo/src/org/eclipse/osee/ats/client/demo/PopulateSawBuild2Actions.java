@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
@@ -69,7 +68,7 @@ public class PopulateSawBuild2Actions {
       Conditions.checkNotNull(version, "SAW_Bld_2");
 
       // Create SAW_Bld_2 Actions
-      AtsChangeSet changes = new AtsChangeSet("Populate Demo DB - PopulateSawBuild2Actions");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Populate Demo DB - PopulateSawBuild2Actions");
 
       // SawBuild2Action1
       ActionArtifact committedAction = sawBuild2Action1_createCommittedAction(changes);

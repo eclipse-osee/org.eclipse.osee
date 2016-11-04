@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.core.client.review.DecisionReviewDefinitionManager;
 import org.eclipse.osee.ats.core.client.review.PeerReviewDefinitionManager;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.stateitem.AtsStateItemCoreManager;
 import org.eclipse.osee.ats.core.client.workflow.stateitem.IAtsStateItemCore;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
@@ -173,7 +172,7 @@ public class AtsBranchUtil {
 
    private static void performPostBranchCreationTasks(final TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       // Create reviews as necessary
-      AtsChangeSet changes = new AtsChangeSet("Create Reviews upon Transition");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Create Reviews upon Transition");
       boolean created = createNecessaryBranchEventReviews(StateEventType.CreateBranch, teamArt, new Date(),
          AtsCoreUsers.SYSTEM_USER, changes);
       if (created) {

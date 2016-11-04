@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
@@ -28,7 +29,6 @@ import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
@@ -182,7 +182,7 @@ public class AtsDeleteManagerTest {
    }
 
    private TeamWorkFlowArtifact createAction(TestNames testName, Collection<IAtsActionableItem> actionableItems) throws OseeCoreException {
-      AtsChangeSet changes = new AtsChangeSet("Delete Manager Test - testActionPurge");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Delete Manager Test - testActionPurge");
 
       Date createdDate = new Date();
       IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();

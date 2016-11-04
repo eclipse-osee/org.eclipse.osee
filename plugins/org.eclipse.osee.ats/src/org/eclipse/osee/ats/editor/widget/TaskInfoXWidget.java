@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -23,7 +24,6 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskStates;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
@@ -145,7 +145,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
                         return;
                      }
                      try {
-                        AtsChangeSet changes = new AtsChangeSet("ATS Auto Complete Tasks");
+                        IAtsChangeSet changes = AtsClientService.get().createChangeSet("ATS Auto Complete Tasks");
                         for (TaskArtifact taskArt : teamWf.getTaskArtifacts(forState)) {
                            if (!taskArt.isCompletedOrCancelled()) {
                               if (taskArt.getStateMgr().isUnAssigned()) {

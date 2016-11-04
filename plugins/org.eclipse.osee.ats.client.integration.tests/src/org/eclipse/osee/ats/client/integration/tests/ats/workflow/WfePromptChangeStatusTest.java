@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.WorkState;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
@@ -27,7 +28,6 @@ import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskStates;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
@@ -70,7 +70,7 @@ public class WfePromptChangeStatusTest {
 
    @Test
    public void test01Initialize() throws Exception {
-      AtsChangeSet changes = new AtsChangeSet("Prompt Change Status Test");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Prompt Change Status Test");
       teamArt = DemoTestUtil.createSimpleAction(getClass().getSimpleName(), changes);
       changes.execute();
       assertNotNull(teamArt);
@@ -116,7 +116,7 @@ public class WfePromptChangeStatusTest {
       TaskArtifact cancelTask = tasks.iterator().next();
 
       // test that if one task is cancelled, can't change status
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       TransitionHelper helper =
          new TransitionHelper("Transition to Cancelled", Arrays.asList(cancelTask), TaskStates.Cancelled.getName(),
             null, null, changes, AtsClientService.get().getServices(), TransitionOption.None);

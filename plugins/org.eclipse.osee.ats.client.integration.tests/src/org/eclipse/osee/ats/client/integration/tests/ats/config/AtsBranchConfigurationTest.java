@@ -23,13 +23,13 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.config.AtsConfigOperation;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
@@ -143,7 +143,7 @@ public class AtsBranchConfigurationTest {
       }
 
       Assert.assertNotNull(versionToTarget);
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       changes.setSoleAttributeValue(versionToTarget, AtsAttributeTypes.BaselineBranchUuid,
          viaTeamDefBranch.getUuid().toString());
       changes.setSoleAttributeValue(versionToTarget, AtsAttributeTypes.AllowCommitBranch, true);
@@ -253,7 +253,7 @@ public class AtsBranchConfigurationTest {
             "Configuring team def to use branch and allow create/commit");
       }
       IAtsTeamDefinition teamDef = operation.getTeamDefinition();
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchUuid,
          viaTeamDefBranch.getUuid().toString());
       // setup team def to allow create/commit of branch

@@ -730,4 +730,9 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    public IAtsChangeSet createChangeSet(String comment, IAtsUser user) {
       return getStoreService().createAtsChangeSet(comment, user);
    }
+
+   @Override
+   public IAtsChangeSet createChangeSet(String comment) {
+      return getStoreService().createAtsChangeSet(comment, userService.getCurrentUser());
+   }
 }

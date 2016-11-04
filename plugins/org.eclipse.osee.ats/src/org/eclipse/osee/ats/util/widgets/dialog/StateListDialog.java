@@ -12,9 +12,7 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.Collection;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.Composite;
