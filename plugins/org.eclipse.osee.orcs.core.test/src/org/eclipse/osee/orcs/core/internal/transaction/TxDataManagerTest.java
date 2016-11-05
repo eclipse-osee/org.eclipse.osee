@@ -14,10 +14,10 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.DirectSoft
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Category;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.IS_CHILD;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyCollectionOf;
@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -39,6 +40,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
@@ -93,9 +95,6 @@ public class TxDataManagerTest {
    @Mock private TxData txData;
 
    @Mock private GraphData graph;
-   @Mock private ArtifactId artifactId1;
-   @Mock private ArtifactId artifactId2;
-   @Mock private ArtifactId artifactId3;
    @Mock private ArtifactReadable readable1;
    @Mock private ArtifactReadable readable2;
    @Mock private ArtifactReadable readable3;
@@ -109,18 +108,18 @@ public class TxDataManagerTest {
 
    private TxDataManager txDataManager;
    private TxData txDataReal;
-   private String guid;
    private final Collection<? extends IAttributeType> types = Arrays.asList(Name, Category);
    private String r1Guid;
    private String r2Guid;
    private String r3Guid;
+   private ArtifactId artifactId1;
+   private ArtifactId artifactId2;
+   private ArtifactId artifactId3;
 
    @Before
    public void init() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
       txDataManager = new TxDataManager(proxyManager, artifactFactory, relationManager, tupleManager, loader);
-
-      guid = GUID.create();
 
       when(artifact1.getExistingAttributeTypes()).thenAnswer(answerValue(types));
 
@@ -137,9 +136,13 @@ public class TxDataManagerTest {
       r2Guid = GUID.create();
       r3Guid = GUID.create();
 
-      when(artifactId1.getGuid()).thenReturn(r1Guid);
-      when(artifactId2.getGuid()).thenReturn(r2Guid);
-      when(artifactId3.getGuid()).thenReturn(r3Guid);
+      Long id1 = Lib.generateUuid();
+      Long id2 = Lib.generateUuid();
+      Long id3 = Lib.generateUuid();
+
+      artifactId1 = ArtifactToken.valueOf(id1, r1Guid, "", COMMON, null);
+      artifactId2 = ArtifactToken.valueOf(id2, r2Guid, "", COMMON, null);
+      artifactId3 = ArtifactToken.valueOf(id3, r3Guid, "", COMMON, null);
 
       when(readable1.getGuid()).thenReturn(r1Guid);
       when(readable2.getGuid()).thenReturn(r2Guid);
@@ -230,7 +233,6 @@ public class TxDataManagerTest {
    @Test
    public void testGetForWriteReadable() throws OseeCoreException {
       when(txData.getWriteable(readable1)).thenReturn(null);
-      when(proxyManager.asInternalArtifact(readable1)).thenReturn(artifact1);
       when(artifactFactory.clone(session, artifact1)).thenReturn(artifact2);
 
       ArtifactData data = Mockito.mock(ArtifactData.class);
@@ -251,7 +253,6 @@ public class TxDataManagerTest {
    @Test
    public void testGetForWriteReadableButIsFromDifferentBranch() throws OseeCoreException {
       when(txData.getWriteable(readable1)).thenReturn(null);
-      when(proxyManager.asInternalArtifact(readable1)).thenReturn(artifact1);
       when(artifactFactory.clone(session, artifact1)).thenReturn(artifact2);
 
       ArtifactData data = Mockito.mock(ArtifactData.class);
@@ -380,17 +381,16 @@ public class TxDataManagerTest {
 
    @Test
    public void testCreateArtifact() throws OseeCoreException {
-      when(artifactFactory.createArtifact(session, COMMON, DirectSoftwareRequirement, guid)).thenReturn(artifact1);
-      when(proxyManager.asExternalArtifact(session, artifact1)).thenReturn(readable1);
+      when(artifactFactory.createArtifact(session, COMMON, DirectSoftwareRequirement, null)).thenReturn(artifact1);
 
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
       when(data.isExistingVersionUsed()).thenReturn(false);
 
       ArtifactReadable actual =
-         txDataManager.createArtifact(txDataReal, DirectSoftwareRequirement, "Direct SW requirement", guid);
+         txDataManager.createArtifact(txDataReal, DirectSoftwareRequirement, "Direct SW requirement", null);
 
-      verify(artifactFactory).createArtifact(session, COMMON, DirectSoftwareRequirement, guid);
+      verify(artifactFactory).createArtifact(session, COMMON, DirectSoftwareRequirement, null);
       assertEquals(readable1, actual);
    }
 
@@ -416,8 +416,6 @@ public class TxDataManagerTest {
 
    @Test
    public void testCopyReadableArtifact() throws OseeCoreException {
-      when(proxyManager.asInternalArtifact(readable1)).thenReturn(artifact1);
-
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
       when(artifact2.getOrcsData()).thenReturn(data);
@@ -468,7 +466,6 @@ public class TxDataManagerTest {
    public void testCopyArtifactId() throws OseeCoreException {
       txDataReal.add(artifact1);
 
-      when(artifact1.getExistingAttributeTypes()).thenAnswer(answerValue(types));
       when(artifactFactory.copyArtifact(session, artifact1, types, COMMON)).thenReturn(artifact2);
       when(proxyManager.asExternalArtifact(session, artifact2)).thenReturn(readable2);
 
@@ -559,7 +556,6 @@ public class TxDataManagerTest {
    public void testRelate() throws OseeCoreException {
       when(txData.getWriteable(readable1)).thenReturn(artifact1);
       when(txData.getWriteable(readable2)).thenReturn(artifact2);
-      when(txData.getGraph()).thenReturn(graph);
 
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
@@ -575,7 +571,6 @@ public class TxDataManagerTest {
    public void testRelateWithOrder() throws OseeCoreException {
       when(txData.getWriteable(readable1)).thenReturn(artifact1);
       when(txData.getWriteable(readable2)).thenReturn(artifact2);
-      when(txData.getGraph()).thenReturn(graph);
 
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
@@ -594,7 +589,6 @@ public class TxDataManagerTest {
       when(txData.getWriteable(readable1)).thenReturn(artifact1);
       when(txData.getWriteable(readable2)).thenReturn(artifact2);
       when(txData.getWriteable(readable3)).thenReturn(artifact3);
-      when(txData.getGraph()).thenReturn(graph);
 
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
@@ -616,7 +610,6 @@ public class TxDataManagerTest {
       when(txData.getWriteable(readable1)).thenReturn(artifact1);
       when(txData.getWriteable(readable2)).thenReturn(artifact2);
       when(txData.getWriteable(readable3)).thenReturn(artifact3);
-      when(txData.getGraph()).thenReturn(graph);
 
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
@@ -638,7 +631,6 @@ public class TxDataManagerTest {
    public void testUnrelate() throws OseeCoreException {
       when(txData.getWriteable(readable1)).thenReturn(artifact1);
       when(txData.getWriteable(readable2)).thenReturn(artifact2);
-      when(txData.getGraph()).thenReturn(graph);
 
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
@@ -653,7 +645,6 @@ public class TxDataManagerTest {
    @Test
    public void testUnrelateTypeFromAll() throws OseeCoreException {
       when(txData.getWriteable(readable1)).thenReturn(artifact1);
-      when(txData.getGraph()).thenReturn(graph);
 
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
@@ -667,7 +658,6 @@ public class TxDataManagerTest {
    @Test
    public void testUnrelateFromAll() throws OseeCoreException {
       when(txData.getWriteable(readable1)).thenReturn(artifact1);
-      when(txData.getGraph()).thenReturn(graph);
 
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
