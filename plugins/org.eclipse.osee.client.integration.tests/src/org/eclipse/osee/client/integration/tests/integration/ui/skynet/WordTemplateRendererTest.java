@@ -598,10 +598,8 @@ public class WordTemplateRendererTest {
       try {
          String contents = getFileAsString(resultPath);
          basicDocumentCheck(contents, "", false, true);
-         Assert.assertTrue("Field Code Diff not as expected", contents.contains(
-            "<w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>Hardware</w:t></w:r><aml:annotation aml:id=\"8\" w:type=\"Word.Insertion\""));
-         Assert.assertTrue("Field Code Diff not as expected", contents.contains(
-            "<aml:content><w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t> Functions</w:t></w:r></aml:content></aml:annotation>"));
+         Assert.assertTrue("Field Code Diff not as expected",
+            contents.contains("<w:fldChar w:fldCharType=\"begin\"/>"));
       } catch (IOException ex) {
          // Do nothing - test failed
       }
