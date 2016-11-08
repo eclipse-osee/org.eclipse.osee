@@ -16,6 +16,11 @@ import org.eclipse.osee.orcs.core.ds.BinaryDataProxy;
  * @author Roberto E. Escobar
  */
 public abstract class BinaryBackedAttribute<T> extends AttributeImpl<T> {
+
+   public BinaryBackedAttribute(Long id) {
+      super(id);
+   }
+
    @Override
    public BinaryDataProxy getDataProxy() {
       // this cast is always safe since the the data provider passed in the constructor to

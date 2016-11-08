@@ -21,6 +21,10 @@ public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
    public static final String NAME = IntegerAttribute.class.getSimpleName();
    private static final Integer DEFAULT_INTEGER = Integer.MIN_VALUE;
 
+   public IntegerAttribute(Long id) {
+      super(id);
+   }
+
    @Override
    public Integer convertStringToValue(String value) {
       Integer toReturn = null;

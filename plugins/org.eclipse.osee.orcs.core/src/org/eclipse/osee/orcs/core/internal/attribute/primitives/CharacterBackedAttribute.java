@@ -17,6 +17,11 @@ import org.eclipse.osee.orcs.core.ds.CharacterDataProxy;
  * @author Roberto E. Escobar
  */
 public abstract class CharacterBackedAttribute<T> extends AttributeImpl<T> {
+
+   public CharacterBackedAttribute(Long id) {
+      super(id);
+   }
+
    @Override
    public CharacterDataProxy<T> getDataProxy() {
       // this cast is always safe since the the data provider passed in the constructor to

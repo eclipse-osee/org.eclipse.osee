@@ -14,7 +14,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IAttribute;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 
 /**
  * @author Roberto E. Escobar
@@ -25,9 +24,6 @@ public interface AttributeReadable<T> extends OrcsReadable, IAttribute<T> {
    GammaId getGammaId();
 
    @Override
-   ModificationType getModificationType();
-
-   @Override
    AttributeTypeToken getAttributeType();
 
    boolean isOfType(AttributeTypeId otherAttributeType);
@@ -36,8 +32,5 @@ public interface AttributeReadable<T> extends OrcsReadable, IAttribute<T> {
    T getValue();
 
    String getDisplayableString();
-
-   @Override
-   String toString();
 
 }

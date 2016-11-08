@@ -14,6 +14,10 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
 
 public abstract class IdentityReferenceAttribute extends CharacterBackedAttribute<Id> {
 
+   public IdentityReferenceAttribute(Long id) {
+      super(id);
+   }
+
    @Override
    public String convertToStorageString(Id rawValue) {
       return rawValue.getIdString();

@@ -22,6 +22,10 @@ import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
 public final class CompressedContentAttribute extends BinaryAttribute<InputStream> {
    public static final String NAME = CompressedContentAttribute.class.getSimpleName();
 
+   public CompressedContentAttribute(Long id) {
+      super(id);
+   }
+
    @Override
    public InputStream getValue() {
       return Lib.byteBufferToInputStream(getDataProxy().getValueAsBytes());

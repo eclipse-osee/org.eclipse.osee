@@ -15,5 +15,8 @@ package org.eclipse.osee.orcs.core.internal.attribute.primitives;
  * @author Ryan D. Brooks
  */
 public abstract class BinaryAttribute<T> extends BinaryBackedAttribute<T> {
-   // do nothing
+
+   public BinaryAttribute(Long id) {
+      super(id);
+   }
 }

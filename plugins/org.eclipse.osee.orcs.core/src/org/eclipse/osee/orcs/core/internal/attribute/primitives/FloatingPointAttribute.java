@@ -21,6 +21,10 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
    public static final String NAME = FloatingPointAttribute.class.getSimpleName();
    private static final Double DEFAULT_DOUBLE = Double.MIN_VALUE;
 
+   public FloatingPointAttribute(Long id) {
+      super(id);
+   }
+
    @Override
    public Double convertStringToValue(String value) {
       Double toReturn = null;

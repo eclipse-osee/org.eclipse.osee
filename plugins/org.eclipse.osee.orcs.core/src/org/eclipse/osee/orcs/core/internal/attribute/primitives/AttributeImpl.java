@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -32,7 +33,12 @@ import org.eclipse.osee.orcs.data.AttributeTypes;
 /**
  * @author Ryan D. Brooks
  */
-public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, Attribute<T> {
+public abstract class AttributeImpl<T> extends BaseId implements Comparable<AttributeImpl<T>>, Attribute<T> {
+
+   public AttributeImpl(Long id) {
+      super(id);
+   }
+
    private AttributeTypes attributeTypeCache;
    private Reference<AttributeContainer> containerReference;
    private Log logger;
@@ -301,11 +307,6 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
    @Override
    public int compareTo(AttributeImpl<T> other) {
       return toString().compareTo(other.toString());
-   }
-
-   @Override
-   public Long getId() {
-      return getOrcsData().getId();
    }
 
    @Override

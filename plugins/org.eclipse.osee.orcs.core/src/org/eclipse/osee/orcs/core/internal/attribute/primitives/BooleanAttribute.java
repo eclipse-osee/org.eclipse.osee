@@ -19,6 +19,10 @@ import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
 public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
    public static final String NAME = BooleanAttribute.class.getSimpleName();
 
+   public BooleanAttribute(Long id) {
+      super(id);
+   }
+
    @Override
    public Boolean convertStringToValue(String value) {
       return Boolean.valueOf(value);

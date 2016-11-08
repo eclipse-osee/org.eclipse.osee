@@ -20,6 +20,10 @@ import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
 public class EnumeratedAttribute extends StringAttribute {
    public static final String NAME = EnumeratedAttribute.class.getSimpleName();
 
+   public EnumeratedAttribute(Long id) {
+      super(id);
+   }
+
    @Override
    public String getDisplayableString() {
       String toDisplay = getDataProxy().getDisplayableString();

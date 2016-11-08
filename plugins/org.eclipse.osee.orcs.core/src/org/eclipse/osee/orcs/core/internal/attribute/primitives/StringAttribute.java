@@ -24,6 +24,11 @@ import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
 public class StringAttribute extends CharacterBackedAttribute<String> {
    public static final String NAME = StringAttribute.class.getSimpleName();
 
+   public StringAttribute(Long id) {
+      super(id);
+   }
+
+
    @Override
    public String convertStringToValue(String value) {
       return value;

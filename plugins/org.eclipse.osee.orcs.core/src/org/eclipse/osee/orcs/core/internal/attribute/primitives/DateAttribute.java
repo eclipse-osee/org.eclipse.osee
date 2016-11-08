@@ -24,6 +24,11 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
    public static final String NAME = DateAttribute.class.getSimpleName();
    private static final DateFormat MMDDYYHHMM = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
 
+   public DateAttribute(Long id) {
+      super(id);
+   }
+
+
    @Override
    public String convertToStorageString(Date rawValue) {
       return String.valueOf(rawValue.getTime());

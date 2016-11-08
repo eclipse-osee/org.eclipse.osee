@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -58,7 +59,7 @@ public class AttributeFactory {
    }
 
    private <T> Attribute<T> createAttribute(AttributeContainer container, AttributeData<T> data, boolean isDirty, boolean createWithDefaults) {
-      Attribute<T> attribute = createAttribute(data.getType());
+      Attribute<T> attribute = createAttribute(data.getType(), data);
 
       DataProxy<T> proxy = data.getDataProxy();
       ResourceNameResolver resolver = createResolver(attribute);
@@ -73,34 +74,35 @@ public class AttributeFactory {
       return attribute;
    }
 
-   private <T> Attribute<T> createAttribute(AttributeTypeId attributeType) {
+   private <T> Attribute<T> createAttribute(AttributeTypeId attributeType, AttributeId attributeId) {
       String baseAttributeType = cache.getBaseAttributeTypeId(attributeType);
+      Long id = attributeId.getId();
 
       Attribute<?> attribute;
 
       // Note: these comparisons are in order of likelihood of matching for the ever so slight advantage of fewer String comparisons
       if (baseAttributeType.equals(StringAttribute.NAME)) {
-         attribute = new StringAttribute();
+         attribute = new StringAttribute(id);
       } else if (baseAttributeType.equals(BooleanAttribute.NAME)) {
-         attribute = new BooleanAttribute();
+         attribute = new BooleanAttribute(id);
       } else if (baseAttributeType.equals(EnumeratedAttribute.NAME)) {
-         attribute = new EnumeratedAttribute();
+         attribute = new EnumeratedAttribute(id);
       } else if (baseAttributeType.equals(DateAttribute.NAME)) {
-         attribute = new DateAttribute();
+         attribute = new DateAttribute(id);
       } else if (baseAttributeType.equals(IntegerAttribute.NAME)) {
-         attribute = new IntegerAttribute();
+         attribute = new IntegerAttribute(id);
       } else if (baseAttributeType.equals(FloatingPointAttribute.NAME)) {
-         attribute = new FloatingPointAttribute();
+         attribute = new FloatingPointAttribute(id);
       } else if (baseAttributeType.equals(ArtifactReferenceAttribute.NAME)) {
-         attribute = new ArtifactReferenceAttribute();
+         attribute = new ArtifactReferenceAttribute(id);
       } else if (baseAttributeType.equals(BranchReferenceAttribute.NAME)) {
-         attribute = new BranchReferenceAttribute();
+         attribute = new BranchReferenceAttribute(id);
       } else if (baseAttributeType.equals(JavaObjectAttribute.NAME)) {
-         attribute = new JavaObjectAttribute();
+         attribute = new JavaObjectAttribute(id);
       } else if (baseAttributeType.equals(CompressedContentAttribute.NAME)) {
-         attribute = new CompressedContentAttribute();
+         attribute = new CompressedContentAttribute(id);
       } else {
-         attribute = new StringAttribute();
+         attribute = new StringAttribute(id);
       }
       return (Attribute<T>) attribute;
    }
