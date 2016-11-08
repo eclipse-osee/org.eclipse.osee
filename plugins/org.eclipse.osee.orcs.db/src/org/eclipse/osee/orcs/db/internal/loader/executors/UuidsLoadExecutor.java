@@ -14,7 +14,6 @@ import java.util.Collection;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -76,7 +75,7 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
 
          getJdbcClient().runQuery(stmt -> {
             Integer artId = stmt.getInt("art_id");
-            toReturn.add(artId, branch.getId(), transactionId);
+            toReturn.add(artId, BranchId.valueOf(branch.getId()), transactionId);
          }, artifactIds.size(), GUIDS_TO_IDS, guidJoin.getQueryId());
 
       } finally {

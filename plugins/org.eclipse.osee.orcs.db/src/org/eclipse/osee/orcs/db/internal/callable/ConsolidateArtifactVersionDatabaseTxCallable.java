@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -109,8 +110,10 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
       chStmt.runPreparedQuery(POPULATE_DUPLICATE_ARTID);
 
       while (chStmt.next()) {
-         idJoinQuery.add(chStmt.getInt("art_id"), chStmt.getLong("branch_id"), TransactionId.SENTINEL);
-         idJoinQuery.add(chStmt.getInt("art_id_1"), chStmt.getLong("branch_id_1"), TransactionId.SENTINEL);
+         idJoinQuery.add(chStmt.getInt("art_id"), BranchId.valueOf(chStmt.getLong("branch_id")),
+            TransactionId.SENTINEL);
+         idJoinQuery.add(chStmt.getInt("art_id_1"), BranchId.valueOf(chStmt.getLong("branch_id_1")),
+            TransactionId.SENTINEL);
       }
       idJoinQuery.store(connection);
       return idJoinQuery;

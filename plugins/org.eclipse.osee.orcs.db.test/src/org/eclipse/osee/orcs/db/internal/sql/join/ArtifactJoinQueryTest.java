@@ -11,13 +11,14 @@
 package org.eclipse.osee.orcs.db.internal.sql.join;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * Test Case for {@link ArtifactJoinQuery}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class ArtifactJoinQueryTest {
@@ -29,11 +30,11 @@ public class ArtifactJoinQueryTest {
       Assert.assertEquals(0, join.size());
       Assert.assertEquals(true, join.isEmpty());
 
-      join.add(1234, 5678L, null);
+      join.add(1234, BranchId.valueOf(5678L), null);
       Assert.assertEquals(1, join.size());
       Assert.assertEquals(false, join.isEmpty());
 
-      join.add(1234, 5678L, null);
+      join.add(1234, BranchId.valueOf(5678L), null);
       Assert.assertEquals(1, join.size());
 
       Assert.assertEquals(false, join.wasStored());
@@ -76,7 +77,7 @@ public class ArtifactJoinQueryTest {
       ArtifactJoinQuery join = new ArtifactJoinQuery(joinAccessor, -1L, 1000, maxSize);
 
       for (int i = 0; i < maxSize + 1; i++) {
-         join.add(i + 1, 1123L, null);
+         join.add(i + 1, BranchId.valueOf(1123L), null);
       }
 
    }

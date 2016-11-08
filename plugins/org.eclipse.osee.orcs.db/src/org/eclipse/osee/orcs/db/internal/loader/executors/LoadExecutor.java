@@ -52,7 +52,7 @@ public class LoadExecutor extends AbstractLoadExecutor {
       ArtifactJoinQuery join = joinFactory.createArtifactJoinQuery();
       TransactionId transactionId = OptionsUtil.getFromTransaction(options);
       for (Integer artId : artifactIds) {
-         join.add(artId, branch.getId(), transactionId);
+         join.add(artId, BranchId.valueOf(branch.getId()), transactionId);
       }
 
       LoadSqlContext loadContext = new LoadSqlContext(session, options, branch);

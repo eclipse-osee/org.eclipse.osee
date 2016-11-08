@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.loader.executors;
 import java.util.List;
 import java.util.function.Consumer;
 import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -74,7 +75,7 @@ public class ArtifactQueryContextLoadExecutor extends AbstractLoadExecutor {
          Consumer<JdbcStatement> consumer = stmt -> {
             checkCancelled(cancellation);
             Integer artId = stmt.getInt("art_id");
-            Long branchUuid = stmt.getLong("branch_id");
+            BranchId branchUuid = BranchId.valueOf(stmt.getLong("branch_id"));
             artifactJoin.add(artId, branchUuid, transactionId);
             checkCancelled(cancellation);
          };

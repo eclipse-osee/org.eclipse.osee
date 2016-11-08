@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.sql.join;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.jdbc.SQL3DataType;
@@ -27,9 +28,9 @@ public class ArtifactJoinQuery extends AbstractJoinQuery {
       private final Long branchUuid;
       private final TransactionId transactionId;
 
-      private Entry(Integer artId, Long branchUuid, TransactionId transactionId) {
+      private Entry(Integer artId, BranchId branchUuid, TransactionId transactionId) {
          this.artId = artId;
-         this.branchUuid = branchUuid;
+         this.branchUuid = branchUuid.getId();
          this.transactionId = transactionId;
       }
 
@@ -107,7 +108,7 @@ public class ArtifactJoinQuery extends AbstractJoinQuery {
       this.maxJoinSize = maxJoinSize;
    }
 
-   public void add(Integer art_id, Long branchUuid, TransactionId transactionId) {
+   public void add(Integer art_id, BranchId branchUuid, TransactionId transactionId) {
       entries.add(new Entry(art_id, branchUuid, transactionId));
       if (entries.size() > maxJoinSize) {
          throw new OseeDataStoreException("Exceeded max artifact join size of [%d]", maxJoinSize);
