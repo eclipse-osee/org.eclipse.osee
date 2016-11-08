@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.script.dsl.ui.integration.internal;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.orcs.script.dsl.ui.IOrcsObjectProvider;
 
 /**
@@ -26,26 +26,26 @@ public class OrcsObjectProviderImpl implements IOrcsObjectProvider {
    }
 
    @Override
-   public Iterable<? extends NamedId> getBranches() {
+   public Iterable<? extends NamedIdBase> getBranches() {
       IOseeCachingService caches = getCache();
-      return caches != null ? caches.getBranchCache().getAll() : Collections.<NamedId> emptyList();
+      return caches != null ? caches.getBranchCache().getAll() : Collections.<NamedIdBase> emptyList();
    }
 
    @Override
-   public Iterable<? extends NamedId> getArtifactTypes() {
+   public Iterable<? extends NamedIdBase> getArtifactTypes() {
       IOseeCachingService caches = getCache();
-      return caches != null ? caches.getArtifactTypeCache().getAll() : Collections.<NamedId> emptyList();
+      return caches != null ? caches.getArtifactTypeCache().getAll() : Collections.<NamedIdBase> emptyList();
    }
 
    @Override
-   public Iterable<? extends NamedId> getAttributeTypes() {
+   public Iterable<? extends NamedIdBase> getAttributeTypes() {
       IOseeCachingService caches = getCache();
-      return caches != null ? caches.getAttributeTypeCache().getAll() : Collections.<NamedId> emptyList();
+      return caches != null ? caches.getAttributeTypeCache().getAll() : Collections.<NamedIdBase> emptyList();
    }
 
    @Override
-   public Iterable<? extends NamedId> getRelationTypes() {
+   public Iterable<? extends NamedIdBase> getRelationTypes() {
       IOseeCachingService caches = getCache();
-      return caches != null ? caches.getRelationTypeCache().getAll() : Collections.<NamedId> emptyList();
+      return caches != null ? caches.getRelationTypeCache().getAll() : Collections.<NamedIdBase> emptyList();
    }
 }

@@ -90,11 +90,6 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public String toStringWithId() {
-      return toString();
-   }
-
-   @Override
    public IAtsStateManager getStateMgr() {
       return null;
    }
@@ -255,4 +250,8 @@ public class MockWorkItem implements IAtsWorkItem {
       return false;
    }
 
+   @Override
+   public String toStringWithId() {
+      return String.format("[%s]-[%s]", getName(), getId());
+   }
 }

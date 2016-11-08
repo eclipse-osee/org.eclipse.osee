@@ -23,13 +23,13 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
-public class Branch extends NamedId implements IOseeBranch, Adaptable {
+public class Branch extends NamedIdBase implements IOseeBranch, Adaptable {
 
    private final Set<Branch> childBranches = new HashSet<>();
    private BranchType branchType;
@@ -165,13 +165,6 @@ public class Branch extends NamedId implements IOseeBranch, Adaptable {
          }
       }
       return false;
-   }
-
-   /*
-    * Provide easy way to display/report [guid][name]
-    */
-   public final String toStringWithId() {
-      return String.format("[%s][%s]", getId(), getName());
    }
 
 }

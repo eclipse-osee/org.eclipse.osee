@@ -10,19 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.script.dsl.ui;
 
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface IOrcsObjectProvider {
 
-   Iterable<? extends NamedId> getBranches();
+   Iterable<? extends NamedIdBase> getBranches();
 
-   Iterable<? extends NamedId> getArtifactTypes();
+   Iterable<? extends NamedIdBase> getArtifactTypes();
 
-   Iterable<? extends NamedId> getAttributeTypes();
+   Iterable<? extends NamedIdBase> getAttributeTypes();
 
-   Iterable<? extends NamedId> getRelationTypes();
+   Iterable<? extends NamedIdBase> getRelationTypes();
 
 }

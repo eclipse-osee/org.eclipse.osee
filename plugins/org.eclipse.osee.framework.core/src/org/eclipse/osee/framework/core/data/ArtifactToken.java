@@ -11,15 +11,15 @@
 package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
  * @author Ryan D. Brooks
  * @author Donald G. Dunne
  */
-public interface ArtifactToken extends ArtifactId, HasArtifactType, HasBranch, Named {
+public interface ArtifactToken extends ArtifactId, HasArtifactType, HasBranch, NamedId {
    default ArtifactTypeId getArtifactTypeId() {
       return null;
    }
@@ -45,7 +45,7 @@ public interface ArtifactToken extends ArtifactId, HasArtifactType, HasBranch, N
    }
 
    public static ArtifactToken valueOf(long id, String guid, String name, BranchId branch, IArtifactType artifactType) {
-      final class ArtifactTokenImpl extends NamedId implements ArtifactToken {
+      final class ArtifactTokenImpl extends NamedIdBase implements ArtifactToken {
          private final BranchId branch;
          private final IArtifactType artifactType;
          private final String guid;
@@ -89,7 +89,4 @@ public interface ArtifactToken extends ArtifactId, HasArtifactType, HasBranch, N
       return new ArtifactTokenImpl(id, guid, name, branch, artifactType);
    }
 
-   default String toStringWithId() {
-      return String.format("[%s][%s]", getName(), getId());
-   }
 }

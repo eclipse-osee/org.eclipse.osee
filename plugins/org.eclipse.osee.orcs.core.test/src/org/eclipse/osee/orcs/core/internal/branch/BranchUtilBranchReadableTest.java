@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.junit.Assert;
 import org.junit.Before;
@@ -45,7 +45,7 @@ public class BranchUtilBranchReadableTest {
       ten = new BranchReadableImpl(10);
    }
 
-   private static class BranchReadableImpl extends NamedId implements BranchReadable {
+   private static class BranchReadableImpl extends NamedIdBase implements BranchReadable {
       private BranchId parent;
 
       public void setParentBranch(BranchId parent) {

@@ -16,12 +16,12 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.model.internal.fields.UniqueIdField;
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 
-public abstract class AbstractOseeType extends NamedId implements IOseeStorable {
+public abstract class AbstractOseeType extends NamedIdBase implements IOseeStorable {
 
    public static final String NAME_FIELD_KEY = "osee.name.field";
    public static final String UNIQUE_ID_FIELD_KEY = "osee.unique.id.field";

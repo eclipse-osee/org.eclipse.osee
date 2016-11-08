@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Named;
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Ryan D. Brooks
@@ -25,7 +25,7 @@ public interface RelationTypeToken extends IRelationType, Named {
    }
 
    public static RelationTypeToken create(Long id, String name) {
-      final class RelationTypeTokenImpl extends NamedId implements RelationTypeToken {
+      final class RelationTypeTokenImpl extends NamedIdBase implements RelationTypeToken {
 
          public RelationTypeTokenImpl(Long id, String name) {
             super(id, name);

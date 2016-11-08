@@ -1,41 +1,14 @@
-/*******************************************************************************
- * Copyright (c) 2016 Boeing.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * Created on Nov 8, 2016
  *
- * Contributors:
- *     Boeing - initial API and implementation
- *******************************************************************************/
-
+ * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
+ */
 package org.eclipse.osee.framework.jdk.core.type;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+public interface NamedId extends Named, Id {
 
-/**
- * @author Ryan D. Brooks
- */
-@JsonSerialize(using = NamedIdSerializer.class)
-public class NamedId extends BaseId implements Named {
-   private String name;
-
-   public NamedId(Long id, String name) {
-      super(id);
-      this.name = name;
+   default String toStringWithId() {
+      return String.format("[%s][%s]", getName(), getId());
    }
 
-   @Override
-   public String getName() {
-      return name;
-   }
-
-   public void setName(String name) {
-      this.name = name;
-   }
-
-   @Override
-   public String toString() {
-      return name == null ? super.toString() : name;
-   }
 }

@@ -13,13 +13,13 @@ package org.eclipse.osee.orcs.account.admin.internal;
 import org.eclipse.osee.account.admin.SubscriptionGroup;
 import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AccountSubscriptionGroupImpl extends NamedId implements SubscriptionGroup {
+public class AccountSubscriptionGroupImpl extends NamedIdBase implements SubscriptionGroup {
 
    private static final String NOT_AVAILABLE = "N/A";
    private final ArtifactReadable artifact;

@@ -260,14 +260,6 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       return getName();
    }
 
-   /*
-    * Provide easy way to display/report [name][uuid]
-    */
-   @Override
-   public final String toStringWithId() {
-      return String.format("[%s][%s]", getSafeName(), getUuid());
-   }
-
    // TODO should not return null but currently application code expects it to
    /**
     * The method should be used when the caller expects this artifact to have exactly one parent. Otherwise use

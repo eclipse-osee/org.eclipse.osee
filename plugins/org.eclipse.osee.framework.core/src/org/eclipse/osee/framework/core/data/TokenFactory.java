@@ -14,7 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
@@ -68,7 +68,7 @@ public final class TokenFactory {
       return new UserToken(uuid, guid, name, userId, active, admin, email, creationRequired);
    }
 
-   private final static class ArtifactTypeToken extends NamedId implements IArtifactType {
+   private final static class ArtifactTypeToken extends NamedIdBase implements IArtifactType {
       public ArtifactTypeToken(Long id, String name) {
          super(id, name);
       }
@@ -97,7 +97,7 @@ public final class TokenFactory {
       }
    }
 
-   private static class UserToken extends NamedId implements IUserToken {
+   private static class UserToken extends NamedIdBase implements IUserToken {
       private final String userId;
       private final boolean active;
       private final boolean admin;

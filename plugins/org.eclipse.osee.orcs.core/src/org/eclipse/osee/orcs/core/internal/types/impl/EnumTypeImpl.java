@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.core.internal.types.impl;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.data.EnumEntry;
@@ -22,7 +22,7 @@ import org.eclipse.osee.orcs.data.EnumType;
 /**
  * @author Roberto E. Escobar
  */
-public final class EnumTypeImpl extends NamedId implements EnumType {
+public final class EnumTypeImpl extends NamedIdBase implements EnumType {
 
    private final List<EnumEntry> entries;
 

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
@@ -27,7 +27,7 @@ import org.junit.runners.MethodSorters;
  * @author Roberto E. Escobar
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public abstract class AbstractOseeCacheTest<T extends NamedId> {
+public abstract class AbstractOseeCacheTest<T extends NamedIdBase> {
    private final List<T> data;
    private final AbstractOseeCache<T> cache;
    private final TypeComparator comparator;

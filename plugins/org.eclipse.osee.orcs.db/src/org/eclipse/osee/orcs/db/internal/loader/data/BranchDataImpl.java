@@ -16,14 +16,14 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.orcs.core.ds.BranchData;
 import org.eclipse.osee.orcs.data.BranchReadable;
 
 /**
  * @author Roberto E. Escobar
  */
-public class BranchDataImpl extends NamedId implements BranchData, BranchReadable {
+public class BranchDataImpl extends NamedIdBase implements BranchData, BranchReadable {
    private ArtifactId associatedArtifact = ArtifactId.SENTINEL;
    private TransactionId baseTransaction = TransactionId.SENTINEL;
    private TransactionId sourceTransaction = TransactionId.SENTINEL;

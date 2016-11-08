@@ -12,12 +12,12 @@ package org.eclipse.osee.ats.core.model.impl;
 
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsObject extends NamedId implements IAtsObject {
+public class AtsObject extends NamedIdBase implements IAtsObject {
 
    private String desc;
    private ArtifactToken object;

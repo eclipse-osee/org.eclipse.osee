@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.jdk.core.type.FullyNamed;
 import org.eclipse.osee.framework.jdk.core.type.HasDescription;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Named;
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Ryan D. Brooks
@@ -33,7 +33,7 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
 
    @JsonCreator
    public static AttributeTypeToken valueOf(long id, String name, String description) {
-      final class AttributeTypeImpl extends NamedId implements AttributeTypeToken {
+      final class AttributeTypeImpl extends NamedIdBase implements AttributeTypeToken {
          private final String description;
 
          public AttributeTypeImpl(Long txId, String name, String description) {

@@ -12,13 +12,13 @@ package org.eclipse.osee.ats.core.users;
 
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.IUserToken;
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsUser extends NamedId implements IAtsUser {
+public class AtsUser extends NamedIdBase implements IAtsUser {
 
    private String userId;
 

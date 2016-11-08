@@ -12,12 +12,12 @@
 package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Andrew M. Finkbeiner
  */
-public class RelationTypeSide extends NamedId implements RelationTypeToken {
+public class RelationTypeSide extends NamedIdBase implements RelationTypeToken {
 
    private final RelationTypeToken type;
    private final RelationSide side;

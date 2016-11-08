@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.renderer;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.junit.Assert;
@@ -90,7 +90,7 @@ public class RenderingUtilTest {
       return URLEncoder.encode(guid, "UTF-8");
    }
 
-   public static final class BranchTokenImpl extends NamedId implements IOseeBranch {
+   public static final class BranchTokenImpl extends NamedIdBase implements IOseeBranch {
       public BranchTokenImpl(Long id, String name) {
          super(id, name);
       }

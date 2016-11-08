@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.account.rest.model;
 
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Angel Avila
  */
-public class SubscriptionGroupId extends NamedId {
+public class SubscriptionGroupId extends NamedIdBase {
 
    public SubscriptionGroupId(Long id) {
       super(id, String.valueOf(id));
