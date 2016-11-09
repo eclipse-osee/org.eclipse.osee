@@ -435,9 +435,7 @@ public class PopulateSawBuild2Actions {
          throw new OseeArgumentException(
             new StringBuilder("Error creating working branch: ").append(result.getText()).toString());
       }
-      AtsBranchUtil.createWorkingBranch_Create(reqTeam);
-
-      DemoDbUtil.sleep(5000);
+      AtsBranchUtil.createWorkingBranch_Create(reqTeam, true);
 
       Artifact branchArtifact = DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement,
          DemoDbUtil.HAPTIC_CONSTRAINTS_REQ, reqTeam.getWorkingBranch()).iterator().next();
@@ -484,9 +482,8 @@ public class PopulateSawBuild2Actions {
          throw new OseeArgumentException(
             new StringBuilder("Error creating working branch: ").append(result.getText()).toString());
       }
-      AtsBranchUtil.createWorkingBranch_Create(reqTeam);
+      AtsBranchUtil.createWorkingBranch_Create(reqTeam, true);
 
-      DemoDbUtil.sleep(5000);
 
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.Functional,
          reqTeam.getWorkingBranch())) {

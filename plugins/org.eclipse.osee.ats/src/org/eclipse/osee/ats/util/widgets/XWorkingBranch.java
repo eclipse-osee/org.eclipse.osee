@@ -175,8 +175,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
                   refreshEnablement();
                   return;
                }
-               AtsBranchUtil.createWorkingBranch_Create(teamArt);
-               Thread.sleep(2000);
+               AtsBranchUtil.createWorkingBranch_Create(teamArt, true);
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }

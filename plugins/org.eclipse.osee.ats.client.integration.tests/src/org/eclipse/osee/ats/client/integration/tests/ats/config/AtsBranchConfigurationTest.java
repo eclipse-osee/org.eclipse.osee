@@ -425,8 +425,7 @@ public class AtsBranchConfigurationTest {
          AWorkbench.popup(result);
          return;
       }
-      AtsBranchUtil.createWorkingBranch_Create(teamWf);
-      TestUtil.sleep(4000);
+      AtsBranchUtil.createWorkingBranch_Create(teamWf, true);
    }
 
    @After
