@@ -182,11 +182,13 @@ public class DispoSetCopier {
                int nextIndex;
                if (placeHolderAnnotationLocations.containsKey(sourceLocation)) {
                   nextIndex = placeHolderAnnotationLocations.get(sourceLocation);
+                  newAnnotation.setIndex(nextIndex);
+                  newAnnotations.set(nextIndex, newAnnotation);
                } else {
                   nextIndex = newAnnotations.size();
+                  newAnnotation.setIndex(nextIndex);
+                  newAnnotations.add(nextIndex, newAnnotation);
                }
-               newAnnotation.setIndex(nextIndex);
-               newAnnotations.add(nextIndex, newAnnotation);
             }
          }
       }

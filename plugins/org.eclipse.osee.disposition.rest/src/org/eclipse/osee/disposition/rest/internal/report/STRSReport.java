@@ -15,6 +15,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
+
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoProgram;
@@ -166,7 +167,7 @@ public class STRSReport {
       String[] locationsRefsArray = locationRefs.split(",");
       int toReturn = 0;
       for (int i = 0; i < locationsRefsArray.length; i++) {
-         String singleRef = locationsRefsArray[i];
+         String singleRef = locationsRefsArray[i].trim();
          if (singleRef.contains("-")) {
             String[] split = singleRef.split("-");
             int gap = Integer.valueOf(split[1]) - Integer.valueOf(split[0]);

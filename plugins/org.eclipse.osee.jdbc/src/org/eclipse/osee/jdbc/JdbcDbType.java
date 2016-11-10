@@ -25,6 +25,7 @@ public class JdbcDbType extends BaseId {
    public static final JdbcDbType mysql = new JdbcDbType(4);
    public static final JdbcDbType postgresql = new JdbcDbType(5);
    public static final JdbcDbType hsql = new JdbcDbType(6);
+   public static final JdbcDbType sqlite = new JdbcDbType(7);
 
    private final boolean hintsSupported;
 
@@ -58,6 +59,8 @@ public class JdbcDbType extends BaseId {
             dbType = postgresql;
          } else if (lowerCaseName.contains("hsql")) {
             dbType = hsql;
+         } else if (lowerCaseName.contains("sqlite")) {
+            dbType = sqlite;
          } else {
             throw newJdbcException("Unsupported database type [%s] ", dbName);
          }

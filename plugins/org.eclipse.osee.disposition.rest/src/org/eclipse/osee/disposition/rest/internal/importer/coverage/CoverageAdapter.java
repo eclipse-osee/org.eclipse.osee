@@ -22,11 +22,13 @@ import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
+import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -92,25 +94,42 @@ public class CoverageAdapter {
          String textFromCoverage = store.get("name").trim();
          String lineNumberFromCoverage = store.get("order");
          String resolutionFromCoverage = store.get("methodType").trim();
+         String rationale = store.get("rationale").trim();
+         if (!Strings.isValid(rationale)) {
+            rationale = "N/A";
+         }
 
          Discrepancy matchedDiscrepancy = textToDiscrepancyMap.get(textFromCoverage);
          if (!resolutionFromCoverage.equalsIgnoreCase("Test_Unit") && !resolutionFromCoverage.equalsIgnoreCase(
             "Exception_Handling") && matchedDiscrepancy != null) {
             madeChange = true;
-            // Add Annotation
-            DispoAnnotationData newAnnotation = new DispoAnnotationData();
-            newAnnotation.setId(GUID.create());
-            newAnnotation.setIsDefault(false);
-            newAnnotation.setResolutionType(resolutionFromCoverage);
-            newAnnotation.setIsResolutionValid(true);
-            newAnnotation.setIndex(annotations.size());
-            newAnnotation.setLocationRefs(lineNumberFromCoverage);
-            newAnnotation.setCustomerNotes(textFromCoverage);
-            newAnnotation.setResolution("n/a");
-            newAnnotation.setDeveloperNotes("");
-            dispoConnector.connectAnnotation(newAnnotation, dest.getDiscrepanciesList());
+            boolean isReplace = false;
+            DispoAnnotationData annotationToUpdate = findAnnotation(matchedDiscrepancy.getText(), annotations);
+            if (annotationToUpdate == null) {
+               annotationToUpdate = new DispoAnnotationData();
+               annotationToUpdate.setId(GUID.create());
+               annotationToUpdate.setIndex(annotations.size());
+               annotationToUpdate.setLocationRefs(lineNumberFromCoverage);
+               annotationToUpdate.setCustomerNotes(textFromCoverage);
+            }
 
-            annotations.add(newAnnotation.getIndex(), newAnnotation);
+            if (!annotationToUpdate.getResolutionType().equals(
+               DispoStrings.Test_Unit_Resolution) && !annotationToUpdate.getResolutionType().equals(
+                  DispoStrings.Exception_Handling_Resolution)) {
+
+               annotationToUpdate.setIsDefault(false);
+               annotationToUpdate.setResolutionType(resolutionFromCoverage);
+               annotationToUpdate.setIsResolutionValid(true);
+               annotationToUpdate.setResolution(rationale);
+               annotationToUpdate.setDeveloperNotes("");
+               dispoConnector.connectAnnotation(annotationToUpdate, dest.getDiscrepanciesList());
+
+               if (isReplace) {
+                  annotations.set(annotationToUpdate.getIndex(), annotationToUpdate);
+               } else {
+                  annotations.add(annotationToUpdate.getIndex(), annotationToUpdate);
+               }
+            }
          } else if (matchedDiscrepancy == null) {
             report.addEntry(source.getName(),
                String.format("Could not find matching Discrepancy for [%s]", covearageItem), WARNING);
@@ -122,6 +141,15 @@ public class CoverageAdapter {
       } else {
          return Collections.emptyList();
       }
+   }
+
+   private DispoAnnotationData findAnnotation(String text, List<DispoAnnotationData> annotations) {
+      for (DispoAnnotationData annotation : annotations) {
+         if (annotation.getCustomerNotes().equals(text)) {
+            return annotation;
+         }
+      }
+      return null;
    }
 
    private Map<String, Discrepancy> getTextToDiscrepancyMap(DispoItem dest) {

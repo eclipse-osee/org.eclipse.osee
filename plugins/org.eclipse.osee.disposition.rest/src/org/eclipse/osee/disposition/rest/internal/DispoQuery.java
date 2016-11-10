@@ -25,7 +25,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public interface DispoQuery {
 
-   Map<String, ArtifactReadable> getCoverageUnits(long branchUuid, String artifactUuid);
+   Map<String, ArtifactReadable> getCoverageUnits(long branchUuid, Long artifactUuid);
 
    ArtifactReadable findUser();
 

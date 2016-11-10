@@ -110,7 +110,7 @@ public class DispoAdminResource {
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getDispoSetCopyCoverage(@QueryParam("destinationSet") String destinationSet, @QueryParam("sourceBranch") Long sourceBranch, @QueryParam("sourcePackage") String sourcePackage, CopySetParams params) {
+   public Response getDispoSetCopyCoverage(@QueryParam("destinationSet") String destinationSet, @QueryParam("sourceBranch") Long sourceBranch, @QueryParam("sourcePackage") Long sourcePackage, CopySetParams params) {
       Response.Status status;
       final DispoSet destination = dispoApi.getDispoSetById(program, destinationSet);
       dispoApi.copyDispoSetCoverage(sourceBranch, sourcePackage, program, destination, params);

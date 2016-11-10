@@ -75,14 +75,14 @@ public class TmoImporter implements DispoImporterApi {
                future = executor.schedule(worker);
                futures.add(future);
             } catch (Exception ex) {
-               logger.error(ex, "Unable to schedule worker");
+               report.addEntry("FATAL", ex.getLocalizedMessage(), DispoSummarySeverity.ERROR);
             }
          }
          for (Future<List<DispoItem>> future : futures) {
             try {
                toReturn.addAll(future.get());
             } catch (Exception ex) {
-               logger.error(ex, "Unable to get future result");
+               report.addEntry("FATAL", ex.getLocalizedMessage(), DispoSummarySeverity.ERROR);
             }
          }
       }
@@ -148,6 +148,8 @@ public class TmoImporter implements DispoImporterApi {
                   }
 
                }
+            } catch (Exception ex) {
+               operationReport.addEntry("ALL", ex.getMessage(), DispoSummarySeverity.ERROR);
             } finally {
                Lib.close(inputStream);
             }

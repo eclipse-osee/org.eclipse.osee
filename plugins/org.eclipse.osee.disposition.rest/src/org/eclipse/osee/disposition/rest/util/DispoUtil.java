@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoConfig;
@@ -41,8 +42,7 @@ import org.json.JSONObject;
  */
 public final class DispoUtil {
 
-   private static final Pattern pattern =
-      Pattern.compile("^\\s*-?\\d+\\s*(-?\\s*-?\\d+\\s*)?(,\\s*-?\\d+\\s*(-?\\s*-?\\d+\\s*)?)*$");
+   private static final Pattern pattern = Pattern.compile("^[,\\d-\\s]+$");
 
    private DispoUtil() {
       //
@@ -63,13 +63,28 @@ public final class DispoUtil {
    }
 
    public static boolean isNumericLocations(String str) {
-      Matcher matcher = pattern.matcher(str);
+      Matcher matcher = pattern.matcher(str.trim());
       return matcher.matches();
    }
 
    public static String operationReportToString(OperationReport report) {
       JSONObject reportAsJson = new JSONObject(report);
       return reportAsJson.toString();
+   }
+
+   public static OperationReport cleanOperationReport(OperationReport origReport) {
+      OperationReport newRerport = new OperationReport();
+      if (origReport.getStatus().isFailed()) {
+         List<OperationSummaryEntry> entries = origReport.getEntries();
+         for (OperationSummaryEntry entry : entries) {
+            if (DispoSummarySeverity.ERROR.equals(entry.getSeverity())) {
+               newRerport.addEntry(entry.getName(), entry.getMessage(), entry.getSeverity());
+            }
+         }
+         return newRerport;
+      } else {
+    	  return origReport;
+      }
    }
 
    public static DispoAnnotationData getById(List<DispoAnnotationData> list, String id) {
@@ -307,9 +322,8 @@ public final class DispoUtil {
       List<OperationSummaryEntry> entries = new ArrayList<>();
 
       try {
-         JSONArray entriesJson = jObj.getJSONArray("entries");
-
          if (jObj.has("entries")) {
+        	 JSONArray entriesJson = jObj.getJSONArray("entries");
             for (int i = 0; i < entriesJson.length(); i++) {
                JSONObject entryAsJson = entriesJson.getJSONObject(i);
                OperationSummaryEntry entry = jsonObjToOperationSummaryEntry(entryAsJson);

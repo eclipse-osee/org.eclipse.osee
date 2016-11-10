@@ -541,9 +541,9 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public Map<String, ArtifactReadable> getCoverageUnits(long branchUuid, String artifactUuid) {
+   public Map<String, ArtifactReadable> getCoverageUnits(long branchUuid, Long artifactUuid) {
       ArtifactReadable coveragePackage =
-         getQuery().fromBranch(branchUuid).andGuid(artifactUuid).getResults().getOneOrNull();
+         getQuery().fromBranch(branchUuid).andUuid(artifactUuid).getResults().getOneOrNull();
 
       List<ArtifactReadable> descendants = coveragePackage.getDescendants();
       return getChildrenRecurse(descendants);
@@ -565,13 +565,14 @@ public class OrcsStorageImpl implements Storage {
 
    @Override
    public void updateOperationSummary(ArtifactReadable author, DispoProgram program, DispoSet set, OperationReport summary) {
+      OperationReport newReport = DispoUtil.cleanOperationReport(summary);
       ArtifactReadable dispoSet = findDispoArtifact(program, set.getGuid(), DispoConstants.DispoSet);
       TransactionBuilder tx =
          getTxFactory().createTransaction(program.getUuid(), author, "Update Dispo Operation Report");
 
-      tx.setSoleAttributeFromString(dispoSet, DispoConstants.ImportState, summary.getStatus().getName());
+      tx.setSoleAttributeFromString(dispoSet, DispoConstants.ImportState, newReport.getStatus().getName());
       tx.setSoleAttributeFromString(dispoSet, DispoConstants.OperationSummary,
-         DispoUtil.operationReportToString(summary));
+         DispoUtil.operationReportToString(newReport));
       tx.commit();
    }
 }

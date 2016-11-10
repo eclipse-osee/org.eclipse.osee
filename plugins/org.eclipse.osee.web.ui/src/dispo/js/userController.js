@@ -553,7 +553,10 @@ app.controller('userController', [
 	        		var discrepancies = $scope.selectedItem.discrepancies;
 	        		var covered = annotation.idsOfCoveredDiscrepancies[0]
 	        		
-	        		return discrepancies[covered].text;        		
+	        		if(!discrepancies[covered] == null)
+		        			return discrepancies[covered].text;
+		        		else 
+		        			return "";     		
         		} else {
         			return annotation.customerNotes;
         		}

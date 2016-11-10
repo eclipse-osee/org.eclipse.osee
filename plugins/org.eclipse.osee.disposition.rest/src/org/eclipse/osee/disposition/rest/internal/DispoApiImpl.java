@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.eclipse.osee.disposition.model.CopySetParams;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
@@ -356,11 +357,13 @@ public class DispoApiImpl implements DispoApi {
                }
             }
 
-            if (itemsToCreate.size() > 0) {
-               createDispoItems(program, setToEdit.getGuid(), itemsToCreate);
-            }
-            if (itemsToEdit.size() > 0) {
-               editDispoItems(program, itemsToEdit, true, "Import");
+            if (!report.getStatus().isFailed()) {
+               if (itemsToCreate.size() > 0) {
+                  createDispoItems(program, setToEdit.getGuid(), itemsToCreate);
+               }
+               if (itemsToEdit.size() > 0) {
+                  editDispoItems(program, itemsToEdit, true, "Import");
+               }
             }
 
          } catch (Exception ex) {
@@ -419,8 +422,8 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public void copyDispoSetCoverage(long sourceBranch, String sourceCoverageGuid, DispoProgram destDispProgram, DispoSet destination, CopySetParams params) {
-      Map<String, ArtifactReadable> coverageUnits = getQuery().getCoverageUnits(sourceBranch, sourceCoverageGuid);
+   public void copyDispoSetCoverage(long sourceBranch, Long sourceCoverageUuid, DispoProgram destDispProgram, DispoSet destination, CopySetParams params) {
+      Map<String, ArtifactReadable> coverageUnits = getQuery().getCoverageUnits(sourceBranch, sourceCoverageUuid);
       List<DispoItem> destItems = getDispoItems(destDispProgram, destination.getGuid());
 
       OperationReport report = new OperationReport();
@@ -429,12 +432,11 @@ public class DispoApiImpl implements DispoApi {
       List<DispoItem> copyData = coverageAdapter.copyData(coverageUnits, destItems, report);
 
       String operation =
-         String.format("Copy From Legacy Coverage - Branch [%s] and Source Set [%s]", sourceBranch, sourceCoverageGuid);
+         String.format("Copy From Legacy Coverage - Branch [%s] and Source Set [%s]", sourceBranch, sourceCoverageUuid);
       if (!copyData.isEmpty()) {
          editDispoItems(destDispProgram, copyData, false, operation);
+         storageProvider.get().updateOperationSummary(getQuery().findUser(), destDispProgram, destination, report);
       }
-
-      storageProvider.get().updateOperationSummary(null, destDispProgram, destination, report);
    }
 
    @Override
@@ -474,9 +476,9 @@ public class DispoApiImpl implements DispoApi {
          String.format("Copy Set from Program [%s] and Set [%s]", sourceProgram.getUuid(), sourceSet.getGuid());
       if (!namesToToEditItems.isEmpty() && !report.getStatus().isFailed()) {
          editDispoItems(program, namesToToEditItems.values(), false, operation);
+         storageProvider.get().updateOperationSummary(getQuery().findUser(), program, destination, report);
       }
 
-      storageProvider.get().updateOperationSummary(getQuery().findUser(), program, destination, report);
    }
 
    @Override

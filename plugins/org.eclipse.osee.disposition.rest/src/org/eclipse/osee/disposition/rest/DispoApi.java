@@ -61,7 +61,7 @@ public interface DispoApi {
 
    void copyDispoSet(DispoProgram program, DispoSet destination, DispoProgram sourceProgram, DispoSet sourceSet, CopySetParams params);
 
-   void copyDispoSetCoverage(long sourceBranch, String sourceCoverageGuid, DispoProgram destDispProgram, DispoSet destination, CopySetParams params);
+   void copyDispoSetCoverage(long sourceBranch, Long sourceCoverageUuid, DispoProgram destDispProgram, DispoSet destination, CopySetParams params);
 
    // Deletes
 

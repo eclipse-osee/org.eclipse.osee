@@ -170,7 +170,7 @@ public class LisFileParser implements DispoImporterApi {
             text = matchingDiscrepancy.getText();
             Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
             discrepancies.remove(matchingDiscrepancy.getId());
-            addAnnotationForForCoveredLine(item, line, Exception_Handling_Resolution, "", text);
+            addAnnotationForForCoveredLine(item, line, Exception_Handling_Resolution, text, "");
          }
       }
    }
@@ -335,16 +335,18 @@ public class LisFileParser implements DispoImporterApi {
                      if (m.find()) {
                         if (!alreadyUsedDatIds.contains(resultsLine)) {
                            DispoItemData item = datIdToItem.get(generateDatId(m.group(1), m.group(2)));
-                           String location = m.group(3);
-                           String text = "";
-                           Discrepancy matchingDiscrepancy = matchDiscrepancy(location, item.getDiscrepanciesList());
-                           if (matchingDiscrepancy != null) {
-                              text = matchingDiscrepancy.getText();
-                              Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
-                              discrepancies.remove(matchingDiscrepancy.getId());
-                              addAnnotationForForCoveredLine(item, location, Test_Unit_Resolution, resultPath, text);
+                           if (item != null) {
+                              String location = m.group(3);
+                              String text = "";
+                              Discrepancy matchingDiscrepancy = matchDiscrepancy(location, item.getDiscrepanciesList());
+                              if (matchingDiscrepancy != null) {
+                                 text = matchingDiscrepancy.getText();
+                                 Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
+                                 discrepancies.remove(matchingDiscrepancy.getId());
+                                 addAnnotationForForCoveredLine(item, location, Test_Unit_Resolution, text, resultPath);
+                              }
+                              alreadyUsedDatIds.add(resultsLine);
                            }
-                           alreadyUsedDatIds.add(resultsLine);
                         }
                      }
                   }
