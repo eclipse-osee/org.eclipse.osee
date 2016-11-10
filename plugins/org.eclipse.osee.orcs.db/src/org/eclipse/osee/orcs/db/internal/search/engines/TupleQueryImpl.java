@@ -62,6 +62,9 @@ public class TupleQueryImpl implements TupleQuery {
    private static final String SELECT_TUPLE3_COUNT_FROM_E3 =
       "select count(1) from osee_tuple3 where tuple_type=? and e3 = ?";
 
+   private static final String SELECT_TUPLE2_COUNT_FROM_E1_E2 =
+      "select count(1) from osee_tuple2 where tuple_type=? and e1 = ? and e2 = ?";
+
    private static final String SELECT_APPLIC_FOR_ART =
       "SELECT distinct e2, value FROM osee_artifact art, osee_txs txs1, osee_tuple2 app, osee_txs txs2, osee_key_value WHERE art_id = ? and art.gamma_id = txs1.gamma_id and txs1.branch_id = ? AND txs1.tx_current in (1,2) and tuple_type = 2 AND e2 = txs1.app_id AND app.gamma_id = txs2.gamma_id AND txs2.branch_id = txs1.branch_id AND txs2.tx_current = 1 AND e2 = key";
 
@@ -106,6 +109,11 @@ public class TupleQueryImpl implements TupleQuery {
    @Override
    public <E1, E2> void getTupleType2ForArtifactId(ArtifactId artId, BranchId branchId, BiConsumer<Long, String> consumer) {
       runQuery(consumer, SELECT_APPLIC_FOR_ART, "e2", artId, branchId);
+   }
+
+   @Override
+   public <E1, E2> boolean doesTuple2Exist(Tuple2Type<E1, E2> tupleType, E1 e1, E2 e2) {
+      return jdbcClient.fetch(0, SELECT_TUPLE2_COUNT_FROM_E1_E2, tupleType, e1, e2) > 0;
    }
 
    @Override

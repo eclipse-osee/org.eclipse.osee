@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 /**
- * Allows the selection of active work packages with the option to toggle on inActive.
+ * Allows the selection of active view applicabilities with the option to toggle on inActive.
  *
  * @param allValidViewApplicabilities contains the valid list of active and inactive View Applicabilities
  * @author Donald G. Dunne

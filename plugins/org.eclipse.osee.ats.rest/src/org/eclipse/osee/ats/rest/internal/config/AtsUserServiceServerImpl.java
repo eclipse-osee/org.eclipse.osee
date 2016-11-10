@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.config;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -27,6 +25,8 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 
 /**
  * @author Donald G. Dunne

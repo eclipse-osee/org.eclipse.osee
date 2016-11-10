@@ -27,7 +27,10 @@ public interface IAtsQueryService {
 
    IAtsQuery createQuery(WorkItemType workItemType, WorkItemType... workItemTypes);
 
-   Collection<IAtsWorkItem> runQuery(String query, Object... data);
+   /**
+    * Run query that returns art_ids of IAtsWorkItems to return
+    */
+   Collection<IAtsWorkItem> getWorkItemsFromQuery(String query, Object... data);
 
    IAtsWorkItemFilter createFilter(Collection<? extends IAtsWorkItem> workItems);
 
@@ -46,5 +49,7 @@ public interface IAtsQueryService {
    IAtsConfigQuery createQuery(IArtifactType artifactType);
 
    Collection<ArtifactId> getArtifacts(List<Integer> ids, BranchId branch);
+
+   void runUpdate(String query, Object... data);
 
 }

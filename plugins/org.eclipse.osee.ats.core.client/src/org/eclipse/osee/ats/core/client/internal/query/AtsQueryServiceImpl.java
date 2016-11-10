@@ -89,7 +89,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
          String jsonValue = (String) attr.getValue();
          if (jsonValue.contains("\"namespace\":\"" + namespace + "\"")) {
             try {
-               AtsSearchData data = fromJson(jsonValue);
+               AtsSearchData data = fromJson(namespace, jsonValue);
                if (data != null) {
                   searches.add(data);
                }

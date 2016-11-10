@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.model;
 
+import java.util.HashMap;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -40,9 +41,36 @@ public interface ApplicabilityEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    List<FeatureDefinitionData> getFeatureDefinitionData();
 
+   /**
+    * Set the applicabilities referenced by the provided artifacts. This is stored in the tuple table which means it
+    * does not impact applicability in a branch view.
+    */
+   @PUT
+   @Path("artifact/reference")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   Response setApplicabilityReference(HashMap<ArtifactId, List<ApplicabilityId>> artifacts);
+
+   @GET
+   @Path("artifact/reference/{artId}")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   List<ApplicabilityId> getApplicabilitiesReferenced(@PathParam("artId") ArtifactId artifact);
+
+   @GET
+   @Path("artifact/reference/token/{artId}")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   List<ApplicabilityToken> getApplicabilityReferenceTokens(@PathParam("artId") ArtifactId artifact);
+
+   /**
+    * Set the applicability in osee_txs for the given artifacts. This affects whether the artifact is included in a
+    * branch view.
+    */
    @PUT
    @Path("{applicId}")
    @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
    Response setApplicability(@PathParam("applicId") ApplicabilityId applicId, List<? extends ArtifactId> artifacts);
 
    @POST

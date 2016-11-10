@@ -559,6 +559,16 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
+   public boolean isNotificationsEnabled() {
+      return AtsUtilClient.isEmailEnabled();
+   }
+
+   @Override
+   public void setNotifactionsEnabled(boolean enabled) {
+      AtsUtilClient.setEmailEnabled(enabled);
+   }
+
+   @Override
    public String getConfigValue(String key) {
       String result = null;
       Artifact atsConfig = ArtifactQuery.getArtifactFromToken(AtsArtifactToken.AtsConfig, AtsUtilCore.getAtsBranch());

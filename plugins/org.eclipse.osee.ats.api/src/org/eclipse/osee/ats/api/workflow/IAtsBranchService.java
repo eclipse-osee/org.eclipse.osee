@@ -82,6 +82,9 @@ public interface IAtsBranchService {
 
    Collection<Object> getCommitTransactionsAndConfigItemsForTeamWf(IAtsTeamWorkflow teamWf);
 
+   /**
+    * @return Branch that is the configured branch to create working branch from.
+    */
    IOseeBranch getConfiguredBranchForWorkflow(IAtsTeamWorkflow teamWf);
 
    /**

@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class AtsWorkItemFilter implements IAtsWorkItemFilter {
 
-   private final Collection<? extends IAtsWorkItem> items;
+   private Collection<? extends IAtsWorkItem> items;
    private IAtsServices services;
 
    public AtsWorkItemFilter(IAtsServices services) {
@@ -43,7 +43,7 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
    }
 
    public AtsWorkItemFilter(Collection<? extends IAtsWorkItem> workItems, IAtsServices services) {
-      this.items = workItems;
+      this.items = new ArrayList<>(workItems);
       this.services = services;
    }
 
@@ -65,11 +65,13 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
    }
 
    @Override
-   public IAtsWorkItemFilter union(IAtsWorkItemFilter... atsQuery) throws OseeCoreException {
+   public IAtsWorkItemFilter union(IAtsWorkItemFilter... workItemFilter) throws OseeCoreException {
       Set<IAtsWorkItem> items = new HashSet<>();
-      for (IAtsWorkItemFilter query : atsQuery) {
-         items.addAll(query.getItems());
+      items.addAll(this.items);
+      for (IAtsWorkItemFilter filter : workItemFilter) {
+         items.addAll(filter.getItems());
       }
+      this.items = items;
       return this;
    }
 

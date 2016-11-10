@@ -25,6 +25,11 @@ workDefinition "WorkDef_Team_Demo_Code" {
       xWidgetName "XTextDam"
       option REQUIRED_FOR_TRANSITION 
    }
+   
+   widgetDefinition "Referenced Applicability" {
+      xWidgetName "XHyperlabelWorkflowApplicabilitySelection"
+      option REQUIRED_FOR_TRANSITION 
+   }
 
    widgetDefinition "Description" {
       attributeName "ats.Description"
@@ -41,6 +46,7 @@ workDefinition "WorkDef_Team_Demo_Code" {
       rule RequireStateHourSpentPrompt
       layout {
          widget "Title"
+         widget "Referenced Applicability"
          widget "Description"
          widget "Proposed Resolution"
          composite {
@@ -62,6 +68,7 @@ workDefinition "WorkDef_Team_Demo_Code" {
       to "Endorse" OverrideAttributeValidation
       rule RequireStateHourSpentPrompt
       layout {
+         widget "Referenced Applicability"
          attributeWidget "ats.Work Package"
          widget "Problem"
          widget "Proposed Resolution"
@@ -96,6 +103,7 @@ workDefinition "WorkDef_Team_Demo_Code" {
       to "Analyze" OverrideAttributeValidation
       rule RequireStateHourSpentPrompt
       layout {
+         widget "Referenced Applicability"
          attributeWidget "ats.Work Package"
          attributeWidget "ats.Estimated Completion Date"
          widget "Resolution"

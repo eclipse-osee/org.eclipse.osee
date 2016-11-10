@@ -55,6 +55,9 @@ public class WfeRelationsHyperlinkComposite extends Composite {
       CoreRelationTypes.Supercedes_Supercedes,
       CoreRelationTypes.SupportingInfo_SupportedBy,
       CoreRelationTypes.SupportingInfo_SupportingInfo,
+      AtsRelationTypes.Derive_From,
+      AtsRelationTypes.Derive_To,
+      CoreRelationTypes.SupportingInfo_SupportingInfo,
       CoreRelationTypes.Dependency__Artifact,
       CoreRelationTypes.Dependency__Dependency};
    private AbstractWorkflowArtifact awa;
@@ -81,6 +84,10 @@ public class WfeRelationsHyperlinkComposite extends Composite {
       createArtifactRelationHyperlinks("This", sma, "supercedes", CoreRelationTypes.Supercedes_Supercedes);
       createArtifactRelationHyperlinks("This", sma, "depends on", CoreRelationTypes.Dependency__Dependency);
       createArtifactRelationHyperlinks("This", sma, "is dependency of", CoreRelationTypes.Dependency__Artifact);
+
+      createArtifactRelationHyperlinks("This", sma, "is derived from", AtsRelationTypes.Derive_From);
+      createArtifactRelationHyperlinks("This", sma, "derived", AtsRelationTypes.Derive_To);
+
       createArtifactRelationHyperlinks("This", sma, "is supported info for",
          CoreRelationTypes.SupportingInfo_SupportedBy);
       createArtifactRelationHyperlinks("This", sma, "has supporting info",
@@ -124,12 +131,9 @@ public class WfeRelationsHyperlinkComposite extends Composite {
          editor.getToolkit().createLabel(this,
             prefix + " \"" + thisArt.getArtifactTypeName() + "\" " + action + getCompletedCancelledString(
                art) + " \"" + art.getArtifactTypeName() + "\" ");
-         Hyperlink link =
-            editor.getToolkit().createHyperlink(this,
-               String.format("\"%s\" - %s",
-                  art.getName().length() < 60 ? art.getName() : art.getName().substring(0, 60),
-                  AtsUtilClient.getAtsId(art)),
-               SWT.NONE);
+         Hyperlink link = editor.getToolkit().createHyperlink(this, String.format("\"%s\" - %s",
+            art.getName().length() < 60 ? art.getName() : art.getName().substring(0, 60), AtsUtilClient.getAtsId(art)),
+            SWT.NONE);
          link.addHyperlinkListener(new IHyperlinkListener() {
 
             @Override

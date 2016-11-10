@@ -11,8 +11,10 @@
 package org.eclipse.osee.orcs.rest.internal;
 
 import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
@@ -111,5 +113,42 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    @Override
    public List<ApplicabilityToken> getApplicabilityTokensForArts(List<ArtifactId> artIds) {
       return orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityTokens(artIds, branch);
+   }
+
+   @Override
+   public List<ApplicabilityId> getApplicabilitiesReferenced(ArtifactId artifact) {
+      List<ApplicabilityId> appIds = new LinkedList<>();
+      for (ApplicabilityId tuple2 : orcsApi.getQueryFactory().tupleQuery().getTuple2(
+         CoreTupleTypes.ArtifactReferenceApplicabilityType, branch, artifact)) {
+         appIds.add(tuple2);
+      }
+      return appIds;
+   }
+
+   @Override
+   public List<ApplicabilityToken> getApplicabilityReferenceTokens(ArtifactId artifact) {
+      List<ApplicabilityToken> tokens = new LinkedList<>();
+      orcsApi.getQueryFactory().tupleQuery().getTuple2NamedId(CoreTupleTypes.ArtifactReferenceApplicabilityType, branch,
+         artifact, (e2, value) -> tokens.add(ApplicabilityToken.c(e2, value)));
+      return tokens;
+   }
+
+   /**
+    * TBD: Need to delete tuples that are not in the set. Update this when tx.removeTuple2 is implemented.
+    */
+   @Override
+   public Response setApplicabilityReference(HashMap<ArtifactId, List<ApplicabilityId>> artToApplMap) {
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account,
+         "Set Reference Applicability Ids for Artifacts");
+      for (Entry<? extends ArtifactId, List<ApplicabilityId>> entry : artToApplMap.entrySet()) {
+         for (ApplicabilityId appId : entry.getValue()) {
+            if (!orcsApi.getQueryFactory().tupleQuery().doesTuple2Exist(
+               CoreTupleTypes.ArtifactReferenceApplicabilityType, entry.getKey(), appId)) {
+               tx.addTuple2(CoreTupleTypes.ArtifactReferenceApplicabilityType, entry.getKey(), appId);
+            }
+         }
+      }
+      tx.commit();
+      return Response.ok().build();
    }
 }

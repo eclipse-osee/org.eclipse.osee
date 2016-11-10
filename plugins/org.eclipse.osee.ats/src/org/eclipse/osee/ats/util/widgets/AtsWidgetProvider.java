@@ -147,7 +147,10 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XOpenSprintBurndownButton();
       } else if (widgetName.equals(XWorkPackageWidget.WIDGET_ID)) {
          return new XWorkPackageWidget();
+      } else if (widgetName.equals(XHyperlabelWorkflowApplicabilitySelection.WIDGET_ID)) {
+         return new XHyperlabelWorkflowApplicabilitySelection();
       }
+
       return toReturn;
    }
 }

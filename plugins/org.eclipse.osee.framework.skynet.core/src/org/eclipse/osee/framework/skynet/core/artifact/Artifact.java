@@ -737,7 +737,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
 
    public final void deleteAttribute(AttributeId attributeId) throws OseeCoreException {
       for (Attribute<?> attribute : getAttributes()) {
-         if (attributeId.equals(attribute)) {
+         if (attributeId.getId().equals(attribute.getId())) {
             deleteAttribute(attribute);
             break;
          }

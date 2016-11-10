@@ -108,9 +108,6 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       return idToWorkingBranchCache.get(teamWf.getAtsId());
    }
 
-   /**
-    * @return Branch that is the configured branch to create working branch from.
-    */
    @Override
    public IOseeBranch getConfiguredBranchForWorkflow(IAtsTeamWorkflow teamWf) {
       IOseeBranch parentBranch = null;

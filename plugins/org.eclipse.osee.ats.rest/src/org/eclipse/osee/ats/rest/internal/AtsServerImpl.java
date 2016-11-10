@@ -735,4 +735,14 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    public IAtsChangeSet createChangeSet(String comment) {
       return getStoreService().createAtsChangeSet(comment, userService.getCurrentUser());
    }
+
+   @Override
+   public boolean isNotificationsEnabled() {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public void setNotifactionsEnabled(boolean enabled) {
+      throw new UnsupportedOperationException();
+   }
 }

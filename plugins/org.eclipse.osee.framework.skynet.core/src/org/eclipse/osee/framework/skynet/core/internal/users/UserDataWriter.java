@@ -74,7 +74,7 @@ public class UserDataWriter {
          /**
           * Users are auto-created, display stack trace as INFO in client's log to help debug any unexpected creation
           */
-         if (!DbUtil.isDbInit()) {
+         if (!DbUtil.isDbInit() && !"false".equals(System.getProperty("displayCreateUserError"))) {
             Exception ex = new Exception("just wanted the stack trace");
             OseeLog.logf(Activator.class, Level.INFO, ex, "Created user [%s]", user);
          }

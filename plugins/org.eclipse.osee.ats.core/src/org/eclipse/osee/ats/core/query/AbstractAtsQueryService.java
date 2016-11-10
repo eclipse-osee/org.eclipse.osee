@@ -35,11 +35,8 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
       this.services = services;
    }
 
-   /**
-    * Run query that returns art_ids of IAtsWorkItems to return
-    */
    @Override
-   public Collection<IAtsWorkItem> runQuery(String query, Object... data) {
+   public Collection<IAtsWorkItem> getWorkItemsFromQuery(String query, Object... data) {
       JdbcStatement chStmt = jdbcService.getClient().getStatement();
       List<Integer> ids = new LinkedList<Integer>();
       try {
@@ -60,6 +57,11 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
          }
       }
       return workItems;
+   }
+
+   @Override
+   public void runUpdate(String query, Object... data) {
+      jdbcService.getClient().runPreparedUpdate(query, data);
    }
 
 }

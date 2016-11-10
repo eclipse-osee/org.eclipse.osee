@@ -72,6 +72,7 @@ public class ActionFactory implements IAtsActionFactory {
    private final IAttributeResolver attrResolver;
    private final IAtsStateFactory stateFactory;
    private final IAtsServices services;
+   private IAtsTeamDefinition topTeamDefinition;
 
    public ActionFactory(IAtsWorkItemFactory workItemFactory, IAtsUtilService utilService, ISequenceProvider sequenceProvider, IAtsActionableItemService actionableItemManager, IAttributeResolver attrResolver, IAtsStateFactory stateFactory, IAtsServices atsServices) {
       this.workItemFactory = workItemFactory;
@@ -91,7 +92,7 @@ public class ActionFactory implements IAtsActionFactory {
 
       Object actionArt = changes.createArtifact(AtsArtifactTypes.Action, title);
       IAtsAction action = workItemFactory.getAction((ArtifactId) actionArt);
-      IAtsTeamDefinition topTeamDefinition = TeamDefinitions.getTopTeamDefinition(services.getQueryService());
+      IAtsTeamDefinition topTeamDefinition = getTopTeamDef();
       utilService.setAtsId(sequenceProvider, action, topTeamDefinition, changes);
       changes.add(action);
       setArtifactIdentifyData(action, title, desc, changeType, priority, validationRequired, needByDate, changes);
@@ -126,6 +127,13 @@ public class ActionFactory implements IAtsActionFactory {
 
       changes.add(action);
       return new Pair<IAtsAction, Collection<IAtsTeamWorkflow>>(action, teamWfs);
+   }
+
+   private IAtsTeamDefinition getTopTeamDef() {
+      if (topTeamDefinition == null) {
+         topTeamDefinition = TeamDefinitions.getTopTeamDefinition(services.getQueryService());
+      }
+      return topTeamDefinition;
    }
 
    @Override

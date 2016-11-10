@@ -63,6 +63,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.client.QueryBuilder;
@@ -1003,5 +1004,56 @@ public static List<ArtifactToken> getArtifactTokenListFromSoleAttributeInherited
          }
       }
       return guidToToken;
+   }
+   /**
+    * Quick way to determine if artifact has changed. This first compares the number of current attributes against db,
+    * if not equal, return true. Then compares number of current relations against db, if not equal, true.<br/>
+    * <br/>
+    * NOTE: This is a fast check, but could be wrong if attribute/relation was added and another deleted. Use
+    * isArtifactChangedViaTransaction if you want to ensure accuracy.
+    */
+   public static boolean isArtifactChangedViaEntries(Artifact artifact) {
+      JdbcClient jdbcClient = ConnectionHandler.getJdbcClient();
+      int attrCount = jdbcClient.fetch(-1,
+         "select count(*) from OSEE_ATTRIBUTE attr, osee_txs txs where attr.art_id = ? and " //
+            + "txs.GAMMA_ID = ATTR.GAMMA_ID and txs.BRANCH_ID = ? and txs.TX_CURRENT = 1",
+         artifact.getArtId(), artifact.getBranchId());
+      if (artifact.getAttributes().size() != attrCount) {
+         return true;
+      }
+      int relCount = jdbcClient.fetch(-1,
+         "select count(*) from OSEE_RELATION_LINK rel, osee_txs txs where (rel.A_ART_ID = ? or rel.B_ART_ID = ?) " //
+            + "and txs.GAMMA_ID = rel.GAMMA_ID and txs.BRANCH_ID = ? and txs.TX_CURRENT = 1",
+         artifact.getArtId(), artifact.getArtId(), artifact.getBranchId());
+      if (!artifact.isHistorical() && artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED).size() != relCount) {
+         return true;
+      }
+      return false;
+   }
+
+   /**
+    * Long way to determine if artifact has changed. Return true if loaded transaction is different than database
+    * transaction. This is 100% accurate, but may take longer to compute. Use isArtifactChangedViaEntries if just quick
+    * check is desired.
+    */
+   public static boolean isArtifactChangedViaTransaction(Artifact artifact) {
+      JdbcClient jdbcClient = ConnectionHandler.getJdbcClient();
+      String query =
+         "select distinct transaction_id from (select txs.transaction_id from osee_artifact art, OSEE_RELATION_LINK rel, " + //
+            "osee_txs txs, osee_tx_details txd where art.art_id = ? and  " + //
+            // check for relation transactions
+            "(art.art_id = rel.A_ART_ID or art.art_id = rel.B_ART_ID) and rel.GAMMA_ID = txs.gamma_id and txs.TRANSACTION_ID = txd.TRANSACTION_ID " + //
+            "and txs.BRANCH_ID = ? " + //
+            "union all " + //
+            // union attribute transactions
+            "select txs.transaction_id from osee_artifact art, osee_attribute attr, " + //
+            "osee_txs txs, osee_tx_details txd where art.art_id = ? and  " + //
+            "art.art_id = attr.art_id and attr.GAMMA_ID = txs.gamma_id and txs.TRANSACTION_ID = txd.TRANSACTION_ID " + //
+            "and txs.BRANCH_ID = ?) " //
+            // order by latest transaction
+            + "order by transaction_id desc ";
+      long transactionId = jdbcClient.fetch(-1L, query, artifact.getArtId(), artifact.getBranchId(),
+         artifact.getArtId(), artifact.getBranchId());
+      return !artifact.getTransaction().getId().equals(transactionId);
    }
 }

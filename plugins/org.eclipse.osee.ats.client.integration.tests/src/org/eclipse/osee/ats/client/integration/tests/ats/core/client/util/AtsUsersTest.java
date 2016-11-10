@@ -14,7 +14,6 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -36,7 +35,7 @@ public class AtsUsersTest {
          AtsClientService.get().getUserService().getUserById(SystemUser.UnAssigned.getUserId()));
    }
 
-   @Test(expected = ArtifactDoesNotExist.class)
+   @Test
    public void testGetUserException() throws OseeCoreException {
       Assert.assertNull(AtsClientService.get().getUserService().getUserById("2345"));
    }

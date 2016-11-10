@@ -94,7 +94,7 @@ public class RevertDuplicateTransitionsAction extends Action {
    protected List<Integer> getArtIdsWithDuplicateTransitions() {
       List<Integer> artIds = new LinkedList<>();
       for (IAttributeType attrType : Arrays.asList(AtsAttributeTypes.CompletedDate, AtsAttributeTypes.CancelledDate)) {
-         for (IAtsWorkItem workItem : AtsClientService.get().getQueryService().runQuery(DUPLICATE_TRANSITION_QUERY,
+         for (IAtsWorkItem workItem : AtsClientService.get().getQueryService().getWorkItemsFromQuery(DUPLICATE_TRANSITION_QUERY,
             AtsUtilCore.getAtsBranch().getId(), attrType.getId())) {
             artIds.add(workItem.getId().intValue());
          }

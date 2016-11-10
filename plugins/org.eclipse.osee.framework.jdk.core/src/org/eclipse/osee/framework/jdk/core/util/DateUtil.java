@@ -32,6 +32,7 @@ public class DateUtil {
    public final static String HHMMSSSS = "hh:mm:ss:SS";
    public final static String HHMM = "hh:mm";
    public static final HashMap<String, DateFormat> dateFormats = new HashMap<>();
+   private static Date SENTINAL = null;
 
    public static Calendar getCalendar(Date date) {
       Calendar calendar = Calendar.getInstance();
@@ -302,6 +303,23 @@ public class DateUtil {
       cal.set(Calendar.MINUTE, 59);
       cal.set(Calendar.SECOND, 59);
       return cal.getTime();
+   }
+
+   /**
+    * @return Jan 1, 2001 1:1:1
+    */
+   public static Date getSentinalDate() {
+      if (SENTINAL == null) {
+         Calendar cal = Calendar.getInstance();
+         cal.set(Calendar.YEAR, 2001);
+         cal.set(Calendar.DAY_OF_MONTH, 1);
+         cal.set(Calendar.MONTH, 1);
+         cal.set(Calendar.HOUR_OF_DAY, 1);
+         cal.set(Calendar.MINUTE, 1);
+         cal.set(Calendar.SECOND, 1);
+         SENTINAL = cal.getTime();
+      }
+      return SENTINAL;
    }
 
 }

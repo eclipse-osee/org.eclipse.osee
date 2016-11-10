@@ -34,6 +34,8 @@ public interface TupleQuery {
 
    <E1, E2> void getTuple2KeyValuePair(Tuple2Type<E1, E2> tupleType, ArtifactId artId, BranchId branchId, BiConsumer<Long, String> consumer);
 
+   <E1, E2> boolean doesTuple2Exist(Tuple2Type<E1, E2> tupleType, E1 e1, E2 e2);
+
    /**
     * Get each unique E2 (Id and associated String value) for a particular TupleType regardless of E1
     *
