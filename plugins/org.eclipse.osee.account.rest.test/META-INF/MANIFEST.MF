@@ -8,7 +8,7 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.account.rest
 Import-Package: org.apache.aries.blueprint;version="1.3.0",
  org.apache.commons.lang.math,
- org.apache.cxf.jaxrs.impl;version="3.0.0",
+ org.apache.cxf.jaxrs.impl,
  org.hamcrest.core,
  org.junit,
  org.junit.rules,
