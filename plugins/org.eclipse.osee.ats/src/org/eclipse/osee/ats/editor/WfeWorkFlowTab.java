@@ -50,7 +50,6 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.note.NoteItem;
-import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -628,19 +627,16 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          if (awa.isTeamWorkflow()) {
             FormsUtil.createLabelText(toolkit, topLineComp, "Team: ", ((TeamWorkFlowArtifact) awa).getTeamName());
          } else if ((awa.isTask() || awa.isReview()) && awa.getParentAWA() != null) {
-            String pcrId = TeamWorkFlowManager.getPcrId(awa.getParentAWA());
-            FormsUtil.createLabelText(toolkit, topLineComp, "Parent Id: ", pcrId);
+            FormsUtil.createLabelText(toolkit, topLineComp, "Parent Id: ",
+               AtsClientService.get().getWorkItemService().getCombinedPcrId(awa.getParentAWA()));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      FormsUtil.createLabelText(toolkit, topLineComp, awa.getArtifactSuperTypeName() + " Id: ", awa.getAtsId());
 
       try {
-         String pcrId = TeamWorkFlowManager.getPcrId(awa);
-         if (Strings.isValid(pcrId)) {
-            FormsUtil.createLabelText(toolkit, topLineComp, " Id: ", pcrId);
-         }
+         FormsUtil.createLabelText(toolkit, topLineComp, " Id: ",
+            AtsClientService.get().getWorkItemService().getCombinedPcrId(awa));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

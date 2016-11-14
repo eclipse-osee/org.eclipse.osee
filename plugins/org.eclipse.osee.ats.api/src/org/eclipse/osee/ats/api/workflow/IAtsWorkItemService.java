@@ -48,4 +48,14 @@ public interface IAtsWorkItemService {
 
    IAtsActionableItemService getActionableItemService();
 
+   /**
+    * Assigned or computed Id that will show at the top of the editor or ats.LegacyPcrId attribute, if set
+    */
+   String getComputedPcrId(IAtsWorkItem workItem) throws OseeCoreException;
+
+   /**
+    * Join ATS Id with computedPcrId (if set)
+    */
+   String getCombinedPcrId(IAtsWorkItem workItem);
+
 }

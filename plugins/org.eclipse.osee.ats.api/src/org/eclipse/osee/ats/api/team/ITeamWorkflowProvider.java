@@ -26,7 +26,7 @@ public interface ITeamWorkflowProvider {
    /**
     * Assigned or computed Id that will show at the top of the editor
     */
-   public String getPcrId(IAtsTeamWorkflow teamWf) throws OseeCoreException;
+   public String getComputedPcrId(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
    /**
     * 5-9 character short name for UI and display purposes

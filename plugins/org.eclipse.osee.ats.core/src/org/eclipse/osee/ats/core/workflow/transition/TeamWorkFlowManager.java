@@ -211,25 +211,6 @@ public class TeamWorkFlowManager {
       return Result.TrueResult;
    }
 
-   /**
-    * Assigned or computed Id that will show at the top of the editor
-    */
-   public static String getPcrId(IAtsWorkItem workItem) throws OseeCoreException {
-      IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
-      if (teamWf != null) {
-         for (ITeamWorkflowProvider atsTeamWorkflow : TeamWorkflowProviders.getTeamWorkflowProviders()) {
-            if (atsTeamWorkflow.isResponsibleFor(workItem)) {
-               String pcrId = atsTeamWorkflow.getPcrId(teamWf);
-               if (Strings.isValid(pcrId)) {
-                  return pcrId;
-               }
-            }
-         }
-         return teamWf.getTeamDefinition().getName() + " " + workItem.getAtsId();
-      }
-      return "";
-   }
-
    public static String getArtifactTypeShortName(IAtsWorkItem teamWf) {
       for (ITeamWorkflowProvider atsTeamWorkflow : TeamWorkflowProviders.getTeamWorkflowProviders()) {
          String typeName = atsTeamWorkflow.getArtifactTypeShortName((IAtsTeamWorkflow) teamWf.getStoreObject());

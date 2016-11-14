@@ -139,4 +139,32 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       return actionableItemService;
    }
 
+   @Override
+   public String getComputedPcrId(IAtsWorkItem workItem) throws OseeCoreException {
+      IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
+      if (teamWf != null) {
+         for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getTeamWorkflowProviders()) {
+            if (provider.isResponsibleFor(workItem)) {
+               String computedPcrId = provider.getComputedPcrId(teamWf);
+               if (Strings.isValid(computedPcrId)) {
+                  return computedPcrId;
+               }
+            }
+         }
+      }
+      return services.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.LegacyPcrId, "");
+   }
+
+   /**
+    * Join ATS Id with computedPcrId (if set)
+    */
+   @Override
+   public String getCombinedPcrId(IAtsWorkItem workItem) {
+      String computedPcrId = getComputedPcrId(workItem);
+      if (Strings.isValid(computedPcrId)) {
+         return String.format("%s / %s", workItem.getAtsId(), computedPcrId);
+      }
+      return workItem.getAtsId();
+   }
+
 }

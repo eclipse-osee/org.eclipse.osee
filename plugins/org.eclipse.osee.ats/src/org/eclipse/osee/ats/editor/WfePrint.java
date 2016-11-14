@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
-import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
 import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -99,12 +98,11 @@ public class WfePrint extends Action {
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Priority: ", PriorityUtil.getPriorityStr(sma)),
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Need By: ", DeadlineColumn.getDateStr(sma))}));
 
-      String pcrId = TeamWorkFlowManager.getPcrId(sma);
+      String combinedPcrId = AtsClientService.get().getWorkItemService().getComputedPcrId(sma);
       resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Workflow: ", sma.getArtifactTypeName()),
-         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "ID: ", sma.getAtsId()),
-         pcrId == null ? "" : AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Id: ", pcrId)}));
+         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "ID: ", combinedPcrId)}));
       resultData.addRaw(AHTML.endMultiColumnTable());
       for (NoteItem note : sma.getNotes().getNoteItems()) {
          if (note.getState().equals("")) {

@@ -33,7 +33,7 @@ public interface IArtifactResolver {
 
    public abstract boolean isOfType(ArtifactId artifact, IArtifactType artifactType);
 
-   public abstract boolean isOfType(IAtsObject atsObject, IArtifactType matchType);
+   public abstract boolean isOfType(IAtsObject atsObject, IArtifactType artifactType);
 
    public boolean inheritsFrom(IArtifactType artType, IArtifactType parentArtType);
 
