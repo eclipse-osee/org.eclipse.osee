@@ -459,7 +459,7 @@ public class ConflictTestManager {
       modifications.add(new ArtifactModification(Type.ARTIFACT, Modification.CREATE_AND_DELETE, 0,
          sourceArtifacts[0].getBranch(), CoreArtifactTypes.SoftwareRequirement, "Test create an Delete"));
       modifications.add(new ArtifactModification(Type.ATTRIBUTE, Modification.CREATE_AND_DELETE, sourceArtifacts[2],
-         "Page Type", StringAttribute.class, "Portrait"));
+         "Page Orientation", StringAttribute.class, "Portrait"));
       modifications.add(new ArtifactModification(Type.RELATION, Modification.CREATE_AND_DELETE, sourceArtifacts[6],
          sourceArtifacts[7]));
    }
@@ -488,7 +488,7 @@ public class ConflictTestManager {
 
       conflictDefs[5].setValues(CoreArtifactTypes.SoftwareRequirement, false, true, 0, 0);
       conflictDefs[5].values.add(
-         new AttributeValue("Page Type", "Landscape", "Portrait", "Destination", StringAttribute.class));
+         new AttributeValue("Page Orientation", "Landscape", "Portrait", "Destination", StringAttribute.class));
       conflictDefs[5].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[5].values.add(
          new AttributeValue("Name", "Test Artifact Number 5 - Source", null, "Source", StringAttribute.class));

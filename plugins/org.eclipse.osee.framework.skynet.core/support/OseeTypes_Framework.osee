@@ -443,7 +443,7 @@ attributeType "Description" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-oseeEnumType "enum.doc.page.type" {
+oseeEnumType "enum.doc.page.orientation" {
 	id 3458764513820541305
 	entry "Portrait"
 	entryGuid "CArJmR0aZl3A8pWTQ8AA"
@@ -451,14 +451,14 @@ oseeEnumType "enum.doc.page.type" {
 	entryGuid "CArJmPtdrFEmxk6+tqQA"
 }
 
-attributeType "Page Type" extends EnumeratedAttribute {
+attributeType "Page Orientation" extends EnumeratedAttribute {
 	id 1152921504606847091
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
-	enumType "enum.doc.page.type"
-	description "Page Type: Landscape/Portrait"
+	enumType "enum.doc.page.orientation"
+	description "Page Orientation: Landscape/Portrait"
 	defaultValue "Portrait"
 	mediaType "text/plain"
 }
@@ -619,7 +619,7 @@ artifactType "MS Word Styles" extends "MS Word Whole Document" {
 artifactType "MS Word Template" extends "MS Word" {
 	id 19
 	attribute "Word Ole Data"
-	attribute "Page Type"
+	attribute "Page Orientation"
 	attribute "Word Template Content"
 	attribute "PublishInline"
 }
@@ -1528,7 +1528,7 @@ abstract artifactType "Work Item Definition" extends "Artifact" {
 artifactType "Work Page Definition" extends "Work Item Definition" {
 	id 51
 	attribute "osee.wi.Work Page Name"
-	attribute "osee.wi.Work Page Type"
+	attribute "osee.wi.Work Page Orientation"
 	attribute "osee.wi.Work Page Ordinal"
 }
 
@@ -1616,7 +1616,7 @@ attributeType "osee.wi.Transition" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "osee.wi.Work Page Type" extends StringAttribute {
+attributeType "osee.wi.Work Page Orientation" extends StringAttribute {
 	id 1152921504606847134
 	dataProvider DefaultAttributeDataProvider
 	min 0
