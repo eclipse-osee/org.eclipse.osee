@@ -19,6 +19,8 @@ public interface CharacterDataProxy extends DataProxy {
 
    public String getValueAsString() throws OseeCoreException;
 
-   public boolean setValue(String value) throws OseeCoreException;
+   public Object getValue();
+
+   public boolean setValue(Object value);
 
 }

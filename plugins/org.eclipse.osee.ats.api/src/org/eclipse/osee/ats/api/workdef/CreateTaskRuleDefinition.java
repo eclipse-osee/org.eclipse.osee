@@ -66,8 +66,8 @@ public class CreateTaskRuleDefinition extends RuleDefinition implements IAtsCrea
          }
          if (createTask) {
             // create the task
-            Map<String, List<String>> attributes = new HashMap<>();
-            List<String> desc = new ArrayList<>();
+            Map<String, List<Object>> attributes = new HashMap<>();
+            List<Object> desc = new ArrayList<>();
             desc.add(this.description);
             attributes.put("ats.Description", desc);
             List<String> titles = new ArrayList<>();

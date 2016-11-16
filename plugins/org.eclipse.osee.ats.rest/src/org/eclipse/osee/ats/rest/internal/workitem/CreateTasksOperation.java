@@ -338,10 +338,12 @@ public class CreateTasksOperation {
          for (IAtsUser user : workItem.getAssignees()) {
             newJaxTask.getAssigneeUserIds().add(user.getUserId());
          }
+
          for (AttributeTypeToken type : taskArt.getExistingAttributeTypes()) {
-            List<String> attributeValues = new LinkedList<>();
+            List<Object> attributeValues = new LinkedList<>();
+
             for (Object value : taskArt.getAttributeValues(type)) {
-               attributeValues.add(value.toString());
+               attributeValues.add(value);
             }
             newJaxTask.addAttributes(type.getName(), attributeValues);
          }

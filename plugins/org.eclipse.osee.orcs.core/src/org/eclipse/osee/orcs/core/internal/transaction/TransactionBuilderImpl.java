@@ -185,13 +185,13 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public <T> void setAttributesFromValues(ArtifactId sourceArtifact, IAttributeType attributeType, T... values) throws OseeCoreException {
+   public <T> void setAttributesFromValues(ArtifactId sourceArtifact, AttributeTypeId attributeType, T... values) throws OseeCoreException {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setAttributesFromValues(attributeType, values);
    }
 
    @Override
-   public <T> void setAttributesFromValues(ArtifactId sourceArtifact, IAttributeType attributeType, Collection<T> values) throws OseeCoreException {
+   public <T> void setAttributesFromValues(ArtifactId sourceArtifact, AttributeTypeId attributeType, Collection<T> values) throws OseeCoreException {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setAttributesFromValues(attributeType, values);
    }

@@ -99,14 +99,17 @@ public class UriDataProxy extends AbstractDataProxy implements CharacterDataProx
    }
 
    @Override
-   public boolean setValue(String value) throws OseeCoreException {
+   public boolean setValue(Object value) throws OseeCoreException {
       ByteBuffer toSet = null;
-      if (value != null) {
+      if (value != null && value instanceof String) {
          try {
-            toSet = ByteBuffer.wrap(value.getBytes("UTF-8"));
+            toSet = ByteBuffer.wrap(((String) value).getBytes("UTF-8"));
          } catch (UnsupportedEncodingException ex) {
             OseeCoreException.wrapAndThrow(ex);
          }
+      } else if (value != null) {
+         OseeCoreException.wrapAndThrow(new UnsupportedEncodingException(
+            String.format("Unsupported type [%s]", value.getClass().toGenericString())));
       }
       return setValue(toSet);
    }
@@ -131,5 +134,10 @@ public class UriDataProxy extends AbstractDataProxy implements CharacterDataProx
    @Override
    public void purge() throws OseeCoreException {
       getStorage().purge();
+   }
+
+   @Override
+   public Object getValue() {
+      return getValueAsString();
    }
 }

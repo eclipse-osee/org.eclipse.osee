@@ -90,21 +90,21 @@ public class JaxAtsTask extends JaxAtsObject {
       this.attributes = attributes;
    }
 
-   public void addAttributes(String attrTypeName, List<String> values) {
+   public void addAttributes(String attrTypeName, List<Object> values) {
       JaxAttribute attr = new JaxAttribute();
       attr.setAttrTypeName(attrTypeName);
       attr.getValues().addAll(values);
       attributes.add(attr);
    }
 
-   public void addAttribute(String attrTypeName, String value) {
+   public void addAttribute(String attrTypeName, Object value) {
       JaxAttribute attr = new JaxAttribute();
       attr.setAttrTypeName(attrTypeName);
       attr.getValues().add(value);
       attributes.add(attr);
    }
 
-   public void addAttribute(IAttributeType attrType, String value) {
+   public void addAttribute(IAttributeType attrType, Object value) {
       addAttribute(attrType.getName(), value);
    }
 

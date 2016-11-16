@@ -276,7 +276,7 @@ public class ExcelAtsTaskArtifactExtractor {
             } catch (Exception ex) {
                throw new OseeArgumentException("Invalid Estimated Hours \"%s\" for row %d", str, rowNum);
             }
-            taskArt.addAttribute(AtsAttributeTypes.EstimatedHours, String.valueOf(hours));
+            taskArt.addAttribute(AtsAttributeTypes.EstimatedHours, hours);
          }
       }
 

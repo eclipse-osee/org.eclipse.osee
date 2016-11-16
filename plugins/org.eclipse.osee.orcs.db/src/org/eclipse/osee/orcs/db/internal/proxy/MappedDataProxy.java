@@ -136,7 +136,7 @@ public class MappedDataProxy extends AbstractDataProxy implements CharacterDataP
    }
 
    @Override
-   public boolean setValue(String value) {
+   public boolean setValue(Object value) {
       // DO NOTHING
       return false;
    }
@@ -171,5 +171,10 @@ public class MappedDataProxy extends AbstractDataProxy implements CharacterDataP
       //         OseeLog.log(Activator.class, Level.SEVERE, ex);
       //      }
       return !isRemoteUriValid();
+   }
+
+   @Override
+   public Object getValue() {
+      return getValueAsString();
    }
 }

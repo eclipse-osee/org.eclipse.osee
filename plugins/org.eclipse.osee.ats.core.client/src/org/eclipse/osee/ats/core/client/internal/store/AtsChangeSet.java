@@ -74,7 +74,8 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       if (objects.isEmpty() && deleteObjects.isEmpty() && execptionIfEmpty) {
          throw new OseeArgumentException("objects/deleteObjects cannot be empty");
       }
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), comment);
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), comment);
       // First, create or update any artifacts that changed
       for (Object obj : new ArrayList<>(objects)) {
          if (obj instanceof IAtsWorkItem) {
@@ -275,7 +276,8 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid, Long uuid) {
-      Artifact artifact = ArtifactTypeManager.addArtifact(artifactType, AtsClientService.get().getAtsBranch(), name, guid, uuid);
+      Artifact artifact =
+         ArtifactTypeManager.addArtifact(artifactType, AtsClientService.get().getAtsBranch(), name, guid, uuid);
       add(artifact);
       return artifact;
    }
@@ -338,9 +340,9 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void setValues(IAtsObject atsObject, AttributeTypeId attrType, List<String> values) {
+   public void setValues(IAtsObject atsObject, AttributeTypeId attrType, List<Object> values) {
       Artifact artifact = getArtifact(atsObject);
-      artifact.setAttributeValues(attrType, values);
+      artifact.setAttributeFromValues(attrType, values);
       add(artifact);
    }
 

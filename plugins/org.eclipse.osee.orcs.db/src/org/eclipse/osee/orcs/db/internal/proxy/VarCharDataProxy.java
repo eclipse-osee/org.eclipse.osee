@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.proxy;
 import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_VARCHAR_LENGTH;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -23,11 +24,11 @@ import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
  * @author Roberto E. Escobar
  */
 public class VarCharDataProxy extends AbstractDataProxy implements CharacterDataProxy {
-   private String rawStringValue;
+   private Object rawValue;
 
    public VarCharDataProxy() {
       super();
-      this.rawStringValue = "";
+      this.rawValue = "";
    }
 
    @Override
@@ -41,16 +42,33 @@ public class VarCharDataProxy extends AbstractDataProxy implements CharacterData
    }
 
    @Override
-   public String getValueAsString() throws OseeCoreException {
-      String fromStorage = getFromStorage();
-      String toReturn = fromStorage != null ? fromStorage : rawStringValue;
+   public Object getValue() {
+      Object fromStorage = getFromStorageAsObject();
+      Object toReturn = null;
+      if (fromStorage != null) {
+         toReturn = fromStorage;
+      } else if (rawValue != null) {
+         toReturn = rawValue;
+      }
       return toReturn != null ? toReturn : "";
    }
 
    @Override
-   public boolean setValue(String value) throws OseeCoreException {
+   public String getValueAsString() throws OseeCoreException {
+      String fromStorage = getFromStorage();
+      String toReturn = null;
+      if (fromStorage != null) {
+         toReturn = fromStorage;
+      } else if (rawValue != null) {
+         toReturn = rawValue.toString();
+      }
+      return toReturn != null ? toReturn : "";
+   }
+
+   @Override
+   public boolean setValue(Object value) throws OseeCoreException {
       boolean response = false;
-      String currentValue = getValueAsString();
+      Object currentValue = getValue();
       if (currentValue == value || currentValue != null && currentValue.equals(value)) {
          response = false;
       } else {
@@ -58,6 +76,26 @@ public class VarCharDataProxy extends AbstractDataProxy implements CharacterData
          response = true;
       }
       return response;
+   }
+
+   private Object getFromStorageAsObject() throws OseeCoreException {
+      Object fromStorage = null;
+      byte[] data = null;
+      try {
+         data = getStorage().getContent();
+         if (data != null) {
+            ByteArrayInputStream in = new ByteArrayInputStream(data);
+            ObjectInputStream is = new ObjectInputStream(in);
+            try {
+               fromStorage = is.readObject();
+            } catch (ClassNotFoundException ex) {
+               OseeCoreException.wrapAndThrow(ex);
+            }
+         }
+      } catch (IOException ex) {
+         OseeCoreException.wrapAndThrow(ex);
+      }
+      return fromStorage;
    }
 
    private String getFromStorage() throws OseeCoreException {
@@ -75,33 +113,34 @@ public class VarCharDataProxy extends AbstractDataProxy implements CharacterData
       return fromStorage;
    }
 
-   private void storeValue(String value) throws OseeCoreException {
-      if (value != null && value.length() > JDBC__MAX_VARCHAR_LENGTH) {
+   private void storeValue(Object value) throws OseeCoreException {
+
+      if (value != null && value instanceof String && ((String) value).length() > JDBC__MAX_VARCHAR_LENGTH) {
          ResourceNameResolver resolver = getResolver();
          Conditions.checkNotNull(resolver, "ResourceNameResolver", "Unable to determine internal file name");
          try {
-            byte[] compressed =
-               Lib.compressStream(new ByteArrayInputStream(value.getBytes("UTF-8")), resolver.getInternalFileName());
+            byte[] compressed = Lib.compressStream(new ByteArrayInputStream(((String) value).getBytes("UTF-8")),
+               resolver.getInternalFileName());
             getStorage().setContent(compressed, "zip", "application/zip", "ISO-8859-1");
-            this.rawStringValue = "";
+            this.rawValue = "";
          } catch (IOException ex) {
             OseeCoreException.wrapAndThrow(ex);
          }
       } else {
-         this.rawStringValue = value;
+         this.rawValue = value;
          getStorage().clear();
       }
    }
 
    @Override
    public Object[] getData() {
-      return new Object[] {rawStringValue, getStorage().getLocator()};
+      return new Object[] {rawValue, getStorage().getLocator()};
    }
 
    @Override
    public void setData(Object... objects) throws OseeCoreException {
       if (objects != null && objects.length > 1) {
-         storeValue((String) objects[0]);
+         storeValue(objects[0]);
          getStorage().setLocator((String) objects[1]);
       }
    }

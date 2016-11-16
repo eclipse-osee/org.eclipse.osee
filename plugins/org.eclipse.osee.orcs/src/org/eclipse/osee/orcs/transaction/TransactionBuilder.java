@@ -89,9 +89,9 @@ public interface TransactionBuilder {
 
    void setSoleAttributeFromString(ArtifactId art, IAttributeType attributeType, String value) throws OseeCoreException;
 
-   <T> void setAttributesFromValues(ArtifactId art, IAttributeType attributeType, T... values) throws OseeCoreException;
+   <T> void setAttributesFromValues(ArtifactId art, AttributeTypeId attributeType, T... values) throws OseeCoreException;
 
-   <T> void setAttributesFromValues(ArtifactId art, IAttributeType attributeType, Collection<T> values) throws OseeCoreException;
+   <T> void setAttributesFromValues(ArtifactId art, AttributeTypeId attributeType, Collection<T> values) throws OseeCoreException;
 
    void setAttributesFromStrings(ArtifactId art, AttributeTypeId attributeType, String... values) throws OseeCoreException;
 

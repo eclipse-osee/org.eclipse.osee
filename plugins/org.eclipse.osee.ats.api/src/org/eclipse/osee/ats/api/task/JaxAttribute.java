@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class JaxAttribute {
 
    private String attrTypeName;
-   private List<String> values;
+   private List<Object> values;
 
    public String getAttrTypeName() {
       return attrTypeName;
@@ -31,14 +31,14 @@ public class JaxAttribute {
       this.attrTypeName = attrTypeName;
    }
 
-   public List<String> getValues() {
+   public List<Object> getValues() {
       if (values == null) {
          values = new LinkedList<>();
       }
       return values;
    }
 
-   public void setValues(List<String> values) {
+   public void setValues(List<Object> values) {
       this.values = values;
    }
 
