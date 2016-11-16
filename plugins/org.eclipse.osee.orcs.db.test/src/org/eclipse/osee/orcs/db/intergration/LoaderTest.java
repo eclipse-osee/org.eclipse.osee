@@ -48,7 +48,6 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
@@ -58,9 +57,7 @@ import org.eclipse.osee.orcs.core.ds.LoadDescription;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.data.RelationReadable;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.junit.Assert;
@@ -91,10 +88,7 @@ public class LoaderTest {
    @Captor private ArgumentCaptor<ArtifactData> artifactCaptor;
    @Captor private ArgumentCaptor<AttributeData> attributeCaptor;
    @Captor private ArgumentCaptor<RelationData> relationCaptor;
-   @Mock private OrcsTypes types;
-   @Mock private ArtifactTypes artTypes;
    @Mock private OrcsSession session;
-   @Mock private AttributeTypes attrTypes;
    // @formatter:on
 
    private static final ArtifactToken AtsAdminToken =
@@ -202,26 +196,10 @@ public class LoaderTest {
       }
 
       MockitoAnnotations.initMocks(this);
-
-      when(types.getArtifactTypes()).thenReturn(artTypes);
-      when(types.getAttributeTypes()).thenReturn(attrTypes);
-
-      loaderFactory = dataStore.createDataModule(types).getDataLoaderFactory();
+      loaderFactory = dataStore.createDataModule(orcsApi.getOrcsTypes()).getDataLoaderFactory();
 
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);
-
-      when(artTypes.get(OseeTypeDefinition.getId())).thenReturn(OseeTypeDefinition);
-      when(artTypes.get(Folder.getId())).thenReturn(Folder);
-
-      when(attrTypes.get(Name.getId())).thenReturn(Name);
-      when(attrTypes.get(UriGeneralStringData.getId())).thenReturn(UriGeneralStringData);
-      when(attrTypes.get(Active.getId())).thenReturn(Active);
-
-      when(attrTypes.getAttributeProviderId(Name)).thenReturn("DefaultAttributeDataProvider");
-      when(attrTypes.getAttributeProviderId(UriGeneralStringData)).thenReturn("DefaultAttributeDataProvider");
-      when(attrTypes.getAttributeProviderId(Active)).thenReturn("DefaultAttributeDataProvider");
-
    }
 
    /**
@@ -270,7 +248,7 @@ public class LoaderTest {
       Iterator<AttributeData> attrs = attributeCaptor.getAllValues().iterator();
 
       verifyData(attrs.next(), OseeTypesFrameworkActiveAttrId, OseeTypesFrameworkId, NEW, Active.getId(), COMMON, tx5,
-         OseeTypesFrameworkActiveGammaId, "true", "");
+         OseeTypesFrameworkActiveGammaId, true, "");
       verifyData(attrs.next(), OseeTypesFrameworkActiveAttrId + 1, OseeTypesFrameworkId, NEW, Name.getId(), COMMON, tx5,
          OseeTypesFrameworkActiveGammaId + 1, "org.eclipse.osee.framework.skynet.core.OseeTypes_Framework", "");
       verifyData(attrs.next(), OseeTypesFrameworkActiveAttrId + 2, OseeTypesFrameworkId, NEW,
@@ -278,7 +256,7 @@ public class LoaderTest {
          "attr://" + (OseeTypesFrameworkActiveGammaId + 2) + "/" + OseeTypesFrameworkGuid + ".zip");
 
       verifyData(attrs.next(), OseeTypesClientDemoActiveAttrId, OseeTypesClientDemoId, NEW, Active.getId(), COMMON, tx5,
-         OseeTypesClientDemoActiveGammaId, "true", "");
+         OseeTypesClientDemoActiveGammaId, true, "");
       verifyData(attrs.next(), OseeTypesClientDemoActiveAttrId + 1, OseeTypesClientDemoId, NEW, Name.getId(), COMMON,
          tx5, OseeTypesClientDemoActiveGammaId + 1, "org.eclipse.osee.client.demo.OseeTypes_ClientDemo", "");
       verifyData(attrs.next(), OseeTypesClientDemoActiveAttrId + 2, OseeTypesClientDemoId, NEW,
@@ -404,9 +382,9 @@ public class LoaderTest {
       Iterator<AttributeData> attrs = attributeCaptor.getAllValues().iterator();
 
       verifyData(attrs.next(), frameworkActiveAttrId, OseeTypesFrameworkId, NEW, Active.getId(), COMMON, tx5,
-         frameworkActiveAttr.getGammaId(), "true", "");
+         frameworkActiveAttr.getGammaId(), true, "");
       verifyData(attrs.next(), clientDemoActiveAttrId, OseeTypesClientDemoId, NEW, Active.getId(), COMMON, tx5,
-         clientDemoActiveAttr.getGammaId(), "true", "");
+         clientDemoActiveAttr.getGammaId(), true, "");
 
       sort(relationCaptor.getAllValues());
       Iterator<RelationData> rels = relationCaptor.getAllValues().iterator();

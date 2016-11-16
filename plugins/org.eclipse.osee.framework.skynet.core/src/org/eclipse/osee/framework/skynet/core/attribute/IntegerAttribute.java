@@ -23,7 +23,7 @@ public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
 
    @Override
    public Integer getValue() throws OseeCoreException {
-      return convertStringToValue(getAttributeDataProvider().getValueAsString());
+      return (Integer) getAttributeDataProvider().getValue();
    }
 
    @Override
@@ -31,7 +31,7 @@ public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
       if (value == null) {
          throw new OseeArgumentException("Attribute value was null");
       }
-      return getAttributeDataProvider().setValue(String.valueOf(value));
+      return getAttributeDataProvider().setValue(value);
    }
 
    @Override

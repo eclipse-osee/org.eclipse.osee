@@ -25,7 +25,7 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
 
    @Override
    public Double getValue() throws OseeCoreException {
-      return convertStringToValue(getDataProxy().getValueAsString());
+      return (Double) getDataProxy().getValue();
    }
 
    @Override
@@ -33,7 +33,7 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
       if (value == null) {
          throw new OseeArgumentException("Attribute value was null");
       }
-      return getDataProxy().setValue(String.valueOf(value));
+      return getDataProxy().setValue(value);
    }
 
    @Override

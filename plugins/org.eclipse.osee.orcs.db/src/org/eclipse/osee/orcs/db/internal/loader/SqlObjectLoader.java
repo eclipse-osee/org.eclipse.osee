@@ -33,6 +33,7 @@ import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.ResultObjectDescription;
 import org.eclipse.osee.orcs.core.ds.TxOrcsData;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
 import org.eclipse.osee.orcs.db.internal.loader.processor.AbstractLoadProcessor;
@@ -68,7 +69,7 @@ public class SqlObjectLoader {
    private final SqlJoinFactory joinFactory;
    private final SqlHandlerFactory handlerFactory;
 
-   public SqlObjectLoader(Log logger, JdbcClient jdbcClient, SqlJoinFactory joinFactory, SqlHandlerFactory handlerFactory, OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicProcessor) {
+   public SqlObjectLoader(Log logger, JdbcClient jdbcClient, SqlJoinFactory joinFactory, SqlHandlerFactory handlerFactory, OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicProcessor, AttributeTypes attributeTypes) {
       super();
       this.logger = logger;
       this.jdbcClient = jdbcClient;
@@ -77,7 +78,7 @@ public class SqlObjectLoader {
       this.dynamicProcessor = dynamicProcessor;
 
       artifactProcessor = new ArtifactLoadProcessor(objectFactory);
-      attributeProcessor = new AttributeLoadProcessor(logger, objectFactory);
+      attributeProcessor = new AttributeLoadProcessor(logger, objectFactory, attributeTypes);
       relationProcessor = new RelationLoadProcessor(logger, objectFactory);
       branchProcessor = new BranchLoadProcessor(objectFactory);
       txProcessor = new TransactionLoadProcessor(objectFactory);

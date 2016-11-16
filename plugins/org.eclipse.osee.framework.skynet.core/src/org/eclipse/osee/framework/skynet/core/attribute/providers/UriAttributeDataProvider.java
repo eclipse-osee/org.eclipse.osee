@@ -102,11 +102,11 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
    }
 
    @Override
-   public boolean setValue(String value) throws OseeCoreException {
+   public boolean setValue(Object value) throws OseeCoreException {
       ByteBuffer toSet = null;
-      if (value != null) {
+      if (value != null && value instanceof String) {
          try {
-            toSet = ByteBuffer.wrap(value.getBytes("UTF-8"));
+            toSet = ByteBuffer.wrap(((String) value).getBytes("UTF-8"));
          } catch (UnsupportedEncodingException ex) {
             OseeCoreException.wrapAndThrow(ex);
          }
@@ -135,5 +135,10 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
    @Override
    public void purge() throws OseeCoreException {
       dataStore.purge();
+   }
+
+   @Override
+   public Object getValue() {
+      return getValueAsString();
    }
 }

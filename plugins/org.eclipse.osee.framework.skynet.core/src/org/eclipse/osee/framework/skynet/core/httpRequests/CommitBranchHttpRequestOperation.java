@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -31,7 +30,6 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -212,11 +210,8 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
                      for (Object obj : attribute.getAttributeDataProvider().getData()) {
                         if (obj == null) {
                            attrChangeEvent.getData().add("");
-                        } else if (obj instanceof String) {
-                           attrChangeEvent.getData().add((String) obj);
                         } else {
-                           OseeLog.log(Activator.class, Level.SEVERE,
-                              "Unhandled data type " + obj.getClass().getSimpleName());
+                           attrChangeEvent.getData().add(obj);
                         }
                      }
                   }

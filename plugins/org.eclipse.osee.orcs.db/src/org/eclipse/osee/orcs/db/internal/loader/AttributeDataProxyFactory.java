@@ -37,8 +37,9 @@ public class AttributeDataProxyFactory implements ProxyDataFactory {
    }
 
    @Override
-   public DataProxy createProxy(long typeUuid, String value, String uri) throws OseeCoreException {
+   public DataProxy createProxy(long typeUuid, Object value, String uri) throws OseeCoreException {
       IAttributeType attributeType = attributeTypeCache.get(typeUuid);
+
       Conditions.checkNotNull(attributeType, "AttributeType", "Unable to find attributeType for [%s]", typeUuid);
 
       String dataProxyFactoryId = attributeTypeCache.getAttributeProviderId(attributeType);
@@ -50,24 +51,18 @@ public class AttributeDataProxyFactory implements ProxyDataFactory {
       Conditions.checkNotNull(factory, "DataProxyFactory", "Unable to find data proxy factory for [%s]",
          dataProxyFactoryId);
 
-      String checkedValue = intern(attributeType, value);
+      Object checkedValue = intern(attributeType, value);
       DataProxy proxy = factory.createInstance(dataProxyFactoryId);
       proxy.setData(checkedValue, uri);
       return proxy;
    }
 
-   private String intern(IAttributeType attributeType, String original) throws OseeCoreException {
-      String value = original;
-      if (isEnumOrBoolean(attributeType)) {
-         value = Strings.intern(value);
+   private Object intern(IAttributeType attributeType, Object original) throws OseeCoreException {
+      Object value = original;
+      if (attributeTypeCache.isEnumerated(attributeType) && value instanceof String) {
+         value = Strings.intern((String) value);
       }
       return value;
-   }
-
-   protected boolean isEnumOrBoolean(IAttributeType attributeType) throws OseeCoreException {
-      boolean isEnumAttribute = attributeTypeCache.isEnumerated(attributeType);
-      boolean isBooleanAttribute = attributeTypeCache.isBooleanType(attributeType);
-      return isBooleanAttribute || isEnumAttribute;
    }
 
    @Override
@@ -76,7 +71,7 @@ public class AttributeDataProxyFactory implements ProxyDataFactory {
       Conditions.checkExpressionFailOnTrue(data.length < 2, "Data must have at least [2] elements - size was [%s]",
          data.length);
 
-      String value = (String) data[0];
+      Object value = data[0];
       String uri = (String) data[1];
       return createProxy(typeUuid, value, uri);
    }

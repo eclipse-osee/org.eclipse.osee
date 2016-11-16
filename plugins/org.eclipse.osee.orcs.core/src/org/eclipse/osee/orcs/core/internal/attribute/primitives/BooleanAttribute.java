@@ -21,12 +21,12 @@ public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
 
    @Override
    public Boolean getValue() throws OseeCoreException {
-      return convertStringToValue(getDataProxy().getValueAsString());
+      return (Boolean) getDataProxy().getValue();
    }
 
    @Override
    public boolean subClassSetValue(Boolean value) throws OseeCoreException {
-      return getDataProxy().setValue(String.valueOf(value));
+      return getDataProxy().setValue(value);
    }
 
    @Override

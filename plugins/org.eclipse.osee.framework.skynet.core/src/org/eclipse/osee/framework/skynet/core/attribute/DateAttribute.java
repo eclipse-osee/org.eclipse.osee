@@ -11,14 +11,10 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Robert A. Fisher
@@ -31,8 +27,6 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
    public final DateFormat MMDDYYYYHHMMSSAMPM = new SimpleDateFormat("MMM dd,yyyy hh:mm:ss a");
    public final DateFormat ALLDATETIME = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy");
 
-   private final DateFormat[] legacyDateFormats = new DateFormat[] {MMDDYYYYHHMMSSAMPM, ALLDATETIME, MMDDYYHHMM};
-
    /**
     * Return current date or null if not set
     * 
@@ -40,18 +34,8 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
     */
    @Override
    public Date getValue() throws OseeCoreException {
-      Date toReturn = null;
-      String value = getAttributeDataProvider().getValueAsString();
-      if (Strings.isValid(value) != false) {
-         //TODO Added for backward compatibility with inconsistent date formats;
-         try {
-            toReturn = new Date(Long.parseLong(value));
-         } catch (Exception ex) {
-            // We have a legacy date - need to figure out how to parse it
-            toReturn = handleLegacyDates(value);
-         }
-      }
-      return toReturn;
+      Object value = getAttributeDataProvider().getValue();
+      return new Date((Long) value);
    }
 
    @Override
@@ -64,19 +48,6 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
       }
    }
 
-   private Date handleLegacyDates(String rawValue) {
-      Date toReturn = null;
-      for (DateFormat format : legacyDateFormats) {
-         try {
-            toReturn = format.parse(rawValue);
-            break;
-         } catch (ParseException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-      }
-      return toReturn;
-   }
-
    /**
     * Sets date
     * 
@@ -84,8 +55,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
     */
    @Override
    public boolean subClassSetValue(Date value) throws OseeCoreException {
-      String toSet = value != null ? Long.toString(value.getTime()) : "";
-      return getAttributeDataProvider().setValue(toSet);
+      return getAttributeDataProvider().setValue(value != null ? value.getTime() : "");
    }
 
    @Override

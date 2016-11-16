@@ -18,7 +18,7 @@ import org.eclipse.osee.orcs.core.ds.DataProxy;
  */
 public interface ProxyDataFactory {
 
-   DataProxy createProxy(long typeUuid, String value, String uri) throws OseeCoreException;
+   DataProxy createProxy(long typeUuid, Object value, String uri) throws OseeCoreException;
 
    DataProxy createProxy(long typeUuid, Object... data) throws OseeCoreException;
 }

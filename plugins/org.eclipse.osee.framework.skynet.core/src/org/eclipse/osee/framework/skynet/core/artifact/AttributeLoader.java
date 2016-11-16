@@ -23,14 +23,13 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -85,7 +84,7 @@ public class AttributeLoader {
       public int modType = -1;
       public Long transactionId = -1L;
       public long attrTypeId = -1;
-      public String value = "";
+      public Object value = "";
       public int stripeId = -1;
       public String uri = "";
       public ApplicabilityId applicabilityId = ApplicabilityId.BASE;
@@ -103,7 +102,26 @@ public class AttributeLoader {
 
          transactionId = chStmt.getLong("transaction_id");
          attrTypeId = chStmt.getLong("attr_type_id");
-         value = chStmt.getString("value");
+
+         AttributeType typeByGuid = AttributeTypeManager.getTypeByGuid(attrTypeId);
+         String baseAttributeType = typeByGuid.getBaseAttributeTypeId();
+         if (baseAttributeType.contains("BooleanAttribute")) {
+            value = chStmt.getBoolean("value");
+         } else if (baseAttributeType.contains("FloatingPointAttribute")) {
+            value = chStmt.getDouble("value");
+         } else if (baseAttributeType.contains("IntegerAttribute")) {
+            value = chStmt.getInt("value");
+         } else if (baseAttributeType.contains("LongAttribute")) {
+            value = chStmt.getLong("value");
+         } else if (baseAttributeType.contains("DateAttribute")) {
+            value = chStmt.getLong("value");
+         } else {
+            value = chStmt.getString("value");
+            if (baseAttributeType.contains("EnumeratedAttribute")) {
+               value = Strings.intern((String) value);
+            }
+         }
+
          if (historical) {
             stripeId = chStmt.getInt("stripe_transaction_id");
          }
@@ -168,19 +186,10 @@ public class AttributeLoader {
 
    private static void loadAttribute(Artifact artifact, AttrData current, AttrData previous) throws OseeCoreException {
       IAttributeType attributeType = AttributeTypeManager.getTypeByGuid(current.attrTypeId);
-      String value = current.value;
-      if (isEnumOrBoolean(attributeType)) {
-         value = Strings.intern(value);
-      }
+
       boolean markDirty = false;
       artifact.internalInitializeAttribute(attributeType, current.attrId, current.gammaId,
-         ModificationType.getMod(current.modType), current.applicabilityId, markDirty, value, current.uri);
-   }
-
-   private static boolean isEnumOrBoolean(IAttributeType attributeType) throws OseeCoreException {
-      boolean isBooleanAttribute = AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType);
-      boolean isEnumAttribute = AttributeTypeManager.isBaseTypeCompatible(EnumeratedAttribute.class, attributeType);
-      return isBooleanAttribute || isEnumAttribute;
+         ModificationType.getMod(current.modType), current.applicabilityId, markDirty, current.value, current.uri);
    }
 
    private static void setLastAttributePersistTransaction(Artifact artifact, List<Long> transactionNumbers) {

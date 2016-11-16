@@ -23,7 +23,7 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
 
    @Override
    public Double getValue() throws OseeCoreException {
-      return convertStringToValue(getAttributeDataProvider().getValueAsString());
+      return (Double) getAttributeDataProvider().getValue();
    }
 
    @Override
@@ -31,7 +31,7 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
       if (value == null) {
          throw new OseeArgumentException("Attribute value was null");
       }
-      return getAttributeDataProvider().setValue(String.valueOf(value));
+      return getAttributeDataProvider().setValue(value);
    }
 
    @Override

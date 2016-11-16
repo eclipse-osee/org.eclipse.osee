@@ -23,7 +23,7 @@ public class LongAttribute extends CharacterBackedAttribute<Long> {
 
    @Override
    public Long getValue() throws OseeCoreException {
-      return convertStringToValue(getAttributeDataProvider().getValueAsString());
+      return (Long) getAttributeDataProvider().getValue();
    }
 
    @Override
@@ -31,7 +31,7 @@ public class LongAttribute extends CharacterBackedAttribute<Long> {
       if (value == null) {
          throw new OseeArgumentException("Attribute value was null");
       }
-      return getAttributeDataProvider().setValue(String.valueOf(value));
+      return getAttributeDataProvider().setValue(value);
    }
 
    @Override

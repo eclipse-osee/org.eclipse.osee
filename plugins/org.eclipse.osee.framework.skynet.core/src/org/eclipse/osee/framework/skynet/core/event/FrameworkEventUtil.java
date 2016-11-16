@@ -286,7 +286,7 @@ public final class FrameworkEventUtil {
       attrChg.setGammaId(remAttrChg.getGammaId());
       attrChg.setAttrTypeGuid(remAttrChg.getAttrTypeGuid());
       attrChg.setModTypeGuid(remAttrChg.getModTypeGuid());
-      for (String data : remAttrChg.getData()) {
+      for (Object data : remAttrChg.getData()) {
          attrChg.getData().add(data);
       }
       return attrChg;
@@ -298,8 +298,8 @@ public final class FrameworkEventUtil {
       remAttrChg.setGammaId(attrChg.getGammaId());
       remAttrChg.setAttrTypeGuid(attrChg.getAttrTypeGuid());
       remAttrChg.setModTypeGuid(attrChg.getModTypeGuid());
-      for (String data : attrChg.getData()) {
-         remAttrChg.getData().add(data);
+      for (Object data : attrChg.getData()) {
+         remAttrChg.getData().add(data.toString());
       }
       return remAttrChg;
    }

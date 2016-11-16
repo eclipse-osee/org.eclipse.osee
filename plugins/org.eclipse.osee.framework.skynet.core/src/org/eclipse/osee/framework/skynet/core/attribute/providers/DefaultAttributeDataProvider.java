@@ -23,14 +23,14 @@ import org.eclipse.osee.jdbc.JdbcConstants;
  * @author Roberto E. Escobar
  */
 public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider implements ICharacterAttributeDataProvider {
-   private String rawStringValue;
+   private Object rawValue;
 
    private final DataStore dataStore;
 
    public DefaultAttributeDataProvider(Attribute<?> attribute) {
       super(attribute);
       this.dataStore = new DataStore(new AttributeResourceProcessor(attribute));
-      this.rawStringValue = "";
+      this.rawValue = "";
    }
 
    @Override
@@ -56,12 +56,17 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
       } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
-      String toReturn = fromStorage != null ? fromStorage : rawStringValue;
-      return toReturn != null ? toReturn : "";
+      if (fromStorage != null) {
+         return fromStorage;
+      } else if (rawValue != null) {
+         return rawValue.toString();
+      }
+
+      return "";
    }
 
    @Override
-   public boolean setValue(String value) throws OseeCoreException {
+   public boolean setValue(Object value) throws OseeCoreException {
       boolean response = false;
       if (getValueAsString() == value || getValueAsString() != null && getValueAsString().equals(value)) {
          response = false;
@@ -76,31 +81,31 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
       return BinaryContentUtils.generateFileName(getAttribute());
    }
 
-   private void storeValue(String value) throws OseeCoreException {
-      if (value != null && value.length() > JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
+   private void storeValue(Object value) throws OseeCoreException {
+      if (value != null && value instanceof String && ((String) value).length() > JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
          try {
             byte[] compressed =
-               Lib.compressStream(new ByteArrayInputStream(value.getBytes("UTF-8")), getInternalFileName());
+               Lib.compressStream(new ByteArrayInputStream(((String) value).getBytes("UTF-8")), getInternalFileName());
             dataStore.setContent(compressed, "zip", "application/zip", "ISO-8859-1");
-            this.rawStringValue = "";
+            this.rawValue = "";
          } catch (IOException ex) {
             OseeCoreException.wrapAndThrow(ex);
          }
       } else {
-         this.rawStringValue = value;
+         this.rawValue = value;
          dataStore.clear();
       }
    }
 
    @Override
    public Object[] getData() {
-      return new Object[] {rawStringValue, dataStore.getLocator()};
+      return new Object[] {rawValue, dataStore.getLocator()};
    }
 
    @Override
    public void loadData(Object... objects) throws OseeCoreException {
       if (objects != null && objects.length > 1) {
-         storeValue((String) objects[0]);
+         storeValue(objects[0]);
          dataStore.setLocator((String) objects[1]);
       }
    }
@@ -113,5 +118,10 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
    @Override
    public void purge() throws OseeCoreException {
       dataStore.purge();
+   }
+
+   @Override
+   public Object getValue() {
+      return rawValue;
    }
 }

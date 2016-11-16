@@ -51,7 +51,7 @@ public class AttributeChange implements FrameworkEvent {
    protected int attributeId;
    protected int gammaId;
    @XmlElement(required = true)
-   protected List<String> data;
+   protected List<Object> data;
    @XmlElement(required = true)
    protected ApplicabilityId applicabilityId;
 
@@ -148,7 +148,7 @@ public class AttributeChange implements FrameworkEvent {
     * <p>
     * Objects of the following type(s) are allowed in the list {@link String }
     */
-   public List<String> getData() {
+   public List<Object> getData() {
       if (data == null) {
          data = new ArrayList<>();
       }

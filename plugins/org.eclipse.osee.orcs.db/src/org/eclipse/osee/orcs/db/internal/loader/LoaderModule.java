@@ -57,8 +57,8 @@ public class LoaderModule {
       return new DataFactoryImpl(idFactory, factory, artifactTypes);
    }
 
-   public DataLoaderFactory createDataLoaderFactory(OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicLoadProcessor) {
-      SqlObjectLoader sqlObjectLoader = createSqlObjectLoader(objectFactory, dynamicLoadProcessor);
+   public DataLoaderFactory createDataLoaderFactory(OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicLoadProcessor, AttributeTypes attributeTypes) {
+      SqlObjectLoader sqlObjectLoader = createSqlObjectLoader(objectFactory, dynamicLoadProcessor, attributeTypes);
       return createDataLoaderFactory(sqlObjectLoader);
    }
 
@@ -70,9 +70,10 @@ public class LoaderModule {
       return new DataLoaderFactoryImpl(logger, jdbcClient, sqlObjectLoader, joinFactory);
    }
 
-   protected SqlObjectLoader createSqlObjectLoader(OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicLoadProcessor) {
+   protected SqlObjectLoader createSqlObjectLoader(OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicLoadProcessor, AttributeTypes attributeTypes) {
       SqlHandlerFactory handlerFactory = LoaderSqlHandlerFactoryUtil.createHandlerFactory(logger, idFactory);
-      return new SqlObjectLoader(logger, jdbcClient, joinFactory, handlerFactory, objectFactory, dynamicLoadProcessor);
+      return new SqlObjectLoader(logger, jdbcClient, joinFactory, handlerFactory, objectFactory, dynamicLoadProcessor,
+         attributeTypes);
    }
 
 }

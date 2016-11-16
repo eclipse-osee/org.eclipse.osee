@@ -91,10 +91,8 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
       for (Object obj : attributeDataProvider.getData()) {
          if (obj == null) {
             attributeChange.getData().add("");
-         } else if (obj instanceof String) {
-            attributeChange.getData().add((String) obj);
          } else {
-            OseeLog.log(Activator.class, Level.SEVERE, "Unhandled data type " + obj.getClass().getSimpleName());
+            attributeChange.getData().add(obj);
          }
       }
 

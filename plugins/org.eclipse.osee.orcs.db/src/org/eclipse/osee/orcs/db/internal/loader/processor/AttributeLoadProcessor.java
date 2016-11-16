@@ -16,12 +16,14 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.VersionData;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.loader.data.AttributeObjectFactory;
 
 /**
@@ -30,10 +32,12 @@ import org.eclipse.osee.orcs.db.internal.loader.data.AttributeObjectFactory;
 public class AttributeLoadProcessor extends LoadProcessor<AttributeData, AttributeObjectFactory> {
 
    private final Log logger;
+   private final AttributeTypes attributeTypes;
 
-   public AttributeLoadProcessor(Log logger, AttributeObjectFactory factory) {
+   public AttributeLoadProcessor(Log logger, AttributeObjectFactory factory, AttributeTypes attributeTypes) {
       super(factory);
       this.logger = logger;
+      this.attributeTypes = attributeTypes;
    }
 
    @Override
@@ -62,7 +66,25 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
 
          AttributeTypeId attributeType = AttributeTypeId.valueOf(chStmt.getLong("attr_type_id"));
 
-         String value = chStmt.getString("value");
+         String baseAttributeType = attributeTypes.getBaseAttributeTypeId(attributeType);
+         Object value = null;
+         if (baseAttributeType.contains("BooleanAttribute")) {
+            value = chStmt.getBoolean("value");
+         } else if (baseAttributeType.contains("FloatingPointAttribute")) {
+            value = chStmt.getDouble("value");
+         } else if (baseAttributeType.contains("IntegerAttribute")) {
+            value = chStmt.getInt("value");
+         } else if (baseAttributeType.contains("LongAttribute")) {
+            value = chStmt.getLong("value");
+         } else if (baseAttributeType.contains("DateAttribute")) {
+            value = chStmt.getLong("value");
+         } else {
+            value = chStmt.getString("value");
+            if (baseAttributeType.contains("EnumeratedAttribute")) {
+               value = Strings.intern((String) value);
+            }
+         }
+
          String uri = chStmt.getString("uri");
 
          toReturn = factory.createAttributeData(version, attrId, attributeType, modType, artId, value, uri, applicId);

@@ -177,7 +177,7 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
    }
 
    @Override
-   public boolean setValue(String value) {
+   public boolean setValue(Object value) {
       // DO NOTHING
       return false;
    }
@@ -221,5 +221,10 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return toReturn;
+   }
+
+   @Override
+   public Object getValue() {
+      return getValueAsString();
    }
 }

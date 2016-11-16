@@ -20,17 +20,17 @@ public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
 
    @Override
    public Boolean getValue() throws OseeCoreException {
-      return Boolean.valueOf(getAttributeDataProvider().getValueAsString());
+      return (Boolean) getAttributeDataProvider().getValue();
    }
 
    @Override
    public boolean subClassSetValue(Boolean value) throws OseeCoreException {
-      return getAttributeDataProvider().setValue(String.valueOf(value));
+      return getAttributeDataProvider().setValue(value);
    }
 
    @Override
    protected Boolean convertStringToValue(String value) {
-      return Boolean.parseBoolean(value);
+      return Boolean.valueOf(value);
    }
 
 }

@@ -66,7 +66,8 @@ public class DataModuleFactory {
       final OrcsObjectFactory objectFactory = loaderModule.createOrcsObjectFactory(proxyFactory);
       final DataFactory dataFactory = loaderModule.createDataFactory(objectFactory, artifactTypes);
       final DynamicLoadProcessor loadProcessor = loaderModule.createDynamicLoadProcessor(orcsTypes, proxyFactory);
-      final DataLoaderFactory dataLoaderFactory = loaderModule.createDataLoaderFactory(objectFactory, loadProcessor);
+      final DataLoaderFactory dataLoaderFactory =
+         loaderModule.createDataLoaderFactory(objectFactory, loadProcessor, attributeTypes);
       final QueryEngine queryEngine = queryModule.createQueryEngine(dataLoaderFactory, attributeTypes);
       final BranchDataStore branchDataStore = branchModule.createBranchDataStore(dataLoaderFactory);
       final KeyValueStore keyValueStore = keyValueModule.createKeyValueStore();
