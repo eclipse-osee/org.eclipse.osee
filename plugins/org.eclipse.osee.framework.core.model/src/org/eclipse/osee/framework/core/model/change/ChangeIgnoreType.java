@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.core.model.change;
  */
 public enum ChangeIgnoreType {
 
+   SENTINEL,
    CREATED_AND_DELETED,
    ALREADY_ON_DESTINATION,
    DELETED_AND_DNE_ON_DESTINATION,
@@ -61,4 +62,11 @@ public enum ChangeIgnoreType {
       return this == NONE;
    }
 
+   public boolean isValid() {
+      return this != SENTINEL;
+   }
+
+   public boolean isInvalid() {
+      return !isValid();
+   }
 }

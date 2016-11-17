@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  */
 public class ChangeItem implements Comparable<ChangeItem> {
 
-   private ChangeIgnoreType ignoreType = ChangeIgnoreType.NONE;
+   private ChangeIgnoreType ignoreType = ChangeIgnoreType.SENTINEL;
    private ChangeType changeType = ChangeType.UNKNOWN_CHANGE;
    private int artId = -1;
    private int itemId = -1;
@@ -164,7 +164,7 @@ public class ChangeItem implements Comparable<ChangeItem> {
       return String.format(
          "ChangeItem - itemId:[%s] artId:%s typeId:%s base:%s first:%s current:%s destination:%s net:%s synthetic:%s ignoreType:%s",
          itemId, getArtId(), getItemTypeId(), getBaselineVersion(), getFirstNonCurrentChange(), getCurrentVersion(),
-         getDestinationVersion(), getNetChange(), isSynthetic(), getItemTypeId());
+         getDestinationVersion(), getNetChange(), isSynthetic(), getIgnoreType().toString());
    }
 
    @Override

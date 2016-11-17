@@ -14,21 +14,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.model.change.ChangeIgnoreType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 
-public class AddArtifactChangeDataCallable extends CancellableCallable<List<ChangeItem>> {
+public class AddSyntheticArtifactChangeData {
    private final List<ChangeItem> changeItems;
 
-   public AddArtifactChangeDataCallable(List<ChangeItem> changeItems) {
+   public AddSyntheticArtifactChangeData(List<ChangeItem> changeItems) {
       super();
       this.changeItems = changeItems;
    }
 
-   @Override
-   public List<ChangeItem> call() throws Exception {
+   public List<ChangeItem> doWork() throws Exception {
       Map<Integer, ChangeItem> artifactChanges = new HashMap<>();
       for (ChangeItem item : changeItems) {
          if (item.getChangeType().isArtifactChange()) {
@@ -56,32 +55,46 @@ public class AddArtifactChangeDataCallable extends CancellableCallable<List<Chan
             }
          }
       }
-      changeItems.addAll(syntheticArtifactChanges.values());
+      for (ChangeItem change : syntheticArtifactChanges.values()) {
+         if (isAllowableChange(change.getIgnoreType())) {
+            changeItems.add(change);
+         }
+      }
       return changeItems;
    }
 
    private void updateArtifactChangeItem(ChangeItem artifact, ChangeItem attribute) {
       try {
-         if (!artifact.getBaselineVersion().isValid() && attribute.getBaselineVersion().isValid()) {
+         if (attribute.getBaselineVersion().isValid()) {
             ChangeItemUtil.copy(attribute.getBaselineVersion(), artifact.getBaselineVersion());
          }
 
-         if (!artifact.getCurrentVersion().isValid() && attribute.getCurrentVersion().isValid()) {
+         if (attribute.getCurrentVersion().isValid()) {
             ChangeItemUtil.copy(attribute.getCurrentVersion(), artifact.getCurrentVersion());
          }
 
-         if (!artifact.getDestinationVersion().isValid() && attribute.getDestinationVersion().isValid()) {
+         if (attribute.getDestinationVersion().isValid()) {
             ChangeItemUtil.copy(attribute.getDestinationVersion(), artifact.getDestinationVersion());
          }
 
-         if (!artifact.getNetChange().isValid() && attribute.getNetChange().isValid()) {
+         if (attribute.getNetChange().isValid()) {
             ChangeItemUtil.copy(attribute.getNetChange(), artifact.getNetChange());
             artifact.getNetChange().setModType(ModificationType.MODIFIED);
          }
-         ChangeItemUtil.checkAndSetIgnoreCase(artifact);
+         if (artifact.getIgnoreType().isInvalid() || !isAllowableChange(artifact.getIgnoreType())) {
+            ChangeItemUtil.checkAndSetIgnoreCase(artifact);
+         }
+
       } catch (Exception ex) {
          ex.printStackTrace();
       }
    }
 
+   private static boolean isAllowableChange(ChangeIgnoreType ignoreType) {
+      return //
+      ignoreType.isNone() || //
+         ignoreType.isResurrected() || //
+         ignoreType.isDeletedOnDestAndNotResurrected() || //
+         ignoreType.isDeletedOnDestination();
+   }
 }

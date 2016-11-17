@@ -189,53 +189,71 @@ public final class ChangeItemUtil {
    }
 
    public static void checkAndSetIgnoreCase(ChangeItem changeItem) {
-      createdAndDeleted(changeItem);
-      wasAlreadyOnDestination(changeItem);
-      deletedAndDoesNotExistInDestination(changeItem);
-      deletedOnDestAndNotResurrected(changeItem);
-      replacedWithVerAndNotRessurected(changeItem);
+      boolean changed = false;
+      changed |= createdAndDeleted(changeItem);
+      changed |= wasAlreadyOnDestination(changeItem);
+      changed |= deletedAndDoesNotExistInDestination(changeItem);
+      changed |= deletedOnDestAndNotResurrected(changeItem);
+      changed |= replacedWithVerAndNotRessurected(changeItem);
+      if (!changed) {
+         changeItem.setIgnoreType(ChangeIgnoreType.NONE);
+      }
    }
 
-   public static void wasAlreadyOnDestination(ChangeItem changeItem) {
+   public static boolean wasAlreadyOnDestination(ChangeItem changeItem) {
       if (isAlreadyOnDestination(changeItem)) {
          changeItem.setIgnoreType(ChangeIgnoreType.ALREADY_ON_DESTINATION);
+         return true;
       }
+      return false;
    }
 
-   public static void createdAndDeleted(ChangeItem changeItem) {
+   public static boolean createdAndDeleted(ChangeItem changeItem) {
       if (wasCreatedAndDeleted(changeItem)) {
          changeItem.setIgnoreType(ChangeIgnoreType.CREATED_AND_DELETED);
+         return true;
       }
+      return false;
    }
 
-   public static void deletedAndDoesNotExistInDestination(ChangeItem changeItem) {
+   public static boolean deletedAndDoesNotExistInDestination(ChangeItem changeItem) {
       if (!changeItem.getDestinationVersion().isValid() && isDeleted(changeItem.getCurrentVersion())) {
          changeItem.setIgnoreType(ChangeIgnoreType.DELETED_AND_DNE_ON_DESTINATION);
+         return true;
       }
+      return false;
    }
 
-   public static void beenDeletedInDestination(ChangeItem changeItem) {
+   public static boolean beenDeletedInDestination(ChangeItem changeItem) {
       if (hasBeenDeletedInDestination(changeItem)) {
          changeItem.setIgnoreType(ChangeIgnoreType.DELETED_ON_DESTINATION);
+         return true;
       }
+      return false;
    }
 
-   public static void deletedOnDestAndNotResurrected(ChangeItem changeItem) {
+   public static boolean deletedOnDestAndNotResurrected(ChangeItem changeItem) {
       if (hasBeenDeletedInDestination(changeItem) && !isResurrected(changeItem)) {
          changeItem.setIgnoreType(ChangeIgnoreType.DELETED_ON_DEST_AND_NOT_RESURRECTED);
+         return true;
       }
+      return false;
    }
 
-   public static void replacedWithVerAndNotRessurected(ChangeItem changeItem) {
+   public static boolean replacedWithVerAndNotRessurected(ChangeItem changeItem) {
       if (hasBeenReplacedWithVersion(changeItem) && !isResurrected(changeItem)) {
          changeItem.setIgnoreType(ChangeIgnoreType.REPLACED_WITH_VERSION_AND_NOT_RESURRECTED);
+         return true;
       }
+      return false;
    }
 
-   public static void resurrected(ChangeItem changeItem) {
+   public static boolean resurrected(ChangeItem changeItem) {
       if (isResurrected(changeItem)) {
          changeItem.setIgnoreType(ChangeIgnoreType.RESURRECTED);
+         return true;
       }
+      return false;
    }
 
    public static boolean wasCreatedAndDeleted(ChangeItem changeItem) {

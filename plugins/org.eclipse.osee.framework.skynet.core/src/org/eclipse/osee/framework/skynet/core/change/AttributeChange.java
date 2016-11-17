@@ -52,9 +52,9 @@ public final class AttributeChange extends Change {
       if (obj instanceof AttributeChange) {
          AttributeChange change = (AttributeChange) obj;
          return super.equals(obj) && //
-         change.getArtId() == getArtId() && //
-         change.getArtModType() == getArtModType() && //
-         change.getAttrId() == getAttrId();
+            change.getArtId() == getArtId() && //
+            change.getArtModType() == getArtModType() && //
+            change.getAttrId() == getAttrId();
       }
       return false;
    }
@@ -108,7 +108,7 @@ public final class AttributeChange extends Change {
             return attribute;
          }
       }
-      throw new AttributeDoesNotExist("Attribute %d could not be found on artifact %d on branch %s", attrId, getArtId(),
+      throw new AttributeDoesNotExist("Attribute %d could not be found on artifact %d on branch %d", attrId, getArtId(),
          getBranch().getGuid());
    }
 

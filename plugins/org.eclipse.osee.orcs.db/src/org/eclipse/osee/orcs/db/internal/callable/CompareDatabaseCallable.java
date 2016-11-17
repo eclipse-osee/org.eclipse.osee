@@ -20,7 +20,7 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.TransactionTokenDelta;
-import org.eclipse.osee.orcs.db.internal.change.AddArtifactChangeDataCallable;
+import org.eclipse.osee.orcs.db.internal.change.AddSyntheticArtifactChangeData;
 import org.eclipse.osee.orcs.db.internal.change.ComputeNetChangeCallable;
 import org.eclipse.osee.orcs.db.internal.change.LoadDeltasBetweenBranches;
 import org.eclipse.osee.orcs.db.internal.change.LoadDeltasBetweenTxsOnTheSameBranch;
@@ -76,8 +76,8 @@ public class CompareDatabaseCallable extends AbstractDatastoreCallable<List<Chan
       Callable<List<ChangeItem>> computeChanges = new ComputeNetChangeCallable(changes);
       changes = callAndCheckForCancel(computeChanges);
 
-      Callable<List<ChangeItem>> addArtifactData = new AddArtifactChangeDataCallable(changes);
-      return callAndCheckForCancel(addArtifactData);
+      AddSyntheticArtifactChangeData addArtifactData = new AddSyntheticArtifactChangeData(changes);
+      return addArtifactData.doWork();
    }
 
 }

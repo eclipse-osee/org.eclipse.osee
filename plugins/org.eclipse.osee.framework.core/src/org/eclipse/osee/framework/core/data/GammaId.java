@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
  * @author Ryan D. Brooks
  */
 public interface GammaId extends Id {
+   GammaId SENTINEL = valueOf(Id.SENTINEL);
 
    public static GammaId valueOf(String id) {
       return valueOf(Long.valueOf(id));
