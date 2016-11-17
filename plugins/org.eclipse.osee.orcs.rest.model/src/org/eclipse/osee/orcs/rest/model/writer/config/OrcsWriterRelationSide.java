@@ -18,15 +18,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class OrcsWriterRelationSide {
 
-   private Long relationTypeUuid;
+   private Long relationTypeId;
    private boolean sideA;
 
-   public Long getRelationTypeUuid() {
-      return relationTypeUuid;
+   public Long getRelationTypeId() {
+      return relationTypeId;
    }
 
-   public void setRelationTypeUuid(Long relationTypeUuid) {
-      this.relationTypeUuid = relationTypeUuid;
+   public void setRelationTypeId(Long relationTypeId) {
+      this.relationTypeId = relationTypeId;
    }
 
    public boolean isSideA() {

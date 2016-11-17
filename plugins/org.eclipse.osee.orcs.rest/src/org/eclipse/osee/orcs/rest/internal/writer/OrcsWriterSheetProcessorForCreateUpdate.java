@@ -92,7 +92,7 @@ public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
                columnToAttributeType.put(colCount, attrType);
                collector.getAttrTypes().add(attrType);
             } else if (value.toLowerCase().equals("relation")) {
-               OwRelationType relType = new OwRelationType();
+               OwRelationType relType = new OwRelationType(0L, "");
                relType.setData(OrcsWriterUtil.getData(getSheetName(), rowCount, colCount, ""));
                columnToRelationType.put(colCount, relType);
                collector.getRelTypes().add(relType);
@@ -159,7 +159,7 @@ public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
                      OwArtifactType artType = factory.getOrCreateArtifactType(value);
                      if (artType == null) {
                         throw new OseeArgumentException(
-                           "Invalid Artifact Type row %d value [%s]; expected [name]-[uuid] on CREATE sheet", rowCount,
+                           "Invalid Artifact Type row %d value [%s]; expected [name]-[id] on CREATE sheet", rowCount,
                            value);
                      }
                      artifact.setType(artType);
@@ -174,10 +174,10 @@ public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
                      OwArtifactToken artifactToken = factory.getOrCreateToken(value);
                      if (artifactToken == null) {
                         throw new OseeArgumentException(
-                           "Invalid Artifact Token row %d value [%s]; expected [name]-[uuid] on UPDATE sheet", rowCount,
+                           "Invalid Artifact Token row %d value [%s]; expected [name]-[id] on UPDATE sheet", rowCount,
                            value);
                      }
-                     artifact.setUuid(artifactToken.getUuid());
+                     artifact.setId(artifactToken.getId());
                   }
                }
             }
@@ -185,10 +185,10 @@ public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
                String value = row[colCount];
                if (Strings.isValid(value)) {
                   OwArtifactToken token = factory.getOrCreateToken(value);
-                  if (token.getUuid() > 0L) {
-                     artifact.setUuid(token.getUuid());
+                  if (token.getId() > 0L) {
+                     artifact.setId(token.getId());
                   } else {
-                     throw new OseeStateException("Unexpected string [%s] at %s; expected [name]-[uuid]", value,
+                     throw new OseeStateException("Unexpected string [%s] at %s; expected [name]-[id]", value,
                         OrcsWriterUtil.getRowColumnStr(colCount, colCount, getSheetName()));
                   }
                }

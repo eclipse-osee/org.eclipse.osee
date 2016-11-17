@@ -32,32 +32,26 @@ import org.eclipse.osee.orcs.rest.model.writer.reader.OwRelationType;
 public class OwFactory {
 
    public static OwArtifactType createArtifactType(IArtifactType artType) {
-      String typeStr = String.format("[%s]-[%d]", artType.getName(), artType.getGuid());
-      OwArtifactType type = new OwArtifactType();
-      type.setUuid(artType.getGuid());
-      type.setName(artType.getName());
+      String typeStr = String.format("[%s]-[%d]", artType.getName(), artType.getId());
+      OwArtifactType type = new OwArtifactType(artType.getId(), artType.getName());
       type.setData(typeStr);
       return type;
    }
 
    public static OwAttributeType createAttributeType(IAttributeType attrType) {
       String typeStr = String.format("[%s]-[%d]", attrType.getName(), attrType.getId());
-      OwAttributeType type = new OwAttributeType();
-      type.setUuid(attrType.getId());
-      type.setName(attrType.getName());
+      OwAttributeType type = new OwAttributeType(attrType.getId(), attrType.getName());
       type.setData(typeStr);
       return type;
    }
 
    public static OwArtifactToken createArtifactToken(ArtifactToken token) {
-      return createArtifactToken(token.getName(), token.getUuid());
+      return createArtifactToken(token.getName(), token.getId());
    }
 
-   public static OwArtifactToken createArtifactToken(String name, long uuid) {
-      String tokenStr = String.format("[%s]-[%d]", name, uuid);
-      OwArtifactToken owToken = new OwArtifactToken();
-      owToken.setUuid(uuid);
-      owToken.setName(name);
+   public static OwArtifactToken createArtifactToken(String name, long id) {
+      String tokenStr = String.format("[%s]-[%d]", name, id);
+      OwArtifactToken owToken = new OwArtifactToken(id, name);
       owToken.setData(tokenStr);
       return owToken;
    }
@@ -65,9 +59,7 @@ public class OwFactory {
    public static OwRelationType createRelationType(RelationTypeToken relType, String sideName, boolean sideA) {
       String sideData =
          String.format("[%s]-[%s]-[Side %s]-[%s]", relType.getName(), sideName, sideA ? "A" : "B", relType.getId());
-      OwRelationType owType = new OwRelationType();
-      owType.setUuid(relType.getId());
-      owType.setName(relType.getName());
+      OwRelationType owType = new OwRelationType(relType.getId(), relType.getName());
       owType.setData(sideData);
       owType.setSideA(sideA);
       return owType;
@@ -83,15 +75,14 @@ public class OwFactory {
       return createArtifact(artifactType, name, null);
    }
 
-   public static OwArtifact createArtifact(IArtifactType artifactType, String name, Long uuid) {
-      OwArtifact artifact = new OwArtifact();
+   public static OwArtifact createArtifact(IArtifactType artifactType, String name, Long id) {
+      OwArtifact artifact = new OwArtifact(id, name);
       OwArtifactType owArtType = OwFactory.createArtifactType(artifactType);
       artifact.setType(owArtType);
-      if (uuid == null) {
-         uuid = Lib.generateArtifactIdAsInt();
+      if (id == null) {
+         id = Lib.generateArtifactIdAsInt();
+         artifact.setId(id);
       }
-      artifact.setUuid(uuid);
-      artifact.setName(name);
       return artifact;
    }
 
@@ -106,11 +97,9 @@ public class OwFactory {
    }
 
    public static OwBranch createBranchToken(IOseeBranch branch) {
-      String tokenStr = String.format("[%s]-[%d]", branch.getName(), branch.getUuid());
-      OwBranch owBranch = new OwBranch();
+      String tokenStr = String.format("[%s]-[%d]", branch.getName(), branch.getId());
+      OwBranch owBranch = new OwBranch(branch.getId(), branch.getName());
       owBranch.setData(tokenStr);
-      owBranch.setName(branch.getName());
-      owBranch.setUuid(branch.getUuid());
       return owBranch;
    }
 }

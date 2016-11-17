@@ -7,16 +7,28 @@
  *
  * Contributors:
  *     Boeing - initial API and implementation
+ *
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.model.writer.reader;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.core.data.RelationId;
 
 /**
+ * Data Transfer object for Orcs Writer
+ * 
  * @author Donald G. Dunne
  */
-@XmlRootElement
-public class OwRelationType extends OwNamedBase {
+
+public class OwRelationType extends OwBase {
+
+   public OwRelationType() {
+      // for jax-rs instantiation
+      super(RelationId.SENTINEL.getId(), "");
+   }
+
+   public OwRelationType(Long id, String name) {
+      super(id, name);
+   }
 
    private boolean sideA;
    private String sideName;
@@ -39,7 +51,7 @@ public class OwRelationType extends OwNamedBase {
 
    @Override
    public String toString() {
-      return "OwRelationType [sideA=" + sideA + ", sideName=" + sideName + ", uuid=" + uuid + ", data=" + data + "]";
+      return "OwRelationType [sideA=" + sideA + ", sideName=" + sideName + ", id=" + getId() + ", data=" + data + "]";
    }
 
 }

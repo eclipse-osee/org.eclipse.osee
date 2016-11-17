@@ -10,16 +10,27 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.model.writer.reader;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 
 /**
+ * Data Transfer object for Orcs Writer
+ *
  * @author Donald G. Dunne
  */
-@XmlRootElement
-public class OwArtifactToken extends OwNamedBase {
+public class OwArtifactToken extends OwBase {
+
+   public OwArtifactToken() {
+      // for jax-rs instantiation
+      super(ArtifactId.SENTINEL.getId(), "");
+   }
+
+   public OwArtifactToken(Long id, String name) {
+      super(id, name);
+   }
 
    @Override
    public String toString() {
-      return "OwArtifactToken [uuid=" + uuid + ", data=" + data + "]";
+      return "OwArtifactToken [id=" + getId() + ", data=" + data + "]";
    }
+
 }

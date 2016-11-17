@@ -12,12 +12,12 @@ package org.eclipse.osee.orcs.rest.model.writer.reader;
 
 import java.util.LinkedList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
+ * Data Transfer object for Orcs Writer
+ *
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class OwAttribute {
 
    public OwAttributeType type;

@@ -31,8 +31,8 @@ public class OrcsWriterFactory {
 
    private final Pattern relTypePattern = Pattern.compile("\\[(.*)\\]-\\[(.*)\\]-\\[(.*)\\]-\\[(.*)\\]");
    private final Pattern nameIdPattern = Pattern.compile("\\[(.*)\\]-\\[(.*)\\]");
-   private final Map<Long, OwArtifactType> uuidToArtType = new HashMap<>();
-   private final Map<Long, OwArtifactToken> uuidToArtToken = new HashMap<>();
+   private final Map<Long, OwArtifactType> idToArtType = new HashMap<>();
+   private final Map<Long, OwArtifactToken> idToArtToken = new HashMap<>();
    private final OwCollector collector;
 
    public OrcsWriterFactory(OwCollector collector) {
@@ -43,15 +43,13 @@ public class OrcsWriterFactory {
       OwArtifactToken token = null;
       Matcher matcher = nameIdPattern.matcher(value);
       if (matcher.find()) {
-         Long uuid = Long.valueOf(matcher.group(2));
-         token = uuidToArtToken.get(uuid);
+         Long id = Long.valueOf(matcher.group(2));
+         token = idToArtToken.get(id);
          if (token == null) {
-            token = new OwArtifactToken();
-            token.setName(matcher.group(1));
-            token.setUuid(uuid);
+            token = new OwArtifactToken(id, matcher.group(1));
             token.setData(value);
             collector.getArtTokens().add(token);
-            uuidToArtToken.put(uuid, token);
+            idToArtToken.put(id, token);
          }
       }
       return token;
@@ -61,15 +59,13 @@ public class OrcsWriterFactory {
       OwArtifactType artType = null;
       Matcher matcher = nameIdPattern.matcher(value);
       if (matcher.find()) {
-         Long uuid = Long.valueOf(matcher.group(2));
-         artType = uuidToArtType.get(uuid);
+         Long id = Long.valueOf(matcher.group(2));
+         artType = idToArtType.get(id);
          if (artType == null) {
-            artType = new OwArtifactType();
-            artType.setName(matcher.group(1));
-            artType.setUuid(uuid);
+            artType = new OwArtifactType(id, matcher.group(1));
             artType.setData(value);
             collector.getArtTypes().add(artType);
-            uuidToArtType.put(uuid, artType);
+            idToArtType.put(id, artType);
          }
       }
       return artType;
@@ -78,7 +74,7 @@ public class OrcsWriterFactory {
    public OwAttribute getOrCreateAttribute(OwArtifact artifact, OwAttributeType attrType) {
       OwAttribute attr = null;
       for (OwAttribute fAttr : artifact.getAttributes()) {
-         if (fAttr.getType().getUuid() > 0L && fAttr.getType().getUuid().equals(attrType.getUuid())) {
+         if (fAttr.getType().getId() > 0L && fAttr.getType().getId().equals(attrType.getId())) {
             attr = fAttr;
             break;
          } else if (fAttr.getType().getName().equals(attrType.getName())) {
@@ -110,7 +106,7 @@ public class OrcsWriterFactory {
          relType.setName(matcher.group(1));
          relType.setSideName(matcher.group(2));
          relType.setSideA(matcher.group(3).contains("Side A"));
-         relType.setUuid(Long.valueOf(matcher.group(4)));
+         relType.setId(Long.valueOf(matcher.group(4)));
       }
    }
 
@@ -119,7 +115,7 @@ public class OrcsWriterFactory {
       Matcher matcher = nameIdPattern.matcher(value);
       if (matcher.find()) {
          attrType.setName(matcher.group(1));
-         attrType.setUuid(Long.valueOf(matcher.group(2)));
+         attrType.setId(Long.valueOf(matcher.group(2)));
       }
       // otherwise, assume the value is the attribute name
       else {
@@ -128,11 +124,11 @@ public class OrcsWriterFactory {
    }
 
    public OwBranch getOrCreateBranchToken(String value) {
-      OwBranch branch = new OwBranch();
+      OwBranch branch = new OwBranch(0L, "");
       Matcher matcher = nameIdPattern.matcher(value);
       if (matcher.find()) {
          branch.setName(matcher.group(1));
-         branch.setUuid(Long.valueOf(matcher.group(2)));
+         branch.setId(Long.valueOf(matcher.group(2)));
       }
       return branch;
    }

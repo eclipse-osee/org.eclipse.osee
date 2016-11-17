@@ -11,18 +11,17 @@
 
 package org.eclipse.osee.framework.jdk.core.type;
 
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonValue;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.ser.std.ToStringSerializer;
 
 /**
  * @author Ryan D. Brooks
  */
 public class BaseId implements Id, Cloneable {
-   private Long id;
+   @JsonSerialize(using = ToStringSerializer.class)
+   protected Long id;
 
-   @JsonCreator
-   public BaseId(@JsonProperty("id") Long id) {
+   public BaseId(Long id) {
       this.id = id;
    }
 
@@ -50,7 +49,6 @@ public class BaseId implements Id, Cloneable {
       return String.valueOf(id);
    }
 
-   @JsonValue
    @Override
    public Long getId() {
       return id;

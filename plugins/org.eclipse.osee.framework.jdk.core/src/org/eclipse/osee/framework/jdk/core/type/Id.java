@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.jdk.core.type;
 
 import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  * @author Ryan D. Brooks
@@ -55,10 +56,12 @@ public interface Id {
       return !equals(id);
    }
 
+   @JsonIgnore
    default boolean isValid() {
       return getId().longValue() > 0;
    }
 
+   @JsonIgnore
    default boolean isInvalid() {
       return !isValid();
    }

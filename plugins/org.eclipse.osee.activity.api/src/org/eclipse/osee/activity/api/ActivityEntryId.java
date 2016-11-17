@@ -10,14 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.activity.api;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Ryan D. Brooks
  */
-@XmlRootElement
 public class ActivityEntryId extends BaseId {
+
+   public ActivityEntryId() {
+      // for jax-rs instantiation
+      super(Id.SENTINEL);
+   }
 
    public ActivityEntryId(Long id) {
       super(id);

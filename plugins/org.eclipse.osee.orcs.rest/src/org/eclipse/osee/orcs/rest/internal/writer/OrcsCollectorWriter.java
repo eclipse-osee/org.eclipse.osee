@@ -52,7 +52,7 @@ public class OrcsCollectorWriter {
 
    private final OwCollector collector;
    private final OrcsApi orcsApi;
-   private Map<Long, ArtifactId> uuidToArtifact;
+   private Map<Long, ArtifactId> idToArtifact;
    private TransactionBuilder transaction;
    private BranchId branch;
    private ArtifactReadable user;
@@ -62,7 +62,7 @@ public class OrcsCollectorWriter {
       this.orcsApi = orcsApi;
       this.collector = collector;
       this.results = results;
-      uuidToArtifact = new HashMap<>();
+      idToArtifact = new HashMap<>();
    }
 
    public XResultData run() {
@@ -77,7 +77,7 @@ public class OrcsCollectorWriter {
    private void processDelete(XResultData results) {
       for (OwArtifactToken owArtifact : collector.getDelete()) {
          ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(getBranch()).andUuid(
-            owArtifact.getUuid()).getResults().getAtMostOneOrNull();
+            owArtifact.getId()).getResults().getAtMostOneOrNull();
          if (artifact == null) {
             results.warningf("Delete Artifact Token %s does not exist in database.  Skipping", owArtifact);
          } else {
@@ -90,7 +90,7 @@ public class OrcsCollectorWriter {
    private void processUpdate(XResultData results) {
       for (OwArtifact owArtifact : collector.getUpdate()) {
          ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(getBranch()).andUuid(
-            owArtifact.getUuid()).getResults().getAtMostOneOrNull();
+            owArtifact.getId()).getResults().getAtMostOneOrNull();
 
          if (artifact == null) {
             throw new OseeArgumentException("Artifact not found for OwArtifact %s", owArtifact);
@@ -234,7 +234,7 @@ public class OrcsCollectorWriter {
    }
 
    protected static IAttributeType getAttributeType(OrcsApi orcsApi, OwAttributeType attributeType) {
-      if (attributeType.getUuid() <= 0L) {
+      if (attributeType.getId() <= 0L) {
          for (IAttributeType type : orcsApi.getOrcsTypes().getAttributeTypes().getAll()) {
             if (type.getName().equals(attributeType.getName())) {
                return type;
@@ -242,26 +242,26 @@ public class OrcsCollectorWriter {
          }
          throw new OseeArgumentException("Invalid attribute type name [%s]", attributeType);
       }
-      return orcsApi.getOrcsTypes().getAttributeTypes().get(attributeType.getUuid());
+      return orcsApi.getOrcsTypes().getAttributeTypes().get(attributeType.getId());
    }
 
    private void processCreate(XResultData results) {
       for (OwArtifact owArtifact : collector.getCreate()) {
          OwArtifactType owArtType = owArtifact.getType();
-         IArtifactType artType = orcsApi.getOrcsTypes().getArtifactTypes().get(owArtType.getUuid());
+         IArtifactType artType = orcsApi.getOrcsTypes().getArtifactTypes().get(owArtType.getId());
 
-         long artifactUuid = owArtifact.getUuid();
-         if (artifactUuid > 0L) {
-            if (uuidToArtifact == null) {
-               uuidToArtifact = new HashMap<>();
+         long artifactId = owArtifact.getId();
+         if (artifactId > 0L) {
+            if (idToArtifact == null) {
+               idToArtifact = new HashMap<>();
             }
          } else {
-            artifactUuid = Lib.generateArtifactIdAsInt();
+            artifactId = Lib.generateArtifactIdAsInt();
          }
          String name = owArtifact.getName();
-         ArtifactId artifact = getTransaction().createArtifact(artType, name, GUID.create(), artifactUuid);
+         ArtifactId artifact = getTransaction().createArtifact(artType, name, GUID.create(), artifactId);
 
-         uuidToArtifact.put(artifactUuid, artifact);
+         idToArtifact.put(artifactId, artifact);
 
          try {
             createAttributes(owArtifact, artifact, results);
@@ -284,28 +284,28 @@ public class OrcsCollectorWriter {
    private void createMissingRelations(List<OwRelation> relations, ArtifactId artifact, XResultData results) {
       for (OwRelation relation : relations) {
          OwRelationType owRelType = relation.getType();
-         IRelationType relType = orcsApi.getOrcsTypes().getRelationTypes().get(owRelType.getUuid());
+         IRelationType relType = orcsApi.getOrcsTypes().getRelationTypes().get(owRelType.getId());
 
          OwArtifactToken artToken = relation.getArtToken();
-         long branchUuid = collector.getBranch().getUuid();
+         long branchId = collector.getBranch().getId();
          ArtifactReadable otherArtifact = null;
 
-         if (uuidToArtifact.containsKey(artToken.getUuid())) {
-            otherArtifact = (ArtifactReadable) uuidToArtifact.get(artToken.getUuid());
+         if (idToArtifact.containsKey(artToken.getId())) {
+            otherArtifact = (ArtifactReadable) idToArtifact.get(artToken.getId());
          } else {
-            otherArtifact = orcsApi.getQueryFactory().fromBranch(branchUuid).andUuid(
-               artToken.getUuid()).getResults().getExactlyOne();
-            uuidToArtifact.put(artToken.getUuid(), otherArtifact);
+            otherArtifact =
+               orcsApi.getQueryFactory().fromBranch(branchId).andUuid(artToken.getId()).getResults().getExactlyOne();
+            idToArtifact.put(artToken.getId(), otherArtifact);
          }
          if (relation.getType().isSideA()) {
             RelationTypeSide relTypeSide =
-               RelationTypeSide.create(RelationSide.SIDE_A, relation.getType().getUuid(), relation.getType().getName());
+               RelationTypeSide.create(RelationSide.SIDE_A, relation.getType().getId(), relation.getType().getName());
             if (!otherArtifact.areRelated(relTypeSide, (ArtifactReadable) artifact)) {
                getTransaction().relate(otherArtifact, relType, artifact);
             }
          } else {
             RelationTypeSide relTypeSide =
-               RelationTypeSide.create(RelationSide.SIDE_B, relation.getType().getUuid(), relation.getType().getName());
+               RelationTypeSide.create(RelationSide.SIDE_B, relation.getType().getId(), relation.getType().getName());
             if (!otherArtifact.areRelated(relTypeSide, (ArtifactReadable) artifact)) {
                getTransaction().relate(artifact, relType, otherArtifact);
             }
@@ -315,7 +315,7 @@ public class OrcsCollectorWriter {
 
    private void createAttributes(OwArtifact owArtifact, ArtifactId artifact, XResultData results) {
       for (OwAttribute owAttribute : owArtifact.getAttributes()) {
-         if (CoreAttributeTypes.Name.notEqual(owAttribute.getType().getUuid())) {
+         if (CoreAttributeTypes.Name.notEqual(owAttribute.getType().getId())) {
             OwAttributeType owAttrType = owAttribute.getType();
             IAttributeType attrType = getAttributeType(orcsApi, owAttrType);
 
@@ -397,7 +397,7 @@ public class OrcsCollectorWriter {
    private BranchId getBranch() {
       if (branch == null) {
          branch = orcsApi.getQueryFactory().branchQuery().andUuids(
-            collector.getBranch().getUuid()).getResults().getAtMostOneOrNull();
+            collector.getBranch().getId()).getResults().getAtMostOneOrNull();
       }
       return branch;
    }

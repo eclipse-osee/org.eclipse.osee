@@ -85,12 +85,12 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
       assertEquals(javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.getStatus());
 
       for (OwArtifact art : collector.getCreate()) {
-         long artTypeUuid = art.getType().getUuid();
-         ArtifactType typeByGuid = ArtifactTypeManager.getTypeByGuid(artTypeUuid);
-         assertNotNull(typeByGuid);
-         if (typeByGuid.equals(CoreArtifactTypes.Folder)) {
-            long artUuid = art.getUuid();
-            Artifact folderArt = AtsClientService.get().getArtifact(artUuid);
+         long artTypeId = art.getType().getId();
+         ArtifactType typeById = ArtifactTypeManager.getTypeByGuid(artTypeId);
+         assertNotNull(typeById);
+         if (typeById.equals(CoreArtifactTypes.Folder)) {
+            long artId = art.getId();
+            Artifact folderArt = AtsClientService.get().getArtifact(artId);
             assertNotNull(folderArt);
             assertEquals(2, folderArt.getChildren().size());
             for (Artifact child : folderArt.getChildren()) {
@@ -101,7 +101,7 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
       }
 
       OwArtifact userGroupOwArt = collector.getUpdate().iterator().next();
-      Artifact userGroupArt = AtsClientService.get().getArtifact(userGroupOwArt.getUuid());
+      Artifact userGroupArt = AtsClientService.get().getArtifact(userGroupOwArt.getId());
       assertNotNull(userGroupArt);
       assertEquals("test static id", userGroupArt.getSoleAttributeValue(CoreAttributeTypes.StaticId, null));
       assertEquals("test annotation", userGroupArt.getSoleAttributeValue(CoreAttributeTypes.Annotation, null));
@@ -121,7 +121,7 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
       collector.getCreate().clear();
       collector.getUpdate().clear();
       OwArtifactToken owToken = new OwArtifactToken();
-      owToken.setUuid(artifact.getUuid());
+      owToken.setId(artifact.getId());
       owToken.setName(artifact.getName());
       String tokenStr = String.format("[%s]-[%d]", artifact.getName(), artifact.getId());
       owToken.setData(tokenStr);
@@ -135,8 +135,8 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
 
       ArtifactCache.deCache(artifactFromId1);
 
-      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(
-         Collections.singleton(artifact.getId().intValue()), CoreBranches.COMMON);
+      List<Artifact> artifacts =
+         ArtifactQuery.getArtifactListFromIds(Collections.singleton(artifact.getId().intValue()), CoreBranches.COMMON);
       assertTrue(artifacts.iterator().next().isDeleted());
    }
 }

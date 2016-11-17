@@ -11,30 +11,20 @@
 package org.eclipse.osee.orcs.rest.model.writer;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Donald G. Dunne
  */
 @XmlRootElement
-public class OrcsWriterToken {
+public class OrcsWriterToken extends NamedIdBase {
 
-   private Long uuid;
-   private String name;
-
-   public Long getUuid() {
-      return uuid;
+   public OrcsWriterToken(Long id, String name) {
+      super(id, name);
    }
 
-   public void setUuid(Long uuid) {
-      this.uuid = uuid;
-   }
-
-   public String getName() {
-      return name;
-   }
-
-   public void setName(String name) {
-      this.name = name;
+   public void setId(Long id) {
+      this.id = id;
    }
 
 }

@@ -14,8 +14,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -35,7 +35,7 @@ import org.eclipse.osee.orcs.rest.model.writer.reader.OwRelationType;
 public class OrcsCollectorValidator {
 
    private final OwCollector collector;
-   private Map<Long, OwArtifact> uuidToArtifact;
+   private Map<Long, OwArtifact> idToArtifact;
    private final Set<Long> artifactsExist;
    private final IOrcsValidationHelper helper;
    private boolean branchValid;
@@ -44,7 +44,7 @@ public class OrcsCollectorValidator {
    public OrcsCollectorValidator(OwCollector collector, IOrcsValidationHelper helper) {
       this.collector = collector;
       this.helper = helper;
-      uuidToArtifact = new HashMap<>();
+      idToArtifact = new HashMap<>();
       artifactsExist = new HashSet<>();
    }
 
@@ -98,42 +98,42 @@ public class OrcsCollectorValidator {
 
    private void validateArtifactType(XResultData results, OwArtifact artifact) {
       OwArtifactType artType = artifact.getType();
-      if (artType == null || artType.getUuid() <= 0L) {
-         results.errorf("Invalid Artifact Type uuid [%s].\n", artType);
+      if (artType == null || artType.getId() <= 0L) {
+         results.errorf("Invalid Artifact Type id [%s].\n", artType);
       } else {
-         if (!helper.isArtifactTypeExist(artType.getUuid())) {
+         if (!helper.isArtifactTypeExist(artType.getId())) {
             results.errorf("Artifact Type [%s] does not exist.\n", artType);
          }
       }
    }
 
    private void validateArtifactDoesNotExist(XResultData results, OwArtifact artifact) {
-      long artifactUuid = artifact.getUuid();
+      long artifactId = artifact.getId();
       if (!branchValid) {
-         results.errorf("Invalid Branch; can't validate artifact uuid for [%s].\n", artifact);
-      } else if (artifactUuid > 0L) {
-         if (helper.isArtifactExists(BranchId.valueOf(collector.getBranch().getUuid()), artifactUuid)) {
-            results.errorf("Artifact with uuid already exists [%s].\n", artifact);
+         results.errorf("Invalid Branch; can't validate artifact id for [%s].\n", artifact);
+      } else if (artifactId > 0L) {
+         if (helper.isArtifactExists(BranchId.valueOf(collector.getBranch().getId()), artifactId)) {
+            results.errorf("Artifact with id already exists [%s].\n", artifact);
          }
-         if (uuidToArtifact == null) {
-            uuidToArtifact = new HashMap<>();
+         if (idToArtifact == null) {
+            idToArtifact = new HashMap<>();
          }
-         uuidToArtifact.put(artifactUuid, artifact);
+         idToArtifact.put(artifactId, artifact);
       }
    }
 
    private void validateArtifactDoesExist(XResultData results, OwArtifact artifact) {
-      long artifactUuid = artifact.getUuid();
+      long artifactId = artifact.getId();
       if (!branchValid) {
-         results.errorf("Invalid Branch; can't validate artifact uuid for [%s].\n", artifact);
-      } else if (artifactUuid > 0L) {
-         if (!helper.isArtifactExists(BranchId.valueOf(collector.getBranch().getUuid()), artifactUuid)) {
-            results.errorf("Artifact with uuid does not exist [%s].\n", artifact);
+         results.errorf("Invalid Branch; can't validate artifact id for [%s].\n", artifact);
+      } else if (artifactId > 0L) {
+         if (!helper.isArtifactExists(BranchId.valueOf(collector.getBranch().getId()), artifactId)) {
+            results.errorf("Artifact with id does not exist [%s].\n", artifact);
          } else {
-            if (uuidToArtifact == null) {
-               uuidToArtifact = new HashMap<>();
+            if (idToArtifact == null) {
+               idToArtifact = new HashMap<>();
             }
-            uuidToArtifact.put(artifactUuid, artifact);
+            idToArtifact.put(artifactId, artifact);
          }
       }
    }
@@ -141,31 +141,31 @@ public class OrcsCollectorValidator {
    private void validateCreateUpdateRelations(OwArtifact artifact, XResultData results) {
       for (OwRelation relation : artifact.getRelations()) {
          if (!branchValid) {
-            results.errorf("Invalid Branch; can't validate artifact uuid for artifact [%s] and relation [%s].\n",
+            results.errorf("Invalid Branch; can't validate artifact id for artifact [%s] and relation [%s].\n",
                artifact, relation);
          } else {
             OwRelationType relType = relation.getType();
             try {
-               if (relType == null || relType.getUuid() <= 0L || !helper.isRelationTypeExist(relType.getUuid())) {
+               if (relType == null || relType.getId() <= 0L || !helper.isRelationTypeExist(relType.getId())) {
                   results.errorf("Invalid Relation Type [%s] for artifact [%s].\n", relType, artifact);
                } else {
                   OwArtifactToken artToken = relation.getArtToken();
-                  long branchUuid = collector.getBranch().getUuid();
+                  long branchUuid = collector.getBranch().getId();
                   if (artToken == null) {
                      results.errorf("Invalid artifact token [%s] for artifact [%s] and relation [%s].\n", artToken,
                         artifact, relation);
                   }
                   // for performance, check to see if this artifact token was validated
-                  else if (!artifactsExist.contains(artToken.getUuid())) {
+                  else if (!artifactsExist.contains(artToken.getId())) {
                      // check to see if token is one of the artifacts to create
-                     if (!uuidToArtifact.containsKey(artToken.getUuid())) {
+                     if (!idToArtifact.containsKey(artToken.getId())) {
                         // else, check to see if token exists in db
-                        if (!helper.isArtifactExists(BranchId.valueOf(branchUuid), artToken.getUuid())) {
+                        if (!helper.isArtifactExists(BranchId.valueOf(branchUuid), artToken.getId())) {
                            results.errorf(
                               "Artifact from token [%s] does not exist to relate to artifact [%s] for relation [%s].\n",
                               artToken, artifact, relation);
                         } else {
-                           artifactsExist.add(artToken.getUuid());
+                           artifactsExist.add(artToken.getId());
                         }
                      }
                   }
@@ -193,8 +193,8 @@ public class OrcsCollectorValidator {
 
          if (orcsApi.getOrcsTypes().getAttributeTypes().isBooleanType(attrType)) {
             if (attribute.values.size() > 1) {
-               results.errorf("Cannot have multiple values for Boolean Attribute [%s] for artifact [%s].\n",
-                  attribute, artifact);
+               results.errorf("Cannot have multiple values for Boolean Attribute [%s] for artifact [%s].\n", attribute,
+                  artifact);
             }
          } else if (orcsApi.getOrcsTypes().getAttributeTypes().isDateType(attrType)) {
             if (attribute.values.size() > 1) {
@@ -208,8 +208,8 @@ public class OrcsCollectorValidator {
 
    private boolean validateBranch(XResultData results) {
       boolean valid = true;
-      if (collector.getBranch() == null || collector.getBranch().getUuid() <= 0L || !helper.isBranchExists(
-         BranchId.valueOf(collector.getBranch().getUuid()))) {
+      if (collector.getBranch() == null || collector.getBranch().getId() <= 0L || !helper.isBranchExists(
+         BranchId.valueOf(collector.getBranch().getId()))) {
          results.errorf("Branch [%s] not valid.\n", collector.getBranch());
          valid = false;
       }

@@ -10,12 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.model.writer.reader;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
+ * Data Transfer object for Orcs Writer
+ * 
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class OwRelation {
 
    public OwRelationType type;

@@ -10,16 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.model.writer.reader;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
 /**
  * @author Donald G. Dunne
  */
-@XmlRootElement
-public class OwAttributeType extends OwNamedBase {
+// Data Transfer object for Orcs Writer
+public class OwAttributeType extends OwBase {
+
+   public OwAttributeType() {
+      // for jax-rs instantiation
+      super(AttributeTypeToken.SENTINEL.getId(), "");
+   }
+
+   public OwAttributeType(Long id, String name) {
+      super(id, name);
+   }
 
    @Override
    public String toString() {
-      return "OwAttributeType [uuid=" + uuid + ", data=" + data + "]";
+      return "OwAttributeType [id=" + getId() + ", data=" + data + "]";
    }
+
 }

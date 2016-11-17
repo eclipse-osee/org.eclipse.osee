@@ -50,8 +50,8 @@ public class OrcsCollectorValidatorTest {
       MockitoAnnotations.initMocks(this);
 
       when(collector.getAsUserId()).thenReturn("3443");
-      when(branch.getUuid()).thenReturn(570L);
-      when(branch.toString()).thenReturn("OwBranch [uuid=570]");
+      when(branch.getId()).thenReturn(570L);
+      when(branch.toString()).thenReturn("OwBranch [id=570]");
       when(collector.getBranch()).thenReturn(branch);
       when(collector.getPersistComment()).thenReturn("persist comment");
 
@@ -63,23 +63,21 @@ public class OrcsCollectorValidatorTest {
       XResultData rd = validator.run();
 
       OwArtifact artifact = new OwArtifact();
-      OwArtifactType artType = new OwArtifactType();
-      artType.setUuid(11);
-      artType.setName("Folder");
+      OwArtifactType artType = new OwArtifactType(11L, "Folder");
       artifact.setType(artType);
 
       when(collector.getCreate()).thenReturn(Arrays.asList(artifact));
       when(helper.isArtifactTypeExist(11)).thenReturn(false);
       rd = validator.run();
-      assertTrue(rd.toString().contains("Artifact Type [OwArtifactType [uuid=11, data=null]] does not exist."));
+      assertTrue(rd.toString().contains("Artifact Type [OwArtifactType [id=11, data=null]] does not exist."));
 
       when(helper.isArtifactTypeExist(11)).thenReturn(true);
       rd = validator.run();
-      assertFalse(rd.toString().contains("Artifact Type [OwArtifactType [uuid=11, data=null]] does not exist."));
+      assertFalse(rd.toString().contains("Artifact Type [OwArtifactType [id=11, data=null]] does not exist."));
 
-      artType.setUuid(0L);
+      artType.setId(0L);
       rd = validator.run();
-      assertTrue(rd.toString().contains("Invalid Artifact Type uuid [OwArtifactType [uuid=0, data=null]]."));
+      assertTrue(rd.toString().contains("Invalid Artifact Type id [OwArtifactType [id=0, data=null]]."));
    }
 
    @Test
@@ -87,24 +85,21 @@ public class OrcsCollectorValidatorTest {
 
       when(helper.isBranchExists(COMMON)).thenReturn(true);
       XResultData rd = validator.run();
-      assertFalse(rd.toString().contains("Branch [OwBranch [uuid=570]] not valid."));
+      assertFalse(rd.toString().contains("Branch [OwBranch [id=570]] not valid."));
 
-      OwArtifact artifact = new OwArtifact();
-      OwArtifactType artType = new OwArtifactType();
-      artType.setUuid(11);
-      artType.setName("Folder");
+      OwArtifact artifact = new OwArtifact(5555L, "");
+      OwArtifactType artType = new OwArtifactType(11L, "Folder");
       artifact.setType(artType);
-      artifact.setUuid(5555L);
 
       when(helper.isArtifactExists(COMMON, 5555L)).thenReturn(false);
       when(collector.getCreate()).thenReturn(Arrays.asList(artifact));
       rd = validator.run();
-      assertTrue(rd.toString().contains("Artifact Type [OwArtifactType [uuid=11, data=null]] does not exist."));
+      assertTrue(rd.toString().contains("Artifact Type [OwArtifactType [id=11, data=null]] does not exist."));
 
-      when(branch.getUuid()).thenReturn(0L);
+      when(branch.getId()).thenReturn(0L);
       rd = validator.run();
       assertTrue(rd.toString().contains(
-         "Invalid Branch; can't validate artifact uuid for [OwArtifact [type=OwArtifactType [uuid=11, data=null], uuid=5555, data=null]]."));
+         "Invalid Branch; can't validate artifact id for [OwArtifact [type=OwArtifactType [id=11, data=null], id=5555, data=null]]."));
 
    }
 
@@ -113,42 +108,37 @@ public class OrcsCollectorValidatorTest {
 
       when(helper.isBranchExists(COMMON)).thenReturn(true);
       XResultData rd = validator.run();
-      assertFalse(rd.toString().contains("Branch [OwBranch [uuid=570]] not valid."));
+      assertFalse(rd.toString().contains("Branch [OwBranch [id=570]] not valid."));
 
-      OwArtifact artifact = new OwArtifact();
-      OwArtifactType artType = new OwArtifactType();
-      artType.setUuid(11);
-      artType.setName("Folder");
+      OwArtifact artifact = new OwArtifact(5555L, "");
+      OwArtifactType artType = new OwArtifactType(11L, "Folder");
       artifact.setType(artType);
-      artifact.setUuid(5555L);
 
       when(collector.getCreate()).thenReturn(Arrays.asList(artifact));
 
       rd = validator.run();
       assertTrue(rd.toString().contains(
-         "Artifact [OwArtifact [type=OwArtifactType [uuid=11, data=null], uuid=5555, data=null]] does not have Name attribute."));
+         "Artifact [OwArtifact [type=OwArtifactType [id=11, data=null], id=5555, data=null]] does not have Name attribute."));
 
       artifact.setName("my name");
       OwAttribute attribute = new OwAttribute();
       artifact.getAttributes().add(attribute);
       rd = validator.run();
       assertTrue(rd.toString().contains(
-         "Invalid Attribute Type uuid [null] for artifact [OwArtifact [type=OwArtifactType [uuid=11, data=null], uuid=5555, data=null]]."));
+         "Invalid Attribute Type id [null] for artifact [OwArtifact [type=OwArtifactType [id=11, data=null], id=5555, data=null]]."));
 
-      OwAttributeType attrType = new OwAttributeType();
-      attrType.setName("Static Id");
-      attrType.setUuid(234);
+      OwAttributeType attrType = new OwAttributeType(234L, "Static Id");
       attribute.setType(attrType);
 
       when(helper.isAttributeTypeExists(234)).thenReturn(false);
       rd = validator.run();
       assertTrue(rd.toString().contains(
-         "Error: Attribute Type [OwAttributeType [uuid=234, data=null]] does not exist for artifact [OwArtifact [type=OwArtifactType [uuid=11, data=null], uuid=5555, data=null]]."));
+         "Error: Attribute Type [OwAttributeType [id=234, data=null]] does not exist for artifact [OwArtifact [type=OwArtifactType [id=11, data=null], id=5555, data=null]]."));
 
       when(helper.isAttributeTypeExists(234)).thenReturn(true);
       rd = validator.run();
       assertFalse(rd.toString().contains(
-         "Error: Attribute Type [OwAttributeType [uuid=234, data=null]] does not exist for artifact [OwArtifact [type=OwArtifactType [uuid=11, data=null], uuid=5555, data=null]]."));
+         "Error: Attribute Type [OwAttributeType [id=234, data=null]] does not exist for artifact [OwArtifact [type=OwArtifactType [id=11, data=null], id=5555, data=null]]."));
    }
 
    @Test
@@ -156,14 +146,11 @@ public class OrcsCollectorValidatorTest {
 
       when(helper.isBranchExists(COMMON)).thenReturn(true);
       XResultData rd = validator.run();
-      assertFalse(rd.toString().contains("Branch [OwBranch [uuid=570]] not valid."));
+      assertFalse(rd.toString().contains("Branch [OwBranch [id=570]] not valid."));
 
-      OwArtifact artifact = new OwArtifact();
-      OwArtifactType artType = new OwArtifactType();
-      artType.setUuid(11);
-      artType.setName("Folder");
+      OwArtifact artifact = new OwArtifact(5555L, "");
+      OwArtifactType artType = new OwArtifactType(11L, "Folder");
       artifact.setType(artType);
-      artifact.setUuid(5555L);
 
       when(collector.getCreate()).thenReturn(Arrays.asList(artifact));
 
@@ -171,28 +158,25 @@ public class OrcsCollectorValidatorTest {
       artifact.getRelations().add(relation);
       rd = validator.run();
       assertTrue(rd.toString().contains(
-         "Invalid Relation Type [null] for artifact [OwArtifact [type=OwArtifactType [uuid=11, data=null], uuid=5555, data=null]]."));
+         "Invalid Relation Type [null] for artifact [OwArtifact [type=OwArtifactType [id=11, data=null], id=5555, data=null]]."));
 
-      OwRelationType relType = new OwRelationType();
-      relType.setUuid(65656);
+      OwRelationType relType = new OwRelationType(65656L, "");
       relation.setType(relType);
       when(helper.isRelationTypeExist(65656)).thenReturn(true);
       rd = validator.run();
       assertTrue(rd.toString().contains(
-         "Invalid artifact token [null] for artifact [OwArtifact [type=OwArtifactType [uuid=11, data=null], uuid=5555, data=null]] and relation [OwRelation [type=OwRelationType [sideA=false, sideName=null, uuid=65656, data=null], artToken=null, data=null]]."));
+         "Invalid artifact token [null] for artifact [OwArtifact [type=OwArtifactType [id=11, data=null], id=5555, data=null]] and relation [OwRelation [type=OwRelationType [sideA=false, sideName=null, id=65656, data=null], artToken=null, data=null]]."));
 
-      OwArtifactToken token = new OwArtifactToken();
-      token.setUuid(9999);
-      token.setName("Default Hierarchy - Child");
+      OwArtifactToken token = new OwArtifactToken(9999L, "Default Hierarchy - Child");
       relation.setArtToken(token);
       rd = validator.run();
       assertTrue(rd.toString().contains(
-         "Artifact from token [OwArtifactToken [uuid=9999, data=null]] does not exist to relate to artifact [OwArtifact [type=OwArtifactType [uuid=11, data=null], uuid=5555, data=null]] for relation [OwRelation [type=OwRelationType [sideA=false, sideName=null, uuid=65656, data=null], artToken=OwArtifactToken [uuid=9999, data=null], data=null]]."));
+         "Artifact from token [OwArtifactToken [id=9999, data=null]] does not exist to relate to artifact [OwArtifact [type=OwArtifactType [id=11, data=null], id=5555, data=null]] for relation [OwRelation [type=OwRelationType [sideA=false, sideName=null, id=65656, data=null], artToken=OwArtifactToken [id=9999, data=null], data=null]]."));
 
-      when(helper.isArtifactExists(BranchId.valueOf(collector.getBranch().getUuid()), 9999)).thenReturn(true);
+      when(helper.isArtifactExists(BranchId.valueOf(collector.getBranch().getId()), 9999)).thenReturn(true);
       rd = validator.run();
       assertFalse(rd.toString().contains(
-         "Artifact from token [OwArtifactToken [uuid=9999, data=null]] does not exist to relate to artifact [OwArtifact [type=OwArtifactType [uuid=11, data=null], uuid=5555, data=null]] for relation [OwRelation [type=OwRelationType [sideA=false, sideName=null, uuid=65656, data=null], artToken=OwArtifactToken [uuid=9999, data=null], data=null]]."));
+         "Artifact from token [OwArtifactToken [id=9999, data=null]] does not exist to relate to artifact [OwArtifact [type=OwArtifactType [id=11, data=null], id=5555, data=null]] for relation [OwRelation [type=OwRelationType [sideA=false, sideName=null, id=65656, data=null], artToken=OwArtifactToken [id=9999, data=null], data=null]]."));
    }
 
    @Test
@@ -211,11 +195,11 @@ public class OrcsCollectorValidatorTest {
    public void test_branch() {
       when(helper.isBranchExists(COMMON)).thenReturn(false);
       XResultData rd = validator.run();
-      assertTrue(rd.toString().contains("Branch [OwBranch [uuid=570]] not valid."));
+      assertTrue(rd.toString().contains("Branch [OwBranch [id=570]] not valid."));
 
       when(helper.isBranchExists(COMMON)).thenReturn(true);
       rd = validator.run();
-      assertFalse(rd.toString().contains("Branch [OwBranch [uuid=570]] not valid."));
+      assertFalse(rd.toString().contains("Branch [OwBranch [id=570]] not valid."));
    }
 
    @Test

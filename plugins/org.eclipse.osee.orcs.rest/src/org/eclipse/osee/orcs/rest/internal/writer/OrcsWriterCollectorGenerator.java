@@ -65,7 +65,7 @@ public class OrcsWriterCollectorGenerator {
       collector.setPersistComment("Put Comment Here");
       collector.setAsUserId(SystemUser.OseeSystem.getUserId());
       collector.getBranch().setName(COMMON.getName());
-      collector.getBranch().setUuid(COMMON.getId());
+      collector.getBranch().setId(COMMON.getId());
       collector.getBranch().setData(String.format("[%s]-[%s]", COMMON.getName(), COMMON.getId()));
       createInstructions();
       createCreateSheet();
@@ -100,9 +100,9 @@ public class OrcsWriterCollectorGenerator {
    }
 
    private void createSoftwareRequirement(OwArtifactToken folderToken, String number) {
-      Long reqUuid = Lib.generateArtifactIdAsInt();
+      Long reqId = Lib.generateArtifactIdAsInt();
       String name = "Software Requirement " + number;
-      OwArtifact softwareReq = OwFactory.createArtifact(CoreArtifactTypes.SoftwareRequirement, name, reqUuid);
+      OwArtifact softwareReq = OwFactory.createArtifact(CoreArtifactTypes.SoftwareRequirement, name, reqId);
       OwFactory.createAttribute(softwareReq, CoreAttributeTypes.StaticId, "static id field " + number);
       collector.getCreate().add(softwareReq);
 
@@ -114,9 +114,9 @@ public class OrcsWriterCollectorGenerator {
    }
 
    private OwArtifactToken createFolder() {
-      Long folderUuid = Lib.generateArtifactIdAsInt();
+      Long folderId = Lib.generateArtifactIdAsInt();
       String folderName = "Orcs Writer Import Folder";
-      OwArtifact folder = OwFactory.createArtifact(CoreArtifactTypes.Folder, folderName, folderUuid);
+      OwArtifact folder = OwFactory.createArtifact(CoreArtifactTypes.Folder, folderName, folderId);
       collector.getCreate().add(folder);
 
       // add to default hierarchy root
@@ -125,12 +125,12 @@ public class OrcsWriterCollectorGenerator {
       relation.setArtToken(OwFactory.createArtifactToken(CoreArtifactTokens.DefaultHierarchyRoot));
       folder.getRelations().add(relation);
 
-      return OwFactory.createArtifactToken(folderName, folderUuid);
+      return OwFactory.createArtifactToken(folderName, folderId);
    }
 
    private void createUpdateSheet() {
       OwArtifact userGroupArt = OwFactory.createArtifact(CoreArtifactTypes.Folder,
-         CoreArtifactTokens.UserGroups.getName(), CoreArtifactTokens.UserGroups.getUuid());
+         CoreArtifactTokens.UserGroups.getName(), CoreArtifactTokens.UserGroups.getId());
       OwFactory.createAttribute(userGroupArt, CoreAttributeTypes.StaticId, "test static id");
       OwFactory.createAttribute(userGroupArt, CoreAttributeTypes.Annotation, "test annotation");
       collector.getUpdate().add(userGroupArt);
@@ -146,7 +146,7 @@ public class OrcsWriterCollectorGenerator {
          collector.getArtTokens().add(owToken);
       } else {
          for (OrcsWriterToken token : config.getIncludeTokens()) {
-            OwArtifactToken owToken = OwFactory.createArtifactToken(token.getName(), token.getUuid());
+            OwArtifactToken owToken = OwFactory.createArtifactToken(token.getName(), token.getId());
             collector.getArtTokens().add(owToken);
          }
       }
@@ -159,8 +159,8 @@ public class OrcsWriterCollectorGenerator {
             types.put(type.getName(), type);
          }
       } else {
-         for (Long typeUuid : config.getIncludeArtifactTypes()) {
-            IArtifactType type = orcsApi.getOrcsTypes().getArtifactTypes().get(typeUuid);
+         for (Long typeId : config.getIncludeArtifactTypes()) {
+            IArtifactType type = orcsApi.getOrcsTypes().getArtifactTypes().get(typeId);
             if (type != null) {
                types.put(type.getName(), type);
             }
@@ -199,8 +199,8 @@ public class OrcsWriterCollectorGenerator {
             types.put(type.getName(), type);
          }
       } else {
-         for (Long typeUuid : config.getIncludeAttributeTypes()) {
-            IAttributeType type = orcsApi.getOrcsTypes().getAttributeTypes().get(typeUuid);
+         for (Long typeId : config.getIncludeAttributeTypes()) {
+            IAttributeType type = orcsApi.getOrcsTypes().getAttributeTypes().get(typeId);
             if (type != null) {
                types.put(type.getName(), type);
             }
@@ -226,8 +226,8 @@ public class OrcsWriterCollectorGenerator {
          }
       } else {
          for (OrcsWriterRelationSide token : config.getIncludeRelationTypes()) {
-            Long relationTypeUuid = token.getRelationTypeUuid();
-            RelationTypeToken type = orcsApi.getOrcsTypes().getRelationTypes().get(relationTypeUuid);
+            Long relationTypeId = token.getRelationTypeId();
+            RelationTypeToken type = orcsApi.getOrcsTypes().getRelationTypes().get(relationTypeId);
             if (type != null) {
                types.put(type.getName(), type);
             }

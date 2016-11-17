@@ -12,16 +12,26 @@ package org.eclipse.osee.orcs.rest.model.writer.reader;
 
 import java.util.LinkedList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 
 /**
+ * Data Transfer object for Orcs Writer
+ *
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class OwArtifact extends OwBase {
 
+   public OwArtifact() {
+      // for jax-rs instantiation
+      super(ArtifactId.SENTINEL.getId(), "");
+   }
+
+   public OwArtifact(Long id, String name) {
+      super(id, name);
+   }
+
    OwArtifactType type;
-   String name;
+
    List<OwAttribute> attributes;
    List<OwRelation> relations;
 
@@ -57,15 +67,7 @@ public class OwArtifact extends OwBase {
 
    @Override
    public String toString() {
-      return "OwArtifact [type=" + type + ", uuid=" + uuid + ", data=" + data + "]";
-   }
-
-   public String getName() {
-      return name;
-   }
-
-   public void setName(String name) {
-      this.name = name;
+      return "OwArtifact [type=" + type + ", id=" + getId() + ", data=" + data + "]";
    }
 
 }

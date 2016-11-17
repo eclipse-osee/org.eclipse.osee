@@ -12,12 +12,13 @@ package org.eclipse.osee.orcs.rest.model.writer.reader;
 
 import java.util.LinkedList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.core.data.BranchId;
 
 /**
+ * Data Transfer object for Orcs Writer
+ * 
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class OwCollector {
 
    private String instructions;
@@ -35,7 +36,7 @@ public class OwCollector {
 
    public OwCollector() {
       create = new LinkedList<>();
-      branch = new OwBranch();
+      branch = new OwBranch(BranchId.SENTINEL.getId(), "");
    }
 
    public List<OwArtifact> getCreate() {

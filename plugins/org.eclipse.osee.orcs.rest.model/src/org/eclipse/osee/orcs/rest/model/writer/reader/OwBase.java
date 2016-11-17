@@ -10,70 +10,31 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.model.writer.reader;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import org.codehaus.jackson.map.JsonSerializer.None;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.ser.std.ToStringSerializer;
-import org.eclipse.osee.framework.jdk.core.type.UuidBaseIdentity;
-import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
+import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
+ * Data Transfer object for Orcs Writer
+ * 
  * @author Donald G. Dunne
  */
-@XmlRootElement
-public class OwBase implements UuidIdentity {
+@JsonSerialize(using = None.class)
+public class OwBase extends NamedIdBase {
+
+   public OwBase() {
+      // for jax-rs instantiation
+      super(Id.SENTINEL, "");
+   }
+
+   public OwBase(Long id, String name) {
+      super(id, name);
+   }
 
    @JsonSerialize(using = ToStringSerializer.class)
-   long uuid = 0L;
    String data = null;
-
-   @Override
-   public Long getUuid() {
-      return uuid;
-   }
-
-   public boolean uuidIsSet() {
-      return uuid != 0L;
-   }
-
-   public void setUuid(long uuid) {
-      this.uuid = uuid;
-   }
-
-   @Override
-   public boolean matches(UuidIdentity... identities) {
-      for (UuidIdentity identity : identities) {
-         if (equals(identity)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   @Override
-   public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + (int) (uuid ^ uuid >>> 32);
-      return result;
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      if (this == obj) {
-         return true;
-      }
-      if (obj == null) {
-         return false;
-      }
-      if (getClass() != obj.getClass()) {
-         return false;
-      }
-      UuidBaseIdentity other = (UuidBaseIdentity) obj;
-      if (other.getUuid().equals(uuid)) {
-         return false;
-      }
-      return true;
-   }
 
    public String getData() {
       return data;
@@ -83,4 +44,7 @@ public class OwBase implements UuidIdentity {
       this.data = data;
    }
 
+   public void setId(Long id) {
+      this.id = id;
+   }
 }

@@ -67,9 +67,7 @@ public class OrcsWriterSheetProcessorForDelete implements RowProcessor {
       OwArtifactToken artifact = null;
       String value = row[0];
       if (Strings.isNumeric(value)) {
-         artifact = new OwArtifactToken();
-         artifact.setUuid(Long.valueOf(value));
-         artifact.setName("unknown");
+         artifact = new OwArtifactToken(Long.valueOf(value), "unknown");
       }
       if (Strings.isValid(value)) {
          artifact = factory.getOrCreateToken(value);
