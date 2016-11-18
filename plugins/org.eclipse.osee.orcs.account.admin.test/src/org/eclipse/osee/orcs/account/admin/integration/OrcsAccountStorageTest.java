@@ -73,6 +73,12 @@ public class OrcsAccountStorageTest {
    public void testSetup() {
       initMocks(this);
 
+      try {
+         Thread.sleep(1000);
+      } catch (InterruptedException ex) {
+         ex.printStackTrace();
+      }
+
       String methodName = testName.getMethodName();
 
       name = String.format("displayName-%s", methodName);
