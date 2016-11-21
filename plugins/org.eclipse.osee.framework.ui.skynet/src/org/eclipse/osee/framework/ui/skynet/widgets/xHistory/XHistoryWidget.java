@@ -71,13 +71,14 @@ public class XHistoryWidget extends GenericXWidget {
 
    private HistoryXViewer xHistoryViewer;
    public final static String normalColor = "#EEEEEE";
-   private static final String LOADING = "Loading ...";
    private static final String NO_HISTORY = "No History changes were found";
    protected Label extraInfoLabel;
    private Artifact artifact;
    private ToolBar toolBar;
    private Composite rightComp;
    private final Set<Long> shadedTransactions = new HashSet<>();
+   private int numberTransactionsToShow = 25;
+   private ToolItem show25Item, show75Item, showAllItem, show50Item;
 
    public XHistoryWidget() {
       super("History");
@@ -184,6 +185,63 @@ public class XHistoryWidget extends GenericXWidget {
          }
       });
 
+      show25Item = new ToolItem(toolBar, SWT.RADIO | SWT.BORDER);
+      show25Item.setText(" 25");
+      show25Item.setToolTipText("Show last 25 transactions.");
+      show25Item.setSelection(true);
+      show25Item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            numberTransactionsToShow = 25;
+            show25Item.setSelection(true);
+            show50Item.setSelection(false);
+            show75Item.setSelection(false);
+            showAllItem.setSelection(false);
+         }
+      });
+
+      show50Item = new ToolItem(toolBar, SWT.RADIO | SWT.BORDER);
+      show50Item.setText(" 50");
+      show50Item.setToolTipText("Show last 50 transactions.");
+      show50Item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            numberTransactionsToShow = 50;
+            show25Item.setSelection(false);
+            show50Item.setSelection(true);
+            show75Item.setSelection(false);
+            showAllItem.setSelection(false);
+         }
+      });
+
+      show75Item = new ToolItem(toolBar, SWT.RADIO | SWT.BORDER);
+      show75Item.setText(" 75");
+      show75Item.setToolTipText("Show last 75 transactions.");
+      show75Item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            numberTransactionsToShow = 75;
+            show25Item.setSelection(false);
+            show50Item.setSelection(false);
+            show75Item.setSelection(true);
+            showAllItem.setSelection(false);
+         }
+      });
+
+      showAllItem = new ToolItem(toolBar, SWT.RADIO | SWT.BORDER);
+      showAllItem.setText(" All");
+      showAllItem.setToolTipText("Show All transactions.");
+      showAllItem.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            numberTransactionsToShow = Integer.MAX_VALUE;
+            show25Item.setSelection(false);
+            show50Item.setSelection(false);
+            show75Item.setSelection(false);
+            showAllItem.setSelection(true);
+         }
+      });
+
       new ActionContributionItem(xHistoryViewer.getCustomizeAction()).fill(toolBar, -1);
 
       rightComp.layout();
@@ -257,7 +315,10 @@ public class XHistoryWidget extends GenericXWidget {
 
    public void setInputData(final Artifact artifact, final boolean loadHistory) {
       this.artifact = artifact;
-      extraInfoLabel.setText(LOADING);
+      extraInfoLabel.setText(String.format("Loading %d Transactions...",
+         (numberTransactionsToShow == Integer.MAX_VALUE ? "All" : numberTransactionsToShow)));
+
+      final int fNumnberTransactionsToShow = numberTransactionsToShow;
 
       Job job = new Job("History: " + artifact.getName()) {
 
@@ -267,7 +328,7 @@ public class XHistoryWidget extends GenericXWidget {
 
             try {
                if (loadHistory) {
-                  changes.addAll(ChangeManager.getChangesPerArtifact(artifact, monitor));
+                  changes.addAll(ChangeManager.getChangesPerArtifact(artifact, fNumnberTransactionsToShow, monitor));
                }
 
                Displays.ensureInDisplayThread(new Runnable() {

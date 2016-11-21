@@ -69,6 +69,10 @@ public final class ChangeManager {
       return revsionChangeLoader.getChangesPerArtifact(artifact, monitor, loadChangeTypes);
    }
 
+   public static Collection<? extends Change> getChangesPerArtifact(Artifact artifact, int numberTransactionsToShow, IProgressMonitor monitor) {
+      return revsionChangeLoader.getChangesPerArtifact(artifact, numberTransactionsToShow, monitor);
+   }
+
    /**
     * Acquires artifact, relation and attribute changes from a source branch since its creation.
     */
@@ -184,4 +188,5 @@ public final class ChangeManager {
       }
       return branchMap;
    }
+
 }

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.revision;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -48,6 +49,7 @@ import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.revision.acquirer.ArtifactChangeAcquirer;
 import org.eclipse.osee.framework.skynet.core.revision.acquirer.AttributeChangeAcquirer;
 import org.eclipse.osee.framework.skynet.core.revision.acquirer.RelationChangeAcquirer;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdComparator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -85,6 +87,31 @@ public final class RevisionChangeLoader {
 
       for (TransactionToken transactionId : transactionIds) {
          loadChanges(null, transactionId, monitor, artifact, changes, loadChangeTypes);
+      }
+      return changes;
+   }
+
+   public Collection<? extends Change> getChangesPerArtifact(Artifact artifact, int numberTransactionsToShow, IProgressMonitor monitor) {
+      BranchId branch = artifact.getBranch();
+      Set<TransactionToken> transactionIds = new LinkedHashSet<>();
+      boolean recurseThroughBranchHierarchy = true;
+      loadBranchTransactions(branch, artifact, transactionIds, TransactionManager.getHeadTransaction(branch),
+         recurseThroughBranchHierarchy);
+
+      Collection<Change> changes = new ArrayList<>();
+      List<TransactionToken> sortedTransIds = new ArrayList<>();
+      sortedTransIds.addAll(transactionIds);
+      Collections.sort(sortedTransIds, new TransactionIdComparator());
+      Collections.reverse(sortedTransIds);
+
+      int count = 0;
+      for (TransactionToken transactionId : sortedTransIds) {
+         loadChanges(null, transactionId, monitor, artifact, changes, LoadChangeType.artifact, LoadChangeType.attribute,
+            LoadChangeType.relation);
+         count++;
+         if (count >= numberTransactionsToShow) {
+            break;
+         }
       }
       return changes;
    }
@@ -237,4 +264,5 @@ public final class RevisionChangeLoader {
       }
       return changes;
    }
+
 }
