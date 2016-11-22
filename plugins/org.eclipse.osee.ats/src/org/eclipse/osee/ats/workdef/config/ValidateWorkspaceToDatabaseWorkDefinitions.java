@@ -73,8 +73,9 @@ public class ValidateWorkspaceToDatabaseWorkDefinitions extends XNavigateItemAct
             resultData.error(" Different (see opened diff editor)");
             CompareHandler compareHandler =
                new CompareHandler("Compare [" + sheet.getName() + "] Work Definition file/artifact",
-                  new CompareItem("File contents", sheetText, System.currentTimeMillis()),
-                  new CompareItem("Artifact contents", artText, System.currentTimeMillis()), null);
+                  new CompareItem("File contents", sheetText, System.currentTimeMillis(), true, "file_contents"),
+                  new CompareItem("Artifact contents", artText, System.currentTimeMillis(), true, "artifact_contents"),
+                  null);
             compareHandler.compare();
          } else {
             resultData.log(" - OK");

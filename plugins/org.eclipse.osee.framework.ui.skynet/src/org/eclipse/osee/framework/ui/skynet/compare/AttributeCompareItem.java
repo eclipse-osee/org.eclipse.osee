@@ -25,8 +25,8 @@ import org.eclipse.swt.graphics.Image;
 public class AttributeCompareItem extends CompareItem {
    private final AttributeConflict attributeConflict;
 
-   public AttributeCompareItem(AttributeConflict attributeConflict, String name, String contents, boolean isEditable, Image image) {
-      super(name, contents, System.currentTimeMillis(), isEditable, image);
+   public AttributeCompareItem(AttributeConflict attributeConflict, String name, String contents, boolean isEditable, Image image, String diffFilename) {
+      super(name, contents, System.currentTimeMillis(), isEditable, image, diffFilename);
 
       this.attributeConflict = attributeConflict;
    }

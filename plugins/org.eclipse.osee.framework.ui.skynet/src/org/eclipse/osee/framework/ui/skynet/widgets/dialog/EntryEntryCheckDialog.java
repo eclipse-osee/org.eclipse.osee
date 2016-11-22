@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2016 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,41 +11,42 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
 
 /**
+ * Provides a dialog with 2 entry fields and a checkbox.
+ *
  * @author Donald G. Dunne
  */
-public class EntryCheckDialog extends EntryDialog {
-
-   private final String checkBoxMessage;
+public class EntryEntryCheckDialog extends EntryEntryDialog {
    private boolean checked = false;
+   private final String checkBoxMessage;
 
-   public EntryCheckDialog(String dialogTitle, String dialogMessage, String checkBoxMessage) {
-      super(dialogTitle, dialogMessage);
-      this.checkBoxMessage = checkBoxMessage;
-   }
-
-   public EntryCheckDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, String checkBoxMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
-      super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels,
-         defaultIndex);
+   public EntryEntryCheckDialog(String dialogTitle, String dialogMessage, String text1Label, String text2Label, String checkBoxMessage) {
+      super(dialogTitle, dialogMessage, text1Label, text2Label);
       this.checkBoxMessage = checkBoxMessage;
    }
 
    @Override
    protected void createExtendedArea(Composite parent) {
+      super.createExtendedArea(parent);
+
+      Composite composite = new Composite(customAreaParent, SWT.NONE);
+      composite.setLayout(new GridLayout(2, false));
+      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+      composite.setLayoutData(gd);
 
       final XCheckBox checkbox = new XCheckBox(checkBoxMessage);
       checkbox.setFillHorizontally(true);
-      checkbox.setFocus();
-      checkbox.setDisplayLabel(false);
+      checkbox.setVerticalLabel(false);
       checkbox.set(checked);
-      checkbox.createWidgets(parent, 1);
+      checkbox.createWidgets(composite, 1);
 
       SelectionListener selectionListener = new SelectionAdapter() {
 
@@ -56,7 +57,6 @@ public class EntryCheckDialog extends EntryDialog {
          }
       };
       checkbox.addSelectionListener(selectionListener);
-
    }
 
    public boolean isChecked() {

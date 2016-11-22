@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.preferences;
 
+import java.io.File;
 import java.util.logging.Level;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
@@ -27,18 +29,26 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.PlatformUI;
 
 public class EditorsPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
    private static String CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN =
       "change.report.close.editors.on.shutdown";
+   private static String USE_EXTERNAL_COMPARE_EDITOR_FOR_TEXT = "use.external.compare.editor.for.text";
+   private static String EXTERNAL_COMPARE_EDITOR_FOR_TEXT = "external.compare.editor.for.text";
    private static String ADMIN_INCLUDE_ATTRIBUTE_TAB_ON_ARTIFACT_EDITOR = "artifact.editor.include.attribute.tab";
    private Button artifactEditorButton;
    private Button editButton;
-   private Button closeChangeReportEditorsOnShutdown;
+   private Button useCompareEditorForTextCompares;
    private Button includeAttributeTabOnArtifactEditor;
+   private Text compareEditorTextBox;
 
    public static boolean isCloseChangeReportEditorsOnShutdown() throws OseeCoreException {
       return UserManager.getBooleanSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN);
@@ -46,6 +56,14 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
 
    public static boolean isIncludeAttributeTabOnArtifactEditor() throws OseeCoreException {
       return UserManager.getBooleanSetting(ADMIN_INCLUDE_ATTRIBUTE_TAB_ON_ARTIFACT_EDITOR);
+   }
+
+   public static boolean isUseExternalCompareEditorForText() throws OseeCoreException {
+      return UserManager.getBooleanSetting(USE_EXTERNAL_COMPARE_EDITOR_FOR_TEXT);
+   }
+
+   public static String getExternalCompareEditorForText() throws OseeCoreException {
+      return UserManager.getSetting(EXTERNAL_COMPARE_EDITOR_FOR_TEXT);
    }
 
    @Override
@@ -56,12 +74,12 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
 
       setDefaultPresentation(composite);
 
-      closeChangeReportEditorsOnShutdown = new Button(composite, SWT.CHECK);
-      closeChangeReportEditorsOnShutdown.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
-      closeChangeReportEditorsOnShutdown.setText("Close Change Report Editors on Shutdown");
+      useCompareEditorForTextCompares = new Button(composite, SWT.CHECK);
+      useCompareEditorForTextCompares.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
+      useCompareEditorForTextCompares.setText("Close Change Report Editors on Shutdown");
       try {
          boolean value = UserManager.getBooleanSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN);
-         closeChangeReportEditorsOnShutdown.setSelection(value);
+         useCompareEditorForTextCompares.setSelection(value);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -82,7 +100,63 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
+      createCompareEditorPreference(composite);
+
       return composite;
+   }
+
+   private void createCompareEditorPreference(Composite parent) {
+      Composite composite = new Composite(parent, SWT.NULL);
+      composite.setLayout(new GridLayout());
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+      useCompareEditorForTextCompares = new Button(composite, SWT.CHECK);
+      useCompareEditorForTextCompares.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
+      useCompareEditorForTextCompares.setText("Use External Compare Editor for text compares");
+      try {
+         boolean value = UserManager.getBooleanSetting(USE_EXTERNAL_COMPARE_EDITOR_FOR_TEXT);
+         useCompareEditorForTextCompares.setSelection(value);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+
+      compareEditorTextBox = new Text(composite, SWT.BORDER);
+      try {
+         String value = UserManager.getSetting(EXTERNAL_COMPARE_EDITOR_FOR_TEXT);
+         compareEditorTextBox.setText(value);
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+
+      Button fileDialog = new Button(composite, SWT.NONE);
+      fileDialog.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE));
+      final Shell shell = composite.getShell();
+      final Text fUserNameTextBox = compareEditorTextBox;
+      fileDialog.addSelectionListener(new SelectionListener() {
+
+         @Override
+         public void widgetDefaultSelected(SelectionEvent e) {
+            widgetSelected(e);
+         }
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            FileDialog dialog = new FileDialog(shell, SWT.OPEN);
+            dialog.setFilterExtensions(new String[] {"*.*"});
+            String defaultDir = fUserNameTextBox.getText();
+            File dir = new File(defaultDir);
+            if (dir.isFile() || dir.isDirectory()) {
+               dialog.setFilterPath(defaultDir);
+            } else {
+               dialog.setFilterPath("c:\\");
+            }
+
+            String result = dialog.open();
+            if (Strings.isValid(result)) {
+               fUserNameTextBox.setText(result);
+            }
+         }
+      });
    }
 
    private void setDefaultPresentation(Composite composite) {
@@ -167,12 +241,22 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
             String.valueOf(artifactEditorButton.getSelection()));
          UserManager.setSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT, String.valueOf(editButton.getSelection()));
 
-         boolean result = closeChangeReportEditorsOnShutdown.getSelection();
+         boolean result = useCompareEditorForTextCompares.getSelection();
          UserManager.setSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN, String.valueOf(result));
 
          if (includeAttributeTabOnArtifactEditor != null) {
             result = includeAttributeTabOnArtifactEditor.getSelection();
             UserManager.setSetting(ADMIN_INCLUDE_ATTRIBUTE_TAB_ON_ARTIFACT_EDITOR, String.valueOf(result));
+         }
+
+         if (useCompareEditorForTextCompares != null) {
+            result = useCompareEditorForTextCompares.getSelection();
+            UserManager.setSetting(USE_EXTERNAL_COMPARE_EDITOR_FOR_TEXT, String.valueOf(result));
+         }
+
+         if (compareEditorTextBox != null) {
+            String editor = compareEditorTextBox.getText();
+            UserManager.setSetting(EXTERNAL_COMPARE_EDITOR_FOR_TEXT, editor);
          }
 
          UserManager.getUser().persist(getClass().getSimpleName());

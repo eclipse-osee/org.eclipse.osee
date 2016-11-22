@@ -45,8 +45,8 @@ public class CompareTwoStringsAction extends Action {
             @Override
             public void handleEvent(Event event) {
                CompareHandler compareHandler =
-                  new CompareHandler(null, new CompareItem("First", ed.getEntry(), System.currentTimeMillis()),
-                     new CompareItem("Second", ed.getEntry2(), System.currentTimeMillis()), null);
+                  new CompareHandler(null, new CompareItem("First", ed.getEntry(), System.currentTimeMillis(), null),
+                     new CompareItem("Second", ed.getEntry2(), System.currentTimeMillis(), null), null);
                compareHandler.compare();
             }
          });

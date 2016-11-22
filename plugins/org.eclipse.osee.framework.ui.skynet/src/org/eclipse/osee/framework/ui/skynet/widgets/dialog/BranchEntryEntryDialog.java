@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2016 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,25 +10,31 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Listener;
 
 /**
- * Dialog with two entry boxes
+ * Dialog with branch selection and two entry boxes
  *
  * @author Donald G. Dunne
  */
-public class EntryEntryDialog extends EntryDialog {
+public class BranchEntryEntryDialog extends EntryDialog {
 
+   private XBranchSelectWidget branchWidget;
    private XText text2;
    private String entryText2 = "";
    private final String text2Label;
    private Listener okListener;
+   private BranchId branch;
 
-   public EntryEntryDialog(String dialogTitle, String dialogMessage, String text1Label, String text2Label) {
+   public BranchEntryEntryDialog(String dialogTitle, String dialogMessage, String text1Label, String text2Label) {
       super(dialogTitle, dialogMessage);
       super.setLabel(text1Label);
       super.setTextHeight(100);
@@ -68,6 +74,15 @@ public class EntryEntryDialog extends EntryDialog {
          }
       });
 
+      branchWidget = new XBranchSelectWidget("Branch");
+      branchWidget.createWidgets(customAreaParent, 1);
+      branchWidget.addXModifiedListener(new XModifiedListener() {
+
+         @Override
+         public void widgetModified(XWidget widget) {
+            branch = branchWidget.getData();
+         }
+      });
    }
 
    public String getEntry2() {
@@ -91,6 +106,10 @@ public class EntryEntryDialog extends EntryDialog {
       if (buttonId == 0 && okListener != null) {
          okListener.handleEvent(null);
       }
+   }
+
+   public BranchId getBranch() {
+      return branch;
    }
 
 }

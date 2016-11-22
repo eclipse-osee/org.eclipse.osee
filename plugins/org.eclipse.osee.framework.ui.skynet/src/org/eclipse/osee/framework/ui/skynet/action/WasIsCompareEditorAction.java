@@ -53,7 +53,11 @@ public class WasIsCompareEditorAction extends Action {
       "SELECT txs.transaction_id, txs.gamma_id FROM osee_attribute atr, osee_txs txs WHERE atr.attr_id = ? AND atr.gamma_id = txs.gamma_id AND txs.branch_id = ? order by transaction_id desc";
 
    public WasIsCompareEditorAction() {
-      super("View Was/Is Comparison");
+      this("View Was/Is Comparison");
+   }
+
+   public WasIsCompareEditorAction(String name) {
+      super(name);
    }
 
    @Override
@@ -98,16 +102,28 @@ public class WasIsCompareEditorAction extends Action {
             if (!Strings.isValid(is) && change instanceof AttributeChange) {
                is = loadAttributeValue(attrId, transactionId, artifact);
             }
+
+            was = performanStringManipulation(was);
+            is = performanStringManipulation(is);
+
             CompareHandler compareHandler = new CompareHandler(String.format("Compare [%s]", change),
                new CompareItem(String.format("Was [Transaction: %s]", previousTransaction), was,
-                  System.currentTimeMillis()),
-               new CompareItem(String.format("Is [Transaction: %s]", transactionId), is, System.currentTimeMillis()),
+                  System.currentTimeMillis(), true, "was_trans_" + previousTransaction),
+               new CompareItem(String.format("Is [Transaction: %s]", transactionId), is, System.currentTimeMillis(),
+                  true, "is_trans_" + previousTransaction),
                null);
             compareHandler.compare();
          }
       } catch (Exception ex) {
          OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
       }
+   }
+
+   /**
+    * Override to perform string manipulation before opening in compare editor
+    */
+   protected String performanStringManipulation(String str) {
+      return str;
    }
 
    private TransactionId getPreviousTransaction(long branchUuid, int attrId, TransactionId transactionId) {
@@ -136,7 +152,7 @@ public class WasIsCompareEditorAction extends Action {
       URI uri =
          UriBuilder.fromUri(appServer).path("orcs").path("branch").path(String.valueOf(artifact.getBranchId())).path(
             "artifact").path(artifact.getUuid().toString()).path("attribute").path(String.valueOf(attrId)).path(
-               String.valueOf(transactionId)).build();
+               "version").path(String.valueOf(transactionId)).path("text").build();
       try {
          return JaxRsClient.newClient().target(uri).request(MediaType.TEXT_PLAIN).get(String.class);
       } catch (Exception ex) {

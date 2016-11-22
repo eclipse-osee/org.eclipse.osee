@@ -33,9 +33,6 @@ import org.eclipse.ui.PlatformUI;
  */
 public class WasIsCompareEditorChangeAction extends WasIsCompareEditorAction {
 
-   public WasIsCompareEditorChangeAction() {
-   }
-
    @Override
    public void run() {
       try {
@@ -75,8 +72,10 @@ public class WasIsCompareEditorChangeAction extends WasIsCompareEditorAction {
                }
             }
             CompareHandler compareHandler = new CompareHandler(String.format("Compare [%s]", change),
-               new CompareItem(String.format("Was [Transaction: %s]", headTx), was, System.currentTimeMillis()),
-               new CompareItem(String.format("Is [Transaction: %s]", currentTxId), is, System.currentTimeMillis()),
+               new CompareItem(String.format("Was [Transaction: %s]", headTx), was, System.currentTimeMillis(), true,
+                  "was_trans_" + headTx),
+               new CompareItem(String.format("Is [Transaction: %s]", currentTxId), is, System.currentTimeMillis(), true,
+                  "is_trans_" + currentTxId),
                null);
             compareHandler.compare();
          }

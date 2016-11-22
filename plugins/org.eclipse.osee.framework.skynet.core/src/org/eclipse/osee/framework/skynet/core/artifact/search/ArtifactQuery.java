@@ -863,6 +863,16 @@ public class ArtifactQuery {
       "and txsAttr.BRANCH_ID = ? and attr.GAMMA_ID = txsAttr.GAMMA_ID and txsAttr.TX_CURRENT = 1 " + //
       "and art.ART_ID = attr.art_id and attr.ATTR_TYPE_ID = ? and value = ? ";
 
+   private static String artifactTokenByGuidQuery =
+      "select ART.ART_ID, attr.VALUE, art.art_type_id, art.guid from OSEE_ATTRIBUTE attr, OSEE_ARTIFACT art, OSEE_TXS txs where " //
+         + "txs.BRANCH_ID = ? and art.GUID in ( ART_GUIDS_HERE ) and txs.TX_CURRENT = 1 and attr.ATTR_TYPE_ID = 1152921504606847088 " //
+         + "and attr.ART_ID = art.ART_ID and txs.GAMMA_ID = ATTR.GAMMA_ID";
+
+   private static String artifactTokenByArtIdQuery =
+      "select ART.ART_ID, attr.VALUE, art.art_type_id, art.guid from OSEE_ATTRIBUTE attr, OSEE_ARTIFACT art, OSEE_TXS txs where " //
+         + "txs.BRANCH_ID = ? and art.art_id in ( ART_IDS_HERE ) and txs.TX_CURRENT = 1 and attr.ATTR_TYPE_ID = 1152921504606847088 " //
+         + "and attr.ART_ID = art.ART_ID and txs.GAMMA_ID = ATTR.GAMMA_ID";
+
    public static List<ArtifactToken> getArtifactTokenListFromSoleAttributeInherited(IArtifactType artifactType, IAttributeType attributetype, String value, BranchId branch) {
 
       ArtifactType artifactTypeFull = ArtifactTypeManager.getType(artifactType);
@@ -951,5 +961,45 @@ public class ArtifactQuery {
       }
       return artToRelatedTokens;
    }
+   public static Map<String, ArtifactToken> getArtifactTokensFromGuids(BranchId branchId, List<String> guids) {
+      Map<String, ArtifactToken> guidToToken = new HashMap<>();
+      if (!guids.isEmpty()) {
+         JdbcStatement chStmt = ConnectionHandler.getStatement();
+         StringBuilder sb = new StringBuilder();
+         for (String guid : guids) {
+            sb.append("'");
+            sb.append(guid);
+            sb.append("',");
+         }
+         try {
+            String query =
+               artifactTokenByGuidQuery.replaceFirst("ART_GUIDS_HERE", sb.toString().replaceFirst(",$", ""));
+            chStmt.runPreparedQuery(query, branchId.getId());
+            for (ArtifactToken token : extractTokensFromQuery(chStmt)) {
+               guidToToken.put(token.getGuid(), token);
+            }
+         } finally {
+            chStmt.close();
+         }
+      }
+      return guidToToken;
+   }
 
+   public static Map<String, ArtifactToken> getArtifactTokensFromIds(BranchId branchId, List<String> artIds) {
+      Map<String, ArtifactToken> guidToToken = new HashMap<>();
+      if (!artIds.isEmpty()) {
+         JdbcStatement chStmt = ConnectionHandler.getStatement();
+         try {
+            String query = artifactTokenByArtIdQuery.replaceFirst("ART_IDS_HERE",
+               org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", artIds));
+            chStmt.runPreparedQuery(query, branchId.getId());
+            for (ArtifactToken token : extractTokensFromQuery(chStmt)) {
+               guidToToken.put(token.getId().toString(), token);
+            }
+         } finally {
+            chStmt.close();
+         }
+      }
+      return guidToToken;
+   }
 }

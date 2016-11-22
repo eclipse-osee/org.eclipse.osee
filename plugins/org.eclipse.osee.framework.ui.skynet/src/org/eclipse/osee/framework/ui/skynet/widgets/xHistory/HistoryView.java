@@ -59,6 +59,7 @@ import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.action.EditTransactionComment;
 import org.eclipse.osee.framework.ui.skynet.action.ITransactionRecordSelectionProvider;
 import org.eclipse.osee.framework.ui.skynet.action.WasIsCompareEditorAction;
+import org.eclipse.osee.framework.ui.skynet.action.WasIsCompareEditorWithReplaceAction;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
@@ -186,7 +187,8 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
       new ActionContributionItem(action).fill(popupMenu, 3);
 
       new ActionContributionItem(new EditTransactionComment(this)).fill(popupMenu, 3);
-
+      new ActionContributionItem(new WasIsCompareEditorWithReplaceAction()).fill(popupMenu, 3);
+      openListener.add(popupMenu.getItem(3));
       new ActionContributionItem(new WasIsCompareEditorAction()).fill(popupMenu, 3);
       openListener.add(popupMenu.getItem(3));
 
@@ -213,7 +215,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
       public void menuShown(MenuEvent e) {
          for (MenuItem item : items) {
             item.setEnabled(!xHistoryWidget.getXViewer().getSelection().isEmpty());
-            if (item.getText().startsWith("View Was")) {
+            if (item.getText().startsWith("View Was") || item.getText().startsWith("Set Was")) {
                item.setEnabled(WasIsCompareEditorAction.isEnabledStatic());
             }
          }

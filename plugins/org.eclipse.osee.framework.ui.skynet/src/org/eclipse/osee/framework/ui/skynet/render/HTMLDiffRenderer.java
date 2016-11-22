@@ -45,8 +45,8 @@ public class HTMLDiffRenderer implements IComparator {
       }
       if (Strings.isValid(is) && Strings.isValid(was)) {
          final CompareHandler compareHandler =
-            new CompareHandler(artifactName, new CompareItem("Was", was, System.currentTimeMillis()),
-               new CompareItem("Is", is, System.currentTimeMillis()), null);
+            new CompareHandler(artifactName, new CompareItem("Was", was, System.currentTimeMillis(), null),
+               new CompareItem("Is", is, System.currentTimeMillis(), null), null);
          Display.getDefault().syncExec(new Runnable() {
             @Override
             public void run() {

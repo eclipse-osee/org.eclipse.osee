@@ -49,6 +49,8 @@ public class DefineNavigateViewItems implements XNavigateViewItems, IXNavigateCo
    public void addDefineSectionChildren(XNavigateItem item) {
       try {
          items.add(new XNavigateItemAction(item, new CompareTwoStringsAction(), FrameworkImage.EDIT));
+         items.add(new XNavigateItemAction(item,
+            new org.eclipse.osee.framework.ui.skynet.action.CompareTwoArtifactIdListsAction(), FrameworkImage.EDIT));
          items.add(new XNavigateItemOperation(item, FrameworkImage.ARTIFACT_MASS_EDITOR,
             MassEditDirtyArtifactOperation.NAME, new MassEditDirtyArtifactOperation()));
          addExtensionPointItems(items);

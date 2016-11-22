@@ -17,6 +17,7 @@ import org.eclipse.compare.IEditableContent;
 import org.eclipse.compare.IModificationDate;
 import org.eclipse.compare.IStreamContentAccessor;
 import org.eclipse.compare.ITypedElement;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -28,17 +29,30 @@ public class CompareItem implements IStreamContentAccessor, ITypedElement, IModi
    private final boolean isEditable;
    private final long time;
    private final Image image;
+   private String diffFilename;
 
-   public CompareItem(String name, String contents, long time) {
-      this(name, contents, time, false, null);
+   /**
+    * @param autoGenFilename true if diffFilename should be auto-generated
+    * @param descriptiveWord if auto generated file, this word will be in filename. Use only letters and underscores.
+    */
+   public CompareItem(String name, String contents, long time, boolean autoGenFilename, String descriptiveWord) {
+      this(name, contents, time, generateDiffFile(descriptiveWord));
    }
 
-   CompareItem(String name, String contents, long time, boolean isEditable, Image image) {
+   /**
+    * @param diffFilename filename if external file is created or null, which will auto-generate filename
+    */
+   public CompareItem(String name, String contents, long time, String diffFilename) {
+      this(name, contents, time, false, null, diffFilename);
+   }
+
+   CompareItem(String name, String contents, long time, boolean isEditable, Image image, String diffFilename) {
       this.name = name;
       this.contents = contents;
       this.time = time;
       this.isEditable = isEditable;
       this.image = image;
+      this.diffFilename = diffFilename;
    }
 
    @Override
@@ -98,5 +112,20 @@ public class CompareItem implements IStreamContentAccessor, ITypedElement, IModi
     */
    public void persistContent() {
       // provided for subclass implementation
+   }
+
+   public String getDiffFilename() {
+      return diffFilename;
+   }
+
+   /**
+    * Filename used if the external file is created
+    */
+   public void setDiffFilename(String diffFilename) {
+      this.diffFilename = diffFilename;
+   }
+
+   public static String generateDiffFile(String descriptiveWord) {
+      return String.format("compare_%s_%d.txt", descriptiveWord, Lib.generateArtifactIdAsInt());
    }
 }

@@ -20,14 +20,13 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareHandler;
-import org.eclipse.osee.framework.ui.skynet.compare.CompareItem;
 import org.eclipse.osee.framework.ui.skynet.render.compare.CompareDataCollector;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.swt.widgets.Display;
 
 /**
  * Class to display the differences between two ASCII plain text files in the default Eclipse diff view.
- * 
+ *
  * @author Shawn F. Cook
  */
 public class PlainTextDiffRenderer implements IComparator {
@@ -49,9 +48,7 @@ public class PlainTextDiffRenderer implements IComparator {
          artifactName = endArtifact.getName();
       }
 
-      final CompareHandler compareHandler =
-         new CompareHandler(artifactName, new CompareItem("Was", startAscii, System.currentTimeMillis()),
-            new CompareItem("Is", endAscii, System.currentTimeMillis()), null);
+      final CompareHandler compareHandler = new CompareHandler(artifactName, startAscii, endAscii);
       Display.getDefault().syncExec(new Runnable() {
          @Override
          public void run() {

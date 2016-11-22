@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.httpRequests.CreateBranchHttpReque
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.compare.AttributeCompareItem;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareHandler;
+import org.eclipse.osee.framework.ui.skynet.compare.CompareItem;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.mergeWizard.ConflictResolutionWizard;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -184,10 +185,10 @@ public class MergeXViewer extends XViewer {
             attributeConflict.getAttributeType(), destArtifact, RENDER_AS_HUMAN_READABLE_TEXT, Strings.EMPTY_STRING);
 
       Image image = ArtifactImageManager.getImage(sourceArtifact);
-      AttributeCompareItem leftCompareItem =
-         new AttributeCompareItem(attributeConflict, leftName, leftContents, true, image);
-      AttributeCompareItem rightCompareItem =
-         new AttributeCompareItem(attributeConflict, rightName, rightContents, false, image);
+      AttributeCompareItem leftCompareItem = new AttributeCompareItem(attributeConflict, leftName, leftContents, true,
+         image, CompareItem.generateDiffFile("source"));
+      AttributeCompareItem rightCompareItem = new AttributeCompareItem(attributeConflict, rightName, rightContents,
+         false, image, CompareItem.generateDiffFile("dest"));
 
       return new CompareHandler(null, leftCompareItem, rightCompareItem, null);
    }

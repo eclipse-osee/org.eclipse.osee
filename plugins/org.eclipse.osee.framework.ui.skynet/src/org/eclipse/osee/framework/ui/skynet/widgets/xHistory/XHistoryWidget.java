@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -45,9 +46,11 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialogWithBranchSelect;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -78,7 +81,8 @@ public class XHistoryWidget extends GenericXWidget {
    private Composite rightComp;
    private final Set<Long> shadedTransactions = new HashSet<>();
    private int numberTransactionsToShow = 25;
-   private ToolItem show25Item, show75Item, showAllItem, show50Item;
+   private ToolItem show25Item, showXItem, showAllItem, show50Item;
+   private final boolean fireShowXSelectionListener = true;
 
    public XHistoryWidget() {
       super("History");
@@ -154,6 +158,35 @@ public class XHistoryWidget extends GenericXWidget {
       toolBar.setLayoutData(gd);
 
       ToolItem item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(ImageManager.getImage(PluginUiImage.REFRESH));
+      item.setToolTipText("Refresh");
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            setInputData(artifact, true);
+            onRefresh();
+         }
+      });
+
+      show25Item = new ToolItem(toolBar, SWT.RADIO | SWT.BORDER);
+      show25Item.setText(" 25");
+      show25Item.setToolTipText("Show last 25 transactions.");
+      show25Item.setSelection(true);
+
+      show50Item = new ToolItem(toolBar, SWT.RADIO | SWT.BORDER);
+      show50Item.setText(" 50");
+      show50Item.setToolTipText("Show last 50 transactions.");
+
+      showXItem = new ToolItem(toolBar, SWT.RADIO | SWT.BORDER);
+      showXItem.setText(" #");
+      showXItem.setToolTipText("Set number of transactions to show.");
+      showXItem.addSelectionListener(showXSelectionAdapter);
+
+      showAllItem = new ToolItem(toolBar, SWT.RADIO | SWT.BORDER);
+      showAllItem.setText(" All");
+      showAllItem.setToolTipText("Show All transactions.");
+
+      item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(ImageManager.getImage(FrameworkImage.OPEN));
       item.setToolTipText("Load by GUID");
       item.addSelectionListener(new SelectionAdapter() {
@@ -174,79 +207,26 @@ public class XHistoryWidget extends GenericXWidget {
          }
       });
 
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(PluginUiImage.REFRESH));
-      item.setToolTipText("Refresh");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            setInputData(artifact, true);
-            onRefresh();
-         }
-      });
-
-      show25Item = new ToolItem(toolBar, SWT.RADIO | SWT.BORDER);
-      show25Item.setText(" 25");
-      show25Item.setToolTipText("Show last 25 transactions.");
-      show25Item.setSelection(true);
-      show25Item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            numberTransactionsToShow = 25;
-            show25Item.setSelection(true);
-            show50Item.setSelection(false);
-            show75Item.setSelection(false);
-            showAllItem.setSelection(false);
-         }
-      });
-
-      show50Item = new ToolItem(toolBar, SWT.RADIO | SWT.BORDER);
-      show50Item.setText(" 50");
-      show50Item.setToolTipText("Show last 50 transactions.");
-      show50Item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            numberTransactionsToShow = 50;
-            show25Item.setSelection(false);
-            show50Item.setSelection(true);
-            show75Item.setSelection(false);
-            showAllItem.setSelection(false);
-         }
-      });
-
-      show75Item = new ToolItem(toolBar, SWT.RADIO | SWT.BORDER);
-      show75Item.setText(" 75");
-      show75Item.setToolTipText("Show last 75 transactions.");
-      show75Item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            numberTransactionsToShow = 75;
-            show25Item.setSelection(false);
-            show50Item.setSelection(false);
-            show75Item.setSelection(true);
-            showAllItem.setSelection(false);
-         }
-      });
-
-      showAllItem = new ToolItem(toolBar, SWT.RADIO | SWT.BORDER);
-      showAllItem.setText(" All");
-      showAllItem.setToolTipText("Show All transactions.");
-      showAllItem.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            numberTransactionsToShow = Integer.MAX_VALUE;
-            show25Item.setSelection(false);
-            show50Item.setSelection(false);
-            show75Item.setSelection(false);
-            showAllItem.setSelection(true);
-         }
-      });
-
       new ActionContributionItem(xHistoryViewer.getCustomizeAction()).fill(toolBar, -1);
 
       rightComp.layout();
       rightComp.getParent().layout();
    }
+
+   private final SelectionAdapter showXSelectionAdapter = new SelectionAdapter() {
+      @Override
+      public void widgetSelected(SelectionEvent e) {
+         if (showXItem.getSelection()) {
+            EntryDialog dialog = new EntryDialog("Transactions", "Enter number of transactions to show");
+            if (dialog.open() == Window.OK) {
+               if (Strings.isNumeric(dialog.getEntry())) {
+                  numberTransactionsToShow = Integer.valueOf(dialog.getEntry());
+                  showXItem.setText(" # (" + dialog.getEntry() + ")");
+               }
+            }
+         }
+      }
+   };
 
    protected void onRefresh() {
       // Can be overridden by clients
@@ -317,6 +297,8 @@ public class XHistoryWidget extends GenericXWidget {
       this.artifact = artifact;
       extraInfoLabel.setText(String.format("Loading %d Transactions...",
          (numberTransactionsToShow == Integer.MAX_VALUE ? "All" : numberTransactionsToShow)));
+      extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
+      extraInfoLabel.setFont(FontManager.getCourierNew12Bold());
 
       final int fNumnberTransactionsToShow = numberTransactionsToShow;
 
