@@ -62,13 +62,13 @@ public final class OseeDslResourceUtil {
 
    public static OseeDslResource loadModel(String uri, String xTextData) throws Exception {
       OseeDslResource displayLogicResource = loadModelUnchecked(uri, xTextData);
-      checkErrorsEmpty(displayLogicResource.getErrors());
+      checkErrorsEmpty(uri, displayLogicResource.getErrors());
       return displayLogicResource;
    }
 
    public static OseeDslResource loadModel(String uri, InputStream xTextData) throws Exception {
       OseeDslResource displayLogicResource = loadModelUnchecked(uri, xTextData);
-      checkErrorsEmpty(displayLogicResource.getErrors());
+      checkErrorsEmpty(uri, displayLogicResource.getErrors());
       return displayLogicResource;
    }
 
@@ -102,9 +102,10 @@ public final class OseeDslResourceUtil {
       resource.save(outputStream, saveOptions.toOptionsMap());
    }
 
-   private static void checkErrorsEmpty(Collection<String> errors) throws Exception {
+   private static void checkErrorsEmpty(String uri, Collection<String> errors) throws Exception {
       if (errors != null && !errors.isEmpty()) {
-         throw new IllegalStateException(errors.iterator().next());
+         throw new IllegalStateException(
+            String.format("Error loading Orcs Types Model from uri [%s]\n\n%s", uri, errors.iterator().next()));
       }
    }
 
