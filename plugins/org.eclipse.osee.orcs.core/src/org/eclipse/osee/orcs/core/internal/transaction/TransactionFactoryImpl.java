@@ -73,12 +73,6 @@ public class TransactionFactoryImpl implements TransactionFactory {
    }
 
    @Override
-   public TransactionBuilder createTransaction(Long branchId, ArtifactId userArtifact, String comment) throws OseeCoreException {
-      BranchId branch = BranchId.valueOf(branchId);
-      return createTransaction(branch, userArtifact, comment);
-   }
-
-   @Override
    public TransactionBuilder createTransaction(BranchId branch, ArtifactId author, String comment) throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
       Conditions.checkNotNull(author, "author");
@@ -110,7 +104,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
    }
 
    @Override
-   public boolean replaceWithBaselineTxVersion(String userId, Long branchId, TransactionId txId, int artId, String comment) {
+   public boolean replaceWithBaselineTxVersion(String userId, BranchId branchId, TransactionId txId, int artId, String comment) {
       boolean introduced = false;
       ArtifactReadable userReadable =
          queryFactory.fromBranch(CoreBranches.COMMON).andGuid(userId).getResults().getOneOrNull();

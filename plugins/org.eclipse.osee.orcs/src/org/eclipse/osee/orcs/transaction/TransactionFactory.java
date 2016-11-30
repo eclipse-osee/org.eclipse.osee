@@ -27,8 +27,6 @@ public interface TransactionFactory {
 
    TransactionBuilder createTransaction(BranchId branch, ArtifactId userArtifact, String comment) throws OseeCoreException;
 
-   TransactionBuilder createTransaction(Long branchId, ArtifactId userArtifact, String comment) throws OseeCoreException;
-
    Callable<Integer> purgeTransaction(Collection<? extends TransactionId> transactions);
 
    int[] purgeUnusedBackingDataAndTransactions();
@@ -43,7 +41,7 @@ public interface TransactionFactory {
 
    boolean setTxComment(TransactionId txId, String comment);
 
-   boolean replaceWithBaselineTxVersion(String userId, Long branchId, TransactionId txId, int artId, String comment);
+   boolean replaceWithBaselineTxVersion(String userId, BranchId branchId, TransactionId txId, int artId, String comment);
 
    boolean purgeTxs(String txIds);
 }

@@ -223,8 +223,8 @@ public class TypesEndpointImpl implements TypesEndpoint {
 
    @Override
    public Response importOrcsTypes(OrcsTypesData typesData) {
-      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(COMMON.getId(), SystemUser.OseeSystem,
-         "Add Types to Common Branch");
+      TransactionBuilder tx =
+         orcsApi.getTransactionFactory().createTransaction(COMMON, SystemUser.OseeSystem, "Add Types to Common Branch");
       for (OrcsTypeSheet sheet : typesData.getSheets()) {
          String guid = GUID.create();
          if (Strings.isValid(sheet.getGuid())) {
@@ -240,7 +240,7 @@ public class TypesEndpointImpl implements TypesEndpoint {
       }
       tx.commit();
 
-      tx = orcsApi.getTransactionFactory().createTransaction(COMMON.getId(), SystemUser.OseeSystem,
+      tx = orcsApi.getTransactionFactory().createTransaction(COMMON, SystemUser.OseeSystem,
          "Add OseeTypeDef Tuples to Common Branch");
       for (ArtifactReadable artifact : orcsApi.getQueryFactory().fromBranch(COMMON).andIsOfType(
          CoreArtifactTypes.OseeTypeDefinition).getResults()) {

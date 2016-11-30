@@ -63,8 +63,8 @@ public class ClientStorageProvider extends LazyObject<ClientStorage> {
                InputSupplier<InputStream> newTypesSupplier = newTypesSupplier();
                ArtifactReadable typeArt = (ArtifactReadable) clientStorage.storeTypes(newTypesSupplier);
 
-               TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(COMMON.getId(),
-                  SystemUser.OseeSystem, "Add OseeTypeDef OAuth Tuple to Common Branch");
+               TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(COMMON, SystemUser.OseeSystem,
+                  "Add OseeTypeDef OAuth Tuple to Common Branch");
                tx.addTuple2(CoreTupleTypes.OseeTypeDef, OrcsTypesData.OSEE_TYPE_VERSION,
                   typeArt.getAttributes(CoreAttributeTypes.UriGeneralStringData).iterator().next());
 

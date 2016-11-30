@@ -62,8 +62,7 @@ public abstract class AbstractConvertGuidToUuid implements IAtsDatabaseConversio
    protected TransactionBuilder createTransactionBuilder() throws OseeCoreException {
       TransactionFactory txFactory = getOrcsApi().getTransactionFactory();
       Conditions.checkNotNull(txFactory, "transaction factory");
-      return txFactory.createTransaction(COMMON, atsServer.getArtifactByGuid(SystemUser.OseeSystem.getGuid()),
-         getName());
+      return txFactory.createTransaction(COMMON, SystemUser.OseeSystem, getName());
    }
 
    /**

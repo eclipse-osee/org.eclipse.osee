@@ -66,8 +66,8 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
                   if (sourceArtifact != null) {
                      String userId = ClientSessionManager.getCurrentUserToken().getUserId();
                      User user = UserManager.getUserByUserId(userId);
-                     txBuilder.replaceWithBaselineTxVersion(user.getGuid(), branch.getUuid(), txRecord,
-                        sourceArtifact.getArtId(), ReplaceArtifactWithBaselineOperation.class.getSimpleName());
+                     txBuilder.replaceWithBaselineTxVersion(user.getGuid(), branch, txRecord, sourceArtifact.getArtId(),
+                        ReplaceArtifactWithBaselineOperation.class.getSimpleName());
                      monitor.done();
                   } else {
                      artifact.deleteAndPersist();

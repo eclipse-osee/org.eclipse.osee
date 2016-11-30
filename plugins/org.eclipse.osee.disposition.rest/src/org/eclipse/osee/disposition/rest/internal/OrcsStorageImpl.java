@@ -70,7 +70,6 @@ public class OrcsStorageImpl implements Storage {
       this.orcsApi = orcsApi;
    }
 
-   @SuppressWarnings("unchecked")
    private ArtifactReadable getDispoUser() throws OseeCoreException {
       return getQuery().fromBranch(COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
    }
@@ -122,7 +121,6 @@ public class OrcsStorageImpl implements Storage {
       reloadTypes();
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public ArtifactReadable findUser() {
       return getQuery().fromBranch(COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
@@ -231,7 +229,8 @@ public class OrcsStorageImpl implements Storage {
 
    @Override
    public Long createDispoSet(ArtifactReadable author, DispoProgram program, DispoSet descriptor) {
-      TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Create Dispo Set");
+      TransactionBuilder tx =
+         getTxFactory().createTransaction(BranchId.valueOf(program.getUuid()), author, "Create Dispo Set");
       ArtifactId creatdArtId = tx.createArtifact(DispoConstants.DispoSet, descriptor.getName());
       tx.setSoleAttributeFromString(creatdArtId, DispoConstants.ImportPath, descriptor.getImportPath());
       tx.setSoleAttributeFromString(creatdArtId, DispoConstants.ImportState, descriptor.getImportState());
@@ -256,7 +255,8 @@ public class OrcsStorageImpl implements Storage {
       boolean toReturn = false;
       ArtifactReadable dispoArtifact = findDispoArtifact(program, entityId, type);
       if (dispoArtifact != null) {
-         TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Delete Dispo Artifact");
+         TransactionBuilder tx =
+            getTxFactory().createTransaction(BranchId.valueOf(program.getUuid()), author, "Delete Dispo Artifact");
          tx.deleteArtifact(dispoArtifact);
          tx.commit();
          toReturn = true;
@@ -278,7 +278,8 @@ public class OrcsStorageImpl implements Storage {
          notesList = DispoUtil.noteListToJsonObj(newData.getNotesList());
       }
 
-      TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Update Dispo Set");
+      TransactionBuilder tx =
+         getTxFactory().createTransaction(BranchId.valueOf(program.getUuid()), author, "Update Dispo Set");
       if (name != null && !name.equals(origSetAs.getName())) {
          tx.setName(dispoSet, name);
       }
@@ -294,7 +295,8 @@ public class OrcsStorageImpl implements Storage {
    @Override
    public void createDispoItems(ArtifactReadable author, DispoProgram program, DispoSet parentSet, List<DispoItem> data) {
       ArtifactReadable parentSetArt = findDispoArtifact(program, parentSet.getGuid(), DispoConstants.DispoSet);
-      TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Create Dispoable Item");
+      TransactionBuilder tx =
+         getTxFactory().createTransaction(BranchId.valueOf(program.getUuid()), author, "Create Dispoable Item");
 
       for (DispoItem item : data) {
          ArtifactId createdItem = tx.createArtifact(DispoConstants.DispoItem, item.getName());
@@ -427,7 +429,7 @@ public class OrcsStorageImpl implements Storage {
 
    @Override
    public void updateDispoItems(ArtifactReadable author, DispoProgram program, Collection<DispoItem> data, boolean resetRerunFlag, String operation) {
-      TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, operation);
+      TransactionBuilder tx = getTxFactory().createTransaction(BranchId.valueOf(program.getUuid()), author, operation);
 
       for (DispoItem newItem : data) {
          ArtifactReadable dispoItemArt = findDispoArtifact(program, newItem.getGuid(), DispoConstants.DispoItem);
@@ -502,15 +504,15 @@ public class OrcsStorageImpl implements Storage {
    public String createDispoReport(DispoProgram program, ArtifactReadable author, String contents, String operationTitle) {
       String toReturn = "";
 
-      TransactionBuilder tx =
-         getTxFactory().createTransaction(program.getUuid(), author, "Update Report: " + operationTitle);
+      TransactionBuilder tx = getTxFactory().createTransaction(BranchId.valueOf(program.getUuid()), author,
+         "Update Report: " + operationTitle);
 
       ArtifactReadable reportArt =
          getQuery().fromBranch(program.getUuid()).andNameEquals("Dispo_Report").getResults().getOneOrNull();
 
       if (reportArt == null) {
          TransactionBuilder txToCreate =
-            getTxFactory().createTransaction(program.getUuid(), author, "Add Operation Report Art");
+            getTxFactory().createTransaction(BranchId.valueOf(program.getUuid()), author, "Add Operation Report Art");
          txToCreate.createArtifact(CoreArtifactTypes.GeneralData, "Dispo_Report");
          txToCreate.commit();
          reportArt =
@@ -562,7 +564,7 @@ public class OrcsStorageImpl implements Storage {
       OperationReport newReport = DispoUtil.cleanOperationReport(summary);
       ArtifactReadable dispoSet = findDispoArtifact(program, set.getGuid(), DispoConstants.DispoSet);
       TransactionBuilder tx =
-         getTxFactory().createTransaction(program.getUuid(), author, "Update Dispo Operation Report");
+         getTxFactory().createTransaction(BranchId.valueOf(program.getUuid()), author, "Update Dispo Operation Report");
 
       tx.setSoleAttributeFromString(dispoSet, DispoConstants.ImportState, newReport.getStatus().getName());
       tx.setSoleAttributeFromString(dispoSet, DispoConstants.OperationSummary,
