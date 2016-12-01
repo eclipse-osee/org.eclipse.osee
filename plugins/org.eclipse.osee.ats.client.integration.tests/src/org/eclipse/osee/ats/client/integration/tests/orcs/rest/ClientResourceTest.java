@@ -14,6 +14,7 @@ import java.net.URI;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.junit.Assert;
@@ -47,10 +48,16 @@ public class ClientResourceTest {
    @Test
    public void testGetClientsForUser() {
       String appServer = OseeClientProperties.getOseeApplicationServer();
-      URI uri = UriBuilder.fromUri(appServer).path("orcs").path("client").path("3333").build();
+      URI uri = UriBuilder.fromUri(appServer).path("orcs").path("client").path(DemoUsers.Joe_Smith.getUserId()).build();
 
       String results = callAndGetResults(uri);
-      getExpected("sessions", results);
+      getExpected("\"userId\" : \"" + DemoUsers.Joe_Smith.getUserId() + "\"", results);
+
+      uri = UriBuilder.fromUri(appServer + "/orcs/client/Joe_Smith").build();
+
+      results = callAndGetResults(uri);
+      getExpected("\"userId\" : \"" + DemoUsers.Joe_Smith.getUserId() + "\"", results);
+
    }
 
    private void getExpected(String expected, String results) {

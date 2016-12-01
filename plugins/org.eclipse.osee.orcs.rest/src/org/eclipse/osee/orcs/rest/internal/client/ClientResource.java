@@ -16,6 +16,8 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -32,6 +34,7 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -94,15 +97,19 @@ public class ClientResource {
       return Response.ok(details).build();
    }
 
+   /**
+    * @param idOrName as userId or name; underscores can be used instead of spaces if calling from browser;
+    * @return all client sessions matching idOrName; multiple users sessions can be returned depending
+    */
    @GET
-   @Path("client/{userId}")
+   @Path("client/{idOrName}")
    @Produces({MediaType.APPLICATION_JSON})
-   public Response getClientsForUser(@PathParam("userId") String userId) {
+   public Response getClientsForUser(@PathParam("idOrName") String idOrName) {
       Sessions sessions = new Sessions();
       Map<String, Boolean> portToAlive = new HashMap<>();
-      String uId = getUserId(userId);
-      if (!Strings.isValid(uId)) {
-         throw new OseeArgumentException("User with id or name of [%s] not found", userId);
+      List<String> resolvedUserIds = getUserIds(idOrName);
+      if (resolvedUserIds.isEmpty()) {
+         throw new OseeArgumentException("User with id or name of [%s] not found", idOrName);
       }
 
       Consumer<JdbcStatement> consumer = stmt -> {
@@ -118,22 +125,24 @@ public class ClientResource {
          }
       };
 
-      jdbcService.getClient().runQueryWithLimit(consumer, 10, NEWEST_SESSIONS_BY_USER, userId);
+      for (String userId : resolvedUserIds) {
+         jdbcService.getClient().runQueryWithLimit(consumer, 10, NEWEST_SESSIONS_BY_USER, userId);
+      }
       return Response.ok(sessions).build();
    }
 
-   private String getUserId(String userId) {
-      if (Strings.isNumeric(userId)) {
-         return userId;
+   private List<String> getUserIds(String userIdOrName) {
+      List<String> results = new LinkedList<>();
+      if (Strings.isNumeric(userIdOrName)) {
+         results.add(userIdOrName);
       } else {
-         ArtifactReadable userArt =
-            orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.User).andNameEquals(
-               userId).getResults().getAtMostOneOrNull();
-         if (userArt != null) {
-            return userArt.getSoleAttributeValue(CoreAttributeTypes.UserId, null);
+         for (ArtifactReadable userArt : orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(
+            CoreArtifactTypes.User).and(CoreAttributeTypes.Name, userIdOrName,
+               QueryOption.CONTAINS_MATCH_OPTIONS).getResults()) {
+            results.add(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId, null));
          }
       }
-      return null;
+      return results;
    }
 
    @GET
