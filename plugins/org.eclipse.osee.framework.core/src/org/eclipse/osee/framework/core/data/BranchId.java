@@ -38,17 +38,42 @@ public interface BranchId extends Identity<Long>, Id {
       return valueOf(Long.valueOf(id));
    }
 
-   @JsonCreator
-   public static BranchId valueOf(long id) {
+   public static BranchId create(long id, ArtifactId view) {
       final class BranchIdImpl extends BaseId implements BranchId {
-         public BranchIdImpl(Long id) {
+         private ArtifactId view;
+
+         public BranchIdImpl(Long id, ArtifactId view) {
             super(id);
+            this.view = view;
+         }
+
+         @Override
+         public ArtifactId getView() {
+            return view;
+         }
+
+         @Override
+         public boolean equals(Object obj) {
+            if (obj instanceof BranchId) {
+               return super.equals(obj) && view.equals(((BranchId) obj).getView());
+            }
+            return false;
          }
       }
-      return new BranchIdImpl(id);
+
+      return new BranchIdImpl(id, view);
+   }
+
+   @JsonCreator
+   public static BranchId valueOf(long id) {
+      return create(id, ArtifactId.SENTINEL);
    }
 
    public static BranchId create() {
       return valueOf(Lib.generateUuid());
+   }
+
+   default ArtifactId getView() {
+      return ArtifactId.SENTINEL;
    }
 }

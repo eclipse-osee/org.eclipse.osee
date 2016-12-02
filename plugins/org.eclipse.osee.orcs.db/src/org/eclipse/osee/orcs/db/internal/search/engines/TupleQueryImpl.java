@@ -71,6 +71,9 @@ public class TupleQueryImpl implements TupleQuery {
    private static final String SELECT_APPLIC_FOR_ARTS =
       "SELECT distinct e2, value, art.art_id FROM osee_artifact art, osee_txs txs1, osee_tuple2 app, osee_txs txs2, osee_key_value, osee_join_id jid WHERE art_id = jid.id and jid.query_id =? and art.gamma_id = txs1.gamma_id and txs1.branch_id = ? AND txs1.tx_current in (1,2) and tuple_type = 2 AND e2 = txs1.app_id AND app.gamma_id = txs2.gamma_id AND txs2.branch_id = txs1.branch_id AND txs2.tx_current = 1 AND e2 = key";
 
+   private static final String SELECT_TUPLE2_BY_TUPLE_TYPE =
+      "select distinct e1, e2 from osee_txs txs, osee_tuple2 app where tuple_type = ? and txs.gamma_id = app.gamma_id and branch_id = ? and tx_current = 1";
+
    TupleQueryImpl(JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory) {
       this.jdbcClient = jdbcClient;
       this.sqlJoinFactory = sqlJoinFactory;
@@ -97,8 +100,8 @@ public class TupleQueryImpl implements TupleQuery {
    }
 
    @Override
-   public <E1, E2> void getTuple2KeyValuePair(Tuple2Type<E1, E2> tupleType, ArtifactId artId, BranchId branchId, BiConsumer<Long, String> consumer) {
-      runQuery(consumer, SELECT_KEY_VALUE_FROM_BRANCH_VIEW, "e2", artId, tupleType, branchId);
+   public <E1, E2> void getTuple2KeyValuePair(Tuple2Type<E1, E2> tupleType, BranchId branch, BiConsumer<Long, String> consumer) {
+      runQuery(consumer, SELECT_KEY_VALUE_FROM_BRANCH_VIEW, "e2", branch.getView(), tupleType, branch);
    }
 
    @Override
@@ -154,12 +157,21 @@ public class TupleQueryImpl implements TupleQuery {
    }
 
    @Override
+   public <E1, E2> void getTuple2E1E2Pair(Tuple2Type<E1, E2> tupleType, BranchId branchId, BiConsumer<Long, Long> consumer) {
+      runQuery(consumer, SELECT_TUPLE2_BY_TUPLE_TYPE, "e1", "e2", tupleType, branchId);
+   }
+
+   @Override
    public <E1, E2, E3> boolean doesTuple3E3Exist(Tuple3Type<E1, E2, E3> tupleType, Long e3) {
       return jdbcClient.fetch(0, SELECT_TUPLE3_COUNT_FROM_E3, tupleType, e3) > 0;
    }
 
    private void runQuery(BiConsumer<Long, String> consumer, String query, String column, Object... data) {
       jdbcClient.runQuery(stmt -> consumer.accept(stmt.getLong(column), stmt.getString("value")), query, data);
+   }
+
+   private void runQuery(BiConsumer<Long, Long> consumer, String query, String column1, String column2, Object... data) {
+      jdbcClient.runQuery(stmt -> consumer.accept(stmt.getLong(column1), stmt.getLong(column2)), query, data);
    }
 
    private void runQuery(String column, List<Long> consumer, String query, Object... data) {

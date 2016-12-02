@@ -127,7 +127,7 @@ public class OrcsTupleTest {
 
       BiConsumer<Long, String> consumer = (id, name) -> result.add(new ApplicabilityToken(id, name));
       orcsApi.getQueryFactory().tupleQuery().getTuple2KeyValuePair(CoreTupleTypes.ViewApplicability,
-         ArtifactId.valueOf(branchViewArts.getList().get(0).getId()), DemoBranches.SAW_Bld_1, consumer);
+         DemoBranches.SAW_Bld_1, consumer);
 
       Assert.assertEquals(5, result.size());
    }

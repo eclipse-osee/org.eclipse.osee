@@ -30,6 +30,7 @@ public final class CoreTupleTypes {
    public static final Tuple2Type<Long, AttributeId> OseeTypeDef = Tuple2Type.valueOf(DefaultFamily, 4L);
    public static final Tuple2Type<ArtifactId, ApplicabilityId> ArtifactReferenceApplicabilityType =
       Tuple2Type.valueOf(CoreTupleFamilyTypes.ProductLineFamily, 13L);
+   public static final Tuple2Type<Long, Long> BranchView = Tuple2Type.valueOf(ProductLineFamily, 11L);
 
    // Data Maintenance
    public static final Tuple3Type<String, Long, Long> FixedMaintenanceData = Tuple3Type.valueOf(DefaultFamily, 5L);

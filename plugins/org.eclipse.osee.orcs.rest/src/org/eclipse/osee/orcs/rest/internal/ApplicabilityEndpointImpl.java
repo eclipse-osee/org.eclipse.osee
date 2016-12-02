@@ -20,9 +20,12 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -56,26 +59,56 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       ArtifactId config1 = tx.createArtifact(CoreArtifactTypes.BranchView, "PL Config 1");
       ArtifactId config2 = tx.createArtifact(CoreArtifactTypes.BranchView, "PL Config 2");
       ArtifactId folder = tx.createArtifact(CoreArtifactTypes.Folder, "Product Line");
+      ArtifactId featureDefinition =
+         tx.createArtifact(CoreArtifactTypes.FeatureDefinition, "Feature Definition_SAW_Bld_1");
 
       orcsApi.getKeyValueOps().putByKey(BASE.getId(), BASE.getName());
 
       tx.addChildren(CoreArtifactTokens.DefaultHierarchyRoot, folder);
-      tx.addChildren(folder, config1, config2);
+      tx.addChildren(folder, config1, config2, featureDefinition);
 
       tx.addTuple2(CoreTupleTypes.ViewApplicability, config1, "Base");
       tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "Base");
 
-      tx.addTuple2(CoreTupleTypes.ViewApplicability, config1, "Feature A = Included");
-      tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "Feature A = Excluded");
+      tx.addTuple2(CoreTupleTypes.ViewApplicability, config1, "Config = Config1");
+      tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "Config = Config2");
 
-      tx.addTuple2(CoreTupleTypes.ViewApplicability, config1, "Feature B = Choice 1");
-      tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "Feature B = Choice 2");
-      tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "Feature B = Choice 3");
+      tx.addTuple2(CoreTupleTypes.ViewApplicability, config1, "A = Included");
+      tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "A = Excluded");
 
-      tx.addTuple2(CoreTupleTypes.ViewApplicability, config1, "Feature C = Included");
-      tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "Feature C = Excluded");
+      tx.addTuple2(CoreTupleTypes.ViewApplicability, config1, "B = Choice 1");
+      tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "B = Choice 2");
+      tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "B = Choice 3");
+
+      tx.addTuple2(CoreTupleTypes.ViewApplicability, config1, "C = Included");
+      tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "C = Excluded");
+
+      String featureDefJson = "[{" + "\"name\": \"A\"," + //
+         "\"type\": \"single\"," + //
+         "\"values\": [\"Included\", \"Excluded\"]," + //
+         "\"defaultValue\": \"Included\"," + //
+         "\"description\": \"Test A\"" + //
+         "}, {" + //
+         "\"name\": \"B\"," + //
+         "\"type\": \"multiple\"," + //
+         "\"values\": [\"Choice 1\", \"Choice 2\", \"Choice 3\"]," + //
+         "\"defaultValue\": \"\"," + //
+         "\"description\": \"Test B\"" + //
+         "},{" + //
+         "\"name\": \"C\"," + //
+         "\"type\": \"single\"," + //
+         "\"values\": [\"Included\", \"Excluded\"]," + //
+         "\"defaultValue\": \"Included\"," + //
+         "\"description\": \"Test C\"" + //
+         "}" + //
+         "]";
+
+      tx.createAttribute(featureDefinition, CoreAttributeTypes.GeneralStringData, featureDefJson);
 
       tx.commit();
+
+      setView(config1);
+      setView(config2);
    }
 
    @Override
@@ -155,5 +188,20 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    @Override
    public List<ApplicabilityToken> getViewApplicabilityTokens(ArtifactId view) {
       return orcsApi.getQueryFactory().applicabilityQuery().getViewApplicabilityTokens(view, branch);
+   }
+
+   @Override
+   public List<BranchViewData> getViews() {
+      return orcsApi.getQueryFactory().applicabilityQuery().getViews();
+   }
+
+   @Override
+   public void setView(ArtifactId branchView) {
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON,
+         SystemUser.OseeSystem, "Create Branch View");
+
+      tx.addTuple2(CoreTupleTypes.BranchView, branch.getId(), branchView.getId());
+
+      tx.commit();
    }
 }

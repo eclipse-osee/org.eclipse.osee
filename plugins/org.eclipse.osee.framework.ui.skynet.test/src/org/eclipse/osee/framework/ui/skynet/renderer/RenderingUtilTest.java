@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.renderer;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -91,8 +93,28 @@ public class RenderingUtilTest {
    }
 
    public static final class BranchTokenImpl extends NamedIdBase implements IOseeBranch {
+      private ArtifactId branchView;
+
       public BranchTokenImpl(Long id, String name) {
+         this(id, name, ArtifactId.SENTINEL);
+      }
+
+      public BranchTokenImpl(Long id, String name, ArtifactId branchView) {
          super(id, name);
+         this.branchView = branchView;
+      }
+
+      @Override
+      public ArtifactId getView() {
+         return branchView;
+      }
+
+      @Override
+      public boolean equals(Object obj) {
+         if (obj instanceof BranchId) {
+            return super.equals(obj) && branchView.equals(((BranchId) obj).getView());
+         }
+         return false;
       }
    }
 }

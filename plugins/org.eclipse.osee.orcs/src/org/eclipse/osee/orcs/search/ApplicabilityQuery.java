@@ -15,9 +15,10 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Ryan D. Brooks
@@ -34,7 +35,9 @@ public interface ApplicabilityQuery {
 
    List<FeatureDefinitionData> getFeatureDefinitionData(List<ArtifactReadable> featureDefinitionArts);
 
-   HashCollection<String, String> getBranchViewFeatureValues(ArtifactId artId, BranchId branch);
-
    List<ApplicabilityToken> getViewApplicabilityTokens(ArtifactId artId, BranchId branch);
+
+   HashCollection<String, String> getBranchViewFeatureValues(BranchId branch);
+
+   List<BranchViewData> getViews();
 }

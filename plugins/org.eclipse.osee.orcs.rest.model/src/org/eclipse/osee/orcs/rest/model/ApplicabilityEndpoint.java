@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
 
 /**
@@ -91,5 +92,15 @@ public interface ApplicabilityEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces(MediaType.APPLICATION_JSON)
    List<ApplicabilityToken> getApplicabilityTokensForArts(List<ArtifactId> artIds);
+
+   @GET
+   @Path("views")
+   @Produces({MediaType.APPLICATION_JSON})
+   List<BranchViewData> getViews();
+
+   @PUT
+   @Path("branchview/{branchView}")
+   @Consumes({MediaType.APPLICATION_JSON})
+   void setView(@PathParam("branchView") ArtifactId branchView);
 
 }
