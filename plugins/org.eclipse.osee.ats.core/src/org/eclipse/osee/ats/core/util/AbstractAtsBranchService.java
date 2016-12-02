@@ -630,6 +630,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
             break;
          }
       }
+      defaultBranchName = Strings.truncate(defaultBranchName, 195, true);
       return defaultBranchName;
    }
 

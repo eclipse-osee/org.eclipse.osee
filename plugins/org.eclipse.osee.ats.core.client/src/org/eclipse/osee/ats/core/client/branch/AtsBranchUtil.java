@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.CatchAndReleaseJob;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
@@ -142,8 +141,7 @@ public class AtsBranchUtil {
    }
 
    public static Job createWorkingBranch(final TeamWorkFlowArtifact teamArt, final TransactionToken parentTransactionId, boolean pend) throws OseeCoreException {
-      final String branchName =
-         Strings.truncate(AtsClientService.get().getBranchService().getBranchName(teamArt), 195, true);
+      final String branchName = AtsClientService.get().getBranchService().getBranchName(teamArt);
       Conditions.checkNotNull(teamArt, "Parent Team Workflow");
       Conditions.checkNotNull(parentTransactionId, "Parent Branch");
 

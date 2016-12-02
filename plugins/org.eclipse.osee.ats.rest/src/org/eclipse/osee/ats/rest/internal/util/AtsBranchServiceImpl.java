@@ -153,4 +153,9 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       TransactionQuery txQuery = orcsApi.getQueryFactory().transactionQuery();
       return txQuery.andBranch(branch).andIs(TransactionDetailsType.Baselined).getResults().getExactlyOne();
    }
+
+   @Override
+   public void setBranchName(IOseeBranch branch, String name) {
+      orcsApi.getBranchOps().changeBranchName(branch, name);
+   }
 }

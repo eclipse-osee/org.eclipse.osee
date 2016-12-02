@@ -109,4 +109,9 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    public TransactionToken getBaseTransaction(BranchId branch) {
       return BranchManager.getBaseTransaction(branch);
    }
+
+   @Override
+   public void setBranchName(IOseeBranch branch, String name) {
+      BranchManager.setName(branch, name);
+   }
 }

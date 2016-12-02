@@ -128,4 +128,6 @@ public interface IAtsBranchService {
    TransactionToken getBaseTransaction(BranchId branch);
 
    String getBranchName(IAtsTeamWorkflow teamWf);
+
+   void setBranchName(IOseeBranch branch, String name);
 }
