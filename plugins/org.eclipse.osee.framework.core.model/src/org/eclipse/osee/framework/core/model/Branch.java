@@ -40,16 +40,35 @@ public class Branch extends NamedIdBase implements IOseeBranch, Adaptable {
    private TransactionRecord baselineTx;
    private Branch parent;
    private ArtifactId associatedArtifact;
+   private ArtifactId branchView;
 
-   public Branch(Long id, String name, BranchType branchType, BranchState branchState, boolean isArchived, boolean inheritsAccessControl) {
-      super(id, name);
+   public Branch(Long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived, boolean inheritsAccessControl) {
+      this(uuid, name, branchType, branchState, isArchived, inheritsAccessControl, ArtifactId.SENTINEL);
+   }
+
+   public Branch(Long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived, boolean inheritsAccessControl, ArtifactId branchView) {
+      super(uuid, name);
       this.branchType = branchType;
       this.branchState = branchState;
       this.isArchived = isArchived;
       this.inheritsAccessControl = inheritsAccessControl;
+      this.branchView = branchView;
    }
 
-   public BranchId getParentBranch() throws OseeCoreException {
+   public static Branch createBranchView(Branch branch, ArtifactId branchView, String name) {
+      Branch viewBranch = new Branch(branch.getId(), branch.getName(), branch.getBranchType(), branch.getBranchState(),
+         branch.isArchived, true);
+      viewBranch.setAssociatedArtifact(branch.getAssociatedArtifactId());
+      viewBranch.setBaseTransaction(branch.getBaseTransaction());
+      viewBranch.setBranchView(branchView);
+      viewBranch.setParentBranch(branch.getParentBranch());
+      viewBranch.setName(name);
+      viewBranch.setBranchView(branchView);
+
+      return viewBranch;
+   }
+
+   public Branch getParentBranch() throws OseeCoreException {
       return parent;
    }
 
@@ -121,6 +140,14 @@ public class Branch extends NamedIdBase implements IOseeBranch, Adaptable {
       return childBranches;
    }
 
+   public ArtifactId getBranchView() {
+      return branchView;
+   }
+
+   public void setBranchView(ArtifactId branchView) {
+      this.branchView = branchView;
+   }
+
    /**
     * @return all child branches. It is equivalent to calling getChildBranches with new BranchFilter() (.i.e no child
     * branches are excluded)
@@ -165,6 +192,27 @@ public class Branch extends NamedIdBase implements IOseeBranch, Adaptable {
          }
       }
       return false;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (obj instanceof BranchId) {
+         return super.equals(obj) && branchView.equals(((BranchId) obj).getView());
+      }
+
+      return false;
+   }
+
+   @Override
+   public ArtifactId getView() {
+      return branchView;
+   }
+
+   /*
+    * Provide easy way to display/report [guid][name]
+    */
+   public final String toStringWithId() {
+      return String.format("[%s][%s]", getName(), getId());
    }
 
 }

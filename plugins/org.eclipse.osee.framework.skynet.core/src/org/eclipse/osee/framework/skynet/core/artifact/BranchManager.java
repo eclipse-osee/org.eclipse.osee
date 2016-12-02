@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -94,6 +95,10 @@ public final class BranchManager {
       return ServiceUtil.getOseeCacheService().getBranchCache();
    }
 
+   public static List<Branch> getBranchesAndViews(Predicate<Branch> branchFilter) throws OseeCoreException {
+      return getCache().getBranchesAndViews(branchFilter);
+   }
+
    public static List<Branch> getBranches(Predicate<Branch> branchFilter) throws OseeCoreException {
       return getCache().getBranches(branchFilter);
    }
@@ -154,19 +159,35 @@ public final class BranchManager {
       if (branch instanceof Branch) {
          return (Branch) branch;
       } else {
-         return getBranch(branch.getId());
+         return getBranch(branch.getId(), branch.getView());
       }
    }
 
    public static Branch getBranch(Long branchId) throws OseeCoreException {
+      return getBranch(branchId, ArtifactId.SENTINEL);
+   }
+
+   public static Branch getBranch(Long branchId, ArtifactId view) throws OseeCoreException {
       if (branchId == null) {
          throw new BranchDoesNotExist("Branch Uuid is null");
       }
 
-      Branch branch = getCache().getById(branchId);
-      if (branch == null) {
-         branch = loadBranchToCache(branchId);
+      Branch branch = null;
+      if (view.notEqual(ArtifactId.SENTINEL)) {
+         List<Branch> views = getCache().getViews();
+         for (Branch branchView : views) {
+            if (branchView.getId().equals(branchId) && branchView.getView().equals(view)) {
+               branch = branchView;
+               break;
+            }
+         }
+      } else {
+         branch = getCache().getById(branchId);
+         if (branch == null) {
+            branch = loadBranchToCache(branchId);
+         }
       }
+
       return branch;
    }
 
@@ -408,7 +429,7 @@ public final class BranchManager {
    private static IOseeBranch createMergeBranch(final IOseeBranch sourceBranch, final IOseeBranch destBranch, final ArrayList<Integer> expectedArtIds) throws OseeCoreException {
       Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery();
       for (int artId : expectedArtIds) {
-         joinQuery.add(sourceBranch, ArtifactId.valueOf(artId));
+         joinQuery.add(sourceBranch, ArtifactId.valueOf(artId), TransactionId.SENTINEL, sourceBranch.getView());
       }
       BranchId branch;
       try {
@@ -509,6 +530,10 @@ public final class BranchManager {
 
    public static List<? extends IOseeBranch> getBaselineBranches() throws OseeCoreException {
       return getBranches(BranchArchivedState.UNARCHIVED, BranchType.BASELINE);
+   }
+
+   public static List<Branch> getBranchesAndViews(BranchArchivedState archivedState, BranchType... branchTypes) {
+      return getCache().getBranchesAndViews(new BranchFilter(archivedState, branchTypes));
    }
 
    public static List<Branch> getBranches(BranchArchivedState archivedState, BranchType... branchTypes) {

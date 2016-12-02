@@ -164,7 +164,8 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
 
       Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery(getJdbcClient());
       for (int artId : artIds) {
-         joinQuery.add(BranchId.valueOf(sourceBranch.getUuid()), ArtifactId.valueOf(artId));
+         joinQuery.add(BranchId.valueOf(sourceBranch.getUuid()), ArtifactId.valueOf(artId), TransactionId.SENTINEL,
+            sourceBranch.getView());
       }
       try {
          joinQuery.store(connection);

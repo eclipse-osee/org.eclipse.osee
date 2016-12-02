@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -177,7 +178,8 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
          Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery();
          try {
             for (int artId : artIds) {
-               joinQuery.add(wasValueBranch, ArtifactId.valueOf(artId));
+               joinQuery.add(wasValueBranch, ArtifactId.valueOf(artId), TransactionId.SENTINEL,
+                  wasValueBranch.getView());
             }
             joinQuery.store();
 

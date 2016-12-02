@@ -18,6 +18,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -42,7 +43,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 public class PurgeArtifacts extends AbstractDbTxOperation {
 
    private static final String SELECT_ITEM_GAMMAS =
-      "SELECT /*+ ordered */ txs.gamma_id, txs.transaction_id, aj.id1 FROM osee_join_id4 aj, %s item, osee_txs txs WHERE aj.query_id = ? AND %s AND item.gamma_id = txs.gamma_id AND aj.id1 = txs.branch_id";
+      "SELECT /*+ ordered */ txs.gamma_id, txs.transaction_id, aj.id1, aj.id4 FROM osee_join_id4 aj, %s item, osee_txs txs WHERE aj.query_id = ? AND %s AND item.gamma_id = txs.gamma_id AND aj.id1 = txs.branch_id";
 
    private static final String COUNT_ARTIFACT_VIOLATIONS =
       "SELECT art.art_id, txs.branch_id FROM osee_join_id4 aj, osee_artifact art, osee_txs txs WHERE aj.query_id = ? AND aj.id2 = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = aj.id1";
@@ -86,7 +87,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
       Id4JoinQuery artJoin2 = JoinUtility.createId4JoinQuery(getJdbcClient());
       try {
          for (Artifact art : artifactsToPurge) {
-            artJoin2.add(art.getBranch(), art);
+            artJoin2.add(art.getBranch(), art, TransactionId.SENTINEL, art.getBranch().getView());
          }
          artJoin2.store(connection);
 
@@ -158,7 +159,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
       Id4JoinQuery artJoin = JoinUtility.createId4JoinQuery(getJdbcClient());
       for (Artifact art : artifactsToPurge) {
          for (IOseeBranch branch : BranchManager.getChildBranches(art.getBranch(), true)) {
-            artJoin.add(branch, art);
+            artJoin.add(branch, art, TransactionId.SENTINEL, branch.getView());
          }
       }
       if (!artJoin.isEmpty()) {

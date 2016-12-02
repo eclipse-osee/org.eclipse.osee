@@ -27,6 +27,8 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  */
 public class BranchCache extends AbstractOseeLoadingCache<Branch> {
 
+   private final List<Branch> views = new ArrayList<>();
+
    public BranchCache(IOseeDataAccessor<Branch> dataAccessor) {
       super(OseeCacheEnum.BRANCH_CACHE, dataAccessor);
    }
@@ -75,6 +77,22 @@ public class BranchCache extends AbstractOseeLoadingCache<Branch> {
          }
       }
       return toReturn;
+   }
+
+   public void setBranchViews(List<Branch> views) {
+      this.views.clear();
+      this.views.addAll(views);
+   }
+
+   public List<Branch> getViews() {
+      return views;
+   }
+
+   public synchronized List<Branch> getBranchesAndViews(Predicate<Branch> branchFilter) {
+      List<Branch> branches = getBranches(branchFilter);
+      branches.addAll(views);
+
+      return branches;
    }
 
    public synchronized List<Branch> getBranches(Predicate<Branch> branchFilter) {

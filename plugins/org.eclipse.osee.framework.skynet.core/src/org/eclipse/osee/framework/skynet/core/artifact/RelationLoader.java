@@ -14,6 +14,7 @@ import static org.eclipse.osee.framework.core.enums.LoadLevel.ARTIFACT_AND_ATTRI
 import static org.eclipse.osee.framework.core.enums.LoadLevel.ARTIFACT_DATA;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -48,7 +49,8 @@ class RelationLoader {
             int relationId = chStmt.getInt("rel_link_id");
             int aArtifactId = chStmt.getInt("a_art_id");
             int bArtifactId = chStmt.getInt("b_art_id");
-            BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
+
+            BranchId branch = BranchId.create(chStmt.getLong("branch_id"), ArtifactId.valueOf(chStmt.getLong("id4")));
             RelationType relationType = RelationTypeManager.getTypeByGuid(chStmt.getLong("rel_link_type_id"));
 
             int gammaId = chStmt.getInt("gamma_id");

@@ -114,7 +114,7 @@ public final class ChangeManager {
          BranchId branch = artifact.getBranch();
          artifactMap.put(artifact.getArtId(), branch, artifact);
          TransactionId transaction = TransactionManager.getHeadTransaction(branch);
-         joinQuery.add(branch, artifact, transaction);
+         joinQuery.add(branch, artifact, transaction, branch.getView());
 
          // for each combination of artifact and its branch hierarchy
          while (!branch.equals(CoreBranches.SYSTEM_ROOT)) {
@@ -161,7 +161,7 @@ public final class ChangeManager {
          // for each combination of artifact and all working branches in its hierarchy
          for (BranchId workingBranch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING)) {
             if (artifact.isOnBranch(BranchManager.getParentBranch(workingBranch))) {
-               joinQuery.add(workingBranch, artifact);
+               joinQuery.add(workingBranch, artifact, TransactionId.SENTINEL, workingBranch.getView());
             }
          }
       }

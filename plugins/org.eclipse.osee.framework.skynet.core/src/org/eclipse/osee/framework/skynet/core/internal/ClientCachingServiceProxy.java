@@ -68,7 +68,7 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
    public void start() {
       JdbcClient jdbcClient = jdbcService.getClient();
 
-      branchCache = new BranchCache(new DatabaseBranchAccessor(jdbcClient));
+      branchCache = new BranchCache(new DatabaseBranchAccessor(jdbcClient, oseeClient));
 
       artifactTypeCache = new ArtifactTypeCache();
       enumTypeCache = new OseeEnumTypeCache();
