@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -63,8 +62,8 @@ public class XBranchContentProvider implements ITreeContentProvider {
 
    @Override
    public Object[] getChildren(Object parentElement) {
-      if (parentElement instanceof Branch) {
-         return getBranchChildren((Branch) parentElement);
+      if (parentElement instanceof BranchId) {
+         return getBranchChildren((BranchId) parentElement);
       } else if (parentElement instanceof Collection<?>) {
          return ((Collection<?>) parentElement).toArray();
       } else if (parentElement instanceof Object[]) {
@@ -82,7 +81,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
       try {
          if (showChildBranchesUnderParents) {
             List<Object> items = new LinkedList<>();
-            Collection<Branch> childBrances = BranchManager.getChildBranches(branch, showArchivedBranches);
+            Collection<? extends BranchId> childBrances = BranchManager.getChildBranches(branch, showArchivedBranches);
             items.addAll(childBrances);
             items.addAll(getTransactions(branch));
 
@@ -175,7 +174,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
       if (element instanceof BranchManager) {
          return true;
       }
-      if (element instanceof Branch) {
+      if (element instanceof BranchId) {
          boolean hasChildren = true;
          try {
             if (!showTransactions) {

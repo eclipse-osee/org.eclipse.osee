@@ -51,8 +51,8 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
    public String getColumnText(Object element, XViewerColumn cCol, int columnIndex) {
       String columnText = "";
       try {
-         if (element instanceof Branch) {
-            columnText = getBranchText((Branch) element, cCol, columnIndex);
+         if (element instanceof BranchId) {
+            columnText = getBranchText((BranchId) element, cCol, columnIndex);
          } else if (element instanceof TransactionRecord) {
             columnText = getTransactionText((TransactionRecord) element, cCol, columnIndex);
          } else if (element instanceof Collection<?>) {
@@ -93,7 +93,8 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
       return columnText;
    }
 
-   private String getBranchText(Branch branch, XViewerColumn cCol, int columnIndex) {
+   private String getBranchText(BranchId branchId, XViewerColumn cCol, int columnIndex) {
+      Branch branch = BranchManager.getBranch(branchId);
       if (cCol.equals(BranchXViewerFactory.branchName)) {
          return branch.getName();
       } else if (cCol.equals(BranchXViewerFactory.archivedState)) {
