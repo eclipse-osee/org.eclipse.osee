@@ -166,7 +166,8 @@ public class ModelUtilTest {
    }
 
    private static void modelEquals(String rawExpected, String actual) {
-      String expected = rawExpected.replaceAll("\n", System.getProperty("line.separator"));
-      Assert.assertEquals(expected, actual);
+      String expected = rawExpected.replaceAll("[\r\n]", "");
+      String actualactual = actual.replaceAll("[\r\n]", "");
+      Assert.assertEquals(expected, actualactual);
    }
 }

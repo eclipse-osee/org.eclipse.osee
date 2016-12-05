@@ -203,17 +203,11 @@ attributeType "Favorite Branch" extends StringAttribute {
 oseeEnumType "enum.test.proc.status" {
 	id 3458764513820541304
 	entry "Not Performed"
-	entryGuid "APt7jzRPv2HBlrjQZXAA"
 	entry "Completed -- Analysis in Work"
-	entryGuid "APt7j0WUEAIFUyyzVZgA"
 	entry "Completed -- Passed"
-	entryGuid "APt7j0YZq1AjCER1qzAA"
 	entry "Completed -- With Issues"
-	entryGuid "APt7j0aZWF2BJc_BqnQA"
 	entry "Completed -- With Issues Resolved"
-	entryGuid "APt7j0cv9B1ImjckeTAA"
 	entry "Partially Complete"
-	entryGuid "AAvULbOIbxhPUO_oDFQA"
 }
 
 attributeType "Test Procedure Status" extends EnumeratedAttribute {
@@ -446,9 +440,7 @@ attributeType "Description" extends StringAttribute {
 oseeEnumType "enum.doc.page.orientation" {
 	id 3458764513820541305
 	entry "Portrait"
-	entryGuid "CArJmR0aZl3A8pWTQ8AA"
 	entry "Landscape"
-	entryGuid "CArJmPtdrFEmxk6+tqQA"
 }
 
 attributeType "Page Orientation" extends EnumeratedAttribute {
@@ -700,9 +692,7 @@ attributeType "Test Frequency" extends EnumeratedAttribute {
 oseeEnumType "enum.req.test.frequency" {
 	id 3458764513820541306
 	entry "One Time"
-	entryGuid "AS7P7QAx8CQb1qp8BqwA"
 	entry "Recurring"
-	entryGuid "AS7RJUFz2EPIYq+sQvwA"
 }
 
 attributeType "Data Rights Classification" extends EnumeratedAttribute {
@@ -740,15 +730,10 @@ attributeType "Subject Matter Expert" extends StringAttribute {
 oseeEnumType "enum.data.rights.classification" {
 	id 3458764513820541445
 	entry "Restricted Rights"
-	entryGuid "ABcLZ6zfUUzjdDa8p7wA"
 	entry "Government Purpose Rights"
-	entryGuid "ABeCYxypz1fic5Sg52QA"
 	entry "Unspecified"
-	entryGuid "ABeDQMSA8Hs_1dxoYIgA"
 	entry "Proprietary"
-	entryGuid "AOigVM2W3WUomEpjlrgA"
 	entry "Limited Rights"
-	entryGuid "ABcLZ6zfUUzjdDa8p6wC"
 }
 
 abstract artifactType "Direct Software Requirement" extends "Abstract Software Requirement" {
@@ -1013,17 +998,11 @@ attributeType "Training Effectivity" extends BooleanAttribute {
 oseeEnumType "enum.req.partition" {
 	id 3458764513820541309
 	entry "Graphics Handler"
-	entryGuid "AHggI+3RUnQwf1KtsqAA"
 	entry "Communication"
-	entryGuid "AHggI+_WjDloKP_beTgA"
 	entry "Flight Control"
-	entryGuid "AHggI_I2olatAugkrrgA"
 	entry "Input/Output Processor"
-	entryGuid "AHggI_cJoCK4KsG6mwgA"
 	entry "Navigation"
-	entryGuid "AHggI_xoLlJwuOWCN3QA"
 	entry "Unspecified"
-	entryGuid "AHggJAD2BiADTH74DhAA"
 }
 
 attributeType "Partition" extends EnumeratedAttribute {
@@ -1040,33 +1019,19 @@ attributeType "Partition" extends EnumeratedAttribute {
 oseeEnumType "enum.req.subsystem" {
 	id 3458764513820541310
 	entry "Robot_API"
-	entryGuid "AHjfb6Ot_Atsy5Hj5xAA"
 	entry "Robot_Survivability_Equipment"
-	entryGuid "AHjfd+vzwB5D1DjSPWgA"
 	entry "Robot_Systems_Management"
-	entryGuid "AHjfd+zuqmUAQPB6MbwA"
 	entry "Chassis"
-	entryGuid "AHjfd+3D_2WDdzxL9hwA"
 	entry "Cognitive_Decision_Aiding"
-	entryGuid "AHjfd+7AwSFsRzmC84QA"
 	entry "Communications"
-	entryGuid "AHjfd++j_hUNRmwobMwA"
 	entry "Data_Management"
-	entryGuid "AHjfd_Cw5zMXN1T21YwA"
 	entry "Electrical"
-	entryGuid "AHjfd_LUzm7Z2jeLDeQA"
 	entry "Controls"
-	entryGuid "AHjfd_RZSXYHzkv1rOQA"
 	entry "Hydraulics"
-	entryGuid "AHjfd_VSQDj9YzYfD7wA"
 	entry "Navigation"
-	entryGuid "AHjfd_ZHOyLb+diLv5gA"
 	entry "Propulsion"
-	entryGuid "AHjfd_c32nOglFGiMxgA"
 	entry "Unknown"
-	entryGuid "AHjfd_kVkkdX2Y9lhIwA"
 	entry "Unspecified"
-	entryGuid "AHjfd_7ljkRqqttzhDQA"
 }
 
 attributeType "Subsystem" extends EnumeratedAttribute {
@@ -1083,22 +1048,14 @@ attributeType "Subsystem" extends EnumeratedAttribute {
 oseeEnumType "enum.req.qualification.method" {
 	id 3458764513820541311
 	entry "Demonstration"
-	entryGuid "CArJmMA53UpBedWUq2wA"
 	entry "Test"
-	entryGuid "CArJmMCo5ABG2ARPMAgA"
 	entry "Analysis"
-	entryGuid "CArJmMEVehxBzLEB5BAA"
 	entry "Inspection"
-	entryGuid "CArJmMGDMTQTjfQ38MAA"
 	entry "Similarity"
-	entryGuid "ASc33qQU1W+9s0suWHwA" // same as Legacy
-
+	 // same as Legacy
 	entry "Special Qualification"
-	entryGuid "CArJmMHtrXO88eBgpDwA"
 	entry "Legacy"
-	entryGuid "CArJmMJahR1CShy_tbAA"
 	entry "Unspecified"
-	entryGuid "CArJmMLRzxv5GEsV81gA"
 }
 
 attributeType "Qualification Method" extends EnumeratedAttribute {
@@ -1117,17 +1074,11 @@ attributeType "Qualification Method" extends EnumeratedAttribute {
 oseeEnumType "enum.req.severity.category" {
 	id 3458764513820541312
 	entry "I"
-	entryGuid "CArJmMT4W0M7RHz21FQA"
 	entry "II"
-	entryGuid "CArJmMVi32d309GaF2QA"
 	entry "III"
-	entryGuid "CArJmMXNMQmB_pYCUmgA"
 	entry "IV"
-	entryGuid "CArJmMZEHicX8fSbRWQA"
 	entry "NH"
-	entryGuid "CArJmMa0N3h90kh02XwA"
 	entry "Unspecified"
-	entryGuid "CArJmMc0N2j19kh03mzA"
 }
 
 attributeType "Severity Category" extends EnumeratedAttribute {
@@ -1145,17 +1096,11 @@ attributeType "Severity Category" extends EnumeratedAttribute {
 oseeEnumType "enum.req.software.control.category" {
 	id 3766269001007852409
 	entry "1(AT)"
-	entryGuid ""
 	entry "2(SAT)"
-	entryGuid ""
 	entry "3(RFT)"
-	entryGuid ""
 	entry "4(IN)"
-	entryGuid ""
 	entry "5(NSI)"
-	entryGuid ""
 	entry "Unspecified"
-	entryGuid ""
 }
 
 attributeType "Software Control Category" extends EnumeratedAttribute {
@@ -1190,15 +1135,10 @@ attributeType "Software Safety Impact" extends BooleanAttribute {
 oseeEnumType "enum.req.verification.level" {
 	id 3458764513820541313
 	entry "System"
-	entryGuid "AHgseTiNRW1AhGHenkAA"
 	entry "Subsystem"
-	entryGuid "AHgseTubynFhgg9eXjQA"
 	entry "Component"
-	entryGuid "AHgseT6tBlXP7azH7LQA"
 	entry "Unspecified"
-	entryGuid "AHgseUA7nhAJY46rRDQA"
 	entry "N/A"
-	entryGuid "An1Vcw_+oEuNHkhfSAAA"
 }
 
 attributeType "Verification Level" extends EnumeratedAttribute {
@@ -1232,9 +1172,7 @@ attributeType "Verification Acceptance Criteria" extends StringAttribute {
 oseeEnumType "enum.test.tis.type" {
 	id 3458764513820541314
 	entry "Stationary Vehicle"
-	entryGuid "AHj4p6gxxxlUbouQY4gA"
 	entry "In Operation"
-	entryGuid "AHj4p6kFZ3S4g4sDOEgA"
 }
 
 attributeType "TIS Test Type" extends EnumeratedAttribute {
@@ -1251,11 +1189,8 @@ attributeType "TIS Test Type" extends EnumeratedAttribute {
 oseeEnumType "enum.test.tis.category" {
 	id 3458764513820541315
 	entry "SPEC_COMP"
-	entryGuid "CArJmMeaR3xHDdsfMmQA"
 	entry "DEV"
-	entryGuid "CArJmQdaJgLQKdfWuqAA"
 	entry "USG"
-	entryGuid "CArJmQe87RfF8MxEp6AA"
 }
 
 attributeType "TIS Test Category" extends EnumeratedAttribute {
@@ -1272,17 +1207,11 @@ attributeType "TIS Test Category" extends EnumeratedAttribute {
 oseeEnumType "enum.req.development.assurance.level" {
 	id 3458764513820541316
 	entry "A"
-	entryGuid "CArJmQghfXnRkiCKD5AA"
 	entry "B"
-	entryGuid "CArJmQiEOmcK4CBlp2gA"
 	entry "C"
-	entryGuid "CArJmQjodlQbcdQmm1AA"
 	entry "D"
-	entryGuid "CArJmQlRRwo1OPaSGhwA"
 	entry "E"
-	entryGuid "CArJmQm9Lx76RVS3lIwA"
 	entry "Unspecified"
-   entryGuid "ABbb5PXLXUOTQZMjxngA"	
 }
 
 attributeType "Legacy DAL" extends EnumeratedAttribute {
@@ -1364,7 +1293,7 @@ attributeType "Technical Performance Parameter" extends BooleanAttribute {
 oseeEnumType "enum.req.verification.event" {
 	id 3458764513820541317
 	entry "Unspecified"
-	entryGuid "AHgx7FoBjTj1Gjx2lwwA"
+	
 }
 
 attributeType "Verification Event" extends EnumeratedAttribute {
@@ -1380,9 +1309,7 @@ attributeType "Verification Event" extends EnumeratedAttribute {
 oseeEnumType "enum.req.component" {
 	id 3458764513820541318
 	entry "Top level product component"
-	entryGuid "AHgx7E8De1cxZ5soXEwA"
 	entry "Unspecified"
-	entryGuid "AHgx7FDclWxiskAifqgA"
 }
 
 attributeType "Component" extends EnumeratedAttribute {
@@ -1675,17 +1602,11 @@ relationType "Supercedes" {
 oseeEnumType "enum.req.csci" {
 	id 3458764513820541319
 	entry "CoreUnit"
-	entryGuid "AHkD1ZWRgG65kO2xGawA"
 	entry "Framework"
-	entryGuid "AHkD1ZZ063rhGqAyBOAA"
 	entry "Interface"
-	entryGuid "AHkD1ZgrchP3YIc3P3AA"
 	entry "Navigation"
-	entryGuid "AHkD1ZnJ3kjo0mcY2bgA"
 	entry "Unspecified"
-	entryGuid "AHkD1ZtZdjiGWH2sJvwA"
 	entry "Visual"
-	entryGuid "AHkD1ZxHLlTIDMbxs6QA"
 }
 
 attributeType "CSCI" extends EnumeratedAttribute {
@@ -1799,23 +1720,14 @@ attributeType "SFHA" extends StringAttribute {
 oseeEnumType "enum.req.hazard.severity" {
 	id 3458764513820541320
 	entry "Catastrophic, I"
-	entryGuid "CArJmKAfM2LFVagvdyAA"
 	entry "Severe-Major, II"
-	entryGuid "CArJmKCbLEwsmEBGn+gA"
 	entry "Critical, II"
-	entryGuid "CArJmKEZuXpODZmFkcQA"
 	entry "Major, III"
-	entryGuid "CArJmKGYAW4oWTiszZgA"
 	entry "Marginal, III"
-	entryGuid "CArJmKIYLBLj6JLdPigA"
 	entry "Minor, IV"
-	entryGuid "CArJmKKX+GP5wM5WJpAA"
 	entry "Negligible, IV"
-	entryGuid "CArJmKMSiWNzklMgHmAA"
 	entry "No Effect, V"
-	entryGuid "CArJmKOJ6x+k2bBnQ2gA"
 	entry "Unspecified"
-	entryGuid "CArJmKQGFVIRln+WloQA"
 }
 
 attributeType "Hazard Severity" extends EnumeratedAttribute {
@@ -1849,11 +1761,8 @@ attributeType "FTA Results" extends FloatingPointAttribute {
 oseeEnumType "enum.req.gfe.cfe" {
 	id 3458764513820541321
 	entry "CFE"
-	entryGuid "CArJmKSDJmlB5eQJFdQA"
 	entry "GFE"
-	entryGuid "CArJmKT8DCOjmZgXRLgA"
 	entry "Unspecified"
-	entryGuid "CArJmKVx8wtiwmzCcugA"
 }
 
 attributeType "GFE / CFE" extends EnumeratedAttribute {
@@ -1936,7 +1845,7 @@ attributeType "Display Text" extends StringAttribute {
 
 attributeType "Circuit Breaker ID" extends IntegerAttribute {
 	id 188458869981238
-        dataProvider DefaultAttributeDataProvider
+   dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
  	defaultValue "0"

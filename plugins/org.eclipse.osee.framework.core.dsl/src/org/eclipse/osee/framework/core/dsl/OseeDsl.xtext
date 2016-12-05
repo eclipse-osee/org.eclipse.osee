@@ -58,7 +58,7 @@ XOseeEnumType:
 	'oseeEnumType' name=STRING '{' 'id' id=WHOLE_NUM_STR (enumEntries+=XOseeEnumEntry)* '}';
 
 XOseeEnumEntry:
-	'entry' name=STRING (ordinal=WHOLE_NUM_STR)? ('entryGuid' entryGuid=STRING)? ('description' description=STRING)?;
+	'entry' name=STRING (ordinal=WHOLE_NUM_STR)? ('description' description=STRING)?;
 
 XOseeEnumOverride:
 	'overrides enum' overridenEnumType=[XOseeEnumType|STRING] '{' (inheritAll?='inheritAll')?
@@ -68,7 +68,7 @@ OverrideOption:
 	AddEnum | RemoveEnum;
 
 AddEnum:
-	'add' enumEntry=STRING (ordinal=WHOLE_NUM_STR)? ('entryGuid' entryGuid=STRING)? ('description' description=STRING)?;
+	'add' enumEntry=STRING (ordinal=WHOLE_NUM_STR)? ('description' description=STRING)?;
 
 RemoveEnum:
 	'remove' enumEntry=[XOseeEnumEntry|STRING];

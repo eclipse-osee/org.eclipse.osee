@@ -43,19 +43,12 @@ attributeType "Field 1" extends EnumeratedAttribute {
 
 oseeEnumType "enum.test.proc.status" {
 	id 3458764513820541304
-	entry "Not Performed"
-	entryGuid "APt7jzRPv2HBlrjQZXAA"
-	description "it was not performed"
+	entry "Not Performed" description "it was not performed"
 	entry "Completed -- Analysis in Work"
-	entryGuid "APt7j0WUEAIFUyyzVZgA"
 	entry "Completed -- Passed"
-	entryGuid "APt7j0YZq1AjCER1qzAA"
 	entry "Completed -- With Issues"
-	entryGuid "APt7j0aZWF2BJc_BqnQA"
 	entry "Completed -- With Issues Resolved"
-	entryGuid "APt7j0cv9B1ImjckeTAA"
 	entry "Partially Complete"
-	entryGuid "AAvULbOIbxhPUO_oDFQA"
 	description "is a partial"
 }
 

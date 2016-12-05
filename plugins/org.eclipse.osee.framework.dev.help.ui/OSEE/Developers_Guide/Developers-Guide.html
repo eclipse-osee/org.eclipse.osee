@@ -1,0 +1,1270 @@
+<?xml version='1.0' encoding='utf-8' ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title>Developers' Guide</title>
+		<link type="text/css" rel="stylesheet" href="../../book.css"/>
+	</head>
+	<body>
+		<table class="navigation" style="width: 100%;" border="0" summary="navigation">
+			<tr>
+				<th style="width: 100%" align="center" colspan="3">Developers' Guide</th>
+			</tr>
+			<tr>
+				<td style="width: 20%" align="left"></td>
+				<td style="width: 60%" align="center"></td>
+				<td style="width: 20%" align="right">
+					<a href="Updating-This-Document.html" title="Updating This Document">
+						<img alt="Next" border="0" src="../../images/next.gif"/>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td style="width: 20%" align="left" valign="top"></td>
+				<td style="width: 60%" align="center"></td>
+				<td style="width: 20%" align="right" valign="top">Updating This Document</td>
+			</tr>
+		</table><hr/>
+		<h2 id="Architecture">Architecture</h2>
+		<h3 id="Client_Architecture">Client Architecture</h3>
+		<p>The central feature of OSEE is an extensible framework called the OSEE Application Framework. Default applications distributed with the OSEE framework are OSEE Define (for requirements management) and OSEE ATS (the Action Tracking System, for configuration management). </p>
+		<p>
+			<img title="OSEE Architecture" alt="OSEE Architecture" border="0" src="images/OSEEArchitecture.gif"/>The Application Framework provides all the necessary services to allow the applications to persist and share data in a common, version controlled object database. Just as Eclipse provides the ability to add a plugin to the existing Eclipse environment, so OSEE allows other applications to add plugins and share the common data store. 
+		</p>
+		<p>And just like Eclipse RCP allows an application to be built and deployed using the Eclipse framework but not include all the standard applications like JDT, OSEE allows an application to be built and deployed using the OSEE Application Framework without including such applications as OSEE Define and OSEE ATS. </p>
+		<h3 id="Client.2FServer_Architecture">Client/Server Architecture</h3>
+		<p>In order to attain a greater degree of scalability, the Open System Engineering Environment (OSEE) has been slowly migrating into a distributed architecture where clients interact with an application server, which is in charge of managing access to an OSEE data store. </p>
+		<p>Additionally, in an effort to provide load balancing, failure recovery, and code compatibility, clients consult an arbitration server before connecting to an application server. The arbitration server's responsibility is to keep track of all the application servers interacting with a common data store and direct clients to a healthy application server compatible with the client's OSEE code version. In this arrangement, arbitration servers act as the initial access points into the OSEE server cloud where a collection of application servers manage client requests to access and operate on a common OSEE data store. Figure 1 shows an example of the OSEE Client/Server network. </p>
+		<p>
+			<img title="Figure 1" alt="Figure 1" border="0" src="images/Client_server_view.png"/> 
+		</p>
+		<p>
+			<br/> In Figure 1, three application servers interact with a single OSEE data store. The data store is comprised of a relational database and a remote file system used to store binary data. It is not necessary for the database and the binary data to exist on the same machine; the only requirement is that the application servers have access to both resources. Upon start-up, each application server registers himself on the data store's server lookup table by entering its host address, port, supported code versions, and its unique id. When the arbitration server receives a request to find an application server to support a client connection, the arbitration server reads the data store's server lookup table and selects the best match for the client. The client requests this information from the arbitration server upon start-up or whenever it can't communicate with an application server. It is important to note that the arbitration server does not have to be a different server than an application server. All application servers are able to act as an arbitration server. An application server is referred to as an arbitration server when clients interact with it in this context. Figure 2 depicts the sequence of events involved in the arbitration process. 
+		</p>
+		<p>
+			<img title="Figure 2" alt="Figure 2" border="0" src="images/Arbitration_sequence.png"/> 
+		</p>
+		<p>Once a client receives an application server's address and port information, the client must authenticate with the application server before it can gain access to the OSEE data store. During the authentication process, a client submits to the application server the current user's credential information and the authentication protocol id to use during the process. The application server verifies the user via the selected protocol and grants access to the data store by creating a session for the user. From this point forward, the application server will be responsible for managing access to the data store by identifying the user via the session id. Whenever a client wants to interact with the application server, it will need to submit its session id in order to gain access to the OSEE data store. Figure 3 shows the sequence of events involved in the authentication process. </p>
+		<p>
+			<img title="Figure 3" alt="Figure 3" border="0" src="images/Authentication_sequence.png"/> 
+		</p>
+		<h3 id="Data_Model">Data Model</h3>
+		<p>The OSEE framework is built around a user configurable and extensible data model consisting of attributes, artifacts, and relations. An 
+			<b>attribute</b> is a key-value pair representing a single data element such as a description, a date, a number, or a file. These basic data elements are grouped into artifacts. 
+			<b>Artifacts</b> can be configured to have any number of attributes. By default, an artifact will always have an attribute of type <tt>name</tt>. In addition, artifacts can be related to one another via 
+			<b>relations</b>. By default, an artifact will always have a default hierarchy relation type. This allows artifacts to be connected together in a tree. In the example below, two instances of the basic artifact type are shown. Artifact 1 has an attribute of type <tt>name</tt> set to string data <tt>"X"</tt>. Artifact 2 has an attribute of type <tt>name</tt> set to string data <tt>"Y"</tt>. These two artifact instances are related via the default hierarchy relation type. Artifact 1 is Artifact 2's parent artifact. 
+		</p>
+		<p>
+			<img border="0" src="images/Basic_artifact.png"/> 
+		</p>
+		<p>Now that we have a basic understanding of the model, lets take a closer look at attributes and how they are defined. </p>
+		<p>An attribute is defined through its attribute type. The attribute type is a blue print for constructing attribute instances. It defines the type of data the will be held by the attribute, the data source or who provides it, how many instances can be created, default value to use during creation, whether the attribute can be tagged for word searches, and if the attribute holds file data, its file extension. </p>
+		<p>By default, data contained in the attribute can be represented through OSEE's basic data types: </p>
+		<ul>
+			<li>String Attribute </li>
+			<li>Boolean Attribute </li>
+			<li>Integer Attribute </li>
+			<li>Floating Point Attribute </li>
+			<li>Date Attribute </li>
+			<li>Enumerated Attribute</li>
+		</ul>
+		<p>
+			<img border="0" src="images/AttributeType.png"/> 
+		</p>
+		<p>OSEE provides three attribute data providers: the default attribute data provider, URI attribute data provider, and the Clob attribute data provider. </p>
+		<ul>
+			<li>The 
+				<b>default attribute data provider</b> is used for data containing less than 4000 characters in length. Data is stored and retrieved from the OSEE relational database. Most attribute types will use this data provider to handle its data content. 
+			</li>
+			<li>The 
+				<b>URI attribute data provider</b> is used for large data. The provider communicates to the OSEE application server to store and retrieve data. 
+			</li>
+			<li>The 
+				<b>Clob attribute data provider</b> is a hybrid provider using both the OSEE relational database and the application server to retrieve and store data. When the data contained by the attribute has less than 4000 characters, the provider uses the relational database. If the data exceeds the 4000 character limit, then the application server is used.
+			</li>
+		</ul>
+		<h2 id="Configuration_Properties">Configuration Properties</h2>
+		<p>OSEE can be configured by setting certain Java system properties when launching Eclipse and by setting various attribute values on the Global Preferences artifact in the datastore. Java system properties are key/value pairs and can be passed as launch arguments in the form of <tt>-D&lt;key&gt;=&lt;value&gt;</tt> (
+			<i>i.e. <tt>-Dosee.authentication.protocol=trustAll</tt></i>). These <tt>-D</tt> options can be specified directly in the command to launch Eclipse or in the corresponding .ini file for the eclipse executable used.  Server-side OSGI properties are specified in an JSON file referenced by the system property cm.config.uri.
+		</p>
+		<h3 id="Server_OSGi_properties">Server OSGi properties</h3>
+		<p>See the file org.eclipse.osee.support.config/launchConfig/osee.postgresql.json for an example.</p>
+		<p>JdbcComponentFactory receives its OSGi properties from the JSON file referenced by the system property cm.config.uri.
+			JdbcConnectionFactoryManager.getConnection() uses the JDK's DriverManager.getConnection() which in turn uses the Java Standard Edition Service Provider mechanism to load the JDBC driver referenced in the JSON file. The JDBC driver must include the file META-INF/services/java.sql.Driver which contains the name of the JDBC driver implementation of java.sql.Driver.	</p>
+		<h3 id="Datastore_Preferences_.28via_Global_Preferences_artifact.29">Datastore Preferences (via Global Preferences artifact)</h3>
+		<p>Do a Quick Search on the Common branch for "Global Preferences" and open the resulting artifact in the artifact editor. The available attribute types for this artifact define what can be configured. Each attribute is self-documenting, because the attribute tip text documents how to use each one. </p>
+		<h3 id="Common_Java_System_Properties">Common Java System Properties</h3>
+		<table class="wikitable" style="border:1">
+			<tr style="background:#CCCCCC">
+				<th>System Property Name </th>
+				<th>Values </th>
+				<th>Default </th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>osee.connection.info.uri </td>
+				<td><code>
+					<a href="FILE">SYSTEM PATH</a></code> 
+				</td>
+				<td>File system path or uri containing custom database connection information.</td>
+			</tr>
+			<tr>
+				<td>osee.db.connection.id </td>
+				<td><code>&lt;db identifier&gt;</code> </td>
+				<td>Default from db.connection file </td>
+				<td>Database Connection Information]] section for more information.</td>
+			</tr>
+			<tr>
+				<td>osee.jini.forced.reggie.search </td>
+				<td><code>true, false</code> </td>
+				<td><code>false</code> </td>
+				<td>If true, adds the lookupList to the global lookup list such that a refresh will try to locate the service again</td>
+			</tr>
+			<tr>
+				<td>osee.jini.lookup.groups </td>
+				<td>user defined group name </td>
+				<td>the Jini Group that all OSEE provided Jini services will register with</td>
+			</tr>
+			<tr>
+				<td>osee.log.default </td>
+				<td><code>FINE, INFO, WARNING, SEVERE</code> </td>
+				<td><code>WARNING</code> </td>
+				<td>the default logging level for all loggers</td>
+			</tr>
+			<tr>
+				<td>osee.port.scanner.start.port </td>
+				<td><code>1 - 65535</code> </td>
+				<td><code>18000</code> </td>
+				<td>the first port number to test for availability when a new port is needed</td>
+			</tr>
+		</table>
+		<h3 id="Application_Server_Java_System_Properties">Application Server Java System Properties</h3>
+		<table class="wikitable" style="border:1">
+			<tr style="background:#CCCCCC">
+				<th>System Property Name </th>
+				<th>Values </th>
+				<th>Default </th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>org.osgi.service.http.port </td>
+				<td><code>1 - 65535</code> </td>
+				<td><code>-1</code> </td>
+				<td>Port the client will use to communicate with the OSEE Application Server</td>
+			</tr>
+			<tr>
+				<td>osee.application.server.data </td>
+				<td><code>
+					<a href="FILE">SYSTEM PATH</a></code> 
+				</td>
+				<td>User Home </td>
+				<td>A directory on the file system to be used by the application server to store and serve artifact binary data.</td>
+			</tr>
+			<tr>
+				<td>osee.db.embedded.server </td>
+				<td><code>
+					<a href="&amp;lt;address&amp;gt;:&amp;lt;port&amp;gt;">&amp;lt;address&amp;gt;:&amp;lt;port&amp;gt;</a></code> 
+				</td>
+				<td>When specified, this system property sets the URL used to launch an embedded database server.</td>
+			</tr>
+			<tr>
+				<td>osee.version </td>
+				<td><code>
+					<a href="&amp;lt;&quot;version">1"&amp;gt;;&amp;lt;"version 2"&amp;gt;</a></code> 
+				</td>
+				<td>When specified, this system property sets the application server's supported client versions. NOTE: version string can use regular expressions</td>
+			</tr>
+			<tr>
+				<td>osee.check.tag.queue.on.startup </td>
+				<td><code>true, false</code> </td>
+				<td>false </td>
+				<td>When specified, this system property allows the application server to check the tag queue and begin tagging and pending tag jobs.</td>
+			</tr>
+		</table>
+		<h3 id="Client_Java_System_Properties">Client Java System Properties</h3>
+		<table class="wikitable" style="border:1">
+			<tr style="background:#CCCCCC">
+				<th>System Property Name </th>
+				<th>Values </th>
+				<th>Default </th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>osee.application.server </td>
+				<td><code>
+					<a href="http://&amp;lt;address&amp;gt;:&amp;lt;port&amp;gt;" target="osee_external">http://&amp;lt;address&amp;gt;:&amp;lt;port&amp;gt;</a></code> 
+				</td>
+				<td>When specified, this system property sets the URL used to reference the application server and arbitration is bypassed.</td>
+			</tr>
+			<tr>
+				<td>osee.arbitration.server </td>
+				<td><code>
+					<a href="http://&amp;lt;address&amp;gt;:&amp;lt;port&amp;gt;" target="osee_external">http://&amp;lt;address&amp;gt;:&amp;lt;port&amp;gt;</a></code> 
+				</td>
+				<td>The arbitration server address and port to use. This system property must be specified for the system to gain access to OSEE data. If the application server property is set then that address takes precedence and arbitration is bypassed.</td>
+			</tr>
+			<tr>
+				<td>osee.authentication.protocol </td>
+				<td>protocol name </td>
+				<td>protocol to be used by the client to authenticate with the server</td>
+			</tr>
+			<tr>
+				<td>osee.choice.on.db.init </td>
+				<td>choice name </td>
+				<td>the predefined database initialization choice</td>
+			</tr>
+			<tr>
+				<td>osee.file.specified.schema.names.on.db.init </td>
+				<td><code>true, false</code> </td>
+				<td><code>false</code> </td>
+				<td>Specifies whether OSEE database initialization should use the schema names specified in the schema.xml files instead of using the connection schema. Using the connection specified schema is the default behavior.</td>
+			</tr>
+			<tr>
+				<td>osee.import.from.connection.id.on.db.init </td>
+				<td><code>
+					<a href="FILE">SYSTEM PATH</a></code> 
+				</td>
+				<td>Specifies where table data should be imported from during OSEE database initialization. The default is to use the database connection id specified in the schema.xml files.</td>
+			</tr>
+			<tr>
+				<td>osee.import.on.db.init </td>
+				<td><code>true, false</code> </td>
+				<td><code>false</code> </td>
+				<td>Specifies whether OSEE database initialization should import database data as part of its tasks.</td>
+			</tr>
+			<tr>
+				<td>osee.local.application.server </td>
+				<td><code>true, false</code> </td>
+				<td><code>false</code> </td>
+				<td>When set to 
+					<b>true</b> launches an application server upon start up. 
+					<i>Uses '''org.osgi.service.http.port</i>' arg to determine port to use.''
+				</td>
+			</tr>
+			<tr>
+				<td>osee.local.http.worker.port </td>
+				<td><code>&lt;port&gt;</code> </td>
+				<td><code>Port Scan starting from 18000</code> </td>
+				<td>Port to use for local worker server.</td>
+			</tr>
+			<tr>
+				<td>osee.prompt.on.db.init </td>
+				<td><code>true, false</code> </td>
+				<td><code>true</code> </td>
+				<td>Specifies whether to interactively prompt the user during database initialization for init choice</td>
+			</tr>
+			<tr>
+				<td>osee.record.activity </td>
+				<td><code>true, false</code> </td>
+				<td><code>true</code> </td>
+				<td>Specifies whether user activity should be logged</td>
+			</tr>
+			<tr>
+				<td>osee.ote.benchmark </td>
+				<td><code>true, false</code> </td>
+			</tr>
+			<tr>
+				<td>osee.ote.cmd.console </td>
+				<td><code>true, false</code> </td>
+				<td>Specifies whether to enable the OTE command console</td>
+			</tr>
+			<tr>
+				<td>osee.ote.server.title </td>
+				<td>free text name </td>
+				<td>name given to the OTE server which is displayed in the test manager</td>
+			</tr>
+			<tr>
+				<td>osee.ote.timing.log.path </td>
+			</tr>
+			<tr>
+				<td>osee.ats.ignore.config.upgrades </td>
+				<td><code>true, false</code> </td>
+			</tr>
+		</table>
+		<h3 id="Setting_Up_Clients_and_Multiple_Servers_to_work_together">Setting Up Clients and Multiple Servers to work together</h3>
+		<p>As described in the Architecture Section 
+			<a href="http://wiki.eclipse.org/OSEE/Developers_Guide#Client.2FServer_Architecture" target="osee_external">http://wiki.eclipse.org/OSEE/Developers_Guide#Client.2FServer_Architecture</a>, the Clients can be configured to choose a particular server or group of servers. By specifying a server version, the arbitration server will pick only the application servers that are configured to work with the client. For instance, the configuration would make it possible to choose only servers in the same location as the clients.
+			<br/> 
+		</p>
+		<p>Steps: 
+			<br/>1. Configure each application server on the local server machine(s) to support the local clients.
+			<br/>&nbsp;&nbsp;&nbsp; a) Set the osee.version system property to a string that will provide a common property to use with the OSEE Client. 
+			<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Example: In the VM Arguments for the server startup, add: 
+			<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; –Dosee.version=”localSiteName”
+			<br/>&nbsp;&nbsp;&nbsp; b) Set the osee.application.server.data to a location on the server for the local copy of the application data 
+			<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Example: -Dosee.application.server.data=”path/to/local/data”
+			<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Note: this local path could be rsync’d to another site to improve local data performance
+			<br/>&nbsp;&nbsp;&nbsp; c) Set the http port to the port number for the client to access the server on
+			<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Example: -Dorg.osgi.service.http.port=8092
+			<br/>2. Configure the OSEE Client to connect to the one of the servers as an arbitration server
+			<br/>&nbsp;&nbsp;&nbsp; a) Set the osee.arbitration.server system property to the URL for one of the application servers configured in step 1.
+			<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Example: -Dosee.arbitrations.server=
+			<a href="http://your.server.com:8092" target="osee_external">http://your.server.com:8092</a>
+			<br/>&nbsp;&nbsp;&nbsp; b) Set the osee.version system property to match the application server(s)
+			<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Example: –Dosee.version=”localSiteName”
+			<br/>
+			<br/>
+		</p>
+		<h3 id="Developer_Workspace_Configuration">Developer Workspace Configuration</h3>
+		<h4 id="Import_Java_Code_Auto_Formatting_Preferences">Import Java Code Auto Formatting Preferences</h4>
+		<ol>
+			<li>Start OSEE</li>
+			<li>
+				<b>File-->Import...</b>
+			</li>
+			<li>Select 
+				<b>General/Preferences</b>
+			</li>
+			<li>Click 
+				<b>Next &gt;</b>
+			</li>
+			<li>Click 
+				<b>Browse</b> and navigate to (and select) the file 
+				<i>
+					<a href="workspace_root">workspace_root</a>\org.eclipse.osee\plugins\org.eclipse.osee.support.config\osee_team_preferences.epf
+				</i>
+			</li>
+			<li>Click 
+				<b>Open</b>
+			</li>
+			<li>Check 
+				<b>Import all</b>
+			</li>
+			<li>Click 
+				<b>Finish</b>
+			</li>
+		</ol>
+		<h4 id="Configure_New_Code_Template_Preferences">Configure New Code Template Preferences</h4>
+		<ul>
+			<li>Window--&gt;Preferences </li>
+			<li>Java/Code Style/Code Templates </li>
+			<li>Code/New Java Files </li>
+			<li>Click Edit... </li>
+			<li>Paste the following (or some variant).&nbsp; Be careful not to modify the template variables, i.e.: "${package_declaration}":</li>
+		</ul>
+		<pre>/*******************************************************************************
+ * Copyright (c) 2012 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+${package_declaration}
+/**
+ * @author Joe P. Schmoe
+ */
+${typecomment}
+${type_declaration}
+</pre>
+		<ul>
+			<li>Code/Catch block body</li>
+			<li>Click Edit...</li>
+			<li>Paste the following (or some variant):
+				<br/>
+			</li>
+		</ul>
+		<pre>OseeLog.log(Activator.class, Level.SEVERE, ${exception_var});
+</pre>
+		<p>
+			<br/>
+		</p>
+		<h2 id="Custom_Data_Model">Custom Data Model</h2>
+		<p>The data model in OSEE is extensible and user configurable. Users can define new artifact, attribute, and relation types and their constraints such as multiplicity and applicability. Type inheritance allows similar types to be defined and modified without tedious redundancy because similar types inherit what is common from their super type. </p>
+		<p>The OSEE data model is defined using a tabular format involving 5 tables. See the following 
+			<a href="http://git.eclipse.org/c/osee/org.eclipse.osee.git/tree/plugins/org.eclipse.osee.framework.skynet.core/support" target="osee_external">link</a> for an example. 
+		</p>
+		<p>The full data model can be defined using a single spreadsheet or be divided among multiple spreadsheets that can reference types defined in any spreadsheet. </p>
+		<h3 id="Artifact_Type_Table">Artifact Type Table</h3>
+		<table class="wikitable" border="1">
+			<tr>
+				<th>Column Name </th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>Artifact Type Name </td>
+				<td>any valid UTF-8 characters with a max length of 75 bytes</td>
+			</tr>
+			<tr>
+				<td>Super Type Name </td>
+				<td>The super artifact type from which this type will inherit associated attributes and relations. Another concrete artifact type or an abstract one that exists only in data model definition.</td>
+			</tr>
+		</table>
+		<h3 id="Artifact_Factory">Artifact Factory</h3>
+		<p>When defining new artifact types, by default, the Java class used to create the artifact at runtime is <code>org.eclipse.osee.framework.skynet.core.artifact.Artifact</code>. When a specialized subtype of Artifact is desired, the extension point <code>org.eclipse.osee.framework.skynet.core.ArtifactFactory</code> can be used to contribute an artifact factory that extends the class <code>org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory</code>. The factory's <code>isResponsibleFor(String artifactTypeName)</code> method determines if a particular factory will be used to construct an artifact of a given artifact type. Thus the artifact factory extension point can be used to case user defined artifact types to be constructed at runtime using a custom Java class that extends Artifact. </p>
+		<h3 id="Attribute_Type_Table">Attribute Type Table</h3>
+		<table class="wikitable" border="1">
+			<tr>
+				<th>Column Name </th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>Attribute Base Type </td>
+			</tr>
+			<tr>
+				<td>Attribute Data Provider </td>
+				<td>The attribute data provider is responsible for storing and retrieving attribute data. Fully qualified java class name of a class that implements <code>org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider</code>. <code>org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider</code> may be used when the data to be stored does not exceeded 4000 bytes, otherwise <code>org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider</code> may be used.</td>
+			</tr>
+			<tr>
+				<td>Attribute Type Name </td>
+				<td>Any valid UTF-8 characters with a max length of 500 bytes</td>
+			</tr>
+			<tr>
+				<td>File Extension </td>
+				<td>Any valid UTF-8 characters with a max length of 50 bytes; only applies when using the <code>org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider</code></td>
+			</tr>
+			<tr>
+				<td>Tagger ID </td>
+				<td>If the attrbiute’s content is to be included in the search index for the quick search, use <code>DefaultAttributeTaggerProvider</code>, otherwise leave blank.</td>
+			</tr>
+			<tr>
+				<td>Default Value </td>
+				<td>The initial value given an attribute upon initialization, this may be left blank</td>
+			</tr>
+			<tr>
+				<td>Validity Xml </td>
+				<td>For the attribute base type <code>org.eclipse.osee.framework.skynet.core.EnumeratedAttribute</code>, specifies the valid enumerations. For example, &lt;Page_Type&gt;&lt;Enum&gt;Portrait&lt;/Enum&gt;&lt;Enum&gt;Landscape&lt;/Enum&gt;&lt;/Page_Type&gt;</td>
+			</tr>
+			<tr>
+				<td>Min Occurrence </td>
+				<td>The framework with prevent having lest than this number of this attribute type on a single artifact</td>
+			</tr>
+			<tr>
+				<td>Max Occurrence </td>
+				<td>The framework with prevent adding more than this number of this attribute type to a single artifact</td>
+			</tr>
+			<tr>
+				<td>Tip Text </td>
+				<td>Text to describe an attribute. Any valid UTF-8 characters with a max length of 4000 bytes</td>
+			</tr>
+		</table>
+		<h3 id="Artifact_Type_.2F_Attribute_Type_Mapping_Table">Artifact Type / Attribute Type Mapping Table</h3>
+		<table class="wikitable" border="1">
+			<tr>
+				<th>Column Name </th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>Artifact Type Name </td>
+				<td>Exact name of an artifact type defined above (or previously)</td>
+			</tr>
+			<tr>
+				<td>Attribute Type Name </td>
+				<td>Exact name of an attribute type defined above (or previously) to be associated with the corresponding artifact type</td>
+			</tr>
+		</table>
+		<h3 id="Relation_Type_Table">Relation Type Table</h3>
+		<table class="wikitable" border="1">
+			<tr>
+				<th>Column Name </th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>Relation Type Name </td>
+				<td>Any valid UTF-8 characters with a max length of 50 bytes</td>
+			</tr>
+			<tr>
+				<td>Side A Name </td>
+				<td>Descriptive name for the A side of the relation. Any valid UTF-8 characters with a max length of 50 bytes</td>
+			</tr>
+			<tr>
+				<td>A to B Phrase </td>
+				<td>An optional phrase that describe the relation between the artifacts from the side A perspective. Any valid UTF-8 characters with a max length of 50 bytes</td>
+			</tr>
+			<tr>
+				<td>Side B Name </td>
+				<td>Descriptive name for the B side of the relation. Any valid UTF-8 characters with a max length of 50 bytes</td>
+			</tr>
+			<tr>
+				<td>B to A Phrase </td>
+				<td>An optional phrase that describe the relation between the artifacts from the side B perspective. Any valid UTF-8 characters with a max length of 50 bytes</td>
+			</tr>
+			<tr>
+				<td>Short Name </td>
+				<td>Five or less characters is typical. This abbreviated name is used in the user interface when space is at a premium</td>
+			</tr>
+			<tr>
+				<td>Ordered </td>
+				<td><code>Yes</code> to have artifacts on the same side of this relation type use a user defined ordered, otherwise <code>No</code></td>
+			</tr>
+		</table>
+		<h3 id="Artifact_Type_.2F_Relation_Type_Mapping_Table">Artifact Type / Relation Type Mapping Table</h3>
+		<table class="wikitable" border="1">
+			<tr>
+				<th>Column Name </th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>Artifact Type </td>
+				<td>Exact name of an artifact type defined above (or previously)</td>
+			</tr>
+			<tr>
+				<td>Relation Type </td>
+				<td>Exact name of an relation type defined above (or previously)</td>
+			</tr>
+			<tr>
+				<td>Side A Max </td>
+				<td>An artifact of type "Artifact Type" can be on side "A", "Side A Max" number of times for relation links of type "Relation Type"</td>
+			</tr>
+			<tr>
+				<td>Side B Max </td>
+				<td>An artifact of type "Artifact Type" can be on side "B", "Side B Max" number of times for relation links of type "Relation Type"</td>
+			</tr>
+		</table>
+		<h2 id="Importing_an_OSEE_Data_Model">Importing an OSEE Data Model</h2>
+		<p>To import changes to the data model for an existing OSEE database: </p>
+		<ol>
+			<li>In Package Explorer, Select a file(s) containing the OSEE data model to import. If there are any enum overrides, you must select them either explicitly or by import statement (hierarchically). </li>
+			<li>Right click and select <code>Import...</code> </li>
+			<li>Under the <code>OSEE</code> category, select <code>OSEE Types</code> </li>
+			<li>Ensure that all types files are included in <code>Resolved dependencies</code> and <code>Report Changes</code> is checked. Select Finish. </li>
+			<li>Review all tabs to ensure that all changes are expected. 
+				<ol>
+					<li><code>Osee Default Enum</code> will always show up on <code>OseeEnum Types</code> tab </li>
+					<li>Ensure each column's data is correct. All "true" values are what is being changed. </li>
+				</ol>
+			</li>
+			<li>When ready to persist changes, you must restart the client (Still Necessary??) and only run import once with <code>Persist Changes</code> checked</li>
+		</ol>
+		<p>To automatically import the data model during database initialization use the extension point <code>org.eclipse.osee.framework.skynet.core.OseeTypes</code> </p>
+		<h2 id="OSEE_Branches">OSEE Branches</h2>
+		<p>
+			<a href="http://wiki.eclipse.org/OSEE/Branches" target="osee_external">OSEE Branches</a> 
+		</p>
+		<h2 id="Workspace_Setup">Workspace Setup</h2>
+		<p>
+			<a href="http://wiki.eclipse.org/OSEE/Workspace_Setup" target="osee_external">Workspace Setup</a> 
+		</p>
+		<h2 id="Downloading_and_Configuring_Eclipse">Downloading and Configuring Eclipse</h2>
+		<p>
+			<a href="http://wiki.eclipse.org/OSEE/Workspace_Setup#Downloading_and_Configuring_Eclipse" target="osee_external">Downloading and Configuring Eclipse</a> 
+		</p>
+		<h2 id="Working_with_GIT">Working with GIT</h2>
+		<p>
+			<a href="http://wiki.eclipse.org/OSEE/Workspace_Setup#Working_with_Git" target="osee_external">Working with Git</a> 
+		</p>
+		<h2 id="Testing">Testing</h2>
+		<p>JUnit Method Rules: </p>
+		<table border="1" cellpadding="1" width="95%">
+			<tr>
+				<th>Rule class</th>
+				<th>Description</th>
+				<th>Example</th>
+			</tr>
+			<tr>
+				<td>
+					<b>OseeHousekeepingRule</b>
+				</td>
+				<td>Checks if the Artifact Cache is clean</td>
+			</tr>
+			<tr></tr>
+		</table>
+		<p>
+			<br/>
+		</p>
+		<h2 id="Location_of_OSEE_Bundles">Location of OSEE Bundles</h2>
+		<p>
+			<a href="http://wiki.eclipse.org/OSEE/Workspace_Setup#Locations_of_all_OSEE_bundles" target="osee_external">Location of OSEE Bundles</a> 
+		</p>
+		<h2 id="Migrating_Branches_to_Another_OSEE_Database_.28including_from_previous_OSEE_version.29">Migrating Branches to Another OSEE Database (including from previous OSEE version)</h2>
+		<ol>
+			<li>From the source application server's osgi console: export_branch myExportFolder </li>
+			<li>The results will be placed in &lt;user home&gt;\Exchange\myExportFolder </li>
+			<li>Zip the resulting folder and save it for possible reuse </li>
+			<li>Run database initialization on destination database</li>
+		</ol>
+		<table style="background:rgb(230,230,230);color:black; border:1px solid gray; font-family: fixedsys;text-align: left" cellpadding="20px" cellspacing="0" width="80%">
+			<tr></tr>
+		</table>
+		<ol>
+			<li>Import any custom types into the destination database </li>
+			<li>From the destination application server's osgi console: import_branch &lt;user home&gt;\Exchange\myExportFolder </li>
+			<li>From the application server run <code>tag_all</code> </li>
+			<li>Restart destination application server </li>
+			<li>Start corresponding OSEE client</li>
+		</ol>
+		<h2 id="Configuring_ATS_for_Change_Tracking">Configuring ATS for Change Tracking</h2>
+		<p>
+			<a href="http://wiki.eclipse.org/OSEE/ATS/Users_Guide/Usage#Configure_ATS_for_Change_Tracking" title="OSEE/ATS/Users Guide/Usage#Configure_ATS_for_Change_Tracking" target="osee_external">Configuring ATS for Change Tracking</a> 
+		</p>
+		<h2 id="Custom_OSEE_Operations_using_BLAM">Custom OSEE Operations using BLAM</h2>
+		<p>the extension point <code>org.eclipse.osee.framework.ui.skynet.BlamOperation</code> can be used to contribute a custom OSEE operation that provides the developer a very quick way to define the graphical interface that supplies the operation with the user specified parameters. <code>org.eclipse.osee.framework.ui.skynet.blam.operation.ChangeArtifactTypeBlam</code> provides a simple example. </p>
+		<h2 id="Event_Handling">Event Handling</h2>
+		<h3 id="General_Design_Considerations">General Design Considerations</h3>
+		<ul>
+			<li>Event Handlers should run VERY quickly </li>
+			<li>A private implementation is more secure </li>
+			<li>Separate classes == maintainable but potentially costly </li>
+			<li>Ensure each listener is safeguarded from other listeners (wrap in event handling)</li>
+		</ul>
+		<h3 id="Requirements">Requirements</h3>
+		<ul>
+			<li>Need local client events and remote events to other clients 
+				<ul>
+					<li>Local event model should be abstracted from remote model so app code doesn't change </li>
+					<li>Remote events should be versioned so event service can know how to handle </li>
+				</ul>
+			</li>
+			<li>Need to handle events where artifact or relation is not in client's cache, but event may still matter 
+				<ul>
+					<li>Client can't load every artifact to determine if it's desired </li>
+					<li>Registration needs to be at base level guid,artTypeId,branchId so these can be filtered out without loading all artifact data. </li>
+				</ul>
+			</li>
+			<li>Need to provide lowest level registration (branch, artType and possibly even attrType) so event msgs reduced </li>
+			<li>Need to support versions of remote events so remote event model can change without causing exceptions </li>
+			<li>MUST have regression tests that are light-weight and easy to run so event service doesn't break </li>
+			<li>Since Artifact, Relation, Attribute types are dynamic, can't create static message model/brokers </li>
+			<li>Since artifact/relation/branch caches must be updated PRIOR to events propagate to GUI 
+				<ul>
+					<li>Need priority listeners for caches to update prior to UI updates </li>
+				</ul>
+			</li>
+			<li>Applications should be able to define their own higher level events while still listening to lower level events</li>
+		</ul>
+		<h3 id="Event_Handling_Revelations">Event Handling Revelations</h3>
+		<ul>
+			<li>Reduce the necessity of events as much as possible - Restful </li>
+			<li>Data injection to keep caches up-to-date a complex/impossible solution for enterprise, multi-client, multi-server operations </li>
+			<li>All clients MUST be connected to event service if connected to database/app service </li>
+			<li>Applications shouldn't have to know what events to handle, but instead presented all the events to handle 
+				<ul>
+					<li>Don't have separate purge, modified, change type events, but instead Artifact listener that has change types of purge, modified, deleted, change type, etc </li>
+				</ul>
+			</li>
+			<li>Since artifacts/relations are cached, application to application events are prone to errors if cache not updated yet</li>
+		</ul>
+		<h3 id="Event_Handling_Ideas_.2F_Goals">Event Handling Ideas / Goals</h3>
+		<ul>
+			<li>How could we have a version for each artifact so clients could know if they are up-to-date or missed an update and reload-all. This would allow for self-healing. </li>
+			<li>Reduce the items in the cache by improving our use of weak references. Anything not in the cache, doesn't have to get updated </li>
+			<li>Move configurations that have to be loaded by all clients to the server. Branch and type caches already there. Users and ATS Config could go there. </li>
+			<li>Is there a way to have events go straight to UIs (Editors, Views) to see if anyone cares that the cache is updated before updating the cache?</li>
+		</ul>
+		<h3 id="OSEE_Event_Handling_-_Current">OSEE Event Handling - Current</h3>
+		<ul>
+			<li>Design Issues 
+				<ul>
+					<li>Communication mechanism - Jini 
+						<ul>
+							<li>Clients are not connecting </li>
+							<li>Clients not staying connected </li>
+						</ul>
+					</li>
+					<li>Event System 
+						<ul>
+							<li>Events are at the data level; applications are required to turn high level operations (eg: save, transition) into low level data events (30 attributes modified, 10 relations added, 5 deleted) which are sent across the wire to another client to re-assemble into a high level operation. </li>
+							<li>Registration is for too high a level, each editor,view has to process through all events to find ones they care about </li>
+							<li>Have to filter between loaded and unloaded artifacts and handle them differently so as not to accidentally load everything </li>
+							<li>Have to register/handle separately for deleted versus purged </li>
+							<li>Two levels of registration for artifacts/attributes/relations, by transaction and by dirty. By dirty is too much information, but necessary sometimes. By transaction is ok, but have to filter through all un-necessary stuff to find what want. Dangerous and costly. </li>
+							<li>Access control is not handled in events </li>
+							<li>Not extensible, so applications can't create/propagate their own events </li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li>Registration 
+				<ul>
+					<li>ArtifactPurgedEvent </li>
+					<li>FrameworkTransactionEvent </li>
+					<li>RelationModifiedEvent </li>
+					<li>BranchEvent</li>
+				</ul>
+			</li>
+		</ul>
+		<h3 id="OSEE_Event_Handling_-_New">OSEE Event Handling - New</h3>
+		<ul>
+			<li>Registration - Need lower level registration of framework events 
+				<ul>
+					<li>By Artifact (branch, guid) </li>
+					<li>By Object Type (artifact, attribute, relation) - include inheritance </li>
+					<li>By Mod Type (added, modified, deleted, purged) </li>
+					<li>By Transaction (persist to DB of group of changes) </li>
+					<li>By Combinations (Artifact type and relation type or Artifact type and attribute type) </li>
+				</ul>
+			</li>
+			<li>ArtifactEventManager 
+				<ul>
+					<li>Sends BasicGuidArtifact for each mod type </li>
+					<li>Modification Types: Purged, Added, Modified, Deleted, Change Type, Access Control </li>
+					<li>Allow registration with filters 
+						<ul>
+							<li>ArtifactGuidFilter - only sends event if artifact is affected </li>
+							<li>BranchGuidFilter - only send event if artifact on this branch is affected </li>
+							<li>ArtifactTypeGuidFilter - only sends event if artifact of one of these types is affected </li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li>BranchEventManager 
+				<ul>
+					<li>Modification Types: Added, Deleted, Purged, Access Control, Renamed </li>
+					<li>Allow registration with same filters as Artifact </li>
+				</ul>
+			</li>
+			<li>Remote events are different and versioned classes so abstract from framework events </li>
+			<li>Created via jaxb</li>
+		</ul>
+		<h3 id="Event_Model">Event Model</h3>
+		<h4 id="Remote_Events">Remote Events</h4>
+		<ol>
+			<li>Remote events classes are auto-generated via jaxb which keeps toXml, fromXml implementation hidden and thus requires less junit tests for base clasess. </li>
+			<li>Each class is versioned by name (1, 2, 3). When RemoteBranchEvent1 changes, will create RemoteBranchEvent2 so there is no conflicts and implement backward compatibility that will 
+				<ol>
+					<li>Create RemoteBranchEvent2 events when RemoteBranchEvent1 are received - for old clients </li>
+					<li>Create RemoteBranchEvent1 events when RemoteBranchEvent2 are received - for new clients </li>
+				</ol>
+			</li>
+			<li>Current classes: 
+				<ol>
+					<li>RemoteAccessControlArtifactsEvent1.java </li>
+					<li>RemoteAttributeChange1.java </li>
+					<li>RemoteBasicGuidArtifact1.java </li>
+					<li>RemoteBasicModifiedGuidArtifact1.java </li>
+					<li>RemoteBranchEvent1.java </li>
+					<li>RemoteBranchRenameEvent1.java </li>
+					<li>RemoteBroadcastEvent1.java </li>
+					<li>RemoteChangeTypeArtifactsEvent1.java </li>
+					<li>RemoteNetworkSender1.java </li>
+					<li>RemotePurgedArtifactsEvent1.java </li>
+					<li>RemoteTransactionDeletedEvent1.java </li>
+					<li>RemoteTransactionEvent1.java</li>
+				</ol>
+			</li>
+		</ol>
+		<h4 id="Framework_Events_.2F_Listeners">Framework Events / Listeners</h4>
+		<ul>
+			<li>ArtifactEvent </li>
+			<li>BranchEvent </li>
+			<li>BroadcastEvent </li>
+			<li>AccessControl?? - Potentially roll into ArtifactEvent </li>
+			<li>TransactionDeleted?? - Potentially roll into ArtifactEvent</li>
+		</ul>
+		<h2 id="Use_Cases">Use Cases</h2>
+		<ul>
+			<li>Artifact Editor 
+				<ul>
+					<li>Current Design 
+						<ul>
+							<li>Registration = All Branches, Mod Types, Object Types </li>
+							<li>Handling 
+								<ul>
+									<li>If not branch, throw away </li>
+									<li>If unloaded, ignore </li>
+									<li>If loaded refresh/update all </li>
+									<li>If relation, refresh relation tree </li>
+									<li>If attribute, refresh attribute tab </li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li>New Design 
+						<ul>
+							<li>Registration = One guid and relations for that guid </li>
+							<li>Handling 
+								<ul>
+									<li>If relation, refresh relation tree </li>
+									<li>If attribute, refresh attribute tab </li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li>Artifact Explorer 
+				<ul>
+					<li>Current Design 
+						<ul>
+							<li>Registration = All Branches, Mod Types, Object Types </li>
+							<li>Handling 
+								<ul>
+									<li>If not branch, throw away </li>
+									<li>If unloaded, ignore </li>
+									<li>If loaded refresh/update all </li>
+									<li>If relation, get parent and call tree.refresh() </li>
+									<li>If attribute (name only), call tree.update(element) </li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li>New Design 
+						<ul>
+							<li>Registration = One branch, One relation type, All Object Types </li>
+							<li>Handling = About the same, but don't have to filter through un-necessary stuff </li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li>SMA Editor - Edits single team workflow, but watches related tasks, reviews, user assignments, etc 
+				<ul>
+					<li>Current Design 
+						<ul>
+							<li>Registration = purged, relation modified, framework transaction, branch event. NOTE: Should register by branchId (Common), guids of workflows, artifact types (eg. don't care about general document artifact type changes on common) </li>
+							<li>Handling 
+								<ul>
+									<li>If not Common branch or in transition, ignore all artifact/relation/attribute changes </li>
+									<li>If is purged/deleted, close editor </li>
+									<li>If is modified, deleted, relChanged, relDeleted, relAdded of main artifact, redraw pages </li>
+									<li>If related review is any of above, redraw pages </li>
+									<li>If relation modified, dirty editor </li>
+									<li>If branch event and working branch added, deleted, purged, committed, redraw pages </li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li>New Design 
+						<ul>
+							<li>Registration - One branch, 12 artifact types </li>
+							<li>Handling = About the same, but don't have to filter through un-necessary stuff</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+		<p>References </p>
+		<ul>
+			<li>
+				<a href="http://java.sun.com/docs/books/tutorial/uiswing/events/generalrules.html" target="osee_external">http://java.sun.com/docs/books/tutorial/uiswing/events/generalrules.html</a>
+			</li>
+		</ul>
+		<h2 id="Building_OSEE_using_Tycho.2FMaven">Building OSEE using Tycho/Maven</h2>
+		<h3 id="Build_Requirements">Build Requirements</h3>
+		<ul>
+			<li>Java Runtime Environment (JRE) 1.6 or higher </li>
+			<li>Maven 3.0 or higher</li>
+		</ul>
+		<h3 id="Build_Steps">Build Steps</h3>
+		<ol>
+			<li>Download and install Maven. See 
+				<a href="http://maven.apache.org" target="osee_external">http://maven.apache.org</a> for installation details.
+			</li>
+			<li>Download the OSEE source code from 
+				<a href="http://git.eclipse.org/c/osee/org.eclipse.osee.git" target="osee_external">Git Web Client</a> (see clone section for more information] or 
+				<a href="https://github.com/eclipse/osee" target="osee_external">https://github.com/eclipse/osee</a>
+				<dl>
+					<dd>
+						<b>Note:</b> 
+						<i>Tycho/Maven build support available for source code versions 0.9.9_SR6 and higher.</i>
+					</dd>
+				</dl>
+			</li>
+			<li>Download and unzip 3rd party dependency P2 archived site: 
+				<a href="http://code.google.com/p/osee-external/downloads/detail?name=org.eclipse.ip.p2_1.0.0.v201203200040-DEV.zip&amp;can=2&amp;q=" target="osee_external">http://code.google.com/p/osee-external/downloads/detail?name=org.eclipse.ip.p2_1.0.0.v201203200040-DEV.zip&amp;can=2&amp;q=</a>
+			</li>
+			<li>Build commands: 
+				<ol>
+					<li>
+						<b>cd org.eclipse.osee/plugins/org.eclipse.osee.parent</b>
+					</li>
+					<li>
+						<b>mvn clean verify -Declipse-ip-site="file:&lt;PATH TO 3rd PARTY P2 SITE&gt;"</b>
+					</li>
+					<li>If you run into any problems (to display debug and stack trace info)
+						<dl>
+							<dd>
+								<b>mvn -e -X verify -Declipse-ip-site="file:&lt;PATH TO 3rd PARTY P2 SITE&gt;"</b>
+							</dd>
+						</dl>
+					</li>
+				</ol>
+			</li>
+		</ol>
+		<pre>Assuming the following layout:&lt;br/&gt;/UserData/org.eclipse.osee&lt;br/&gt;/UserData/org.eclipse.ip.p2_1.0.0.v201203200040-DEV&lt;br/&gt;&lt;br/&gt;machine@user /UserData/org.eclipse.osee/plugins/org.eclipse.osee.parent:&lt;br/&gt;$mvn clean verify -Declipse-ip-site="file:../../../org.eclipse.ip.p2_1.0.0.v201203200040-DEV"
+</pre>
+		<h3 id="Interactive_Build">Interactive Build</h3>
+		<pre>&amp;#9758; '''Depends on org.eclipse.osee.ip.p2'''
+</pre>
+		<dl>
+			<dd>To build all org.eclipse.osee artifacts
+				<ol>
+					<li>cd org.eclipse.osee/plugins/org.eclipse.osee.support.maven</li>
+					<li>Issue maven build command: 
+						<b>mvn compile -Declipse-ip-site="file:../../../org.eclipse.ip.p2_1.0.0.v201203200040-DEV"</b>
+					</li>
+					<li>Select build options when prompted</li>
+				</ol>
+			</dd>
+		</dl>
+		<h3 id="Build_Module_Hierarchy_.28from_highest_to_lowest.29">Build Module Hierarchy (from highest to lowest)</h3>
+		<ol>
+			<li>org.eclipse.osee.parent
+				<ol>
+					<li>org.eclipse.osee.ide.parent
+						<ol>
+							<li>org.eclipse.osee.client.all.parent</li>
+							<li>org.eclipse.osee.client.parent</li>
+							<li>org.eclipse.osee.ote.parent</li>
+							<li>org.eclipse.osee.runtime.parent</li>
+						</ol>
+					</li>
+					<li>org.eclipse.osee.x.parent
+						<ol>
+							<li>org.eclipse.osee.x.server.parent</li>
+							<li>org.eclipse.osee.orcs.parent</li>
+							<li>org.eclipse.osee.x.core.parent</li>
+						</ol>
+					</li>
+				</ol>
+			</li>
+		</ol>
+		<h3 id="Build_Artifacts">Build Artifacts</h3>
+		<table border="1" cellpadding="1">
+			<tr>
+				<th>Path</th>
+				<th>Artifact</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td rowspan="2">plugins/org.eclipse.osee.client.all.p2/target/</td>
+				<td>repository/</td>
+				<td>OSEE IDE Client P2 Site</td>
+			</tr>
+			<tr>
+				<td>org.eclipse.osee.client.all.p2.zip</td>
+				<td>OSEE IDE Client P2 Archived Update Site</td>
+			</tr>
+			<tr>
+				<td rowspan="5">plugins/org.eclipse.osee.client.all.product/target/products/</td>
+				<td>build_label.txt</td>
+				<td>OSEE Build Information </td>
+			</tr>
+			<tr>
+				<td>org.eclipse.osee.ide.id-linux.gtk.x86.tar.gz</td>
+				<td>OSEE Client IDE All-In-One Linux x86</td>
+			</tr>
+			<tr>
+				<td>org.eclipse.osee.ide.id-linux.gtk.x86_64.tar.gz</td>
+				<td>OSEE Client IDE All-In-One Linux x86 64-bit</td>
+			</tr>
+			<tr>
+				<td>org.eclipse.osee.ide.id-win32.win32.x86.zip</td>
+				<td>OSEE Client IDE All-In-One Win32 x86</td>
+			</tr>
+			<tr>
+				<td>org.eclipse.osee.ide.id-win32.win32.x86_64.zip</td>
+				<td>OSEE Client IDE All-In-One Win32 x86 64-bit</td>
+			</tr>
+			<tr>
+				<td rowspan="4">plugins/org.eclipse.osee.x.server.p2/target</td>
+				<td>repository/</td>
+				<td>OSEE Application Server P2 Site </td>
+			</tr>
+			<tr>
+				<td>server/</td>
+				<td>OSEE Application Server</td>
+			</tr>
+			<tr>
+				<td>org.eclipse.osee.x.server.p2.zip</td>
+				<td>OSEE Application Server Archived Update Site</td>
+			</tr>
+			<tr>
+				<td>org.eclipse.osee.x.server.runtime.zip</td>
+				<td>OSEE Application Server Zipped Runtime</td>
+			</tr>
+			<tr></tr>
+		</table>
+		<p>
+			<br/>
+		</p>
+		<h4 id="OSEE_System_Requirements">OSEE System Requirements</h4>
+		<ul>
+			<li>System with at least 1GB of RAM </li>
+			<li>Relational database. H2 is included by default. If you wish to use something else such as PostgreSQL or Oracle, please see instructions for installing 
+				<a href="http://wiki.eclipse.org/OSEE/Users_Guide/Getting_Started#Supported_Databases" title="OSEE/Users Guide/Getting Started#Supported_Databases" target="osee_external">Supported Databases</a> to complete this step.
+			</li>
+		</ul>
+		<h2 id="Database_Schema">Database Schema</h2>
+		<p>TODO: add html generated from SKYNET_VERSIONING.xml file.</p>
+		<h2 id="How_to_Define_Classes_for_Coverage_Importing">How to Define Classes for Coverage Importing</h2>
+		<p>The following steps walk a developer through defining the classes necessary to begin importing coverage data into the OSEE application.&nbsp; Please keep in mind that these are meant to be simplified examples and developers are encouraged to 'get creative' when adapting these examples to their own particular context.
+			<br/> 
+
+			<img border="0" src="images/TestWorkflow.png"/> 
+		</p>
+		<p>
+			<b>1. Write a class that extends AbstractCoverageBlam</b>
+			<br/> 
+		</p>
+		<pre>public class MyCoverageImportBlam extends AbstractCoverageBlam {
+   public static String COVERAGE_IMPORT_DIR = "Coverage Import Directory";
+   public static String NAMESPACE = "Code Namespace";
+
+   @Override
+   public String getName() {
+      return "My Coverage Import";
+   }
+
+   @Override
+   public Collection&amp;lt;String&amp;gt; getCategories() {
+      return Arrays.asList("Blams");
+   }
+
+   @Override
+   public String getDescriptionUsage() {
+      return "Import coverage from coverage directory.";
+   }
+
+   @Override
+   public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+      try {
+         final String coverageInputDir = variableMap.getString(COVERAGE_IMPORT_DIR);
+         if (!Strings.isValid(coverageInputDir)) {
+            throw new OseeArgumentException("Must enter valid filename.");
+         }
+         final String namespace = variableMap.getString(NAMESPACE);
+         if (!Strings.isValid(namespace)) {
+            throw new OseeArgumentException("Must enter valid namespace.");
+         }
+
+         File file = new File(coverageInputDir);
+         if (!file.exists()) {
+            throw new OseeArgumentException("Invalid filename.");
+         }
+
+         MyCoverageImporter myCoverageImporter = new MyCoverageImporter(coverageInputDir, namespace);
+         CoverageImport coverageImport = myCoverageImporter.run(monitor);
+         setCoverageImport(coverageImport);
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+
+   @Override
+   public String getXWidgetsXml() {
+      StringBuffer buffer = new StringBuffer("&amp;lt;xWidgets&amp;gt;");
+      buffer.append("&amp;lt;XWidget xwidgetType=\"XDirectorySelectionDialog\" " + getDefaultDirectory() + " displayName=\"" + COVERAGE_IMPORT_DIR + "\" /&amp;gt;");
+      buffer.append("&amp;lt;XWidget xwidgetType=\"XText\" displayName=\"" + NAMESPACE + "\" /&amp;gt;");
+      buffer.append("&amp;lt;/xWidgets&amp;gt;");
+      return buffer.toString();
+   }
+
+   private String getDefaultDirectory() {
+      if (CoverageUtil.isAdmin()) {
+         return " defaultValue=\"C:\\UserData\" ";
+      }
+      return "";
+   }
+
+}
+
+</pre>
+		<p> 
+
+			<b>2. Define a class that implements ICoverageImporter</b> 
+		</p>
+		<pre>public class MyCoverageImporter implements ICoverageImporter {
+   private final String coverageInputDir;
+   private final String namespace;
+   private final CoverageImport coverageImport = new CoverageImport("My Coverage Import");
+
+   public MyCoverageImporter(String coverageInputDir, String namespace) {
+      this.coverageInputDir = coverageInputDir;
+      this.namespace = namespace;
+   }
+
+   @Override
+   public String getName() {
+      return "My Coverage Importer";
+   }
+
+   @Override
+   public CoverageImport run(IProgressMonitor progressMonitor) throws OseeCoreException {
+      /*
+       * Use any member variables to populate coverageImport
+       */
+      return coverageImport;
+   }
+
+}
+
+</pre>
+		<p> 
+
+			<b>3. Add extension point declaration to package's plugin.xml</b>
+			<br/> 
+		</p>
+		<pre>&amp;lt;?xml version="1.0" encoding="UTF-8"?&amp;gt;
+&amp;lt;?eclipse version="3.4"?&amp;gt;
+&amp;lt;plugin&amp;gt;
+   &amp;lt;extension
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation"&amp;gt;
+      &amp;lt;Operation
+            className="com.my.coverage.MyCoverageImportBlam"&amp;gt;
+      &amp;lt;/Operation&amp;gt;
+   &amp;lt;/extension&amp;gt;
+&amp;lt;/plugin&amp;gt;
+</pre>
+		<p> 
+
+			<br/>
+		</p>
+		<h2 id="OSEE_Web_Development">OSEE Web Development</h2>
+		<p>OSEE provides a simple mechanism to contribute static web resources in the MANIFEST.MF.  The header "Osee-JaxRs-Resource" allows specifying a path in the bundle and its mapping to a URL.  See org.eclipse.osee.ats.rest/META-INF/MANIFEST.MF for an example.  The resource(s) at that path will be severed by the embedded web server in the OSEE server at the specified URL.</p>
+		<h2 id="Helpful_links">Helpful links</h2>
+		<ul>
+			<li>
+				<a href="http://rcpquickstart.com/2007/06/20/unit-testing-plug-ins-with-fragments/" target="osee_external">http://rcpquickstart.com/2007/06/20/unit-testing-plug-ins-with-fragments/</a> 
+			</li>
+			<li>
+				<a href="http://junit.sourceforge.net/" target="osee_external">http://junit.sourceforge.net/</a> 
+			</li>
+			<li>
+				<a href="http://junit.sourceforge.net/doc/cookbook/cookbook.htm" target="osee_external">http://junit.sourceforge.net/doc/cookbook/cookbook.htm</a> 
+			</li>
+			<li>
+				<a href="http://www.eclipse.org/articles/Article-PDE-Automation/automation.html" target="osee_external">Build and Test Automation for plug-ins and features</a> 
+			</li>
+			<li>
+				<a href="http://www.eclipse.org/documentation/" target="osee_external">Eclipse Documentation Online</a> 
+			</li>
+			<li>
+				<a href="http://www-128.ibm.com/developerworks/library/os-ecgui3/" target="osee_external">Using the Eclipse GUI outside the Eclipse Workbench</a> 
+			</li>
+			<li>
+				<a href="http://www.eclipse.org/articles/article.php?file=Article-Understanding-Layouts/index.html" target="osee_external">Understanding Layouts in SWT</a> 
+			</li>
+			<li>
+				<a href="http://www.eclipsezone.com/articles/eclipse-vms" target="osee_external">Eclipse - a tale of two VMs (and many classloaders)</a> 
+			</li>
+			<li>
+				<a href="http://www.osgi.org/blog/2006/04/strong-lesson-about-modularity.html" target="osee_external">Strong Lesson About OSGI Modularity</a>
+			</li>
+		</ul>
+		<h2 id="Design_Questions">Design Questions</h2>
+		<h3 id="I_have_strange_eclipse.2Fosee_issues_can_I_delete_stuff_from_my_.27.27.27.27.27configuration.27.27.27.27.27_folder.3F">I have strange eclipse/osee issues can I delete stuff from my '''''configuration''''' folder?</h3>
+		<p>yes. Everything 
+			<b>except</b>: 
+		</p>
+		<pre>  config.ini
+ org.eclipse.equinox.simpleconfigurator
+</pre>
+		<h3 id="Is_OSEE_an_application_framework_or_an_application.3F">Is OSEE an application framework or an application?</h3>
+		<p>The simple answer is BOTH. OSEE Application Framework is created to allow applications to be built on top and share the common data model. This can be used independently of any OSEE applications. In addition, there are applications that are delivered with and use the OSEE Application Framework. This includes a full featured Requirements and Document Management System (OSEE Define), a powerful change tracking and configuration management application (OSEE ATS - Action Tracking System), a fully customizable peer-review module and other project, reporting and metrics tools. These application can be used out-of-the-box and new applications can be created or integrated on the framework to share and contribute to the same data. </p>
+		<h3 id="Other_products_sound_similar._Why_OSEE.3F">Other products sound similar. Why OSEE?</h3>
+		<ul>
+			<li>Open Source Extensible Platform </li>
+			<li>Open Eclipse Project w/ Collaboration </li>
+			<li>Tight Integration Around A Common Data Model </li>
+			<li>Full Lifecycle Engineering Environment</li>
+		</ul>
+		<h3 id="Is_OSEE_only_for_Avionics_Engineering.3F">Is OSEE only for Avionics Engineering?</h3>
+		<p>No. OSEE's was created by The Boeing Company in support of the Apache AH-64 Attack Helicopter flight control software. Although it was created to handle the complexity of a large US Department of Defense program, it was architected to support any systems engineering project from a simple application built for a single customer to a large complex application like the Apache flight controls. In addition, since OSEE is an independent application, the OSEE development team uses OSEE to develop, deploy and maintain OSEE. </p>
+		<h3 id="What_is_Skynet.3F">What is Skynet?</h3>
+		<p>Skynet is a legacy term for the persistence portion of the OSEE Application Framework. </p>
+		<h3 id="What_are_Artifact_Framework_types.3F">What are Artifact Framework types?</h3>
+		<p>OSEE provides Artifacts, Attributes and Relations that are strongly typed. This means that the user can create their own artifact type, for example a "Software Requirement" to represent the requirements at a software level and their own attribute types, for example a "Qualification" attribute or a "Safety Criticality" attribute and event their own relations, for example a "Software Requirement to Allocation" relation. These types are defined in the Artifact Framework and can be created dynamically in the system during database creation or while running. This allows the end user to expand the data that is being stored in OSEE without providing a new release. </p>
+		<h3 id="What_is_the_Action_Tracking_System_.28ATS.29.3F">What is the Action Tracking System (ATS)?</h3>
+		<p>The Action Tracking System is the tightly integrated configuration management system built in OSEE and very tightly integrated with the OSEE Application Framework. It uses a powerful workflow engine to provides a fully customizeable workflow to track improvements, problems and support for any number of teams/tools/programs simultaneously. This gives the user a single point view into all the work that they are required to do. </p>
+		<h3 id="Why_build_yet_another_bug_tracking_tool_like_the_Action_Tracking_System_.28ATS.29.3F">Why build yet another bug tracking tool like the Action Tracking System (ATS)?</h3>
+		<p>Although there are a number of open source and commercial bug tracking systems available, OSEE's goal to integrate workflow management and provide a tight integration with the Application Framework, and the applications built on top, required us to develop ATS. ATS is meant to be more than simple bug tracking since it can be used to manage multiple teams working on multiple products or support simultaneously. This means that you can create a single "Action" to "Fix the XYZ capability" that will create the necessary workflows for all the teams that need to perform work. For example, a workflow may be created for not only the Software Development team, but also the test team, documentation team, integration team and even facilities like labs or conference rooms. Each team then moves independently through its workflow to perform the work necessary for the common "Action". In addition, ATS enables complete customization of different workflows for each configured team. This means that the documentation team can follow their own "process" which may contain 5 different states while the application developers can follow their own more complex "process" which may contain 30 different states. </p>
+		<h3 id="How_does_OSEE_handle_traceability.3F">How does OSEE handle traceability?</h3>
+		<p>
+			<a href="http://en.wikipedia.org/wiki/Requirements_Traceability" target="osee_external">Traceability</a> is handled in OSEE through the use of Relations. These relations can be defined in OSEE according to their need and the users can then add and remove these relations throughout the lifecycle of the requirements or other artifacts. Deliverable documents or any report generation would also use this traceability. 
+		</p>
+		<h3 id="What_is_Define.3F">What is Define?</h3>
+		<p>OSEE Define is OSEE's advanced Requirements and Document Management System. OSEE Define can be used to track a simple application's requirements, code and test or configured to support a large program doing concurrent development with multiple parallel builds and manage requirements for multiple product lines simultaneously. Although any application file (document) can be stored and managed, OSEE Define is tightly integrated with Microsoft Word&#169; to store and manage individual requirement objects (stored in XML) and provide advanced features like index based searching and showing differences between historical changes. Integrated tightly with the Action Tracking System, OSEE Define can be configured to provide advanced configuration management for any set of requirements object. </p>
+		<h2 id="What_is_an_HRID_and_how_is_it_used.3F">What is an HRID and how is it used?</h2>
+		<p>The HRID creation, storage and use are currently under re-design. Below are the notes. </p>
+		<ul>
+			<li>HRID = Human Readable ID </li>
+			<li>HRID Provider = provides the HRID when the artifact is constructed</li>
+		</ul>
+		<h3 id="Purpose">Purpose</h3>
+		<p>To have a unique, short, constant, communicatable and customizable number that artifacts in the system can be referenced by. By definition, this number is database dependent which means it may occur in another database. </p>
+		<p>Note: All artifacts currently have a GUID. This number id long, constant, un-consomizeable, un-communicatable, database independent number and thus could not work as the HRID. </p>
+		<h3 id="Format">Format</h3>
+		<p>&lt;character sequence&gt;&lt;numeric sequence&gt; </p>
+		<p>where 
+			<b>TBD</b> &lt;character squence&gt; - Alpha numeric, All caps, &gt; 1 and &lt; 6 characters &lt;numeric sequence&gt; - blank or unique numeric number, not zero padded 
+			<b>TBD</b> by default, the framework will provide a unique 6 character Alpha-numeric number 
+		</p>
+		<h3 id="Design">Design</h3>
+		<p>ATS is one of the main consumers of this number and is thus an important portion of the design considerations. </p>
+		<ul>
+			<li>Each provider will have a unique sequence number available </li>
+			<li>One HRID Provider can be used by multiple ATS Team Definitions </li>
+			<li>Each Artifact will have at least 
+				<b>TBD</b> 0,1 HRID 
+				<ul>
+					<li>Question still remains as to whether every artifact should have at least one HRID. </li>
+					<li>Reasons for always having 
+						<ul>
+							<li>Users will always be able to reference HRID instead of switching between GUID and HRID </li>
+							<li>Code won't have to check if HRID is null if trying to get an ID for display </li>
+							<li>UI's don't have to show both GUID and HRID </li>
+						</ul>
+					</li>
+					<li>Reasons against 
+						<ul>
+							<li>Users don't often reference non-ats artifacts by HRID </li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li>ATS Action will have it's own provider and provide something like ACT1234. Team Workflows will provide their own sequence related to their team like CODE9233, TEST2345, REQ3243. </li>
+			<li>ATS will automatically designate the first workflow as the "driving workflow". The displayed action number will be &lt;action hrid&gt;-&lt;driving workflow hrid&gt;. Example: ACT123-REQ1134 </li>
+			<li>HRID will be stored in database. 
+				<b>TBD</b> either in current HRID column in artifact table or as attribute on artifact 
+				<ul>
+					<li>Reasons for attribute 
+						<ul>
+							<li>No special queries to get at HRID </li>
+							<li>Tagging framework already works for attributes </li>
+						</ul>
+					</li>
+					<li>Reasons for hrid column 
+						<ul>
+							<li>Minimal framework/query changes </li>
+							<li>Searching by HRID is faster than by attribute value </li>
+							<li>Would need to limit users/API/UI from changing that special attribute </li>
+							<li>Migration of HRIDs to existing artifacts would require pushing HRID to parent branch and migrating it down to all children </li>
+							<li>Attribute value would be branched and add addressing information to all database and all branches </li>
+							<li>Attributes are for data that can be changed by user. HRID can't</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+		<h3 id="Implementation">Implementation</h3>
+		<ul>
+			<li>Need tagging rules to enable numbers to be split apart and searched by either number alone or character sequence number. Example REQ3243 and 3243 should both work. Keep in mind that 3243 may return 2 objects cause prefix is what makes it unique. </li>
+			<li>ATS, and other places, will need specialized sorter to make sure REQ31 comes after REQ4 </li>
+			<li>ATS will need to programatically set first workflow to "driving workflow" and allow user to change. </li>
+			<li>UI to configure for ATS and framework</li>
+		</ul>
+		<h3 id="Migration">Migration</h3>
+		<ul>
+			<li>
+				<b>TBD</b> keep same HRID for existing and start with new now or save HRID in ATS actions / static ids and change all historical ids using new sequence 
+			</li>
+		</ul>
+		<p>*</p>
+		<h3 id="OSEE_Framework_Patterns">OSEE Framework Patterns</h3>
+		<p>(Work in progress)</p>
+		<ul>
+			<li>Working with transactions</li>
+		</ul>
+		<p>
+			<a href="http://wiki.eclipse.org/Category:OSEE" title="Category:OSEE" target="osee_external">Category:OSEE</a>
+		</p><hr/>
+		<table class="navigation" style="width: 100%;" border="0" summary="navigation">
+			<tr>
+				<td style="width: 20%" align="left"></td>
+				<td style="width: 60%" align="center"></td>
+				<td style="width: 20%" align="right">
+					<a href="Updating-This-Document.html" title="Updating This Document">
+						<img alt="Next" border="0" src="../../images/next.gif"/>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td style="width: 20%" align="left" valign="top"></td>
+				<td style="width: 60%" align="center"></td>
+				<td style="width: 20%" align="right" valign="top">Updating This Document</td>
+			</tr>
+		</table>
+	</body>
+</html>

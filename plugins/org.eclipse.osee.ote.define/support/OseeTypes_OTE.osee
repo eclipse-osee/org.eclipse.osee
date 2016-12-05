@@ -286,10 +286,10 @@ attributeType "Disposition" extends StringAttribute {
 
 oseeEnumType "enum.test.run.status" {
    id 3458764513820541332
-   entry "Pass" entryGuid "CArJmMNCPUkt72j8fGgA"
-   entry "Fail" entryGuid "CArJmMOtrEWczci+BkwA"
-   entry "Aborted" entryGuid "CArJmMQc80VqSa4AWZAA"
-   entry "Exception" entryGuid "CArJmMSKtjAY7O+M4KwA"
+   entry "Pass" 
+   entry "Fail" 
+   entry "Aborted" 
+   entry "Exception" 
 }
 
 attributeType "Test Status" extends EnumeratedAttribute {

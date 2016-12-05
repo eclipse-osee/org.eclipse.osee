@@ -1,0 +1,360 @@
+<?xml version='1.0' encoding='utf-8' ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title>Tips - MS Word Tips</title>
+		<link type="text/css" rel="stylesheet" href="../../../book.css"/>
+	</head>
+	<body>
+		<table class="navigation" style="width: 100%;" border="0" summary="navigation">
+			<tr>
+				<th style="width: 100%" align="center" colspan="3">MS Word Tips</th>
+			</tr>
+			<tr>
+				<td style="width: 20%" align="left">
+					<a href="Search-Tips.html" title="Search Tips">
+						<img alt="Previous" border="0" src="../../../images/prev.gif"/>
+					</a>
+				</td>
+				<td style="width: 60%" align="center"></td>
+				<td style="width: 20%" align="right">
+					<a href="Updating-This-Document.html" title="Updating This Document">
+						<img alt="Next" border="0" src="../../../images/next.gif"/>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td style="width: 20%" align="left" valign="top">Search Tips</td>
+				<td style="width: 60%" align="center"></td>
+				<td style="width: 20%" align="right" valign="top">Updating This Document</td>
+			</tr>
+		</table><hr/>
+		<h1 id="MS_Word_Tips">MS Word Tips</h1>
+		<h2 id="Where_is_the_Tools_Menu_in_Office_2007.3F">Where is the Tools Menu in Office 2007?</h2>
+		<p>In Office 2007, the Options command which was located on the 
+			<b>Tools</b> menu has been moved under the 
+			<b>Office Button</b> 
+			<img border="0" src="images/officeButton.jpg"/>.   Click the 
+			<b>Office Button</b> 
+			<img border="0" src="images/officeButton.jpg"/> to open the 
+			<b>Options Dialog</b>. This dialog is similar to the sub-menu located under the 
+			<b>File</b> menu in Office 2003. To open the user preference dialog, you have to click on the 
+			<b>Word Options</b> button located on the lower left corner of the 
+			<b>Office Button Dialog</b>.
+		</p>
+		<p>
+			<img border="0" src="images/officeDialog.jpg"/>
+		</p>
+		<p>
+			<img width="500" border="0" src="images/wordOptions.jpg"/>
+		</p>
+		<h2 id="What_format_should_Word_Documents_be_stored">What format should Word Documents be stored</h2>
+		<p>OSEE does not support Word 2007 XML format. Documents should be saved using 
+			<b>Word 2003 XML Document</b> format.
+		</p>
+		<h2 id="What_user_preferences_should_I_set_when_using_Word_2007.3F">What user preferences should I set when using Word 2007?</h2>
+		<ol>
+			<li>[[#Stop Word from raising a "Convert File" prompt |'
+				<i>Disable Word from raising a "Convert File" prompt</i>']]
+			</li>
+			<li>[[#Make XML Tags Visible|'
+				<i>Always Show Smart Tags</i>']]
+			</li>
+			<li>[[#Stop Word from adding Smart Tags|'
+				<i>Disable Smart Tag Document Embedding</i>']]
+			</li>
+		</ol>
+		<h2 id="Where_can_I_find_support_for_Word_2007_features.3F">Where can I find support for Word 2007 features?</h2>
+		<p>[
+			<a href="http://office.microsoft.com/en-us/training/CR100654561033.aspx" target="osee_external">http://office.microsoft.com/en-us/training/CR100654561033.aspx</a> 
+			<b>Office 2007 How-To Demos</b>]
+		</p>
+		<h2 id="Do_I_have_to_use_Microsoft_Word_to_enter_my_requirements.3F">Do I have to use Microsoft Word to enter my requirements?</h2>
+		<p>Quick Answer: No</p>
+		<p>This question comes up when users find out that OSEE is integrated with Microsoft Word as one method to enter artifact data such as requirements.</p>
+		<p>OSEE uses Artifacts, Attributes and Relations to store information in its data store.  The Attributes associated with a certain Artifact can be boolean, text, date, float or any newly created attribute type.  One such attribute type is a "Word Content" attribute.  This allows word content to be added as an attribute to an Artifact.  This attribute, however, is not required to be used.  One could define a "Software Requirement" to be any set of Attribute types that must/can be entered.  Although, Word 2003 XML is more tightly integrated into OSEE, the architecture provides for other editing applications to be plugged in. We are actively working on adding tight integration with Open Office to edit requirements.</p>
+		<p>In addition to this specific type of Attribute, OSEE does allows any operating system file to be dragged in and created as an Artifact.  This artifact, when opened, will extract its data and present it to the operating system to allow viewing and editing.  This allows things like requirements to be specified by other modeling, diagraming or even mathematical applications that OSEE doesn't know about.  These artifacts can have their own metadata associated and also be related to other artifacts in the system.</p>
+		<h2 id="Importing_Microsoft_Word.28c.29_documents_into_OSEE">Importing Microsoft Word(c) documents into OSEE</h2>
+		<p>Yes.  OSEE will import existing Word 2003 XML documents and atomize them by their paragraph sections.  The Word styles "Heading (1...9)" are used to determine the breakout into individual artifacts and their position in the document hierarchy.</p>
+		<h2 id="How_are_MS_Word_styles_and_formatting_handled.3F">How are MS Word styles and formatting handled?</h2>
+		<p>Whole MS Word documents can be stored and edited as an artifact like any other native file type without any formatting restrictions of any kind.  However, to use the more tightly integrated support such as editing many artifacts in a single Word document or the document generation capabilities, then the file format needs to be MS Word 2003 XML.  Since OSEE supports user defined Word XML templates for editing, previewing, comparing, and publishing, the user has complete control over the Word styles (and all other formatting) through the rendering templates.  The only formmatting requirements for Word content are that when importing the Word styles "Heading (1...9)" are used to determine the breakout into individual artifacts and their position in the document hierarchy.</p>
+		<h2 id="Stop_Word_from_raising_a_.22Convert_File.22_prompt">Stop Word from raising a "Convert File" prompt</h2>
+		<h3 id="Office_2013">Office 2013</h3>
+		<ol>
+			<li>Click the 
+				<b>FILE</b> menu
+			</li>
+			<li>Click the 
+				<b>Options</b> menu option
+			</li>
+			<li>Select 
+				<b>Advanced</b> from the topics panel on the left
+			</li>
+			<li>Scroll to the 
+				<b>General</b> settings section
+			</li>
+			<li>Uncheck 
+				<b>Confirm file format on open</b>
+			</li>
+		</ol>
+		<h3 id="Office_2007">Office 2007</h3>
+		<ol>
+			<li>Click the 
+				<b>Office Button</b> located on the upper left corner
+			</li>
+			<li>Click the 
+				<b>Word Options</b> button to open the options dialog
+			</li>
+			<li>Select 
+				<b>Advanced</b> from the topics panel on the left
+			</li>
+			<li>Scroll to the 
+				<b>General</b> settings section
+			</li>
+			<li>Uncheck 
+				<b>Confirm file format on open</b>
+			</li>
+		</ol>
+		<h3 id="Office_2003">Office 2003</h3>
+		<ol>
+			<li>Open 
+				<b>Tools &gt; Options... &gt; General</b> 
+				<ol>
+					<li>Uncheck 
+						<b>Confirm conversion at Open</b>
+					</li>
+					<li>Click 
+						<b>OK</b>
+					</li>
+				</ol>
+			</li>
+		</ol>
+		<h2 id="Stop_Word_from_adding_Smart_Tags">Stop Word from adding Smart Tags</h2>
+		<h3 id="Office_2003_2">Office 2003</h3>
+		<ol>
+			<li>Open 
+				<b>Tools &gt; AutoCorrect Options… &gt; Smart Tags</b> 
+				<ol>
+					<li>Uncheck 
+						<b>Label text with smart tags</b>
+					</li>
+					<li>Click 
+						<b>Save Options...</b> 
+						<ol>
+							<li>Uncheck 
+								<b>Embed Smart Tags</b>
+							</li>
+							<li>Click 
+								<b>OK</b>
+							</li>
+						</ol>
+					</li>
+					<li>Click 
+						<b>Remove Smart Tags</b> if the button is not grayed out
+					</li>
+					<li>Click 
+						<b>OK</b>
+					</li>
+				</ol>
+			</li>
+		</ol>
+		<h3 id="Office_2007_2">Office 2007</h3>
+		<ol>
+			<li>Click the 
+				<b>Office Button</b> located on the upper left corner
+			</li>
+			<li>Click the 
+				<b>Word Options</b> button to open the options dialog
+			</li>
+			<li>Select 
+				<b>Advanced</b> from the topics panel on the left
+			</li>
+			<li>Scroll to the 
+				<b>Preserve fidelity when sharing this document</b> section
+			</li>
+			<li>Select 
+				<b>All New Documents</b> from the drop-down located next to the section title
+			</li>
+			<li>Uncheck 
+				<b>Embed Smart tags</b>
+			</li>
+			<li>Uncheck 
+				<b>Embed Linguistic data</b> There appears to be a bug in MS Word 2007: 
+				<a href="http://support.microsoft.com/kb/925174" target="osee_external">http://support.microsoft.com/kb/925174</a>
+			</li>
+		</ol>
+		<h2 id="Make_XML_Tags_Visible">Make XML Tags Visible</h2>
+		<p>To toggle viewing of XML tags, press Ctrl+Shift+X. You should enable these unless you have a good reason not to.</p>
+		<h3 id="Office_2007_Preference_Settings">Office 2007 Preference Settings</h3>
+		<ol>
+			<li>Click the 
+				<b>Office Button</b> located on the upper left corner
+			</li>
+			<li>Click the 
+				<b>Word Options</b> button to open the options dialog
+			</li>
+			<li>Select 
+				<b>Advanced</b> from the topics panel on the left
+			</li>
+			<li>Scroll to the 
+				<b>Show Document</b> settings section
+			</li>
+			<li>Check 
+				<b>Show Smart Tags</b>
+			</li>
+		</ol>
+		<h2 id="Make_tracked_changes_in_Word_appear_inline_instead_of_in_balloons">Make tracked changes in Word appear inline instead of in balloons</h2>
+		<ol>
+			<li>Open the 
+				<b>Show</b> dropdown menu within the Reviewing Toolbar and select 
+				<b>Options...</b>.
+			</li>
+			<li>Within the 
+				<b>Track Changes</b> window that just appeared change the 
+				<b>Insertions</b> and 
+				<b>Deletions</b> colors to Blue and Red, respectively.
+			</li>
+			<li>Change the 
+				<b>Use Balloons</b> dropdown menu from 
+				<b>Always</b> to 
+				<b>Only for comments/formatting.</b>
+			</li>
+			<li>Click OK.</li>
+		</ol>
+		<h2 id="Keep_MS_Word_from_prompting_to_save_Normal.doc">Keep MS Word from prompting to save Normal.doc</h2>
+		<ol>
+			<li>Upgrade to Office 2007 (required by OSEE)</li>
+			<li>On the Tools menu, click Options.</li>
+			<li>Click the Save tab.</li>
+			<li>Clear the Prompt to save Normal template check box.</li>
+		</ol>
+		<h2 id="What_do_I_do_when_I_am_seeing_some_characters_.28such_as_smart_quotes_and_.21.3D_signs.29_show_up_as_a_little_black_rectangle_instead.3F">What do I do when I am seeing some characters (such as smart quotes and != signs) show up as a little black rectangle instead?</h2>
+		<ol>
+			<li>In Word, goto Tools-&gt;AutoCorrect Options
+				<ol>
+					<li>In the "Replace text as you type" table , delete the "straight quotes with smart quotes" option</li>
+					<li>In the "AutoFormat as you Type" Tab deselect the Replace as you type "straight quotes with smart quotes" selection</li>
+					<li>In the "AutoFormat" Tab deselect the Replace "straight quotes with smart quotes" selection</li>
+				</ol>
+			</li>
+		</ol>
+		<h3 id="Office_2007_Preference_Settings_2">Office 2007 Preference Settings</h3>
+		<ol>
+			<li>
+				<a href="Windows">Button</a>--> Proofing --> in the AutoCorrect options block --> AutoCorrect Options...
+			</li>
+			<li>In the "AutoFormat as you Type" Tab deselect the Replace as you type "straight quotes with smart quotes" selection</li>
+			<li>In the "AutoFormat" Tab deselect the Replace "straight quotes with smart quotes" selection</li>
+		</ol>
+		<h2 id="Configure_MS_Word_.282003.2F2007.29_so_it_does_NOT_auto-format_bulleted_and_numbered_lists">Configure MS Word (2003/2007) so it does NOT auto-format bulleted and numbered lists</h2>
+		<p>As you may have already seen, Word will take the following:
+			(A) -&gt; XXX 
+			And turn it into some type of numbered list, such as: </p>
+		<ul style="list-style: square">
+			<li>&gt; XXX, or A. -&gt; XXX, or 1 -&gt; XXX, etc.</li>
+		</ul>
+		<p>This will cause incorrect formatting, because Word will automatically create styles that are not part of the templates used for rendering and publishing in OSEE. Ultimately this auto-numbering leads to the need for fix RPCRs. Additionally when introduced using Word 2003, it can cause compatibility issues. </p>
+		<ol>
+			<li>Close all instances of Word </li>
+			<li>Open either MS Word 2007 or 2003 (whichever you prefer to work with)
+				<ul>
+					<li>Word 2007:
+						<ol>
+							<li>Select 
+								<i>Office</i> (top-left corner)
+							</li>
+							<li>Go to 
+								<i>Word Options</i> =&gt; 
+								<i>Proofing</i> =&gt; 
+								<i>AutoCorrect Options</i>
+							</li>
+						</ol>
+					</li>
+					<li>Word 2003:
+						<ol>
+							<li>Go to 
+								<i>Tools</i> =&gt; 
+								<i>AutoCorrect Options...</i>
+							</li>
+						</ol>
+					</li>
+				</ul>
+			</li>
+			<li>Select 
+				<i>AutoFormat As You Type</i>
+			</li>
+			<li>Under 
+				<i>Apply as you type</i> clear the checkboxes: 
+				<i>Automatic bulleted lists</i> and 
+				<i>Automatic numbered lists</i>
+			</li>
+			<li>Restart MS Word</li>
+		</ol>
+		<h2 id="Restarting_a_numbered_list_in_an_OSEE_Artifact">Restarting a numbered list in an OSEE Artifact</h2>
+		<ol>
+			<li>Menu Item in Word:  Insert-&gt;Quick Parts-&gt;Field-&gt;ListNum</li>
+			<li>Enable Level in list: 1 </li>
+			<li>Enable Start-at value: 0</li>
+			<li>Click Ok</li>
+			<li>To not show the 'dot' character in the document
+				<ul>
+					<li>Highlight the dot, right click -&gt; Font</li>
+					<li>Enable Hidden</li>
+					<li>Click Ok</li>
+				</ul>
+			</li>
+			<li>If you need to see the field code simply click on the Show/Hide icon</li>
+		</ol>
+		<h2 id="Creating_Cross-References_between_Multiple_Word_Artifacts_having_OLE_Data">Creating Cross-References between Multiple Word Artifacts having OLE Data</h2>
+		<p>
+			<b>Issue:</b> OSEE is unable to open Word Artifacts containing OLE Data for multi-edit. Therefore, I am unable to create cross-references between sections of artifacts.
+		</p>
+		<h3 id="Method1:_Use_single_edit">Method1: Use single edit</h3>
+		<ol>
+			<li>Open each artifact for edit separately.</li>
+			<li>In the artifact with the figure, ensure the figure has an associated auto-reference number (i.e., the figure has a title/caption paragraph with a field code for the auto-reference).  Create one if it does not already have one using normal MSWord procedure (right-click on the figure and select Insert Caption, etc.).</li>
+			<li>In the artifact with the figure, create a temporary paragraph with a temporary sentence that says “As shown in .”</li>
+			<li>At the end of the temporary sentence, insert an auto-reference to the figure using normal MSWord procedure (use the References tab and select Cross-reference, etc.).  The temporary sentence should now say, “As shown in Figure x”  where x is the figure number.</li>
+			<li>Copy the field code from the temporary sentence (i.e., the part that says “Figure x” and which will turn gray when selected) from the artifact with the figure in it to the other artifact that you want to reference the figure from.  This copy/paste will result in copying the field code for the figure over to the other artifact.  Copy it to the text location where it is needed in the other artifact.</li>
+			<li>Once edits are complete, delete the temporary paragraph that was put into the artifact with the figure in it. </li>
+			<li>Save both artifacts (there is no need to save the artifact with the figure in it unless you made substantive changes, such as adding the title/caption paragraph to the figure per Step 2 above).</li>
+		</ol>
+		<h3 id="Method2:_Separate_contents_and_reference_with_hyperlinks">Method2: Separate contents and reference with hyperlinks</h3>
+		<ol>
+			<li>Create a separate artifact for the section that needs to be referenced. </li>
+			<li>Create hyperlinks to the new artifact from the referencing artifact.</li>
+		</ol>
+		<h2 id="Word_XML_opening_in_XML_editor_instead_of_Word">Word XML opening in XML editor instead of Word</h2>
+		<p>Sometimes, the registry settings for what to open XML documents can get set incorrectly.  A common symptom is that links to Word documents in OSEE open in an XML editor or IE.  To fix this, modify the registry entry: 
+			<b>Computer\HKEY_CLASSES_ROOT\xmlfile\shell\open\command</b> to the correct version of Office.  For Office 2013, the value would be: 
+			<b>"C:\Program Files (x86)\Common Files\Microsoft Shared\OFFICE15\MSOXMLED.EXE" /verb open "%1"</b>  (with quotes)
+		</p>
+		<p>
+			<a href="http://wiki.eclipse.org/Category:OSEE" title="Category:OSEE" target="osee_external">Category:OSEE</a>
+		</p><hr/>
+		<table class="navigation" style="width: 100%;" border="0" summary="navigation">
+			<tr>
+				<td style="width: 20%" align="left">
+					<a href="Search-Tips.html" title="Search Tips">
+						<img alt="Previous" border="0" src="../../../images/prev.gif"/>
+					</a>
+				</td>
+				<td style="width: 60%" align="center">
+					<a href="Tips.html" title="Tips">
+						<img alt="Tips" border="0" src="../../../images/home.gif"/>
+					</a>
+				</td>
+				<td style="width: 20%" align="right">
+					<a href="Updating-This-Document.html" title="Updating This Document">
+						<img alt="Next" border="0" src="../../../images/next.gif"/>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td style="width: 20%" align="left" valign="top">Search Tips</td>
+				<td style="width: 60%" align="center"></td>
+				<td style="width: 20%" align="right" valign="top">Updating This Document</td>
+			</tr>
+		</table>
+	</body>
+</html>

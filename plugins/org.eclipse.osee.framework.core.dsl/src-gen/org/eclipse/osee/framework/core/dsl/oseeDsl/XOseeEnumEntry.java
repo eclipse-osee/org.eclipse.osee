@@ -15,7 +15,6 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry#getOrdinal <em>Ordinal</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry#getEntryGuid <em>Entry Guid</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry#getDescription <em>Description</em>}</li>
  * </ul>
  *
@@ -76,32 +75,6 @@ public interface XOseeEnumEntry extends EObject
    * @generated
    */
   void setOrdinal(String value);
-
-  /**
-   * Returns the value of the '<em><b>Entry Guid</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Entry Guid</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Entry Guid</em>' attribute.
-   * @see #setEntryGuid(String)
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getXOseeEnumEntry_EntryGuid()
-   * @model
-   * @generated
-   */
-  String getEntryGuid();
-
-  /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry#getEntryGuid <em>Entry Guid</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Entry Guid</em>' attribute.
-   * @see #getEntryGuid()
-   * @generated
-   */
-  void setEntryGuid(String value);
 
   /**
    * Returns the value of the '<em><b>Description</b></em>' attribute.

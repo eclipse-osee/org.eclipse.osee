@@ -1,0 +1,1142 @@
+<?xml version='1.0' encoding='utf-8' ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title>Features - Views and Editors</title>
+		<link type="text/css" rel="stylesheet" href="../../../book.css"/>
+	</head>
+	<body>
+		<table class="navigation" style="width: 100%;" border="0" summary="navigation">
+			<tr>
+				<th style="width: 100%" align="center" colspan="3">Views and Editors</th>
+			</tr>
+			<tr>
+				<td style="width: 20%" align="left">
+					<a href="Features.html" title="Features">
+						<img alt="Previous" border="0" src="../../../images/prev.gif"/>
+					</a>
+				</td>
+				<td style="width: 60%" align="center"></td>
+				<td style="width: 20%" align="right">
+					<a href="Search.html" title="Search">
+						<img alt="Next" border="0" src="../../../images/next.gif"/>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td style="width: 20%" align="left" valign="top">Features</td>
+				<td style="width: 60%" align="center"></td>
+				<td style="width: 20%" align="right" valign="top">Search</td>
+			</tr>
+		</table><hr/>
+		<h1 id="Views_and_Editors">Views and Editors</h1>
+		<h2 id="Branch_Manager_View">Branch Manager View</h2>
+		<p>The Branch Manager View, shown by default in the Define Perspective, shows all branches and transactions on each branch managed by OSEE in a hierarchical fashion.  By default, OSEE is initialized with two branches. The System Root Branch (visible to OSEE Administrators only) and the Common Branch. The System Root Branch is the base branch for all other branches in the system. The Common branch is used to store system-wide artifacts such as configuration artifacts, users, and user preferences.</p>
+		<p>
+			<img align="right" border="0" src="images/BranchManager.gif"/>
+		</p>
+		<h3 id="Toolbar_buttons">Toolbar buttons</h3>
+		<table class="wikitable" style="border:1">
+			<tr style="background:#CCCCCC">
+				<th>Icon</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Refresh.gif"/>
+				</td>
+				<td>Refreshes the branch hierarchy tree with the latest branch information.</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Customize.gif"/>
+				</td>
+				<td>Opens the table customization dialog. This allows users to add or hide columns.</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Bug.gif"/>
+				</td>
+				<td>Opens an action against the Branch Manager View.</td>
+			</tr>
+		</table>
+		<h3 id="Toolbar_Drop-Down">Toolbar Drop-Down</h3>
+		<p>To display, click on the inverted triangle located on the upper right-hand side of the Branch Manager view.</p>
+		<table class="wikitable" style="border:1">
+			<tr style="background:#CCCCCC">
+				<th>Command</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>Open Branch Graph</td>
+				<td>Display a diagram showing the relations among branches.</td>
+			</tr>
+			<tr>
+				<td>Open OSEE Data Model Editor</td>
+				<td>Opens a graphical editor of all the artifact, attribute, and relation types in the system.</td>
+			</tr>
+			<tr>
+				<td>Branch Presentation</td>
+				<td>Switch presentation between flat or hierarchical views.</td>
+			</tr>
+			<tr>
+				<td>Show Archived Branches</td>
+				<td>(Admins Only) Toggles archived branch visibility.</td>
+			</tr>
+			<tr>
+				<td>Show Merge Branches</td>
+				<td>(Admins Only) Toggles merge branch visibility.</td>
+			</tr>
+			<tr>
+				<td>Show/Hide Transactions</td>
+				<td>Toggles branch transaction visibility.</td>
+			</tr>
+			<tr>
+				<td>Show Favorites First</td>
+				<td>Orders branches by showing favorite branches first.</td>
+			</tr>
+		</table>
+		<h3 id="Pop-up_Menu">Pop-up Menu</h3>
+		<p>To display, perform a right-click on any branch.</p>
+		<table class="wikitable" style="border:1">
+			<tr style="background:#CCCCCC">
+				<th>Command</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>Explore</td>
+				<td>Opens the Artifact Explorer View for the selected branch. This operation can also be performed by double-clicking on a branch.</td>
+			</tr>
+			<tr>
+				<td>Change Report</td>
+				<td>Opens the Change Report View for the selected branch.</td>
+			</tr>
+			<tr>
+				<td>Merge Manager</td>
+				<td>Opens the merge manager. This is used to resolve conflicts when committing a working branch back into its parent branch.</td>
+			</tr>
+			<tr>
+				<td>Branch</td>
+				<td>Creates a child branch of the selected branch.</td>
+			</tr>
+			<tr>
+				<td>Update Branch</td>
+				<td>Re-baselines a branch into its parent, leaving the selected branch in place. If there are conflicts, the merge manager will be opened to allow the user to resolve them.</td>
+			</tr>
+			<tr>
+				<td>Commit Into</td>
+				<td>Commits changes made to a branch into another branch. Unlike "Update Branch," this feature does not assume that the destination branch is the parent. This feature can only be used by administrators. </td>
+			</tr>
+			<tr>
+				<td>Delete Branch</td>
+				<td>Deletes the selected branch from the system by setting the branch state to deleted. The data from this branch will still be recoverable.</td>
+			</tr>
+			<tr>
+				<td>Purge Branch</td>
+				<td>Purges the selected branch from the system by removing all data from the data store. This action cannot be undone.</td>
+			</tr>
+			<tr>
+				<td>Purge Transaction</td>
+				<td>Purges the currently selected transaction from its branch. Removes all changes made on the selected transaction. (Not recoverable)</td>
+			</tr>
+			<tr>
+				<td>Open Associated Artifact</td>
+				<td>Opens the artifact that was associated with the creation of the selected branch.</td>
+			</tr>
+			<tr>
+				<td>Set Associated Artifact</td>
+				<td>Associates an artifact with the currently selected branch.</td>
+			</tr>
+			<tr>
+				<td>Archive</td>
+				<td>Archives the branch so that it does not appear in a list of branches unless archived branches are specifically requested.</td>
+			</tr>
+			<tr>
+				<td>Access Control</td>
+				<td>Opens the access control dialog.</td>
+			</tr>
+			<tr>
+				<td>Rename</td>
+				<td>Allows users to change the branch name.</td>
+			</tr>
+			<tr>
+				<td>Mark as Favorite</td>
+				<td>Sets/Unsets a branch as a favorite branch.</td>
+			</tr>
+			<tr>
+				<td>Copy</td>
+				<td>Places branch information into the clipboard.</td>
+			</tr>
+			<tr>
+				<td>Open Osee Data Model Editor</td>
+				<td>Opens a graphical editor of all the artifact, attribute, and relation types in the system.</td>
+			</tr>
+			<tr>
+				<td>Open Branch Graph</td>
+				<td>Shows a graphical representation of branches using the currently selected branch as the base branch.</td>
+			</tr>
+		</table>
+		<h3 id="Additional_Operations">Additional Operations</h3>
+		<p>
+			<b>Searching</b> - Can be performed by typing text in the Search text box. Matching text will be highlighted. Click on the 
+			<img border="0" src="images/Clear.jpg"/> icon to clear the search box and clear all the search results.
+		</p>
+		<p>
+			<b>Filtering</b> - Can be performed by typing text in the Filter box. Click on the 
+			<img border="0" src="images/Clear.jpg"/> icon to clear the filter box and display all items.
+		</p>
+		<h2 id="Artifact_Explorer_View">Artifact Explorer View</h2>
+		<p>The Artifact Explorer view, shown by default in the Define perspective, shows the artifact hierarchy of the selected branch.  The artifact hierarchy is derived from the artifact's default hierarchy relation.  By default, all branches have a default hierarchy root artifact which is the hierarchy tree's base element.  </p>
+		<p>
+			<img align="right" border="0" src="images/ArtifactExplorer.jpg"/>
+		</p>
+		<h3 id="Toolbar_buttons_2">Toolbar buttons</h3>
+		<table class="wikitable" style="border:1">
+			<tr style="background:#CCCCCC">
+				<th>Icon</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/CollapseAll.gif"/>
+				</td>
+				<td>Collapses all tree nodes.</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Up.gif"/>
+				</td>
+				<td>Navigates to the parent container of the artifacts that are currently displayed at the top level in the view.</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Artifact_explorer.gif"/>
+				</td>
+				<td>Opens a new instance of the Artifact Explorer view.</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Branch_change.gif"/>
+				</td>
+				<td>Opens the Change Report View for the Artifact Explorer's selected branch.  This report will show all changes made to the selected branch.</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Artifact_search.gif"/>
+				</td>
+				<td>Opens the Quick Search View for the selected branch.</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Bug.gif"/>
+				</td>
+				<td>Opens an action against the Artifact Explorer view.</td>
+			</tr>
+		</table>
+		<h3 id="Pop-up_Menu_2">Pop-up Menu</h3>
+		<p>To display, select one or more artifacts and perform a right-click.</p>
+		<table class="wikitable" style="border:1">
+			<tr style="background:#CCCCCC">
+				<th>Command</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>Open</td>
+				<td>Opens the selected artifact using the default editor.</td>
+			</tr>
+			<tr>
+				<td>Open With</td>
+				<td>Opens a sub-menu listing the available editor's for this artifact.</td>
+			</tr>
+			<tr></tr>
+			<tr>
+				<td>Reveal on Another Branch</td>
+				<td>Open's a new instance of Artifact Explorer for a user selected branch. Expands tree elements to display the selected artifact to be revealed.</td>
+			</tr>
+			<tr></tr>
+			<tr>
+				<td>New Child</td>
+				<td>Creates a new artifact and places it directly under the selected artifact.</td>
+			</tr>
+			<tr>
+				<td>Go Into</td>
+				<td>Sets the selected artifact as the base of the artifact hierarchy tree hiding artifacts except child artifacts.</td>
+			</tr>
+			<tr>
+				<td>Mass Edit</td>
+				<td>Opens the Artifact Mass Editor populated with the selected artifacts.</td>
+			</tr>
+			<tr>
+				<td>Sky Walker</td>
+				<td>Launches the Sky Walker View. </td>
+			</tr>
+			<tr></tr>
+			<tr>
+				<td>Delete Artifact</td>
+				<td>Deletes the selected artifacts.</td>
+			</tr>
+			<tr>
+				<td>Purge Artifact(s)</td>
+				<td>Purges the selected artifacts from the data store.</td>
+			</tr>
+			<tr>
+				<td>Rename Artifact</td>
+				<td>Allows a user to quickly change the artifact's name attribute.</td>
+			</tr>
+			<tr></tr>
+			<tr>
+				<td>Show Resource History</td>
+				<td>Opens the Resource History view for the selected artifact. This will display all transactions for this artifact.</td>
+			</tr>
+			<tr></tr>
+			<tr>
+				<td>Import</td>
+				<td>Opens Eclipse's import dialog.</td>
+			</tr>
+			<tr>
+				<td>Export</td>
+				<td>Opens Eclipse's export dialog.</td>
+			</tr>
+			<tr></tr>
+			<tr>
+				<td>Lock</td>
+				<td>Locks the artifact so the current user is the only one allowed to make changes to its attributes.</td>
+			</tr>
+			<tr></tr>
+			<tr>
+				<td>Copy</td>
+				<td>Copies the artifact.</td>
+			</tr>
+			<tr>
+				<td>Paste</td>
+				<td>Pastes the artifact.</td>
+			</tr>
+			<tr>
+				<td>Expand All</td>
+				<td>Expands all tree nodes from the selected artifact down.</td>
+			</tr>
+			<tr>
+				<td>Select All</td>
+				<td>Selects all open tree nodes.</td>
+			</tr>
+			<tr></tr>
+			<tr>
+				<td>Access Control</td>
+				<td>Opens the access control dialog.</td>
+			</tr>
+		</table>
+		<h3 id="Operations">Operations</h3>
+		<p>Operations that can be performed on an Artifact Explorer.</p>
+		<table class="wikitable" style="border:1">
+			<tr style="background:#CCCCCC">
+				<th>Command</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>Cross Branch Drag and Drop</td>
+				<td>Artifacts can be referenced from other branches by dragging an artifact from one branch and dropping in onto another Artifact Explorer. The outcome will be one of two actions. If the artifact already existed on the branch it will be updated with the source artifacts state data. If the artifact did not exist on the destination branch it will be introduced to that branch. Meaning it will show up in the change report as an introduced artifact.</td>
+			</tr>
+			<tr>
+				<td>File Document Drag and Drop</td>
+				<td>Artifacts can be created by dragging and dropping files directly onto the parent artifact. After the drop is performed, the Artifact Import Wizard should open. Select the import method and artifact type to convert file into. This should create a child artifact directly under the artifact where the file was dropped.</td>
+			</tr>
+		</table>
+		<p>Dragging An Artifact From The Artifact Explorer</p>
+		<ul>
+			<li>If an artifact is dragged from the explorer into a Word document a hyper link will be created with the artifact name in text and when selected it will open the artifact in the Artifact Editor.</li>
+			<li>If an artifact is dragged into a Text File the name of the artifact will be written inside the document.</li>
+			<li>If an artifact is dragged into a relation in the Relational View of the Artifact Editor a new relation will be created with the source artifact and the target artifact in the editor.</li>
+			<li>If an artifact is dragged within the Artifact Explorer the original Default Hierarchal Relation will be deleted and a new one be created whith the target artifact.</li>
+		</ul>
+		<p>Dropping Onto The Artifact Explorer</p>
+		<ul>
+			<li>If a file is dropped onto the Artifact Explorer a new artifact will be created with the contents of the source file and a new Default Hierarchal Relationship.</li>
+		</ul>
+		<h2 id="Artifact_Editor">Artifact Editor</h2>
+		<p>The Artifact editor provides specialized features for editing artifacts (this is the default editor for editing attributes and relations).  The editor can be opened through Artifact Explorer, by double-clicking on any artifact or right-clicking on an artifact and selecting to Open With "Artifact Editor".</p>
+		<p>Associated with the editor is an Artifact-specific Outline view, which shows the structure of the active artifact.  It is updated as the user edits the artifact.</p>
+		<p>
+			<img align="right" border="0" src="images/ArtifactEditor.jpg"/>
+		</p>
+		<p>The Artifact Editor is divided into the following sections 
+			<i>(some sections can be expanded and collapsed by clicking on the section's title bar)</i>. 
+		</p>
+		<h3 id="Title_Area">Title Area</h3>
+		<ol>
+			<li>
+				<b>Artifact Name</b> - the artifact's name attribute
+			</li>
+			<li>
+				<b>Message Area</b> - reports issues that need to be addressed by the user before saving is allowed. Click on the message to open a message summary window. From the message summary window, click on any message to jump to the item associated with the message.
+			</li>
+			<li>
+				<b>Toolbar Area</b>
+			</li>
+		</ol>
+		<table class="wikitable" style="border:1">
+			<tr style="background:#CCCCCC">
+				<th>Icon</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Refresh.gif"/>
+				</td>
+				<td>Refreshes the artifact editor. Displaying the artifact's current data. NOTE: Changes made to the form will be lost unless data is saved before clicking on this button.</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Bug.gif"/>
+				</td>
+				<td>Opens an action against the Artifact Editor.</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Open.gif"/>
+				</td>
+				<td>Opens the artifact or if clicking on the down-arrow, displays the open with sub-menu.</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Delete.gif"/>
+				</td>
+				<td>Deletes the artifact and closes the editor.</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Outline_co.gif"/>
+				</td>
+				<td>Displays the outline view.</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/DBiconBlue.GIF"/>
+				</td>
+				<td>Opens the artifact's resource history.</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Magnify.gif"/>
+				</td>
+				<td>Displays the artifact in an Artifact Explorer view.</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Branch.gif"/>
+				</td>
+				<td>Open the Branch Manager View and highlights the artifact's branch.</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Authenticated.gif"/>
+				</td>
+				<td>Locks or unlocks the artifact for editing. Locking an artifact prevents other users from making changes to it.</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/CopyToClipboard.gif"/>
+				</td>
+				<td>Copies a link to the latest version of the artifact to the clipboard.</td>
+			</tr>
+		</table>
+		<h3 id="Artifact_Information_Area">Artifact Information Area</h3>
+		<p>Displays the artifact's branch, artifact type, and human readable id.</p>
+		<h3 id="Attributes_Section">Attributes Section</h3>
+		<p>Displays attribute types to be edited. Attribute types can be added or deleted by clicking on the appropriate toolbar button 
+			<i>located on the upper-right of the attributes section title bar</i>.
+
+			<b>Note: The following operations follow min/max occurrence rules defined by the attribute's type.</b>
+		</p>
+		<table class="wikitable" style="border:1">
+			<tr style="background:#CCCCCC">
+				<th>Icon</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Back.gif"/>
+				</td>
+				<td>Opens an attribute type selection dialog; the selected attribute type instances will be reset to their default value.</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/GreenPlus.gif"/>
+				</td>
+				<td>Opens a dialog displaying attribute types that can be added to the artifact.</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Delete.gif"/>
+				</td>
+				<td>Opens a dialog displaying attribute types that can be deleted from the artifact. 
+					<b>Note: Data entered for the attribute type to be deleted will be lost as soon as the dialog's '''OK</b> button is selected.
+				</td>
+			</tr>
+		</table>
+		<h3 id="Relations_Section">Relations Section</h3>
+		<p>All relations that are defined as being valid for the artifact are shown. Relations can be added by dragging any set of artifacts into the appropriate relation group.  Opening a relation group will show all the artifacts that are currently related.  Double-clicking a related artifact will open it in its default editor (normally the Artifact Editor).</p>
+		<p>
+			<b>Pop-up Menu</b> - To display, expand the 
+			<b>Relations</b> section, select one or more artifacts, and perform a right-click.
+		</p>
+		<table class="wikitable" style="border:1">
+			<tr style="background:#CCCCCC">
+				<th>Command</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>Open</td>
+				<td>Opens the selected relation using the default editor.</td>
+			</tr>
+			<tr>
+				<td>Edit</td>
+				<td>Opens the Artifact for editing.</td>
+			</tr>
+			<tr>
+				<td>Mass Edit</td>
+				<td>Opens the Artifact Mass Editor populated with the selected artifacts.</td>
+			</tr>
+			<tr>
+				<td>View Relation Table Report</td>
+				<td>Opens an HTML report of the relation tree.</td>
+			</tr>
+			<tr>
+				<td>Order Relation...</td>
+				<td>Select an order type for the relations in the group. Once the user makes a selection, the artifacts will be ordered appropriately. Options include:</td>
+			</tr>
+			<tr>
+				<td>Delete Relation</td>
+				<td>Deletes the selected relations.</td>
+			</tr>
+			<tr>
+				<td>Expand All</td>
+				<td>Expands all tree nodes containing relations to this artifact.</td>
+			</tr>
+			<tr>
+				<td>Select All</td>
+				<td>Selects all tree nodes.</td>
+			</tr>
+			<tr>
+				<td>Delete Artifact</td>
+				<td>Deletes the selected artifact and its relation to this artifact.</td>
+			</tr>
+		</table>
+		<h4 id="Drag_N.27_Drop_Operation">Drag N' Drop Operation</h4>
+		<p>Artifacts can be related by dragging and dropping artifacts from Artifact Explorer onto a relation link group.</p>
+		<p>Relation links may be reordered within the same relation link group by selecting the link and dropping it into the desired location.</p>
+		<h3 id="Details_Section">Details Section</h3>
+		<p>Displays artifact meta-data.</p>
+		<h2 id="Blam_Editor">Blam Editor</h2>
+		<p>BLAM Lightweight Artifact Manipulation (BLAM) allows non-programmers to graphically construct workflows to automate repetitive tasks. A given workflow can be used for variety of similar tasks by using customizable controls to specify workflow parameters.</p>
+		<h2 id="Resource_History_View">Resource History View</h2>
+		<p>The resource history view allows users to view the detailed changes to an aritfact.</p>
+		<p>
+			<img border="0" src="images/Resourcehistoryview.jpg"/>
+		</p>
+		<p>In addition, the view also provides the user with the ability to select and compare artifacts.</p>
+		<p>
+			<img border="0" src="images/Resourcehistoryviewmenu2.jpg"/>
+		</p>
+		<h2 id="Mass_Artifact_Editor">Mass Artifact Editor</h2>
+		<p>The Mass Artifact Editor allows for easy view and editing of multiple artifacts and their attributes. To Open, right-click on the Artifact Explorer, the Search Results page, to open the pop-up menu and select the 
+			<b>Mass Edit</b> option. Single cells can be edited via Alt-Left-Mouse-Click. After editing any number of artifacts, click on the save button. All changes will be saved.
+		</p>
+		<p>
+			<img title=" center" alt=" center" border="0" src="images/MassEditor.png_"/>
+		</p>
+		<h3 id="Toolbar_buttons_3">Toolbar buttons</h3>
+		<table class="wikitable" style="border:1">
+			<tr style="background:#CCCCCC">
+				<th>Icon</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Refresh.gif"/>
+				</td>
+				<td>Refreshes the data with the latest information.</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Customize.gif"/>
+				</td>
+				<td>Opens the table customization dialog. This allows users to add or hide columns.</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Bug.gif"/>
+				</td>
+				<td>Opens an action against the Mass Editor.</td>
+			</tr>
+		</table>
+		<p>See 
+			<a href="http://wiki.eclipse.org/OSEE/Users_Guide#XViewer_-_Advanced_TreeViewer_Widget" target="osee_external">Xviewer</a> for more information
+		</p>
+		<h2 id="Quick_Search_View">Quick Search View</h2>
+		<p>The Quick Search view allows users to perform searches for information that is contained 
+			<i>inside</i> artifacts in a selected branch or search for artifacts by their GUID. The view is opened by default in the Define Perspective. It can also be opened by clicking on the Artifact Explorer tool bar's 
+			<img border="0" src="images/Artifact_search.jpg"/> icon.
+		</p>
+		<p>
+			<img border="0" src="images/QuickSearchView.png"/>
+		</p>
+		<p>To find all artifacts that contain a particular set of keywords:</p>
+		<ol>
+			<li>Select 
+				<b>Window &gt; Show View &gt; Other... &gt; OSEE &gt; Quick Search</b> to open the view
+			</li>
+			<li>Type your search string in the 
+				<b>Enter Search String</b> combo box (or use the pull-down list to select a previously entered search expression). 
+				<ul>
+					<li>Special characters such as <tt>(' ', !, ", #, $, %, (, ), *, +, ,, -, ., /, :, ;, &lt;, &gt;, ?, @, 
+						<a href=",">\, </a>, ^, {, |, }, ~, _)</tt> are assumed to be word separators.
+					</li>
+					<li>In the GUID search, spaces and commas are treated as separators.
+						<dl>
+							<dd>For example:
+								<ul>
+									<li>
+										<ul>
+											<li>Under normal attribute search operations, <tt>hello.world</tt> will be translated to <tt>hello</tt> and <tt>world</tt>. The search will match attributes with <tt>hello</tt> and <tt>world</tt> keywords.</li>
+											<li>When the GUID search is used, (<tt>A+ABG7jFm+0BKaVZIxfqOQ,AFABG7jFm+0BKaVZIxfqOQ</tt>) will be interpreted as two GUIDs. The search will match artifacts containing <tt>A+ABG7jFm+0BKaVZIxfqOQ</tt> and <tt>AFABG7jFm+0BKaVZIxfqOQ</tt> as its GUID.</li>
+										</ul>
+									</li>
+								</ul>
+							</dd>
+						</dl>
+					</li>
+				</ul>
+			</li>
+			<li>Select search options</li>
+			<li>Click 
+				<b>Search</b> or press 
+				<b>Enter</b> from the combo box to execute the search
+			</li>
+			<li>The Search view displays the results of your search</li>
+			<li>Right-click on any item in the Search view to open a context menu that allows you perform various operations on the artifacts such as copy search results to the clipboard or reveal a selected artifact in Artifact Explorer.</li>
+			<li>To open one of the listed artifacts, double-click it or select 
+				<b>Open</b> from the context menu.
+			</li>
+		</ol>
+		<h3 id="Quick_Search_Options">Quick Search Options</h3>
+		<h4 id="Attribute_Type_Filter">Attribute Type Filter</h4>
+		<p>An option to search in a specific set of attribute types for artifacts on the selected branch.
+			Type in the desired words to search for. Make sure the Attribute Type Filter option is selected under Options. By default, the filter is set to filter by attributes of type Name. If you wish to change the filter, select the button to the right of the configuration text area. When this is performed, a dialog displaying all the different tagged attribute types will be displayed. Check the items to include in the filter and select Ok. Press the Search button to execute the search.</p>
+		<p>Note: When Attribute Type Filter option is selected, By Id option is not allowed. Therefore, selecting Attribute Type Filter option disables the By Id option by setting its state to not selected.</p>
+		<h4 id="By_GUID">By GUID</h4>
+		<p>An option to search for artifacts with a particular GUID on the default branch. Type in the desired GUID(s) separated by commas or spaces. Make sure the By GUID option is selected under Options, then press the Search button.</p>
+		<p>Note: When By GUID option is selected, Attribute Type Filter option is not allowed. Therefore, selecting By GUID option disables the Attribute Type Filter option by setting its state to not selected.</p>
+		<h4 id="Include_Deleted">Include Deleted</h4>
+		<p>An option to include artifacts that have been deleted as part of a quick search on the default branch. Type in the desired words. Make sure the Include Deleted option is selected under Options, then press the Search button.</p>
+		<h4 id="Match_Word_Order">Match Word Order</h4>
+		<p>An option to match a phrase against artifacts during a quick search operation on the default branch. Type in the desired words. Make sure the Match Word Order option is selected under Options, then press the Search button.</p>
+		<h4 id="Exact_Match">Exact Match</h4>
+		<p>An option to return exact matches to the input string.  The case and special characters that are part of the input must be matched.</p>
+		<h4 id="Case_Sensitive">Case Sensitive</h4>
+		<p>Type in the desired words. Make sure the Match Word Order option is selected under Options, select All Match Locations then press the Search button.</p>
+		<h2 id="Sky_Walker_View">Sky Walker View</h2>
+		<p>The Sky Walker View displays a graphical representation of artifacts and their relations for easy navigation.</p>
+		<p>
+			<img border="0" src="images/SkyWalker.png"/>
+		</p>
+		<h2 id="Change_Report_Editor">Change Report Editor</h2>
+		<p>The change report view shows all changes made to a branch. A Change Report can be performed for a branch two ways. The first way is by right-clicking a branch from the Branch Manager then choosing the "Show Change Report" menu item. The second way is to select "Show Change Report" from the Aspect view of an ATS Action that is still in work; this will do a Change Report for the working branch of the Aspect.</p>
+		<p>The Change Report will display all of the artifacts on the branch that have had an attribute or relation link modified. It will also do conflict detection on these artifacts against the parent branch. Attributes and relation links with multiple changes will provide a summarized node that shows the final effect of the changes and can be expanded to view all of the minor changes that were made. If an attribute or relation link was modified on both branches then the summary will show a red conflict mark to signify that a commit will cause an override to occur. </p>
+		<p>On the Transactions tab, OSEE will show all the transactions that were made on the branch.  Author and timestamp show who and when and admins have the ability to purge a transaction.</p>
+		<p>
+			<img width="550" align="right" border="0" src="images/ChangeReportEditor.png"/>
+		</p>
+		<h3 id="Toolbar_buttons_4">Toolbar buttons</h3>
+		<table class="wikitable" style="border:1">
+			<tr style="background:#CCCCCC">
+				<th>Command</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Refresh.gif"/>
+				</td>
+				<td>Refreshes the data in the change report view with the latest information.</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Customize.gif"/>
+				</td>
+				<td>Opens the table customization dialog. This allows users add or hide columns.</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Bug.gif"/>
+				</td>
+				<td>Opens an action against the Change Report View.</td>
+			</tr>
+		</table>
+		<h3 id="Toolbar_Drop-Down_2">Toolbar Drop-Down</h3>
+		<p>To display, click on the inverted triangle located on the upper right-hand side of the Change Report View.</p>
+		<table class="wikitable" style="border:1">
+			<tr style="background:#CCCCCC">
+				<th>Command</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>Show Document Order</td>
+				<td>Switch presentation to show artifacts ordered by their default hierarchy relation.</td>
+			</tr>
+		</table>
+		<h3 id="Pop-up_Menu_3">Pop-up Menu</h3>
+		<p>To display, perform a right-click on any branch.</p>
+		<table class="wikitable" style="border:1">
+			<tr style="background:#CCCCCC">
+				<th>Command</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>Open</td>
+				<td>Opens the selected artifact using the default editor.</td>
+			</tr>
+			<tr>
+				<td>Open With</td>
+				<td>Opens a sub-menu listing the available editor's for this artifact.</td>
+			</tr>
+			<tr>
+				<td>Reveal in Artifact Explorer</td>
+				<td>Displays an artifacts location in the Artifact Explorer.</td>
+			</tr>
+			<tr>
+				<td>Resource History</td>
+				<td>Opens the Resource History view for the selected artifact. This will display all transactions for this artifact.</td>
+			</tr>
+			<tr>
+				<td>View Word Change Report</td>
+				<td>Displays a Word document populated with the branch differences of the selected artifacts.</td>
+			</tr>
+			<tr>
+				<td>View Viewer Report</td>
+				<td>Generates a report of the Change Report View content.</td>
+			</tr>
+			<tr>
+				<td>Copy</td>
+				<td>Copies the artifact.</td>
+			</tr>
+			<tr>
+				<td>Replace with Baseline Version...</td>
+				<td>Displays dialog to Replace a single Attribute or Artifact. Attribute - Will replace the current attribute with the baseline version. Artifact - Will replace the complete artifact (all attributes and relations).</td>
+			</tr>
+		</table>
+		<p>
+			<br/>
+			<br/>
+		</p>
+		<h2 id="Define_Navigator">Define Navigator</h2>
+		<p>The Define Navigator, shown by default in the Define Perspective, provides a central location to launch frequently used define operations. To quickly find a define operation to execute, enter text into the filter box. This will filter out all navigation items that contains the entered text. Select the clear action (
+			<img border="0" src="images/Clear.gif"/>) to clear out the text and restore all navigation items. To execute the operation, double-click on any of the navigation item. 
+		</p>
+		<h2 id="Merge_Manager">Merge Manager</h2>
+		<p>The Merge Manager is used to resolve conflicts that arise when doing development on parallel branches.  The Merge Manager makes conflicts that arise easily identifiable and then provides the means for resolving the conflicts, so that the working branch can be committed. A conflict exists if the value of an attribute/artifact has changed on both the Destination and Source Branches.  For reference the Source Branch is the users working branch.  It is the branch that the user has been making changes to and would like to then add back into the Destination Branch or Baseline Branch.  Both branches are identified by name in the header of the Merge Manager.  </p>
+		<p>Depending upon the conflict found, the user may have several choices for resolution.  These include:</p>
+		<ul>
+			<li>Accept the value on the Source Branch and overwrite the value on the Destination Branch</li>
+			<li>Accept the value on the Destination Branch and do not add any of the Source Branch changes, (These will still show up as merged on Change Reports)</li>
+			<li>Create a solution that is a combination of the two changes</li>
+			<li>Revert the changes on the Source Branch  (This is the only available solution when the Artifact/Attribute was deleted on the Destination Branch, will show up as no change on the Change Report)</li>
+			<li>Do nothing (only possible for informational conflicts)</li>
+		</ul>
+		<p>
+			<b>Committing of Branches is blocked until all conflicts are resolved.</b>
+		</p>
+		<p>
+			<img align="middle" border="0" src="images/MergeManager.png"/>
+		</p>
+		<h3 id="Icons">Icons</h3>
+		<table class="wikitable" style="border:1">
+			<tr style="background:#CCCCCC">
+				<th>Icon</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Chkbox_disabled.gif"/>
+				</td>
+				<td>Resolution has been started for the conflict</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Accept.gif"/>
+				</td>
+				<td>Conflict has been resolved and is ready to be committed, In the Merge column it means that the Source and Destination Branches have the same value even though they were both changed.</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Chkbox_enabled_conflicted.gif"/>   
+				</td>
+				<td>After a conflict has been marked as resolved the value changed on the source or destination branch</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Issue.gif"/> 
+				</td>
+				<td>A conflict that provides the user special information but does not need to be resolved</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Red_light.gif"/> 
+				</td>
+				<td>A conflict that can not be resolved except by reverting the Artifact or Attribute, because it was deleted on the Destination Branch</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Blue_d.gif"/> 
+				</td>
+				<td>Shows that the item defined by the column it is in has the Destination Branches value</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Green_s.gif"/> 
+				</td>
+				<td>Shows that the item defined by the column it is in has the Source Branches value</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Yellow_m.gif"/> 
+				</td>
+				<td>Shows that the item defined by the column it is in has a new value that is neither the Source Branch nor Destination Branch value.</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Conflict.gif"/> 
+				</td>
+				<td>Shows that the conflict has not been given an initial value</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/User.gif"/> 
+				</td>
+				<td>Opens the Associated Artifact for the merge</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Branch_change_source.gif"/> 
+				</td>
+				<td>Opens up the Change Report for the Source Branch</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Branch_change_dest.gif"/> 
+				</td>
+				<td>Opens up the Change Report for the Destination Branch</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Refresh.gif"/> 
+				</td>
+				<td>Refreshes the Merge Manger view to find new conflicts</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Customize.gif"/> 
+				</td>
+				<td>Allows the user to customize the Merge Manager tables</td>
+			</tr>
+			<tr>
+				<td>
+					<img border="0" src="images/Bug.gif"/> 
+				</td>
+				<td>Report a bug with the Merge Manager</td>
+			</tr>
+		</table>
+		<h3 id="GUI_Overview">GUI Overview</h3>
+		<p>The GUI is organized to provide the user with an ability to quickly identify conflicts.</p>
+		<ul>
+			<li>
+				<b>The Heading</b> - The Heading contains text to help identify what is being merged. It identifies the Source Branch, and the Destination Branch.  It also provides the user with information about how many conflicts there are and if they have been resolved.  The Heading also contains easy launch icons for additional tools in connection with the Merge Manager.
+			</li>
+			<li>
+				<b>The Conflict Resolution Column</b> - This column provides the user information about the state of the conflict.  A blank entry in the column means that the conflict is new and has not had any actions performed on it. 
+				<ul>
+					<li>A 
+						<img border="0" src="images/Chkbox_disabled.gif"/> indicates that conflict is in the modified state.  This means the user has begun merging the conflict but has not marked it as resolved.  The user may transition it into the resolved state by left clicking on the 
+						<img border="0" src="images/Chkbox_disabled.gif"/> icon. 
+					</li>
+					<li>The 
+						<img border="0" src="images/Accept.gif"/> icon indicates the user has marked the conflict as resolved.  This means they have selected a value for it and have verified the value going in is what they want.  No additional changes are allowed on a conflict once it is in the resolved state.  It can be placed back into the modified state by left clicking on the 
+						<img border="0" src="images/Accept.gif"/> icon. 
+					</li>
+					<li>The 
+						<img border="0" src="images/Chkbox_enabled_conflicted.gif"/> means that a conflict was in the resolved state but a new change has occurred on either the Source or Destination Branch.  It serves to notify the user that the conflict was not in the finalized state when they resolved the conflict.  The user can return to resolved state by left clicking on the 
+						<img border="0" src="images/Chkbox_enabled_conflicted.gif"/> icon. 
+					</li>
+					<li>The 
+						<img border="0" src="images/Red_light.gif"/> icon indicates that an Artifact or Attribute must be reverted on the Source Branch.  This indicates that the Artifact/Attribute was deleted on the Destination Branch and can not have a change committed onto it.  The user must abandon any change to that artifact attribute by using the revert command.  Once the Artifact/Attribute has been reverted the Merge Manager will be refreshed and the conflict will be removed. 
+					</li>
+					<li>The 
+						<img border="0" src="images/Issue.gif"/> icon indicates an informational conflict.  The user does not have to take any action to resolve these conflicts.  It just provides the information that the Source Branch deleted the Artifact/Attribute but the Destination Branch has been modified.  The user is free to act as desired based on the provided information.
+					</li>
+				</ul>
+			</li>
+			<li>
+				<b>The Artifact Name Column</b> - This column tells which artifact the conflict occurred on.  If the name is different between the Source and Destination Branches, (this will show up as a conflict) it will at first showing use the Source Branch value and then use whatever the name is resolved to be after that has occurred.
+			</li>
+			<li>
+				<b>The Artifact Type Column</b> - Simply lists what type of Artifact is conflicted
+			</li>
+			<li>
+				<b>The Conflicting Item Column</b> - In the case of an attribute conflict it states what attribute type is conflicting.  In the case of an artifact conflict it will always say "Artifact State"
+			</li>
+			<li>
+				<b>The Source Value Column</b> - When possible this column tells what value the Source Branch has for the conflict.  It will always have a 
+				<img border="0" src="images/Green_s.gif"/> icon. If the conflicting item is Word Formatted Content the words "Stream data" will be shown.  For artifact conflicts it will either show "Modified" or "Deleted".  Left clicking on the 
+				<img border="0" src="images/Green_s.gif"/> icon will populate the Merge Branch with value found on the Source Branch.
+			</li>
+			<li>
+				<b>The Destination Value Column</b> - When possible this column tells what value the Destination Branch has for the conflict.  It will always have a 
+				<img border="0" src="images/Blue_d.gif"/> icon. If the conflicting item is Word Formatted Content the words "Stream data" will be shown.  For artifact conflicts it will either show "Modified" or "Deleted".  Left clicking on the 
+				<img border="0" src="images/Blue_d.gif"/> icon will populate the Merge Branch with value found on the Destination Branch.
+			</li>
+			<li>
+				<b>The Merge Value Column</b> - The Merged Value column serves to show the user the value that has been selected for use when the Branch is committed.  The Merge value is actually kept on a new "Merge Branch" and so any changes made to it will not affect the value seen on the Source or Destination Branches.  When the Merge Value column is blank with no icon, the conflict is informational and no actions are provided.  
+				<ul>
+					<li>When the Merge Value column contains a 
+						<img border="0" src="images/Conflict.gif"/> icon the value has not been set.  This is the icon that should be shown for all conflicts (Except informational conflicts, or same value conflicts) the first time the user brings up the merge manager.  
+					</li>
+					<li>The 
+						<img border="0" src="images/Green_s.gif"/> icon indicates that the Source Value was selected as the final value.  The actual Source Value text will also be shown in this column if possible. 
+					</li>
+					<li>The 
+						<img border="0" src="images/Blue_d.gif"/> icon indicates that the Destination Value was selected as the final value.  The Destination Value text will also be shown in this column if possible. 
+					</li>
+					<li>The 
+						<img border="0" src="images/Yellow_m.gif"/> icon will be shown when a new value has been selected for the final value.  This indicates that the user has modified the final value so that it is no longer a copy of the Source or Destination, but some variation thereof. 
+					</li>
+					<li>A 
+						<img border="0" src="images/Accept.gif"/> icon indicates that although both the Source Branch Value and Destination Branch Value have changed they were both changed to the same value and so there is not really a conflict. Left clicking on the icon in the Merge Value column will bring up the Merge Wizard or in the case of un-resolvable conflicts a dialog offering the ability to revert the conflicting item.
+					</li>
+				</ul>
+			</li>
+		</ul>
+		<h3 id="Pop-up_Menu_4">Pop-up Menu</h3>
+		<p>To display, perform a right click on any row. This will provide a menu with options to resolve conflicts.</p>
+		<table class="wikitable" border="1" cellpadding="1">
+			<tr style="background:#CCCCCC">
+				<th>Item</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>Set Source as Default Branch</td>
+				<td>This selection is a quick way to set the Source Branch as the default branch.
+					<br/>If the Source Branch is already set as the Default Branch, the menu item will be grayed out and there will be a check mark next to the option.
+				</td>
+			</tr>
+			<tr>
+				<td>Set Destination as Default Branch</td>
+				<td>This selection is a quick way to set the Destination Branch as the default branch.
+					<br/>If the Destination Branch is already set as the Default Branch, the menu item will be grayed out and there will be a check mark next to the option.
+				</td>
+			</tr>
+			<tr>
+				<td>Edit Merge Artifact</td>
+				<td>This option is only enabled for Word Formatted Content conflicts and will bring up the Merge Artifact in Word.  </td>
+			</tr>
+			<tr>
+				<td>Generate Three Way Merge</td>
+				<td>Will generate a Three Way Merge for the Word Formatted Content.</td>
+			</tr>
+			<tr>
+				<td>Preview Source Artifact</td>
+				<td rowspan="3">Show a preview in Word of the Artifact based on the version selected.</td>
+			</tr>
+			<tr>
+				<td>Preview Destination Artifact</td>
+			</tr>
+			<tr>
+				<td>Preview Merge Artifact</td>
+			</tr>
+			<tr>
+				<td>Show Source Branch Differences</td>
+				<td rowspan="5">Generates differences based upon which option is selected.  Allows the user to see how different versions of the artifact differ</td>
+			</tr>
+			<tr>
+				<td>Show Destination Branch Differences</td>
+			</tr>
+			<tr>
+				<td>Show Source/Destination Differences</td>
+			</tr>
+			<tr>
+				<td>Show Source/Merge Differences</td>
+			</tr>
+			<tr>
+				<td>Show Destination/Merge Differences</td>
+			</tr>
+			<tr>
+				<td>Reveal Artifact in Explorer</td>
+				<td>This option is only available when either the Source or Destination Branch is set as the default branch.  When such is the case this will reveal the artifact in the Artifact Explorer for the Branch that is the default branch.</td>
+			</tr>
+			<tr>
+				<td>Resource History</td>
+				<td>This option is only available when either the Source or Destination Branch is set as the default branch.  When such is the case this will reveal the resource history of the artifact on the Branch that is the default branch.</td>
+			</tr>
+		</table>
+		<h3 id="General_Resolution_of_Conflicts">General Resolution of Conflicts</h3>
+		<table class="wikitable" border="1" cellpadding="1">
+			<tr style="background:#CCCCCC">
+				<th>Type</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>Informational Conflicts</td>
+				<td>Informational conflicts are identified by the 
+					<img border="0" src="images/Issue.gif"/> icon in the conflict resolution column in the GUI.  Informational conflicts require no action by the user, and no actions are provided in the GUI other than the ability to use the right click menu to examine the artifact using the tools provided there.  An informational conflict is generated when the Source branch deletes an Artifact or an Attribute and that same Artifact or Attribute was modified on the Destination Branch.  This is to allow the user the opportunity to review a change that was made on the Destination Branch that  might make them want to take some action in regards to their deletion.
+				</td>
+			</tr>
+			<tr>
+				<td>Un-resolvable Conflicts</td>
+				<td>Un-resolvable Conflicts are identified by the 
+					<img border="0" src="images/Red_light.gif"/> icon in the conflict resolution column of the GUI. This conflicts require the user to revert the Artifact or Attribute that caused the conflict on the Source Branch.  An Un-resolvable conflict is caused when the Destination Branch deletes an Artifact or Attribute while the Source Branch modifies that same Artifact, Attribute.  The reason the user must revert their changes is that committing in their changes would essentially undo that deletion and bring that item back into existence. If the deletion should not have happened the user needs to talk with the committer of the deletion to resolve the issue.
+				</td>
+			</tr>
+			<tr>
+				<td>Attribute Conflicts</td>
+				<td>Attribute Conflicts occur when both the Destination and Source branch modify an attribute.  This section will cover all attributes except Word Formatted Content Attributes.  </td>
+			</tr>
+		</table>
+		<h3 id="Word_Formatted_Content_Conflict_Resolution">Word Formatted Content Conflict Resolution</h3>
+		<p>Resolution of conflicts is provided in two different ways.  They can either copy and paste the changes into their Merge Artifact document or they can generate a Three Way Merge and accept the changes that show up in the generated document.  Both approaches have their advantages and disadvantages and are best suited for different situations.  They can also be combined where the situation warrants it, however the three way merge must always be done first if this is the case.</p>
+		<h3 id="Manual_Merging">Manual Merging</h3>
+		<p>
+			<b>Usage:</b>
+		</p>
+		<ul>
+			<li>When one version of the artifact has many changes and the other version has very few changes</li>
+			<li>When both files have formatting changes</li>
+			<li>When three way merging generates a complex document</li>
+			<li>When both versions edit the same text in multiple places</li>
+		</ul>
+		<p>Manual Merging is the process of combining the Source Branch changes and the destination branch changes manually by copying and pasting them into the Merge Artifact document.  The Merge Artifact is a separate version of the artifact that will preserve the details of the Merge, and will be reviewable in the Merge Manager after an artifact is committed.  IMPORTANT: If the user makes the changes to their Source Branch instead of on the Merge Artifact the Merge Manager will incorrectly represent the merge in future reviews.</p>
+		<p>The following procedure illustrates the functionality available to facilitate a manual merge.</p>
+		<p>The user will first either launch the Merge Wizard by left clicking on the icon in the Merge Value column of the GUI or they may select the functionality from the right click menu for the conflict in question.  The first thing to do is to bring up a word document comparison of both the Source Branch Version and the Destination Branch Version.  These documents will show all of the changes that have been made to these two artifacts since the Source Branch was created.  To launch these difference's the user either select "Show Source Diff" and "Show Destination Diff" from the wizard or "Differences"-&gt;"Show Source Branch Differences" and "Differences"-&gt;"Show Destination Branch Differences" from the right click menu.  These will bring up the two difference's in different Word instances with window labels to allow the user to differentiate the files.  The intention of bringing up these difference's is twofold.  Firstly, it allows the user to identify the file that has the most changes.  Secondly, it will come in use later when the user copy's and paste's changes into the Merge document.</p>
+		<p>Upon identifying the branch that has the most changes the user should then set the Merge Artifact to contain that branches value.  This is done by either selecting "Populate with Source Data" or "Populate with Destination Data" from the Merge Wizard or left clicking on the icon or the icon in the Source and Destination Value columns in the Merge Manager GUI.  The user can then bring up the Merge Artifact for editing by clicking on "Edit Merge Artifact" in the Merge Wizard or in the right click menu.  The Document that comes up contains the Merge Artifact and any changes made to it will be reflected when the Source Branch is committed.  The user can than begin to copy the changes from the diff report that showed the fewest changes (opposite of the one chosen as the baseline).  After all changes have been migrated into the Merge Artifact document the user than saves the document, which will preserve the Merge Artifact value.  The user should be aware that any changes they do not wish to preserve from either the Source or Destination version of the Artifact need to be omitted on the Merge Artifact.</p>
+		<p>The user then right clicks on the in the Conflict Status Column so that the icon is displayed.  The conflict is resolved and will allow the Source Branch to be committed.</p>
+		<h4 id="Three_Way_Merge">Three Way Merge</h4>
+		<p>
+			<b>Usage:</b>
+		</p>
+		<ul>
+			<li>When both versions have many changes or both versions have few changes.</li>
+			<li>When only one file has formatting changes (Must be combined with Manual Merging in this case)</li>
+			<li>When three way merging generates an understandable document </li>
+		</ul>
+		<p>Three Way Merging leverages Microsoft Words ability to merge documents.  At the beginning of any Word Formatted Content merge it is recommended that user generate a Three Way Merge and check the complexity of the document.  In most cases Three Way Merging is a quicker way to merge two documents, however in some cases the Three Way Merge will generate a document that is difficult to use and understand.  This usually arises when the Source and Destination branches have edited the same text or if one of the branches has touched a large percentage of the file.  As it runs fairly quickly it is always a good idea to run it at the beginning of a Merge to check if it is useful.  Three Way Merging only allows the user to maintain format changes from one of the documents.  If format changes are made on both documents the Three Way Merge will prompt the user as to which format changes they would like to maintain, the user will then need to copy the format changes from the other document into the Merge Artifact document manually.</p>
+		<p>A Three Way Merge is generated by selecting Generate Three Way Merge from either the Merge Wizard or the right click menu.  IMPORTANT: Generating a Three Way Merge will discard any changes made to the Merge Artifact, therefore a prompt will make sure this is the intended operation.  If a user had started a Three Way Merge previously but had not completed the Merge the user is also given the option of continuing the previous Merge in the prompt (Selecting Edit Merge Artifact will also have this effect). The following is an example of a Three Way Merge in Word.</p>
+		<p>
+			<img width="650" align="middle" border="0" src="images/WordThreeWayMerge.png"/>
+		</p>
+		<p>The changes made by the Source Branch and Destination Branch are shown in different colors in the Word Document.  In this particular case the changes made in Red were done by the Source Branch and the changes made in Blue were done on the Destination Branch.  The color scheme is not consistent and the user needs to verify which color equates to which changes by hovering there mouse over one of the changes.  A popup will be shown which will identify the author.  The following Guide will explain how to resolve the changes in the document. IMPORTANT: All changes must be either accepted or rejected before the conflict can be marked as resolved.  After the user has resolved all the changes it is a good idea to do generate a difference document between the Source Artifact and the Merge Artifact, and the Destination Artifact and the Merge Artifact by selecting "Show Source/Merge Diff" and "Show Destination/Merge Diff" from the merge Wizard or "Differences"-&gt;"Show Source/Merge Differences" and "Differences"-&gt;"Show Destination/Merge Differences" from the right click menu.  These views will show the differences between the branch artifact and the merge artifact.  For the Source/Merge difference this will show everything that is different between the source document and the Merge document.  In the case where the user accepts all changes from the source and destination branches this diff will highlight all of the changes that occurred on the destination branch. In the Destination/Merge diff it will highlight all of the changes that happened on the source branch.  It is always possible to use Manual Merging techniques in conjunction with Three Way Merging.</p>
+		<p>The user then right clicks on the in the Conflict Status Column so that the icon is displayed.  The conflict is resolved and will allow the Source Branch to be committed.</p>
+		<p>
+			<img width="400" align="middle" border="0" src="images/Word_formatted_content_merge_wizard.jpg"/>
+		</p>
+		<h3 id="Additional_Features">Additional Features</h3>
+		<p>The Merge Wizard contains a "Clear the Merge Artifact" that is not available from the right click menu and only available for Word Formatted Content.  This will empty out the Merge artifact and allow the user to start with an empty document for editing.  It will also place a 
+			<img border="0" src="images/Conflict.gif"/>icon in the merge value column for that conflict.
+		</p>
+		<h3 id="Step-By-Step_Recipe">Step-By-Step Recipe</h3>
+		<p>Upon selecting to commit a working branch, OSEE will prompt the user to perform a merge if conflicts are detected between the changes made on the child branch and any changes made to the parent branch since the child branch was created.  </p>
+		<p>
+			<img width="350" align="middle" border="0" src="images/StoppedDialog.JPG"/>
+		</p>
+		<p>The Merge Manager in OSEE will be used to reconcile these differences. From the 
+			<i>Merge Manager</i> tab, select the Merged Value icon which will cause the 
+			<i>Edit the attribute</i> window to appear. 
+		</p>
+		<p>Perform the following steps for each artifact listed on the 
+			<i>Merge Manager</i> tab:
+		</p>
+		<ol>
+			<li>Determine which change would be the easiest to re-implement (typically the smaller and simpler of the two).  This can be done by comparing all of the changes made to this UI.
+				<ol>
+					<li>
+						<b>Show Source Diff</b> displays the changes made on this working branch.
+					</li>
+					<li>
+						<b>Show Destination Diff</b> displays the changes made on the parent branch.
+					</li>
+					<li>
+						<b>Show Source/Destination Diff</b> displays the effect on the parent branch prior to any merge management.  This view will show how the changes made on this working branch will be overwritten by the changes made on the parent branch.
+					</li>
+				</ol>
+			</li>
+			<li>Select the 
+				<i>more complicated</i> of the two changes to populate the Merge Artifact: 
+				<b>Populate with Source Data</b> or 
+				<b>Populate with Destination Data</b>.  The Merged Value column on the 
+				<i>Merge Manager</i> tab and the top-most icon in the 
+				<i>Edit the attribute</i> window will update to display "S" or "D" based upon this selection.
+			</li>
+			<li>Select 
+				<b>Edit Merge Artifact</b> to open the merge document for editing.
+			</li>
+			<li>Re-implement the changes from the 
+				<i>simpler</i> change report.
+			</li>
+			<li>If at any time the merge effort needs to be cleared or re-started, select 
+				<b>Clear the Merge Artifact</b>.
+			</li>
+			<li>The following selections may be used to review and confirm the changes made during the merge.  Prior to updating the Merge Artifact, these selections will not provide accurate information.
+				<ol>
+					<li>
+						<b>Show Source/Merge Diff</b> displays the additional changes beyond those made on the working branch.
+					</li>
+					<li>
+						<b>Show Destination/Merge Diff</b> displays the additional changes beyond those made on the parent branch.
+					</li>
+				</ol>
+			</li>
+			<li>Select 
+				<b>Finish</b>
+			</li>
+			<li>Under the Conflict Resolution column on the 
+				<i>Merge Manager</i> tab, check the box so that the resolution status updates from "Modified" to "Resolved".
+			</li>
+			<li>Once all artifact conflicts have been addressed, the 
+				<i>Merge Manager</i> tab will report "All Conflicts Are Resolved."  At this point, the user can return to the Workflow tab and re-initiate committing the branch.
+			</li>
+			<li>OSEE will display the 
+				<i>Commit Branch</i> window to confirm the conflicts have been resolved via the Merge Manager. 
+			</li>
+			<li>Select 
+				<b>Ok</b> to finish committing the branch.
+			</li>
+		</ol>
+		<p>
+			<img width="320" alt=" center" border="0" src="images/Complete2.JPG_"/>
+		</p>
+		<h2 id="Test_Run_View">Test Run View</h2>
+		<p>The Test Run View provides an integration point with OTE (OSEE Test Environment). The test run view is used for viewing test run results. It can view a summary of output files that exist on a file system and it will upload those output files to the OSEE data store. It can also be used to view previous test runs that have been uploaded to the OSEE data store. </p>
+		<p>
+			<img align="middle" border="0" src="images/TestRunView.jpg"/>
+		</p><hr/>
+		<table class="navigation" style="width: 100%;" border="0" summary="navigation">
+			<tr>
+				<td style="width: 20%" align="left">
+					<a href="Features.html" title="Features">
+						<img alt="Previous" border="0" src="../../../images/prev.gif"/>
+					</a>
+				</td>
+				<td style="width: 60%" align="center">
+					<a href="Features.html" title="Features">
+						<img alt="Features" border="0" src="../../../images/home.gif"/>
+					</a>
+				</td>
+				<td style="width: 20%" align="right">
+					<a href="Search.html" title="Search">
+						<img alt="Next" border="0" src="../../../images/next.gif"/>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td style="width: 20%" align="left" valign="top">Features</td>
+				<td style="width: 60%" align="center"></td>
+				<td style="width: 20%" align="right" valign="top">Search</td>
+			</tr>
+		</table>
+	</body>
+</html>

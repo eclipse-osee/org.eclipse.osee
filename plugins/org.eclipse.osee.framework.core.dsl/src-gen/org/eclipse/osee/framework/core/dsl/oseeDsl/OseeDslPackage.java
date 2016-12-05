@@ -562,22 +562,13 @@ public interface OseeDslPackage extends EPackage
   int XOSEE_ENUM_ENTRY__ORDINAL = 1;
 
   /**
-   * The feature id for the '<em><b>Entry Guid</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int XOSEE_ENUM_ENTRY__ENTRY_GUID = 2;
-
-  /**
    * The feature id for the '<em><b>Description</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int XOSEE_ENUM_ENTRY__DESCRIPTION = 3;
+  int XOSEE_ENUM_ENTRY__DESCRIPTION = 2;
 
   /**
    * The number of structural features of the '<em>XOsee Enum Entry</em>' class.
@@ -586,7 +577,7 @@ public interface OseeDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int XOSEE_ENUM_ENTRY_FEATURE_COUNT = 4;
+  int XOSEE_ENUM_ENTRY_FEATURE_COUNT = 3;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XOseeEnumOverrideImpl <em>XOsee Enum Override</em>}' class.
@@ -682,22 +673,13 @@ public interface OseeDslPackage extends EPackage
   int ADD_ENUM__ORDINAL = OVERRIDE_OPTION_FEATURE_COUNT + 1;
 
   /**
-   * The feature id for the '<em><b>Entry Guid</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ADD_ENUM__ENTRY_GUID = OVERRIDE_OPTION_FEATURE_COUNT + 2;
-
-  /**
    * The feature id for the '<em><b>Description</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ADD_ENUM__DESCRIPTION = OVERRIDE_OPTION_FEATURE_COUNT + 3;
+  int ADD_ENUM__DESCRIPTION = OVERRIDE_OPTION_FEATURE_COUNT + 2;
 
   /**
    * The number of structural features of the '<em>Add Enum</em>' class.
@@ -706,7 +688,7 @@ public interface OseeDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ADD_ENUM_FEATURE_COUNT = OVERRIDE_OPTION_FEATURE_COUNT + 4;
+  int ADD_ENUM_FEATURE_COUNT = OVERRIDE_OPTION_FEATURE_COUNT + 3;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RemoveEnumImpl <em>Remove Enum</em>}' class.
@@ -2192,17 +2174,6 @@ public interface OseeDslPackage extends EPackage
   EAttribute getXOseeEnumEntry_Ordinal();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry#getEntryGuid <em>Entry Guid</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Entry Guid</em>'.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry#getEntryGuid()
-   * @see #getXOseeEnumEntry()
-   * @generated
-   */
-  EAttribute getXOseeEnumEntry_EntryGuid();
-
-  /**
    * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry#getDescription <em>Description</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2297,17 +2268,6 @@ public interface OseeDslPackage extends EPackage
    * @generated
    */
   EAttribute getAddEnum_Ordinal();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.AddEnum#getEntryGuid <em>Entry Guid</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Entry Guid</em>'.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.AddEnum#getEntryGuid()
-   * @see #getAddEnum()
-   * @generated
-   */
-  EAttribute getAddEnum_EntryGuid();
 
   /**
    * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.AddEnum#getDescription <em>Description</em>}'.
@@ -3549,14 +3509,6 @@ public interface OseeDslPackage extends EPackage
     EAttribute XOSEE_ENUM_ENTRY__ORDINAL = eINSTANCE.getXOseeEnumEntry_Ordinal();
 
     /**
-     * The meta object literal for the '<em><b>Entry Guid</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute XOSEE_ENUM_ENTRY__ENTRY_GUID = eINSTANCE.getXOseeEnumEntry_EntryGuid();
-
-    /**
      * The meta object literal for the '<em><b>Description</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -3633,14 +3585,6 @@ public interface OseeDslPackage extends EPackage
      * @generated
      */
     EAttribute ADD_ENUM__ORDINAL = eINSTANCE.getAddEnum_Ordinal();
-
-    /**
-     * The meta object literal for the '<em><b>Entry Guid</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute ADD_ENUM__ENTRY_GUID = eINSTANCE.getAddEnum_EntryGuid();
 
     /**
      * The meta object literal for the '<em><b>Description</b></em>' attribute feature.

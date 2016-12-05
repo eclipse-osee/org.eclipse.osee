@@ -1,9 +1,9 @@
-attributeType "Qualification Method" extends StringAttribute {
-	id 1152921504606847062
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
-	defaultValue "test"
+artifactType "Artifact" {
+	id 1
+}
+
+artifactType "Software Requirement" extends "Artifact" {
+	id 2
 }
 
 relationType "Requirement Relation" {
@@ -16,16 +16,20 @@ relationType "Requirement Relation" {
 	multiplicity ONE_TO_MANY
 }
 
-artifactType "Artifact" {
-	id 1
+attributeType "Qualification Method" extends StringAttribute {
+	id 1152921504606847062
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue "test"
 }
 
-artifactType "Software Requirement" extends "Artifact" {
-	id 2
-}
-
+artifactMatcher "Software Items" where artifactId EQ "AAMFEcWy0xc4e3tcem99";
+artifactMatcher "Systems" where branchName LIKE "\\w+";
+artifactMatcher "SubSystems" where artifactName EQ "xx";
 accessContext "System Context" {
 	guid "AAMFEcWy0xc4e3tcem11";
+	DENY edit artifactType "Artifact";
 	childrenOf "Software Items" {
 		DENY edit artifactType "Artifact";
 	}
@@ -38,7 +42,6 @@ accessContext "System Context" {
 		DENY edit artifactType "Artifact";
 	}
 
-	DENY edit artifactType "Artifact";
 }
 
 accessContext "subsystem.requirement.writer" extends "System Context" {
@@ -48,7 +51,3 @@ accessContext "subsystem.requirement.writer" extends "System Context" {
 	ALLOW edit attributeType "Qualification Method" of artifactType "Software Requirement";
 	DENY edit relationType "Requirement Relation" SIDE_A;
 }
-
-artifactMatcher "Software Items" where artifactId EQ "AAMFEcWy0xc4e3tcem99";
-artifactMatcher "Systems" where branchName LIKE "\\w+";
-artifactMatcher "SubSystems" where artifactName EQ "xx";

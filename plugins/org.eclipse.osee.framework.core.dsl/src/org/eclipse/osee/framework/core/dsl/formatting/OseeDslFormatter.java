@@ -27,7 +27,7 @@ public class OseeDslFormatter extends AbstractDeclarativeFormatter implements II
       "sideBName",
       "sideBArtifactType",
       "defaultOrderType",
-      "entryGuid",
+      "entryId",
       "multiplicity",
       "dataProvider",
       "min",

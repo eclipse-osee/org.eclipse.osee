@@ -17,20 +17,8 @@ import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor;
 public class OseeDslProposalProvider extends AbstractOseeDslProposalProvider {
 
    @Override
-   public void completeAddEnum_EntryGuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-      super.completeAddEnum_EntryGuid(model, assignment, context, acceptor);
-      completeGuidGeneration((RuleCall) assignment.getTerminal(), context, acceptor);
-   }
-
-   @Override
    public void completeXAttributeTypeRef_BranchUuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
       super.completeXAttributeTypeRef_BranchUuid(model, assignment, context, acceptor);
-      completeGuidGeneration((RuleCall) assignment.getTerminal(), context, acceptor);
-   }
-
-   @Override
-   public void completeXOseeEnumEntry_EntryGuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-      super.completeXOseeEnumEntry_EntryGuid(model, assignment, context, acceptor);
       completeGuidGeneration((RuleCall) assignment.getTerminal(), context, acceptor);
    }
 

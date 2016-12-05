@@ -1336,37 +1336,15 @@ ruleXOseeEnumEntry returns [EObject current=null]
 	    }
 
 )
-)?(	otherlv_3='entryGuid' 
+)?(	otherlv_3='description' 
     {
-    	newLeafNode(otherlv_3, grammarAccess.getXOseeEnumEntryAccess().getEntryGuidKeyword_3_0());
+    	newLeafNode(otherlv_3, grammarAccess.getXOseeEnumEntryAccess().getDescriptionKeyword_3_0());
     }
 (
 (
-		lv_entryGuid_4_0=RULE_STRING
+		lv_description_4_0=RULE_STRING
 		{
-			newLeafNode(lv_entryGuid_4_0, grammarAccess.getXOseeEnumEntryAccess().getEntryGuidSTRINGTerminalRuleCall_3_1_0()); 
-		}
-		{
-	        if ($current==null) {
-	            $current = createModelElement(grammarAccess.getXOseeEnumEntryRule());
-	        }
-       		setWithLastConsumed(
-       			$current, 
-       			"entryGuid",
-        		lv_entryGuid_4_0, 
-        		"org.eclipse.osee.framework.core.dsl.OseeDsl.STRING");
-	    }
-
-)
-))?(	otherlv_5='description' 
-    {
-    	newLeafNode(otherlv_5, grammarAccess.getXOseeEnumEntryAccess().getDescriptionKeyword_4_0());
-    }
-(
-(
-		lv_description_6_0=RULE_STRING
-		{
-			newLeafNode(lv_description_6_0, grammarAccess.getXOseeEnumEntryAccess().getDescriptionSTRINGTerminalRuleCall_4_1_0()); 
+			newLeafNode(lv_description_4_0, grammarAccess.getXOseeEnumEntryAccess().getDescriptionSTRINGTerminalRuleCall_3_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1375,7 +1353,7 @@ ruleXOseeEnumEntry returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"description",
-        		lv_description_6_0, 
+        		lv_description_4_0, 
         		"org.eclipse.osee.framework.core.dsl.OseeDsl.STRING");
 	    }
 
@@ -1560,37 +1538,15 @@ ruleAddEnum returns [EObject current=null]
 	    }
 
 )
-)?(	otherlv_3='entryGuid' 
+)?(	otherlv_3='description' 
     {
-    	newLeafNode(otherlv_3, grammarAccess.getAddEnumAccess().getEntryGuidKeyword_3_0());
+    	newLeafNode(otherlv_3, grammarAccess.getAddEnumAccess().getDescriptionKeyword_3_0());
     }
 (
 (
-		lv_entryGuid_4_0=RULE_STRING
+		lv_description_4_0=RULE_STRING
 		{
-			newLeafNode(lv_entryGuid_4_0, grammarAccess.getAddEnumAccess().getEntryGuidSTRINGTerminalRuleCall_3_1_0()); 
-		}
-		{
-	        if ($current==null) {
-	            $current = createModelElement(grammarAccess.getAddEnumRule());
-	        }
-       		setWithLastConsumed(
-       			$current, 
-       			"entryGuid",
-        		lv_entryGuid_4_0, 
-        		"org.eclipse.osee.framework.core.dsl.OseeDsl.STRING");
-	    }
-
-)
-))?(	otherlv_5='description' 
-    {
-    	newLeafNode(otherlv_5, grammarAccess.getAddEnumAccess().getDescriptionKeyword_4_0());
-    }
-(
-(
-		lv_description_6_0=RULE_STRING
-		{
-			newLeafNode(lv_description_6_0, grammarAccess.getAddEnumAccess().getDescriptionSTRINGTerminalRuleCall_4_1_0()); 
+			newLeafNode(lv_description_4_0, grammarAccess.getAddEnumAccess().getDescriptionSTRINGTerminalRuleCall_3_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1599,7 +1555,7 @@ ruleAddEnum returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"description",
-        		lv_description_6_0, 
+        		lv_description_4_0, 
         		"org.eclipse.osee.framework.core.dsl.OseeDsl.STRING");
 	    }
 

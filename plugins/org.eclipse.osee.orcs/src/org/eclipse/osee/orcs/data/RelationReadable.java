@@ -32,4 +32,8 @@ public interface RelationReadable<T> extends RelationId, OrcsReadable {
    @Override
    String toString();
 
+   int getArtIdA();
+
+   int getArtIdB();
+
 }

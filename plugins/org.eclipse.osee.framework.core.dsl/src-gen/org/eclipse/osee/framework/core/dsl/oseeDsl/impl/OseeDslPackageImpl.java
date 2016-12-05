@@ -851,19 +851,9 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getXOseeEnumEntry_EntryGuid()
-  {
-    return (EAttribute)xOseeEnumEntryEClass.getEStructuralFeatures().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EAttribute getXOseeEnumEntry_Description()
   {
-    return (EAttribute)xOseeEnumEntryEClass.getEStructuralFeatures().get(3);
+    return (EAttribute)xOseeEnumEntryEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -951,19 +941,9 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getAddEnum_EntryGuid()
-  {
-    return (EAttribute)addEnumEClass.getEStructuralFeatures().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EAttribute getAddEnum_Description()
   {
-    return (EAttribute)addEnumEClass.getEStructuralFeatures().get(3);
+    return (EAttribute)addEnumEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -1855,7 +1835,6 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     xOseeEnumEntryEClass = createEClass(XOSEE_ENUM_ENTRY);
     createEAttribute(xOseeEnumEntryEClass, XOSEE_ENUM_ENTRY__NAME);
     createEAttribute(xOseeEnumEntryEClass, XOSEE_ENUM_ENTRY__ORDINAL);
-    createEAttribute(xOseeEnumEntryEClass, XOSEE_ENUM_ENTRY__ENTRY_GUID);
     createEAttribute(xOseeEnumEntryEClass, XOSEE_ENUM_ENTRY__DESCRIPTION);
 
     xOseeEnumOverrideEClass = createEClass(XOSEE_ENUM_OVERRIDE);
@@ -1868,7 +1847,6 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     addEnumEClass = createEClass(ADD_ENUM);
     createEAttribute(addEnumEClass, ADD_ENUM__ENUM_ENTRY);
     createEAttribute(addEnumEClass, ADD_ENUM__ORDINAL);
-    createEAttribute(addEnumEClass, ADD_ENUM__ENTRY_GUID);
     createEAttribute(addEnumEClass, ADD_ENUM__DESCRIPTION);
 
     removeEnumEClass = createEClass(REMOVE_ENUM);
@@ -2079,7 +2057,6 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     initEClass(xOseeEnumEntryEClass, XOseeEnumEntry.class, "XOseeEnumEntry", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getXOseeEnumEntry_Name(), ecorePackage.getEString(), "name", null, 0, 1, XOseeEnumEntry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getXOseeEnumEntry_Ordinal(), ecorePackage.getEString(), "ordinal", null, 0, 1, XOseeEnumEntry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getXOseeEnumEntry_EntryGuid(), ecorePackage.getEString(), "entryGuid", null, 0, 1, XOseeEnumEntry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getXOseeEnumEntry_Description(), ecorePackage.getEString(), "description", null, 0, 1, XOseeEnumEntry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(xOseeEnumOverrideEClass, XOseeEnumOverride.class, "XOseeEnumOverride", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -2092,7 +2069,6 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     initEClass(addEnumEClass, AddEnum.class, "AddEnum", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getAddEnum_EnumEntry(), ecorePackage.getEString(), "enumEntry", null, 0, 1, AddEnum.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getAddEnum_Ordinal(), ecorePackage.getEString(), "ordinal", null, 0, 1, AddEnum.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getAddEnum_EntryGuid(), ecorePackage.getEString(), "entryGuid", null, 0, 1, AddEnum.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getAddEnum_Description(), ecorePackage.getEString(), "description", null, 0, 1, AddEnum.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(removeEnumEClass, RemoveEnum.class, "RemoveEnum", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

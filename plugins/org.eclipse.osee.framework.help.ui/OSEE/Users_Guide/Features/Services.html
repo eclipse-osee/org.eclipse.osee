@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='utf-8' ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title>Features - Services</title>
+		<link type="text/css" rel="stylesheet" href="../../../book.css"/>
+	</head>
+	<body>
+		<table class="navigation" style="width: 100%;" border="0" summary="navigation">
+			<tr>
+				<th style="width: 100%" align="center" colspan="3">Services</th>
+			</tr>
+			<tr>
+				<td style="width: 20%" align="left">
+					<a href="Wizards.html" title="Wizards">
+						<img alt="Previous" border="0" src="../../../images/prev.gif"/>
+					</a>
+				</td>
+				<td style="width: 60%" align="center"></td>
+				<td style="width: 20%" align="right">
+					<a href="Custom-Widgets.html" title="Custom Widgets">
+						<img alt="Next" border="0" src="../../../images/next.gif"/>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td style="width: 20%" align="left" valign="top">Wizards</td>
+				<td style="width: 60%" align="center"></td>
+				<td style="width: 20%" align="right" valign="top">Custom Widgets</td>
+			</tr>
+		</table><hr/>
+		<h1 id="Services">Services</h1>
+		<h2 id="Event_Service">Event Service</h2>
+		<p>OSEE is a client side application that runs off an Oracle database.  As with many applications, OSEE caches some of the data it provides to the user.  These caches need to be notified that there are updates available.  These updates are triggered by an event service that "connects" all OSEE instances and notifies them that changes have been made to cached data.</p>
+		<p>When your application focus is on any OSEE View, you will notice a double-arrow icon at the bottom of your workbench.  When NOT connected to the event service, this icon will show a red slash.   When this happens, you should shutdown, restart and accept all OSEE updates.  If this does not solve the problem, contact an OSEE Team member for help in resolving the problem.</p>
+		<h2 id="Attribute_Tagging_for_Quick_Search">Attribute Tagging for Quick Search</h2>
+		<p>When an artifact is saved, each attribute contained in the artifact is analyzed to produce a list of tags that are then associated with the artifact. Quick search is a form of <i>keyword</i> based searching which uses tags to perform contextual artifact searches.</p>
+		<p>For an attribute to be tagged by the system, it must meet the following criteria:</p>
+		<ul>
+			<li>The attribute's type must specify an <b>Attribute Tagger</b> to be used by the tagging system.</li>
+			<li>The attribute must contain valid data.</li>
+			<li>The attribute revision must be saved in the database before sending to tagging system.</li>
+		</ul>
+		<p>To produce tags, modified attributes are sent to the OSEE application server where the tagging system processes each attribute using an <b>Attribute Tagger</b> specified by the attribute's type. The <b>Attribute Tagger</b> knows how to interpret the attribute's data and how to extract words from the content. At this point, a word is defined as a sequential set of alphanumeric characters delimited by one or more spaces. As words are parsed, they are sent to the tagging system's word encoder where the following processing takes place:</p>
+		<ul>
+			<li>The characters in the original word are converted to lower case.</li>
+			<li>The lowercase version of the word is encoded and stored in the tagging system.</li>
+			<li>The lowercase version of the word is split using <tt>(' ', !, ", #, $, %, (, ), *, +, ,, -, ., /, :, ;, &lt;, &gt;, ?, @, 
+				<a href=",">\, </a>, ^, {, |, }, ~, _)</tt> as delimiters.
+			</li>
+			<li>Words given in inflected form (possessive, plural, etc) are converted into 
+				<a href="http://en.wikipedia.org/wiki/Dictionary_form" target="osee_external">citation form</a>.
+			</li>
+			<li>Each word is encoded and stored in the tag system.</li>
+		</ul>
+		<p>When encoding words into tags, the tag encoder uses an algorithm which transforms the word's characters into a bit-packed tag that will fit in a 64-bit integer. The tag will represent up to 12 characters (all that can fit into 64-bits). Longer words will be turned into consecutive tags.</p>
+		<h3 id="Tag_Encoding_Examples">Tag Encoding Examples</h3>
+		<table class="wikitable" border="1">
+			<tr>
+				<th>Original</th>
+				<th>Keywords</th>
+				<th>Encoding</th>
+			</tr>
+			<tr>
+				<td>appendices</td>
+				<td>appendix</td>
+				<td>&#45;220858502</td>
+			</tr>
+			<tr>
+				<td>batteries</td>
+				<td>battery</td>
+				<td>529513131</td>
+			</tr>
+			<tr>
+				<td>alternate</td>
+				<td>alternate</td>
+				<td>&#45;1420231874</td>
+			</tr>
+			<tr>
+				<td>backup</td>
+				<td>backup</td>
+				<td>24902827</td>
+			</tr>
+		</table><hr/>
+		<table class="navigation" style="width: 100%;" border="0" summary="navigation">
+			<tr>
+				<td style="width: 20%" align="left">
+					<a href="Wizards.html" title="Wizards">
+						<img alt="Previous" border="0" src="../../../images/prev.gif"/>
+					</a>
+				</td>
+				<td style="width: 60%" align="center">
+					<a href="Features.html" title="Features">
+						<img alt="Features" border="0" src="../../../images/home.gif"/>
+					</a>
+				</td>
+				<td style="width: 20%" align="right">
+					<a href="Custom-Widgets.html" title="Custom Widgets">
+						<img alt="Next" border="0" src="../../../images/next.gif"/>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td style="width: 20%" align="left" valign="top">Wizards</td>
+				<td style="width: 60%" align="center"></td>
+				<td style="width: 20%" align="right" valign="top">Custom Widgets</td>
+			</tr>
+		</table>
+	</body>
+</html>

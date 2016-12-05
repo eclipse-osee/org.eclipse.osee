@@ -283,11 +283,9 @@ public class DslToTypeLoader implements TypesLoader {
          @Override
          public Void caseAddEnum(AddEnum addEnum) {
             String entryName = addEnum.getEnumEntry();
-            String entryGuid = addEnum.getEntryGuid();
             String description = addEnum.getDescription();
             XOseeEnumEntry xEnumEntry = OseeDslFactory.eINSTANCE.createXOseeEnumEntry();
             xEnumEntry.setName(entryName);
-            xEnumEntry.setEntryGuid(entryGuid);
             xEnumEntry.setDescription(description);
             enumEntries.add(xEnumEntry);
             return super.caseAddEnum(addEnum);
@@ -296,11 +294,11 @@ public class DslToTypeLoader implements TypesLoader {
          @Override
          public Void caseRemoveEnum(RemoveEnum removeEnum) {
             XOseeEnumEntry enumEntry = removeEnum.getEnumEntry();
-            String guidToMatch = enumEntry.getEntryGuid();
+            String nameToMatch = enumEntry.getName();
             List<XOseeEnumEntry> toRemove = new LinkedList<>();
             for (XOseeEnumEntry item : enumEntries) {
-               String itemGuid = item.getEntryGuid();
-               if (guidToMatch.equals(itemGuid)) {
+               String itemId = item.getName();
+               if (nameToMatch.equals(itemId)) {
                   toRemove.add(item);
                }
             }

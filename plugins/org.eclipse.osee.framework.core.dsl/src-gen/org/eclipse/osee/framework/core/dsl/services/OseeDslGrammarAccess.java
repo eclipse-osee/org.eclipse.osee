@@ -767,19 +767,15 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Assignment cOrdinalAssignment_2 = (Assignment)cGroup.eContents().get(2);
 		private final RuleCall cOrdinalWHOLE_NUM_STRTerminalRuleCall_2_0 = (RuleCall)cOrdinalAssignment_2.eContents().get(0);
 		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
-		private final Keyword cEntryGuidKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
-		private final Assignment cEntryGuidAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
-		private final RuleCall cEntryGuidSTRINGTerminalRuleCall_3_1_0 = (RuleCall)cEntryGuidAssignment_3_1.eContents().get(0);
-		private final Group cGroup_4 = (Group)cGroup.eContents().get(4);
-		private final Keyword cDescriptionKeyword_4_0 = (Keyword)cGroup_4.eContents().get(0);
-		private final Assignment cDescriptionAssignment_4_1 = (Assignment)cGroup_4.eContents().get(1);
-		private final RuleCall cDescriptionSTRINGTerminalRuleCall_4_1_0 = (RuleCall)cDescriptionAssignment_4_1.eContents().get(0);
+		private final Keyword cDescriptionKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
+		private final Assignment cDescriptionAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
+		private final RuleCall cDescriptionSTRINGTerminalRuleCall_3_1_0 = (RuleCall)cDescriptionAssignment_3_1.eContents().get(0);
 		
 		//XOseeEnumEntry:
-		//	'entry' name=STRING ordinal=WHOLE_NUM_STR? ('entryGuid' entryGuid=STRING)? ('description' description=STRING)?;
+		//	'entry' name=STRING ordinal=WHOLE_NUM_STR? ('description' description=STRING)?;
 		@Override public ParserRule getRule() { return rule; }
 
-		//'entry' name=STRING ordinal=WHOLE_NUM_STR? ('entryGuid' entryGuid=STRING)? ('description' description=STRING)?
+		//'entry' name=STRING ordinal=WHOLE_NUM_STR? ('description' description=STRING)?
 		public Group getGroup() { return cGroup; }
 
 		//'entry'
@@ -797,29 +793,17 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//WHOLE_NUM_STR
 		public RuleCall getOrdinalWHOLE_NUM_STRTerminalRuleCall_2_0() { return cOrdinalWHOLE_NUM_STRTerminalRuleCall_2_0; }
 
-		//('entryGuid' entryGuid=STRING)?
+		//('description' description=STRING)?
 		public Group getGroup_3() { return cGroup_3; }
 
-		//'entryGuid'
-		public Keyword getEntryGuidKeyword_3_0() { return cEntryGuidKeyword_3_0; }
-
-		//entryGuid=STRING
-		public Assignment getEntryGuidAssignment_3_1() { return cEntryGuidAssignment_3_1; }
-
-		//STRING
-		public RuleCall getEntryGuidSTRINGTerminalRuleCall_3_1_0() { return cEntryGuidSTRINGTerminalRuleCall_3_1_0; }
-
-		//('description' description=STRING)?
-		public Group getGroup_4() { return cGroup_4; }
-
 		//'description'
-		public Keyword getDescriptionKeyword_4_0() { return cDescriptionKeyword_4_0; }
+		public Keyword getDescriptionKeyword_3_0() { return cDescriptionKeyword_3_0; }
 
 		//description=STRING
-		public Assignment getDescriptionAssignment_4_1() { return cDescriptionAssignment_4_1; }
+		public Assignment getDescriptionAssignment_3_1() { return cDescriptionAssignment_3_1; }
 
 		//STRING
-		public RuleCall getDescriptionSTRINGTerminalRuleCall_4_1_0() { return cDescriptionSTRINGTerminalRuleCall_4_1_0; }
+		public RuleCall getDescriptionSTRINGTerminalRuleCall_3_1_0() { return cDescriptionSTRINGTerminalRuleCall_3_1_0; }
 	}
 
 	public class XOseeEnumOverrideElements extends AbstractParserRuleElementFinder {
@@ -905,19 +889,15 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Assignment cOrdinalAssignment_2 = (Assignment)cGroup.eContents().get(2);
 		private final RuleCall cOrdinalWHOLE_NUM_STRTerminalRuleCall_2_0 = (RuleCall)cOrdinalAssignment_2.eContents().get(0);
 		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
-		private final Keyword cEntryGuidKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
-		private final Assignment cEntryGuidAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
-		private final RuleCall cEntryGuidSTRINGTerminalRuleCall_3_1_0 = (RuleCall)cEntryGuidAssignment_3_1.eContents().get(0);
-		private final Group cGroup_4 = (Group)cGroup.eContents().get(4);
-		private final Keyword cDescriptionKeyword_4_0 = (Keyword)cGroup_4.eContents().get(0);
-		private final Assignment cDescriptionAssignment_4_1 = (Assignment)cGroup_4.eContents().get(1);
-		private final RuleCall cDescriptionSTRINGTerminalRuleCall_4_1_0 = (RuleCall)cDescriptionAssignment_4_1.eContents().get(0);
+		private final Keyword cDescriptionKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
+		private final Assignment cDescriptionAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
+		private final RuleCall cDescriptionSTRINGTerminalRuleCall_3_1_0 = (RuleCall)cDescriptionAssignment_3_1.eContents().get(0);
 		
 		//AddEnum:
-		//	'add' enumEntry=STRING ordinal=WHOLE_NUM_STR? ('entryGuid' entryGuid=STRING)? ('description' description=STRING)?;
+		//	'add' enumEntry=STRING ordinal=WHOLE_NUM_STR? ('description' description=STRING)?;
 		@Override public ParserRule getRule() { return rule; }
 
-		//'add' enumEntry=STRING ordinal=WHOLE_NUM_STR? ('entryGuid' entryGuid=STRING)? ('description' description=STRING)?
+		//'add' enumEntry=STRING ordinal=WHOLE_NUM_STR? ('description' description=STRING)?
 		public Group getGroup() { return cGroup; }
 
 		//'add'
@@ -935,29 +915,17 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//WHOLE_NUM_STR
 		public RuleCall getOrdinalWHOLE_NUM_STRTerminalRuleCall_2_0() { return cOrdinalWHOLE_NUM_STRTerminalRuleCall_2_0; }
 
-		//('entryGuid' entryGuid=STRING)?
+		//('description' description=STRING)?
 		public Group getGroup_3() { return cGroup_3; }
 
-		//'entryGuid'
-		public Keyword getEntryGuidKeyword_3_0() { return cEntryGuidKeyword_3_0; }
-
-		//entryGuid=STRING
-		public Assignment getEntryGuidAssignment_3_1() { return cEntryGuidAssignment_3_1; }
-
-		//STRING
-		public RuleCall getEntryGuidSTRINGTerminalRuleCall_3_1_0() { return cEntryGuidSTRINGTerminalRuleCall_3_1_0; }
-
-		//('description' description=STRING)?
-		public Group getGroup_4() { return cGroup_4; }
-
 		//'description'
-		public Keyword getDescriptionKeyword_4_0() { return cDescriptionKeyword_4_0; }
+		public Keyword getDescriptionKeyword_3_0() { return cDescriptionKeyword_3_0; }
 
 		//description=STRING
-		public Assignment getDescriptionAssignment_4_1() { return cDescriptionAssignment_4_1; }
+		public Assignment getDescriptionAssignment_3_1() { return cDescriptionAssignment_3_1; }
 
 		//STRING
-		public RuleCall getDescriptionSTRINGTerminalRuleCall_4_1_0() { return cDescriptionSTRINGTerminalRuleCall_4_1_0; }
+		public RuleCall getDescriptionSTRINGTerminalRuleCall_3_1_0() { return cDescriptionSTRINGTerminalRuleCall_3_1_0; }
 	}
 
 	public class RemoveEnumElements extends AbstractParserRuleElementFinder {
@@ -2658,7 +2626,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//XOseeEnumEntry:
-	//	'entry' name=STRING ordinal=WHOLE_NUM_STR? ('entryGuid' entryGuid=STRING)? ('description' description=STRING)?;
+	//	'entry' name=STRING ordinal=WHOLE_NUM_STR? ('description' description=STRING)?;
 	public XOseeEnumEntryElements getXOseeEnumEntryAccess() {
 		return pXOseeEnumEntry;
 	}
@@ -2689,7 +2657,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//AddEnum:
-	//	'add' enumEntry=STRING ordinal=WHOLE_NUM_STR? ('entryGuid' entryGuid=STRING)? ('description' description=STRING)?;
+	//	'add' enumEntry=STRING ordinal=WHOLE_NUM_STR? ('description' description=STRING)?;
 	public AddEnumElements getAddEnumAccess() {
 		return pAddEnum;
 	}

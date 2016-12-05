@@ -120,17 +120,11 @@ attributeType "dispo.Import State" extends EnumeratedAttribute {
 oseeEnumType "enum.dispo.imported state" {
 	id 3458764513820541335
 	entry "None"
-	entryGuid "AHkD1ZWRgG65kO3xVB"
 	entry "No Change"
-	entryGuid "AHkD42Lk63rhGqAyBOAA"
 	entry "OK"
-	entryGuid "AHkD145yThP3YIc3P3AA"
 	entry "Warnings"
-	entryGuid "AHkD1ZnB5kjoOpcY2bcC"
 	entry "Failed"
-	entryGuid "AHkD1ZnB5kjoOpZz2bcD"
 	entry "Unspecified"
-	entryGuid "AHkD1ZtZdviGWH2sJvwC"
 }
 
 attributeType "dispo.Item Status" extends EnumeratedAttribute {
@@ -273,13 +267,9 @@ attributeType "dispo.Method Number" extends StringAttribute {
 oseeEnumType "enum.dispo.item status" {
 	id 3458764513820541337
 	entry "PASS"
-	entryGuid "AHkD1ZWRgG95kO2xwA"
 	entry "INCOMPLETE"
-	entryGuid "AHkD82Lk63rhGqAyBOAA"
 	entry "COMPLETE"
-	entryGuid "AHk1145yThP3YIc3P3AA"
 	entry "Unspecified"
-	entryGuid "AHkD1ZtZdviGWH2sJvwC"
 }
 
 

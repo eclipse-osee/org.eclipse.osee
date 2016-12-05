@@ -57,11 +57,11 @@ artifactType "Demo Test Team Workflow" extends "Team Workflow" {
 
 oseeEnumType "enum.demo.code.category" {
    id 3458764513820541328
-   entry "Code Problem" entryGuid "AHgPZbKmc3ysmzFjpZgA"
-   entry "Design/Implementation" entryGuid "AHgPZbUNIwI2P31Om0gA"
-   entry "Comment Change Only" entryGuid "AHgPZbadTBlE5CI67iwA"
-   entry "Non-Mission" entryGuid "AHgPZbdoMgmRBR6iuAgA"
-   entry "Workaround" entryGuid "AHgPZbj6MDAZRpyTSDQA"
+   entry "Code Problem" 
+   entry "Design/Implementation" 
+   entry "Comment Change Only" 
+   entry "Non-Mission" 
+   entry "Workaround" 
 }
 
 attributeType "demo.code.Category" extends EnumeratedAttribute {
@@ -102,26 +102,26 @@ attributeType "demo.code.CSCI" extends StringAttribute {
 
 oseeEnumType "enum.demo.code.defect.code" {
    id 3458764513820541329
-   entry "CL01 - Requirements Implemented Incorrectly" entryGuid "AHfrvF6LB3l2ASR0vEAA"
-   entry "CL02 - Initialization Error" entryGuid "AHfrwIxoUhI9nSogT6QA"
-   entry "CL03 - Out of Range Error" entryGuid "AHfzRJVB30_q_so4ppQA"
-   entry "CL04 - Data Conversion Error" entryGuid "AHfzSQWtX2T4nNigm+AA"
-   entry "CL05 - Buffer Sizing Error" entryGuid "AHfzSQam0XRx4prJvagA"
-   entry "CL06 - Timing Problem" entryGuid "AHfzSQeRBmQzmrcY6vwA"
-   entry "CL07 - Interface Error" entryGuid "AHfzSQh7FEjHhQPKR8AA"
-   entry "CL08 - Logic Control Error" entryGuid "AHfzSQllBATn27u98cQA"
-   entry "CL09 - TYPO" entryGuid "AHfzSQpJlizmRdu0IrwA"
-   entry "CL10 - Multiple Code Logic Problems" entryGuid "AHfzSQtEDTUdrtdqv7QA"
-   entry "CL99 - Other Code Logic Problem" entryGuid "AHfzSQwxmHKsPyBDF_AA"
-   entry "NC01 - Requirement Error" entryGuid "AHfzSQ_xzUibI7xCOTQA"
-   entry "NC02 - Test Script Error" entryGuid "AHf_QpZYYgwLGaFvbyAA"
-   entry "NC03 - CTE Error" entryGuid "AHf_QpdW6j0C5YHwUdgA"
-   entry "NC04 - Hardware Error" entryGuid "AHgDrndASh04zzKFOpAA"
-   entry "NC99 - Other NON-CODE Problem" entryGuid "AHgDrnxUSRDqOZDSq3QA"
-   entry "SV01 - Coding Standard Violation" entryGuid "AHgDroWS6TdaMT_hT8wA"
-   entry "TE01 - Compiler/Linker/Assembler Problem" entryGuid "AHgHAQbdFRvQmU0a2mgA"
-   entry "TE02 - APEX Problem" entryGuid "AHgHAQ4s01+9G8JHCYQA"
-   entry "TE99 - Other Tool Error" entryGuid "AHgHARH61nVDkVoWWewA"
+   entry "CL01 - Requirements Implemented Incorrectly" 
+   entry "CL02 - Initialization Error" 
+   entry "CL03 - Out of Range Error" 
+   entry "CL04 - Data Conversion Error" 
+   entry "CL05 - Buffer Sizing Error" 
+   entry "CL06 - Timing Problem" 
+   entry "CL07 - Interface Error" 
+   entry "CL08 - Logic Control Error" 
+   entry "CL09 - TYPO" 
+   entry "CL10 - Multiple Code Logic Problems" 
+   entry "CL99 - Other Code Logic Problem" 
+   entry "NC01 - Requirement Error" 
+   entry "NC02 - Test Script Error" 
+   entry "NC03 - CTE Error" 
+   entry "NC04 - Hardware Error" 
+   entry "NC99 - Other NON-CODE Problem" 
+   entry "SV01 - Coding Standard Violation" 
+   entry "TE01 - Compiler/Linker/Assembler Problem" 
+   entry "TE02 - APEX Problem" 
+   entry "TE99 - Other Tool Error" 
 }
 
 attributeType "demo.code.Defect Code" extends EnumeratedAttribute {
@@ -135,13 +135,13 @@ attributeType "demo.code.Defect Code" extends EnumeratedAttribute {
 
 oseeEnumType "enum.demo.code.detection" {
    id 3458764513820541330
-   entry "Test Script(s)" entryGuid "AHfYTFIxP2WjivgIf5AA"
-   entry "Inspection (Test)" entryGuid "AHfYUIExngyljHlV5NwA"
-   entry "Hot Bench" entryGuid "AHfYUIIBaHndjAnnDVQA"
-   entry "Aircraft" entryGuid "AHfYUILOEUJvVLy5BkAA"
-   entry "Peer Review" entryGuid "AHfYUIOZXRNhn0bltBQA"
-   entry "TRAX Issue" entryGuid "AHfYUIRpfj0QUBOknawA"
-   entry "Other" entryGuid "AHfYUIUzQFakG8hrbcgA"
+   entry "Test Script(s)" 
+   entry "Inspection (Test)" 
+   entry "Hot Bench" 
+   entry "Aircraft" 
+   entry "Peer Review" 
+   entry "TRAX Issue" 
+   entry "Other" 
 }
 
 attributeType "demo.code.Detection" extends EnumeratedAttribute {
@@ -181,11 +181,11 @@ attributeType "demo.code.Originating Build" extends StringAttribute {
 
 oseeEnumType "enum.demo.code.req.doc" {
    id 3458764513820541331
-   entry "Unknown" entryGuid "AHfFYLyC6lm5ycsW5SQA"
-   entry "SubDD" entryGuid "AHfFYMLZl2C6DnGN8lgA"
-   entry "CSID" entryGuid "AHfFYMOhyQ7tbByHMcgA"
-   entry "SRS" entryGuid "AHfFYMVvYHa1PShzHhQA"
-   entry "Other" entryGuid "AHfFYMZNVF7T4VhhkgAA"
+   entry "Unknown" 
+   entry "SubDD" 
+   entry "CSID" 
+   entry "SRS" 
+   entry "Other" 
 }
 
 attributeType "demo.code.Req Doc" extends EnumeratedAttribute {

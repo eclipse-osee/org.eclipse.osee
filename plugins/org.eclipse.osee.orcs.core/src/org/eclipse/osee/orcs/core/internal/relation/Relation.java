@@ -181,4 +181,14 @@ public class Relation implements RelationReadable, HasOrcsData<RelationData>, Or
       return getOrcsData().getVersion().getGammaId();
    }
 
+   @Override
+   public int getArtIdA() {
+      return getOrcsData().getArtIdA();
+   }
+
+   @Override
+   public int getArtIdB() {
+      return getOrcsData().getArtIdB();
+   }
+
 }

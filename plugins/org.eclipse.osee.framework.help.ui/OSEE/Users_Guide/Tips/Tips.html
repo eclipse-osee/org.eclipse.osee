@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='utf-8' ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title>Tips</title>
+		<link type="text/css" rel="stylesheet" href="../../../book.css"/>
+	</head>
+	<body>
+		<table class="navigation" style="width: 100%;" border="0" summary="navigation">
+			<tr>
+				<th style="width: 100%" align="center" colspan="3">Tips</th>
+			</tr>
+			<tr>
+				<td style="width: 20%" align="left"></td>
+				<td style="width: 60%" align="center"></td>
+				<td style="width: 20%" align="right">
+					<a href="Branch-Manager.html" title="Branch Manager">
+						<img alt="Next" border="0" src="../../../images/next.gif"/>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td style="width: 20%" align="left" valign="top"></td>
+				<td style="width: 60%" align="center"></td>
+				<td style="width: 20%" align="right" valign="top">Branch Manager</td>
+			</tr>
+		</table><hr/>
+		<h1 id="Frequently_Asked_Questions">Frequently Asked Questions</h1>
+		<h2 id="Do_I_have_to_create_a_new_database_table_for_every_type_of_Artifact_that_I_want_to_use.3F">Do I have to create a new database table for every type of Artifact that I want to use?</h2>
+		<p>Quick Answer: No</p>
+		<p>The OSEE Architecture Framework uses a common table structure to store all types of artifacts, attributes and relations.  This allows the users to dynamically create and start using new objects without major database modification.</p>
+		<h2 id="Do_I_have_to_use_the_Artifact_types_that_are_built_into_OSEE.3F">Do I have to use the Artifact types that are built into OSEE?</h2>
+		<p>Quick Answer: No</p>
+		<p>All Artifact Types, Attribute Types and Relation Types (with a few exceptions) are fully customizable. Although OSEE was initially built for capturing all data throughout the lifecycle of a large avionics systems engineering project, it was architected to store any data by simply defining a different data model to use.</p>
+		<p>In addition, these data models can be dynamically modified.  New Artifacts, Attributes and Relations can be specified at anytime (and even by end users if allowed).  Modification and deletion of these can be performed with some administrative back-end tools with the understanding that you would need to determine what to do with the removed data.</p>
+		<h2 id="How_do_I_delete_artifact_types.3F">How do I delete artifact types?</h2>
+		<p>There is a BLAM called "Purge Artifact Type" that is used to permanently remove all traces of an artifact type from the OSEE database. The BLAM allows the user to select one or more artifact types to purge. If any artifact instances of the doomed artifact type exist, a different artifact type can be specified; these artifacts will be converted to the new type. Otherwise, the BLAM will abort upon discovering an artifact that is of a type to be purged; that is, the BLAM will never delete any artifacts.</p>
+		<h2 id="Can_OSEE_be_used_offline_and_later_sync.27d_up.3F">Can OSEE be used offline and later sync'd up?</h2>
+		<p>Although OSEE does not currently provide the capability to download database artifacts, work offline and then sync up when re-connected, it was certainly a consideration in the design.  The most complex part would be resolving conflicts that may occur to artifacts edited in both disconnected OSEE's.  Since OSEE already has the capability to run on multiple databases and the capability to export and import artifacts, it would just take some effort to provide the first versions of this feature. This would be a great area for collaboration.</p>
+		<h2 id="Can_I_import_existing_traceability_into_OSEE.3F">Can I import existing traceability into OSEE?</h2>
+		<p>Quick Answer: Yes</p>
+		<p>Since traceability is usually defined in a way that is specific to it's use and the objects that are being traced, there is currently no "generic" traceability importing in OSEE, however OSEE provides BLAM that would enable traceability to be imported from existing applications, documents, excel spreadsheets.  This capability has already been used a number of times to successfully import traceability from legacy documents and systems on projects OSEE has been deployed to.</p>
+		<h2 id="Can_I_import_from_Microsoft_Excel.26copy.3B.3F">Can I import from Microsoft Excel&amp;copy;?</h2>
+		<p>Quick Answer: Yes</p>
+		<p>Through OSEE's BLAM tool, users can import from other applications, documents and spreadsheets.</p>
+		<h2 id="How_do_I_publish_documents_from_OSEE.3F">How do I publish documents from OSEE?</h2>
+		<p>The majority of the work in publishing out of OSEE has been in the format of Microsoft Word&#169; documents. The user can create a Word template that "describes" the format, headers, footers and what data maps into the specified areas in the template. A BLAM is then run where the user can specify the branch and what artifacts are to be published.  Upon execution, the documents are created.  This method has successfully generated documents in excess of 10,000 pages that were delivered to the customer.</p>
+		<p>The OSEE architecture also supports other methods of publishing including web and open document formats. Depending on the level of complexity, some work would be done to provide further export capabilities.</p>
+		<p>Another form of publishing that OSEE was architected for is delivery of OSEE and the database.  Although OSEE can publish documents and reports, it was decided early on that the vendors and customers would want and need the same navigation and exportation capabilities that OSEE provides.  Instead of delivering generated documents, one of the projects that OSEE is deployed on delivers a copy of OSEE with a sanitized database (confidential data removed).  This has been very successful from both the program and customer's point of view.</p>
+		<h2 id="What_databases_can_be_used_with_OSEE.3F">What databases can be used with OSEE?</h2>
+		<p>OSEE was architected to be database independent and should run on any SQL-99 compliant DB that has a JDBC driver. It is currently runs on Oracle 10g and 11g and PostgreSQL 8.2.  In the past, OSEE has also been run on Derby and MySQL.  The current release of OSEE would need to be tested for compatibility with Derby, MySQL, or any other database.  If desired, the OSEE Team could work with the user/developers to help perform this task.</p>
+		<h2 id="Is_OSEE_Compatible_with_Office_2007.3F">Is OSEE Compatible with Office 2007?</h2>
+		<p>Yes, OSEE is compatible. When storing word content in XML format make sure to use 
+			<b>Word 2003 XML Document (*.xml)</b> format.
+		</p><hr/>
+		<table class="navigation" style="width: 100%;" border="0" summary="navigation">
+			<tr>
+				<td style="width: 20%" align="left"></td>
+				<td style="width: 60%" align="center"></td>
+				<td style="width: 20%" align="right">
+					<a href="Branch-Manager.html" title="Branch Manager">
+						<img alt="Next" border="0" src="../../../images/next.gif"/>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td style="width: 20%" align="left" valign="top"></td>
+				<td style="width: 60%" align="center"></td>
+				<td style="width: 20%" align="right" valign="top">Branch Manager</td>
+			</tr>
+		</table>
+	</body>
+</html>

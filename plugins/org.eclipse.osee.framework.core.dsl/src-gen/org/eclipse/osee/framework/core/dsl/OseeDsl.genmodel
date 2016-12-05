@@ -87,7 +87,6 @@
     <genClasses ecoreClass="OseeDsl.ecore#//XOseeEnumEntry">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//XOseeEnumEntry/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//XOseeEnumEntry/ordinal"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//XOseeEnumEntry/entryGuid"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//XOseeEnumEntry/description"/>
     </genClasses>
     <genClasses ecoreClass="OseeDsl.ecore#//XOseeEnumOverride">
@@ -99,7 +98,6 @@
     <genClasses ecoreClass="OseeDsl.ecore#//AddEnum">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//AddEnum/enumEntry"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//AddEnum/ordinal"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//AddEnum/entryGuid"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//AddEnum/description"/>
     </genClasses>
     <genClasses ecoreClass="OseeDsl.ecore#//RemoveEnum">

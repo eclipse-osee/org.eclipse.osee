@@ -663,7 +663,7 @@ public class OrcsTypesTest {
       //@formatter:off
       String enumOverride = "overrides enum \"enum.test.proc.status\" { \n" +
          "inheritAll \n" +
-         "add \"In Work\" entryGuid \"CArJmMckZm_uUjBpStQA\" description \"this is in work\"\n" +
+         "add \"In Work\" description \"this is in work\"\n" +
          "remove \"enum.test.proc.status.Completed -- With Issues\" \n" +
       "}\n";
       //@formatter:on

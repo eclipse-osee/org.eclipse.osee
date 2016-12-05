@@ -17,12 +17,12 @@ import org.eclipse.osee.orcs.data.EnumEntry;
 /**
  * @author Roberto E. Escobar
  */
-public final class EnumEntryImpl extends FullyNamedIdentity<String>implements EnumEntry {
+public final class EnumEntryImpl extends FullyNamedIdentity<String> implements EnumEntry {
 
    private final int ordinal;
 
-   public EnumEntryImpl(String guid, String name, int ordinal, String description) {
-      super(guid, name, description);
+   public EnumEntryImpl(String name, int ordinal, String description) {
+      super(name, name, description);
       this.ordinal = ordinal;
    }
 

@@ -19,6 +19,6 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({InternalTestSuite.class,})
-public class OrcsRestTestSuite {
+public class OrcsRest_Integration_TestSuite {
    // Test Suite
 }

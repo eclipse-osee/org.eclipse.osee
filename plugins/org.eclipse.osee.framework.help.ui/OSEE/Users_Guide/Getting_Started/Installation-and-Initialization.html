@@ -1,0 +1,433 @@
+<?xml version='1.0' encoding='utf-8' ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title>Introduction - Installation and Initialization</title>
+		<link type="text/css" rel="stylesheet" href="../../../book.css"/>
+	</head>
+	<body>
+		<table class="navigation" style="width: 100%;" border="0" summary="navigation">
+			<tr>
+				<th style="width: 100%" align="center" colspan="3">Installation and Initialization</th>
+			</tr>
+			<tr>
+				<td style="width: 20%" align="left">
+					<a href="Getting-Started.html" title="Introduction">
+						<img alt="Previous" border="0" src="../../../images/prev.gif"/>
+					</a>
+				</td>
+				<td style="width: 60%" align="center"></td>
+				<td style="width: 20%" align="right">
+					<a href="Screencasts.html" title="Screencasts">
+						<img alt="Next" border="0" src="../../../images/next.gif"/>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td style="width: 20%" align="left" valign="top">Introduction</td>
+				<td style="width: 60%" align="center"></td>
+				<td style="width: 20%" align="right" valign="top">Screencasts</td>
+			</tr>
+		</table><hr/>
+		<h1 id="Installation_and_Initialization">Installation and Initialization</h1>
+		<h2 id="Requirements">Requirements</h2>
+		<ul>
+			<li>System with at least 4GB of RAM</li>
+			<li>Java Runtime Environment (JRE) 1.6</li>
+			<li>
+				<a href="https://www.eclipse.org/downloads/packages/release/Kepler/SR2" target="osee_external">Eclipse Kepler 4.3.2</a>
+			</li>
+			<li>Relational Databases: OSEE comes bundled with H2. For additional database support, see 
+				<a href="Supported_Databases" title="OSEE/Users_Guide/Getting_Started#Supported_Databases">Supported Databases</a>.
+			</li>
+		</ul>
+		<h2 id="Eclipse_Installation">Eclipse Installation</h2>
+		<p>To install OSEE: Start by downloading the OSEE Application Server and the  OSEE Client Update Archive from the 
+			<a href="http://www.eclipse.org/osee/downloads/" target="osee_external">downloads</a> page.
+		</p>
+		<h3 id="Quick_Server_Installation">Quick Server Installation</h3>
+		<p>If you are interested in a quick start, and are not setting up a custom database installation, setting up the OSEE server with the bundled HSQLDB database is simple.</p>
+		<ul>
+			<li>Create a directory to place your server in, and unzip the downloaded server zip file (e.g. org.eclipse.osee.x.server.runtime.zip) into that directory.</li>
+		</ul>
+		<p>You should end up with the following files and directories:</p>
+		<dl>
+			<dd>configuration</dd>
+			<dd>demo</dd>
+			<dd>eclipse</dd>
+			<dd>etc</dd>
+			<dd>plugins</dd>
+			<dd>runDemo.bat</dd>
+			<dd>runDemo.sh</dd>
+			<dd>runHsql.sh</dd>
+			<dd>runPostgreSqlLocal.sh</dd>
+		</dl>
+		<ul>
+			<li>Edit the desired startup script file (e.g. "runDemo.bat") to provide the server the link to the binary data.</li>
+		</ul>
+		<p>For example, if you were using Windows, and you installed to C:/UserData/OseeDemo, you would change the line in the batch file to:</p>
+		<ul style="list-style: square">
+			<li>
+				<ul style="list-style: square">
+					<li>Dosee.application.server.data="C:/UserData/OseeDemo/demo/binary_data"</li>
+				</ul>
+			</li>
+			<li>change to the etc directory, and edit the osee.hsql.json file.</li>
+		</ul>
+		<p>Set the jdbc.server.db.data.path to the location of the hsql db.
+			Following the example above, for instance, you would change the line in the json file to:</p>
+		<dl>
+			<dd>"jdbc.server.db.data.path": "file:c:/UserData/OseeDemo/demo/hsql/osee.hsql.db",</dd>
+		</dl>
+		<p>That completes the simple server setup.
+			Run the server by setting up a command window, then running the script file to start the server.
+			For example, if you were running with Windows, you would start a windows command shell, then run the "runDemo.bat" batch script. See  
+			<a href="Installation-and-Initialization.html#Launch_Application_Server">Launch Application Server</a> for details on running the server.
+		</p>
+		<h3 id="Client_Installation">Client Installation</h3>
+		<p>The OSEE client can be installed from within Eclipse like any other Eclipse plugin.</p>
+		<ol>
+			<li>Start Eclipse and select the menu item 
+				<b>Help &gt; Install New Software...</b> <!--
+				<img border="0" src="images/Find_and_install.png"/>-->
+			</li>
+			<li>Select the 
+				<i>Available Software</i> tab group and click the 
+				<i>Add...</i> button. 
+				<br/> 
+				<img width="500" border="0" src="images/Add_site.png"/> 
+				<img border="0" src="images/New_update_site.png"/>
+				<br/>
+			</li>
+			<li>In the 
+				<i>Add Repository</i> dialog, choose the Archive button, then navigate the file browser to the Client Update file downloaded in step one. 
+				<b>Please note that the use of the software you are about to access may be subject to third party terms and conditions and you are responsible for abiding by such terms and conditions.</b>
+			</li>
+			<li>Click on the 
+				<i>OK</i> button to store update site information.
+			</li>
+			<li>Select the OSEE update site entry and all features listed under its category. Click the 
+				<i>Next</i> button. 
+				<img border="0" src="images/AvailableSoftware.png"/>
+			</li>
+			<li>The update manager calculates dependencies and offers you a list of features to install. Select the needed ones and click the 
+				<i>Next</i> button.
+			</li>
+			<li>Accept terms of license agreement and click the 
+				<i>Finish</i> button in order to start the installation of selected features.
+				<img border="0" src="images/AcceptTerms.png"/>
+			</li>
+			<li>To apply installation changes click on the 
+				<i>No</i> button and shutdown Eclipse. It is important that you don't restart Eclipse until you have completed the database initialization steps below.
+			</li>
+		</ol>
+		<p>
+			<img border="0" src="images/Restart_dialog.png"/>
+			If you are using the default demo database and did the server quick start above, you just need to make one change to the eclipse eclipse.ini file - add the line 
+		</p>
+		<ul style="list-style: square">
+			<li>
+				<ul style="list-style: square">
+					<li>Dosee.application.server=
+						<a href="http://localhost:8089" target="osee_external">http://localhost:8089</a> to the end of the file.
+					</li>
+				</ul>
+			</li>
+		</ul>
+		<p>Your installation is complete. </p>
+		<ul>
+			<li>If you chose the quick server installation above, you can check to make sure the server is running in the command window, then start the OSEE client.</li>
+			<li>If you are using a custom database, then configure the database and initialize it before running the client.</li>
+		</ul>
+		<h2 id="Additional_Configuration_Options">Additional Configuration Options</h2>
+		<ol>
+			<li>The following instructions apply if you are setting up a custom database, or if you are configuring OSEE for use by multiple users.</li>
+			<li>Custom Data Base: Follow the instructions at 
+				<a href="Installation-and-Initialization.html#Supported_Databases">Supported Databases</a> to complete this step.
+			</li>
+			<li>Initialize the database with default OSEE data.  See 
+				<a href="Installation-and-Initialization.html#Database_Initialization">Database Initialization</a>
+			</li>
+			<li>Setup config.ini and launch eclipse to start using OSEE  
+				<a href="Installation-and-Initialization.html#Launch_.26_Configuration">Launch and Configuration</a>
+			</li>
+			<li>You can find different OSEE perspectives, such as Define and ATS, and views in correspondent dialogs, activated by menu items 
+				<i>Window &gt; Open Perspective &gt; Other...</i> and 
+				<i>Window &gt; Show View &gt; Other...</i>.
+			</li>
+		</ol>
+		<p><table border="0" cellpadding="5" cellspacing="0">
+<tr><td valign="top">
+			<img border="0" src="images/Open_perspective.png"/></td>
+<td valign="top">
+			<img border="0" src="images/Show_view.png"/></td></tr>
+</table>
+		</p>
+		<h2 id="Server_Installation">Server Installation</h2>
+		<ol>
+			<li>Download the server zip file from 
+				<a href="http://www.eclipse.org/osee/downloads/" target="osee_external">downloads</a>. 
+			</li>
+			<li>Unzip the file</li>
+			<li>Set up the database (as described below)</li>
+		</ol>
+		<h2 id="Supported_Databases">Supported Databases</h2>
+		<p>Data created and managed by OSEE is persisted into a data store divided into two sections. A relational database to store type, configuration, and small content (&lt; 4000 bytes) and a remote file system to store larger binary content.</p>
+		<p>Before you can use OSEE, you will need to select and install a relational database suited for your needs and identify a file system path for binary content storage. OSEE provides support for the databases listed below.  For launch and configuration instructions visit 
+			<a href="Installation-and-Initialization.html#Launch_.26_Configuration">Launch and Configuration</a>.
+		</p>
+		<h3 id="PostgreSQL_Installation">PostgreSQL Installation</h3>
+		<p>
+			<b>Prerequisites</b>
+		</p>
+		<ul>
+			<li>Ensure you have selected the best database for your needs</li>
+		</ul>
+		<p>
+			<b>Instructions</b>
+		</p>
+		<ol>
+			<li>Download PostgreSQL from 
+				<a href="http://www.postgresql.org/download" target="osee_external">http://www.postgresql.org/download</a>
+			</li>
+			<li>Follow PostgreSQL installation instructions</li>
+			<li>By default, the PostgreSQL database server is configured to allow only local connections. If remote connections are to be allowed, edit postgresql.conf and pg_hba.conf to set the necessary permissions. (To setup an unsecured database instance set listen_address to * in the postgresql.conf file and add the following line to the pg_hba.conf file: host  all  all  0.0.0.0/0  trust)</li>
+			<li>Configure PostgreSQL for OSEE
+				<ol>
+					<li>Launch pgAdmin (in windows Start-&gt;All Programs-&gt;PostgreSQL*-&gt;pgAdmin III)</li>
+					<li>Double click on PostgreSQL Database Server (listed under Servers on the left hand side)
+						<ol>
+							<li>If you are prompted for a password type the password selected during installation (user should be postgres by default)</li>
+						</ol>
+					</li>
+					<li>Create an "osee" user
+						<ol>
+							<li>Right-click on Login Roles (at the bottom of the tree on the left hand side) and select "New Login Role..."</li>
+							<li>Enter the following in the dialog:
+								<ol>
+									<li>Role Name: osee</li>
+									<li>"Can login" should be checked</li>
+									<li>Password: osee</li>
+									<li>Password (again): osee</li>
+									<li>Role Privileges--select all of the following:
+										<ol>
+											<li>Inherits rights from parent roles</li>
+											<li>Superuser</li>
+											<li>Can create database objects</li>
+											<li>Can modify catalog directly</li>
+										</ol>
+									</li>
+								</ol>
+							</li>
+							<li>Click 'OK'</li>
+							<li>You should now have an "osee" user under Login Roles</li>
+						</ol>
+					</li>
+					<li>Expand the "Databases" item in the tree
+						<ol>
+							<li>Create the "OSEE" database by right-clicking on "Databases" and selecting "New Database..."</li>
+							<li>Enter the following in the dialog:
+								<ol>
+									<li>Name: OSEE</li>
+									<li>Owner: osee</li>
+									<li>Encoding: UTF-8</li>
+								</ol>
+							</li>
+							<li>Click 'OK'</li>
+							<li>You should now have an "OSEE" Database under Databases</li>
+						</ol>
+					</li>
+					<li>Click on "OSEE" and then expand it, then expand "Schemas"
+						<ol>
+							<li>Create the "osee" schema:
+								<ol>
+									<li>Right click on "Schemas" and select "New Schema..."</li>
+									<li>Enter the following in the dialog:
+										<ol>
+											<li>Name: osee</li>
+											<li>Owner: osee</li>
+										</ol>
+									</li>
+									<li>Click 'OK'</li>
+									<li>You should now have an "osee" schema under schemas</li>
+								</ol>
+							</li>
+							<li>The relational database is now configured. Proceed to OSEE Database Initialization</li>
+						</ol>
+					</li>
+				</ol>
+			</li>
+		</ol>
+		<h2 id="Launch_Application_Server">Launch Application Server</h2>
+		<p>
+			<b>Prerequisites</b>
+		</p>
+		<ul>
+			<li>Database has been installed</li>
+		</ul>
+		<p>
+			<b>Instructions</b>
+		</p>
+		<ul>
+			<li>Execute the launch script for your database and OS (if running from microdoc: 
+				<a href="http://osee.microdoc.com/node/2" target="osee_external">http://osee.microdoc.com/node/2</a>) - typical launch script names are 
+				<i>runPostgresqlLocal.sh</i> for a local Postgres on Unix and 
+				<i>runH2.sh</i> for H2 on Unix. It is straightforward to convert the downloaded scripts to Windows batch files.
+				<ul>
+					<li>If running PostgreSQL, be sure to add the driver bundle (
+						<a href="http://www.eclipse.org/osee/downloads/" target="osee_external">downloads</a>) to the server installation.  Unzip the files into the server installation and add org.postgresql.driver@start to the bundles in config.ini.
+					</li>
+				</ul>
+			</li>
+			<li>Wait until server finishes the startup procedure - 
+				<b>do not close the console</b>
+			</li>
+			<li>To check that the server has connected successfully to the database, enter the command osgi&gt; osee server_status</li>
+			<li>You should see results similar to:</li>
+		</ul>
+		<p>
+			<a href="http://wiki.eclipse.org/File:ServerStatus.jpg" title="File:ServerStatus.jpg" target="osee_external">File:ServerStatus.jpg</a>
+		</p>
+		<h2 id="Database_Initialization">Database Initialization</h2>
+		<p>
+			<b>Prerequisites</b> 
+		</p>
+		<p>Visit the 'User's Guide' if you need more information about any of the pre-requisites below. </p>
+		<ul>
+			<li>Database has been installed </li>
+			<li>Database server is running </li>
+			<li>A file system path has been selected for binary data storage. The system default the user's home directory. </li>
+			<li>An application server is running. See 'Application Server Launch' for more info.</li>
+		</ul>
+		<p>
+			<br/>'
+			<b>'Warning: This process will delete all data from OSEE Data Store. Make sure you are certain before running this process.</b>'' 
+		</p>
+		<p>
+			<br/>
+		</p>
+		<p>
+			<b>Instructions</b> 
+		</p>
+		<p>
+			<br/>
+		</p>
+		<ul>
+			<li>Ensure database connection information matches database installation. OSEE is pre-configured to work with a PostgreSQL server running on port 5432. If you need a specialized database connection see the 'Configuring Database Connection' section.</li>
+			<li>If using PostgreSQL, make sure the driver bundle has been installed on the client eclipse (available at 
+				<a href="http://www.eclipse.org/osee/downloads/" target="osee_external">downloads</a>).
+				<ul>
+					<li>The zip file can be dragged and dropped on the install new software window.</li>
+					<li>Uncheck the "Group items by category" for it to show up.</li>
+				</ul>
+			</li>
+			<li>In a console from the client installation, launch the database initialization application by entering the following:</li>
+		</ul>
+		<p>
+			<br/>
+		</p>
+		<table style="background:rgb(230,230,230);color:black; border:1px solid gray; font-family: fixedsys;text-align: left"></table>
+		<p>
+			<br/>
+		</p>
+		<ul>
+			<li>When prompted select "Y" </li>
+			<li>Wait for initialization to complete</li>
+		</ul>
+		<h2 id="Messaging_Service">Messaging Service</h2>
+		<p>OSEE utilizes the 
+			<a href="http://en.wikipedia.org/wiki/Java_Message_Service" target="osee_external">Java Message Service (JMS) API</a> for loosely coupled, reliable, and asynchronous communication with OSEE clients.  You will need an implementation of this API such as 
+			<a href="http://activemq.apache.org" target="osee_external">ActiveMQ</a> in order for clients to receive updates to cached artifacts that were modified by another client (remote events). Download the latest version from 
+			<a href="http://activemq.apache.org/download.html" target="osee_external">here</a>.
+		</p>
+		<h4 id="Install">Install</h4>
+		<p>General installation 
+			<a href="http://activemq.apache.org/getting-started.html#GettingStarted-InstallationProcedureforUnix" target="osee_external">instructions</a>.
+		</p>
+		<p>If you are downloading a release of ActiveMQ from the terminal and need to use an http proxy, this command will set up your proxy:</p>
+		<pre>
+$ export http_proxy=http://proxy.host.com:1234
+</pre>
+		<h4 id="Start">Start</h4>
+		<p>General instructions on how to start ActiveMQ are 
+			<a href="http://activemq.apache.org/getting-started.html#GettingStarted-StartingActiveMQ" target="osee_external">here</a>.
+		</p>
+		<p>To direct the OSEE client to use this service, in your launcher ini file, include the following Java system property:</p>
+		<pre>
+-Dosee.default.broker.uri=tcp://&lt;localhost_or_your_server&gt;:61616
+</pre>
+		<h2 id="Launch_.26_Configuration">Launch &amp; Configuration</h2>
+		<p>Before you can launch OSEE, you will need the address of an arbitration server or an application server to access the OSEE data store. If you have questions regarding client/server interactions, visit 'Client/Server Overview'.  If everything is on the same machine, the following examples will work.
+
+			<br/>
+
+			<br/>
+		</p>
+		<p>
+			<b>Prerequisites</b>
+		</p>
+		<ul>
+			<li>Database has been installed</li>
+			<li>Database server is running</li>
+			<li>A file system path has been selected for binary data storage. The system default the user's home directory.</li>
+		</ul>
+		<p>
+			<br/>
+
+			<b>Application Server Launch Instructions</b>
+		</p>
+		<table style="background:rgb(230,230,230);color:black; border:1px solid gray; font-family: fixedsys;text-align: left"></table>
+		<p>
+			<br/>
+			For PostgreSQL:
+
+			<br/>
+		</p>
+		<table style="background:rgb(230,230,230);color:black; border:1px solid gray; font-family: fixedsys;text-align: left"></table>
+		<p>
+			<br/>
+		</p>
+		<p>
+			<b>OSEE Client Launch Instructions</b>
+		</p>
+		<table style="background:rgb(230,230,230);color:black; border:1px solid gray; font-family: fixedsys;text-align: left"></table>
+		<h2 id="Configure_a_New_Project_in_OSEE">Configure a New Project in OSEE</h2>
+		<ol>
+			<li>Create baseline branch
+				<ol>
+					<li>From the Branch Manager's select parent branch -&gt; open context menu -&gt; select "branch" and enter new branch name</li>
+					<li>From the Branch Manager's select new branch -&gt; open context menu -&gt; access control
+						<ol>
+							<li>Add system administrators with Full Access</li>
+							<li>Add Everyone with Read Access</li>
+						</ol>
+					</li>
+				</ol>
+			</li>
+		</ol><hr/>
+		<table class="navigation" style="width: 100%;" border="0" summary="navigation">
+			<tr>
+				<td style="width: 20%" align="left">
+					<a href="Getting-Started.html" title="Introduction">
+						<img alt="Previous" border="0" src="../../../images/prev.gif"/>
+					</a>
+				</td>
+				<td style="width: 60%" align="center">
+					<a href="Getting-Started.html" title="Introduction">
+						<img alt="Introduction" border="0" src="../../../images/home.gif"/>
+					</a>
+				</td>
+				<td style="width: 20%" align="right">
+					<a href="Screencasts.html" title="Screencasts">
+						<img alt="Next" border="0" src="../../../images/next.gif"/>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td style="width: 20%" align="left" valign="top">Introduction</td>
+				<td style="width: 60%" align="center"></td>
+				<td style="width: 20%" align="right" valign="top">Screencasts</td>
+			</tr>
+		</table>
+	</body>
+</html>

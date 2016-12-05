@@ -22,7 +22,7 @@
 				<version>${tycho-version}</version>
 				<configuration>
 					<testSuite>org.eclipse.osee.orcs.rest.test</testSuite>
-					<testClass>org.eclipse.osee.orcs.rest.OrcsRestTestSuite</testClass>
+					<testClass>org.eclipse.osee.orcs.rest.OrcsRest_Integration_TestSuite</testClass>
 				</configuration>
 			</plugin>
 			<plugin>

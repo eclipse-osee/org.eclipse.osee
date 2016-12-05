@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='utf-8' ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title>Features - Custom Widgets</title>
+		<link type="text/css" rel="stylesheet" href="../../../book.css"/>
+	</head>
+	<body>
+		<table class="navigation" style="width: 100%;" border="0" summary="navigation">
+			<tr>
+				<th style="width: 100%" align="center" colspan="3">Custom Widgets</th>
+			</tr>
+			<tr>
+				<td style="width: 20%" align="left">
+					<a href="Services.html" title="Services">
+						<img alt="Previous" border="0" src="../../../images/prev.gif"/>
+					</a>
+				</td>
+				<td style="width: 60%" align="center"></td>
+				<td style="width: 20%" align="right">
+					<a href="Updating-This-Document.html" title="Updating This Document">
+						<img alt="Next" border="0" src="../../../images/next.gif"/>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td style="width: 20%" align="left" valign="top">Services</td>
+				<td style="width: 60%" align="center"></td>
+				<td style="width: 20%" align="right" valign="top">Updating This Document</td>
+			</tr>
+		</table><hr/>
+		<h1 id="Custom_Widgets">Custom Widgets</h1>
+		<h2 id="XViewer_-_Advanced_TreeViewer_Widget">XViewer - Advanced TreeViewer Widget</h2>
+		<p>
+			<a href="http://www.eclipse.org/osee/xviewer/XViewer.pdf" target="osee_external">EclipseCon 2009 Presentation Slides</a>
+		</p>
+		<p>
+			<a href="http://www.eclipse.org/osee/xviewer/org_eclipse_nebula_widgets_xviewer.zip" target="osee_external">Download Zip of Code and Example</a>
+		</p>
+		<p>
+			<a href="http://www.eclipse.org/osee/xviewer/README.txt" target="osee_external">Download Instructions</a>
+		</p>
+		<p>The purpose of the XViewer is to give the application developer a more advanced and dynamic TreeViewer that has the filtering and sorting the capabilities of a spreadsheet while providing the users the ability to customize their table to suit their current needs and save/restore these customizations for future use by individual or group.</p>
+		<p>The XViewer has been incorporated into the Nebula project.</p>
+		<p>
+			<img border="0" src="images/Xviewer_main.png"/>
+		</p>
+		<h3 id="Table_Customizations">Table Customizations</h3>
+		<p>
+			<img border="0" src="images/Xviewer_customize.PNG"/>
+		</p>
+		<ul>
+			<li>Provides 
+				<b>Table Customization</b> dialog to allow selection of visible columns, as well as the specification of their widths and names
+			</li>
+			<li>
+				<b>Easily reorder columns</b> through drag/drop or table customization
+			</li>
+			<li>Provides mechanism to 
+				<b>save and load table customizations</b> so users can easily switch between customizations
+			</li>
+			<li>Provides mechanism to '''mark table customizations as individual or global '''to provide sharing of customizations by users and teams (needs to be backed with shared file system or database)</li>
+			<li>Provides mechanism to 
+				<b>mark table customization as default customization</b> to display whenever this table is shown
+			</li>
+			<li>Provides ability for 
+				<b>multiple XViewer tables to be used within the same application</b>, but provide their own columns and customizations
+			</li>
+		</ul>
+		<h3 id="Sorting_and_Filtering">Sorting and Filtering</h3>
+		<p>
+			<img border="0" src="images/Xviewer_sortfilter.png"/>
+		</p>
+		<h4 id="Sorting">Sorting</h4>
+		<ul>
+			<li>Sort individual columns (forward or reverse) using 
+				<b>data-specific configured sorter</b> for that columns data type
+			</li>
+			<li>Perform unlimited 
+				<b>multi-column sorting</b> by holding Ctrl key down and selecting other columns.  Re-selecting a column while Ctrl is held down will reverse the sort for that column
+			</li>
+		</ul>
+		<h4 id="Filtering">Filtering</h4>
+		<ul>
+			<li>
+				<b>Quick filter (bottom left)</b> provides for filtering of all visible data by entered keywords
+			</li>
+			<li>Alt-left click on column header (or right-click menu) allows for 
+				<b>filtering by column</b>.  As many column filters can be added and work together.
+			</li>
+			<li>Provides 
+				<b>simple metrics (bottom status label)</b> to show number of objects loaded, number shown and number selected.
+			</li>
+			<li>
+				<b>Status label shows filters and sorters</b> that are currently applied to viewer (bottom status label)
+			</li>
+		</ul>
+		<h3 id="Other_Capabilities">Other Capabilities</h3>
+		<ul>
+			<li>Provides ability to 
+				<b>copy rows, columns or individual cells into buffer</b> for pasting into other applications
+			</li>
+			<li>Allows for 
+				<b>multi-column editing of selected rows/columns</b>
+			</li>
+			<li>Provides 
+				<b>html rendering</b> of currently visible table data
+			</li>
+			<li>Provides 
+				<b>comma separated value export</b> to csv file that can be opened in any spreadsheet application
+			</li>
+			<li>All the normal capabilities of the existing SWT Tree/TreeViewer have been retained as XViewer is an extension to TreeViewer</li>
+		</ul>
+		<h3 id="Future">Future</h3>
+		<ul>
+			<li>
+				<b>Submitted to Nebula</b> as alternative to existing SWT TreeViewer (already part of eclipse.org/osee project)
+			</li>
+			<li>Allow for 
+				<b>advanced column filtering</b> by complex expression and "canned list" of already entered items
+			</li>
+			<li>Add 
+				<b>regular expressions</b> to all filtering capabilities
+			</li>
+			<li>Provide easy ability to 
+				<b>sum selected rows for selected column</b>
+			</li>
+			<li>Provide simple 
+				<b>summing/counting of rows/column</b> data
+			</li>
+			<li>Provide 
+				<b>formulas and functions</b> for advanced summing/counting of data
+			</li>
+			<li>Provide 
+				<b>graphing and charting</b> of data
+			</li>
+			<li>Collaborate with other table/tree solutions to integrate functionality... </li>
+		</ul>
+		<h3 id="HTML_Report_and_CSV_Export">HTML Report and CSV Export</h3>
+		<p>
+			<img border="0" src="images/Xviewer_reportexport.PNG"/>
+		</p>
+		<p>
+			<a href="http://wiki.eclipse.org/Category:OSEE" title="Category:OSEE" target="osee_external">Category:OSEE</a>
+		</p><hr/>
+		<table class="navigation" style="width: 100%;" border="0" summary="navigation">
+			<tr>
+				<td style="width: 20%" align="left">
+					<a href="Services.html" title="Services">
+						<img alt="Previous" border="0" src="../../../images/prev.gif"/>
+					</a>
+				</td>
+				<td style="width: 60%" align="center">
+					<a href="Features.html" title="Features">
+						<img alt="Features" border="0" src="../../../images/home.gif"/>
+					</a>
+				</td>
+				<td style="width: 20%" align="right">
+					<a href="Updating-This-Document.html" title="Updating This Document">
+						<img alt="Next" border="0" src="../../../images/next.gif"/>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td style="width: 20%" align="left" valign="top">Services</td>
+				<td style="width: 60%" align="center"></td>
+				<td style="width: 20%" align="right" valign="top">Updating This Document</td>
+			</tr>
+		</table>
+	</body>
+</html>

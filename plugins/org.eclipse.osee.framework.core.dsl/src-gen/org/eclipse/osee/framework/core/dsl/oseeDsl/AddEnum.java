@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.core.dsl.oseeDsl;
  * <ul>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.AddEnum#getEnumEntry <em>Enum Entry</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.AddEnum#getOrdinal <em>Ordinal</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.AddEnum#getEntryGuid <em>Entry Guid</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.AddEnum#getDescription <em>Description</em>}</li>
  * </ul>
  *
@@ -75,32 +74,6 @@ public interface AddEnum extends OverrideOption
    * @generated
    */
   void setOrdinal(String value);
-
-  /**
-   * Returns the value of the '<em><b>Entry Guid</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Entry Guid</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Entry Guid</em>' attribute.
-   * @see #setEntryGuid(String)
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getAddEnum_EntryGuid()
-   * @model
-   * @generated
-   */
-  String getEntryGuid();
-
-  /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.AddEnum#getEntryGuid <em>Entry Guid</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Entry Guid</em>' attribute.
-   * @see #getEntryGuid()
-   * @generated
-   */
-  void setEntryGuid(String value);
 
   /**
    * Returns the value of the '<em><b>Description</b></em>' attribute.

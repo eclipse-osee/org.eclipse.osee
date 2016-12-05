@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage;
  * <ul>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AddEnumImpl#getEnumEntry <em>Enum Entry</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AddEnumImpl#getOrdinal <em>Ordinal</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AddEnumImpl#getEntryGuid <em>Entry Guid</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AddEnumImpl#getDescription <em>Description</em>}</li>
  * </ul>
  *
@@ -68,26 +67,6 @@ public class AddEnumImpl extends OverrideOptionImpl implements AddEnum
    * @ordered
    */
   protected String ordinal = ORDINAL_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getEntryGuid() <em>Entry Guid</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getEntryGuid()
-   * @generated
-   * @ordered
-   */
-  protected static final String ENTRY_GUID_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getEntryGuid() <em>Entry Guid</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getEntryGuid()
-   * @generated
-   * @ordered
-   */
-  protected String entryGuid = ENTRY_GUID_EDEFAULT;
 
   /**
    * The default value of the '{@link #getDescription() <em>Description</em>}' attribute.
@@ -181,29 +160,6 @@ public class AddEnumImpl extends OverrideOptionImpl implements AddEnum
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getEntryGuid()
-  {
-    return entryGuid;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setEntryGuid(String newEntryGuid)
-  {
-    String oldEntryGuid = entryGuid;
-    entryGuid = newEntryGuid;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.ADD_ENUM__ENTRY_GUID, oldEntryGuid, entryGuid));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public String getDescription()
   {
     return description;
@@ -236,8 +192,6 @@ public class AddEnumImpl extends OverrideOptionImpl implements AddEnum
         return getEnumEntry();
       case OseeDslPackage.ADD_ENUM__ORDINAL:
         return getOrdinal();
-      case OseeDslPackage.ADD_ENUM__ENTRY_GUID:
-        return getEntryGuid();
       case OseeDslPackage.ADD_ENUM__DESCRIPTION:
         return getDescription();
     }
@@ -259,9 +213,6 @@ public class AddEnumImpl extends OverrideOptionImpl implements AddEnum
         return;
       case OseeDslPackage.ADD_ENUM__ORDINAL:
         setOrdinal((String)newValue);
-        return;
-      case OseeDslPackage.ADD_ENUM__ENTRY_GUID:
-        setEntryGuid((String)newValue);
         return;
       case OseeDslPackage.ADD_ENUM__DESCRIPTION:
         setDescription((String)newValue);
@@ -286,9 +237,6 @@ public class AddEnumImpl extends OverrideOptionImpl implements AddEnum
       case OseeDslPackage.ADD_ENUM__ORDINAL:
         setOrdinal(ORDINAL_EDEFAULT);
         return;
-      case OseeDslPackage.ADD_ENUM__ENTRY_GUID:
-        setEntryGuid(ENTRY_GUID_EDEFAULT);
-        return;
       case OseeDslPackage.ADD_ENUM__DESCRIPTION:
         setDescription(DESCRIPTION_EDEFAULT);
         return;
@@ -310,8 +258,6 @@ public class AddEnumImpl extends OverrideOptionImpl implements AddEnum
         return ENUM_ENTRY_EDEFAULT == null ? enumEntry != null : !ENUM_ENTRY_EDEFAULT.equals(enumEntry);
       case OseeDslPackage.ADD_ENUM__ORDINAL:
         return ORDINAL_EDEFAULT == null ? ordinal != null : !ORDINAL_EDEFAULT.equals(ordinal);
-      case OseeDslPackage.ADD_ENUM__ENTRY_GUID:
-        return ENTRY_GUID_EDEFAULT == null ? entryGuid != null : !ENTRY_GUID_EDEFAULT.equals(entryGuid);
       case OseeDslPackage.ADD_ENUM__DESCRIPTION:
         return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
     }
@@ -333,8 +279,6 @@ public class AddEnumImpl extends OverrideOptionImpl implements AddEnum
     result.append(enumEntry);
     result.append(", ordinal: ");
     result.append(ordinal);
-    result.append(", entryGuid: ");
-    result.append(entryGuid);
     result.append(", description: ");
     result.append(description);
     result.append(')');

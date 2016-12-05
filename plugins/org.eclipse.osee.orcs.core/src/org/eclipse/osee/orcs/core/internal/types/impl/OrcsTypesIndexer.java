@@ -221,7 +221,7 @@ public class OrcsTypesIndexer {
             description = Strings.emptyString();
          }
 
-         EnumEntry enumEntry = new EnumEntryImpl(entry.getEntryGuid(), entry.getName(), lastOrdinal, description);
+         EnumEntry enumEntry = new EnumEntryImpl(entry.getName(), lastOrdinal, description);
          entries.add(enumEntry);
          lastOrdinal++;
       }
@@ -307,11 +307,9 @@ public class OrcsTypesIndexer {
          @Override
          public Void caseAddEnum(AddEnum addEnum) {
             String entryName = addEnum.getEnumEntry();
-            String entryGuid = addEnum.getEntryGuid();
             String description = addEnum.getDescription();
             XOseeEnumEntry xEnumEntry = OseeDslFactory.eINSTANCE.createXOseeEnumEntry();
             xEnumEntry.setName(entryName);
-            xEnumEntry.setEntryGuid(entryGuid);
             xEnumEntry.setDescription(description);
             enumEntries.add(xEnumEntry);
             return super.caseAddEnum(addEnum);

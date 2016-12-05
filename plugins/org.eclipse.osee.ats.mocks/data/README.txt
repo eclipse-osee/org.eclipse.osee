@@ -3,7 +3,8 @@ To do so:
 
 1) Delete C:/Users/<account>/hsql and C:/Users/<account>/attr
 2) Do a normal AtsClient_Integration_TestSuite, stop before ClientResourceTest
-3) Re-launch the application server to prime the database
+3) Re-launch the application server and client to prime the database 
+	- Close client/server, open hsql directory.  .log file should not be large, .script should
 4) Zip up hsql dir to hsql.zip and copy to this directory
 5) Zip up attr to binary_data.zip and copy to this directory
 6) Re-run AtsServer_Integration_TestSuite and fix any errors

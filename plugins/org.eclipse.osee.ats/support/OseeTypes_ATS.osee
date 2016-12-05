@@ -298,17 +298,17 @@ attributeType "ats.Color Team" extends EnumeratedAttribute {
 
 oseeEnumType "enum.color.team" {
    id 5000740273963153015
-   entry "Blood Red Team" entryGuid "74310723"
-   entry "Blue Crew Team" entryGuid "74310724"
-   entry "Mean Green Team" entryGuid "74310725"
-   entry "Purple Team" entryGuid "74310726"
-   entry "Burnt Orange Team" entryGuid "74319302"
-   entry "Bronze Team" entryGuid "74319303"
-   entry "Silver Team" entryGuid "74319304"
-   entry "Pirate Black Team" entryGuid "74319305"
-   entry "Gold Team" entryGuid "74319306"
-   entry "Plaid Team" entryGuid "74319307"
-   entry "Unspecified" entryGuid "74319308"
+   entry "Blood Red Team" 
+   entry "Blue Crew Team" 
+   entry "Mean Green Team" 
+   entry "Purple Team" 
+   entry "Burnt Orange Team" 
+   entry "Bronze Team" 
+   entry "Silver Team" 
+   entry "Pirate Black Team" 
+   entry "Gold Team" 
+   entry "Plaid Team" 
+   entry "Unspecified" 
 }
 
 attributeType "ats.Holiday" extends DateAttribute {
@@ -392,9 +392,7 @@ attributeType "ats.Applicability Workflow" extends BooleanAttribute {
 oseeEnumType "enum.ats.applicability.to.program" {
 	id 1152921949229285546
 	entry "Yes"
-	entryGuid "CArJmR2JDn5DXT8FGPQA"
 	entry "No"
-	entryGuid "CArJmR3xrEmbw8zbyqgA"
 }
 
 attributeType "ats.Applicable to Program" extends EnumeratedAttribute {
@@ -502,15 +500,10 @@ attributeType "ats.Work Package Program" extends StringAttribute {
 oseeEnumType "enum.ats.work.package.type" {
 	id 3458764513820541333
 	entry "Discrete"
-	entryGuid "Bwht_BKlJhvXevH9wgwA"
 	entry "Discrete - % Complete"
-	entryGuid "BOsciRhe9TGNFHydWFAA"
 	entry "Discrete - 50-50"
-	entryGuid "BOsciRiFnUHFqODmPuQA"
 	entry "Discrete - 0-100"
-	entryGuid "BOsciRijrkK85LhqYegA"
-	entry "LOE"
-	entryGuid "Bwhv914yDlTLh0AfNZAA"
+	entry "LOE"	
 }
 
 attributeType "ats.Work Package Type" extends EnumeratedAttribute {
@@ -526,21 +519,13 @@ attributeType "ats.Work Package Type" extends EnumeratedAttribute {
 oseeEnumType "enum.ats.ipt" {
 	id 2695446918879429118
 	entry "Comm/Nav/Ase"
-	entryGuid "ABWZunRwEF66p88MC1QA"
 	entry "Crew Systems"
-	entryGuid "ABWZunnoXUr06VeWlzgA"
 	entry "Integration"
-	entryGuid "ABWZunrQUQnztgs2HAgA"
 	entry "Software"
-	entryGuid "ABWZunrs9AqlPuBkQqwA"
 	entry "CEE"
-	entryGuid "ABWZunsh7lR0XJkpSgAA"
 	entry "Weapons/Sights"
-	entryGuid "ABWZuns7tDXtJXC5U5AA"
 	entry "Processors/Displays"
-	entryGuid "ABWZuntUC0uBwnMoegAA"
 	entry "AH-6"
-	entryGuid "ABWZuntsYj07sqnVyUQA"
 }
 
 attributeType "ats.IPT" extends EnumeratedAttribute {
@@ -886,11 +871,8 @@ attributeType "ats.End Date" extends DateAttribute {
 oseeEnumType "enum.ats.review.blocks" {
 	id 3458764513820541322
 	entry "None"
-	entryGuid "CArJmR2JDn5DXT9FGPQA"
 	entry "Transition"
-	entryGuid "CArJmR3xrEmbw7zbyqgA"
 	entry "Commit"
-	entryGuid "CArJmR5WzHmG_n_OKhQA"
 }
 
 attributeType "ats.Review Blocks" extends EnumeratedAttribute {
@@ -916,37 +898,23 @@ attributeType "ats.Review Formal Type" extends EnumeratedAttribute {
 oseeEnumType "enum.ats.review.formalType" {
 	id 3458764513820541323
 	entry "InFormal"
-	entryGuid "AOwhbvyBMHKCIuhSzwgA"
 	entry "Formal"
-	entryGuid "AOwiPVD_jCOHV4KnAQwA"
 }
 
 oseeEnumType "enum.ats.point" {
 	id 3458764513820541324
 	entry "1"
-	entryGuid "AYyqLF5WrgvoWwAJhb12"
 	entry "2"
-	entryGuid "AYyqLWfS+S+58gmCmOQA"
-   entry "3" 
-   entryGuid "APO730vh5yEB35DSIFgA"
+   entry "3"
 	entry "4"
-	entryGuid "AYyqLY8_ChxManvFc6QA"
-   entry "5" 
-   entryGuid "APO+W+I7NA3qcxQSdDwA"
+   entry "5"
 	entry "8"
-	entryGuid "AYyqLbRYXECHjlLzQ+QA"
 	entry "13"
-	entryGuid "AYyqLdkSvmy0XZECrRwA"
 	entry "20"
-	entryGuid "AYyqLfzfO20iUkZSilgA"
 	entry "40"
-	entryGuid "AYyqLiFHxD1XUanPXBwA"
 	entry "80"
-	entryGuid "AYyqLkUSERzIljDD4agA"
 	entry "150"
-	entryGuid "AYyqLmlTUi3u7Eg8CdgA"
 	entry "Epic"
-	entryGuid "AYyqLo2M7zr1nj1mFfQA"
 }
 
 attributeType "ats.Points" extends EnumeratedAttribute {
@@ -978,15 +946,10 @@ attributeType "ats.Points Attribute Type" extends StringAttribute {
 oseeEnumType "enum.ats.priority" {
 	id 3458764513820541325
 	entry "1"
-	entryGuid "CArJmPvK7mXFU4cMY3gA"
 	entry "2"
-	entryGuid "CArJmR7LQUYx7XRMnwQA"
 	entry "3"
-	entryGuid "CArJmR82AgY40rzzjagA"
 	entry "4"
-	entryGuid "CArJmR+dqR2jW6eRU1AA"
 	entry "5"
-	entryGuid "CArJmSAGIB9IRKqlKuAA"
 }
 
 attributeType "ats.Priority" extends EnumeratedAttribute {
@@ -1001,13 +964,9 @@ attributeType "ats.Priority" extends EnumeratedAttribute {
 oseeEnumType "enum.ats.change.type" {
 	id 3458764513820541326
 	entry "Improvement"
-	entryGuid "CArJmSBzfx4jvQ5vEtAA"
 	entry "Problem"
-	entryGuid "CArJmPw6F3bP1V5B59gA"
 	entry "Support"
-	entryGuid "CArJmSDgGAG4aKsU+KAA"
 	entry "Refinement"
-	entryGuid "ADTfjCHhk0KoDVpUpagA"
 }
 
 attributeType "ats.Change Type" extends EnumeratedAttribute {
@@ -1790,11 +1749,8 @@ attributeType "ats.closure.Active" extends BooleanAttribute {
 oseeEnumType "ats.closure.states" {
 	id 3458764513820541340
 	entry "Closed"
-	entryGuid "CArJmR2JDn5DXT9FGRQB"
 	entry "Closing"
-	entryGuid "CArJmR3xrEmbw7zbyzhA"
 	entry "Open"
-	entryGuid "CArJmR5WzHmGBBBOKhQA"
 }
 
 attributeType "ats.closure.Closure State" extends EnumeratedAttribute {
