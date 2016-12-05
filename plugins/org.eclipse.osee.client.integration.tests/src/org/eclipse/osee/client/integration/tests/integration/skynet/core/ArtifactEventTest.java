@@ -325,11 +325,11 @@ public class ArtifactEventTest {
       }
       Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
       Assert.assertTrue(newArt.isOnSameBranch(guidArt));
-      Assert.assertEquals(CoreArtifactTypes.HeadingMSWord.getGuid(), guidArt.getArtTypeGuid());
-      Assert.assertEquals(CoreArtifactTypes.GeneralData.getGuid(), guidArt.getFromArtTypeGuid());
+      Assert.assertEquals(CoreArtifactTypes.HeadingMSWord, guidArt.getArtifactType());
+      Assert.assertEquals(CoreArtifactTypes.GeneralData, guidArt.getFromArtTypeGuid());
       // Reload artifact; since artifact cache cleared, it should be loaded as new artifact type
       Artifact changedArt = ArtifactQuery.getArtifactFromId(newArt.getGuid(), newArt.getBranch());
-      Assert.assertEquals(CoreArtifactTypes.HeadingMSWord.getGuid(), changedArt.getArtifactType().getGuid());
+      Assert.assertEquals(CoreArtifactTypes.HeadingMSWord, changedArt.getArtifactType());
    }
 
    protected boolean isRemoteTest() {

@@ -10,21 +10,32 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.event;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
  * @author Donald G. Dunne
  */
 public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements IBasicGuidArtifact {
    private final BranchId branch;
-   private Long artTypeGuid;
+   private ArtifactTypeId artifactType;
 
-   public DefaultBasicGuidArtifact(BranchId branch, Long artTypeGuid, String artGuid) {
+   public DefaultBasicGuidArtifact(BranchId branch, ArtifactTypeId artifactType, String artGuid) {
       super(artGuid);
       this.branch = branch;
-      this.artTypeGuid = artTypeGuid;
+      this.artifactType = artifactType;
+   }
+
+   public DefaultBasicGuidArtifact(BranchId branch, ArtifactTypeId artifactType) {
+      this(branch, artifactType, GUID.create());
+   }
+
+   public DefaultBasicGuidArtifact(BranchId branch, ArtifactTypeId artifactType, ArtifactId artifact) {
+      this(branch, artifactType, artifact.getGuid());
    }
 
    @Override
@@ -34,7 +45,11 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements IB
 
    @Override
    public Long getArtTypeGuid() {
-      return artTypeGuid;
+      return artifactType.getId();
+   }
+
+   public ArtifactTypeId getArtifactType() {
+      return artifactType;
    }
 
    @Override
@@ -59,10 +74,10 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements IB
       if (!equals && obj instanceof IBasicGuidArtifact) {
          IBasicGuidArtifact other = (IBasicGuidArtifact) obj;
 
-         if (artTypeGuid == null || other.getArtTypeGuid() == null) {
+         if (artifactType == null || other.getArtTypeGuid() == null) {
             equals = false;
          }
-         equals = artTypeGuid.equals(other.getArtTypeGuid());
+         equals = artifactType.equals(other.getArtTypeGuid());
 
          equals &= isOnSameBranch(other);
 
@@ -75,8 +90,8 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements IB
       return equals;
    }
 
-   public void setArtTypeGuid(Long artTypeGuid) {
-      this.artTypeGuid = artTypeGuid;
+   public void setArtTypeGuid(ArtifactTypeId artifactType) {
+      this.artifactType = artifactType;
    }
 
    public boolean is(IArtifactType... artifactTypes) {

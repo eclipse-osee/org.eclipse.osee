@@ -1703,7 +1703,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    }
 
    public final DefaultBasicGuidArtifact getBasicGuidArtifact() {
-      return new DefaultBasicGuidArtifact(getBranch(), getArtifactType().getGuid(), getGuid());
+      return new DefaultBasicGuidArtifact(getBranch(), getArtifactTypeId(), this);
    }
 
    @Override

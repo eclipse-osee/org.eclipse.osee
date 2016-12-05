@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
@@ -120,12 +119,9 @@ public class RelationOrderData {
             addOrderList(type, side, requestedSorterId, relativeSequence);
             relationOrderModType = RelationOrderModType.Absolute;
          }
-         BranchId branch = artifact.getBranch();
-         DefaultBasicGuidArtifact guidArtifact =
-            new DefaultBasicGuidArtifact(branch, artifact.getArtifactTypeId().getId(), artifact.getGuid());
-
-         DefaultBasicUuidRelationReorder reorder =
-            new DefaultBasicUuidRelationReorder(relationOrderModType, branch, type.getGuid(), guidArtifact);
+         DefaultBasicGuidArtifact guidArtifact = artifact.getBasicGuidArtifact();
+         DefaultBasicUuidRelationReorder reorder = new DefaultBasicUuidRelationReorder(relationOrderModType,
+            artifact.getBranch(), type.getGuid(), guidArtifact);
 
          accessor.store(artifact, this, reorder);
       }

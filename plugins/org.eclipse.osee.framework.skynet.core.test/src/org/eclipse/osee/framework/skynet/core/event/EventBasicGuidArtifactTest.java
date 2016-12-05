@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.junit.Assert;
@@ -28,30 +28,15 @@ public class EventBasicGuidArtifactTest {
 
    @Test
    public void testEqualsEventBasicGuidArtifact() {
-      EventBasicGuidArtifact eventArt1 = new EventBasicGuidArtifact(EventModType.Added, COMMON, 0x01L, GUID.create());
+      EventBasicGuidArtifact eventArt1 = new EventBasicGuidArtifact(EventModType.Added, COMMON, Artifact);
       EventBasicGuidArtifact eventArt2 =
-         new EventBasicGuidArtifact(EventModType.Added, COMMON, eventArt1.getArtTypeGuid(), eventArt1.getGuid());
+         new EventBasicGuidArtifact(EventModType.Added, COMMON, Artifact, eventArt1.getGuid());
 
       Assert.assertEquals(eventArt1.hashCode(), eventArt2.hashCode());
       Assert.assertEquals(eventArt1, eventArt2);
-
-      eventArt2 =
-         new EventBasicGuidArtifact(EventModType.Deleted, COMMON, eventArt1.getArtTypeGuid(), eventArt1.getGuid());
-
       Assert.assertNotSame(eventArt1, eventArt2);
 
-      eventArt2 =
-         new EventBasicGuidArtifact(EventModType.Added, COMMON, eventArt1.getArtTypeGuid(), eventArt1.getGuid());
-
-      Assert.assertNotSame(eventArt1, eventArt2);
-
-      eventArt2 = new EventBasicGuidArtifact(EventModType.Added, COMMON, 0x02L, eventArt1.getGuid());
-
-      Assert.assertNotSame(eventArt1, eventArt2);
-
-      eventArt2 = new EventBasicGuidArtifact(EventModType.Added, COMMON, eventArt1.getArtTypeGuid(), GUID.create());
-
-      Assert.assertNotSame(eventArt1, eventArt2);
+      eventArt2 = new EventBasicGuidArtifact(EventModType.Added, COMMON, Artifact);
 
       Set<EventBasicGuidArtifact> toAdd = new HashSet<>();
       toAdd.add(eventArt2);
@@ -65,36 +50,18 @@ public class EventBasicGuidArtifactTest {
       eventArts.add(eventArt2);
       eventArts.addAll(toAdd);
       Assert.assertEquals(2, toAdd.size());
-
    }
 
    @Test
    public void testEqualsBasicGuidArtifact() {
-      EventBasicGuidArtifact eventArt1 = new EventBasicGuidArtifact(EventModType.Added, COMMON, 0x01L, GUID.create());
-      DefaultBasicGuidArtifact eventArt2 =
-         new DefaultBasicGuidArtifact(eventArt1.getBranch(), eventArt1.getArtTypeGuid(), eventArt1.getGuid());
+      EventBasicGuidArtifact eventArt1 = new EventBasicGuidArtifact(EventModType.Added, COMMON, Artifact);
+      DefaultBasicGuidArtifact eventArt2 = new DefaultBasicGuidArtifact(COMMON, Artifact, eventArt1.getGuid());
 
       Assert.assertEquals(eventArt1.hashCode(), eventArt2.hashCode());
       Assert.assertEquals(eventArt1, eventArt2);
-
-      eventArt2 = new EventBasicGuidArtifact(EventModType.Deleted, eventArt1.getBranch(), eventArt1.getArtTypeGuid(),
-         eventArt1.getGuid());
-
       Assert.assertNotSame(eventArt1, eventArt2);
 
-      eventArt2 =
-         new EventBasicGuidArtifact(EventModType.Added, COMMON, eventArt1.getArtTypeGuid(), eventArt1.getGuid());
-
-      Assert.assertNotSame(eventArt1, eventArt2);
-
-      eventArt2 = new EventBasicGuidArtifact(EventModType.Added, eventArt1.getBranch(), 0x02L, eventArt1.getGuid());
-
-      Assert.assertNotSame(eventArt1, eventArt2);
-
-      eventArt2 = new EventBasicGuidArtifact(EventModType.Added, eventArt1.getBranch(), eventArt1.getArtTypeGuid(),
-         GUID.create());
-
-      Assert.assertNotSame(eventArt1, eventArt2);
+      eventArt2 = new EventBasicGuidArtifact(EventModType.Added, COMMON, Artifact);
 
       Set<IBasicGuidArtifact> toAdd = new HashSet<>();
       toAdd.add(eventArt2);
@@ -108,16 +75,14 @@ public class EventBasicGuidArtifactTest {
       eventArts.add(eventArt2);
       eventArts.addAll(toAdd);
       Assert.assertEquals(2, toAdd.size());
-
    }
 
    @Test
    public void testEventBasicGuidArtifactIs() {
-      EventBasicGuidArtifact eventArt1 = new EventBasicGuidArtifact(EventModType.Added, COMMON, 0x01L, GUID.create());
+      EventBasicGuidArtifact eventArt1 = new EventBasicGuidArtifact(EventModType.Added, COMMON, Artifact);
       Assert.assertTrue(eventArt1.is(EventModType.Added));
       Assert.assertTrue(eventArt1.is(EventModType.Added, EventModType.ChangeType));
       Assert.assertFalse(eventArt1.is(EventModType.ChangeType));
       Assert.assertFalse(eventArt1.is(EventModType.Deleted, EventModType.ChangeType));
    }
-
 }

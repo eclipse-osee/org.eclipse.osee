@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.IArtifactTypeProvider;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
@@ -47,12 +46,12 @@ public class ArtifactTypeEventFilterTest {
          CoreArtifactTypes.Requirement);
       ArtifactTypeEventFilter typeFilter = new ArtifactTypeEventFilter(typeProvider, CoreArtifactTypes.Requirement);
       EventBasicGuidArtifact guidArt =
-         new EventBasicGuidArtifact(EventModType.Added, COMMON, CoreArtifactTypes.Requirement.getGuid(), GUID.create());
+         new EventBasicGuidArtifact(EventModType.Added, COMMON, CoreArtifactTypes.Requirement);
       List<EventBasicGuidArtifact> guidArts = Arrays.asList(guidArt);
       Assert.assertTrue("Should match cause same artifact type", typeFilter.isMatchArtifacts(guidArts));
 
       // inherited type
-      guidArt.setArtTypeGuid(CoreArtifactTypes.SoftwareRequirement.getGuid());
+      guidArt.setArtTypeGuid(CoreArtifactTypes.SoftwareRequirement);
       when(typeProvider.getTypeByGuid(CoreArtifactTypes.SoftwareRequirement.getGuid())).thenReturn(
          CoreArtifactTypes.SoftwareRequirement);
       when(typeProvider.inheritsFrom(CoreArtifactTypes.SoftwareRequirement, CoreArtifactTypes.Requirement)).thenReturn(
@@ -63,7 +62,7 @@ public class ArtifactTypeEventFilterTest {
 
       // not inherited type
       typeFilter = new ArtifactTypeEventFilter(typeProvider, CoreArtifactTypes.SoftwareRequirement);
-      guidArt.setArtTypeGuid(CoreArtifactTypes.Requirement.getGuid());
+      guidArt.setArtTypeGuid(CoreArtifactTypes.Requirement);
 
       Assert.assertFalse("Should NOT match cause Requirement is NOT subclass of Software Requirement",
          typeFilter.isMatchArtifacts(guidArts));
@@ -76,9 +75,9 @@ public class ArtifactTypeEventFilterTest {
       when(typeProvider.getTypeByGuid(CoreArtifactTypes.Requirement.getGuid())).thenReturn(
          CoreArtifactTypes.Requirement);
       EventBasicGuidArtifact guidArtA =
-         new EventBasicGuidArtifact(EventModType.Added, COMMON, CoreArtifactTypes.Requirement.getGuid(), GUID.create());
-      EventBasicGuidArtifact guidArtB = new EventBasicGuidArtifact(EventModType.Added, COMMON,
-         CoreArtifactTypes.SoftwareRequirement.getGuid(), GUID.create());
+         new EventBasicGuidArtifact(EventModType.Added, COMMON, CoreArtifactTypes.Requirement);
+      EventBasicGuidArtifact guidArtB =
+         new EventBasicGuidArtifact(EventModType.Added, COMMON, CoreArtifactTypes.SoftwareRequirement);
 
       List<IBasicGuidRelation> relations = new ArrayList<>();
       EventBasicGuidRelation relation = new EventBasicGuidRelation(RelationEventType.Added, BranchId.SENTINEL,
@@ -89,8 +88,8 @@ public class ArtifactTypeEventFilterTest {
       Assert.assertTrue(typeFilter.isMatchRelationArtifacts(relations));
 
       // no art in relation matches
-      guidArtA.setArtTypeGuid(CoreArtifactTypes.AccessControlModel.getGuid());
-      guidArtB.setArtTypeGuid(CoreArtifactTypes.Folder.getGuid());
+      guidArtA.setArtTypeGuid(CoreArtifactTypes.AccessControlModel);
+      guidArtB.setArtTypeGuid(CoreArtifactTypes.Folder);
       Assert.assertFalse(typeFilter.isMatchRelationArtifacts(relations));
    }
 

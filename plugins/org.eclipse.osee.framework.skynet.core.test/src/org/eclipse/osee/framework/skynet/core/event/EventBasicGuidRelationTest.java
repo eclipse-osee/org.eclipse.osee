@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GlobalPreferences;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.junit.Assert;
@@ -28,9 +29,8 @@ public class EventBasicGuidRelationTest {
 
    @Test
    public void testEqualsEventBasicGuidRelation() {
-      DefaultBasicGuidArtifact eventArt1 = new DefaultBasicGuidArtifact(COMMON, 0x01L, GUID.create());
-      DefaultBasicGuidArtifact eventArt2 =
-         new DefaultBasicGuidArtifact(eventArt1.getBranch(), eventArt1.getArtTypeGuid(), eventArt1.getGuid());
+      DefaultBasicGuidArtifact eventArt1 = new DefaultBasicGuidArtifact(COMMON, Artifact);
+      DefaultBasicGuidArtifact eventArt2 = new DefaultBasicGuidArtifact(COMMON, Artifact, eventArt1.getGuid());
 
       EventBasicGuidRelation eventRel1 = new EventBasicGuidRelation(RelationEventType.Added, eventArt1.getBranch(),
          0x02L, 234, 333, 34, eventArt1, 33, eventArt2);
@@ -94,9 +94,8 @@ public class EventBasicGuidRelationTest {
 
    @Test
    public void testEventBasicGuidRelationIs() {
-      DefaultBasicGuidArtifact eventArt1 = new DefaultBasicGuidArtifact(COMMON, 0x03L, GUID.create());
-      DefaultBasicGuidArtifact eventArt2 =
-         new DefaultBasicGuidArtifact(eventArt1.getBranch(), eventArt1.getArtTypeGuid(), eventArt1.getGuid());
+      DefaultBasicGuidArtifact eventArt1 = new DefaultBasicGuidArtifact(COMMON, GlobalPreferences);
+      DefaultBasicGuidArtifact eventArt2 = new DefaultBasicGuidArtifact(COMMON, GlobalPreferences, eventArt1.getGuid());
 
       EventBasicGuidRelation eventRel1 = new EventBasicGuidRelation(RelationEventType.Added, eventArt1.getBranch(),
          0x04L, 234, 333, 34, eventArt1, 33, eventArt2);

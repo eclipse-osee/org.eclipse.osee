@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
@@ -111,6 +112,10 @@ public class RemoteBasicGuidArtifact1 extends RemoteEvent {
       return artTypeGuid;
    }
 
+   public ArtifactTypeId getArtifactType() {
+      return ArtifactTypeId.valueOf(artTypeGuid);
+   }
+
    /**
     * Sets the value of the artTypeGuid property.
     */
@@ -163,6 +168,10 @@ public class RemoteBasicGuidArtifact1 extends RemoteEvent {
     */
    public long getToArtTypeGuid() {
       return toArtTypeGuid;
+   }
+
+   public ArtifactTypeId getToArtifactType() {
+      return ArtifactTypeId.valueOf(toArtTypeGuid);
    }
 
    /**

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Random;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -34,7 +33,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -44,7 +42,6 @@ import org.junit.Test;
  * @author Roberto E. Escobar
  */
 public class RelationOrderDataTest {
-   private static final Random randomGenerator = new Random();
 
    private Artifact artifact;
    private MockRelationOrderAccessor accessor;

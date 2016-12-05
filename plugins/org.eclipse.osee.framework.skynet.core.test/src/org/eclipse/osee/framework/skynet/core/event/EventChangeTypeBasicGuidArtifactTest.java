@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,32 +29,17 @@ public class EventChangeTypeBasicGuidArtifactTest {
    @Test
    public void testEquals() {
       EventChangeTypeBasicGuidArtifact eventArt1 =
-         new EventChangeTypeBasicGuidArtifact(COMMON, 1234L, 546L, GUID.create());
-      EventChangeTypeBasicGuidArtifact eventArt2 = new EventChangeTypeBasicGuidArtifact(eventArt1.getBranch(),
-         eventArt1.getFromArtTypeGuid(), eventArt1.getArtTypeGuid(), eventArt1.getGuid());
+         new EventChangeTypeBasicGuidArtifact(COMMON, Artifact, Folder, GUID.create());
+      EventChangeTypeBasicGuidArtifact eventArt2 =
+         new EventChangeTypeBasicGuidArtifact(COMMON, Artifact, Folder, eventArt1.getGuid());
 
       Assert.assertEquals(eventArt1.hashCode(), eventArt2.hashCode());
       Assert.assertEquals(eventArt1, eventArt2);
-
-      eventArt2 = new EventChangeTypeBasicGuidArtifact(eventArt1.getBranch(), eventArt1.getFromArtTypeGuid(),
-         eventArt1.getArtTypeGuid(), eventArt1.getGuid());
+      Assert.assertNotSame(eventArt1, eventArt2);
 
       Assert.assertNotSame(eventArt1, eventArt2);
 
-      eventArt2 = new EventChangeTypeBasicGuidArtifact(COMMON, eventArt1.getFromArtTypeGuid(),
-         eventArt1.getArtTypeGuid(), eventArt1.getGuid());
-
-      Assert.assertNotSame(eventArt1, eventArt2);
-
-      eventArt2 = new EventChangeTypeBasicGuidArtifact(eventArt1.getBranch(), 111L, eventArt1.getArtTypeGuid(),
-         eventArt1.getGuid());
-
-      Assert.assertNotSame(eventArt1, eventArt2);
-
-      eventArt2 = new EventChangeTypeBasicGuidArtifact(eventArt1.getBranch(), eventArt1.getFromArtTypeGuid(),
-         eventArt1.getArtTypeGuid(), GUID.create());
-
-      Assert.assertNotSame(eventArt1, eventArt2);
+      eventArt2 = new EventChangeTypeBasicGuidArtifact(COMMON, Artifact, Folder, GUID.create());
 
       Set<EventBasicGuidArtifact> toAdd = new HashSet<>();
       toAdd.add(eventArt2);
@@ -66,6 +53,5 @@ public class EventChangeTypeBasicGuidArtifactTest {
       eventArts.add(eventArt2);
       eventArts.addAll(toAdd);
       Assert.assertEquals(2, toAdd.size());
-
    }
 }

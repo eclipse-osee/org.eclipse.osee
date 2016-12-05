@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event.model;
 
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -19,14 +20,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
  */
 public class EventChangeTypeBasicGuidArtifact extends EventBasicGuidArtifact {
 
-   private final Long fromArtTypeGuid;
+   private final ArtifactTypeId fromArtTypeGuid;
 
-   public EventChangeTypeBasicGuidArtifact(BranchId branch, Long fromArtTypeGuid, Long artTypeGuid, String guid) {
-      super(EventModType.ChangeType, branch, artTypeGuid, guid);
-      this.fromArtTypeGuid = fromArtTypeGuid;
+   public EventChangeTypeBasicGuidArtifact(BranchId branch, ArtifactTypeId fromArtifactType, ArtifactTypeId artifactType, String guid) {
+      super(EventModType.ChangeType, branch, artifactType, guid);
+      this.fromArtTypeGuid = fromArtifactType;
    }
 
-   public Long getFromArtTypeGuid() {
+   public ArtifactTypeId getFromArtTypeGuid() {
       return fromArtTypeGuid;
    }
 
@@ -34,7 +35,7 @@ public class EventChangeTypeBasicGuidArtifact extends EventBasicGuidArtifact {
    public String toString() {
       try {
          return String.format("[%s - %s from type [%s][%s] to [%s][%s]]", EventModType.ChangeType.name(), getGuid(),
-            fromArtTypeGuid, ArtifactTypeManager.getTypeByGuid(fromArtTypeGuid), getArtTypeGuid(),
+            fromArtTypeGuid, ArtifactTypeManager.getType(fromArtTypeGuid), getArtTypeGuid(),
             ArtifactTypeManager.getTypeByGuid(getArtTypeGuid()));
       } catch (OseeCoreException ex) {
          return String.format("[%s - %s from type [%s] to [%s]]", EventModType.ChangeType.name(), getGuid(),

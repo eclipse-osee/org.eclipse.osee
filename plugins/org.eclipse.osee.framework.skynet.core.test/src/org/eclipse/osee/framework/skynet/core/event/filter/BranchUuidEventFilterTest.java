@@ -10,16 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event.filter;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Requirement;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirement;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
@@ -45,18 +45,16 @@ public class BranchUuidEventFilterTest {
    public void testIsMatchArtifacts() {
       BranchUuidEventFilter branchFilter = new BranchUuidEventFilter(COMMON);
 
-      EventBasicGuidArtifact guidArtA = new EventBasicGuidArtifact(EventModType.Added, BranchId.create(),
-         CoreArtifactTypes.Requirement.getGuid(), GUID.create());
-      EventBasicGuidArtifact guidArtB = new EventBasicGuidArtifact(EventModType.Added, BranchId.create(),
-         CoreArtifactTypes.SoftwareRequirement.getGuid(), GUID.create());
+      EventBasicGuidArtifact guidArtA = new EventBasicGuidArtifact(EventModType.Added, BranchId.create(), Requirement);
+      EventBasicGuidArtifact guidArtB =
+         new EventBasicGuidArtifact(EventModType.Added, BranchId.create(), SoftwareRequirement);
       List<IBasicGuidArtifact> arts = new ArrayList<>();
       arts.add(guidArtB);
       arts.add(guidArtA);
 
       Assert.assertFalse(branchFilter.isMatchArtifacts(arts));
 
-      guidArtA =
-         new EventBasicGuidArtifact(EventModType.Added, COMMON, CoreArtifactTypes.Requirement.getGuid(), GUID.create());
+      guidArtA = new EventBasicGuidArtifact(EventModType.Added, COMMON, Requirement);
       arts.clear();
       arts.add(guidArtB);
       arts.add(guidArtA);
@@ -68,10 +66,9 @@ public class BranchUuidEventFilterTest {
    public void testIsMatchRelationArtifacts() {
       BranchUuidEventFilter branchFilter = new BranchUuidEventFilter(COMMON);
 
-      EventBasicGuidArtifact guidArtA = new EventBasicGuidArtifact(EventModType.Added, BranchId.create(),
-         CoreArtifactTypes.Requirement.getGuid(), GUID.create());
-      EventBasicGuidArtifact guidArtB = new EventBasicGuidArtifact(EventModType.Added, BranchId.create(),
-         CoreArtifactTypes.SoftwareRequirement.getGuid(), GUID.create());
+      EventBasicGuidArtifact guidArtA = new EventBasicGuidArtifact(EventModType.Added, BranchId.create(), Requirement);
+      EventBasicGuidArtifact guidArtB =
+         new EventBasicGuidArtifact(EventModType.Added, BranchId.create(), SoftwareRequirement);
 
       List<IBasicGuidRelation> relations = new ArrayList<>();
       EventBasicGuidRelation relation = new EventBasicGuidRelation(RelationEventType.Added, BranchId.SENTINEL,
@@ -81,10 +78,8 @@ public class BranchUuidEventFilterTest {
       // neither in relation matches common branch
       Assert.assertFalse(branchFilter.isMatchRelationArtifacts(relations));
 
-      guidArtA =
-         new EventBasicGuidArtifact(EventModType.Added, COMMON, CoreArtifactTypes.Requirement.getGuid(), GUID.create());
-      guidArtB = new EventBasicGuidArtifact(EventModType.Added, COMMON, CoreArtifactTypes.SoftwareRequirement.getGuid(),
-         GUID.create());
+      guidArtA = new EventBasicGuidArtifact(EventModType.Added, COMMON, Requirement);
+      guidArtB = new EventBasicGuidArtifact(EventModType.Added, COMMON, SoftwareRequirement);
 
       relations.clear();
       relation = new EventBasicGuidRelation(RelationEventType.Added, COMMON,

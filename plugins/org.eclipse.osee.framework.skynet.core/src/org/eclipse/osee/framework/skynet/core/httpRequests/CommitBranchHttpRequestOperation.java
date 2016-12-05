@@ -192,8 +192,8 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
 
                   EventModifiedBasicGuidArtifact artEvent = artEventMap.get(artifactId.getId().intValue());
                   if (artEvent == null) {
-                     artEvent = new EventModifiedBasicGuidArtifact(newTransaction.getBranch(),
-                        change.getArtifactType().getGuid(), changedArtifact.getGuid(),
+                     artEvent = new EventModifiedBasicGuidArtifact(newTransaction.getBranch(), change.getArtifactType(),
+                        changedArtifact.getGuid(),
                         new ArrayList<org.eclipse.osee.framework.skynet.core.event.model.AttributeChange>());
                      artifactEvent.getArtifacts().add(artEvent);
                   }

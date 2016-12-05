@@ -193,7 +193,7 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
       for (Artifact artifact : artifactReferences) {
          if (artifact.hasDirtyAttributes()) {
             EventModifiedBasicGuidArtifact guidArt = new EventModifiedBasicGuidArtifact(artifact.getBranch(),
-               artifact.getArtifactType().getGuid(), artifact.getGuid(), artifact.getDirtyFrameworkAttributeChanges());
+               artifact.getArtifactType(), artifact.getGuid(), artifact.getDirtyFrameworkAttributeChanges());
             artifactEvent.getArtifacts().add(guidArt);
 
             // Collection relation reorder records for events

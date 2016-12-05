@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
@@ -31,7 +32,6 @@ import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionChange1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
@@ -121,18 +121,17 @@ public final class FrameworkEventUtil {
       event.setTransaction(transEvent.getTransactionId());
       for (EventBasicGuidArtifact guidArt : transEvent.getArtifacts()) {
          if (guidArt.getModType() == EventModType.Modified) {
-            event.getArtifacts().add(getRemoteBasicGuidArtifact(guidArt.getModType().getGuid(),
-               guidArt.getBasicGuidArtifact(), ((EventModifiedBasicGuidArtifact) guidArt).getAttributeChanges()));
+            event.getArtifacts().add(getRemoteBasicGuidArtifact(guidArt.getModType().getGuid(), guidArt,
+               ((EventModifiedBasicGuidArtifact) guidArt).getAttributeChanges()));
          } else if (guidArt.getModType() == EventModType.ChangeType) {
             EventChangeTypeBasicGuidArtifact changeGuidArt = (EventChangeTypeBasicGuidArtifact) guidArt;
             RemoteBasicGuidArtifact1 remGuidArt =
-               getRemoteBasicGuidArtifact(guidArt.getModType().getGuid(), guidArt.getBasicGuidArtifact(), null);
-            remGuidArt.setArtTypeGuid(changeGuidArt.getFromArtTypeGuid());
+               getRemoteBasicGuidArtifact(guidArt.getModType().getGuid(), guidArt, null);
+            remGuidArt.setArtTypeGuid(changeGuidArt.getFromArtTypeGuid().getId());
             remGuidArt.setToArtTypeGuid(changeGuidArt.getArtTypeGuid());
             event.getArtifacts().add(remGuidArt);
          } else {
-            event.getArtifacts().add(
-               getRemoteBasicGuidArtifact(guidArt.getModType().getGuid(), guidArt.getBasicGuidArtifact(), null));
+            event.getArtifacts().add(getRemoteBasicGuidArtifact(guidArt.getModType().getGuid(), guidArt, null));
          }
       }
       for (EventBasicGuidRelation guidRel : transEvent.getRelations()) {
@@ -244,13 +243,13 @@ public final class FrameworkEventUtil {
    }
 
    public static EventBasicGuidArtifact getEventBasicGuidArtifact(EventModType modType, RemoteBasicGuidArtifact1 remGuidArt) {
-      return new EventBasicGuidArtifact(modType, remGuidArt.getBranch(), remGuidArt.getArtTypeGuid(),
+      return new EventBasicGuidArtifact(modType, remGuidArt.getBranch(), remGuidArt.getArtifactType(),
          remGuidArt.getArtGuid());
    }
 
    public static EventChangeTypeBasicGuidArtifact getEventChangeTypeBasicGuidArtifact(EventModType modType, RemoteBasicGuidArtifact1 remGuidArt) {
-      return new EventChangeTypeBasicGuidArtifact(remGuidArt.getBranch(), remGuidArt.getArtTypeGuid(),
-         remGuidArt.getToArtTypeGuid(), remGuidArt.getArtGuid());
+      return new EventChangeTypeBasicGuidArtifact(remGuidArt.getBranch(), remGuidArt.getArtifactType(),
+         remGuidArt.getToArtifactType(), remGuidArt.getArtGuid());
    }
 
    public static EventModifiedBasicGuidArtifact getEventModifiedBasicGuidArtifact(EventModType modType, RemoteBasicGuidArtifact1 remGuidArt) {
@@ -258,16 +257,13 @@ public final class FrameworkEventUtil {
       for (RemoteAttributeChange1 remAttrChg : remGuidArt.getAttributes()) {
          attributeChanges.add(getAttributeChange(remAttrChg));
       }
-      return new EventModifiedBasicGuidArtifact(remGuidArt.getBranch(), remGuidArt.getArtTypeGuid(),
+      return new EventModifiedBasicGuidArtifact(remGuidArt.getBranch(), remGuidArt.getArtifactType(),
          remGuidArt.getArtGuid(), attributeChanges);
    }
 
    public static DefaultBasicGuidArtifact getBasicGuidArtifact(RemoteBasicGuidArtifact1 remGuidArt) {
-      return new DefaultBasicGuidArtifact(remGuidArt.getBranch(), remGuidArt.getArtTypeGuid(), remGuidArt.getArtGuid());
-   }
-
-   public static DefaultBasicGuidArtifact getBasicGuidArtifact(Artifact artifact) {
-      return new DefaultBasicGuidArtifact(artifact.getBranch(), artifact.getArtTypeGuid(), artifact.getGuid());
+      return new DefaultBasicGuidArtifact(remGuidArt.getBranch(), ArtifactTypeId.valueOf(remGuidArt.getArtTypeGuid()),
+         remGuidArt.getArtGuid());
    }
 
    public static RemoteBasicGuidArtifact1 getRemoteBasicGuidArtifact(String modTypeGuid, DefaultBasicGuidArtifact guidArt, Collection<AttributeChange> attributeChanges) {

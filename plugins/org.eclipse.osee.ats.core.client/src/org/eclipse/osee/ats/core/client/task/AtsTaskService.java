@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -91,8 +90,8 @@ public class AtsTaskService extends AbstractAtsTaskService {
 
       for (JaxAtsTask task : jaxTasks.getTasks()) {
          String guid = ArtifactQuery.getGuidFromUuid(task.getUuid(), AtsUtilCore.getAtsBranch());
-         artifactEvent.getArtifacts().add(new EventBasicGuidArtifact(EventModType.Added, AtsUtilCore.getAtsBranch(),
-            AtsArtifactTypes.Task.getGuid(), guid));
+         artifactEvent.getArtifacts().add(
+            new EventBasicGuidArtifact(EventModType.Added, AtsUtilCore.getAtsBranch(), AtsArtifactTypes.Task, guid));
          artUuids.add(task.getUuid());
 
          RelationLink relation = getRelation(teamWf, task);
@@ -100,9 +99,9 @@ public class AtsTaskService extends AbstractAtsTaskService {
          if (relation != null) {
             Artifact taskArt = atsClient.getArtifact(task.getUuid());
 
-            DefaultBasicUuidRelation guidRelation =
-               new DefaultBasicUuidRelation(AtsUtilCore.getAtsBranch(), AtsRelationTypes.TeamWfToTask_Task.getGuid(),
-                  relation.getId(), relation.getGammaId(), getBasicGuidArtifact(teamWf), getBasicGuidArtifact(taskArt));
+            DefaultBasicUuidRelation guidRelation = new DefaultBasicUuidRelation(AtsUtilCore.getAtsBranch(),
+               AtsRelationTypes.TeamWfToTask_Task.getGuid(), relation.getId(), relation.getGammaId(),
+               teamWf.getBasicGuidArtifact(), taskArt.getBasicGuidArtifact());
 
             artifactEvent.getRelations().add(new EventBasicGuidRelation(RelationEventType.Added,
                newTaskData.getTeamWfUuid().intValue(), new Long(task.getUuid()).intValue(), guidRelation));
@@ -112,10 +111,6 @@ public class AtsTaskService extends AbstractAtsTaskService {
       for (Long uuid : artUuids) {
          tasks.add(AtsClientService.get().getWorkItemFactory().getTask(AtsClientService.get().getArtifact(uuid)));
       }
-   }
-
-   public static DefaultBasicGuidArtifact getBasicGuidArtifact(Artifact artifact) {
-      return new DefaultBasicGuidArtifact(artifact.getBranch(), artifact.getArtTypeGuid(), artifact.getGuid());
    }
 
    private RelationLink getRelation(Artifact teamWf, JaxAtsTask task) {
