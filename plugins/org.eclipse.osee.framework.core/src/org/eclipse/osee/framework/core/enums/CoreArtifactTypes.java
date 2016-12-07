@@ -64,6 +64,7 @@ public final class CoreArtifactTypes {
    public static final IArtifactType SoftwareRequirementDataDefinition = TokenFactory.createArtifactType(793, "Software Requirement Data Definition");
    public static final IArtifactType SoftwareRequirementDrawing = TokenFactory.createArtifactType(29, "Software Requirement Drawing");
    public static final IArtifactType SoftwareRequirementFunction = TokenFactory.createArtifactType(28, "Software Requirement Function");
+   public static final IArtifactType SoftwareRequirementHtml = TokenFactory.createArtifactType(42, "Software Requirement - HTML");
    public static final IArtifactType SoftwareRequirementPlainText = TokenFactory.createArtifactType(792, "Software Requirement Plain Text");
    public static final IArtifactType SoftwareRequirementProcedure = TokenFactory.createArtifactType(27, "Software Requirement Procedure");
    public static final IArtifactType SubscriptionGroup = TokenFactory.createArtifactType(6753071794573299176L, "Subscription Group");

@@ -756,6 +756,10 @@ artifactType "Software Requirement" extends "MS Word Template" , "Direct Softwar
 	attribute "Software Control Category Rationale"
 }
 
+artifactType "Software Requirement - HTML" extends "Abstract Software Requirement", "HTML Artifact" {
+	id 42
+}
+
 artifactType "Plain Text" extends "Artifact" {
 	id 784
 	attribute "Paragraph Number"
