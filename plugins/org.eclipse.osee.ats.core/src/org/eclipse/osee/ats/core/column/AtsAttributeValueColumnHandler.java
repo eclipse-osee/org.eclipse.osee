@@ -94,7 +94,7 @@ public class AtsAttributeValueColumnHandler implements IAtsColumn {
    }
 
    public static String getColumnText(IAtsObject atsObject, IAttributeType attributeType, boolean isActionRollup, boolean inheritParent, IAtsServices services) {
-      return getColumnText(atsObject, attributeType.getGuid(), isActionRollup, inheritParent, services);
+      return getColumnText(atsObject, attributeType.getId(), isActionRollup, inheritParent, services);
    }
 
 }

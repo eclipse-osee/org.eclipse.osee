@@ -14,7 +14,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -80,13 +79,21 @@ public final class TokenFactory {
       }
    }
 
-   private final static class AttributeTypeToken extends FullyNamedIdentity<Long> implements IAttributeType {
+   private final static class AttributeTypeToken extends NamedId implements IAttributeType {
+      private final String description;
+
       public AttributeTypeToken(Long guid, String name) {
-         super(guid, name);
+         this(guid, name, null);
       }
 
       public AttributeTypeToken(Long guid, String name, String description) {
-         super(guid, name, description);
+         super(guid, name);
+         this.description = description;
+      }
+
+      @Override
+      public String getDescription() {
+         return description;
       }
    }
 

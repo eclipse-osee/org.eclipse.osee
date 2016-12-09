@@ -315,7 +315,7 @@ public class OrcsCollectorWriter {
 
    private void createAttributes(OwArtifact owArtifact, ArtifactId artifact, XResultData results) {
       for (OwAttribute owAttribute : owArtifact.getAttributes()) {
-         if (!CoreAttributeTypes.Name.getGuid().equals(owAttribute.getType().getUuid())) {
+         if (CoreAttributeTypes.Name.notEqual(owAttribute.getType().getUuid())) {
             OwAttributeType owAttrType = owAttribute.getType();
             IAttributeType attrType = getAttributeType(orcsApi, owAttrType);
 

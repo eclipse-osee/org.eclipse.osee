@@ -30,7 +30,7 @@ public class AtsAttributeValueColumn extends AtsValueColumn {
 
    public AtsAttributeValueColumn(IAttributeType attributeType, String id, String name, int width, String align, boolean show, ColumnType sortDataType, boolean multiColumnEditable, String description, Boolean actionRollup, Boolean inheritParent) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description, actionRollup, inheritParent);
-      this.attrTypeId = attributeType.getGuid();
+      this.attrTypeId = attributeType.getId();
       this.attrTypeName = attributeType.getName();
    }
 

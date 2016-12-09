@@ -121,7 +121,7 @@ public class WordUpdateArtifact {
                if (oleDataElement == null && containsOleData) {
                   txBuilder.setSoleAttributeFromString(artifact, CoreAttributeTypes.WordOleData, "");
                   artChange.setChanged(true);
-                  artChange.addChangedAttrType(CoreAttributeTypes.WordOleData.getGuid());
+                  artChange.addChangedAttributeType(CoreAttributeTypes.WordOleData);
                } else if (oleDataElement != null && singleArtifact) {
                   txBuilder.setSoleAttributeFromStream(artifact, CoreAttributeTypes.WordOleData,
                      new ByteArrayInputStream(WordUtilities.getFormattedContent(oleDataElement)));
@@ -129,7 +129,7 @@ public class WordUpdateArtifact {
                   if (!containsOleData) {
                      artChange.setCreated(true);
                   }
-                  artChange.addChangedAttrType(CoreAttributeTypes.WordOleData.getGuid());
+                  artChange.addChangedAttributeType(CoreAttributeTypes.WordOleData);
                }
                String content = Lib.inputStreamToString(
                   new ByteArrayInputStream(WordUtilities.getFormattedContent(extractorData.getParentEelement())));
@@ -156,7 +156,7 @@ public class WordUpdateArtifact {
                      if (!containsWordData) {
                         artChange.setCreated(true);
                      }
-                     artChange.addChangedAttrType(CoreAttributeTypes.WordTemplateContent.getGuid());
+                     artChange.addChangedAttributeType(CoreAttributeTypes.WordTemplateContent);
                   } else {
                      updateChange.setTrackedChangeArts(artifact.getId(), artifact.getName());
                   }
@@ -165,7 +165,7 @@ public class WordUpdateArtifact {
                   artChange.setSafetyRelated(checkIfSafetyRelated(artifact,
                      CoreAttributeTypes.LegacyDAL) || checkIfSafetyRelated(artifact, CoreAttributeTypes.ItemDAL));
                   updateChange.addChangedArt(artChange);
-                  artChange.addChangedAttrType(CoreAttributeTypes.WordTemplateContent.getGuid());
+                  artChange.addChangedAttributeType(CoreAttributeTypes.WordTemplateContent);
                }
             }
          }

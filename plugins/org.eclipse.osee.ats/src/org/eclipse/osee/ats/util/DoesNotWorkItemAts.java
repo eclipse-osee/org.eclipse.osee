@@ -45,7 +45,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
          if (column instanceof XViewerAtsAttributeValueColumn) {
             XViewerAtsAttributeValueColumn attrColumn = (XViewerAtsAttributeValueColumn) column;
 
-            AttributeType attrType = AttributeTypeManager.getTypeByGuid(attrColumn.getAttributeType().getGuid());
+            AttributeType attrType = AttributeTypeManager.getType(attrColumn.getAttributeType());
 
             AtsAttributeValueColumn valueColumn = new AtsAttributeValueColumn();
             valueColumn.setAttrTypeId(attrType.getId());

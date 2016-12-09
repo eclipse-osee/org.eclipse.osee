@@ -210,7 +210,7 @@ public class ConflictManagerInternal {
       List<Object[]> batchParams = new LinkedList<>();
       try {
          for (IAttributeType type : types) {
-            joinQuery.add(type.getGuid());
+            joinQuery.add(type);
          }
          joinQuery.store();
 

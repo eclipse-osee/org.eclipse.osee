@@ -116,8 +116,7 @@ public class WordUtil {
 
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt.runPreparedQuery(SELECT_WORD_VALUES, artId, CoreAttributeTypes.WordTemplateContent.getGuid(),
-            branch.getUuid());
+         chStmt.runPreparedQuery(SELECT_WORD_VALUES, artId, CoreAttributeTypes.WordTemplateContent, branch);
 
          List<Pair<String, Integer>> values = new LinkedList<>();
          while (chStmt.next()) {

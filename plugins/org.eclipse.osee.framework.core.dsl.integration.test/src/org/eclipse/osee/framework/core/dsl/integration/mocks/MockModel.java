@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.integration.mocks;
 
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
@@ -111,12 +112,12 @@ public final class MockModel {
       return toReturn;
    }
 
-   public static XAttributeType createXAttributeType(long uuid, String name) throws OseeCoreException {
+   public static XAttributeType createXAttributeType(AttributeTypeId id, String name) throws OseeCoreException {
       XAttributeType toReturn = OseeDslFactory.eINSTANCE.createXAttributeType();
       Assert.assertNotNull(toReturn);
-      toReturn.setId(String.valueOf(uuid));
+      toReturn.setId(id.getIdString());
       toReturn.setName(name);
-      Assert.assertEquals(uuid, Long.valueOf(toReturn.getId()).longValue());
+      Assert.assertEquals(id, Long.valueOf(toReturn.getId()));
       Assert.assertEquals(name, toReturn.getName());
       return toReturn;
    }

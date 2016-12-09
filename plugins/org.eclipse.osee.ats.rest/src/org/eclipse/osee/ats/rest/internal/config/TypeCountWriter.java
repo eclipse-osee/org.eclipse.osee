@@ -128,7 +128,7 @@ public class TypeCountWriter {
 
       Collection<? extends IAttributeType> allTypes = orcsApi.getOrcsTypes().getAttributeTypes().getAll();
       for (IAttributeType type : allTypes) {
-         if (typeIds.contains(type.getGuid())) {
+         if (typeIds.contains(type.getId())) {
             toReturn.add(type);
          }
       }

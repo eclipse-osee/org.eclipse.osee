@@ -35,7 +35,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link AttributeTypeRestrictionHandler}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerTest<AttributeTypeRestriction> {
@@ -49,8 +49,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
    public void testProcessDataAttributeTypeNotApplicable() throws OseeCoreException {
       IAttributeType attributeType = CoreAttributeTypes.Name;
 
-      XAttributeType attributeTypeRef =
-         MockModel.createXAttributeType(attributeType.getGuid(), attributeType.getName());
+      XAttributeType attributeTypeRef = MockModel.createXAttributeType(attributeType, attributeType.getName());
 
       AttributeTypeRestriction restriction = MockModel.createAttributeTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
@@ -67,8 +66,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
    public void testProcessDataAttributeTypeIsApplicable() throws OseeCoreException {
       IAttributeType attributeType = CoreAttributeTypes.Name;
 
-      XAttributeType attributeTypeRef =
-         MockModel.createXAttributeType(attributeType.getGuid(), attributeType.getName());
+      XAttributeType attributeTypeRef = MockModel.createXAttributeType(attributeType, attributeType.getName());
 
       AttributeTypeRestriction restriction = MockModel.createAttributeTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
@@ -86,8 +84,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
    public void testProcessDataAttributeTypeIsApplicableArtifactTypeBoundedNoMatch() throws OseeCoreException {
       IAttributeType attributeType = CoreAttributeTypes.Name;
 
-      XAttributeType attributeTypeRef =
-         MockModel.createXAttributeType(attributeType.getGuid(), attributeType.getName());
+      XAttributeType attributeTypeRef = MockModel.createXAttributeType(attributeType, attributeType.getName());
 
       AttributeTypeRestriction restriction = MockModel.createAttributeTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
@@ -112,8 +109,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
    public void testProcessDataAttributeTypeIsApplicableArtifactTypeMatch() throws OseeCoreException {
       IAttributeType attributeType = CoreAttributeTypes.Name;
 
-      XAttributeType attributeTypeRef =
-         MockModel.createXAttributeType(attributeType.getGuid(), attributeType.getName());
+      XAttributeType attributeTypeRef = MockModel.createXAttributeType(attributeType, attributeType.getName());
 
       AttributeTypeRestriction restriction = MockModel.createAttributeTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
@@ -138,8 +134,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
    public void testProcessDataAttributeTypeIsApplicableArtifactTypeMatchWithInheritance() throws OseeCoreException {
       IAttributeType attributeType = CoreAttributeTypes.Name;
 
-      XAttributeType attributeTypeRef =
-         MockModel.createXAttributeType(attributeType.getGuid(), attributeType.getName());
+      XAttributeType attributeTypeRef = MockModel.createXAttributeType(attributeType, attributeType.getName());
 
       AttributeTypeRestriction restriction = MockModel.createAttributeTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.action;
 import java.net.URL;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -47,8 +48,8 @@ public final class CopyArtifactURLAction extends Action {
       Clipboard clipboard = null;
       try {
          String urlString =
-            String.format("%sorcs/branch/%d/artifact/%d/attribute/type/%d", ArtifactURL.getSelectedPermanenrLinkUrl(),
-               artifact.getBranchId(), artifact.getUuid(), getAttributeTypeId());
+            String.format("%sorcs/branch/%d/artifact/%d/attribute/type/%s", ArtifactURL.getSelectedPermanenrLinkUrl(),
+               artifact.getBranchId(), artifact.getId(), getAttributeTypeId().getIdString());
          URL url = new URL(urlString);
          clipboard = new Clipboard(null);
          clipboard.setContents(new Object[] {url.toString()}, new Transfer[] {TextTransfer.getInstance()});
@@ -63,9 +64,9 @@ public final class CopyArtifactURLAction extends Action {
       }
    }
 
-   private Long getAttributeTypeId() {
+   private AttributeTypeId getAttributeTypeId() {
       return artifact.isOfType(
-         CoreArtifactTypes.WholeWord) ? CoreAttributeTypes.WholeWordContent.getGuid() : CoreAttributeTypes.NativeContent.getGuid();
+         CoreArtifactTypes.WholeWord) ? CoreAttributeTypes.WholeWordContent : CoreAttributeTypes.NativeContent;
    }
 
    public static boolean isApplicable(Artifact artifact) {

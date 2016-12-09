@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -70,12 +71,12 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
       AbstractJoinQuery joinQuery = null;
       String jIdAlias = null;
       if (!criteria.isIncludeAllTypes() && types.size() > 1) {
-         Set<Long> typeIds = new HashSet<>();
+         Set<AttributeTypeId> typeIds = new HashSet<>();
          for (IAttributeType type : types) {
-            typeIds.add(type.getGuid());
+            typeIds.add(type);
          }
          jIdAlias = writer.getNextAlias(TableEnum.ID_JOIN_TABLE);
-         joinQuery = writer.writeIdJoin(typeIds);
+         joinQuery = writer.writeJoin(typeIds);
       }
 
       Collection<String> values = criteria.getValues();
@@ -104,7 +105,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
                gammaSb.append(" AND attr_type_id = ");
                if (types.size() == 1) {
                   gammaSb.append("?");
-                  writer.addParameter(types.iterator().next().getGuid());
+                  writer.addParameter(types.iterator().next());
                } else {
                   gammaSb.append(jIdAlias);
                   gammaSb.append(".id AND ");
@@ -151,8 +152,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
          attrSb.append(" AND att.attr_type_id = ");
          if (types.size() == 1) {
             attrSb.append("?");
-            long typeId = criteria.getTypes().iterator().next().getGuid();
-            writer.addParameter(typeId);
+            writer.addParameter(criteria.getTypes().iterator().next());
          } else {
             attrSb.append(jIdAlias);
             attrSb.append(".id AND ");

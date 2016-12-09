@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
@@ -63,11 +64,11 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
       writer.write(" txs WHERE ");
 
       if (types.size() > 1) {
-         Set<Long> typeIds = new HashSet<>();
+         Set<AttributeTypeId> typeIds = new HashSet<>();
          for (IAttributeType type : types) {
-            typeIds.add(type.getGuid());
+            typeIds.add(type);
          }
-         joinQuery = writer.writeIdJoin(typeIds);
+         joinQuery = writer.writeJoin(typeIds);
 
          writer.write("attr.attr_type_id = ");
          writer.write(jIdAlias);
@@ -78,7 +79,7 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
       } else {
          IAttributeType type = types.iterator().next();
          writer.write("attr.attr_type_id = ?");
-         writer.addParameter(type.getGuid());
+         writer.addParameter(type);
       }
 
       writer.writeAndLn();

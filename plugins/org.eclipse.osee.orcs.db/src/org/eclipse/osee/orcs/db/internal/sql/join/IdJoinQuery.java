@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.sql.join;
 
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.orcs.db.internal.sql.join.DatabaseJoinAccessor.JoinItem;
 
 /**
@@ -79,5 +80,9 @@ public class IdJoinQuery extends AbstractJoinQuery {
 
    public void add(Number id) {
       entries.add(new TempIdEntry(id.longValue()));
+   }
+
+   public void add(Id id) {
+      entries.add(new TempIdEntry(id.getId()));
    }
 }

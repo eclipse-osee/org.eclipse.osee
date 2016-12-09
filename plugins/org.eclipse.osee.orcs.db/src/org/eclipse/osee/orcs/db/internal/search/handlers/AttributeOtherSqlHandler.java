@@ -62,7 +62,7 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther>
 
       types = criteria.getAttributeTypes();
       if (types.size() > 1) {
-         typeJoinQuery = writer.writeIdentifiableJoin(types);
+         typeJoinQuery = writer.writeJoin(types);
          typeJoinAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
 
@@ -102,7 +102,7 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther>
       if (attributeTypes.size() == 1) {
          writer.write(attrAlias);
          writer.write(".attr_type_id = ?");
-         writer.addParameter(attributeTypes.iterator().next().getGuid());
+         writer.addParameter(attributeTypes.iterator().next());
       } else if (attributeTypes.size() > 1) {
          writer.write(attrAlias);
          writer.write(".attr_type_id = ");

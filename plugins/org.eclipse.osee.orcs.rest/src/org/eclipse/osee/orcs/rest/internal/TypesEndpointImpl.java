@@ -182,7 +182,7 @@ public class TypesEndpointImpl implements TypesEndpoint {
       JaxEnumAttribute enumAttr = new JaxEnumAttribute();
       enumAttr.setName(type.getName());
       enumAttr.setDescription(type.getDescription());
-      enumAttr.setUuid(type.getGuid().toString());
+      enumAttr.setUuid(type.getIdString());
       enumAttr.setDataProvider(attributeTypes.getAttributeProviderId(type));
       enumAttr.setDefaultValue(attributeTypes.getDefaultValue(type));
       enumAttr.setMax(attributeTypes.getMaxOccurrences(type));

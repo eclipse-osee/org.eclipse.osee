@@ -30,6 +30,10 @@ public interface Id {
 
    Long getId();
 
+   default String getIdString() {
+      return getId().toString();
+   }
+
    default boolean matches(Id... identities) {
       for (Id identity : identities) {
          if (equals(identity)) {

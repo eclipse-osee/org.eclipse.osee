@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 
 /**
@@ -20,7 +21,7 @@ import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
  * Java class for RemoteAttributeChange1 complex type.
  * <p>
  * The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="RemoteAttributeChange1">
  *   &lt;complexContent>
@@ -63,9 +64,13 @@ public class RemoteAttributeChange1 extends RemoteEvent {
       this.attrTypeGuid = value;
    }
 
+   public void setAttributeType(AttributeTypeId attributeType) {
+      this.attrTypeGuid = attributeType.getId();
+   }
+
    /**
     * Gets the value of the modTypeGuid property.
-    * 
+    *
     * @return possible object is {@link String }
     */
    public String getModTypeGuid() {
@@ -74,7 +79,7 @@ public class RemoteAttributeChange1 extends RemoteEvent {
 
    /**
     * Sets the value of the modTypeGuid property.
-    * 
+    *
     * @param value allowed object is {@link String }
     */
    public void setModTypeGuid(String value) {
@@ -117,7 +122,7 @@ public class RemoteAttributeChange1 extends RemoteEvent {
     * the data property.
     * <p>
     * For example, to add a new item, do as follows:
-    * 
+    *
     * <pre>
     * getData().add(newItem);
     * </pre>

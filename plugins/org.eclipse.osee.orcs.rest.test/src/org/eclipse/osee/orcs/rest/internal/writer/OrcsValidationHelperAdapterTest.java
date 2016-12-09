@@ -92,7 +92,7 @@ public class OrcsValidationHelperAdapterTest {
 
    @Test
    public void testIsAttributeTypeExists() {
-      Assert.assertTrue(helper.isAttributeTypeExists(CoreAttributeTypes.StaticId.getGuid()));
+      Assert.assertTrue(helper.isAttributeTypeExists(CoreAttributeTypes.StaticId.getId()));
 
       Assert.assertFalse(helper.isAttributeTypeExists(999999L));
    }

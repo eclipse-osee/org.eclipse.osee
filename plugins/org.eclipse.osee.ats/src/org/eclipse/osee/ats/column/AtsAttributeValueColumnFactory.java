@@ -21,7 +21,7 @@ public class AtsAttributeValueColumnFactory {
       AtsAttributeValueColumn col = new AtsAttributeValueColumn();
       col.setName(inCol.getName());
       col.setNamespace(namespace);
-      col.setAttrTypeId(inCol.getAttributeType().getGuid());
+      col.setAttrTypeId(inCol.getAttributeType().getId());
       col.setAttrTypeName(inCol.getAttributeType().getName());
       ColumnAlign colAlign = AtsUtil.getColumnAlign(inCol.getAlign());
       col.setAlign(colAlign);

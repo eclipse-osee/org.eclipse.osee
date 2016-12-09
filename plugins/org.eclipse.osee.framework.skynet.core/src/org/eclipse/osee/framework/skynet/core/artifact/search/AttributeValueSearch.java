@@ -32,7 +32,7 @@ public class AttributeValueSearch implements ISearchPrimitive {
 
    @Override
    public String getStorageString() {
-      return attributeType.getGuid().toString() + TOKEN + attributeValue;
+      return attributeType.getIdString() + TOKEN + attributeValue;
    }
 
    public static AttributeValueSearch getPrimitive(String storageString) {

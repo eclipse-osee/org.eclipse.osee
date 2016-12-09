@@ -126,7 +126,7 @@ public final class AtsAttributeTypes {
    public static final IAttributeType TeamDefinition = createType(1152921504606847201L, "Team Definition");
    public static final IAttributeType TestToSourceLocator = TokenFactory.createAttributeType(130595201919637916L,
       "Test Run to Source Locator");
-   public static final IAttributeType Title = createType(CoreAttributeTypes.Name.getGuid(), CoreAttributeTypes.Name.getName(), "Enter clear and consise title that can be generally understood.");
+   public static final IAttributeType Title = createType(CoreAttributeTypes.Name.getId(), CoreAttributeTypes.Name.getName(), "Enter clear and concise title that can be generally understood.");
    public static final IAttributeType ValidationRequired = createType(1152921504606847146L, "Validation Required", "If selected, originator will be asked to validate the implementation.");
    public static final IAttributeType VersionLocked = createType(1152921504606847156L, "Version Locked", "True if version artifact is locked.");
    public static final IAttributeType WeeklyBenefit = createType(1152921504606847186L, "Weekly Benefit", "Estimated number of hours that will be saved over a single year if this change is completed.");

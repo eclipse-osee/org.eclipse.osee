@@ -126,7 +126,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
 
    @Override
    public AttributeData createAttributeData(VersionData version, Integer localId, IAttributeType type, ModificationType modType, int artId, ApplicabilityId applicId) throws OseeCoreException {
-      long typeId = type.getGuid();
+      long typeId = type.getId();
       DataProxy proxy = proxyFactory.createProxy(typeId, "", "");
       return createAttributeFromRow(version, localId, typeId, modType, typeId, modType, artId, proxy, applicId);
    }

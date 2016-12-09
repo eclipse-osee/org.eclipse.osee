@@ -295,8 +295,7 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected,
-         CoreAttributeTypes.Annotation.getGuid());
+      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected, CoreAttributeTypes.Annotation);
    }
 
    @Test
@@ -322,7 +321,7 @@ public class DataLoaderFactoryImplTest {
       dataLoader.load(cancellation, builder);
 
       verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected, data(JQID),
-         list(data(CoreAttributeTypes.Annotation.getGuid(), CoreAttributeTypes.Category.getGuid())));
+         list(data(CoreAttributeTypes.Annotation, CoreAttributeTypes.Category)));
    }
 
    @Test
@@ -399,7 +398,7 @@ public class DataLoaderFactoryImplTest {
       dataLoader.load(cancellation, builder);
 
       verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected, data(JQID, JQID),
-         list(data(45, 55), data(CoreAttributeTypes.Annotation.getGuid(), CoreAttributeTypes.Category.getGuid())));
+         list(data(45, 55), data(CoreAttributeTypes.Annotation, CoreAttributeTypes.Category)));
    }
 
    @Test
@@ -425,8 +424,7 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected, 45,
-         CoreAttributeTypes.Annotation.getGuid());
+      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected, 45, CoreAttributeTypes.Annotation);
    }
 
    @Test

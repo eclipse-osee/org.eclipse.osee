@@ -192,7 +192,7 @@ public class QuickSearchOptionComposite extends Composite {
                         updateExactMatchOptions();
                         // set attribute search by Name
                         attributeSearchText.setText(CoreAttributeTypes.Name.getName());
-                        configHandler.loadFrom(new String[] {CoreAttributeTypes.Name.getGuid().toString()});
+                        configHandler.loadFrom(new String[] {CoreAttributeTypes.Name.getIdString()});
                      } catch (OseeCoreException ex) {
                         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                      }
@@ -525,7 +525,7 @@ public class QuickSearchOptionComposite extends Composite {
          String[] guids = new String[configuration.size()];
          int index = 0;
          for (IAttributeType type : configuration) {
-            guids[index++] = String.valueOf(type.getGuid());
+            guids[index++] = type.getIdString();
          }
          return guids;
       }

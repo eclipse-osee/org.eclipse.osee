@@ -11,9 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
@@ -65,18 +63,12 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
          }
          sb.append("    WHERE txs.gamma_id = attr.gamma_id\n");
          if (types.size() > 1) {
-            Set<Long> typeIds = new HashSet<>();
-            for (IAttributeType type : types) {
-               typeIds.add(type.getGuid());
-            }
-            AbstractJoinQuery joinQuery = writer.writeIdJoin(typeIds);
+            AbstractJoinQuery joinQuery = writer.writeJoin(types);
             sb.append("   AND attr.attr_type_id = id.id AND id.query_id = ?");
             writer.addParameter(joinQuery.getQueryId());
          } else {
-            IAttributeType type = types.iterator().next();
-            long localId = type.getGuid();
             sb.append("    AND att.attr_type_id = ?");
-            writer.addParameter(localId);
+            writer.addParameter(types.iterator().next());
          }
          sb.append(" AND ");
          sb.append(writer.getWithClauseTxBranchFilter("txs", false));
@@ -115,11 +107,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
 
       Collection<? extends IAttributeType> types = criteria.getTypes();
       if (types.size() > 1) {
-         Set<Long> typeIds = new HashSet<>();
-         for (IAttributeType type : types) {
-            typeIds.add(type.getGuid());
-         }
-         joinQuery = writer.writeIdJoin(typeIds);
+         joinQuery = writer.writeJoin(types);
 
          writer.write(attrAlias);
          writer.write(".attr_type_id = ");
@@ -133,7 +121,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
          IAttributeType type = types.iterator().next();
          writer.write(attrAlias);
          writer.write(".attr_type_id = ?");
-         writer.addParameter(type.getGuid());
+         writer.addParameter(type);
       }
 
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);

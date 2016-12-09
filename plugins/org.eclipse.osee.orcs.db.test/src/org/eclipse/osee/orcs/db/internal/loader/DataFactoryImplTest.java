@@ -215,7 +215,7 @@ public class DataFactoryImplTest {
    public void testCreateAttributeData() throws OseeCoreException {
       IAttributeType attributeType = mock(IAttributeType.class);
 
-      when(attributeType.getGuid()).thenReturn(2389L);
+      when(attributeType.getId()).thenReturn(2389L);
       when(proxyFactory.createProxy(2389L, "", "")).thenReturn(otherDataProxy);
       when(otherDataProxy.getData()).thenReturn(new Object[] {2389L, "", ""});
 

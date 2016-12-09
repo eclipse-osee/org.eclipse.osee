@@ -725,7 +725,7 @@ public class OrcsTypesTest {
 
       //@formatter:off
       assertEquals("Field 3", attrType.getName());
-      assertEquals(Long.valueOf(1152921504606847106L), attrType.getGuid());
+      assertEquals(attrType, 1152921504606847106L);
       assertEquals("org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider", attrTypes.getAttributeProviderId(attrType));
       assertEquals("org.eclipse.osee.framework.skynet.core.DateAttribute", attrTypes.getBaseAttributeTypeId(attrType));
       assertEquals(null, attrTypes.getDefaultValue(attrType));

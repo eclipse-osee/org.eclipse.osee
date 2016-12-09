@@ -13,6 +13,7 @@ package org.eclipse.osee.define.report.api;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 
 /**
  * @author David W. Miller
@@ -43,6 +44,10 @@ public class WordArtifactChange {
 
    public void addChangedAttrType(long attrId) {
       this.changedAttrTypes.add(attrId);
+   }
+
+   public void addChangedAttributeType(AttributeTypeId attributeType) {
+      this.changedAttrTypes.add(attributeType.getId());
    }
 
    public boolean isChanged() {

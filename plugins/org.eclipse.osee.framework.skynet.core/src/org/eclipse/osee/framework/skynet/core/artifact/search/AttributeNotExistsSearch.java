@@ -37,7 +37,7 @@ public class AttributeNotExistsSearch implements ISearchPrimitive {
       StringBuilder storageString = new StringBuilder();
 
       for (IAttributeType attrType : attributeTypes) {
-         storageString.append(attrType.getGuid().toString());
+         storageString.append(attrType.getIdString());
          storageString.append(",");
       }
       storageString.deleteCharAt(storageString.length() - 1);

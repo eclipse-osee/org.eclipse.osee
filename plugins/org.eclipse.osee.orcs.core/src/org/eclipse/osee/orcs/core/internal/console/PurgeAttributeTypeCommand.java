@@ -90,10 +90,10 @@ public class PurgeAttributeTypeCommand implements ConsoleCommand {
                try {
                   Long typeId = Long.valueOf(uuid);
                   IAttributeType type = attributeTypes.get(typeId);
-                  console.writeln("Type [%s] found. Guid: [0x%X]", type.getName(), type.getGuid());
+                  console.writeln("Type [%s] found.", type);
                   toReturn.add(type);
                } catch (OseeArgumentException ex) {
-                  console.writeln("Type [0x%X] NOT found.", uuid);
+                  console.writeln("Type [%s] NOT found.", uuid);
                   console.writeln(ex);
                }
             }

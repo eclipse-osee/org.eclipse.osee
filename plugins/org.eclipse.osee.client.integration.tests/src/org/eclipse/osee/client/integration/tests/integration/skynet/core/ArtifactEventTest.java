@@ -725,7 +725,7 @@ public class ArtifactEventTest {
       int nameAttrId = injectArt.getAttributes().iterator().next().getId().intValue();
       remAttrChg.setAttributeId(nameAttrId);
       remAttrChg.setGammaId(1000);
-      remAttrChg.setAttrTypeGuid(CoreAttributeTypes.Name.getGuid());
+      remAttrChg.setAttributeType(CoreAttributeTypes.Name);
       remAttrChg.setModTypeGuid(AttributeEventModificationType.Modified.getGuid());
       remAttrChg.getData().add(NEW_NAME);
       remAttrChg.getData().add("");
@@ -752,7 +752,7 @@ public class ArtifactEventTest {
       Assert.assertEquals(nameAttrId, attrChg.getAttributeId());
       Assert.assertEquals(AttributeEventModificationType.Modified,
          AttributeEventModificationType.getType(attrChg.getModTypeGuid()));
-      Assert.assertEquals(CoreAttributeTypes.Name.getGuid(), attrChg.getAttrTypeGuid());
+      Assert.assertEquals(CoreAttributeTypes.Name, attrChg.getAttrTypeGuid());
       Assert.assertEquals(1000, attrChg.getGammaId());
 
       Assert.assertEquals(Arrays.asList(NEW_NAME, ""), remAttrChg.getData());
@@ -776,7 +776,7 @@ public class ArtifactEventTest {
       RemoteAttributeChange1 remAttrChg = new RemoteAttributeChange1();
       remAttrChg.setAttributeId(2343);
       remAttrChg.setGammaId(1000);
-      remAttrChg.setAttrTypeGuid(CoreAttributeTypes.GeneralStringData.getGuid());
+      remAttrChg.setAttributeType(CoreAttributeTypes.GeneralStringData);
       remAttrChg.setModTypeGuid(AttributeEventModificationType.New.getGuid());
       remAttrChg.getData().add(GENERAL_DATA_STRING);
       remAttrChg.getData().add("");
@@ -803,7 +803,7 @@ public class ArtifactEventTest {
       Assert.assertEquals(2343, attrChg.getAttributeId());
       Assert.assertEquals(AttributeEventModificationType.New,
          AttributeEventModificationType.getType(attrChg.getModTypeGuid()));
-      Assert.assertEquals(CoreAttributeTypes.GeneralStringData.getGuid(), attrChg.getAttrTypeGuid());
+      Assert.assertEquals(CoreAttributeTypes.GeneralStringData, attrChg.getAttrTypeGuid());
       Assert.assertEquals(1000, attrChg.getGammaId());
 
       Assert.assertEquals(Arrays.asList(GENERAL_DATA_STRING, ""), remAttrChg.getData());
@@ -828,7 +828,7 @@ public class ArtifactEventTest {
          injectArt.getAttributes(CoreAttributeTypes.GeneralStringData).iterator().next().getId().intValue();
       remAttrChg.setAttributeId(genStrAttrId);
       remAttrChg.setGammaId(1000);
-      remAttrChg.setAttrTypeGuid(CoreAttributeTypes.GeneralStringData.getGuid());
+      remAttrChg.setAttributeType(CoreAttributeTypes.GeneralStringData);
       remAttrChg.setModTypeGuid(AttributeEventModificationType.Deleted.getGuid());
       remGuidArt.getAttributes().add(remAttrChg);
 
@@ -854,7 +854,7 @@ public class ArtifactEventTest {
       Assert.assertEquals(genStrAttrId, attrChg.getAttributeId());
       Assert.assertEquals(AttributeEventModificationType.Deleted,
          AttributeEventModificationType.getType(attrChg.getModTypeGuid()));
-      Assert.assertEquals(CoreAttributeTypes.GeneralStringData.getGuid(), attrChg.getAttrTypeGuid());
+      Assert.assertEquals(CoreAttributeTypes.GeneralStringData, attrChg.getAttrTypeGuid());
       Assert.assertEquals(1000, attrChg.getGammaId());
 
       // Validate that artifact was updated

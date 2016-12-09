@@ -11,8 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.loader.handlers;
 
 import java.util.Collection;
-import java.util.HashSet;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaAttribute;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
@@ -32,7 +31,6 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute> {
    private String attrAlias;
    private String txsAlias;
 
-   private Collection<Long> typeIds;
    private AbstractJoinQuery joinIdQuery;
    private AbstractJoinQuery joinTypeQuery;
 
@@ -59,21 +57,12 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute> {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
 
-      typeIds = getLocalTypeIds();
-      if (typeIds.size() > 1) {
+      if (criteria.getTypes().size() > 1) {
          jTypeIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
 
       attrAlias = writer.addTable(TableEnum.ATTRIBUTE_TABLE);
       txsAlias = writer.addTable(TableEnum.TXS_TABLE);
-   }
-
-   private Collection<Long> getLocalTypeIds() throws OseeCoreException {
-      Collection<Long> toReturn = new HashSet<>();
-      for (Identity<Long> type : criteria.getTypes()) {
-         toReturn.add(type.getGuid());
-      }
-      return toReturn;
    }
 
    @Override
@@ -105,10 +94,11 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute> {
          }
       }
 
-      if (!typeIds.isEmpty()) {
+      Collection<? extends AttributeTypeId> types = criteria.getTypes();
+      if (!types.isEmpty()) {
          writer.write(" AND ");
-         if (typeIds.size() > 1) {
-            joinTypeQuery = writer.writeIdJoin(typeIds);
+         if (types.size() > 1) {
+            joinTypeQuery = writer.writeJoin(types);
             writer.write(attrAlias);
             writer.write(".attr_type_id = ");
             writer.write(jTypeIdAlias);
@@ -119,7 +109,7 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute> {
          } else {
             writer.write(attrAlias);
             writer.write(".attr_type_id = ?");
-            writer.addParameter(typeIds.iterator().next());
+            writer.addParameter(types.iterator().next());
          }
       }
 

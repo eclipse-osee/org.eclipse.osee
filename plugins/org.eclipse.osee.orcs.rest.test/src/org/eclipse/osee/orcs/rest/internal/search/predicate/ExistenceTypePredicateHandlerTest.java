@@ -118,7 +118,7 @@ public class ExistenceTypePredicateHandlerTest {
       verify(builder).andExists(attrTypeSideCaptor.capture());
       Assert.assertEquals(1, attrTypeSideCaptor.getAllValues().size());
       List<IAttributeType> attrTypes = new ArrayList<>(attrTypeSideCaptor.getValue());
-      Assert.assertTrue(12345L == attrTypes.get(0).getGuid());
+      Assert.assertEquals(attrTypes.get(0), Long.valueOf(attrUuid));
    }
 
    @Test
@@ -135,8 +135,8 @@ public class ExistenceTypePredicateHandlerTest {
       verify(builder).andExists(attrTypeSideCaptor.capture());
       Assert.assertEquals(1, attrTypeSideCaptor.getAllValues().size());
       Iterator<IAttributeType> iterator = attrTypeSideCaptor.getValue().iterator();
-      Assert.assertEquals(Long.valueOf(12345L), iterator.next().getGuid());
-      Assert.assertEquals(Long.valueOf(34567L), iterator.next().getGuid());
+      Assert.assertEquals(iterator.next(), Long.valueOf(attrType1));
+      Assert.assertEquals(iterator.next(), Long.valueOf(attrType2));
    }
 
    @Test

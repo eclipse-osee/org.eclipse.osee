@@ -16,8 +16,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
@@ -108,7 +108,7 @@ public class AttributeTypeManager {
    }
 
    public static AttributeType getType(IAttributeType type) throws OseeCoreException {
-      return getTypeByGuid(type.getGuid());
+      return getTypeByGuid(type.getId());
    }
 
    /**

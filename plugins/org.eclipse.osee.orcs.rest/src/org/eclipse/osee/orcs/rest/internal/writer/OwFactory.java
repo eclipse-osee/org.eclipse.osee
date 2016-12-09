@@ -41,9 +41,9 @@ public class OwFactory {
    }
 
    public static OwAttributeType createAttributeType(IAttributeType attrType) {
-      String typeStr = String.format("[%s]-[%d]", attrType.getName(), attrType.getGuid());
+      String typeStr = String.format("[%s]-[%d]", attrType.getName(), attrType.getId());
       OwAttributeType type = new OwAttributeType();
-      type.setUuid(attrType.getGuid());
+      type.setUuid(attrType.getId());
       type.setName(attrType.getName());
       type.setData(typeStr);
       return type;

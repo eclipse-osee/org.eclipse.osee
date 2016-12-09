@@ -90,7 +90,7 @@ public class AttributeTypeResource {
                sb.append(AHTML.addRowMultiColumnTable(AHTML.bold("Name:"), attrType.getName()));
                sb.append(AHTML.addRowMultiColumnTable(AHTML.bold("AttributeTypeId:"),
                   AHTML.getHyperlink(String.format("/orcs/branch/%d/artifact/%d/attribute/type/%d", branchUuid,
-                     artifactUuid, attrType.getGuid()), attrType.getGuid().toString())));
+                     artifactUuid, attrType.getId()), attrType.getId().toString())));
                sb.append(AHTML.addRowMultiColumnTable(""));
             }
             sb.append(AHTML.endMultiColumnTable());
@@ -138,7 +138,7 @@ public class AttributeTypeResource {
                IAttributeType attributeType =
                   OrcsApplication.getOrcsApi().getOrcsTypes().getAttributeTypes().get((long) attributeTypeId);
                return Response.ok(AHTML.simplePage(String.format("No attributes of type [%s][%d] found.",
-                  attributeType.getName(), attributeType.getGuid()))).build();
+                  attributeType.getName(), attributeType.getId()))).build();
             }
          }
       } catch (Exception ex) {

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.utility;
 
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.skynet.core.utility.DatabaseJoinAccessor.JoinItem;
 
 /**
@@ -58,5 +59,9 @@ public class IdJoinQuery extends AbstractJoinQuery {
 
    public void add(Number id) {
       entries.add(new TempIdEntry(id.longValue()));
+   }
+
+   public void add(Id id) {
+      entries.add(new TempIdEntry(id.getId()));
    }
 }
