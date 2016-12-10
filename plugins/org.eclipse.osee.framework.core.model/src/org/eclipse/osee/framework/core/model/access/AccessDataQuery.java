@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.core.model.access;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -107,7 +107,7 @@ public class AccessDataQuery {
       }
    }
 
-   public void attributeTypeMatches(PermissionEnum permissionToMatch, ArtifactToken artifact, final IAttributeType attributeType, PermissionStatus permissionStatus) throws OseeCoreException {
+   public void attributeTypeMatches(PermissionEnum permissionToMatch, ArtifactToken artifact, final AttributeTypeId attributeType, PermissionStatus permissionStatus) throws OseeCoreException {
       artifactMatches(permissionToMatch, artifact, permissionStatus);
       if (permissionStatus.matched()) {
          Collection<AccessDetail<?>> branchAccessDetails = accessData.getAccess(artifact.getBranch());

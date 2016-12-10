@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -107,7 +108,7 @@ public class AttributeTypeManager {
       return attributeType;
    }
 
-   public static AttributeType getType(IAttributeType type) throws OseeCoreException {
+   public static AttributeType getType(AttributeTypeId type) throws OseeCoreException {
       return getTypeByGuid(type.getId());
    }
 
@@ -126,11 +127,11 @@ public class AttributeTypeManager {
       return attributeType.getOseeEnumType().valuesAsOrderedStringSet();
    }
 
-   public static Set<String> getEnumerationValues(IAttributeType attributeType) throws OseeCoreException {
+   public static Set<String> getEnumerationValues(AttributeTypeId attributeType) throws OseeCoreException {
       return getEnumerationValues(getType(attributeType));
    }
 
-   public static Map<String, String> getEnumerationValueDescriptions(IAttributeType attributeType) throws OseeCoreException {
+   public static Map<String, String> getEnumerationValueDescriptions(AttributeTypeId attributeType) throws OseeCoreException {
       Map<String, String> values = new HashMap<>();
       for (OseeEnumEntry entry : AttributeTypeManager.getType(attributeType).getOseeEnumType().values()) {
          values.put(entry.getName(), entry.getDescription());
@@ -138,11 +139,11 @@ public class AttributeTypeManager {
       return values;
    }
 
-   public static int getMinOccurrences(IAttributeType attributeType) throws OseeCoreException {
+   public static int getMinOccurrences(AttributeTypeId attributeType) throws OseeCoreException {
       return getType(attributeType).getMinOccurrences();
    }
 
-   public static int getMaxOccurrences(IAttributeType attributeType) throws OseeCoreException {
+   public static int getMaxOccurrences(AttributeTypeId attributeType) throws OseeCoreException {
       return getType(attributeType).getMaxOccurrences();
    }
 
@@ -153,11 +154,11 @@ public class AttributeTypeManager {
    }
 
    @SuppressWarnings("rawtypes")
-   public static boolean isBaseTypeCompatible(Class<? extends Attribute> baseType, IAttributeType attributeType) throws OseeCoreException {
+   public static boolean isBaseTypeCompatible(Class<? extends Attribute> baseType, AttributeTypeId attributeType) throws OseeCoreException {
       return baseType.isAssignableFrom(getAttributeBaseClass(attributeType));
    }
 
-   public static Class<? extends Attribute<?>> getAttributeBaseClass(IAttributeType attributeType) throws OseeCoreException {
+   public static Class<? extends Attribute<?>> getAttributeBaseClass(AttributeTypeId attributeType) throws OseeCoreException {
       return AttributeExtensionManager.getAttributeClassFor(getType(attributeType).getBaseAttributeTypeId());
    }
 
@@ -165,7 +166,7 @@ public class AttributeTypeManager {
       return AttributeExtensionManager.getAttributeProviderClassFor(attributeType.getAttributeProviderId());
    }
 
-   public static boolean checkIfRemovalAllowed(IAttributeType attributeType, Collection<? extends Artifact> artifacts) {
+   public static boolean checkIfRemovalAllowed(AttributeTypeId attributeType, Collection<? extends Artifact> artifacts) {
       boolean removalAllowed = false;
       if (getType(attributeType).getMinOccurrences() == 0) {
          removalAllowed = true;

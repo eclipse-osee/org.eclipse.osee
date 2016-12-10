@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -110,7 +111,7 @@ public class ArtifactType extends AbstractOseeIdType implements IArtifactType {
       ((ArtifactTypeAttributesField) field).set(attributeTypes);
    }
 
-   public boolean isValidAttributeType(IAttributeType attributeType, Branch branch) throws OseeCoreException {
+   public boolean isValidAttributeType(AttributeTypeId attributeType, Branch branch) throws OseeCoreException {
       Collection<IAttributeType> attributes = getAttributeTypes(branch);
       return attributes.contains(attributeType);
    }

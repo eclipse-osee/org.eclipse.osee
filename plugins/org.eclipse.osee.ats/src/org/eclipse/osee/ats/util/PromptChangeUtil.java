@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
@@ -28,11 +28,11 @@ public final class PromptChangeUtil {
       // Utility class
    }
 
-   public static boolean promptChangeAttribute(final Collection<? extends AbstractWorkflowArtifact> awas, IAttributeType attributeType, boolean persist, boolean multiLine) {
+   public static boolean promptChangeAttribute(final Collection<? extends AbstractWorkflowArtifact> awas, AttributeTypeToken attributeType, boolean persist, boolean multiLine) {
       return ArtifactPromptChange.promptChangeAttribute(attributeType, awas, persist, multiLine);
    }
 
-   public static boolean promptChangeAttribute(AbstractWorkflowArtifact sma, IAttributeType attributeType, final boolean persist, boolean multiLine) {
+   public static boolean promptChangeAttribute(AbstractWorkflowArtifact sma, AttributeTypeToken attributeType, final boolean persist, boolean multiLine) {
       try {
          return ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(sma), persist, multiLine);
       } catch (Exception ex) {

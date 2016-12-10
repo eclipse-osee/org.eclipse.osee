@@ -452,7 +452,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
     * applications. Use addAttribute() instead
     */
    @SuppressWarnings("unchecked")
-   private <T> Attribute<T> createAttribute(IAttributeType attributeType) throws OseeCoreException {
+   private <T> Attribute<T> createAttribute(AttributeTypeId attributeType) throws OseeCoreException {
       Class<? extends Attribute<T>> attributeClass =
          (Class<? extends Attribute<T>>) AttributeTypeManager.getAttributeBaseClass(attributeType);
       Attribute<T> attribute = null;
@@ -467,10 +467,9 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       return attribute;
    }
 
-   private <T> Attribute<T> initializeAttribute(IAttributeType attributeType, ModificationType modificationType, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
+   private <T> Attribute<T> initializeAttribute(AttributeTypeId attributeType, ModificationType modificationType, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
       Attribute<T> attribute = createAttribute(attributeType);
-      attribute.internalInitialize(attributeType, this, modificationType, ApplicabilityId.BASE, markDirty,
-         setDefaultValue);
+      attribute.internalInitialize(attributeType, this, modificationType, ApplicabilityId.BASE, markDirty, setDefaultValue);
       return attribute;
    }
 
@@ -479,14 +478,14 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
          markDirty, data);
    }
 
-   public final <T> Attribute<T> internalInitializeAttribute(IAttributeType attributeType, AttributeId attributeId, int gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty, Object... data) {
+   public final <T> Attribute<T> internalInitializeAttribute(AttributeTypeId attributeType, AttributeId attributeId, int gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty, Object... data) {
       Attribute<T> attribute = createAttribute(attributeType);
       attribute.internalInitialize(attributeType, this, modificationType, applicabilityId, attributeId, gammaId, markDirty, false);
       attribute.getAttributeDataProvider().loadData(data);
       return attribute;
    }
 
-   public final boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException {
+   public final boolean isAttributeTypeValid(AttributeTypeId attributeType) throws OseeCoreException {
       if (attributeType.equals(CoreAttributeTypes.Name)) {
          return true;
       }
@@ -615,7 +614,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       return soleAttributes.iterator().next();
    }
 
-   private <T> Attribute<T> getOrCreateSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
+   private <T> Attribute<T> getOrCreateSoleAttribute(AttributeTypeId attributeType) throws OseeCoreException {
       if (!isAttributeTypeValid(attributeType)) {
          throw new OseeArgumentException("The attribute type %s is not valid for artifacts of type [%s]", attributeType,
             getArtifactTypeName());
@@ -631,7 +630,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
     * Return he existing attribute value or the default value from a newly initialized attribute if none previously
     * existed
     */
-   public final <T> T getOrInitializeSoleAttributeValue(IAttributeType attributeType) throws OseeCoreException {
+   public final <T> T getOrInitializeSoleAttributeValue(AttributeTypeId attributeType) throws OseeCoreException {
       Attribute<T> attribute = getOrCreateSoleAttribute(attributeType);
       return attribute.getValue();
    }
@@ -642,7 +641,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
     * <br>
     * Used for quick access to attribute value that should only have 0 or 1 instances of the attribute.
     */
-   public final <T> T getSoleAttributeValue(IAttributeType attributeType) throws OseeCoreException {
+   public final <T> T getSoleAttributeValue(AttributeTypeId attributeType) throws OseeCoreException {
       List<Attribute<T>> soleAttributes = getAttributes(attributeType);
       if (soleAttributes.isEmpty()) {
          if (!isAttributeTypeValid(attributeType)) {
@@ -765,15 +764,15 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
     * Used on attribute types with no more than one instance. If the attribute exists, it's value is changed, otherwise
     * a new attribute is added and its value set.
     */
-   public final <T> void setSoleAttributeValue(IAttributeType attributeType, T value) throws OseeCoreException {
+   public final <T> void setSoleAttributeValue(AttributeTypeId attributeType, T value) throws OseeCoreException {
       getOrCreateSoleAttribute(attributeType).setValue(value);
    }
 
-   public final <T> void setSoleAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException {
+   public final <T> void setSoleAttributeFromString(AttributeTypeId attributeType, String value) throws OseeCoreException {
       getOrCreateSoleAttribute(attributeType).setFromString(value);
    }
 
-   public final void setSoleAttributeFromStream(IAttributeType attributeType, InputStream stream) throws OseeCoreException {
+   public final void setSoleAttributeFromStream(AttributeTypeId attributeType, InputStream stream) throws OseeCoreException {
       getOrCreateSoleAttribute(attributeType).setValueFromInputStream(stream);
    }
 
@@ -819,7 +818,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
     * Will add the single string value if it does not already exist. Will also cleanup if more than one exists with same
     * value. Will not touch any other values.
     */
-   public void setSingletonAttributeValue(IAttributeType attributeType, String value) throws OseeCoreException {
+   public void setSingletonAttributeValue(AttributeTypeId attributeType, String value) throws OseeCoreException {
       List<Attribute<String>> attributes = getAttributes(CoreAttributeTypes.StaticId, value);
       if (attributes.isEmpty()) {
          addAttribute(attributeType, value);
@@ -846,7 +845,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
     * attributes will be changed to match or if need be new attributes will be added to stored these values. Finally any
     * excess attributes will be deleted.
     */
-   public final void setAttributeValues(IAttributeType attributeType, Collection<String> newValues) throws OseeCoreException {
+   public final void setAttributeValues(AttributeTypeId attributeType, Collection<String> newValues) throws OseeCoreException {
       ensureAttributesLoaded();
       // ensure new values are unique
       HashSet<String> uniqueNewValues = new HashSet<>(newValues);
@@ -884,7 +883,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       }
    }
 
-   public final <T> void setAttributeFromValues(IAttributeType attributeType, Collection<T> values) throws OseeCoreException {
+   public final <T> void setAttributeFromValues(AttributeTypeId attributeType, Collection<T> values) throws OseeCoreException {
       ensureAttributesLoaded();
 
       Set<T> uniqueItems = Collections.toSet(values);
@@ -922,7 +921,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       }
    }
 
-   public final void setBinaryAttributeFromValues(IAttributeType attributeType, Collection<InputStream> values) throws OseeCoreException {
+   public final void setBinaryAttributeFromValues(AttributeTypeId attributeType, Collection<InputStream> values) throws OseeCoreException {
       ensureAttributesLoaded();
 
       List<Attribute<Object>> remainingAttributes = getAttributes(attributeType);
@@ -945,7 +944,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    /**
     * adds a new attribute of the type named attributeTypeName and assigns it the given value
     */
-   public final <T> void addAttribute(IAttributeType attributeType, T value) throws OseeCoreException {
+   public final <T> void addAttribute(AttributeTypeId attributeType, T value) throws OseeCoreException {
       initializeAttribute(attributeType, ModificationType.NEW, true, false).setValue(value);
    }
 
@@ -953,7 +952,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
     * adds a new attribute of the type named attributeTypeName. The attribute is set to the default value for its type,
     * if any.
     */
-   public final void addAttribute(IAttributeType attributeType) throws OseeCoreException {
+   public final void addAttribute(AttributeTypeId attributeType) throws OseeCoreException {
       initializeAttribute(attributeType, ModificationType.NEW, true, true);
    }
 
@@ -968,7 +967,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    /**
     * adds a new attribute of the type named attributeTypeName and assigns it the given value
     */
-   public final void addAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException {
+   public final void addAttributeFromString(AttributeTypeId attributeType, String value) throws OseeCoreException {
       initializeAttribute(attributeType, ModificationType.NEW, true, false).setFromString(value);
    }
 
@@ -976,7 +975,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
     * we do not what duplicated enumerated values so this method silently returns if the specified attribute type is
     * enumerated and value is already present
     */
-   private final <T> void setOrAddAttribute(IAttributeType attributeType, T value) throws OseeCoreException {
+   private final <T> void setOrAddAttribute(AttributeTypeId attributeType, T value) throws OseeCoreException {
       List<Attribute<Object>> attributes = getAttributes(attributeType);
       for (Attribute<?> canidateAttribute : attributes) {
          if (canidateAttribute.getValue().equals(value)) {
@@ -1602,11 +1601,11 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       return false;
    }
 
-   public final int getRemainingAttributeCount(IAttributeType attributeType) throws OseeCoreException {
+   public final int getRemainingAttributeCount(AttributeTypeId attributeType) throws OseeCoreException {
       return AttributeTypeManager.getMaxOccurrences(attributeType) - getAttributeCount(attributeType);
    }
 
-   public final int getAttributeCount(IAttributeType attributeType) throws OseeCoreException {
+   public final int getAttributeCount(AttributeTypeId attributeType) throws OseeCoreException {
       ensureAttributesLoaded();
       return getAttributes(attributeType).size();
    }
@@ -1696,7 +1695,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       if (modType == ModificationType.DELETED) {
          return;
       }
-      for (IAttributeType attributeType : getAttributeTypes()) {
+      for (AttributeTypeId attributeType : getAttributeTypes()) {
          int missingCount = AttributeTypeManager.getMinOccurrences(attributeType) - getAttributeCount(attributeType);
          for (int i = 0; i < missingCount; i++) {
             initializeAttribute(attributeType, ModificationType.NEW, isNewArtifact, true);

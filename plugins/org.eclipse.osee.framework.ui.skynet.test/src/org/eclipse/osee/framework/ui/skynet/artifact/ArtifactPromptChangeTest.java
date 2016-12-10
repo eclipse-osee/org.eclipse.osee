@@ -11,16 +11,17 @@
 
 package org.eclipse.osee.framework.ui.skynet.artifact;
 
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Annotation;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -37,7 +38,6 @@ import org.junit.Test;
  * @author Jeff C. Phillips
  */
 public class ArtifactPromptChangeTest {
-   private static IAttributeType TEST_ATTRIBUTE_TYPE = CoreAttributeTypes.Name;
 
    @Test
    public void test() throws OseeCoreException {
@@ -46,13 +46,12 @@ public class ArtifactPromptChangeTest {
 
       MockPromptFactory MockPromptFactory = new MockPromptFactory();
       AccessPolicy policyHandler = new MockAccessPolicyHandler();
-      MockPromptFactory.createPrompt(CoreAttributeTypes.Annotation, "", artifacts, persist, false);
+      MockPromptFactory.createPrompt(Annotation, "", artifacts, persist, false);
 
       ArtifactPrompt artifactPromptChange = new ArtifactPrompt(MockPromptFactory, policyHandler);
 
-      Assert.assertFalse(
-         artifactPromptChange.promptChangeAttribute(CoreAttributeTypes.Annotation, artifacts, persist, false));
-      Assert.assertTrue(artifactPromptChange.promptChangeAttribute(TEST_ATTRIBUTE_TYPE, artifacts, persist, false));
+      Assert.assertFalse(artifactPromptChange.promptChangeAttribute(Annotation, artifacts, persist, false));
+      Assert.assertTrue(artifactPromptChange.promptChangeAttribute(Name, artifacts, persist, false));
    }
 
    private static class MockAccessPolicyHandler implements AccessPolicy {
@@ -73,7 +72,7 @@ public class ArtifactPromptChangeTest {
       }
 
       @Override
-      public PermissionStatus hasAttributeTypePermission(Collection<? extends ArtifactToken> artifacts, IAttributeType attributeType, PermissionEnum permission, Level level) {
+      public PermissionStatus hasAttributeTypePermission(Collection<? extends ArtifactToken> artifacts, AttributeTypeId attributeType, PermissionEnum permission, Level level) {
          return new PermissionStatus();
       }
 
@@ -96,15 +95,15 @@ public class ArtifactPromptChangeTest {
 
    private static class MockPromptFactory implements IPromptFactory {
       @Override
-      public IHandlePromptChange createPrompt(IAttributeType attributeType, String displayName, Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) throws OseeCoreException {
+      public IHandlePromptChange createPrompt(AttributeTypeId attributeType, String displayName, Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) throws OseeCoreException {
          return new TestPromptChange(attributeType, persist);
       }
    }
    private static class TestPromptChange implements IHandlePromptChange {
-      private final IAttributeType attributeType;
+      private final AttributeTypeId attributeType;
       private final boolean persist;
 
-      public TestPromptChange(IAttributeType attributeType, boolean persist) {
+      public TestPromptChange(AttributeTypeId attributeType, boolean persist) {
          super();
          this.attributeType = attributeType;
          this.persist = persist;
@@ -117,7 +116,7 @@ public class ArtifactPromptChangeTest {
 
       @Override
       public boolean store() throws OseeCoreException {
-         return persist && attributeType.equals(TEST_ATTRIBUTE_TYPE);
+         return persist && attributeType.equals(Name);
       }
    }
 }

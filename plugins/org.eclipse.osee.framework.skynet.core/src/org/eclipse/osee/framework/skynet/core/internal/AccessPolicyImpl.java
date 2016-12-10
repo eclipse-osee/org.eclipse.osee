@@ -15,9 +15,9 @@ import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -106,7 +106,7 @@ public class AccessPolicyImpl implements AccessPolicy {
     * others will write to the log.
     */
    @Override
-   public PermissionStatus hasAttributeTypePermission(Collection<? extends ArtifactToken> artifacts, IAttributeType attributeType, PermissionEnum permission, Level level) throws OseeCoreException {
+   public PermissionStatus hasAttributeTypePermission(Collection<? extends ArtifactToken> artifacts, AttributeTypeId attributeType, PermissionEnum permission, Level level) throws OseeCoreException {
       User currentUser = getCurrentUser();
       AccessDataQuery query = getAccessService().getAccessData(currentUser, artifacts);
 

@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -45,7 +46,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
    private boolean dirty;
    private ModificationType modificationType;
    private boolean useBackingData;
-   private IAttributeType attributeTypeToken;
+   private AttributeTypeId attributeTypeToken;
    private ApplicabilityId applicabilityId;
 
    void internalInitialize(IAttributeType attributeType, Artifact artifact, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
@@ -100,7 +101,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
       return attributeChange;
    }
 
-   public void internalInitialize(IAttributeType attributeType, Artifact artifact, ModificationType modificationType, ApplicabilityId applicabilityId, AttributeId attributeId, int gammaId, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
+   public void internalInitialize(AttributeTypeId attributeType, Artifact artifact, ModificationType modificationType, ApplicabilityId applicabilityId,AttributeId attributeId, int gammaId, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
       internalInitialize(attributeType, artifact, modificationType, applicabilityId, markDirty, setDefaultValue);
       this.attrId = attributeId;
       this.gammaId = gammaId;
@@ -227,10 +228,10 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
     * @return attributeType Attribute Type Information
     */
    public AttributeType getAttributeType() {
-      return AttributeTypeManager.getType(getAttributeTypeToken());
+      return AttributeTypeManager.getType(attributeTypeToken);
    }
 
-   public IAttributeType getAttributeTypeToken() {
+   public AttributeTypeId getAttributeTypeToken() {
       return attributeTypeToken;
    }
 

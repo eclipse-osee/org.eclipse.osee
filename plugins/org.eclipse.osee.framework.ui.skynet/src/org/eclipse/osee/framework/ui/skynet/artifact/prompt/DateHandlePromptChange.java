@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.prompt;
 import java.util.Collection;
 import java.util.Date;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -28,10 +28,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.DateSelectionDialog;
 public class DateHandlePromptChange implements IHandlePromptChange {
    private final DateSelectionDialog diag;
    private final Collection<? extends Artifact> artifacts;
-   private final IAttributeType attributeType;
+   private final AttributeTypeId attributeType;
    private final boolean persist;
 
-   public DateHandlePromptChange(Collection<? extends Artifact> artifacts, IAttributeType attributeType, String displayName, boolean persist) {
+   public DateHandlePromptChange(Collection<? extends Artifact> artifacts, AttributeTypeId attributeType, String displayName, boolean persist) {
       super();
       this.artifacts = artifacts;
       this.attributeType = attributeType;

@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -50,7 +50,7 @@ public class EnumSelectionDialog extends FilteredCheckboxTreeDialog {
    };
    private Selection selected = Selection.AddSelection;
 
-   public EnumSelectionDialog(IAttributeType attributeType, Collection<? extends Artifact> artifacts) {
+   public EnumSelectionDialog(AttributeTypeId attributeType, Collection<? extends Artifact> artifacts) {
       super("Select Options" + (isSingletonAttribute(attributeType) ? " - (Singleton)" : ""),
          "Select option(s) to add, delete or replace.", new ArrayTreeContentProvider(), new StringLabelProvider(),
          new StringViewerSorter());
@@ -70,7 +70,7 @@ public class EnumSelectionDialog extends FilteredCheckboxTreeDialog {
       setInput(options);
    }
 
-   private static boolean isSingletonAttribute(IAttributeType attributeType) {
+   private static boolean isSingletonAttribute(AttributeTypeId attributeType) {
       return AttributeTypeManager.getMaxOccurrences(attributeType) == 1;
    }
 

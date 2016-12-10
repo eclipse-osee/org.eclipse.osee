@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -38,7 +38,7 @@ public class EnumSingletonSelectionDialog extends ListDialog {
    private boolean isRemoveAllAllowed = true;
    private boolean removeAllSelected = false;
 
-   public EnumSingletonSelectionDialog(IAttributeType attributeType, Collection<? extends Artifact> artifacts) {
+   public EnumSingletonSelectionDialog(AttributeTypeId attributeType, Collection<? extends Artifact> artifacts) {
       super(Displays.getActiveShell());
       Set<String> options;
       try {

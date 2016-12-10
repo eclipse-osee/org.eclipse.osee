@@ -15,7 +15,7 @@ import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -31,10 +31,10 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class BooleanHandlePromptChange implements IHandlePromptChange {
    private final MessageDialogWithToggle dialog;
    private final Collection<? extends Artifact> artifacts;
-   private final IAttributeType attributeType;
+   private final AttributeTypeId attributeType;
    private final boolean persist;
 
-   public BooleanHandlePromptChange(Collection<? extends Artifact> artifacts, IAttributeType attributeType, String displayName, boolean persist, String toggleMessage) {
+   public BooleanHandlePromptChange(Collection<? extends Artifact> artifacts, AttributeTypeId attributeType, String displayName, boolean persist, String toggleMessage) {
       super();
       this.artifacts = artifacts;
       this.attributeType = attributeType;

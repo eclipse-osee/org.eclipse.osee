@@ -12,7 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.artifact;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
@@ -46,11 +46,11 @@ public final class ArtifactPromptChange {
       return ArtifactPromptChange.prompt;
    }
 
-   public static boolean promptChangeAttribute(IAttributeType attributeType, final Collection<? extends Artifact> artifacts, boolean persist) {
+   public static boolean promptChangeAttribute(AttributeTypeToken attributeType, final Collection<? extends Artifact> artifacts, boolean persist) {
       return promptChangeAttribute(attributeType, artifacts, persist, true);
    }
 
-   public static boolean promptChangeAttribute(IAttributeType attributeType, final Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) {
+   public static boolean promptChangeAttribute(AttributeTypeToken attributeType, final Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) {
       boolean result = false;
       ArtifactPrompt prompt = getArtifactPrompt();
       if (prompt != null) {
