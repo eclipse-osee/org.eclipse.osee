@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -81,7 +82,7 @@ public class ExportArtifacts extends AbstractBlam {
          row[0] = artifact.getGuid();
          row[1] = artifact.getArtifactTypeName();
          row[2] = artifact.getName();
-         for (IAttributeType attributeType : artifact.getAttributeTypes()) {
+         for (AttributeTypeId attributeType : artifact.getAttributeTypes()) {
             if (!attributeType.equals(CoreAttributeTypes.Name)) {
                String value = artifact.getAttributesToString(attributeType);
                if (!value.equals("")) {
@@ -100,10 +101,10 @@ public class ExportArtifacts extends AbstractBlam {
    }
 
    private void mapAttributeTypeToColumn(List<Artifact> artifacts) throws OseeCoreException {
-      HashSet<IAttributeType> attributeTypes = new HashSet<>();
+      HashSet<AttributeTypeId> attributeTypes = new HashSet<>();
 
       for (Artifact artifact : artifacts) {
-         for (IAttributeType attributeType : artifact.getAttributeTypes()) {
+         for (AttributeTypeId attributeType : artifact.getAttributeTypes()) {
             attributeTypes.add(attributeType);
          }
       }

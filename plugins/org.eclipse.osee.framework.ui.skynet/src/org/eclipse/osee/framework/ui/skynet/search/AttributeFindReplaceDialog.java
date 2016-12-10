@@ -29,8 +29,9 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -54,7 +55,7 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * Dialog for performing find/replace of attribute values on a set of <code>Artifact</code>'s.
- * 
+ *
  * @see org.eclipse.osee.framework.skynet.core.artifact.Artifact
  * @see org.eclipse.osee.framework.skynet.core.artifact.Attribute
  * @author Robert A. Fisher
@@ -101,8 +102,8 @@ public class AttributeFindReplaceDialog extends Dialog {
 
    private void setInputs() {
       try {
-         Collection<IAttributeType> attributeTypes = AttributeTypeManager.getValidAttributeTypes(branch);
-         cmbAttributeDescriptors.setInput(attributeTypes.toArray(new IAttributeType[attributeTypes.size()]));
+         Collection<AttributeTypeToken> attributeTypes = AttributeTypeManager.getValidAttributeTypes(branch);
+         cmbAttributeDescriptors.setInput(attributeTypes.toArray(new AttributeTypeToken[attributeTypes.size()]));
          cmbAttributeDescriptors.getCombo().select(0);
       } catch (OseeCoreException ex) {
          cmbAttributeDescriptors.setInput(new Object[] {ex});

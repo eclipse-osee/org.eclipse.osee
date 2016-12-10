@@ -18,9 +18,9 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.model.AbstractOseeIdType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IOseeField;
@@ -112,22 +112,21 @@ public class ArtifactType extends AbstractOseeIdType implements IArtifactType {
    }
 
    public boolean isValidAttributeType(AttributeTypeId attributeType, Branch branch) throws OseeCoreException {
-      Collection<IAttributeType> attributes = getAttributeTypes(branch);
-      return attributes.contains(attributeType);
+      return getAttributeTypes(branch).contains(attributeType);
    }
 
    public Map<BranchId, Collection<AttributeType>> getLocalAttributeTypes() throws OseeCoreException {
       return getFieldValue(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
    }
 
-   public Collection<IAttributeType> getAttributeTypes(Branch branch) throws OseeCoreException {
+   public Collection<AttributeTypeToken> getAttributeTypes(Branch branch) throws OseeCoreException {
       // Do not use ARTIFACT_TYPE_ATTRIBUTES_FIELD for this call since it must use branch inheritance to get all attribute types
-      Set<IAttributeType> attributeTypes = new HashSet<>();
+      Set<AttributeTypeToken> attributeTypes = new HashSet<>();
       getAttributeTypes(attributeTypes, this, branch);
       return attributeTypes;
    }
 
-   private static void getAttributeTypes(Set<IAttributeType> attributeTypes, ArtifactType artifactType, Branch branch) throws OseeCoreException {
+   private static void getAttributeTypes(Set<AttributeTypeToken> attributeTypes, ArtifactType artifactType, Branch branch) throws OseeCoreException {
       Map<BranchId, Collection<AttributeType>> validityMap = artifactType.getLocalAttributeTypes();
 
       if (!validityMap.isEmpty()) {

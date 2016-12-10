@@ -30,6 +30,8 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -220,7 +222,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
          Collection<IAttributeType> selectedItems = attributesAction.getSelected();
 
          List<String> info = new ArrayList<>();
-         for (IAttributeType attributeType : artifact.getAttributeTypes()) {
+         for (AttributeTypeId attributeType : artifact.getAttributeTypes()) {
             if (selectedItems.contains(attributeType)) {
                String value = artifact.getAttributesToString(attributeType);
                if (Strings.isValid(value)) {
@@ -350,15 +352,15 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
                      if (branch == null) {
                         status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Branch not selected");
                      } else {
-                        Collection<IAttributeType> selectableTypes =
+                        Collection<AttributeTypeToken> selectableTypes =
                            AttributeTypeManager.getValidAttributeTypes(branch);
                         FilteredCheckboxAttributeTypeDialog dialog = new FilteredCheckboxAttributeTypeDialog(
                            "Select Attribute Types", "Select attribute types to display.");
                         dialog.setSelectable(selectableTypes);
 
-                        List<IAttributeType> initSelection = new ArrayList<>();
+                        List<AttributeTypeId> initSelection = new ArrayList<>();
                         for (IAttributeType entry : selectedTypes) {
-                           for (IAttributeType type : selectableTypes) {
+                           for (AttributeTypeId type : selectableTypes) {
                               if (type.equals(entry)) {
                                  initSelection.add(type);
                               }

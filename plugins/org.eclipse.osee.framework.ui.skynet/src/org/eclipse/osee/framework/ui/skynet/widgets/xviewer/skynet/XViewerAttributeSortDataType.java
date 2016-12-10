@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet;
 
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.OutlineNumberAttribute;
  */
 public class XViewerAttributeSortDataType {
 
-   public static SortDataType get(IAttributeType attributeType) throws OseeCoreException {
+   public static SortDataType get(AttributeTypeId attributeType) throws OseeCoreException {
       SortDataType sortType = SortDataType.String;
       if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {
          sortType = SortDataType.Date;

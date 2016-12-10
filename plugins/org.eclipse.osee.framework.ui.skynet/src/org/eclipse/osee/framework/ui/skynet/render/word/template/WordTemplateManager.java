@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -230,7 +230,7 @@ public class WordTemplateManager {
       for (ITemplateTask task : tasks) {
          if (task instanceof TemplateAttribute && ((TemplateAttribute) task).isTypeNameWildcard()) {
             TemplateAttribute attributeTask = (TemplateAttribute) task;
-            for (IAttributeType attributeType : artifact.getAttributeTypes()) {
+            for (AttributeTypeToken attributeType : artifact.getAttributeTypes()) {
                newTasks.add(new TemplateAttribute(attributeTask, attributeType.getName()));
             }
          } else {

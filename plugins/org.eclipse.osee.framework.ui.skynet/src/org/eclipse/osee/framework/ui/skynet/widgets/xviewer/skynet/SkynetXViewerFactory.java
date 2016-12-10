@@ -24,6 +24,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomizations;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -104,7 +105,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
       return attrColumns;
    }
 
-   public static XViewerColumn getAttributeColumn(IAttributeType attributeType) throws OseeCoreException {
+   public static XViewerColumn getAttributeColumn(AttributeTypeToken attributeType) throws OseeCoreException {
       return new AttributeColumn("attribute." + attributeType.getName(), attributeType.getName(), attributeType, 75,
          XViewerAlign.Left, false, XViewerAttributeSortDataType.get(attributeType), false, null);
    }
@@ -114,8 +115,8 @@ public class SkynetXViewerFactory extends XViewerFactory {
     */
    public static List<XViewerColumn> getAllAttributeColumnsForArtifacts(Collection<? extends Artifact> artifacts) throws OseeCoreException {
       List<XViewerColumn> columns = new ArrayList<>();
-      Set<IAttributeType> attrTypesUsed = new HashSet<>();
-      Set<IAttributeType> attributeTypes = new HashSet<>();
+      Set<AttributeTypeToken> attrTypesUsed = new HashSet<>();
+      Set<AttributeTypeToken> attributeTypes = new HashSet<>();
       try {
          for (Artifact art : artifacts) {
             attributeTypes.addAll(art.getAttributeTypes());
@@ -133,14 +134,14 @@ public class SkynetXViewerFactory extends XViewerFactory {
       columns.add(new ArtifactNameColumn(true));
       attrNames.add("Name");
       // Add attribute types used next
-      for (IAttributeType attributeType : attrTypesUsed) {
+      for (AttributeTypeToken attributeType : attrTypesUsed) {
          if (!attrNames.contains(attributeType.getName())) {
             columns.add(getAttributeColumn(attributeType));
             attrNames.add(attributeType.getName());
          }
       }
       // Add remainder last
-      for (IAttributeType attributeType : attributeTypes) {
+      for (AttributeTypeToken attributeType : attributeTypes) {
          if (!attrNames.contains(attributeType.getName())) {
             columns.add(getAttributeColumn(attributeType));
             attrNames.add(attributeType.getName());

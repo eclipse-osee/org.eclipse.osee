@@ -22,9 +22,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -58,7 +58,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  * @author Jeff C. Phillips
  */
 public class ChangeArtifactType {
-   private final HashSet<IAttributeType> attributeTypes = new HashSet<>();
+   private final HashSet<AttributeTypeId> attributeTypes = new HashSet<>();
    private final HashSet<IRelationType> relationTypes = new HashSet<>();
    private final HashMap<BranchId, SkynetTransaction> txMap = new HashMap<>();
    private final Set<EventBasicGuidArtifact> artifactChanges = new HashSet<>();
@@ -192,7 +192,7 @@ public class ChangeArtifactType {
 
    private void deleteInvalidAttributes(Artifact artifact, IArtifactType artifactType) throws OseeCoreException {
 
-      for (IAttributeType attributeType : artifact.getAttributeTypes()) {
+      for (AttributeTypeId attributeType : artifact.getAttributeTypes()) {
          ArtifactType aType = ArtifactTypeManager.getType(artifactType);
          if (!aType.isValidAttributeType(attributeType, BranchManager.getBranch(artifact.getBranch()))) {
             artifact.deleteAttributes(attributeType);

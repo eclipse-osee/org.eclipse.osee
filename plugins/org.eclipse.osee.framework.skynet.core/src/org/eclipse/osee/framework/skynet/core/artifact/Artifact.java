@@ -590,7 +590,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       return !attributes.isEmpty();
    }
 
-   public final Collection<IAttributeType> getAttributeTypes() throws OseeCoreException {
+   public final Collection<AttributeTypeToken> getAttributeTypes() throws OseeCoreException {
       return getArtifactType().getAttributeTypes(BranchManager.getBranch(branch));
    }
 

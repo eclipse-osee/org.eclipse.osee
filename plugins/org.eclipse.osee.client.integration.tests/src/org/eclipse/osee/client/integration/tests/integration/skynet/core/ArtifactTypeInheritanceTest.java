@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -63,13 +63,13 @@ public class ArtifactTypeInheritanceTest {
       allTypes.remove(baseArtifactType);
 
       Branch branch = BranchManager.getBranch(CoreBranches.SYSTEM_ROOT);
-      Collection<IAttributeType> baseAttributeTypes = baseArtifactType.getAttributeTypes(branch);
+      Collection<AttributeTypeToken> baseAttributeTypes = baseArtifactType.getAttributeTypes(branch);
 
       Assert.assertTrue(baseAttributeTypes.size() > 0); // Must have at least name
 
       for (ArtifactType artifactType : allTypes) {
-         Collection<IAttributeType> childAttributeTypes = artifactType.getAttributeTypes(branch);
-         Collection<IAttributeType> complement = Collections.setComplement(baseAttributeTypes, childAttributeTypes);
+         Collection<AttributeTypeToken> childAttributeTypes = artifactType.getAttributeTypes(branch);
+         Collection<AttributeTypeToken> complement = Collections.setComplement(baseAttributeTypes, childAttributeTypes);
          Assert.assertTrue(String.format("[%s] did not inherit %s ", artifactType.getName(), complement),
             complement.isEmpty());
       }

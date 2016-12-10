@@ -75,7 +75,7 @@ public class AttributeTypeEditPresenter {
 
    public void onRemoveAttributeType() throws OseeCoreException {
       Artifact artifact = model.getArtifact();
-      Collection<? extends AttributeTypeToken> validTypesPerBranch = artifact.getAttributeTypes();
+      Collection<AttributeTypeToken> validTypesPerBranch = artifact.getAttributeTypes();
       List<AttributeTypeToken> input = AttributeTypeUtil.getTypesWithData(artifact);
 
       Iterator<AttributeTypeToken> iterator = input.iterator();

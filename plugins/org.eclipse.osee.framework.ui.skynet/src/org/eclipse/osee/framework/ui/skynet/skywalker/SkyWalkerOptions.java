@@ -19,9 +19,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -55,7 +56,7 @@ public final class SkyWalkerOptions {
    private AbstractLayoutAlgorithm layout;
    protected AbstractLayoutAlgorithm defaultLayout;
    private Map<IArtifactType, Boolean> artTypes;
-   private Map<IAttributeType, Boolean> showAttributes;
+   private Map<AttributeTypeToken, Boolean> showAttributes;
    // RelationLinkDescriptor and RelationLinkDescriptorSide
    private Map<Object, Boolean> relTypes;
    private boolean filterEnabled = true;
@@ -87,7 +88,7 @@ public final class SkyWalkerOptions {
          return "";
       } else {
          StringBuffer sb = new StringBuffer();
-         for (IAttributeType attributeType : getSelectedShowAttributeTypes()) {
+         for (AttributeTypeId attributeType : getSelectedShowAttributeTypes()) {
             if (artifact.getAttributeCount(attributeType) > 0) {
                sb.append("\n");
                sb.append(artifact.getAttributesToString(attributeType));
@@ -114,7 +115,7 @@ public final class SkyWalkerOptions {
       if (showAttributes == null) {
          showAttributes = new HashMap<>();
          try {
-            for (IAttributeType descriptor : AttributeTypeManager.getValidAttributeTypes(artifact.getBranch())) {
+            for (AttributeTypeToken descriptor : AttributeTypeManager.getValidAttributeTypes(artifact.getBranch())) {
                showAttributes.put(descriptor, false);
             }
          } catch (OseeCoreException ex) {
@@ -198,11 +199,11 @@ public final class SkyWalkerOptions {
       }
       String showAttrString = AXml.getTagData(xml, "showAttributes");
       if (Strings.isValid(showAttrString)) {
-         for (Entry<IAttributeType, Boolean> desc : showAttributes.entrySet()) {
+         for (Entry<AttributeTypeToken, Boolean> desc : showAttributes.entrySet()) {
             desc.setValue(false);
          }
          for (String name : showAttrString.split(",")) {
-            for (Entry<IAttributeType, Boolean> desc : showAttributes.entrySet()) {
+            for (Entry<AttributeTypeToken, Boolean> desc : showAttributes.entrySet()) {
                if (desc.getKey().getName().equals(name)) {
                   desc.setValue(true);
                   break;
@@ -382,7 +383,7 @@ public final class SkyWalkerOptions {
       for (Object obj : selected) {
          selList.add(obj);
       }
-      for (Entry<IAttributeType, Boolean> entry : showAttributes.entrySet()) {
+      for (Entry<AttributeTypeToken, Boolean> entry : showAttributes.entrySet()) {
          entry.setValue(selList.contains(entry.getKey()));
       }
       notifyListeners(ModType.Show_Attribute);
@@ -424,12 +425,12 @@ public final class SkyWalkerOptions {
       return selected;
    }
 
-   public Set<IAttributeType> getSelectedShowAttributeTypes() {
-      Set<IAttributeType> selected = new HashSet<>();
+   public Set<AttributeTypeToken> getSelectedShowAttributeTypes() {
+      Set<AttributeTypeToken> selected = new HashSet<>();
       if (showAttributes == null) {
          return selected;
       }
-      for (IAttributeType desc : showAttributes.keySet()) {
+      for (AttributeTypeToken desc : showAttributes.keySet()) {
          if (showAttributes.get(desc)) {
             selected.add(desc);
          }
@@ -451,9 +452,9 @@ public final class SkyWalkerOptions {
       return relTypes.keySet();
    }
 
-   public Set<IAttributeType> getAllShowAttributes() {
+   public Set<AttributeTypeToken> getAllShowAttributes() {
       if (showAttributes == null) {
-         return new HashSet<IAttributeType>();
+         return new HashSet<AttributeTypeToken>();
       }
       return showAttributes.keySet();
    }

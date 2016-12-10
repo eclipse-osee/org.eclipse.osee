@@ -61,7 +61,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.XWorldTextFilter;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
 import org.eclipse.osee.ats.workflow.TransitionToMenu;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -238,7 +238,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       }
 
       XResultData rData = new XResultData();
-      IAttributeType attributeType = null;
+      AttributeTypeToken attributeType = null;
       if (treeColumn.getData() instanceof IAttributeColumn) {
          attributeType = ((IAttributeColumn) treeColumn.getData()).getAttributeType();
       }
@@ -285,7 +285,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       if ((XViewerColumn) treeColumn.getData() instanceof IMultiColumnEditProvider) {
          return true;
       }
-      IAttributeType attributeType = null;
+      AttributeTypeToken attributeType = null;
       // Currently don't know how to multi-edit anything but attribute
       if (treeColumn.getData() instanceof IAttributeColumn) {
          attributeType = ((IAttributeColumn) treeColumn.getData()).getAttributeType();

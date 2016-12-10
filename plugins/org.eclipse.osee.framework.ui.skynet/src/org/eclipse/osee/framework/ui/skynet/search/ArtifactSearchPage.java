@@ -24,9 +24,10 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
@@ -317,11 +318,10 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       attributeTypeList.getViewer().setContentProvider(new ArrayTreeContentProvider());
       attributeTypeList.getViewer().setLabelProvider(new StringLabelProvider());
       attributeTypeList.getViewer().setSorter(new ToStringViewerSorter());
-      List<IAttributeType> list =
-         new ArrayList<IAttributeType>(AttributeTypeManager.getValidAttributeTypes(getSelectedBranch()));
+      List<AttributeTypeToken> list = new ArrayList<>(AttributeTypeManager.getValidAttributeTypes(getSelectedBranch()));
       attributeTypeList.getViewer().setInput(list);
       try {
-         for (IAttributeType type : AttributeTypeManager.getValidAttributeTypes(getSelectedBranch())) {
+         for (AttributeTypeToken type : AttributeTypeManager.getValidAttributeTypes(getSelectedBranch())) {
             attributeTypeList.getViewer().add(attributeTypeControls, type);
             attributeTypeList.getViewer().setData(type.getName(), type);
          }

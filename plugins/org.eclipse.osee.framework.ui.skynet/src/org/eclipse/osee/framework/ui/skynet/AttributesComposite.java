@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
@@ -23,6 +22,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -243,9 +243,9 @@ public class AttributesComposite extends Composite {
       addItem.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            Collection<IAttributeType> selectableTypes = new ArrayList<>();
+            Collection<AttributeTypeToken> selectableTypes = new ArrayList<>();
             try {
-               for (IAttributeType attrType : artifact.getAttributeTypes()) {
+               for (AttributeTypeToken attrType : artifact.getAttributeTypes()) {
                   if (artifact.getRemainingAttributeCount(attrType) > 0) {
                      selectableTypes.add(attrType);
                   }

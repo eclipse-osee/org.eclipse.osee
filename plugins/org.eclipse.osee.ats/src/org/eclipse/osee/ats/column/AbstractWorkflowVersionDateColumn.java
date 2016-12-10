@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -38,7 +39,8 @@ import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttributeValueColumn {
 
    public AbstractWorkflowVersionDateColumn(String id, IAttributeType attributeType) {
-      super(attributeType, id, attributeType.getUnqualifiedName(), 80, XViewerAlign.Left, false, SortDataType.Date, true, "");
+      super(attributeType, id, attributeType.getUnqualifiedName(), 80, XViewerAlign.Left, false, SortDataType.Date,
+         true, "");
    }
 
    @Override
@@ -63,7 +65,7 @@ public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttrib
       return super.getColumnText(element, column, columnIndex);
    }
 
-   public static Date getDateFromWorkflow(IAttributeType attributeType, Object object) throws OseeCoreException {
+   public static Date getDateFromWorkflow(AttributeTypeId attributeType, Object object) throws OseeCoreException {
       if (Artifacts.isOfType(object, AtsArtifactTypes.TeamWorkflow)) {
          return ((TeamWorkFlowArtifact) object).getSoleAttributeValue(attributeType, null);
       } else if (object instanceof AbstractWorkflowArtifact) {
@@ -75,7 +77,7 @@ public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttrib
       return null;
    }
 
-   public static Date getDateFromTargetedVersion(IAttributeType attributeType, Object object) throws OseeCoreException {
+   public static Date getDateFromTargetedVersion(AttributeTypeId attributeType, Object object) throws OseeCoreException {
       if (Artifacts.isOfType(object, AtsArtifactTypes.TeamWorkflow)) {
          TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) object;
          IAtsVersion verArt = AtsClientService.get().getVersionService().getTargetedVersion(teamArt);
@@ -95,15 +97,15 @@ public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttrib
       return null;
    }
 
-   public static String getDateStrFromWorkflow(IAttributeType attributeType, AbstractWorkflowArtifact artifact) throws OseeCoreException {
+   public static String getDateStrFromWorkflow(AttributeTypeId attributeType, AbstractWorkflowArtifact artifact) throws OseeCoreException {
       return DateUtil.getMMDDYY(getDateFromWorkflow(attributeType, artifact));
    }
 
-   public static String getDateStrFromTargetedVersion(IAttributeType attributeType, AbstractWorkflowArtifact artifact) throws OseeCoreException {
+   public static String getDateStrFromTargetedVersion(AttributeTypeId attributeType, AbstractWorkflowArtifact artifact) throws OseeCoreException {
       return DateUtil.getMMDDYY(getDateFromTargetedVersion(attributeType, artifact));
    }
 
-   public static String getDateStr(IAttributeType attributeType, AbstractWorkflowArtifact artifact) throws OseeCoreException {
+   public static String getDateStr(AttributeTypeId attributeType, AbstractWorkflowArtifact artifact) throws OseeCoreException {
       String workflowDate = getDateStrFromWorkflow(attributeType, artifact);
       String versionDate = getDateStrFromTargetedVersion(attributeType, artifact);
       if (Strings.isValid(workflowDate) && Strings.isValid(versionDate)) {

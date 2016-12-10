@@ -16,7 +16,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
  */
 public class AttributeColumn extends XViewerValueColumn implements IAttributeColumn {
 
-   private IAttributeType attributeType;
+   private AttributeTypeToken attributeType;
 
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
@@ -52,7 +52,7 @@ public class AttributeColumn extends XViewerValueColumn implements IAttributeCol
       super(xViewer, xml);
    }
 
-   public AttributeColumn(String id, String name, IAttributeType attributeType, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   public AttributeColumn(String id, String name, AttributeTypeToken attributeType, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
       this.attributeType = attributeType;
    }
@@ -75,12 +75,12 @@ public class AttributeColumn extends XViewerValueColumn implements IAttributeCol
    }
 
    @Override
-   public IAttributeType getAttributeType() {
+   public AttributeTypeToken getAttributeType() {
       return attributeType;
    }
 
    @Override
-   public void setAttributeType(IAttributeType attributeType) {
+   public void setAttributeType(AttributeTypeToken attributeType) {
       this.attributeType = attributeType;
    }
 

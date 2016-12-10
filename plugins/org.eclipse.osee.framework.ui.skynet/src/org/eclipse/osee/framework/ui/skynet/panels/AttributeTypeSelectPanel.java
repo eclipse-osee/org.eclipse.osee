@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.panels;
 import java.util.Collection;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxAttributeTypeDialog;
@@ -23,7 +24,7 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class AttributeTypeSelectPanel extends AbstractItemSelectPanel<Collection<IAttributeType>> {
 
-   private Collection<IAttributeType> attributeTypes;
+   private Collection<AttributeTypeToken> attributeTypes;
    private String title;
    private String message;
 
@@ -33,7 +34,7 @@ public class AttributeTypeSelectPanel extends AbstractItemSelectPanel<Collection
       this.message = "";
    }
 
-   public void setAllowedAttributeTypes(Collection<IAttributeType> attributeTypes) {
+   public void setAllowedAttributeTypes(Collection<AttributeTypeToken> attributeTypes) {
       this.attributeTypes = attributeTypes;
    }
 

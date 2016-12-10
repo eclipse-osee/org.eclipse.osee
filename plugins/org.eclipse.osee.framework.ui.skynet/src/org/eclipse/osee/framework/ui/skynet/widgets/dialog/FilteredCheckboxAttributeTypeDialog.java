@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -32,27 +33,27 @@ import org.eclipse.swt.widgets.Control;
  */
 public class FilteredCheckboxAttributeTypeDialog extends FilteredCheckboxTreeDialog {
 
-   private Collection<? extends IAttributeType> selectable;
+   private Collection<? extends AttributeTypeId> selectable;
 
    public FilteredCheckboxAttributeTypeDialog(String title, String message) {
       this(title, message, AttributeTypeManager.getAllTypes(), new ArrayTreeContentProvider(),
          new AttributeTypeLabelProvider());
    }
 
-   public FilteredCheckboxAttributeTypeDialog(String title, String message, Collection<? extends IAttributeType> selectable) {
+   public FilteredCheckboxAttributeTypeDialog(String title, String message, Collection<? extends AttributeTypeId> selectable) {
       this(title, message, selectable, new ArrayTreeContentProvider(), new AttributeTypeLabelProvider());
    }
 
-   public FilteredCheckboxAttributeTypeDialog(String title, String message, Collection<? extends IAttributeType> selectable, ILabelProvider labelProvider) {
+   public FilteredCheckboxAttributeTypeDialog(String title, String message, Collection<? extends AttributeTypeId> selectable, ILabelProvider labelProvider) {
       this(title, message, selectable, new ArrayTreeContentProvider(), labelProvider);
    }
 
-   public FilteredCheckboxAttributeTypeDialog(String title, String message, Collection<? extends IAttributeType> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider) {
+   public FilteredCheckboxAttributeTypeDialog(String title, String message, Collection<? extends AttributeTypeId> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider) {
       super(title, message, contentProvider, labelProvider, new AttributeTypeNameComparator());
       this.selectable = selectable;
    }
 
-   public FilteredCheckboxAttributeTypeDialog(String title, Collection<? extends IAttributeType> selectable) {
+   public FilteredCheckboxAttributeTypeDialog(String title, Collection<? extends AttributeTypeId> selectable) {
       this(title, title, selectable, new AttributeTypeLabelProvider());
    }
 
@@ -85,12 +86,11 @@ public class FilteredCheckboxAttributeTypeDialog extends FilteredCheckboxTreeDia
       return super.isComplete();
    }
 
-   public Collection<? extends IAttributeType> getSelectable() {
+   public Collection<? extends AttributeTypeId> getSelectable() {
       return selectable;
    }
 
-   public void setSelectable(Collection<? extends IAttributeType> selectable) {
+   public void setSelectable(Collection<? extends AttributeTypeId> selectable) {
       this.selectable = selectable;
    }
-
 }

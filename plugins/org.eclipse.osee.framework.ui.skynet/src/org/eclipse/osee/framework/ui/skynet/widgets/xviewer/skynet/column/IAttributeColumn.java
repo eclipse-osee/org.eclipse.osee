@@ -10,15 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IAttributeColumn {
 
-   IAttributeType getAttributeType();
+   AttributeTypeToken getAttributeType();
 
-   void setAttributeType(IAttributeType attributeType);
+   void setAttributeType(AttributeTypeToken attributeType);
 
 }

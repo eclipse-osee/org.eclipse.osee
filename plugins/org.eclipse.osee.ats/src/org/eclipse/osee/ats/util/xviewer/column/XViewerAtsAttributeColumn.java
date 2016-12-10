@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.util.xviewer.column;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.world.WorldXViewerFactory;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.IAttributeColumn;
@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.IAttri
  */
 public class XViewerAtsAttributeColumn extends XViewerAtsColumn implements IAttributeColumn {
 
-   private IAttributeType attributeType;
+   private AttributeTypeToken attributeType;
 
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
@@ -55,17 +55,13 @@ public class XViewerAtsAttributeColumn extends XViewerAtsColumn implements IAttr
       this.attributeType = attributeType;
    }
 
-   private static final String generateId(String unqualifiedName) {
-      return WorldXViewerFactory.COLUMN_NAMESPACE + "." + unqualifiedName.replaceAll(" ", "").toLowerCase();
-   }
-
    @Override
-   public IAttributeType getAttributeType() {
+   public AttributeTypeToken getAttributeType() {
       return attributeType;
    }
 
    @Override
-   public void setAttributeType(IAttributeType attributeType) {
+   public void setAttributeType(AttributeTypeToken attributeType) {
       this.attributeType = attributeType;
    }
 
