@@ -23,7 +23,7 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -127,12 +127,12 @@ public final class RendererManager {
       return bestRendererPrototype;
    }
 
-   public static void renderAttribute(IAttributeType attributeType, PresentationType presentationType, Artifact artifact, Producer producer, AttributeElement attributeElement, String footer, Object... options) throws OseeCoreException {
+   public static void renderAttribute(AttributeTypeToken attributeType, PresentationType presentationType, Artifact artifact, Producer producer, AttributeElement attributeElement, String footer, Object... options) throws OseeCoreException {
       getBestRenderer(PRODUCE_ATTRIBUTE, artifact, options).renderAttribute(attributeType, artifact, presentationType,
          producer, attributeElement, footer);
    }
 
-   public static Collection<IAttributeType> getAttributeTypeOrderList(Artifact artifact) throws OseeCoreException {
+   public static Collection<AttributeTypeToken> getAttributeTypeOrderList(Artifact artifact) throws OseeCoreException {
       return getBestRenderer(PresentationType.PRODUCE_ATTRIBUTE, artifact).getOrderedAttributeTypes(artifact,
          artifact.getAttributeTypes());
    }

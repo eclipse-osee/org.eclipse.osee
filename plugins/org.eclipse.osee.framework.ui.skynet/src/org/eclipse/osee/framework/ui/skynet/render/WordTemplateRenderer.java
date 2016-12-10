@@ -36,8 +36,8 @@ import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.define.report.api.WordTemplateContentData;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -157,7 +157,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    }
 
    @Override
-   public void renderAttribute(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement, String footer) throws OseeCoreException {
+   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement, String footer) throws OseeCoreException {
       WordMLProducer wordMl = (WordMLProducer) producer;
 
       String data = null;

@@ -22,8 +22,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -122,7 +123,7 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    @Override
-   public void renderAttribute(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement, String footer) throws OseeCoreException {
+   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement, String footer) throws OseeCoreException {
       WordMLProducer wordMl = (WordMLProducer) producer;
       String format = attributeElement.getFormatPre();
       boolean allAttrs = getBooleanOption("allAttrs");
@@ -156,7 +157,7 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    @Override
-   public String renderAttributeAsString(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, final String defaultValue) throws OseeCoreException {
+   public String renderAttributeAsString(AttributeTypeId attributeType, Artifact artifact, PresentationType presentationType, final String defaultValue) throws OseeCoreException {
       String returnValue = defaultValue;
       if (presentationType.matches(RENDER_AS_HUMAN_READABLE_TEXT)) {
          if (artifact == null) {
@@ -191,11 +192,11 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    @Override
-   public List<IAttributeType> getOrderedAttributeTypes(Artifact artifact, Collection<IAttributeType> attributeTypes) {
-      ArrayList<IAttributeType> orderedAttributeTypes = new ArrayList<>(attributeTypes.size());
-      IAttributeType contentType = null;
+   public List<AttributeTypeToken> getOrderedAttributeTypes(Artifact artifact, Collection<? extends AttributeTypeToken> attributeTypes) {
+      ArrayList<AttributeTypeToken> orderedAttributeTypes = new ArrayList<>(attributeTypes.size());
+      AttributeTypeToken contentType = null;
 
-      for (IAttributeType attributeType : attributeTypes) {
+      for (AttributeTypeToken attributeType : attributeTypes) {
          if (attributeType.matches(CoreAttributeTypes.WholeWordContent, CoreAttributeTypes.WordTemplateContent,
             CoreAttributeTypes.PlainTextContent)) {
             contentType = attributeType;

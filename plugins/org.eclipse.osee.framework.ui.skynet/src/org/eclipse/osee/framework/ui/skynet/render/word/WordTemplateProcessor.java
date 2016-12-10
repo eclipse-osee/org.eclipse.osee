@@ -11,6 +11,8 @@
 
 package org.eclipse.osee.framework.ui.skynet.render.word;
 
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Partition;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.SeverityCategory;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WordTemplateContent;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
@@ -42,6 +44,7 @@ import org.eclipse.osee.define.report.api.DataRightInput;
 import org.eclipse.osee.define.report.api.DataRightResult;
 import org.eclipse.osee.define.report.api.PageOrientation;
 import org.eclipse.osee.define.report.api.ReportConstants;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -575,7 +578,7 @@ public class WordTemplateProcessor {
          }
 
          int index = 0;
-         String overrideClassification = (String) renderer.getOption(ITemplateRenderer.OVERRIDE_DATA_RIGHTS_OPTION);
+         String overrideClassification = (String) renderer.getOption(IRenderer.OVERRIDE_DATA_RIGHTS_OPTION);
          for (Artifact artifact : allArtifacts) {
 
             String classification = null;
@@ -598,7 +601,7 @@ public class WordTemplateProcessor {
          String attributeName = attributeElement.getAttributeName();
 
          if (renderer.getBooleanOption(ALL_ATTRIBUTES) || attributeName.equals("*")) {
-            for (IAttributeType attributeType : RendererManager.getAttributeTypeOrderList(artifact)) {
+            for (AttributeTypeToken attributeType : RendererManager.getAttributeTypeOrderList(artifact)) {
                if (!outlining || !attributeType.equals(headingAttributeType)) {
                   processAttribute(artifact, wordMl, attributeElement, attributeType, true, presentationType,
                      publishInLine, footer);
@@ -615,13 +618,12 @@ public class WordTemplateProcessor {
       }
    }
 
-   private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, IAttributeType attributeType, boolean allAttrs, PresentationType presentationType, boolean publishInLine, String footer) throws OseeCoreException {
+   private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, AttributeTypeToken attributeType, boolean allAttrs, PresentationType presentationType, boolean publishInLine, String footer) throws OseeCoreException {
       renderer.setOption("allAttrs", allAttrs);
       // This is for SRS Publishing. Do not publish unspecified attributes
-      if (!allAttrs && (attributeType.equals(CoreAttributeTypes.Partition) || attributeType.equals(
-         CoreAttributeTypes.SeverityCategory))) {
-         if (artifact.isAttributeTypeValid(CoreAttributeTypes.Partition)) {
-            for (Attribute<?> partition : artifact.getAttributes(CoreAttributeTypes.Partition)) {
+      if (!allAttrs && attributeType.matches(Partition, SeverityCategory)) {
+         if (artifact.isAttributeTypeValid(Partition)) {
+            for (Attribute<?> partition : artifact.getAttributes(Partition)) {
                if (partition == null || partition.getValue() == null || partition.getValue().equals("Unspecified")) {
                   return;
                }
@@ -629,7 +631,7 @@ public class WordTemplateProcessor {
          }
       }
       boolean templateOnly = renderer.getBooleanOption("TEMPLATE ONLY");
-      if (templateOnly && !attributeType.equals(WordTemplateContent)) {
+      if (templateOnly && attributeType.notEqual(WordTemplateContent)) {
          return;
       }
 

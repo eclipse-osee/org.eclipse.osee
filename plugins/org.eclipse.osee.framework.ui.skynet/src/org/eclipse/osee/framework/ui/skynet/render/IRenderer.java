@@ -13,8 +13,9 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -109,9 +110,9 @@ public interface IRenderer {
 
    public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact);
 
-   public void renderAttribute(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement, String footer) throws OseeCoreException;
+   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement, String footer) throws OseeCoreException;
 
-   public String renderAttributeAsString(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, String defaultValue) throws OseeCoreException;
+   public String renderAttributeAsString(AttributeTypeId attributeType, Artifact artifact, PresentationType presentationType, String defaultValue) throws OseeCoreException;
 
    public int minimumRanking() throws OseeCoreException;
 
@@ -143,5 +144,5 @@ public interface IRenderer {
 
    public IComparator getComparator();
 
-   public List<IAttributeType> getOrderedAttributeTypes(Artifact artifact, Collection<IAttributeType> attributeTypes);
+   public List<AttributeTypeToken> getOrderedAttributeTypes(Artifact artifact, Collection<? extends AttributeTypeToken> attributeTypes);
 }
