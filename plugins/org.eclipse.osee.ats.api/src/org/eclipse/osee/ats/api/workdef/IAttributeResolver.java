@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -36,9 +37,9 @@ public interface IAttributeResolver {
 
    <T> T getSoleAttributeValue(IAtsObject atsObject, IAttributeType attributeType, T defaultReturnValue) throws OseeCoreException;
 
-   Collection<String> getAttributesToStringList(IAtsObject atsObject, IAttributeType attributeType) throws OseeCoreException;
+   Collection<String> getAttributesToStringList(IAtsObject atsObject, AttributeTypeId attributeType) throws OseeCoreException;
 
-   boolean isAttributeTypeValid(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException;
+   boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeId attributeType) throws OseeCoreException;
 
    String getSoleAttributeValueAsString(IAtsObject atsObject, IAttributeType attributeType, String defaultReturnValue) throws OseeCoreException;
 
@@ -88,7 +89,7 @@ public interface IAttributeResolver {
 
    int getAttributeCount(IAtsWorkItem workItem, IAttributeType attributeType);
 
-   default public String getAttributesToStringUniqueList(IAtsObject atsObject, IAttributeType attributeType, String separator) {
+   default public String getAttributesToStringUniqueList(IAtsObject atsObject, AttributeTypeId attributeType, String separator) {
       Set<String> strs = new HashSet<>();
       strs.addAll(getAttributesToStringList(atsObject, attributeType));
       return org.eclipse.osee.framework.jdk.core.util.Collections.toString(separator, strs);

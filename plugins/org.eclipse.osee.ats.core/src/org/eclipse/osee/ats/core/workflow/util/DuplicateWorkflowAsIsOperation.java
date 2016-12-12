@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOperation {
 
    private final boolean duplicateTasks;
-   private List<IAttributeType> excludeTypes;
+   private List<AttributeTypeId> excludeTypes;
    private static String ATS_CONFIG_EXCLUDE_DUPLICATE_TYPE_IDS_KEY =
       "DuplicateWorkflowAsIsOperation_ExcludeAttrTypeIds";
 
@@ -121,7 +121,7 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
       return services.getWorkItemFactory().getWorkItem(newWorkItemArt);
    }
 
-   private List<IAttributeType> getExcludeTypes() {
+   private List<AttributeTypeId> getExcludeTypes() {
       if (excludeTypes == null) {
          excludeTypes = new LinkedList<>();
          excludeTypes.add(AtsAttributeTypes.AtsId);
@@ -130,7 +130,7 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
          if (Strings.isValid(value)) {
             for (String attrTypeId : value.split(";")) {
                if (Strings.isNumeric(attrTypeId)) {
-                  IAttributeType attributeType = services.getStoreService().getAttributeType(Long.valueOf(attrTypeId));
+                  AttributeTypeId attributeType = AttributeTypeId.valueOf(attrTypeId);
                   if (attributeType != null) {
                      excludeTypes.add(attributeType);
                   } else {

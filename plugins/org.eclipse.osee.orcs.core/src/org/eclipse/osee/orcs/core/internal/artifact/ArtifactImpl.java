@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.artifact;
 
 import static org.eclipse.osee.framework.core.enums.DirtyState.APPLICABILITY_ONLY;
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -145,7 +146,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
-   public boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException {
+   public boolean isAttributeTypeValid(AttributeTypeId attributeType) throws OseeCoreException {
       return artifactTypeCache.isValidAttributeType(getArtifactType(), getBranch(), attributeType);
    }
 

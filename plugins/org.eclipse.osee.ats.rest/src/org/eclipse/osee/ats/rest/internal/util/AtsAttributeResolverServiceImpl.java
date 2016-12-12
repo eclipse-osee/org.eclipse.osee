@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -115,12 +116,12 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    }
 
    @Override
-   public Collection<String> getAttributesToStringList(IAtsObject atsObject, IAttributeType attributeType) throws OseeCoreException {
+   public Collection<String> getAttributesToStringList(IAtsObject atsObject, AttributeTypeId attributeType) throws OseeCoreException {
       return getArtifact(atsObject).getAttributeValues(attributeType);
    }
 
    @Override
-   public boolean isAttributeTypeValid(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException {
+   public boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeId attributeType) throws OseeCoreException {
       return getArtifact(workItem).isAttributeTypeValid(attributeType);
    }
 

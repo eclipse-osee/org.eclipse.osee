@@ -11,12 +11,12 @@
 package org.eclipse.osee.orcs.core.internal.types.impl;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.data.EnumType;
@@ -45,9 +45,8 @@ public class AttributeTypesImpl implements AttributeTypes {
       this.enumTypeIndexProvider = enumTypeIndexProvider;
    }
 
-   private XAttributeType getType(IAttributeType attrType) throws OseeCoreException {
-      Conditions.checkNotNull(attrType, "attributeType");
-      return provider.getAttributeTypeIndex().getDslTypeByToken(attrType);
+   private XAttributeType getType(AttributeTypeId attributeType) throws OseeCoreException {
+      return provider.getAttributeTypeIndex().getDslTypeByToken(attributeType);
    }
 
    @Override
@@ -74,9 +73,8 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public String getBaseAttributeTypeId(IAttributeType attrType) throws OseeCoreException {
-      XAttributeType type = getType(attrType);
-      return getQualifiedTypeName(type.getBaseAttributeType());
+   public String getBaseAttributeTypeId(AttributeTypeId attributeType) throws OseeCoreException {
+      return getQualifiedTypeName(getType(attributeType).getBaseAttributeType());
    }
 
    @Override
@@ -214,8 +212,8 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public boolean isDateType(IAttributeType attrType) {
-      String baseType = getBaseAttributeTypeId(attrType);
+   public boolean isDateType(AttributeTypeId attributeType) {
+      String baseType = getBaseAttributeTypeId(attributeType);
       return baseType != null && baseType.toLowerCase().contains("date");
    }
 

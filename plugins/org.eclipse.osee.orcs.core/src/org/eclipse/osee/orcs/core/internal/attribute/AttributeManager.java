@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -42,7 +43,7 @@ public interface AttributeManager extends AttributeContainer {
 
    String getSoleAttributeAsString(IAttributeType attributeType, String defaultValue) throws OseeCoreException;
 
-   <T> List<T> getAttributeValues(IAttributeType attributeType) throws OseeCoreException;
+   <T> List<T> getAttributeValues(AttributeTypeId attributeType) throws OseeCoreException;
 
    <T> void setSoleAttributeValue(IAttributeType attributeType, T value) throws OseeCoreException;
 

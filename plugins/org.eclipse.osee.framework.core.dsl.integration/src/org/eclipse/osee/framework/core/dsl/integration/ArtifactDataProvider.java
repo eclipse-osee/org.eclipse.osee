@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.dsl.integration;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -28,7 +28,7 @@ public interface ArtifactDataProvider {
       @Override
       ArtifactType getArtifactType();
 
-      boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException;
+      boolean isAttributeTypeValid(AttributeTypeId attributeType) throws OseeCoreException;
 
       Collection<RelationType> getValidRelationTypes() throws OseeCoreException;
 

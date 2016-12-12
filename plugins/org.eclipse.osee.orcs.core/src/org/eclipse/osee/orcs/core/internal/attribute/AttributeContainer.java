@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.attribute;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -49,7 +50,7 @@ public interface AttributeContainer extends Identifiable<String>, HasLocalId<Int
 
    int getAttributeCount(IAttributeType type, DeletionFlag deletionFlag) throws OseeCoreException;
 
-   boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException;
+   boolean isAttributeTypeValid(AttributeTypeId attributeType) throws OseeCoreException;
 
    Collection<? extends IAttributeType> getValidAttributeTypes() throws OseeCoreException;
 

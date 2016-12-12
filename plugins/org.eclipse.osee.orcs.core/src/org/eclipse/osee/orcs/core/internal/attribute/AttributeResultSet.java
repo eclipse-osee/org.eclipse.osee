@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.attribute;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSetList;
 
@@ -20,14 +20,14 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSetList;
  */
 public class AttributeResultSet<T> extends ResultSetList<Attribute<T>> {
 
-   private final IAttributeType wasSearched;
+   private final AttributeTypeId wasSearched;
    private final AttributeExceptionFactory exceptionFactory;
 
    public AttributeResultSet(AttributeExceptionFactory exceptionFactory, List<Attribute<T>> data) {
       this(exceptionFactory, null, data);
    }
 
-   public AttributeResultSet(AttributeExceptionFactory exceptionFactory, IAttributeType wasSearched, List<Attribute<T>> data) {
+   public AttributeResultSet(AttributeExceptionFactory exceptionFactory, AttributeTypeId wasSearched, List<Attribute<T>> data) {
       super(data);
       this.exceptionFactory = exceptionFactory;
       this.wasSearched = wasSearched;

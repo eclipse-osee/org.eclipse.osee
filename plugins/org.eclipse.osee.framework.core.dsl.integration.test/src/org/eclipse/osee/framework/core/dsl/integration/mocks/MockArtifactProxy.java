@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.core.dsl.integration.mocks;
 import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -59,7 +59,7 @@ public class MockArtifactProxy implements ArtifactProxy {
    }
 
    @Override
-   public boolean isAttributeTypeValid(IAttributeType attributeType) {
+   public boolean isAttributeTypeValid(AttributeTypeId attributeType) {
       return false;
    }
 

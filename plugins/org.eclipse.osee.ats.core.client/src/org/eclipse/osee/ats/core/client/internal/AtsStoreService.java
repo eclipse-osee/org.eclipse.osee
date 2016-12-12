@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.core.client.internal.store.AtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -106,18 +107,13 @@ public class AtsStoreService implements IAtsStoreService {
    }
 
    @Override
-   public boolean isAttributeTypeValid(IAtsObject atsObject, IAttributeType attributeType) {
+   public boolean isAttributeTypeValid(IAtsObject atsObject, AttributeTypeId attributeType) {
       return isAttributeTypeValid(atsObject.getStoreObject(), attributeType);
    }
 
    @Override
-   public boolean isAttributeTypeValid(ArtifactId artifact, IAttributeType attributeType) {
+   public boolean isAttributeTypeValid(ArtifactId artifact, AttributeTypeId attributeType) {
       return ((Artifact) artifact).isAttributeTypeValid(attributeType);
-   }
-
-   @Override
-   public IAttributeType getAttributeType(long attrTypeId) {
-      return AttributeTypeManager.getTypeByGuid(attrTypeId);
    }
 
    @Override
@@ -131,7 +127,7 @@ public class AtsStoreService implements IAtsStoreService {
    }
 
    @Override
-   public boolean isDateType(IAttributeType attributeType) {
+   public boolean isDateType(AttributeTypeId attributeType) {
       return AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType);
    }
 
@@ -153,5 +149,4 @@ public class AtsStoreService implements IAtsStoreService {
       }
       changes.execute();
    }
-
 }

@@ -16,6 +16,7 @@ import static org.eclipse.osee.orcs.core.internal.util.OrcsPredicates.attributeV
 import static org.eclipse.osee.orcs.core.internal.util.OrcsPredicates.deletionFlagEquals;
 import com.google.common.base.Predicate;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -25,7 +26,7 @@ import org.eclipse.osee.orcs.core.internal.util.AbstractTypeCollection;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeCollection extends AbstractTypeCollection<IAttributeType, Attribute<?>, IAttributeType, Attribute<?>> {
+public class AttributeCollection extends AbstractTypeCollection<IAttributeType, Attribute<?>, AttributeTypeId, Attribute<?>> {
 
    private final AttributeExceptionFactory exceptionFactory;
 
@@ -44,7 +45,7 @@ public class AttributeCollection extends AbstractTypeCollection<IAttributeType, 
 
    @Override
    @SuppressWarnings({"unchecked", "rawtypes"})
-   protected <T extends Attribute<?>> ResultSet<T> createResultSet(IAttributeType attributeType, List<T> values) {
+   protected <T extends Attribute<?>> ResultSet<T> createResultSet(AttributeTypeId attributeType, List<T> values) {
       return new AttributeResultSet(exceptionFactory, attributeType, values);
    }
 
@@ -80,7 +81,7 @@ public class AttributeCollection extends AbstractTypeCollection<IAttributeType, 
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public <T> List<Attribute<T>> getList(IAttributeType attributeType, DeletionFlag includeDeleted) throws OseeCoreException {
+   public <T> List<Attribute<T>> getList(AttributeTypeId attributeType, DeletionFlag includeDeleted) throws OseeCoreException {
       Predicate attributeDeletionFlagEquals = deletionFlagEquals(includeDeleted);
       return getListByFilter(attributeType, attributeDeletionFlagEquals);
    }

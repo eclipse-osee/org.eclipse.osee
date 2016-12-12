@@ -15,8 +15,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -72,7 +72,7 @@ public final class ArtifactDataProviderImpl implements ArtifactDataProvider {
       }
 
       @Override
-      public boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException {
+      public boolean isAttributeTypeValid(AttributeTypeId attributeType) throws OseeCoreException {
          return self.isAttributeTypeValid(attributeType);
       }
 

@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -248,7 +249,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public boolean isAttributeTypeValid(IAtsWorkItem workItem, IAttributeType attributeType) {
+   public boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeId attributeType) {
       Artifact artifact = AtsClientService.get().getArtifact(workItem);
       return artifact.getAttributeTypes().contains(attributeType);
    }

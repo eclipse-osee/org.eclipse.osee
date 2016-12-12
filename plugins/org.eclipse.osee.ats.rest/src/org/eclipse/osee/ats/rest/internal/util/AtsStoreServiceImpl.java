@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -96,18 +97,13 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
-   public boolean isAttributeTypeValid(IAtsObject atsObject, IAttributeType attributeType) {
+   public boolean isAttributeTypeValid(IAtsObject atsObject, AttributeTypeId attributeType) {
       return isAttributeTypeValid(atsObject.getStoreObject(), attributeType);
    }
 
    @Override
-   public boolean isAttributeTypeValid(ArtifactId artifact, IAttributeType attributeType) {
+   public boolean isAttributeTypeValid(ArtifactId artifact, AttributeTypeId attributeType) {
       return ((ArtifactReadable) artifact).isAttributeTypeValid(attributeType);
-   }
-
-   @Override
-   public IAttributeType getAttributeType(long attrTypeId) {
-      return atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().get(attrTypeId);
    }
 
    @Override
@@ -121,7 +117,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
-   public boolean isDateType(IAttributeType attributeType) {
+   public boolean isDateType(AttributeTypeId attributeType) {
       return atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().isDateType(attributeType);
    }
 

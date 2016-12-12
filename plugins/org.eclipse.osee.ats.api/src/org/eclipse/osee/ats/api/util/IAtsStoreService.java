@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 
@@ -30,22 +31,20 @@ public interface IAtsStoreService {
 
    String getGuid(IAtsObject atsObject);
 
-   boolean isAttributeTypeValid(IAtsObject atsObject, IAttributeType attributeType);
+   boolean isAttributeTypeValid(IAtsObject atsObject, AttributeTypeId attributeType);
 
-   boolean isAttributeTypeValid(ArtifactId artifact, IAttributeType attributeType);
+   boolean isAttributeTypeValid(ArtifactId artifact, AttributeTypeId attributeType);
 
    /**
     * Uses artifact type inheritance to retrieve all TeamWorkflow artifact types
     */
    Set<IArtifactType> getTeamWorkflowArtifactTypes();
 
-   IAttributeType getAttributeType(long attrTypeId);
-
    IAttributeType getAttributeType(String attrTypeName);
 
    IArtifactType getArtifactType(ArtifactId artifact);
 
-   boolean isDateType(IAttributeType attributeType);
+   boolean isDateType(AttributeTypeId attributeType);
 
    boolean isOfType(ArtifactId artifact, IArtifactType... artifactType);
 

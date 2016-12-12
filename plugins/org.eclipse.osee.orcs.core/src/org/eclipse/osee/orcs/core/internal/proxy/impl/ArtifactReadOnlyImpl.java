@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -113,7 +114,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException {
+   public boolean isAttributeTypeValid(AttributeTypeId attributeType) throws OseeCoreException {
       return getProxiedObject().isAttributeTypeValid(attributeType);
    }
 
@@ -158,7 +159,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public <T> List<T> getAttributeValues(IAttributeType attributeType) throws OseeCoreException {
+   public <T> List<T> getAttributeValues(AttributeTypeId attributeType) throws OseeCoreException {
       return getProxiedObject().getAttributeValues(attributeType);
    }
 

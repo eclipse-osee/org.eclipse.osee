@@ -14,6 +14,7 @@ import com.google.common.collect.Sets;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -105,7 +106,7 @@ public class ArtifactTypesImpl implements ArtifactTypes {
    }
 
    @Override
-   public boolean isValidAttributeType(IArtifactType artType, BranchId branch, IAttributeType attributeType) throws OseeCoreException {
+   public boolean isValidAttributeType(IArtifactType artType, BranchId branch, AttributeTypeId attributeType) throws OseeCoreException {
       Collection<IAttributeType> attributes = getAttributeTypes(artType, branch);
       return attributes.contains(attributeType);
    }

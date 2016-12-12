@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -68,7 +69,7 @@ public interface IAtsChangeSet {
 
    void deleteAttribute(IAtsObject atsObject, IAttributeType attributeType, Object value) throws OseeCoreException;
 
-   boolean isAttributeTypeValid(IAtsWorkItem workItem, IAttributeType attributeType);
+   boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeId attributeType);
 
    ArtifactId createArtifact(IArtifactType artifactType, String name);
 

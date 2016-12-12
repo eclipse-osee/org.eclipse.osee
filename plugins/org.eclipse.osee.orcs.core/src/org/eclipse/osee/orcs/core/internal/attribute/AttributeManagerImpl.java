@@ -21,6 +21,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -165,7 +166,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    }
 
    @Override
-   public <T> List<T> getAttributeValues(IAttributeType attributeType) throws OseeCoreException {
+   public <T> List<T> getAttributeValues(AttributeTypeId attributeType) throws OseeCoreException {
       List<Attribute<T>> attributes = getAttributesExcludeDeleted(attributeType);
 
       List<T> values = new LinkedList<>();
@@ -414,7 +415,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
       return getAttributesHelper(DeletionFlag.INCLUDE_DELETED);
    }
 
-   private <T> List<Attribute<T>> getAttributesExcludeDeleted(IAttributeType attributeType) throws OseeCoreException {
+   private <T> List<Attribute<T>> getAttributesExcludeDeleted(AttributeTypeId attributeType) throws OseeCoreException {
       return getAttributesHelper(attributeType, DeletionFlag.EXCLUDE_DELETED);
    }
 
@@ -427,7 +428,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
       return Collections.castAll(attributes.getList(includeDeleted));
    }
 
-   private <T> List<Attribute<T>> getAttributesHelper(IAttributeType attributeType, DeletionFlag includeDeleted) throws OseeCoreException {
+   private <T> List<Attribute<T>> getAttributesHelper(AttributeTypeId attributeType, DeletionFlag includeDeleted) throws OseeCoreException {
       ensureAttributesLoaded();
       return attributes.getList(attributeType, includeDeleted);
    }
@@ -548,12 +549,12 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    //////////////////////////////////////////////////////////////
 
    @Override
-   public MultipleAttributesExist createManyExistException(IAttributeType type, int count) {
+   public MultipleAttributesExist createManyExistException(AttributeTypeId type, int count) {
       MultipleAttributesExist toReturn;
       if (type != null) {
          toReturn = new MultipleAttributesExist(
-            "The attribute type [%s] has [%s] instances on [%s], but only [1] instance is allowed", type.getName(),
-            count, getExceptionString());
+            "The attribute type [%s] has [%s] instances on [%s], but only [1] instance is allowed", type, count,
+            getExceptionString());
       } else {
          toReturn = new MultipleAttributesExist(
             "Multiple items found - total instances [%s] on [%s], but only [1] instance is allowed", count,
@@ -563,11 +564,11 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    }
 
    @Override
-   public AttributeDoesNotExist createDoesNotExistException(IAttributeType type) {
+   public AttributeDoesNotExist createDoesNotExistException(AttributeTypeId type) {
       AttributeDoesNotExist toReturn;
       if (type != null) {
-         toReturn = new AttributeDoesNotExist("Attribute of type [%s] could not be found on [%s]", type.getName(),
-            getExceptionString());
+         toReturn =
+            new AttributeDoesNotExist("Attribute of type [%s] could not be found on [%s]", type, getExceptionString());
       } else {
          toReturn = new AttributeDoesNotExist("Attribute not be found on [%s]", getExceptionString());
       }
