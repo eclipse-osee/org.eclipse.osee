@@ -27,13 +27,11 @@ public class XBranchTextFilter extends XViewerTextFilter {
 
    @Override
    public boolean select(Viewer viewer, Object parentElement, Object element) {
-      if (element instanceof ArrayList<?>) {
+      if (element instanceof TransactionRecord) {
          return true;
       }
-      if (element instanceof TransactionRecord) {
-         super.setIsTransaction(true);
-      } else {
-         super.setIsTransaction(false);
+      if (element instanceof ArrayList<?>) {
+         return true;
       }
       return super.select(viewer, parentElement, element);
    }
