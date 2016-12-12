@@ -12,11 +12,10 @@ package org.eclipse.osee.framework.skynet.core.validation;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
@@ -51,7 +50,7 @@ public class OseeValidator {
       return status;
    }
 
-   public IStatus validate(int requiredQualityOfService, Artifact artifact, IAttributeType attributeType, Object proposedValue) {
+   public IStatus validate(int requiredQualityOfService, Artifact artifact, AttributeTypeToken attributeType, Object proposedValue) {
       for (IOseeValidator validator : loadedObjects.getObjects()) {
          if (requiredQualityOfService >= validator.getQualityOfService()) {
             try {
@@ -75,23 +74,11 @@ public class OseeValidator {
 
    public IStatus validate(int requiredQualityOfService, Artifact artifact) {
       try {
-         for (IAttributeType attributeType : artifact.getAttributeTypes()) {
-            for (Attribute<?> attribute : artifact.getAttributes(attributeType)) {
-               IStatus status = validate(requiredQualityOfService, artifact, attributeType, attribute.getValue());
+         for (AttributeTypeToken attributeType : artifact.getAttributeTypes()) {
+            for (Object value : artifact.getAttributeValues(attributeType)) {
+               IStatus status = validate(requiredQualityOfService, artifact, attributeType, value);
                if (!status.isOK()) {
                   return status;
-                  //                  String messageToUse =
-                  //                        String.format("%s:[%s] - %s", artifact.getArtifactTypeName(), artifact.getDescriptiveName(),
-                  //                              status.getMessage());
-                  //                  if (status.isMultiStatus()) {
-                  //                     MultiStatus mStatus =
-                  //                           new MultiStatus(status.getPlugin(), status.getCode(), messageToUse, status.getException());
-                  //                     mStatus.merge(status);
-                  //                     return mStatus;
-                  //                  } else {
-                  //                     return new Status(status.getSeverity(), status.getPlugin(), status.getCode(), messageToUse,
-                  //                           status.getException());
-                  //                  }
                }
             }
          }
@@ -100,44 +87,4 @@ public class OseeValidator {
       }
       return Status.OK_STATUS;
    }
-   //   private void checkExtensionsLoaded() {
-   //      if (loadedObjects.isEmpty()) {
-   //         List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(EXTENSION_ID, EXTENSION_ELEMENT);
-   //         for (IConfigurationElement element : elements) {
-   //            // TODO Implement dynamic attribute type validation chain definition
-   //            //            IExtension extension = ((IExtension) element.getParent());
-   //            //            String identifier = extension.getUniqueIdentifier();
-   //            String attributeTypeName = element.getAttribute(ATTRIBUTE_TYPENAME);
-   //            String className = element.getAttribute(CLASS_NAME_ATTRIBUTE);
-   //            String bundleName = element.getContributor().getName();
-   //
-   //            if (Strings.isValid(bundleName) && Strings.isValid(className)) {
-   //               try {
-   //                  Bundle bundle = Platform.getBundle(bundleName);
-   //                  Class<?> taskClass = bundle.loadClass(className);
-   //                  IOseeValidator object = null;
-   //                  try {
-   //                     Method getInstance = taskClass.getMethod("getInstance", new Class[] {});
-   //                     object = (IOseeValidator) getInstance.invoke(null, new Object[] {});
-   //                  } catch (Exception ex) {
-   //                     object = (IOseeValidator) taskClass.newInstance();
-   //                  }
-   //                  if (object != null) {
-   //                     AttributeType attributeType = AttributeTypeManager.getType(attributeTypeName);
-   //                     loadedObjects.put(attributeType, object);
-   //                  }
-   //               } catch (Exception ex) {
-   //                  OseeLog.log(OseeActivator.class, Level.SEVERE, ex, "Unable to Load: [%s - %s]", bundleName,
-   //                        className);
-   //               }
-   //            }
-   //         }
-   //      }
-   //   }
-
-   // TODO Implement dynamic attribute type validation chain definition
-   //   public List<IValidator> createValidateChain(String xml) {
-   //      List<IValidator> validators = new ArrayList<>();
-   //      return validators;
-   //   }
 }

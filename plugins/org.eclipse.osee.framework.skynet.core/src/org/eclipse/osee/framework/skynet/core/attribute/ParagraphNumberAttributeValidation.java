@@ -12,7 +12,8 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -26,12 +27,12 @@ public class ParagraphNumberAttributeValidation implements IOseeValidator {
    }
 
    @Override
-   public boolean isApplicable(Artifact artifact, IAttributeType attributeType) throws OseeCoreException {
-      return AttributeTypeManager.getType(attributeType).equals(CoreAttributeTypes.ParagraphNumber);
+   public boolean isApplicable(Artifact artifact, AttributeTypeId attributeType) throws OseeCoreException {
+      return attributeType.equals(CoreAttributeTypes.ParagraphNumber);
    }
 
    @Override
-   public IStatus validate(Artifact artifact, IAttributeType attributeType, Object proposedObject) throws OseeCoreException {
+   public IStatus validate(Artifact artifact, AttributeTypeToken attributeType, Object proposedObject) throws OseeCoreException {
       if (artifact.getSoleAttributeValueAsString(attributeType, "").matches(".*[a-zA-Z].*")) {
          return new Status(IStatus.ERROR, ParagraphNumberAttributeValidation.class.getName(),
             "Invalid Paragraph Number - letters are not allowed");

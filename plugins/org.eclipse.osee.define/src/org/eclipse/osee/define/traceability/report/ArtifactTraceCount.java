@@ -13,6 +13,7 @@ package org.eclipse.osee.define.traceability.report;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -41,7 +42,7 @@ public class ArtifactTraceCount extends AbstractArtifactRelationReport {
    }
 
    private IAttributeType getSubsystemAttributeType(Artifact artifact) throws OseeCoreException {
-      for (IAttributeType attributeType : artifact.getAttributeTypes()) {
+      for (AttributeTypeId attributeType : artifact.getAttributeTypes()) {
          if (attributeType.equals(CoreAttributeTypes.Partition)) {
             return CoreAttributeTypes.Partition;
          } else if (attributeType.equals(CoreAttributeTypes.Csci)) {

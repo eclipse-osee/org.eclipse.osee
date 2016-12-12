@@ -13,7 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.templates;
 import java.util.Collection;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -34,13 +35,13 @@ public class TemplateArtifactValidator implements IOseeValidator {
    }
 
    @Override
-   public boolean isApplicable(Artifact artifact, IAttributeType attributeType) {
+   public boolean isApplicable(Artifact artifact, AttributeTypeId attributeType) {
       return artifact.isOfType(CoreArtifactTypes.RendererTemplate) && attributeType.equals(
          CoreAttributeTypes.TemplateMatchCriteria);
    }
 
    @Override
-   public IStatus validate(Artifact artifact, IAttributeType attributeType, Object proposedObject) throws OseeCoreException {
+   public IStatus validate(Artifact artifact, AttributeTypeToken attributeType, Object proposedObject) throws OseeCoreException {
       if (proposedObject instanceof String) {
          String toVerify = (String) proposedObject;
          if (Strings.isValid(toVerify)) {

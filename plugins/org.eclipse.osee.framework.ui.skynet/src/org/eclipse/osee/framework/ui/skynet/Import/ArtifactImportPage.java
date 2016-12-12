@@ -404,7 +404,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          } else {
-            attributeTypeSelectPanel.setAllowedAttributeTypes(new ArrayList<IAttributeType>());
+            attributeTypeSelectPanel.setAllowedAttributeTypes(new ArrayList<>());
          }
       }
    }

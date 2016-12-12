@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.validation;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public interface IOseeValidator {
@@ -23,7 +23,7 @@ public interface IOseeValidator {
 
    public int getQualityOfService();
 
-   public boolean isApplicable(Artifact artifact, IAttributeType attributeType) throws OseeCoreException;
+   public boolean isApplicable(Artifact artifact, AttributeTypeId attributeType);
 
-   public IStatus validate(Artifact artifact, IAttributeType attributeType, Object proposedObject) throws OseeCoreException;
+   public IStatus validate(Artifact artifact, AttributeTypeToken attributeType, Object proposedObject);
 }
