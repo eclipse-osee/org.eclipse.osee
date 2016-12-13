@@ -17,8 +17,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -216,24 +216,24 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
    }
 
    @Override
-   public T andExists(IAttributeType... attributeType) {
+   public T andExists(AttributeTypeId... attributeType) {
       return andExists(Arrays.asList(attributeType));
    }
 
    @Override
-   public T andExists(Collection<? extends IAttributeType> attributeTypes) {
+   public T andExists(Collection<AttributeTypeId> attributeTypes) {
       Criteria criteria = criteriaFactory.createExistsCriteria(attributeTypes);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T andNotExists(IAttributeType attributeType) {
+   public T andNotExists(AttributeTypeId attributeType) {
       Criteria criteria = criteriaFactory.createNotExistsCriteria(attributeType);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T andNotExists(Collection<? extends IAttributeType> attributeTypes) {
+   public T andNotExists(Collection<AttributeTypeId> attributeTypes) {
       Criteria criteria = criteriaFactory.createNotExistsCriteria(attributeTypes);
       return addAndCheck(getQueryData(), criteria);
    }
@@ -263,22 +263,22 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
    }
 
    @Override
-   public T and(IAttributeType attributeType, Collection<String> values, QueryOption... options) {
+   public T and(AttributeTypeId attributeType, Collection<String> values, QueryOption... options) {
       return and(Collections.singleton(attributeType), values, options);
    }
 
    @Override
-   public T and(IAttributeType attributeType, String value, QueryOption... options) {
+   public T and(AttributeTypeId attributeType, String value, QueryOption... options) {
       return and(Collections.singleton(attributeType), Collections.singleton(value), options);
    }
 
    @Override
-   public T and(Collection<IAttributeType> attributeTypes, String value, QueryOption... options) {
+   public T and(Collection<AttributeTypeId> attributeTypes, String value, QueryOption... options) {
       return and(attributeTypes, Collections.singleton(value), options);
    }
 
    @Override
-   public T and(Collection<IAttributeType> attributeTypes, Collection<String> value, QueryOption... options) {
+   public T and(Collection<AttributeTypeId> attributeTypes, Collection<String> value, QueryOption... options) {
       Criteria criteria = criteriaFactory.createAttributeCriteria(attributeTypes, value, options);
       return addAndCheck(getQueryData(), criteria);
    }

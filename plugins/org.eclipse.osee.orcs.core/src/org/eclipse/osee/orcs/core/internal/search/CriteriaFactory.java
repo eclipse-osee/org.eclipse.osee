@@ -14,8 +14,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -49,10 +49,10 @@ public class CriteriaFactory {
       this.attributeTypeCache = attributeTypeCache;
    }
 
-   private Collection<? extends IAttributeType> checkForAnyType(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
-      Collection<? extends IAttributeType> toReturn;
+   private Collection<AttributeTypeId> checkForAnyType(Collection<AttributeTypeId> attributeTypes) throws OseeCoreException {
+      Collection<AttributeTypeId> toReturn;
       if (attributeTypes.contains(ArtifactQueryBuilder.ANY_ATTRIBUTE_TYPE)) {
-         Collection<IAttributeType> temp = new LinkedList<>();
+         Collection<AttributeTypeId> temp = new LinkedList<>();
          temp.addAll(attributeTypeCache.getAll());
          toReturn = temp;
       } else {
@@ -61,16 +61,16 @@ public class CriteriaFactory {
       return toReturn;
    }
 
-   public Criteria createExistsCriteria(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
+   public Criteria createExistsCriteria(Collection<AttributeTypeId> attributeTypes) throws OseeCoreException {
       return new CriteriaAttributeTypeExists(attributeTypes);
    }
 
-   public Criteria createNotExistsCriteria(IAttributeType attributeType) throws OseeCoreException {
-      List<IAttributeType> list = java.util.Arrays.asList(attributeType);
+   public Criteria createNotExistsCriteria(AttributeTypeId attributeType) throws OseeCoreException {
+      List<AttributeTypeId> list = java.util.Arrays.asList(attributeType);
       return new CriteriaAttributeTypeNotExists(list);
    }
 
-   public Criteria createNotExistsCriteria(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
+   public Criteria createNotExistsCriteria(Collection<AttributeTypeId> attributeTypes) throws OseeCoreException {
       return new CriteriaAttributeTypeNotExists(attributeTypes);
    }
 
@@ -90,8 +90,8 @@ public class CriteriaFactory {
       return new CriteriaRelationTypeSideNotExists(relationTypeSide);
    }
 
-   public Criteria createAttributeCriteria(Collection<IAttributeType> attributeTypes, Collection<String> values, QueryOption... options) throws OseeCoreException {
-      Collection<? extends IAttributeType> types = checkForAnyType(attributeTypes);
+   public Criteria createAttributeCriteria(Collection<AttributeTypeId> attributeTypes, Collection<String> values, QueryOption... options) throws OseeCoreException {
+      Collection<AttributeTypeId> types = checkForAnyType(attributeTypes);
       boolean isIncludeAllTypes = attributeTypes.contains(ArtifactQueryBuilder.ANY_ATTRIBUTE_TYPE);
       return new CriteriaAttributeKeywords(isIncludeAllTypes, types, attributeTypeCache, values, options);
    }

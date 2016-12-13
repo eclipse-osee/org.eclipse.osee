@@ -14,9 +14,10 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.ArtifactSearch_V1;
@@ -48,7 +49,7 @@ public class ArtifactSearch_V1Test {
    @Mock private Request request;
    // @formatter:on
 
-   private final java.util.List<String> types = Arrays.asList("1000000000000070");
+   private final List<String> types = Arrays.asList("1000000000000070");
    private ArtifactSearch_V1 search;
 
    @Before
@@ -62,14 +63,14 @@ public class ArtifactSearch_V1Test {
       when(orcsApi.getQueryFactory()).thenReturn(queryFactory);
       when(queryFactory.fromBranch(COMMON)).thenReturn(builder);
 
-      Collection<IAttributeType> attrTypes = PredicateHandlerUtil.getIAttributeTypes(types);
+      Collection<AttributeTypeId> attributeTypes = PredicateHandlerUtil.getAttributeTypes(types);
       Predicate predicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, types, Arrays.asList("AtsAdmin"));
-      when(builder.and(attrTypes, predicate.getValues().iterator().next(), predicate.getOptions())).thenReturn(builder);
+      when(builder.and(attributeTypes, predicate.getValues().iterator().next(), predicate.getOptions())).thenReturn(
+         builder);
 
       SearchRequest params = new SearchRequest(COMMON, Arrays.asList(predicate), null, 0, false);
       SearchResponse response = search.getSearchWithMatrixParams(params);
 
       Assert.assertEquals(response.getSearchRequest(), params);
    }
-
 }

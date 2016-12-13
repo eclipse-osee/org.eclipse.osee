@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.api;
 
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.AccessContextId;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.ContentUrl;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Dictionary;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
@@ -28,7 +32,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -243,9 +246,7 @@ public class OrcsQueryTest {
    @Test
    public void testQueryMultipleAttributeExistsType() throws OseeCoreException {
       QueryBuilder builder = factory.fromBranch(COMMON);
-      List<IAttributeType> attributeTypes =
-         Arrays.asList(CoreAttributeTypes.AccessContextId, CoreAttributeTypes.Dictionary);
-      builder.andExists(attributeTypes);
+      builder.andExists(Arrays.asList(AccessContextId, Dictionary));
 
       assertEquals(0, builder.getCount());
       ResultSet<ArtifactReadable> artifacts = builder.getResults();
@@ -255,8 +256,7 @@ public class OrcsQueryTest {
    @Test
    public void testQueryMultipleAttributeNotExistsType() throws OseeCoreException {
       QueryBuilder builder = factory.fromBranch(COMMON);
-      List<IAttributeType> attributeTypes = Arrays.asList(CoreAttributeTypes.ContentUrl, CoreAttributeTypes.Name);
-      builder.andNotExists(attributeTypes);
+      builder.andNotExists(Arrays.asList(ContentUrl, Name));
 
       assertTrue(builder.getCount() >= 245);
       ResultSet<ArtifactReadable> artifacts = builder.getResults();

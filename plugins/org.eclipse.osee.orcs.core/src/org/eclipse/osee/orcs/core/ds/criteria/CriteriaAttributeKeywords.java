@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.core.ds.criteria;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -29,30 +29,30 @@ import org.eclipse.osee.orcs.data.AttributeTypes;
 public class CriteriaAttributeKeywords extends Criteria {
 
    private final AttributeTypes attributeTypeCache;
-   private final Collection<? extends IAttributeType> attributeType;
+   private final Collection<AttributeTypeId> attributeTypes;
    private final Collection<String> values;
    private final QueryOption[] options;
    private final boolean includeAllTypes;
 
-   public CriteriaAttributeKeywords(boolean includeAllTypes, Collection<? extends IAttributeType> attributeType, AttributeTypes attributeTypeCache, Collection<String> values, QueryOption... options) {
+   public CriteriaAttributeKeywords(boolean includeAllTypes, Collection<AttributeTypeId> attributeTypes, AttributeTypes attributeTypeCache, Collection<String> values, QueryOption... options) {
       super();
       this.includeAllTypes = includeAllTypes;
       this.attributeTypeCache = attributeTypeCache;
-      this.attributeType = attributeType;
+      this.attributeTypes = attributeTypes;
       this.values = values;
       this.options = options;
    }
 
-   public CriteriaAttributeKeywords(boolean includeAllTypes, Collection<? extends IAttributeType> attributeType, AttributeTypes attributeTypeCache, String value, QueryOption... options) {
-      this(includeAllTypes, attributeType, attributeTypeCache, java.util.Collections.singleton(value), options);
+   public CriteriaAttributeKeywords(boolean includeAllTypes, Collection<AttributeTypeId> attributeTypes, AttributeTypes attributeTypeCache, String value, QueryOption... options) {
+      this(includeAllTypes, attributeTypes, attributeTypeCache, java.util.Collections.singleton(value), options);
    }
 
    public boolean isIncludeAllTypes() {
       return includeAllTypes;
    }
 
-   public Collection<? extends IAttributeType> getTypes() {
-      return attributeType;
+   public Collection<AttributeTypeId> getTypes() {
+      return attributeTypes;
    }
 
    public Collection<String> getValues() {
@@ -73,7 +73,7 @@ public class CriteriaAttributeKeywords extends Criteria {
 
    @Override
    public String toString() {
-      return String.format("CriteriaAttributeKeyword [attributeType=%s, value=%s, options=%s]", attributeType,
+      return String.format("CriteriaAttributeKeyword [attributeType=%s, value=%s, options=%s]", attributeTypes,
          Collections.toString(",", values), Collections.toString(",", Arrays.asList(options)));
    }
 
@@ -87,9 +87,9 @@ public class CriteriaAttributeKeywords extends Criteria {
       if (!includeAllTypes) {
          ArrayList<String> notTaggable = new ArrayList<>();
          if (attributeTypeCache != null) {
-            for (IAttributeType type : attributeType) {
+            for (AttributeTypeId type : attributeTypes) {
                if (!attributeTypeCache.isTaggable(type)) {
-                  notTaggable.add(type.getName());
+                  notTaggable.add(type.toString());
                }
             }
             if (!notTaggable.isEmpty()) {

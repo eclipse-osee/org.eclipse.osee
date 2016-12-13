@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -23,13 +23,13 @@ import org.eclipse.osee.orcs.rest.client.QueryBuilder;
  */
 public class AttributeCriteria implements ArtifactSearchCriteria {
 
-   private final IAttributeType attributeType;
+   private final AttributeTypeId attributeType;
    private String value;
    private Collection<String> values;
    private final QueryOption[] options;
    private final boolean existsSearch;
 
-   public IAttributeType getAttributeType() {
+   public AttributeTypeId getAttributeType() {
       return attributeType;
    }
 
@@ -48,10 +48,10 @@ public class AttributeCriteria implements ArtifactSearchCriteria {
    /**
     * Constructor for search criteria that finds an attribute of the given type with its current value equal to the
     * given value.
-    * 
+    *
     * @param value to search;
     */
-   public AttributeCriteria(IAttributeType attributeType, String value, QueryOption... options) {
+   public AttributeCriteria(AttributeTypeId attributeType, String value, QueryOption... options) {
       this(attributeType, value, null, false, options);
    }
 
@@ -59,7 +59,7 @@ public class AttributeCriteria implements ArtifactSearchCriteria {
     * Constructor for search criteria that finds an attribute of the given type and any value (i.e. checks for
     * existence)
     */
-   public AttributeCriteria(IAttributeType attributeType, QueryOption... options) {
+   public AttributeCriteria(AttributeTypeId attributeType, QueryOption... options) {
       this(attributeType, null, null, true, options);
    }
 
@@ -69,7 +69,7 @@ public class AttributeCriteria implements ArtifactSearchCriteria {
     * conducted exactly as if the single value constructor was called. This search does not support the wildcard for
     * multiple values.
     */
-   public AttributeCriteria(IAttributeType attributeType, Collection<String> values) throws OseeCoreException {
+   public AttributeCriteria(AttributeTypeId attributeType, Collection<String> values) throws OseeCoreException {
       this(attributeType, null, validate(values), false);
    }
 
@@ -80,7 +80,7 @@ public class AttributeCriteria implements ArtifactSearchCriteria {
       return values;
    }
 
-   private AttributeCriteria(IAttributeType attributeType, String value, Collection<String> values, boolean existsSearch, QueryOption... options) {
+   private AttributeCriteria(AttributeTypeId attributeType, String value, Collection<String> values, boolean existsSearch, QueryOption... options) {
       this.attributeType = attributeType;
       this.existsSearch = existsSearch;
 

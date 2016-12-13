@@ -12,8 +12,8 @@ package org.eclipse.osee.orcs.rest.internal.search.artifact.predicate;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -26,12 +26,12 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class PredicateHandlerUtil {
 
-   public static Collection<IAttributeType> getIAttributeTypes(Collection<String> types) throws OseeCoreException {
-      Collection<IAttributeType> attrTypes = new LinkedHashSet<>();
+   public static Collection<AttributeTypeId> getAttributeTypes(Collection<String> types) throws OseeCoreException {
+      Collection<AttributeTypeId> attrTypes = new LinkedHashSet<>();
       for (String value : types) {
          long uuid = parseUuid(value);
          if (uuid != -1L) {
-            attrTypes.add(TokenFactory.createAttributeType(uuid, "SearchAttributeType"));
+            attrTypes.add(AttributeTypeId.valueOf(uuid));
          }
       }
       return attrTypes;

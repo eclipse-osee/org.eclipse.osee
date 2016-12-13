@@ -12,8 +12,9 @@ package org.eclipse.osee.orcs.search;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -27,7 +28,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public interface ArtifactQueryBuilder<T> {
 
-   public static IAttributeType ANY_ATTRIBUTE_TYPE =
+   public static AttributeTypeToken ANY_ATTRIBUTE_TYPE =
       TokenFactory.createAttributeType(Long.MIN_VALUE, "Any Attribute Type");
 
    T includeDeletedArtifacts();
@@ -109,22 +110,22 @@ public interface ArtifactQueryBuilder<T> {
    /**
     * Search criteria that checks for the existence of an attribute type(s).
     */
-   T andExists(IAttributeType... attributeType);
+   T andExists(AttributeTypeId... attributeType);
 
    /**
     * Search criteria that checks for the existence of an attribute types.
     */
-   T andExists(Collection<? extends IAttributeType> attributeTypes);
+   T andExists(Collection<AttributeTypeId> attributeTypes);
 
    /**
     * Search criteria that checks for the non-existence of an attribute type(s).
     */
-   T andNotExists(Collection<? extends IAttributeType> attributeTypes);
+   T andNotExists(Collection<AttributeTypeId> attributeTypes);
 
    /**
     * Search criteria that checks for the non-existence of an attribute type(s).
     */
-   T andNotExists(IAttributeType attributeType);
+   T andNotExists(AttributeTypeId attributeType);
 
    /**
     * Search criteria that follows the relation link ending on the given side
@@ -164,22 +165,22 @@ public interface ArtifactQueryBuilder<T> {
     * any one of the given literal values. If the list only contains one value, then the search is conducted exactly as
     * if the single value constructor was called. This search does not support the (* wildcard) for multiple values.
     */
-   T and(IAttributeType attributeType, Collection<String> values, QueryOption... options);
+   T and(AttributeTypeId attributeType, Collection<String> values, QueryOption... options);
 
    /**
     * Search criteria that finds an attribute of the given type with its current value relative to the given value based
     * on the operator provided.
     */
-   T and(IAttributeType attributeType, String value, QueryOption... options);
+   T and(AttributeTypeId attributeType, String value, QueryOption... options);
 
    /**
     * Search criteria that finds an attribute of the given type with its current value exactly equal (or not equal) to
     * any one of the given literal values. If the list only contains one value, then the search is conducted exactly as
     * if the single value constructor was called. This search does not support the (* wildcard) for multiple values.
     */
-   T and(Collection<IAttributeType> attributeTypes, String value, QueryOption... options);
+   T and(Collection<AttributeTypeId> attributeTypes, String value, QueryOption... options);
 
-   T and(Collection<IAttributeType> attributeTypes, Collection<String> value, QueryOption... options);
+   T and(Collection<AttributeTypeId> attributeTypes, Collection<String> value, QueryOption... options);
 
    /**
     * Search for related artifacts

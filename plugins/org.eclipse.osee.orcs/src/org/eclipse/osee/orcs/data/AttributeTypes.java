@@ -38,9 +38,9 @@ public interface AttributeTypes extends IdCollection<IAttributeType> {
 
    String getFileTypeExtension(IAttributeType attrType) throws OseeCoreException;
 
-   String getTaggerId(IAttributeType attrType) throws OseeCoreException;
+   String getTaggerId(AttributeTypeId attrType) throws OseeCoreException;
 
-   boolean isTaggable(IAttributeType attrType) throws OseeCoreException;
+   boolean isTaggable(AttributeTypeId attrType) throws OseeCoreException;
 
    boolean isEnumerated(IAttributeType attrType) throws OseeCoreException;
 

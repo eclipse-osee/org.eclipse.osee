@@ -22,9 +22,9 @@ import java.util.stream.Collectors;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -153,17 +153,6 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
    private IArtifactType getArtifactType(String name) {
       IArtifactType toReturn = null;
       for (IArtifactType type : orcsTypes.getArtifactTypes().getAll()) {
-         if (type.getName().equals(name)) {
-            toReturn = type;
-            break;
-         }
-      }
-      return toReturn;
-   }
-
-   private IAttributeType getAttributeType(String name) {
-      IAttributeType toReturn = null;
-      for (IAttributeType type : orcsTypes.getAttributeTypes().getAll()) {
          if (type.getName().equals(name)) {
             toReturn = type;
             break;
@@ -589,7 +578,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
 
       @Override
       public Void caseOseAttributeOpClause(OseAttributeOpClause object) {
-         Collection<IAttributeType> types = asAttributeTypes(object.getTypes());
+         Collection<AttributeTypeId> types = asAttributeTypes(object.getTypes());
          Collection<String> values = resolver.resolve(String.class, object.getValues());
          QueryOption[] options = asQueryOptions(object.getOptions());
          getArtifactQuery().and(types, values, options);
@@ -658,15 +647,15 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
          return toReturn;
       }
 
-      private Collection<IAttributeType> asAttributeTypes(List<OsExpression> expressions) {
-         Set<IAttributeType> toReturn = new LinkedHashSet<>();
+      private Collection<AttributeTypeId> asAttributeTypes(List<OsExpression> expressions) {
+         Set<AttributeTypeId> toReturn = new LinkedHashSet<>();
          List<Class<?>> resolvedTypes = resolver.resolveTypes(expressions);
          for (int index = 0; index < resolvedTypes.size(); index++) {
             Class<?> clazz = resolvedTypes.get(index);
             OsExpression expression = expressions.get(index);
             if (clazz.isAssignableFrom(String.class)) {
                String name = resolver.resolveSingle(String.class, expression);
-               toReturn.add(getAttributeType(name));
+               toReturn.add(orcsTypes.getAttributeTypes().getByName(name));
             } else {
                long typeId = resolver.resolveSingle(Long.class, expression);
                toReturn.add(orcsTypes.getAttributeTypes().get(typeId));

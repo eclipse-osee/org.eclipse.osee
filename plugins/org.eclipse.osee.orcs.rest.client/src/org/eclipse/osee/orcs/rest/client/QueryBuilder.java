@@ -14,8 +14,8 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -31,7 +31,7 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
  */
 public interface QueryBuilder {
 
-   public static IAttributeType ANY_ATTRIBUTE_TYPE =
+   public static AttributeTypeId ANY_ATTRIBUTE_TYPE =
       TokenFactory.createAttributeType(Long.MIN_VALUE, "Any Attribute Type");
 
    QueryBuilder includeDeleted();
@@ -103,22 +103,22 @@ public interface QueryBuilder {
    /**
     * Search criteria that checks for the existence of an attribute type(s).
     */
-   QueryBuilder andExists(IAttributeType... attributeType) throws OseeCoreException;
+   QueryBuilder andExists(AttributeTypeId... attributeType) throws OseeCoreException;
 
    /**
     * Search criteria that checks for the existence of an attribute types.
     */
-   QueryBuilder andExists(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException;
+   QueryBuilder andExists(Collection<? extends AttributeTypeId> attributeTypes) throws OseeCoreException;
 
    /**
     * Search criteria that checks for the non-existence of an attribute type(s).
     */
-   QueryBuilder andNotExists(IAttributeType attributeType) throws OseeCoreException;
+   QueryBuilder andNotExists(AttributeTypeId attributeType) throws OseeCoreException;
 
    /**
     * Search criteria that checks for the non-existence of an attribute type(s).
     */
-   QueryBuilder andNotExists(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException;
+   QueryBuilder andNotExists(Collection<? extends AttributeTypeId> attributeTypes) throws OseeCoreException;
 
    /**
     * Search criteria that follows the relation link ending on the given side
@@ -158,20 +158,20 @@ public interface QueryBuilder {
     * any one of the given literal values. If the list only contains one value, then the search is conducted exactly as
     * if the single value constructor was called. This search does not support the (* wildcard) for multiple values.
     */
-   QueryBuilder and(IAttributeType attributeType, Collection<String> values, QueryOption... options) throws OseeCoreException;
+   QueryBuilder and(AttributeTypeId attributeType, Collection<String> values, QueryOption... options) throws OseeCoreException;
 
    /**
     * Search criteria that finds an attribute of the given type with its current value relative to the given value based
     * on the operator provided.
     */
-   QueryBuilder and(IAttributeType attributeType, String value, QueryOption... options) throws OseeCoreException;
+   QueryBuilder and(AttributeTypeId attributeType, String value, QueryOption... options) throws OseeCoreException;
 
    /**
     * Search criteria that finds an attribute of the given type with its current value exactly equal (or not equal) to
     * any one of the given literal values. If the list only contains one value, then the search is conducted exactly as
     * if the single value constructor was called. This search does not support the (* wildcard) for multiple values.
     */
-   QueryBuilder and(Collection<? extends IAttributeType> attributeTypes, String value, QueryOption... options) throws OseeCoreException;
+   QueryBuilder and(Collection<? extends AttributeTypeId> attributeTypes, String value, QueryOption... options) throws OseeCoreException;
 
    /**
     * Search for related artifacts

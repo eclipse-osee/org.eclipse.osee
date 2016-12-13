@@ -16,8 +16,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -80,24 +80,24 @@ public class PredicateFactoryImpl implements PredicateFactory {
    }
 
    @Override
-   public Predicate createAttributeTypeSearch(Collection<? extends IAttributeType> attributeTypes, String value, QueryOption... options) {
+   public Predicate createAttributeTypeSearch(Collection<? extends AttributeTypeId> attributeTypes, String value, QueryOption... options) {
       return createAttributeTypeSearch(attributeTypes, Collections.singleton(value), options);
    }
 
    @Override
-   public Predicate createAttributeTypeSearch(Collection<? extends IAttributeType> attributeTypes, Collection<String> values, QueryOption... options) {
+   public Predicate createAttributeTypeSearch(Collection<? extends AttributeTypeId> attributeTypes, Collection<String> values, QueryOption... options) {
       List<String> typeIds = getLongIds(attributeTypes);
       return new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeIds, new LinkedList<String>(values), options);
    }
 
    @Override
-   public Predicate createAttributeExistsSearch(Collection<? extends IAttributeType> attributeTypes) {
+   public Predicate createAttributeExistsSearch(Collection<? extends AttributeTypeId> attributeTypes) {
       List<String> typeIds = getLongIds(attributeTypes);
       return new Predicate(SearchMethod.EXISTS_TYPE, Arrays.asList("attrType"), typeIds);
    }
 
    @Override
-   public Predicate createAttributeNotExistsSearch(Collection<? extends IAttributeType> attributeTypes) {
+   public Predicate createAttributeNotExistsSearch(Collection<? extends AttributeTypeId> attributeTypes) {
       List<String> typeIds = getLongIds(attributeTypes);
       return new Predicate(SearchMethod.NOT_EXISTS_TYPE, Arrays.asList("attrType"), typeIds);
    }

@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
@@ -67,12 +66,12 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
    public void addWithTables(AbstractSqlWriter writer) throws OseeCoreException {
       String gammaAlias = writer.getNextAlias(GAMMA_WITH);
       StringBuilder gammaSb = new StringBuilder();
-      Collection<? extends IAttributeType> types = criteria.getTypes();
+      Collection<AttributeTypeId> types = criteria.getTypes();
       AbstractJoinQuery joinQuery = null;
       String jIdAlias = null;
       if (!criteria.isIncludeAllTypes() && types.size() > 1) {
          Set<AttributeTypeId> typeIds = new HashSet<>();
-         for (IAttributeType type : types) {
+         for (AttributeTypeId type : types) {
             typeIds.add(type);
          }
          jIdAlias = writer.getNextAlias(TableEnum.ID_JOIN_TABLE);

@@ -12,8 +12,8 @@ package org.eclipse.osee.orcs.rest.client.internal.search;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -35,13 +35,13 @@ public interface PredicateFactory {
 
    Predicate createTypeEqualsSearch(Collection<? extends IArtifactType> artifactType);
 
-   Predicate createAttributeTypeSearch(Collection<? extends IAttributeType> attributeTypes, String value, QueryOption... options);
+   Predicate createAttributeTypeSearch(Collection<? extends AttributeTypeId> attributeTypes, String value, QueryOption... options);
 
-   Predicate createAttributeTypeSearch(Collection<? extends IAttributeType> attributeTypes, Collection<String> values, QueryOption... options);
+   Predicate createAttributeTypeSearch(Collection<? extends AttributeTypeId> attributeTypes, Collection<String> values, QueryOption... options);
 
-   Predicate createAttributeExistsSearch(Collection<? extends IAttributeType> attributeTypes);
+   Predicate createAttributeExistsSearch(Collection<? extends AttributeTypeId> attributeTypes);
 
-   Predicate createAttributeNotExistsSearch(Collection<? extends IAttributeType> attributeTypes);
+   Predicate createAttributeNotExistsSearch(Collection<? extends AttributeTypeId> attributeTypes);
 
    Predicate createRelationExistsSearch(Collection<? extends IRelationType> relationTypes);
 

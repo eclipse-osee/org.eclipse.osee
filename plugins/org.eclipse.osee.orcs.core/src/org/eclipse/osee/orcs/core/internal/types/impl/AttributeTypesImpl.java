@@ -121,16 +121,16 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public String getTaggerId(IAttributeType attrType) throws OseeCoreException {
-      XAttributeType type = getType(attrType);
+   public String getTaggerId(AttributeTypeId attributeType) {
+      XAttributeType type = getType(attributeType);
       String value = type.getTaggerId();
       return Strings.isValid(value) ? value : Strings.emptyString();
    }
 
    @Override
-   public boolean isTaggable(IAttributeType attrType) throws OseeCoreException {
+   public boolean isTaggable(AttributeTypeId attributeType) {
       boolean toReturn = false;
-      String taggerId = getTaggerId(attrType);
+      String taggerId = getTaggerId(attributeType);
       if (taggerId != null) {
          toReturn = Strings.isValid(taggerId.trim());
       }

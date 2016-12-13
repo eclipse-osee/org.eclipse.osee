@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
@@ -51,7 +50,7 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
 
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
-      Collection<? extends IAttributeType> types = criteria.getTypes();
+      Collection<AttributeTypeId> types = criteria.getTypes();
 
       writer.writeEquals(artAlias, txsAlias, "gamma_id");
       writer.writeAndLn();
@@ -65,7 +64,7 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
 
       if (types.size() > 1) {
          Set<AttributeTypeId> typeIds = new HashSet<>();
-         for (IAttributeType type : types) {
+         for (AttributeTypeId type : types) {
             typeIds.add(type);
          }
          joinQuery = writer.writeJoin(typeIds);
@@ -77,7 +76,7 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
          writer.write(".query_id = ?");
          writer.addParameter(joinQuery.getQueryId());
       } else {
-         IAttributeType type = types.iterator().next();
+         AttributeTypeId type = types.iterator().next();
          writer.write("attr.attr_type_id = ?");
          writer.addParameter(type);
       }

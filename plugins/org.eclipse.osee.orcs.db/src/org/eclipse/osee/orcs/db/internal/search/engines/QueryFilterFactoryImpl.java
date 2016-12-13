@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -23,7 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.executor.admin.HasCancellation;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
@@ -46,9 +49,6 @@ import org.eclipse.osee.orcs.db.internal.search.util.AttributeDataMatcher;
 import org.eclipse.osee.orcs.db.internal.search.util.LoadDataBuffer;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 /**
  * @author Roberto E. Escobar
@@ -204,7 +204,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
          for (CriteriaAttributeKeywords criteria : criterias) {
             cancellation.checkForCancelled();
             Collection<String> valuesToMatch = criteria.getValues();
-            Collection<? extends IAttributeType> typesFilter = criteria.getTypes();
+            Collection<AttributeTypeId> typesFilter = criteria.getTypes();
             QueryOption[] options = criteria.getOptions();
             List<MatchLocation> matches = matcher.process(cancellation, data, valuesToMatch, typesFilter, options);
             if (Conditions.hasValues(matches)) {

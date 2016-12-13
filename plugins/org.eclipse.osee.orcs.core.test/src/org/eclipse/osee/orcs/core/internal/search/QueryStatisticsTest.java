@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.core.internal.search;
 
 import java.util.Collection;
 import java.util.Collections;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -29,7 +29,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link QueryStatisticsImpl}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class QueryStatisticsTest {
@@ -47,7 +47,7 @@ public class QueryStatisticsTest {
 
    private static QueryData createQueryData(String value) {
       QueryData queryData = new QueryData(new CriteriaSet(), OptionsUtil.createOptions());
-      Collection<? extends IAttributeType> types = Collections.singleton(CoreAttributeTypes.Name);
+      Collection<AttributeTypeId> types = Collections.singleton(CoreAttributeTypes.Name);
       queryData.addCriteria(new CriteriaAttributeKeywords(false, types, null, value, QueryOption.TOKEN_DELIMITER__ANY,
          QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_COUNT__IGNORE, QueryOption.CASE__MATCH));
       return queryData;

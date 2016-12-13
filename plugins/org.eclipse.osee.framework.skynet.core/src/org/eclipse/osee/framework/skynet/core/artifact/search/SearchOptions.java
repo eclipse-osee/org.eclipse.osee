@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 
 /**
@@ -21,7 +22,7 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
  */
 public class SearchOptions {
 
-   private final Collection<IAttributeType> attributeTypeGuids = new HashSet<>();
+   private final Collection<AttributeTypeId> attributeTypes = new HashSet<>();
    private final Collection<IArtifactType> artifactTypeGuids = new HashSet<>();
    private DeletionFlag deletionFlag;
    private boolean isMatchWordOrder;
@@ -53,22 +54,20 @@ public class SearchOptions {
       return isExactMatch;
    }
 
-   public Collection<IAttributeType> getAttributeTypeFilter() {
-      return attributeTypeGuids;
+   public Collection<AttributeTypeId> getAttributeTypeFilter() {
+      return attributeTypes;
    }
 
-   public void setAttributeTypeFilter(IAttributeType... typeFilter) {
-      for (IAttributeType attributeType : typeFilter) {
-         addAttributeTypeFilter(attributeType);
-      }
+   public void setAttributeTypeFilter(AttributeTypeId[] typeFilter) {
+      attributeTypes.addAll(Arrays.asList(typeFilter));
    }
 
    public void clearTypeFilter() {
-      attributeTypeGuids.clear();
+      attributeTypes.clear();
    }
 
-   public void addAttributeTypeFilter(IAttributeType type) {
-      attributeTypeGuids.add(type);
+   public void addAttributeTypeFilter(AttributeTypeId type) {
+      attributeTypes.add(type);
    }
 
    public void setDeletedIncluded(DeletionFlag deletionFlag) {
@@ -93,7 +92,7 @@ public class SearchOptions {
 
    @Override
    public String toString() {
-      return "SearchOptions [attributeTypeGuids=" + attributeTypeGuids + ", artifactTypeGuids=" + artifactTypeGuids + ", isIncludeDeleted=" + getDeletionFlag() + ", isMatchWordOrder=" + isMatchWordOrder + ", isCaseSensive=" + isCaseSensive + ", isExactMatch=" + isExactMatch + "]";
+      return "SearchOptions [attributeTypeGuids=" + attributeTypes + ", artifactTypeGuids=" + artifactTypeGuids + ", isIncludeDeleted=" + getDeletionFlag() + ", isMatchWordOrder=" + isMatchWordOrder + ", isCaseSensive=" + isCaseSensive + ", isExactMatch=" + isExactMatch + "]";
    }
 
    public void setArtifactTypeFilter(IArtifactType[] artifactTypeFilter) {

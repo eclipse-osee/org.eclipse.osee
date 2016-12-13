@@ -15,10 +15,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -148,24 +148,24 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder andExists(IAttributeType... attributeType) {
+   public QueryBuilder andExists(AttributeTypeId... attributeType) {
       return andExists(Arrays.asList(attributeType));
    }
 
    @Override
-   public QueryBuilder andExists(Collection<? extends IAttributeType> attributeTypes) {
+   public QueryBuilder andExists(Collection<? extends AttributeTypeId> attributeTypes) {
       predicates.add(predicateFactory.createAttributeExistsSearch(attributeTypes));
       return this;
    }
 
    @Override
-   public QueryBuilder andNotExists(IAttributeType attributeType) {
+   public QueryBuilder andNotExists(AttributeTypeId attributeType) {
       predicates.add(predicateFactory.createAttributeNotExistsSearch(Collections.singleton(attributeType)));
       return this;
    }
 
    @Override
-   public QueryBuilder andNotExists(Collection<? extends IAttributeType> attributeTypes) {
+   public QueryBuilder andNotExists(Collection<? extends AttributeTypeId> attributeTypes) {
       predicates.add(predicateFactory.createAttributeNotExistsSearch(attributeTypes));
       return this;
    }
@@ -200,18 +200,18 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder and(IAttributeType attributeType, Collection<String> values, QueryOption... options) {
+   public QueryBuilder and(AttributeTypeId attributeType, Collection<String> values, QueryOption... options) {
       predicates.add(predicateFactory.createAttributeTypeSearch(Collections.singleton(attributeType), values, options));
       return this;
    }
 
    @Override
-   public QueryBuilder and(IAttributeType attributeType, String value, QueryOption... options) {
+   public QueryBuilder and(AttributeTypeId attributeType, String value, QueryOption... options) {
       return and(Collections.singleton(attributeType), value, options);
    }
 
    @Override
-   public QueryBuilder and(Collection<? extends IAttributeType> attributeTypes, String value, QueryOption... options) {
+   public QueryBuilder and(Collection<? extends AttributeTypeId> attributeTypes, String value, QueryOption... options) {
       predicates.add(predicateFactory.createAttributeTypeSearch(attributeTypes, value, options));
       return this;
    }

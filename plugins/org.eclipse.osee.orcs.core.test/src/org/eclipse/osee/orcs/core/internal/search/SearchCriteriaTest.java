@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.core.internal.search;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Collections;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -71,7 +71,7 @@ public class SearchCriteriaTest {
 
       when(cache.isTaggable(CoreAttributeTypes.FavoriteBranch)).thenReturn(false);
 
-      ArrayList<IAttributeType> types = new ArrayList<>();
+      ArrayList<AttributeTypeId> types = new ArrayList<>();
       types.add(CoreAttributeTypes.Active);
       types.add(CoreAttributeTypes.FavoriteBranch);
 

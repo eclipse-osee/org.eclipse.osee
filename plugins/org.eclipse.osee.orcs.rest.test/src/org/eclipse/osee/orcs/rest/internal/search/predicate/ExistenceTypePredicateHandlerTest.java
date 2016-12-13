@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -49,7 +49,7 @@ public class ExistenceTypePredicateHandlerTest {
    @Captor
    private ArgumentCaptor<IRelationType> relationTypeCaptor;
    @Captor
-   private ArgumentCaptor<Collection<IAttributeType>> attrTypeSideCaptor;
+   private ArgumentCaptor<Collection<AttributeTypeId>> attrTypeSideCaptor;
 
    @Before
    public void initialize() {
@@ -117,7 +117,7 @@ public class ExistenceTypePredicateHandlerTest {
       handler.handle(builder, testPredicate);
       verify(builder).andExists(attrTypeSideCaptor.capture());
       Assert.assertEquals(1, attrTypeSideCaptor.getAllValues().size());
-      List<IAttributeType> attrTypes = new ArrayList<>(attrTypeSideCaptor.getValue());
+      List<AttributeTypeId> attrTypes = new ArrayList<>(attrTypeSideCaptor.getValue());
       Assert.assertEquals(attrTypes.get(0), Long.valueOf(attrUuid));
    }
 
@@ -134,7 +134,7 @@ public class ExistenceTypePredicateHandlerTest {
 
       verify(builder).andExists(attrTypeSideCaptor.capture());
       Assert.assertEquals(1, attrTypeSideCaptor.getAllValues().size());
-      Iterator<IAttributeType> iterator = attrTypeSideCaptor.getValue().iterator();
+      Iterator<AttributeTypeId> iterator = attrTypeSideCaptor.getValue().iterator();
       Assert.assertEquals(iterator.next(), Long.valueOf(attrType1));
       Assert.assertEquals(iterator.next(), Long.valueOf(attrType2));
    }
@@ -148,7 +148,7 @@ public class ExistenceTypePredicateHandlerTest {
       Predicate testPredicate =
          new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, values, QueryOption.TOKEN_DELIMITER__ANY);
       handler.handle(builder, testPredicate);
-      verify(builder, never()).andExists(anyCollectionOf(IAttributeType.class));
+      verify(builder, never()).andExists(anyCollectionOf(AttributeTypeId.class));
 
       value = "12A4G";
       typeParameters = Collections.singletonList("relType");

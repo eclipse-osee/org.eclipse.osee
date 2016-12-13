@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.util;
 
+import com.google.common.collect.Lists;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +18,7 @@ import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.executor.admin.HasCancellation;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -32,7 +33,6 @@ import org.eclipse.osee.orcs.core.ds.IndexedResource;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
-import com.google.common.collect.Lists;
 
 /**
  * @author Roberto E. Escobar
@@ -57,7 +57,7 @@ public class AttributeDataMatcher {
       return toReturn;
    }
 
-   public List<MatchLocation> process(HasCancellation cancellation, AttributeData data, Collection<String> valuesToMatch, Collection<? extends IAttributeType> typesFilter, QueryOption... options) throws Exception {
+   public List<MatchLocation> process(HasCancellation cancellation, AttributeData data, Collection<String> valuesToMatch, Collection<AttributeTypeId> typesFilter, QueryOption... options) throws Exception {
       logger.debug("Attribute Data match for attr[%s] - [%s]", data.getLocalId(), valuesToMatch);
       if (Conditions.hasValues(options)) {
          return matchTokenizedValue(cancellation, data, valuesToMatch, typesFilter, options);
@@ -85,9 +85,9 @@ public class AttributeDataMatcher {
       return matched;
    }
 
-   private List<MatchLocation> matchTokenizedValue(HasCancellation cancellation, AttributeData data, Iterable<String> valuesToMatch, Collection<? extends IAttributeType> typesFilter, QueryOption... options) {
+   private List<MatchLocation> matchTokenizedValue(HasCancellation cancellation, AttributeData data, Iterable<String> valuesToMatch, Collection<AttributeTypeId> typesFilter, QueryOption... options) {
       AttributeIndexedResource source = adapt(data);
-      IAttributeType attrType = attrTypes.get(source.getTypeUuid());
+      AttributeTypeId attrType = AttributeTypeId.valueOf(source.getTypeUuid());
       if (typesFilter.contains(attrType)) {
          checkCancelled(cancellation);
          String taggerId = attrTypes.getTaggerId(attrType);
