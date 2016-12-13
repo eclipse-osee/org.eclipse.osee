@@ -62,6 +62,8 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
       STATUS,
       MESSAGE_ARGS;
 
+      public static final Long SENTINAL = -1L;
+
       Long from(Object[] entry) {
          Object obj = entry[ordinal()];
          if (obj instanceof Long) {
@@ -198,7 +200,8 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    public Long createEntry(Long typeId, Integer status, Object... messageArgs) {
       if (enabled) {
          Object[] threadRootEntry = activityMonitor.getThreadRootEntry();
-         Long entryId = LogEntry.ENTRY_ID.from(threadRootEntry);
+         // Should never have a null rootEntry, but still want to log message with sentinals
+         Long entryId = threadRootEntry == null ? LogEntry.SENTINAL : LogEntry.ENTRY_ID.from(threadRootEntry);
          return createEntry(typeId, entryId, status, messageArgs);
       }
       return 0L;
@@ -208,9 +211,10 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    public Long createEntry(Long typeId, Long parentId, Integer status, Object... messageArgs) {
       if (enabled) {
          Object[] rootEntry = activityMonitor.getThreadRootEntry();
-         Long accountId = LogEntry.ACCOUNT_ID.from(rootEntry);
-         Long serverId = LogEntry.SERVER_ID.from(rootEntry);
-         Long clientId = LogEntry.CLIENT_ID.from(rootEntry);
+         // Should never have a null rootEntry, but still want to log message with sentinals
+         Long accountId = rootEntry == null ? LogEntry.SENTINAL : LogEntry.ACCOUNT_ID.from(rootEntry);
+         Long serverId = rootEntry == null ? LogEntry.SENTINAL : LogEntry.SERVER_ID.from(rootEntry);
+         Long clientId = rootEntry == null ? LogEntry.SENTINAL : LogEntry.CLIENT_ID.from(rootEntry);
          Object[] entry =
             createEntry(parentId, typeId, accountId, serverId, clientId, computeDuration(), status, messageArgs);
          return LogEntry.ENTRY_ID.from(entry);
@@ -355,8 +359,7 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    private Long computeDuration() {
       long timeOfUpdate = System.currentTimeMillis();
       Object[] rootEntry = activityMonitor.getThreadRootEntry();
-      LogEntry.START_TIME.from(rootEntry);
-      return timeOfUpdate - LogEntry.START_TIME.from(rootEntry);
+      return timeOfUpdate = rootEntry == null ? LogEntry.SENTINAL : timeOfUpdate - LogEntry.START_TIME.from(rootEntry);
    }
 
    /**
