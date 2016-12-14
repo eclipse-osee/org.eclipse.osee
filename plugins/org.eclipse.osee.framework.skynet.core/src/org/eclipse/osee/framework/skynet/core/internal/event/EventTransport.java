@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.client.OseeClientSession;
+import org.eclipse.osee.framework.core.data.IdeClientSession;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -94,7 +94,7 @@ public class EventTransport implements Transport, IFrameworkEventListener {
             sender = (Sender) sourceObject;
          } else {
             // create new sender based on sourceObject
-            OseeClientSession session = ClientSessionManager.getSession();
+            IdeClientSession session = ClientSessionManager.getSession();
             sender = Sender.createSender(sourceObject, session);
          }
       }

@@ -27,10 +27,10 @@ import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
 import org.eclipse.osee.framework.core.client.GuestCredentialProvider;
 import org.eclipse.osee.framework.core.client.ICredentialProvider;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
-import org.eclipse.osee.framework.core.client.OseeClientSession;
 import org.eclipse.osee.framework.core.client.server.HttpServer;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
+import org.eclipse.osee.framework.core.data.IdeClientSession;
 import org.eclipse.osee.framework.core.data.OseeClientInfo;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeCredential;
@@ -54,7 +54,7 @@ public class InternalClientSessionManager {
 
    private final OseeClientInfo clientInfo;
    private OseeSessionGrant oseeSessionGrant;
-   private OseeClientSession oseeSession;
+   private IdeClientSession oseeSession;
 
    private InternalClientSessionManager() {
       clearData();
@@ -89,7 +89,7 @@ public class InternalClientSessionManager {
       throw new OseeAuthenticationRequiredException("Session is invalid - authentication is required");
    }
 
-   public OseeClientSession getOseeSession() throws OseeAuthenticationRequiredException {
+   public IdeClientSession getOseeSession() throws OseeAuthenticationRequiredException {
       ensureSessionCreated();
       if (isSessionValid()) {
          return oseeSession;
@@ -101,9 +101,16 @@ public class InternalClientSessionManager {
       authenticate(new GuestCredentialProvider());
    }
 
-   public OseeClientSession getSafeSession() {
-      return new OseeClientSession("Invalid", clientInfo.getClientMachineName(), "N/A", clientInfo.getClientAddress(),
-         clientInfo.getPort(), clientInfo.getVersion(), "N/A");
+   public IdeClientSession getSafeSession() {
+      IdeClientSession session = new IdeClientSession();
+      session.setId("Invalid");
+      session.setClientName(clientInfo.getClientMachineName());
+      session.setClientAddress(clientInfo.getClientAddress());
+      session.setUserId("N/A");
+      session.setClientPort(String.valueOf(clientInfo.getPort()));
+      session.setClientVersion(clientInfo.getVersion());
+      session.setAuthenticationProtocol("N/A");
+      return session;
    }
 
    public synchronized void authenticate(ICredentialProvider credentialProvider) throws OseeCoreException {
@@ -115,9 +122,14 @@ public class InternalClientSessionManager {
             if (oseeSessionGrant == null) {
                return;
             }
-            oseeSession = new OseeClientSession(oseeSessionGrant.getSessionId(), clientInfo.getClientMachineName(),
-               oseeSessionGrant.getUserToken().getUserId(), clientInfo.getClientAddress(), clientInfo.getPort(),
-               clientInfo.getVersion(), oseeSessionGrant.getAuthenticationProtocol());
+            oseeSession = new IdeClientSession();
+            oseeSession.setId("Invalid");
+            oseeSession.setClientName(clientInfo.getClientMachineName());
+            oseeSession.setClientAddress(clientInfo.getClientAddress());
+            oseeSession.setUserId(oseeSessionGrant.getUserToken().getUserId());
+            oseeSession.setClientPort(String.valueOf(clientInfo.getPort()));
+            oseeSession.setClientVersion(clientInfo.getVersion());
+            oseeSession.setAuthenticationProtocol(oseeSessionGrant.getAuthenticationProtocol());
          } catch (Exception ex) {
             OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.SEVERE, ex));
             OseeCoreException.wrapAndThrow(ex);

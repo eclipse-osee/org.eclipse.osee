@@ -16,8 +16,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import org.eclipse.osee.cache.admin.Cache;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.client.OseeClientSession;
 import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.IdeClientSession;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
@@ -103,7 +103,7 @@ public class CurrentUserProvider extends LazyObject<User> {
                      "You are logged into OSEE as \"Guest\".  If this is unexpected notify your OSEE admin");
                }
             }
-            OseeClientSession session = ClientSessionManager.getSession();
+            IdeClientSession session = ClientSessionManager.getSession();
             try {
                String userId = session.getUserId();
                if (Strings.isValid(userId) && !"bootstrap".equals(userId)) {

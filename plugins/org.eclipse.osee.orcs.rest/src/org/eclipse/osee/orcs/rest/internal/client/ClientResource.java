@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Consumer;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -31,6 +32,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.data.IdeClientSession;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -48,7 +50,6 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.rest.internal.client.model.ClientDetails;
 import org.eclipse.osee.orcs.rest.internal.client.model.ClientInfo;
-import org.eclipse.osee.orcs.rest.internal.client.model.ClientSession;
 import org.eclipse.osee.orcs.rest.internal.client.model.Sessions;
 
 /**
@@ -78,14 +79,22 @@ public class ClientResource {
       return Response.ok(activeSessions).build();
    }
 
+   @PUT
+   @Path("ideclient")
+   @Produces({MediaType.APPLICATION_JSON})
+   public Response connectIdeClient(IdeClientSession clientSession) {
+      System.err.println("connect ide client");
+      return Response.ok().build();
+   }
+
    @GET
    @Path("client/details")
    @Produces({MediaType.APPLICATION_JSON})
    public Response getAllDetails() {
       ClientDetails details = new ClientDetails();
-      Map<ClientSession, ClientInfo> activeSessions = getActiveSessions();
-      for (Entry<ClientSession, ClientInfo> entry : activeSessions.entrySet()) {
-         ClientSession session = entry.getKey();
+      Map<IdeClientSession, ClientInfo> activeSessions = getActiveSessions();
+      for (Entry<IdeClientSession, ClientInfo> entry : activeSessions.entrySet()) {
+         IdeClientSession session = entry.getKey();
          details.getSessions().add(session);
          ClientInfo info = entry.getValue();
          increment(details.releaseCount, info.getVersion());
@@ -113,7 +122,7 @@ public class ClientResource {
       }
 
       Consumer<JdbcStatement> consumer = stmt -> {
-         ClientSession session = createSession(stmt, uriInfo);
+         IdeClientSession session = createSession(stmt, uriInfo);
          String key = session.getClientAddress() + session.getClientPort();
          Boolean alive = portToAlive.get(key);
          if (alive == null) {
@@ -152,13 +161,13 @@ public class ClientResource {
       if (!GUID.isValid(sessionId)) {
          return Response.ok(String.format("Session [%s] is invalid", sessionId)).build();
       }
-      ClientSession session = getClientSession(sessionId);
+      IdeClientSession session = getClientSession(sessionId);
       String infoStr = getInfoStr(session, true);
       return Response.ok(infoStr).build();
    }
 
-   private static ClientSession createSession(JdbcStatement stmt, UriInfo uriInfo) {
-      ClientSession session = new ClientSession(stmt.getString("CLIENT_ADDRESS"), stmt.getString("CLIENT_PORT"),
+   private static IdeClientSession createSession(JdbcStatement stmt, UriInfo uriInfo) {
+      IdeClientSession session = new IdeClientSession(stmt.getString("CLIENT_ADDRESS"), stmt.getString("CLIENT_PORT"),
          stmt.getString("USER_ID"), stmt.getString("CLIENT_VERSION"), stmt.getString("SESSION_ID"),
          DateUtil.get(stmt.getDate("CREATED_ON"), DateUtil.MMDDYYHHMM));
       URI location =
@@ -168,12 +177,12 @@ public class ClientResource {
       return session;
    }
 
-   private Map<ClientSession, ClientInfo> getActiveSessions() {
-      Map<ClientSession, ClientInfo> sessionToInfo = new HashMap<>(200);
+   private Map<IdeClientSession, ClientInfo> getActiveSessions() {
+      Map<IdeClientSession, ClientInfo> sessionToInfo = new HashMap<>(200);
       Set<String> pinged = new HashSet<>(200);
 
       Consumer<JdbcStatement> consumer = stmt -> {
-         ClientSession session = createSession(stmt, uriInfo);
+         IdeClientSession session = createSession(stmt, uriInfo);
          String key = session.getClientAddress() + session.getClientPort();
          // don't ping same host:port twice
          if (!pinged.contains(key)) {
@@ -211,7 +220,7 @@ public class ClientResource {
    }
 
    private ClientInfo getClientInfo(String sessionId) {
-      ClientSession session = getClientSession(sessionId);
+      IdeClientSession session = getClientSession(sessionId);
       String infoStr = getInfoStr(session, false);
       if (Strings.isValid(infoStr)) {
          return new ClientInfo(infoStr);
@@ -219,12 +228,12 @@ public class ClientResource {
       return null;
    }
 
-   private ClientSession getClientSession(String sessionId) {
-      return jdbcService.getClient().fetch((ClientSession) null, stmt -> createSession(stmt, uriInfo),
+   private IdeClientSession getClientSession(String sessionId) {
+      return jdbcService.getClient().fetch((IdeClientSession) null, stmt -> createSession(stmt, uriInfo),
          "select * from osee_session where session_id = ?", sessionId);
    }
 
-   private boolean alive(ClientSession session) throws OseeCoreException {
+   private boolean alive(IdeClientSession session) throws OseeCoreException {
       boolean alive = isHostAlive(session);
       if (!alive) {
          return false;
@@ -245,7 +254,7 @@ public class ClientResource {
       return alive;
    }
 
-   private boolean isHostAlive(ClientSession session) {
+   private boolean isHostAlive(IdeClientSession session) {
       boolean reachable = false;
       try {
          String osName = System.getProperty("os.name");
@@ -260,7 +269,7 @@ public class ClientResource {
       return reachable;
    }
 
-   private String getInfoStr(ClientSession session, boolean withLog) throws OseeCoreException {
+   private String getInfoStr(IdeClientSession session, boolean withLog) throws OseeCoreException {
       try {
          boolean alive = isHostAlive(session);
          if (!alive) {

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.core.data.IdeClientSession;
 
 /**
  * @author Donald G. Dunne
@@ -25,7 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class ClientDetails {
 
-   public List<ClientSession> sessions = new LinkedList<>();
+   public List<IdeClientSession> sessions = new LinkedList<>();
    public Map<String, Integer> releaseCount = new HashMap<>();
    public Map<String, Collection<String>> releaseToUserId = new HashMap<>(10);
    public Set<String> networkReleaseUserIds = new HashSet<>();
@@ -33,11 +34,11 @@ public class ClientDetails {
    public ClientDetails() {
    }
 
-   public List<ClientSession> getSessions() {
+   public List<IdeClientSession> getSessions() {
       return sessions;
    }
 
-   public void setSessions(List<ClientSession> sessions) {
+   public void setSessions(List<IdeClientSession> sessions) {
       this.sessions = sessions;
    }
 

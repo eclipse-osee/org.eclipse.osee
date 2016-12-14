@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.client.demo.PopulateDemoActions;
 import org.eclipse.osee.ats.client.demo.PopulateDemoAgile;
 import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.client.OseeClientSession;
+import org.eclipse.osee.framework.core.data.IdeClientSession;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -48,7 +48,7 @@ public class PopulateDemoDatabaseTest {
       try {
          ClientSessionManager.releaseSession();
          // Re-authenticate so we can continue
-         OseeClientSession session = ClientSessionManager.getSession();
+         IdeClientSession session = ClientSessionManager.getSession();
          UserManager.releaseUser();
 
          Assert.assertEquals("Must run populate as Joe Smith (3333)", DemoUsers.Joe_Smith.getUserId(),

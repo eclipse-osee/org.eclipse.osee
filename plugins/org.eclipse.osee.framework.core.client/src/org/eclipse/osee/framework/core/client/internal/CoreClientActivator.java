@@ -16,7 +16,10 @@ import org.eclipse.osee.framework.core.client.server.HttpServer;
 import org.osgi.framework.BundleContext;
 
 /**
- * The activator class controls the plug-in life cycle
+ * KEEP<br/>
+ * Start and stop the client httpServer and release the session upon stop.
+ *
+ * @author Donald G. Dunne
  */
 public class CoreClientActivator extends Plugin {
 

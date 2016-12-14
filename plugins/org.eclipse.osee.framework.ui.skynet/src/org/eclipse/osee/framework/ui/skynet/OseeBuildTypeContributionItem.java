@@ -56,7 +56,7 @@ public class OseeBuildTypeContributionItem extends OseeStatusContributionItem {
    private String getClientVersion() {
       String version = "N/A";
       try {
-         version = ClientSessionManager.getSession().getVersion();
+         version = ClientSessionManager.getSession().getClientVersion();
       } catch (OseeCoreException ex) {
          // Do Nothing
       }

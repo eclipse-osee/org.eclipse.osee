@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.client.integration.tests.ats.AtsTest_Ats_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsCoreClient_Suite;
 import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.client.OseeClientSession;
+import org.eclipse.osee.framework.core.data.IdeClientSession;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
@@ -49,7 +49,7 @@ public class AtsTest_AllAts_Suite {
          ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
       assertTrue("Should be run on demo database.", TestUtil.isDemoDb());
 
-      OseeClientSession session = ClientSessionManager.getSession();
+      IdeClientSession session = ClientSessionManager.getSession();
       assertEquals("Must run populate as Joe Smith (3333)", DemoUsers.Joe_Smith.getUserId(), session.getUserId());
       assertEquals("Must run populate as Joe Smith (3333)", DemoUsers.Joe_Smith.getUserId(),
          UserManager.getUser().getUserId());

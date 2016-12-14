@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Properties;
 import org.eclipse.osee.framework.core.client.internal.InternalClientSessionManager;
 import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.IdeClientSession;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -43,7 +44,7 @@ public class ClientSessionManager {
       return InternalClientSessionManager.getInstance().getOseeSessionGrant();
    }
 
-   public static OseeClientSession getSession() throws OseeAuthenticationRequiredException {
+   public static IdeClientSession getSession() throws OseeAuthenticationRequiredException {
       return InternalClientSessionManager.getInstance().getOseeSession();
    }
 
@@ -107,7 +108,7 @@ public class ClientSessionManager {
       return getSessionGrant().getDatabaseInfo().toString();
    }
 
-   public static OseeClientSession getSafeSession() {
+   public static IdeClientSession getSafeSession() {
       return InternalClientSessionManager.getInstance().getSafeSession();
    }
 

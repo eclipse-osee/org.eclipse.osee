@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.rest.internal.client.model;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.core.data.IdeClientSession;
 
 /**
  * @author Donald G. Dunne
@@ -20,13 +21,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Sessions {
 
-   public List<ClientSession> sessions = new LinkedList<>();
+   public List<IdeClientSession> sessions = new LinkedList<>();
 
-   public void add(ClientSession clientSession) {
+   public void add(IdeClientSession clientSession) {
       sessions.add(clientSession);
    }
 
-   public List<ClientSession> get() {
+   public List<IdeClientSession> get() {
       return sessions;
    }
 
