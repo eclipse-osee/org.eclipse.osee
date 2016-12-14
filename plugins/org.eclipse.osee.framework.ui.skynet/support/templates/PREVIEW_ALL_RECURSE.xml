@@ -7638,7 +7638,34 @@
 	</w:docPr>
 	<w:body>
 		<wx:sect>
-			INSERT_ARTIFACT_HERE
+			<ns0:Artifact>
+				<w:p>
+					<Set_Name>
+						<w:r>
+							<w:t>Default</w:t>
+						</w:r>
+					</Set_Name>
+					<Outline>
+						<HeadingAttribute>
+							<w:r>
+								<w:t>Name</w:t>
+							</w:r>
+						</HeadingAttribute>
+						<RecurseChildren>
+							<w:r>
+								<w:t>true</w:t>
+							</w:r>
+						</RecurseChildren>
+					</Outline>
+					<Attribute>
+						<Name>
+							<w:r>
+								<w:t>*</w:t>
+							</w:r>
+						</Name>
+					</Attribute>
+				</w:p>
+			</ns0:Artifact>
 			<w:p/>
 			<w:sectPr>
 				<w:hdr w:type="odd">

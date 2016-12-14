@@ -87,13 +87,13 @@ public class WordTemplateProcessor {
 
    private static final String ARTIFACT = "Artifact";
    private static final String INSERT_LINK = "INSERT_LINK_HERE";
-   private static final String INSERT_ARTIFACT_HERE = "INSERT_ARTIFACT_HERE";
    private static final String NESTED_TEMPLATE = "NestedTemplate";
    public static final String PGNUMTYPE_START_1 = "<w:pgNumType [^>]*w:start=\"1\"/>";
    public static final String STYLES = "<w:lists>.*?</w:lists><w:styles>.*?</w:styles>";
 
-   private static final Pattern headElementsPattern = Pattern.compile("(" + INSERT_ARTIFACT_HERE + ")" + "|" + INSERT_LINK,
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern headElementsPattern =
+      Pattern.compile("<((\\w+:)?(" + ARTIFACT + "))>(.*?)</\\1>|" + INSERT_LINK,
+         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
    //The following REGEX are to be used once the Whole Word Content xml no longer contains custom xml tags
    //NOTE: will have to have new tag for extension processor to know where to insert link
@@ -444,9 +444,9 @@ public class WordTemplateProcessor {
          Matcher matcher = headElementsPattern.matcher(template);
 
          if (matcher.find()) {
-            String elementType = matcher.group(0);
+            String elementType = matcher.group(3);
 
-            if (elementType != null && elementType.equals(INSERT_ARTIFACT_HERE) && !artifacts.isEmpty()) {
+            if (elementType != null && elementType.equals(ARTIFACT) && !artifacts.isEmpty()) {
                Artifact artifact = artifacts.iterator().next();
                if (artifact.isAttributeTypeValid(CoreAttributeTypes.ParagraphNumber)) {
                   String paragraphNum = artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
