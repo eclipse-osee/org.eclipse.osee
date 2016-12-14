@@ -18,7 +18,6 @@ public class OseeServerContext {
    private static final String BASE_CONTEXT = "osee";
 
    public static final String MANAGER_CONTEXT = asAbsoluteContext("manager");
-   public static final String SESSION_CONTEXT = asAbsoluteContext("session");
    public static final String CLIENT_LOOPBACK_CONTEXT = asAbsoluteContext("client/loopback");
    public static final String ARTIFACT_CONTEXT = asAbsoluteContext("artifact");
 

@@ -96,10 +96,6 @@ public class AuthenticationDialog extends OseeMessageDialog {
       authenticationComposite.setPassword(password);
    }
 
-   private void setDomain(String domain) {
-      authenticationComposite.setDomain(domain);
-   }
-
    private void setStorageAllowed(boolean isStorageAllowed) {
       authenticationComposite.setStorageAllowed(isStorageAllowed);
    }
@@ -110,10 +106,6 @@ public class AuthenticationDialog extends OseeMessageDialog {
 
    private String getUserName() {
       return authenticationComposite.getUserName();
-   }
-
-   private String getDomain() {
-      return authenticationComposite.getDomain();
    }
 
    private boolean isStorageAllowed() {
@@ -155,7 +147,6 @@ public class AuthenticationDialog extends OseeMessageDialog {
             String dialogTitle = "Authentication Failed";
             String endMsg = "Shutting down the workbench.";
             String user = "";
-            String domain = "";
             String message = "";
             boolean isStorageAllowed = false;
             boolean isGuestLogin = false;
@@ -167,14 +158,12 @@ public class AuthenticationDialog extends OseeMessageDialog {
                if (numberOfTries != 0) {
                   dialog.setUserName(user);
                   dialog.setPassword("");
-                  dialog.setDomain(domain);
                   dialog.setStorageAllowed(isStorageAllowed);
                   dialog.setGuestLogin(isGuestLogin);
                }
                int result = dialog.open();
 
                user = dialog.getUserName();
-               domain = dialog.getDomain();
                isStorageAllowed = dialog.isStorageAllowed();
                isGuestLogin = dialog.isGuestLogin();
 

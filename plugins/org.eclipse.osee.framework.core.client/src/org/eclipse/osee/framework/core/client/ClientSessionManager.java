@@ -65,15 +65,15 @@ public class ClientSessionManager {
    }
 
    public static String getDataStoreLoginName() throws OseeAuthenticationRequiredException {
-      return getSessionGrant().getDatabaseInfo().getDatabaseLoginName();
+      return getSessionGrant().getDbLogin();
    }
 
    public static String getDataStoreDriver() throws OseeAuthenticationRequiredException {
-      return getSessionGrant().getDatabaseInfo().getDriver();
+      return getSessionGrant().getDbDriver();
    }
 
    public static String getDataStoreName() throws OseeAuthenticationRequiredException {
-      return getSessionGrant().getDatabaseInfo().getDatabaseName();
+      return getSessionGrant().getDbDatabaseName();
    }
 
    public static String getDataStorePath() throws OseeAuthenticationRequiredException {
@@ -81,7 +81,7 @@ public class ClientSessionManager {
    }
 
    public static boolean isProductionDataStore() throws OseeAuthenticationRequiredException {
-      return getSessionGrant().getDatabaseInfo().isProduction();
+      return getSessionGrant().isDbIsProduction();
    }
 
    public static Properties getSqlProperties() {
@@ -105,7 +105,7 @@ public class ClientSessionManager {
    }
 
    public static String getDatabaseInfo() throws OseeAuthenticationRequiredException {
-      return getSessionGrant().getDatabaseInfo().toString();
+      return getSessionGrant().toString();
    }
 
    public static IdeClientSession getSafeSession() {

@@ -63,8 +63,8 @@ public final class SessionManagerImpl implements ISessionManager {
 
                Date creationDate = GlobalTime.GreenwichMeanTimestamp();
                Session session = sessionFactory.createNewSession(newSessionId, userToken.getUserId(), creationDate,
-                  credential.getVersion(), credential.getClientMachineName(), credential.getClientAddress(),
-                  credential.getPort());
+                  credential.getClientVersion(), credential.getClientAddress(), credential.getClientAddress(),
+                  Integer.valueOf(credential.getClientPort()));
 
                // if the user is BootStrap we do not want to insert into database since tables may not exist
                if (!SystemUser.BootStrap.equals(userToken)) {

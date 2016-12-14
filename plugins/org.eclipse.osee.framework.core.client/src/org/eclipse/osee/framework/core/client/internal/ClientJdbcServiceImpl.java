@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcClientBuilder;
@@ -28,7 +27,7 @@ import org.eclipse.osee.jdbc.JdbcService;
 
 /**
  * Temporary Service implementation until client is dynamically configured using ConfigAdmin
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class ClientJdbcServiceImpl implements JdbcService {
@@ -107,8 +106,8 @@ public class ClientJdbcServiceImpl implements JdbcService {
       private volatile JdbcClient proxiedClient;
 
       public String getId() {
-         IDatabaseInfo dbInfo = getDbInfo();
-         return dbInfo != null ? dbInfo.getId() : "N/A";
+         OseeSessionGrant dbInfo = getDbInfo();
+         return dbInfo != null ? dbInfo.getDbId() : "N/A";
       }
 
       private boolean isGetId(Method method) {
@@ -137,7 +136,7 @@ public class ClientJdbcServiceImpl implements JdbcService {
 
       private JdbcClient getProxiedClient() {
          if (proxiedClient == null) {
-            IDatabaseInfo dbInfo = getDbInfo();
+            OseeSessionGrant dbInfo = getDbInfo();
             if (dbInfo != null) {
                proxiedClient = newClient(dbInfo);
             }
@@ -145,19 +144,19 @@ public class ClientJdbcServiceImpl implements JdbcService {
          return proxiedClient;
       }
 
-      private IDatabaseInfo getDbInfo() {
+      private OseeSessionGrant getDbInfo() {
          OseeSessionGrant sessionGrant = InternalClientSessionManager.getInstance().getOseeSessionGrant();
-         return sessionGrant != null ? sessionGrant.getDatabaseInfo() : null;
+         return sessionGrant;
       }
 
-      private JdbcClient newClient(IDatabaseInfo dbInfo) {
+      private JdbcClient newClient(OseeSessionGrant sessionGrant) {
          JdbcClientBuilder builder = JdbcClientBuilder.newBuilder()//
-         .dbDriver(dbInfo.getDriver())//
-         .dbUri(dbInfo.getConnectionUrl())//
-         .dbUsername(dbInfo.getDatabaseLoginName())//
-         .production(dbInfo.isProduction());
+            .dbDriver(sessionGrant.getDbDriver())//
+            .dbUri(sessionGrant.getDbUrl())//
+            .dbUsername(sessionGrant.getDbLogin())//
+            .production(sessionGrant.isCreationRequired());
 
-         Properties properties = dbInfo.getConnectionProperties();
+         Properties properties = sessionGrant.getDbConnectionProperties();
          if (properties != null && !properties.isEmpty()) {
             for (Entry<Object, Object> entry : properties.entrySet()) {
                builder.dbParam((String) entry.getKey(), (String) entry.getValue());

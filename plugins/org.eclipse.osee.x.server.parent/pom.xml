@@ -36,7 +36,8 @@
 			<module>../../plugins/org.eclipse.osee.framework.authentication.ldap.core</module>
 			<module>../../plugins/org.eclipse.osee.framework.core.server</module>
 			<module>../../plugins/org.eclipse.osee.framework.core.server.test</module>
-			<module>../../plugins/org.eclipse.osee.framework.manager.servlet</module>
+			<module>../../plugins/org.eclipse.osee.framework.server.ide.api</module>
+			<module>../../plugins/org.eclipse.osee.framework.server.ide</module>
 
 			<module>../../plugins/org.eclipse.osee.web.ui</module>
 			<!-- <module>../../plugins/org.eclipse.osee.web.ui.test</module> -->
@@ -69,7 +70,8 @@
 			<module>../../plugins/org.eclipse.osee.framework.authentication.ldap.core</module>
 			<module>../../plugins/org.eclipse.osee.framework.core.server</module>
 			<module>../../plugins/org.eclipse.osee.framework.core.server.test</module>
-			<module>../../plugins/org.eclipse.osee.framework.manager.servlet</module>
+			<module>../../plugins/org.eclipse.osee.framework.server.ide.api</module>
+			<module>../../plugins/org.eclipse.osee.framework.server.ide</module>
 
 			<module>../../plugins/org.eclipse.osee.web.ui</module>
 			<!-- <module>../../plugins/org.eclipse.osee.web.ui.test</module> -->

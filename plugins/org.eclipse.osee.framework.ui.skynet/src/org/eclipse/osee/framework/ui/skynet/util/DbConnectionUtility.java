@@ -16,12 +16,11 @@ import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
+import org.eclipse.osee.framework.server.ide.api.model.IdeVersion;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
+import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
-import org.eclipse.osee.orcs.rest.client.OseeClient;
-import org.eclipse.osee.orcs.rest.model.IdeClientEndpoint;
-import org.eclipse.osee.orcs.rest.model.IdeVersion;
 
 /**
  * @author Donald G Dunne
@@ -30,6 +29,7 @@ public class DbConnectionUtility {
 
    private static Boolean supported;
    private static Boolean applicationServerAlive;
+   private static ClientEndpoint clientEp;
 
    public static Result areOSEEServicesAvailable() {
       Result toReturn = Result.FalseResult;
@@ -88,17 +88,25 @@ public class DbConnectionUtility {
 
    private static Collection<String> getIdeClientSupportedVersions() {
       IdeVersion clientResult = null;
-
-      OseeClient client = ServiceUtil.getOseeClient();
+      ClientEndpoint client = getClientEndpoint();
       if (client != null) {
-         IdeClientEndpoint endpoint = client.getIdeClientEndpoint();
          try {
-            clientResult = endpoint.getSupportedVersions();
+            clientResult = client.getSupportedVersions();
          } catch (Exception ex) {
             throw JaxRsExceptions.asOseeException(ex);
          }
       }
       return clientResult != null ? clientResult.getVersions() : Collections.<String> emptySet();
+   }
+
+   private static ClientEndpoint getClientEndpoint() {
+      if (clientEp == null) {
+         String appServer = OseeClientProperties.getOseeApplicationServer();
+         String orcsUri = String.format("%s/ide", appServer);
+         JaxRsClient jaxRsClient = JaxRsClient.newBuilder().build();
+         clientEp = jaxRsClient.target(orcsUri).newProxy(ClientEndpoint.class);
+      }
+      return clientEp;
    }
 
 }

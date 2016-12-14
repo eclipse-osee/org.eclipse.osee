@@ -119,4 +119,9 @@ public class IdeClientSession {
       this.clientName = clientName;
    }
 
+   @Override
+   public String toString() {
+      return "IdeClientSession [id=" + id + ", clientAddress=" + clientAddress + ", clientPort=" + clientPort + ", userId=" + userId + ", clientVersion=" + clientVersion + ", sessionId=" + sessionId + ", createdOn=" + createdOn + ", sessionLog=" + sessionLog + ", authenticationProtocol=" + authenticationProtocol + ", clientName=" + clientName + "]";
+   }
+
 }

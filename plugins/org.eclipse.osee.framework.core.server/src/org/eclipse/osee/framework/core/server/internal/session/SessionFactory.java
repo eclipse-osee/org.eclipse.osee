@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.server.internal.session;
 
 import java.util.Date;
 import java.util.Properties;
-import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.model.cache.IOseeTypeFactory;
@@ -52,11 +51,24 @@ public final class SessionFactory implements IOseeTypeFactory {
       Conditions.checkNotNull(session, "Session");
       Conditions.checkNotNull(userToken, "IUserToken");
 
+      final JdbcClientConfig config = jdbcService.getClient().getConfig();
+
       OseeSessionGrant sessionGrant = new OseeSessionGrant(session.getGuid());
       sessionGrant.setAuthenticationProtocol(authenticationType);
       sessionGrant.setCreationRequired(userToken.isCreationRequired());
-      sessionGrant.setUserToken(userToken);
-      sessionGrant.setDatabaseInfo(getDatabaseInfo());
+      sessionGrant.setOseeUserName(userToken.getName());
+      sessionGrant.setOseeUserEmail(userToken.getEmail());
+      sessionGrant.setOseeUserActive(userToken.isActive());
+      sessionGrant.setOseeUserId(userToken.getUserId());
+      sessionGrant.setDbIsProduction(config.isProduction());
+      sessionGrant.setDbLogin(config.getDbUsername());
+      sessionGrant.setDbId(jdbcService.getId());
+      sessionGrant.setDbDriver(config.getDbDriver());
+      sessionGrant.setDbLogin(config.getDbUsername());
+      sessionGrant.setDbUrl(config.getDbUri());
+      sessionGrant.setDbConnectionProperties(config.getDbProps());
+      sessionGrant.setDbDatabaseName(jdbcService.hasServer() ? jdbcService.getServerConfig().getDbName() : "");
+      sessionGrant.setDbDatabasePath(jdbcService.hasServer() ? jdbcService.getServerConfig().getDbPath() : "");
 
       Properties properties = OseeSql.getSqlProperties(jdbcService.getClient().getDbType().areHintsSupported());
       sessionGrant.setSqlProperties(properties);
@@ -65,53 +77,4 @@ public final class SessionFactory implements IOseeTypeFactory {
       return sessionGrant;
    }
 
-   private IDatabaseInfo getDatabaseInfo() {
-      final String infoId = jdbcService.getId();
-      final JdbcClientConfig config = jdbcService.getClient().getConfig();
-      return new IDatabaseInfo() {
-
-         private static final long serialVersionUID = 192942011732757789L;
-
-         @Override
-         public boolean isProduction() {
-            return config.isProduction();
-         }
-
-         @Override
-         public String getId() {
-            return infoId;
-         }
-
-         @Override
-         public String getDriver() {
-            return config.getDbDriver();
-         }
-
-         @Override
-         public String getDatabaseLoginName() {
-            return config.getDbUsername();
-         }
-
-         @Override
-         public String getConnectionUrl() {
-            return config.getDbUri();
-         }
-
-         @Override
-         public Properties getConnectionProperties() {
-            return config.getDbProps();
-         }
-
-         @Override
-         public String getDatabaseName() {
-            return jdbcService.hasServer() ? jdbcService.getServerConfig().getDbName() : "";
-         }
-
-         @Override
-         public String getDatabaseHome() {
-            return jdbcService.hasServer() ? jdbcService.getServerConfig().getDbPath() : "";
-         }
-
-      };
-   }
 }

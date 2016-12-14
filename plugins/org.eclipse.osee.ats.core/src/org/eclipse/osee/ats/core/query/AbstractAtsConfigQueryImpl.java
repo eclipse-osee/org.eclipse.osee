@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.config.WorkType;
@@ -293,6 +294,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    }
 
    @Override
+   @Nullable
    public <T extends IAtsConfigObject> T getOneOrNull(Class<T> clazz) {
       Collection<T> items = getItems(clazz);
       if (!items.isEmpty()) {

@@ -54,7 +54,6 @@ public class AuthenticationComposite extends Composite {
    private enum LabelEnum {
       UserId("Enter user name"),
       Password(true, "Enter a valid password"),
-      Domain("Enter a valid domain [sw, nw, etc...]"),
       Remember_My_Password(WARNING_MESSAGE);
 
       boolean isHidden;
@@ -264,7 +263,6 @@ public class AuthenticationComposite extends Composite {
                         OseeCredential credential = super.getCredential();
                         credential.setUserName(dataMap.get(LabelEnum.UserId));
                         credential.setPassword(dataMap.get(LabelEnum.Password));
-                        credential.setDomain(dataMap.get(LabelEnum.Domain));
                         return credential;
                      }
                   });
@@ -316,10 +314,6 @@ public class AuthenticationComposite extends Composite {
       setAndStoreField(LabelEnum.Password, password);
    }
 
-   public void setDomain(String domain) {
-      setAndStoreField(LabelEnum.Domain, domain);
-   }
-
    public void setStorageAllowed(boolean isStorageAllowed) {
       setAndStoreField(LabelEnum.Remember_My_Password, Boolean.toString(isStorageAllowed));
    }
@@ -357,10 +351,6 @@ public class AuthenticationComposite extends Composite {
 
    public String getPassword() {
       return dataMap.get(LabelEnum.Password);
-   }
-
-   public String getDomain() {
-      return dataMap.get(LabelEnum.Domain);
    }
 
    public boolean isGuestLogin() {

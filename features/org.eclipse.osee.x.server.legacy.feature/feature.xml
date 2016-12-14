@@ -25,7 +25,14 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.framework.manager.servlet"
+         id="org.eclipse.osee.framework.server.ide"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+   <plugin
+         id="org.eclipse.osee.framework.server.ide.api"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -10,98 +10,71 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import java.io.InputStream;
 import java.util.Properties;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Roberto E. Escobar
+ * @author Donald G. Dunne
  */
-public class OseeSessionGrant extends BaseExchangeData {
+public class OseeSessionGrant {
 
-   private static final long serialVersionUID = -7236201704435470272L;
-   private static final String SESSION_ID = "sessionId";
-   private static final String SQL_PROPERTIES = "slqProperty";
+   private String sessionId;
+   private String dbDriver;
+   private String dbUrl;
+   private String dbLogin;
+   private String dbDatabaseName;
+   private boolean dbIsProduction;
+   private String dbDatabasePath;
+   private String dbId;
 
-   private static final String DB_DRIVER = "dbDriver";
-   private static final String DB_CONNECTION_URL = "dbUrl";
-   private static final String DB_CONNECT_PROPERTIES = "dbConnectionProperties";
-   private static final String DB_LOGIN_NAME = "dbLogin";
-   private static final String DB_DATABASE_NAME = "dbDatabaseName";
-   private static final String DB_IS_PRODUCTION = "dbIsProduction";
-   private static final String DB_PATH = "dbDatabasePath";
-   private static final String DB_ID = "dbId";
+   private boolean oseeUserNeedsCreation;
+   private String oseeUserEmail;
+   private String oseeUserName;
+   private String oseeUserId;
+   private boolean isOseeUserActive;
+   private String oseeApplicationServerDataPath;
+   private String oseeAuthenticationProtocol;
 
-   private static final String OSEE_USER_IS_CREATION_REQUIRED = "oseeUserNeedsCreation";
-   private static final String OSEE_USER_EMAIL = "oseeUserEmail";
-   private static final String OSEE_USER_NAME = "oseeUserName";
-   private static final String OSEE_USER_ID = "oseeUserId";
-   private static final String OSEE_IS_USER_ACTIVE = "isOseeUserActive";
-   private static final String OSEE_APPLICATION_SERVER_DATA_PATH = "oseeApplicationServerDataPath";
-   private static final String AUTHENTICATION_PROTOCOL = "oseeAuthenticationProtocol";
+   private Properties sqlProperties;
+   private Properties dbConnectionProperties;
 
-   private IDatabaseInfo grantedDatabaseInfo;
-
-   protected OseeSessionGrant() {
+   public OseeSessionGrant() {
       super();
-      this.grantedDatabaseInfo = new GrantedDatabaseInfo();
    }
 
    public OseeSessionGrant(String sessionId) {
       super();
-      this.backingData.put(SESSION_ID, sessionId);
+      this.sessionId = sessionId;
    }
 
    public String getSessionId() {
-      return getString(SESSION_ID);
-   }
-
-   public IDatabaseInfo getDatabaseInfo() {
-      return grantedDatabaseInfo;
-   }
-
-   public void setDatabaseInfo(IDatabaseInfo dbInfo) {
-      this.backingData.put(DB_DRIVER, dbInfo.getDriver());
-      this.backingData.put(DB_CONNECTION_URL, dbInfo.getConnectionUrl());
-      this.backingData.put(DB_LOGIN_NAME, dbInfo.getDatabaseLoginName());
-      this.backingData.put(DB_DATABASE_NAME, dbInfo.getDatabaseName());
-      this.backingData.put(DB_IS_PRODUCTION, dbInfo.isProduction());
-      this.backingData.put(DB_ID, dbInfo.getId());
-      this.backingData.put(DB_PATH, dbInfo.getDatabaseHome());
-      putProperties(DB_CONNECT_PROPERTIES, dbInfo.getConnectionProperties());
+      return sessionId;
    }
 
    public void setSqlProperties(Properties sqlProperties) {
-      putProperties(SQL_PROPERTIES, sqlProperties);
+      this.sqlProperties = sqlProperties;
    }
 
    public Properties getSqlProperties() {
-      return getPropertyString(SQL_PROPERTIES);
-   }
-
-   public void setUserToken(IUserToken userInfo) throws OseeCoreException {
-      this.backingData.put(OSEE_USER_EMAIL, userInfo.getEmail());
-      this.backingData.put(OSEE_USER_NAME, userInfo.getName());
-      this.backingData.put(OSEE_USER_ID, userInfo.getUserId());
-      this.backingData.put(OSEE_IS_USER_ACTIVE, userInfo.isActive());
+      return this.sqlProperties;
    }
 
    public boolean isCreationRequired() {
-      return backingData.getBoolean(OSEE_USER_IS_CREATION_REQUIRED);
+      return oseeUserNeedsCreation;
    }
 
    public void setCreationRequired(boolean value) {
-      this.backingData.put(OSEE_USER_IS_CREATION_REQUIRED, value);
+      this.oseeUserNeedsCreation = value;
    }
 
    public void setDataStorePath(String oseeApplicationServerData) {
-      this.backingData.put(OSEE_APPLICATION_SERVER_DATA_PATH, oseeApplicationServerData);
+      this.oseeApplicationServerDataPath = oseeApplicationServerData;
    }
 
    public String getDataStorePath() {
-      return getString(OSEE_APPLICATION_SERVER_DATA_PATH);
+      return oseeApplicationServerDataPath;
    }
 
    public IUserToken getUserToken() {
@@ -109,74 +82,132 @@ public class OseeSessionGrant extends BaseExchangeData {
    }
 
    public String getAuthenticationProtocol() {
-      return getString(AUTHENTICATION_PROTOCOL);
+      return oseeAuthenticationProtocol;
    }
 
    public void setAuthenticationProtocol(String protocol) {
-      this.backingData.put(AUTHENTICATION_PROTOCOL, protocol);
-   }
-
-   public static OseeSessionGrant fromXml(InputStream inputStream) throws OseeCoreException {
-      OseeSessionGrant session = new OseeSessionGrant();
-      session.loadfromXml(inputStream);
-      return session;
+      this.oseeAuthenticationProtocol = protocol;
    }
 
    private IUserToken getGrantedUserToken() {
-      return TokenFactory.createUserToken(Lib.generateArtifactIdAsInt(), GUID.create(), getString(OSEE_USER_NAME),
-         getString(OSEE_USER_EMAIL), getString(OSEE_USER_ID), backingData.getBoolean(OSEE_IS_USER_ACTIVE), false,
-         false);
+      return TokenFactory.createUserToken(Lib.generateArtifactIdAsInt(), GUID.create(), oseeUserName, oseeUserEmail,
+         oseeUserId, isOseeUserActive, false, false);
    }
 
-   private final class GrantedDatabaseInfo implements IDatabaseInfo {
+   public String getDbDriver() {
+      return dbDriver;
+   }
 
-      private static final long serialVersionUID = -7314120611445752014L;
+   public void setDbDriver(String dbDriver) {
+      this.dbDriver = dbDriver;
+   }
 
-      @Override
-      public Properties getConnectionProperties() {
-         return getPropertyString(DB_CONNECT_PROPERTIES);
-      }
+   public String getDbLogin() {
+      return dbLogin;
+   }
 
-      @Override
-      public String getConnectionUrl() {
-         return getString(DB_CONNECTION_URL);
-      }
+   public void setDbLogin(String dbLogin) {
+      this.dbLogin = dbLogin;
+   }
 
-      @Override
-      public String getDatabaseLoginName() {
-         return getString(DB_LOGIN_NAME);
-      }
+   public String getDbDatabaseName() {
+      return dbDatabaseName;
+   }
 
-      @Override
-      public String getDatabaseName() {
-         return getString(DB_DATABASE_NAME);
-      }
+   public void setDbDatabaseName(String dbDatabaseName) {
+      this.dbDatabaseName = dbDatabaseName;
+   }
 
-      @Override
-      public String getDriver() {
-         return getString(DB_DRIVER);
-      }
+   public String getDbDatabasePath() {
+      return dbDatabasePath;
+   }
 
-      @Override
-      public String getId() {
-         return getString(DB_ID);
-      }
+   public void setDbDatabasePath(String dbDatabasePath) {
+      this.dbDatabasePath = dbDatabasePath;
+   }
 
-      @Override
-      public boolean isProduction() {
-         return Boolean.valueOf(getString(DB_IS_PRODUCTION));
-      }
+   public String getDbId() {
+      return dbId;
+   }
 
-      @Override
-      public String toString() {
-         return getId() + ": " + getConnectionUrl();
-      }
+   public void setDbId(String dbId) {
+      this.dbId = dbId;
+   }
 
-      @Override
-      public String getDatabaseHome() {
-         return getString(DB_PATH);
-      }
+   public String getOseeUserEmail() {
+      return oseeUserEmail;
+   }
 
+   public void setOseeUserEmail(String oseeUserEmail) {
+      this.oseeUserEmail = oseeUserEmail;
+   }
+
+   public String getOseeUserName() {
+      return oseeUserName;
+   }
+
+   public void setOseeUserName(String oseeUserName) {
+      this.oseeUserName = oseeUserName;
+   }
+
+   public String getOseeUserId() {
+      return oseeUserId;
+   }
+
+   public void setOseeUserId(String oseeUserId) {
+      this.oseeUserId = oseeUserId;
+   }
+
+   public String getOseeApplicationServerDataPath() {
+      return oseeApplicationServerDataPath;
+   }
+
+   public void setOseeApplicationServerDataPath(String oseeApplicationServerDataPath) {
+      this.oseeApplicationServerDataPath = oseeApplicationServerDataPath;
+   }
+
+   public String getOseeAuthenticationProtocol() {
+      return oseeAuthenticationProtocol;
+   }
+
+   public void setOseeAuthenticationProtocol(String oseeAuthenticationProtocol) {
+      this.oseeAuthenticationProtocol = oseeAuthenticationProtocol;
+   }
+
+   public void setSessionId(String sessionId) {
+      this.sessionId = sessionId;
+   }
+
+   public boolean isDbIsProduction() {
+      return dbIsProduction;
+   }
+
+   public void setDbIsProduction(boolean dbIsProduction) {
+      this.dbIsProduction = dbIsProduction;
+   }
+
+   public boolean isOseeUserActive() {
+      return isOseeUserActive;
+   }
+
+   public void setOseeUserActive(boolean isOseeUserActive) {
+      this.isOseeUserActive = isOseeUserActive;
+   }
+
+   public void setDbUrl(String dbUrl) {
+      this.dbUrl = dbUrl;
+   }
+
+   public Properties getDbConnectionProperties() {
+      return dbConnectionProperties;
+   }
+
+   public void setDbConnectionProperties(Properties dbConnectionProperties) {
+      this.dbConnectionProperties = dbConnectionProperties;
+   }
+
+   public String getDbUrl() {
+      return dbUrl;
    }
 
 }

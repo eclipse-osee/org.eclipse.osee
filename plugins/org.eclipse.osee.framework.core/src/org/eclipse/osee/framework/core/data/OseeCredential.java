@@ -10,54 +10,41 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import java.io.InputStream;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-
 /**
  * @author Roberto E. Escobar
+ * @author Donald G. Dunne
  */
-public class OseeCredential extends OseeClientInfo {
-   private static final long serialVersionUID = 4583587251351958961L;
-   private static final String USERNAME = "userName";
-   private static final String PASSWORD = "password";
-   private static final String DOMAIN = "domain";
+public class OseeCredential extends IdeClientSession {
+   private String userName = "userName";
+   private String password = "password";
 
    public OseeCredential() {
       super();
    }
 
    public void setUserName(String userName) {
-      this.backingData.put(USERNAME, userName);
+      this.userName = userName;
    }
 
    public void setPassword(String password) {
-      this.backingData.put(PASSWORD, password);
-   }
-
-   public void setDomain(String domain) {
-      this.backingData.put(DOMAIN, domain);
+      this.password = password;
    }
 
    public String getUserName() {
-      return getString(USERNAME);
+      return userName;
    }
 
    public String getPassword() {
-      return getString(PASSWORD);
+      return password;
    }
 
-   public String getDomain() {
-      return getString(DOMAIN);
+   @Override
+   public String toString() {
+      return "OseeCredential [userName=" + userName + ", password=" + password + ", getUserName()=" + getUserName() + ", getPassword()=" + //
+         getPassword() + ", getClientAddress()=" + getClientAddress() + ", getClientPort()=" + getClientPort() + ", getUserId()=" + getUserId() + //
+         ", getClientVersion()=" + getClientVersion() + ", getSessionId()=" + getSessionId() + ", getCreatedOn()=" + getCreatedOn() + //
+         ", getSessionLog()=" + getSessionLog() + ", getAuthenticationProtocol()=" + getAuthenticationProtocol() + ", getId()=" + getId() + //
+         ", getClientName()=" + getClientName() + "]";
    }
 
-   /**
-    * Create new instance from XML input
-    * 
-    * @param OseeCredential the new instance
-    */
-   public static OseeCredential fromXml(InputStream inputStream) throws OseeCoreException {
-      OseeCredential session = new OseeCredential();
-      session.loadfromXml(inputStream);
-      return session;
-   }
 }

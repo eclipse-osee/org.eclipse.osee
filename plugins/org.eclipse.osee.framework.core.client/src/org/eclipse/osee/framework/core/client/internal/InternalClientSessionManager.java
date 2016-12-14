@@ -10,40 +10,31 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.client.internal;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
 import org.eclipse.osee.framework.core.client.GuestCredentialProvider;
 import org.eclipse.osee.framework.core.client.ICredentialProvider;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.client.server.HttpServer;
-import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
-import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.data.IdeClientSession;
 import org.eclipse.osee.framework.core.data.OseeClientInfo;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeCredential;
-import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
-import org.eclipse.osee.framework.core.util.HttpProcessor;
-import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.BaseStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.server.ide.api.SessionEndpoint;
+import org.eclipse.osee.jaxrs.client.JaxRsClient;
 
 /**
  * @author Roberto E. Escobar
@@ -51,6 +42,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class InternalClientSessionManager {
    public static final String STATUS_ID = "Session Manager";
    private static final InternalClientSessionManager instance = new InternalClientSessionManager();
+   private static Object ideTarget;
 
    private final OseeClientInfo clientInfo;
    private OseeSessionGrant oseeSessionGrant;
@@ -77,8 +69,8 @@ public class InternalClientSessionManager {
       return oseeSession != null;
    }
 
-   public IDatabaseInfo getDatabaseInfo() throws OseeAuthenticationRequiredException {
-      return getOseeSessionGrant().getDatabaseInfo();
+   public OseeSessionGrant getDatabaseInfo() throws OseeAuthenticationRequiredException {
+      return getOseeSessionGrant();
    }
 
    public OseeSessionGrant getOseeSessionGrant() throws OseeAuthenticationRequiredException {
@@ -155,7 +147,6 @@ public class InternalClientSessionManager {
                      }
                   }
                   credential.setUserName(userName);
-                  credential.setDomain("");
                   credential.setPassword("");
                   return credential;
                }
@@ -178,43 +169,26 @@ public class InternalClientSessionManager {
    }
 
    private void internalReleaseSession(String sessionId) throws OseeCoreException {
-      Map<String, String> parameters = new HashMap<>();
-      parameters.put("operation", "release");
-      parameters.put("sessionId", sessionId);
       try {
-         String url =
-            HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
-         if (Strings.isValid(url)) {
-            String reponse = HttpProcessor.post(new URL(url));
-            OseeLog.log(CoreClientActivator.class, Level.INFO, reponse);
-            clearData();
+         SessionEndpoint sessionEp = getSessionEp();
+         Response response = sessionEp.releaseIdeClientSession(sessionId);
+         if (response.getStatus() != Status.OK.getStatusCode()) {
+            throw new OseeCoreException("Unable to Release Session " + response.toString());
          }
+         clearData();
       } catch (Exception ex) {
-         OseeCoreException.wrapAndThrow(ex);
+         OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
       }
    }
 
    public List<String> getAuthenticationProtocols() {
       List<String> toReturn = new ArrayList<>();
       try {
-         Map<String, String> parameters = new HashMap<>();
-         String url =
-            HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
-         if (Strings.isValid(url)) {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            AcquireResult result = HttpProcessor.acquire(new URL(url), outputStream);
-            if (result.getCode() == HttpURLConnection.HTTP_OK) {
-               String protocols = outputStream.toString("UTF-8");
-               if (Strings.isValid(protocols)) {
-                  String[] results = protocols.split("[\\[\\]\\s,]+");
-                  for (String entry : results) {
-                     if (Strings.isValid(entry)) {
-                        toReturn.add(entry);
-                     }
-                  }
-               }
-            }
-         }
+         SessionEndpoint sessionEp = getSessionEp();
+         Response response = sessionEp.getIdeClientProtocols();
+         @SuppressWarnings("unchecked")
+         List<String> protocols = response.readEntity(LinkedList.class);
+         toReturn.addAll(protocols);
       } catch (Exception ex) {
          OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
       }
@@ -226,53 +200,18 @@ public class InternalClientSessionManager {
       this.oseeSessionGrant = null;
    }
 
-   private OseeSessionGrant internalAcquireSession(OseeCredential credential) throws OseeCoreException, MalformedURLException {
-      OseeSessionGrant session = null;
-      Map<String, String> parameters = new HashMap<>();
-      parameters.put("operation", "create");
-      String url =
-         HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
-
-      if (Strings.isValid(url)) {
-         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-         AcquireResult result =
-            HttpProcessor.post(new URL(url), asInputStream(credential), "text/xml", "UTF-8", outputStream);
-         if (result.getCode() == HttpURLConnection.HTTP_ACCEPTED) {
-            session = fromEncryptedBytes(outputStream.toByteArray());
-         } else {
-            throw new OseeCoreException("Error during create session request - code [%s]\n%s", result.getCode(),
-               outputStream.toString());
-         }
-      }
-      return session;
+   private OseeSessionGrant internalAcquireSession(OseeCredential credential) throws OseeCoreException {
+      SessionEndpoint sessionEp = getSessionEp();
+      Response response = sessionEp.createIdeClientSession(credential);
+      OseeSessionGrant sessionGrant = response.readEntity(OseeSessionGrant.class);
+      return sessionGrant;
    }
 
-   private static ByteArrayInputStream asInputStream(OseeCredential credential) throws OseeCoreException {
-      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      credential.write(outputStream);
-
-      //TODO ENCRYPT DATA
-
-      return new ByteArrayInputStream(outputStream.toByteArray());
-   }
-
-   private static OseeSessionGrant fromEncryptedBytes(byte[] rawData) throws OseeCoreException {
-      OseeSessionGrant session = null;
-      InputStream inputStream = null;
-      try {
-         //TODO DECRYPT DATA
-         inputStream = new ByteArrayInputStream(rawData);
-         session = OseeSessionGrant.fromXml(inputStream);
-      } finally {
-         if (inputStream != null) {
-            try {
-               inputStream.close();
-            } catch (IOException ex) {
-               OseeCoreException.wrapAndThrow(ex);
-            }
-         }
-      }
-      return session;
+   private static SessionEndpoint getSessionEp() {
+      String appServer = OseeClientProperties.getOseeApplicationServer();
+      String atsUri = String.format("%s/ide", appServer);
+      JaxRsClient jaxRsClient = JaxRsClient.newBuilder().createThreadSafeProxyClients(true).build();
+      return jaxRsClient.target(atsUri).newProxy(SessionEndpoint.class);
    }
 
 }

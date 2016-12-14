@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.admin.LinkUpdateResource;
-import org.eclipse.osee.orcs.rest.internal.client.ClientResource;
 import org.eclipse.osee.orcs.rest.internal.writer.OrcsWriterEndpointImpl;
 import org.osgi.service.event.EventAdmin;
 
@@ -70,7 +69,6 @@ public class OrcsApplication extends Application {
       resources.add(new OrcsScriptResource(engine));
 
       classes.add(BranchesResource.class);
-      resources.add(new IdeClientEndpointImpl());
 
       resources.add(new BranchEndpointImpl(orcsApi, resourceManager, activityLog));
       resources.add(new OrcsWriterEndpointImpl(orcsApi));
@@ -81,7 +79,6 @@ public class OrcsApplication extends Application {
       resources.add(new ResourcesEndpointImpl(resourceManager));
       resources.add(new DatastoreEndpointImpl(orcsApi, activityLog));
       resources.add(new KeyValueResource(orcsApi));
-      resources.add(new ClientResource(jdbcService, orcsApi));
 
       resources.add(new LinkUpdateResource(orcsApi));
    }

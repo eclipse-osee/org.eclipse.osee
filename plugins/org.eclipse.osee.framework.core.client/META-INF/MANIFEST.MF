@@ -18,9 +18,14 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.plugin.core.util,
+ org.eclipse.osee.framework.server.ide.api,
+ org.eclipse.osee.framework.server.ide.api.client,
+ org.eclipse.osee.jaxrs.client,
  org.eclipse.osee.jdbc,
  org.eclipse.osee.orcs.rest.client,
+ org.eclipse.osee.orcs.rest.model,
  org.osgi.framework
 Export-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.client.server
 Service-Component: OSGI-INF/*.xml
+Require-Bundle: javax.ws.rs

@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.client.integration.tests.DirtyArtifactCacheTest;
 import org.eclipse.osee.ats.client.integration.tests.framework.skynet.core.artifact.SkyentCoreArtifact_Suite;
 import org.eclipse.osee.ats.client.integration.tests.framework.ui.skynet.FrameworkUiSkynetTest_Suite;
 import org.eclipse.osee.ats.client.integration.tests.framework.ui.skynet.dialog.FrameworkUiSkynetTest_Dialog_Suite;
-import org.eclipse.osee.ats.client.integration.tests.orcs.rest.ClientResourceTest;
+import org.eclipse.osee.ats.client.integration.tests.orcs.rest.ClientEndpointTest;
 import org.eclipse.osee.ats.client.integration.tests.util.DbInitTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -28,7 +28,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    DbInitTest.class,
    DemoDbPopulateSuite.class,
-   ClientResourceTest.class,
+   ClientEndpointTest.class,
    AtsTest_AllAts_Suite.class,
    SkyentCoreArtifact_Suite.class,
    FrameworkUiSkynetTest_Suite.class,

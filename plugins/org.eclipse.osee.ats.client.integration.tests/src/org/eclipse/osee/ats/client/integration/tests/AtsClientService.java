@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.workflow.WorkItemJsonReader;
 import org.eclipse.osee.ats.core.client.workflow.WorkItemsJsonReader;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
 import org.eclipse.osee.orcs.rest.model.OrcsWriterEndpoint;
@@ -46,6 +47,7 @@ public class AtsClientService {
    private static AtsNotifyEndpointApi notifyEp;
    private static AtsConfigEndpointApi configEp;
    private static AtsWorkPackageEndpointApi workPackageEp;
+   private static ClientEndpoint clientEp;
 
    public void setAtsClient(IAtsClient atsClient) {
       AtsClientService.atsClient = atsClient;
@@ -144,6 +146,16 @@ public class AtsClientService {
          workPackageEp = getAtsTarget().newProxy(AtsWorkPackageEndpointApi.class);
       }
       return workPackageEp;
+   }
+
+   public static ClientEndpoint getClientEndpoint() {
+      if (clientEp == null) {
+         String appServer = OseeClientProperties.getOseeApplicationServer();
+         String orcsUri = String.format("%s/ide", appServer);
+         JaxRsClient jaxRsClient = JaxRsClient.newBuilder().build();
+         clientEp = jaxRsClient.target(orcsUri).newProxy(ClientEndpoint.class);
+      }
+      return clientEp;
    }
 
 }

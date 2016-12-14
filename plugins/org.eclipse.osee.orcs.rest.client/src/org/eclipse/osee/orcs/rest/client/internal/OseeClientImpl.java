@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
@@ -39,7 +40,6 @@ import org.eclipse.osee.orcs.rest.client.internal.search.QueryOptions;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
-import org.eclipse.osee.orcs.rest.model.IdeClientEndpoint;
 import org.eclipse.osee.orcs.rest.model.IndexerEndpoint;
 import org.eclipse.osee.orcs.rest.model.OrcsWriterEndpoint;
 import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
@@ -177,8 +177,8 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
    }
 
    @Override
-   public IdeClientEndpoint getIdeClientEndpoint() {
-      return client.targetProxy(baseUri, IdeClientEndpoint.class);
+   public ClientEndpoint getClientEndpoint() {
+      return client.targetProxy(baseUri, ClientEndpoint.class);
    }
 
    @Override

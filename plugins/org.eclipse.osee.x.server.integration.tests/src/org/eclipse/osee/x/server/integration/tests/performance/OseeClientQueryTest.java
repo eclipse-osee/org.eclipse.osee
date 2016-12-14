@@ -20,10 +20,8 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Active;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.io.StringWriter;
-import java.util.Collection;
 import java.util.Properties;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -33,8 +31,6 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
-import org.eclipse.osee.orcs.rest.model.IdeClientEndpoint;
-import org.eclipse.osee.orcs.rest.model.IdeVersion;
 import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
 import org.eclipse.osee.x.server.integration.tests.util.IntegrationUtil;
@@ -163,15 +159,6 @@ public class OseeClientQueryTest {
       SearchResult results =
          createClient.createQueryBuilder(COMMON).andExists(Active, AccessContextId).getSearchResult(RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
-   }
-
-   @Test
-   public void supportedVersions() {
-      IdeClientEndpoint endpoint = createClient.getIdeClientEndpoint();
-      IdeVersion versions = endpoint.getSupportedVersions();
-      assertNotNull(versions);
-      Collection<String> supportedVersions = versions.getVersions();
-      assertEquals(true, !supportedVersions.isEmpty());
    }
 
    /**
