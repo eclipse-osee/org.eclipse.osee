@@ -79,7 +79,7 @@ public final class TokenFactory {
       }
    }
 
-   private final static class AttributeTypeToken extends NamedId implements IAttributeType {
+   private final static class AttributeTypeToken extends NamedIdBase implements IAttributeType {
       private final String description;
 
       public AttributeTypeToken(Long guid, String name) {
