@@ -133,11 +133,6 @@ public class AttributeDataMatcher {
       }
 
       @Override
-      public Integer getLocalId() {
-         return attrData.getLocalId();
-      }
-
-      @Override
       public long getTypeUuid() {
          return attrData.getTypeUuid();
       }

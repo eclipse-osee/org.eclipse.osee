@@ -49,11 +49,6 @@ public class IndexerDataSourceImpl implements IndexedResource {
    }
 
    @Override
-   public Integer getLocalId() {
-      return localId;
-   }
-
-   @Override
    public long getGammaId() {
       return gammaId;
    }
