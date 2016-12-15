@@ -229,14 +229,14 @@ public class GraphDataImplTest {
       when(artifact1.getLocalId()).thenReturn(20);
       when(artifact2.getLocalId()).thenReturn(21);
 
-      adjacencies.add(Allocation__Component.getGuid(), relation1);
+      adjacencies.add(Allocation__Component, relation1);
       graph.addAdjacencies(artifact1, adjacencies);
       adj = graph.getAdjacencies(20);
       List<Relation> list = adj.getList(Allocation__Component, DeletionFlag.EXCLUDE_DELETED);
       assertFalse(list.isEmpty());
       assertTrue(list.size() == 1);
 
-      adjacencies.add(CodeRequirement_CodeUnit.getGuid(), relation2);
+      adjacencies.add(CodeRequirement_CodeUnit, relation2);
       graph.addAdjacencies(20, adjacencies);
       adj = graph.getAdjacencies(artifact1);
       all = adj.getAll();
@@ -245,7 +245,7 @@ public class GraphDataImplTest {
       assertTrue(adj.getList(Allocation__Component, DeletionFlag.EXCLUDE_DELETED).size() == 1);
       assertTrue(adj.getList(CodeRequirement_CodeUnit, DeletionFlag.EXCLUDE_DELETED).size() == 1);
 
-      adjacencies.add(Default_Hierarchical__Child.getGuid(), relation3);
+      adjacencies.add(Default_Hierarchical__Child, relation3);
       graph.addAdjacencies(21, adjacencies);
       adj = graph.getAdjacencies(artifact2);
       all = adj.getAll();
@@ -264,9 +264,9 @@ public class GraphDataImplTest {
       when(artifact1.getLocalId()).thenReturn(20);
       when(artifact2.getLocalId()).thenReturn(21);
 
-      adjacencies.add(Allocation__Component.getGuid(), relation1);
-      adjacencies.add(CodeRequirement_CodeUnit.getGuid(), relation2);
-      adjacencies.add(Default_Hierarchical__Child.getGuid(), relation3);
+      adjacencies.add(Allocation__Component, relation1);
+      adjacencies.add(CodeRequirement_CodeUnit, relation2);
+      adjacencies.add(Default_Hierarchical__Child, relation3);
 
       graph.addAdjacencies(artifact1, adjacencies);
       graph.addAdjacencies(20, adjacencies);

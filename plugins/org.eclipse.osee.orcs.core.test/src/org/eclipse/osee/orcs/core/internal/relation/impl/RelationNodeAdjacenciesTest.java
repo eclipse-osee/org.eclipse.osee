@@ -64,9 +64,9 @@ public class RelationNodeAdjacenciesTest {
       MockitoAnnotations.initMocks(this);
       collection = new RelationNodeAdjacencies();
 
-      collection.add(TYPE_1.getId(), dirty);
-      collection.add(TYPE_2.getId(), clean);
-      collection.add(TYPE_3.getId(), deleted);
+      collection.add(TYPE_1, dirty);
+      collection.add(TYPE_2, clean);
+      collection.add(TYPE_3, deleted);
 
       when(dirty.isDirty()).thenReturn(true);
 
@@ -85,7 +85,7 @@ public class RelationNodeAdjacenciesTest {
       boolean actual1 = collection.hasDirty();
       assertTrue(actual1);
 
-      collection.remove(TYPE_1.getId(), dirty);
+      collection.remove(TYPE_1, dirty);
 
       boolean actual2 = collection.hasDirty();
       assertFalse(actual2);
@@ -206,7 +206,7 @@ public class RelationNodeAdjacenciesTest {
       when(relation.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(11);
       when(relation.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(22);
 
-      collection.add(TYPE_1.getId(), relation);
+      collection.add(TYPE_1, relation);
 
       when(localId.getLocalId()).thenReturn(22);
       Relation actual = (Relation) collection.getResultSet(TYPE_1, DeletionFlag.EXCLUDE_DELETED, localId,

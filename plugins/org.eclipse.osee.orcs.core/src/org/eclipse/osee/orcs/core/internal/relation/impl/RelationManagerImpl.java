@@ -36,6 +36,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -244,8 +245,8 @@ public class RelationManagerImpl implements RelationManager {
       boolean updated = false;
       if (relation == null) {
          relation = relationFactory.createRelation(aNode, type, bNode, rationale);
-         graph.<RelationNodeAdjacencies> getAdjacencies(aNode).add(type.getId(), relation);
-         graph.<RelationNodeAdjacencies> getAdjacencies(bNode).add(type.getId(), relation);
+         graph.<RelationNodeAdjacencies> getAdjacencies(aNode).add(type, relation);
+         graph.<RelationNodeAdjacencies> getAdjacencies(bNode).add(type, relation);
          updated = true;
       }
       if (relation.isDeleted()) {
@@ -391,11 +392,11 @@ public class RelationManagerImpl implements RelationManager {
 
       Relation relation = aAdjacencies.getRelation(aNode, type, bNode, inludeDeleted);
       if (relation != null) {
-         bAdjacencies.add(type.getId(), relation);
+         bAdjacencies.add(type, relation);
       } else {
          relation = bAdjacencies.getRelation(aNode, type, bNode, inludeDeleted);
          if (relation != null) {
-            aAdjacencies.add(type.getId(), relation);
+            aAdjacencies.add(type, relation);
          }
       }
       return ResultSets.singleton(relation);
@@ -467,7 +468,8 @@ public class RelationManagerImpl implements RelationManager {
             destination.getGraph().addAdjacencies(destination, adjacencies2);
             for (Relation relation : adjacencies1.getAll()) {
                Relation newRel = relationFactory.clone(relation);
-               adjacencies2.add(newRel.getOrcsData().getTypeUuid(), newRel);
+               RelationTypeId relationType = RelationTypeId.valueOf(newRel.getOrcsData().getTypeUuid());
+               adjacencies2.add(relationType, newRel);
             }
          }
       }

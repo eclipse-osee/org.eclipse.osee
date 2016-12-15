@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal.graph.impl;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
@@ -109,12 +110,14 @@ public class GraphBuilderImpl extends LoadDataHandlerAdapter implements GraphBui
       if (relation == null) {
          relation = relationFactory.createRelation(data);
       }
-      aAdjacencies.add(data.getTypeUuid(), relation);
-      bAdjacencies.add(data.getTypeUuid(), relation);
+      RelationTypeId relationType = RelationTypeId.valueOf(data.getTypeUuid());
+      aAdjacencies.add(relationType, relation);
+      bAdjacencies.add(relationType, relation);
    }
 
    private Relation findRelation(RelationNodeAdjacencies adjacencies, RelationData data) throws OseeCoreException {
-      return adjacencies.getRelation(data.getArtIdA(), data.getTypeUuid(), data.getArtIdB());
+      RelationTypeId relationType = RelationTypeId.valueOf(data.getTypeUuid());
+      return adjacencies.getRelation(data.getArtIdA(), relationType, data.getArtIdB());
    }
 
    private RelationNodeAdjacencies getAdjacencies(GraphData graph, int id) {

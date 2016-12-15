@@ -217,7 +217,7 @@ public class RelationManagerTest {
       graph.addAdjacencies(node, adjacents);
       when(graph.getAdjacencies(node)).thenReturn(adjacents);
       for (Relation relation : relations) {
-         adjacents.add(relation.getRelationType().getId(), relation);
+         adjacents.add(relation.getRelationType(), relation);
       }
    }
 

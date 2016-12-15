@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.data;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
@@ -20,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
  */
 @JsonSerialize(using = IdSerializer.class)
 // TODO: Rename to RelationTypeId
-public interface IRelationType extends Id {
+public interface IRelationType extends RelationTypeId {
 
    public static IRelationType valueOf(long id, String name) {
       final class RelationTypeIdImpl extends NamedIdBase implements IRelationType {

@@ -17,6 +17,7 @@ import com.google.common.base.Predicate;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -32,7 +33,7 @@ import org.eclipse.osee.orcs.core.internal.util.OrcsPredicates;
 /**
  * @author Roberto E. Escobar
  */
-public class RelationNodeAdjacencies extends AbstractTypeCollection<IRelationType, Relation, Long, Relation> implements GraphAdjacencies {
+public class RelationNodeAdjacencies extends AbstractTypeCollection<IRelationType, Relation, RelationTypeId, Relation> implements GraphAdjacencies {
 
    @Override
    protected ResultSet<Relation> createResultSet(List<Relation> values) {
@@ -40,7 +41,7 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<IRelationTyp
    }
 
    @Override
-   protected <T extends Relation> ResultSet<T> createResultSet(Long type, List<T> values) {
+   protected <T extends Relation> ResultSet<T> createResultSet(RelationTypeId type, List<T> values) {
       return ResultSets.newResultSet(values);
    }
 
@@ -58,7 +59,7 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<IRelationTyp
    @SuppressWarnings({"unchecked", "rawtypes"})
    public List<Relation> getList(IRelationType type, DeletionFlag includeDeleted) throws OseeCoreException {
       Predicate deletionFlagEquals = deletionFlagEquals(includeDeleted);
-      return getListByFilter(type.getId(), deletionFlagEquals);
+      return getListByFilter(type, deletionFlagEquals);
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
@@ -66,13 +67,13 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<IRelationTyp
       Predicate deletionFlagEquals = deletionFlagEquals(includeDeleted);
       Predicate relIdOnSide = nodeIdOnSideEquals(localId, side);
       Predicate matcher = and(deletionFlagEquals, relIdOnSide);
-      return getListByFilter(type.getId(), matcher);
+      return getListByFilter(type, matcher);
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
    public ResultSet<Relation> getResultSet(IRelationType type, DeletionFlag includeDeleted) throws OseeCoreException {
       Predicate deletionFlagEquals = deletionFlagEquals(includeDeleted);
-      return getSetByFilter(type.getId(), deletionFlagEquals);
+      return getSetByFilter(type, deletionFlagEquals);
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
@@ -80,7 +81,7 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<IRelationTyp
       Predicate deletionFlagEquals = deletionFlagEquals(includeDeleted);
       Predicate relIdOnSide = nodeIdOnSideEquals(localId, side);
       Predicate matcher = and(deletionFlagEquals, relIdOnSide);
-      return getSetByFilter(type.getId(), matcher);
+      return getSetByFilter(type, matcher);
    }
 
    @SuppressWarnings({"rawtypes", "unchecked"})
@@ -88,13 +89,13 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<IRelationTyp
       Predicate<Relation> nodeMatcher = OrcsPredicates.nodeIdsEquals(aNode, bNode);
       Predicate deletionFlagEquals = deletionFlagEquals(excludeDeleted);
       Predicate matcher = and(deletionFlagEquals, nodeMatcher);
-      List<Relation> listByFilter = getListByFilter(type.getId(), matcher);
+      List<Relation> listByFilter = getListByFilter(type, matcher);
       return listByFilter.isEmpty() ? null : listByFilter.get(0);
    }
 
-   public Relation getRelation(int artIdA, long typeUuid, int artIdB) throws OseeCoreException {
+   public Relation getRelation(int artIdA, RelationTypeId relationType, int artIdB) throws OseeCoreException {
       Predicate<Relation> nodeMatcher = OrcsPredicates.nodeIdsEquals(artIdA, artIdB);
-      List<Relation> listByFilter = getListByFilter(typeUuid, nodeMatcher);
+      List<Relation> listByFilter = getListByFilter(relationType, nodeMatcher);
       return listByFilter.isEmpty() ? null : listByFilter.get(0);
    }
 
