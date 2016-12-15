@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -113,18 +114,22 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
       }
       List<String> list = new ArrayList<>();
 
+      Boolean isNoTags = Boolean.valueOf(OseeInfo.getValue("osee.publish.no.tags"));
+
       String rendererId = renderer.getClass().getCanonicalName();
       if (artifact != null && option != null) {
-         list.add(rendererId + " " + artifact.getArtifactTypeName() + " " + presentationType + " " + option);
+         list.add(
+            rendererId + " " + artifact.getArtifactTypeName() + " " + presentationType + " " + option + (isNoTags ? " " + "NO TAGS" : ""));
       }
       if (artifact != null) {
-         list.add(rendererId + " " + artifact.getArtifactTypeName() + " " + presentationType);
+         list.add(
+            rendererId + " " + artifact.getArtifactTypeName() + " " + presentationType + (isNoTags ? " " + "NO TAGS" : ""));
       }
       if (option != null) {
-         list.add(rendererId + " " + presentationType + " " + option);
+         list.add(rendererId + " " + presentationType + " " + option + (isNoTags ? " " + "NO TAGS" : ""));
       }
 
-      list.add(rendererId + " " + presentationType);
+      list.add(rendererId + " " + presentationType + (isNoTags ? " " + "NO TAGS" : ""));
       return list;
    }
 
