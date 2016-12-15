@@ -95,7 +95,7 @@ public class FixAttributeOperation extends AbstractOperation {
 
                rowData.add(new String[] {
                   branch.getName(),
-                  artifact.getGuid(),
+                  artifact.getIdString(),
                   artifact.getName(),
                   attributeType.getName(),
                   Collections.toString(", ", attributeValues),

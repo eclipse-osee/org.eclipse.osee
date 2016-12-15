@@ -168,7 +168,7 @@ public class FixAttributeOperationTest {
          ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Robot API", branch);
       robotAPI.addAttribute(CoreAttributeTypes.Partition, "Navigation");
 
-      itemId = robotAPI.getGuid();
+      itemId = robotAPI.getIdString();
 
       SkynetTransaction transaction = TransactionManager.createTransaction(branch, "Adding Attribute");
       transaction.addArtifact(robotAPI);

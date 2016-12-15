@@ -317,6 +317,6 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
 
    @Override
    public Long getId() {
-      return getOrcsData().getLocalId().longValue();
+      return getOrcsData().getId();
    }
 }
