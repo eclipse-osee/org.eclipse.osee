@@ -283,4 +283,10 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    public Long getUuid() {
       return Long.valueOf(getLocalId());
    }
+
+   @Override
+   public String toString() {
+      return String.format("Artifact: Id [%s] Type [%s] Name [%s]", getId().toString(), getArtifactType().getName(),
+         getName());
+   }
 }

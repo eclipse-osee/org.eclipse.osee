@@ -3,3 +3,4 @@ Database files will be copied out to users home directory for tests that require
 If schema or breaking db changes are made, update database from instructions in that plugin.
 
 It does not require running an separate application server.
+Launch using AtsServer_Integration_TestSuite launch config.

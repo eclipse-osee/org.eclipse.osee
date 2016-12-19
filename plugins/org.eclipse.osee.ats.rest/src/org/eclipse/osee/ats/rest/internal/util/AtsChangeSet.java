@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.rest.internal.util;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -240,11 +239,6 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void setRelation(Object object1, IRelationTypeSide relationSide, Object object2) {
-      setRelations(object1, relationSide, Collections.singleton(object2));
-   }
-
-   @Override
    public void setRelations(Object object, IRelationTypeSide relationSide, Collection<? extends Object> objects) {
       ArtifactReadable artifact = getArtifact(object);
       List<ArtifactReadable> artifacts = new LinkedList<>();
@@ -255,6 +249,13 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          }
       }
 
+      // unrelate all objects that are not in set
+      for (ArtifactReadable art : artifact.getRelated(relationSide)) {
+         if (!artifacts.contains(art)) {
+            unrelate(artifact, relationSide, art);
+         }
+      }
+
       // add all relations that do not exist
       for (Object obj : objects) {
          ArtifactReadable art = getArtifact(obj);
@@ -262,12 +263,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
             relate(object, relationSide, obj);
          }
       }
-      // unrelate all objects that are not in set
-      for (ArtifactReadable art : artifact.getRelated(relationSide)) {
-         if (!artifacts.contains(art)) {
-            unrelate(artifact, relationSide, art);
-         }
-      }
+
    }
 
    public void unrelate(Object object1, IRelationTypeSide relationType, Object object2) {

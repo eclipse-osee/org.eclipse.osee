@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -30,6 +31,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -52,8 +54,7 @@ public class AtsChangeSetTest {
    @Test
    public void testCreateArtifact() {
       String className = getClass().getSimpleName();
-      IAtsChangeSet changes =
-         atsServer.getStoreService().createAtsChangeSet(className, atsServer.getUserService().getCurrentUser());
+      IAtsChangeSet changes = createAtsChangeSet();
       Long uuid = Lib.generateArtifactIdAsInt();
       String guid = GUID.create();
       String name = "Ver 1 " + className;
@@ -74,8 +75,7 @@ public class AtsChangeSetTest {
    @Test
    public void testCreateRelationsAndUnrelateAll() {
       String className = getClass().getSimpleName();
-      IAtsChangeSet changes =
-         atsServer.getStoreService().createAtsChangeSet(className, atsServer.getUserService().getCurrentUser());
+      IAtsChangeSet changes = createAtsChangeSet();
       ArtifactId folderArt = changes.createArtifact(CoreArtifactTypes.Folder, "Folder 2 " + className);
       ArtifactId verArt = changes.createArtifact(AtsArtifactTypes.Version, "Ver 2 " + className);
       changes.execute();
@@ -86,7 +86,7 @@ public class AtsChangeSetTest {
       assertNotNull(version);
 
       // add relation from folder to version
-      changes = atsServer.getStoreService().createAtsChangeSet(className, atsServer.getUserService().getCurrentUser());
+      changes = createAtsChangeSet();
       changes.relate(folder, CoreRelationTypes.SupportingInfo_SupportingInfo, version);
       changes.execute();
 
@@ -99,7 +99,7 @@ public class AtsChangeSetTest {
       assertFalse(verArt2.areRelated(CoreRelationTypes.SupportingInfo_SupportingInfo, folderArt2));
 
       // unrelate all on folder
-      changes = atsServer.getStoreService().createAtsChangeSet(className, atsServer.getUserService().getCurrentUser());
+      changes = createAtsChangeSet();
       changes.unrelateAll(folderArt2, CoreRelationTypes.SupportingInfo_SupportingInfo);
       changes.execute();
 
@@ -116,7 +116,7 @@ public class AtsChangeSetTest {
       assertNotNull(folder);
       version = atsServer.getConfigItemFactory().getVersion(atsServer.getArtifact(verArt.getUuid()));
       assertNotNull(version);
-      changes = atsServer.getStoreService().createAtsChangeSet(className, atsServer.getUserService().getCurrentUser());
+      changes = createAtsChangeSet();
       changes.relate(version, CoreRelationTypes.SupportingInfo_SupportedBy, folder);
       changes.execute();
 
@@ -129,7 +129,7 @@ public class AtsChangeSetTest {
       assertFalse(verArt22.areRelated(CoreRelationTypes.SupportingInfo_SupportingInfo, folderArt22));
 
       // unrelate all on version
-      changes = atsServer.getStoreService().createAtsChangeSet(className, atsServer.getUserService().getCurrentUser());
+      changes = createAtsChangeSet();
       changes.unrelateAll(verArt22, CoreRelationTypes.SupportingInfo_SupportedBy);
       changes.execute();
 
@@ -145,8 +145,7 @@ public class AtsChangeSetTest {
    @Test
    public void testUnrelate() {
       String className = getClass().getSimpleName();
-      IAtsChangeSet changes =
-         atsServer.getStoreService().createAtsChangeSet(className, atsServer.getUserService().getCurrentUser());
+      IAtsChangeSet changes = createAtsChangeSet();
       ArtifactId folderArt = changes.createArtifact(CoreArtifactTypes.Folder, "Folder 3 " + className);
       ArtifactId verArt = changes.createArtifact(AtsArtifactTypes.Version, "Ver 3 " + className);
       changes.relate(folderArt, CoreRelationTypes.SupportingInfo_SupportingInfo, verArt);
@@ -161,7 +160,7 @@ public class AtsChangeSetTest {
       assertFalse(verArt2.areRelated(CoreRelationTypes.SupportingInfo_SupportingInfo, folderArt2));
 
       // unrelate folder from version
-      changes = atsServer.getStoreService().createAtsChangeSet(className, atsServer.getUserService().getCurrentUser());
+      changes = createAtsChangeSet();
       changes.unrelate(folderArt2, CoreRelationTypes.SupportingInfo_SupportingInfo, verArt2);
       changes.execute();
 
@@ -176,8 +175,7 @@ public class AtsChangeSetTest {
    @Test
    public void testSetRelationAndRelations() {
       String className = getClass().getSimpleName();
-      IAtsChangeSet changes =
-         atsServer.getStoreService().createAtsChangeSet(className, atsServer.getUserService().getCurrentUser());
+      IAtsChangeSet changes = createAtsChangeSet();
       ArtifactId folderArt = changes.createArtifact(CoreArtifactTypes.Folder, "Folder 4 " + className);
       ArtifactId ver1ArtId = changes.createArtifact(AtsArtifactTypes.Version, "Ver 4.1 " + className);
       changes.relate(folderArt, CoreRelationTypes.SupportingInfo_SupportingInfo, ver1ArtId);
@@ -196,7 +194,7 @@ public class AtsChangeSetTest {
       assertFalse(folderArt2.areRelated(CoreRelationTypes.SupportingInfo_SupportingInfo, verArt3));
 
       // setRelations to 2 and 3
-      changes = atsServer.getStoreService().createAtsChangeSet(className, atsServer.getUserService().getCurrentUser());
+      changes = createAtsChangeSet();
       changes.setRelations(folderArt2, CoreRelationTypes.SupportingInfo_SupportingInfo,
          Arrays.asList(verArt2, verArt3));
       changes.execute();
@@ -211,7 +209,7 @@ public class AtsChangeSetTest {
       assertTrue(folderArt21.areRelated(CoreRelationTypes.SupportingInfo_SupportingInfo, verArt31));
 
       // setRelations to 1 and 2
-      changes = atsServer.getStoreService().createAtsChangeSet(className, atsServer.getUserService().getCurrentUser());
+      changes = createAtsChangeSet();
       changes.setRelations(folderArt21, CoreRelationTypes.SupportingInfo_SupportingInfo,
          Arrays.asList(verArt11, verArt21));
       changes.execute();
@@ -224,6 +222,55 @@ public class AtsChangeSetTest {
       assertTrue(folderArt211.areRelated(CoreRelationTypes.SupportingInfo_SupportingInfo, verArt111));
       assertTrue(folderArt211.areRelated(CoreRelationTypes.SupportingInfo_SupportingInfo, verArt211));
       assertFalse(folderArt211.areRelated(CoreRelationTypes.SupportingInfo_SupportingInfo, verArt311));
-
    }
+
+   /**
+    * Verify that if relation validity is many to one, setRelation/setRelations will successfully remove one and add
+    * another
+    */
+   @Test
+   public void testSetRelationAndRelations_OneToMany() {
+      String className = getClass().getSimpleName();
+      IAtsChangeSet changes = createAtsChangeSet();
+      ArtifactId ver1 = changes.createArtifact(AtsArtifactTypes.Version, "Version 1 " + className);
+      ArtifactId ver2 = changes.createArtifact(AtsArtifactTypes.Version, "Version 2 " + className);
+      ArtifactId teamWf = changes.createArtifact(AtsArtifactTypes.TeamWorkflow, "Workflow " + className);
+      changes.execute();
+
+      // setRelation/setRelations - teamWf to version
+      changes = createAtsChangeSet();
+      changes.setRelation(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, ver1);
+      changes.execute();
+
+      // reload artifacts to get latest stripe
+      ver1 = atsServer.getArtifact(ver1.getId());
+      ver2 = atsServer.getArtifact(ver2.getId());
+      teamWf = atsServer.getArtifact(teamWf.getId());
+
+      // ensure that teamWf is related to ver1
+      Assert.assertEquals(ver1.getId(),
+         atsServer.getVersionService().getTargetedVersion(atsServer.getWorkItemFactory().getTeamWf(teamWf)).getUuid());
+
+      // setRelation/setRelations - replace ver1 with ver2
+      changes = createAtsChangeSet();
+      changes.setRelation(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, ver2);
+      changes.execute();
+
+      // reload artifacts to get latest stripe
+      ver1 = atsServer.getArtifact(ver1.getId());
+      ver2 = atsServer.getArtifact(ver2.getId());
+      teamWf = atsServer.getArtifact(teamWf.getId());
+
+      // ensure teamWf is related to ver2 and not related to ver1
+      Assert.assertEquals(ver2.getId(),
+         atsServer.getVersionService().getTargetedVersion(atsServer.getWorkItemFactory().getTeamWf(teamWf)).getUuid());
+      Assert.assertEquals(0,
+         ((ArtifactReadable) ver1).getRelated(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow).size());
+   }
+
+   private IAtsChangeSet createAtsChangeSet() {
+      return atsServer.getStoreService().createAtsChangeSet(getClass().getSimpleName(),
+         atsServer.getUserService().getCurrentUser());
+   }
+
 }

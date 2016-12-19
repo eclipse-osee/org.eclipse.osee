@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -164,6 +165,11 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    @Override
    public void setSoleAttributeFromString(IAtsObject atsObject, IAttributeType attributeType, String value) {
       setSoleAttributeFromString(atsObject.getStoreObject(), attributeType, value);
+   }
+
+   @Override
+   public void setRelation(Object object1, IRelationTypeSide relationSide, Object object2) {
+      setRelations(object1, relationSide, Collections.singleton(object2));
    }
 
 }
