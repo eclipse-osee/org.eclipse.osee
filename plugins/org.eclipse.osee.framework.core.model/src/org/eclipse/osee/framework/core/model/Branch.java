@@ -46,24 +46,23 @@ public class Branch extends NamedIdBase implements IOseeBranch, Adaptable {
       this(uuid, name, branchType, branchState, isArchived, inheritsAccessControl, ArtifactId.SENTINEL);
    }
 
-   public Branch(Long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived, boolean inheritsAccessControl, ArtifactId branchView) {
+   public Branch(Long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived, boolean inheritsAccessControl, ArtifactId viewId) {
       super(uuid, name);
       this.branchType = branchType;
       this.branchState = branchState;
       this.isArchived = isArchived;
       this.inheritsAccessControl = inheritsAccessControl;
-      this.branchView = branchView;
+      this.branchView = viewId;
    }
 
-   public static Branch createBranchView(Branch branch, ArtifactId branchView, String name) {
+   public static Branch createBranchView(Branch branch, ArtifactId viewId, String name) {
       Branch viewBranch = new Branch(branch.getId(), branch.getName(), branch.getBranchType(), branch.getBranchState(),
          branch.isArchived, true);
       viewBranch.setAssociatedArtifact(branch.getAssociatedArtifactId());
       viewBranch.setBaseTransaction(branch.getBaseTransaction());
-      viewBranch.setBranchView(branchView);
+      viewBranch.setBranchView(viewId);
       viewBranch.setParentBranch(branch.getParentBranch());
       viewBranch.setName(name);
-      viewBranch.setBranchView(branchView);
 
       return viewBranch;
    }
@@ -197,14 +196,14 @@ public class Branch extends NamedIdBase implements IOseeBranch, Adaptable {
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof BranchId) {
-         return super.equals(obj) && branchView.equals(((BranchId) obj).getView());
+         return super.equals(obj) && branchView.equals(((BranchId) obj).getViewId());
       }
 
       return false;
    }
 
    @Override
-   public ArtifactId getView() {
+   public ArtifactId getViewId() {
       return branchView;
    }
 

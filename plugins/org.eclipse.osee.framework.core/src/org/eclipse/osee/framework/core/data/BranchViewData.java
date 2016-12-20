@@ -15,6 +15,7 @@ import java.util.List;
 public class BranchViewData {
 
    private BranchId branch;
+
    private List<ArtifactId> branchViews;
 
    public BranchViewData() {

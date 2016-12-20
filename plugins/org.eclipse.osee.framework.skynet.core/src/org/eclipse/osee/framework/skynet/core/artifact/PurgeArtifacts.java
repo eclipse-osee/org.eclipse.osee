@@ -87,7 +87,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
       Id4JoinQuery artJoin2 = JoinUtility.createId4JoinQuery(getJdbcClient());
       try {
          for (Artifact art : artifactsToPurge) {
-            artJoin2.add(art.getBranch(), art, TransactionId.SENTINEL, art.getBranch().getView());
+            artJoin2.add(art.getBranch(), art, TransactionId.SENTINEL, art.getBranch().getViewId());
          }
          artJoin2.store(connection);
 
@@ -159,7 +159,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
       Id4JoinQuery artJoin = JoinUtility.createId4JoinQuery(getJdbcClient());
       for (Artifact art : artifactsToPurge) {
          for (IOseeBranch branch : BranchManager.getChildBranches(art.getBranch(), true)) {
-            artJoin.add(branch, art, TransactionId.SENTINEL, branch.getView());
+            artJoin.add(branch, art, TransactionId.SENTINEL, branch.getViewId());
          }
       }
       if (!artJoin.isEmpty()) {

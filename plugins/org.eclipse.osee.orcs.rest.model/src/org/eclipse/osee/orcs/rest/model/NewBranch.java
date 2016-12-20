@@ -27,7 +27,7 @@ public class NewBranch {
    private TransactionId sourceTransaction;
    private String creationComment;
    private int mergeAddressingQueryId;
-   private long mergeDestinationBranchId;
+   private BranchId mergeDestinationBranchId;
    private boolean txCopyBranchType;
 
    public String getBranchName() {
@@ -62,7 +62,7 @@ public class NewBranch {
       return mergeAddressingQueryId;
    }
 
-   public long getMergeDestinationBranchId() {
+   public BranchId getMergeDestinationBranchId() {
       return mergeDestinationBranchId;
    }
 
@@ -103,7 +103,7 @@ public class NewBranch {
    }
 
    public void setMergeDestinationBranchId(BranchId mergeDestinationBranch) {
-      this.mergeDestinationBranchId = mergeDestinationBranch.getId();
+      this.mergeDestinationBranchId = mergeDestinationBranch;
    }
 
    public void setTxCopyBranchType(boolean txCopyBranchType) {

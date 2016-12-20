@@ -17,7 +17,6 @@ import static org.mockito.Mockito.when;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -153,7 +152,7 @@ public class BranchDataFactoryTest {
       assertEquals(fromTx, actual.getFromTransaction());
 
       assertEquals(-1, actual.getMergeAddressingQueryId());
-      assertEquals(-1L, actual.getMergeDestinationBranchId());
+      assertEquals(BranchId.SENTINEL, actual.getMergeDestinationBranchId());
 
       assertEquals(author, actual.getAuthor());
       assertEquals(associatedArtifact, actual.getAssociatedArtifact());

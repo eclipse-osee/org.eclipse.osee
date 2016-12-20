@@ -179,7 +179,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
          try {
             for (int artId : artIds) {
                joinQuery.add(wasValueBranch, ArtifactId.valueOf(artId), TransactionId.SENTINEL,
-                  wasValueBranch.getView());
+                  wasValueBranch.getViewId());
             }
             joinQuery.store();
 

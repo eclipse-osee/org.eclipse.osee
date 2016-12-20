@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.define.report.api;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 

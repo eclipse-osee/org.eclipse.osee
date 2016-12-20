@@ -43,30 +43,30 @@ public interface IOseeBranch extends BranchId, Named {
       return create(Long.valueOf(id), name, ArtifactId.SENTINEL);
    }
 
-   public static IOseeBranch create(Long id, String name, ArtifactId branchView) {
+   public static IOseeBranch create(Long id, String name, ArtifactId viewId) {
       final class BranchTokenImpl extends NamedIdBase implements IOseeBranch {
-         private ArtifactId branchView;
+         private ArtifactId viewId;
 
-         public BranchTokenImpl(Long id, String name, ArtifactId branchView) {
+         public BranchTokenImpl(Long id, String name, ArtifactId viewId) {
             super(id, name);
-            this.branchView = branchView;
+            this.viewId = viewId;
          }
 
          @Override
-         public ArtifactId getView() {
-            return branchView;
+         public ArtifactId getViewId() {
+            return viewId;
          }
 
          @Override
          public boolean equals(Object obj) {
             if (obj instanceof BranchId) {
-               return super.equals(obj) && branchView.equals(((BranchId) obj).getView());
+               return super.equals(obj) && viewId.equals(((BranchId) obj).getViewId());
             }
 
             return false;
          }
       }
-      return new BranchTokenImpl(id, name, branchView);
+      return new BranchTokenImpl(id, name, viewId);
    }
 
    public static IOseeBranch create(Long id, String name) {

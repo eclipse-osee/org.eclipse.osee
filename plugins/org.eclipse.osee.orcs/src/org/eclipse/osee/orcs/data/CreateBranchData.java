@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
  * @author Roberto E. Escobar
  */
 public class CreateBranchData {
-   private final long MERGE_DESTINATION_BRANCH_ID = -1; // only used on merge branches
+   private final BranchId MERGE_DESTINATION_BRANCH_ID = BranchId.SENTINEL; // only used on merge branches
    private final int MERGE_ADDRESSING_QUERY_ID = -1; // only used on merge branches
 
    private String branchName;
@@ -33,7 +33,7 @@ public class CreateBranchData {
 
    // Merge Branch Legacy Support
    private int mergeAddressingQueryId = MERGE_ADDRESSING_QUERY_ID;
-   private long mergeDestinationBranchId = MERGE_DESTINATION_BRANCH_ID;
+   private BranchId mergeDestinationBranchId = MERGE_DESTINATION_BRANCH_ID;
 
    private boolean txCopyBranchType = false;
    private BranchId parentBranch;
@@ -110,11 +110,11 @@ public class CreateBranchData {
       this.mergeAddressingQueryId = mergeAddressingQueryId;
    }
 
-   public long getMergeDestinationBranchId() {
+   public BranchId getMergeDestinationBranchId() {
       return mergeDestinationBranchId;
    }
 
-   public void setMergeDestinationBranchId(long destinationBranchId) {
+   public void setMergeDestinationBranchId(BranchId destinationBranchId) {
       this.mergeDestinationBranchId = destinationBranchId;
    }
 

@@ -32,15 +32,15 @@ public class BranchDataImpl extends NamedIdBase implements BranchData, BranchRea
    private BranchState branchState = BranchState.CREATED;
    private BranchType branchType = BranchType.WORKING;
    private boolean inheritAccessControl = false;
-   private ArtifactId branchView = ArtifactId.SENTINEL;
+   private ArtifactId viewId = ArtifactId.SENTINEL;
 
    public BranchDataImpl(Long branchId, String name) {
       this(branchId, name, ArtifactId.SENTINEL);
    }
 
-   public BranchDataImpl(Long branchId, String name, ArtifactId branchView) {
+   public BranchDataImpl(Long branchId, String name, ArtifactId viewId) {
       super(branchId, name);
-      this.branchView = branchView;
+      this.viewId = viewId;
    }
 
    @Override
@@ -134,7 +134,7 @@ public class BranchDataImpl extends NamedIdBase implements BranchData, BranchRea
    }
 
    @Override
-   public ArtifactId getView() {
-      return branchView;
+   public ArtifactId getViewId() {
+      return viewId;
    }
 }

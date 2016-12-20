@@ -108,7 +108,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       this.newBranchData = branchData;
    }
 
-   private void checkPreconditions(JdbcConnection connection, BranchId parentBranch, Long destinationBranch) throws OseeCoreException {
+   private void checkPreconditions(JdbcConnection connection, BranchId parentBranch, BranchId destinationBranch) throws OseeCoreException {
       if (newBranchData.getBranchType().isMergeBranch()) {
          if (jdbcClient.fetch(connection, 0, TEST_MERGE_BRANCH_EXISTENCE, parentBranch, destinationBranch) > 0) {
             throw new OseeStateException("Existing merge branch detected for [%s] and [%d]", parentBranch,
@@ -148,7 +148,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
    @Override
    public void handleTxWork(JdbcConnection connection) {
       BranchId parentBranch = newBranchData.getParentBranch();
-      Long destinationBranchUuid = newBranchData.getMergeDestinationBranchId();
+      BranchId destinationBranchUuid = newBranchData.getMergeDestinationBranchId();
 
       checkPreconditions(connection, parentBranch, destinationBranchUuid);
 

@@ -10,18 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Ryan D. Brooks
  */
-@JsonSerialize(using = IdSerializer.class)
+
+@JsonSerialize(using = BranchIdSerializer.class)
+@JsonDeserialize(using = BranchIdDeserializer.class)
 public interface BranchId extends Identity<Long>, Id {
    BranchId SENTINEL = valueOf(Id.SENTINEL);
 
@@ -40,22 +41,22 @@ public interface BranchId extends Identity<Long>, Id {
 
    public static BranchId create(long id, ArtifactId view) {
       final class BranchIdImpl extends BaseId implements BranchId {
-         private ArtifactId view;
+         private ArtifactId viewId;
 
          public BranchIdImpl(Long id, ArtifactId view) {
             super(id);
-            this.view = view;
+            this.viewId = view;
          }
 
          @Override
-         public ArtifactId getView() {
-            return view;
+         public ArtifactId getViewId() {
+            return viewId;
          }
 
          @Override
          public boolean equals(Object obj) {
             if (obj instanceof BranchId) {
-               return super.equals(obj) && view.equals(((BranchId) obj).getView());
+               return super.equals(obj) && viewId.equals(((BranchId) obj).getViewId());
             }
             return false;
          }
@@ -64,7 +65,6 @@ public interface BranchId extends Identity<Long>, Id {
       return new BranchIdImpl(id, view);
    }
 
-   @JsonCreator
    public static BranchId valueOf(long id) {
       return create(id, ArtifactId.SENTINEL);
    }
@@ -73,7 +73,7 @@ public interface BranchId extends Identity<Long>, Id {
       return valueOf(Lib.generateUuid());
    }
 
-   default ArtifactId getView() {
+   default ArtifactId getViewId() {
       return ArtifactId.SENTINEL;
    }
 }

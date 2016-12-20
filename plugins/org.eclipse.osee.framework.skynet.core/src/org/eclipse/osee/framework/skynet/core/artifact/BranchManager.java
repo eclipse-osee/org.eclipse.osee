@@ -159,7 +159,7 @@ public final class BranchManager {
       if (branch instanceof Branch) {
          return (Branch) branch;
       } else {
-         return getBranch(branch.getId(), branch.getView());
+         return getBranch(branch.getId(), branch.getViewId());
       }
    }
 
@@ -176,7 +176,7 @@ public final class BranchManager {
       if (view.notEqual(ArtifactId.SENTINEL)) {
          List<Branch> views = getCache().getViews();
          for (Branch branchView : views) {
-            if (branchView.getId().equals(branchId) && branchView.getView().equals(view)) {
+            if (branchView.getId().equals(branchId) && branchView.getBranchView().equals(view)) {
                branch = branchView;
                break;
             }
@@ -429,7 +429,7 @@ public final class BranchManager {
    private static IOseeBranch createMergeBranch(final IOseeBranch sourceBranch, final IOseeBranch destBranch, final ArrayList<Integer> expectedArtIds) throws OseeCoreException {
       Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery();
       for (int artId : expectedArtIds) {
-         joinQuery.add(sourceBranch, ArtifactId.valueOf(artId), TransactionId.SENTINEL, sourceBranch.getView());
+         joinQuery.add(sourceBranch, ArtifactId.valueOf(artId), TransactionId.SENTINEL, sourceBranch.getViewId());
       }
       BranchId branch;
       try {

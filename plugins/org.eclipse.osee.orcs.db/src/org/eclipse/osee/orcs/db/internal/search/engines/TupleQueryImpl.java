@@ -101,7 +101,7 @@ public class TupleQueryImpl implements TupleQuery {
 
    @Override
    public <E1, E2> void getTuple2KeyValuePair(Tuple2Type<E1, E2> tupleType, BranchId branch, BiConsumer<Long, String> consumer) {
-      runQuery(consumer, SELECT_KEY_VALUE_FROM_BRANCH_VIEW, "e2", branch.getView(), tupleType, branch);
+      runQuery(consumer, SELECT_KEY_VALUE_FROM_BRANCH_VIEW, "e2", branch.getViewId(), tupleType, branch);
    }
 
    @Override

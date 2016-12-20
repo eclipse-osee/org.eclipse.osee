@@ -268,7 +268,7 @@ public final class ArtifactLoader {
          Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery();
          for (Pair<ArtifactId, BranchId> pair : toLoad) {
             joinQuery.add(BranchId.valueOf(pair.getSecond().getId()), ArtifactId.valueOf(pair.getFirst().getId()),
-               TransactionId.valueOf(transactionId.getId()), pair.getSecond().getView());
+               TransactionId.valueOf(transactionId.getId()), pair.getSecond().getViewId());
          }
          loadArtifacts(artifacts, joinQuery, loadLevel, null, reload, transactionId, allowDeleted, isArchived);
       }
@@ -361,7 +361,7 @@ public final class ArtifactLoader {
 
       try {
          joinQuery.add(BranchId.valueOf(artifact.getBranchId()), ArtifactId.valueOf(artifact.getId()),
-            TransactionId.SENTINEL, artifact.getBranch().getView());
+            TransactionId.SENTINEL, artifact.getBranch().getViewId());
          joinQuery.store();
 
          List<Artifact> artifacts = new ArrayList<>(1);
