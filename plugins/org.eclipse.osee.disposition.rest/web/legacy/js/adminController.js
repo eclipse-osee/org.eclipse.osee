@@ -428,9 +428,9 @@
 		        
 		        
 		        var CopySetModalCtrl = function($scope, $modalInstance, programs, currentlySelectedProgram, sets, showLoadingModal) {
-		            $scope.setsLocal = angular.copy(sets);
-		            $scope.programsLocal = angular.copy(programs);
-		            $scope.setsLocalSource = angular.copy(sets);
+		            $scope.setsLocal = sets.slice();
+		            $scope.programsLocal = programs.slice();
+		            $scope.setsLocalSource = sets.slice();
 		            $scope.sourceProgram = currentlySelectedProgram;
 		            
 			        $scope.updateProgramLocal = function() {
