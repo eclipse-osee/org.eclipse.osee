@@ -17,6 +17,7 @@ import org.eclipse.osee.define.report.api.WordUpdateData;
 import org.eclipse.osee.define.report.api.WordUpdateEndpoint;
 import org.eclipse.osee.define.report.internal.wordupdate.WordTemplateContentRendererHandler;
 import org.eclipse.osee.define.report.internal.wordupdate.WordUpdateArtifact;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
@@ -57,7 +58,7 @@ public final class WordUpdateEndpointImpl implements WordUpdateEndpoint {
    }
 
    @Override
-   public Pair<String, Set<String>> renderWordTemplateContent(WordTemplateContentData data) {
+   public Pair<String, Set<String>> renderWordTemplateContent(WordTemplateContentData data) throws OseeCoreException {
       WordTemplateContentRendererHandler wordRendererHandler = new WordTemplateContentRendererHandler(orcsApi);
       return wordRendererHandler.renderWordML(data);
    }

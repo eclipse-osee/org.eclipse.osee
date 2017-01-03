@@ -83,7 +83,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       tx.addTuple2(CoreTupleTypes.ViewApplicability, config1, "C = Included");
       tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "C = Excluded");
 
-      String featureDefJson = "{\"FeatureDefinitions\" : [{" + "\"name\": \"A\"," + //
+      String featureDefJson = "[{" + "\"name\": \"A\"," + //
          "\"type\": \"single\"," + //
          "\"values\": [\"Included\", \"Excluded\"]," + //
          "\"defaultValue\": \"Included\"," + //
@@ -101,7 +101,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
          "\"defaultValue\": \"Included\"," + //
          "\"description\": \"Test C\"" + //
          "}" + //
-         "]}";
+         "]";
 
       tx.createAttribute(featureDefinition, CoreAttributeTypes.GeneralStringData, featureDefJson);
 

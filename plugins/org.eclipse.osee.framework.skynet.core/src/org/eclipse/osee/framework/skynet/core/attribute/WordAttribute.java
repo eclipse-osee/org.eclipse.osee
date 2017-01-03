@@ -18,6 +18,7 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IStatusHandler;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -76,6 +77,10 @@ public class WordAttribute extends StringAttribute {
    public boolean containsWordAnnotations() throws OseeCoreException {
       String temp = getValue();
       return WordCoreUtil.containsWordAnnotations(temp);
+   }
+
+   public boolean areApplicabilityTagsInvalid(BranchId branch, HashCollection<String, String> validFeatureValues) {
+      return WordCoreUtil.areApplicabilityTagsInvalid(getValue(), branch, validFeatureValues);
    }
 
    @Override

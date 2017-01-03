@@ -24,6 +24,7 @@ Import-Package: org.antlr.runtime;
  org.eclipse.osee.framework.jdk.core.text.rules,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.jdk.core.util.xml,
  org.eclipse.osee.framework.logging,
  org.eclipse.osgi.framework.console,
  org.osgi.service.event,

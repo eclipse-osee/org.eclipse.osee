@@ -198,11 +198,11 @@
      </IHttpServerRequest>
   </extension>
         <extension
-              id="CatchTrackedChanges"
-              name="CatchTrackedChanges"
+              id="CatchWordMlChanges"
+              name="CatchWordMlChanges"
               point="org.eclipse.osee.framework.skynet.core.CommitActions">
            <commitActions
-                 className="org.eclipse.osee.framework.skynet.core.commit.actions.CatchTrackedChanges">
+                 className="org.eclipse.osee.framework.skynet.core.commit.actions.CatchWordMlChanges">
            </commitActions>
         </extension>
         <extension

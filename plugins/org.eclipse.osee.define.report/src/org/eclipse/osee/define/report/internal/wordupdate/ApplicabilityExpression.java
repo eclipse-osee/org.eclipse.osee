@@ -164,16 +164,25 @@ public class ApplicabilityExpression {
    }
 
    private boolean isFeatureValuePairValid(String feature, String value, ArtifactReadable featureDefArt) {
-      if (featureValuesAllowed.containsKey(feature)) {
-         Collection<String> validValues = featureValuesAllowed.getValues(feature);
+      if (featureValuesAllowed.containsKey(feature.toUpperCase())) {
+         Collection<String> validValues = featureValuesAllowed.getValues(feature.toUpperCase());
 
-         value = value.equals("Default") ? getDefaultValue(feature, featureDefArt) : value;
+         value = value.equalsIgnoreCase("Default") ? getDefaultValue(feature, featureDefArt) : value;
 
-         if (validValues.contains(value)) {
+         if (containsIgnoreCase(validValues, value)) {
             return true;
          }
       }
 
+      return false;
+   }
+
+   private static boolean containsIgnoreCase(Collection<String> validValues, String val) {
+      for (String validValue : validValues) {
+         if (validValue.equalsIgnoreCase(val)) {
+            return true;
+         }
+      }
       return false;
    }
 
@@ -186,7 +195,7 @@ public class ApplicabilityExpression {
          FeatureDefinitionData[] featDataList = mapper.readValue(json, FeatureDefinitionData[].class);
 
          for (FeatureDefinitionData featData : featDataList) {
-            if (featData.getName().equals(feature)) {
+            if (featData.getName().equalsIgnoreCase(feature)) {
                toReturn = featData.getDefaultValue();
                break;
             }

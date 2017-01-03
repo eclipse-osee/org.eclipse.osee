@@ -79,8 +79,8 @@ public class UpdateArtifactOperation extends AbstractOperation {
 
       WordUpdateChange change = HttpWordUpdateRequest.updateWordArtifacts(wud);
       postProcessChange(change);
-      TrackedChangesDialog trackedChanges = new TrackedChangesDialog(change);
-      trackedChanges.doWork(null);
+      WordMlChangesDialog changes = new WordMlChangesDialog(change);
+      changes.doWork(null);
    }
 
    private void postProcessChange(WordUpdateChange change) {
@@ -132,11 +132,11 @@ public class UpdateArtifactOperation extends AbstractOperation {
       return sb.toString();
    }
 
-   private static final class TrackedChangesDialog extends AbstractOperation {
+   private static final class WordMlChangesDialog extends AbstractOperation {
 
       private final WordUpdateChange change;
 
-      public TrackedChangesDialog(WordUpdateChange change) {
+      public WordMlChangesDialog(WordUpdateChange change) {
          super("Tracked Changes Dialog", Activator.PLUGIN_ID);
          this.change = change;
       }
@@ -147,22 +147,38 @@ public class UpdateArtifactOperation extends AbstractOperation {
 
             @Override
             public void run() {
-               XResultData resultData = new XResultData(false);
-               if (change != null && !change.getTrackedChangeArts().isEmpty()) {
-                  resultData.setTitle("Artifacts with Tracked Changes");
-                  resultData.addRaw("The following artifacts contain tracked changes and could not be saved." //
-                     + "\nPlease accept or reject and turn off tracked changes, then save the artifact.\n\n");
-                  for (Map.Entry<Long, String> entry : change.getTrackedChangeArts().entrySet()) {
-                     resultData.addRaw("Artifact ");
-                     resultData.addRaw("id: " + entry.getKey() + ", ");
-                     resultData.addRaw("name: " + entry.getValue() + "\n");
+
+               if (change != null) {
+                  if (!change.getTrackedChangeArts().isEmpty()) {
+                     XResultData resultData = new XResultData(false);
+                     resultData.setTitle("Artifacts with Tracked Changes");
+                     resultData.addRaw("The following artifacts contain tracked changes and could not be saved." //
+                        + "\nPlease accept or reject and turn off tracked changes, then save the artifact.\n\n");
+                     for (Map.Entry<Long, String> entry : change.getTrackedChangeArts().entrySet()) {
+                        resultData.addRaw("Artifact ");
+                        resultData.addRaw("id: " + entry.getKey() + ", ");
+                        resultData.addRaw("name: " + entry.getValue() + "\n");
+                     }
+                     XResultDataUI.report(resultData, resultData.getTitle());
                   }
-                  XResultDataUI.report(resultData, resultData.getTitle());
+
+                  if (!change.getInvalidApplicabilityTagArts().isEmpty()) {
+                     XResultData resultData = new XResultData(false);
+                     resultData.setTitle("Artifacts with Invalid Applicability Tags");
+                     resultData.addRaw(
+                        "The following artifacts contain invalid feature values and/or inconsistent start and ends tags and could not be saved." //
+                           + "\nPlease make sure the feature values used are found in the Feature Definition artifact and the start and end tags match, then try to save the artifact again.\n\n");
+
+                     for (Map.Entry<Long, String> entry : change.getInvalidApplicabilityTagArts().entrySet()) {
+                        resultData.addRaw("Artifact ");
+                        resultData.addRaw("id: " + entry.getKey() + ", ");
+                        resultData.addRaw("name: " + entry.getValue() + "\n");
+                     }
+                     XResultDataUI.report(resultData, resultData.getTitle());
+                  }
                }
             }
          });
       }
-
    }
-
 }

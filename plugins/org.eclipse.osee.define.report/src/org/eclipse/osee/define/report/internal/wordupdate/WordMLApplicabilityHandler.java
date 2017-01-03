@@ -73,7 +73,7 @@ public class WordMLApplicabilityHandler {
    private static int startReplaceIndex = 0;
    private static int endReplaceIndex = 0;
 
-   public static String previewValidApplicabilityContent(OrcsApi orcsApi, String content, BranchId branch) {
+   public static String previewValidApplicabilityContent(OrcsApi orcsApi, String content, BranchId branch) throws OseeCoreException {
       String toReturn = content;
       startReplaceIndex = 0;
       endReplaceIndex = 0;
@@ -82,14 +82,13 @@ public class WordMLApplicabilityHandler {
       HashCollection<String, String> featureValuesAllowed =
          orcsApi.getQueryFactory().applicabilityQuery().getBranchViewFeatureValues(branch, branch.getViewId());
 
-      String configuration = featureValuesAllowed.getValues("Config").iterator().next();
+      String configuration = featureValuesAllowed.getValues("CONFIG").iterator().next();
 
       ApplicabilityExpression appExp = new ApplicabilityExpression(configuration, featureValuesAllowed);
 
       // need to do this to make sure index keeps getting updated for adding and removing content
       while (startSearchIndex < toReturn.length()) {
          String toSearch = toReturn.substring(startSearchIndex);
-
          String applicabilityContent = findNextApplicability(toSearch);
 
          if (applicabilityContent == null) {
@@ -98,6 +97,10 @@ public class WordMLApplicabilityHandler {
 
          String plainText = WordUtilities.textOnly(applicabilityContent);
          String plExpression = plainText.substring(0, plainText.indexOf("]") + 1);
+
+         if (plExpression.isEmpty()) {
+            throw new OseeCoreException("The applicability expression is missing an end bracket\n " + plainText);
+         }
          toReturn = parseExpression(orcsApi, appExp, plExpression, applicabilityContent, toReturn, branch);
       }
 

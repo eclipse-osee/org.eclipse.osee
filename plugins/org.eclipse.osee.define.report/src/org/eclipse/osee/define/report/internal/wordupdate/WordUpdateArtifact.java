@@ -22,10 +22,13 @@ import org.eclipse.osee.define.report.api.WordArtifactChange;
 import org.eclipse.osee.define.report.api.WordUpdateChange;
 import org.eclipse.osee.define.report.api.WordUpdateData;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -135,13 +138,18 @@ public class WordUpdateArtifact {
                   new ByteArrayInputStream(WordUtilities.getFormattedContent(extractorData.getParentEelement())));
 
                boolean hasTrackedChanges = WordCoreUtil.containsWordAnnotations(content);
+
+               HashCollection<String, String> validFeatureValues = getValidFeatureValuesForBranch(data.getBranch());
+               boolean hasInvalidApplicabilityTags =
+                  WordCoreUtil.areApplicabilityTagsInvalid(content, data.getBranch(), validFeatureValues);
                /**
                 * Only update if: a. editing a single artifact or b. in multi-edit mode only update if the artifact has
                 * at least one textual change (if the MUTI_EDIT_SAVE_ALL_CHANGES preference is not set).
                 */
                boolean multiSave = data.isMultiEdit() || hasChangedContent(artifact, content);
+
                if (singleArtifact || multiSave) {
-                  if (!hasTrackedChanges) {
+                  if (!hasTrackedChanges && !hasInvalidApplicabilityTags) {
                      if (extractorData.getParentEelement().getNodeName().endsWith("body")) {
                         /*
                          * This code pulls out all of the stuff after the inserted listnum reordering stuff. This needs
@@ -158,7 +166,12 @@ public class WordUpdateArtifact {
                      }
                      artChange.addChangedAttributeType(CoreAttributeTypes.WordTemplateContent);
                   } else {
-                     updateChange.setTrackedChangeArts(artifact.getId(), artifact.getName());
+                     if (hasTrackedChanges) {
+                        updateChange.setTrackedChangeArts(artifact.getId(), artifact.getName());
+                     }
+                     if (hasInvalidApplicabilityTags) {
+                        updateChange.setInvalidApplicabilityTagArts(artifact.getId(), artifact.getName());
+                     }
                   }
                }
                if (artChange.isChanged()) {
@@ -183,6 +196,21 @@ public class WordUpdateArtifact {
          }
       }
       return updateChange;
+   }
+
+   private HashCollection<String, String> getValidFeatureValuesForBranch(BranchId branch) {
+      List<ArtifactReadable> featureDefinitionArts = orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(
+         CoreArtifactTypes.FeatureDefinition).getResults().getList();
+
+      List<FeatureDefinitionData> featureDefinitionData =
+         orcsApi.getQueryFactory().applicabilityQuery().getFeatureDefinitionData(featureDefinitionArts);
+
+      HashCollection<String, String> validFeatureValues = new HashCollection<>();
+      for (FeatureDefinitionData feat : featureDefinitionData) {
+         validFeatureValues.put(feat.getName(), feat.getValues());
+      }
+
+      return validFeatureValues;
    }
 
    private void postProcessChange(TransactionReadable tx, WordUpdateChange updateChange, ArtifactId account) {

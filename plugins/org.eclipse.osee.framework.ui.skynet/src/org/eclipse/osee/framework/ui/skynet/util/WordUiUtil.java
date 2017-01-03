@@ -71,6 +71,28 @@ public final class WordUiUtil {
       }
    }
 
+   public static void displayErrorMessage(String errorMessage) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            int startIndex = errorMessage.indexOf("errorMessage=") + 13; // add 13 so 'errorMessage=' is not part of the text display
+            String err = errorMessage.substring(startIndex, errorMessage.indexOf(",", startIndex));
+            if (err == null || err.isEmpty()) {
+               err = errorMessage;
+            }
+
+            if (RenderingUtil.arePopupsAllowed()) {
+               XResultData rd = new XResultData(false);
+               rd.addRaw(err);
+               XResultDataUI.report(rd, "Artifact Word Content - Failed To Parse");
+            } else {
+               OseeLog.logf(Activator.class, Level.SEVERE, err);
+            }
+
+         }
+      });
+   }
+
    public static IVbaDiffGenerator createScriptGenerator(boolean merge, boolean show, boolean detectFormatChanges, boolean executeVbScript, boolean skipErrors, boolean diffFieldCodes) {
       return new VbaWordDiffGenerator(merge, show, detectFormatChanges, executeVbScript, skipErrors, diffFieldCodes);
    }

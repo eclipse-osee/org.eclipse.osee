@@ -14,19 +14,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
@@ -35,11 +39,12 @@ import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 /**
  * @author Theron Virgin
  */
-public class CatchTrackedChanges implements CommitAction {
+public class CatchWordMlChanges implements CommitAction {
 
    /**
-    * Check that none of the artifacts that will be commited contain tracked changes Use the change report to get
-    * attributeChanges and check their content for trackedChanges
+    * Check that none of the artifacts that will be commited contain tracked changes or mismatching start and end
+    * applicability tags. Use the change report to get attributeChanges and check their content for trackedChanges and
+    * incorrect applicability tags
     */
 
    @Override
@@ -50,6 +55,7 @@ public class CatchTrackedChanges implements CommitAction {
       Operations.executeWorkAndCheckStatus(operation);
 
       Map<Integer, String> trackedChanges = new HashMap<Integer, String>();
+      Map<Integer, String> applicabilityTags = new HashMap<Integer, String>();
       for (Change change : changes) {
          if (!change.getModificationType().isDeleted()) {
             if (change.getChangeType() == LoadChangeType.attribute) {
@@ -59,6 +65,10 @@ public class CatchTrackedChanges implements CommitAction {
                   if (((WordAttribute) attribute).containsWordAnnotations()) {
                      trackedChanges.put(attribute.getArtifact().getArtId(), attribute.getArtifact().getSafeName());
                   }
+                  if (((WordAttribute) attribute).areApplicabilityTagsInvalid(destinationBranch,
+                     getValidFeatureValuesForBranch(destinationBranch))) {
+                     applicabilityTags.put(attribute.getArtifact().getArtId(), attribute.getArtifact().getSafeName());
+                  }
                }
             }
 
@@ -66,15 +76,28 @@ public class CatchTrackedChanges implements CommitAction {
             if (artifactChanged != null) {
                changedArtifacts.add(artifactChanged);
             }
-
          }
       }
 
+      String err = null;
       if (!trackedChanges.isEmpty()) {
-         throw new OseeCoreException(String.format(
+         err = String.format(
             "Commit Branch Failed. The following artifacts contain Tracked Changes. " //
-               + " Please accept or reject and turn off track changes, then recommit : [%s]",
-            trackedChanges.toString()));
+               + " Please accept or reject and turn off track changes, then recommit : [%s]\n\n",
+            trackedChanges.toString());
+      }
+      if (!applicabilityTags.isEmpty()) {
+         String temp = String.format(
+            "Commit Branch Failed. The following artifacts have inconsistent start and end applicability tags " //
+               + "or the feature value pair is not valid based on the Product Line feature definition artifact. " //
+               + "Please fix the tags, then recommit: [%s]",
+            applicabilityTags.toString());
+
+         err = (err == null) ? temp : err + temp;
+      }
+
+      if (err != null) {
+         throw new OseeCoreException(err);
       }
 
       OseeValidator validator = OseeValidator.getInstance();
@@ -87,6 +110,18 @@ public class CatchTrackedChanges implements CommitAction {
             }
          }
       }
+   }
+
+   private HashCollection<String, String> getValidFeatureValuesForBranch(BranchId branch) {
+      List<FeatureDefinitionData> featureDefinitionData =
+         ServiceUtil.getOseeClient().getApplicabilityEndpoint(branch).getFeatureDefinitionData();
+
+      HashCollection<String, String> validFeatureValues = new HashCollection<>();
+      for (FeatureDefinitionData feat : featureDefinitionData) {
+         validFeatureValues.put(feat.getName(), feat.getValues());
+      }
+
+      return validFeatureValues;
    }
 
    private String getArtifactErrorMessage(Artifact artifact) {

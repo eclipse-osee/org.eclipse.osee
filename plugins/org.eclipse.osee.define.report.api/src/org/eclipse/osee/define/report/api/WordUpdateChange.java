@@ -24,6 +24,7 @@ public class WordUpdateChange {
    private TransactionId tx;
    private List<WordArtifactChange> changedArts = new LinkedList<>();
    private final Map<Long, String> trackedChangeArts = new HashMap<>();
+   private final Map<Long, String> invalidApplicabilityTagsArts = new HashMap<>();
    private BranchId branch;
 
    public TransactionId getTx() {
@@ -90,4 +91,11 @@ public class WordUpdateChange {
       trackedChangeArts.put(artId, name);
    }
 
+   public Map<Long, String> getInvalidApplicabilityTagArts() {
+      return invalidApplicabilityTagsArts;
+   }
+
+   public void setInvalidApplicabilityTagArts(Long artId, String name) {
+      invalidApplicabilityTagsArts.put(artId, name);
+   }
 }

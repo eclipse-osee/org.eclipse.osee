@@ -46,6 +46,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  * @author Paul K. Waldfogel
  */
 public class WordUtil {
+
    public static final String BODY_START = "<w:body>";
    public static final String BODY_END = "</w:body>";
    private static final String[] NUMBER =
@@ -286,5 +287,4 @@ public class WordUtil {
       }
       return newTemplate;
    }
-
 }

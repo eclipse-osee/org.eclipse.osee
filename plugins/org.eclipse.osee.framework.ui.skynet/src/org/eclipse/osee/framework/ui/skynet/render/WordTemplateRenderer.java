@@ -187,7 +187,13 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          wtcData.setSessionId(ClientSessionManager.getSessionId());
          wtcData.setOseeLink(oseeLink);
 
-         Pair<String, Set<String>> content = HttpWordUpdateRequest.renderWordTemplateContent(wtcData);
+         Pair<String, Set<String>> content = null;
+         try {
+            content = HttpWordUpdateRequest.renderWordTemplateContent(wtcData);
+         } catch (Exception e) {
+            WordUiUtil.displayErrorMessage(e.toString());
+         }
+
          if (content != null) {
             data = content.getFirst();
             WordUiUtil.displayUnknownGuids(artifact, content.getSecond());

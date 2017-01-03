@@ -114,7 +114,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       for (ApplicabilityToken app : result) {
          if (!app.getName().equals("Base")) {
             String[] nameValue = app.getName().split("=");
-            toReturn.put(nameValue[0].trim(), nameValue[1].trim());
+            toReturn.put(nameValue[0].trim().toUpperCase(), nameValue[1].trim());
          }
       }
 

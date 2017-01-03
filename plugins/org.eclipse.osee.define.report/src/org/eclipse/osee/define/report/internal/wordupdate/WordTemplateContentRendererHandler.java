@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -40,7 +41,7 @@ public class WordTemplateContentRendererHandler {
       this.orcsApi = orcsApi;
    }
 
-   public Pair<String, Set<String>> renderWordML(WordTemplateContentData wtcData) {
+   public Pair<String, Set<String>> renderWordML(WordTemplateContentData wtcData) throws OseeCoreException {
       TransactionId txId = wtcData.getTxId();
       if (txId == null) {
          txId = TransactionId.SENTINEL;
