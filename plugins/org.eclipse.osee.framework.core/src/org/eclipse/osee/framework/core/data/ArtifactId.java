@@ -33,7 +33,7 @@ public interface ArtifactId extends Identity<String>, Id {
    }
 
    public static ArtifactId valueOf(long id) {
-      final class ArtifactIdImpl extends BaseId implements ArtifactId {
+      final class ArtifactIdImpl extends BaseId implements ArtifactId, Comparable<ArtifactId> {
          public ArtifactIdImpl(Long artId) {
             super(artId);
          }
@@ -41,6 +41,11 @@ public interface ArtifactId extends Identity<String>, Id {
          @Override
          public String getGuid() {
             return null;
+         }
+
+         @Override
+         public int compareTo(ArtifactId o) {
+            return getId().compareTo(o.getId());
          }
       }
       return new ArtifactIdImpl(id);
