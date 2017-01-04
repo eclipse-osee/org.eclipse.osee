@@ -39,6 +39,7 @@
 								<plugin id="org.eclipse.xtend.lib.macro" />
 								<plugin id="org.eclipse.xtext.smap" />
 								<plugin id="org.apache.commons.cli" />
+								<plugin id="org.apache.commons.io" />
 							</excludes>
 						</configuration>
 					</execution>
