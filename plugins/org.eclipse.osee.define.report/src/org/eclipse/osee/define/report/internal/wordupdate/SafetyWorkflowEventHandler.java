@@ -76,12 +76,13 @@ public class SafetyWorkflowEventHandler implements EventHandler {
 
          checkEventObjects(branchId, userArt); // throws exception if incorrect
          ArtifactReadable assocArt = getAssociatedWorkflowArt((BranchId) branchId);
-         IAtsTeamWorkflow safetyWf = getSafetyWorkflow(assocArt);
-         if (safetyWf == null) {
-            IAtsTeamWorkflow teamWf = atsServer.getWorkItemFactory().getTeamWf(assocArt);
-            safetyWf = createSafetyAction(teamWf, (ArtifactReadable) userArt);
+         if (assocArt != null) {
+            IAtsTeamWorkflow safetyWf = getSafetyWorkflow(assocArt);
+            if (safetyWf == null) {
+               IAtsTeamWorkflow teamWf = atsServer.getWorkItemFactory().getTeamWf(assocArt);
+               safetyWf = createSafetyAction(teamWf, (ArtifactReadable) userArt);
+            }
          }
-
       } catch (Exception ex) {
          logger.error(ex, "Could not create safety workflow");
       }
@@ -100,13 +101,15 @@ public class SafetyWorkflowEventHandler implements EventHandler {
 
    private ArtifactReadable getAssociatedWorkflowArt(BranchId branchId) {
       ArtifactReadable toReturn = null;
-      BranchReadable branch = queryFactory.branchQuery().andIds(branchId).getResults().getExactlyOne();
-      long workflowUuid = branch.getAssociatedArtifactId();
       try {
-         toReturn = atsServer.getQuery().andUuid(workflowUuid).andIsOfType(
-            AtsArtifactTypes.TeamWorkflow).getResults().getExactlyOne();
+         BranchReadable branch = queryFactory.branchQuery().andIds(branchId).getResults().getOneOrNull();
+         if (branch != null) {
+            long workflowUuid = branch.getAssociatedArtifactId();
+            toReturn = atsServer.getQuery().andUuid(workflowUuid).andIsOfType(
+               AtsArtifactTypes.TeamWorkflow).getResults().getOneOrNull();
+         }
       } catch (Exception ex) {
-         throw new OseeCoreException(ex, "Exception in getAssociatedWorkflowArt: %s", workflowUuid);
+         // do not throw exception when associated artifact is osee system or doesn't exist
       }
       return toReturn;
    }
