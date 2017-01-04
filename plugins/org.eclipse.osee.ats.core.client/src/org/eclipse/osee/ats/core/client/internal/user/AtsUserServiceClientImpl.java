@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.user.JaxAtsUser;
 import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -174,6 +175,16 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
       Artifact userArt = ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Name,
          name, AtsUtilCore.getAtsBranch());
       return createFromArtifact(userArt);
+   }
+
+   @Override
+   protected IAtsUser loadUserByAccountId(Long accountId) {
+      IAtsUser user = null;
+      ArtifactId userArt = ArtifactQuery.getArtifactFromId(accountId.intValue(), AtsUtilCore.getAtsBranch());
+      if (userArt != null) {
+         user = createFromArtifact((Artifact) userArt);
+      }
+      return user;
    }
 
 }

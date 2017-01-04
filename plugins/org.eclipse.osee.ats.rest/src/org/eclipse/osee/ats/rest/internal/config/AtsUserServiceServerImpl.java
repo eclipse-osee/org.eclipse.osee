@@ -112,7 +112,17 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
          return createFromArtifact(userArt);
       }
       return null;
+   }
 
+   @Override
+   protected IAtsUser loadUserByAccountId(Long accountId) {
+      IAtsUser user = null;
+      ArtifactId userArt = orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(
+         accountId).getResults().getAtMostOneOrNull();
+      if (userArt != null) {
+         user = createFromArtifact((ArtifactReadable) userArt);
+      }
+      return user;
    }
 
 }

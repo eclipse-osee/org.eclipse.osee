@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public abstract class AbstractAtsUserService implements IAtsUserService {
 
+   protected final Map<Long, IAtsUser> accountIdToAtsUser = new ConcurrentHashMap<>(300);
    protected final Map<String, IAtsUser> userIdToAtsUser = new ConcurrentHashMap<>(300);
    protected final Map<String, IAtsUser> nameToAtsUser = new ConcurrentHashMap<>(300);
    protected IAtsUser currentUser = null;
@@ -79,6 +80,20 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
       }
       return atsUser;
    }
+
+   @Override
+   public IAtsUser getUserByAccountId(Long accountId) throws OseeCoreException {
+      IAtsUser atsUser = accountIdToAtsUser.get(accountId);
+      if (atsUser == null) {
+         atsUser = loadUserByAccountId(accountId);
+         if (atsUser != null) {
+            accountIdToAtsUser.put(accountId, atsUser);
+         }
+      }
+      return atsUser;
+   }
+
+   protected abstract IAtsUser loadUserByAccountId(Long accountId);
 
    protected abstract IAtsUser loadUserFromDbByUserId(String userId);
 

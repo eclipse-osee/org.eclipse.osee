@@ -62,6 +62,10 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
          ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
 
          String rationale = chStmt.getString("rationale");
+         // Oracle returns nulls as null. HSQLDB returns as "".  Rationale can not be null.
+         if (rationale == null) {
+            rationale = "";
+         }
 
          toReturn = factory.createRelationData(version, localId, typeId, modType, aArtId, bArtId, rationale, applicId);
 

@@ -237,7 +237,7 @@ public class RelationManagerImpl implements RelationManager {
       Relation relation = getRelation(session, aNode, type, bNode, INCLUDE_DELETED).getOneOrNull();
       boolean updated = false;
       if (relation == null) {
-         relation = relationFactory.createRelation(aNode, type, bNode);
+         relation = relationFactory.createRelation(aNode, type, bNode, rationale);
          graph.<RelationNodeAdjacencies> getAdjacencies(aNode).add(type.getGuid(), relation);
          graph.<RelationNodeAdjacencies> getAdjacencies(bNode).add(type.getGuid(), relation);
          updated = true;

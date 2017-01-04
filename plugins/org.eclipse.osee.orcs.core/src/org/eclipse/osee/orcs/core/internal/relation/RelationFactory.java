@@ -40,9 +40,13 @@ public class RelationFactory {
    }
 
    public Relation createRelation(RelationNode aNode, IRelationType type, RelationNode bNode) throws OseeCoreException {
+      return createRelation(aNode, type, bNode, "");
+   }
+
+   public Relation createRelation(RelationNode aNode, IRelationType type, RelationNode bNode, String rationale) throws OseeCoreException {
       OrcsConditions.checkBranch(aNode, bNode);
       OrcsConditions.checkRelateSelf(aNode, bNode);
-      RelationData data = relationDataFactory.createRelationData(type, aNode.getBranchId(), aNode, bNode, "");
+      RelationData data = relationDataFactory.createRelationData(type, aNode.getBranchId(), aNode, bNode, rationale);
       return createRelation(data);
    }
 

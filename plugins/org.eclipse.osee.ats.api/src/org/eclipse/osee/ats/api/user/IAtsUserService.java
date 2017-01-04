@@ -48,4 +48,6 @@ public interface IAtsUserService {
 
    List<? extends IAtsUser> getUsers();
 
+   IAtsUser getUserByAccountId(Long accountId);
+
 }

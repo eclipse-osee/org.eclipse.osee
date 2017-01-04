@@ -20,11 +20,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
-import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -162,30 +159,6 @@ public class AtsUtilCore {
       Hashtable<String, String> table = new Hashtable<>();
       table.put(key, value);
       return table;
-   }
-
-   /**
-    * @return User by artId which is also accountId
-    */
-   public static IAtsUser getUserByAccountId(String accountId, IAtsServices services) {
-      IAtsUser user = null;
-      if (Strings.isNumeric(accountId)) {
-         user = getUserByAccountId(Long.valueOf(accountId), services);
-      }
-      return user;
-   }
-
-   public static IAtsUser getUserByAccountId(Long accountId, IAtsServices services) {
-      IAtsUser user = null;
-      ArtifactId userArt = services.getArtifact(accountId);
-      if (userArt != null) {
-         String userId =
-            services.getAttributeResolver().getSoleAttributeValue(userArt, CoreAttributeTypes.UserId, null);
-         if (Strings.isValid(userId)) {
-            user = services.getUserService().getUserById(userId);
-         }
-      }
-      return user;
    }
 
    public static String getActionUrl(String atsIdOrUuid, IAtsServices services) {

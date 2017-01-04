@@ -10,12 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.program;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -53,10 +57,21 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class AtsProgramService implements IAtsProgramService {
 
-   private final IAtsServices services;
+   static private IAtsServices services;
+   static CacheLoader<IAtsTeamDefinition, IAtsProgram> teamDefToAtsProgramCacheLoader =
+      new CacheLoader<IAtsTeamDefinition, IAtsProgram>() {
+         @Override
+         public IAtsProgram load(IAtsTeamDefinition teamDef) {
+            return loadProgram(teamDef);
+         }
+      };
+   static private final LoadingCache<IAtsTeamDefinition, IAtsProgram> teamDefToAtsProgramCache =
+      CacheBuilder.newBuilder() //
+         .expireAfterWrite(15, TimeUnit.MINUTES) //
+         .build(teamDefToAtsProgramCacheLoader);
 
    public AtsProgramService(IAtsServices services) {
-      this.services = services;
+      AtsProgramService.services = services;
    }
 
    @Override
@@ -196,6 +211,15 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public IAtsProgram getProgram(IAtsTeamDefinition teamDef) {
+      try {
+         return teamDefToAtsProgramCache.get(teamDef);
+      } catch (Exception ex) {
+         // do nothing
+      }
+      return null;
+   }
+
+   private static IAtsProgram loadProgram(IAtsTeamDefinition teamDef) {
       IAtsProgram program = null;
       Object object =
          services.getAttributeResolver().getSoleAttributeValue(teamDef, AtsAttributeTypes.ProgramUuid, null);
@@ -207,7 +231,7 @@ public class AtsProgramService implements IAtsProgramService {
       if (program == null) {
          IAtsTeamDefinition topTeamDef = teamDef.getTeamDefinitionHoldingVersions();
          if (topTeamDef != null && !teamDef.equals(topTeamDef)) {
-            program = getProgram(teamDef.getParentTeamDef());
+            program = loadProgram(teamDef.getParentTeamDef());
          }
       }
       if (program == null) {

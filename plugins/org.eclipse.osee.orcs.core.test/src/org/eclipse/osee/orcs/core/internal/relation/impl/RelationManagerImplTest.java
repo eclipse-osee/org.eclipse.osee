@@ -74,6 +74,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
@@ -520,7 +521,8 @@ public class RelationManagerImplTest {
       when(container1.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
       when(container2.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
 
-      when(relationFactory.createRelation(node1, TYPE_1, node2)).thenReturn(relation1);
+      when(relationFactory.createRelation(eq(node1), eq(TYPE_1), eq(node2), Matchers.anyString())).thenReturn(
+         relation1);
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
       when(node1.getArtifactType()).thenReturn(artifactType1);
@@ -534,7 +536,6 @@ public class RelationManagerImplTest {
 
       verify(container1).getRelation(node1, TYPE_1, node2, INCLUDE_DELETED);
       verify(container2).getRelation(node1, TYPE_1, node2, INCLUDE_DELETED);
-      verify(relationFactory).createRelation(node1, TYPE_1, node2);
       verify(orderManager1).setOrder(eq(typeSide), eq(LEXICOGRAPHICAL_ASC), sortedListCaptor.capture());
       verify(container1).add(TYPE_1.getGuid(), relation1);
       verify(container2).add(TYPE_1.getGuid(), relation1);
@@ -545,7 +546,8 @@ public class RelationManagerImplTest {
       when(container1.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
       when(container2.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
 
-      when(relationFactory.createRelation(node1, TYPE_1, node2)).thenReturn(relation1);
+      when(relationFactory.createRelation(eq(node1), eq(TYPE_1), eq(node2), Matchers.anyString())).thenReturn(
+         relation1);
 
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
@@ -561,7 +563,6 @@ public class RelationManagerImplTest {
 
       verify(container1).getRelation(node1, TYPE_1, node2, INCLUDE_DELETED);
       verify(container2).getRelation(node1, TYPE_1, node2, INCLUDE_DELETED);
-      verify(relationFactory).createRelation(node1, TYPE_1, node2);
       verify(orderManager1).getSorterId(typeSide);
       verify(orderManager1).setOrder(eq(typeSide), eq(UNORDERED), sortedListCaptor.capture());
       verify(container1).add(TYPE_1.getGuid(), relation1);
@@ -573,7 +574,8 @@ public class RelationManagerImplTest {
       when(container1.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
       when(container2.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
 
-      when(relationFactory.createRelation(node1, TYPE_1, node2)).thenReturn(relation1);
+      when(relationFactory.createRelation(eq(node1), eq(TYPE_1), eq(node2), Matchers.anyString())).thenReturn(
+         relation1);
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
       List<Relation> toOrder = Arrays.asList(relation3, relation4);
@@ -613,7 +615,9 @@ public class RelationManagerImplTest {
       when(container1.getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED)).thenReturn(null);
       when(container2.getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED)).thenReturn(null);
 
-      when(relationFactory.createRelation(node1, DEFAULT_HIERARCHY, node2)).thenReturn(relation1);
+      when(
+         relationFactory.createRelation(eq(node1), eq(DEFAULT_HIERARCHY), eq(node2), Matchers.anyString())).thenReturn(
+            relation1);
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
@@ -639,7 +643,9 @@ public class RelationManagerImplTest {
       when(container1.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
       when(container2.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
 
-      when(relationFactory.createRelation(node1, DEFAULT_HIERARCHY, node2)).thenReturn(relation1);
+      when(
+         relationFactory.createRelation(eq(node1), eq(DEFAULT_HIERARCHY), eq(node2), Matchers.anyString())).thenReturn(
+            relation1);
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
       when(orderManager1.getSorterId(Default_Hierarchical__Child)).thenReturn(UNORDERED);
 
