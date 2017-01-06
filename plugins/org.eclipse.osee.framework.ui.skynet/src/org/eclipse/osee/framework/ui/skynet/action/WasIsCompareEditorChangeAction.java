@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.action;
 import java.util.List;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -58,7 +59,7 @@ public class WasIsCompareEditorChangeAction extends WasIsCompareEditorAction {
             TransactionId headTx = BranchManager.getBaseTransaction(artifact.getBranch());
 
             String was = change.getWasValue();
-            int attrId = ((AttributeChange) change).getAttrId().getId().intValue();
+            AttributeId attrId = ((AttributeChange) change).getAttrId();
             if (!Strings.isValid(was) && change instanceof AttributeChange) {
                if (headTx != null && headTx.isValid()) {
                   was = loadAttributeValue(attrId, headTx, artifact);

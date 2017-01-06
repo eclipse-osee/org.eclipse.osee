@@ -20,6 +20,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -50,7 +52,7 @@ import org.eclipse.ui.PlatformUI;
 public class WasIsCompareEditorAction extends Action {
 
    private static String ATTRIBUTE_TRANSACTIONS_QUERY_DESC =
-      "SELECT txs.transaction_id, txs.gamma_id FROM osee_attribute atr, osee_txs txs WHERE atr.attr_id = ? AND atr.gamma_id = txs.gamma_id AND txs.branch_id = ? order by transaction_id desc";
+      "SELECT txs.transaction_id, txs.gamma_id FROM osee_attribute atr, osee_txs txs WHERE atr.attr_id = ? AND atr.gamma_id = txs.gamma_id AND txs.branch_id = ? and transaction_id < ? order by transaction_id desc";
 
    public WasIsCompareEditorAction() {
       this("View Was/Is Comparison");
@@ -90,8 +92,8 @@ public class WasIsCompareEditorAction extends Action {
             Artifact artifact = artifactsFromStructuredSelection.iterator().next();
 
             String was = change.getWasValue();
-            int attrId = ((AttributeChange) change).getAttrId().getId().intValue();
-            TransactionId previousTransaction = getPreviousTransaction(artifact.getBranchId(), attrId, transactionId);
+            AttributeId attrId = ((AttributeChange) change).getAttrId();
+            TransactionId previousTransaction = getPreviousTransaction(artifact.getBranch(), attrId, transactionId);
             if (!Strings.isValid(was) && change instanceof AttributeChange) {
                if (previousTransaction.isValid()) {
                   was = loadAttributeValue(attrId, previousTransaction, artifact);
@@ -126,28 +128,17 @@ public class WasIsCompareEditorAction extends Action {
       return str;
    }
 
-   private TransactionId getPreviousTransaction(long branchUuid, int attrId, TransactionId transactionId) {
-      TransactionId previousTransaction = TransactionId.SENTINEL;
-      boolean found = false;
-      JdbcStatement chStmt = ConnectionHandler.getStatement();
-      try {
-         chStmt.runPreparedQuery(ATTRIBUTE_TRANSACTIONS_QUERY_DESC, attrId, branchUuid);
-         while (chStmt.next()) {
-            TransactionId transaction = TransactionId.valueOf(chStmt.getLong("transaction_id"));
-            if (found) {
-               return transaction;
-            }
-            if (transactionId.equals(transaction)) {
-               found = true;
-            }
+   private TransactionId getPreviousTransaction(BranchId branch, AttributeId attrId, TransactionId transactionId) {
+      try (JdbcStatement chStmt = ConnectionHandler.getStatement()) {
+         chStmt.runPreparedQuery(ATTRIBUTE_TRANSACTIONS_QUERY_DESC, attrId, branch, transactionId);
+         if (chStmt.next()) {
+            return TransactionId.valueOf(chStmt.getLong("transaction_id"));
          }
-      } finally {
-         chStmt.close();
       }
-      return previousTransaction;
+      return TransactionId.SENTINEL;
    }
 
-   protected String loadAttributeValue(int attrId, TransactionId transactionId, Artifact artifact) {
+   protected String loadAttributeValue(AttributeId attrId, TransactionId transactionId, Artifact artifact) {
       String appServer = OseeClientProperties.getOseeApplicationServer();
       URI uri =
          UriBuilder.fromUri(appServer).path("orcs").path("branch").path(String.valueOf(artifact.getBranchId())).path(
