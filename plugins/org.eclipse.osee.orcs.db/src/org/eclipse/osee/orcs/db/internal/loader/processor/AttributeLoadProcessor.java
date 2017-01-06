@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.loader.processor;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -59,12 +60,12 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
             version.setStripeId(TransactionId.valueOf(chStmt.getLong("stripe_transaction_id")));
          }
 
-         long typeId = chStmt.getLong("attr_type_id");
+         AttributeTypeId attributeType = AttributeTypeId.valueOf(chStmt.getLong("attr_type_id"));
 
          String value = chStmt.getString("value");
          String uri = chStmt.getString("uri");
 
-         toReturn = factory.createAttributeData(version, attrId, typeId, modType, artId, value, uri, applicId);
+         toReturn = factory.createAttributeData(version, attrId, attributeType, modType, artId, value, uri, applicId);
 
       } else {
          if (!historical) {

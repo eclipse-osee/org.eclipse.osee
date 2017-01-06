@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.db.internal.loader.criteria;
 
 import java.util.Collection;
 import java.util.Collections;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 
 /**
  * @author Roberto E. Escobar
@@ -20,9 +20,9 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 public class CriteriaAttribute extends CriteriaArtifact {
 
    private final Collection<Integer> ids;
-   private final Collection<? extends IAttributeType> types;
+   private final Collection<? extends AttributeTypeId> types;
 
-   public CriteriaAttribute(Collection<Integer> ids, Collection<? extends IAttributeType> types) {
+   public CriteriaAttribute(Collection<Integer> ids, Collection<? extends AttributeTypeId> types) {
       super();
       this.ids = ids;
       this.types = types;
@@ -32,8 +32,8 @@ public class CriteriaAttribute extends CriteriaArtifact {
       return ids != null ? ids : Collections.<Integer> emptyList();
    }
 
-   public Collection<? extends IAttributeType> getTypes() {
-      return types != null ? types : Collections.<IAttributeType> emptyList();
+   public Collection<? extends AttributeTypeId> getTypes() {
+      return types != null ? types : Collections.emptyList();
    }
 
    @Override

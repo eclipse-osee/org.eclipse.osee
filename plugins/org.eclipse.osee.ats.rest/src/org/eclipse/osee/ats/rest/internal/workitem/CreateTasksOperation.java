@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -338,7 +339,7 @@ public class CreateTasksOperation {
          for (IAtsUser user : workItem.getAssignees()) {
             newJaxTask.getAssigneeUserIds().add(user.getUserId());
          }
-         for (IAttributeType type : taskArt.getExistingAttributeTypes()) {
+         for (AttributeTypeToken type : taskArt.getExistingAttributeTypes()) {
             List<String> attributeValues = new LinkedList<>();
             for (Object value : taskArt.getAttributeValues(type)) {
                attributeValues.add(value.toString());

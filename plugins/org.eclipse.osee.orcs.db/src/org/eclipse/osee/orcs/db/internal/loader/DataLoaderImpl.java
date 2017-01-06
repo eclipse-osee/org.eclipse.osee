@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -41,7 +42,7 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 public class DataLoaderImpl implements DataLoader {
 
    private final Collection<Integer> attributeIds = new HashSet<>();
-   private final Collection<IAttributeType> attributeTypes = new HashSet<>();
+   private final Collection<AttributeTypeId> attributeTypes = new HashSet<>();
 
    private final Collection<Integer> relationIds = new HashSet<>();
    private final Collection<IRelationType> relationTypes = new HashSet<>();
@@ -195,7 +196,7 @@ public class DataLoaderImpl implements DataLoader {
    }
 
    @Override
-   public DataLoader withAttributeTypes(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
+   public DataLoader withAttributeTypes(Collection<? extends AttributeTypeId> attributeTypes) throws OseeCoreException {
       this.attributeTypes.addAll(attributeTypes);
       return this;
    }

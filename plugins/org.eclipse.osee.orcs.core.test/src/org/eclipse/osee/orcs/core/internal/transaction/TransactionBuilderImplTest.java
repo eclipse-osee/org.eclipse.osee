@@ -22,10 +22,10 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Qualifica
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.RelationOrder;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WordTemplateContent;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
-import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.DEFAULT_HIERARCHY;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_ASC;
+import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
@@ -41,7 +41,7 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -157,7 +157,7 @@ public class TransactionBuilderImplTest {
 
    @Test
    public void testCopyArtifactWithList() throws OseeCoreException {
-      Collection<? extends IAttributeType> attributesToDuplicate = Arrays.asList(Name, Annotation);
+      Collection<AttributeTypeId> attributesToDuplicate = Arrays.asList(Name, Annotation);
 
       factory.copyArtifact(expectedAuthor, attributesToDuplicate);
 

@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -20,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface AttributeDataFactory {
 
-   AttributeData create(ArtifactData parent, IAttributeType attributeType) throws OseeCoreException;
+   AttributeData create(ArtifactData parent, AttributeTypeId attributeType) throws OseeCoreException;
 
    AttributeData copy(BranchId destination, AttributeData orcsData) throws OseeCoreException;
 

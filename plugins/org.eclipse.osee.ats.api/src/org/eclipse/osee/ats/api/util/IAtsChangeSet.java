@@ -125,7 +125,7 @@ public interface IAtsChangeSet {
 
    void unrelate(IAtsObject atsObject, RelationTypeSide relationSide, ArtifactId artifact);
 
-   void addAttribute(ArtifactId artifactId, IAttributeType attrType, Object value);
+   void addAttribute(ArtifactId artifactId, AttributeTypeId attrType, Object value);
 
    void setSoleAttributeFromString(ArtifactId artifact, IAttributeType attrType, String value);
 

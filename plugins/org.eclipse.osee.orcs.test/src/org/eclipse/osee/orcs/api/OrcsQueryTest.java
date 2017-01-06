@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -563,7 +563,7 @@ public class OrcsQueryTest {
       }
    }
 
-   private static void checkMatchSingleAttribute(Match<ArtifactReadable, AttributeReadable<?>> match, String artName, IAttributeType types, String matched) throws OseeCoreException {
+   private static void checkMatchSingleAttribute(Match<ArtifactReadable, AttributeReadable<?>> match, String artName, AttributeTypeId types, String matched) throws OseeCoreException {
       assertEquals(artName, match.getItem().getName());
 
       AttributeReadable<?> attribute = match.getElements().iterator().next();
@@ -576,7 +576,7 @@ public class OrcsQueryTest {
       assertEquals(matched, value.substring(location.getStartPosition() - 1, location.getEndPosition()));
    }
 
-   private static void checkMatch(Match<ArtifactReadable, AttributeReadable<?>> match, String artName, IAttributeType... types) throws OseeCoreException {
+   private static void checkMatch(Match<ArtifactReadable, AttributeReadable<?>> match, String artName, AttributeTypeId... types) throws OseeCoreException {
       assertEquals(artName, match.getItem().getName());
       if (types.length > 0) {
          assertEquals(types.length, match.getElements().size());

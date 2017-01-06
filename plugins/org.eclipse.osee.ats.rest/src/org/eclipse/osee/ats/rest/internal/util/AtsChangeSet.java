@@ -341,7 +341,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void addAttribute(ArtifactId artifact, IAttributeType attrType, Object value) {
+   public void addAttribute(ArtifactId artifact, AttributeTypeId attrType, Object value) {
       ArtifactReadable art = getArtifact(artifact);
       getTransaction().createAttribute(artifact, attrType, value);
       add(art);

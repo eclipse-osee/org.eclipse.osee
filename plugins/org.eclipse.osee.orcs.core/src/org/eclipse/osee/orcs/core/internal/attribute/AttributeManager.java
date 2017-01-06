@@ -67,13 +67,13 @@ public interface AttributeManager extends AttributeContainer {
 
    <T> Attribute<T> createAttribute(IAttributeType attributeType) throws OseeCoreException;
 
-   <T> Attribute<T> createAttribute(IAttributeType attributeType, T value) throws OseeCoreException;
+   <T> Attribute<T> createAttribute(AttributeTypeId attributeType, T value) throws OseeCoreException;
 
    <T> Attribute<T> createAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException;
 
    List<Attribute<Object>> getAttributes() throws OseeCoreException;
 
-   <T> List<Attribute<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException;
+   <T> List<Attribute<T>> getAttributes(AttributeTypeId attributeType) throws OseeCoreException;
 
    List<Attribute<Object>> getAttributes(DeletionFlag deletionFlag) throws OseeCoreException;
 

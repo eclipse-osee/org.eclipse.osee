@@ -15,8 +15,8 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -135,7 +135,7 @@ public class OrcsTypesImpl implements OrcsTypes {
    }
 
    @Override
-   public Callable<Void> purgeAttributesByAttributeType(Collection<? extends IAttributeType> attributeTypes) {
+   public Callable<Void> purgeAttributesByAttributeType(Collection<? extends AttributeTypeId> attributeTypes) {
       return dataStore.purgeAttributesByAttributeType(session, attributeTypes);
    }
 

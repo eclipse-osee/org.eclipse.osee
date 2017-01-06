@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -61,8 +62,8 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    }
 
    @Override
-   public synchronized void add(IAttributeType type, Attribute<? extends Object> attribute) {
-      attributes.add(type, attribute);
+   public synchronized void add(AttributeTypeId attributeType, Attribute<? extends Object> attribute) {
+      attributes.add(attributeType, attribute);
       attribute.getOrcsData().setArtifactId(getLocalId());
    }
 
@@ -127,13 +128,13 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    }
 
    @Override
-   public Collection<? extends IAttributeType> getExistingAttributeTypes() throws OseeCoreException {
+   public Collection<AttributeTypeToken> getExistingAttributeTypes() throws OseeCoreException {
       ensureAttributesLoaded();
       return attributes.getExistingTypes(DeletionFlag.EXCLUDE_DELETED);
    }
 
    @Override
-   public int getAttributeCount(IAttributeType attributeType) throws OseeCoreException {
+   public int getAttributeCount(AttributeTypeId attributeType) throws OseeCoreException {
       return getAttributesExcludeDeleted(attributeType).size();
    }
 
@@ -161,7 +162,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    }
 
    @Override
-   public <T> List<Attribute<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException {
+   public <T> List<Attribute<T>> getAttributes(AttributeTypeId attributeType) throws OseeCoreException {
       return getAttributesExcludeDeleted(attributeType);
    }
 
@@ -344,8 +345,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    }
 
    private void deleteAttribute(Attribute<?> attribute) throws OseeCoreException {
-      IAttributeType attributeType = attribute.getAttributeType();
-      checkMultiplicityCanDelete(attributeType);
+      checkMultiplicityCanDelete(attribute.getAttributeType());
       attribute.delete();
    }
 
@@ -355,7 +355,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    }
 
    @Override
-   public <T> Attribute<T> createAttribute(IAttributeType attributeType, T value) throws OseeCoreException {
+   public <T> Attribute<T> createAttribute(AttributeTypeId attributeType, T value) throws OseeCoreException {
       Attribute<T> attribute = internalCreateAttributeHelper(attributeType);
       attribute.setValue(value);
       return attribute;
@@ -369,7 +369,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    }
 
    //////////////////////////////////////////////////////////////
-   private <T> Attribute<T> internalCreateAttributeHelper(IAttributeType attributeType) throws OseeCoreException {
+   private <T> Attribute<T> internalCreateAttributeHelper(AttributeTypeId attributeType) throws OseeCoreException {
       checkTypeValid(attributeType);
       checkMultiplicityCanAdd(attributeType);
       Attribute<T> attr = attributeFactory.createAttributeWithDefaults(this, getOrcsData(), attributeType);
@@ -476,7 +476,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
 
    //////////////////////////////////////////////////////////////
 
-   private void checkTypeValid(IAttributeType attributeType) throws OseeCoreException {
+   private void checkTypeValid(AttributeTypeId attributeType) throws OseeCoreException {
       if (!CoreAttributeTypes.Name.equals(attributeType)) {
          if (!isAttributeTypeValid(attributeType)) {
             throw new OseeArgumentException("The attribute type [%s] is not valid for artifacts [%s]", attributeType,
@@ -485,15 +485,15 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
       }
    }
 
-   private void checkMultiplicityCanAdd(IAttributeType attributeType) throws OseeCoreException {
+   private void checkMultiplicityCanAdd(AttributeTypeId attributeType) throws OseeCoreException {
       checkMultiplicity(attributeType, getAttributeCount(attributeType) + 1);
    }
 
-   private void checkMultiplicityCanDelete(IAttributeType attributeType) throws OseeCoreException {
+   private void checkMultiplicityCanDelete(AttributeTypeId attributeType) throws OseeCoreException {
       checkMultiplicity(attributeType, getAttributeCount(attributeType) - 1);
    }
 
-   private void checkMultiplicity(IAttributeType attributeType, int count) throws OseeCoreException {
+   private void checkMultiplicity(AttributeTypeId attributeType, int count) throws OseeCoreException {
       MultiplicityState state = getAttributeMuliplicityState(attributeType, count);
       switch (state) {
          case MAX_VIOLATION:
@@ -507,7 +507,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
       }
    }
 
-   private MultiplicityState getAttributeMuliplicityState(IAttributeType attributeType, int count) throws OseeCoreException {
+   private MultiplicityState getAttributeMuliplicityState(AttributeTypeId attributeType, int count) throws OseeCoreException {
       MultiplicityState state = MultiplicityState.IS_VALID;
       if (count > attributeFactory.getMaxOccurrenceLimit(attributeType)) {
          state = MultiplicityState.MAX_VIOLATION;

@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.api.workflow;
 
 import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -27,5 +27,5 @@ public interface IAttribute<T> extends AttributeId {
 
    public void setValue(T value) throws OseeCoreException;
 
-   public IAttributeType getAttrType();
+   public AttributeTypeToken getAttrType();
 }

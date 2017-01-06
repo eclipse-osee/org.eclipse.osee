@@ -17,7 +17,7 @@ import static org.eclipse.osee.orcs.core.internal.util.OrcsPredicates.deletionFl
 import com.google.common.base.Predicate;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -26,7 +26,7 @@ import org.eclipse.osee.orcs.core.internal.util.AbstractTypeCollection;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeCollection extends AbstractTypeCollection<IAttributeType, Attribute<?>, AttributeTypeId, Attribute<?>> {
+public class AttributeCollection extends AbstractTypeCollection<AttributeTypeToken, Attribute<?>, AttributeTypeId, Attribute<?>> {
 
    private final AttributeExceptionFactory exceptionFactory;
 
@@ -55,7 +55,7 @@ public class AttributeCollection extends AbstractTypeCollection<IAttributeType, 
    }
 
    @Override
-   protected IAttributeType getType(Attribute<?> data) throws OseeCoreException {
+   protected AttributeTypeToken getType(Attribute<?> data) throws OseeCoreException {
       return data.getAttributeType();
    }
 
@@ -65,7 +65,7 @@ public class AttributeCollection extends AbstractTypeCollection<IAttributeType, 
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public <T> ResultSet<Attribute<T>> getAttributeSetFromString(IAttributeType attributeType, DeletionFlag includeDeleted, String value) throws OseeCoreException {
+   public <T> ResultSet<Attribute<T>> getAttributeSetFromString(AttributeTypeId attributeType, DeletionFlag includeDeleted, String value) throws OseeCoreException {
       Predicate deleteStateMatch = deletionFlagEquals(includeDeleted);
       Predicate stringEqualsMatch = attributeStringEquals(value);
       Predicate filter = and(deleteStateMatch, stringEqualsMatch);
@@ -73,7 +73,7 @@ public class AttributeCollection extends AbstractTypeCollection<IAttributeType, 
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public <T> ResultSet<Attribute<T>> getAttributeSetFromValue(IAttributeType attributeType, DeletionFlag includeDeleted, T value) throws OseeCoreException {
+   public <T> ResultSet<Attribute<T>> getAttributeSetFromValue(AttributeTypeId attributeType, DeletionFlag includeDeleted, T value) throws OseeCoreException {
       Predicate deleteStateMatch = deletionFlagEquals(includeDeleted);
       Predicate attributeValueEquals = attributeValueEquals(value);
       Predicate filter = and(attributeValueEquals, deleteStateMatch);

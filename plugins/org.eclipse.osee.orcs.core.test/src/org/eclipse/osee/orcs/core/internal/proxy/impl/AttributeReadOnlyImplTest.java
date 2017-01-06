@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.proxy.impl;
 
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -39,8 +40,6 @@ public class AttributeReadOnlyImplTest {
    @Mock private OrcsSession session;
    @Mock private Attribute<Date> proxiedObject;
 
-   @Mock private IAttributeType attributeType;
-
    @Mock private AttributeId attributeId;
 
    @Mock private Attribute<Object> attribute1;
@@ -58,12 +57,10 @@ public class AttributeReadOnlyImplTest {
 
    @Test
    public void testGetAttributeType() throws OseeCoreException {
-      IAttributeType expected = attributeType;
+      IAttributeType expected = Name;
       when(proxiedObject.getAttributeType()).thenReturn(expected);
 
-      IAttributeType actual = readOnly.getAttributeType();
-
-      assertEquals(expected, actual);
+      assertEquals(expected, readOnly.getAttributeType());
       verify(proxiedObject).getAttributeType();
    }
 
@@ -136,12 +133,11 @@ public class AttributeReadOnlyImplTest {
    @Test
    public void testIsOfType() throws OseeCoreException {
       boolean expected = true;
-      when(proxiedObject.isOfType(attributeType)).thenReturn(expected);
+      when(proxiedObject.isOfType(Name)).thenReturn(expected);
 
-      boolean actual = readOnly.isOfType(attributeType);
+      boolean actual = readOnly.isOfType(Name);
 
       assertEquals(expected, actual);
-      verify(proxiedObject).isOfType(attributeType);
+      verify(proxiedObject).isOfType(Name);
    }
-
 }

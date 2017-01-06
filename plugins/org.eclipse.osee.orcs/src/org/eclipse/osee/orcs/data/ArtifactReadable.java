@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -46,7 +47,7 @@ public interface ArtifactReadable extends ArtifactToken, HasLocalId<Integer>, Ha
 
    Collection<? extends IAttributeType> getValidAttributeTypes() throws OseeCoreException;
 
-   Collection<? extends IAttributeType> getExistingAttributeTypes() throws OseeCoreException;
+   Collection<AttributeTypeToken> getExistingAttributeTypes() throws OseeCoreException;
 
    <T> T getSoleAttributeValue(IAttributeType attributeType);
 
@@ -68,7 +69,7 @@ public interface ArtifactReadable extends ArtifactToken, HasLocalId<Integer>, Ha
 
    ResultSet<? extends AttributeReadable<Object>> getAttributes() throws OseeCoreException;
 
-   <T> ResultSet<? extends AttributeReadable<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException;
+   <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeId attributeType) throws OseeCoreException;
 
    ResultSet<? extends AttributeReadable<Object>> getAttributes(DeletionFlag deletionFlag) throws OseeCoreException;
 

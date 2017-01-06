@@ -37,7 +37,7 @@ public abstract class AbstractTypeCollection<TYPE, MATCH_DATA extends OrcsWritea
 
    protected abstract TYPE getType(DATA data) throws OseeCoreException;
 
-   public Collection<? extends TYPE> getExistingTypes(DeletionFlag includeDeleted) throws OseeCoreException {
+   public Collection<TYPE> getExistingTypes(DeletionFlag includeDeleted) throws OseeCoreException {
       Set<TYPE> toReturn = new LinkedHashSet<>();
       for (DATA data : getList(includeDeleted)) {
          if (isValid(data)) {

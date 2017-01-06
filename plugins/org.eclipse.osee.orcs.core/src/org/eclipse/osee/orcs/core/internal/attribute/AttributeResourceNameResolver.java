@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.Named;
@@ -79,7 +79,7 @@ public class AttributeResourceNameResolver implements ResourceNameResolver {
    }
 
    private String getExtension(Attribute<?> attribute) throws OseeCoreException {
-      IAttributeType attributeType = attribute.getAttributeType();
+      AttributeTypeId attributeType = attribute.getAttributeType();
       String fileTypeExtension = null;
       if (attribute.isOfType(CoreAttributeTypes.NativeContent)) {
          fileTypeExtension = (String) attribute.getValue();

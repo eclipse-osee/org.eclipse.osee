@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -186,7 +187,7 @@ public class ArtifactReadOnlyImplTest {
       List<? extends IAttributeType> types = Arrays.asList(Active, Name);
       when(proxiedObject.getExistingAttributeTypes()).thenAnswer(answer(types));
 
-      Collection<? extends IAttributeType> actual = readOnly.getExistingAttributeTypes();
+      Collection<AttributeTypeToken> actual = readOnly.getExistingAttributeTypes();
 
       assertEquals(types, actual);
       verify(proxiedObject).getExistingAttributeTypes();

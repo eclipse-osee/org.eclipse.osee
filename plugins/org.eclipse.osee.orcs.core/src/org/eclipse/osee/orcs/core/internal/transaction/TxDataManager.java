@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
@@ -269,13 +269,13 @@ public class TxDataManager {
       return copyArtifactHelper(txData, source, source.getExistingAttributeTypes());
    }
 
-   public ArtifactReadable copyArtifact(TxData txData, BranchId fromBranch, ArtifactId artifactId, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
+   public ArtifactReadable copyArtifact(TxData txData, BranchId fromBranch, ArtifactId artifactId, Collection<AttributeTypeId> attributesToDuplicate) throws OseeCoreException {
       checkChangesAllowed(txData);
       Artifact source = getSourceArtifact(txData, fromBranch, artifactId);
       return copyArtifactHelper(txData, source, attributesToDuplicate);
    }
 
-   private ArtifactReadable copyArtifactHelper(TxData txData, Artifact source, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
+   private ArtifactReadable copyArtifactHelper(TxData txData, Artifact source, Collection<? extends AttributeTypeId> attributesToDuplicate) throws OseeCoreException {
       Artifact copy =
          artifactFactory.copyArtifact(txData.getSession(), source, attributesToDuplicate, txData.getBranch());
       return asExternalArtifact(txData, copy);

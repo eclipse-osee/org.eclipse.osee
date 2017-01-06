@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.artifact;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -20,9 +21,8 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -61,7 +61,6 @@ public class ArtifactFactoryTest {
 
    // @formatter:off
    @Mock private BranchReadable branch;
-   @Mock private IArtifactType artifactType;
    @Mock private ArtifactData artifactData;
    @Mock private VersionData artifactVersion;
 
@@ -81,7 +80,7 @@ public class ArtifactFactoryTest {
 
    private String guid;
    private ArtifactFactory artifactFactory;
-   private List<IAttributeType> types;
+   private List<AttributeTypeId> types;
 
    @Before
    public void init() throws OseeCoreException {
@@ -98,7 +97,7 @@ public class ArtifactFactoryTest {
 
       when(artifactData.getLocalId()).thenReturn(45);
       when(artifactData.getGuid()).thenReturn(guid);
-      when(artifactData.getTypeUuid()).thenReturn(65L);
+      when(artifactData.getTypeUuid()).thenReturn(Artifact.getId());
       when(artifactData.getVersion()).thenReturn(artifactVersion);
       when(artifactVersion.getBranch()).thenReturn(COMMON);
       when(source.getOrcsData()).thenReturn(artifactData);
@@ -108,33 +107,34 @@ public class ArtifactFactoryTest {
 
       when(otherArtifactData.getLocalId()).thenReturn(45);
       when(otherArtifactData.getGuid()).thenReturn(guid);
-      when(otherArtifactData.getTypeUuid()).thenReturn(65L);
+      when(otherArtifactData.getTypeUuid()).thenReturn(Artifact.getId());
       when(otherArtifactData.getVersion()).thenReturn(artifactVersion);
 
-      when(artifactTypeCache.get(65L)).thenReturn(artifactType);
+      // TODO RDB: make this line unnecessary
+      when(artifactTypeCache.get(Artifact.getId())).thenReturn(Artifact);
 
    }
 
    @Test
    public void testCreateArtifactFromBranchTypeAndGuid() throws OseeCoreException {
-      when(dataFactory.create(COMMON, artifactType, guid)).thenReturn(artifactData);
+      when(dataFactory.create(COMMON, Artifact, guid)).thenReturn(artifactData);
 
-      Artifact artifact = artifactFactory.createArtifact(session, COMMON, artifactType, guid);
+      Artifact artifact = artifactFactory.createArtifact(session, COMMON, Artifact, guid);
 
-      verify(dataFactory).create(COMMON, artifactType, guid);
-      assertEquals(artifactType, artifact.getArtifactType());
+      verify(dataFactory).create(COMMON, Artifact, guid);
+      assertEquals(Artifact, artifact.getArtifactType());
       assertEquals(guid, artifact.getGuid());
    }
 
    @Test
    public void testCreateArtifactFromBranchTypeAndGuidAndUuid() throws OseeCoreException {
       long uuid = 93456L;
-      when(dataFactory.create(COMMON, artifactType, guid, uuid)).thenReturn(artifactData);
+      when(dataFactory.create(COMMON, Artifact, guid, uuid)).thenReturn(artifactData);
 
-      Artifact artifact = artifactFactory.createArtifact(session, COMMON, artifactType, guid, uuid);
+      Artifact artifact = artifactFactory.createArtifact(session, COMMON, Artifact, guid, uuid);
 
-      verify(dataFactory).create(COMMON, artifactType, guid, uuid);
-      assertEquals(artifactType, artifact.getArtifactType());
+      verify(dataFactory).create(COMMON, Artifact, guid, uuid);
+      assertEquals(Artifact, artifact.getArtifactType());
       assertEquals(guid, artifact.getGuid());
    }
 
@@ -142,7 +142,7 @@ public class ArtifactFactoryTest {
    public void testCreateArtifactFromArtifactData() throws OseeCoreException {
       Artifact artifact = artifactFactory.createArtifact(session, artifactData);
 
-      assertEquals(artifactType, artifact.getArtifactType());
+      assertEquals(Artifact, artifact.getArtifactType());
       assertEquals(guid, artifact.getGuid());
    }
 
@@ -153,7 +153,7 @@ public class ArtifactFactoryTest {
       when(source.getAttributes(CoreAttributeTypes.Annotation)).thenAnswer(new ReturnAttribute(attribute));
       when(attribute.getOrcsData()).thenReturn(attributeData);
 
-      when(artifactTypeCache.isValidAttributeType(eq(artifactType), any(BranchId.class),
+      when(artifactTypeCache.isValidAttributeType(eq(Artifact), any(BranchId.class),
          eq(CoreAttributeTypes.Annotation))).thenReturn(true);
 
       ArgumentCaptor<Artifact> implCapture = ArgumentCaptor.forClass(Artifact.class);
@@ -176,8 +176,7 @@ public class ArtifactFactoryTest {
       when(source.getExistingAttributeTypes()).thenAnswer(new ReturnExistingTypes(types));
       when(source.getAttributes(DeletionFlag.INCLUDE_DELETED)).thenAnswer(new ReturnAttribute(attribute));
       when(attribute.getOrcsData()).thenReturn(attributeData);
-      when(artifactTypeCache.isValidAttributeType(artifactType, branch, CoreAttributeTypes.Annotation)).thenReturn(
-         true);
+      when(artifactTypeCache.isValidAttributeType(Artifact, branch, CoreAttributeTypes.Annotation)).thenReturn(true);
       when(attribute.getAttributeType()).thenReturn(CoreAttributeTypes.Annotation);
       when(destination.isAttributeTypeValid(CoreAttributeTypes.Annotation)).thenReturn(true);
 
@@ -194,7 +193,7 @@ public class ArtifactFactoryTest {
       when(source.getExistingAttributeTypes()).thenAnswer(new ReturnExistingTypes(types));
       when(source.getAttributes(CoreAttributeTypes.Annotation)).thenAnswer(new ReturnAttribute(attribute));
       when(attribute.getOrcsData()).thenReturn(attributeData);
-      when(artifactTypeCache.isValidAttributeType(eq(artifactType), any(BranchId.class),
+      when(artifactTypeCache.isValidAttributeType(eq(Artifact), any(BranchId.class),
          eq(CoreAttributeTypes.Annotation))).thenReturn(true);
 
       ArgumentCaptor<Artifact> implCapture = ArgumentCaptor.forClass(Artifact.class);
@@ -223,16 +222,16 @@ public class ArtifactFactoryTest {
       }
    };
 
-   private static final class ReturnExistingTypes implements Answer<List<IAttributeType>> {
+   private static final class ReturnExistingTypes implements Answer<List<AttributeTypeId>> {
 
-      private final List<IAttributeType> types;
+      private final List<AttributeTypeId> types;
 
-      public ReturnExistingTypes(List<IAttributeType> types) {
+      public ReturnExistingTypes(List<AttributeTypeId> types) {
          this.types = types;
       }
 
       @Override
-      public List<IAttributeType> answer(InvocationOnMock invocation) throws Throwable {
+      public List<AttributeTypeId> answer(InvocationOnMock invocation) throws Throwable {
          return types;
       }
    };

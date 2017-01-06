@@ -16,8 +16,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -89,8 +89,8 @@ public class HtmlWriter {
       }
       data.put("Branch", asLink(uri.toASCIIString(), "Branch " + branchId));
 
-      Collection<? extends IAttributeType> types = artifact.getExistingAttributeTypes();
-      for (IAttributeType type : types) {
+      Collection<AttributeTypeToken> types = artifact.getExistingAttributeTypes();
+      for (AttributeTypeToken type : types) {
          for (AttributeReadable<?> attr : artifact.getAttributes(type)) {
             URI attrUri = uriInfo.getAbsolutePathBuilder().path("/attribute/{attributeId}").build(attr.getLocalId());
             String label = asLink(attrUri.getPath(), type.getName());

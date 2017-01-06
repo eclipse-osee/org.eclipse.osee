@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -62,11 +63,11 @@ public interface TransactionBuilder {
 
    ArtifactToken copyArtifact(ArtifactReadable sourceArtifact) throws OseeCoreException;
 
-   ArtifactToken copyArtifact(ArtifactReadable sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException;
+   ArtifactToken copyArtifact(ArtifactReadable sourceArtifact, Collection<AttributeTypeId> attributesToDuplicate) throws OseeCoreException;
 
    ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId sourceArtifact) throws OseeCoreException;
 
-   ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException;
+   ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId sourceArtifact, Collection<AttributeTypeId> attributesToDuplicate) throws OseeCoreException;
 
    ArtifactToken introduceArtifact(BranchId fromBranch, ArtifactId sourceArtifact) throws OseeCoreException;
 
@@ -78,7 +79,7 @@ public interface TransactionBuilder {
 
    AttributeId createAttribute(ArtifactId art, IAttributeType attributeType) throws OseeCoreException;
 
-   <T> AttributeId createAttribute(ArtifactId art, IAttributeType attributeType, T value) throws OseeCoreException;
+   <T> AttributeId createAttribute(ArtifactId art, AttributeTypeId attributeType, T value) throws OseeCoreException;
 
    AttributeId createAttributeFromString(ArtifactId art, IAttributeType attributeType, String value) throws OseeCoreException;
 

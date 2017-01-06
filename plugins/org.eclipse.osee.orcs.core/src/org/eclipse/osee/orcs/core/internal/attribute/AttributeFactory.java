@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -40,7 +41,7 @@ public class AttributeFactory {
       this.cache = cache;
    }
 
-   public <T> Attribute<T> createAttributeWithDefaults(AttributeContainer container, ArtifactData artifactData, IAttributeType attributeType) throws OseeCoreException {
+   public <T> Attribute<T> createAttributeWithDefaults(AttributeContainer container, ArtifactData artifactData, AttributeTypeId attributeType) throws OseeCoreException {
       AttributeData data = dataFactory.create(artifactData, attributeType);
       return createAttribute(container, data, true, true);
    }
@@ -98,11 +99,11 @@ public class AttributeFactory {
       return new AttributeResourceNameResolver(cache, attribute);
    }
 
-   public int getMaxOccurrenceLimit(IAttributeType attributeType) throws OseeCoreException {
+   public int getMaxOccurrenceLimit(AttributeTypeId attributeType) throws OseeCoreException {
       return cache.getMaxOccurrences(attributeType);
    }
 
-   public int getMinOccurrenceLimit(IAttributeType attributeType) throws OseeCoreException {
+   public int getMinOccurrenceLimit(AttributeTypeId attributeType) throws OseeCoreException {
       return cache.getMinOccurrences(attributeType);
    }
 

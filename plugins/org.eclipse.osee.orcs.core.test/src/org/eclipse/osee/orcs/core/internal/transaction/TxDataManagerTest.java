@@ -31,7 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -108,7 +108,7 @@ public class TxDataManagerTest {
 
    private TxDataManager txDataManager;
    private TxData txDataReal;
-   private final Collection<? extends IAttributeType> types = Arrays.asList(Name, Category);
+   private final Collection<AttributeTypeId> types = Arrays.asList(Name, Category);
    private String r1Guid;
    private String r2Guid;
    private String r3Guid;
@@ -446,7 +446,7 @@ public class TxDataManagerTest {
 
       when(data.getGuid()).thenReturn(guid);
 
-      List<? extends IAttributeType> copyTypes = Arrays.asList(CoreAttributeTypes.Active, CoreAttributeTypes.Name);
+      List<AttributeTypeId> copyTypes = Arrays.asList(CoreAttributeTypes.Active, CoreAttributeTypes.Name);
       when(sourceArtifact.getExistingAttributeTypes()).thenAnswer(answerValue(copyTypes));
 
       when(artifact2.getOrcsData()).thenReturn(data);

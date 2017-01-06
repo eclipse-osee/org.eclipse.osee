@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -23,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface AttributeContainer extends Identifiable<String>, HasLocalId<Integer> {
 
-   void add(IAttributeType type, Attribute<? extends Object> attribute);
+   void add(AttributeTypeId attributeType, Attribute<? extends Object> attribute);
 
    void remove(IAttributeType type, Attribute<? extends Object> attribute);
 
@@ -46,7 +47,7 @@ public interface AttributeContainer extends Identifiable<String>, HasLocalId<Int
 
    /////////////////////////////////////////////////////////////////
 
-   int getAttributeCount(IAttributeType type) throws OseeCoreException;
+   int getAttributeCount(AttributeTypeId type) throws OseeCoreException;
 
    int getAttributeCount(IAttributeType type, DeletionFlag deletionFlag) throws OseeCoreException;
 
@@ -54,5 +55,5 @@ public interface AttributeContainer extends Identifiable<String>, HasLocalId<Int
 
    Collection<? extends IAttributeType> getValidAttributeTypes() throws OseeCoreException;
 
-   Collection<? extends IAttributeType> getExistingAttributeTypes() throws OseeCoreException;
+   Collection<AttributeTypeToken> getExistingAttributeTypes() throws OseeCoreException;
 }

@@ -16,6 +16,7 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -65,7 +66,7 @@ public class PurgeAttributeTypeCommand implements ConsoleCommand {
 
             console.writeln();
 
-            Set<IAttributeType> types = getTypes(typesToPurge);
+            Set<AttributeTypeId> types = getTypes(typesToPurge);
             boolean found = !types.isEmpty();
 
             if (found) {
@@ -83,9 +84,9 @@ public class PurgeAttributeTypeCommand implements ConsoleCommand {
             return null;
          }
 
-         private Set<IAttributeType> getTypes(String[] typesToPurge) throws OseeCoreException {
+         private Set<AttributeTypeId> getTypes(String[] typesToPurge) throws OseeCoreException {
             AttributeTypes attributeTypes = orcsTypes.getAttributeTypes();
-            Set<IAttributeType> toReturn = new HashSet<>();
+            Set<AttributeTypeId> toReturn = new HashSet<>();
             for (String uuid : typesToPurge) {
                try {
                   Long typeId = Long.valueOf(uuid);

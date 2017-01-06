@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.artifact;
 
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.RelationOrder;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -62,11 +62,11 @@ public class ArtifactFactory {
       return artifact;
    }
 
-   public Artifact copyArtifact(OrcsSession session, Artifact source, Collection<? extends IAttributeType> types, BranchId ontoBranch) throws OseeCoreException {
+   public Artifact copyArtifact(OrcsSession session, Artifact source, Collection<? extends AttributeTypeId> types, BranchId ontoBranch) throws OseeCoreException {
       ArtifactData artifactData = factory.copy(ontoBranch, source.getOrcsData());
       Artifact copy = createArtifact(session, artifactData);
-      Collection<? extends IAttributeType> typesToCopy = getAllowedTypes(copy, types);
-      for (IAttributeType attributeType : typesToCopy) {
+      Collection<AttributeTypeId> typesToCopy = getAllowedTypes(copy, types);
+      for (AttributeTypeId attributeType : typesToCopy) {
          for (AttributeReadable<?> attributeSource : source.getAttributes(attributeType)) {
             AttributeData data = getAttributeData(attributeSource);
             attributeFactory.copyAttribute(data, ontoBranch, copy);
@@ -114,7 +114,7 @@ public class ArtifactFactory {
    public Artifact clone(OrcsSession session, Artifact source) throws OseeCoreException {
       ArtifactData artifactData = factory.clone(source.getOrcsData());
       Artifact copy = createArtifact(session, artifactData);
-      for (IAttributeType attributeType : source.getExistingAttributeTypes()) {
+      for (AttributeTypeId attributeType : source.getExistingAttributeTypes()) {
          for (AttributeReadable<?> attributeSource : source.getAttributes(attributeType)) {
             AttributeData data = getAttributeData(attributeSource);
             attributeFactory.cloneAttribute(data, copy);
@@ -128,10 +128,10 @@ public class ArtifactFactory {
       return ((Attribute<?>) source).getOrcsData();
    }
 
-   private Collection<? extends IAttributeType> getAllowedTypes(Artifact destination, Collection<? extends IAttributeType> types) throws OseeCoreException {
-      Set<IAttributeType> toReturn = new HashSet<>();
-      for (IAttributeType type : types) {
-         if (!CoreAttributeTypes.RelationOrder.equals(type)) {
+   private Collection<AttributeTypeId> getAllowedTypes(Artifact destination, Collection<? extends AttributeTypeId> types) throws OseeCoreException {
+      Set<AttributeTypeId> toReturn = new HashSet<>();
+      for (AttributeTypeId type : types) {
+         if (type.notEqual(RelationOrder)) {
             if (destination.isAttributeTypeValid(type)) {
                toReturn.add(type);
             }

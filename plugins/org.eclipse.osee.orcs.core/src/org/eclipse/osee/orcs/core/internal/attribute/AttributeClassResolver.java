@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute;
 
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -34,7 +35,7 @@ public class AttributeClassResolver {
       return registry.getBaseClazz(alias);
    }
 
-   protected Class<? extends Attribute<?>> getBaseClazz(IAttributeType attributeType) throws OseeCoreException {
+   protected Class<? extends Attribute<?>> getBaseClazz(AttributeTypeId attributeType) throws OseeCoreException {
       String alias = attributeTypes.getBaseAttributeTypeId(attributeType);
       if (alias.contains(".")) {
          alias = Lib.getExtension(alias);
@@ -51,14 +52,14 @@ public class AttributeClassResolver {
       return baseType.isAssignableFrom(clazz);
    }
 
-   public <T> Attribute<T> createAttribute(IAttributeType type) throws OseeCoreException {
+   public <T> Attribute<T> createAttribute(AttributeTypeId type) throws OseeCoreException {
       Class<? extends Attribute<?>> attributeClass = getAttributeClass(type);
       Conditions.checkNotNull(attributeClass, "attributeClass",
          "Cannot find attribute class base type for attributeType[%s]", type);
       return createAttribute(attributeClass);
    }
 
-   private Class<? extends Attribute<?>> getAttributeClass(IAttributeType type) throws OseeCoreException {
+   private Class<? extends Attribute<?>> getAttributeClass(AttributeTypeId type) throws OseeCoreException {
       Class<? extends Attribute<?>> attributeClass = getBaseClazz(type);
       if (attributeClass == null) {
          // TODO Word Attributes etc -  Default to StringAttribute if Null

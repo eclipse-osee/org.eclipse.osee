@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.rest.internal.util;
 
 import org.eclipse.osee.ats.api.workflow.IAttribute;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 
@@ -52,7 +52,7 @@ public class AttributeReadableWrapper<T> implements IAttribute<T> {
    }
 
    @Override
-   public IAttributeType getAttrType() {
+   public AttributeTypeToken getAttrType() {
       return attr.getAttributeType();
    }
 

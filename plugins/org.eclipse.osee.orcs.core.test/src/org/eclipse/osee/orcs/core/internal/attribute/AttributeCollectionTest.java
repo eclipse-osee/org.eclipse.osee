@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 import com.google.common.collect.Iterables;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -33,7 +33,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link AttributeCollection}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class AttributeCollectionTest {
@@ -106,7 +106,7 @@ public class AttributeCollectionTest {
       when(deletedAttr.getAttributeType()).thenReturn(typeC);
       when(deletedAttr.isDeleted()).thenReturn(false);
 
-      Collection<? extends IAttributeType> types = attributeCollection.getExistingTypes(DeletionFlag.INCLUDE_DELETED);
+      Collection<? extends AttributeTypeId> types = attributeCollection.getExistingTypes(DeletionFlag.INCLUDE_DELETED);
 
       assertEquals(3, types.size());
 
@@ -114,7 +114,7 @@ public class AttributeCollectionTest {
       assertTrue(types.contains(typeB));
       assertTrue(types.contains(typeC));
 
-      Collection<? extends IAttributeType> types2 = attributeCollection.getExistingTypes(DeletionFlag.EXCLUDE_DELETED);
+      Collection<? extends AttributeTypeId> types2 = attributeCollection.getExistingTypes(DeletionFlag.EXCLUDE_DELETED);
       assertEquals(1, types2.size());
 
       assertFalse(types2.contains(typeA));

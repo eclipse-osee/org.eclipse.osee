@@ -11,10 +11,10 @@
 package org.eclipse.osee.orcs.db.internal.loader;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -93,7 +93,7 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public AttributeData create(ArtifactData parent, IAttributeType attributeType) throws OseeCoreException {
+   public AttributeData create(ArtifactData parent, AttributeTypeId attributeType) throws OseeCoreException {
       VersionData version = objectFactory.createDefaultVersionData();
       version.setBranch(parent.getVersion().getBranch());
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
