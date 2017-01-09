@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -48,7 +47,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
          chStmt.close();
       }
       List<IAtsWorkItem> workItems = new LinkedList<>();
-      for (ArtifactId art : services.getQueryService().getArtifacts(ids, AtsUtilCore.getAtsBranch())) {
+      for (ArtifactId art : services.getQueryService().getArtifacts(ids, services.getAtsBranch())) {
          if (services.getStoreService().isOfType(art, AtsArtifactTypes.AbstractWorkflowArtifact)) {
             IAtsWorkItem workItem = services.getWorkItemFactory().getWorkItem(art);
             if (workItem != null) {

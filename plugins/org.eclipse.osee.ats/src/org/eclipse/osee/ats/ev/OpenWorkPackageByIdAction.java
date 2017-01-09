@@ -21,7 +21,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -75,15 +75,15 @@ public class OpenWorkPackageByIdAction extends Action {
                protected IStatus run(IProgressMonitor monitor) {
                   List<Artifact> results = new LinkedList<>();
                   if (!guids.isEmpty()) {
-                     results.addAll(ArtifactQuery.getArtifactListFromIds(guids, AtsUtilCore.getAtsBranch()));
+                     results.addAll(ArtifactQuery.getArtifactListFromIds(guids, AtsClientService.get().getAtsBranch()));
                   }
                   if (!ids.isEmpty()) {
                      results.addAll(ArtifactQuery.getArtifactListFromAttributeValues(AtsAttributeTypes.ActivityId, ids,
-                        AtsUtilCore.getAtsBranch(), 5));
+                        AtsClientService.get().getAtsBranch(), 5));
                      AttributeType type = AttributeTypeManager.getType(FinancialSystemId);
                      if (type != null) {
                         results.addAll(ArtifactQuery.getArtifactListFromAttributeValues(FinancialSystemId, ids,
-                           AtsUtilCore.getAtsBranch(), 5));
+                           AtsClientService.get().getAtsBranch(), 5));
                      }
                   }
                   if (results.isEmpty()) {

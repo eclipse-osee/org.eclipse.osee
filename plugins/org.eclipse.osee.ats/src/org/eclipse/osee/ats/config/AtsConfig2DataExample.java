@@ -16,9 +16,9 @@ import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  * Example configuration of ATS using the AtsConfig2 data and operation classes. This can be run from demo database from
  * ATS Navigator. It will create 3 actionable items, 2 teams (software and requirements), 1 team workdefinition and 1
  * task workdefinition that will be configured for the Software team.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsConfig2DataExample extends AbstractAtsConfig2Data {
@@ -45,7 +45,7 @@ public class AtsConfig2DataExample extends AbstractAtsConfig2Data {
 
    @Override
    public void performPostConfig(IAtsChangeSet changes, AbstractAtsConfig2Data data) {
-      Artifact dtsSoftware = ArtifactQuery.getArtifactFromToken(Software_Team, AtsUtilCore.getAtsBranch());
+      Artifact dtsSoftware = ArtifactQuery.getArtifactFromToken(Software_Team, AtsClientService.get().getAtsBranch());
       dtsSoftware.addAttribute(AtsAttributeTypes.RelatedTaskWorkDefinition, "WorkDef_Task_AtsConfig2Example");
       changes.add(dtsSoftware);
    }

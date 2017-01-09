@@ -26,9 +26,9 @@ import org.eclipse.osee.ats.core.client.artifact.AbstractAtsArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -118,7 +118,7 @@ public class AtsDeleteManager {
                   Operations.executeWorkAndCheckStatus(new PurgeArtifacts(allDeleteArts));
                } else if (!allDeleteArts.isEmpty()) {
                   SkynetTransaction transaction =
-                     TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Delete ATS Objects");
+                     TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Delete ATS Objects");
                   ArtifactPersistenceManager.deleteArtifactCollection(transaction, false, allDeleteArts);
                   transaction.execute();
                }

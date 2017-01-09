@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -106,7 +106,7 @@ public abstract class AbstractImageManagerTest {
    @org.junit.Test
    public void testGetImageByArtifact() throws Exception {
       ArtifactId folder = ArtifactQuery.getArtifactFromTypeAndNameNoException(CoreArtifactTypes.Folder, "User Groups",
-         AtsUtilCore.getAtsBranch());
+         AtsClientService.get().getAtsBranch());
       assertTrue("Image returned not a folder image.",
          ArtifactImageManager.getImage((Artifact) folder).equals(ImageManager.getImage(PluginUiImage.FOLDER)));
    }

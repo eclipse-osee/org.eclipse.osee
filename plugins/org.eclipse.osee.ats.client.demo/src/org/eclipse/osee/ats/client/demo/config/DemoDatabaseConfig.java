@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.config.AtsDatabaseConfig;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoCountry;
 import org.eclipse.osee.ats.demo.api.DemoInsertion;
@@ -102,7 +101,7 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
 
    private void addSawWorkTypes() {
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Add SAW Work Types");
+         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Add SAW Work Types");
       Artifact sawProgram = AtsClientService.get().getArtifact(DemoArtifactToken.SAW_Program);
       for (DemoCsci csci : DemoCsci.values()) {
          sawProgram.addAttribute(AtsAttributeTypes.CSCI, csci.name());
@@ -158,14 +157,16 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
 
          // relate country to programs
          SkynetTransaction transaction =
-            TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Create USG Country Config");
-         Artifact country = ArtifactQuery.getArtifactFromId(DemoCountry.usg.getUuid(), AtsUtilCore.getAtsBranch());
+            TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Create USG Country Config");
+         Artifact country =
+            ArtifactQuery.getArtifactFromId(DemoCountry.usg.getUuid(), AtsClientService.get().getAtsBranch());
          Artifact program =
-            ArtifactQuery.getArtifactFromId(DemoProgram.sawProgram.getUuid(), AtsUtilCore.getAtsBranch());
+            ArtifactQuery.getArtifactFromId(DemoProgram.sawProgram.getUuid(), AtsClientService.get().getAtsBranch());
          country.addRelation(AtsRelationTypes.CountryToProgram_Program, program);
          program.persist(transaction);
 
-         program = ArtifactQuery.getArtifactFromId(DemoProgram.cisProgram.getUuid(), AtsUtilCore.getAtsBranch());
+         program =
+            ArtifactQuery.getArtifactFromId(DemoProgram.cisProgram.getUuid(), AtsClientService.get().getAtsBranch());
          country.addRelation(AtsRelationTypes.CountryToProgram_Program, program);
          program.persist(transaction);
          country.persist(transaction);
@@ -262,9 +263,10 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
 
    private void createAndSetWorkPackages() throws OseeCoreException {
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Create Work Packages");
+         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Create Work Packages");
 
-      Artifact codeTeamArt = ArtifactQuery.getArtifactFromToken(DemoArtifactToken.SAW_Code, AtsUtilCore.getAtsBranch());
+      Artifact codeTeamArt =
+         ArtifactQuery.getArtifactFromToken(DemoArtifactToken.SAW_Code, AtsClientService.get().getAtsBranch());
 
       Artifact workPkg1 = createWorkPackage(DemoArtifactToken.SAW_Code_Team_WorkPackage_01, "ASDHFA443");
       workPkg1.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, codeTeamArt);
@@ -283,7 +285,7 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
       workPkg3.persist(transaction);
 
       Artifact testTeamArt =
-         ArtifactQuery.getArtifactFromToken(DemoArtifactToken.SAW_Test_AI, AtsUtilCore.getAtsBranch());
+         ArtifactQuery.getArtifactFromToken(DemoArtifactToken.SAW_Test_AI, AtsClientService.get().getAtsBranch());
 
       Artifact workPkg11 = createWorkPackage(DemoArtifactToken.SAW_Test_AI_WorkPackage_0A, "AHESSH3");
       workPkg11.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, testTeamArt);
@@ -310,7 +312,7 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
    }
 
    private Artifact createWorkPackage(ArtifactToken workPackageToken, String activityId) throws OseeCoreException {
-      Artifact workPkg1 = ArtifactTypeManager.addArtifact(workPackageToken, AtsUtilCore.getAtsBranch());
+      Artifact workPkg1 = ArtifactTypeManager.addArtifact(workPackageToken, AtsClientService.get().getAtsBranch());
       char charAt = workPackageToken.getName().charAt(workPackageToken.getName().length() - 1);
       workPkg1.addAttributeFromString(AtsAttributeTypes.WorkPackageId, "WP_0" + charAt);
       workPkg1.addAttributeFromString(AtsAttributeTypes.WorkPackageProgram, "Program A");

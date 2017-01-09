@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.goal.MembersLabelProvider;
 import org.eclipse.osee.ats.goal.MembersViewerSorter;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -63,8 +62,8 @@ public class GoalManager extends MembersManager<GoalArtifact> {
    }
 
    public static GoalArtifact createGoal(String title, IAtsChangeSet changes) throws OseeCoreException {
-      GoalArtifact goalArt =
-         (GoalArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Goal, AtsUtilCore.getAtsBranch(), title);
+      GoalArtifact goalArt = (GoalArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Goal,
+         AtsClientService.get().getAtsBranch(), title);
 
       AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), goalArt,
          TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()), changes);

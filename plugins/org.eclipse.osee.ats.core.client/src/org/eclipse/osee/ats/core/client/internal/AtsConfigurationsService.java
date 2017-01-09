@@ -72,7 +72,7 @@ public class AtsConfigurationsService implements IAtsConfigurationProvider {
          try {
             userArt = UserManager.getUserByArtId(user.getId());
             if (userArt == null) {
-               userArt = ArtifactQuery.getArtifactFromId(user.getId(), AtsUtilCore.getAtsBranch());
+               userArt = ArtifactQuery.getArtifactFromId(user.getId(), AtsClientService.get().getAtsBranch());
             }
          } catch (ArtifactDoesNotExist ex) {
             // do nothing

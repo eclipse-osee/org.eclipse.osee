@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -43,7 +42,7 @@ public class ArtifactResolverImpl implements IArtifactResolver {
       if (atsObject.getStoreObject() instanceof ArtifactReadable) {
          return atsObject.getStoreObject();
       }
-      ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(
+      ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(services.getAtsBranch()).andUuid(
          atsObject.getId()).getResults().getAtMostOneOrNull();
       return artifact;
    }

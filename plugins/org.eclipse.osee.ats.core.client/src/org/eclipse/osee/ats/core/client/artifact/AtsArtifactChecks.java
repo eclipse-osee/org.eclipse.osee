@@ -103,7 +103,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
    // Get all artifacts and recurse down default hierarchy
    private Set<Artifact> getAllArtifacts(Collection<Artifact> artifacts, Set<Artifact> allArtifacts) {
       for (Artifact art : artifacts) {
-         if (art.isOnBranch(AtsUtilCore.getAtsBranch())) {
+         if (art.isOnBranch(AtsClientService.get().getAtsBranch())) {
             allArtifacts.addAll(art.getDescendants());
          }
       }
@@ -160,7 +160,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
       Set<String> aiaGuids = getActionableItemGuidsWithRecurse(new HashSet<String>(), artifacts);
       if (!aiaGuids.isEmpty()) {
          List<Artifact> teamWfsRelatedToAis = ArtifactQuery.getArtifactListFromTypeAndAttribute(
-            AtsArtifactTypes.TeamWorkflow, AtsAttributeTypes.ActionableItem, aiaGuids, AtsUtilCore.getAtsBranch(), 10);
+            AtsArtifactTypes.TeamWorkflow, AtsAttributeTypes.ActionableItem, aiaGuids, AtsClientService.get().getAtsBranch(), 10);
          if (!teamWfsRelatedToAis.isEmpty()) {
             return createStatus(String.format(
                "Actionable Items (or children AIs) [%s] selected to delete have related Team Workflows; Delete or re-assign Team Workflows first.",
@@ -198,7 +198,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
       }
       if (!guids.isEmpty()) {
          List<Artifact> artifactListFromIds = ArtifactQuery.getArtifactListFromAttributeValues(
-            AtsAttributeTypes.TeamDefinition, guids, AtsUtilCore.getAtsBranch(), 5);
+            AtsAttributeTypes.TeamDefinition, guids, AtsClientService.get().getAtsBranch(), 5);
          if (artifactListFromIds.size() > 0) {
             return createStatus(String.format(
                "Team Definition (or children Team Definitions) [%s] selected to delete have related Team Workflows; Delete or re-assign Team Workflows first.",
@@ -220,7 +220,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
       }
       if (!guids.isEmpty()) {
          List<Artifact> artifactListFromIds = ArtifactQuery.getArtifactListFromAttributeValues(
-            AtsAttributeTypes.WorkPackageGuid, guids, AtsUtilCore.getAtsBranch(), 5);
+            AtsAttributeTypes.WorkPackageGuid, guids, AtsClientService.get().getAtsBranch(), 5);
          if (artifactListFromIds.size() > 0) {
             return createStatus(String.format(
                "Work Packages [%s] selected to delete have related Work Items; Delete or re-assign Work Packages first.",
@@ -235,7 +235,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
          if (art.isOfType(AtsArtifactTypes.WorkDefinition)) {
             List<Artifact> artifactListFromTypeAndAttribute =
                ArtifactQuery.getArtifactListFromTypeAndAttribute(AtsArtifactTypes.WorkDefinition,
-                  AtsAttributeTypes.WorkflowDefinition, art.getName(), AtsUtilCore.getAtsBranch());
+                  AtsAttributeTypes.WorkflowDefinition, art.getName(), AtsClientService.get().getAtsBranch());
             if (artifactListFromTypeAndAttribute.size() > 0) {
                return createStatus(String.format(
                   "ATS WorkDefinition [%s] selected to delete has ats.WorkDefinition attributes set to it's name in %d artifact.  These must be changed first.",

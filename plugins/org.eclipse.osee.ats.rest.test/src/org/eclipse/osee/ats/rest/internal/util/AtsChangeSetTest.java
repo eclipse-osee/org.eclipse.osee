@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.db.mocks.AtsClassDatabase;
 import org.eclipse.osee.ats.db.mocks.AtsIntegrationByClassRule;
 import org.eclipse.osee.ats.rest.IAtsServer;
@@ -61,7 +60,7 @@ public class AtsChangeSetTest {
       changes.createArtifact(AtsArtifactTypes.Version, name, guid, uuid);
       changes.execute();
 
-      ArtifactReadable verArt = atsServer.getOrcsApi().getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(
+      ArtifactReadable verArt = atsServer.getOrcsApi().getQueryFactory().fromBranch(atsServer.getAtsBranch()).andUuid(
          uuid).getResults().getAtMostOneOrNull();
       assertNotNull(verArt);
       assertEquals(uuid.longValue(), verArt.getId().longValue());

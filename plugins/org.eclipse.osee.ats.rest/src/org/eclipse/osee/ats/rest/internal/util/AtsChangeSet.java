@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.util.AbstractAtsChangeSet;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -75,7 +74,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    public TransactionBuilder getTransaction() throws OseeCoreException {
       if (transaction == null) {
          transaction =
-            orcsApi.getTransactionFactory().createTransaction(AtsUtilCore.getAtsBranch(), getUser(asUser), comment);
+            orcsApi.getTransactionFactory().createTransaction(atsServer.getAtsBranch(), getUser(asUser), comment);
       }
       return transaction;
    }
@@ -84,7 +83,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       if (user.getStoreObject() instanceof ArtifactReadable) {
          return (ArtifactReadable) user.getStoreObject();
       }
-      return orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(
+      return orcsApi.getQueryFactory().fromBranch(atsServer.getAtsBranch()).andUuid(
          user.getId()).getResults().getExactlyOne();
    }
 

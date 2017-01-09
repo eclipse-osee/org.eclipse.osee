@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.client.demo.config;
 
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -34,7 +34,7 @@ public class DemoWebDatabaseConfig implements IDbInitializationTask {
    public void run() throws OseeCoreException {
       TestUtil.setDemoDb(true);
 
-      BranchId atsBranch = AtsUtilCore.getAtsBranch();
+      BranchId atsBranch = AtsClientService.get().getAtsBranch();
       SkynetTransaction transaction = TransactionManager.createTransaction(atsBranch, "Create ATS Folders");
       Artifact headingArt = OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.HeadingFolder, atsBranch);
 

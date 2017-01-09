@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  * This operation will take source workflows and convert state names. Use this BLAM when Work Definition changes require
  * state re-name or removal. This BLAM will fix old workflows. This works by reading the attributes on the workflow and
  * search/replacing the fromStateName to the toStateName. NOTE: ATS log will show name changes, but not OSEE history.";
- * 
+ *
  * @author Donald G. Dunne
  */
 public class ConvertWorkflowStatesOperation extends AbstractOperation {
@@ -63,7 +63,7 @@ public class ConvertWorkflowStatesOperation extends AbstractOperation {
    protected void doWork(IProgressMonitor monitor) throws Exception {
       SkynetTransaction transaction = null;
       if (persist) {
-         transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getName());
+         transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), getName());
       }
       if (fromStateToStateMap.isEmpty()) {
          rd.error("Must enter FromToState pairs");

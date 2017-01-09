@@ -39,8 +39,8 @@ public class AtsPreferencesService {
       preferences.put(key, value);
    }
 
-   public void setAtsPreferences(IAtsPreferences dbService) {
-      AtsPreferencesService.preferences = dbService;
+   public void setAtsPreferences(IAtsPreferences preferences) {
+      AtsPreferencesService.preferences = preferences;
    }
 
    public static boolean isAvailable() {

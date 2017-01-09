@@ -54,7 +54,7 @@ public class AtsPeerToPeerReviewPrepareStateItemTest {
       if (peerRevArt == null) {
          // setup fake review artifact with decision options set
          peerRevArt = (PeerToPeerReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.PeerToPeerReview,
-            AtsUtilCore.getAtsBranch());
+            AtsClientService.get().getAtsBranch());
          peerRevArt.setName(getClass().getSimpleName());
          // Setup actionable item so don't get error that there is no parent team workflow
          IAtsChangeSet changes = AtsClientService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName(),

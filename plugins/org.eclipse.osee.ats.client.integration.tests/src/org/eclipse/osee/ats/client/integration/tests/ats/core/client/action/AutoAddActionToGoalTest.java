@@ -48,8 +48,8 @@ public class AutoAddActionToGoalTest {
       AtsTestUtil.cleanup();
 
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "AutoAddActionToGoalTest - cleanup");
-      for (Artifact art : ArtifactQuery.getArtifactListFromName("AutoAddActionToGoalTest", AtsUtilCore.getAtsBranch(),
+         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "AutoAddActionToGoalTest - cleanup");
+      for (Artifact art : ArtifactQuery.getArtifactListFromName("AutoAddActionToGoalTest", AtsClientService.get().getAtsBranch(),
          DeletionFlag.EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS)) {
          art.deleteAndPersist(transaction);
       }
@@ -167,7 +167,7 @@ public class AutoAddActionToGoalTest {
 
       AtsTestUtil.cleanup();
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), getClass().getSimpleName());
       testAI2Art.deleteAndPersist(transaction);
       goalArt.deleteAndPersist(transaction);
       transaction.execute();
@@ -217,7 +217,7 @@ public class AutoAddActionToGoalTest {
       AtsTestUtil.cleanup();
 
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), getClass().getSimpleName());
       testAI2.deleteAndPersist(transaction);
       testAI3.deleteAndPersist(transaction);
       goalArt.deleteAndPersist(transaction);

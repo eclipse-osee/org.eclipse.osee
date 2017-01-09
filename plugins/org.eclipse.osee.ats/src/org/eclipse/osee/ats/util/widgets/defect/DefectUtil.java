@@ -16,8 +16,8 @@ import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -51,7 +51,7 @@ public class DefectUtil {
       if (ed.open() == 0) {
          try {
             SkynetTransaction transaction =
-               TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Add Review Defect");
+               TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Add Review Defect");
             ReviewDefectItem item = new ReviewDefectItem();
             item.setDescription(ed.getEntry());
             if (ed.getSeverity() != null) {
@@ -96,7 +96,7 @@ public class DefectUtil {
       if (delete) {
          try {
             SkynetTransaction transaction =
-               TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Delete Review Defects");
+               TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Delete Review Defects");
             ReviewDefectManager defectManager = getDefectManager();
             for (ReviewDefectItem defectItem : items) {
                defectManager.removeDefectItem(defectItem, persist, transaction);
@@ -118,7 +118,7 @@ public class DefectUtil {
          ed.setFillVertically(true);
          if (ed.open() == 0) {
             SkynetTransaction transaction =
-               TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Import Review Defects");
+               TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Import Review Defects");
             ReviewDefectManager defectManager = getDefectManager();
             for (String str : ed.getEntry().split("\n")) {
                str = str.replaceAll("\r", "");

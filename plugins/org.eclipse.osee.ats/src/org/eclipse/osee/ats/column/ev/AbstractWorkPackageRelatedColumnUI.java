@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -115,10 +114,11 @@ public abstract class AbstractWorkPackageRelatedColumnUI extends XViewerAtsColum
          AWorkbench.popup("No Work Packages set for selected Work Items");
       } else {
          if (guids.size() == 1) {
-            AtsUtil.openArtifact(guids.iterator().next(), AtsUtilCore.getAtsBranch().getUuid(),
+            AtsUtil.openArtifact(guids.iterator().next(), AtsClientService.get().getAtsBranch().getUuid(),
                OseeCmEditor.ArtifactEditor);
          } else {
-            List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(guids, AtsUtilCore.getAtsBranch());
+            List<Artifact> artifacts =
+               ArtifactQuery.getArtifactListFromIds(guids, AtsClientService.get().getAtsBranch());
             MassArtifactEditor.editArtifacts("Edit Work Packages", artifacts);
          }
       }

@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
@@ -322,8 +321,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       String actionTitle = "tt " + ttNum;
       resultData.log("Running " + title);
 
-      Artifact actionArt =
-         ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, actionTitle, AtsUtilCore.getAtsBranch());
+      Artifact actionArt = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, actionTitle,
+         AtsClientService.get().getAtsBranch());
 
       if (actionArt == null) {
          resultData.error(String.format("Couldn't load Action named [%s]", actionTitle));
@@ -340,8 +339,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       String actionTitle = "tt " + ttNum;
       resultData.log("Running " + title);
 
-      Artifact actionArt =
-         ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, actionTitle, AtsUtilCore.getAtsBranch());
+      Artifact actionArt = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, actionTitle,
+         AtsClientService.get().getAtsBranch());
 
       if (actionArt == null) {
          resultData.error(String.format("Couldn't load Action named [%s]", actionTitle));

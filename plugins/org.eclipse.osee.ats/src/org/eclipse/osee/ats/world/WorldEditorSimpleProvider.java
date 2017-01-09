@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -69,7 +69,7 @@ public class WorldEditorSimpleProvider extends WorldEditorProvider {
          for (Artifact art : artifacts) {
             ids.add(art.getArtId());
          }
-         artifacts = ArtifactQuery.getArtifactListFromIds(ids, AtsUtilCore.getAtsBranch());
+         artifacts = ArtifactQuery.getArtifactListFromIds(ids, AtsClientService.get().getAtsBranch());
       }
       return artifacts;
    }

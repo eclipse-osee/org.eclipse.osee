@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -68,7 +67,7 @@ public class WorkflowManager {
       List<TeamWorkFlowArtifact> result = new ArrayList<>();
       for (IArtifactType artType : AtsClientService.get().getStoreService().getTeamWorkflowArtifactTypes()) {
          List<TeamWorkFlowArtifact> teamArts = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
-            ArtifactQuery.getArtifactListFromType(artType, AtsUtilCore.getAtsBranch()));
+            ArtifactQuery.getArtifactListFromType(artType, AtsClientService.get().getAtsBranch()));
          result.addAll(teamArts);
       }
       return result;

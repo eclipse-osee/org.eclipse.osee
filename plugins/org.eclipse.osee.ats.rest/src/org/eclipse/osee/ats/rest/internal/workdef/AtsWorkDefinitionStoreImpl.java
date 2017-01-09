@@ -16,8 +16,8 @@ import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStore;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -44,7 +44,7 @@ public class AtsWorkDefinitionStoreImpl implements IAtsWorkDefinitionStore {
    @Override
    public List<Pair<String, String>> getWorkDefinitionStrings() throws OseeCoreException {
       List<Pair<String, String>> nameToWorkDefStr = new ArrayList<>(15);
-      for (ArtifactReadable workDefArt : orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andTypeEquals(
+      for (ArtifactReadable workDefArt : orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andTypeEquals(
          AtsArtifactTypes.WorkDefinition).getResults()) {
          nameToWorkDefStr.add(
             new Pair<String, String>(workDefArt.getName(), loadWorkDefinitionFromArtifact(workDefArt)));
@@ -63,9 +63,9 @@ public class AtsWorkDefinitionStoreImpl implements IAtsWorkDefinitionStore {
    }
 
    private String loadWorkDefinitionFromArtifact(String name) throws OseeCoreException {
-      ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andTypeEquals(
-         AtsArtifactTypes.WorkDefinition).and(CoreAttributeTypes.Name, name,
-            QueryOption.EXACT_MATCH_OPTIONS).getResults().getExactlyOne();
+      ArtifactReadable artifact =
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andTypeEquals(AtsArtifactTypes.WorkDefinition).and(
+            CoreAttributeTypes.Name, name, QueryOption.EXACT_MATCH_OPTIONS).getResults().getExactlyOne();
       return loadWorkDefinitionFromArtifact(artifact);
    }
 
@@ -80,7 +80,7 @@ public class AtsWorkDefinitionStoreImpl implements IAtsWorkDefinitionStore {
    @SuppressWarnings("unchecked")
    @Override
    public String loadRuleDefinitionString() throws OseeCoreException {
-      ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIds(
+      ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(
          AtsArtifactToken.RuleDefinitions).getResults().getOneOrNull();
       if (artifact != null) {
          return artifact.getSoleAttributeValue(AtsAttributeTypes.DslSheet, null);

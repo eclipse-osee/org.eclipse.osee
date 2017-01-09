@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -98,7 +97,7 @@ public class AtsConfigOperation extends AbstractOperation {
 
    private void checkWorkItemNamespaceUnique() throws OseeCoreException {
       Artifact workDefArt = ArtifactQuery.getArtifactFromTypeAndNameNoException(AtsArtifactTypes.WorkDefinition, name,
-         AtsUtilCore.getAtsBranch());
+         AtsClientService.get().getAtsBranch());
       if (workDefArt != null) {
          throw new OseeArgumentException(
             String.format("Configuration Namespace [%s] already used, choose a unique namespace.", name));
@@ -245,7 +244,8 @@ public class AtsConfigOperation extends AbstractOperation {
                      AtsUtil.openATSAction(AtsClientService.get().getConfigArtifact(aia), AtsOpenOption.OpenAll);
                   }
                   RendererManager.open(ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition,
-                     workDefinition.getName(), AtsUtilCore.getAtsBranch()), PresentationType.SPECIALIZED_EDIT, monitor);
+                     workDefinition.getName(), AtsClientService.get().getAtsBranch()),
+                     PresentationType.SPECIALIZED_EDIT, monitor);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }

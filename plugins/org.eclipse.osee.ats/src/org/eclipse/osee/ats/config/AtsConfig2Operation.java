@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -31,7 +30,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
  * Imports team/ai information from xtext importer. Imports work definitions from xtext importer. AtsConfg2Data provides
  * performPostConfig method to allow for extra changes to be made before commit.</br>
  * Implement AtsConfig2Data and run this operation.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsConfig2Operation extends AbstractOperation {
@@ -89,10 +88,10 @@ public class AtsConfig2Operation extends AbstractOperation {
    private Artifact getWorkDefinitionFolder() {
       Artifact result = null;
       result = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, "Work Definitions",
-         AtsUtilCore.getAtsBranch());
+         AtsClientService.get().getAtsBranch());
       if (result == null) {
          result = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, "Action Tracking System",
-            AtsUtilCore.getAtsBranch());
+            AtsClientService.get().getAtsBranch());
       }
       return result;
    }

@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.core.config.Version;
 import org.eclipse.osee.ats.core.insertion.Insertion;
 import org.eclipse.osee.ats.core.insertion.InsertionActivity;
 import org.eclipse.osee.ats.core.model.WorkPackage;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -294,8 +293,8 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       if (!toDelete.getArtifactType().equals(type)) {
          throw new OseeCoreException("Artifact type does not match for %s", comment);
       }
-      TransactionBuilder transaction = atsServer.getOrcsApi().getTransactionFactory().createTransaction(
-         AtsUtilCore.getAtsBranch(), toDelete, comment);
+      TransactionBuilder transaction =
+         atsServer.getOrcsApi().getTransactionFactory().createTransaction(atsServer.getAtsBranch(), toDelete, comment);
       transaction.deleteArtifact(toDelete);
       transaction.commit();
    }

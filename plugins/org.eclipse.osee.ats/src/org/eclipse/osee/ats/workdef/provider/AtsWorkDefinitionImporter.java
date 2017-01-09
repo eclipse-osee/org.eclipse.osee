@@ -87,10 +87,10 @@ public class AtsWorkDefinitionImporter {
       Artifact artifact = null;
       try {
          if (token != null) {
-            artifact = ArtifactQuery.getArtifactFromToken(token, AtsUtilCore.getAtsBranch());
+            artifact = ArtifactQuery.getArtifactFromToken(token, AtsClientService.get().getAtsBranch());
          } else {
             artifact = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, sheetName,
-               AtsUtilCore.getAtsBranch());
+               AtsClientService.get().getAtsBranch());
          }
       } catch (ArtifactDoesNotExist ex) {
          // do nothing; this is what we want
@@ -108,7 +108,7 @@ public class AtsWorkDefinitionImporter {
       } else {
          resultData.log(String.format("Imported new WorkDefinition [%s]", workDefName));
          artifact =
-            ArtifactTypeManager.addArtifact(AtsArtifactTypes.WorkDefinition, AtsUtilCore.getAtsBranch(), sheetName);
+            ArtifactTypeManager.addArtifact(AtsArtifactTypes.WorkDefinition, AtsClientService.get().getAtsBranch(), sheetName);
       }
       artifact.setSoleAttributeValue(AtsAttributeTypes.DslSheet, workDefXml);
       changes.add(artifact);

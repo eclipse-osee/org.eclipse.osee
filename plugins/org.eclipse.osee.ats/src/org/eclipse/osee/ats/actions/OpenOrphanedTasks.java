@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -85,12 +84,14 @@ public class OpenOrphanedTasks extends Action {
 
                @Override
                protected void doWork(IProgressMonitor monitor) throws Exception {
-                  List<ArtifactId> ids = ArtifactQuery.createQueryBuilder(AtsUtilCore.getAtsBranch()).andIsOfType(
-                     AtsArtifactTypes.Task).andNotExists(AtsRelationTypes.TeamWfToTask_Task).getIds();
+                  List<ArtifactId> ids =
+                     ArtifactQuery.createQueryBuilder(AtsClientService.get().getAtsBranch()).andIsOfType(
+                        AtsArtifactTypes.Task).andNotExists(AtsRelationTypes.TeamWfToTask_Task).getIds();
                   if (ids.isEmpty()) {
                      AWorkbench.popup("No Orphaned Tasks Found");
                   } else {
-                     List<Artifact> artifacts = ArtifactQuery.getArtifactListFrom(ids, AtsUtilCore.getAtsBranch());
+                     List<Artifact> artifacts =
+                        ArtifactQuery.getArtifactListFrom(ids, AtsClientService.get().getAtsBranch());
                      CustomizeData data = new CustomizeData();
                      data.setGuid(GUID.create());
                      data.setName("Orphaned Task View");

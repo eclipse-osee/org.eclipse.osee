@@ -44,16 +44,16 @@ public class AtsChangeSetTest {
    public void setup() {
 
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), getClass().getSimpleName());
 
       folderArt =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, AtsUtilCore.getAtsBranch(), "AtsChangeSetTest");
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, AtsClientService.get().getAtsBranch(), "AtsChangeSetTest");
       folderArt.setSoleAttributeValue(CoreAttributeTypes.StaticId, "my static id");
       folderArt.persist(transaction);
 
       for (int x = 0; x < 4; x++) {
          Artifact genDocArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument,
-            AtsUtilCore.getAtsBranch(), "Art " + x + " AtsChangeSetTest");
+            AtsClientService.get().getAtsBranch(), "Art " + x + " AtsChangeSetTest");
          genDocArt.persist(transaction);
          genDocArts.add(genDocArt);
       }
@@ -64,9 +64,9 @@ public class AtsChangeSetTest {
    @After
    public void cleanup() {
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), getClass().getSimpleName());
       for (Artifact artifact : ArtifactQuery.getArtifactListFromName(getClass().getSimpleName(),
-         AtsUtilCore.getAtsBranch(), EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS)) {
+         AtsClientService.get().getAtsBranch(), EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS)) {
          artifact.deleteAndPersist(transaction);
       }
       transaction.execute();

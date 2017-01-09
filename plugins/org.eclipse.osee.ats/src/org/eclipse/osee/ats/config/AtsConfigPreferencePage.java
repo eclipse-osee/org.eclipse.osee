@@ -14,7 +14,6 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osee.ats.api.config.AtsConfiguration;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -68,7 +67,7 @@ public class AtsConfigPreferencePage extends PreferencePage implements IWorkbenc
                   AtsConfiguration config = (AtsConfiguration) dialog.getResult()[0];
                   BranchId branch = BranchId.valueOf(config.getBranchUuid());
 
-                  AtsUtilCore.storeAtsBranch(branch, config.getName());
+                  AtsClientService.get().storeAtsBranch(branch, config.getName());
 
                   updateConfigurationField();
                   AWorkbench.popup("ATS Configuration Changed; OSEE will be restarted.");
@@ -84,7 +83,7 @@ public class AtsConfigPreferencePage extends PreferencePage implements IWorkbenc
 
    private void updateConfigurationField() {
       configText.setEditable(true);
-      configText.setText(AtsUtilCore.getAtsBranch().getName());
+      configText.setText(AtsClientService.get().getAtsBranch().getName());
       configText.setEditable(false);
    }
 

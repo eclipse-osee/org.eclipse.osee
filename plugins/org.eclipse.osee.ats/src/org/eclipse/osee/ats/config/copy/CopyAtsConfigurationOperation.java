@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -249,8 +248,8 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
          throw new OseeArgumentException("Could not get new name from name conversion.");
       }
       // duplicate all but baseline branch uuid
-      Artifact newTeamDef =
-         fromArtifact.duplicate(AtsUtilCore.getAtsBranch(), Arrays.asList(AtsAttributeTypes.BaselineBranchUuid));
+      Artifact newTeamDef = fromArtifact.duplicate(AtsClientService.get().getAtsBranch(),
+         Arrays.asList(AtsAttributeTypes.BaselineBranchUuid));
       newTeamDef.setName(newName);
       changes.add(newTeamDef);
       resultData.log("Creating new " + newTeamDef.getArtifactTypeName() + ": " + newTeamDef);

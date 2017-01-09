@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileFeatureGroup;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -53,7 +52,7 @@ public class CreateNewAgileFeatureGroup extends XNavigateItemAction {
 
       List<Artifact> activeTeams = new LinkedList<>();
       for (Artifact agTeam : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.AgileTeam,
-         AtsUtilCore.getAtsBranch())) {
+         AtsClientService.get().getAtsBranch())) {
          if (agTeam.getSoleAttributeValue(AtsAttributeTypes.Active, true)) {
             activeTeams.add(agTeam);
          }
@@ -82,7 +81,7 @@ public class CreateNewAgileFeatureGroup extends XNavigateItemAction {
                      if (entity != null) {
                         JaxAgileFeatureGroup group = (JaxAgileFeatureGroup) entity;
                         Artifact groupArt = ArtifactQuery.getArtifactFromId(new Long(group.getUuid()).intValue(),
-                           AtsUtilCore.getAtsBranch());
+                           AtsClientService.get().getAtsBranch());
                         groupArt.getParent().reloadAttributesAndRelations();
                         AtsUtil.openArtifact(group.getUuid(), OseeCmEditor.CmPcrEditor);
                      } else {

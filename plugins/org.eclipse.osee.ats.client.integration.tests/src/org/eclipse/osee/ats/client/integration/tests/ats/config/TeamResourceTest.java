@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.config;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.demo.api.DemoTeam;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -67,6 +67,6 @@ public class TeamResourceTest extends AbstractConfigurationRestTest {
    }
 
    private Artifact getSawSwTeamDef() {
-      return ArtifactQuery.getArtifactFromToken(DemoTeam.SAW_SW.getTeamDefToken(), AtsUtilCore.getAtsBranch());
+      return ArtifactQuery.getArtifactFromToken(DemoTeam.SAW_SW.getTeamDefToken(), AtsClientService.get().getAtsBranch());
    }
 }

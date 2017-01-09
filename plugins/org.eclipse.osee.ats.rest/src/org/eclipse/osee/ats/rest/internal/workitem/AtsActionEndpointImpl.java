@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -118,7 +117,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          if (attrType != null) {
             for (String value : queryParameters.get(key)) {
                Iterator<ArtifactReadable> iterator =
-                  atsServer.getOrcsApi().getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).and(attrType,
+                  atsServer.getOrcsApi().getQueryFactory().fromBranch(atsServer.getAtsBranch()).and(attrType,
                      value).getResults().iterator();
                while (iterator.hasNext()) {
                   ArtifactReadable artifactReadable = iterator.next();
@@ -189,7 +188,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          return RestUtil.returnBadRequest("changeType is not valid");
       }
       IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet("Create Action - Server", atsUser);
-      orcsApi.getTransactionFactory().createTransaction(AtsUtilCore.getAtsBranch(), atsUser.getStoreObject(),
+      orcsApi.getTransactionFactory().createTransaction(atsServer.getAtsBranch(), atsUser.getStoreObject(),
          "Create Action - Server");
 
       ChangeType changeType = null;

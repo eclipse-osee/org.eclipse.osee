@@ -45,7 +45,6 @@ import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
@@ -190,7 +189,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
             OseeLog.log(Activator.class, Level.INFO, "Add Favorites");
          }
          for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(DemoArtifactTypes.DemoCodeTeamWorkflow,
-            "Diagram View", AtsUtilCore.getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS)) {
+            "Diagram View", AtsClientService.get().getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS)) {
             new FavoritesManager((AbstractWorkflowArtifact) art).toggleFavorite(false);
          }
 
@@ -199,7 +198,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
             OseeLog.log(Activator.class, Level.INFO, "Add Subscribed");
          }
          for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(DemoArtifactTypes.DemoCodeTeamWorkflow,
-            "Even", AtsUtilCore.getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS)) {
+            "Even", AtsClientService.get().getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS)) {
             new SubscribeManagerUI((AbstractWorkflowArtifact) art).toggleSubscribe(false);
          }
 
@@ -223,7 +222,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
    private void setDefaultWorkPackages() {
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Set Work Packages");
+         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Set Work Packages");
 
       // set work packages
       TeamWorkFlowArtifact commWf = DemoUtil.getSawCodeCommittedWf();

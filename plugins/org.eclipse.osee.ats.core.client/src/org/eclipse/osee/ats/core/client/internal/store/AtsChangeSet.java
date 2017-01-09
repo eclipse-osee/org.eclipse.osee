@@ -74,7 +74,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       if (objects.isEmpty() && deleteObjects.isEmpty() && execptionIfEmpty) {
          throw new OseeArgumentException("objects/deleteObjects cannot be empty");
       }
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), comment);
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), comment);
       // First, create or update any artifacts that changed
       for (Object obj : new ArrayList<>(objects)) {
          if (obj instanceof IAtsWorkItem) {
@@ -122,7 +122,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
          List<Artifact> changedArts = new LinkedList<>();
          for (Long changedUuid : results.getChangedWorkitemUuids()) {
-            Artifact artifact = ArtifactCache.getActive(changedUuid, AtsUtilCore.getAtsBranch());
+            Artifact artifact = ArtifactCache.getActive(changedUuid, AtsClientService.get().getAtsBranch());
             if (artifact != null) {
                changedArts.add(artifact);
             }
@@ -256,7 +256,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public ArtifactId createArtifact(IArtifactType artifactType, String name) {
-      Artifact artifact = ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch(), name);
+      Artifact artifact = ArtifactTypeManager.addArtifact(artifactType, AtsClientService.get().getAtsBranch(), name);
       add(artifact);
       return artifact;
    }
@@ -275,7 +275,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid, Long uuid) {
-      Artifact artifact = ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch(), name, guid, uuid);
+      Artifact artifact = ArtifactTypeManager.addArtifact(artifactType, AtsClientService.get().getAtsBranch(), name, guid, uuid);
       add(artifact);
       return artifact;
    }

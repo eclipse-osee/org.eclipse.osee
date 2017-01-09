@@ -28,14 +28,12 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.agile.model.AgileBacklog;
 import org.eclipse.osee.ats.rest.internal.agile.model.AgileFeatureGroup;
 import org.eclipse.osee.ats.rest.internal.agile.model.AgileSprint;
 import org.eclipse.osee.ats.rest.internal.agile.model.AgileTeam;
 import org.eclipse.osee.ats.rest.internal.agile.util.AgileFolders;
-import org.eclipse.osee.ats.rest.internal.util.AtsChangeSet;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -61,7 +59,7 @@ public class AgileFactory {
       if (agileTeamArt == null) {
 
          TransactionBuilder transaction = atsServer.getOrcsApi().getTransactionFactory().createTransaction(
-            AtsUtilCore.getAtsBranch(), userArt, "Create new Agile Team");
+            atsServer.getAtsBranch(), userArt, "Create new Agile Team");
 
          agileTeamArt = (ArtifactReadable) transaction.createArtifact(AtsArtifactTypes.AgileTeam, newTeam.getName(),
             GUID.create(), newTeam.getUuid());
@@ -84,7 +82,7 @@ public class AgileFactory {
       ArtifactReadable userArt = atsServer.getArtifact(atsServer.getUserService().getCurrentUser());
 
       TransactionBuilder transaction = atsServer.getOrcsApi().getTransactionFactory().createTransaction(
-         AtsUtilCore.getAtsBranch(), userArt, "Update new Agile Team");
+         atsServer.getAtsBranch(), userArt, "Update new Agile Team");
 
       ArtifactReadable agileTeamArt = atsServer.getArtifact(team.getUuid());
       if (agileTeamArt == null) {
@@ -135,7 +133,7 @@ public class AgileFactory {
    public static IAgileFeatureGroup createAgileFeatureGroup(Log logger, IAtsServer atsServer, JaxAgileFeatureGroup newFeatureGroup) {
       ArtifactReadable userArt = atsServer.getArtifact(atsServer.getUserService().getCurrentUser());
       TransactionBuilder transaction = atsServer.getOrcsApi().getTransactionFactory().createTransaction(
-         AtsUtilCore.getAtsBranch(), userArt, "Create new Agile Feature Group");
+         atsServer.getAtsBranch(), userArt, "Create new Agile Feature Group");
       ArtifactReadable featureGroupArt =
          (ArtifactReadable) transaction.createArtifact(AtsArtifactTypes.AgileFeatureGroup, newFeatureGroup.getName(),
             GUID.create(), newFeatureGroup.getUuid());
@@ -158,8 +156,8 @@ public class AgileFactory {
 
    public static IAgileSprint createAgileSprint(Log logger, IAtsServer atsServer, long teamUuid, String name, String guid, Long uuid) {
 
-      IAtsChangeSet changes = (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Create new Agile Sprint",
-         AtsCoreUsers.SYSTEM_USER);
+      IAtsChangeSet changes =
+         atsServer.getStoreService().createAtsChangeSet("Create new Agile Sprint", AtsCoreUsers.SYSTEM_USER);
 
       ArtifactReadable sprintArt =
          (ArtifactReadable) changes.createArtifact(AtsArtifactTypes.AgileSprint, name, guid, uuid);
@@ -189,8 +187,8 @@ public class AgileFactory {
 
    public static IAgileBacklog createAgileBacklog(Log logger, IAtsServer atsServer, long teamUuid, String name, String guid, Long uuid) {
 
-      IAtsChangeSet changes = (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Create new Agile Backlog",
-         AtsCoreUsers.SYSTEM_USER);
+      IAtsChangeSet changes =
+         atsServer.getStoreService().createAtsChangeSet("Create new Agile Backlog", AtsCoreUsers.SYSTEM_USER);
 
       ArtifactReadable backlogArt = (ArtifactReadable) changes.createArtifact(AtsArtifactTypes.Goal, name, guid, uuid);
       IAgileBacklog sprint = atsServer.getWorkItemFactory().getAgileBacklog(backlogArt);

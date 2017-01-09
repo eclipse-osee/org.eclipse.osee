@@ -24,8 +24,8 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -88,7 +88,7 @@ public class WorldXViewerEventManager {
             }
          }
          try {
-            if (artifactEvent.isForBranch(AtsUtilCore.getAtsBranch())) {
+            if (artifactEvent.isForBranch(AtsClientService.get().getAtsBranch())) {
                Runnable runnable = createDisplayRunnable(artifactEvent, handlers);
                Displays.ensureInDisplayThread(runnable);
             }

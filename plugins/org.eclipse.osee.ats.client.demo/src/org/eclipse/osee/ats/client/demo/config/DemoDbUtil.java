@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.client.demo.internal.Activator;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -50,7 +49,7 @@ public class DemoDbUtil {
          for (String actionName : new String[] {
             "SAW (committed) Reqt Changes for Diagram View",
             "SAW (uncommitted) More Reqt Changes for Diagram View"}) {
-            for (Artifact art : ArtifactQuery.getArtifactListFromName(actionName, AtsUtilCore.getAtsBranch(),
+            for (Artifact art : ArtifactQuery.getArtifactListFromName(actionName, AtsClientService.get().getAtsBranch(),
                EXCLUDE_DELETED)) {
                if (art.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow)) {
                   codeArts.add((TeamWorkFlowArtifact) art);

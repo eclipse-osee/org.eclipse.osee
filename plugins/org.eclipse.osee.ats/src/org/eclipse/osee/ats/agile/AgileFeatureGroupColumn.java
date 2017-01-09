@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
@@ -37,13 +38,12 @@ import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -206,22 +206,22 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
 
       if (!artifacts.isEmpty()) {
          // Change NamedId to ArtifactToken when merge to 25.0
-         HashCollection<ArtifactId, IArtifactToken> artifactToTokens =
-            ArtifactQuery.getArtifactTokenListFromRelated(AtsUtilCore.getAtsBranch(), artifacts,
+         HashCollection<ArtifactId, ArtifactToken> artifactToTokens =
+            ArtifactQuery.getArtifactTokenListFromRelated(AtsClientService.get().getAtsBranch(), artifacts,
                AtsArtifactTypes.Version, AtsRelationTypes.AgileFeatureToItem_FeatureGroup);
-         for (Entry<ArtifactId, Collection<IArtifactToken>> entry : artifactToTokens.entrySet()) {
+         for (Entry<ArtifactId, Collection<ArtifactToken>> entry : artifactToTokens.entrySet()) {
             try {
                if (Artifacts.isOfType(entry.getKey(), AtsArtifactTypes.Action)) {
                   Set<String> strs = new HashSet<>();
                   for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(entry.getKey())) {
-                     for (IArtifactToken artToken : artifactToTokens.getValues(teamWf)) {
+                     for (ArtifactToken artToken : artifactToTokens.getValues(teamWf)) {
                         strs.add(artToken.getName());
                      }
                   }
                   preComputedValueMap.put(getKey(entry.getKey()), Collections.toString(", ", strs));
                } else {
                   Set<String> strs = new HashSet<>();
-                  for (IArtifactToken artToken : entry.getValue()) {
+                  for (ArtifactToken artToken : entry.getValue()) {
                      strs.add(artToken.getName());
                   }
                   preComputedValueMap.put(getKey(entry.getKey()), Collections.toString(", ", strs));

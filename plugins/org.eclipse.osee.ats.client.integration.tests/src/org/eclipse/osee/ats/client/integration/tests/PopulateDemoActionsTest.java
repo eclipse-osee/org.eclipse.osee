@@ -66,7 +66,7 @@ public class PopulateDemoActionsTest {
    @AfterClass
    public static void cleanup() throws OseeCoreException {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Cleanup PopulateDemoActionsTest");
-      for (Artifact art : ArtifactQuery.getArtifactListFromName("Auto-created", AtsUtilCore.getAtsBranch(),
+      for (Artifact art : ArtifactQuery.getArtifactListFromName("Auto-created", AtsClientService.get().getAtsBranch(),
          DeletionFlag.EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS)) {
          changes.deleteArtifact(art);
       }
@@ -84,7 +84,7 @@ public class PopulateDemoActionsTest {
       // {@link DemoDbActionData.getReqSawActionsData()} - 1
       String title = "SAW (committed) Reqt Changes for Diagram View";
       ActionArtifact action = (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, title,
-         AtsUtilCore.getAtsBranch());
+         AtsClientService.get().getAtsBranch());
       Assert.assertNotNull(action);
 
       // test teams
@@ -149,7 +149,7 @@ public class PopulateDemoActionsTest {
       // {@link DemoDbActionData.getReqSawActionsData()} - 2
       String title = "SAW (uncommitted) More Reqt Changes for Diagram View";
       ActionArtifact action = (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, title,
-         AtsUtilCore.getAtsBranch());
+         AtsClientService.get().getAtsBranch());
       Assert.assertNotNull(action);
       Assert.assertEquals(4, action.getTeams().size());
       TeamWorkFlowArtifact codeTeam = null, designTeam = null;
@@ -213,7 +213,7 @@ public class PopulateDemoActionsTest {
       // {@link DemoDbActionData.getReqSawActionsData()} - 3
       String title = "SAW (no-branch) Even More Requirement Changes for Diagram View";
       ActionArtifact action = (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, title,
-         AtsUtilCore.getAtsBranch());
+         AtsClientService.get().getAtsBranch());
       Assert.assertNotNull(action);
       Assert.assertEquals(4, action.getTeams().size());
       Assert.assertEquals(4, action.getTeams().size());
@@ -257,7 +257,7 @@ public class PopulateDemoActionsTest {
       // {@link DemoDbActionData.getReqSawActionsData()} - 4
       String title = "SAW (uncommitted-conflicted) More Requirement Changes for Diagram View";
       ActionArtifact action = (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, title,
-         AtsUtilCore.getAtsBranch());
+         AtsClientService.get().getAtsBranch());
       Assert.assertNotNull(action);
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
@@ -270,7 +270,7 @@ public class PopulateDemoActionsTest {
    public void testWorkaroundForGraphViewBld1Action() throws OseeCoreException {
       String title = "Workaround for Graph View for SAW_Bld_1";
       ActionArtifact action = (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, title,
-         AtsUtilCore.getAtsBranch());
+         AtsClientService.get().getAtsBranch());
       Assert.assertNotNull(action);
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
@@ -283,7 +283,7 @@ public class PopulateDemoActionsTest {
    public void testWorkaroundForGraphViewBld2Action() throws OseeCoreException {
       String title = "Workaround for Graph View for SAW_Bld_2";
       ActionArtifact action = (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, title,
-         AtsUtilCore.getAtsBranch());
+         AtsClientService.get().getAtsBranch());
       Assert.assertNotNull(action);
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
@@ -296,7 +296,7 @@ public class PopulateDemoActionsTest {
    public void testWorkaroundForGraphViewBld3Action() throws OseeCoreException {
       String title = "Workaround for Graph View for SAW_Bld_3";
       ActionArtifact action = (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, title,
-         AtsUtilCore.getAtsBranch());
+         AtsClientService.get().getAtsBranch());
       Assert.assertNotNull(action);
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
@@ -309,7 +309,7 @@ public class PopulateDemoActionsTest {
    public void testWorkingWithDiagramTreeBld1Action() throws OseeCoreException {
       String title = "Working with Diagram Tree for SAW_Bld_1";
       ActionArtifact action = (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, title,
-         AtsUtilCore.getAtsBranch());
+         AtsClientService.get().getAtsBranch());
       Assert.assertNotNull(action);
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
@@ -322,7 +322,7 @@ public class PopulateDemoActionsTest {
    public void testWorkingWithDiagramTreeBld2Action() throws OseeCoreException {
       String title = "Working with Diagram Tree for SAW_Bld_2";
       ActionArtifact action = (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, title,
-         AtsUtilCore.getAtsBranch());
+         AtsClientService.get().getAtsBranch());
       Assert.assertNotNull(action);
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
@@ -335,7 +335,7 @@ public class PopulateDemoActionsTest {
    public void testWorkingWithDiagramTreeBld3Action() throws OseeCoreException {
       String title = "Working with Diagram Tree for SAW_Bld_3";
       ActionArtifact action = (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, title,
-         AtsUtilCore.getAtsBranch());
+         AtsClientService.get().getAtsBranch());
       Assert.assertNotNull(action);
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
@@ -348,7 +348,7 @@ public class PopulateDemoActionsTest {
    public void testButton2DoesntWorkOnHelpAction() throws OseeCoreException {
       String title = "Button S doesn't work on help";
       ActionArtifact action = (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, title,
-         AtsUtilCore.getAtsBranch());
+         AtsClientService.get().getAtsBranch());
       Assert.assertNotNull(action);
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
@@ -369,7 +369,7 @@ public class PopulateDemoActionsTest {
    public void testButtonWDoesntWorkOnSituationPageAction() throws OseeCoreException {
       String title = "Button W doesn't work on Situation Page";
       ActionArtifact action = (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, title,
-         AtsUtilCore.getAtsBranch());
+         AtsClientService.get().getAtsBranch());
       Assert.assertNotNull(action);
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
@@ -390,7 +390,7 @@ public class PopulateDemoActionsTest {
    public void testCantLoadDiagramTreeAction() throws OseeCoreException {
       String title = "Can't load Diagram Tree";
       ActionArtifact action = (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, title,
-         AtsUtilCore.getAtsBranch());
+         AtsClientService.get().getAtsBranch());
       Assert.assertNotNull(action);
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
@@ -403,7 +403,7 @@ public class PopulateDemoActionsTest {
    public void testCantSeeTheGraphViewAction() throws OseeCoreException {
       String title = "Can't see the Graph View";
       ActionArtifact action = (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, title,
-         AtsUtilCore.getAtsBranch());
+         AtsClientService.get().getAtsBranch());
       Assert.assertNotNull(action);
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
@@ -417,7 +417,7 @@ public class PopulateDemoActionsTest {
    public void testProblemInDiagramTreeAction() throws OseeCoreException {
       String title = "Problem in Diagram Tree";
       ActionArtifact action = (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, title,
-         AtsUtilCore.getAtsBranch());
+         AtsClientService.get().getAtsBranch());
       Assert.assertNotNull(action);
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
@@ -431,7 +431,7 @@ public class PopulateDemoActionsTest {
    public void testProblemWithTheGraphViewAction() throws OseeCoreException {
       String title = "Problem with the Graph View";
       ActionArtifact action = (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, title,
-         AtsUtilCore.getAtsBranch());
+         AtsClientService.get().getAtsBranch());
       Assert.assertNotNull(action);
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
@@ -445,7 +445,7 @@ public class PopulateDemoActionsTest {
    public void testProblemWithTheUserWindowAction() throws OseeCoreException {
       String title = "Problem with the user window";
       ActionArtifact action = (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, title,
-         AtsUtilCore.getAtsBranch());
+         AtsClientService.get().getAtsBranch());
       Assert.assertNotNull(action);
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();

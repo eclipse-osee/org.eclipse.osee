@@ -55,8 +55,8 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.XWorldTextFilter;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
@@ -207,7 +207,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             SkynetTransaction transaction;
             try {
                transaction =
-                  TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Reset Action off Children");
+                  TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Reset Action off Children");
                for (ActionArtifact actionArt : getSelectedActionArtifacts()) {
                   ActionArtifactRollup rollup = new ActionArtifactRollup(actionArt);
                   rollup.resetAttributesOffChildren();

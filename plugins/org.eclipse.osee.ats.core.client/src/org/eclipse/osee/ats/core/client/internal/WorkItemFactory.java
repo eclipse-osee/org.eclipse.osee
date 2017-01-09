@@ -124,7 +124,7 @@ public class WorkItemFactory extends AbstractWorkItemFactory {
    @Override
    public IAtsWorkItem getWorkItemByAtsId(String atsId) {
       Artifact artifact =
-         ArtifactQuery.getArtifactFromAttribute(AtsAttributeTypes.AtsId, atsId, AtsUtilCore.getAtsBranch());
+         ArtifactQuery.getArtifactFromAttribute(AtsAttributeTypes.AtsId, atsId, AtsClientService.get().getAtsBranch());
       return getWorkItem(artifact);
    }
 

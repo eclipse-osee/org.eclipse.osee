@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.util;
 
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.util.CreateActionUsingAllActionableItems;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -28,7 +28,7 @@ import org.junit.BeforeClass;
 
 /**
  * Test for {@link CreateActionUsingAllActionableItems}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class CreateActionUsingAllActionableItemsTest {
@@ -37,10 +37,10 @@ public class CreateActionUsingAllActionableItemsTest {
    @AfterClass
    public static void cleanup() throws OseeCoreException {
       AtsBulkLoad.reloadConfig(true);
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(),
          CreateActionUsingAllActionableItemsTest.class.getSimpleName());
       for (Artifact art : ArtifactQuery.getArtifactListFromName("Big Action Test - Delete Me",
-         AtsUtilCore.getAtsBranch(), DeletionFlag.EXCLUDE_DELETED)) {
+         AtsClientService.get().getAtsBranch(), DeletionFlag.EXCLUDE_DELETED)) {
          art.deleteAndPersist(transaction);
       }
       transaction.execute();

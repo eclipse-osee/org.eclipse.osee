@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -39,7 +39,7 @@ public class ArtifactTypeSearchItem extends WorldUISearchItem {
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       Conditions.checkNotNull(artifactType, getName());
-      return ArtifactQuery.getArtifactListFromType(artifactType, AtsUtilCore.getAtsBranch());
+      return ArtifactQuery.getArtifactListFromType(artifactType, AtsClientService.get().getAtsBranch());
    }
 
    @Override

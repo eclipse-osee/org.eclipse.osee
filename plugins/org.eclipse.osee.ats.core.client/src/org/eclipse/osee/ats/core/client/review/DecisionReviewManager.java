@@ -186,7 +186,7 @@ public class DecisionReviewManager {
    public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, Collection<IAtsDecisionReviewOption> options, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
       DecisionReviewArtifact decRev =
          (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.DecisionReview,
-            AtsUtilCore.getAtsBranch(), title);
+            AtsClientService.get().getAtsBranch(), title);
 
       teamArt.addRelation(AtsRelationTypes.TeamWorkflowToReview_Review, decRev);
       AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), decRev,

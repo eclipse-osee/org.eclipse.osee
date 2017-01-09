@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.actions.OpenWorkflowByIdAction;
 import org.eclipse.osee.ats.actions.OpenWorldByIdAction;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -233,7 +232,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
    private String getWhoAmI() {
       try {
          String userName = AtsClientService.get().getUserService().getCurrentUser().getName();
-         return String.format("[%s] - [%s]", AtsUtilCore.getAtsBranch().getName(), userName);
+         return String.format("[%s] - [%s]", AtsClientService.get().getAtsBranch().getName(), userName);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return "Exception: " + ex.getLocalizedMessage();

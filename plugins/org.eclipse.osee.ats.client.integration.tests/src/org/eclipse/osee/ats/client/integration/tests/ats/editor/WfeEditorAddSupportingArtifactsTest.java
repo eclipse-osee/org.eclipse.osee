@@ -11,9 +11,9 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.editor;
 
 import java.util.Arrays;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.editor.WfeEditorAddSupportingArtifacts;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -41,7 +41,7 @@ public class WfeEditorAddSupportingArtifactsTest {
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
       Artifact rootArt =
-         ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.DefaultHierarchyRoot, AtsUtilCore.getAtsBranch());
+         ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.DefaultHierarchyRoot, AtsClientService.get().getAtsBranch());
       Artifact firstArt = null, secondArt = null;
       for (Artifact child : rootArt.getChildren()) {
          if (firstArt == null) {

@@ -35,7 +35,7 @@ public class AtsWorkDefinitionStore implements IAtsWorkDefinitionStore {
    public List<Pair<String, String>> getWorkDefinitionStrings() throws OseeCoreException {
       List<Pair<String, String>> nameToWorkDefStr = new ArrayList<>(15);
       for (Artifact workDefArt : ArtifactQuery.getArtifactListFromType(Arrays.asList(AtsArtifactTypes.WorkDefinition),
-         AtsUtilCore.getAtsBranch(), DeletionFlag.EXCLUDE_DELETED)) {
+         AtsClientService.get().getAtsBranch(), DeletionFlag.EXCLUDE_DELETED)) {
          nameToWorkDefStr.add(
             new Pair<String, String>(workDefArt.getName(), loadWorkDefinitionFromArtifact(workDefArt)));
       }
@@ -54,7 +54,7 @@ public class AtsWorkDefinitionStore implements IAtsWorkDefinitionStore {
 
    private String loadWorkDefinitionFromArtifact(String name) throws OseeCoreException {
       Artifact artifact = ArtifactQuery.getArtifactFromTypeAndNameNoException(AtsArtifactTypes.WorkDefinition, name,
-         AtsUtilCore.getAtsBranch());
+         AtsClientService.get().getAtsBranch());
       return loadWorkDefinitionFromArtifact(artifact);
    }
 

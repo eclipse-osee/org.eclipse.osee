@@ -25,8 +25,8 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -105,7 +105,7 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
       for (AbstractWorkflowArtifact awa : awas) {
          selected.addAll(awa.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Group));
       }
-      Collection<Artifact> allGroups = UniversalGroup.getGroupsNotRoot(AtsUtilCore.getAtsBranch());
+      Collection<Artifact> allGroups = UniversalGroup.getGroupsNotRoot(AtsClientService.get().getAtsBranch());
       FilteredCheckboxTreeArtifactDialog dialog =
          new FilteredCheckboxTreeArtifactDialog("Select Groups", "Select Groups", allGroups);
       dialog.setInitialSelections(selected);

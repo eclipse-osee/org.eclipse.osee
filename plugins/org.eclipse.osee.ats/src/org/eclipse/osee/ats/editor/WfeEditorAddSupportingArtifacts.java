@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -47,7 +46,7 @@ public class WfeEditorAddSupportingArtifacts extends Job {
          results.error("Must pass in supporting artifacts");
       }
       for (Artifact art : supportingArtifacts) {
-         if (!art.getBranch().equals(AtsUtilCore.getAtsBranch())) {
+         if (!art.getBranch().equals(AtsClientService.get().getAtsBranch())) {
             results.error("Can not relate artifacts that are not on the ATS Branch");
          }
       }

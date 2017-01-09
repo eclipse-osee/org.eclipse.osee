@@ -15,8 +15,8 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.VisitedItemCache;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -43,7 +43,7 @@ public class VisitedItems extends XNavigateItemAction {
       for (IAtsWorkItem workItem : getCache().getReverseVisited()) {
          artIds.add(new Long(workItem.getId()).intValue());
       }
-      Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(artIds, AtsUtilCore.getAtsBranch());
+      Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(artIds, AtsClientService.get().getAtsBranch());
       WorldEditor.open(new WorldEditorSimpleProvider(getName(), artifacts, null, tableLoadOptions));
    }
 

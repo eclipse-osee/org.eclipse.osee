@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Dispositi
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -101,7 +100,7 @@ public class DemoDbReviews {
       if (reviewTestArts == null) {
          reviewTestArts = new ArrayList<>();
          for (String actionName : new String[] {"Button W doesn't work on", "Diagram Tree"}) {
-            for (Artifact art : ArtifactQuery.getArtifactListFromName(actionName, AtsUtilCore.getAtsBranch(),
+            for (Artifact art : ArtifactQuery.getArtifactListFromName(actionName, AtsClientService.get().getAtsBranch(),
                EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS)) {
                if (art.isOfType(DemoArtifactTypes.DemoTestTeamWorkflow)) {
                   reviewTestArts.add((TeamWorkFlowArtifact) art);

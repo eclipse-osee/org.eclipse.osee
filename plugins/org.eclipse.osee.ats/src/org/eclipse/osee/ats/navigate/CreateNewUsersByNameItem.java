@@ -14,7 +14,6 @@ package org.eclipse.osee.ats.navigate;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -82,7 +81,7 @@ public class CreateNewUsersByNameItem extends XNavigateItemAction {
          }
          try {
             SkynetTransaction transaction =
-               TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Create New User(s)");
+               TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Create New User(s)");
             Set<Artifact> newUsers = createNewUserItemTx(transaction, newUserNames);
             transaction.execute();
 
@@ -102,7 +101,7 @@ public class CreateNewUsersByNameItem extends XNavigateItemAction {
       Set<Artifact> newVersions = new HashSet<>();
       for (String userName : userNames) {
          Artifact userArt =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, AtsUtilCore.getAtsBranch(), userName);
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, AtsClientService.get().getAtsBranch(), userName);
          userArt.setSoleAttributeValue(CoreAttributeTypes.UserId, GUID.create());
          userArt.persist(transaction);
          newVersions.add(userArt);

@@ -12,11 +12,10 @@ package org.eclipse.osee.ats.ev;
 
 import java.util.Collection;
 import java.util.LinkedList;
+
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.column.WorkPackageFilterTreeDialog.IWorkPackageProvider;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -34,11 +33,11 @@ public class WorkPackageSearchProvider implements IWorkPackageProvider {
 
    @Override
    public Collection<IAtsWorkPackage> getActiveWorkPackages() {
-      Collection<ArtifactToken> selectableWorkPackageTokens = ArtifactQuery.getArtifactTokenListFromTypeAndActive(
-         AtsArtifactTypes.WorkPackage, AtsAttributeTypes.Active, AtsUtilCore.getAtsBranch());
+      Collection<ArtifactToken> selectableWorkPackageTokens = ArtifactQuery.getArtifactTokenListFromType(
+         AtsArtifactTypes.WorkPackage, AtsClientService.get().getAtsBranch());
       Collection<IAtsWorkPackage> items = new LinkedList<>();
       for (Artifact art : ArtifactQuery.getArtifactListFromTokens(selectableWorkPackageTokens,
-         AtsUtilCore.getAtsBranch())) {
+         AtsClientService.get().getAtsBranch())) {
          items.add(AtsClientService.get().getConfigItemFactory().getWorkPackage(art));
       }
       return items;
@@ -46,11 +45,11 @@ public class WorkPackageSearchProvider implements IWorkPackageProvider {
 
    @Override
    public Collection<IAtsWorkPackage> getAllWorkPackages() {
-      Collection<ArtifactToken> selectableWorkPackageTokens =
-         ArtifactQuery.getArtifactTokenListFromType(AtsArtifactTypes.WorkPackage, AtsUtilCore.getAtsBranch());
+      Collection<ArtifactToken> selectableWorkPackageTokens = ArtifactQuery.getArtifactTokenListFromType(
+         AtsArtifactTypes.WorkPackage, AtsClientService.get().getAtsBranch());
       Collection<IAtsWorkPackage> items = new LinkedList<>();
       for (Artifact art : ArtifactQuery.getArtifactListFromTokens(selectableWorkPackageTokens,
-         AtsUtilCore.getAtsBranch())) {
+         AtsClientService.get().getAtsBranch())) {
          items.add(AtsClientService.get().getConfigItemFactory().getWorkPackage(art));
       }
       return items;

@@ -19,9 +19,9 @@ import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryImpl;
 import org.eclipse.osee.ats.core.query.AtsAttributeQuery;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -54,7 +54,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
 
    @Override
    public void createQueryBuilder() {
-      query = ArtifactQuery.createQueryBuilder(AtsUtilCore.getAtsBranch());
+      query = ArtifactQuery.createQueryBuilder(AtsClientService.get().getAtsBranch());
    }
 
    @Override
@@ -121,7 +121,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    public List<String> getWorkPackagesForColorTeam(String colorTeam) {
       List<String> workPackageGuids = new LinkedList<>();
       for (Artifact workPackageArt : ArtifactQuery.getArtifactListFromTypeAndAttribute(AtsArtifactTypes.WorkPackage,
-         AtsAttributeTypes.ColorTeam, colorTeam, AtsUtilCore.getAtsBranch())) {
+         AtsAttributeTypes.ColorTeam, colorTeam, AtsClientService.get().getAtsBranch())) {
          workPackageGuids.add(workPackageArt.getGuid());
       }
       return workPackageGuids;

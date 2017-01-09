@@ -36,7 +36,6 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.JaxAtsUser;
 import org.eclipse.osee.ats.api.workdef.JaxAtsWorkDef;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -105,7 +104,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
                configs.getUsers().add((JaxAtsUser) user);
             }
             // load admins
-            ArtifactReadable atsAdminArt = orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIds(
+            ArtifactReadable atsAdminArt = orcsApi.getQueryFactory().fromBranch(atsServer.getAtsBranch()).andIds(
                AtsArtifactToken.AtsAdmin).getResults().getAtMostOneOrNull();
             if (atsAdminArt != null) {
                for (ArtifactReadable member : atsAdminArt.getRelated(CoreRelationTypes.Users_User)) {
@@ -113,14 +112,14 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
                }
             }
             // load ats config object ids
-            for (ArtifactId configArtId : orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
+            for (ArtifactId configArtId : orcsApi.getQueryFactory().fromBranch(atsServer.getAtsBranch()).andIsOfType(
                AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.Version,
                AtsArtifactTypes.ActionableItem).getResultsAsLocalIds()) {
                configs.getAtsConfigIds().add(configArtId.getId());
             }
             // load work definitions
-            for (ArtifactToken workDefArt : orcsApi.getQueryFactory().fromBranch(
-               AtsUtilCore.getAtsBranch()).andIsOfType(AtsArtifactTypes.WorkDefinition).getResults()) {
+            for (ArtifactToken workDefArt : orcsApi.getQueryFactory().fromBranch(atsServer.getAtsBranch()).andIsOfType(
+               AtsArtifactTypes.WorkDefinition).getResults()) {
                String workDefStr = atsServer.getAttributeResolver().getSoleAttributeValueAsString(workDefArt,
                   AtsAttributeTypes.DslSheet, "");
                configs.getWorkDefIdToWorkDef().put(workDefArt.getName(), workDefStr);
@@ -277,7 +276,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    public Response storeWorkDef(JaxAtsWorkDef jaxWorkDef) {
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON,
          atsServer.getArtifact(AtsCoreUsers.SYSTEM_USER), "Store Work Definition " + jaxWorkDef.getName());
-      ArtifactReadable workDefArt = orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
+      ArtifactReadable workDefArt = orcsApi.getQueryFactory().fromBranch(atsServer.getAtsBranch()).andIsOfType(
          AtsArtifactTypes.WorkDefinition).andNameEquals(jaxWorkDef.getName()).getResults().getAtMostOneOrNull();
       if (workDefArt == null) {
          workDefArt = (ArtifactReadable) tx.createArtifact(AtsArtifactTypes.WorkDefinition, jaxWorkDef.getName());

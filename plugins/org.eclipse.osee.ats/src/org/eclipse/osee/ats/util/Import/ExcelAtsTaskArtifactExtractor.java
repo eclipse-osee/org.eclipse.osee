@@ -176,7 +176,7 @@ public class ExcelAtsTaskArtifactExtractor {
                      OseeLog.log(Activator.class, Level.SEVERE, "Invalid Attribute Type Name => " + header);
                   } else {
                      if (!ArtifactTypeManager.getArtifactTypesFromAttributeType(attributeType,
-                        AtsUtilCore.getAtsBranch()).contains(AtsArtifactTypes.Task)) {
+                        AtsClientService.get().getAtsBranch()).contains(AtsArtifactTypes.Task)) {
                         OseeLog.log(Activator.class, Level.SEVERE, "Invalid Attribute Type for Task => " + header);
                      } else {
                         String value = row[i];

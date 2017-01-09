@@ -20,8 +20,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -83,7 +83,7 @@ public class WfeReloadTab extends FormPage {
          bodyComp.setLayout(new GridLayout(1, false));
          bodyComp.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, true, false));
 
-         if (!AtsUtilCore.getAtsBranch().getUuid().equals(branchUuid)) {
+         if (!AtsClientService.get().getAtsBranch().getUuid().equals(branchUuid)) {
             Label imageLabel = new Label(bodyComp, SWT.NONE);
             imageLabel.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, true));
             Image image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
@@ -182,9 +182,9 @@ public class WfeReloadTab extends FormPage {
 
       @Override
       protected IStatus run(IProgressMonitor monitor) {
-         if (artUuid > 0 && AtsUtilCore.getAtsBranch().getUuid().equals(branchUuid)) {
+         if (artUuid > 0 && AtsClientService.get().getAtsBranch().getUuid().equals(branchUuid)) {
             try {
-               artifact = ArtifactQuery.getArtifactFromId(artUuid, AtsUtilCore.getAtsBranch());
+               artifact = ArtifactQuery.getArtifactFromId(artUuid, AtsClientService.get().getAtsBranch());
             } catch (ArtifactDoesNotExist ex) {
                // do nothing
             }

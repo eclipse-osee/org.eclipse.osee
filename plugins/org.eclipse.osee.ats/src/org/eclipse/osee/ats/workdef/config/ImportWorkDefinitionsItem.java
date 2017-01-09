@@ -17,7 +17,6 @@ import java.util.Set;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
@@ -52,7 +51,7 @@ public class ImportWorkDefinitionsItem extends XNavigateItemAction {
          XResultData resultData = new XResultData(false);
          IAtsChangeSet changes = AtsClientService.get().createChangeSet(getName());
          Artifact folder =
-            OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.WorkDefinitionsFolder, AtsUtilCore.getAtsBranch());
+            OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.WorkDefinitionsFolder, AtsClientService.get().getAtsBranch());
          Set<String> stateNames = new HashSet<>();
          AtsWorkDefinitionSheetProviders.importWorkDefinitionSheets(resultData, changes, folder, dialog.getSelection(),
             stateNames);

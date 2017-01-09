@@ -18,8 +18,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -74,10 +74,12 @@ public class RevertDuplicateTransitionByIdAction extends Action {
                      }
                   }
                   XResultData results = new XResultData();
-                  SkynetTransaction trans = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getName());
+                  SkynetTransaction trans =
+                     TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), getName());
 
                   boolean changed = false;
-                  for (Artifact art : ArtifactQuery.getArtifactListFromIds(artIds, AtsUtilCore.getAtsBranch())) {
+                  for (Artifact art : ArtifactQuery.getArtifactListFromIds(artIds,
+                     AtsClientService.get().getAtsBranch())) {
                      results.logf("\n\nReverting transition for %s\n\n", art.toStringWithId());
                      if (revertTransition(art, results, persist, trans)) {
                         changed = true;
@@ -88,7 +90,7 @@ public class RevertDuplicateTransitionByIdAction extends Action {
 
                   if (!atsIds.isEmpty()) {
                      for (Artifact art : ArtifactQuery.getArtifactListFromAttributeValues(AtsAttributeTypes.AtsId,
-                        atsIds, AtsUtilCore.getAtsBranch(), 50)) {
+                        atsIds, AtsClientService.get().getAtsBranch(), 50)) {
                         results.logf("\n\nReverting transition for %s\n\n", art.toStringWithId());
                         if (revertTransition(art, results, persist, trans)) {
                            changed = true;

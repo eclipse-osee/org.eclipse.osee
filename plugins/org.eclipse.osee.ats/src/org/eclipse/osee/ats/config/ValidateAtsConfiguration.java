@@ -15,10 +15,10 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.health.ValidateResults;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
@@ -52,8 +52,9 @@ public class ValidateAtsConfiguration extends XNavigateItemAction {
       try {
          List<Artifact> configArts = ArtifactQuery.getArtifactListFromType(
             Arrays.asList(AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.ActionableItem, AtsArtifactTypes.Version),
-            AtsUtilCore.getAtsBranch(), DeletionFlag.EXCLUDE_DELETED);
-         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getName());
+            AtsClientService.get().getAtsBranch(), DeletionFlag.EXCLUDE_DELETED);
+         SkynetTransaction transaction =
+            TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), getName());
 
          ValidateResults results = new ValidateResults();
 

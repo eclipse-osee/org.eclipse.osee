@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -205,7 +204,7 @@ public class CreateTasksOperation {
 
    private static IAttributeType getAttributeType(IAtsServer atsServer, String attrTypeName) {
       for (IAttributeType attrType : atsServer.getOrcsApi().getOrcsTypes().getArtifactTypes().getAttributeTypes(
-         AtsArtifactTypes.Task, AtsUtilCore.getAtsBranch())) {
+         AtsArtifactTypes.Task, atsServer.getAtsBranch())) {
          if (attrType.getName().equals(attrTypeName)) {
             return attrType;
          }

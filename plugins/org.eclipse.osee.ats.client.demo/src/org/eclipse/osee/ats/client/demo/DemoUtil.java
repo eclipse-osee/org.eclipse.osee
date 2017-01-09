@@ -15,8 +15,8 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -79,7 +79,7 @@ public class DemoUtil {
 
    public static Collection<TeamWorkFlowArtifact> getSawWfs(String name) {
       List<TeamWorkFlowArtifact> teamWfs = new ArrayList<>();
-      for (Artifact art : ArtifactQuery.getArtifactListFromName(name, AtsUtilCore.getAtsBranch(),
+      for (Artifact art : ArtifactQuery.getArtifactListFromName(name, AtsClientService.get().getAtsBranch(),
          DeletionFlag.EXCLUDE_DELETED)) {
          if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             teamWfs.add((TeamWorkFlowArtifact) art);
@@ -90,7 +90,7 @@ public class DemoUtil {
 
    public static TeamWorkFlowArtifact getSwDesignNoBranchWf() throws OseeCoreException {
       for (Artifact artifact : ArtifactQuery.getArtifactListFromName(
-         "SAW (uncommitted) More Reqt Changes for Diagram View", AtsUtilCore.getAtsBranch(),
+         "SAW (uncommitted) More Reqt Changes for Diagram View", AtsClientService.get().getAtsBranch(),
          DeletionFlag.EXCLUDE_DELETED)) {
          if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;

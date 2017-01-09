@@ -99,7 +99,6 @@ import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreServiceImpl;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionCache;
 import org.eclipse.osee.ats.core.workflow.AtsImplementersService;
@@ -108,7 +107,6 @@ import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -351,7 +349,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
                for (Long id : configProvider.getConfigurations().getAtsConfigIds()) {
                   ids.add(id.intValue());
                }
-               List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(ids, AtsUtilCore.getAtsBranch());
+               List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(ids, getAtsBranch());
                for (Artifact artifact : artifacts) {
                   IAtsConfigObject configObj = configItemFactory.getConfigObject(artifact);
                   if (configObj != null) {
@@ -445,7 +443,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       if (artifact instanceof Artifact) {
          return (Artifact) artifact;
       }
-      return ArtifactQuery.getArtifactFromId(artifact, AtsUtilCore.getAtsBranch());
+      return ArtifactQuery.getArtifactFromId(artifact, getAtsBranch());
    }
 
    @Override
@@ -465,7 +463,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       Conditions.checkExpressionFailOnTrue(uuid <= 0, "Uuid must be > 0; is %d", uuid);
       Artifact result = null;
       try {
-         result = ArtifactQuery.getArtifactFromId(uuid.intValue(), AtsUtilCore.getAtsBranch());
+         result = ArtifactQuery.getArtifactFromId(uuid.intValue(), getAtsBranch());
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
       }
@@ -571,7 +569,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    @Override
    public String getConfigValue(String key) {
       String result = null;
-      Artifact atsConfig = ArtifactQuery.getArtifactFromToken(AtsArtifactToken.AtsConfig, AtsUtilCore.getAtsBranch());
+      Artifact atsConfig = ArtifactQuery.getArtifactFromToken(AtsArtifactToken.AtsConfig, getAtsBranch());
       if (atsConfig != null) {
          for (Object obj : atsConfig.getAttributeValues(CoreAttributeTypes.GeneralStringData)) {
             String str = (String) obj;
@@ -665,7 +663,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    public Artifact getArtifactByAtsId(String id) {
       Artifact result = null;
       try {
-         result = ArtifactQuery.getArtifactFromAttribute(AtsAttributeTypes.AtsId, id, AtsUtilCore.getAtsBranch());
+         result = ArtifactQuery.getArtifactFromAttribute(AtsAttributeTypes.AtsId, id, getAtsBranch());
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
       }
@@ -674,7 +672,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
    @Override
    public Artifact getArtifactByGuid(String guid) throws OseeCoreException {
-      return ArtifactQuery.getArtifactFromId(guid, AtsUtilCore.getAtsBranch());
+      return ArtifactQuery.getArtifactFromId(guid, getAtsBranch());
    }
 
    @Override
@@ -695,7 +693,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
    @Override
    public Artifact checkArtifactFromId(long uuid, BranchId atsBranch) {
-      return ArtifactQuery.checkArtifactFromId((int) uuid, AtsUtilCore.getAtsBranch(), DeletionFlag.EXCLUDE_DELETED);
+      return ArtifactQuery.checkArtifactFromId((int) uuid, getAtsBranch(), DeletionFlag.EXCLUDE_DELETED);
    }
 
    @Override
@@ -735,7 +733,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
    @Override
    public ArtifactId getArtifactByName(IArtifactType artType, String name) {
-      return ArtifactQuery.getArtifactFromTypeAndNameNoException(artType, name, AtsUtilCore.getAtsBranch());
+      return ArtifactQuery.getArtifactFromTypeAndNameNoException(artType, name, getAtsBranch());
    }
 
    @Override
@@ -779,11 +777,6 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    @Override
    public void clearConfigurationsCaches() {
       configProvider.clearConfigurationsCaches();
-   }
-
-   @Override
-   public IOseeBranch getAtsBranch() {
-      return AtsUtilCore.getAtsBranch();
    }
 
    @Override

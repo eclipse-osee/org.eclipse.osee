@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.agile.JaxAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -53,7 +52,7 @@ public class CreateNewAgileSprint extends XNavigateItemAction {
 
       List<Artifact> activeTeams = new LinkedList<>();
       for (Artifact agTeam : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.AgileTeam,
-         AtsUtilCore.getAtsBranch())) {
+         AtsClientService.get().getAtsBranch())) {
          if (agTeam.getSoleAttributeValue(AtsAttributeTypes.Active, true)) {
             activeTeams.add(agTeam);
          }
@@ -83,7 +82,7 @@ public class CreateNewAgileSprint extends XNavigateItemAction {
                      if (sprint != null) {
                         long uuid = sprint.getUuid();
                         Artifact sprintArt =
-                           ArtifactQuery.getArtifactFromId(new Long(uuid).intValue(), AtsUtilCore.getAtsBranch());
+                           ArtifactQuery.getArtifactFromId(new Long(uuid).intValue(), AtsClientService.get().getAtsBranch());
                         sprintArt.getParent().reloadAttributesAndRelations();
                         AtsUtil.openArtifact(sprintArt.getGuid(), OseeCmEditor.CmPcrEditor);
                      } else {

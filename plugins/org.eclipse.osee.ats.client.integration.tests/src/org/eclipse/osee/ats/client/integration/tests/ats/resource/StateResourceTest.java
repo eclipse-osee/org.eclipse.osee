@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.demo.api.DemoActionableItems;
 import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
@@ -52,7 +51,7 @@ public class StateResourceTest extends AbstractRestTest {
    public void tearDown() {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(StateResourceTest.class.getName() + " - cleanup");
       changes.addToDelete(ArtifactQuery.getArtifactListFromName(StateResourceTest.class.getName(),
-         AtsUtilCore.getAtsBranch(), DeletionFlag.EXCLUDE_DELETED));
+         AtsClientService.get().getAtsBranch(), DeletionFlag.EXCLUDE_DELETED));
       if (!changes.isEmpty()) {
          changes.execute();
       }

@@ -22,8 +22,8 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectError;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectValidator;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.defect.DefectContentProvider;
 import org.eclipse.osee.ats.util.widgets.defect.DefectData;
 import org.eclipse.osee.ats.util.widgets.defect.DefectLabelProvider;
@@ -61,7 +61,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
  */
 public class WfeDefectsTab extends FormPage implements IRefreshActionHandler, DefectRefreshListener, IArtifactEventListener {
    private static final List<IEventFilter> EVENT_FILTERS =
-      Arrays.asList(new BranchUuidEventFilter(AtsUtilCore.getAtsBranch()),
+      Arrays.asList(new BranchUuidEventFilter(AtsClientService.get().getAtsBranch()),
          new ArtifactTypeEventFilter(AtsArtifactTypes.PeerToPeerReview));
    private Composite bodyComp;
    private ScrolledForm scrolledForm;

@@ -11,9 +11,9 @@
 package org.eclipse.osee.ats.rest.internal.convert;
 
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -28,7 +28,7 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * See description below
- * 
+ *
  * @author Donald G Dunne
  */
 public class ConvertBaselineGuidToBaselineUuid extends AbstractConvertGuidToUuid {
@@ -42,7 +42,7 @@ public class ConvertBaselineGuidToBaselineUuid extends AbstractConvertGuidToUuid
    }
 
    @Override
-   public void run(XResultData data, boolean reportOnly) {
+   public void run(XResultData data, boolean reportOnly, IAtsServices services) {
       if (reportOnly) {
          data.log("REPORT ONLY - Changes not persisted\n");
       }
@@ -52,7 +52,7 @@ public class ConvertBaselineGuidToBaselineUuid extends AbstractConvertGuidToUuid
       }
       TransactionBuilder tx = createTransactionBuilder();
       int numChanges = 0;
-      for (ArtifactReadable art : getOrcsApi().getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andTypeEquals(
+      for (ArtifactReadable art : getOrcsApi().getQueryFactory().fromBranch(atsServer.getAtsBranch()).andTypeEquals(
          AtsArtifactTypes.Version, AtsArtifactTypes.TeamDefinition).andExists(BaselineBranchGuid).getResults()) {
          List<String> attributeValues = art.getAttributeValues(BaselineBranchGuid);
          for (String guid : attributeValues) {

@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.agile.JaxAgileBacklog;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileBacklog;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -53,7 +52,7 @@ public class CreateNewAgileBacklog extends XNavigateItemAction {
 
       List<Artifact> activeTeams = new LinkedList<>();
       for (Artifact agTeam : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.AgileTeam,
-         AtsUtilCore.getAtsBranch())) {
+         AtsClientService.get().getAtsBranch())) {
          if (agTeam.getSoleAttributeValue(AtsAttributeTypes.Active, true)) {
             activeTeams.add(agTeam);
          }
@@ -81,7 +80,7 @@ public class CreateNewAgileBacklog extends XNavigateItemAction {
                   if (entity != null) {
                      JaxAgileBacklog backlog = (JaxAgileBacklog) entity;
                      Artifact backlogart = ArtifactQuery.getArtifactFromId(new Long(backlog.getUuid()).intValue(),
-                        AtsUtilCore.getAtsBranch());
+                        AtsClientService.get().getAtsBranch());
                      backlogart.getParent().reloadAttributesAndRelations();
                      AtsUtil.openArtifact(backlog.getUuid(), OseeCmEditor.CmPcrEditor);
                   } else {

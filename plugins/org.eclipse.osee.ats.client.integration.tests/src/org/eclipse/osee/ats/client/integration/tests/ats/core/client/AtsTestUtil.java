@@ -59,7 +59,6 @@ import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
 import org.eclipse.osee.ats.core.workflow.state.StateTypeAdapter;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
@@ -380,7 +379,7 @@ public class AtsTestUtil {
    public static void importWorkDefinition(JaxAtsWorkDef jaxWorkDef) throws Exception {
       AtsClientService.getConfigEndpoint().storeWorkDef(jaxWorkDef);
       Artifact workDefArt = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, WORK_DEF_NAME,
-         AtsUtilCore.getAtsBranch());
+         AtsClientService.get().getAtsBranch());
       workDefArt.reloadAttributesAndRelations();
       AtsClientService.get().getWorkDefinitionAdmin().clearCaches();
       XResultData results = new XResultData();
@@ -520,7 +519,7 @@ public class AtsTestUtil {
       deleteTeamWf(teamArt3);
       deleteTeamWf(teamArt4);
 
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(),
          AtsTestUtil.class.getSimpleName() + " - cleanup config");
       for (IAtsConfigObject config : Arrays.asList(teamDef, testAi, testAi2, testAi3, testAi4)) {
          if (config != null && config.getStoreObject() instanceof Artifact) {
@@ -531,7 +530,7 @@ public class AtsTestUtil {
 
       try {
          Artifact workDefArt = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, WORK_DEF_NAME,
-            AtsUtilCore.getAtsBranch());
+            AtsClientService.get().getAtsBranch());
          if (workDefArt != null) {
             workDefArt.deleteAndPersist(transaction);
          }
@@ -576,7 +575,7 @@ public class AtsTestUtil {
    public static void cleanupSimpleTest(Collection<String> titles) throws Exception {
       List<Artifact> artifacts = new ArrayList<>();
       for (String title : titles) {
-         artifacts.addAll(ArtifactQuery.getArtifactListFromName(title, AtsUtilCore.getAtsBranch(), EXCLUDE_DELETED,
+         artifacts.addAll(ArtifactQuery.getArtifactListFromName(title, AtsClientService.get().getAtsBranch(), EXCLUDE_DELETED,
             QueryOption.CONTAINS_MATCH_OPTIONS));
       }
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artifacts));

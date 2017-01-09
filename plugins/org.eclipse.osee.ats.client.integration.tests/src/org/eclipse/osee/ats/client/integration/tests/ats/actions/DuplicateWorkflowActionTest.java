@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -71,7 +70,7 @@ public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
 
       // duplicate workflow
       dupArt =
-         (TeamWorkFlowArtifact) teamWf.duplicate(AtsUtilCore.getAtsBranch(), Arrays.asList(AtsAttributeTypes.AtsId));
+         (TeamWorkFlowArtifact) teamWf.duplicate(AtsClientService.get().getAtsBranch(), Arrays.asList(AtsAttributeTypes.AtsId));
       dupArt.initializeNewStateMachine(assignees, new Date(), AtsCoreUsers.SYSTEM_USER, changes);
 
       changes.add(dupArt);

@@ -15,7 +15,6 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.JaxAgileTeam;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -55,7 +54,7 @@ public class CreateNewAgileTeam extends XNavigateItemAction {
                if (entity != null) {
                   JaxAgileTeam team = (JaxAgileTeam) entity;
                   Artifact teamArt =
-                     ArtifactQuery.getArtifactFromId(new Long(team.getUuid()).intValue(), AtsUtilCore.getAtsBranch());
+                     ArtifactQuery.getArtifactFromId(new Long(team.getUuid()).intValue(), AtsClientService.get().getAtsBranch());
                   teamArt.getParent().reloadAttributesAndRelations();
                   AtsUtil.openArtifact(team.getUuid(), OseeCmEditor.CmPcrEditor);
                } else {

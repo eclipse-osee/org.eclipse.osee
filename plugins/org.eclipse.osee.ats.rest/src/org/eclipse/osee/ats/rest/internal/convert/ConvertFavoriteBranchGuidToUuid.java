@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.convert;
 
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -54,7 +54,7 @@ public class ConvertFavoriteBranchGuidToUuid extends AbstractConvertGuidToUuid {
    }
 
    @Override
-   public void run(XResultData data, boolean reportOnly) {
+   public void run(XResultData data, boolean reportOnly, IAtsServices services) {
       if (reportOnly) {
          data.log("REPORT ONLY - Changes not persisted\n");
       }
@@ -133,7 +133,7 @@ public class ConvertFavoriteBranchGuidToUuid extends AbstractConvertGuidToUuid {
    }
 
    private ResultSet<ArtifactReadable> getUsersFavoriteBranch(QueryFactory queryFactory) throws OseeCoreException {
-      return queryFactory.fromBranch(AtsUtilCore.getAtsBranch()).andTypeEquals(CoreArtifactTypes.User).andExists(
+      return queryFactory.fromBranch(atsServer.getAtsBranch()).andTypeEquals(CoreArtifactTypes.User).andExists(
          CoreAttributeTypes.FavoriteBranch).getResults();
    }
 

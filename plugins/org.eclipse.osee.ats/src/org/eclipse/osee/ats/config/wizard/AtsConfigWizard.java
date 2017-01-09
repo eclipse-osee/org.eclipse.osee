@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.config.AtsConfigOperation;
 import org.eclipse.osee.ats.config.AtsConfigOperation.Display;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -91,7 +90,8 @@ public class AtsConfigWizard extends Wizard implements INewWizard {
                      AtsUtil.openATSAction(AtsClientService.get().getConfigArtifact(aia), AtsOpenOption.OpenAll);
                   }
                   RendererManager.open(ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition,
-                     workDefinition.getName(), AtsUtilCore.getAtsBranch()), PresentationType.SPECIALIZED_EDIT, monitor);
+                     workDefinition.getName(), AtsClientService.get().getAtsBranch()),
+                     PresentationType.SPECIALIZED_EDIT, monitor);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }

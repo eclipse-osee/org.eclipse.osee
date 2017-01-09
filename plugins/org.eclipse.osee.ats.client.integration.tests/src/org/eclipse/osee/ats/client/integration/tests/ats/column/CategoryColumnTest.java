@@ -11,10 +11,10 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.column;
 
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.column.CategoryColumn;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.demo.api.DemoWorkType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -42,7 +42,7 @@ public class CategoryColumnTest {
       TeamWorkFlowArtifact testArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Test);
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), CategoryColumnTest.class.getSimpleName());
+         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), CategoryColumnTest.class.getSimpleName());
       codeArt.deleteAttributes(AtsAttributeTypes.Category1);
       codeArt.persist(transaction);
       reqArt.deleteAttributes(AtsAttributeTypes.Category1);
@@ -74,7 +74,7 @@ public class CategoryColumnTest {
          CategoryColumn.getCategory1Instance().getColumnText(actionArt, CategoryColumn.getCategory1Instance(), 0));
 
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), CategoryColumnTest.class.getSimpleName());
+         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), CategoryColumnTest.class.getSimpleName());
       codeArt.addAttribute(AtsAttributeTypes.Category1, "this");
       codeArt.persist(transaction);
       reqArt.addAttribute(AtsAttributeTypes.Category1, "that");
@@ -98,7 +98,7 @@ public class CategoryColumnTest {
       Assert.assertTrue(actionArtStr.contains("the other"));
 
       transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), CategoryColumnTest.class.getSimpleName());
+         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), CategoryColumnTest.class.getSimpleName());
       codeArt.deleteAttributes(AtsAttributeTypes.Category1);
       codeArt.persist(transaction);
       reqArt.deleteSoleAttribute(AtsAttributeTypes.Category1);

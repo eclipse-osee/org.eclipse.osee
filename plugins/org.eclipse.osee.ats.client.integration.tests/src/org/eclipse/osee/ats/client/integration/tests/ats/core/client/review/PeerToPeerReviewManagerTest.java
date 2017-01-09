@@ -44,10 +44,10 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
    @AfterClass
    public static void cleanup() throws Exception {
       AtsTestUtil.cleanup();
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(),
          PeerToPeerReviewManagerTest.class.getSimpleName());
       for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.PeerToPeerReview,
-         "PeerToPeerReviewManagerTest", AtsUtilCore.getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS)) {
+         "PeerToPeerReviewManagerTest", AtsClientService.get().getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS)) {
          if (art.getName().contains("StandAlone")) {
             art.deleteAndPersist(transaction);
          }

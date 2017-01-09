@@ -58,7 +58,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
 
       // load top team into cache
       Artifact topTeamDefArt =
-         ArtifactQuery.getArtifactFromToken(AtsArtifactToken.TopTeamDefinition, AtsUtilCore.getAtsBranch());
+         ArtifactQuery.getArtifactFromToken(AtsArtifactToken.TopTeamDefinition, AtsClientService.get().getAtsBranch());
       IAtsTeamDefinition teamDef = AtsClientService.get().getConfigItem(topTeamDefArt);
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Set Top Team Work Definition");
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.WorkflowDefinition,
@@ -67,7 +67,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
 
       // load top ai into cache
       Artifact topAiArt =
-         ArtifactQuery.getArtifactFromToken(AtsArtifactToken.TopActionableItem, AtsUtilCore.getAtsBranch());
+         ArtifactQuery.getArtifactFromToken(AtsArtifactToken.TopActionableItem, AtsClientService.get().getAtsBranch());
       IAtsActionableItem aia = AtsClientService.get().getConfigItem(topAiArt);
       changes.setSoleAttributeValue(aia, AtsAttributeTypes.Actionable, false);
       changes.execute();
@@ -98,7 +98,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
    }
 
    public static void createAtsFolders() throws OseeCoreException {
-      BranchId atsBranch = AtsUtilCore.getAtsBranch();
+      BranchId atsBranch = AtsClientService.get().getAtsBranch();
       SkynetTransaction transaction = TransactionManager.createTransaction(atsBranch, "Create ATS Folders");
 
       Artifact headingArt = OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.HeadingFolder, atsBranch);
@@ -129,10 +129,12 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
 
    public static void organizePrograms(IArtifactType programType, ArtifactToken programFolderToken) {
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Organize Programs");
-      Artifact programFolder = OseeSystemArtifacts.getOrCreateArtifact(programFolderToken, AtsUtilCore.getAtsBranch());
+         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Organize Programs");
+      Artifact programFolder =
+         OseeSystemArtifacts.getOrCreateArtifact(programFolderToken, AtsClientService.get().getAtsBranch());
       programFolder.persist(transaction);
-      for (Artifact programArt : ArtifactQuery.getArtifactListFromType(programType, AtsUtilCore.getAtsBranch())) {
+      for (Artifact programArt : ArtifactQuery.getArtifactListFromType(programType,
+         AtsClientService.get().getAtsBranch())) {
          if (!programFolder.getChildren().contains(programArt)) {
             programFolder.addChild(programArt);
          }

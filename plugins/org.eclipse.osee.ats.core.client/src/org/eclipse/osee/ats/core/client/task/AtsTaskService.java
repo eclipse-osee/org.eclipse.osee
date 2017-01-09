@@ -69,7 +69,7 @@ public class AtsTaskService extends AbstractAtsTaskService {
 
       List<IAtsTask> tasks = new LinkedList<>();
 
-      ArtifactEvent artifactEvent = new ArtifactEvent(AtsUtilCore.getAtsBranch());
+      ArtifactEvent artifactEvent = new ArtifactEvent(AtsClientService.get().getAtsBranch());
       for (NewTaskData newTaskData : newTaskDatas.getTaskDatas()) {
          processForEvents(newTaskData, response, tasks);
       }
@@ -82,16 +82,16 @@ public class AtsTaskService extends AbstractAtsTaskService {
       Artifact teamWf = atsClient.getArtifact(newTaskData.getTeamWfUuid());
 
       JaxAtsTasks jaxTasks = response.readEntity(JaxAtsTasks.class);
-      ArtifactEvent artifactEvent = new ArtifactEvent(AtsUtilCore.getAtsBranch());
+      ArtifactEvent artifactEvent = new ArtifactEvent(AtsClientService.get().getAtsBranch());
       List<Long> artUuids = new LinkedList<>();
 
       teamWf.reloadAttributesAndRelations();
       AtsTaskCache.decache((TeamWorkFlowArtifact) teamWf);
 
       for (JaxAtsTask task : jaxTasks.getTasks()) {
-         String guid = ArtifactQuery.getGuidFromUuid(task.getUuid(), AtsUtilCore.getAtsBranch());
+         String guid = ArtifactQuery.getGuidFromUuid(task.getUuid(), AtsClientService.get().getAtsBranch());
          artifactEvent.getArtifacts().add(
-            new EventBasicGuidArtifact(EventModType.Added, AtsUtilCore.getAtsBranch(), AtsArtifactTypes.Task, guid));
+            new EventBasicGuidArtifact(EventModType.Added, AtsClientService.get().getAtsBranch(), AtsArtifactTypes.Task, guid));
          artUuids.add(task.getUuid());
 
          RelationLink relation = getRelation(teamWf, task);
@@ -99,7 +99,7 @@ public class AtsTaskService extends AbstractAtsTaskService {
          if (relation != null) {
             Artifact taskArt = atsClient.getArtifact(task.getUuid());
 
-            DefaultBasicUuidRelation guidRelation = new DefaultBasicUuidRelation(AtsUtilCore.getAtsBranch(),
+            DefaultBasicUuidRelation guidRelation = new DefaultBasicUuidRelation(AtsClientService.get().getAtsBranch(),
                AtsRelationTypes.TeamWfToTask_Task.getGuid(), relation.getId(), relation.getGammaId(),
                teamWf.getBasicGuidArtifact(), taskArt.getBasicGuidArtifact());
 

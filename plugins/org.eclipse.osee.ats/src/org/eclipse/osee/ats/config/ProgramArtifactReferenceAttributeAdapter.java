@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -41,7 +41,7 @@ public class ProgramArtifactReferenceAttributeAdapter implements AttributeAdapte
 
       int uuid = identity.getId() <= 0 ? 0 : identity.getId().intValue();
       if (uuid > 0) {
-         resultProgramArt = ArtifactQuery.getArtifactFromId(uuid, AtsUtilCore.getAtsBranch());
+         resultProgramArt = ArtifactQuery.getArtifactFromId(uuid, AtsClientService.get().getAtsBranch());
       }
       return resultProgramArt;
    }

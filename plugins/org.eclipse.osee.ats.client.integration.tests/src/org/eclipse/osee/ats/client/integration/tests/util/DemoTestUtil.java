@@ -158,7 +158,7 @@ public class DemoTestUtil {
    public static TeamWorkFlowArtifact getToolsTeamWorkflow() throws OseeCoreException {
       if (toolsTeamWorkflow == null) {
          for (Artifact art : ArtifactQuery.getArtifactListFromName("Button S doesn't work on help",
-            AtsUtilCore.getAtsBranch(), EXCLUDE_DELETED)) {
+            AtsClientService.get().getAtsBranch(), EXCLUDE_DELETED)) {
             if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                toolsTeamWorkflow = (TeamWorkFlowArtifact) art;
             }
@@ -171,7 +171,7 @@ public class DemoTestUtil {
       if (unCommittedWorkflows == null) {
          unCommittedWorkflows = new HashMap<>();
          for (Artifact art : ArtifactQuery.getArtifactListFromName(
-            "SAW (uncommitted) More Reqt Changes for Diagram View", AtsUtilCore.getAtsBranch(), EXCLUDE_DELETED)) {
+            "SAW (uncommitted) More Reqt Changes for Diagram View", AtsClientService.get().getAtsBranch(), EXCLUDE_DELETED)) {
             if (art.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow)) {
                unCommittedWorkflows.put(DemoWorkType.Code, art);
             } else if (art.isOfType(DemoArtifactTypes.DemoTestTeamWorkflow)) {
@@ -190,7 +190,7 @@ public class DemoTestUtil {
       if (committedWorkflows == null) {
          committedWorkflows = new HashMap<>();
          for (Artifact art : ArtifactQuery.getArtifactListFromName("SAW (committed) Reqt Changes for Diagram View",
-            AtsUtilCore.getAtsBranch(), EXCLUDE_DELETED)) {
+            AtsClientService.get().getAtsBranch(), EXCLUDE_DELETED)) {
             if (art.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow)) {
                committedWorkflows.put(DemoWorkType.Code, art);
             } else if (art.isOfType(DemoArtifactTypes.DemoTestTeamWorkflow)) {

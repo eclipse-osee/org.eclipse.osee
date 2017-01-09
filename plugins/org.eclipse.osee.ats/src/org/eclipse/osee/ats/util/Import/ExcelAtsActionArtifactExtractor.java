@@ -107,7 +107,7 @@ public class ExcelAtsActionArtifactExtractor {
                try {
                   Collection<IAtsActionableItem> aias = new ArrayList<>();
                   for (Artifact aiaArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.ActionableItem,
-                     actionableItemName, AtsUtilCore.getAtsBranch())) {
+                     actionableItemName, AtsClientService.get().getAtsBranch())) {
                      IAtsActionableItem ai = AtsClientService.get().getConfigItemFactory().getActionableItem(aiaArt);
                      if (ai != null) {
                         aias.add(ai);
@@ -195,7 +195,7 @@ public class ExcelAtsActionArtifactExtractor {
                Set<IAtsActionableItem> aias = new HashSet<>();
                for (String actionableItemName : aData.actionableItems) {
                   for (Artifact aiaArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.ActionableItem,
-                     actionableItemName, AtsUtilCore.getAtsBranch())) {
+                     actionableItemName, AtsClientService.get().getAtsBranch())) {
                      IAtsActionableItem ai = AtsClientService.get().getConfigItemFactory().getActionableItem(aiaArt);
                      if (ai != null) {
                         aias.add(ai);
@@ -446,7 +446,7 @@ public class ExcelAtsActionArtifactExtractor {
                         OseeLog.log(Activator.class, Level.SEVERE, "Invalid Attribute Type Name => " + header);
                      } else {
                         if (!ArtifactTypeManager.getArtifactTypesFromAttributeType(attributeType,
-                           AtsUtilCore.getAtsBranch()).contains(AtsArtifactTypes.Task)) {
+                           AtsClientService.get().getAtsBranch()).contains(AtsArtifactTypes.Task)) {
                            OseeLog.log(Activator.class, Level.SEVERE, "Invalid Attribute Type for Task => " + header);
                         } else {
                            String value = cols[i];

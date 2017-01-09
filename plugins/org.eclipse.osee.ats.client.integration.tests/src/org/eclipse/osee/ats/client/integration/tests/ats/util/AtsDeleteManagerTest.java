@@ -162,7 +162,7 @@ public class AtsDeleteManagerTest {
    }
 
    private void verifyExists(TestNames testName, int expectedNumActions, int expectedNumCodeWorkflows, int expectedNumReqWorkflows, int expectedNumTasks, int expectedNumReviews) throws OseeCoreException {
-      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(testName.toString(), AtsUtilCore.getAtsBranch(),
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(testName.toString(), AtsClientService.get().getAtsBranch(),
          EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS);
       CountingMap<IArtifactType> countMap = new CountingMap<>();
       for (Artifact artifact : artifacts) {

@@ -17,10 +17,10 @@ import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.JaxAtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -48,7 +48,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    @Override
    public boolean isAtsAdmin(IAtsUser user) {
       if (atsAdminArt == null) {
-         atsAdminArt = orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIds(
+         atsAdminArt = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(
             AtsArtifactToken.AtsAdmin).getResults().getAtMostOneOrNull();
       }
       return atsAdminArt.areRelated(CoreRelationTypes.User_Grouping__Members, (ArtifactReadable) user.getStoreObject());
@@ -62,7 +62,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
          @Override
          public List<IAtsUser> get() {
             List<IAtsUser> users = new ArrayList<>();
-            for (ArtifactId art : orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
+            for (ArtifactId art : orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(
                CoreArtifactTypes.User).getResults()) {
                ArtifactReadable userArt = (ArtifactReadable) art;
                JaxAtsUser atsUser = createFromArtifact(userArt);
@@ -94,7 +94,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    @Override
    protected IAtsUser loadUserFromDbByUserId(String userId) {
       ArtifactReadable userArt =
-         orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(CoreArtifactTypes.User).and(
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.User).and(
             CoreAttributeTypes.UserId, userId).getResults().getAtMostOneOrNull();
       if (userArt != null) {
          return createFromArtifact(userArt);
@@ -105,7 +105,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    @Override
    protected IAtsUser loadUserFromDbByUserName(String name) {
       ArtifactReadable userArt =
-         orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(CoreArtifactTypes.User).and(
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.User).and(
             CoreAttributeTypes.Name, name).getResults().getAtMostOneOrNull();
       if (userArt != null) {
          return createFromArtifact(userArt);
@@ -116,8 +116,8 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    @Override
    protected IAtsUser loadUserByAccountId(Long accountId) {
       IAtsUser user = null;
-      ArtifactId userArt = orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(
-         accountId).getResults().getAtMostOneOrNull();
+      ArtifactId userArt =
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andUuid(accountId).getResults().getAtMostOneOrNull();
       if (userArt != null) {
          user = createFromArtifact((ArtifactReadable) userArt);
       }
@@ -127,7 +127,8 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    @Override
    public IAtsUser getUserByArtifactId(ArtifactId id) {
       ArtifactReadable userArt =
-         orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andId(id).getResults().getExactlyOne();
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(id).getResults().getExactlyOne();
       return createFromArtifact(userArt);
    }
+
 }

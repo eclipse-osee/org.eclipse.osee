@@ -15,8 +15,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.viewer.model.StateDefShape;
 import org.eclipse.osee.ats.workdef.viewer.model.WorkDefinitionDiagram;
 import org.eclipse.osee.ats.workdef.viewer.parts.DiagramEditPart;
@@ -73,7 +73,7 @@ public class EditAction extends Action {
             }
             if (Strings.isValid(artifactName)) {
                Artifact artifact = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition,
-                  artifactName, AtsUtilCore.getAtsBranch());
+                  artifactName, AtsClientService.get().getAtsBranch());
                if (artifact != null) {
                   RendererManager.open(artifact, PresentationType.DEFAULT_OPEN);
                   return;

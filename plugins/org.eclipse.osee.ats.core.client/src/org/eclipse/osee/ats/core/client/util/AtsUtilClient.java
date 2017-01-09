@@ -77,7 +77,7 @@ public class AtsUtilClient {
 
    public static BranchUuidEventFilter getAtsBranchFilter() {
       if (commonBranchUuidEventFilter == null) {
-         commonBranchUuidEventFilter = new BranchUuidEventFilter(AtsUtilCore.getAtsBranch());
+         commonBranchUuidEventFilter = new BranchUuidEventFilter(AtsClientService.get().getAtsBranch());
       }
       return commonBranchUuidEventFilter;
    }
@@ -145,7 +145,7 @@ public class AtsUtilClient {
    public static Artifact getFromToken(ArtifactToken token) {
       Artifact toReturn = null;
       try {
-         toReturn = ArtifactQuery.getArtifactFromToken(token, AtsUtilCore.getAtsBranch());
+         toReturn = ArtifactQuery.getArtifactFromToken(token, AtsClientService.get().getAtsBranch());
       } catch (OseeCoreException ex) {
          // Do Nothing;
       }

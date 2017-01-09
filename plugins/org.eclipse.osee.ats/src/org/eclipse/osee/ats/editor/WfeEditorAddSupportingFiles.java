@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -74,8 +74,8 @@ public class WfeEditorAddSupportingFiles extends Job {
       if (results.isErrors()) {
          throw new OseeArgumentException(results.toString());
       }
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Import and relate supporting files");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(),
+         "Import and relate supporting files");
       for (File file : supportingFiles) {
          IArtifactExtractor extractor = ArtifactExplorerDragAndDrop.getArtifactExtractor(
             ArtifactTypeManager.getType(CoreArtifactTypes.GeneralDocument));

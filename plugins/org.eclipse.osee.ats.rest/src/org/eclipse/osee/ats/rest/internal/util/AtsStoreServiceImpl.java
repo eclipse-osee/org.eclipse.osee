@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -67,7 +66,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
       List<IAtsWorkItem> workItems = new ArrayList<>(inWorkWorkflows.size());
       List<String> guids = AtsObjects.toGuids(inWorkWorkflows);
       Iterator<ArtifactReadable> arts =
-         atsServer.getOrcsApi().getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andGuids(
+         atsServer.getOrcsApi().getQueryFactory().fromBranch(atsServer.getAtsBranch()).andGuids(
             guids).getResults().iterator();
       while (arts.hasNext()) {
          workItems.add(atsServer.getWorkItemFactory().getWorkItem(arts.next()));

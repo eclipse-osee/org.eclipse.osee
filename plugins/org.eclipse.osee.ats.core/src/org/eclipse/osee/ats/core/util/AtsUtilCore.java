@@ -17,69 +17,23 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
-import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsUtilCore {
 
-   private static final String ATS_BRANCH_NAME = "ats.branch.name";
-   private static final String ATS_BRANCH_UUID = "ats.branch.uuid";
    public final static double DEFAULT_HOURS_PER_WORK_DAY = 8;
    public static final String DEFAULT_ATS_ID_VALUE = "0";
    public static final String USER_CREATION_DISABLED = "UserCreationDisabled2";
    public static final String ATS_CONFIG_ACTION_URL_KEY = "ActionUrl";
    public static final String ATS_DEFAULT_ACTION_URL = "/ats/ui/action/UUID";
 
-   private static final Object lock = new Object();
-   private volatile static IOseeBranch atsBranch;
    private static Map<Long, String> uuidToGuidMap = new HashMap<>(50);
    private static Map<String, Long> guidToUuidMap = new HashMap<>(50);
-
-   public static IOseeBranch getAtsBranch() {
-      synchronized (lock) {
-         if (atsBranch == null) {
-            // Preference store overrides all
-            if (AtsPreferencesService.isAvailable()) {
-               try {
-                  String atsBranchUuid = AtsPreferencesService.get(ATS_BRANCH_UUID);
-                  setConfig(atsBranchUuid, AtsPreferencesService.get(ATS_BRANCH_NAME));
-               } catch (Exception ex) {
-                  OseeLog.log(AtsUtilCore.class, Level.SEVERE, "Error processing stored ATS Branch.", ex);
-               }
-            }
-            // osee.ini -D option overrides default
-            if (atsBranch == null) {
-               String atsBranchUuid = System.getProperty(ATS_BRANCH_UUID);
-               if (Strings.isValid(atsBranchUuid)) {
-                  setConfig(atsBranchUuid, System.getProperty(ATS_BRANCH_NAME));
-               }
-            }
-            // default is always common
-            if (atsBranch == null) {
-               atsBranch = CoreBranches.COMMON;
-            }
-         }
-      }
-      return atsBranch;
-   }
-
-   private static void setConfig(String branchUuid, String name) {
-      if (!Strings.isValid(name)) {
-         name = "unknown";
-      }
-      if (Strings.isValid(branchUuid) && branchUuid.matches("\\d+")) {
-         atsBranch = IOseeBranch.create(Long.valueOf(branchUuid), name);
-      }
-   }
 
    public static List<String> toGuids(Collection<? extends IAtsObject> atsObjects) {
       List<String> guids = new ArrayList<>(atsObjects.size());
@@ -87,11 +41,6 @@ public class AtsUtilCore {
          guids.add(AtsUtilCore.getGuid(atsObj));
       }
       return guids;
-   }
-
-   public static void storeAtsBranch(BranchId branch, String name) {
-      AtsPreferencesService.get().put(ATS_BRANCH_UUID, String.valueOf(branch.getUuid()));
-      AtsPreferencesService.get().put(ATS_BRANCH_NAME, name);
    }
 
    public static boolean isInTest() {

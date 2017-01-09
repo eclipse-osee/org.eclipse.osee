@@ -21,8 +21,8 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.JaxAtsUser;
 import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -158,7 +158,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
       Artifact userArt = null;
       try {
          userArt = ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.UserId,
-            userId, AtsUtilCore.getAtsBranch());
+            userId, AtsClientService.get().getAtsBranch());
          return createFromArtifact(userArt);
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
@@ -182,7 +182,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
       Artifact userArt = null;
       try {
          userArt = ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Name, name,
-            AtsUtilCore.getAtsBranch());
+            AtsClientService.get().getAtsBranch());
          return createFromArtifact(userArt);
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
@@ -198,7 +198,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    @Override
    protected IAtsUser loadUserByAccountId(Long accountId) {
       IAtsUser user = null;
-      ArtifactId userArt = ArtifactQuery.getArtifactFromId(accountId.intValue(), AtsUtilCore.getAtsBranch());
+      ArtifactId userArt = ArtifactQuery.getArtifactFromId(accountId.intValue(), AtsClientService.get().getAtsBranch());
       if (userArt != null) {
          user = createFromArtifact((Artifact) userArt);
       }

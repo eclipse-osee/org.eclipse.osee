@@ -15,8 +15,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.AtsDslUtil;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -57,7 +57,7 @@ public class ValidateWorkspaceToDatabaseWorkDefinitions extends XNavigateItemAct
          Artifact workDefArt = null;
          try {
             workDefArt = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, sheet.getName(),
-               AtsUtilCore.getAtsBranch());
+               AtsClientService.get().getAtsBranch());
          } catch (ArtifactDoesNotExist ex) {
             // do nothing;
          }

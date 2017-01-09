@@ -61,7 +61,7 @@ public class ImportActionsViaSpreadsheetTest {
 
       for (String title : ActionTitles) {
          List<Artifact> arts =
-            ArtifactQuery.getArtifactListFromName(title, AtsUtilCore.getAtsBranch(), EXCLUDE_DELETED);
+            ArtifactQuery.getArtifactListFromName(title, AtsClientService.get().getAtsBranch(), EXCLUDE_DELETED);
          Assert.assertEquals(String.format("Action [%s] should have been purged before test start.", title), 0,
             arts.size());
       }
@@ -78,7 +78,7 @@ public class ImportActionsViaSpreadsheetTest {
       Assert.assertEquals("No errors should be reported", "", rd.toString());
 
       List<Artifact> arts =
-         ArtifactQuery.getArtifactListFromName(FIRST_ACTION_TITLE, AtsUtilCore.getAtsBranch(), EXCLUDE_DELETED);
+         ArtifactQuery.getArtifactListFromName(FIRST_ACTION_TITLE, AtsClientService.get().getAtsBranch(), EXCLUDE_DELETED);
       Assert.assertEquals("One Action and 3 Team Workflows should be created", 4, arts.size());
       int codeCount = 0, testCount = 0;
       TeamWorkFlowArtifact testWf = null;

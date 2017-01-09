@@ -79,7 +79,7 @@ public class WfeArtifactEventManager implements IArtifactEventListener {
          }
       }
       try {
-         if (!artifactEvent.isForBranch(AtsUtilCore.getAtsBranch())) {
+         if (!artifactEvent.isForBranch(AtsClientService.get().getAtsBranch())) {
             return;
          }
       } catch (OseeCoreException ex) {
@@ -104,13 +104,13 @@ public class WfeArtifactEventManager implements IArtifactEventListener {
       //
       workflowModifiedOrReloaded(artifactEvent, awa) ||
       //
-      workflowRelationIsAddedChangedOrDeleted(artifactEvent, awa) ||
-      //
-      workflowActionIsModifedOrReloaded(artifactEvent, awa) ||
-      //
-      workflowActionRelationIsAddedChangedOrDeleted(artifactEvent, awa) ||
-      //
-      teamWorkflowParallelConfigurationChanged(artifactEvent, awa)
+         workflowRelationIsAddedChangedOrDeleted(artifactEvent, awa) ||
+         //
+         workflowActionIsModifedOrReloaded(artifactEvent, awa) ||
+         //
+         workflowActionRelationIsAddedChangedOrDeleted(artifactEvent, awa) ||
+         //
+         teamWorkflowParallelConfigurationChanged(artifactEvent, awa)
       //
       ) {
          refreshed = true;

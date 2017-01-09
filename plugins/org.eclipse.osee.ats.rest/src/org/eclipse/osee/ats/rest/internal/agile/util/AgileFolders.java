@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.rest.internal.agile.util;
 import org.eclipse.osee.ats.api.agile.AgileUtil;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -64,14 +63,13 @@ public class AgileFolders {
       return featureGroupFolder;
    }
 
-   @SuppressWarnings("unchecked")
    public static ArtifactReadable getOrCreateTopAgileFolder(IAtsServer atsServer, TransactionBuilder tx, ArtifactReadable userArt) {
       ArtifactId agileFolder = atsServer.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(
          AtsArtifactToken.TopAgileFolder).getResults().getAtMostOneOrNull();
       if (agileFolder == null) {
          agileFolder = tx.createArtifact(AtsArtifactToken.TopAgileFolder);
          ArtifactReadable rootArtifact = atsServer.getOrcsApi().getQueryFactory().fromBranch(
-            AtsUtilCore.getAtsBranch()).andIsHeirarchicalRootArtifact().getResults().getExactlyOne();
+            atsServer.getAtsBranch()).andIsHeirarchicalRootArtifact().getResults().getExactlyOne();
          tx.addChildren(rootArtifact, agileFolder);
       }
       return (ArtifactReadable) agileFolder;

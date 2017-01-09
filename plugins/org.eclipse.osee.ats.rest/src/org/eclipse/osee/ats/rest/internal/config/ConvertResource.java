@@ -86,7 +86,7 @@ public final class ConvertResource {
       results.logf("Running [%s] ...\n", convertName);
       for (IAtsDatabaseConversion convert : atsServer.getDatabaseConversions()) {
          if (convert.getName().equals(convertName)) {
-            convert.run(results, reportOnly);
+            convert.run(results, reportOnly, atsServer);
          }
       }
       if (results.isErrors()) {
