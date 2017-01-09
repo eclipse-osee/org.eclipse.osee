@@ -3,7 +3,6 @@
    <implementation class="org.eclipse.osee.ats.core.client.internal.AtsClientImpl"/>
    <service>
       <provide interface="org.eclipse.osee.ats.core.client.IAtsClient"/>
-      <provide interface="org.eclipse.osee.ats.core.client.internal.IAtsWorkItemArtifactServiceProvider"/>
    </service>
    <reference bind="setAtsWorkDefinitionService" cardinality="1..1" interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService" name="IAtsWorkDefinitionService" policy="static"/>
    <reference bind="setJdbcService" cardinality="1..1" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="static" target="(osgi.binding=skynet.jdbc.service)"/>

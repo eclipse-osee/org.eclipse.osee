@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api;
 
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.IAtsCache;
@@ -20,10 +21,12 @@ import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
+import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
@@ -33,6 +36,7 @@ import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
+import org.eclipse.osee.ats.api.version.IVersionFactory;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -41,7 +45,11 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsActionFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
-import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
+import org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider;
+import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
+import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -53,7 +61,7 @@ import org.eclipse.osee.logger.Log;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsServices extends IAtsConfigurationProvider, IWorkDefinitionStringProvider {
+public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfigurationProvider, IWorkDefinitionStringProvider, IAtsWorkItemServiceProvider {
 
    IOseeBranch getAtsBranch();
 
@@ -62,8 +70,6 @@ public interface IAtsServices extends IAtsConfigurationProvider, IWorkDefinition
    IAttributeResolver getAttributeResolver();
 
    IAtsUserService getUserService();
-
-   IAtsWorkItemService getWorkItemService();
 
    IAtsReviewService getReviewService();
 
@@ -115,6 +121,7 @@ public interface IAtsServices extends IAtsConfigurationProvider, IWorkDefinition
 
    IAtsQueryService getQueryService();
 
+   @Override
    IAtsEarnedValueService getEarnedValueService();
 
    @Override
@@ -156,5 +163,23 @@ public interface IAtsServices extends IAtsConfigurationProvider, IWorkDefinition
    IAtsChangeSet createChangeSet(String comment, IAtsUser user);
 
    void storeAtsBranch(BranchId branch, String name);
+
+   List<IAtsSearchDataProvider> getSearchDataProviders();
+
+   void invalidateAllCaches();
+
+   void invalidateWorkDefinitionCache();
+
+   ITeamWorkflowProvidersLazy getTeamWorkflowProviders();
+
+   IVersionFactory getVersionFactory();
+
+   IAtsStateFactory getStateFactory();
+
+   IAtsWorkStateFactory getWorkStateFactory();
+
+   IAtsLogFactory getLogFactory();
+
+   IAtsTeamDefinitionService getTeamDefinitionService();
 
 }

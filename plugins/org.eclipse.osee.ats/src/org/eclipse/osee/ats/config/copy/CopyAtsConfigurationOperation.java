@@ -220,7 +220,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
    private void persistOrUndoChanges(IAtsChangeSet changes) throws OseeCoreException {
       if (data.isPersistChanges()) {
          changes.execute();
-         AtsClientService.get().invalidateCache();
+         AtsClientService.get().invalidateAllCaches();
       } else {
          resultData.log("\n\nCleanup of created / modified artifacts\n\n");
          for (Artifact artifact : newArtifacts) {

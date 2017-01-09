@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.workflow;
+package org.eclipse.osee.ats.api.workflow;
 
 import java.util.List;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;

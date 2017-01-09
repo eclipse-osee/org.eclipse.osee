@@ -16,18 +16,13 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
-import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactoryProvider;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionServiceProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
-import org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider;
-import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
-import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.core.config.IAtsCacheProvider;
 import org.eclipse.osee.ats.rest.util.IArtifactProvider;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -38,7 +33,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 /**
  * @author Donald G Dunne
  */
-public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFactoryProvider, IAtsCacheProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsWorkItemServiceProvider, IAtsWorkDefinitionServiceProvider, IArtifactProvider, IAtsEarnedValueServiceProvider {
+public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFactoryProvider, IAtsCacheProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IArtifactProvider {
 
    OrcsApi getOrcsApi() throws OseeCoreException;
 
@@ -46,10 +41,6 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
 
    @Override
    ArtifactReadable getArtifactByGuid(String guid);
-
-   IAtsStateFactory getStateFactory();
-
-   IAtsLogFactory getLogFactory();
 
    Iterable<IAtsDatabaseConversion> getDatabaseConversions();
 
@@ -67,6 +58,7 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
 
    void setEmailEnabled(boolean emailEnabled);
 
+   @Override
    IAtsTeamDefinitionService getTeamDefinitionService();
 
    @Override

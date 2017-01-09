@@ -10,38 +10,189 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
+import org.eclipse.osee.ats.api.column.IAtsColumnService;
+import org.eclipse.osee.ats.api.config.AtsConfigurations;
+import org.eclipse.osee.ats.api.config.IAtsCache;
+import org.eclipse.osee.ats.api.config.IAtsConfigurationProvider;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
+import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
+import org.eclipse.osee.ats.api.program.IAtsProgramService;
+import org.eclipse.osee.ats.api.query.IAtsQueryService;
+import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
+import org.eclipse.osee.ats.api.review.IAtsReviewService;
+import org.eclipse.osee.ats.api.task.IAtsTaskService;
+import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
+import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.api.util.IArtifactResolver;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.IAtsStoreService;
+import org.eclipse.osee.ats.api.util.IAtsUtilService;
+import org.eclipse.osee.ats.api.util.ISequenceProvider;
+import org.eclipse.osee.ats.api.version.IAtsVersionService;
+import org.eclipse.osee.ats.api.version.IVersionFactory;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+import org.eclipse.osee.ats.api.workdef.IRelationResolver;
+import org.eclipse.osee.ats.api.workflow.IAtsActionFactory;
+import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
+import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
+import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
+import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
+import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
+import org.eclipse.osee.ats.core.config.AtsCache;
+import org.eclipse.osee.ats.core.program.AtsProgramService;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionCache;
+import org.eclipse.osee.ats.core.workflow.AtsImplementersService;
+import org.eclipse.osee.ats.core.workflow.AtsWorkItemServiceImpl;
+import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.jdbc.JdbcService;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Donald G. Dunne
  */
 public abstract class AtsCoreServiceImpl implements IAtsServices {
 
-   protected IAtsWorkDefinitionAdmin workDefAdmin;
    private static final Object lock = new Object();
    private volatile static IOseeBranch atsBranch;
    private static final String ATS_BRANCH_NAME = "ats.branch.name";
    private static final String ATS_BRANCH_UUID = "ats.branch.uuid";
+
+   private final List<IAtsSearchDataProvider> searchDataProviders;
+
+   protected Log logger;
+   protected IAtsCache atsCache;
+   protected JdbcService jdbcService;
+
+   protected IAtsWorkDefinitionAdmin workDefAdmin;
+   protected IAtsWorkDefinitionService workDefService;
+   protected IAtsUserService userService;
+   protected IAtsConfigurationProvider configProvider;
+   protected IAtsEarnedValueService earnedValueService;
+   protected TeamWorkflowProviders teamWorkflowProvidersLazy;
+   protected AtsWorkDefinitionCache workDefCache;
+   protected IAttributeResolver attributeResolverService;
+   protected IAtsActionFactory actionFactory;
+   protected IAtsImplementerService implementerService;
+   protected IAtsWorkItemService workItemService;
+   protected ISequenceProvider sequenceProvider;
+   protected IAtsProgramService programService;
+   protected IAtsStateFactory stateFactory;
+   protected IArtifactResolver artifactResolver;
+   protected IVersionFactory versionFactory;
+   protected IAtsBranchService branchService;
+   protected IAtsReviewService reviewService;
+   protected IAtsWorkStateFactory workStateFactory;
+   protected IAtsLogFactory logFactory;
+   protected IAtsColumnService columnServices;
+   protected IAtsUtilService utilService;
+   protected IAtsWorkItemFactory workItemFactory;
+   protected IAtsConfigItemFactory configItemFactory;
+   protected IAtsActionableItemService actionableItemManager;
+   protected IRelationResolver relationResolver;
+   protected IAtsVersionService versionService;
+   protected IAtsTaskService taskService;
+   protected IAtsTeamDefinitionService teamDefinitionService;
+   protected IAtsQueryService queryService;
+   protected IAtsStoreService storeService;
+
+   public AtsCoreServiceImpl() {
+      searchDataProviders = new ArrayList<>();
+   }
+
+   public void setJdbcService(JdbcService jdbcService) {
+      this.jdbcService = jdbcService;
+   }
+
+   public void setAtsWorkDefinitionService(IAtsWorkDefinitionService workDefService) {
+      this.workDefService = workDefService;
+   }
+
+   public void setLogger(Log logger) {
+      this.logger = logger;
+   }
+
+   public void setConfigurationsService(IAtsConfigurationProvider configProvider) {
+      this.configProvider = configProvider;
+   }
+
+   public void setAtsUserService(IAtsUserService userServiceClient) {
+      this.userService = userServiceClient;
+   }
+
+   public void addSearchDataProvider(IAtsSearchDataProvider provider) {
+      searchDataProviders.add(provider);
+   }
+
+   public void removeSearchDataProvider(IAtsSearchDataProvider provider) {
+      searchDataProviders.remove(provider);
+   }
+
+   public void start() throws OseeCoreException {
+      Conditions.checkNotNull(workDefService, "IAtsWorkDefinitionService");
+
+      atsCache = new AtsCache(this);
+      workDefService.setWorkDefinitionStringProvider(this);
+      teamWorkflowProvidersLazy = new TeamWorkflowProviders();
+      workDefCache = new AtsWorkDefinitionCache();
+
+      workDefAdmin = new AtsWorkDefinitionAdminImpl(workDefCache, workDefService, attributeResolverService,
+         teamWorkflowProvidersLazy);
+      workItemService = new AtsWorkItemServiceImpl(this, teamWorkflowProvidersLazy);
+      programService = new AtsProgramService(this);
+
+   }
+
+   public void stop() {
+      if (workDefAdmin != null) {
+         workDefAdmin.clearCaches();
+      }
+      workDefAdmin = null;
+      atsCache = null;
+      workDefCache = null;
+      jdbcService = null;
+      versionFactory = null;
+   }
+
+   @Override
+   public void invalidateAllCaches() {
+      atsCache.invalidate();
+   }
+
+   @Override
+   public void invalidateWorkDefinitionCache() {
+      workDefCache.invalidate();
+   }
 
    @Override
    public String getAtsId(ArtifactId artifact) {
@@ -173,6 +324,214 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
    public void storeAtsBranch(BranchId branch, String name) {
       AtsPreferencesService.get().put(ATS_BRANCH_UUID, String.valueOf(branch.getUuid()));
       AtsPreferencesService.get().put(ATS_BRANCH_NAME, name);
+   }
+
+   @Override
+   public IAtsCache getCache() {
+      return atsCache;
+   }
+
+   @Override
+   public List<IAtsSearchDataProvider> getSearchDataProviders() {
+      return searchDataProviders;
+   }
+
+   @Override
+   public Log getLogger() {
+      return logger;
+   }
+
+   @Override
+   public IAtsEarnedValueService getEarnedValueService() throws OseeStateException {
+      return earnedValueService;
+   }
+
+   @Override
+   public IAtsWorkDefinitionService getWorkDefService() {
+      return workDefService;
+   }
+
+   @Override
+   public IAtsWorkDefinitionAdmin getWorkDefinitionAdmin() throws OseeStateException {
+      return workDefAdmin;
+   }
+
+   @Override
+   public IAtsUserService getUserService() throws OseeStateException {
+      return userService;
+   }
+
+   @Override
+   public IAttributeResolver getAttributeResolver() {
+      return attributeResolverService;
+   }
+
+   @Override
+   public IAtsEarnedValueServiceProvider getEarnedValueServiceProvider() {
+      return this;
+   }
+
+   @Override
+   public AtsConfigurations getConfigurations() {
+      return configProvider.getConfigurations();
+   }
+
+   @Override
+   public void clearConfigurationsCaches() {
+      configProvider.clearConfigurationsCaches();
+   }
+
+   @Override
+   public ITeamWorkflowProvidersLazy getTeamWorkflowProviders() {
+      return teamWorkflowProvidersLazy;
+   }
+
+   @Override
+   public IAtsActionFactory getActionFactory() {
+      return actionFactory;
+   }
+
+   @Override
+   public IAtsImplementerService getImplementerService() {
+      if (implementerService == null) {
+         implementerService = new AtsImplementersService(this);
+      }
+      return implementerService;
+   }
+
+   @Override
+   public IAtsWorkItemService getWorkItemService() {
+      return workItemService;
+   }
+
+   public void setWorkItemService(IAtsWorkItemService workItemService) {
+      this.workItemService = workItemService;
+   }
+
+   @Override
+   public ISequenceProvider getSequenceProvider() {
+      if (sequenceProvider == null) {
+         sequenceProvider = new ISequenceProvider() {
+
+            @Override
+            public long getNext(String sequenceName) {
+               // Sequence is set to sequential
+               return jdbcService.getClient().getNextSequence(sequenceName, false);
+            }
+         };
+      }
+      return sequenceProvider;
+   }
+
+   @Override
+   public IAtsProgramService getProgramService() {
+      return programService;
+   }
+
+   @Override
+   public IAtsReviewService getReviewService() throws OseeCoreException {
+      return reviewService;
+   }
+
+   @Override
+   public IAtsStateFactory getStateFactory() {
+      if (stateFactory == null) {
+         stateFactory = AtsCoreFactory.newStateFactory(this, getLogFactory());
+      }
+      return stateFactory;
+   }
+
+   @Override
+   public IAtsWorkStateFactory getWorkStateFactory() {
+      if (workStateFactory == null) {
+         workStateFactory = AtsCoreFactory.getWorkStateFactory(getUserService());
+      }
+      return workStateFactory;
+   }
+
+   @Override
+   public IAtsLogFactory getLogFactory() {
+      if (logFactory == null) {
+         logFactory = AtsCoreFactory.getLogFactory();
+      }
+      return logFactory;
+   }
+
+   @Override
+   public IAtsUtilService getUtilService() {
+      return utilService;
+   }
+
+   @Override
+   public IArtifactResolver getArtifactResolver() {
+      return artifactResolver;
+   }
+
+   @Override
+   public IAtsWorkItemFactory getWorkItemFactory() {
+      return workItemFactory;
+   }
+
+   @Override
+   public IAtsConfigItemFactory getConfigItemFactory() {
+      return configItemFactory;
+   }
+
+   @Override
+   public IRelationResolver getRelationResolver() {
+      return relationResolver;
+   }
+
+   @Override
+   public IAtsBranchService getBranchService() throws OseeCoreException {
+      return branchService;
+   }
+
+   @Override
+   public IVersionFactory getVersionFactory() {
+      return versionFactory;
+   }
+
+   @Override
+   public IAtsColumnService getColumnService() {
+      if (columnServices == null) {
+         columnServices = AtsCoreFactory.getColumnService(this);
+      }
+      return columnServices;
+   }
+
+   @Override
+   public IAtsVersionService getVersionService() {
+      return versionService;
+   }
+
+   public void setVersionService(IAtsVersionService versionService) {
+      this.versionService = versionService;
+   }
+
+   @Override
+   public IAtsTaskService getTaskService() {
+      return taskService;
+   }
+
+   @Override
+   public IAtsTeamDefinitionService getTeamDefinitionService() {
+      return teamDefinitionService;
+   }
+
+   @Override
+   public IAtsQueryService getQueryService() {
+      return queryService;
+   }
+
+   @Override
+   public IAtsStoreService getStoreService() {
+      return storeService;
+   }
+
+   @Override
+   public IAtsChangeSet createChangeSet(String comment, IAtsUser user) {
+      return getStoreService().createAtsChangeSet(comment, user);
    }
 
 }
