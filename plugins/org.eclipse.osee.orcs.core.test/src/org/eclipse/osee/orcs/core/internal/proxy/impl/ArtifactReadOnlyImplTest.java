@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -284,9 +285,7 @@ public class ArtifactReadOnlyImplTest {
 
       when(relationManager.getValidRelationTypes(session, proxiedObject)).thenAnswer(answer(types));
 
-      Collection<? extends IRelationType> actual = readOnly.getValidRelationTypes();
-
-      assertEquals(types, actual);
+      assertEquals(types, readOnly.getValidRelationTypes());
       verify(relationManager).getValidRelationTypes(session, proxiedObject);
    }
 
@@ -319,7 +318,7 @@ public class ArtifactReadOnlyImplTest {
       List<? extends IRelationType> types = Arrays.asList(Allocation__Requirement);
       when(relationManager.getExistingRelationTypes(session, proxiedObject)).thenAnswer(answer(types));
 
-      Collection<? extends IRelationType> actual = readOnly.getExistingRelationTypes();
+      Collection<RelationTypeId> actual = readOnly.getExistingRelationTypes();
 
       assertEquals(types, actual);
       verify(relationManager).getExistingRelationTypes(session, proxiedObject);

@@ -12,8 +12,8 @@ package org.eclipse.osee.orcs.data;
 
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationId;
+import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
@@ -25,9 +25,9 @@ public interface RelationReadable extends RelationId, OrcsReadable {
    @Override
    ModificationType getModificationType();
 
-   IRelationType getRelationType() throws OseeCoreException;
+   RelationTypeId getRelationType();
 
-   boolean isOfType(IRelationType relationType) throws OseeCoreException;
+   boolean isOfType(IRelationType relationType);
 
    @Override
    String toString();

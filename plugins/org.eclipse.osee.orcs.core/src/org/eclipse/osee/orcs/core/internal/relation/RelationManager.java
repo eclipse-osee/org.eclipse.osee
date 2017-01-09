@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
@@ -30,9 +30,9 @@ import org.eclipse.osee.orcs.core.internal.graph.GraphData;
  */
 public interface RelationManager {
 
-   int getMaximumRelationAllowed(OrcsSession session, IRelationType type, RelationNode node, RelationSide side) throws OseeCoreException;
+   int getMaximumRelationAllowed(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side) throws OseeCoreException;
 
-   Collection<? extends IRelationType> getValidRelationTypes(OrcsSession session, RelationNode node) throws OseeCoreException;
+   Collection<RelationTypeId> getValidRelationTypes(OrcsSession session, RelationNode node) throws OseeCoreException;
 
    ///////////////////////////////////////
 
@@ -42,15 +42,15 @@ public interface RelationManager {
 
    boolean hasDirtyRelations(OrcsSession session, RelationNode node) throws OseeCoreException;
 
-   Collection<? extends IRelationType> getExistingRelationTypes(OrcsSession session, RelationNode node) throws OseeCoreException;
+   Collection<RelationTypeId> getExistingRelationTypes(OrcsSession session, RelationNode node) throws OseeCoreException;
 
-   int getRelatedCount(OrcsSession session, IRelationType type, RelationNode node, RelationSide side) throws OseeCoreException;
+   int getRelatedCount(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side) throws OseeCoreException;
 
-   int getRelatedCount(OrcsSession session, IRelationType type, RelationNode node, RelationSide side, DeletionFlag includeDeleted) throws OseeCoreException;
+   int getRelatedCount(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side, DeletionFlag includeDeleted) throws OseeCoreException;
 
-   boolean areRelated(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode) throws OseeCoreException;
+   boolean areRelated(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode) throws OseeCoreException;
 
-   String getRationale(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode) throws OseeCoreException;
+   String getRationale(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode) throws OseeCoreException;
 
    ///////////////////////////////////////
 
@@ -58,9 +58,9 @@ public interface RelationManager {
 
    <T extends RelationNode> ResultSet<T> getChildren(OrcsSession session, RelationNode parent) throws OseeCoreException;
 
-   <T extends RelationNode> ResultSet<T> getRelated(OrcsSession session, IRelationType type, RelationNode node, RelationSide side) throws OseeCoreException;
+   <T extends RelationNode> ResultSet<T> getRelated(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side) throws OseeCoreException;
 
-   <T extends RelationNode> ResultSet<T> getRelated(OrcsSession session, IRelationType type, RelationNode node, RelationSide side, DeletionFlag flag) throws OseeCoreException;
+   <T extends RelationNode> ResultSet<T> getRelated(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side, DeletionFlag flag) throws OseeCoreException;
 
    ///////////////////////////////////////
 
@@ -68,27 +68,27 @@ public interface RelationManager {
 
    void addChildren(OrcsSession session, RelationNode parent, List<? extends RelationNode> children) throws OseeCoreException;
 
-   void relate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode) throws OseeCoreException;
+   void relate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode) throws OseeCoreException;
 
-   void relate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, String rationale) throws OseeCoreException;
+   void relate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, String rationale) throws OseeCoreException;
 
-   void relate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, RelationSorter sortType) throws OseeCoreException;
+   void relate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, RelationSorter sortType) throws OseeCoreException;
 
-   void relate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, String rationale, RelationSorter sortType) throws OseeCoreException;
+   void relate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, String rationale, RelationSorter sortType) throws OseeCoreException;
 
-   void setRationale(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, String rationale) throws OseeCoreException;
+   void setRationale(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, String rationale) throws OseeCoreException;
 
-   void unrelate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode) throws OseeCoreException;
+   void unrelate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode) throws OseeCoreException;
 
    void unrelateFromAll(OrcsSession session, RelationNode node) throws OseeCoreException;
 
-   void unrelateFromAll(OrcsSession session, IRelationType type, RelationNode node, RelationSide side) throws OseeCoreException;
+   void unrelateFromAll(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side) throws OseeCoreException;
 
    void cloneRelations(OrcsSession session, RelationNode source, RelationNode destination) throws OseeCoreException;
 
    void introduce(OrcsSession session, BranchId branch, RelationNode source, RelationNode destination) throws OseeCoreException;
 
-   void setApplicabilityId(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, ApplicabilityId applicId);
+   void setApplicabilityId(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, ApplicabilityId applicId);
 
    List<Relation> getRelations(OrcsSession session, RelationNode node, DeletionFlag includeDeleted) throws OseeCoreException;
 

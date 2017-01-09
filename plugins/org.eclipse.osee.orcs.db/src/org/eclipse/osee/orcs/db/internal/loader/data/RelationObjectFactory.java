@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.RelationData;
@@ -24,7 +24,7 @@ public interface RelationObjectFactory extends VersionObjectFactory {
 
    RelationData createRelationData(VersionData version, Integer localId, long typeID, ModificationType modType, int aArtId, int bArtId, String rationale, ApplicabilityId applicId) throws OseeCoreException;
 
-   RelationData createRelationData(VersionData version, Integer localId, IRelationType type, ModificationType modType, int aArtId, int bArtId, String rationale, ApplicabilityId applicId) throws OseeCoreException;
+   RelationData createRelationData(VersionData version, Integer localId, RelationTypeId type, ModificationType modType, int aArtId, int bArtId, String rationale, ApplicabilityId applicId) throws OseeCoreException;
 
    RelationData createCopy(RelationData source) throws OseeCoreException;
 }

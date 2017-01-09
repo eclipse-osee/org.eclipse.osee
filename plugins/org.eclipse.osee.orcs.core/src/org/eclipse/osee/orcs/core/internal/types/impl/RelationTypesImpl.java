@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal.types.impl;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -39,7 +40,7 @@ public class RelationTypesImpl implements RelationTypes {
       this.provider = provider;
    }
 
-   private XRelationType getType(IRelationType type) throws OseeCoreException {
+   private XRelationType getType(RelationTypeId type) throws OseeCoreException {
       Conditions.checkNotNull(type, "relationType");
       return provider.getRelationTypeIndex().getDslTypeByToken(type);
    }
@@ -63,7 +64,7 @@ public class RelationTypesImpl implements RelationTypes {
    }
 
    @Override
-   public RelationTypeMultiplicity getMultiplicity(IRelationType relation) throws OseeCoreException {
+   public RelationTypeMultiplicity getMultiplicity(RelationTypeId relation) throws OseeCoreException {
       XRelationType type = getType(relation);
       String multiplicityId = type.getMultiplicity().getName();
       RelationTypeMultiplicity multiplicity = RelationTypeMultiplicity.getFromString(multiplicityId);
@@ -120,14 +121,14 @@ public class RelationTypesImpl implements RelationTypes {
    }
 
    @Override
-   public IArtifactType getArtifactType(IRelationType relation, RelationSide relationSide) throws OseeCoreException {
+   public IArtifactType getArtifactType(RelationTypeId relation, RelationSide relationSide) throws OseeCoreException {
       Conditions.checkNotNull(relation, "relationType");
       Conditions.checkNotNull(relationSide, "relationSide");
       return provider.getRelationTypeIndex().getArtifactType(relation, relationSide);
    }
 
    @Override
-   public boolean isArtifactTypeAllowed(IRelationType relation, RelationSide relationSide, IArtifactType artifactType) throws OseeCoreException {
+   public boolean isArtifactTypeAllowed(RelationTypeId relation, RelationSide relationSide, IArtifactType artifactType) throws OseeCoreException {
       Conditions.checkNotNull(relation, "relationType");
       Conditions.checkNotNull(relationSide, "relationSide");
       Conditions.checkNotNull(artifactType, "artifactType");

@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
@@ -52,7 +53,7 @@ public class RelationTypeValidity {
       }
    }
 
-   public void checkRelationTypeValid(IRelationType type, RelationNode node, RelationSide side) throws OseeCoreException {
+   public void checkRelationTypeValid(RelationTypeId type, RelationNode node, RelationSide side) throws OseeCoreException {
       Conditions.checkNotNull(type, "type");
       Conditions.checkNotNull(node, "node");
       Conditions.checkNotNull(side, "relationSide");
@@ -66,7 +67,7 @@ public class RelationTypeValidity {
       }
    }
 
-   public int getMaximumRelationsAllowed(IRelationType type, IArtifactType artifactType, RelationSide side) throws OseeCoreException {
+   public int getMaximumRelationsAllowed(RelationTypeId type, IArtifactType artifactType, RelationSide side) throws OseeCoreException {
       Conditions.checkNotNull(type, "relationType");
       Conditions.checkNotNull(artifactType, "artifactType");
       Conditions.checkNotNull(side, "relationSide");
@@ -94,17 +95,17 @@ public class RelationTypeValidity {
       return toReturn;
    }
 
-   public boolean isRelationTypeValid(IRelationType relationType, IArtifactType artifactType, RelationSide relationSide) throws OseeCoreException {
+   public boolean isRelationTypeValid(RelationTypeId relationType, IArtifactType artifactType, RelationSide relationSide) throws OseeCoreException {
       checkTypeExists(relationType);
       Conditions.checkNotNull(artifactType, "artifactType");
       Conditions.checkNotNull(relationSide, "relationSide");
       return getRelationSideMax(relationType, artifactType, relationSide) > 0;
    }
 
-   public List<IRelationType> getValidRelationTypes(IArtifactType artifactType) throws OseeCoreException {
+   public List<RelationTypeId> getValidRelationTypes(IArtifactType artifactType) throws OseeCoreException {
       Conditions.checkNotNull(artifactType, "artifactType");
       Collection<? extends IRelationType> types = relationTypes.getAll();
-      List<IRelationType> toReturn = new ArrayList<>();
+      List<RelationTypeId> toReturn = new ArrayList<>();
       for (IRelationType relationType : types) {
          if (isTypeAllowed(artifactType, relationType)) {
             toReturn.add(relationType);
@@ -125,12 +126,12 @@ public class RelationTypeValidity {
       return result;
    }
 
-   private void checkTypeExists(IRelationType type) throws OseeCoreException {
+   private void checkTypeExists(RelationTypeId type) throws OseeCoreException {
       boolean exists = relationTypes.exists(type);
       Conditions.checkExpressionFailOnTrue(!exists, "relationType [%s] does not exist", type);
    }
 
-   private int getRelationSideMax(IRelationType relationType, IArtifactType artifactType, RelationSide relationSide) throws OseeCoreException {
+   private int getRelationSideMax(RelationTypeId relationType, IArtifactType artifactType, RelationSide relationSide) throws OseeCoreException {
       int toReturn = 0;
       if (relationTypes.isArtifactTypeAllowed(relationType, relationSide, artifactType)) {
          toReturn = relationTypes.getMultiplicity(relationType).getLimit(relationSide);

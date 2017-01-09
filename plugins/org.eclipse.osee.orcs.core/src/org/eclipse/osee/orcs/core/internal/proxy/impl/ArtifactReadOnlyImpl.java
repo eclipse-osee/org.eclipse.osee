@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -202,12 +203,12 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public Collection<? extends IRelationType> getValidRelationTypes() throws OseeCoreException {
+   public Collection<RelationTypeId> getValidRelationTypes() throws OseeCoreException {
       return getRelationManager().getValidRelationTypes(getSession(), getProxiedObject());
    }
 
    @Override
-   public Collection<? extends IRelationType> getExistingRelationTypes() throws OseeCoreException {
+   public Collection<RelationTypeId> getExistingRelationTypes() throws OseeCoreException {
       return getRelationManager().getExistingRelationTypes(getSession(), getProxiedObject());
    }
 

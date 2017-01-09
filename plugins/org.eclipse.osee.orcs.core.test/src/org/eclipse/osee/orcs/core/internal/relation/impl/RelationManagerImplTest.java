@@ -41,6 +41,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -194,9 +195,7 @@ public class RelationManagerImplTest {
          }
       });
 
-      Collection<? extends IRelationType> actual = manager.getValidRelationTypes(session, node1);
-
-      assertEquals(expected, actual);
+      assertEquals(expected, manager.getValidRelationTypes(session, node1));
       verify(validity).getValidRelationTypes(artifactType1);
    }
 
@@ -244,7 +243,7 @@ public class RelationManagerImplTest {
    @Test
    public void testGetExistingRelationType() throws OseeCoreException {
       when(graph.getAdjacencies(node1)).thenReturn(null);
-      Collection<? extends IRelationType> actuals = manager.getExistingRelationTypes(session, node1);
+      Collection<RelationTypeId> actuals = manager.getExistingRelationTypes(session, node1);
       assertEquals(Collections.emptyList(), actuals);
 
       final List<IRelationType> types = Arrays.asList(relType1, relType2);
@@ -260,7 +259,7 @@ public class RelationManagerImplTest {
       actuals = manager.getExistingRelationTypes(session, node1);
       verify(container1).getExistingTypes(EXCLUDE_DELETED);
       assertEquals(2, actuals.size());
-      Iterator<? extends IRelationType> iterator = actuals.iterator();
+      Iterator<RelationTypeId> iterator = actuals.iterator();
       assertEquals(relType1, iterator.next());
       assertEquals(relType2, iterator.next());
    }

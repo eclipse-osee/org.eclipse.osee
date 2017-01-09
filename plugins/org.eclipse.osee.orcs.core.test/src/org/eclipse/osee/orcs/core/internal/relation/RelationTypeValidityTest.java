@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -162,7 +163,7 @@ public class RelationTypeValidityTest {
       when(relTypes.isArtifactTypeAllowed(relationType4, SIDE_A, artifactType)).thenReturn(false);
       when(relTypes.getMultiplicity(relationType4)).thenReturn(ONE_TO_MANY);
 
-      List<IRelationType> actual = validity.getValidRelationTypes(artifactType);
+      List<RelationTypeId> actual = validity.getValidRelationTypes(artifactType);
 
       assertEquals(2, actual.size());
       assertTrue(actual.contains(relationType1));

@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.data;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
@@ -24,17 +25,17 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface RelationTypes extends IdCollection<RelationTypeToken> {
 
-   RelationTypeMultiplicity getMultiplicity(IRelationType relation) throws OseeCoreException;
+   RelationTypeMultiplicity getMultiplicity(RelationTypeId relation) throws OseeCoreException;
 
    IArtifactType getArtifactTypeSideA(IRelationType relation) throws OseeCoreException;
 
    IArtifactType getArtifactTypeSideB(IRelationType relation) throws OseeCoreException;
 
-   IArtifactType getArtifactType(IRelationType relation, RelationSide relationSide) throws OseeCoreException;
+   IArtifactType getArtifactType(RelationTypeId relation, RelationSide relationSide) throws OseeCoreException;
 
    String getSideName(IRelationType relation, RelationSide relationSide) throws OseeCoreException;
 
-   boolean isArtifactTypeAllowed(IRelationType relation, RelationSide relationSide, IArtifactType artifactType) throws OseeCoreException;
+   boolean isArtifactTypeAllowed(RelationTypeId relation, RelationSide relationSide, IArtifactType artifactType) throws OseeCoreException;
 
    String getSideAName(IRelationType relation) throws OseeCoreException;
 

@@ -33,7 +33,7 @@ import org.eclipse.osee.orcs.core.internal.util.OrcsPredicates;
 /**
  * @author Roberto E. Escobar
  */
-public class RelationNodeAdjacencies extends AbstractTypeCollection<IRelationType, Relation, RelationTypeId, Relation> implements GraphAdjacencies {
+public class RelationNodeAdjacencies extends AbstractTypeCollection<RelationTypeId, Relation, RelationTypeId, Relation> implements GraphAdjacencies {
 
    @Override
    protected ResultSet<Relation> createResultSet(List<Relation> values) {
@@ -51,7 +51,7 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<IRelationTyp
    }
 
    @Override
-   protected IRelationType getType(Relation data) throws OseeCoreException {
+   protected RelationTypeId getType(Relation data) throws OseeCoreException {
       return data.getRelationType();
    }
 
@@ -63,11 +63,11 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<IRelationTyp
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public List<Relation> getList(IRelationType type, DeletionFlag includeDeleted, HasLocalId<Integer> localId, RelationSide side) throws OseeCoreException {
+   public List<Relation> getList(RelationTypeId relationType, DeletionFlag includeDeleted, HasLocalId<Integer> localId, RelationSide side) throws OseeCoreException {
       Predicate deletionFlagEquals = deletionFlagEquals(includeDeleted);
       Predicate relIdOnSide = nodeIdOnSideEquals(localId, side);
       Predicate matcher = and(deletionFlagEquals, relIdOnSide);
-      return getListByFilter(type, matcher);
+      return getListByFilter(relationType, matcher);
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
@@ -85,7 +85,7 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<IRelationTyp
    }
 
    @SuppressWarnings({"rawtypes", "unchecked"})
-   public Relation getRelation(RelationNode aNode, IRelationType type, RelationNode bNode, DeletionFlag excludeDeleted) throws OseeCoreException {
+   public Relation getRelation(RelationNode aNode, RelationTypeId type, RelationNode bNode, DeletionFlag excludeDeleted) throws OseeCoreException {
       Predicate<Relation> nodeMatcher = OrcsPredicates.nodeIdsEquals(aNode, bNode);
       Predicate deletionFlagEquals = deletionFlagEquals(excludeDeleted);
       Predicate matcher = and(deletionFlagEquals, nodeMatcher);

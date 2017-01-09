@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -78,9 +78,9 @@ public interface ArtifactReadable extends ArtifactToken, HasLocalId<Integer>, Ha
    ////////////////////
    int getMaximumRelationAllowed(RelationTypeSide relationTypeSide) throws OseeCoreException;
 
-   Collection<? extends IRelationType> getValidRelationTypes() throws OseeCoreException;
+   Collection<RelationTypeId> getValidRelationTypes() throws OseeCoreException;
 
-   Collection<? extends IRelationType> getExistingRelationTypes() throws OseeCoreException;
+   Collection<RelationTypeId> getExistingRelationTypes() throws OseeCoreException;
 
    ArtifactReadable getParent() throws OseeCoreException;
 
