@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Donald G. Dunne
  */
-public interface RelationReadable<T> extends RelationId, OrcsReadable {
+public interface RelationReadable extends RelationId, OrcsReadable {
 
    long getGammaId();
 

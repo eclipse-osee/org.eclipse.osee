@@ -253,8 +253,8 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public ResultSet<RelationReadable<Object>> getRelations(RelationTypeSide typeAndSide) {
-      return new ResultSetList<RelationReadable<Object>>(Collections.castAll(
+   public ResultSet<RelationReadable> getRelations(RelationTypeSide typeAndSide) {
+      return new ResultSetList<RelationReadable>(Collections.castAll(
          getRelationManager().getRelations(getSession(), getProxiedObject(), DeletionFlag.EXCLUDE_DELETED)));
    }
 

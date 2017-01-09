@@ -102,6 +102,6 @@ public interface ArtifactReadable extends ArtifactToken, HasLocalId<Integer>, Ha
 
    String getRationale(RelationTypeSide typeAndSide, ArtifactReadable readable) throws OseeCoreException;
 
-   ResultSet<RelationReadable<Object>> getRelations(RelationTypeSide relationTypeSide);
+   ResultSet<RelationReadable> getRelations(RelationTypeSide relationTypeSide);
 
 }

@@ -173,15 +173,13 @@ public class LoaderTest {
          }
          ArtifactReadable defaultHierRoot = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
             CoreArtifactTokens.DefaultHierarchyRoot).getResults().getExactlyOne();
-         for (RelationReadable<Object> relation : defaultHierRoot.getRelations(
-            CoreRelationTypes.Default_Hierarchical__Child)) {
+         for (RelationReadable relation : defaultHierRoot.getRelations(CoreRelationTypes.Default_Hierarchical__Child)) {
             if (relation.getArtIdB() == CoreArtifactTokens.UserGroups.getId().intValue()) {
                defaultHierRootToUserGroupsRelationGammaId = relation.getGammaId();
                break;
             }
          }
-         for (RelationReadable<Object> rel : userGroupFolder.getRelations(
-            CoreRelationTypes.Default_Hierarchical__Child)) {
+         for (RelationReadable rel : userGroupFolder.getRelations(CoreRelationTypes.Default_Hierarchical__Child)) {
             for (ArtifactToken token : relationsArts) {
                if (rel.getArtIdB() == token.getId().intValue() || rel.getArtIdA() == token.getId().intValue()) {
                   artTokenToRelationId.put(token, rel.getId().intValue());
