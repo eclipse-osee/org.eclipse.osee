@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -64,10 +64,10 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
    private final IndexingTaskConsumer consumer;
    private final IndexerCollector collector;
    private final Collection<BranchReadable> branches;
-   private final Collection<? extends IAttributeType> typesToTag;
+   private final Collection<? extends AttributeTypeId> typesToTag;
    private final boolean tagOnlyMissingGammas;
 
-   public IndexBranchesDatabaseCallable(Log logger, OrcsSession session, JdbcClient service, SqlJoinFactory joinFactory, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector, Collection<? extends IAttributeType> typesToTag, Collection<BranchReadable> branches, boolean tagOnlyMissingGammas) {
+   public IndexBranchesDatabaseCallable(Log logger, OrcsSession session, JdbcClient service, SqlJoinFactory joinFactory, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector, Collection<? extends AttributeTypeId> typesToTag, Collection<BranchReadable> branches, boolean tagOnlyMissingGammas) {
       super(logger, session, service);
       this.joinFactory = joinFactory;
       this.types = types;
@@ -95,7 +95,7 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
          String searchQuery = data.getSecond();
          Object[] params = data.getThird();
 
-         for (IAttributeType attributeType : typesToTag) {
+         for (AttributeTypeId attributeType : typesToTag) {
             if (types.isTaggable(attributeType)) {
                typeJoin.add(attributeType);
             }

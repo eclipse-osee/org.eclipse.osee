@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal.types.impl;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -22,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class AttributeTypeIndex extends TokenTypeIndex<IAttributeType, XAttributeType> {
 
-   private final Set<IAttributeType> taggables = new HashSet<>();
+   private final Set<AttributeTypeId> taggables = new HashSet<>();
 
    @Override
    public void put(IAttributeType token, XAttributeType dslType) {
@@ -32,7 +33,7 @@ public class AttributeTypeIndex extends TokenTypeIndex<IAttributeType, XAttribut
       }
    }
 
-   public Collection<? extends IAttributeType> getAllTaggable() {
+   public Collection<AttributeTypeId> getAllTaggable() {
       return taggables;
    }
 

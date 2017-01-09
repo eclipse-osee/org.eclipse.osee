@@ -100,7 +100,7 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    }
 
    @Override
-   public String getSoleAttributeValueAsString(IAtsObject atsObject, IAttributeType attributeType, String defaultValue) throws OseeCoreException {
+   public String getSoleAttributeValueAsString(IAtsObject atsObject, AttributeTypeId attributeType, String defaultValue) throws OseeCoreException {
       String result = defaultValue;
       Artifact artifact = AtsClientService.get().getArtifact(atsObject);
       if (artifact != null) {

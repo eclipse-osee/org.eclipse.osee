@@ -41,7 +41,7 @@ public interface IAttributeResolver {
 
    boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeId attributeType) throws OseeCoreException;
 
-   String getSoleAttributeValueAsString(IAtsObject atsObject, IAttributeType attributeType, String defaultReturnValue) throws OseeCoreException;
+   String getSoleAttributeValueAsString(IAtsObject atsObject, AttributeTypeId attributeType, String defaultReturnValue) throws OseeCoreException;
 
    int getAttributeCount(IAtsObject atsObject, IAttributeType attributeType) throws OseeCoreException;
 

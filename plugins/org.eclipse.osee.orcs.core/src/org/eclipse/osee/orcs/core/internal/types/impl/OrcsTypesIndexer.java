@@ -153,7 +153,7 @@ public class OrcsTypesIndexer {
          BranchId branch = getAttributeBranch(xAttributeTypeRef);
 
          IAttributeType attributeType = attributeTypeIndex.getTokenByDslType(xAttributeType);
-         if (attributeType != null) {
+         if (attributeType.isValid()) {
             Collection<IAttributeType> listOfAllowedAttributes = validAttributes.get(branch);
             if (listOfAllowedAttributes == null) {
                listOfAllowedAttributes = Sets.newHashSet();

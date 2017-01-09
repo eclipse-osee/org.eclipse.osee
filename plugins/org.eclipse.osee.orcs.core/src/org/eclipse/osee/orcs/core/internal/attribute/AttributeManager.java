@@ -33,11 +33,11 @@ public interface AttributeManager extends AttributeContainer {
 
    <T> T getSoleAttributeValue(IAttributeType attributeType, DeletionFlag flag, T defaultValue);
 
-   <T> T getSoleAttributeValue(IAttributeType attributeType, T defaultValue) throws OseeCoreException;
+   <T> T getSoleAttributeValue(AttributeTypeId attributeType, T defaultValue) throws OseeCoreException;
 
-   <T> Attribute<T> getSoleAttribute(IAttributeType attributeType);
+   <T> Attribute<T> getSoleAttribute(AttributeTypeId attributeType);
 
-   <T> Attribute<T> getSoleAttribute(IAttributeType attributeType, DeletionFlag flag);
+   <T> Attribute<T> getSoleAttribute(AttributeTypeId attributeType, DeletionFlag flag);
 
    String getSoleAttributeAsString(IAttributeType attributeType) throws OseeCoreException;
 

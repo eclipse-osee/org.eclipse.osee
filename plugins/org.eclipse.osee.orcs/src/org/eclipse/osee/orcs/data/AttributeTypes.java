@@ -13,48 +13,47 @@ package org.eclipse.osee.orcs.data;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface AttributeTypes extends IdCollection<IAttributeType> {
 
-   Collection<? extends IAttributeType> getAllTaggable() throws OseeCoreException;
+   Collection<AttributeTypeId> getAllTaggable();
 
-   String getDescription(IAttributeType attrType) throws OseeCoreException;
+   String getDescription(AttributeTypeId attrType);
 
-   String getBaseAttributeTypeId(AttributeTypeId attrType) throws OseeCoreException;
+   String getBaseAttributeTypeId(AttributeTypeId attrType);
 
-   String getAttributeProviderId(IAttributeType attrType) throws OseeCoreException;
+   String getAttributeProviderId(AttributeTypeId attrType);
 
-   String getDefaultValue(IAttributeType attrType) throws OseeCoreException;
+   String getDefaultValue(AttributeTypeId attrType);
 
-   int getMaxOccurrences(IAttributeType attrType) throws OseeCoreException;
+   int getMaxOccurrences(AttributeTypeId attrType);
 
-   int getMinOccurrences(IAttributeType attrType) throws OseeCoreException;
+   int getMinOccurrences(AttributeTypeId attrType);
 
-   EnumType getEnumType(IAttributeType attrType) throws OseeCoreException;
+   EnumType getEnumType(AttributeTypeId attrType);
 
-   String getFileTypeExtension(IAttributeType attrType) throws OseeCoreException;
+   String getFileTypeExtension(AttributeTypeId attrType);
 
-   String getTaggerId(AttributeTypeId attrType) throws OseeCoreException;
+   String getTaggerId(AttributeTypeId attrType);
 
-   boolean isTaggable(AttributeTypeId attrType) throws OseeCoreException;
+   boolean isTaggable(AttributeTypeId attrType);
 
-   boolean isEnumerated(IAttributeType attrType) throws OseeCoreException;
+   boolean isEnumerated(AttributeTypeId attrType);
 
-   String getMediaType(IAttributeType attrType) throws OseeCoreException;
+   String getMediaType(AttributeTypeId attrType);
 
-   boolean hasMediaType(IAttributeType attrType) throws OseeCoreException;
+   boolean hasMediaType(AttributeTypeId attrType);
 
-   boolean isBooleanType(IAttributeType attrType) throws OseeCoreException;
+   boolean isBooleanType(AttributeTypeId attrType);
 
-   boolean isIntegerType(IAttributeType attrType);
+   boolean isIntegerType(AttributeTypeId attrType);
 
    boolean isDateType(AttributeTypeId attrType);
 
-   boolean isFloatingType(IAttributeType attrType);
+   boolean isFloatingType(AttributeTypeId attrType);
 
    IAttributeType getByName(String attrTypeName);
 

@@ -59,7 +59,7 @@ public class AttributeCollection extends AbstractTypeCollection<IAttributeType, 
       return data.getAttributeType();
    }
 
-   public <T> ResultSet<Attribute<T>> getResultSet(IAttributeType attributeType, DeletionFlag includeDeleted) throws OseeCoreException {
+   public <T> ResultSet<Attribute<T>> getResultSet(AttributeTypeId attributeType, DeletionFlag includeDeleted) throws OseeCoreException {
       List<Attribute<T>> result = getList(attributeType, includeDeleted);
       return createResultSet(attributeType, result);
    }

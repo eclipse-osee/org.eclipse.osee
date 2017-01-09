@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.data.BranchReadable;
@@ -36,7 +36,7 @@ public interface QueryEngineIndexer {
 
    CancellableCallable<Integer> purgeAllIndexes(OrcsSession session);
 
-   CancellableCallable<Integer> indexBranches(OrcsSession session, AttributeTypes types, Collection<? extends IAttributeType> typeToTag, Set<BranchReadable> branches, boolean indexOnlyMissing, IndexerCollector... collector);
+   CancellableCallable<Integer> indexBranches(OrcsSession session, AttributeTypes types, Collection<? extends AttributeTypeId> typeToTag, Set<BranchReadable> branches, boolean indexOnlyMissing, IndexerCollector... collector);
 
    CancellableCallable<Integer> indexAllFromQueue(OrcsSession session, AttributeTypes types, IndexerCollector... collector);
 

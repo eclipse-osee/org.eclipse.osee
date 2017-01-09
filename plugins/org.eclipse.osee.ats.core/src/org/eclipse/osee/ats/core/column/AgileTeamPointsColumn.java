@@ -47,7 +47,7 @@ public class AgileTeamPointsColumn extends AbstractServicesColumn {
                AtsAttributeTypes.PointsAttributeType, "");
             if (Strings.isValid(pointsAttrTypeName)) {
                IAttributeType type = services.getStoreService().getAttributeType(pointsAttrTypeName);
-               if (type != null) {
+               if (type.isValid()) {
                   pointsAttrType = type;
                }
             }

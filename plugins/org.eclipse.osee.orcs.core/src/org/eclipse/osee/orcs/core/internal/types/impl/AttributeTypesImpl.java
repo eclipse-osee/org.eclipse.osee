@@ -78,19 +78,19 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public String getAttributeProviderId(IAttributeType attrType) throws OseeCoreException {
+   public String getAttributeProviderId(AttributeTypeId attrType) throws OseeCoreException {
       XAttributeType type = getType(attrType);
       return getQualifiedTypeName(type.getDataProvider());
    }
 
    @Override
-   public String getDefaultValue(IAttributeType attrType) throws OseeCoreException {
+   public String getDefaultValue(AttributeTypeId attrType) throws OseeCoreException {
       XAttributeType type = getType(attrType);
       return type.getDefaultValue();
    }
 
    @Override
-   public int getMaxOccurrences(IAttributeType attrType) throws OseeCoreException {
+   public int getMaxOccurrences(AttributeTypeId attrType) throws OseeCoreException {
       XAttributeType type = getType(attrType);
       String maxValue = type.getMax();
       int max = Integer.MAX_VALUE;
@@ -103,7 +103,7 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public int getMinOccurrences(IAttributeType attrType) throws OseeCoreException {
+   public int getMinOccurrences(AttributeTypeId attrType) throws OseeCoreException {
       XAttributeType type = getType(attrType);
       String minValue = type.getMin();
       int min = 0;
@@ -114,7 +114,7 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public String getFileTypeExtension(IAttributeType attrType) throws OseeCoreException {
+   public String getFileTypeExtension(AttributeTypeId attrType) throws OseeCoreException {
       XAttributeType type = getType(attrType);
       String value = type.getFileExtension();
       return Strings.isValid(value) ? value : Strings.emptyString();
@@ -138,14 +138,14 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public boolean isEnumerated(IAttributeType attrType) throws OseeCoreException {
+   public boolean isEnumerated(AttributeTypeId attrType) throws OseeCoreException {
       XAttributeType type = getType(attrType);
       XOseeEnumType enumType = type.getEnumType();
       return enumType != null;
    }
 
    @Override
-   public EnumType getEnumType(IAttributeType attrType) throws OseeCoreException {
+   public EnumType getEnumType(AttributeTypeId attrType) throws OseeCoreException {
       EnumType toReturn = null;
       XAttributeType type = getType(attrType);
       XOseeEnumType enumType = type.getEnumType();
@@ -156,7 +156,7 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public String getDescription(IAttributeType attrType) throws OseeCoreException {
+   public String getDescription(AttributeTypeId attrType) throws OseeCoreException {
       XAttributeType type = getType(attrType);
       String value = type.getDescription();
       return Strings.isValid(value) ? value : Strings.emptyString();
@@ -173,7 +173,7 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public Collection<? extends IAttributeType> getAllTaggable() throws OseeCoreException {
+   public Collection<AttributeTypeId> getAllTaggable() throws OseeCoreException {
       return provider.getAttributeTypeIndex().getAllTaggable();
    }
 
@@ -183,14 +183,14 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public String getMediaType(IAttributeType attrType) throws OseeCoreException {
+   public String getMediaType(AttributeTypeId attrType) throws OseeCoreException {
       XAttributeType type = getType(attrType);
       String value = type.getMediaType();
       return Strings.isValid(value) ? value : Strings.emptyString();
    }
 
    @Override
-   public boolean hasMediaType(IAttributeType attrType) throws OseeCoreException {
+   public boolean hasMediaType(AttributeTypeId attrType) throws OseeCoreException {
       boolean toReturn = false;
       String mediaType = getMediaType(attrType);
       if (mediaType != null) {
@@ -200,13 +200,13 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public boolean isBooleanType(IAttributeType attrType) throws OseeCoreException {
+   public boolean isBooleanType(AttributeTypeId attrType) throws OseeCoreException {
       String baseType = getBaseAttributeTypeId(attrType);
       return baseType != null && baseType.toLowerCase().contains("boolean");
    }
 
    @Override
-   public boolean isIntegerType(IAttributeType attrType) {
+   public boolean isIntegerType(AttributeTypeId attrType) {
       String baseType = getBaseAttributeTypeId(attrType);
       return baseType != null && baseType.toLowerCase().contains("integer");
    }
@@ -218,7 +218,7 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public boolean isFloatingType(IAttributeType attrType) {
+   public boolean isFloatingType(AttributeTypeId attrType) {
       String baseType = getBaseAttributeTypeId(attrType);
       return baseType != null && baseType.toLowerCase().contains("floatingpoint");
    }

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConstants;
@@ -72,7 +72,7 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
    }
 
    @Override
-   public CancellableCallable<Integer> indexBranches(OrcsSession session, AttributeTypes types, Collection<? extends IAttributeType> typeToTag, Set<BranchReadable> branches, boolean indexOnlyMissing, IndexerCollector... collector) {
+   public CancellableCallable<Integer> indexBranches(OrcsSession session, AttributeTypes types, Collection<? extends AttributeTypeId> typeToTag, Set<BranchReadable> branches, boolean indexOnlyMissing, IndexerCollector... collector) {
       return new IndexBranchesDatabaseCallable(logger, session, jdbcClient, joinFactory, types, consumer,
          merge(collector), typeToTag, branches, indexOnlyMissing);
    }

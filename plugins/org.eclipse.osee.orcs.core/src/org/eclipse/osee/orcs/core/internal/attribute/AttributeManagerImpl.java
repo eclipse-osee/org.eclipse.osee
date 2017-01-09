@@ -251,7 +251,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    }
 
    @Override
-   public <T> T getSoleAttributeValue(IAttributeType attributeType, T defaultValue) throws OseeCoreException {
+   public <T> T getSoleAttributeValue(AttributeTypeId attributeType, T defaultValue) throws OseeCoreException {
       T value = defaultValue;
       Attribute<T> attribute = null;
       try {
@@ -390,7 +390,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
     * Exclude any hard deleted attributes, but include artifact deleted attributes
     */
    @Override
-   public <T> Attribute<T> getSoleAttribute(IAttributeType attributeType) {
+   public <T> Attribute<T> getSoleAttribute(AttributeTypeId attributeType) {
       return getSoleAttribute(attributeType, DeletionFlag.EXCLUDE_DELETED);
    }
 
@@ -399,7 +399,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
     * all hard deleted attributes, but include artifact deleted attributes
     */
    @Override
-   public <T> Attribute<T> getSoleAttribute(IAttributeType attributeType, DeletionFlag flag) {
+   public <T> Attribute<T> getSoleAttribute(AttributeTypeId attributeType, DeletionFlag flag) {
       ensureAttributesLoaded();
       ResultSet<Attribute<T>> result = attributes.getResultSet(attributeType, flag);
       return result.getExactlyOne();
