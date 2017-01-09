@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute;
 
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -22,5 +22,5 @@ public interface AttributeSetHelper<A, V> {
 
    void setAttributeValue(Attribute<A> attribute, V value) throws OseeCoreException;
 
-   void createAttribute(IAttributeType attributeType, V value) throws OseeCoreException;
+   void createAttribute(AttributeTypeId attributeType, V value) throws OseeCoreException;
 }

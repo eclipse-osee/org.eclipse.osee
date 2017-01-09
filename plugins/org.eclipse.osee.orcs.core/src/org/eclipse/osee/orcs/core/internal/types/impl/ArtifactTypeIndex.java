@@ -16,9 +16,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.internal.types.BranchHierarchyProvider;
@@ -42,7 +43,7 @@ public class ArtifactTypeIndex extends TokenTypeIndex<IArtifactType, XArtifactTy
       metaData.setSuperTypes(superTypes);
    }
 
-   public void put(IArtifactType type, Map<BranchId, Collection<IAttributeType>> attributes) {
+   public void put(IArtifactType type, Map<BranchId, Collection<AttributeTypeToken>> attributes) {
       ArtifactTypeMetaData metaData = getOrCreateData(type);
       metaData.setAttributeTypes(attributes);
    }
@@ -56,7 +57,7 @@ public class ArtifactTypeIndex extends TokenTypeIndex<IArtifactType, XArtifactTy
       return metaData;
    }
 
-   public Map<BranchId, Collection<IAttributeType>> getAllAttributeTypes(IArtifactType artifactType) {
+   public Map<BranchId, Collection<AttributeTypeToken>> getAllAttributeTypes(ArtifactTypeId artifactType) {
       ArtifactTypeMetaData metaData = tokenToTypeData.get(artifactType);
       return metaData.attributeTypes;
    }
@@ -101,20 +102,20 @@ public class ArtifactTypeIndex extends TokenTypeIndex<IArtifactType, XArtifactTy
       return result;
    }
 
-   public Collection<IAttributeType> getAttributeTypes(IArtifactType artType, BranchId branch) throws OseeCoreException {
-      Set<IAttributeType> attributeTypes = Sets.newLinkedHashSet();
+   public Collection<AttributeTypeToken> getAttributeTypes(IArtifactType artType, BranchId branch) throws OseeCoreException {
+      Set<AttributeTypeToken> attributeTypes = Sets.newLinkedHashSet();
       getAttributeTypes(attributeTypes, artType, branch);
       return attributeTypes;
    }
 
-   private void getAttributeTypes(Set<IAttributeType> attributeTypes, IArtifactType artifactType, BranchId branch) throws OseeCoreException {
+   private void getAttributeTypes(Set<AttributeTypeToken> attributeTypes, IArtifactType artifactType, BranchId branch) throws OseeCoreException {
       ArtifactTypeMetaData metaData = tokenToTypeData.get(artifactType);
       if (metaData != null) {
-         Map<BranchId, Collection<IAttributeType>> validityMap = metaData.getAttributeTypes();
+         Map<BranchId, Collection<AttributeTypeToken>> validityMap = metaData.getAttributeTypes();
 
          Iterable<? extends BranchId> branches = hierarchyProvider.getParentHierarchy(branch);
          for (BranchId parent : branches) {
-            Collection<IAttributeType> items = validityMap.get(parent);
+            Collection<AttributeTypeToken> items = validityMap.get(parent);
             if (items != null) {
                attributeTypes.addAll(items);
             }
@@ -129,7 +130,7 @@ public class ArtifactTypeIndex extends TokenTypeIndex<IArtifactType, XArtifactTy
       private final IArtifactType type;
       private Set<IArtifactType> superTypes;
       private final Set<IArtifactType> descendantTypes;
-      private Map<BranchId, Collection<IAttributeType>> attributeTypes;
+      private Map<BranchId, Collection<AttributeTypeToken>> attributeTypes;
 
       public ArtifactTypeMetaData(IArtifactType type) {
          super();
@@ -156,7 +157,7 @@ public class ArtifactTypeIndex extends TokenTypeIndex<IArtifactType, XArtifactTy
          }
       }
 
-      public void setAttributeTypes(Map<BranchId, Collection<IAttributeType>> attributes) {
+      public void setAttributeTypes(Map<BranchId, Collection<AttributeTypeToken>> attributes) {
          this.attributeTypes = attributes;
       }
 
@@ -168,7 +169,7 @@ public class ArtifactTypeIndex extends TokenTypeIndex<IArtifactType, XArtifactTy
          return descendantTypes;
       }
 
-      public Map<BranchId, Collection<IAttributeType>> getAttributeTypes() {
+      public Map<BranchId, Collection<AttributeTypeToken>> getAttributeTypes() {
          return attributeTypes;
       }
 

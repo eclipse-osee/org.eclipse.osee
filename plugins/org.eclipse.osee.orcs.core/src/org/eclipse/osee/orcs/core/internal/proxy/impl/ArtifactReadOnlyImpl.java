@@ -120,7 +120,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public Collection<? extends IAttributeType> getValidAttributeTypes() throws OseeCoreException {
+   public Collection<AttributeTypeToken> getValidAttributeTypes() throws OseeCoreException {
       return getProxiedObject().getValidAttributeTypes();
    }
 

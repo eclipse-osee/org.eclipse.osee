@@ -23,6 +23,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -86,7 +87,7 @@ public class AttributeTypeResource {
             sb.append(AHTML.beginMultiColumnTable(95));
             sb.append(AHTML.addRowMultiColumnTable(AHTML.bold("Valid Types")));
             sb.append(AHTML.addRowMultiColumnTable(""));
-            for (IAttributeType attrType : exactlyOne.getValidAttributeTypes()) {
+            for (AttributeTypeToken attrType : exactlyOne.getValidAttributeTypes()) {
                sb.append(AHTML.addRowMultiColumnTable(AHTML.bold("Name:"), attrType.getName()));
                sb.append(AHTML.addRowMultiColumnTable(AHTML.bold("AttributeTypeId:"),
                   AHTML.getHyperlink(String.format("/orcs/branch/%d/artifact/%d/attribute/type/%d", branchUuid,

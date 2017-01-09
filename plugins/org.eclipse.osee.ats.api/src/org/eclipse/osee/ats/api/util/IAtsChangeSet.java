@@ -101,7 +101,7 @@ public interface IAtsChangeSet {
 
    void deleteArtifact(IAtsWorkItem workItem);
 
-   void setValues(IAtsObject atsObject, IAttributeType attrType, List<String> values);
+   void setValues(IAtsObject atsObject, AttributeTypeId attrType, List<String> values);
 
    String getComment();
 

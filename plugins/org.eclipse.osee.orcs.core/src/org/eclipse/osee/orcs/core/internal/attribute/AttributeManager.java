@@ -14,7 +14,6 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -29,9 +28,9 @@ public interface AttributeManager extends AttributeContainer {
 
    void unDeleteAttributesByArtifact() throws OseeCoreException;
 
-   <T> T getSoleAttributeValue(IAttributeType attributeType) throws OseeCoreException;
+   <T> T getSoleAttributeValue(AttributeTypeId attributeType) throws OseeCoreException;
 
-   <T> T getSoleAttributeValue(IAttributeType attributeType, DeletionFlag flag, T defaultValue);
+   <T> T getSoleAttributeValue(AttributeTypeId attributeType, DeletionFlag flag, T defaultValue);
 
    <T> T getSoleAttributeValue(AttributeTypeId attributeType, T defaultValue) throws OseeCoreException;
 
@@ -39,37 +38,37 @@ public interface AttributeManager extends AttributeContainer {
 
    <T> Attribute<T> getSoleAttribute(AttributeTypeId attributeType, DeletionFlag flag);
 
-   String getSoleAttributeAsString(IAttributeType attributeType) throws OseeCoreException;
+   String getSoleAttributeAsString(AttributeTypeId attributeType) throws OseeCoreException;
 
-   String getSoleAttributeAsString(IAttributeType attributeType, String defaultValue) throws OseeCoreException;
+   String getSoleAttributeAsString(AttributeTypeId attributeType, String defaultValue) throws OseeCoreException;
 
    <T> List<T> getAttributeValues(AttributeTypeId attributeType) throws OseeCoreException;
 
-   <T> void setSoleAttributeValue(IAttributeType attributeType, T value) throws OseeCoreException;
+   <T> void setSoleAttributeValue(AttributeTypeId attributeType, T value) throws OseeCoreException;
 
-   void setSoleAttributeFromStream(IAttributeType attributeType, InputStream inputStream) throws OseeCoreException;
+   void setSoleAttributeFromStream(AttributeTypeId attributeType, InputStream inputStream) throws OseeCoreException;
 
-   void setSoleAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException;
+   void setSoleAttributeFromString(AttributeTypeId attributeType, String value) throws OseeCoreException;
 
-   <T> void setAttributesFromValues(IAttributeType attributeType, T... values) throws OseeCoreException;
+   <T> void setAttributesFromValues(AttributeTypeId attributeType, T... values) throws OseeCoreException;
 
-   <T> void setAttributesFromValues(IAttributeType attributeType, Collection<T> values) throws OseeCoreException;
+   <T> void setAttributesFromValues(AttributeTypeId attributeType, Collection<T> values) throws OseeCoreException;
 
-   void setAttributesFromStrings(IAttributeType attributeType, String... values) throws OseeCoreException;
+   void setAttributesFromStrings(AttributeTypeId attributeType, String... values) throws OseeCoreException;
 
-   void setAttributesFromStrings(IAttributeType attributeType, Collection<String> values) throws OseeCoreException;
+   void setAttributesFromStrings(AttributeTypeId attributeType, Collection<String> values) throws OseeCoreException;
 
-   void deleteSoleAttribute(IAttributeType attributeType) throws OseeCoreException;
+   void deleteSoleAttribute(AttributeTypeId attributeType) throws OseeCoreException;
 
-   void deleteAttributes(IAttributeType attributeType) throws OseeCoreException;
+   void deleteAttributes(AttributeTypeId attributeType) throws OseeCoreException;
 
-   void deleteAttributesWithValue(IAttributeType attributeType, Object value) throws OseeCoreException;
+   void deleteAttributesWithValue(AttributeTypeId attributeType, Object value) throws OseeCoreException;
 
-   <T> Attribute<T> createAttribute(IAttributeType attributeType) throws OseeCoreException;
+   <T> Attribute<T> createAttribute(AttributeTypeId attributeType) throws OseeCoreException;
 
    <T> Attribute<T> createAttribute(AttributeTypeId attributeType, T value) throws OseeCoreException;
 
-   <T> Attribute<T> createAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException;
+   <T> Attribute<T> createAttributeFromString(AttributeTypeId attributeType, String value) throws OseeCoreException;
 
    List<Attribute<Object>> getAttributes() throws OseeCoreException;
 
@@ -77,7 +76,7 @@ public interface AttributeManager extends AttributeContainer {
 
    List<Attribute<Object>> getAttributes(DeletionFlag deletionFlag) throws OseeCoreException;
 
-   <T> List<Attribute<T>> getAttributes(IAttributeType attributeType, DeletionFlag deletionFlag) throws OseeCoreException;
+   <T> List<Attribute<T>> getAttributes(AttributeTypeId attributeType, DeletionFlag deletionFlag) throws OseeCoreException;
 
    Attribute<Object> getAttributeById(Integer attributeId) throws OseeCoreException;
 

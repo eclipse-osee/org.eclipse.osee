@@ -45,7 +45,7 @@ public interface ArtifactReadable extends ArtifactToken, HasLocalId<Integer>, Ha
 
    boolean isAttributeTypeValid(AttributeTypeId attributeType) throws OseeCoreException;
 
-   Collection<? extends IAttributeType> getValidAttributeTypes() throws OseeCoreException;
+   Collection<AttributeTypeToken> getValidAttributeTypes() throws OseeCoreException;
 
    Collection<AttributeTypeToken> getExistingAttributeTypes() throws OseeCoreException;
 

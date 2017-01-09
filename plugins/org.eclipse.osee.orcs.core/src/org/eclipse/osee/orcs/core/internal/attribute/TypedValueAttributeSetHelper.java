@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute;
 
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -40,7 +40,7 @@ public class TypedValueAttributeSetHelper<T> implements AttributeSetHelper<T, T>
    }
 
    @Override
-   public void createAttribute(IAttributeType attributeType, T value) throws OseeCoreException {
+   public void createAttribute(AttributeTypeId attributeType, T value) throws OseeCoreException {
       ResultSet<Attribute<T>> result =
          attributes.getAttributeSetFromValue(attributeType, DeletionFlag.EXCLUDE_DELETED, value);
       if (result.getOneOrNull() == null) {

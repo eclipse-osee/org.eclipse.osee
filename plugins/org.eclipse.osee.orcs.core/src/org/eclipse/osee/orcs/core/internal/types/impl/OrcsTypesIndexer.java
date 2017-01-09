@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.types.impl;
 
-import com.google.common.base.Stopwatch;
 import com.google.common.collect.Sets;
 import java.io.InputStream;
 import java.util.Collection;
@@ -21,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -75,9 +75,6 @@ public class OrcsTypesIndexer {
    }
 
    public OrcsTypesIndex index(IResource source) throws Exception {
-      Stopwatch stopwatch = new Stopwatch();
-      stopwatch.start();
-
       OseeDslResource resource = null;
       InputStream inputStream = null;
       try {
@@ -87,7 +84,6 @@ public class OrcsTypesIndexer {
       } finally {
          Lib.close(inputStream);
       }
-      logger.trace("Converted OrcsTypes to model in [%s]", Lib.getElapseString(stopwatch.elapsedMillis()));
 
       Conditions.checkNotNull(resource, "osee dsl model", "Error reading osee dsl resource");
       OseeDsl model = resource.getModel();
@@ -98,35 +94,30 @@ public class OrcsTypesIndexer {
       OrcsIndeces index =
          new OrcsIndeces(source, artifactTypeIndex, attributeTypeIndex, enumTypeIndex, relationTypeIndex);
 
-      try {
-         for (XOseeArtifactTypeOverride xArtifactTypeOverride : model.getArtifactTypeOverrides()) {
-            applyArtifactTypeOverrides(xArtifactTypeOverride);
-         }
+      for (XOseeArtifactTypeOverride xArtifactTypeOverride : model.getArtifactTypeOverrides()) {
+         applyArtifactTypeOverrides(xArtifactTypeOverride);
+      }
 
-         for (XOseeEnumOverride xEnumOverride : model.getEnumOverrides()) {
-            applyEnumOverrides(xEnumOverride);
-         }
+      for (XOseeEnumOverride xEnumOverride : model.getEnumOverrides()) {
+         applyEnumOverrides(xEnumOverride);
+      }
 
-         for (XAttributeType dslType : model.getAttributeTypes()) {
-            getOrCreateToken(attributeTypeIndex, dslType);
-         }
+      for (XAttributeType dslType : model.getAttributeTypes()) {
+         getOrCreateToken(attributeTypeIndex, dslType);
+      }
 
-         for (XArtifactType dslType : model.getArtifactTypes()) {
-            IArtifactType token = getOrCreateToken(artifactTypeIndex, dslType);
-            indexSuperTypes(artifactTypeIndex, token, dslType);
-            indexAttributes(artifactTypeIndex, attributeTypeIndex, dslType);
-         }
+      for (XArtifactType dslType : model.getArtifactTypes()) {
+         IArtifactType token = getOrCreateToken(artifactTypeIndex, dslType);
+         indexSuperTypes(artifactTypeIndex, token, dslType);
+         indexAttributes(artifactTypeIndex, attributeTypeIndex, dslType);
+      }
 
-         for (XRelationType dslType : model.getRelationTypes()) {
-            getOrCreateToken(relationTypeIndex, dslType);
-         }
+      for (XRelationType dslType : model.getRelationTypes()) {
+         getOrCreateToken(relationTypeIndex, dslType);
+      }
 
-         for (XOseeEnumType dslType : model.getEnumTypes()) {
-            getOrCreateEnumType(enumTypeIndex, dslType);
-         }
-      } finally {
-         logger.trace("Indexed OseeDsl model in [%s]", Lib.getElapseString(stopwatch.elapsedMillis()));
-         stopwatch.stop();
+      for (XOseeEnumType dslType : model.getEnumTypes()) {
+         getOrCreateEnumType(enumTypeIndex, dslType);
       }
       return index;
    }
@@ -147,14 +138,14 @@ public class OrcsTypesIndexer {
    }
 
    private void indexAttributes(ArtifactTypeIndex artifactTypeIndex, AttributeTypeIndex attributeTypeIndex, XArtifactType dslType) throws OseeCoreException {
-      Map<BranchId, Collection<IAttributeType>> validAttributes = new HashMap<BranchId, Collection<IAttributeType>>();
+      Map<BranchId, Collection<AttributeTypeToken>> validAttributes = new HashMap<>();
       for (XAttributeTypeRef xAttributeTypeRef : dslType.getValidAttributeTypes()) {
          XAttributeType xAttributeType = xAttributeTypeRef.getValidAttributeType();
          BranchId branch = getAttributeBranch(xAttributeTypeRef);
 
          IAttributeType attributeType = attributeTypeIndex.getTokenByDslType(xAttributeType);
          if (attributeType.isValid()) {
-            Collection<IAttributeType> listOfAllowedAttributes = validAttributes.get(branch);
+            Collection<AttributeTypeToken> listOfAllowedAttributes = validAttributes.get(branch);
             if (listOfAllowedAttributes == null) {
                listOfAllowedAttributes = Sets.newHashSet();
                validAttributes.put(branch, listOfAllowedAttributes);

@@ -36,7 +36,6 @@ import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -162,7 +161,7 @@ public class CreateTasksOperation {
             }
 
             for (JaxAttribute attribute : task.getAttributes()) {
-               IAttributeType attrType = getAttributeType(atsServer, attribute.getAttrTypeName());
+               AttributeTypeToken attrType = getAttributeType(atsServer, attribute.getAttrTypeName());
                if (attrType == null) {
                   resultData.errorf("Attribute Type [%s] not valid for Task creation in %s",
                      attribute.getAttrTypeName(), task);
@@ -203,14 +202,14 @@ public class CreateTasksOperation {
       return RelationTypeToken.SENTINEL;
    }
 
-   private static IAttributeType getAttributeType(IAtsServer atsServer, String attrTypeName) {
-      for (IAttributeType attrType : atsServer.getOrcsApi().getOrcsTypes().getArtifactTypes().getAttributeTypes(
+   private static AttributeTypeToken getAttributeType(IAtsServer atsServer, String attrTypeName) {
+      for (AttributeTypeToken attrType : atsServer.getOrcsApi().getOrcsTypes().getArtifactTypes().getAttributeTypes(
          AtsArtifactTypes.Task, atsServer.getAtsBranch())) {
          if (attrType.getName().equals(attrTypeName)) {
             return attrType;
          }
       }
-      return null;
+      return AttributeTypeToken.SENTINEL;
    }
 
    public List<JaxAtsTask> getTasks() {
@@ -293,8 +292,8 @@ public class CreateTasksOperation {
             }
 
             for (JaxAttribute attribute : jaxTask.getAttributes()) {
-               IAttributeType attrType = getAttributeType(atsServer, attribute.getAttrTypeName());
-               if (attrType == null) {
+               AttributeTypeToken attrType = getAttributeType(atsServer, attribute.getAttrTypeName());
+               if (attrType.isInvalid()) {
                   resultData.errorf("Attribute Type [%s] not valid for Task creation in %s",
                      attribute.getAttrTypeName(), task);
                }

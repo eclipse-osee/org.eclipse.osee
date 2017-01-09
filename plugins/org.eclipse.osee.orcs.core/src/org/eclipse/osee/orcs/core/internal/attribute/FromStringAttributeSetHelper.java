@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute;
 
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -45,7 +45,7 @@ public class FromStringAttributeSetHelper implements AttributeSetHelper<Object, 
    }
 
    @Override
-   public void createAttribute(IAttributeType attributeType, String value) throws OseeCoreException {
+   public void createAttribute(AttributeTypeId attributeType, String value) throws OseeCoreException {
       ResultSet<Attribute<Object>> result =
          attributes.getAttributeSetFromString(attributeType, DeletionFlag.EXCLUDE_DELETED, value);
       if (result.getOneOrNull() == null) {

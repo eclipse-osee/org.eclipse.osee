@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -68,7 +67,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    }
 
    @Override
-   public synchronized void remove(IAttributeType type, Attribute<? extends Object> attribute) {
+   public synchronized void remove(AttributeTypeId type, Attribute<? extends Object> attribute) {
       attributes.remove(type, attribute);
       attribute.getOrcsData().setArtifactId(-1);
    }
@@ -110,7 +109,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    }
 
    @Override
-   public int getMaximumAttributeTypeAllowed(IAttributeType attributeType) throws OseeCoreException {
+   public int getMaximumAttributeTypeAllowed(AttributeTypeId attributeType) throws OseeCoreException {
       int result = -1;
       if (isAttributeTypeValid(attributeType)) {
          result = attributeFactory.getMaxOccurrenceLimit(attributeType);
@@ -119,7 +118,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    }
 
    @Override
-   public int getMinimumAttributeTypeAllowed(IAttributeType attributeType) throws OseeCoreException {
+   public int getMinimumAttributeTypeAllowed(AttributeTypeId attributeType) throws OseeCoreException {
       int result = -1;
       if (isAttributeTypeValid(attributeType)) {
          result = attributeFactory.getMinOccurrenceLimit(attributeType);
@@ -181,7 +180,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    }
 
    @Override
-   public int getAttributeCount(IAttributeType attributeType, DeletionFlag includeDeleted) throws OseeCoreException {
+   public int getAttributeCount(AttributeTypeId attributeType, DeletionFlag includeDeleted) throws OseeCoreException {
       return getAttributesHelper(attributeType, includeDeleted).size();
    }
 
@@ -191,12 +190,12 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    }
 
    @Override
-   public <T> List<Attribute<T>> getAttributes(IAttributeType attributeType, DeletionFlag includeDeleted) throws OseeCoreException {
+   public <T> List<Attribute<T>> getAttributes(AttributeTypeId attributeType, DeletionFlag includeDeleted) throws OseeCoreException {
       return getAttributesHelper(attributeType, includeDeleted);
    }
 
    @Override
-   public String getSoleAttributeAsString(IAttributeType attributeType, String defaultValue) throws OseeCoreException {
+   public String getSoleAttributeAsString(AttributeTypeId attributeType, String defaultValue) throws OseeCoreException {
       String toReturn = defaultValue;
       List<Attribute<Object>> items = getAttributesExcludeDeleted(attributeType);
       if (!items.isEmpty()) {
@@ -207,7 +206,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    }
 
    @Override
-   public String getSoleAttributeAsString(IAttributeType attributeType) throws OseeCoreException {
+   public String getSoleAttributeAsString(AttributeTypeId attributeType) throws OseeCoreException {
       String toReturn = null;
       Object value = getSoleAttributeValue(attributeType);
       if (value instanceof InputStream) {
@@ -232,13 +231,13 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    }
 
    @Override
-   public <T> T getSoleAttributeValue(IAttributeType attributeType) {
+   public <T> T getSoleAttributeValue(AttributeTypeId attributeType) {
       Attribute<T> attribute = getSoleAttribute(attributeType);
       return attribute.getValue();
    }
 
    @Override
-   public <T> T getSoleAttributeValue(IAttributeType attributeType, DeletionFlag flag, T defaultValue) {
+   public <T> T getSoleAttributeValue(AttributeTypeId attributeType, DeletionFlag flag, T defaultValue) {
       T value = defaultValue;
       Attribute<T> attribute = null;
       try {
@@ -266,39 +265,39 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    }
 
    @Override
-   public <T> void setSoleAttributeValue(IAttributeType attributeType, T value) throws OseeCoreException {
+   public <T> void setSoleAttributeValue(AttributeTypeId attributeType, T value) throws OseeCoreException {
       Attribute<T> attribute = getOrCreateSoleAttribute(attributeType);
       attribute.setValue(value);
    }
 
    @Override
-   public void setSoleAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException {
+   public void setSoleAttributeFromString(AttributeTypeId attributeType, String value) throws OseeCoreException {
       getOrCreateSoleAttribute(attributeType).setFromString(value);
    }
 
    @Override
-   public void setSoleAttributeFromStream(IAttributeType attributeType, InputStream inputStream) throws OseeCoreException {
+   public void setSoleAttributeFromStream(AttributeTypeId attributeType, InputStream inputStream) throws OseeCoreException {
       getOrCreateSoleAttribute(attributeType).setValueFromInputStream(inputStream);
    }
 
    @Override
-   public void setAttributesFromStrings(IAttributeType attributeType, String... values) throws OseeCoreException {
+   public void setAttributesFromStrings(AttributeTypeId attributeType, String... values) throws OseeCoreException {
       setAttributesFromStrings(attributeType, Arrays.asList(values));
    }
 
    @Override
-   public void setAttributesFromStrings(IAttributeType attributeType, Collection<String> values) throws OseeCoreException {
+   public void setAttributesFromStrings(AttributeTypeId attributeType, Collection<String> values) throws OseeCoreException {
       AttributeSetHelper<Object, String> attributeStringSetter = new FromStringAttributeSetHelper(attributes, this);
       setAttributesFromValuesHelper(attributeStringSetter, attributeType, values);
    }
 
    @Override
-   public <T> void setAttributesFromValues(IAttributeType attributeType, T... values) throws OseeCoreException {
+   public <T> void setAttributesFromValues(AttributeTypeId attributeType, T... values) throws OseeCoreException {
       setAttributesFromValues(attributeType, Arrays.asList(values));
    }
 
    @Override
-   public <T> void setAttributesFromValues(IAttributeType attributeType, Collection<T> values) throws OseeCoreException {
+   public <T> void setAttributesFromValues(AttributeTypeId attributeType, Collection<T> values) throws OseeCoreException {
       AttributeSetHelper<T, T> setter = new TypedValueAttributeSetHelper<>(attributes, this);
       setAttributesFromValuesHelper(setter, attributeType, values);
    }
@@ -320,7 +319,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    }
 
    @Override
-   public void deleteSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
+   public void deleteSoleAttribute(AttributeTypeId attributeType) throws OseeCoreException {
       Attribute<?> attribute = getSoleAttribute(attributeType);
       if (attribute != null) {
          deleteAttribute(attribute);
@@ -328,14 +327,14 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    }
 
    @Override
-   public void deleteAttributes(IAttributeType attributeType) throws OseeCoreException {
+   public void deleteAttributes(AttributeTypeId attributeType) throws OseeCoreException {
       for (Attribute<?> attribute : getAttributesIncludeDeleted(attributeType)) {
          attribute.delete();
       }
    }
 
    @Override
-   public void deleteAttributesWithValue(IAttributeType attributeType, Object value) throws OseeCoreException {
+   public void deleteAttributesWithValue(AttributeTypeId attributeType, Object value) throws OseeCoreException {
       for (Attribute<Object> attribute : getAttributesIncludeDeleted(attributeType)) {
          if (attribute.getValue().equals(value)) {
             deleteAttribute(attribute);
@@ -350,7 +349,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    }
 
    @Override
-   public <T> Attribute<T> createAttribute(IAttributeType attributeType) throws OseeCoreException {
+   public <T> Attribute<T> createAttribute(AttributeTypeId attributeType) throws OseeCoreException {
       return internalCreateAttributeHelper(attributeType);
    }
 
@@ -362,7 +361,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    }
 
    @Override
-   public <T> Attribute<T> createAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException {
+   public <T> Attribute<T> createAttributeFromString(AttributeTypeId attributeType, String value) throws OseeCoreException {
       Attribute<T> attribute = internalCreateAttributeHelper(attributeType);
       attribute.setFromString(value);
       return attribute;
@@ -377,7 +376,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
       return attr;
    }
 
-   private <T> Attribute<T> getOrCreateSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
+   private <T> Attribute<T> getOrCreateSoleAttribute(AttributeTypeId attributeType) throws OseeCoreException {
       ResultSet<Attribute<T>> result = attributes.getResultSet(attributeType, DeletionFlag.EXCLUDE_DELETED);
       Attribute<T> attribute = result.getAtMostOneOrNull();
       if (attribute == null) {
@@ -419,7 +418,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
       return getAttributesHelper(attributeType, DeletionFlag.EXCLUDE_DELETED);
    }
 
-   private <T> List<Attribute<T>> getAttributesIncludeDeleted(IAttributeType attributeType) throws OseeCoreException {
+   private <T> List<Attribute<T>> getAttributesIncludeDeleted(AttributeTypeId attributeType) throws OseeCoreException {
       return getAttributesHelper(attributeType, DeletionFlag.INCLUDE_DELETED);
    }
 
@@ -435,7 +434,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
 
    //////////////////////////////////////////////////////////////
 
-   private <A, T> void setAttributesFromValuesHelper(AttributeSetHelper<A, T> helper, IAttributeType attributeType, Collection<T> values) throws OseeCoreException {
+   private <A, T> void setAttributesFromValuesHelper(AttributeSetHelper<A, T> helper, AttributeTypeId attributeType, Collection<T> values) throws OseeCoreException {
       ensureAttributesLoaded();
 
       Set<T> uniqueItems = new LinkedHashSet<>(values);
@@ -531,7 +530,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    }
 
    private void meetMinimumAttributes() throws OseeCoreException {
-      for (IAttributeType attributeType : getValidAttributeTypes()) {
+      for (AttributeTypeId attributeType : getValidAttributeTypes()) {
          int missingCount = getRemainingAttributeCount(attributeType);
          for (int i = 0; i < missingCount; i++) {
             Attribute<Object> attr = attributeFactory.createAttributeWithDefaults(this, getOrcsData(), attributeType);
@@ -541,7 +540,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
       }
    }
 
-   private final int getRemainingAttributeCount(IAttributeType attributeType) throws OseeCoreException {
+   private final int getRemainingAttributeCount(AttributeTypeId attributeType) throws OseeCoreException {
       int minLimit = attributeFactory.getMinOccurrenceLimit(attributeType);
       return minLimit - getAttributeCount(attributeType);
    }

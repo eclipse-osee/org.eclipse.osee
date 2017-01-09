@@ -198,7 +198,7 @@ public class ArtifactReadOnlyImplTest {
       List<? extends IAttributeType> types = Arrays.asList(Active, Name, Annotation);
       when(proxiedObject.getValidAttributeTypes()).thenAnswer(answer(types));
 
-      Collection<? extends IAttributeType> actual = readOnly.getValidAttributeTypes();
+      Collection<AttributeTypeToken> actual = readOnly.getValidAttributeTypes();
 
       assertEquals(types, actual);
       verify(proxiedObject).getValidAttributeTypes();
