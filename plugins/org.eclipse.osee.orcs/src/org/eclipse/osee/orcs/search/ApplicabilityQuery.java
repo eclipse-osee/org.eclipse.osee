@@ -35,4 +35,6 @@ public interface ApplicabilityQuery {
    List<FeatureDefinitionData> getFeatureDefinitionData(List<ArtifactReadable> featureDefinitionArts);
 
    HashCollection<String, String> getBranchViewFeatureValues(ArtifactId artId, BranchId branch);
+
+   List<ApplicabilityToken> getViewApplicabilityTokens(ArtifactId artId, BranchId branch);
 }

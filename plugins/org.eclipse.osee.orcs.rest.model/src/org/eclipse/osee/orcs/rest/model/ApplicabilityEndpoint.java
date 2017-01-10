@@ -41,6 +41,11 @@ public interface ApplicabilityEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    List<FeatureDefinitionData> getFeatureDefinitionData();
 
+   @GET
+   @Path("view/{viewId}")
+   @Produces({MediaType.APPLICATION_JSON})
+   List<ApplicabilityToken> getViewApplicabilityTokens(@PathParam("viewId") ArtifactId view);
+
    /**
     * Set the applicabilities referenced by the provided artifacts. This is stored in the tuple table which means it
     * does not impact applicability in a branch view.

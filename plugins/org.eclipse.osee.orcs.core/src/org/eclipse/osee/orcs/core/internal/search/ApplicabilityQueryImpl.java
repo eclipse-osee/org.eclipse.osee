@@ -120,4 +120,12 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
 
       return toReturn;
    }
+
+   @Override
+   public List<ApplicabilityToken> getViewApplicabilityTokens(ArtifactId artId, BranchId branch) {
+      List<ApplicabilityToken> result = new ArrayList<>();
+      BiConsumer<Long, String> consumer = (id, name) -> result.add(new ApplicabilityToken(id, name));
+      tupleQuery.getTuple2KeyValuePair(CoreTupleTypes.ViewApplicability, artId, branch, consumer);
+      return result;
+   }
 }

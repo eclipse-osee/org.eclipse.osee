@@ -151,4 +151,9 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       tx.commit();
       return Response.ok().build();
    }
+
+   @Override
+   public List<ApplicabilityToken> getViewApplicabilityTokens(ArtifactId view) {
+      return orcsApi.getQueryFactory().applicabilityQuery().getViewApplicabilityTokens(view, branch);
+   }
 }
