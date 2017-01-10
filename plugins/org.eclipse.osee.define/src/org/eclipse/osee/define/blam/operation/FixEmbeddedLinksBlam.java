@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -54,7 +54,7 @@ public class FixEmbeddedLinksBlam extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      IOseeBranch branch = variableMap.getBranch(BRANCH);
+      BranchId branch = variableMap.getBranch(BRANCH);
       QueryBuilderArtifact queryBuilder = ArtifactQuery.createQueryBuilder(branch);
       queryBuilder.andExists(CoreAttributeTypes.WholeWordContent);
       SkynetTransaction tx = TransactionManager.createTransaction(branch, "Update embedded links");

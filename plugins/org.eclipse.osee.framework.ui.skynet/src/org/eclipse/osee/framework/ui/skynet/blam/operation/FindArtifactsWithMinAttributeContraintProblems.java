@@ -14,7 +14,7 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -31,7 +31,7 @@ public class FindArtifactsWithMinAttributeContraintProblems extends AbstractBlam
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      IOseeBranch branch = variableMap.getBranch("Parent Branch");
+      BranchId branch = variableMap.getBranch("Parent Branch");
       ArtifactQuery.getArtifactListFromBranch(branch, EXCLUDE_DELETED);
    }
 

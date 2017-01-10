@@ -13,11 +13,12 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -39,8 +40,8 @@ public class ReportAttributeTypesUsageBlam extends AbstractBlam {
       monitor.beginTask("Report Usage of AttributeTypes on Branch", IProgressMonitor.UNKNOWN);
 
       XResultData xResultData = new XResultData();
-      IOseeBranch branch = variableMap.getBranch("Branch");
-      xResultData.log(getName() + " " + branch.getName());
+      BranchId branch = variableMap.getBranch("Branch");
+      xResultData.log(getName() + " " + BranchManager.getBranchName(branch));
       xResultData.addRaw(AHTML.beginMultiColumnTable(100, 1));
       xResultData.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"AttributeType", "Occurances"}));
       for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
@@ -48,7 +49,7 @@ public class ReportAttributeTypesUsageBlam extends AbstractBlam {
          xResultData.addRaw(AHTML.addRowMultiColumnTable(attributeType.getName(), String.valueOf(arts.size())));
       }
       xResultData.addRaw(AHTML.endMultiColumnTable());
-      XResultDataUI.report(xResultData, getName() + " " + branch.getName());
+      XResultDataUI.report(xResultData, getName() + " " + BranchManager.getBranchName(branch));
    }
 
    @Override

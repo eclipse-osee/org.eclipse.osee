@@ -22,7 +22,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
@@ -63,10 +62,10 @@ public final class WordTemplateFileDiffer {
       renderer.setOption(WordTemplateProcessor.PUBLISH_AS_DIFF, false);
       renderer.setOption("RecurseChildren", recurseChildren);
 
-      IOseeBranch endBranch = renderer.getBranchOption("Branch");
+      BranchId endBranch = renderer.getBranchOption("Branch");
       renderer.setOption("Diff Branch", endBranch);
 
-      IOseeBranch compareBranch = renderer.getBranchOption("compareBranch");
+      BranchId compareBranch = renderer.getBranchOption("compareBranch");
 
       TransactionToken startTransaction;
 

@@ -16,8 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -102,8 +102,8 @@ public class VariableMap {
       return getValue(String.class, parameterName);
    }
 
-   public IOseeBranch getBranch(String parameterName) throws OseeArgumentException {
-      return getValue(IOseeBranch.class, parameterName);
+   public BranchId getBranch(String parameterName) throws OseeArgumentException {
+      return getValue(BranchId.class, parameterName);
    }
 
    public boolean getBoolean(String parameterName) throws OseeArgumentException {

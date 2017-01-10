@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -43,7 +43,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
       return "Set Verification Level for Subsystem Requirements";
    }
 
-   private IOseeBranch branch;
+   private BranchId branch;
    private Collection<Artifact> subsystemRequirements;
    private StringBuilder report;
    private SkynetTransaction transaction;

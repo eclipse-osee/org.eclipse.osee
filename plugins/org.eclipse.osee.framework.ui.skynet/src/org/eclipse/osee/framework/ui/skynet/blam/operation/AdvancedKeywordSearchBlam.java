@@ -17,8 +17,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -48,7 +48,7 @@ public class AdvancedKeywordSearchBlam extends AbstractBlam {
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       IArtifactType ofArtifactType = variableMap.getArtifactType("Filter results by Artifact Type");
-      IOseeBranch branch = variableMap.getBranch("Branch");
+      BranchId branch = variableMap.getBranch("Branch");
       if (branch == null) {
          AWorkbench.popup("Must enter Branch");
          return;
@@ -95,11 +95,11 @@ public class AdvancedKeywordSearchBlam extends AbstractBlam {
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets>" + //
-      "<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" />" + //
-      "<XWidget xwidgetType=\"XText\" fill=\"Vertically\"  displayName=\"Keyword groups (one set of keywords per line)\" />" + //
-      "<XWidget xwidgetType=\"XArtifactTypeComboViewer\" displayName=\"Filter results by Artifact Type\" />" + //
-      "<XWidget xwidgetType=\"XAttributeTypeMultiChoiceSelect\" displayName=\"Include Attribute Values in Results\" />" + //
-      "</xWidgets>";
+         "<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" />" + //
+         "<XWidget xwidgetType=\"XText\" fill=\"Vertically\"  displayName=\"Keyword groups (one set of keywords per line)\" />" + //
+         "<XWidget xwidgetType=\"XArtifactTypeComboViewer\" displayName=\"Filter results by Artifact Type\" />" + //
+         "<XWidget xwidgetType=\"XAttributeTypeMultiChoiceSelect\" displayName=\"Include Attribute Values in Results\" />" + //
+         "</xWidgets>";
    }
 
    @Override

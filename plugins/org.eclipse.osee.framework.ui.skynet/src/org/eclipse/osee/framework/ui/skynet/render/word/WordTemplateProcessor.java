@@ -45,9 +45,9 @@ import org.eclipse.osee.define.report.api.DataRightResult;
 import org.eclipse.osee.define.report.api.PageOrientation;
 import org.eclipse.osee.define.report.api.ReportConstants;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -325,7 +325,7 @@ public class WordTemplateProcessor {
             String artifactName = renderer.getStringOption("Name");
             String artifactId = renderer.getStringOption("Id");
             String orcsQuery = renderer.getStringOption("OrcsQuery");
-            IOseeBranch branch = renderer.getBranchOption("Branch");
+            BranchId branch = renderer.getBranchOption("Branch");
             List<Artifact> artifacts = null;
 
             if (Strings.isValid(artifactId)) {
@@ -359,7 +359,7 @@ public class WordTemplateProcessor {
       }
    }
 
-   private List<Artifact> parseOrcsQueryResult(String result, IOseeBranch branch) {
+   private List<Artifact> parseOrcsQueryResult(String result, BranchId branch) {
       ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
       try {
          JSONObject jsonObject = new JSONObject(result);

@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -265,7 +265,7 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    @Override
-   public IOseeBranch getBranchOption(String key) throws OseeArgumentException {
+   public BranchId getBranchOption(String key) throws OseeArgumentException {
       return options.getBranch(key);
    }
 

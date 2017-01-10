@@ -15,8 +15,8 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -136,7 +136,7 @@ public interface IRenderer {
 
    public boolean getBooleanOption(String key) throws OseeArgumentException;
 
-   public IOseeBranch getBranchOption(String key) throws OseeArgumentException;
+   public BranchId getBranchOption(String key) throws OseeArgumentException;
 
    public IRenderer newInstance() throws OseeCoreException;
 

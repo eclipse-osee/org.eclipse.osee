@@ -24,8 +24,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.data.BaseTraceDataCache;
@@ -37,7 +37,7 @@ import org.eclipse.osee.define.traceability.report.ArtifactToRelatedArtifact;
 import org.eclipse.osee.define.traceability.report.ArtifactTraceCount;
 import org.eclipse.osee.define.traceability.report.ArtifactsWithoutRelations;
 import org.eclipse.osee.define.traceability.report.IReportDataCollector;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -147,7 +147,7 @@ public class TraceReportBlam extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
 
       //      String fileName = variableMap.getString("Select UI List File");
-      IOseeBranch branch = variableMap.getBranch("Requirements Branch");
+      BranchId branch = variableMap.getBranch("Requirements Branch");
       if (branch == null) {
          throw new OseeArgumentException("Branch cannot be null");
       }
