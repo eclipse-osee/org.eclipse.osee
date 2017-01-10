@@ -14,7 +14,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -50,11 +49,10 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
                return;
             }
             try {
-               IOseeBranch parentBranch =
-                  AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(getTeamArt());
+               String parentBranchName = AtsClientService.get().getBranchService().getBranchName(getTeamArt());
                // Retrieve parent branch to create working branch from
                if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Create Working Branch",
-                  "Create a working branch from parent branch\n\n\"" + parentBranch.getName() + "\"?\n\n" + "NOTE: Working branches are necessary when OSEE Artifact changes " + "are made during implementation.")) {
+                  "Create a working branch from parent branch\n\n\"" + parentBranchName + "\"?\n\n" + "NOTE: Working branches are necessary when OSEE Artifact changes " + "are made during implementation.")) {
                   disableAll = false;
                   refreshEnablement(button);
                   return;

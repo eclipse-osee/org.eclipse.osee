@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -69,7 +68,7 @@ public class XWorkingBranchUpdate extends XWorkingBranchButtonAbstract {
                      return;
                   }
                   IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
-                  IOseeBranch targetedBranch =
+                  BranchId targetedBranch =
                      AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamWf);
                   if (BranchManager.isUpdatable(branchToUpdate)) {
                      if (BranchManager.getState(branchToUpdate).isRebaselineInProgress()) {
@@ -79,7 +78,8 @@ public class XWorkingBranchUpdate extends XWorkingBranchButtonAbstract {
                            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Update Branch",
                            String.format(
                               "Are you sure you want to update [%s] branch from Targeted Version or Team Configured branch [%s]",
-                              branchToUpdate.getName(), targetedBranch.getName()));
+                              branchToUpdate.getName(),
+                              AtsClientService.get().getBranchService().getBranchName(teamWf)));
                         if (isUserSure) {
                            BranchManager.updateBranch(branchToUpdate, targetedBranch, new UserConflictResolver());
                         }

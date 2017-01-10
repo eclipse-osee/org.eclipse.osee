@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -274,7 +273,7 @@ public final class BranchManager {
       return Operations.executeAsJob(operation, true);
    }
 
-   public static Job updateBranch(Branch branch, IOseeBranch fromBranch, ConflictResolverOperation resolver) {
+   public static Job updateBranch(Branch branch, BranchId fromBranch, ConflictResolverOperation resolver) {
       IOperation operation = new UpdateBranchOperation(branch, fromBranch, resolver);
       return Operations.executeAsJob(operation, true);
    }
@@ -471,8 +470,7 @@ public final class BranchManager {
    }
 
    public static IOseeBranch createWorkingBranch(TransactionToken parentTransaction, String branchName, ArtifactId associatedArtifact) throws OseeCoreException {
-      return createBranch(BranchType.WORKING, parentTransaction, IOseeBranch.create(branchName),
-         associatedArtifact);
+      return createBranch(BranchType.WORKING, parentTransaction, IOseeBranch.create(branchName), associatedArtifact);
    }
 
    public static BranchId createBaselineBranch(BranchId parentBranch, IOseeBranch childBranch) throws OseeCoreException {

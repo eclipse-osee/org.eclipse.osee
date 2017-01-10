@@ -38,9 +38,9 @@ public interface IAtsBranchService {
 
    IOseeBranch getBranch(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
-   IOseeBranch getBranch(IAtsConfigObject configObject);
+   BranchId getBranch(IAtsConfigObject configObject);
 
-   IOseeBranch getBranch(ICommitConfigItem configObject);
+   BranchId getBranch(ICommitConfigItem configObject);
 
    String getBranchShortName(ICommitConfigItem commitConfigArt);
 
@@ -85,7 +85,7 @@ public interface IAtsBranchService {
    /**
     * @return Branch that is the configured branch to create working branch from.
     */
-   IOseeBranch getConfiguredBranchForWorkflow(IAtsTeamWorkflow teamWf);
+   BranchId getConfiguredBranchForWorkflow(IAtsTeamWorkflow teamWf);
 
    /**
     * @return working branch or null if does not exist
@@ -131,6 +131,8 @@ public interface IAtsBranchService {
    TransactionToken getBaseTransaction(BranchId branch);
 
    String getBranchName(IAtsTeamWorkflow teamWf);
+
+   String getBranchName(BranchId branchId);
 
    void setBranchName(IOseeBranch branch, String name);
 }

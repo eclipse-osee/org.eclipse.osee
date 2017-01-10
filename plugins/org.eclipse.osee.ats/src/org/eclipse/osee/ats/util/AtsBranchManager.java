@@ -217,8 +217,7 @@ public final class AtsBranchManager {
    public static void showChangeReport(TeamWorkFlowArtifact teamArt) {
       try {
          if (AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt)) {
-            IOseeBranch parentBranch =
-               AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamArt);
+            BranchId parentBranch = AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamArt);
             Conditions.assertNotNull(parentBranch,
                "Parent Branch can not be null. Set Targeted Version or configure Team for Parent Branch");
             IOseeBranch workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt);

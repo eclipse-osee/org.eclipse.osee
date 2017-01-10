@@ -39,7 +39,7 @@ public class UpdateBranchOperation extends AbstractOperation {
       this(branch, null, resolver);
    }
 
-   public UpdateBranchOperation(final IOseeBranch branch, final IOseeBranch fromBranch, final ConflictResolverOperation resolver) {
+   public UpdateBranchOperation(final IOseeBranch branch, final BranchId fromBranch, final ConflictResolverOperation resolver) {
       super(String.format("Update Branch [%s]", branch.getShortName()), Activator.PLUGIN_ID);
       this.originalBranch = branch;
       this.resolver = resolver;

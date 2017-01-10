@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
@@ -166,11 +165,10 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
                return;
             }
             try {
-               IOseeBranch parentBranch =
-                  AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamArt);
+               String parentBranchName = AtsClientService.get().getBranchService().getBranchName(teamArt);
                // Retrieve parent branch to create working branch from
                if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Create Working Branch",
-                  "Create a working branch from parent branch\n\n\"" + parentBranch.getName() + "\"?\n\n" + "NOTE: Working branches are necessary when OSEE Artifact changes " + "are made during implementation.")) {
+                  "Create a working branch from parent branch\n\n\"" + parentBranchName + "\"?\n\n" + "NOTE: Working branches are necessary when OSEE Artifact changes " + "are made during implementation.")) {
                   enablement.refresh();
                   refreshEnablement();
                   return;

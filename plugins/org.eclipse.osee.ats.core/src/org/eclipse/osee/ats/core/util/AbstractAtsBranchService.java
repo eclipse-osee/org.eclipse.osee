@@ -109,8 +109,8 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public IOseeBranch getConfiguredBranchForWorkflow(IAtsTeamWorkflow teamWf) {
-      IOseeBranch parentBranch = null;
+   public BranchId getConfiguredBranchForWorkflow(IAtsTeamWorkflow teamWf) {
+      BranchId parentBranch = null;
 
       // Check for parent branch uuid in Version artifact
       if (teamWf.getTeamDefinition().isTeamUsesVersions()) {
@@ -330,12 +330,12 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public IOseeBranch getBranch(IAtsConfigObject configObject) {
-      IOseeBranch branch = null;
+   public BranchId getBranch(IAtsConfigObject configObject) {
+      BranchId branch = null;
       if (configObject instanceof IAtsVersion) {
          IAtsVersion version = (IAtsVersion) configObject;
-         if (version.getBaselineBranchUuid() > 0) {
-            branch = getBranchByUuid(version.getBaselineBranchUuid());
+         if (version.getBaselineBranchId().isValid()) {
+            branch = version.getBaselineBranchId();
          }
       }
       if (branch == null && configObject instanceof IAtsTeamDefinition) {
@@ -364,7 +364,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public IOseeBranch getBranch(ICommitConfigItem configObject) {
+   public BranchId getBranch(ICommitConfigItem configObject) {
       return getBranch((IAtsConfigObject) configObject);
    }
 

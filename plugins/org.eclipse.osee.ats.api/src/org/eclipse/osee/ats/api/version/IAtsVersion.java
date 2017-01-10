@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Date;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.Result;
 
 /**
@@ -39,8 +40,7 @@ public interface IAtsVersion extends ICommitConfigItem, IAtsConfigObject {
    /**
     * @return directly configured baseline branch uuid or parentTeamDefinition's branch uuid
     */
-   @Override
-   long getBaselineBranchUuid();
+   BranchId getBaselineBranchId();
 
    long getBaselineBranchUuidInherited();
 

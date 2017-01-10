@@ -611,9 +611,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             IAtsVersion version = AtsClientService.get().getCache().getAtsObject(artifact.getId());
             if (version != null) {
                try {
-                  long parentBranchUuid = version.getBaselineBranchUuid();
-                  if (parentBranchUuid > 0) {
-                     validateBranchUuid(version, parentBranchUuid, results);
+                  BranchId parentBranchId = version.getBaselineBranchId();
+                  if (parentBranchId.isValid()) {
+                     validateBranchUuid(version, parentBranchId, results);
                   }
                   if (AtsClientService.get().getVersionService().getTeamDefinition(version) == null) {
                      results.log(artifact, "testVersionArtifacts",
@@ -669,7 +669,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             try {
                long parentBranchUuid = teamDef.getBaselineBranchUuid();
                if (parentBranchUuid > 0) {
-                  validateBranchUuid(teamDef, parentBranchUuid, results);
+                  validateBranchUuid(teamDef, BranchId.valueOf(parentBranchUuid), results);
                }
             } catch (Exception ex) {
                results.log("testTeamDefinitionss",
@@ -761,25 +761,25 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       results.logTestTimeSpent(date, "testAtsBranchManager");
    }
 
-   public static void validateBranchUuid(IAtsConfigObject name, long parentBranchUuid, ValidateResults results) {
+   public static void validateBranchUuid(IAtsConfigObject name, BranchId parentBranchId, ValidateResults results) {
       Date date = new Date();
       try {
-         BranchId branch = BranchId.valueOf(parentBranchUuid);
+         BranchId branch = parentBranchId;
          if (BranchManager.isArchived(branch)) {
             results.log("validateBranchUuid",
                String.format(
                   "Error: [%s][%d][%s] has Parent Branch Uuid attribute set to Archived Branch [%s] named [%s]",
-                  name.getName(), name.getId(), name, parentBranchUuid, branch));
+                  name.getName(), name.getId(), name, parentBranchId, branch));
          } else if (!BranchManager.getType(branch).isBaselineBranch()) {
             results.log("validateBranchUuid",
                String.format(
                   "Error: [%s][%d][%s] has Parent Branch Uuid attribute [%s][%s] that is a [%s] branch; should be a BASELINE branch",
-                  name.getName(), name.getId(), name, BranchManager.getType(branch).name(), parentBranchUuid, branch));
+                  name.getName(), name.getId(), name, BranchManager.getType(branch).name(), parentBranchId, branch));
          }
       } catch (BranchDoesNotExist ex) {
          results.log("validateBranchUuid",
             String.format("Error: [%s][%d][%s] has Parent Branch Uuid attribute [%s] that references a non-existant",
-               name.getName(), name.getId(), name, parentBranchUuid));
+               name.getName(), name.getId(), name, parentBranchId));
       } catch (Exception ex) {
          results.log("validateBranchUuid",
             "Error: " + name.getName() + " [" + name.toStringWithId() + "] exception: " + ex.getLocalizedMessage());

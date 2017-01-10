@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
@@ -45,7 +44,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    public IOseeBranch getWorkingBranchExcludeStates(IAtsTeamWorkflow teamWf, BranchState... negatedBranchStates) {
       BranchFilter branchFilter = new BranchFilter(BranchType.WORKING, BranchType.BASELINE);
       branchFilter.setNegatedBranchStates(negatedBranchStates);
-      branchFilter.setAssociatedArtifact((Artifact) teamWf.getStoreObject());
+      branchFilter.setAssociatedArtifact(teamWf.getStoreObject());
 
       return BranchManager.getBranch(branchFilter);
    }
@@ -54,7 +53,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    public IOseeBranch getCommittedWorkingBranch(IAtsTeamWorkflow teamWf) {
       BranchFilter branchFilter = new BranchFilter(BranchType.WORKING);
       branchFilter.setBranchStates(BranchState.COMMITTED);
-      branchFilter.setAssociatedArtifact((Artifact) teamWf.getStoreObject());
+      branchFilter.setAssociatedArtifact(teamWf.getStoreObject());
       return BranchManager.getBranch(branchFilter);
    }
 
@@ -113,5 +112,10 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public void setBranchName(IOseeBranch branch, String name) {
       BranchManager.setName(branch, name);
+   }
+
+   @Override
+   public String getBranchName(BranchId branch) {
+      return BranchManager.getBranchName(branch);
    }
 }

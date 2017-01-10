@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -121,12 +122,6 @@ public class Version extends AtsConfigObject implements IAtsVersion {
    }
 
    @Override
-   public long getBaselineBranchUuid() {
-      return Long.parseLong(
-         services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.BaselineBranchUuid, "-1"));
-   }
-
-   @Override
    public long getBaselineBranchUuidInherited() {
       if (getBaselineBranchUuid() > 0) {
          return getBaselineBranchUuid();
@@ -142,6 +137,19 @@ public class Version extends AtsConfigObject implements IAtsVersion {
             return 0;
          }
       }
+   }
+
+   @Override
+   public BranchId getBaselineBranchId() {
+      return BranchId.valueOf(
+         services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.BaselineBranchUuid, "-1"));
+   }
+
+   @Override
+   //   TODO: Remove after fixing
+   public long getBaselineBranchUuid() throws OseeCoreException {
+      return Long.parseLong(
+         services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.BaselineBranchUuid, "-1"));
    }
 
 }
