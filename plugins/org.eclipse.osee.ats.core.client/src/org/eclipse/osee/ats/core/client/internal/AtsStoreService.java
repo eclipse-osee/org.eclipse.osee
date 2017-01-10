@@ -13,9 +13,11 @@ package org.eclipse.osee.ats.core.client.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -37,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
+import org.eclipse.osee.jdbc.JdbcService;
 
 /**
  * @author Donald G. Dunne
@@ -44,10 +47,12 @@ import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 public class AtsStoreService implements IAtsStoreService {
    private final IAtsWorkItemFactory workItemFactory;
    private final IAtsUserService userService;
+   private final JdbcService jdbcService;
 
-   public AtsStoreService(IAtsWorkItemFactory workItemFactory, IAtsUserService userService) {
+   public AtsStoreService(IAtsWorkItemFactory workItemFactory, IAtsUserService userService, JdbcService jdbcService) {
       this.workItemFactory = workItemFactory;
       this.userService = userService;
+      this.jdbcService = jdbcService;
    }
 
    @Override
@@ -149,4 +154,19 @@ public class AtsStoreService implements IAtsStoreService {
       }
       changes.execute();
    }
+
+   @Override
+   public IArtifactType getArtifactType(Long artTypeId) {
+      return ArtifactTypeManager.getTypeByGuid(artTypeId);
+   }
+
+   @Override
+   public Map<Long, IArtifactType> getArtifactTypes(Collection<Long> artIds) {
+      Map<Long, IArtifactType> artIdToType = new HashMap<>();
+      jdbcService.getClient().runQuery(
+         stmt -> artIdToType.put(stmt.getLong("art_id"), getArtifactType(stmt.getLong("art_type_id"))), String.format(
+            ART_TYPE_FROM_ID_QUERY, org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", artIds)));
+      return artIdToType;
+   }
+
 }

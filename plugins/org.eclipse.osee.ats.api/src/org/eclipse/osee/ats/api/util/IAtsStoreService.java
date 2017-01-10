@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api.util;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -22,6 +23,9 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 
 public interface IAtsStoreService {
+
+   public static final String ART_TYPE_FROM_ID_QUERY =
+      "select art_id, art_type_id from osee_artifact where art_id in (%s)";
 
    IAtsChangeSet createAtsChangeSet(String comment, IAtsUser user);
 
@@ -48,8 +52,12 @@ public interface IAtsStoreService {
 
    boolean isOfType(ArtifactId artifact, IArtifactType... artifactType);
 
+   IArtifactType getArtifactType(Long artTypeId);
+
    void executeChangeSet(String comment, IAtsObject atsObject);
 
    void executeChangeSet(String comment, Collection<? extends IAtsObject> atsObjects);
+
+   Map<Long, IArtifactType> getArtifactTypes(Collection<Long> artIds);
 
 }

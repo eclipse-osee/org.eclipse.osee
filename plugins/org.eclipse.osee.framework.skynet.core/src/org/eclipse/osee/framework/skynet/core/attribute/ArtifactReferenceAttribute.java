@@ -18,9 +18,15 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class ArtifactReferenceAttribute extends IdentityReferenceAttribute<Artifact> {
 
+   Long rawValue;
+
    @Override
    protected boolean subClassSetValue(Artifact artifact) throws OseeCoreException {
+      rawValue = artifact == null ? null : artifact.getUuid();
       return getAttributeDataProvider().setValue(artifact == null ? "" : String.valueOf(artifact.getUuid()));
    }
 
+   public Long getRawValue() {
+      return rawValue;
+   }
 }

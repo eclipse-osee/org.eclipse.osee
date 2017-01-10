@@ -79,6 +79,7 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactReferenceAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -661,25 +662,41 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
     */
 
    public final String getSoleAttributeValueAsString(AttributeTypeId attributeType, String defaultReturnValue) throws OseeCoreException, MultipleAttributesExist {
-
-      String toReturn = null;
-      Object value = getSoleAttributeValue(attributeType, defaultReturnValue);
-      if (value instanceof InputStream) {
-         InputStream inputStream = (InputStream) value;
-         try {
-            toReturn = Lib.inputStreamToString(inputStream);
-         } catch (IOException ex) {
-            OseeCoreException.wrapAndThrow(ex);
-         } finally {
-            try {
-               inputStream.close();
-            } catch (IOException ex) {
-               OseeCoreException.wrapAndThrow(ex);
+      String toReturn = defaultReturnValue;
+      if (AttributeTypeManager.isBaseTypeCompatible(ArtifactReferenceAttribute.class, attributeType)) {
+         List<Attribute<Object>> soleAttributes = getAttributes(attributeType);
+         if (soleAttributes.size() == 1) {
+            String value = (String) soleAttributes.iterator().next().getAttributeDataProvider().getData()[0];
+            if (value == null) {
+               return defaultReturnValue;
             }
+            return value;
+         } else if (soleAttributes.size() > 1) {
+            throw new MultipleAttributesExist(
+               "Attribute [%s] must have exactly one instance.  It currently has %d for artifact [%s] on branch [%d]",
+               attributeType, soleAttributes.size(), getGuid(), getBranchId());
+         } else {
+            return defaultReturnValue;
          }
       } else {
-         if (value != null) {
-            toReturn = value.toString();
+         Object value = getSoleAttributeValue(attributeType, defaultReturnValue);
+         if (value instanceof InputStream) {
+            InputStream inputStream = (InputStream) value;
+            try {
+               toReturn = Lib.inputStreamToString(inputStream);
+            } catch (IOException ex) {
+               OseeCoreException.wrapAndThrow(ex);
+            } finally {
+               try {
+                  inputStream.close();
+               } catch (IOException ex) {
+                  OseeCoreException.wrapAndThrow(ex);
+               }
+            }
+         } else {
+            if (value != null) {
+               toReturn = value.toString();
+            }
          }
       }
       return toReturn;

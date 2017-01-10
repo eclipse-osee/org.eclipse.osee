@@ -62,6 +62,9 @@ public class AtsColumnToken {
    public static AtsColumnIdValueColumn CompletedCancelledDateColumn =
       new AtsColumnIdValueColumn(AtsColumnId.CompletedCancelledDate, "Completed or Cancelled Date", 80,
          ColumnAlign.Left.name(), false, ColumnType.Date, false, "Date action to completed or cancelled", false, false);
+   public static AtsColumnIdValueColumn TaskToRelatedArtifactTypeColumnToken = new AtsColumnIdValueColumn(
+      AtsColumnId.TaskToRelatedArtifactType, "Task To Related Artifact Type", 110, ColumnAlign.Left.name(), false,
+      ColumnType.String, false, "Shows the Artifact Type of the Related Artifact", false, false);
 
    // AttributeValue columns
    public static AtsAttributeValueColumn NotesColumn = new AtsAttributeValueColumn(AtsAttributeTypes.SmaNote,

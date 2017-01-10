@@ -104,6 +104,7 @@ import org.eclipse.osee.ats.column.ReviewNumMinorDefectsColumn;
 import org.eclipse.osee.ats.column.ReviewReviewerColumn;
 import org.eclipse.osee.ats.column.StartDateColumn;
 import org.eclipse.osee.ats.column.TargetedVersionColumnUI;
+import org.eclipse.osee.ats.column.TaskRelatedArtifactTypeColumnUI;
 import org.eclipse.osee.ats.column.ValidationRequiredColumn;
 import org.eclipse.osee.ats.column.WeeklyBenefitHrsColumn;
 import org.eclipse.osee.ats.column.WorkDaysNeededColumn;
@@ -282,7 +283,8 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          RelatedArtifactChangedColumn.getInstance(),
          RelatedArtifactLastModifiedByColumn.getInstance(),
          RelatedArtifactLastModifiedDateColumn.getInstance(),
-         new UuidColumn(false)};
+         TaskRelatedArtifactTypeColumnUI.getInstance(),
+         new UuidColumn(false),};
    }
 
    /**

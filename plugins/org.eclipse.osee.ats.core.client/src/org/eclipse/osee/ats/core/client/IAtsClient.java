@@ -36,12 +36,16 @@ import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolverProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsCacheProvider, ITeamDefinitionFactory, IActionableItemFactory, IAtsVersionServiceProvider {
 
+   /**
+    * @return corresponding Artifact or null if not found
+    */
    @Override
    Artifact getArtifact(ArtifactId artifact);
 
@@ -105,5 +109,7 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
    void reloadConfigCache(boolean pend);
 
    void reloadUserCache(boolean pend);
+
+   OseeClient getOseeClient();
 
 }

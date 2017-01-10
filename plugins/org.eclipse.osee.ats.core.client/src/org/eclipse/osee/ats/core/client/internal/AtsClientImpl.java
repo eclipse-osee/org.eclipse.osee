@@ -73,6 +73,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -84,6 +85,7 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
 
 /**
  * @author Donald G. Dunne
@@ -125,7 +127,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
       logFactory = AtsCoreFactory.newLogFactory();
       stateFactory = AtsCoreFactory.newStateFactory(getServices(), logFactory);
-      storeService = new AtsStoreService(workItemFactory, getUserServiceClient());
+      storeService = new AtsStoreService(workItemFactory, getUserServiceClient(), jdbcService);
 
       queryService = new AtsQueryServiceImpl(this, jdbcService);
       actionableItemManager = new ActionableItemManager(attributeResolverService, storeService, this);
@@ -473,6 +475,11 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    @Override
    public IAtsChangeSet createChangeSet(String comment) {
       return getStoreService().createAtsChangeSet(comment, getUserService().getCurrentUser());
+   }
+
+   @Override
+   public OseeClient getOseeClient() {
+      return OsgiUtil.getService(getClass(), OseeClient.class);
    }
 
 }

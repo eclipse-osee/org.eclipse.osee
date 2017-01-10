@@ -140,7 +140,8 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
 
       logFactory = AtsCoreFactory.newLogFactory();
       stateFactory = AtsCoreFactory.newStateFactory(getServices(), logFactory);
-      storeService = new AtsStoreServiceImpl(attributeResolverService, this, stateFactory, logFactory, this);
+      storeService =
+         new AtsStoreServiceImpl(attributeResolverService, this, stateFactory, logFactory, this, jdbcService);
 
       utilService = AtsCoreFactory.getUtilService(attributeResolverService);
       queryService = new AtsQueryServiceImpl(this, jdbcService);

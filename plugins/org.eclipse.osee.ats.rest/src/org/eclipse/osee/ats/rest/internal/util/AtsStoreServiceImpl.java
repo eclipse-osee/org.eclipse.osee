@@ -13,9 +13,11 @@ package org.eclipse.osee.ats.rest.internal.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -34,6 +36,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -46,13 +49,15 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    private final IAtsLogFactory logFactory;
    private final IAtsNotifier notifier;
    private final IAtsServer atsServer;
+   private final JdbcService jdbcService;
 
-   public AtsStoreServiceImpl(IAttributeResolver attributeResolver, IAtsServer atsServer, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, IAtsNotifier notifier) {
+   public AtsStoreServiceImpl(IAttributeResolver attributeResolver, IAtsServer atsServer, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, IAtsNotifier notifier, JdbcService jdbcService) {
       this.atsServer = atsServer;
       this.attributeResolver = attributeResolver;
       this.logFactory = logFactory;
       this.stateFactory = stateFactory;
       this.notifier = notifier;
+      this.jdbcService = jdbcService;
    }
 
    @Override
@@ -137,6 +142,20 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
          changes.add(atsObject);
       }
       changes.execute();
+   }
+
+   @Override
+   public IArtifactType getArtifactType(Long artTypeId) {
+      return atsServer.getOrcsApi().getOrcsTypes().getArtifactTypes().get(artTypeId);
+   }
+
+   @Override
+   public Map<Long, IArtifactType> getArtifactTypes(Collection<Long> artIds) {
+      Map<Long, IArtifactType> artIdToType = new HashMap<>();
+      jdbcService.getClient().runQuery(
+         stmt -> artIdToType.put(stmt.getLong("art_id"), getArtifactType(stmt.getLong("art_type_id"))), String.format(
+            ART_TYPE_FROM_ID_QUERY, org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", artIds)));
+      return artIdToType;
    }
 
 }

@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.core.column.PercentCompleteTasksColumn;
 import org.eclipse.osee.ats.core.column.SprintOrderColumn;
 import org.eclipse.osee.ats.core.column.StateColumn;
 import org.eclipse.osee.ats.core.column.TargetedVersionColumn;
+import org.eclipse.osee.ats.core.column.TaskRelatedArtifactTypeColumn;
 import org.eclipse.osee.ats.core.column.TeamColumn;
 import org.eclipse.osee.ats.core.column.TitleColumn;
 import org.eclipse.osee.ats.core.column.TypeColumn;
@@ -143,6 +144,8 @@ public class AtsColumnService implements IAtsColumnService {
             column = new CompletedCancelledDateColumn(services);
          } else if (id.equals(AtsColumnId.AgileFeatureGroup.getId())) {
             column = new AgileFeatureGroupColum(services);
+         } else if (id.equals(AtsColumnId.TaskToRelatedArtifactType.getId())) {
+            column = new TaskRelatedArtifactTypeColumn(services);
          }
       }
       // Add columns provided through OSGI services

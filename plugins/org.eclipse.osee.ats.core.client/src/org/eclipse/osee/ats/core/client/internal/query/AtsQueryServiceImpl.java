@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
+import org.eclipse.osee.ats.api.query.IAtsOrcsScriptQuery;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
 import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
@@ -230,6 +231,11 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    @Override
    public Collection<ArtifactId> getArtifacts(List<Integer> ids, BranchId branch) {
       return Collections.castAll(ArtifactQuery.getArtifactListFromIds(ids, branch));
+   }
+
+   @Override
+   public IAtsOrcsScriptQuery createOrcsScriptQuery(String query, Object... data) {
+      return new AtsOrcsScriptQuery(String.format(query, data), atsClient);
    }
 
 }

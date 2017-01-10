@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.world;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,8 +19,10 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
@@ -40,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * Common location for event handling for task and world composites in order to keep number of registrations and
@@ -109,6 +109,28 @@ public class WorldXViewerEventManager {
          Collection<EventBasicGuidArtifact> deletedPurgedArts =
             artifactEvent.get(EventModType.Deleted, EventModType.Purged);
          Collection<Artifact> goalMemberReordered = new HashSet<>();
+
+         // create list of items to updatePreComputedColumnValues; includes arts and parent arts
+         Set<Artifact> allModAndParents = new HashSet<>((modifiedArts.size() * 2) + relModifiedArts.size());
+         for (Artifact art : modifiedArts) {
+            allModAndParents.add(art);
+            if (art instanceof IAtsWorkItem) {
+               IAtsTeamWorkflow teamWf = ((IAtsWorkItem) art).getParentTeamWorkflow();
+               if (teamWf != null) {
+                  allModAndParents.add((Artifact) teamWf.getStoreObject());
+               }
+            }
+         }
+         for (Artifact art : relModifiedArts) {
+            allModAndParents.add(art);
+            if (art instanceof IAtsWorkItem) {
+               IAtsTeamWorkflow teamWf = ((IAtsWorkItem) art).getParentTeamWorkflow();
+               if (teamWf != null) {
+                  allModAndParents.add((Artifact) teamWf.getStoreObject());
+               }
+            }
+         }
+
          for (DefaultBasicUuidRelationReorder reorder : artifactEvent.getRelationOrderRecords()) {
             if (reorder.is(AtsRelationTypes.Goal_Member)) {
                Artifact cachedArt = ArtifactCache.getActive(reorder.getParentArt());
@@ -126,8 +148,9 @@ public class WorldXViewerEventManager {
                }
             }
          }
-         return new DisplayRunnable(modifiedArts, relModifiedArts, deletedPurgedArts, goalMemberReordered,
-            sprintMemberReordered, handlers);
+
+         return new DisplayRunnable(modifiedArts, allModAndParents, relModifiedArts, deletedPurgedArts,
+            goalMemberReordered, sprintMemberReordered, handlers);
       }
    }
 
@@ -138,10 +161,12 @@ public class WorldXViewerEventManager {
       private final Collection<IWorldViewerEventHandler> handlers;
       private final Collection<Artifact> goalMemberReordered;
       private final Collection<Artifact> sprintMemberReordered;
+      private final Collection<Artifact> allModAndParents;
 
-      public DisplayRunnable(Collection<Artifact> modifiedArts, Collection<Artifact> relModifiedArts, Collection<EventBasicGuidArtifact> deletedPurgedArts, Collection<Artifact> goalMemberReordered, Collection<Artifact> sprintMemberReordered, Collection<IWorldViewerEventHandler> handlers) {
+      public DisplayRunnable(Collection<Artifact> modifiedArts, Collection<Artifact> allModAndParents, Collection<Artifact> relModifiedArts, Collection<EventBasicGuidArtifact> deletedPurgedArts, Collection<Artifact> goalMemberReordered, Collection<Artifact> sprintMemberReordered, Collection<IWorldViewerEventHandler> handlers) {
          super();
          this.modifiedArts = modifiedArts;
+         this.allModAndParents = allModAndParents;
          this.relModifiedArts = relModifiedArts;
          this.deletedPurgedArts = deletedPurgedArts;
          this.goalMemberReordered = goalMemberReordered;
@@ -153,8 +178,6 @@ public class WorldXViewerEventManager {
          try {
             // Don't refresh deleted artifacts
             if (!artifact.isDeleted() && AtsUtil.isAtsArtifact(artifact)) {
-               // Reset pre-computed column
-               clearPreComputedColumnValue(artifact, worldViewer);
                worldViewer.refresh(artifact);
                // If parent is loaded and child changed, refresh parent
                if (artifact instanceof AbstractWorkflowArtifact) {
@@ -175,16 +198,12 @@ public class WorldXViewerEventManager {
          }
       }
 
-      private void clearPreComputedColumnValue(Artifact artifact, WorldXViewer worldViewer) {
+      private void updatePreComputedColumnValue(Collection<Artifact> allModAndParents, WorldXViewer worldViewer) {
          try {
-            for (TreeItem item : worldViewer.getVisibleItems()) {
-               if (item.getData().equals(artifact)) {
-                  for (XViewerColumn column : worldViewer.getCustomizeMgr().getCurrentVisibleTableColumns()) {
-                     if (column instanceof IXViewerPreComputedColumn) {
-                        ((IXViewerPreComputedColumn) column).populateCachedValues(Collections.singleton(artifact),
-                           column.getPreComputedValueMap());
-                     }
-                  }
+            for (XViewerColumn column : worldViewer.getCustomizeMgr().getCurrentVisibleTableColumns()) {
+               if (column instanceof IXViewerPreComputedColumn) {
+                  ((IXViewerPreComputedColumn) column).populateCachedValues(allModAndParents,
+                     column.getPreComputedValueMap());
                }
             }
          } catch (Exception ex) {
@@ -218,6 +237,9 @@ public class WorldXViewerEventManager {
                if (!handler.isDisposed()) {
                   WorldXViewer worldViewer = handler.getWorldXViewer();
                   if (worldViewer != null && !worldViewer.isDisposed()) {
+                     // update precomputed values in bulk before handling each artifact separately
+                     updatePreComputedColumnValue(allModAndParents, worldViewer);
+
                      processPurged(worldViewer, handler);
                      for (Artifact artifact : modifiedArts) {
                         processArtifact(worldViewer, artifact, processed);

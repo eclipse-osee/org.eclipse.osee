@@ -8,6 +8,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.base,
  com.google.common.cache,
  org.codehaus.jackson,
+ org.codehaus.jackson.annotate,
  org.codehaus.jackson.map,
  org.eclipse.nebula.widgets.xviewer.core.model,
  org.eclipse.osee.framework.core.data,
