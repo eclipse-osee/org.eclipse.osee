@@ -139,9 +139,9 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          return BranchManager.getState(branch).name();
       } else if (cCol.equals(BranchXViewerFactory.branchType)) {
          return BranchManager.getType(branch).name();
-      } else if (cCol.equals(BranchXViewerFactory.branchUuid)) {
+      } else if (cCol.equals(BranchXViewerFactory.branchId)) {
          return String.valueOf(branch.getUuid());
-      } else if (cCol.equals(BranchXViewerFactory.branchUuid)) {
+      } else if (cCol.equals(BranchXViewerFactory.branchId)) {
          return String.valueOf(branch.getUuid());
       } else if (cCol.equals(BranchXViewerFactory.parentBranch)) {
          try {

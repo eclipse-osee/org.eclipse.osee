@@ -37,8 +37,8 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
       XViewerAlign.Left, true, SortDataType.String, false, null);
    public final static XViewerColumn associatedArtifact = new XViewerColumn("framework.branch.assocArt",
       "Associated Artifact", 100, XViewerAlign.Left, false, SortDataType.String, false, null);
-   public final static XViewerColumn branchUuid = new XViewerColumn("framework.branch.uuid", "Branch UUID", 200,
-      XViewerAlign.Left, false, SortDataType.String, false, null);
+   public final static XViewerColumn branchId = new XViewerColumn("framework.branch.uuid", "Branch Id", 200,
+      XViewerAlign.Left, false, SortDataType.Long, false, null);
    public final static XViewerColumn parentBranch = new XViewerColumn("framework.branch.parentBranch", "Parent Branch",
       100, XViewerAlign.Left, false, SortDataType.String, false, null);
    public final static XViewerColumn archivedState = new XViewerColumn("framework.branch.archived", "Archived State",
@@ -53,7 +53,7 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
    public BranchXViewerFactory(IOseeTreeReportProvider reportProvider) {
       super(NAMESPACE, reportProvider);
       registerColumns(branchName, branchType, branchState, timeStamp, author, comment, associatedArtifact, parentBranch,
-         branchUuid, branchUuid, archivedState, inheritAccessControl);
+         branchId, archivedState, inheritAccessControl);
    }
 
    @Override
