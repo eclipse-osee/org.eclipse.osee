@@ -316,10 +316,9 @@ public class QuickSearchView extends GenericViewPart {
                }
 
                if (invalids.isEmpty()) {
-                  DeletionFlag allowDeleted = isIncludeDeletedEnabled() ? INCLUDE_DELETED : EXCLUDE_DELETED;
                   NewSearchUI.activateSearchResultView();
 
-                  ISearchQuery query = new IdArtifactSearch(searchString, branch, allowDeleted);
+                  ISearchQuery query = new IdArtifactSearch(searchString, branch, isIncludeDeletedEnabled());
                   NewSearchUI.runQueryInBackground(query);
                } else {
                   String message =

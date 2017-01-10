@@ -10,14 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import com.google.common.collect.Iterables;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -29,9 +27,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.QueryBuilderArtifa
 final class IdArtifactSearch extends AbstractLegacyArtifactSearchQuery {
    private final String searchString;
    private final BranchId branchToSearch;
-   private final DeletionFlag allowDeleted;
+   private final boolean allowDeleted;
 
-   IdArtifactSearch(String searchString, BranchId branchToSearch, DeletionFlag allowDeleted) {
+   IdArtifactSearch(String searchString, BranchId branchToSearch, boolean allowDeleted) {
       super();
       this.searchString = searchString;
       this.branchToSearch = branchToSearch;
@@ -52,23 +50,21 @@ final class IdArtifactSearch extends AbstractLegacyArtifactSearchQuery {
 
       List<Artifact> toReturn = new LinkedList<>();
 
+      QueryBuilderArtifact query = ArtifactQuery.createQueryBuilder(branchToSearch);
       if (!artIds.isEmpty()) {
-         QueryBuilderArtifact query = ArtifactQuery.createQueryBuilder(branchToSearch);
          query.andLocalIds(artIds);
-         Iterables.addAll(toReturn, query.getResults());
       }
-
       if (!guids.isEmpty()) {
-         QueryBuilderArtifact query = ArtifactQuery.createQueryBuilder(branchToSearch);
          query.andGuids(guids);
-         Iterables.addAll(toReturn, query.getResults());
       }
+      query.includeDeleted(allowDeleted);
+      Iterables.addAll(toReturn, query.getResults());
 
       return toReturn;
    }
 
    @Override
    public String getCriteriaLabel() {
-      return String.format("%s%s", searchString, allowDeleted == INCLUDE_DELETED ? " - Options:[Include Deleted]" : "");
+      return String.format("%s%s", searchString, allowDeleted ? " - Options:[Include Deleted]" : "");
    }
 }
