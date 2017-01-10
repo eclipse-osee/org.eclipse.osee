@@ -17,6 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -32,26 +33,26 @@ public class ArtifactResource {
    @Context
    Request request;
 
-   Long branchUuid;
+   BranchId branchId;
    Long artifactUuid;
 
-   public ArtifactResource(UriInfo uriInfo, Request request, Long branchUuid, Long artifactUuid) {
+   public ArtifactResource(UriInfo uriInfo, Request request, BranchId branchId, Long artifactUuid) {
       this.uriInfo = uriInfo;
       this.request = request;
-      this.branchUuid = branchUuid;
+      this.branchId = branchId;
       this.artifactUuid = artifactUuid;
    }
 
    @Path("attribute")
    public AttributesResource getAttributes() {
-      return new AttributesResource(uriInfo, request, branchUuid, artifactUuid);
+      return new AttributesResource(uriInfo, request, branchId, artifactUuid);
    }
 
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getAsHtml() throws OseeCoreException {
       QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory();
-      ResultSet<ArtifactReadable> arts = factory.fromBranch(branchUuid).andUuid(artifactUuid).getResults();
+      ResultSet<ArtifactReadable> arts = factory.fromBranch(branchId).andUuid(artifactUuid).getResults();
       HtmlWriter writer = new HtmlWriter(uriInfo);
       return writer.toHtml(arts);
    }

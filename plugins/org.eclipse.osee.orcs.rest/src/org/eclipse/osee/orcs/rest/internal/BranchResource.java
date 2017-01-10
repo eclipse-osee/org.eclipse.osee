@@ -17,6 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -33,19 +34,19 @@ public class BranchResource {
    @Context
    Request request;
 
-   Long branchUuid;
+   BranchId branchId;
    OrcsApi orcsApi;
 
-   public BranchResource(UriInfo uriInfo, Request request, Long branchUuid, OrcsApi orcsApi) {
+   public BranchResource(UriInfo uriInfo, Request request, BranchId branchId, OrcsApi orcsApi) {
       this.uriInfo = uriInfo;
       this.request = request;
-      this.branchUuid = branchUuid;
+      this.branchId = branchId;
       this.orcsApi = orcsApi;
    }
 
    @Path("artifact")
    public ArtifactsResource getArtifacts() {
-      return new ArtifactsResource(uriInfo, request, branchUuid, orcsApi);
+      return new ArtifactsResource(uriInfo, request, branchId, orcsApi);
    }
 
    /**
@@ -56,7 +57,7 @@ public class BranchResource {
    @Produces(MediaType.TEXT_HTML)
    public String getAsHtml() throws OseeCoreException {
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
-      ResultSet<BranchReadable> results = query.andUuids(branchUuid).getResults();
+      ResultSet<BranchReadable> results = query.andIds(branchId).getResults();
       HtmlWriter writer = new HtmlWriter(uriInfo);
       return writer.toHtml(results);
    }

@@ -287,7 +287,7 @@ public class OrcsCollectorWriter {
          IRelationType relType = orcsApi.getOrcsTypes().getRelationTypes().get(owRelType.getId());
 
          OwArtifactToken artToken = relation.getArtToken();
-         long branchId = collector.getBranch().getId();
+         BranchId branchId = BranchId.valueOf(collector.getBranch().getId());
          ArtifactReadable otherArtifact = null;
 
          if (idToArtifact.containsKey(artToken.getId())) {

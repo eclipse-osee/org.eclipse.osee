@@ -18,6 +18,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -36,57 +37,57 @@ public class AttributesResource {
    @Context
    private final Request request;
 
-   private final Long branchUuid;
+   private final BranchId branchId;
    private final Long artifactUuid;
 
-   public AttributesResource(UriInfo uriInfo, Request request, Long branchUuid, Long artifactUuid) {
+   public AttributesResource(UriInfo uriInfo, Request request, BranchId branchId, Long artifactUuid) {
       this.uriInfo = uriInfo;
       this.request = request;
-      this.branchUuid = branchUuid;
+      this.branchId = branchId;
       this.artifactUuid = artifactUuid;
    }
 
    @Path("{attributeId}")
    public AttributeResource getAttribute(@PathParam("attributeId") int attributeId) {
-      return new AttributeResource(uriInfo, request, branchUuid, artifactUuid, attributeId);
+      return new AttributeResource(uriInfo, request, branchId, artifactUuid, attributeId);
    }
 
    @Path("{attributeId}/version/{transactionId}/text")
    public AttributeResource getAttributeWithGammaAsText(@PathParam("attributeId") int attributeId, @PathParam("transactionId") TransactionId transactionId) {
       AttributeResource toReturn =
-         new AttributeResource(uriInfo, request, branchUuid, artifactUuid, attributeId, transactionId);
+         new AttributeResource(uriInfo, request, branchId, artifactUuid, attributeId, transactionId);
       toReturn.setTextOut(true);
       return toReturn;
    }
 
    @Path("{attributeId}/version/{transactionId}")
    public AttributeResource getAttributeWithGamma(@PathParam("attributeId") int attributeId, @PathParam("transactionId") TransactionId transactionId) {
-      return new AttributeResource(uriInfo, request, branchUuid, artifactUuid, attributeId, transactionId);
+      return new AttributeResource(uriInfo, request, branchId, artifactUuid, attributeId, transactionId);
    }
 
    @Path("type")
    @Produces(MediaType.TEXT_HTML)
    public AttributeTypeResource getAttributeTypes() {
-      return new AttributeTypeResource(uriInfo, request, branchUuid, artifactUuid);
+      return new AttributeTypeResource(uriInfo, request, branchId, artifactUuid);
    }
 
    @Path("type/{attributeTypeId}")
    @Produces(MediaType.TEXT_HTML)
    public AttributeTypeResource getAttributeTypeValues(@PathParam("attributeTypeId") Long attributeTypeId) {
-      return new AttributeTypeResource(uriInfo, request, branchUuid, artifactUuid, attributeTypeId);
+      return new AttributeTypeResource(uriInfo, request, branchId, artifactUuid, attributeTypeId);
    }
 
    @Path("type/{attributeTypeId}/version/{transactionId}")
    @Produces(MediaType.TEXT_HTML)
    public AttributeTypeResource getAttributeTypeValuesForTransaction(@PathParam("attributeTypeId") Long attributeTypeId, @PathParam("transactionId") TransactionId transactionId) {
-      return new AttributeTypeResource(uriInfo, request, branchUuid, artifactUuid, attributeTypeId, transactionId);
+      return new AttributeTypeResource(uriInfo, request, branchId, artifactUuid, attributeTypeId, transactionId);
    }
 
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getAllAttributes() throws OseeCoreException {
       QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory();
-      ArtifactReadable artifact = factory.fromBranch(branchUuid).andUuid(artifactUuid).getResults().getExactlyOne();
+      ArtifactReadable artifact = factory.fromBranch(branchId).andUuid(artifactUuid).getResults().getExactlyOne();
 
       HtmlWriter writer = new HtmlWriter(uriInfo);
       return writer.toHtml(artifact.getAttributes());

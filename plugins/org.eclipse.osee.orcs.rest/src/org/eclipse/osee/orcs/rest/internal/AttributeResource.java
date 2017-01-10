@@ -23,6 +23,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -41,20 +42,20 @@ public class AttributeResource {
    @Context
    private final Request request;
 
-   private final Long branchUuid;
+   private final BranchId branchId;
    private final Long artifactUuid;
    private final int attrId;
    private final TransactionId transactionId;
    private boolean textOut = false;
 
-   public AttributeResource(UriInfo uriInfo, Request request, Long branchUuid, Long artifactUuid, int attributeId) {
-      this(uriInfo, request, branchUuid, artifactUuid, attributeId, TransactionId.SENTINEL);
+   public AttributeResource(UriInfo uriInfo, Request request, BranchId branchId, Long artifactUuid, int attributeId) {
+      this(uriInfo, request, branchId, artifactUuid, attributeId, TransactionId.SENTINEL);
    }
 
-   public AttributeResource(UriInfo uriInfo, Request request, Long branchUuid, Long artifactUuid, int attributeId, TransactionId transactionId) {
+   public AttributeResource(UriInfo uriInfo, Request request, BranchId branchId, Long artifactUuid, int attributeId, TransactionId transactionId) {
       this.uriInfo = uriInfo;
       this.request = request;
-      this.branchUuid = branchUuid;
+      this.branchId = branchId;
       this.artifactUuid = artifactUuid;
       this.attrId = attributeId;
       this.transactionId = transactionId;
@@ -69,7 +70,7 @@ public class AttributeResource {
       ResponseBuilder builder = Response.noContent();
       try {
          QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory();
-         QueryBuilder queryBuilder = factory.fromBranch(branchUuid).andUuid(artifactUuid);
+         QueryBuilder queryBuilder = factory.fromBranch(branchId).andUuid(artifactUuid);
          if (transactionId.isValid()) {
             queryBuilder.fromTransaction(transactionId);
          }

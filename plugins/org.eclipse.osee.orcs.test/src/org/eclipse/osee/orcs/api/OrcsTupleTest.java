@@ -121,7 +121,7 @@ public class OrcsTupleTest {
    @Test
    public void testGetTupleType2() throws OseeCoreException {
       ResultSet<ArtifactReadable> branchViewArts =
-         orcsApi.getQueryFactory().fromBranch(DemoBranches.SAW_Bld_1.getId()).andTypeEquals(
+         orcsApi.getQueryFactory().fromBranch(DemoBranches.SAW_Bld_1).andTypeEquals(
             CoreArtifactTypes.BranchView).getResults();
       List<ApplicabilityToken> result = new ArrayList<>();
 

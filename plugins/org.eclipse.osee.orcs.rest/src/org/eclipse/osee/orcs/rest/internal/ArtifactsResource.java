@@ -18,6 +18,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -36,14 +37,14 @@ public class ArtifactsResource {
    @Context
    private final Request request;
 
-   private final Long branchUuid;
+   private final BranchId branchId;
 
    private final OrcsApi orcsApi;
 
-   public ArtifactsResource(UriInfo uriInfo, Request request, Long branchUuid, OrcsApi orcsApi) {
+   public ArtifactsResource(UriInfo uriInfo, Request request, BranchId branchId, OrcsApi orcsApi) {
       this.uriInfo = uriInfo;
       this.request = request;
-      this.branchUuid = branchUuid;
+      this.branchId = branchId;
       this.orcsApi = orcsApi;
    }
 
@@ -54,14 +55,14 @@ public class ArtifactsResource {
 
    @Path("{uuid}")
    public ArtifactResource getArtifact(@PathParam("uuid") Long artifactUuid) {
-      return new ArtifactResource(uriInfo, request, branchUuid, artifactUuid);
+      return new ArtifactResource(uriInfo, request, branchId, artifactUuid);
    }
 
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getAsHtml() throws OseeCoreException {
       ArtifactReadable rootArtifact =
-         orcsApi.getQueryFactory().fromBranch(branchUuid).andIsHeirarchicalRootArtifact().getResults().getExactlyOne();
+         orcsApi.getQueryFactory().fromBranch(branchId).andIsHeirarchicalRootArtifact().getResults().getExactlyOne();
 
       ResultSet<ArtifactReadable> arts = rootArtifact.getChildren();
       HtmlWriter writer = new HtmlWriter(uriInfo);

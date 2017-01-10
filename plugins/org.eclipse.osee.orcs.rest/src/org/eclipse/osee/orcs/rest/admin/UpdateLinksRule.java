@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.rest.admin;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -40,7 +41,7 @@ public class UpdateLinksRule extends Rule {
    }
 
    private String generateLink(String branchIdString, String artifactGuid) {
-      Long branchId = Long.valueOf(branchIdString);
+      BranchId branchId = BranchId.valueOf(branchIdString);
       artifactGuid = artifactGuid.replaceAll("%2[Bb]", "+");
       artifactGuid = artifactGuid.replaceAll("%3[Dd]", "=");
 

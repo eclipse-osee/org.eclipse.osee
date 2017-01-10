@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -48,23 +49,23 @@ public class AttributeTypeResource {
    @Context
    private final Request request;
 
-   private final Long branchUuid;
+   private final BranchId branchId;
    private final Long artifactUuid;
    private final Long attributeTypeId;
    private final TransactionId transactionId;
 
-   public AttributeTypeResource(UriInfo uriInfo, Request request, Long branchUuid, Long artifactUuid) {
-      this(uriInfo, request, branchUuid, artifactUuid, -1L, TransactionId.valueOf(-1));
+   public AttributeTypeResource(UriInfo uriInfo, Request request, BranchId branchId, Long artifactUuid) {
+      this(uriInfo, request, branchId, artifactUuid, -1L, TransactionId.valueOf(-1));
    }
 
-   public AttributeTypeResource(UriInfo uriInfo, Request request, Long branchUuid, Long artifactUuid, Long attributeTypeId) {
-      this(uriInfo, request, branchUuid, artifactUuid, attributeTypeId, TransactionId.valueOf(-1));
+   public AttributeTypeResource(UriInfo uriInfo, Request request, BranchId branchId, Long artifactUuid, Long attributeTypeId) {
+      this(uriInfo, request, branchId, artifactUuid, attributeTypeId, TransactionId.valueOf(-1));
    }
 
-   public AttributeTypeResource(UriInfo uriInfo, Request request, Long branchUuid, Long artifactUuid, Long attributeTypeId, TransactionId transactionId) {
+   public AttributeTypeResource(UriInfo uriInfo, Request request, BranchId branchId, Long artifactUuid, Long attributeTypeId, TransactionId transactionId) {
       this.uriInfo = uriInfo;
       this.request = request;
-      this.branchUuid = branchUuid;
+      this.branchId = branchId;
       this.artifactUuid = artifactUuid;
       this.attributeTypeId = attributeTypeId;
       this.transactionId = transactionId;
@@ -76,7 +77,7 @@ public class AttributeTypeResource {
       ResponseBuilder builder = Response.noContent();
       try {
          QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory();
-         QueryBuilder queryBuilder = factory.fromBranch(branchUuid).andUuid(artifactUuid);
+         QueryBuilder queryBuilder = factory.fromBranch(branchId).andUuid(artifactUuid);
          if (transactionId.getId() > 0) {
             queryBuilder.fromTransaction(transactionId);
          }
@@ -90,7 +91,7 @@ public class AttributeTypeResource {
             for (AttributeTypeToken attrType : exactlyOne.getValidAttributeTypes()) {
                sb.append(AHTML.addRowMultiColumnTable(AHTML.bold("Name:"), attrType.getName()));
                sb.append(AHTML.addRowMultiColumnTable(AHTML.bold("AttributeTypeId:"),
-                  AHTML.getHyperlink(String.format("/orcs/branch/%d/artifact/%d/attribute/type/%d", branchUuid,
+                  AHTML.getHyperlink(String.format("/orcs/branch/%d/artifact/%d/attribute/type/%d", branchId,
                      artifactUuid, attrType.getId()), attrType.getId().toString())));
                sb.append(AHTML.addRowMultiColumnTable(""));
             }

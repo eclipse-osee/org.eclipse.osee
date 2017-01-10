@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.osee.define.report.internal.TraceAccumulator;
 import org.eclipse.osee.define.report.internal.TraceInformationAccumulator;
 import org.eclipse.osee.define.report.internal.TraceMatch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.CaseInsensitiveString;
@@ -71,7 +72,7 @@ public class TraceReportGenerator {
    private final String[] columnHeadingsTest =
       {"Doors ID", "Paragraph #", "System Requirement Name", CoreArtifactTypes.TestPlanElement.getName(), "ArtifactId"};
 
-   private void init(OrcsApi orcsApi, long branchId, ISheetWriter writer) {
+   private void init(OrcsApi orcsApi, ISheetWriter writer) {
       accumulator = new TraceInformationAccumulator(this, writer);
       queryFactory = orcsApi.getQueryFactory();
    }
@@ -84,7 +85,7 @@ public class TraceReportGenerator {
       testTraces = new TraceAccumulator(testFileMatch, testMatch);
    }
 
-   public void generate(OrcsApi providedOrcs, long branchId, String codeRoot, String traceRoot, Writer providedWriter) throws IOException {
+   public void generate(OrcsApi providedOrcs, BranchId branchId, String codeRoot, String traceRoot, Writer providedWriter) throws IOException {
       ISheetWriter writer = new ExcelXmlWriter(providedWriter);
       if (Strings.isValid(codeRoot)) {
          File root = new File(codeRoot);
@@ -96,7 +97,7 @@ public class TraceReportGenerator {
          testTraces.extractTraces(troot);
          writeTracesSheet(writer, "test traces", testTraces);
       }
-      init(providedOrcs, branchId, writer);
+      init(providedOrcs, writer);
 
       ArtifactReadable requirementsFolder =
          queryFactory.fromBranch(branchId).andIsOfType(CoreArtifactTypes.Folder).andNameEquals(
