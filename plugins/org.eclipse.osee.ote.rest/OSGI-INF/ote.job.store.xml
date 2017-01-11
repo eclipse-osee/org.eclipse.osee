@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.osee.ote.rest">
-   <implementation class="org.eclipse.osee.ote.rest.internal.OteJobStoreImpl"/>
-   <service>
-      <provide interface="org.eclipse.osee.ote.rest.internal.OteJobStore"/>
-   </service>
-</scr:component>

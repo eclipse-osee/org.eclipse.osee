@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop">
-   <implementation class="org.eclipse.osee.ote.internal.RemoteOteApiHandler"/>
-   <reference bind="bindOTEApi" cardinality="1..1" interface="org.eclipse.osee.ote.OTEApi" name="OTEApi" policy="static" unbind="unbindOTEApi"/>
-   <reference bind="bindEventAdmin" cardinality="1..1" interface="org.osgi.service.event.EventAdmin" name="EventAdmin" policy="static" unbind="unbindEventAdmin"/>
-   <reference bind="bindOteUdpEndpoint" cardinality="1..1" interface="org.eclipse.osee.ote.endpoint.OteUdpEndpoint" name="OteUdpEndpoint" policy="static" unbind="unbindOteUdpEndpoint"/>
-</scr:component>

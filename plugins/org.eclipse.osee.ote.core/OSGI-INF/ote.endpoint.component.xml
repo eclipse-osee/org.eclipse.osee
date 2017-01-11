@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" immediate="true" name="org.eclipse.osee.ote.endpoint">
-   <implementation class="org.eclipse.osee.ote.internal.endpoint.EndpointComponent"/>
-   <service>
-      <provide interface="org.eclipse.osee.ote.endpoint.OteUdpEndpoint"/>
-   </service>
-   <reference bind="addDataProcessor" cardinality="0..n" interface="org.eclipse.osee.ote.endpoint.EndpointDataProcessor" name="EndpointDataProcessor" policy="dynamic" unbind="removeDataProcessor"/>
-   <reference cardinality="1..1" interface="org.osgi.service.event.EventAdmin" name="EventAdmin" policy="static"/>
-</scr:component>

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="true" immediate="true" name="org.eclipse.osee.ote.runtimeManager">
-   <implementation class="org.eclipse.osee.ote.internal.OTEBundleLoader"/>
-  
-   <reference bind="bindOTEServerRuntimeCache" cardinality="1..1" interface="org.eclipse.osee.ote.OTEServerRuntimeCache" name="OTEServerRuntimeCache" policy="static" unbind="unbindOTEServerRuntimeCache"/> <service>
-      <provide interface="org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager"/>
-   </service>
-</scr:component>

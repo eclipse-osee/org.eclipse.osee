@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.eclipse.osee.ote.jms.bridge.endpoint">
-   <property name="event.topics" type="String" value="ote/*"/>
-   <implementation class="org.eclipse.osee.ote.jms.bridge.EventToEndpoint"/>
-   <service>
-      <provide interface="org.osgi.service.event.EventHandler"/>
-   </service>
-   <reference bind="bindOteUdpEndpoint" cardinality="1..1" interface="org.eclipse.osee.ote.endpoint.OteUdpEndpoint" name="OteUdpEndpoint" policy="static" unbind="unbindOteUdpEndpoint"/>
-</scr:component>
