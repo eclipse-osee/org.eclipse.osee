@@ -14,6 +14,7 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -40,6 +41,7 @@ import org.eclipse.swt.graphics.Image;
  */
 public class XBranchLabelProvider extends XViewerLabelProvider {
    private final static DateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
+
    private final BranchXViewer branchXViewer;
 
    public XBranchLabelProvider(BranchXViewer branchXViewer) {
@@ -235,6 +237,21 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
       }
       Image returnImage = BranchViewImageHandler.getImage(element, columnIndex);
       return returnImage;
+   }
+
+   @Override
+   public Object getBackingData(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
+      if (xCol.getId().equals(BranchXViewerFactory.timeStamp.getId())) {
+         if (element instanceof BranchId) {
+            TransactionRecord tx = BranchManager.getBaseTransaction((BranchId) element);
+            Date date = null;
+            if (tx != null) {
+               date = tx.getTimeStamp();
+            }
+            return date;
+         }
+      }
+      return super.getBackingData(element, xCol, columnIndex);
    }
 
    @Override
