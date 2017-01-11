@@ -54,7 +54,6 @@ import org.eclipse.osee.define.traceability.TraceUnitExtensionManager.TraceHandl
 import org.eclipse.osee.define.traceability.TraceabilityProviderOperation;
 import org.eclipse.osee.define.traceability.report.RequirementStatus;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -115,7 +114,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
       "<XWidget xwidgetType=\"XCheckBox\" displayName=\"%s\" labelAfter=\"true\" horizontalLabel=\"true\"/>";
    private Collection<String> availableTraceHandlers;
 
-   private IOseeBranch selectedBranch;
+   private BranchId selectedBranch;
    private IAtsProgram selectedProgram;
    private static final int MAX_EXCEL_COLUMNS = 256;
 
@@ -146,7 +145,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
             IAtsVersion version = (IAtsVersion) iter.next();
 
             try {
-               selectedBranch = AtsClientService.get().getBranchService().getBranchInherited(version);
+               selectedBranch = version.getBaselineBranchIdInherited();
                requirementsBranchWidget.setSelection(selectedBranch);
                testProcedureBranchWidget.setSelection(selectedBranch);
             } catch (OseeCoreException ex) {

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -20,6 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public interface IOseeBranch extends BranchId, Named {
    static final int SHORT_NAME_LIMIT = 35;
+   IOseeBranch SENTINEL = create(Id.SENTINEL, "SENTINEL");
 
    default String getShortName() {
       return getShortName(SHORT_NAME_LIMIT);

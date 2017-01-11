@@ -613,7 +613,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                try {
                   BranchId parentBranchId = version.getBaselineBranchId();
                   if (parentBranchId.isValid()) {
-                     validateBranchUuid(version, parentBranchId, results);
+                     validateBranchId(version, parentBranchId, results);
                   }
                   if (AtsClientService.get().getVersionService().getTeamDefinition(version) == null) {
                      results.log(artifact, "testVersionArtifacts",
@@ -667,9 +667,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (art.isOfType(AtsArtifactTypes.TeamDefinition)) {
             IAtsTeamDefinition teamDef = AtsClientService.get().getCache().getAtsObject(art.getId());
             try {
-               long parentBranchUuid = teamDef.getBaselineBranchUuid();
-               if (parentBranchUuid > 0) {
-                  validateBranchUuid(teamDef, BranchId.valueOf(parentBranchUuid), results);
+               BranchId parentBranchId = teamDef.getBaselineBranchId();
+               if (parentBranchId.isValid()) {
+                  validateBranchId(teamDef, parentBranchId, results);
                }
             } catch (Exception ex) {
                results.log("testTeamDefinitionss",
@@ -761,7 +761,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       results.logTestTimeSpent(date, "testAtsBranchManager");
    }
 
-   public static void validateBranchUuid(IAtsConfigObject name, BranchId parentBranchId, ValidateResults results) {
+   public static void validateBranchId(IAtsConfigObject name, BranchId parentBranchId, ValidateResults results) {
       Date date = new Date();
       try {
          BranchId branch = parentBranchId;

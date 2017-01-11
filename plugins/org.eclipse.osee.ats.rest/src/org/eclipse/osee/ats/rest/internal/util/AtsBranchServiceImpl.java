@@ -100,7 +100,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
     */
    @Override
    public boolean isMergeBranchExists(IAtsTeamWorkflow teamWf, BranchId workingBranch, BranchId destinationBranch) throws OseeCoreException {
-      if (workingBranch == null) {
+      if (workingBranch.isInvalid()) {
          return false;
       }
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
@@ -118,9 +118,9 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public boolean branchExists(long branchUuid) {
+   public boolean branchExists(BranchId branch) {
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
-      return query.andUuids(branchUuid).getCount() > 0;
+      return query.andIds(branch).getCount() > 0;
    }
 
    @Override

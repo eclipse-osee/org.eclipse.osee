@@ -23,10 +23,6 @@ public interface HasBranch {
       return getBranch().getId();
    }
 
-   default boolean isOnBranch(Long branchId) {
-      return getBranchId().equals(branchId);
-   }
-
    default boolean isOnSameBranch(HasBranch other) {
       return other == null ? false : getBranch().equals(other.getBranch());
    }

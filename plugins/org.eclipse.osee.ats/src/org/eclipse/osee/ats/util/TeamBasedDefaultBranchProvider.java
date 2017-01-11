@@ -42,7 +42,7 @@ public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesPr
 
          Collection<BranchId> branches = new LinkedList<>();
          for (IAtsTeamDefinition team : teams) {
-            branches.add(BranchId.valueOf(team.getTeamBranchUuid()));
+            branches.add(team.getTeamBranchId());
          }
 
          return branches;

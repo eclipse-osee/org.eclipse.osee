@@ -137,7 +137,7 @@ public abstract class XWorkingBranchWidgetAbstract extends GenericXWidget implem
       workingBranchCreationInProgress = teamArt.isWorkingBranchCreationInProgress();
       workingBranchInWork = AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt);
 
-      if (workingBranch == null) {
+      if (workingBranch.isInvalid()) {
          workingBranchCommitInProgress = false;
       } else {
          BranchState state = BranchManager.getState(workingBranch);

@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -66,9 +67,9 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
    Result isAllowCreateBranchInherited();
 
    @Override
-   long getBaselineBranchUuid();
+   BranchId getBaselineBranchId();
 
-   long getTeamBranchUuid();
+   BranchId getTeamBranchId();
 
    /*****************************
     * Versions

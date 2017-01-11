@@ -110,7 +110,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          if (!AtsClientService.get().getBranchService().isBranchValid(configArt)) {
             return String.format("Branch not configured for [%s]", element);
          } else {
-            branch = BranchId.valueOf(configArt.getBaselineBranchUuid());
+            branch = configArt.getBaselineBranchId();
          }
       } else if (element instanceof TransactionToken) {
          TransactionToken txRecord = (TransactionToken) element;

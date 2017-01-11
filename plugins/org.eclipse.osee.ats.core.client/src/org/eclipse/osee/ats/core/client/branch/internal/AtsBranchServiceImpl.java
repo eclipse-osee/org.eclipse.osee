@@ -78,7 +78,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
     */
    @Override
    public boolean isMergeBranchExists(IAtsTeamWorkflow teamWf, BranchId workingBranch, BranchId destinationBranch) throws OseeCoreException {
-      if (workingBranch == null) {
+      if (workingBranch.isInvalid()) {
          return false;
       }
       return BranchManager.doesMergeBranchExist(workingBranch, destinationBranch);
@@ -87,11 +87,6 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public IOseeBranch getBranchByUuid(long branchUuid) {
       return BranchManager.getBranchToken(branchUuid);
-   }
-
-   @Override
-   public boolean branchExists(long branchUuid) {
-      return BranchManager.branchExists(branchUuid);
    }
 
    @Override
@@ -117,5 +112,10 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public String getBranchName(BranchId branch) {
       return BranchManager.getBranchName(branch);
+   }
+
+   @Override
+   public boolean branchExists(BranchId branch) {
+      return BranchManager.branchExists(branch);
    }
 }

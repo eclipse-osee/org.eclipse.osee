@@ -302,7 +302,7 @@ public final class AtsBranchManager {
                    * id's branch.
                    */
                   for (TransactionRecord transId : transIds) {
-                     if (transId.isOnBranch(commitConfigArt.getBaselineBranchUuid())) {
+                     if (transId.isOnBranch(commitConfigArt.getBaselineBranchId())) {
                         transactionId = transId;
                      }
                   }
@@ -333,6 +333,6 @@ public final class AtsBranchManager {
    }
 
    private static boolean isBaselinBranchConfigured(ICommitConfigItem commitConfigArt) {
-      return commitConfigArt.getBaselineBranchUuid() > 0;
+      return commitConfigArt.getBaselineBranchId().isValid();
    }
 }

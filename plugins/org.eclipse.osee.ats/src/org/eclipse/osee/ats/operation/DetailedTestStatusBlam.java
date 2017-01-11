@@ -49,7 +49,6 @@ import org.eclipse.osee.ats.util.XVersionList;
 import org.eclipse.osee.ats.util.widgets.XAtsProgramComboWidget;
 import org.eclipse.osee.define.traceability.report.RequirementStatus;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -104,7 +103,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    private XBranchSelectWidget reportBranchWidget;
    private XVersionList versionsListViewer;
 
-   private IOseeBranch selectedBranch;
+   private BranchId selectedBranch;
    private IAtsProgram selectedProgram;
 
    private enum Index {
@@ -134,7 +133,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
             IAtsVersion version = (IAtsVersion) iter.next();
 
             try {
-               selectedBranch = AtsClientService.get().getBranchService().getBranchInherited(version);
+               selectedBranch = version.getBaselineBranchIdInherited();
                reportBranchWidget.setSelection(selectedBranch);
             } catch (OseeCoreException ex) {
                log(ex);

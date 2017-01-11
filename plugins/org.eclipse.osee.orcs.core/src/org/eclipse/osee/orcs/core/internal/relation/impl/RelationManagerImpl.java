@@ -60,7 +60,6 @@ import org.eclipse.osee.orcs.core.internal.relation.order.OrderChange;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderManager;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderManagerFactory;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule.QueryModuleProvider;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.RelationTypes;
 
 /**
@@ -505,17 +504,6 @@ public class RelationManagerImpl implements RelationManager {
       ResultSet<Relation> result = getRelation(session, aNode, type, bNode, EXCLUDE_DELETED);
       Relation relation = result.getExactlyOne();
       relation.setApplicabilityId(applicId);
-   }
-
-   private ArtifactReadable doesRelatedArtifactExist(OrcsSession session, Relation rel, RelationNode destination, Long branch) {
-      // need to check if the related artifact exists
-      int artIdA = rel.getOrcsData().getArtIdA();
-      int artIdB = rel.getOrcsData().getArtIdB();
-      int checkArtId = destination.getLocalId() == artIdA ? artIdB : artIdA;
-      // need to check if artifact to relate to exists
-      ArtifactReadable readable =
-         provider.getQueryFactory(session).fromBranch(branch).andUuid(checkArtId).getResults().getOneOrNull();
-      return readable;
    }
 
    private Relation findRelationByLocalId(RelationNodeAdjacencies adjacencies, Integer localId) {

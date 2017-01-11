@@ -300,7 +300,7 @@ public class ActionPage {
    private void addCommitManager(StringBuilder sb, IAtsWorkItem workItem2, IAtsWidgetDefinition widget) {
       sb.append("Commit Manager: ");
       IOseeBranch branch = atsServer.getBranchService().getBranch((IAtsTeamWorkflow) workItem);
-      if (branch != null) {
+      if (branch.isValid()) {
          sb.append(branch.getName());
       }
    }

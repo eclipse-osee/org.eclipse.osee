@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -154,7 +155,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       if (!isAllowCommitBranch()) {
          return new Result(false, "Team Definition [" + this + "] not configured to allow branch commit.");
       }
-      if (getBaselineBranchUuid() <= 0) {
+      if (getBaselineBranchId().isInvalid()) {
          return new Result(false, "Parent Branch not configured for Team Definition [" + this + "]");
       }
       return Result.TrueResult;
@@ -177,29 +178,29 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       if (!isAllowCreateBranch()) {
          return new Result(false, "Branch creation disabled for Team Definition [" + this + "]");
       }
-      if (getBaselineBranchUuid() <= 0) {
+      if (getBaselineBranchId().isInvalid()) {
          return new Result(false, "Parent Branch not configured for Team Definition [" + this + "]");
       }
       return Result.TrueResult;
    }
 
    @Override
-   public long getBaselineBranchUuid() {
-      return Long.valueOf((String) getAttributeValue(AtsAttributeTypes.BaselineBranchUuid, "0"));
+   public BranchId getBaselineBranchId() {
+      return BranchId.valueOf((String) getAttributeValue(AtsAttributeTypes.BaselineBranchUuid, "0"));
    }
 
    @Override
-   public long getTeamBranchUuid() {
-      long uuid = getBaselineBranchUuid();
-      if (uuid > 0) {
-         return uuid;
+   public BranchId getTeamBranchId() {
+      BranchId branch = getBaselineBranchId();
+      if (branch.isValid()) {
+         return branch;
       } else {
          IAtsTeamDefinition parentTeamDef = getParentTeamDef();
          if (parentTeamDef instanceof TeamDefinition) {
-            return parentTeamDef.getTeamBranchUuid();
+            return parentTeamDef.getTeamBranchId();
          }
       }
-      return 0;
+      return BranchId.SENTINEL;
    }
 
    @Override

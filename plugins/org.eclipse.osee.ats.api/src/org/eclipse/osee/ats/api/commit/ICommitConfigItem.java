@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.commit;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -19,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface ICommitConfigItem extends Named {
 
-   public long getBaselineBranchUuid() throws OseeCoreException;
+   public BranchId getBaselineBranchId() throws OseeCoreException;
 
    public Result isAllowCommitBranchInherited() throws OseeCoreException;
 

@@ -83,11 +83,6 @@ public class QueryFactoryImpl implements QueryFactory {
    }
 
    @Override
-   public QueryBuilder fromBranch(Long branchId) throws OseeCoreException {
-      return fromBranch(BranchId.valueOf(branchId));
-   }
-
-   @Override
    public QueryBuilder fromArtifacts(Collection<? extends ArtifactReadable> artifacts) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(artifacts, "artifacts");
       ArtifactReadable artifact = artifacts.iterator().next();

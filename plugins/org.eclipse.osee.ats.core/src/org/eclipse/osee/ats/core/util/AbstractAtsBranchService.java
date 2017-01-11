@@ -94,7 +94,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       boolean notSet = idToWorkingBranchCacheUpdated.get(teamWf.getAtsId()) == null;
       if (AtsUtilCore.isInTest() || notSet || force || now - idToWorkingBranchCacheUpdated.get(
          teamWf.getAtsId()) > 1000) {
-         IOseeBranch branch = null;
+         IOseeBranch branch = IOseeBranch.SENTINEL;
          try {
             branch = getWorkingBranchExcludeStates(teamWf, BranchState.REBASELINED, BranchState.DELETED,
                BranchState.PURGED, BranchState.COMMIT_IN_PROGRESS, BranchState.CREATION_IN_PROGRESS,
@@ -110,9 +110,9 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
 
    @Override
    public BranchId getConfiguredBranchForWorkflow(IAtsTeamWorkflow teamWf) {
-      BranchId parentBranch = null;
+      BranchId parentBranch = BranchId.SENTINEL;
 
-      // Check for parent branch uuid in Version artifact
+      // Check for parent branch id in Version artifact
       if (teamWf.getTeamDefinition().isTeamUsesVersions()) {
          IAtsVersion verArt = services.getVersionService().getTargetedVersion(teamWf);
          if (verArt != null) {
@@ -121,11 +121,11 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       }
 
       // If not defined in version, check for parent branch from team definition
-      if (parentBranch == null && teamWf.isTeamWorkflow() && isBranchValid(teamWf.getTeamDefinition())) {
+      if (parentBranch.isInvalid() && teamWf.isTeamWorkflow() && isBranchValid(teamWf.getTeamDefinition())) {
          parentBranch = getBranch((IAtsConfigObject) teamWf.getTeamDefinition());
       }
 
-      // If not defined, return null
+      // If not defined, return SENTINEL
       return parentBranch;
    }
 
@@ -137,7 +137,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
 
    @Override
    public TransactionRecord getCommitTransactionRecord(IAtsTeamWorkflow teamWf, BranchId branch) {
-      if (branch == null) {
+      if (branch.isInvalid()) {
          return TransactionRecord.SENTINEL;
       }
 
@@ -301,7 +301,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
          if (!isBranchValid(config)) {
             return false;
          }
-         if (!branchExists(config.getBaselineBranchUuid())) {
+         if (!branchExists(config.getBaselineBranchId())) {
             return false;
          }
       }
@@ -314,41 +314,32 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public IOseeBranch getBranchInherited(IAtsVersion version) {
-      IOseeBranch branch = null;
-      long branchUuid = version.getBaselineBranchUuidInherited();
-      if (branchUuid > 0) {
-         branch = getBranchByUuid(branchUuid);
-      }
-      return branch;
-   }
-
-   @Override
    public boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       BranchId branch = getWorkingBranch(teamWf);
-      return branch != null && !getBranchState(branch).isCommitted();
+      return (branch != null) && branch.isValid() && !getBranchState(branch).isCommitted();
    }
 
    @Override
    public BranchId getBranch(IAtsConfigObject configObject) {
-      BranchId branch = null;
+      BranchId branch = BranchId.SENTINEL;
       if (configObject instanceof IAtsVersion) {
          IAtsVersion version = (IAtsVersion) configObject;
          if (version.getBaselineBranchId().isValid()) {
             branch = version.getBaselineBranchId();
          }
       }
-      if (branch == null && configObject instanceof IAtsTeamDefinition) {
+      if (branch.isInvalid() && configObject instanceof IAtsTeamDefinition) {
          IAtsTeamDefinition teamDef = (IAtsTeamDefinition) configObject;
-         if (teamDef.getBaselineBranchUuid() > 0) {
-            branch = getBranchByUuid(teamDef.getBaselineBranchUuid());
+         if (teamDef.getBaselineBranchId().isValid()) {
+            branch = teamDef.getBaselineBranchId();
          }
       }
-      if (branch == null) {
-         String branchUuid = services.getAttributeResolver().getSoleAttributeValueAsString(configObject,
-            AtsAttributeTypes.BaselineBranchUuid, "");
-         if (Strings.isValid(branchUuid)) {
-            branch = getBranchByUuid(Long.valueOf(branchUuid));
+      if (branch.isInvalid()) {
+         BranchId branchId =
+            BranchId.valueOf(services.getAttributeResolver().getSoleAttributeValueAsString(configObject,
+               AtsAttributeTypes.BaselineBranchUuid, ""));
+         if (branchId.isValid()) {
+            branch = branchId;
          }
       }
       return branch;
@@ -371,7 +362,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    @Override
    public boolean isBranchValid(ICommitConfigItem configObject) {
       boolean validBranch = false;
-      if (configObject.getBaselineBranchUuid() > 0) {
+      if (configObject.getBaselineBranchId().isValid()) {
          validBranch = true;
       }
       return validBranch;
@@ -504,13 +495,13 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    @Override
    public CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, BranchId destinationBranch, ICommitConfigItem configArt) {
       BranchId workingBranch = getWorkingBranch(teamWf);
-      if (workingBranch != null) {
+      if (workingBranch.isValid()) {
          if (getBranchState(workingBranch).isRebaselineInProgress()) {
             return CommitStatus.Rebaseline_In_Progress;
          }
       }
 
-      if (destinationBranch == null) {
+      if (destinationBranch.isInvalid()) {
          return CommitStatus.Branch_Not_Configured;
       }
 
@@ -541,7 +532,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       if (result.isFalse()) {
          return CommitStatus.Branch_Commit_Disabled;
       }
-      if (getWorkingBranch(teamWf) == null) {
+      if (getWorkingBranch(teamWf).isInvalid()) {
          return CommitStatus.Working_Branch_Not_Created;
       }
       if (mergeBranchExists) {

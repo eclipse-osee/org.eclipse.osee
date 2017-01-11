@@ -122,19 +122,19 @@ public class Version extends AtsConfigObject implements IAtsVersion {
    }
 
    @Override
-   public long getBaselineBranchUuidInherited() {
-      if (getBaselineBranchUuid() > 0) {
-         return getBaselineBranchUuid();
+   public BranchId getBaselineBranchIdInherited() {
+      if (getBaselineBranchId().isValid()) {
+         return getBaselineBranchId();
       } else {
          try {
             IAtsTeamDefinition teamDef = services.getVersionService().getTeamDefinition(this);
             if (teamDef != null) {
-               return teamDef.getTeamBranchUuid();
+               return teamDef.getTeamBranchId();
             } else {
-               return 0;
+               return BranchId.SENTINEL;
             }
          } catch (OseeCoreException ex) {
-            return 0;
+            return BranchId.SENTINEL;
          }
       }
    }
@@ -142,13 +142,6 @@ public class Version extends AtsConfigObject implements IAtsVersion {
    @Override
    public BranchId getBaselineBranchId() {
       return BranchId.valueOf(
-         services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.BaselineBranchUuid, "-1"));
-   }
-
-   @Override
-   //   TODO: Remove after fixing
-   public long getBaselineBranchUuid() throws OseeCoreException {
-      return Long.parseLong(
          services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.BaselineBranchUuid, "-1"));
    }
 

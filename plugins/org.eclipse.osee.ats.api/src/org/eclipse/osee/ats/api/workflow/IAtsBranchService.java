@@ -14,7 +14,6 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
-import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -45,8 +44,6 @@ public interface IAtsBranchService {
    String getBranchShortName(ICommitConfigItem commitConfigArt);
 
    boolean isBranchValid(ICommitConfigItem configArt);
-
-   IOseeBranch getBranchInherited(IAtsVersion version);
 
    boolean isAllObjectsToCommitToConfigured(IAtsTeamWorkflow teamWf);
 
@@ -114,7 +111,7 @@ public interface IAtsBranchService {
 
    IOseeBranch getBranchByUuid(long branchId);
 
-   boolean branchExists(long branchUuid);
+   boolean branchExists(BranchId branch);
 
    boolean isArchived(BranchId branch);
 

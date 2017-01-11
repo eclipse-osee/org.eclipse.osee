@@ -40,9 +40,10 @@ public interface IAtsVersion extends ICommitConfigItem, IAtsConfigObject {
    /**
     * @return directly configured baseline branch uuid or parentTeamDefinition's branch uuid
     */
+   @Override
    BranchId getBaselineBranchId();
 
-   long getBaselineBranchUuidInherited();
+   BranchId getBaselineBranchIdInherited();
 
    @Override
    String getCommitFullDisplayName();
