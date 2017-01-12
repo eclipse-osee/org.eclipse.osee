@@ -75,6 +75,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
    private final boolean detectFormatChanges;
    private final boolean executeVbScript;
    private final boolean skipErrors;
+   private Long timeoutMs;
 
    public VbaWordDiffGenerator(boolean merge, boolean show, boolean detectFormatChanges, boolean executeVbScript, boolean skipErrors, boolean diffFieldCode) {
       this.merge = merge;
@@ -83,6 +84,18 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
       this.executeVbScript = executeVbScript;
       this.skipErrors = skipErrors;
       this.diffFieldCode = diffFieldCode;
+
+      timeoutMs = Long.MAX_VALUE;
+      String timeout = null;
+      try {
+         timeout = OseeInfo.getValue("osee.vba.word.diff.timeout");
+         if (Strings.isValid(timeout)) {
+            timeoutMs = Long.parseLong(timeout);
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.INFO,
+            String.format("Timeout lookup failed in %s, set to default %s", this.getClass().getSimpleName(), timeout));
+      }
    }
 
    @Override
@@ -145,8 +158,22 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
          }
 
          //Unfortunately Word seems to need a little extra time to close, otherwise Word 2007 will crash periodically if too many files are being compared.
-         String propertyWordDiffSleepMs = System.getProperty(OSEE_WORD_DIFF_SLEEP_MS, "250");// Quarter second is the default sleep value
-         appendable.append("WScript.sleep(" + propertyWordDiffSleepMs + ")\n");
+         String propertyWordDiffSleepMs = null;
+         try {
+            propertyWordDiffSleepMs = OseeInfo.getValue(OSEE_WORD_DIFF_SLEEP_MS);
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.INFO,
+               String.format("Word Diff Sleep lookup failed in %s, set to default %s", this.getClass().getSimpleName(),
+                  propertyWordDiffSleepMs));
+         }
+
+         if (!Strings.isValid(propertyWordDiffSleepMs)) {
+            propertyWordDiffSleepMs = "250"; // Quarter second is the default sleep value
+         }
+
+         if (!propertyWordDiffSleepMs.equals("0")) {
+            appendable.append("WScript.sleep(" + propertyWordDiffSleepMs + ")\n");
+         }
 
          appendable.append("    ver1 = \"");
          appendable.append(entry.getKey());
@@ -224,18 +251,6 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
          };
          errorCatcher.start();
          outputCatcher.start();
-
-         Long timeoutMs = Long.MAX_VALUE;
-         String timeout = null;
-         try {
-            timeout = OseeInfo.getValue("osee.vba.word.diff.timeout");
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.INFO, String.format("Timeout lookup failed in %s, set to default %s",
-               this.getClass().getSimpleName(), timeout));
-         }
-         if (Strings.isValid(timeout)) {
-            timeoutMs = Long.parseLong(timeout);
-         }
 
          if (!process.waitFor(timeoutMs, TimeUnit.MILLISECONDS)) {
             throw new OperationTimedoutException("The View Word Change Report Timed-out");

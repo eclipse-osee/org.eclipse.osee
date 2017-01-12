@@ -18,10 +18,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -51,6 +53,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -168,9 +171,38 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
          WordTemplateRenderer.FIRST_TIME,
          true};
 
-      renderer.publish(master, slave, artifacts, options);
+      Boolean isDiff = (Boolean) variableMap.getValue(PUBLISH_AS_DIFF);
+      int toProcessSize = 0;
+      for (Artifact art : artifacts) {
+         toProcessSize += art.getDescendants().size();
+      }
 
-      transaction.execute();
+      final int totalSize = toProcessSize;
+      final AtomicReference<Boolean> result = new AtomicReference<>();
+      final int maxArtsForQuickDiff = 900;
+
+      Display.getDefault().syncExec(new Runnable() {
+         @Override
+         public void run() {
+            double secPerArt = 2;
+            double minutes = (totalSize * secPerArt) / 60;
+
+            if (isDiff && totalSize > maxArtsForQuickDiff && !MessageDialog.openConfirm(
+               Display.getDefault().getActiveShell(), "Continue with Word Diff",
+               "You have chosen to do a word diff on " + totalSize + " Artifacts.\n\n" + //
+            "This could be a very long running task (approximately " + minutes + "min) and consume large resources.\n\nAre you sure?")) {
+               result.set(false);
+            } else {
+               result.set(true);
+            }
+         }
+      });
+
+      if (result.get()) {
+         renderer.publish(master, slave, artifacts, options);
+         transaction.execute();
+         monitor.done();
+      }
    }
 
    private List<Artifact> getArtifactsFromOrcsQuery() {
