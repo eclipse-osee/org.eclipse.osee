@@ -62,8 +62,8 @@ public class OrderParserTest {
    private static final List<String> ORDER_LIST_3 = Arrays.asList("AAABDEJ_mIQXf8VXVtGqvA", "AAABDEJ_oQVBf8VXLX7U_g");
 
    //@formatter:off
-   private static final String ENTRY_PATTERN = "<Order relType=\"%s\" side=\"%s\" orderType=\"%s\" list=\"%s\"></Order>";
-   private static final String ENTRY_NO_LIST_PATTERN = "<Order relType=\"%s\" side=\"%s\" orderType=\"%s\"></Order>";
+   private static final String ENTRY_PATTERN = "<Order relType=\"%s\" side=\"%s\" orderType=\"%s\" list=\"%s\"/>";
+   private static final String ENTRY_NO_LIST_PATTERN = "<Order relType=\"%s\" side=\"%s\" orderType=\"%s\"/>";
    private static final String ONE_ENTRY_PATTERN = String.format("<OrderList>%s</OrderList>", ENTRY_PATTERN);
    private static final String ONE_ENTRY_NO_LIST_PATTERN = String.format("<OrderList>%s</OrderList>", ENTRY_NO_LIST_PATTERN);
    private static final String TWO_ENTRY_PATTERN = String.format("<OrderList>%s%s</OrderList>", ENTRY_PATTERN, ENTRY_PATTERN);
@@ -78,7 +78,7 @@ public class OrderParserTest {
    private static final String EMPTY_TYPE = "<OrderList><Order side=\"SIDE_B\" orderType=\"AAT0xogoMjMBhARkBZQA\"></Order></OrderList>";
    private static final String EMPTY_SIDE = "<OrderList><Order relType=\"X\" orderType=\"AAT0xogoMjMBhARkBZQA\"></Order></OrderList>";
    private static final String EMPTY_ORDER_TYPE = "<OrderList><Order relType=\"X\" side=\"SIDE_B\"></Order></OrderList>";
-   private static final String NO_ENTRIES = "<OrderList></OrderList>";
+   private static final String NO_ENTRIES = "<OrderList/>";
    //@formatter:on
 
    @Rule
@@ -223,6 +223,7 @@ public class OrderParserTest {
    public void testToXmlEmptyEntries() throws OseeCoreException {
       Map<RelationTypeSide, OrderData> data = new LinkedHashMap<>();
       when(hasOrderData.iterator()).thenReturn(data.entrySet().iterator());
+      when(hasOrderData.isEmpty()).thenReturn(true);
 
       String actual = parser.toXml(hasOrderData);
       assertEquals(NO_ENTRIES, actual);

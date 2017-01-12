@@ -135,11 +135,16 @@ public class OrderParser {
       XMLStreamWriter xmlWriter = null;
       try {
          xmlWriter = outputFactory.get().createXMLStreamWriter(writer);
-         xmlWriter.writeStartElement(ROOT_ELEMENT);
-         for (Entry<RelationTypeSide, OrderData> entry : hasOrderData) {
-            writeEntry(xmlWriter, entry.getKey(), entry.getValue());
+
+         if (hasOrderData.isEmpty()) {
+            xmlWriter.writeEmptyElement(ROOT_ELEMENT);
+         } else {
+            xmlWriter.writeStartElement(ROOT_ELEMENT);
+            for (Entry<RelationTypeSide, OrderData> entry : hasOrderData) {
+               writeEntry(xmlWriter, entry.getKey(), entry.getValue());
+            }
+            xmlWriter.writeEndElement();
          }
-         xmlWriter.writeEndElement();
          xmlWriter.writeEndDocument();
       } catch (XMLStreamException ex) {
          OseeCoreException.wrapAndThrow(ex);
@@ -156,7 +161,7 @@ public class OrderParser {
    }
 
    private void writeEntry(XMLStreamWriter xmlWriter, RelationTypeSide typeAndSide, OrderData orderData) throws XMLStreamException {
-      xmlWriter.writeStartElement(START_TAG);
+      xmlWriter.writeEmptyElement(START_TAG);
       // TODO don't store relation type by name - use type UUID
       xmlWriter.writeAttribute(RELATION_TYPE_TAG, typeAndSide.getName());
       xmlWriter.writeAttribute(SIDE_TAG, typeAndSide.getSide().name());
@@ -166,6 +171,5 @@ public class OrderParser {
       if (!guids.isEmpty()) {
          xmlWriter.writeAttribute(LIST_TAG, org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", guids));
       }
-      xmlWriter.writeEndElement();
    }
 }
