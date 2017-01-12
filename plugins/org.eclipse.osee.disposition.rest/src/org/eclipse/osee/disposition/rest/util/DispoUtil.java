@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoConfig;
@@ -83,7 +82,7 @@ public final class DispoUtil {
          }
          return newRerport;
       } else {
-    	  return origReport;
+         return origReport;
       }
    }
 
@@ -218,10 +217,10 @@ public final class DispoUtil {
             dispoItem.setItemNotes(jsonObject.getString("itemNotes"));
          }
          if (jsonObject.has("fileNumber")) {
-            dispoItem.setItemNotes(jsonObject.getString("fileNumber"));
+            dispoItem.setFileNumber(jsonObject.getString("fileNumber"));
          }
          if (jsonObject.has("methodNumber")) {
-            dispoItem.setItemNotes(jsonObject.getString("methodNumber"));
+            dispoItem.setMethodNumber(jsonObject.getString("methodNumber"));
          }
       } catch (JSONException ex) {
          throw new OseeCoreException("Error deserializing a Dispositionable Item.", ex);
@@ -323,7 +322,7 @@ public final class DispoUtil {
 
       try {
          if (jObj.has("entries")) {
-        	 JSONArray entriesJson = jObj.getJSONArray("entries");
+            JSONArray entriesJson = jObj.getJSONArray("entries");
             for (int i = 0; i < entriesJson.length(); i++) {
                JSONObject entryAsJson = entriesJson.getJSONObject(i);
                OperationSummaryEntry entry = jsonObjToOperationSummaryEntry(entryAsJson);
