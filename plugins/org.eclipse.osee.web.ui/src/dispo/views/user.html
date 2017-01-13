@@ -26,6 +26,7 @@
                      <button type="button" class="btn btn-default" ng-show="isMultiEditView" ng-disabled="selectedItems.length == 0" ng-click="showCategoryModal()">Category</button>
                      <button type="button" class="btn btn-default" ng-show="isMultiEditView" ng-disabled="selectedItems.length == 0" ng-click="showNeedsRerunModal()">Needs Rerun</button>
                      <button type="button" class="btn btn-default" ng-show="isMultiEditView" ng-disabled="selectedItems.length == 0" ng-click="showItemNotesModal()">Item Notes</button>
+                     <button type="button" class="btn btn-default" ng-show="editItems" ng-disabled="selectedItems.length == 0" ng-click="showMassDispositionModal()">Mass Disposition</button>
                   </div>
                </div>
                 <div id="search" class="col-md-1 col-md-offset-1">
@@ -113,7 +114,24 @@
             <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
          </div>
        </script>
-    
+      <script type="text/ng-template" id="massDisposition.html">
+         <div class="modal-header">
+             <h3 class="modal-title">Mass Disposition</h3>
+         </div>
+         <div class="modal-body" style="height: 300px; overflow: auto;">
+             <div class="form-group">
+                 <label for="setCategory">Category</label>
+                 <select class="form-control" ng-options="obj.value as obj.text for obj in typesLocal" options-disabled="option.isDefault for option in typesLocal" ng-model="resolutionType" placeholder="Select Resolution Type" required></select>
+					  <input ng-model="resolution" class="form-control" name="setResolution" placeholder="Enter Resolution" required>
+             </div>
+         </div>
+         
+         <div class="modal-footer">
+             <button class="btn btn-primary" ng-click="ok()">OK</button>
+             <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+         </div>
+         
+      </script>    
     <script type="text/ng-template" id="advSearchModal.html">
          <div class="modal-header">
             <h3 class="modal-title">Advanced Search</h3>

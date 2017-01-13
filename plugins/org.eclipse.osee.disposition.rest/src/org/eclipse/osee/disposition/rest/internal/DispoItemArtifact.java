@@ -81,8 +81,14 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
       try {
          JSONArray jArray = DispoUtil.asJSONArray(annotationsList);
          for (int i = 0; i < jArray.length(); i++) {
-            DispoAnnotationData annotation = DispoUtil.jsonObjToDispoAnnotationData(jArray.getJSONObject(i));
-            toReturn.add(annotation);
+            String className = jArray.get(i).getClass().getSimpleName();
+            if (className.equals("Null")) {
+               DispoAnnotationData annotation = null;
+               toReturn.add(annotation);
+            } else {
+               DispoAnnotationData annotation = DispoUtil.jsonObjToDispoAnnotationData(jArray.getJSONObject(i));
+               toReturn.add(annotation);
+            }
          }
          return toReturn;
       } catch (JSONException ex) {

@@ -71,6 +71,8 @@ public interface DispoApi {
 
    boolean editDispoItem(BranchId branch, String itemId, DispoItemData newDispoItem);
 
+   boolean editMassDispositions(BranchId branch, String itemId, List<String> ids, String resolutionType, String resolution);
+
    boolean massEditTeam(BranchId branch, String setId, List<String> itemNames, String team, String commitMessage);
 
    boolean editDispoAnnotation(BranchId branch, String itemId, String annotationId, DispoAnnotationData newAnnotation, String userName, boolean isCi);

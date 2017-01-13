@@ -211,6 +211,22 @@ app.provider('Set', function() {
     ];
 });
 
+app.provider('MassDisposition', function() {
+    this.$get = ['$resource',
+        function($resource) {
+            var MassDisposition = $resource('/dispo/program/:programId/set/:setId/massDisposition', {}, {
+                update: {
+                    method: 'PUT',
+                    headers: {
+                        "Accept": "application/json"
+                    }
+                }
+            });
+            return MassDisposition;
+        }
+    ];
+});
+
 app.provider('Config', function() {
     this.$get = ['$resource',
         function($resource) {

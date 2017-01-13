@@ -4,6 +4,7 @@ app.controller('userController', [
     '$rootScope',
     'Program',
     'Set',
+    'MassDisposition',
     'Item',
     'Annotation',
     'SetSearch',
@@ -356,7 +357,7 @@ app.controller('userController', [
 
         $scope.subGridOptions.data = [];
         $scope.subGridOptions.columnDefs = ColumnFactory.getSubGridColumns($rootScope.type);
-
+        
         $scope.getItemDetails = function(item, row) {
             if (!$scope.isMultiEditView) {
                 $scope.selectedItem = item;
@@ -417,6 +418,33 @@ app.controller('userController', [
 
         }
 
+        $scope.massDisposition = function(itemIds, resolutionType, resolution) {
+        	var loadingModal = $scope.showLoadingModal();
+        	
+        	MassDisposition.save({
+                programId: $scope.programSelection,
+                setId: $scope.setSelection,
+                resolutionType: resolutionType,
+                resolution: resolution
+            }, itemIds, function(data){
+            	$scope.items = {};
+                Item.query({
+                    programId: $scope.programSelection,
+                    setId: $scope.setSelection,
+                    isDetailed: $rootScope.type == 'codeCoverage'
+                }, function(data) {
+                	loadingModal.close();
+                    $scope.items = data;
+                }, function(data) {
+                	loadingModal.close();
+                	alert("Ooops...Something went wrong");
+                });
+            }, function() {
+            	alert("Ooops...Something went wrong");
+            	loadingModal.close();
+            });
+        }
+        
         $scope.editItem = function editItem(item) {
             $scope.editItem(item, null);
         }
@@ -818,8 +846,51 @@ app.controller('userController', [
         };
 
 
+        // Mass Disposition Modal
+        $scope.showMassDispositionModal = function() {
+        	$scope.isMulitEditRequest = true;
+            var modalInstance = $modal.open({
+                templateUrl: 'massDisposition.html',
+                controller: MassDispositionCtrl,
+                size: 'sm',
+                windowClass: 'massDispositionModal',
+                resolve: {
+                	coverageResolutionTypes: function() {
+                		return $scope.coverageResolutionTypes;
+                	}
+                }
+            });
 
-        // Advanced Serach Modal
+            modalInstance.result.then(function(inputs) {
+            	var newSet = new Set;
+            	var operation = {};
+            	var parameters = {};
+            	operation.operationName = "Mass_Disposition";
+            	var itemIds = [];
+            	var size = $scope.selectedItems.length;
+            	for(var i = 0; i < size; i++) {
+            		itemIds.push($scope.selectedItems[i].guid);
+            	}
+            	$scope.massDisposition(itemIds, inputs.resolutionType, inputs.resolution);
+            });
+        }
+        
+        var MassDispositionCtrl = function($scope, $modalInstance, coverageResolutionTypes) {
+        	$scope.typesLocal = coverageResolutionTypes.slice();
+            $scope.ok = function() {
+                var inputs = {};
+                inputs.resolutionType = this.resolutionType;
+                inputs.resolution = this.resolution;
+                $modalInstance.close(inputs);
+            };
+
+            $scope.cancel = function() {
+                $modalInstance.dismiss('cancel');
+            };
+        };
+        
+        
+        // Advanced Search Modal
         $scope.showAdvSearchModal = function() {
             var modalInstance = $modal.open({
                 templateUrl: 'advSearchModal.html',

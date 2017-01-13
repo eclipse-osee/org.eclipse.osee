@@ -137,6 +137,26 @@ public class DispoSetResource {
    }
 
    /**
+    * Edit a specific Disposition Set given a setId and new Disposition Set Data
+    *
+    * @param setId The Id of the Disposition Set to search for
+    * @param newDispositionSet The data for the new Disposition Set
+    * @return The updated Disposition Set if successful. Error Code otherwise
+    * @response.representation.200.doc OK, Found Disposition Set
+    * @response.representation.404.doc Not Found, Could not find any Disposition Sets
+    */
+   @Path("{setId}/massDisposition")
+   @POST
+   @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
+   @Consumes(MediaType.APPLICATION_JSON)
+   public Response runMassDisposition(@PathParam("setId") String setId, @QueryParam("resolutionType") String resolutionType, @QueryParam("resolution") String resolution, List<String> itemIds) {
+      Response.Status status;
+      dispoApi.editMassDispositions(branch, setId, itemIds, resolutionType, resolution);
+      status = Status.OK;
+      return Response.status(status).build();
+   }
+
+   /**
     * Delete a specific Disposition Set given a setId
     *
     * @param setId The Id of the Disposition Set to search for

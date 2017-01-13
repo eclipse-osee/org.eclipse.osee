@@ -213,6 +213,17 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
+   public boolean editMassDispositions(BranchId branch, String setId, List<String> ids, String resolutionType, String resolution) {
+      boolean wasUpdated = false;
+      List<DispoItem> itemsToEdit = massDisposition(branch, setId, ids, resolutionType, resolution);
+      if (itemsToEdit.size() > 0) {
+         editDispoItems(branch, setId, itemsToEdit, true, "Import");
+         wasUpdated = true;
+      }
+      return wasUpdated;
+   }
+
+   @Override
    public boolean editDispoItem(BranchId branch, String itemId, DispoItemData newDispoItem) {
       boolean wasUpdated = false;
       DispoItem dispoItemToEdit = getQuery().findDispoItemById(branch, itemId);
@@ -540,6 +551,7 @@ public class DispoApiImpl implements DispoApi {
       // Create the Note to document the Operation
       List<Note> notesList = setToEdit.getNotesList();
       Note genOpNotes = generateOperationNotes(operation);
+      notesList.add(generateOperationNotes("Import"));
       notesList.add(genOpNotes);
       newSet.setNotesList(notesList);
       newDate.setTime(System.currentTimeMillis());
@@ -547,6 +559,38 @@ public class DispoApiImpl implements DispoApi {
 
       // Generate report
       getWriter().updateOperationSummary(author, branch, setToEdit.getGuid(), report);
+   }
+
+   private List<DispoItem> massDisposition(BranchId branch, String setId, List<String> itemIds, String resolutionType, String resolution) {
+      List<DispoItem> toEdit = new ArrayList<>();
+
+      List<DispoItem> allItemsInSet = getDispoItems(branch, setId);
+      for (DispoItem item : allItemsInSet) {
+         if (itemIds.contains(item.getGuid())) {
+            DispoItemData newItem = new DispoItemData();
+            newItem.setGuid(item.getGuid());
+            newItem.setName(item.getName());
+
+            List<DispoAnnotationData> newAnnotations = new ArrayList<>();
+            newAnnotations = item.getAnnotationsList();
+            for (DispoAnnotationData annotation : item.getAnnotationsList()) {
+               if (annotation.getResolution().equals("")) {
+                  annotation.setResolutionType(resolutionType);
+                  annotation.setResolution(resolution);
+                  annotation.setIsResolutionValid(true);
+                  annotation.setIsConnected(true);
+                  annotation.setIsDefault(false);
+                  dispoConnector.connectAnnotation(annotation, item.getDiscrepanciesList());
+                  newAnnotations.set(annotation.getIndex(), annotation);
+               }
+            }
+            newItem.setAnnotationsList(newAnnotations);
+            newItem.setDiscrepanciesList(item.getDiscrepanciesList());
+            newItem.setStatus(dispoConnector.getItemStatus(newItem));
+            toEdit.add(newItem);
+         }
+      }
+      return toEdit;
    }
 
    private void MassSendDispoItemStatus(BranchId branch, DispoSet set, OperationReport report) {

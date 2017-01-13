@@ -47,7 +47,10 @@ public class DispoStrings {
    public static final String Item_Analyzed = "COMPLETE-ANALYZED";
 
    public static final String Operation_Import = "Import";
+   public static final String Mass_Disposition = "Mass_Disposition";
    public static final String Operation_MassSendStatus = "MassSendDispoItemStatus";
+   
+   public static final String CLEAN_ANNOTATIONS = "Clean_Annotations";
 
    public static final String DeletedDiscrepancy = "Deleted Discrepancy";
 
