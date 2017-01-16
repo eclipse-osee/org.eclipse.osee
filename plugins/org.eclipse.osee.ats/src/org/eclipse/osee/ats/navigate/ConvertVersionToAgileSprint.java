@@ -108,7 +108,10 @@ public class ConvertVersionToAgileSprint extends XNavigateItemAction {
             newSprint.setName(useVersionTitle ? version.getName() : newTitle);
             newSprint.setTeamUuid(teamUuid);
             Response response = ageilEp.createSprint(new Long(teamUuid), newSprint);
-            JaxAgileSprint jaxSprint = response.readEntity(JaxAgileSprint.class);
+            JaxAgileSprint jaxSprint = null;
+            if (response != null) {
+               jaxSprint = response.readEntity(JaxAgileSprint.class);
+            }
             if (jaxSprint != null) {
                long uuid = jaxSprint.getUuid();
                IAgileSprint sprint = (SprintArtifact) client.getArtifact(uuid);
@@ -124,7 +127,7 @@ public class ConvertVersionToAgileSprint extends XNavigateItemAction {
                changes.executeIfNeeded();
 
             } else {
-               AWorkbench.popup("Error creating Agile Team [%s]", response.toString());
+               AWorkbench.popup("Error creating Agile Team [%s]", response != null ? response.toString() : "");
                return;
             }
          }

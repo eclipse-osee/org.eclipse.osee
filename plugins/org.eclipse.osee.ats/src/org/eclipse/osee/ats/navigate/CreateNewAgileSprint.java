@@ -78,15 +78,18 @@ public class CreateNewAgileSprint extends XNavigateItemAction {
                      newSprint.setName(name);
                      newSprint.setTeamUuid(teamUuid);
                      Response response = ageilEp.createSprint(new Long(teamUuid), newSprint);
-                     JaxAgileSprint sprint = response.readEntity(JaxAgileSprint.class);
+                     JaxAgileSprint sprint = null;
+                     if (response != null) {
+                        sprint = response.readEntity(JaxAgileSprint.class);
+                     }
                      if (sprint != null) {
                         long uuid = sprint.getUuid();
-                        Artifact sprintArt =
-                           ArtifactQuery.getArtifactFromId(new Long(uuid).intValue(), AtsClientService.get().getAtsBranch());
+                        Artifact sprintArt = ArtifactQuery.getArtifactFromId(new Long(uuid).intValue(),
+                           AtsClientService.get().getAtsBranch());
                         sprintArt.getParent().reloadAttributesAndRelations();
                         AtsUtil.openArtifact(sprintArt.getGuid(), OseeCmEditor.CmPcrEditor);
                      } else {
-                        AWorkbench.popup("Error creating Agile Team [%s]", response.toString());
+                        AWorkbench.popup("Error creating Agile Team [%s]", response != null ? response.toString() : "");
                         return;
                      }
                   }

@@ -77,7 +77,10 @@ public class CreateNewAgileFeatureGroup extends XNavigateItemAction {
 
                      newGroup.setTeamUuid(teamUuid);
                      Response response = teamApi.createFeatureGroup(new Long(teamUuid), newGroup);
-                     Object entity = response.readEntity(JaxAgileFeatureGroup.class);
+                     Object entity = null;
+                     if (response != null) {
+                        entity = response.readEntity(JaxAgileFeatureGroup.class);
+                     }
                      if (entity != null) {
                         JaxAgileFeatureGroup group = (JaxAgileFeatureGroup) entity;
                         Artifact groupArt = ArtifactQuery.getArtifactFromId(new Long(group.getUuid()).intValue(),
@@ -85,7 +88,7 @@ public class CreateNewAgileFeatureGroup extends XNavigateItemAction {
                         groupArt.getParent().reloadAttributesAndRelations();
                         AtsUtil.openArtifact(group.getUuid(), OseeCmEditor.CmPcrEditor);
                      } else {
-                        AWorkbench.popup("Error creating Agile Team [%s]", response.toString());
+                        AWorkbench.popup("Error creating Agile Team [%s]", response != null ? response.toString() : "");
                         return;
                      }
                   }

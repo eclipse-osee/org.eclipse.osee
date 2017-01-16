@@ -174,17 +174,15 @@ public class XDslEditorWidget extends XText {
 
          @Override
          public void textChanged(TextEvent event) {
-            if (editor != null) {
-               XtextSourceViewer viewer = editor.getViewer();
-               if (viewer != null) {
-                  if (Widgets.isAccessible(viewer.getTextWidget())) {
-                     Displays.ensureInDisplayThread(new Runnable() {
-                        @Override
-                        public void run() {
-                           notifyXModifiedListeners();
-                        }
-                     });
-                  }
+            XtextSourceViewer viewer = editor.getViewer();
+            if (viewer != null) {
+               if (Widgets.isAccessible(viewer.getTextWidget())) {
+                  Displays.ensureInDisplayThread(new Runnable() {
+                     @Override
+                     public void run() {
+                        notifyXModifiedListeners();
+                     }
+                  });
                }
             }
          }

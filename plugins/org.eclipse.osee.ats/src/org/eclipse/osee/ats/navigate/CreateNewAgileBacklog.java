@@ -76,7 +76,10 @@ public class CreateNewAgileBacklog extends XNavigateItemAction {
 
                   newBacklog.setTeamUuid(teamUuid);
                   Response response = agileEp.createBacklog(new Long(teamUuid), newBacklog);
-                  Object entity = response.readEntity(JaxAgileBacklog.class);
+                  Object entity = null;
+                  if (response != null) {
+                     entity = response.readEntity(JaxAgileBacklog.class);
+                  }
                   if (entity != null) {
                      JaxAgileBacklog backlog = (JaxAgileBacklog) entity;
                      Artifact backlogart = ArtifactQuery.getArtifactFromId(new Long(backlog.getUuid()).intValue(),
@@ -84,7 +87,7 @@ public class CreateNewAgileBacklog extends XNavigateItemAction {
                      backlogart.getParent().reloadAttributesAndRelations();
                      AtsUtil.openArtifact(backlog.getUuid(), OseeCmEditor.CmPcrEditor);
                   } else {
-                     AWorkbench.popup("Error creating Agile Backlog [%s]", response.toString());
+                     AWorkbench.popup("Error creating Agile Backlog [%s]", response != null ? response.toString() : "");
                   }
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

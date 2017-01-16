@@ -202,18 +202,15 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
 
                @Override
                public void selectionChanged(SelectionChangedEvent event) {
-                  if (treeViewer != null) {
-                     Tree viewer = treeViewer.getTree();
-                     if (viewer != null && !viewer.isDisposed()) {
-                        viewer.redraw();
-                     }
-                     Control control = treeViewer.getControl();
-                     if (control != null && !control.isDisposed()) {
-                        control.redraw();
-                     }
+                  Tree viewer = treeViewer.getTree();
+                  if (viewer != null && !viewer.isDisposed()) {
+                     viewer.redraw();
+                  }
+                  Control control = treeViewer.getControl();
+                  if (control != null && !control.isDisposed()) {
+                     control.redraw();
                   }
                }
-
             });
 
             /**

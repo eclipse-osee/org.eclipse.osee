@@ -50,7 +50,10 @@ public class CreateNewAgileTeam extends XNavigateItemAction {
                JaxNewAgileTeam newTeam = new JaxNewAgileTeam();
                newTeam.setName(ed.getEntry());
                Response response = agileEp.createTeam(newTeam);
-               Object entity = response.readEntity(JaxAgileTeam.class);
+               Object entity = null;
+               if(response != null){
+                  entity = response.readEntity(JaxAgileTeam.class);
+               }
                if (entity != null) {
                   JaxAgileTeam team = (JaxAgileTeam) entity;
                   Artifact teamArt =
@@ -58,7 +61,7 @@ public class CreateNewAgileTeam extends XNavigateItemAction {
                   teamArt.getParent().reloadAttributesAndRelations();
                   AtsUtil.openArtifact(team.getUuid(), OseeCmEditor.CmPcrEditor);
                } else {
-                  AWorkbench.popup("Error Creating Team", response.toString());
+                  AWorkbench.popup("Error Creating Team", response != null ? response.toString() : "");
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
