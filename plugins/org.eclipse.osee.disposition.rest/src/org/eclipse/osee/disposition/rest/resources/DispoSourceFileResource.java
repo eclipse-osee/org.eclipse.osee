@@ -59,8 +59,9 @@ public class DispoSourceFileResource {
    @GET
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
    public Response getDispoItemsById(@PathParam("fileName") String fileName) {
+      String origFileName = fileName;
       if (!fileName.endsWith(".LIS")) {
-         fileName = fileName.replaceAll("\\.(ada|c).*", ".LIS");
+         fileName = fileName.replaceAll("\\.(ada($|\\.)|c($|\\.)).*", ".LIS");
       }
 
       DispoSet set = dispoApi.getDispoSetById(branch, setId);
