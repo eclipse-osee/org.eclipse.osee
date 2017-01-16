@@ -252,10 +252,15 @@ public class ChangeDataLoader extends AbstractOperation {
                      wasValue = fromVersion.getValue();
                   }
                } else {
-                  Artifact startArtifact = artifactDelta.getBaseArtifact();
-                  if (startArtifact == null) {
-                     startArtifact = artifactDelta.getStartArtifact();
+                  Artifact startArtifact = null;
+
+                  if (artifactDelta != null) {
+                     startArtifact = artifactDelta.getBaseArtifact();
+                     if (startArtifact == null) {
+                        startArtifact = artifactDelta.getStartArtifact();
+                     }
                   }
+
                   if (startArtifact != null) {
                      wasValue = startArtifact.getAttributesToString(attributeType);
                      if (wasValue == null) {
@@ -374,8 +379,8 @@ public class ChangeDataLoader extends AbstractOperation {
    private static boolean isAllowableChange(ChangeIgnoreType ignoreType) {
       return //
       ignoreType.isNone() || //
-      ignoreType.isResurrected() || //
-      ignoreType.isDeletedOnDestAndNotResurrected() || //
-      ignoreType.isDeletedOnDestination();
+         ignoreType.isResurrected() || //
+         ignoreType.isDeletedOnDestAndNotResurrected() || //
+         ignoreType.isDeletedOnDestination();
    }
 }

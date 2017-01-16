@@ -126,7 +126,7 @@ public class RevertDuplicateTransitionByIdAction extends Action {
             break;
          }
       }
-      if (attributes.isEmpty()) {
+      if (attributes == null || attributes.isEmpty()) {
          results.errorf("Unable to find duplicate completed/cancelled dates for artifact %s", art.toStringWithId());
          return false;
       }
@@ -138,6 +138,9 @@ public class RevertDuplicateTransitionByIdAction extends Action {
          } else {
             trans2 = transId;
          }
+      }
+      if (trans1 == null || trans2 == null) {
+         return false;
       }
       earlyTrans = trans1.getId() < trans2.getId() ? trans1 : trans2;
       lateTrans = trans2.getId() < trans1.getId() ? trans1 : trans2;

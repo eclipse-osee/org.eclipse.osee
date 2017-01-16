@@ -52,7 +52,7 @@ public interface IAtsQueryService {
    Collection<ArtifactId> getArtifacts(List<Integer> ids, BranchId branch);
 
    void runUpdate(String query, Object... data);
-   
+
    IAtsOrcsScriptQuery createOrcsScriptQuery(String query, Object... data);
 
 }

@@ -125,7 +125,8 @@ public class UpdateAtsConfiguration {
                configArt.getAttributes(CoreAttributeTypes.GeneralStringData, DeletionFlag.EXCLUDE_DELETED).iterator();
             while (iterator.hasNext()) {
                AttributeReadable<Object> attributeReadable = iterator.next();
-               if (((String) attributeReadable.getValue()).startsWith(VIEWS_EQUAL_KEY)) {
+
+               if (attributeReadable != null && ((String) attributeReadable.getValue()).startsWith(VIEWS_EQUAL_KEY)) {
                   tx.setAttributeById(configArt, attributeReadable, getViewsAttrValue(databaseViews));
                   rd.log("Create or update AtsConfig.VIEWS attribute\n");
                   break;

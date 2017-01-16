@@ -66,7 +66,7 @@ public class XTextSpellCheckListener implements ModifyListener {
       xText.getStyledText().addDisposeListener(new DisposeListener() {
          @Override
          public void widgetDisposed(DisposeEvent e) {
-            if (xText == null || xText.getStyledText() == null || xText.getStyledText().isDisposed()) {
+            if (xText.getStyledText() == null || xText.getStyledText().isDisposed()) {
                return;
             }
             xText.getStyledText().removeMouseListener(mouseListener);
