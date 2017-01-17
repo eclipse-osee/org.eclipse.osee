@@ -27,7 +27,7 @@ import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.model.DispoProgamDescriptorData;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.DispoRoles;
-import org.eclipse.osee.disposition.rest.util.DispoFactory;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,11 +40,9 @@ import org.json.JSONObject;
 public class DispoProgramResource {
 
    private final DispoApi dispoApi;
-   private final DispoFactory dispoFactory;
 
-   public DispoProgramResource(DispoApi dispoApi, DispoFactory dispoFactory) {
+   public DispoProgramResource(DispoApi dispoApi) {
       this.dispoApi = dispoApi;
-      this.dispoFactory = dispoFactory;
    }
 
    /**
@@ -117,18 +115,18 @@ public class DispoProgramResource {
       return Response.status(status).entity(jarray.toString()).build();
    }
 
-   @Path("{programId}/set")
-   public DispoSetResource getAnnotation(@PathParam("programId") String programId) {
-      return new DispoSetResource(dispoApi, dispoFactory.createProgram(programId, Long.parseLong(programId)));
+   @Path("{branchId}/set")
+   public DispoSetResource getAnnotation(@PathParam("branchId") BranchId branch) {
+      return new DispoSetResource(dispoApi, branch);
    }
 
-   @Path("{programId}/admin")
-   public DispoAdminResource getDispoSetReport(@PathParam("programId") String programId) {
-      return new DispoAdminResource(dispoApi, dispoFactory.createProgram(programId, Long.parseLong(programId)));
+   @Path("{branchId}/admin")
+   public DispoAdminResource getDispoSetReport(@PathParam("branchId") BranchId branch) {
+      return new DispoAdminResource(dispoApi, branch);
    }
 
-   @Path("{programId}/config")
-   public DispoConfigResource getDispoDataStore(@PathParam("programId") String programId) {
-      return new DispoConfigResource(dispoApi, dispoFactory.createProgram(programId, Long.parseLong(programId)));
+   @Path("{branchId}/config")
+   public DispoConfigResource getDispoDataStore(@PathParam("branchId") BranchId branch) {
+      return new DispoConfigResource(dispoApi, branch);
    }
 }

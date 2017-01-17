@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.disposition.model.DispoConfig;
 import org.eclipse.osee.disposition.model.DispoItem;
-import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -25,7 +25,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public interface DispoQuery {
 
-   Map<String, ArtifactReadable> getCoverageUnits(long branchUuid, Long artifactUuid);
+   Map<String, ArtifactReadable> getCoverageUnits(BranchId branch, Long artifactUuid);
 
    ArtifactReadable findUser();
 
@@ -35,22 +35,22 @@ public interface DispoQuery {
 
    boolean isUniqueProgramName(String name);
 
-   boolean isUniqueSetName(DispoProgram program, String name);
+   boolean isUniqueSetName(BranchId branch, String name);
 
-   boolean isUniqueItemName(DispoProgram program, String setId, String name);
+   boolean isUniqueItemName(BranchId branch, String setId, String name);
 
-   List<DispoSet> findDispoSets(DispoProgram program, String type);
+   List<DispoSet> findDispoSets(BranchId branch, String type);
 
-   DispoSet findDispoSetsById(DispoProgram program, String id);
+   DispoSet findDispoSetsById(BranchId branch, String id);
 
-   List<DispoItem> findDipoItems(DispoProgram program, String setId, boolean isDetailed);
+   List<DispoItem> findDipoItems(BranchId branch, String setId, boolean isDetailed);
 
-   DispoItem findDispoItemById(DispoProgram program, String itemId);
+   DispoItem findDispoItemById(BranchId branch, String itemId);
 
    List<IOseeBranch> getDispoBranches();
 
-   Collection<DispoItem> findDispoItemByAnnoationText(DispoProgram program, String setId, String keyword, boolean isDetailed);
+   Collection<DispoItem> findDispoItemByAnnoationText(BranchId branch, String setId, String keyword, boolean isDetailed);
 
-   DispoConfig findDispoConfig(DispoProgram program);
+   DispoConfig findDispoConfig(BranchId branch);
 
 }

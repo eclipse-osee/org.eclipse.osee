@@ -15,11 +15,9 @@ import static org.mockito.Mockito.when;
 import java.util.Collections;
 import java.util.List;
 import javax.ws.rs.core.Response;
-import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.rest.DispoApi;
-import org.eclipse.osee.disposition.rest.util.DispoFactory;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,18 +34,16 @@ public class DispoProgramResourceTest {
    @Mock
    private DispoApi dispoApi;
    @Mock
-   private DispoProgram id1;
+   private BranchId id1;
    @Mock
-   private DispoProgram id2;
-   @Mock
-   private DispoFactory dispoFactory;
+   private BranchId id2;
 
    private DispoProgramResource resource;
 
    @Before
    public void setUp() {
       MockitoAnnotations.initMocks(this);
-      resource = new DispoProgramResource(dispoApi, dispoFactory);
+      resource = new DispoProgramResource(dispoApi);
       when(id1.getUuid()).thenReturn(23L);
       when(id2.getUuid()).thenReturn(25L);
    }

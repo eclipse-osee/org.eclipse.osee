@@ -15,13 +15,12 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
-
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
-import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 
@@ -36,9 +35,9 @@ public class STRSReport {
       this.dispoApi = dispoApi;
    }
 
-   public void runReport(DispoProgram program, DispoSet setPrimary, DispoSet setSecondary, OutputStream outputStream) {
-      List<DispoItem> itemsFromPrimary = dispoApi.getDispoItems(program, setPrimary.getGuid(), true);
-      List<DispoItem> itemsFromSecondary = dispoApi.getDispoItems(program, setSecondary.getGuid(), true);
+   public void runReport(BranchId branch, DispoSet setPrimary, DispoSet setSecondary, OutputStream outputStream) {
+      List<DispoItem> itemsFromPrimary = dispoApi.getDispoItems(branch, setPrimary.getGuid(), true);
+      List<DispoItem> itemsFromSecondary = dispoApi.getDispoItems(branch, setSecondary.getGuid(), true);
 
       HashMap<String, DispoItem> idsToDryRun = convertToMap(itemsFromSecondary);
 

@@ -17,12 +17,12 @@ import java.util.Collections;
 import java.util.List;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.disposition.model.DispoMessages;
-import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.DispoApi;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -36,7 +36,7 @@ public class DispoSetResourceTest {
    @Mock
    private DispoApi dispositionApi;
    @Mock
-   private DispoProgram program;
+   private BranchId branch;
 
    private DispoSetResource resource;
    private final Long id1 = 21351L;
@@ -48,7 +48,7 @@ public class DispoSetResourceTest {
    @Before
    public void setUp() {
       MockitoAnnotations.initMocks(this);
-      resource = new DispoSetResource(dispositionApi, program);
+      resource = new DispoSetResource(dispositionApi, branch);
    }
 
    @Test
@@ -63,9 +63,9 @@ public class DispoSetResourceTest {
       expected.setGuid(id1AsString);
       expected.setName(descriptor.getName());
       expected.setImportPath(descriptor.getImportPath());
-      when(dispositionApi.createDispoSet(program, descriptor)).thenReturn(id1);
-      when(dispositionApi.getDispoSetById(program, id1AsString)).thenReturn(expected);
-      when(dispositionApi.isUniqueSetName(program, descriptor.getName())).thenReturn(true);
+      when(dispositionApi.createDispoSet(branch, descriptor)).thenReturn(id1);
+      when(dispositionApi.getDispoSetById(branch, id1AsString)).thenReturn(expected);
+      when(dispositionApi.isUniqueSetName(branch, descriptor.getName())).thenReturn(true);
 
       Response postResponse = resource.postDispoSet(descriptor);
       DispoSetData returnedEntity = (DispoSetData) postResponse.getEntity();
@@ -103,7 +103,7 @@ public class DispoSetResourceTest {
       descriptor.setImportPath("c:");
       descriptor.setDispoType("testScript");
 
-      when(dispositionApi.isUniqueSetName(program, descriptor.getName())).thenReturn(false);
+      when(dispositionApi.isUniqueSetName(branch, descriptor.getName())).thenReturn(false);
 
       Response postResponse = resource.postDispoSet(descriptor);
       String returnedEntity = (String) postResponse.getEntity();
@@ -115,7 +115,7 @@ public class DispoSetResourceTest {
    public void testGetAll() {
       // No Sets
       List<DispoSet> emptyResultSet = new ArrayList<>();
-      when(dispositionApi.getDispoSets(program, "testScript")).thenReturn(emptyResultSet);
+      when(dispositionApi.getDispoSets(branch, "testScript")).thenReturn(emptyResultSet);
       Iterable<DispoSet> noSetsResponse = resource.getAllDispoSets("testScript");
       assertEquals(Collections.emptyList(), noSetsResponse);
 
@@ -124,7 +124,7 @@ public class DispoSetResourceTest {
       set.setDispoType("testScript");
       List<DispoSet> resultSet = Collections.singletonList((DispoSet) set);
 
-      when(dispositionApi.getDispoSets(program, "testScript")).thenReturn(resultSet);
+      when(dispositionApi.getDispoSets(branch, "testScript")).thenReturn(resultSet);
       Iterable<DispoSet> oneSetResponse = resource.getAllDispoSets("testScript");
       DispoSet setFromEntity = oneSetResponse.iterator().next();
       assertEquals(id1AsString, setFromEntity.getGuid());
@@ -133,14 +133,14 @@ public class DispoSetResourceTest {
    @Test
    public void testGetSingleSet() {
       // No Sets
-      when(dispositionApi.getDispoSetById(program, id2AsString)).thenReturn(null);
+      when(dispositionApi.getDispoSetById(branch, id2AsString)).thenReturn(null);
       DispoSet noSetsResponse = resource.getDispoSetById(id2AsString);
       assertEquals(null, noSetsResponse);
 
       DispoSetData expectedSet = new DispoSetData();
       expectedSet.setGuid(id1AsString);
       expectedSet.setName("Set");
-      when(dispositionApi.getDispoSetById(program, expectedSet.getGuid())).thenReturn(expectedSet);
+      when(dispositionApi.getDispoSetById(branch, expectedSet.getGuid())).thenReturn(expectedSet);
       DispoSet oneSetResponse = resource.getDispoSetById(expectedSet.getGuid());
       assertEquals(expectedSet.getGuid(), oneSetResponse.getGuid());
    }
@@ -160,11 +160,11 @@ public class DispoSetResourceTest {
    public void testDelete() {
       DispoSetData setToEdt = new DispoSetData();
       setToEdt.setGuid(id1AsString);
-      when(dispositionApi.deleteDispoSet(program, id1AsString)).thenReturn(true);
+      when(dispositionApi.deleteDispoSet(branch, id1AsString)).thenReturn(true);
       Response response = resource.deleteDispoSet(id1AsString);
       assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
-      when(dispositionApi.deleteDispoSet(program, id1AsString)).thenReturn(false);
+      when(dispositionApi.deleteDispoSet(branch, id1AsString)).thenReturn(false);
       response = resource.deleteDispoSet(id1AsString);
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
    }

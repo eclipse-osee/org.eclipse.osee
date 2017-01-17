@@ -12,11 +12,11 @@ package org.eclipse.osee.disposition.rest.integration.util;
 
 import static org.eclipse.osee.disposition.rest.integration.util.DispositionTestUtil.SAW_Bld_1_FOR_DISPO;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
-import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -74,8 +74,8 @@ public class DispositionInitializer {
       DispoSetDescriptorData descriptor = new DispoSetDescriptorData();
       descriptor.setName("DEMO SET");
       descriptor.setImportPath("c:");
-      DispoProgram program = dispoApi.getDispoFactory().createProgram(SAW_Bld_1_FOR_DISPO);
-      dispoApi.createDispoSet(program, descriptor);
+      BranchId branch = SAW_Bld_1_FOR_DISPO;
+      dispoApi.createDispoSet(branch, descriptor);
    }
 
    @SuppressWarnings("unchecked")

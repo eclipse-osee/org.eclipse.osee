@@ -16,8 +16,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.disposition.model.DispoConfig;
-import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.rest.DispoApi;
+import org.eclipse.osee.framework.core.data.BranchId;
 
 /**
  * @author Angel Avila
@@ -25,11 +25,11 @@ import org.eclipse.osee.disposition.rest.DispoApi;
 public class DispoConfigResource {
 
    private final DispoApi dispoApi;
-   private final DispoProgram program;
+   private final BranchId branch;
 
-   public DispoConfigResource(DispoApi dispoApi, DispoProgram program) {
+   public DispoConfigResource(DispoApi dispoApi, BranchId branch) {
       this.dispoApi = dispoApi;
-      this.program = program;
+      this.branch = branch;
    }
 
    @GET
@@ -37,7 +37,7 @@ public class DispoConfigResource {
    public Response getDispoConfig() {
       Response.Status status;
       Response response;
-      DispoConfig config = dispoApi.getDispoConfig(program);
+      DispoConfig config = dispoApi.getDispoConfig(branch);
 
       if (config == null) {
          status = Status.NOT_FOUND;

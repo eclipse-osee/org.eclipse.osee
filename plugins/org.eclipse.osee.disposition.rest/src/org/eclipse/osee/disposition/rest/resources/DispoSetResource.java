@@ -27,12 +27,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoMessages;
-import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.DispoRoles;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.json.JSONException;
 
 /**
@@ -41,11 +41,11 @@ import org.json.JSONException;
 public class DispoSetResource {
 
    private final DispoApi dispoApi;
-   private final DispoProgram program;
+   private final BranchId branch;
 
-   public DispoSetResource(DispoApi dispoApi, DispoProgram program) {
+   public DispoSetResource(DispoApi dispoApi, BranchId branch) {
       this.dispoApi = dispoApi;
-      this.program = program;
+      this.branch = branch;
    }
 
    /**
@@ -69,10 +69,10 @@ public class DispoSetResource {
       String dispoType = descriptor.getDispoType();
 
       if (!name.isEmpty() && !importPath.isEmpty() && !dispoType.isEmpty()) {
-         boolean isUniqueSetName = dispoApi.isUniqueSetName(program, name);
+         boolean isUniqueSetName = dispoApi.isUniqueSetName(branch, name);
          if (isUniqueSetName) {
-            Long createdSetId = dispoApi.createDispoSet(program, descriptor);
-            DispoSet createdSet = dispoApi.getDispoSetById(program, String.valueOf(createdSetId));
+            Long createdSetId = dispoApi.createDispoSet(branch, descriptor);
+            DispoSet createdSet = dispoApi.getDispoSetById(branch, String.valueOf(createdSetId));
             status = Status.CREATED;
             response = Response.status(status).entity(createdSet).build();
          } else {
@@ -98,13 +98,13 @@ public class DispoSetResource {
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public DispoSet getDispoSetById(@PathParam("setId") String setId) {
-      return dispoApi.getDispoSetById(program, setId);
+      return dispoApi.getDispoSetById(branch, setId);
    }
 
    /**
-    * Get all Disposition Sets on the given program branch
+    * Get all Disposition Sets on the given branch
     *
-    * @return The Disposition Sets found on the program branch
+    * @return The Disposition Sets found on the branch
     * @throws JSONException
     * @response.representation.200.doc OK, Found Disposition Sets
     * @response.representation.404.doc Not Found, Could not find any Disposition Sets
@@ -112,7 +112,7 @@ public class DispoSetResource {
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public Iterable<DispoSet> getAllDispoSets(@QueryParam("type") String type) {
-      List<DispoSet> allDispoSets = dispoApi.getDispoSets(program, type);
+      List<DispoSet> allDispoSets = dispoApi.getDispoSets(branch, type);
       return allDispoSets;
    }
 
@@ -131,7 +131,7 @@ public class DispoSetResource {
    @Consumes(MediaType.APPLICATION_JSON)
    public Response putDispoSet(@PathParam("setId") String setId, DispoSetData newDispositionSet) {
       Response.Status status;
-      dispoApi.editDispoSet(program, setId, newDispositionSet);
+      dispoApi.editDispoSet(branch, setId, newDispositionSet);
       status = Status.OK;
       return Response.status(status).build();
    }
@@ -149,7 +149,7 @@ public class DispoSetResource {
    @DELETE
    public Response deleteDispoSet(@PathParam("setId") String setId) {
       Response.Status status = Status.NOT_FOUND;
-      boolean wasDeleted = dispoApi.deleteDispoSet(program, setId);
+      boolean wasDeleted = dispoApi.deleteDispoSet(branch, setId);
       if (wasDeleted) {
          status = Status.OK;
       } else {
@@ -160,12 +160,12 @@ public class DispoSetResource {
 
    @Path("{setId}/file")
    public DispoSourceFileResource getDispoSourceFiles(@PathParam("setId") String setId) {
-      return new DispoSourceFileResource(dispoApi, program, setId);
+      return new DispoSourceFileResource(dispoApi, branch, setId);
    }
 
    @Path("{setId}/item")
    public DispoItemResource getDispositionableItems(@PathParam("setId") String setId) {
-      return new DispoItemResource(dispoApi, program, setId);
+      return new DispoItemResource(dispoApi, branch, setId);
    }
 
    /**
@@ -180,7 +180,7 @@ public class DispoSetResource {
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public Iterable<DispoItem> getDispoItemsByAnnotationText(@PathParam("setId") String setId, @QueryParam("value") String value, @QueryParam("isDetailed") boolean isDetailed) {
-      Collection<DispoItem> foundItems = dispoApi.getDispoItemByAnnotationText(program, setId, value, isDetailed);
+      Collection<DispoItem> foundItems = dispoApi.getDispoItemByAnnotationText(branch, setId, value, isDetailed);
       return foundItems;
    }
 }

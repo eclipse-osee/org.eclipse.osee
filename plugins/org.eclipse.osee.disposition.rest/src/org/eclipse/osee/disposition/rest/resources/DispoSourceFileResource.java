@@ -26,9 +26,9 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
-import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.rest.DispoApi;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
@@ -37,12 +37,12 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  */
 public class DispoSourceFileResource {
    private final DispoApi dispoApi;
-   private final DispoProgram program;
+   private final BranchId branch;
    private final String setId;
 
-   public DispoSourceFileResource(DispoApi dispoApi, DispoProgram program, String setId) {
+   public DispoSourceFileResource(DispoApi dispoApi, BranchId branch, String setId) {
       this.dispoApi = dispoApi;
-      this.program = program;
+      this.branch = branch;
       this.setId = setId;
    }
 
@@ -63,7 +63,7 @@ public class DispoSourceFileResource {
          fileName = fileName.replaceAll("\\.(ada|c).*", ".LIS");
       }
 
-      DispoSet set = dispoApi.getDispoSetById(program, setId);
+      DispoSet set = dispoApi.getDispoSetById(branch, setId);
       String fullPath = set.getImportPath() + File.separator + "vcast" + File.separator + fileName;
       final File result = new File(fullPath);
 

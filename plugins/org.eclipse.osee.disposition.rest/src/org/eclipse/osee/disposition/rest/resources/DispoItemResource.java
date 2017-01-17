@@ -24,27 +24,27 @@ import javax.ws.rs.core.Response;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoMessages;
-import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.rest.DispoApi;
+import org.eclipse.osee.framework.core.data.BranchId;
 
 /**
  * @author Angel Avila
  */
 public class DispoItemResource {
    private final DispoApi dispoApi;
-   private final DispoProgram program;
+   private final BranchId branch;
    private final String setId;
 
-   public DispoItemResource(DispoApi dispoApi, DispoProgram program, String setId) {
+   public DispoItemResource(DispoApi dispoApi, BranchId branch, String setId) {
       this.dispoApi = dispoApi;
-      this.program = program;
+      this.branch = branch;
       this.setId = setId;
    }
 
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public Iterable<DispoItem> getAllDispoItems(@QueryParam("isDetailed") Boolean isDetailed) {
-      List<DispoItem> allDispoItems = dispoApi.getDispoItems(program, setId, isDetailed);
+      List<DispoItem> allDispoItems = dispoApi.getDispoItems(branch, setId, isDetailed);
       return allDispoItems;
    }
 
@@ -60,7 +60,7 @@ public class DispoItemResource {
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public DispoItem getDispoItemsById(@PathParam("itemId") String itemId) {
-      return dispoApi.getDispoItemById(program, itemId);
+      return dispoApi.getDispoItemById(branch, itemId);
    }
 
    /**
@@ -77,7 +77,7 @@ public class DispoItemResource {
    @Consumes(MediaType.APPLICATION_JSON)
    public Response putDispoItem(@PathParam("itemId") String itemId, DispoItemData newDispoItem) {
       Response response;
-      boolean wasEdited = dispoApi.editDispoItem(program, itemId, newDispoItem);
+      boolean wasEdited = dispoApi.editDispoItem(branch, itemId, newDispoItem);
       if (wasEdited) {
          response = Response.status(Response.Status.OK).build();
       } else {
@@ -98,7 +98,7 @@ public class DispoItemResource {
    @DELETE
    public Response deleteDispoItem(@PathParam("itemId") String itemId) {
       Response response;
-      boolean wasEdited = dispoApi.deleteDispoItem(program, itemId);
+      boolean wasEdited = dispoApi.deleteDispoItem(branch, itemId);
       if (wasEdited) {
          response = Response.status(Response.Status.OK).build();
       } else {
@@ -109,6 +109,6 @@ public class DispoItemResource {
 
    @Path("{itemId}/annotation/")
    public AnnotationResource getAnnotation(@PathParam("itemId") String itemId) {
-      return new AnnotationResource(dispoApi, program, setId, itemId);
+      return new AnnotationResource(dispoApi, branch, setId, itemId);
    }
 }

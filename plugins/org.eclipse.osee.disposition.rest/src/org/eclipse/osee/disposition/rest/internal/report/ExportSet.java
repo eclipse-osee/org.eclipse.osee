@@ -25,13 +25,13 @@ import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoConfig;
 import org.eclipse.osee.disposition.model.DispoItem;
-import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.ResolutionMethod;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
 import org.eclipse.osee.disposition.rest.internal.LocationRangesCompressor;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -49,8 +49,8 @@ public class ExportSet {
       this.dispoApi = dispoApi;
    }
 
-   public void runReport(DispoProgram program, DispoSet setPrimary, String option, OutputStream outputStream) {
-      List<DispoItem> items = dispoApi.getDispoItems(program, setPrimary.getGuid(), true);
+   public void runReport(BranchId branch, DispoSet setPrimary, String option, OutputStream outputStream) {
+      List<DispoItem> items = dispoApi.getDispoItems(branch, setPrimary.getGuid(), true);
 
       try {
          Writer writer = new OutputStreamWriter(outputStream, "UTF-8");
@@ -107,14 +107,14 @@ public class ExportSet {
 
    }
 
-   public void runCoverageReport(DispoProgram program, DispoSet setPrimary, String option, OutputStream outputStream) {
+   public void runCoverageReport(BranchId branch, DispoSet setPrimary, String option, OutputStream outputStream) {
       totalStatementCount = 0;
       totalCoveredCount = 0;
-      List<DispoItem> items = dispoApi.getDispoItems(program, setPrimary.getGuid(), true);
+      List<DispoItem> items = dispoApi.getDispoItems(branch, setPrimary.getGuid(), true);
 
       Map<String, Integer> resolutionToCount = new HashMap<>();
       Map<String, Pair<Integer, Integer>> unitToCovered = new HashMap<>();
-      DispoConfig config = dispoApi.getDispoConfig(program);
+      DispoConfig config = dispoApi.getDispoConfig(branch);
       config.getValidResolutions();
       for (ResolutionMethod resolution : config.getValidResolutions()) {
          resolutionToCount.put(resolution.getText(), 0);

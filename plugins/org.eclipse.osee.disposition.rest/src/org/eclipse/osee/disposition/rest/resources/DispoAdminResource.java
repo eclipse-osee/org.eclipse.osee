@@ -28,13 +28,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.disposition.model.CopySetParams;
-import org.eclipse.osee.disposition.model.DispoProgram;
-import org.eclipse.osee.disposition.model.DispoProgramImpl;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.DispoRoles;
 import org.eclipse.osee.disposition.rest.internal.report.ExportSet;
 import org.eclipse.osee.disposition.rest.internal.report.STRSReport;
+import org.eclipse.osee.framework.core.data.BranchId;
 
 /**
  * @author Angel Avila
@@ -42,11 +41,11 @@ import org.eclipse.osee.disposition.rest.internal.report.STRSReport;
 
 public class DispoAdminResource {
    private final DispoApi dispoApi;
-   private final DispoProgram program;
+   private final BranchId branch;
 
-   public DispoAdminResource(DispoApi dispoApi, DispoProgram program) {
+   public DispoAdminResource(DispoApi dispoApi, BranchId branch) {
       this.dispoApi = dispoApi;
-      this.program = program;
+      this.branch = branch;
    }
 
    @Path("/report")
@@ -54,8 +53,8 @@ public class DispoAdminResource {
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
    public Response getDispoSetReport(@Encoded @QueryParam("primarySet") String primarySet, @Encoded @QueryParam("secondarySet") String secondarySet) {
-      final DispoSet dispoSet = dispoApi.getDispoSetById(program, primarySet);
-      final DispoSet dispoSet2 = dispoApi.getDispoSetById(program, secondarySet);
+      final DispoSet dispoSet = dispoApi.getDispoSetById(branch, primarySet);
+      final DispoSet dispoSet2 = dispoApi.getDispoSetById(branch, secondarySet);
       final STRSReport writer = new STRSReport(dispoApi);
 
       final String fileName = String.format("STRS_Report_%s", System.currentTimeMillis());
@@ -64,7 +63,7 @@ public class DispoAdminResource {
 
          @Override
          public void write(OutputStream outputStream) throws WebApplicationException, IOException {
-            writer.runReport(program, dispoSet, dispoSet2, outputStream);
+            writer.runReport(branch, dispoSet, dispoSet2, outputStream);
             outputStream.flush();
          }
       };
@@ -79,7 +78,7 @@ public class DispoAdminResource {
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
    public Response postDispoSetExport(@Encoded @QueryParam("primarySet") String primarySet, @QueryParam("option") String option) {
-      final DispoSet dispoSet = dispoApi.getDispoSetById(program, primarySet);
+      final DispoSet dispoSet = dispoApi.getDispoSetById(branch, primarySet);
       final ExportSet writer = new ExportSet(dispoApi);
       final String options = option;
       Date date = new Date();
@@ -92,9 +91,9 @@ public class DispoAdminResource {
          public void write(OutputStream outputStream) throws WebApplicationException, IOException {
             String dispoType = dispoSet.getDispoType();
             if (dispoType.equals("testScript")) {
-               writer.runReport(program, dispoSet, options, outputStream);
+               writer.runReport(branch, dispoSet, options, outputStream);
             } else {
-               writer.runCoverageReport(program, dispoSet, options, outputStream);
+               writer.runCoverageReport(branch, dispoSet, options, outputStream);
             }
             outputStream.flush();
          }
@@ -110,10 +109,10 @@ public class DispoAdminResource {
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getDispoSetCopyCoverage(@QueryParam("destinationSet") String destinationSet, @QueryParam("sourceBranch") Long sourceBranch, @QueryParam("sourcePackage") Long sourcePackage, CopySetParams params) {
+   public Response getDispoSetCopyCoverage(@QueryParam("destinationSet") String destinationSet, @QueryParam("sourceBranch") BranchId sourceBranch, @QueryParam("sourcePackage") Long sourcePackage, CopySetParams params) {
       Response.Status status;
-      final DispoSet destination = dispoApi.getDispoSetById(program, destinationSet);
-      dispoApi.copyDispoSetCoverage(sourceBranch, sourcePackage, program, destination, params);
+      final DispoSet destination = dispoApi.getDispoSetById(branch, destinationSet);
+      dispoApi.copyDispoSetCoverage(sourceBranch, sourcePackage, branch, destination, params);
       status = Status.OK;
       return Response.status(status).build();
    }
@@ -122,12 +121,11 @@ public class DispoAdminResource {
    @POST
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getDispoSetCopy(@QueryParam("destinationSet") String destinationSet, @QueryParam("sourceProgram") String sourceProgram, @QueryParam("sourceSet") String sourceSet, CopySetParams params) {
+   public Response getDispoSetCopy(@QueryParam("destinationSet") String destinationSet, @QueryParam("sourceProgram") BranchId sourceBranch, @QueryParam("sourceSet") String sourceSet, CopySetParams params) {
       Response.Status status;
-      final DispoSet destination = dispoApi.getDispoSetById(program, destinationSet);
-      DispoProgramImpl sourceDispoProgram = new DispoProgramImpl("", Long.valueOf(sourceProgram));
-      final DispoSet source = dispoApi.getDispoSetById(sourceDispoProgram, sourceSet);
-      dispoApi.copyDispoSet(program, destination, sourceDispoProgram, source, params);
+      final DispoSet destination = dispoApi.getDispoSetById(branch, destinationSet);
+      final DispoSet source = dispoApi.getDispoSetById(sourceBranch, sourceSet);
+      dispoApi.copyDispoSet(branch, destination, sourceBranch, source, params);
       status = Status.OK;
       return Response.status(status).build();
    }

@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import org.eclipse.osee.disposition.model.DispoItem;
-import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoStrings;
@@ -26,6 +25,7 @@ import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.integration.util.DispositionInitializer;
 import org.eclipse.osee.disposition.rest.integration.util.DispositionIntegrationRule;
 import org.eclipse.osee.disposition.rest.integration.util.DispositionTestUtil;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
@@ -82,22 +82,22 @@ public class DispositionIntegrationTest {
    public void testDispositionApi() {
       // We have one item with discrepancies: 1-10, 12-20, 23, 25, 32-90
 
-      DispoProgram program = dispoApi.getDispoFactory().createProgram(DispositionTestUtil.SAW_Bld_1_FOR_DISPO);
+      BranchId branch = DispositionTestUtil.SAW_Bld_1_FOR_DISPO;
 
-      List<DispoSet> dispoSets = dispoApi.getDispoSets(program, "code_coverage");
+      List<DispoSet> dispoSets = dispoApi.getDispoSets(branch, "code_coverage");
       DispoSet devSet = dispoSets.get(0);
       String devSetId = devSet.getGuid();
 
       DispoSetData devSetEdited = new DispoSetData();
       devSetEdited.setImportPath(folder.getRoot().toString());
-      dispoApi.editDispoSet(program, devSetId, devSetEdited);
+      dispoApi.editDispoSet(branch, devSetId, devSetEdited);
 
       DispoSetData devSetEdited2 = new DispoSetData();
       devSetEdited2.setOperation(DispoStrings.Operation_Import);
-      dispoApi.editDispoSet(program, devSetId, devSetEdited2);
+      dispoApi.editDispoSet(branch, devSetId, devSetEdited2);
 
       // should have new items now
-      List<DispoItem> dispoItems = dispoApi.getDispoItems(program, devSetId, false);
+      List<DispoItem> dispoItems = dispoApi.getDispoItems(branch, devSetId, false);
       assertEquals(5, dispoItems.size());
    }
 

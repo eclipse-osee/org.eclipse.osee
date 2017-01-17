@@ -22,11 +22,11 @@ import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
-import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
 import org.eclipse.osee.disposition.rest.internal.report.STRSReport;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -43,7 +43,7 @@ public class STRSReportTest {
    DispoApi dispoApi;
 
    @Mock
-   DispoProgram program;
+   BranchId branch;
 
    @Mock
    DispoSet set1;
@@ -68,15 +68,15 @@ public class STRSReportTest {
       List<DispoItem> itemsForPrimary = new ArrayList<>();
       itemsForPrimary.add(item1);
       itemsForPrimary.add(item2);
-      Mockito.when(dispoApi.getDispoItems(program, set1.getGuid(), true)).thenReturn(itemsForPrimary);
+      Mockito.when(dispoApi.getDispoItems(branch, set1.getGuid(), true)).thenReturn(itemsForPrimary);
 
       List<DispoItem> itemsForSecondary = new ArrayList<>();
       itemsForSecondary.add(item1);
       itemsForSecondary.add(item2);
-      Mockito.when(dispoApi.getDispoItems(program, set1.getGuid(), true)).thenReturn(itemsForSecondary);
+      Mockito.when(dispoApi.getDispoItems(branch, set1.getGuid(), true)).thenReturn(itemsForSecondary);
 
       ByteArrayOutputStream bout = new ByteArrayOutputStream();
-      reportWriter.runReport(program, set1, set2, bout);
+      reportWriter.runReport(branch, set1, set2, bout);
 
       String reportOutput = bout.toString();
 
