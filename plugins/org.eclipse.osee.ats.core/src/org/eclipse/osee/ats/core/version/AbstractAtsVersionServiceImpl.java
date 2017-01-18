@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -199,13 +200,9 @@ public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionServic
    }
 
    @Override
-   public Long getBranchId(IAtsVersion version) {
-      Long branchUuid = Long.valueOf(
-         services.getAttributeResolver().getSoleAttributeValue(version, AtsAttributeTypes.BaselineBranchUuid, "0"));
-      if (branchUuid <= 0) {
-         branchUuid = null;
-      }
-      return branchUuid;
+   public BranchId getBranchId(IAtsVersion version) {
+      return services.getAttributeResolver().getSoleAttributeValue(version, AtsAttributeTypes.BaselineBranchUuid,
+         BranchId.SENTINEL);
    }
 
    @Override

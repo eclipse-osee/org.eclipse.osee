@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -42,7 +43,7 @@ public interface IAtsVersionService {
 
    IAtsVersion getById(Identity<String> id) throws OseeCoreException;
 
-   Long getBranchId(IAtsVersion version);
+   BranchId getBranchId(IAtsVersion version);
 
    IAtsVersion getTargetedVersionByTeamWf(IAtsTeamWorkflow team) throws OseeCoreException;
 
