@@ -16,7 +16,9 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.workflow.WorkItem;
 import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
@@ -34,12 +36,12 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
    @Override
    public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
       Set<IAtsActionableItem> ais = new HashSet<>();
-      for (Object aiGuidObj : artifact.getAttributeValues(AtsAttributeTypes.ActionableItem)) {
+      for (Object aiGuidObj : ((ArtifactReadable) artifact).getAttributeValues(AtsAttributeTypes.ActionableItem)) {
          String aiGuid = (String) aiGuidObj;
-         IAtsActionableItem ai = getAtsServer().getConfigItem(aiGuid);
+         IAtsActionableItem ai = services.getConfigItem(aiGuid);
          if (ai == null) {
-            ArtifactReadable aiArt = getAtsServer().getArtifactByGuid(aiGuid);
-            ai = getAtsServer().getConfigItemFactory().getActionableItem(aiArt);
+            ArtifactId aiArt = services.getArtifactByGuid(aiGuid);
+            ai = services.getConfigItemFactory().getActionableItem(aiArt);
          }
          ais.add(ai);
       }
@@ -49,9 +51,9 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
    @Override
    public IAtsTeamDefinition getTeamDefinition() throws OseeCoreException {
       IAtsTeamDefinition teamDef = null;
-      String teamDefGuid = artifact.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition);
+      String teamDefGuid = ((ArtifactReadable) artifact).getSoleAttributeValue(AtsAttributeTypes.TeamDefinition);
       if (Strings.isValid(teamDefGuid)) {
-         teamDef = getAtsServer().getConfigItem(teamDefGuid);
+         teamDef = services.getConfigItem(teamDefGuid);
       }
       return teamDef;
    }

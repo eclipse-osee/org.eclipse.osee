@@ -20,13 +20,12 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.agile.AgileBacklog;
+import org.eclipse.osee.ats.core.agile.AgileItem;
+import org.eclipse.osee.ats.core.agile.AgileSprint;
 import org.eclipse.osee.ats.core.client.IAtsClient;
-import org.eclipse.osee.ats.core.client.agile.AgileBacklog;
-import org.eclipse.osee.ats.core.client.agile.AgileItem;
-import org.eclipse.osee.ats.core.client.agile.AgileSprint;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkItemFactory;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -96,7 +95,7 @@ public class WorkItemFactory extends AbstractWorkItemFactory {
       if (artifact instanceof IAgileSprint) {
          sprint = (IAgileSprint) artifact;
       } else {
-         sprint = new AgileSprint(atsClient, (Artifact) artifact);
+         sprint = new AgileSprint(atsClient.getLogger(), atsClient, (Artifact) artifact);
       }
       return sprint;
    }
@@ -107,7 +106,7 @@ public class WorkItemFactory extends AbstractWorkItemFactory {
       if (artifact instanceof IAgileBacklog) {
          backlog = (IAgileBacklog) artifact;
       } else {
-         backlog = new AgileBacklog(atsClient, (Artifact) artifact);
+         backlog = new AgileBacklog(atsClient.getLogger(), atsClient, (Artifact) artifact);
       }
       return backlog;
    }
@@ -131,10 +130,10 @@ public class WorkItemFactory extends AbstractWorkItemFactory {
    @Override
    public IAgileItem getAgileItem(ArtifactId artifact) {
       IAgileItem item = null;
-      if (artifact instanceof IAgileItem) {
+      if (artifact instanceof AgileItem) {
          item = (IAgileItem) artifact;
       } else {
-         item = new AgileItem(atsClient, (Artifact) artifact);
+         item = new AgileItem(atsClient.getLogger(), atsClient, (Artifact) artifact);
       }
       return item;
    }

@@ -25,6 +25,7 @@ Import-Package: com.google.common.base,
  org.osgi.service.event
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.ats.core,
+ org.eclipse.osee.ats.core.agile,
  org.eclipse.osee.ats.core.ai,
  org.eclipse.osee.ats.core.column,
  org.eclipse.osee.ats.core.config,

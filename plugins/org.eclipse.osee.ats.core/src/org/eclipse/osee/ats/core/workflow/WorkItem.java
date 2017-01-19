@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2017 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,10 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.rest.internal.workitem.model;
+package org.eclipse.osee.ats.core.workflow;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -31,40 +33,34 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
-import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G Dunne
  */
 public class WorkItem extends AtsObject implements IAtsWorkItem {
 
-   protected final ArtifactReadable artifact;
+   protected final ArtifactToken artifact;
    private IAtsStateManager stateMgr;
    private IAtsLog atsLog;
    private IWorkDefinitionMatch match;
-   private final IAtsServer atsServer;
-   private final Log logger;
+   protected final IAtsServices services;
+   protected final Log logger;
 
-   public WorkItem(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
+   public WorkItem(Log logger, IAtsServices services, ArtifactToken artifact) {
       super(artifact.getName(), artifact.getId());
       this.logger = logger;
-      this.atsServer = atsServer;
+      this.services = services;
       this.artifact = artifact;
-   }
-
-   protected IAtsServer getAtsServer() {
-      return atsServer;
    }
 
    @Override
    public String getDescription() {
       try {
-         return artifact.getSoleAttributeAsString(AtsAttributeTypes.Description, "");
+         return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.Description, "");
       } catch (OseeCoreException ex) {
          logger.error(ex, "Error getting description for artifact[%s]", artifact);
          return "exception: " + ex.getLocalizedMessage();
@@ -79,7 +75,8 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    @Override
    public String getAtsId() {
       try {
-         return artifact.getSoleAttributeAsString(AtsAttributeTypes.AtsId, String.valueOf(getId()));
+         return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.AtsId,
+            String.valueOf(getId()));
       } catch (OseeCoreException ex) {
          return null;
       }
@@ -92,35 +89,37 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public IAtsTeamWorkflow getParentTeamWorkflow() throws OseeCoreException {
-      ArtifactReadable teamArt = null;
+      ArtifactId teamArt = null;
       if (isTeamWorkflow()) {
          teamArt = artifact;
       } else if (isReview()) {
-         ResultSet<ArtifactReadable> results = artifact.getRelated(AtsRelationTypes.TeamWorkflowToReview_Team);
+         Collection<ArtifactToken> results =
+            services.getRelationResolver().getRelated(artifact, AtsRelationTypes.TeamWorkflowToReview_Team);
          if (!results.isEmpty()) {
             teamArt = results.iterator().next();
          }
       } else if (isTask()) {
-         ResultSet<ArtifactReadable> results = artifact.getRelated(AtsRelationTypes.TeamWfToTask_TeamWf);
+         Collection<ArtifactToken> results =
+            services.getRelationResolver().getRelated(artifact, AtsRelationTypes.TeamWfToTask_TeamWf);
          if (!results.isEmpty()) {
             teamArt = results.iterator().next();
          }
       }
-      return atsServer.getWorkItemFactory().getTeamWf(teamArt);
+      return services.getWorkItemFactory().getTeamWf(teamArt);
    }
 
    @Override
    public IAtsAction getParentAction() {
-      ArtifactReadable actionArt = null;
+      ArtifactId actionArt = null;
       IAtsTeamWorkflow teamWf = getParentTeamWorkflow();
       if (teamWf != null) {
-         ResultSet<ArtifactReadable> results =
-            ((ArtifactReadable) teamWf.getStoreObject()).getRelated(AtsRelationTypes.ActionToWorkflow_Action);
+         Collection<ArtifactToken> results = services.getRelationResolver().getRelated(teamWf.getStoreObject(),
+            AtsRelationTypes.ActionToWorkflow_Action);
          if (!results.isEmpty()) {
             actionArt = results.iterator().next();
          }
       }
-      return atsServer.getWorkItemFactory().getAction(actionArt);
+      return services.getWorkItemFactory().getAction(actionArt);
    }
 
    @Override
@@ -137,7 +136,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    public IAtsStateManager getStateMgr() {
       if (stateMgr == null) {
          try {
-            stateMgr = getAtsServer().getStateFactory().getStateManager(this, true);
+            stateMgr = services.getStateFactory().getStateManager(this, true);
          } catch (OseeCoreException ex) {
             logger.error(ex, "Error getting stateManager for artifact[%s]", artifact);
          }
@@ -154,7 +153,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    public IAtsLog getLog() {
       if (atsLog == null) {
          try {
-            atsLog = getAtsServer().getLogFactory().getLogLoaded(this, atsServer.getAttributeResolver());
+            atsLog = services.getLogFactory().getLogLoaded(this, services.getAttributeResolver());
          } catch (OseeCoreException ex) {
             logger.error(ex, "Error getting Log for artifact[%s]", artifact);
          }
@@ -180,7 +179,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    public IWorkDefinitionMatch getWorkDefinitionMatch() {
       if (match == null) {
          try {
-            match = getAtsServer().getWorkDefAdmin().getWorkDefinition(this);
+            match = services.getWorkDefinitionAdmin().getWorkDefinition(this);
          } catch (Exception ex) {
             logger.error("Error getting work definition match for artifact[%s]: Exception %s", artifact,
                ex.getLocalizedMessage());
@@ -219,35 +218,40 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public IAtsUser getCreatedBy() {
-      String userId = artifact.getSoleAttributeValue(AtsAttributeTypes.CreatedBy, null);
-      return atsServer.getUserService().getUserById(userId);
+      String userId =
+         services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CreatedBy, null);
+      return services.getUserService().getUserById(userId);
    }
 
    @Override
    public Date getCreatedDate() {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.CreatedDate, null);
+      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CreatedDate, null);
    }
 
    @Override
    public IAtsUser getCompletedBy() {
-      String userId = artifact.getSoleAttributeValue(AtsAttributeTypes.CompletedBy, null);
-      return atsServer.getUserService().getUserById(userId);
+      String userId =
+         services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CompletedBy, null);
+      return services.getUserService().getUserById(userId);
    }
 
    @Override
    public IAtsUser getCancelledBy() {
-      String userId = artifact.getSoleAttributeValue(AtsAttributeTypes.CancelledBy, null);
-      return atsServer.getUserService().getUserById(userId);
+      String userId =
+         services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CancelledBy, null);
+      return services.getUserService().getUserById(userId);
    }
 
    @Override
    public String getCompletedFromState() {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.CompletedFromState, null);
+      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CompletedFromState,
+         null);
    }
 
    @Override
    public String getCancelledFromState() {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.CancelledFromState, null);
+      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CancelledFromState,
+         null);
    }
 
    @Override
@@ -257,17 +261,17 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public Date getCompletedDate() {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.CompletedDate, null);
+      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CompletedDate, null);
    }
 
    @Override
    public Date getCancelledDate() {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.CancelledDate, null);
+      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CancelledDate, null);
    }
 
    @Override
    public String getCancelledReason() {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.CancelledReason, null);
+      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CancelledReason, null);
    }
 
    @Override
@@ -277,7 +281,8 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public boolean isCompleted() {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.CurrentStateType, "").equals(StateType.Completed.name());
+      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CurrentStateType,
+         "").equals(StateType.Completed.name());
    }
 
    @Override
@@ -287,12 +292,13 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public boolean isCancelled() {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.CurrentStateType, "").equals(StateType.Cancelled.name());
+      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CurrentStateType,
+         "").equals(StateType.Cancelled.name());
    }
 
    @Override
    public List<IAtsUser> getImplementers() throws OseeCoreException {
-      return atsServer.getImplementerService().getImplementers(this);
+      return services.getImplementerService().getImplementers(this);
    }
 
    @Override

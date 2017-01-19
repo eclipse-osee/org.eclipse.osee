@@ -24,9 +24,9 @@ import org.eclipse.osee.ats.api.insertion.JaxInsertionActivity;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.core.agile.AgileFeatureGroup;
+import org.eclipse.osee.ats.core.agile.AgileTeam;
 import org.eclipse.osee.ats.core.client.IAtsClient;
-import org.eclipse.osee.ats.core.client.agile.AgileFeatureGroup;
-import org.eclipse.osee.ats.core.client.agile.AgileTeam;
 import org.eclipse.osee.ats.core.config.AbstractConfigItemFactory;
 import org.eclipse.osee.ats.core.config.ActionableItem;
 import org.eclipse.osee.ats.core.config.Country;
@@ -158,7 +158,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       if (artifact instanceof IAgileTeam) {
          agileTeam = (IAgileTeam) artifact;
       } else if (artifact instanceof Artifact && ((Artifact) artifact).isOfType(AtsArtifactTypes.AgileTeam)) {
-         agileTeam = new AgileTeam(atsClient, (Artifact) artifact);
+         agileTeam = new AgileTeam(logger, atsClient, (Artifact) artifact);
       }
       return agileTeam;
    }
@@ -169,7 +169,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       if (artifact instanceof IAgileFeatureGroup) {
          group = (IAgileFeatureGroup) artifact;
       } else if (artifact instanceof Artifact && ((Artifact) artifact).isOfType(AtsArtifactTypes.AgileFeatureGroup)) {
-         group = new AgileFeatureGroup(atsClient, (Artifact) artifact);
+         group = new AgileFeatureGroup(logger, atsClient, (Artifact) artifact);
       }
       return group;
    }

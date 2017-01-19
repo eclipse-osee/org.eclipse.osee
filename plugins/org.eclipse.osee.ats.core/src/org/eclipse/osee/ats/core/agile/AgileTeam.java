@@ -8,52 +8,57 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.agile;
+package org.eclipse.osee.ats.core.agile;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.IAtsClient;
-import org.eclipse.osee.ats.core.client.internal.config.AtsConfigObject;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.logger.Log;
 
 /**
- * @author Donald G. Dunne
+ * @author Donald G Dunne
  */
 public class AgileTeam extends AtsConfigObject implements IAgileTeam {
 
-   public AgileTeam(IAtsClient atsClient, Artifact artifact) {
-      super(atsClient, artifact);
+   public AgileTeam(Log logger, IAtsServices services, ArtifactToken artifact) {
+      super(logger, services, artifact);
    }
 
    @Override
    public String getTypeName() {
-      return artifact.getArtifactTypeName();
+      return "Agile Team";
    }
 
    @Override
    public List<Long> getAtsTeamUuids() {
       List<Long> uuids = new ArrayList<>();
-      for (Artifact atsTeam : artifact.getRelatedArtifacts(AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam)) {
-         uuids.add(new Long(atsTeam.getArtId()));
+      for (ArtifactId atsTeam : services.getRelationResolver().getRelated(artifact,
+         AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam)) {
+         uuids.add(new Long(atsTeam.getId()));
       }
       return uuids;
    }
 
    @Override
    public String getDescription() {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.Description, "");
+      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.Description, "");
    }
 
    @Override
    public long getBacklogUuid() {
       long backlogUuid = -1;
-      Artifact backlogArt = null;
       try {
-         backlogArt = artifact.getRelatedArtifact(AtsRelationTypes.AgileTeamToBacklog_Backlog);
-         backlogUuid = backlogArt.getArtId();
+         ArtifactId backlogArt =
+            services.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.AgileTeamToBacklog_Backlog);
+         if (backlogArt != null) {
+            backlogUuid = backlogArt.getId();
+         }
       } catch (Exception ex) {
          // do nothing
       }

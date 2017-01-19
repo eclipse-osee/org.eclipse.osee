@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.rest.internal.workitem.model;
 
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.core.workflow.WorkItem;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;

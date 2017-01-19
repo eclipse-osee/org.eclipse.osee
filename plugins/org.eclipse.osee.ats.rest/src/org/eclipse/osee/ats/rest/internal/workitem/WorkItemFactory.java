@@ -21,10 +21,10 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.agile.AgileBacklog;
+import org.eclipse.osee.ats.core.agile.AgileSprint;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkItemFactory;
 import org.eclipse.osee.ats.rest.IAtsServer;
-import org.eclipse.osee.ats.rest.internal.agile.model.AgileBacklog;
-import org.eclipse.osee.ats.rest.internal.agile.model.AgileSprint;
 import org.eclipse.osee.ats.rest.internal.workitem.model.Action;
 import org.eclipse.osee.ats.rest.internal.workitem.model.DecisionReview;
 import org.eclipse.osee.ats.rest.internal.workitem.model.Goal;
@@ -117,7 +117,7 @@ public class WorkItemFactory extends AbstractWorkItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-            item = new org.eclipse.osee.ats.rest.internal.agile.model.AgileItem(logger, atsServer,
+            item = new org.eclipse.osee.ats.core.agile.AgileItem(logger, atsServer,
                (ArtifactReadable) artifact);
          }
       }

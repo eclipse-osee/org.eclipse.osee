@@ -8,20 +8,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.agile;
+package org.eclipse.osee.ats.core.agile;
 
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
-import org.eclipse.osee.ats.core.client.IAtsClient;
-import org.eclipse.osee.ats.core.client.internal.workflow.WorkItem;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.ats.core.workflow.WorkItem;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.logger.Log;
 
 /**
- * @author Donald G. Dunne
+ * @author Donald G Dunne
  */
 public class AgileItem extends WorkItem implements IAgileItem {
 
-   public AgileItem(IAtsClient atsClient, Artifact artifact) {
-      super(atsClient, artifact);
+   public AgileItem(Log logger, IAtsServices services, ArtifactToken artifact) {
+      super(logger, services, artifact);
    }
 
    @Override

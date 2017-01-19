@@ -8,23 +8,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.rest.internal.agile.model;
+package org.eclipse.osee.ats.core.agile;
 
-import org.eclipse.osee.ats.api.agile.IAgileSprint;
+import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.rest.IAtsServer;
-import org.eclipse.osee.ats.rest.internal.workitem.model.WorkItem;
+import org.eclipse.osee.ats.core.workflow.WorkItem;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G Dunne
  */
-public class AgileSprint extends WorkItem implements IAgileSprint {
+public class AgileBacklog extends WorkItem implements IAgileBacklog {
 
-   public AgileSprint(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
-      super(logger, atsServer, artifact);
+   public AgileBacklog(Log logger, IAtsServices services, ArtifactToken artifact) {
+      super(logger, services, artifact);
    }
 
    @Override
@@ -36,7 +37,8 @@ public class AgileSprint extends WorkItem implements IAgileSprint {
    public long getTeamUuid() {
       long result = 0;
       try {
-         ArtifactReadable agileTeam = artifact.getRelated(AtsRelationTypes.AgileTeamToSprint_AgileTeam).getOneOrNull();
+         ArtifactId agileTeam =
+            services.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.AgileTeamToBacklog_AgileTeam);
          if (agileTeam != null) {
             result = agileTeam.getId();
          }
