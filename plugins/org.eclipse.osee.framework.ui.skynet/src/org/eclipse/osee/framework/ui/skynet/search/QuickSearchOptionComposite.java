@@ -444,6 +444,7 @@ public class QuickSearchOptionComposite extends Composite {
                "Attribute Type Filter Selection", "Select attribute types to search in.");
             dialog.setSelectable(taggableItems);
             dialog.setShowSelectButtons(true);
+            dialog.setInput(taggableItems);
 
             List<IAttributeType> selectedElements = new ArrayList<>();
             for (IAttributeType type : taggableItems) {
