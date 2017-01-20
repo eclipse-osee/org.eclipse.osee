@@ -32,6 +32,7 @@ artifactType "Global Preferences" extends "Artifact" {
 	id 3
 	attribute "Dictionary"
 	attribute "osee.config.Default Mail Server"
+	attribute "General String Data"
 }
 
 attributeType "Id Value" extends StringAttribute {
