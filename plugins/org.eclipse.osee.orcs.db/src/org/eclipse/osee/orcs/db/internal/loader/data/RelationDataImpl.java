@@ -73,44 +73,6 @@ public class RelationDataImpl extends OrcsVersionedObjectImpl implements Relatio
    }
 
    @Override
-   public int hashCode() {
-      final int prime = 31;
-      int result = super.hashCode();
-      result = prime * result + artIdA;
-      result = prime * result + artIdB;
-      result = prime * result + (rationale == null ? 0 : rationale.hashCode());
-      return result;
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      if (this == obj) {
-         return true;
-      }
-      if (!super.equals(obj)) {
-         return false;
-      }
-      if (getClass() != obj.getClass()) {
-         return false;
-      }
-      RelationDataImpl other = (RelationDataImpl) obj;
-      if (artIdA != other.artIdA) {
-         return false;
-      }
-      if (artIdB != other.artIdB) {
-         return false;
-      }
-      if (rationale == null) {
-         if (other.rationale != null) {
-            return false;
-         }
-      } else if (!rationale.equals(other.rationale)) {
-         return false;
-      }
-      return true;
-   }
-
-   @Override
    public String toString() {
       return "RelationData [artIdA=" + artIdA + ", artIdB=" + artIdB + ", rationale=" + rationale + " " + super.toString() + "]";
    }

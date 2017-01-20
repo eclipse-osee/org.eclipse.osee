@@ -14,6 +14,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.enums.DirtyState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 
@@ -145,39 +146,37 @@ public abstract class OrcsVersionedObjectImpl extends OrcsObjectImpl<Integer> im
    @Override
    public int hashCode() {
       final int prime = 31;
-      int result = super.hashCode();
+      int result = getLocalId().hashCode();
       result = prime * result + (baseModType == null ? 0 : baseModType.hashCode());
-      result = prime * result + (int) (baseTypeUuid ^ baseTypeUuid >>> 32);
+      result = prime * result + Long.hashCode(baseTypeUuid);
       result = prime * result + (version == null ? 0 : version.hashCode());
       return result;
    }
 
    @Override
    public boolean equals(Object obj) {
-      if (this == obj) {
-         return true;
-      }
-      if (!super.equals(obj)) {
-         return false;
-      }
-      if (getClass() != obj.getClass()) {
-         return false;
-      }
-      OrcsVersionedObjectImpl other = (OrcsVersionedObjectImpl) obj;
-      if (baseModType != other.baseModType) {
-         return false;
-      }
-      if (baseTypeUuid != other.baseTypeUuid) {
-         return false;
-      }
-      if (version == null) {
-         if (other.version != null) {
+      if (obj instanceof OrcsVersionedObjectImpl) {
+         OrcsVersionedObjectImpl other = (OrcsVersionedObjectImpl) obj;
+         if (!getLocalId().equals(other.getLocalId())) {
             return false;
          }
-      } else if (!version.equals(other.version)) {
-         return false;
+         if (baseModType != other.baseModType) {
+            return false;
+         }
+         if (baseTypeUuid != other.baseTypeUuid) {
+            return false;
+         }
+         if (version == null) {
+            if (other.version != null) {
+               return false;
+            }
+            return version.equals(other.version);
+         }
+         return true;
+      } else if (obj instanceof Id) {
+         return ((Id) obj).getId().equals(getLocalId().longValue());
       }
-      return true;
+      return false;
    }
 
    @Override

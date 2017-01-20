@@ -34,18 +34,16 @@ public class BaseIdentity<T> implements Identity<T> {
    @SuppressWarnings("unchecked")
    @Override
    public boolean equals(Object obj) {
-      boolean equal = false;
       if (obj instanceof Identity) {
          Identity<T> identity = (Identity<T>) obj;
-         if (getGuid() == identity.getGuid()) {
-            equal = true;
-         } else if (getGuid() != null) {
-            equal = getGuid().equals(identity.getGuid());
+         if (identity.getGuid() != null) {
+            return getGuid().equals(identity.getGuid());
          }
-      } else if (obj instanceof Id) {
-         equal = ((Id) obj).getId().equals(id);
       }
-      return equal;
+      if (obj instanceof Id && this instanceof Id) {
+         return ((Id) obj).getId().equals(((Id) this).getId());
+      }
+      return false;
    }
 
    @Override

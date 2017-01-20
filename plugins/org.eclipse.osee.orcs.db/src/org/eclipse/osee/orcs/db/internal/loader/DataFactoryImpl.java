@@ -97,9 +97,8 @@ public class DataFactoryImpl implements DataFactory {
       VersionData version = objectFactory.createDefaultVersionData();
       version.setBranch(parent.getVersion().getBranch());
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
-      Integer attributeid = RelationalConstants.DEFAULT_ITEM_ID;
-      return objectFactory.createAttributeData(version, attributeid, attributeType, modType, parent.getLocalId(),
-         ApplicabilityId.BASE);
+      return objectFactory.createAttributeData(version, idFactory.getNextAttributeId(), attributeType, modType,
+         parent.getLocalId(), ApplicabilityId.BASE);
    }
 
    @Override
@@ -123,9 +122,8 @@ public class DataFactoryImpl implements DataFactory {
       VersionData version = objectFactory.createDefaultVersionData();
       version.setBranch(branch);
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
-      Integer relationId = RelationalConstants.DEFAULT_ITEM_ID;
-      return objectFactory.createRelationData(version, relationId, relationType, modType, aArt.getLocalId(),
-         bArt.getLocalId(), rationale, ApplicabilityId.BASE);
+      return objectFactory.createRelationData(version, idFactory.getNextRelationId(), relationType, modType,
+         aArt.getLocalId(), bArt.getLocalId(), rationale, ApplicabilityId.BASE);
    }
 
    @Override

@@ -36,33 +36,6 @@ public abstract class OrcsObjectImpl<T extends Number> implements HasLocalId<T> 
    }
 
    @Override
-   public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + localId.intValue();
-      return result;
-   }
-
-   @SuppressWarnings("rawtypes")
-   @Override
-   public boolean equals(Object obj) {
-      if (this == obj) {
-         return true;
-      }
-      if (obj == null) {
-         return false;
-      }
-      if (getClass() != obj.getClass()) {
-         return false;
-      }
-      OrcsObjectImpl other = (OrcsObjectImpl) obj;
-      if (localId.equals(other.localId)) {
-         return false;
-      }
-      return true;
-   }
-
-   @Override
    public String toString() {
       return "OrcsObject [localId=" + localId + "]";
    }

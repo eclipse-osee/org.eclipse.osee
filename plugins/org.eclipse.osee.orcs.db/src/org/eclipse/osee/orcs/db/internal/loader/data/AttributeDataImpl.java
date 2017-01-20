@@ -50,37 +50,15 @@ public class AttributeDataImpl extends OrcsVersionedObjectImpl implements Attrib
    }
 
    @Override
-   public int hashCode() {
-      final int prime = 31;
-      int result = super.hashCode();
-      result = prime * result + artifactId;
-      result = prime * result + (proxy == null ? 0 : proxy.hashCode());
-      return result;
-   }
-
-   @Override
    public boolean equals(Object obj) {
-      if (this == obj) {
-         return true;
-      }
       if (!super.equals(obj)) {
          return false;
       }
-      if (getClass() != obj.getClass()) {
-         return false;
+      if (obj instanceof AttributeDataImpl) {
+         AttributeDataImpl other = (AttributeDataImpl) obj;
+         return Integer.valueOf(other.artifactId).equals(artifactId) && proxy.equals(other.proxy);
       }
-      AttributeDataImpl other = (AttributeDataImpl) obj;
-      if (artifactId != other.artifactId) {
-         return false;
-      }
-      if (proxy == null) {
-         if (other.proxy != null) {
-            return false;
-         }
-      } else if (!proxy.equals(other.proxy)) {
-         return false;
-      }
-      return true;
+      return false;
    }
 
    @Override

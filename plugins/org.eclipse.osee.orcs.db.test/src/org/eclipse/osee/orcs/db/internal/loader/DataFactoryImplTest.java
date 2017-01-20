@@ -16,10 +16,10 @@ import static org.junit.Assert.assertNotSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -38,6 +38,7 @@ import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.data.OrcsObjectFactoryImpl;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -218,6 +219,7 @@ public class DataFactoryImplTest {
       when(attributeType.getId()).thenReturn(2389L);
       when(proxyFactory.createProxy(2389L, "", "")).thenReturn(otherDataProxy);
       when(otherDataProxy.getData()).thenReturn(new Object[] {2389L, "", ""});
+      when(idFactory.getNextAttributeId()).thenReturn(1);
 
       AttributeData actual = dataFactory.create(artData, attributeType);
 
@@ -229,7 +231,7 @@ public class DataFactoryImplTest {
       assertEquals(false, actualVer.isHistorical());
       assertEquals(false, actualVer.isInStorage());
 
-      assertEquals(RelationalConstants.DEFAULT_ITEM_ID, actual.getLocalId());
+      Assert.assertTrue("local id must be valid", actual.getLocalId() > 0);
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getModType());
       assertEquals(2389L, actual.getTypeUuid());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getBaseModType());
@@ -254,6 +256,7 @@ public class DataFactoryImplTest {
       when(relationType.getId()).thenReturn(2389L);
       when(localId1.getLocalId()).thenReturn(4562);
       when(localId2.getLocalId()).thenReturn(9513);
+      when(idFactory.getNextRelationId()).thenReturn(1);
 
       RelationData actual = dataFactory.createRelationData(relationType, COMMON, localId1, localId2, "My rationale");
 
@@ -265,7 +268,7 @@ public class DataFactoryImplTest {
       assertEquals(false, actualVer.isHistorical());
       assertEquals(false, actualVer.isInStorage());
 
-      assertEquals(RelationalConstants.DEFAULT_ITEM_ID, actual.getLocalId());
+      Assert.assertTrue("local id must be valid", actual.getLocalId() > 0);
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getModType());
       assertEquals(2389L, actual.getTypeUuid());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getBaseModType());
