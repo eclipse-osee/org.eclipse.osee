@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.callable;
 
 import java.util.Collection;
 import org.eclipse.osee.console.admin.Console;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
@@ -27,10 +28,10 @@ public final class PurgeAttributesDatabaseTxCallable extends AbstractDatastoreTx
       "select gamma_id from osee_attribute, osee_join_id where attr_id = id and query_id = ?";
 
    private final SqlJoinFactory joinFactory;
-   private final Collection<Long> idsToPurge;
+   private final Collection<AttributeId> idsToPurge;
    private final Console console;
 
-   public PurgeAttributesDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, Collection<Long> idsToPurge, Console console) {
+   public PurgeAttributesDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, Collection<AttributeId> idsToPurge, Console console) {
       super(logger, session, jdbcClient);
       this.joinFactory = joinFactory;
       this.idsToPurge = idsToPurge;
@@ -40,14 +41,13 @@ public final class PurgeAttributesDatabaseTxCallable extends AbstractDatastoreTx
    @Override
    protected Void handleTxWork(JdbcConnection connection) throws OseeCoreException {
       IdJoinQuery idJoin = joinFactory.createIdJoinQuery();
-      JdbcStatement chStmt = getJdbcClient().getStatement(connection);
-      try {
+      try (JdbcStatement chStmt = getJdbcClient().getStatement(connection)) {
          OseePreparedStatement attrBatch =
             getJdbcClient().getBatchStatement(connection, "delete from osee_attribute where attr_id = ?");
          OseePreparedStatement txBatch =
             getJdbcClient().getBatchStatement(connection, "delete from osee_txs where gamma_id = ?");
 
-         for (Long id : idsToPurge) {
+         for (AttributeId id : idsToPurge) {
             idJoin.add(id);
             attrBatch.addToBatch(id);
          }
@@ -68,7 +68,6 @@ public final class PurgeAttributesDatabaseTxCallable extends AbstractDatastoreTx
          writeToConsole(deleted + " rows deleted.");
          writeToConsole("Operation Finished");
       } finally {
-         chStmt.close();
          idJoin.delete(connection);
       }
       return null;
@@ -79,5 +78,4 @@ public final class PurgeAttributesDatabaseTxCallable extends AbstractDatastoreTx
          console.writeln(s);
       }
    }
-
 }

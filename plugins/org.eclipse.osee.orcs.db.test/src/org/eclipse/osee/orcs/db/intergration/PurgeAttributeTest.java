@@ -15,6 +15,7 @@ import static org.eclipse.osee.orcs.db.intergration.IntegrationUtil.integrationR
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -84,21 +85,13 @@ public class PurgeAttributeTest {
       tx.createAttribute(CoreArtifactTokens.OseeAdmin, CoreAttributeTypes.Annotation, UNIQUE_ATTR_VALUE);
       tx.commit();
 
-      JdbcStatement stmt = jdbcClient.getStatement();
-
       int prePurgeAttributeCount = getCount(jdbcClient, "osee_attribute");
-      int preAttributeRows =
-         getCount(jdbcClient, String.format("osee_attribute where value = '%s'", UNIQUE_ATTR_VALUE));
+      int preAttributeRows = getCount(jdbcClient, "osee_attribute where value = ?", UNIQUE_ATTR_VALUE);
 
-      Assert.assertTrue(preAttributeRows == 3);
+      Assert.assertEquals(3, preAttributeRows);
 
       int prePurgeTxsCount = getCount(jdbcClient, "osee_txs");
-
-      stmt.runPreparedQuery(String.format("select attr_id from osee_attribute where value = '%s'", UNIQUE_ATTR_VALUE));
-      List<Long> toPurge = new LinkedList<>();
-      while (stmt.next()) {
-         toPurge.add(stmt.getLong("attr_id"));
-      }
+      List<AttributeId> toPurge = getAttributesToPurge(jdbcClient);
 
       PurgeAttributesDatabaseTxCallable callable =
          new PurgeAttributesDatabaseTxCallable(null, null, jdbcClient, sqlJoinFactory, toPurge, null);
@@ -116,13 +109,19 @@ public class PurgeAttributeTest {
       Assert.assertTrue(postPurgeTxsCount < prePurgeTxsCount);
    }
 
-   private int getCount(JdbcClient jdbcClient, String table) {
-      JdbcStatement stmt = jdbcClient.getStatement();
-      int toReturn = -1;
-      stmt.runPreparedQuery("select count(1) from " + table);
-      while (stmt.next()) {
-         toReturn = stmt.getInt(1);
+   private List<AttributeId> getAttributesToPurge(JdbcClient jdbcClient) {
+      List<AttributeId> toPurge = new LinkedList<>();
+      try (JdbcStatement stmt = jdbcClient.getStatement()) {
+         stmt.runPreparedQuery(
+            String.format("select attr_id from osee_attribute where value = '%s'", UNIQUE_ATTR_VALUE));
+         while (stmt.next()) {
+            toPurge.add(AttributeId.valueOf(stmt.getLong("attr_id")));
+         }
       }
-      return toReturn;
+      return toPurge;
+   }
+
+   private int getCount(JdbcClient jdbcClient, String table, Object... data) {
+      return jdbcClient.fetch(-1, "select count(1) from " + table, data);
    }
 }

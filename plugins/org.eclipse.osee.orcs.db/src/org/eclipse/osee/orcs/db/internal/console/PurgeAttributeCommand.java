@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleParameters;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeAttributesDatabaseTxCallable;
@@ -49,9 +50,9 @@ public class PurgeAttributeCommand extends AbstractDatastoreConsoleCommand {
    @Override
    public Callable<Void> createCallable(final Console console, final ConsoleParameters params) {
       String[] attrIds = params.getArray("attr_id");
-      Set<Long> longIds = new HashSet<>();
+      Set<AttributeId> longIds = new HashSet<>();
       for (String id : attrIds) {
-         longIds.add(Long.parseLong(id));
+         longIds.add(AttributeId.valueOf(id));
       }
 
       boolean force = params.getBoolean("force");
