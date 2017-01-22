@@ -39,6 +39,7 @@
       <import plugin="org.eclipse.jetty.server"/>
       <import plugin="org.eclipse.jetty.servlet"/>
       <import plugin="org.eclipse.jetty.util"/>
+      <import plugin="org.eclipse.jdt.annotation"/>
       <import plugin="com.google.guava" version="11.0.0" match="greaterOrEqual"/>
       <import plugin="com.google.gson" version="2.1.0" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.dbcp" version="1.4.0" match="compatible"/>
@@ -264,6 +265,13 @@
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="org.eclipse.jdt.annotation"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
    <plugin
          id="org.eclipse.equinox.console.ssh"
          download-size="0"

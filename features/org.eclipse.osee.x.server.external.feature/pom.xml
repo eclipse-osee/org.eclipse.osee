@@ -40,6 +40,7 @@
 								<plugin id="org.eclipse.xtext.smap" />
 								<plugin id="org.apache.commons.cli" />
 								<plugin id="org.apache.commons.io" />
+								<plugin id="org.eclipse.jdt.annotation" />
 							</excludes>
 						</configuration>
 					</execution>
