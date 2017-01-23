@@ -107,11 +107,7 @@ public final class PortPairsOperation extends AbstractOperation {
    }
 
    private TeamWorkFlowArtifact getWorkflowFromAtsID(String atsID) throws OseeCoreException {
-      IArtifactType LbaSubSystemsTeamWorkflow =
-         TokenFactory.createArtifactType(204509162766345L, "Lba SubSystems Team Workflow");
-
-      return (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndAttribute(LbaSubSystemsTeamWorkflow,
-         AtsAttributeTypes.AtsId, atsID, AtsClientService.get().getAtsBranch());
+      return (TeamWorkFlowArtifact) AtsClientService.get().getArtifactByAtsId(atsID);
    }
 
    private void doPortWork(TeamWorkFlowArtifact sourceWorkflow, TeamWorkFlowArtifact destinationWorkflow) throws OseeCoreException {

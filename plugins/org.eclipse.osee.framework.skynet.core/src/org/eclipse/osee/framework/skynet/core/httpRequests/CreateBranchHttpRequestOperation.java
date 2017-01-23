@@ -73,7 +73,8 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
       BranchEndpoint proxy = ServiceUtil.getOseeClient().getBranchEndpoint();
 
       NewBranch data = new NewBranch();
-      data.setAssociatedArtifact(associatedArtifact.isValid() ? associatedArtifact : OseeSystem);
+      data.setAssociatedArtifact(
+         associatedArtifact != null && associatedArtifact.isValid() ? associatedArtifact : OseeSystem);
       data.setAuthor(UserManager.getUser());
       data.setBranchName(branchName);
       data.setBranchType(branchType);
