@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.api.query;
 
 import java.util.Collection;
-import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
@@ -61,6 +60,6 @@ public interface IAtsConfigQuery {
 
    IAtsConfigQuery andActive(boolean active);
 
-   @Nullable <T extends IAtsConfigObject> T getOneOrNull(Class<T> clazz);
+   <T extends IAtsConfigObject> T getOneOrNull(Class<T> clazz);
 
 }
