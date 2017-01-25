@@ -102,7 +102,7 @@
 			</java>
 		</forget>
 
-		<sleep seconds="3"/>
+		<sleep seconds="20"/>
 		
 		<waitfor maxwait="20" maxwaitunit="second" checkevery="1" checkeveryunit="second" >
 			<http url="http://127.0.0.1:${xserver-port}/orcs/datastore/info" />
