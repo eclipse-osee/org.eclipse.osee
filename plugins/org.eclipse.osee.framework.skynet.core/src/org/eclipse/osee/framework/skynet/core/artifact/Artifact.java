@@ -642,7 +642,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
                attributeType, getArtifactTypeName());
          }
          throw new AttributeDoesNotExist("Attribute of type [%s] could not be found on artifact [%s] on branch [%s]",
-            attributeType, this, getBranchId());
+            attributeType, this, getBranch());
       } else if (soleAttributes.size() > 1) {
          throw new MultipleAttributesExist(
             "Attribute [%s] must have exactly one instance.  It currently has %d for artifact [%s]", attributeType,
@@ -674,7 +674,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
          } else if (soleAttributes.size() > 1) {
             throw new MultipleAttributesExist(
                "Attribute [%s] must have exactly one instance.  It currently has %d for artifact [%s] on branch [%d]",
-               attributeType, soleAttributes.size(), getGuid(), getBranchId());
+               attributeType, soleAttributes.size(), getGuid(), getBranch());
          } else {
             return defaultReturnValue;
          }
@@ -723,7 +723,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       } else if (soleAttributes.size() > 1) {
          throw new MultipleAttributesExist(
             "Attribute [%s] must have exactly one instance.  It currently has %d for artifact [%s] on branch [%d]",
-            attributeType, soleAttributes.size(), getGuid(), getBranchId());
+            attributeType, soleAttributes.size(), getGuid(), getBranch());
       } else {
          return defaultReturnValue;
       }
@@ -1585,7 +1585,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
          DefaultBasicGuidArtifact other = (DefaultBasicGuidArtifact) obj;
          boolean result = getGuid().equals(other.getGuid());
          if (result) {
-            if (getBranchId() != null && other.getBranchId() != null) {
+            if (getBranch().isValid() && other.getBranch().isValid()) {
                result = isOnSameBranch(other);
             }
          }
@@ -1595,10 +1595,10 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
          IArtifact other = (IArtifact) obj;
          boolean result = getGuid().equals(other.getGuid());
          if (result) {
-            if (getBranch() != null && other.getBranch() != null) {
+            if (getBranch().isValid() && other.getBranch().isValid()) {
                result = isOnSameBranch(other);
             } else {
-               result = getBranch() == null && other.getBranch() == null;
+               result = getBranch().isInvalid() && other.getBranch().isInvalid();
             }
          }
          return result;

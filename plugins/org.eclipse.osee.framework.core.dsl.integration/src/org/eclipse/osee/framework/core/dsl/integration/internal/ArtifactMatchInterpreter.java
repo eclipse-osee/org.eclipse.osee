@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.CompareOp;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.CompoundCondition;
@@ -105,10 +106,10 @@ public class ArtifactMatchInterpreter {
             Conditions.checkExpressionFailOnTrue(!GUID.isValid(input), "guid");
             break;
          case BRANCH_UUID:
-            Long uuid = proxy.getBranchId();
-            Conditions.checkExpressionFailOnTrue(uuid <= 0L,
-               String.format("branchUuid should be > 0, but is [%d]", uuid));
-            input = String.valueOf(uuid);
+            BranchId branch = proxy.getBranch();
+            Conditions.checkExpressionFailOnTrue(branch.isInvalid(),
+               String.format("branch id should be > 0, but is [%s]", branch.getIdString()));
+            input = branch.getIdString();
             break;
          case ARTIFACT_NAME:
             input = proxy.getName();

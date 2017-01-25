@@ -86,7 +86,7 @@ public final class OrcsRestUtil {
       Transaction data = new Transaction();
       data.setTxId(tx);
       data.setAuthor(tx.getAuthor());
-      data.setBranchUuid(tx.getBranchId());
+      data.setBranchUuid(tx.getBranch().getId());
       data.setComment(tx.getComment());
       data.setCommitArt(tx.getCommitArt());
       data.setTimeStamp(tx.getDate());

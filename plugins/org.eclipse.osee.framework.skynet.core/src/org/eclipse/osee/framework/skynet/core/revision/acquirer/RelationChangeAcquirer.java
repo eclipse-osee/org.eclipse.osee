@@ -61,11 +61,11 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
 
             if (getSpecificArtifact() != null) {
                chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CHANGE_TX_RELATION_FOR_SPECIFIC_ARTIFACT),
-                  toTransactionId.getBranchId(), toTransactionId.getId(), getSpecificArtifact().getArtId(),
+                  toTransactionId.getBranch(), toTransactionId.getId(), getSpecificArtifact().getArtId(),
                   getSpecificArtifact().getArtId());
                fromTransactionId = toTransactionId;
             } else {
-               chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CHANGE_TX_RELATION), toTransactionId.getBranchId(),
+               chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CHANGE_TX_RELATION), toTransactionId.getBranch(),
                   toTransactionId.getId());
                fromTransactionId = TransactionManager.getPriorTransaction(toTransactionId);
             }

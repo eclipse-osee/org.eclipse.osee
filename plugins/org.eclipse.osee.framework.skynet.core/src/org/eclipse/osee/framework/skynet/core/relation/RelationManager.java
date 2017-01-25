@@ -248,7 +248,7 @@ public class RelationManager {
          JdbcStatement chStmt = ConnectionHandler.getStatement();
          try {
             String sql = String.format(GET_DELETED_ARTIFACT, formatArgs);
-            chStmt.runPreparedQuery(sql, artifact.getBranchId(), relationType.getGuid(), artifact.getArtId());
+            chStmt.runPreparedQuery(sql, artifact.getBranch(), relationType.getGuid(), artifact.getArtId());
             while (chStmt.next()) {
                int artId = chStmt.getInt(formatArgs[0] + "_art_id");
                artIds.add(artId);

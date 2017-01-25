@@ -81,10 +81,10 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
             toTransaction = getTransaction();
             if (hasSpecificArtifact) {
                chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_IS_FOR_SPECIFIC_ARTIFACT),
-                  toTransaction.getBranchId(), toTransaction.getId(), getSpecificArtifact().getArtId());
+                  toTransaction.getBranch(), toTransaction.getId(), getSpecificArtifact().getArtId());
                fromTransactionId = getTransaction();
             } else {
-               chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_IS), toTransaction.getBranchId(),
+               chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_IS), toTransaction.getBranch(),
                   toTransaction.getId());
                fromTransactionId = TransactionManager.getPriorTransaction(toTransaction);
             }

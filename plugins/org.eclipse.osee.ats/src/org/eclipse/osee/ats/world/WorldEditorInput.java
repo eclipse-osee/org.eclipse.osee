@@ -29,7 +29,7 @@ import org.eclipse.ui.IPersistableElement;
 /**
  * @author Donald G. Dunne
  */
-public class WorldEditorInput implements IEditorInput, IPersistableElement, Adaptable  {
+public class WorldEditorInput implements IEditorInput, IPersistableElement, Adaptable {
 
    IWorldEditorProvider iWorldEditorProvider;
    WorldEditor editor;
@@ -134,7 +134,7 @@ public class WorldEditorInput implements IEditorInput, IPersistableElement, Adap
          branchUuid = provider.getBranchUuid();
       } else {
          if (!editor.getLoadedArtifacts().isEmpty()) {
-            branchUuid = editor.getLoadedArtifacts().iterator().next().getBranchId();
+            branchUuid = editor.getLoadedArtifacts().iterator().next().getBranch().getId();
          }
       }
       return branchUuid;

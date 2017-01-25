@@ -192,7 +192,7 @@ public final class TransactionManager {
    public static synchronized void internalPersist(JdbcConnection connection, TransactionRecord transactionRecord) throws OseeCoreException {
       ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_TRANSACTION_DETAIL, transactionRecord.getId(),
          transactionRecord.getComment(), transactionRecord.getTimeStamp(), transactionRecord.getAuthor(),
-         transactionRecord.getBranchId(), transactionRecord.getTxType().getId());
+         transactionRecord.getBranch(), transactionRecord.getTxType().getId());
    }
 
    public static TransactionToken getTransactionAtDate(BranchId branch, Date maxDateExclusive) throws OseeCoreException {

@@ -126,6 +126,6 @@ public class CatchWordMlChanges implements CommitAction {
 
    private String getArtifactErrorMessage(Artifact artifact) {
       return String.format("Error validating: [(%s)(%s) - %s] on branchUuid:[%s]", artifact.getArtId(),
-         artifact.getGuid(), artifact.getName(), artifact.getBranchId());
+         artifact.getGuid(), artifact.getName(), artifact.getBranch());
    }
 }

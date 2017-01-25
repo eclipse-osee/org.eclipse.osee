@@ -440,8 +440,8 @@ public class AccessControlService implements IAccessControlService {
          }
       }
       if (userPermission == null) {
-         if (!CoreBranches.COMMON.getId().equals(accessObject.getBranchId()) && BranchManager.getType(
-            BranchId.valueOf(accessObject.getBranchId())).isBaselineBranch()) {
+         if (!CoreBranches.COMMON.equals(accessObject.getBranch()) && BranchManager.getType(
+            accessObject.getBranch()).isBaselineBranch()) {
             userPermission = PermissionEnum.READ;
          } else {
             userPermission = PermissionEnum.FULLACCESS;
