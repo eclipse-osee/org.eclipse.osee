@@ -123,7 +123,7 @@ public class InternalClientSessionManager {
                return;
             }
             oseeSession = new IdeClientSession();
-            oseeSession.setId("Invalid");
+            oseeSession.setId(oseeSessionGrant.getSessionId());
             oseeSession.setClientName(clientInfo.getClientMachineName());
             oseeSession.setClientAddress(clientInfo.getClientAddress());
             oseeSession.setUserId(oseeSessionGrant.getUserToken().getUserId());
