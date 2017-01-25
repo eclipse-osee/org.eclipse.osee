@@ -45,7 +45,7 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
       AttributeData toReturn = null;
 
       BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
-      int artId = chStmt.getInt("art_id");
+      int artId = chStmt.getInt("id2");
       int attrId = chStmt.getInt("attr_id");
       long gammaId = chStmt.getInt("gamma_id");
       ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));

@@ -105,8 +105,8 @@ public class LoaderTest {
    private static int OseeTypesClientDemoId, OseeTypesClientDemoActiveAttrId, OseeTypesClientDemoNameAttrId;
    private static long OseeTypesClientDemoActiveGammaId, OseeTypesClientDemoNameGammaId;
    private static String OseeTypesClientDemoGuid;
-   private static final long UserGroupsArtifactGammaId = 55L, OseeTypesClientDemoGammaId = 11L,
-      OseeTypesFrameworkGammaId = 9L;
+   private static final long UserGroupsArtifactGammaId = 43L, OseeTypesClientDemoGammaId = 11L,
+      OseeTypesFrameworkGammaId = 8L;
    private static final int UserGroupsId = CoreArtifactTokens.UserGroups.getUuid().intValue();
    private static int UserGroupsNameAttrId;
    private static long UserGroupsNameGammaId;

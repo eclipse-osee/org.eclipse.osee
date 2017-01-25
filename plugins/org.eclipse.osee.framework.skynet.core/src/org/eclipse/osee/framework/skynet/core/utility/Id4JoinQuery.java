@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2017 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,41 +10,40 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.utility;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.skynet.core.utility.DatabaseJoinAccessor.JoinItem;
-import org.eclipse.osee.jdbc.SQL3DataType;
 
 /**
- * @author Roberto E. Escobar
+ * @author Morgan E. Cook
  */
-public class ArtifactJoinQuery extends AbstractJoinQuery {
+public class Id4JoinQuery extends AbstractJoinQuery {
 
    private final int maxJoinSize;
 
    private final class Entry implements IJoinRow {
-      private final Integer artId;
-      private final Long branchUuid;
-      private final TransactionId transactionId;
+      private final Id id_1;
+      private final Id id_2;
+      private final Id id_3;
+      private final Id id_4;
 
-      private Entry(Integer artId, Long branchUuid, TransactionId transactionId) {
-         this.artId = artId;
-         this.branchUuid = branchUuid;
-         this.transactionId = transactionId;
+      private Entry(Id id_1, Id id_2, Id id_3, Id id_4) {
+         this.id_1 = id_1;
+         this.id_2 = id_2;
+         this.id_3 = id_3;
+         this.id_4 = id_4;
       }
 
       @Override
       public Object[] toArray() {
-         return new Object[] {
-            getQueryId(),
-            artId,
-            branchUuid,
-            transactionId.isValid() ? transactionId : SQL3DataType.BIGINT};
+         return new Object[] {getQueryId(), id_1, id_2, id_3, id_4};
       }
 
       @Override
       public String toString() {
-         return String.format("art_id=%s, branch_id=%s, transaction_id=%s", artId, branchUuid, transactionId);
+         return String.format("id_1=%s, id_2=%s, id_3=%s, id_4=%s", id_1, id_2, id_3, id_4);
       }
 
       @Override
@@ -62,21 +61,28 @@ public class ArtifactJoinQuery extends AbstractJoinQuery {
          if (!getOuterType().equals(other.getOuterType())) {
             return false;
          }
-         if (artId == null) {
-            if (other.artId != null) {
+         if (id_1 == null) {
+            if (other.id_1 != null) {
                return false;
             }
-         } else if (!artId.equals(other.artId)) {
+         } else if (!id_1.equals(other.id_1)) {
             return false;
          }
-         if (branchUuid == null) {
-            if (other.branchUuid != null) {
+         if (id_2 == null) {
+            if (other.id_2 != null) {
                return false;
             }
-         } else if (!branchUuid.equals(other.branchUuid)) {
+         } else if (!id_2.equals(other.id_2)) {
             return false;
          }
-         if (!transactionId.equals(other.transactionId)) {
+         if (id_3 == null) {
+            if (other.id_3 != null) {
+               return false;
+            }
+         } else if (!id_3.equals(other.id_3)) {
+            return false;
+         }
+         if (!id_4.equals(other.id_4)) {
             return false;
          }
          return true;
@@ -87,31 +93,36 @@ public class ArtifactJoinQuery extends AbstractJoinQuery {
          final int prime = 31;
          int result = 1;
          result = prime * result + getOuterType().hashCode();
-         result = prime * result + (artId == null ? 0 : artId.hashCode());
-         result = prime * result + (branchUuid == null ? 0 : branchUuid.hashCode());
-         result = prime * result + transactionId.hashCode();
+         result = prime * result + (id_1 == null ? 0 : id_1.hashCode());
+         result = prime * result + (id_2 == null ? 0 : id_2.hashCode());
+         result = prime * result + (id_3 == null ? 0 : id_3.hashCode());
+         result = prime * result + (id_4 == null ? 0 : id_4.hashCode());
          return result;
       }
 
-      private ArtifactJoinQuery getOuterType() {
-         return ArtifactJoinQuery.this;
+      private Id4JoinQuery getOuterType() {
+         return Id4JoinQuery.this;
       }
    }
 
-   public ArtifactJoinQuery(IJoinAccessor joinAccessor, Long expiresIn, int queryId, int maxJoinSize) {
-      super(joinAccessor, JoinItem.ARTIFACT, expiresIn, queryId);
+   protected Id4JoinQuery(IJoinAccessor joinAccessor, Long expiresIn, int queryId, int maxJoinSize) {
+      super(joinAccessor, JoinItem.ID4, expiresIn, queryId);
       this.maxJoinSize = maxJoinSize;
    }
 
-   public void add(Integer art_id, Long branchUuid, TransactionId transactionId) {
-      entries.add(new Entry(art_id, branchUuid, transactionId));
+   public void add(Id id_1, Id id_2, Id id_3, Id id_4) {
+      entries.add(new Entry(id_1, id_2, id_3, id_4));
       if (entries.size() > maxJoinSize) {
          throw new OseeDataStoreException("Exceeded max artifact join size of [%d]", maxJoinSize);
       }
    }
 
-   public void add(Integer art_id, Long branchUuid) {
-      add(art_id, branchUuid, TransactionId.SENTINEL);
+   public void add(Id id_1, Id id_2, Id id_3) {
+      add(id_1, id_2, id_3, ArtifactId.SENTINEL);
+
    }
 
+   public void add(Id id_1, Id id_2) {
+      add(id_1, id_2, TransactionId.SENTINEL, ArtifactId.SENTINEL);
+   }
 }

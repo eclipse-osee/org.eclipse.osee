@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.loader.executors;
 
 import java.util.Collection;
 import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -24,8 +25,8 @@ import org.eclipse.osee.orcs.db.internal.loader.LoadSqlContext;
 import org.eclipse.osee.orcs.db.internal.loader.LoadUtil;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
-import org.eclipse.osee.orcs.db.internal.sql.join.ArtifactJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.CharJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.Id4JoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
@@ -53,16 +54,16 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
    public void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, Options options) throws OseeCoreException {
       checkCancelled(cancellation);
       if (!artifactIds.isEmpty()) {
-         ArtifactJoinQuery join = createIdJoin(getJdbcClient(), options);
+         Id4JoinQuery join = createIdJoin(getJdbcClient(), options);
          LoadSqlContext loadContext = new LoadSqlContext(session, options, branch);
          int fetchSize = LoadUtil.computeFetchSize(artifactIds.size());
          getLoader().loadArtifacts(cancellation, handler, join, criteria, loadContext, fetchSize);
       }
    }
 
-   private ArtifactJoinQuery createIdJoin(JdbcClient jdbcClient, Options options) throws OseeCoreException {
+   private Id4JoinQuery createIdJoin(JdbcClient jdbcClient, Options options) throws OseeCoreException {
 
-      ArtifactJoinQuery toReturn = joinFactory.createArtifactJoinQuery();
+      Id4JoinQuery toReturn = joinFactory.createId4JoinQuery();
 
       CharJoinQuery guidJoin = joinFactory.createCharJoinQuery();
       try {
@@ -75,7 +76,7 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
 
          getJdbcClient().runQuery(stmt -> {
             Integer artId = stmt.getInt("art_id");
-            toReturn.add(artId, BranchId.valueOf(branch.getId()), transactionId);
+            toReturn.add(branch, ArtifactId.valueOf(artId), transactionId);
          }, artifactIds.size(), GUIDS_TO_IDS, guidJoin.getQueryId());
 
       } finally {

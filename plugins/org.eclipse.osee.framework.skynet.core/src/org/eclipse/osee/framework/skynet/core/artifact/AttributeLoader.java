@@ -95,7 +95,7 @@ public class AttributeLoader {
 
       public AttrData(JdbcStatement chStmt, boolean historical) throws OseeCoreException {
          artifactId = chStmt.getInt("art_id");
-         branchUuid = chStmt.getLong("branch_id");
+         branchUuid = chStmt.getLong("id1");
          attrId = chStmt.getInt("attr_id");
          gammaId = chStmt.getInt("gamma_id");
          modType = chStmt.getInt("mod_type");

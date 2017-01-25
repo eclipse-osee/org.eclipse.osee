@@ -29,8 +29,8 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.utility.AbstractDbTxOperation;
-import org.eclipse.osee.framework.skynet.core.utility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
+import org.eclipse.osee.framework.skynet.core.utility.Id4JoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
 import org.eclipse.osee.framework.skynet.core.utility.TransactionJoinQuery;
 import org.eclipse.osee.jdbc.JdbcConnection;
@@ -42,10 +42,10 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 public class PurgeArtifacts extends AbstractDbTxOperation {
 
    private static final String SELECT_ITEM_GAMMAS =
-      "SELECT /*+ ordered */ txs.gamma_id, txs.transaction_id, aj.branch_id FROM osee_join_artifact aj, %s item, osee_txs txs WHERE aj.query_id = ? AND %s AND item.gamma_id = txs.gamma_id AND aj.branch_id = txs.branch_id";
+      "SELECT /*+ ordered */ txs.gamma_id, txs.transaction_id, aj.id1 FROM osee_join_id4 aj, %s item, osee_txs txs WHERE aj.query_id = ? AND %s AND item.gamma_id = txs.gamma_id AND aj.id1 = txs.branch_id";
 
    private static final String COUNT_ARTIFACT_VIOLATIONS =
-      "SELECT art.art_id, txs.branch_id FROM osee_join_artifact aj, osee_artifact art, osee_txs txs WHERE aj.query_id = ? AND aj.art_id = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = aj.branch_id";
+      "SELECT art.art_id, txs.branch_id FROM osee_join_id4 aj, osee_artifact art, osee_txs txs WHERE aj.query_id = ? AND aj.id2 = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = aj.id1";
 
    private static final String DELETE_FROM_TXS_USING_JOIN_TRANSACTION =
       "DELETE FROM osee_txs txs WHERE EXISTS (select 1 from osee_join_transaction jt WHERE jt.query_id = ? AND jt.branch_id = txs.branch_id AND jt.gamma_id = txs.gamma_id AND jt.transaction_id = txs.transaction_id)";
@@ -83,10 +83,10 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
       }
       artifactsToPurge.addAll(childreArtifactsToPurge);
 
-      ArtifactJoinQuery artJoin2 = JoinUtility.createArtifactJoinQuery(getJdbcClient());
+      Id4JoinQuery artJoin2 = JoinUtility.createId4JoinQuery(getJdbcClient());
       try {
          for (Artifact art : artifactsToPurge) {
-            artJoin2.add(art.getArtId(), art.getBranchId());
+            artJoin2.add(art.getBranch(), art);
          }
          artJoin2.store(connection);
 
@@ -95,9 +95,9 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
          TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery(getJdbcClient());
 
          insertSelectItems(txJoin, connection, "osee_relation_link",
-            "(aj.art_id = item.a_art_id OR aj.art_id = item.b_art_id)", queryId);
-         insertSelectItems(txJoin, connection, "osee_attribute", "aj.art_id = item.art_id", queryId);
-         insertSelectItems(txJoin, connection, "osee_artifact", "aj.art_id = item.art_id", queryId);
+            "(aj.id2 = item.a_art_id OR aj.id1 = item.b_art_id)", queryId);
+         insertSelectItems(txJoin, connection, "osee_attribute", "aj.id2 = item.art_id", queryId);
+         insertSelectItems(txJoin, connection, "osee_artifact", "aj.id2 = item.art_id", queryId);
 
          try {
             txJoin.store(connection);
@@ -147,7 +147,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
       try {
          chStmt.runPreparedQuery(query, queryId);
          while (chStmt.next()) {
-            txJoin.add(chStmt.getLong("gamma_id"), chStmt.getLong("transaction_id"), chStmt.getLong("branch_id"));
+            txJoin.add(chStmt.getLong("gamma_id"), chStmt.getLong("transaction_id"), chStmt.getLong("id1"));
          }
       } finally {
          chStmt.close();
@@ -155,10 +155,10 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
    }
 
    private void checkPurgeValid(JdbcConnection connection) {
-      ArtifactJoinQuery artJoin = JoinUtility.createArtifactJoinQuery(getJdbcClient());
+      Id4JoinQuery artJoin = JoinUtility.createId4JoinQuery(getJdbcClient());
       for (Artifact art : artifactsToPurge) {
          for (IOseeBranch branch : BranchManager.getChildBranches(art.getBranch(), true)) {
-            artJoin.add(art.getArtId(), branch.getUuid());
+            artJoin.add(branch, art);
          }
       }
       if (!artJoin.isEmpty()) {

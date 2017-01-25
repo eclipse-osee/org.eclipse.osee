@@ -59,13 +59,13 @@ public class JoinUtility {
       return new IdJoinQuery(createAccessor(jdbcClient), actualExpiration, getNewQueryId());
    }
 
-   public static ArtifactJoinQuery createArtifactJoinQuery(JdbcClient jdbcClient) {
-      return createArtifactJoinQuery(jdbcClient, null);
+   public static Id4JoinQuery createId4JoinQuery(JdbcClient jdbcClient) {
+      return createId4JoinQuery(jdbcClient, null);
    }
 
-   public static ArtifactJoinQuery createArtifactJoinQuery(JdbcClient jdbcClient, Long expiresIn) {
+   public static Id4JoinQuery createId4JoinQuery(JdbcClient jdbcClient, Long expiresIn) {
       Long actualExpiration = getExpiresIn(jdbcClient, expiresIn, EXPIRATION_SECS__ARTIFACT_JOIN_QUERY);
-      return new ArtifactJoinQuery(createAccessor(jdbcClient), actualExpiration, getNewQueryId(),
+      return new Id4JoinQuery(createAccessor(jdbcClient), actualExpiration, getNewQueryId(),
          getMaxArtifactJoinSize(jdbcClient));
    }
 
@@ -87,9 +87,9 @@ public class JoinUtility {
       return createIdJoinQuery(getJdbcClient());
    }
 
-   public static ArtifactJoinQuery createArtifactJoinQuery() {
+   public static Id4JoinQuery createId4JoinQuery() {
       JdbcClient jdbcClient = getJdbcClient();
-      return createArtifactJoinQuery(jdbcClient);
+      return createId4JoinQuery(jdbcClient);
    }
 
    public static TransactionJoinQuery createTransactionJoinQuery() {

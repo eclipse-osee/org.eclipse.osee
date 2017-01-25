@@ -35,7 +35,7 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
    protected ArtifactData createData(Object conditions, ArtifactObjectFactory factory, JdbcStatement chStmt, Options options) throws OseeCoreException {
       ArtifactData toReturn = null;
 
-      int artifactId = chStmt.getInt("art_id");
+      int artifactId = chStmt.getInt("id2");
       BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
 
       CreateConditions onCreate = asConditions(conditions);

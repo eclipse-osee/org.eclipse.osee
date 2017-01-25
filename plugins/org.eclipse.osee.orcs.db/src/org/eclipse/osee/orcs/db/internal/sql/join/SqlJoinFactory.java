@@ -105,13 +105,13 @@ public class SqlJoinFactory {
       return new IdJoinQuery(getAccessor(), actualExpiration, getNewQueryId());
    }
 
-   public ArtifactJoinQuery createArtifactJoinQuery() {
-      return createArtifactJoinQuery(null);
+   public Id4JoinQuery createId4JoinQuery() {
+      return createId4JoinQuery(null);
    }
 
-   public ArtifactJoinQuery createArtifactJoinQuery(Long expiresIn) {
-      Long actualExpiration = getExpiresIn(expiresIn, EXPIRATION_SECS__ARTIFACT_JOIN_QUERY);
-      return new ArtifactJoinQuery(getAccessor(), actualExpiration, getNewQueryId(), getMaxArtifactJoinSize());
+   public Id4JoinQuery createId4JoinQuery(Long expiresIn) {
+      Long actualExpiration = getExpiresIn(expiresIn, EXPIRATION_SECS__ID_JOIN_QUERY);
+      return new Id4JoinQuery(getAccessor(), actualExpiration, getNewQueryId(), getMaxArtifactJoinSize());
    }
 
    public TagQueueJoinQuery createTagQueueJoinQuery() {

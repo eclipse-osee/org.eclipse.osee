@@ -68,8 +68,8 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.internal.accessors.DatabaseBranchAccessor;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.utility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
+import org.eclipse.osee.framework.skynet.core.utility.Id4JoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
@@ -406,9 +406,9 @@ public final class BranchManager {
    }
 
    private static IOseeBranch createMergeBranch(final IOseeBranch sourceBranch, final IOseeBranch destBranch, final ArrayList<Integer> expectedArtIds) throws OseeCoreException {
-      ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
+      Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery();
       for (int artId : expectedArtIds) {
-         joinQuery.add(artId, sourceBranch.getUuid());
+         joinQuery.add(sourceBranch, ArtifactId.valueOf(artId));
       }
       BranchId branch;
       try {

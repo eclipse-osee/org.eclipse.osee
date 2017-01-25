@@ -51,7 +51,7 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) throws OseeCoreException {
-      jArtAlias = writer.addTable(TableEnum.ARTIFACT_JOIN_TABLE);
+      jArtAlias = writer.addTable(TableEnum.JOIN_ID4_TABLE);
 
       if (criteria.getIds().size() > 1) {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
@@ -70,7 +70,7 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute> {
       writer.write(attrAlias);
       writer.write(".art_id = ");
       writer.write(jArtAlias);
-      writer.write(".art_id AND ");
+      writer.write(".id2 AND ");
       writer.write(jArtAlias);
       writer.write(".query_id = ?");
       writer.addParameter(criteria.getQueryId());

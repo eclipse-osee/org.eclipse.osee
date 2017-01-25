@@ -42,8 +42,8 @@ import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictBuilder;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.utility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
+import org.eclipse.osee.framework.skynet.core.utility.Id4JoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.IdJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -82,7 +82,7 @@ public class ConflictManagerInternal {
       "attr_d.attr_id <> sj_c.sj_attr_id";
 
    private static final String CONFLICT_CLEANUP =
-      "DELETE FROM osee_conflict t1 WHERE merge_branch_id = ? and NOT EXISTS (SELECT 'X' FROM osee_join_artifact WHERE query_id = ? and t1.conflict_id = art_id and (t1.conflict_type = transaction_id or transaction_id is NULL))";
+      "DELETE FROM osee_conflict t1 WHERE merge_branch_id = ? AND NOT EXISTS (SELECT 'X' FROM osee_join_id4 WHERE query_id = ? AND t1.conflict_id = id2 AND (t1.conflict_type = id3 or id3 is NULL))";
 
    private static final String GET_DESTINATION_BRANCHES =
       "SELECT dest_branch_id FROM osee_merge WHERE source_branch_id = ?";
@@ -367,10 +367,10 @@ public class ConflictManagerInternal {
    private static void cleanUpConflictDB(Collection<Conflict> conflicts, long branchUuid, IProgressMonitor monitor) throws OseeCoreException {
       monitor.subTask("Cleaning up old conflict data");
       if (conflicts != null && conflicts.size() != 0 && branchUuid != 0) {
-         ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
+         Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery();
          try {
             for (Conflict conflict : conflicts) {
-               joinQuery.add(conflict.getObjectId(), branchUuid,
+               joinQuery.add(BranchId.valueOf(branchUuid), ArtifactId.valueOf(conflict.getObjectId()),
                   TransactionId.valueOf(conflict.getConflictType().getValue()));
             }
             joinQuery.store();

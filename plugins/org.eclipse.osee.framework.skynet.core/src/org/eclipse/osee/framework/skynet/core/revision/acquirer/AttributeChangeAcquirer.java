@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -33,8 +34,8 @@ import org.eclipse.osee.framework.skynet.core.change.AttributeChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.ChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.utility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
+import org.eclipse.osee.framework.skynet.core.utility.Id4JoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
 import org.eclipse.osee.jdbc.JdbcStatement;
 
@@ -173,10 +174,10 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
             sqlParamter = transactionId.getId();
          }
 
-         ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
+         Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery();
          try {
             for (int artId : artIds) {
-               joinQuery.add(artId, wasValueBranch.getUuid());
+               joinQuery.add(wasValueBranch, ArtifactId.valueOf(artId));
             }
             joinQuery.store();
 

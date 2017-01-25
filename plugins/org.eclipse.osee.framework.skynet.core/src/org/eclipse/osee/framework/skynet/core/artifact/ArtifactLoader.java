@@ -41,8 +41,8 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
-import org.eclipse.osee.framework.skynet.core.utility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
+import org.eclipse.osee.framework.skynet.core.utility.Id4JoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
 import org.eclipse.osee.jdbc.JdbcStatement;
 
@@ -226,7 +226,7 @@ public final class ArtifactLoader {
          int previousArtId = -1;
          long previousBranchId = -1;
          while (chStmt.next()) {
-            int artId = chStmt.getInt("art_id");
+            int artId = chStmt.getInt("id2");
             long branchUuid = chStmt.getLong("branch_id");
             // assumption: sql is returning rows ordered by branch_id, art_id, transaction_id in descending order
             if (previousArtId != artId || previousBranchId != branchUuid) {
@@ -261,15 +261,16 @@ public final class ArtifactLoader {
    private static void loadArtifacts(List<Pair<ArtifactId, BranchId>> toLoad, LoadLevel loadLevel, TransactionId transactionId, LoadType reload, DeletionFlag allowDeleted, Set<Artifact> artifacts, boolean isArchived) throws OseeCoreException {
       if (toLoad != null && !toLoad.isEmpty()) {
 
-         ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
+         Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery();
          for (Pair<ArtifactId, BranchId> pair : toLoad) {
-            joinQuery.add(pair.getFirst().getId().intValue(), pair.getSecond().getId(), transactionId);
+            joinQuery.add(BranchId.valueOf(pair.getSecond().getId()), ArtifactId.valueOf(pair.getFirst().getId()),
+               TransactionId.valueOf(transactionId.getId()), ArtifactId.SENTINEL);
          }
          loadArtifacts(artifacts, joinQuery, loadLevel, null, reload, transactionId, allowDeleted, isArchived);
       }
    }
 
-   private static void loadArtifacts(Collection<Artifact> loadedItems, ArtifactJoinQuery joinQuery, LoadLevel loadLevel, ISearchConfirmer confirmer, LoadType reload, TransactionId transactionId, DeletionFlag allowDeleted, boolean isArchived) throws OseeCoreException {
+   private static void loadArtifacts(Collection<Artifact> loadedItems, Id4JoinQuery joinQuery, LoadLevel loadLevel, ISearchConfirmer confirmer, LoadType reload, TransactionId transactionId, DeletionFlag allowDeleted, boolean isArchived) throws OseeCoreException {
       if (!joinQuery.isEmpty()) {
          Collection<Artifact> data;
          if (loadedItems.isEmpty()) {
@@ -326,7 +327,7 @@ public final class ArtifactLoader {
     * This method is called only after the cache has been checked
     */
    private static Artifact retrieveShallowArtifact(JdbcStatement chStmt, LoadType reload, boolean historical, boolean isArchived) throws OseeCoreException {
-      ArtifactId artifactId = ArtifactId.valueOf(chStmt.getLong("art_id"));
+      ArtifactId artifactId = ArtifactId.valueOf(chStmt.getLong("id2"));
       BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
       TransactionToken transactionId = TransactionToken.SENTINEL;
       ApplicabilityId appId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
@@ -351,9 +352,10 @@ public final class ArtifactLoader {
    }
 
    static void loadArtifactData(Artifact artifact, LoadLevel loadLevel, boolean isArchived) throws OseeCoreException {
-      ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
+      Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery();
+
       try {
-         joinQuery.add(artifact.getArtId(), artifact.getBranchId());
+         joinQuery.add(BranchId.valueOf(artifact.getBranchId()), ArtifactId.valueOf(artifact.getId()));
          joinQuery.store();
 
          List<Artifact> artifacts = new ArrayList<>(1);

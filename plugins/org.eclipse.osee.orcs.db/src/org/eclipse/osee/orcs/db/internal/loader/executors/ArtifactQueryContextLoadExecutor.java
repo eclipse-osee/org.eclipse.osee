@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.loader.executors;
 import java.util.List;
 import java.util.function.Consumer;
 import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -29,7 +30,7 @@ import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
 import org.eclipse.osee.orcs.db.internal.search.engines.ArtifactQuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
-import org.eclipse.osee.orcs.db.internal.sql.join.ArtifactJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.Id4JoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
@@ -50,7 +51,7 @@ public class ArtifactQueryContextLoadExecutor extends AbstractLoadExecutor {
    public void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, Options options) throws OseeCoreException {
       int fetchSize = computeFetchSize(queryContext);
 
-      ArtifactJoinQuery join = createArtifactIdJoin(getJdbcClient(), cancellation, fetchSize);
+      Id4JoinQuery join = createId4Join(getJdbcClient(), cancellation, fetchSize);
 
       LoadSqlContext loadContext = new LoadSqlContext(queryContext.getSession(), options, queryContext.getBranch());
       getLoader().loadArtifacts(cancellation, handler, join, criteria, loadContext, fetchSize);
@@ -64,8 +65,8 @@ public class ArtifactQueryContextLoadExecutor extends AbstractLoadExecutor {
       return LoadUtil.computeFetchSize(fetchSize);
    }
 
-   private ArtifactJoinQuery createArtifactIdJoin(JdbcClient jdbcClient, HasCancellation cancellation, int fetchSize) throws OseeCoreException {
-      ArtifactJoinQuery artifactJoin = joinFactory.createArtifactJoinQuery();
+   private Id4JoinQuery createId4Join(JdbcClient jdbcClient, HasCancellation cancellation, int fetchSize) throws OseeCoreException {
+      Id4JoinQuery artifactJoin = joinFactory.createId4JoinQuery();
       try {
          for (AbstractJoinQuery join : queryContext.getJoins()) {
             join.store();
@@ -76,7 +77,7 @@ public class ArtifactQueryContextLoadExecutor extends AbstractLoadExecutor {
             checkCancelled(cancellation);
             Integer artId = stmt.getInt("art_id");
             BranchId branchUuid = BranchId.valueOf(stmt.getLong("branch_id"));
-            artifactJoin.add(artId, branchUuid, transactionId);
+            artifactJoin.add(branchUuid, ArtifactId.valueOf(artId), transactionId);
             checkCancelled(cancellation);
          };
          checkCancelled(cancellation);

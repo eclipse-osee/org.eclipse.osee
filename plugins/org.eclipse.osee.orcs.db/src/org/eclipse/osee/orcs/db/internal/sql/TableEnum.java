@@ -23,7 +23,7 @@ public enum TableEnum implements AliasEntry {
    CHAR_JOIN_TABLE("osee_join_char_id", "jch"),
    ID_JOIN_TABLE("osee_join_id", "jid"),
    SEARCH_TAGS_TABLE("osee_search_tags", "tag"),
-   ARTIFACT_JOIN_TABLE("osee_join_artifact", "jart"),
+   JOIN_ID4_TABLE("osee_join_id4", "jart"),
    MERGE_TABLE("osee_merge", "mbr");
 
    private final String tableName;

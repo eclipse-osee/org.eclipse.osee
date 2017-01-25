@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.loader.executors;
 
 import java.util.Collection;
 import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -24,7 +25,7 @@ import org.eclipse.osee.orcs.db.internal.loader.LoadSqlContext;
 import org.eclipse.osee.orcs.db.internal.loader.LoadUtil;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
-import org.eclipse.osee.orcs.db.internal.sql.join.ArtifactJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.Id4JoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
@@ -49,10 +50,10 @@ public class LoadExecutor extends AbstractLoadExecutor {
    public void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, Options options) throws OseeCoreException {
       checkCancelled(cancellation);
 
-      ArtifactJoinQuery join = joinFactory.createArtifactJoinQuery();
+      Id4JoinQuery join = joinFactory.createId4JoinQuery();
       TransactionId transactionId = OptionsUtil.getFromTransaction(options);
       for (Integer artId : artifactIds) {
-         join.add(artId, BranchId.valueOf(branch.getId()), transactionId);
+         join.add(branch, ArtifactId.valueOf(artId), transactionId);
       }
 
       LoadSqlContext loadContext = new LoadSqlContext(session, options, branch);

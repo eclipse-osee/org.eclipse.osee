@@ -43,7 +43,7 @@ public class ArtifactSqlHandler extends SqlHandler<CriteriaArtifact> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      jArtAlias = writer.addTable(TableEnum.ARTIFACT_JOIN_TABLE);
+      jArtAlias = writer.addTable(TableEnum.JOIN_ID4_TABLE);
       artAlias = writer.addTable(TableEnum.ARTIFACT_TABLE);
       txsAlias = writer.addTable(TableEnum.TXS_TABLE);
    }
@@ -53,7 +53,7 @@ public class ArtifactSqlHandler extends SqlHandler<CriteriaArtifact> {
       writer.write(artAlias);
       writer.write(".art_id = ");
       writer.write(jArtAlias);
-      writer.write(".art_id AND ");
+      writer.write(".id2 AND ");
       writer.write(jArtAlias);
       writer.write(".query_id = ?");
       writer.addParameter(criteria.getQueryId());

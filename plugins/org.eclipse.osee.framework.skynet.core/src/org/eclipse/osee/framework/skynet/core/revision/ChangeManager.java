@@ -31,8 +31,8 @@ import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.utility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
+import org.eclipse.osee.framework.skynet.core.utility.Id4JoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
 import org.eclipse.osee.jdbc.JdbcStatement;
 
@@ -108,19 +108,19 @@ public final class ChangeManager {
     * @return a map of artifact to collection of TransactionIds which affected the given artifact
     */
    public static HashCollection<Artifact, TransactionId> getModifingTransactions(Collection<Artifact> artifacts) throws OseeCoreException {
-      ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
+      Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery();
       CompositeKeyHashMap<Integer, BranchId, Artifact> artifactMap = new CompositeKeyHashMap<>();
       for (Artifact artifact : artifacts) {
          BranchId branch = artifact.getBranch();
          artifactMap.put(artifact.getArtId(), branch, artifact);
          TransactionId transaction = TransactionManager.getHeadTransaction(branch);
-         joinQuery.add(artifact.getArtId(), branch.getUuid(), transaction);
+         joinQuery.add(branch, artifact, transaction);
 
          // for each combination of artifact and its branch hierarchy
          while (!branch.equals(CoreBranches.SYSTEM_ROOT)) {
             transaction = BranchManager.getSourceTransaction(branch);
             branch = BranchManager.getParentBranch(branch);
-            joinQuery.add(artifact.getArtId(), branch.getUuid(), transaction);
+            joinQuery.add(branch, artifact, transaction);
          }
       }
 
@@ -152,7 +152,7 @@ public final class ChangeManager {
     * @return a map of artifact to collection of branches which affected the given artifact
     */
    public static HashCollection<Artifact, BranchId> getModifingBranches(Collection<Artifact> artifacts) throws OseeCoreException {
-      ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
+      Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery();
 
       CompositeKeyHashMap<Integer, BranchId, Artifact> artifactMap =
          new CompositeKeyHashMap<Integer, BranchId, Artifact>();
@@ -161,7 +161,7 @@ public final class ChangeManager {
          // for each combination of artifact and all working branches in its hierarchy
          for (BranchId workingBranch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING)) {
             if (artifact.isOnBranch(BranchManager.getParentBranch(workingBranch))) {
-               joinQuery.add(artifact.getArtId(), workingBranch.getUuid());
+               joinQuery.add(workingBranch, artifact);
             }
          }
       }

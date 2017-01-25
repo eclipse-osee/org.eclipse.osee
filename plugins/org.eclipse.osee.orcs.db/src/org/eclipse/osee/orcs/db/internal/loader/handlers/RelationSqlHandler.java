@@ -53,7 +53,7 @@ public class RelationSqlHandler extends SqlHandler<CriteriaRelation> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) throws OseeCoreException {
-      jArtAlias = writer.addTable(TableEnum.ARTIFACT_JOIN_TABLE);
+      jArtAlias = writer.addTable(TableEnum.JOIN_ID4_TABLE);
 
       if (criteria.getIds().size() > 1) {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
@@ -78,7 +78,7 @@ public class RelationSqlHandler extends SqlHandler<CriteriaRelation> {
 
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
-      writer.write("(%s.a_art_id = %s.art_id OR %s.b_art_id = %s.art_id)", relationAlias, jArtAlias, relationAlias,
+      writer.write("(%s.a_art_id = %s.id2 OR %s.b_art_id = %s.id2)", relationAlias, jArtAlias, relationAlias,
          jArtAlias);
       writer.write(" AND ");
       writer.write(jArtAlias);

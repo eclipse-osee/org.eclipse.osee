@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -28,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.utility.AbstractDbTxOperation;
-import org.eclipse.osee.framework.skynet.core.utility.ArtifactJoinQuery;
+import org.eclipse.osee.framework.skynet.core.utility.Id4JoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
@@ -152,18 +153,18 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
    }
 
    private final static String INSERT_ATTRIBUTE_GAMMAS =
-      "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current, branch_id, app_id) SELECT ?, atr1.gamma_id, txs1.mod_type, ?, ?, txs1.app_id FROM osee_attribute atr1, osee_txs txs1, osee_join_artifact ald1 WHERE txs1.branch_id = ? AND txs1.tx_current in (1,2) AND txs1.gamma_id = atr1.gamma_id AND atr1.art_id = ald1.art_id and ald1.query_id = ?";
+      "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current, branch_id, app_id) SELECT ?, atr1.gamma_id, txs1.mod_type, ?, ?, txs1.app_id FROM osee_attribute atr1, osee_txs txs1, osee_join_id4 ald1 WHERE txs1.branch_id = ? AND txs1.tx_current in (1,2) AND txs1.gamma_id = atr1.gamma_id AND atr1.art_id = ald1.id2 and ald1.query_id = ?";
    private final static String INSERT_ARTIFACT_GAMMAS =
-      "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current, branch_id, app_id) SELECT ?, arv1.gamma_id, txs1.mod_type, ?, ?, txs1.app_id FROM osee_artifact arv1, osee_txs txs1, osee_join_artifact ald1 WHERE txs1.branch_id = ? AND txs1.tx_current in (1,2) AND txs1.gamma_id = arv1.gamma_id AND arv1.art_id = ald1.art_id and ald1.query_id = ?";
+      "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current, branch_id, app_id) SELECT ?, arv1.gamma_id, txs1.mod_type, ?, ?, txs1.app_id FROM osee_artifact arv1, osee_txs txs1, osee_join_id4 ald1 WHERE txs1.branch_id = ? AND txs1.tx_current in (1,2) AND txs1.gamma_id = arv1.gamma_id AND arv1.art_id = ald1.id2 and ald1.query_id = ?";
 
    private void addArtifactsToBranch(JdbcConnection connection, BranchId sourceBranch, BranchId destBranch, BranchId mergeBranch, Collection<Integer> artIds) throws OseeCoreException {
       if (artIds == null || artIds.isEmpty()) {
          throw new IllegalArgumentException("Artifact IDs can not be null or empty");
       }
 
-      ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery(getJdbcClient());
+      Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery(getJdbcClient());
       for (int artId : artIds) {
-         joinQuery.add(artId, sourceBranch.getUuid());
+         joinQuery.add(BranchId.valueOf(sourceBranch.getUuid()), ArtifactId.valueOf(artId));
       }
       try {
          joinQuery.store(connection);

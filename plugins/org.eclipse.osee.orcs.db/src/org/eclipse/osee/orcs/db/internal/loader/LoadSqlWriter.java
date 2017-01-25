@@ -39,7 +39,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
    @Override
    public void writeSelect(Iterable<SqlHandler<?>> handlers) throws OseeCoreException {
       String txAlias = getLastAlias(TableEnum.TXS_TABLE);
-      String artJoinAlias = getLastAlias(TableEnum.ARTIFACT_JOIN_TABLE);
+      String artJoinAlias = getLastAlias(TableEnum.JOIN_ID4_TABLE);
 
       write("SELECT%s ", getSqlHint());
       write("%s.gamma_id, %s.mod_type, %s.branch_id, %s.transaction_id, %s.app_id", txAlias, txAlias, txAlias, txAlias,
@@ -47,7 +47,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
       if (OptionsUtil.isHistorical(getOptions())) {
          write(", %s.transaction_id as stripe_transaction_id", txAlias);
       }
-      write(",\n %s.art_id", artJoinAlias);
+      write(",\n %s.id2", artJoinAlias);
       for (SqlHandler<?> handler : handlers) {
          setHandlerLevel(handler);
          write(", ");
@@ -57,10 +57,10 @@ public class LoadSqlWriter extends AbstractSqlWriter {
 
    @Override
    public void writeGroupAndOrder() throws OseeCoreException {
-      String artAlias = getLastAlias(TableEnum.ARTIFACT_JOIN_TABLE);
+      String artAlias = getLastAlias(TableEnum.JOIN_ID4_TABLE);
       String txAlias = getLastAlias(TableEnum.TXS_TABLE);
 
-      write("\n ORDER BY %s.branch_id, %s.art_id", txAlias, artAlias);
+      write("\n ORDER BY %s.branch_id, %s.id2", txAlias, artAlias);
       if (hasAlias(TableEnum.ATTRIBUTE_TABLE)) {
          write(", %s.attr_id", getLastAlias(TableEnum.ATTRIBUTE_TABLE));
       }
@@ -82,13 +82,13 @@ public class LoadSqlWriter extends AbstractSqlWriter {
    @Override
    public String getTxBranchFilter(String txsAlias, boolean allowDeleted) {
       StringBuilder sb = new StringBuilder();
-      String artJoinAlias = getLastAlias(TableEnum.ARTIFACT_JOIN_TABLE);
+      String artJoinAlias = getLastAlias(TableEnum.JOIN_ID4_TABLE);
       writeTxFilter(txsAlias, artJoinAlias, sb, allowDeleted);
       sb.append(" AND ");
       sb.append(txsAlias);
       sb.append(".branch_id = ");
       sb.append(artJoinAlias);
-      sb.append(".branch_id");
+      sb.append(".id1");
       return sb.toString();
    }
 
@@ -134,7 +134,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
          sb.append(txsAlias);
          sb.append(".transaction_id <= ");
          sb.append(artJoinAlias);
-         sb.append(".transaction_id");
+         sb.append(".id3");
          if (!areDeletedIncluded) {
             sb.append(" AND ");
             sb.append(txsAlias);
