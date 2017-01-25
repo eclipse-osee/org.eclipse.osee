@@ -8,9 +8,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.workflow.note;
+package org.eclipse.osee.ats.core.workflow.note;
 
-import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.framework.core.util.Result;
 
 /**
  * @author Donald G. Dunne
@@ -19,7 +19,7 @@ public interface INoteStorageProvider {
 
    String getNoteXml();
 
-   IStatus saveNoteXml(String xml);
+   Result saveNoteXml(String xml);
 
    String getNoteTitle();
 

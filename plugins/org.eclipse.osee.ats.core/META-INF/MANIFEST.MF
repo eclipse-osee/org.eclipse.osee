@@ -44,6 +44,7 @@ Export-Package: org.eclipse.osee.ats.core,
  org.eclipse.osee.ats.core.workdef,
  org.eclipse.osee.ats.core.workflow,
  org.eclipse.osee.ats.core.workflow.log,
+ org.eclipse.osee.ats.core.workflow.note,
  org.eclipse.osee.ats.core.workflow.state,
  org.eclipse.osee.ats.core.workflow.transition,
  org.eclipse.osee.ats.core.workflow.util

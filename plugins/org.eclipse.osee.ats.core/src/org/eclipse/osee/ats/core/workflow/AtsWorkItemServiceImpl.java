@@ -28,9 +28,12 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
+import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.ai.ActionableItemManager;
 import org.eclipse.osee.ats.core.validator.AtsXWidgetValidateManager;
+import org.eclipse.osee.ats.core.workflow.note.ArtifactNote;
+import org.eclipse.osee.ats.core.workflow.note.AtsWorkItemNotes;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -166,6 +169,11 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          return String.format("%s / %s", workItem.getAtsId(), computedPcrId);
       }
       return workItem.getAtsId();
+   }
+
+   @Override
+   public IAtsWorkItemNotes getNotes(IAtsWorkItem workItem) {
+      return new AtsWorkItemNotes(new ArtifactNote(workItem, services), services);
    }
 
 }

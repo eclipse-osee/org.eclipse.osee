@@ -44,12 +44,12 @@ import org.eclipse.osee.ats.agile.AgileUtilClient;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
+import org.eclipse.osee.ats.api.workflow.note.NoteItem;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.note.NoteItem;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -724,7 +724,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
 
    public static void createStateNotesHeader(Composite comp, XFormToolkit toolkit, AbstractWorkflowArtifact sma, int horizontalSpan, String forStateName) {
       // Display global Notes
-      for (NoteItem noteItem : sma.getNotes().getNoteItems()) {
+      for (NoteItem noteItem : AtsClientService.get().getWorkItemService().getNotes(sma).getNoteItems()) {
          if (forStateName == null || noteItem.getState().equals(forStateName)) {
             FormsUtil.createLabelOrHyperlink(comp, toolkit, horizontalSpan, noteItem.toString());
          }

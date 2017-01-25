@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workflow.note.NoteItem;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.column.DeadlineColumn;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
@@ -23,7 +24,6 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.client.workflow.PriorityUtil;
-import org.eclipse.osee.ats.core.client.workflow.note.NoteItem;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
@@ -104,7 +104,7 @@ public class WfePrint extends Action {
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Workflow: ", sma.getArtifactTypeName()),
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "ID: ", combinedPcrId)}));
       resultData.addRaw(AHTML.endMultiColumnTable());
-      for (NoteItem note : sma.getNotes().getNoteItems()) {
+      for (NoteItem note : AtsClientService.get().getWorkItemService().getNotes(sma).getNoteItems()) {
          if (note.getState().equals("")) {
             resultData.addRaw(note.toHTML() + AHTML.newline());
          }
@@ -165,7 +165,7 @@ public class WfePrint extends Action {
                continue;
             }
             StringBuffer notesSb = new StringBuffer();
-            for (NoteItem note : sma.getNotes().getNoteItems()) {
+            for (NoteItem note : AtsClientService.get().getWorkItemService().getNotes(sma).getNoteItems()) {
                if (note.getState().equals(statePage.getName())) {
                   notesSb.append(note.toHTML());
                   notesSb.append(AHTML.newline());

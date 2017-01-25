@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.client.integration.tests.ats.core.client.workflow.note;
+package org.eclipse.osee.ats.core.workflow.note;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -18,6 +18,6 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({AtsNoteTest.class, NoteItemTest.class})
-public class NoteTestSuite {
+public class AtsCore_Workflow_Note_Suite {
    // Test Suite
 }

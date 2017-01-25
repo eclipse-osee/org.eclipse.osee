@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.core.client.workflow;
 
-import org.eclipse.osee.ats.client.integration.tests.ats.core.client.workflow.note.NoteTestSuite;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.workflow.transition.AtsCoreClient_Transition_Suite;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
@@ -22,10 +21,7 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-   NoteTestSuite.class,
-   AtsCoreClient_Transition_Suite.class,
-   ConvertWorkflowStatesOperationTest.class})
+@Suite.SuiteClasses({AtsCoreClient_Transition_Suite.class, ConvertWorkflowStatesOperationTest.class})
 public class AtsCoreClient_Workflow_Suite {
    @BeforeClass
    public static void setUp() throws Exception {

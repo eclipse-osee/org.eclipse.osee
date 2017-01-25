@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.actions.wizard;
 
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.osee.ats.core.client.workflow.note.NoteType;
+import org.eclipse.osee.ats.api.workflow.note.NoteType;
 import org.eclipse.osee.framework.ui.skynet.widgets.XList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.swt.ALayout;

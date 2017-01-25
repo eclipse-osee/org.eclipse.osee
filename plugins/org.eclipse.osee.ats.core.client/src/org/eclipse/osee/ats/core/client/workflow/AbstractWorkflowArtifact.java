@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
+import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.artifact.AbstractAtsArtifact;
@@ -45,8 +46,6 @@ import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.note.ArtifactNote;
-import org.eclipse.osee.ats.core.client.workflow.note.AtsNote;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -89,7 +88,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    private IAtsLog atsLog;
    private TransactionId atsLogTx;
    private TransactionId stateMgrTransactionNumber;
-   private AtsNote atsNote;
+   private IAtsWorkItemNotes atsNote;
    private IAtsStateManager stateMgr;
 
    public AbstractWorkflowArtifact(String guid, BranchId branch, ArtifactTypeId artifactType) {
@@ -410,13 +409,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          atsLogTx = getTransaction();
       }
       return atsLog;
-   }
-
-   public AtsNote getNotes() {
-      if (atsNote == null) {
-         atsNote = new AtsNote(new ArtifactNote(this));
-      }
-      return atsNote;
    }
 
    public Result getUserInputNeeded() {

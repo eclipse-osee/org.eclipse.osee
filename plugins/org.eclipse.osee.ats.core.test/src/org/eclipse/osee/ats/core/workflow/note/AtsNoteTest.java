@@ -8,36 +8,59 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.client.integration.tests.ats.core.client.workflow.note;
+package org.eclipse.osee.ats.core.workflow.note;
 
+import static org.mockito.Mockito.when;
+import java.util.ArrayList;
 import java.util.Date;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.ats.core.client.workflow.note.AtsNote;
-import org.eclipse.osee.ats.core.client.workflow.note.INoteStorageProvider;
-import org.eclipse.osee.ats.core.client.workflow.note.NoteItem;
+import java.util.List;
+import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
+import org.eclipse.osee.ats.api.workflow.note.NoteItem;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsNoteTest {
 
+   // @formatter:off
+   @Mock private IAtsUserService userService;
+   @Mock private IAtsServices services;
+   @Mock private IAtsUser Joe;
+   // @formatter:on
+   List<IAtsUser> assignees = new ArrayList<>();
+
+   @Before
+   public void setup() {
+      MockitoAnnotations.initMocks(this);
+
+      when(services.getUserService()).thenReturn(userService);
+      when(userService.getUserById("333")).thenReturn(Joe);
+      when(Joe.getUserId()).thenReturn("333");
+   }
+
    @Test
    public void testToAndFromStore() throws OseeCoreException {
       Date date = new Date();
       SimpleNoteStore store = new SimpleNoteStore();
-      AtsNote log = new AtsNote(store);
-      NoteItem item = NoteItemTest.getTestNoteItem(date);
+      IAtsWorkItemNotes log = new AtsWorkItemNotes(store, services);
+      NoteItem item = NoteItemTest.getTestNoteItem(date, Joe);
       log.addNoteItem(item);
 
-      AtsNote log2 = new AtsNote(store);
+      IAtsWorkItemNotes log2 = new AtsWorkItemNotes(store, services);
       Assert.assertEquals(1, log2.getNoteItems().size());
       NoteItem loadItem = log2.getNoteItems().iterator().next();
-      NoteItemTest.validate(loadItem, date);
+      NoteItemTest.validate(loadItem, date, Joe);
    }
 
    public class SimpleNoteStore implements INoteStorageProvider {
@@ -50,9 +73,9 @@ public class AtsNoteTest {
       }
 
       @Override
-      public IStatus saveNoteXml(String xml) {
+      public Result saveNoteXml(String xml) {
          store = xml;
-         return Status.OK_STATUS;
+         return Result.TrueResult;
       }
 
       @Override

@@ -97,7 +97,6 @@ Export-Package: org.eclipse.osee.ats.core.client,
  org.eclipse.osee.ats.core.client.util,
  org.eclipse.osee.ats.core.client.validator,
  org.eclipse.osee.ats.core.client.workflow,
- org.eclipse.osee.ats.core.client.workflow.note,
  org.eclipse.osee.ats.core.client.workflow.stateitem,
  org.eclipse.osee.ats.core.client.workflow.transition
 Bundle-Vendor: Eclipse Open System Engineering Environment

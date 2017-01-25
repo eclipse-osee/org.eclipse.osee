@@ -164,7 +164,8 @@ public class Overview {
 
    public void addNotes(Artifact artifact) {
       if (artifact instanceof AbstractWorkflowArtifact) {
-         String notesHtml = ((AbstractWorkflowArtifact) artifact).getNotes().getTable(null);
+         String notesHtml =
+            AtsClientService.get().getWorkItemService().getNotes((AbstractWorkflowArtifact) artifact).getTable(null);
          if (notesHtml.equals("")) {
             return;
          }
