@@ -170,9 +170,9 @@ public final class AtsUtil {
       new ModifyActionableItemAction(teamArt).run();
    }
 
-   public static void openArtifact(String guid, Long branchUuid, OseeCmEditor view) {
+   public static void openArtifact(String guid, BranchId branch, OseeCmEditor view) {
       try {
-         Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchId.valueOf(branchUuid));
+         Artifact artifact = ArtifactQuery.getArtifactFromId(guid, branch);
          openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

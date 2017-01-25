@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.ui.IElementFactory;
@@ -34,17 +34,17 @@ public class ArtifactEditorInputFactory implements IElementFactory {
 
    @Override
    public IAdaptable createElement(IMemento memento) {
-      long branchUuid = 0;
+      BranchId branchId = BranchId.SENTINEL;
       String title = memento.getString(TITLE);
       if (Strings.isValid(memento.getString(BRANCH_KEY))) {
-         branchUuid = Long.valueOf(memento.getString(BRANCH_KEY));
+         branchId = BranchId.valueOf(memento.getString(BRANCH_KEY));
       }
       Integer artUuid = null;
       String artUuidStr = memento.getString(ART_UUID);
       if (Strings.isValid(artUuidStr)) {
          artUuid = Integer.valueOf(artUuidStr);
       }
-      return new ArtifactEditorInput(branchUuid, (artUuid == null ? null : Long.valueOf(artUuid)), title);
+      return new ArtifactEditorInput(branchId, (artUuid == null ? null : Long.valueOf(artUuid)), title);
    }
 
    public static void saveState(IMemento memento, ArtifactEditorInput input) {

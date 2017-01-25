@@ -27,7 +27,7 @@ import org.eclipse.ui.IPersistableElement;
  */
 public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
    private Artifact artifact;
-   private Long savedBranchUuid;
+   private BranchId savedBranchId;
    private Long savedArtUuid;
    private String savedTitle;
    private boolean attemptedReload = false;
@@ -36,8 +36,8 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
       this.artifact = artifact;
    }
 
-   public ArtifactEditorInput(long branchUuid, Long artUuid, String title) {
-      this.savedBranchUuid = branchUuid;
+   public ArtifactEditorInput(BranchId branchId, Long artUuid, String title) {
+      this.savedBranchId = branchId;
       this.savedArtUuid = artUuid;
       this.savedTitle = title;
    }
@@ -120,9 +120,9 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
 
    public Artifact loadArtifact() {
       if (artifact == null && !attemptedReload) {
-         if (savedArtUuid != null && savedBranchUuid != null) {
+         if (savedArtUuid != null && savedBranchId.isValid()) {
             try {
-               artifact = ArtifactQuery.getArtifactFromId(savedArtUuid, BranchId.valueOf(savedBranchUuid));
+               artifact = ArtifactQuery.getArtifactFromId(savedArtUuid, savedBranchId);
             } catch (Exception ex) {
                // do nothing
             }
@@ -137,18 +137,18 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
       final int prime = 31;
       int result = 1;
       result = prime * result + ((getArtUuid() == null) ? 0 : getArtUuid().hashCode());
-      result = prime * result + ((getBranchUuid() == null) ? 0 : getBranchUuid().hashCode());
+      result = prime * result + getBranchId().hashCode();
       return result;
    }
 
-   private Long getBranchUuid() {
-      Long uuid = 0L;
+   private BranchId getBranchId() {
+      BranchId id = BranchId.SENTINEL;
       if (artifact != null) {
-         uuid = artifact.getBranchId();
-      } else if (savedBranchUuid != null) {
-         uuid = savedBranchUuid;
+         id = artifact.getBranch();
+      } else if (savedBranchId.isValid()) {
+         id = savedBranchId;
       }
-      return uuid;
+      return id;
    }
 
    private Long getArtUuid() {
@@ -163,35 +163,19 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
 
    @Override
    public boolean equals(Object obj) {
-      if (this == obj) {
-         return true;
-      }
-      if (obj == null) {
-         return false;
-      }
-      if (getClass() != obj.getClass()) {
-         return false;
-      }
-      ArtifactEditorInput other = (ArtifactEditorInput) obj;
-      if (getArtUuid() == null) {
-         if (other.getArtUuid() != null) {
+
+      if (obj instanceof ArtifactEditorInput) {
+         ArtifactEditorInput other = (ArtifactEditorInput) obj;
+         if (!getArtUuid().equals(other.getArtUuid())) {
             return false;
          }
-      } else if (!getArtUuid().equals(other.getArtUuid())) {
-         return false;
+         return getBranchId().equals(other.getBranchId());
       }
-      if (getBranchUuid() == null) {
-         if (other.getBranchUuid() != null) {
-            return false;
-         }
-      } else if (!getBranchUuid().equals(other.getBranchUuid())) {
-         return false;
-      }
-      return true;
+      return false;
    }
 
-   public Long getSavedBranchUuid() {
-      return savedBranchUuid;
+   public BranchId getSavedBranchId() {
+      return savedBranchId;
    }
 
    public Long getSavedArtUuid() {

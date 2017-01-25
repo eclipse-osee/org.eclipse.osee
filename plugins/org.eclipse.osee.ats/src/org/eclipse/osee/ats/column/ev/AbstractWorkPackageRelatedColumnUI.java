@@ -114,7 +114,7 @@ public abstract class AbstractWorkPackageRelatedColumnUI extends XViewerAtsColum
          AWorkbench.popup("No Work Packages set for selected Work Items");
       } else {
          if (guids.size() == 1) {
-            AtsUtil.openArtifact(guids.iterator().next(), AtsClientService.get().getAtsBranch().getUuid(),
+            AtsUtil.openArtifact(guids.iterator().next(), AtsClientService.get().getAtsBranch(),
                OseeCmEditor.ArtifactEditor);
          } else {
             List<Artifact> artifacts =

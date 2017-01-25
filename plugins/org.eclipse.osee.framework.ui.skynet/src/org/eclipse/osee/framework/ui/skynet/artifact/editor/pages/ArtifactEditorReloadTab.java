@@ -55,14 +55,14 @@ public class ArtifactEditorReloadTab extends FormPage {
    private final ArtifactEditor editor;
    private final String title;
    private final long artUuid;
-   private final long branchUuid;
+   private final BranchId branchId;
 
    public ArtifactEditorReloadTab(ArtifactEditor editor) {
       super(editor, ID, "Reload");
       this.editor = editor;
       this.artUuid = editor.getEditorInput().getSavedArtUuid();
       this.title = editor.getEditorInput().getSavedTitle();
-      this.branchUuid = editor.getEditorInput().getSavedBranchUuid();
+      this.branchId = editor.getEditorInput().getSavedBranchId();
    }
 
    @Override
@@ -169,7 +169,7 @@ public class ArtifactEditorReloadTab extends FormPage {
       protected IStatus run(IProgressMonitor monitor) {
          if (artUuid > 0) {
             try {
-               artifact = ArtifactQuery.getArtifactFromId(artUuid, BranchId.valueOf(branchUuid));
+               artifact = ArtifactQuery.getArtifactFromId(artUuid, branchId);
             } catch (ArtifactDoesNotExist ex) {
                // do nothing
             }
