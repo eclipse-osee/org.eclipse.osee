@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -42,9 +43,9 @@ public interface IAtsWorkItemFactory {
 
    IAtsWorkItem getWorkItemByAtsId(String atsId);
 
-   IAgileSprint getAgileSprint(ArtifactId artifact) throws OseeCoreException;
+   IAgileSprint getAgileSprint(ArtifactToken artifact) throws OseeCoreException;
 
-   IAgileBacklog getAgileBacklog(ArtifactId artifact);
+   IAgileBacklog getAgileBacklog(ArtifactToken artifact);
 
    IAgileItem getAgileItem(ArtifactId artifact);
 

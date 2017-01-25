@@ -10,19 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.workitem;
 
-import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.agile.IAgileBacklog;
-import org.eclipse.osee.ats.api.agile.IAgileItem;
-import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.agile.AgileBacklog;
-import org.eclipse.osee.ats.core.agile.AgileSprint;
 import org.eclipse.osee.ats.core.review.DecisionReview;
 import org.eclipse.osee.ats.core.review.PeerToPeerReview;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkItemFactory;
@@ -33,7 +26,6 @@ import org.eclipse.osee.ats.rest.internal.workitem.model.Task;
 import org.eclipse.osee.ats.rest.internal.workitem.model.TeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -41,12 +33,10 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class WorkItemFactory extends AbstractWorkItemFactory {
 
-   private final Log logger;
    private final IAtsServer atsServer;
 
-   public WorkItemFactory(Log logger, IAtsServer atsServer) {
-      super();
-      this.logger = logger;
+   public WorkItemFactory(IAtsServer atsServer) {
+      super(atsServer);
       this.atsServer = atsServer;
    }
 
@@ -56,35 +46,10 @@ public class WorkItemFactory extends AbstractWorkItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-            team = new TeamWorkflow(logger, atsServer, (ArtifactReadable) artifact);
+            team = new TeamWorkflow(services.getLogger(), atsServer, (ArtifactReadable) artifact);
          }
       }
       return team;
-   }
-
-   @Override
-   public IAtsWorkItem getWorkItem(ArtifactId artifact) {
-      IAtsWorkItem workItem = null;
-      try {
-         if (artifact instanceof ArtifactReadable) {
-            ArtifactReadable artRead = (ArtifactReadable) artifact;
-            if (artRead.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-               workItem = getTeamWf(artifact);
-            } else if (artRead.isOfType(AtsArtifactTypes.PeerToPeerReview) || artRead.isOfType(
-               AtsArtifactTypes.DecisionReview)) {
-               workItem = getReview(artRead);
-            } else if (artRead.isOfType(AtsArtifactTypes.Task)) {
-               workItem = getTask(artRead);
-            } else if (artRead.isOfType(AtsArtifactTypes.Goal)) {
-               workItem = getGoal(artRead);
-            } else if (artRead.isOfType(AtsArtifactTypes.AgileSprint)) {
-               workItem = getAgileSprint(artRead);
-            }
-         }
-      } catch (OseeCoreException ex) {
-         logger.error(ex, "Error getting work item for [%s]", artifact);
-      }
-      return workItem;
    }
 
    @Override
@@ -93,47 +58,10 @@ public class WorkItemFactory extends AbstractWorkItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.Goal)) {
-            goal = new Goal(logger, atsServer, (ArtifactReadable) artifact);
+            goal = new Goal(services.getLogger(), atsServer, (ArtifactReadable) artifact);
          }
       }
       return goal;
-   }
-
-   @Override
-   public IAgileSprint getAgileSprint(ArtifactId artifact) throws OseeCoreException {
-      IAgileSprint sprint = null;
-      if (artifact instanceof ArtifactReadable) {
-         ArtifactReadable artRead = (ArtifactReadable) artifact;
-         if (artRead.isOfType(AtsArtifactTypes.AgileSprint)) {
-            sprint = new AgileSprint(logger, atsServer, (ArtifactReadable) artifact);
-         }
-      }
-      return sprint;
-   }
-
-   @Override
-   public IAgileItem getAgileItem(ArtifactId artifact) {
-      IAgileItem item = null;
-      if (artifact instanceof ArtifactReadable) {
-         ArtifactReadable artRead = (ArtifactReadable) artifact;
-         if (artRead.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-            item = new org.eclipse.osee.ats.core.agile.AgileItem(logger, atsServer,
-               (ArtifactReadable) artifact);
-         }
-      }
-      return item;
-   }
-
-   @Override
-   public IAgileBacklog getAgileBacklog(ArtifactId artifact) throws OseeCoreException {
-      IAgileBacklog backlog = null;
-      if (artifact instanceof ArtifactReadable) {
-         ArtifactReadable artRead = (ArtifactReadable) artifact;
-         if (artRead.isOfType(AtsArtifactTypes.Goal)) {
-            backlog = new AgileBacklog(logger, atsServer, (ArtifactReadable) artifact);
-         }
-      }
-      return backlog;
    }
 
    @Override
@@ -142,7 +70,7 @@ public class WorkItemFactory extends AbstractWorkItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.Task)) {
-            task = new Task(logger, atsServer, (ArtifactReadable) artifact);
+            task = new Task(services.getLogger(), atsServer, (ArtifactReadable) artifact);
          }
       }
       return task;
@@ -154,9 +82,9 @@ public class WorkItemFactory extends AbstractWorkItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.PeerToPeerReview)) {
-            review = new PeerToPeerReview(logger, atsServer, artRead);
+            review = new PeerToPeerReview(services.getLogger(), services, artRead);
          } else {
-            review = new DecisionReview(logger, atsServer, artRead);
+            review = new DecisionReview(services.getLogger(), services, artRead);
          }
       }
       return review;
@@ -172,12 +100,6 @@ public class WorkItemFactory extends AbstractWorkItemFactory {
          }
       }
       return action;
-   }
-
-   @Override
-   public IAtsWorkItem getWorkItemByAtsId(String atsId) {
-      ArtifactReadable artifact = atsServer.getQuery().and(AtsAttributeTypes.AtsId, atsId).getResults().getOneOrNull();
-      return getWorkItem(artifact);
    }
 
 }

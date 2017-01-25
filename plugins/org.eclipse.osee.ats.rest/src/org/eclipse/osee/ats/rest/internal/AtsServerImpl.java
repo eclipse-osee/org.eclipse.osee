@@ -133,7 +133,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
       super.start();
 
       notifyService = new AtsNotifierServiceImpl();
-      workItemFactory = new WorkItemFactory(logger, this);
+      workItemFactory = new WorkItemFactory(this);
       configItemFactory = new ConfigItemFactory(logger, this);
 
       artifactResolver = new ArtifactResolverImpl(this, orcsApi);
