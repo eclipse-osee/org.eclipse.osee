@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.editor.stateItem;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.review.DecisionOptions;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -19,7 +20,7 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
-import org.eclipse.osee.ats.core.client.review.XDecisionOptions;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -40,7 +41,7 @@ public class AtsDecisionReviewPrepareStateItem extends AtsStateItem implements I
    public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) throws OseeCoreException {
       if (workItem instanceof IAtsDecisionReview && fromState.getName().equals(
          DecisionReviewState.Prepare.getName()) && toState.getName().equals(DecisionReviewState.Decision.getName())) {
-         XDecisionOptions decOptions = new XDecisionOptions(workItem);
+         DecisionOptions decOptions = new DecisionOptions((IAtsDecisionReview) workItem, AtsClientService.get());
          decOptions.validateDecisionOptions(results);
       }
    }

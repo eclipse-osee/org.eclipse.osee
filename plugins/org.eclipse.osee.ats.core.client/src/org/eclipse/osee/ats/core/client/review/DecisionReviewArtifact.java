@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.review;
 
+import org.eclipse.osee.ats.api.review.DecisionOptions;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
@@ -20,10 +22,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
  */
 public class DecisionReviewArtifact extends AbstractReviewArtifact implements IATSStateMachineArtifact, IAtsDecisionReview {
 
-   public XDecisionOptions decisionOptions;
+   public DecisionOptions decisionOptions;
 
    public DecisionReviewArtifact(String guid, BranchId branch, ArtifactTypeId artifactType) {
       super(guid, branch, artifactType);
-      decisionOptions = new XDecisionOptions(this);
+      decisionOptions = new DecisionOptions(this, AtsClientService.get());
    }
 }

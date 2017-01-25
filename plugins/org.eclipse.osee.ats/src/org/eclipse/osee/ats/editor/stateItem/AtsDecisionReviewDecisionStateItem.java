@@ -15,15 +15,16 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.review.DecisionOption;
+import org.eclipse.osee.ats.api.review.DecisionOptions;
+import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.artifact.WorkflowManager;
-import org.eclipse.osee.ats.core.client.review.DecisionOption;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
-import org.eclipse.osee.ats.core.client.review.XDecisionOptions;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.WfeWorkflowSection;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -56,7 +57,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
          if (xWidget.getLabel().equals(AtsAttributeTypes.Decision.getUnqualifiedName())) {
             XComboDam decisionComboDam = (XComboDam) xWidget;
             List<String> options = new ArrayList<>();
-            XDecisionOptions xDecOptions = new XDecisionOptions(WorkflowManager.cast(art));
+            DecisionOptions xDecOptions = new DecisionOptions((IAtsDecisionReview) art, AtsClientService.get());
             for (DecisionOption opt : xDecOptions.getDecisionOptions()) {
                options.add(opt.getName());
             }

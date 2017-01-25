@@ -8,19 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.review;
+package org.eclipse.osee.ats.api.review;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
@@ -29,6 +27,7 @@ public class DecisionOption {
    private String name;
    private Collection<IAtsUser> assignees = new HashSet<>();
    private boolean followupRequired;
+   private final IAtsServices services;
 
    @Override
    public int hashCode() {
@@ -38,28 +37,21 @@ public class DecisionOption {
       return result;
    }
 
-   public DecisionOption(String name, Collection<IAtsUser> assignees, boolean followup) {
+   public DecisionOption(IAtsServices services) {
+      this("", (IAtsUser) null, false, services);
+   }
+
+   public DecisionOption(String name, IAtsUser assignee, boolean followup, IAtsServices services) {
+      this(name, (assignee == null ? Collections.emptyList() : Collections.singleton(assignee)), followup, services);
+   }
+
+   public DecisionOption(String name, Collection<IAtsUser> assignees, boolean followup, IAtsServices services) {
       this.name = name;
       this.followupRequired = followup;
+      this.services = services;
       if (assignees != null) {
-         this.assignees = assignees;
+         this.assignees = new HashSet<IAtsUser>(assignees);
       }
-   }
-
-   public DecisionOption(String name, IAtsUser assignee, boolean followup) {
-      this.name = name;
-      this.followupRequired = followup;
-      if (assignee != null) {
-         this.assignees.add(assignee);
-      }
-   }
-
-   public DecisionOption(String name) {
-      this(name, (IAtsUser) null, false);
-   }
-
-   public DecisionOption() {
-      this("", (IAtsUser) null, false);
    }
 
    @Override
@@ -152,9 +144,9 @@ public class DecisionOption {
          m = Pattern.compile("<(.*?)>").matcher(m.group(3));
          while (m.find()) {
             try {
-               assignees.add(AtsClientService.get().getUserService().getUserById(m.group(1)));
+               assignees.add(services.getUserService().getUserById(m.group(1)));
             } catch (Exception ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
+               services.getLogger().error(ex, "Error deserializing xml in DecisionOption.setFromXml");
             }
          }
          if (followupRequired && assignees.isEmpty()) {

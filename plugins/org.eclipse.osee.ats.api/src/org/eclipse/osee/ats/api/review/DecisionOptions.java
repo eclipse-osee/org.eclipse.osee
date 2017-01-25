@@ -8,39 +8,30 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.review;
+package org.eclipse.osee.ats.api.review;
 
-import java.lang.ref.WeakReference;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.ats.core.client.internal.AtsClientService;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
  */
-public class XDecisionOptions {
+public class DecisionOptions {
 
-   private final WeakReference<AbstractWorkflowArtifact> smaRef;
    private final IAttributeType attributeType;
+   private final IAtsServices services;
+   private final IAtsDecisionReview decRev;
 
-   public XDecisionOptions(IAtsWorkItem workItem) throws OseeCoreException {
-      this((AbstractWorkflowArtifact) AtsClientService.get().getArtifact(workItem));
-   }
-
-   public XDecisionOptions(AbstractWorkflowArtifact sma) {
-      this.smaRef = new WeakReference<>(sma);
+   public DecisionOptions(IAtsDecisionReview decRev, IAtsServices services) throws OseeCoreException {
+      this.decRev = decRev;
+      this.services = services;
       this.attributeType = AtsAttributeTypes.DecisionReviewOptions;
    }
 
@@ -49,24 +40,17 @@ public class XDecisionOptions {
    }
 
    public Set<DecisionOption> getDecisionOptions() throws OseeCoreException {
-      String decString = getSma().getSoleAttributeValue(getAttributeType(), "");
-      return getDecisionOptions(decString);
+      String decString = services.getAttributeResolver().getSoleAttributeValue(decRev, getAttributeType(), "");
+      return getDecisionOptions(decString, services);
    }
 
-   public AbstractWorkflowArtifact getSma() throws OseeStateException {
-      if (smaRef.get() == null) {
-         throw new OseeStateException("Artifact has been garbage collected");
-      }
-      return smaRef.get();
-   }
-
-   public static Set<DecisionOption> getDecisionOptions(String decisionOptions) {
+   public static Set<DecisionOption> getDecisionOptions(String decisionOptions, IAtsServices services) {
       Set<DecisionOption> decOptions = new LinkedHashSet<>();
       for (String decsionOpt : decisionOptions.split("[\n\r]+")) {
-         DecisionOption state = new DecisionOption();
+         DecisionOption state = new DecisionOption(services);
          Result result = state.setFromXml(decsionOpt);
          if (result.isFalse()) {
-            OseeLog.log(Activator.class, Level.SEVERE, result.getText());
+            services.getLogger().error(result.getText());
          } else {
             decOptions.add(state);
          }
@@ -84,15 +68,16 @@ public class XDecisionOptions {
    }
 
    public void validateDecisionOptions(TransitionResults results) throws OseeCoreException {
-      validateDecisionOptions(results, getSma(), getSma().getSoleAttributeValue(getAttributeType(), ""));
+      validateDecisionOptions(results, decRev,
+         services.getAttributeResolver().getSoleAttributeValue(decRev, getAttributeType(), ""), services);
    }
 
-   public static void validateDecisionOptions(TransitionResults results, AbstractWorkflowArtifact awa, String decisionOptions) {
+   public static void validateDecisionOptions(TransitionResults results, IAtsDecisionReview decRev, String decisionOptions, IAtsServices services) {
       for (String decsionOpt : decisionOptions.split("[\n\r]+")) {
-         DecisionOption state = new DecisionOption();
+         DecisionOption state = new DecisionOption(services);
          Result result = state.setFromXml(decsionOpt);
          if (result.isFalse()) {
-            results.addResult(awa,
+            results.addResult(decRev,
                new TransitionResult("Invalid Decision Option \"" + decsionOpt + "\" " + result.getText()));
          }
       }
@@ -108,7 +93,8 @@ public class XDecisionOptions {
    }
 
    public void setDecisionOptions(String decisionOptions) throws OseeCoreException {
-      getSma().setSoleAttributeValue(getAttributeType(), toXml(getDecisionOptions(decisionOptions)));
+      services.getAttributeResolver().setSoleAttributeValue(decRev, getAttributeType(),
+         toXml(getDecisionOptions(decisionOptions, services)));
    }
 
 }
