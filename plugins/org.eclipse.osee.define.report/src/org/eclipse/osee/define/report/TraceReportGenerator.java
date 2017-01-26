@@ -101,7 +101,7 @@ public class TraceReportGenerator {
 
       ArtifactReadable requirementsFolder =
          queryFactory.fromBranch(branchId).andIsOfType(CoreArtifactTypes.Folder).andNameEquals(
-            "System Specification").getResults().getExactlyOne();
+            "System Requirements").getResults().getExactlyOne();
       List<ArtifactReadable> systemRequirements = requirementsFolder.getDescendants();
       processReqts(systemRequirements, writer);
       processComponents(systemRequirements, writer);
@@ -184,7 +184,7 @@ public class TraceReportGenerator {
    }
 
    private void outputCommonCells(ArtifactReadable systemRequirement, ISheetWriter writer) throws IOException {
-      writer.writeCell(systemRequirement.getSoleAttributeAsString(CoreAttributeTypes.LegacyId));
+      writer.writeCell(systemRequirement.getIdString());
       writer.writeCell(systemRequirement.getSoleAttributeAsString(CoreAttributeTypes.ParagraphNumber));
       writer.writeCell(systemRequirement.getName());
    }
