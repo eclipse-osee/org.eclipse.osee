@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
+import org.eclipse.osee.ats.core.review.UserRoleManager;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -46,7 +47,7 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
    public Image getColumnImage(Object element, XViewerColumn dCol, int columnIndex) {
       UserRole roleItem = (UserRole) element;
       try {
-         IAtsUser user = org.eclipse.osee.ats.core.client.review.role.UserRoleManager.getUser(roleItem);
+         IAtsUser user = UserRoleManager.getUser(roleItem, AtsClientService.get());
          if (dCol.equals(UserRoleXViewerFactory.User_Col)) {
             return ArtifactImageManager.getImage(AtsClientService.get().getUserServiceClient().getOseeUser(user));
          } else if (dCol.equals(UserRoleXViewerFactory.Role_Col)) {
@@ -72,17 +73,16 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
    @Override
    public String getColumnText(Object element, XViewerColumn aCol, int columnIndex) throws OseeCoreException {
 
-      UserRole defectItem = (UserRole) element;
-      IAtsUser user = org.eclipse.osee.ats.core.client.review.role.UserRoleManager.getUser(defectItem);
+      UserRole userRole = (UserRole) element;
+      IAtsUser user = UserRoleManager.getUser(userRole, AtsClientService.get());
       if (aCol.equals(UserRoleXViewerFactory.User_Col)) {
          return user.getName();
       } else if (aCol.equals(UserRoleXViewerFactory.Hours_Spent_Col)) {
-         return defectItem.getHoursSpent() == null ? "" : AtsUtilCore.doubleToI18nString(defectItem.getHoursSpent(),
-            false);
+         return userRole.getHoursSpent() == null ? "" : AtsUtilCore.doubleToI18nString(userRole.getHoursSpent(), false);
       } else if (aCol.equals(UserRoleXViewerFactory.Role_Col)) {
-         return defectItem.getRole().name();
+         return userRole.getRole().name();
       } else if (aCol.equals(UserRoleXViewerFactory.Completed_Col)) {
-         return String.valueOf(defectItem.isCompleted());
+         return String.valueOf(userRole.isCompleted());
       } else if (aCol.equals(UserRoleXViewerFactory.Num_Major_Col)) {
          ReviewDefectManager defectMgr = new ReviewDefectManager(xViewer.getXUserRoleViewer().getReviewArt());
          return defectMgr.getNumMajor(user) + "";

@@ -254,7 +254,7 @@ public class UserRoleXViewer extends XViewer {
    public boolean executeTransaction(Collection<UserRole> userRoles) throws OseeCoreException {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Modify Review Roles");
       for (UserRole userRole : userRoles) {
-         xUserRoleViewer.getUserRoleMgr().addOrUpdateUserRole(userRole, xUserRoleViewer.getReviewArt());
+         xUserRoleViewer.getUserRoleMgr().addOrUpdateUserRole(userRole);
          update(userRole, null);
       }
       xUserRoleViewer.getUserRoleMgr().saveToArtifact(changes);

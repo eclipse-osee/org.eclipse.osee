@@ -17,6 +17,8 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
+import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
@@ -24,7 +26,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
 import org.eclipse.osee.ats.core.model.IActionGroup;
 import org.eclipse.osee.ats.core.review.DecisionReviewState;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewState;
-import org.eclipse.osee.ats.core.review.UserRoleManager;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -73,7 +74,9 @@ public class AtsImplementersService implements IAtsImplementerService {
 
    public List<IAtsUser> getWorkItemImplementers(IAtsWorkItem workItem) throws OseeCoreException {
       List<IAtsUser> implementers = new ArrayList<>();
-      getImplementers_fromReviews(workItem, implementers);
+      if (workItem.isReview()) {
+         getImplementers_fromReviews(workItem, implementers);
+      }
       getImplementers_fromCompletedCancelledBy(workItem, implementers);
       getImplementers_fromCompletedCancelledFrom(workItem, implementers);
       return implementers;
@@ -123,8 +126,9 @@ public class AtsImplementersService implements IAtsImplementerService {
          implementers.addAll(getImplementersByState(workItem, DecisionReviewState.Decision));
       } else {
          implementers.addAll(getImplementersByState(workItem, PeerToPeerReviewState.Review));
-         List<UserRole> userRoles = UserRoleManager.getUserRoles(workItem, services);
-         for (IAtsUser user : (UserRoleManager.getRoleUsers(workItem, userRoles, services.getUserService()))) {
+         IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) workItem).getRoleManager();
+         List<UserRole> userRoles = roleMgr.getUserRoles();
+         for (IAtsUser user : (roleMgr.getRoleUsers(userRoles))) {
             implementers.add(user);
          }
       }

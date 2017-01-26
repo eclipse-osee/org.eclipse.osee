@@ -60,7 +60,7 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
    }
 
    @Override
-   public abstract WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider valueProvider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices atsServices) throws OseeCoreException;
+   public abstract WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider valueProvider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices services) throws OseeCoreException;
 
    @SuppressWarnings("unchecked")
    public <A> A getConstraintOfType(IAtsWidgetDefinition widgetDef, Class<A> clazz) {

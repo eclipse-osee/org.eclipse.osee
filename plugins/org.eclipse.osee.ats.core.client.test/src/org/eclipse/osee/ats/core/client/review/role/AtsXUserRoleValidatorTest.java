@@ -10,62 +10,84 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.review.role;
 
+import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsServices;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
+import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.Role;
 import org.eclipse.osee.ats.api.review.UserRole;
+import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
+import org.eclipse.osee.ats.api.workdef.WidgetOptionHandler;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.core.client.review.defect.ValidatorTestUtil;
-import org.eclipse.osee.ats.mocks.MockStateDefinition;
-import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
+import org.junit.Before;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsXUserRoleValidatorTest {
-   private IAtsServices atsServices;
+
    // @formatter:off
-   @Mock IAtsWorkItem workItem;
+   @Mock IAtsPeerToPeerReview workItem;
+   @Mock IAtsWidgetDefinition widgetDef;
+   @Mock IAtsServices services;
+   @Mock IAtsStateDefinition fromStateDef;
+   @Mock IAtsStateDefinition toStateDef;
+   @Mock IAttributeResolver attrResolver;
+   @Mock IAtsUserService userService;
+   @Mock IAtsPeerReviewRoleManager roleMgr;
    // @formatter:on
+
+   @Before
+   public void setup() {
+      MockitoAnnotations.initMocks(this);
+
+      when(widgetDef.getName()).thenReturn("test");
+      when(fromStateDef.getStateType()).thenReturn(StateType.Working);
+      when(toStateDef.getStateType()).thenReturn(StateType.Working);
+
+      when(services.getAttributeResolver()).thenReturn(attrResolver);
+      when(services.getUserService()).thenReturn(userService);
+
+      when(workItem.getRoleManager()).thenReturn(roleMgr);
+   }
 
    @org.junit.Test
    public void testValidateTransition() throws OseeCoreException {
       AtsXUserRoleValidator validator = new AtsXUserRoleValidator();
 
-      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
-      widgetDef.setXWidgetName("xList");
-
-      MockStateDefinition fromStateDef = new MockStateDefinition("from");
-      fromStateDef.setStateType(StateType.Working);
-      MockStateDefinition toStateDef = new MockStateDefinition("to");
-      toStateDef.setStateType(StateType.Working);
+      when(widgetDef.getXWidgetName()).thenReturn("xList");
 
       // Valid for anything not XIntegerDam
       WidgetResult result = validator.validateTransition(workItem, ValidatorTestUtil.emptyValueProvider, widgetDef,
-         fromStateDef, toStateDef, atsServices);
+         fromStateDef, toStateDef, services);
       ValidatorTestUtil.assertValidResult(result);
 
-      widgetDef.setXWidgetName("XUserRoleViewer");
+      when(widgetDef.getXWidgetName()).thenReturn("XUserRoleViewer");
 
       // Not valid to have no roles
       result = validator.validateTransition(workItem, ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef,
-         toStateDef, atsServices);
+         toStateDef, services);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
       Assert.assertEquals(UserRoleError.OneRoleEntryRequired.getError(), result.getDetails());
 
-      widgetDef.getOptions().add(WidgetOption.REQUIRED_FOR_TRANSITION);
+      when(widgetDef.getOptions()).thenReturn(new WidgetOptionHandler(WidgetOption.NOT_REQUIRED_FOR_TRANSITION));
 
       // Not valid to have no roles
       result = validator.validateTransition(workItem, ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef,
-         toStateDef, atsServices);
+         toStateDef, services);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
       Assert.assertEquals(UserRoleError.OneRoleEntryRequired.getError(), result.getDetails());
    }
@@ -74,36 +96,33 @@ public class AtsXUserRoleValidatorTest {
    public void testValidateTransition_Roles() throws OseeCoreException {
       AtsXUserRoleValidator validator = new AtsXUserRoleValidator();
 
-      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
-      widgetDef.setXWidgetName("XUserRoleViewer");
-
-      MockStateDefinition fromStateDef = new MockStateDefinition("from");
-      fromStateDef.setStateType(StateType.Working);
-      MockStateDefinition toStateDef = new MockStateDefinition("to");
-      toStateDef.setStateType(StateType.Working);
+      when(widgetDef.getXWidgetName()).thenReturn("XUserRoleViewer");
 
       UserRole author = new UserRole(Role.Author, "2134", 0.0, false);
       UserRole reviewer = new UserRole(Role.Reviewer, "123");
       List<UserRole> roles = Arrays.asList(author, reviewer);
 
-      MockUserRoleValueProvider provider = new MockUserRoleValueProvider(roles);
+      when(roleMgr.getUserRoles()).thenReturn(roles);
+      when(roleMgr.getUserRoles(Role.Author)).thenReturn(Arrays.asList(author));
+      when(roleMgr.getUserRoles(Role.Reviewer)).thenReturn(Arrays.asList(reviewer));
+
+      when(fromStateDef.getName()).thenReturn("from");
+      when(fromStateDef.getName()).thenReturn("to");
 
       // Valid Roles
-      WidgetResult result =
-         validator.validateTransition(workItem, provider, widgetDef, fromStateDef, toStateDef, atsServices);
+      WidgetResult result = validator.validateTransition(workItem, null, widgetDef, fromStateDef, toStateDef, services);
       ValidatorTestUtil.assertValidResult(result);
 
       // Not valid to have no author
-      roles = Arrays.asList(reviewer);
-      provider = new MockUserRoleValueProvider(roles);
-      result = validator.validateTransition(workItem, provider, widgetDef, fromStateDef, toStateDef, atsServices);
+      when(roleMgr.getUserRoles(Role.Author)).thenReturn(Arrays.asList());
+      result = validator.validateTransition(workItem, null, widgetDef, fromStateDef, toStateDef, services);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
       Assert.assertEquals(UserRoleError.MustHaveAtLeastOneAuthor.getError(), result.getDetails());
 
       // Not valid to have no reviewer
-      roles = Arrays.asList(author);
-      provider = new MockUserRoleValueProvider(roles);
-      result = validator.validateTransition(workItem, provider, widgetDef, fromStateDef, toStateDef, atsServices);
+      when(roleMgr.getUserRoles(Role.Author)).thenReturn(Arrays.asList(author));
+      when(roleMgr.getUserRoles(Role.Reviewer)).thenReturn(Arrays.asList());
+      result = validator.validateTransition(workItem, null, widgetDef, fromStateDef, toStateDef, services);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
       Assert.assertEquals(UserRoleError.MustHaveAtLeastOneReviewer.getError(), result.getDetails());
 

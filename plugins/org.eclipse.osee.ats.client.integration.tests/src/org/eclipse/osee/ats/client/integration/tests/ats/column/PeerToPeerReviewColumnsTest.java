@@ -13,6 +13,8 @@ package org.eclipse.osee.ats.client.integration.tests.ats.column;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
+import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.Role;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -32,7 +34,6 @@ import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Dispositi
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
-import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -102,19 +103,19 @@ public class PeerToPeerReviewColumnsTest {
 
       UserRole role =
          new UserRole(Role.Author, AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Alex_Kay));
-      UserRoleManager roleMgr = new UserRoleManager(peerArt);
-      roleMgr.addOrUpdateUserRole(role, peerArt);
+      IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) peerArt).getRoleManager();
+      roleMgr.addOrUpdateUserRole(role);
 
       role = new UserRole(Role.Moderator,
          AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Jason_Michael));
-      roleMgr.addOrUpdateUserRole(role, peerArt);
+      roleMgr.addOrUpdateUserRole(role);
 
       role = new UserRole(Role.Reviewer,
          AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith));
-      roleMgr.addOrUpdateUserRole(role, peerArt);
+      roleMgr.addOrUpdateUserRole(role);
       role = new UserRole(Role.Reviewer,
          AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Kay_Jones));
-      roleMgr.addOrUpdateUserRole(role, peerArt);
+      roleMgr.addOrUpdateUserRole(role);
       roleMgr.saveToArtifact(changes);
       changes.add(peerArt);
       changes.execute();

@@ -12,6 +12,8 @@ package org.eclipse.osee.ats.core.client.review.role;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
+import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.Role;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -31,7 +33,7 @@ public class UserRoleValidator {
       try {
          if (artifact.isOfType(AtsArtifactTypes.PeerToPeerReview)) {
             PeerToPeerReviewArtifact peerToPeerReviewArtifact = (PeerToPeerReviewArtifact) artifact;
-            UserRoleManager roleMgr = new UserRoleManager(peerToPeerReviewArtifact);
+            IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) artifact).getRoleManager();
             UserRoleError result = isValid(roleMgr, peerToPeerReviewArtifact.getStateDefinition(),
                peerToPeerReviewArtifact.getStateDefinition().getDefaultToState());
             if (!result.isOK()) {
@@ -45,7 +47,7 @@ public class UserRoleValidator {
       return UserRoleError.None;
    }
 
-   public static UserRoleError isValid(UserRoleManager roleMgr, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) throws OseeCoreException {
+   public static UserRoleError isValid(IAtsPeerReviewRoleManager roleMgr, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) throws OseeCoreException {
       if (roleMgr.getUserRoles().isEmpty()) {
          return UserRoleError.OneRoleEntryRequired;
       }

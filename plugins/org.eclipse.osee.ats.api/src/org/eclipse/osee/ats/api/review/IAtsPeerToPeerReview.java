@@ -14,5 +14,5 @@ package org.eclipse.osee.ats.api.review;
  * @author Donald G. Dunne
  */
 public interface IAtsPeerToPeerReview extends IAtsAbstractReview {
-   // do nothing
+   IAtsPeerReviewRoleManager getRoleManager();
 }

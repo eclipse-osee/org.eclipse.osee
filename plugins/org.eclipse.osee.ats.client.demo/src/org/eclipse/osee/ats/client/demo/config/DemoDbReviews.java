@@ -50,8 +50,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class DemoDbReviews {
 
    public static void createReviews(boolean DEBUG) throws Exception {
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Populate Demo DB - Create Reviews");
-      createPeerToPeerReviews(DEBUG, changes);
+      createPeerToPeerReviews(DEBUG);
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Populate Demo DB - Create Decision Reviews");
       createDecisionReviews(DEBUG, changes);
       changes.execute();
    }
@@ -118,7 +118,9 @@ public class DemoDbReviews {
     * 3) PeerToPeer in Prepare state w Joe Smith assignee and completed<br>
     * <br>
     */
-   public static void createPeerToPeerReviews(boolean DEBUG, IAtsChangeSet changes) throws Exception {
+   public static void createPeerToPeerReviews(boolean DEBUG) throws Exception {
+
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Populate Demo DB - Create PeerToPeer Reviews 1");
 
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Create Peer To Peer reviews");
@@ -185,6 +187,12 @@ public class DemoDbReviews {
       for (ReviewDefectItem defect : defects) {
          defect.setClosed(true);
       }
+
+      PeerToPeerReviewManager.setPrepareStateData(false, reviewArt, roles, "here", 100, 2.5, changes);
+      changes.execute();
+
+      changes = AtsClientService.get().createChangeSet("Populate Demo DB - Create PeerToPeer Reviews 2");
+
       result = PeerToPeerReviewManager.transitionTo(reviewArt, PeerToPeerReviewState.Completed, roles, defects,
          AtsClientService.get().getUserService().getCurrentUser(), false, changes);
       if (result.isTrue()) {
@@ -193,5 +201,7 @@ public class DemoDbReviews {
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Completed: " + result.getText());
       }
+
+      changes.execute();
    }
 }

@@ -26,15 +26,16 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleError;
-import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleValidator;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
+import org.eclipse.osee.ats.core.review.UserRoleManager;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -88,7 +89,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
    private ToolItem newUserRoleItem, deleteUserRoleItem;
    private Label extraInfoLabel;
    private ToolBar toolBar;
-   private UserRoleManager roleMgr;
+   private IAtsPeerReviewRoleManager roleMgr;
 
    private static Map<PeerToPeerReviewArtifact, Integer> tableHeight = new HashMap<>();
 
@@ -338,7 +339,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
             IAtsChangeSet changes = AtsClientService.get().createChangeSet("Add Review Roles");
             for (IAtsUser user : dialog.getUsers()) {
                UserRole userRole = new UserRole(dialog.getRole(), user);
-               roleMgr.addOrUpdateUserRole(userRole, reviewArt);
+               roleMgr.addOrUpdateUserRole(userRole);
                changes.add(reviewArt);
             }
             roleMgr.saveToArtifact(changes);
@@ -430,7 +431,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
             AHTML.addHeaderRowMultiColumnTable(new String[] {"Role", "User", "Hours", "Major", "Minor", "Issues"}));
          ReviewDefectManager defectMgr = new ReviewDefectManager(reviewArt);
          for (UserRole item : roleMgr.getUserRoles()) {
-            IAtsUser atsUser = UserRoleManager.getUser(item);
+            IAtsUser atsUser = UserRoleManager.getUser(item, AtsClientService.get());
             html.append(AHTML.addRowMultiColumnTable(new String[] {
                item.getRole().name(),
                atsUser.getName(),
@@ -462,7 +463,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
 
    public void setReviewArt(PeerToPeerReviewArtifact reviewArt) {
       this.reviewArt = reviewArt;
-      roleMgr = new UserRoleManager(reviewArt);
+      roleMgr = reviewArt.getRoleManager();
       if (xViewer != null) {
          loadTable();
       }
@@ -519,7 +520,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
       });
    }
 
-   public UserRoleManager getUserRoleMgr() {
+   public IAtsPeerReviewRoleManager getUserRoleMgr() {
       return roleMgr;
    }
 

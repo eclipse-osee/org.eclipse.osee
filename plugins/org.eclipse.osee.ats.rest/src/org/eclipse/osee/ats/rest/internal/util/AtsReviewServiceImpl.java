@@ -19,12 +19,15 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
+import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
+import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
+import org.eclipse.osee.ats.core.review.UserRoleManager;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.util.IArtifactProvider;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -88,6 +91,11 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
          reviews.add(atsServer.getWorkItemFactory().getReview(reviewArt));
       }
       return reviews;
+   }
+
+   @Override
+   public IAtsPeerReviewRoleManager createPeerReviewRoleManager(IAtsPeerToPeerReview peerRev) {
+      return new UserRoleManager(peerRev, atsServer);
    }
 
 }

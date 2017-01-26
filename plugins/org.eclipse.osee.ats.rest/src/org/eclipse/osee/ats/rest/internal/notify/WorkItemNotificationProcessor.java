@@ -23,7 +23,8 @@ import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.notify.AtsWorkItemNotificationEvent;
-import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
+import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
+import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.Role;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -34,7 +35,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.review.UserRoleManager;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.users.AtsUsersUtility;
 import org.eclipse.osee.ats.rest.IAtsServer;
@@ -180,9 +180,9 @@ public class WorkItemNotificationProcessor {
             logger.error(ex, "Error processing Completed or Cancelled for workItem [%s] and event [%s]",
                workItem.toStringWithId(), event.toString());
          }
-         if (types.contains(AtsNotifyType.Peer_Reviewers_Completed) && workItem instanceof IAtsAbstractReview) {
+         if (types.contains(AtsNotifyType.Peer_Reviewers_Completed) && workItem instanceof IAtsPeerToPeerReview) {
             try {
-               UserRoleManager roleMgr = new UserRoleManager(attrResolver, userService, workItem);
+               IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) workItem).getRoleManager();
                Collection<IAtsUser> authorModerator = new ArrayList<>();
                for (UserRole role : roleMgr.getUserRoles()) {
                   if (role.getRole() == Role.Author || role.getRole() == Role.Moderator) {

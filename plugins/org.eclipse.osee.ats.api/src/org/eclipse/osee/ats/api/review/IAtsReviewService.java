@@ -28,7 +28,7 @@ public interface IAtsReviewService {
 
    /**
     * Create a new decision review configured and transitioned to handle action validation
-    * 
+    *
     * @param force will force the creation of the review without checking that a review should be created
     */
    IAtsDecisionReview createValidateReview(IAtsTeamWorkflow teamWf, boolean force, Date transitionDate, IAtsUser transitionUser, IAtsChangeSet changes) throws OseeCoreException;
@@ -40,5 +40,7 @@ public interface IAtsReviewService {
    boolean isStandAloneReview(IAtsAbstractReview review);
 
    Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf);
+
+   IAtsPeerReviewRoleManager createPeerReviewRoleManager(IAtsPeerToPeerReview peerRev);
 
 }

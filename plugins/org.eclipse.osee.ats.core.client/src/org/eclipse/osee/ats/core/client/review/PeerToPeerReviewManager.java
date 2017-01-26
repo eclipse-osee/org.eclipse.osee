@@ -18,6 +18,8 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
+import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.ReviewFormalType;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -33,9 +35,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
-import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.framework.core.util.Result;
@@ -112,9 +112,9 @@ public class PeerToPeerReviewManager {
 
       }
       if (roles != null) {
-         UserRoleManager roleMgr = new UserRoleManager(reviewArt);
+         IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) reviewArt).getRoleManager();
          for (UserRole role : roles) {
-            roleMgr.addOrUpdateUserRole(role, reviewArt);
+            roleMgr.addOrUpdateUserRole(role);
          }
          roleMgr.saveToArtifact(changes);
       }
@@ -127,9 +127,9 @@ public class PeerToPeerReviewManager {
 
    public static Result setReviewStateData(PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, Collection<ReviewDefectItem> defects, int statePercentComplete, double stateHoursSpent, IAtsChangeSet changes) throws OseeCoreException {
       if (roles != null) {
-         UserRoleManager roleMgr = new UserRoleManager(reviewArt);
+         IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) reviewArt).getRoleManager();
          for (UserRole role : roles) {
-            roleMgr.addOrUpdateUserRole(role, reviewArt);
+            roleMgr.addOrUpdateUserRole(role);
          }
          roleMgr.saveToArtifact(changes);
       }

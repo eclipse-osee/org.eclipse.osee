@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.review;
 
+import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
@@ -22,5 +24,10 @@ public class PeerToPeerReviewArtifact extends AbstractReviewArtifact implements 
 
    public PeerToPeerReviewArtifact(String guid, BranchId branch, ArtifactTypeId artifactType) {
       super(guid, branch, artifactType);
+   }
+
+   @Override
+   public IAtsPeerReviewRoleManager getRoleManager() {
+      return AtsClientService.get().getReviewService().createPeerReviewRoleManager(this);
    }
 }
