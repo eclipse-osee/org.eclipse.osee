@@ -145,9 +145,11 @@ public class DetailedTestStatusOld extends AbstractBlam {
             IAtsVersion version = (IAtsVersion) iter.next();
 
             try {
-               selectedBranch = version.getBaselineBranchIdInherited();
-               requirementsBranchWidget.setSelection(selectedBranch);
-               testProcedureBranchWidget.setSelection(selectedBranch);
+               if (version != null) {
+                  selectedBranch = version.getBaselineBranchIdInherited();
+                  requirementsBranchWidget.setSelection(selectedBranch);
+                  testProcedureBranchWidget.setSelection(selectedBranch);
+               }
             } catch (OseeCoreException ex) {
                log(ex);
             }
