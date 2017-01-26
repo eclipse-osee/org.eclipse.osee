@@ -187,10 +187,10 @@ public class WorkflowManager {
       return null;
    }
 
-   public static List<StateXWidgetPage> getStatePagesOrderedByOrdinal(AbstractWorkflowArtifact awa) throws OseeStateException {
+   public static List<StateXWidgetPage> getStatePagesOrderedByOrdinal(IAtsWorkItem workItem) throws OseeStateException {
       List<StateXWidgetPage> statePages = new ArrayList<>();
-      if (awa != null) {
-         IAtsWorkDefinition definition = awa.getWorkDefinition();
+      if (workItem != null) {
+         IAtsWorkDefinition definition = workItem.getWorkDefinition();
          ATSXWidgetOptionResolver optionResolver = ATSXWidgetOptionResolver.getInstance();
          for (IAtsStateDefinition stateDefinition : AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByOrdinal(
             definition)) {

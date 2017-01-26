@@ -28,7 +28,12 @@ import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.core.column.AtsIdColumn;
 import org.eclipse.osee.ats.core.column.AttributeColumn;
+import org.eclipse.osee.ats.core.column.CancelledByColumn;
+import org.eclipse.osee.ats.core.column.CancelledDateColumn;
+import org.eclipse.osee.ats.core.column.CompletedByColumn;
+import org.eclipse.osee.ats.core.column.CompletedCancelledByColumn;
 import org.eclipse.osee.ats.core.column.CompletedCancelledDateColumn;
+import org.eclipse.osee.ats.core.column.CompletedDateColumn;
 import org.eclipse.osee.ats.core.column.CreatedDateColumn;
 import org.eclipse.osee.ats.core.column.IAtsColumnProvider;
 import org.eclipse.osee.ats.core.column.ImplementerColumn;
@@ -98,6 +103,18 @@ public class AtsColumnService implements IAtsColumnService {
             column = new AtsAttributeValueColumnHandler(AtsColumnToken.ChangeTypeColumn, services);
          } else if (id.equals(AtsColumnId.CreatedDate.getId())) {
             column = new CreatedDateColumn(services);
+         } else if (id.equals(AtsColumnId.CompletedDate.getId())) {
+            column = new CompletedDateColumn(services);
+         } else if (id.equals(AtsColumnId.CancelledDate.getId())) {
+            column = new CancelledDateColumn(services);
+         } else if (id.equals(AtsColumnId.CancelledBy.getId())) {
+            column = new CancelledByColumn(services);
+         } else if (id.equals(AtsColumnId.CompletedBy.getId())) {
+            column = new CompletedByColumn(services);
+         } else if (id.equals(AtsColumnId.CompletedCancelledBy.getId())) {
+            column = new CompletedCancelledByColumn(services);
+         } else if (id.equals(AtsColumnId.CompletedCancelledDate.getId())) {
+            column = new CompletedCancelledDateColumn(services);
          } else if (id.equals(AtsColumnId.Notes.getId())) {
             column = new AtsAttributeValueColumnHandler(AtsColumnToken.NotesColumn, services);
          } else if (id.equals(AtsColumnId.State.getId())) {

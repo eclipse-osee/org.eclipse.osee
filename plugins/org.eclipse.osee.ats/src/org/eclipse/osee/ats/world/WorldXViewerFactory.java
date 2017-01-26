@@ -25,15 +25,15 @@ import org.eclipse.osee.ats.column.AtsColumnIdUI;
 import org.eclipse.osee.ats.column.BacklogColumnUI;
 import org.eclipse.osee.ats.column.BacklogOrderColumn;
 import org.eclipse.osee.ats.column.BranchStatusColumn;
-import org.eclipse.osee.ats.column.CancelledByColumn;
-import org.eclipse.osee.ats.column.CancelledDateColumn;
+import org.eclipse.osee.ats.column.CancelledByColumnUI;
+import org.eclipse.osee.ats.column.CancelledDateColumnUI;
 import org.eclipse.osee.ats.column.CategoryColumn;
 import org.eclipse.osee.ats.column.ChangeTypeColumnUI;
 import org.eclipse.osee.ats.column.ColorTeamColumnUI;
-import org.eclipse.osee.ats.column.CompletedByColumn;
-import org.eclipse.osee.ats.column.CompletedCancelledByColumn;
-import org.eclipse.osee.ats.column.CompletedCancelledDateColumn;
-import org.eclipse.osee.ats.column.CompletedDateColumn;
+import org.eclipse.osee.ats.column.CompletedByColumnUI;
+import org.eclipse.osee.ats.column.CompletedCancelledByColumnUI;
+import org.eclipse.osee.ats.column.CompletedCancelledDateColumnUI;
+import org.eclipse.osee.ats.column.CompletedDateColumnUI;
 import org.eclipse.osee.ats.column.CountryColumnUI;
 import org.eclipse.osee.ats.column.CreatedDateColumnUI;
 import org.eclipse.osee.ats.column.DaysInCurrentStateColumn;
@@ -228,12 +228,12 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          ReviewDeciderColumn.getInstance(),
          StartDateColumn.getInstance(),
          EndDateColumn.getInstance(),
-         CompletedDateColumn.getInstance(),
-         CompletedByColumn.getInstance(),
-         CancelledDateColumn.getInstance(),
-         CancelledByColumn.getInstance(),
-         CompletedCancelledByColumn.getInstance(),
-         CompletedCancelledDateColumn.getInstance(),
+         CompletedDateColumnUI.getInstance(),
+         CompletedByColumnUI.getInstance(),
+         CancelledDateColumnUI.getInstance(),
+         CancelledByColumnUI.getInstance(),
+         CompletedCancelledByColumnUI.getInstance(),
+         CompletedCancelledDateColumnUI.getInstance(),
          WorkDaysNeededColumn.getInstance(),
          PercentReworkColumn.getInstance(),
          BranchStatusColumn.getInstance(),

@@ -19,33 +19,31 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 /**
  * @author Donald G. Dunne
  */
-public class CompletedCancelledDateColumn extends AbstractServicesColumn {
+public class CancelledDateColumn extends AbstractServicesColumn {
 
-   public CompletedCancelledDateColumn(IAtsServices services) {
+   public CancelledDateColumn(IAtsServices services) {
       super(services);
    }
 
    @Override
    public String getText(IAtsObject atsObject) throws Exception {
-      return getCompletedCancelledDateStr(atsObject);
+      return getCancelledDateStr(atsObject);
    }
 
-   public static String getCompletedCancelledDateStr(Object object) {
+   public static String getCancelledDateStr(Object object) {
       String result = "";
-      Date date = getCompletedCancelledDate(object);
+      Date date = getCancelledDate(object);
       if (date != null) {
          result = DateUtil.getMMDDYYHHMM(date);
       }
       return result;
    }
 
-   public static Date getCompletedCancelledDate(Object object) {
+   public static Date getCancelledDate(Object object) {
       Date result = null;
       if (object instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) object;
-         if (workItem.isCompleted()) {
-            result = workItem.getCompletedDate();
-         } else {
+         if (workItem.isCancelled()) {
             result = workItem.getCancelledDate();
          }
       }

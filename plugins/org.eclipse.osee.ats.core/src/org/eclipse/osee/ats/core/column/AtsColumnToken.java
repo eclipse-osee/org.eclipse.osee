@@ -22,7 +22,13 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
  */
 public class AtsColumnToken {
 
-   // ColumnId columns
+   public static final String WorldXViewerFactory_COLUMN_NAMESPACE = "ats.column";
+
+   /**
+    * ColumnId columns are basic columns providing simple or computed data. They are NOT backed directly by an
+    * attribute, usually don't change, usually can't be changed by the user through edit or alt-left click.</br>
+    * USE ATTRIBUTE VALUE COLUMNS below if possible!!
+    */
    public static AtsColumnIdValueColumn AtsIdColumn = new AtsColumnIdValueColumn(AtsColumnId.AtsId,
       AtsColumnId.AtsId.name(), 75, ColumnAlign.Left.name(), false, ColumnType.String, false, "ATS ID", false, false);
    public static AtsColumnIdValueColumn AtsIdColumnShow = new AtsColumnIdValueColumn(AtsColumnId.AtsId,
@@ -65,8 +71,24 @@ public class AtsColumnToken {
    public static AtsColumnIdValueColumn TaskToRelatedArtifactTypeColumnToken = new AtsColumnIdValueColumn(
       AtsColumnId.TaskToRelatedArtifactType, "Task To Related Artifact Type", 110, ColumnAlign.Left.name(), false,
       ColumnType.String, false, "Shows the Artifact Type of the Related Artifact", false, false);
+   public static AtsColumnIdValueColumn CancelledByColumn =
+      new AtsColumnIdValueColumn(AtsColumnId.CancelledBy, "Cancelled By", 80, ColumnAlign.Left.name(), false,
+         ColumnType.String, false, "User transitioning action to cancelled state.", true, false);
+   public static AtsColumnIdValueColumn CompletedByColumn =
+      new AtsColumnIdValueColumn(AtsColumnId.CompletedBy, "Completed By", 80, ColumnAlign.Left.name(), false,
+         ColumnType.String, false, "User transitioning action to completed state.", true, false);
+   public static AtsColumnIdValueColumn CompletedCancelledByColumn = new AtsColumnIdValueColumn(
+      AtsColumnId.CompletedCancelledBy, "Completed or Cancelled By", 80, ColumnAlign.Left.name(), false,
+      ColumnType.String, false, "User transitioning action to completed or cancelled state.", true, false);
+   public static AtsColumnIdValueColumn CancelledDateColumn = new AtsColumnIdValueColumn(AtsColumnId.CancelledDate,
+      "Cancelled Date", 80, ColumnAlign.Center.name(), false, ColumnType.Date, false, null, true, false);
+   public static AtsColumnIdValueColumn CompletedDateColumn = new AtsColumnIdValueColumn(AtsColumnId.CompletedDate,
+      "Completed Date", 80, ColumnAlign.Center.name(), false, ColumnType.Date, false, null, true, false);
 
-   // AttributeValue columns
+   /**
+    * Attribute Value columns. These are backed directly by an attribute with the possible ability to change with edit
+    * or alt-left-click. USE THIS IF POSSIBLE!!!
+    */
    public static AtsAttributeValueColumn NotesColumn = new AtsAttributeValueColumn(AtsAttributeTypes.SmaNote,
       AtsColumnId.Notes.getId(), "Notes", 80, ColumnAlign.Left.name(), true, ColumnType.String, true, "", false, false);
    public static AtsAttributeValueColumn ChangeTypeColumn = new AtsAttributeValueColumn(AtsAttributeTypes.ChangeType,

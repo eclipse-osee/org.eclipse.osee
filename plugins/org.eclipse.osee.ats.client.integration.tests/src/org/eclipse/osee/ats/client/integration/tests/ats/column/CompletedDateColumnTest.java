@@ -19,8 +19,9 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.ats.column.CompletedDateColumn;
+import org.eclipse.osee.ats.column.CompletedDateColumnUI;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.column.CompletedDateColumn;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
@@ -54,10 +55,10 @@ public class CompletedDateColumnTest {
 
       changes.clear();
       Assert.assertEquals("",
-         CompletedDateColumn.getInstance().getColumnText(teamArt, CompletedDateColumn.getInstance(), 0));
-      Date date = CompletedDateColumn.getDate(teamArt);
+         CompletedDateColumnUI.getInstance().getColumnText(teamArt, CompletedDateColumnUI.getInstance(), 0));
+      Date date = CompletedDateColumn.getCompletedDate(teamArt);
       Assert.assertNull(date);
-      Assert.assertEquals("", CompletedDateColumn.getDateStr(teamArt));
+      Assert.assertEquals("", CompletedDateColumn.getCompletedDateStr(teamArt));
 
       TransitionHelper helper = new TransitionHelper("Transition to Completed", Arrays.asList(teamArt),
          TeamState.Completed.getName(), null, null, changes, AtsClientService.get().getServices(),
@@ -67,11 +68,11 @@ public class CompletedDateColumnTest {
       Assert.assertTrue(results.toString(), results.isEmpty());
 
       changes.clear();
-      date = CompletedDateColumn.getDate(teamArt);
+      date = CompletedDateColumn.getCompletedDate(teamArt);
       Assert.assertNotNull(date);
-      Assert.assertEquals(DateUtil.getMMDDYYHHMM(date), CompletedDateColumn.getDateStr(teamArt));
+      Assert.assertEquals(DateUtil.getMMDDYYHHMM(date), CompletedDateColumn.getCompletedDateStr(teamArt));
       Assert.assertEquals(DateUtil.getMMDDYYHHMM(date),
-         CompletedDateColumn.getInstance().getColumnText(teamArt, CompletedDateColumn.getInstance(), 0));
+         CompletedDateColumnUI.getInstance().getColumnText(teamArt, CompletedDateColumnUI.getInstance(), 0));
 
       helper = new TransitionHelper("Transition to Endorse", Arrays.asList(teamArt), TeamState.Endorse.getName(),
          Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, changes,
@@ -83,8 +84,8 @@ public class CompletedDateColumnTest {
       changes.execute();
 
       Assert.assertEquals("Cancelled date should be blank again", "",
-         CompletedDateColumn.getInstance().getColumnText(teamArt, CompletedDateColumn.getInstance(), 0));
-      date = CompletedDateColumn.getDate(teamArt);
+         CompletedDateColumnUI.getInstance().getColumnText(teamArt, CompletedDateColumnUI.getInstance(), 0));
+      date = CompletedDateColumn.getCompletedDate(teamArt);
       Assert.assertNull(date);
 
       TestUtil.severeLoggingEnd(loggingMonitor);
