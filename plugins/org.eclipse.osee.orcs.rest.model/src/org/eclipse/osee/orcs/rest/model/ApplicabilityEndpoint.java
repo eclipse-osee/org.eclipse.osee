@@ -103,4 +103,7 @@ public interface ApplicabilityEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    void setView(@PathParam("branchView") ArtifactId branchView);
 
+   @POST
+   @Path("view/{viewId}/applic/{applicability}/")
+   void createNewApplicabilityForView(@PathParam("viewId") ArtifactId viewId, @PathParam("applicability") String applicability);
 }

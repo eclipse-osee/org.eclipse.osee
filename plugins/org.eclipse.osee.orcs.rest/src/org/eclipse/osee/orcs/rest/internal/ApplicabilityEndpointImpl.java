@@ -201,7 +201,14 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
          SystemUser.OseeSystem, "Create Branch View");
 
       tx.addTuple2(CoreTupleTypes.BranchView, branch.getId(), branchView.getId());
+      tx.commit();
+   }
 
+   @Override
+   public void createNewApplicabilityForView(ArtifactId viewId, String applicability) {
+      TransactionBuilder tx =
+         orcsApi.getTransactionFactory().createTransaction(branch, SystemUser.OseeSystem, "Create new applicability");
+      tx.addTuple2(CoreTupleTypes.ViewApplicability, viewId, applicability);
       tx.commit();
    }
 }
