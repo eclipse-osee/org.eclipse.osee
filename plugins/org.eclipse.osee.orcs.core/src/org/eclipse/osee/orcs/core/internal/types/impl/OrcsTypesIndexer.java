@@ -144,7 +144,7 @@ public class OrcsTypesIndexer {
          BranchId branch = getAttributeBranch(xAttributeTypeRef);
 
          IAttributeType attributeType = attributeTypeIndex.getTokenByDslType(xAttributeType);
-         if (attributeType.isValid()) {
+         if (attributeType != null && attributeType.isValid()) {
             Collection<AttributeTypeToken> listOfAllowedAttributes = validAttributes.get(branch);
             if (listOfAllowedAttributes == null) {
                listOfAllowedAttributes = Sets.newHashSet();
