@@ -48,7 +48,7 @@ public class ActivityLogRequestFilter implements ContainerRequestFilter {
    public void filter(ContainerRequestContext context) {
       if (activityLog.isEnabled()) {
          try {
-            String message = String.format("%s %s", context.getMethod(), context.getUriInfo().getRequestUri());
+            String message = String.format("%s %s", context.getMethod(), context.getUriInfo().getPath());
             Long serverId = getServerId(context);
             Long clientId = ActivityConstants.DEFAULT_CLIENT_ID;
             if (Strings.isNumeric(context.getHeaders().getFirst("osee.client.id"))) {

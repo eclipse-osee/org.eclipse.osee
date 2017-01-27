@@ -114,7 +114,7 @@ public final class JaxRsResourceManager implements BundleListener {
 
    public Resource findResource(ContainerRequestContext requestContext) {
       UriInfo uriInfo = requestContext.getUriInfo();
-      String path = uriInfo.getAbsolutePath().getPath();
+      String path = uriInfo.getPath(false); 
 
       Resource resource = getResource(path);
       if (resource == null) {
@@ -204,9 +204,9 @@ public final class JaxRsResourceManager implements BundleListener {
       boolean isActive = false;
       boolean isStopping = false;
       if (state == Bundle.ACTIVE //
-      || state == Bundle.STARTING //
-      || state == Bundle.INSTALLED //
-      || state == Bundle.RESOLVED) {
+         || state == Bundle.STARTING //
+         || state == Bundle.INSTALLED //
+         || state == Bundle.RESOLVED) {
          isActive = true;
       } else if (state == Bundle.STOPPING) {
          isStopping = true;
