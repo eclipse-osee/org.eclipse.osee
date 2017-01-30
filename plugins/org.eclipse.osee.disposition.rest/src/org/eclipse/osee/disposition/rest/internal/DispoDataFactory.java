@@ -24,6 +24,7 @@ import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.Note;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -73,12 +74,19 @@ public class DispoDataFactory {
       if (itemToInit.getDiscrepanciesList() == null) {
          itemToInit.setDiscrepanciesList(new HashMap<String, Discrepancy>());
       }
-
       if (itemToInit.getDiscrepanciesList().size() == 0) {
          itemToInit.setStatus(DispoStrings.Item_Pass);
       } else {
          itemToInit.setStatus(DispoStrings.Item_InComplete);
       }
+      if (!Strings.isValid(itemToInit.getAssignee())) {
+         itemToInit.setAssignee("UnAssigned");
+      }
+
+      itemToInit.setAborted(false);
+      itemToInit.setNeedsRerun(false);
+      itemToInit.setNeedsReview(false);
+
    }
 
    public void initAnnotation(DispoAnnotationData annotationToInit) {

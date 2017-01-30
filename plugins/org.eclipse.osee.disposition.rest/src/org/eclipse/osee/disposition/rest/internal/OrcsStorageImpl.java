@@ -298,7 +298,7 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public void createDispoItems(ArtifactReadable author, DispoProgram program, DispoSet parentSet, List<DispoItem> data, String assignee) {
+   public void createDispoItems(ArtifactReadable author, DispoProgram program, DispoSet parentSet, List<DispoItem> data) {
       ArtifactReadable parentSetArt = findDispoArtifact(program, parentSet.getGuid(), DispoConstants.DispoSet);
       TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Create Dispoable Item");
 
@@ -309,7 +309,10 @@ public class OrcsStorageImpl implements Storage {
          tx.setSoleAttributeValue(createdItem, DispoConstants.DispoLastUpdated, item.getLastUpdate());
          tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemStatus, item.getStatus());
          tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemTotalPoints, item.getTotalPoints());
+
          tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemNeedsRerun, item.getNeedsRerun());
+         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemAborted, item.getAborted());
+         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemNeedsReview, item.getAborted());
 
          // Need to convert to Json String
          String discrepanciesAsJsonString = DispoUtil.disrepanciesMapToJson(item.getDiscrepanciesList()).toString();
@@ -319,11 +322,10 @@ public class OrcsStorageImpl implements Storage {
          // End
 
          tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemVersion, item.getVersion());
-         tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemAssignee, assignee);
+         tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemAssignee, item.getAssignee());
          tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemMachine, item.getMachine());
          tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemCategory, item.getCategory());
          tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemElapsedTime, item.getElapsedTime());
-         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemAborted, item.getAborted());
 
          if (Strings.isValid(item.getFileNumber())) {
             tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemFileNumber, item.getFileNumber());

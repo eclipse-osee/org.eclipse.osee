@@ -165,4 +165,9 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
    public String getFileNumber() {
       return artifact.getSoleAttributeAsString(DispoConstants.DispoItemFileNumber, "");
    }
+
+   @Override
+   public Boolean getNeedsReview() {
+      return artifact.getSoleAttributeValue(DispoConstants.DispoItemNeedsReview, false);
+   }
 }

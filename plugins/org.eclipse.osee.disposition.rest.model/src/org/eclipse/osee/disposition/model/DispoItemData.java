@@ -37,6 +37,7 @@ public class DispoItemData implements DispoItem {
    private String category;
    private String elapsedTime;
    private Boolean aborted;
+   private Boolean needsReview;
    private String itemNotes;
    private String discrepanciesAsRanges;
    private int failureCount;
@@ -151,6 +152,11 @@ public class DispoItemData implements DispoItem {
       return isIncludeDetails;
    }
 
+   @Override
+   public Boolean getNeedsReview() {
+      return needsReview;
+   }
+
    public void setName(String name) {
       this.name = name;
    }
@@ -233,5 +239,9 @@ public class DispoItemData implements DispoItem {
 
    public void setIsIncludeDetails(boolean isIncludeDetails) {
       this.isIncludeDetails = isIncludeDetails;
+   }
+
+   public void setNeedsReview(boolean needsReview) {
+      this.needsReview = needsReview;
    }
 }

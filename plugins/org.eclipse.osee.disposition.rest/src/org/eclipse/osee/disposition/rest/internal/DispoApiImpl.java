@@ -122,7 +122,7 @@ public class DispoApiImpl implements DispoApi {
       DispoSet parentSet = getQuery().findDispoSetsById(program, setId);
       if (parentSet != null) {
          ArtifactReadable author = getQuery().findUser();
-         getWriter().createDispoItems(author, program, parentSet, dispoItems, "UnAssigned");
+         getWriter().createDispoItems(author, program, parentSet, dispoItems);
       }
    }
 

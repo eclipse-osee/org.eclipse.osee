@@ -31,7 +31,7 @@ public interface DispoWriter {
 
    boolean deleteDispoSet(ArtifactReadable author, DispoProgram program, String setId);
 
-   void createDispoItems(ArtifactReadable author, DispoProgram program, DispoSet parentSet, List<DispoItem> data, String assignee);
+   void createDispoItems(ArtifactReadable author, DispoProgram program, DispoSet parentSet, List<DispoItem> data);
 
    boolean deleteDispoItem(ArtifactReadable author, DispoProgram program, String itemId);
 
