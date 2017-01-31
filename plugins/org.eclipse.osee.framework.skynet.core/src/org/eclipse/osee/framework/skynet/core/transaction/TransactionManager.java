@@ -136,7 +136,11 @@ public final class TransactionManager {
             SELECT_COMMIT_TRANSACTIONS, artifact);
       }
       Collection<TransactionRecord> transactions = commitArtifactIdMap.getValues(artifact);
-      return transactions == null ? Collections.emptyList() : transactions;
+      if (transactions == null) {
+         transactions = Collections.emptyList();
+         commitArtifactIdMap.put(artifact, transactions);
+      }
+      return transactions;
    }
 
    /**

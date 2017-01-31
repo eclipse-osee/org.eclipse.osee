@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -25,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * specified at construction, if desired. All Collections returned by methods are backed by the , so changes to the are
  * reflected in the Collection, and vice-versa. However, modifications to the Collection outside of this class are
  * generally discouraged because removal of the last item would then not guarantee removal of the key.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class HashCollection<K, V> {
@@ -96,7 +97,7 @@ public class HashCollection<K, V> {
 
    /**
     * Creates an unsynchronized Plus using a default Collection type (ArrayList)
-    * 
+    *
     * @see HashMap#HashMap(int, float)
     */
    public HashCollection(int initialCapacity, float loadFactor) {
@@ -105,7 +106,7 @@ public class HashCollection<K, V> {
 
    /**
     * Creates an unsynchronized Plus using a default Collection type (ArrayList)
-    * 
+    *
     * @see HashMap#HashMap(int)
     */
    public HashCollection(int initialCapacity) {
@@ -127,7 +128,7 @@ public class HashCollection<K, V> {
    /**
     * Adds the value to the collection specified by the key. If there is not a collection for the given key, a new
     * collection is created and added to the hash.
-    * 
+    *
     * @param key The key whose collection we will add value to.
     * @param value The value to be added.
     * @return the collection containing value and all other items associated with the key.
@@ -157,13 +158,19 @@ public class HashCollection<K, V> {
 
    /**
     * Adds all of the items in the Collection values to the collection for the specified key.
-    * 
+    *
     * @param key The key to add the values to
-    * @param values The values to be added
+    * @param values The values to be added. Null or empty values will insert empty list in map
     * @return The collection for the key, containing all values.
     */
    public Collection<V> put(K key, Collection<V> values) {
       Collection<V> items = null;
+      if (values == null || values.isEmpty()) {
+         Collection<V> values2 = this.getValues(key);
+         if (values2 == null) {
+            map.put(key, new LinkedList<>());
+         }
+      }
       for (V value : values) {
          if (items == null) {
             items = this.put(key, value);
@@ -202,7 +209,7 @@ public class HashCollection<K, V> {
 
    /**
     * Returns the Collection of items for this key, or null if the key does not exist.
-    * 
+    *
     * @return Return value collection reference
     */
    public Collection<V> getValues(K key) {
@@ -211,7 +218,7 @@ public class HashCollection<K, V> {
 
    /**
     * Returns the Collection all items
-    * 
+    *
     * @return Return value collection reference
     */
    public List<V> getValues() {
