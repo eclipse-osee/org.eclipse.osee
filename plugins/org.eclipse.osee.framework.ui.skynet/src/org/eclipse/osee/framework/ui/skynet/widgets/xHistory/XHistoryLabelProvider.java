@@ -72,7 +72,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
             } else if (cCol.equals(HistoryXViewerFactory.is)) {
                toReturn = data.getIsValue();
             } else {
-               toReturn = "unhandled column";
+               toReturn = super.getColumnText(element, columnIndex);
             }
          }
       } catch (Exception ex) {
