@@ -29,11 +29,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -795,11 +797,11 @@ public class ArtifactQuery {
     * performing queries.
     */
 
-   public static Collection<IArtifactToken> getArtifactTokenListFromTypeAndActive(IArtifactType artifactType, BranchId branch) {
+   public static Collection<IArtifactToken> getArtifactTokenListFromTypeAndActive(IArtifactType artifactType, IAttributeType activeAttrType, BranchId branch) {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt.runPreparedQuery(getTokenQuery(Active.Active), artifactType.getId(), branch.getId(), branch.getId(),
-            branch.getId());
+         chStmt.runPreparedQuery(getTokenQuery(Active.Active, activeAttrType), artifactType.getId(), branch.getId(),
+            branch.getId(), branch.getId());
          List<IArtifactToken> tokens = extractTokensFromQuery(chStmt);
          return tokens;
       } finally {
@@ -810,7 +812,8 @@ public class ArtifactQuery {
    public static Collection<IArtifactToken> getArtifactTokenListFromType(IArtifactType artifactType, BranchId branch) {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt.runPreparedQuery(getTokenQuery(Active.Both), artifactType.getId(), branch.getId(), branch.getId());
+         chStmt.runPreparedQuery(getTokenQuery(Active.Both, null), artifactType.getId(), branch.getId(),
+            branch.getId());
          List<IArtifactToken> tokens = extractTokensFromQuery(chStmt);
          return tokens;
       } finally {
@@ -818,9 +821,10 @@ public class ArtifactQuery {
       }
    }
 
-   private static String getTokenQuery(Active active) {
+   private static String getTokenQuery(Active active, IAttributeType activeAttrType) {
       if (active == Active.Active) {
-         return tokenQuery + activeTokenQueryAdendum;
+         return tokenQuery + activeTokenQueryAdendum.replaceFirst("PUT_ACTIVE_ATTR_TYPE_HERE",
+            activeAttrType.getId().toString());
       } else if (active == Active.Both) {
          return tokenQuery;
       } else {
@@ -846,12 +850,12 @@ public class ArtifactQuery {
       "from osee_txs txsArt, osee_txs txsAttr, osee_artifact art, osee_attribute attr where art.art_type_id = ? " + //
       "and txsArt.BRANCH_ID = ? and art.GAMMA_ID = txsArt.GAMMA_ID and txsArt.TX_CURRENT = 1 " + //
       "and txsAttr.BRANCH_ID = ? and attr.GAMMA_ID = txsAttr.GAMMA_ID and txsAttr.TX_CURRENT = 1 " + //
-      "and art.ART_ID = attr.art_id and attr.ATTR_TYPE_ID = 1152921504606847088 ";
+      "and art.ART_ID = attr.art_id and attr.ATTR_TYPE_ID = " + CoreAttributeTypes.Name.getId() + " ";
 
    private static String activeTokenQueryAdendum =
       "and not exists (select 1 from osee_attribute attr, osee_txs txs where txs.BRANCH_ID = ? " + //
          "and txs.GAMMA_ID = attr.GAMMA_ID and attr.art_id = art.art_id " + //
-         "and txs.TX_CURRENT = 1 and  attr.ATTR_TYPE_ID = 1152921504606847153 and value = 'false')";
+         "and txs.TX_CURRENT = 1 and  attr.ATTR_TYPE_ID = PUT_ACTIVE_ATTR_TYPE_HERE and value = 'false')";
 
    private static String attributeTokenQuery = "select art.art_id, art.art_type_id, art.guid, attr.value " + //
       "from osee_txs txsArt, osee_txs txsAttr, osee_artifact art, osee_attribute attr where art.art_type_id in ( ART_IDS_HERE ) " + //
@@ -880,6 +884,72 @@ public class ArtifactQuery {
       } finally {
          chStmt.close();
       }
+   }
+
+   private static String artifactTokensRelatedToArtifactQuery =
+      "select * from osee_attribute attr, OSEE_ARTIFACT art where attr.attr_type_id = " + CoreAttributeTypes.Name.getId() + " and " + //
+         "art.ART_ID = attr.ART_ID and attr.ART_ID in (" + //
+         "with links as (select GAMMA_ID, a_art_id, b_art_id from OSEE_RELATION_LINK where REL_SIDE_HERE in (ART_IDS_HERE) and REL_LINK_TYPE_ID = REL_TYPE_LINKE_ID_HERE) " + //
+         "select links.OPPOSITE_REL_SIDE_HERE from links, osee_txs txs where txs.BRANCH_ID = BRANCH_ID_HERE and txs.TX_CURRENT = 1 and txs.MOD_TYPE " + //
+         "not in (3,5,9.10) and txs.GAMMA_ID = links.gamma_id)";
+
+   private static String aArtifactIdToRelatedBArtifactId =
+      "with links as (select GAMMA_ID, a_art_id, b_art_id from OSEE_RELATION_LINK where REL_SIDE_HERE in (ART_IDS_HERE) and REL_LINK_TYPE_ID = REL_TYPE_LINKE_ID_HERE) " + //
+         "select links.a_art_id, links.b_art_id from links, osee_txs txs where txs.BRANCH_ID = BRANCH_ID_HERE and txs.TX_CURRENT = 1 and txs.MOD_TYPE not in (3,5,9.10) " + //
+         "and txs.GAMMA_ID = links.gamma_id";
+
+   public static HashCollection<ArtifactId, IArtifactToken> getArtifactTokenListFromRelated(BranchId branch, Collection<ArtifactId> artifacts, IArtifactType artifactType, IRelationTypeSide relationType) {
+      List<Long> artIds = new LinkedList<>();
+      String ids = "";
+      for (ArtifactId art : artifacts) {
+         artIds.add(art.getId());
+         ids += art.getId().toString() + ",";
+      }
+      ids = ids.replaceFirst(",$", "");
+
+      Map<Long, Long> artBIdToArtAId = new HashMap<>();
+      Map<Long, Long> artAIdToArtBId = new HashMap<>();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
+      boolean isSideA = relationType.getSide().isSideA();
+      try {
+         String query = aArtifactIdToRelatedBArtifactId.replaceFirst("ART_IDS_HERE", ids);
+         query = query.replaceAll("REL_SIDE_HERE", isSideA ? "b_art_id" : "a_art_id");
+         query = query.replaceAll("REL_TYPE_LINKE_ID_HERE", relationType.getGuid().toString());
+         query = query.replaceAll("BRANCH_ID_HERE", branch.getId().toString());
+         chStmt.runPreparedQuery(query);
+         while (chStmt.next()) {
+            Long aArtId = chStmt.getLong("a_art_id");
+            Long bArtId = chStmt.getLong("b_art_id");
+            artBIdToArtAId.put(bArtId, aArtId);
+            artAIdToArtBId.put(aArtId, bArtId);
+         }
+      } finally {
+         chStmt.close();
+      }
+
+      chStmt = ConnectionHandler.getStatement();
+      HashCollection<ArtifactId, IArtifactToken> artToRelatedTokens = new HashCollection<>();
+      try {
+         String query = artifactTokensRelatedToArtifactQuery.replaceFirst("ART_IDS_HERE", ids);
+         query = query.replaceAll("OPPOSITE_REL_SIDE_HERE", isSideA ? "a_art_id" : "b_art_id");
+         query = query.replaceAll("REL_SIDE_HERE", isSideA ? "b_art_id" : "a_art_id");
+         query = query.replaceAll("REL_TYPE_LINKE_ID_HERE", relationType.getGuid().toString());
+         query = query.replaceAll("BRANCH_ID_HERE", branch.getId().toString());
+         chStmt.runPreparedQuery(query);
+         while (chStmt.next()) {
+            Long artId = chStmt.getLong("art_id");
+            Long artTypeId = chStmt.getLong("art_type_id");
+            String name = chStmt.getString("value");
+            ArtifactType artType = ArtifactTypeManager.getTypeByGuid(Long.valueOf(artTypeId));
+            IArtifactToken token = TokenFactory.createArtifactToken(artId, name, artType);
+            Long artIdLong = isSideA ? artAIdToArtBId.get(artId) : artBIdToArtAId.get(artId);
+            ArtifactId aArtId = ArtifactId.valueOf(artIdLong);
+            artToRelatedTokens.put(aArtId, token);
+         }
+      } finally {
+         chStmt.close();
+      }
+      return artToRelatedTokens;
    }
 
 }

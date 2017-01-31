@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
@@ -25,7 +26,6 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
@@ -36,10 +36,15 @@ import org.eclipse.osee.ats.column.IAtsXViewerPreComputedColumn;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -189,30 +194,41 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
       Long result = 0L;
       if (obj instanceof IAtsObject) {
          result = ((IAtsObject) obj).getUuid();
+      } else if (obj instanceof ArtifactId) {
+         result = ((ArtifactId) obj).getId();
       }
       return result;
    }
 
    @Override
    public void populateCachedValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
-      for (Object element : objects) {
-         try {
-            if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-               Set<String> strs = new HashSet<>();
-               for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(element)) {
-                  for (Artifact art : ((Artifact) teamWf.getStoreObject()).getRelatedArtifacts(
-                     AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
-                     strs.add(art.getName());
+      Collection<ArtifactId> artifacts = AtsObjects.getTeamWfArtifacts(objects, AtsClientService.get());
+
+      if (!artifacts.isEmpty()) {
+         // Change NamedId to ArtifactToken when merge to 25.0
+         HashCollection<ArtifactId, IArtifactToken> artifactToTokens =
+            ArtifactQuery.getArtifactTokenListFromRelated(AtsUtilCore.getAtsBranch(), artifacts,
+               AtsArtifactTypes.Version, AtsRelationTypes.AgileFeatureToItem_FeatureGroup);
+         for (Entry<ArtifactId, Collection<IArtifactToken>> entry : artifactToTokens.entrySet()) {
+            try {
+               if (Artifacts.isOfType(entry.getKey(), AtsArtifactTypes.Action)) {
+                  Set<String> strs = new HashSet<>();
+                  for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(entry.getKey())) {
+                     for (IArtifactToken artToken : artifactToTokens.getValues(teamWf)) {
+                        strs.add(artToken.getName());
+                     }
                   }
+                  preComputedValueMap.put(getKey(entry.getKey()), Collections.toString(", ", strs));
+               } else {
+                  Set<String> strs = new HashSet<>();
+                  for (IArtifactToken artToken : entry.getValue()) {
+                     strs.add(artToken.getName());
+                  }
+                  preComputedValueMap.put(getKey(entry.getKey()), Collections.toString(", ", strs));
                }
-               preComputedValueMap.put(getKey(element), Collections.toString(", ", strs));
-            } else {
-               preComputedValueMap.put(getKey(element),
-                  Collections.toString(", ", ((Artifact) (IAtsWorkItem) element).getRelatedArtifacts(
-                     AtsRelationTypes.AgileFeatureToItem_FeatureGroup)));
+            } catch (OseeCoreException ex) {
+               preComputedValueMap.put(getKey(entry.getKey()), LogUtil.getCellExceptionString(ex));
             }
-         } catch (OseeCoreException ex) {
-            preComputedValueMap.put(getKey(element), LogUtil.getCellExceptionString(ex));
          }
       }
    }

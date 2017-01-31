@@ -15,8 +15,11 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
@@ -99,10 +102,34 @@ public class AtsObjects {
       return uuids;
    }
 
-   public static Collection<ArtifactId> getArtifacts(Collection<? extends IAtsObject> atsObjects) {
+   public static Collection<ArtifactId> getArtifacts(Collection<?> objects) {
       List<ArtifactId> artifacts = new LinkedList<>();
-      for (IAtsObject task : atsObjects) {
-         artifacts.add(task.getStoreObject());
+      for (Object object : objects) {
+         if (object instanceof ArtifactId) {
+            artifacts.add((ArtifactId) object);
+         } else if (object instanceof IAtsObject) {
+            artifacts.add(((IAtsObject) object).getStoreObject());
+         }
+      }
+      return artifacts;
+   }
+
+   /**
+    * Return collection of TeamWfs. If Task or Review, return nothing. If Action, return children TeamWfs.
+    */
+   public static Collection<ArtifactId> getTeamWfArtifacts(Collection<?> objects, IAtsServices services) {
+      List<ArtifactId> artifacts = new LinkedList<>();
+      for (Object object : objects) {
+         if (object instanceof ArtifactId) {
+            ArtifactId artId = (ArtifactId) object;
+            if (services.getStoreService().isOfType(artId, AtsArtifactTypes.Action)) {
+               artifacts.addAll(AtsObjects.getArtifacts(
+                  services.getWorkItemService().getTeams(services.getWorkItemFactory().getAction(artId))));
+            }
+         }
+         if (object instanceof IAtsTeamWorkflow) {
+            artifacts.add(((IAtsTeamWorkflow) object).getStoreObject());
+         }
       }
       return artifacts;
    }
