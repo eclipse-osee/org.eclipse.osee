@@ -261,7 +261,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
    @Override
    public String toString() {
       try {
-         return String.format("ArtifactEvent: BG[%s] TrId[%d] ARTS[%s] RELS[%s] Sender[%s]", branch.getId(),
+         return String.format("ArtifactEvent: BG[%s] TrId[%s] ARTS[%s] RELS[%s] Sender[%s]", branch.getId(),
             transaction, getArtifactsString(artifacts), getRelationsString(relations), networkSender);
       } catch (Exception ex) {
          return String.format("ArtifactEvent exception: " + ex.getLocalizedMessage());
