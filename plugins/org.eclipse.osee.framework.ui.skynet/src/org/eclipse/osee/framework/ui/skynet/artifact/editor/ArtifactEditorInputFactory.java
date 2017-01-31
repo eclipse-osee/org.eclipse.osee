@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -25,26 +26,31 @@ import org.eclipse.ui.IMemento;
 public class ArtifactEditorInputFactory implements IElementFactory {
 
    public final static String ID = "org.eclipse.osee.framework.ui.skynet.ArtifactEditorInputFactory"; //$NON-NLS-1$
-   public final static String ART_UUID = "org.eclipse.osee.framework.ui.skynet.ArtifactEditorInputFactory.uuid"; //$NON-NLS-1$
-   public final static String BRANCH_KEY = "org.eclipse.osee.framework.ui.skynet.ArtifactEditorInputFactory.branchUuid"; //$NON-NLS-1$
-   public final static String TITLE = "org.eclipse.osee.framework.ui.skynet.ArtifactEditorInputFactory.title"; //$NON-NLS-1$
+   private final static String ART_KEY = "org.eclipse.osee.framework.ui.skynet.ArtifactEditorInputFactory.uuid"; //$NON-NLS-1$
+   private final static String ART_KEY_AS_LONG = "org.eclipse.osee.ats.WEEditorInputFactory.artIdAsLong"; //$NON-NLS-1$
+   private final static String BRANCH_KEY =
+      "org.eclipse.osee.framework.ui.skynet.ArtifactEditorInputFactory.branchUuid"; //$NON-NLS-1$
+   private final static String TITLE = "org.eclipse.osee.framework.ui.skynet.ArtifactEditorInputFactory.title"; //$NON-NLS-1$
 
    public ArtifactEditorInputFactory() {
    }
 
    @Override
    public IAdaptable createElement(IMemento memento) {
-      BranchId branchId = BranchId.SENTINEL;
       String title = memento.getString(TITLE);
-      if (Strings.isValid(memento.getString(BRANCH_KEY))) {
-         branchId = BranchId.valueOf(memento.getString(BRANCH_KEY));
+      String branchStr = memento.getString(BRANCH_KEY);
+      BranchId branch = branchStr == null ? BranchId.SENTINEL : BranchId.valueOf(branchStr);
+
+      ArtifactId artifactId;
+      String artKeyAsLong = memento.getString(ART_KEY_AS_LONG);
+      if (Strings.isValid(artKeyAsLong)) {
+         artifactId = ArtifactId.valueOf(artKeyAsLong);
+      } else {
+         String artKeyAsInt = memento.getString(ART_KEY);
+         artifactId = artKeyAsInt == null ? ArtifactId.SENTINEL : ArtifactId.valueOf(artKeyAsInt);
       }
-      Integer artUuid = null;
-      String artUuidStr = memento.getString(ART_UUID);
-      if (Strings.isValid(artUuidStr)) {
-         artUuid = Integer.valueOf(artUuidStr);
-      }
-      return new ArtifactEditorInput(branchId, (artUuid == null ? null : Long.valueOf(artUuid)), title);
+
+      return new ArtifactEditorInput(branch, artifactId, title);
    }
 
    public static void saveState(IMemento memento, ArtifactEditorInput input) {
@@ -55,10 +61,9 @@ public class ArtifactEditorInputFactory implements IElementFactory {
          long branchUuid = artifact.getBranchId();
          if (Strings.isValid(artUuid) && branchUuid > 0 && Strings.isValid(title)) {
             memento.putString(BRANCH_KEY, String.valueOf(branchUuid));
-            memento.putString(ART_UUID, artUuid);
+            memento.putString(ART_KEY, artUuid);
             memento.putString(TITLE, title);
          }
       }
    }
-
 }

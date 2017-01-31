@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -54,13 +55,13 @@ public class ArtifactEditorReloadTab extends FormPage {
    public final static String ID = "artifact.editor.reload.tab";
    private final ArtifactEditor editor;
    private final String title;
-   private final long artUuid;
+   private final ArtifactId artifactId;
    private final BranchId branchId;
 
    public ArtifactEditorReloadTab(ArtifactEditor editor) {
       super(editor, ID, "Reload");
       this.editor = editor;
-      this.artUuid = editor.getEditorInput().getSavedArtUuid();
+      this.artifactId = editor.getEditorInput().getSavedArtUuid();
       this.title = editor.getEditorInput().getSavedTitle();
       this.branchId = editor.getEditorInput().getSavedBranchId();
    }
@@ -167,9 +168,9 @@ public class ArtifactEditorReloadTab extends FormPage {
 
       @Override
       protected IStatus run(IProgressMonitor monitor) {
-         if (artUuid > 0) {
+         if (artifactId.isValid()) {
             try {
-               artifact = ArtifactQuery.getArtifactFromId(artUuid, branchId);
+               artifact = ArtifactQuery.getArtifactFromId(artifactId, branchId);
             } catch (ArtifactDoesNotExist ex) {
                // do nothing
             }

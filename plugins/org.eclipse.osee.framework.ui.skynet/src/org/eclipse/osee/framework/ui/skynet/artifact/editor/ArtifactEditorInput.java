@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -28,7 +29,7 @@ import org.eclipse.ui.IPersistableElement;
 public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
    private Artifact artifact;
    private BranchId savedBranchId;
-   private Long savedArtUuid;
+   private ArtifactId savedArtUuid;
    private String savedTitle;
    private boolean attemptedReload = false;
 
@@ -36,9 +37,9 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
       this.artifact = artifact;
    }
 
-   public ArtifactEditorInput(BranchId branchId, Long artUuid, String title) {
+   public ArtifactEditorInput(BranchId branchId, ArtifactId artifactId, String title) {
       this.savedBranchId = branchId;
-      this.savedArtUuid = artUuid;
+      this.savedArtUuid = artifactId;
       this.savedTitle = title;
    }
 
@@ -141,7 +142,7 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
       return result;
    }
 
-   private BranchId getBranchId() {
+   public BranchId getBranchId() {
       BranchId id = BranchId.SENTINEL;
       if (artifact != null) {
          id = artifact.getBranch();
@@ -151,22 +152,21 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
       return id;
    }
 
-   private Long getArtUuid() {
-      Long uuid = 0L;
+   public ArtifactId getArtUuid() {
+      ArtifactId artifactId = ArtifactId.SENTINEL;
       if (artifact != null) {
-         uuid = artifact.getUuid();
+         artifactId = artifact;
       } else if (savedArtUuid != null) {
-         uuid = savedArtUuid;
+         artifactId = savedArtUuid;
       }
-      return uuid;
+      return artifactId;
    }
 
    @Override
    public boolean equals(Object obj) {
-
       if (obj instanceof ArtifactEditorInput) {
          ArtifactEditorInput other = (ArtifactEditorInput) obj;
-         if (!getArtUuid().equals(other.getArtUuid())) {
+         if (getArtUuid().notEqual(other.getArtUuid())) {
             return false;
          }
          return getBranchId().equals(other.getBranchId());
@@ -178,7 +178,7 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
       return savedBranchId;
    }
 
-   public Long getSavedArtUuid() {
+   public ArtifactId getSavedArtUuid() {
       return savedArtUuid;
    }
 

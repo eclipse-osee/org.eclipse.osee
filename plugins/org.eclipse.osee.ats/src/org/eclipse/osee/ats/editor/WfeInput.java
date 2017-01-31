@@ -14,6 +14,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.agile.AgileUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
@@ -24,66 +25,19 @@ import org.eclipse.ui.IPersistableElement;
 /**
  * @author Donald G. Dunne
  */
-public class WfeInput extends ArtifactEditorInput implements IPersistableElement {
-
-   private final boolean pend;
-   private int artUuid;
-   private String title;
-   private BranchId branch;
+public class WfeInput extends ArtifactEditorInput {
 
    public WfeInput(Artifact artifact) {
-      this(artifact, false);
-   }
-
-   public WfeInput(Artifact artifact, boolean pend) {
       super(artifact);
-      this.pend = pend;
    }
 
-   public WfeInput(BranchId branch, int artUuid, String title) {
-      this(null);
-      this.branch = branch;
-      this.artUuid = artUuid;
-      this.title = title;
-   }
-
-   @Override
-   public int hashCode() {
-      final int prime = 31;
-      int result = super.hashCode();
-      result = prime * result + artUuid;
-      result = prime * result + (int) (branch.getId() ^ branch.getId() >>> 32);
-      return result;
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      if (this == obj) {
-         return true;
-      }
-      if (!super.equals(obj)) {
-         return false;
-      }
-      if (getClass() != obj.getClass()) {
-         return false;
-      }
-      WfeInput other = (WfeInput) obj;
-      if (artUuid != other.artUuid) {
-         return false;
-      }
-      if (!branch.equals(other.branch)) {
-         return false;
-      }
-      return true;
+   public WfeInput(BranchId branch, ArtifactId artUuid, String title) {
+      super(branch, artUuid, title);
    }
 
    @Override
    public boolean isReload() {
       return getArtifact() == null;
-   }
-
-   public boolean isPend() {
-      return pend;
    }
 
    @Override
@@ -101,21 +55,9 @@ public class WfeInput extends ArtifactEditorInput implements IPersistableElement
       return WfeInputFactory.ID;
    }
 
-   public int getArtUuid() {
-      return artUuid;
-   }
-
-   public BranchId getBranchId() {
-      return branch;
-   }
-
-   public String getTitle() {
-      return title;
-   }
-
    @Override
    public String getName() {
-      String name = title;
+      String name = getSavedTitle();
       if (getArtifact() != null && !getArtifact().isDeleted()) {
          if (isBacklog()) {
             name = "Backlog: " + getArtifact().getName();
@@ -137,5 +79,4 @@ public class WfeInput extends ArtifactEditorInput implements IPersistableElement
       }
       return ImageManager.getImageDescriptor(AtsImage.TEAM_WORKFLOW);
    }
-
 }

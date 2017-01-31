@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.editor;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.ui.IElementFactory;
@@ -25,6 +26,7 @@ public class WfeInputFactory implements IElementFactory {
 
    public final static String ID = "org.eclipse.osee.ats.WEEditorInputFactory"; //$NON-NLS-1$
    public final static String ART_KEY = "org.eclipse.osee.ats.WEEditorInputFactory.artUuid"; //$NON-NLS-1$
+   public final static String ART_KEY_AS_LONG = "org.eclipse.osee.ats.WEEditorInputFactory.artUuidAsLong"; //$NON-NLS-1$
    public final static String BRANCH_KEY = "org.eclipse.osee.ats.WEEditorInputFactory.branchUuid"; //$NON-NLS-1$
    public final static String TITLE = "org.eclipse.osee.ats.WEEditorInputFactory.title"; //$NON-NLS-1$
 
@@ -36,29 +38,38 @@ public class WfeInputFactory implements IElementFactory {
     */
    @Override
    public IAdaptable createElement(IMemento memento) {
-      BranchId branch = BranchId.SENTINEL;
-      if (Strings.isValid(memento.getString(BRANCH_KEY))) {
-         branch = BranchId.valueOf(memento.getString(BRANCH_KEY));
+      String branchStr = memento.getString(BRANCH_KEY);
+      BranchId branch = branchStr == null ? BranchId.SENTINEL : BranchId.valueOf(branchStr);
+
+      ArtifactId artifactId;
+
+      String artKeyAsLong = memento.getString(ART_KEY_AS_LONG);
+      if (Strings.isValid(artKeyAsLong)) {
+         artifactId = ArtifactId.valueOf(artKeyAsLong);
+      } else {
+         String artKeyAsInt = memento.getString(ART_KEY);
+         artifactId = artKeyAsInt == null ? ArtifactId.SENTINEL : ArtifactId.valueOf(artKeyAsInt);
       }
-      Integer artUuid = memento.getInteger(ART_KEY);
+
       String title = memento.getString(TITLE);
-      return new WfeInput(branch, artUuid == null ? 0 : artUuid, title);
+      return new WfeInput(branch, artifactId, title);
    }
 
    public static void saveState(IMemento memento, WfeInput input) {
-      int artUuid = input.getArtUuid();
+      ArtifactId artifactId = input.getArtUuid();
       BranchId branch = input.getBranchId();
-      String title = input.getTitle();
+      String title = input.getSavedTitle();
       if (input.getArtifact() != null && !input.getArtifact().isDeleted()) {
-         artUuid = input.getArtifact().getArtId();
+         artifactId = input.getArtifact();
          branch = input.getArtifact().getBranch();
          title = input.getName();
       }
-      if (artUuid > 0 && branch.isValid() && Strings.isValid(title)) {
+      if (artifactId.isValid() && branch.isValid() && Strings.isValid(title)) {
          memento.putString(BRANCH_KEY, branch.getIdString());
-         memento.putInteger(ART_KEY, artUuid);
+         // Keep Storing the id as an Int so that the release can still read the workspace
+         memento.putInteger(ART_KEY, artifactId.getId().intValue());
+         memento.putString(ART_KEY_AS_LONG, artifactId.getIdString());
          memento.putString(TITLE, title);
       }
    }
-
 }

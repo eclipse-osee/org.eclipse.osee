@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -61,14 +62,14 @@ public class WfeReloadTab extends FormPage {
    public final static String ID = "ats.reload.tab";
    private final WorkflowEditor editor;
    private final String title;
-   private final int artUuid;
+   private final ArtifactId artUuid;
    private final BranchId branch;
 
    public WfeReloadTab(WorkflowEditor editor) {
       super(editor, ID, "Reload");
       this.editor = editor;
       this.artUuid = editor.getWfeInput().getArtUuid();
-      this.title = editor.getWfeInput().getTitle();
+      this.title = editor.getWfeInput().getSavedTitle();
       this.branch = editor.getWfeInput().getBranchId();
    }
 
@@ -183,7 +184,7 @@ public class WfeReloadTab extends FormPage {
 
       @Override
       protected IStatus run(IProgressMonitor monitor) {
-         if (artUuid > 0 && AtsClientService.get().getAtsBranch().equals(branch)) {
+         if (artUuid.isValid() && AtsClientService.get().getAtsBranch().equals(branch)) {
             try {
                artifact = ArtifactQuery.getArtifactFromId(artUuid, AtsClientService.get().getAtsBranch());
             } catch (ArtifactDoesNotExist ex) {
