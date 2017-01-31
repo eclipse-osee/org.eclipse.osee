@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -61,14 +62,14 @@ public class WfeReloadTab extends FormPage {
    private final WorkflowEditor editor;
    private final String title;
    private final int artUuid;
-   private final long branchUuid;
+   private final BranchId branch;
 
    public WfeReloadTab(WorkflowEditor editor) {
       super(editor, ID, "Reload");
       this.editor = editor;
       this.artUuid = editor.getWfeInput().getArtUuid();
       this.title = editor.getWfeInput().getTitle();
-      this.branchUuid = editor.getWfeInput().getBranchUuid();
+      this.branch = editor.getWfeInput().getBranchId();
    }
 
    @Override
@@ -83,7 +84,7 @@ public class WfeReloadTab extends FormPage {
          bodyComp.setLayout(new GridLayout(1, false));
          bodyComp.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, true, false));
 
-         if (!AtsClientService.get().getAtsBranch().getUuid().equals(branchUuid)) {
+         if (!AtsClientService.get().getAtsBranch().equals(branch)) {
             Label imageLabel = new Label(bodyComp, SWT.NONE);
             imageLabel.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, true));
             Image image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
@@ -182,7 +183,7 @@ public class WfeReloadTab extends FormPage {
 
       @Override
       protected IStatus run(IProgressMonitor monitor) {
-         if (artUuid > 0 && AtsClientService.get().getAtsBranch().getUuid().equals(branchUuid)) {
+         if (artUuid > 0 && AtsClientService.get().getAtsBranch().equals(branch)) {
             try {
                artifact = ArtifactQuery.getArtifactFromId(artUuid, AtsClientService.get().getAtsBranch());
             } catch (ArtifactDoesNotExist ex) {

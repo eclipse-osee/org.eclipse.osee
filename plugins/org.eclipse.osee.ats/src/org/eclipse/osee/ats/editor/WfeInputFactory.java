@@ -11,13 +11,14 @@
 package org.eclipse.osee.ats.editor;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.ui.IElementFactory;
 import org.eclipse.ui.IMemento;
 
 /**
  * The factory which is capable of recreating class file editor inputs stored in a memento.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class WfeInputFactory implements IElementFactory {
@@ -35,26 +36,26 @@ public class WfeInputFactory implements IElementFactory {
     */
    @Override
    public IAdaptable createElement(IMemento memento) {
-      long branchUuid = 0;
+      BranchId branch = BranchId.SENTINEL;
       if (Strings.isValid(memento.getString(BRANCH_KEY))) {
-         branchUuid = Long.valueOf(memento.getString(BRANCH_KEY));
+         branch = BranchId.valueOf(memento.getString(BRANCH_KEY));
       }
       Integer artUuid = memento.getInteger(ART_KEY);
       String title = memento.getString(TITLE);
-      return new WfeInput(branchUuid, artUuid == null ? 0 : artUuid, title);
+      return new WfeInput(branch, artUuid == null ? 0 : artUuid, title);
    }
 
    public static void saveState(IMemento memento, WfeInput input) {
       int artUuid = input.getArtUuid();
-      long branchUuid = input.getBranchUuid();
+      BranchId branch = input.getBranchId();
       String title = input.getTitle();
       if (input.getArtifact() != null && !input.getArtifact().isDeleted()) {
          artUuid = input.getArtifact().getArtId();
-         branchUuid = input.getArtifact().getBranchId();
+         branch = input.getArtifact().getBranch();
          title = input.getName();
       }
-      if (artUuid > 0 && branchUuid > 0 && Strings.isValid(title)) {
-         memento.putString(BRANCH_KEY, String.valueOf(branchUuid));
+      if (artUuid > 0 && branch.isValid() && Strings.isValid(title)) {
+         memento.putString(BRANCH_KEY, branch.getIdString());
          memento.putInteger(ART_KEY, artUuid);
          memento.putString(TITLE, title);
       }

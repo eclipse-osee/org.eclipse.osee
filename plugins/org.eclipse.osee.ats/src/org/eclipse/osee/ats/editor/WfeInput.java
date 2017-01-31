@@ -14,6 +14,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.agile.AgileUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -28,7 +29,7 @@ public class WfeInput extends ArtifactEditorInput implements IPersistableElement
    private final boolean pend;
    private int artUuid;
    private String title;
-   private long branchUuid;
+   private BranchId branch;
 
    public WfeInput(Artifact artifact) {
       this(artifact, false);
@@ -39,9 +40,9 @@ public class WfeInput extends ArtifactEditorInput implements IPersistableElement
       this.pend = pend;
    }
 
-   public WfeInput(long branchUuid, int artUuid, String title) {
+   public WfeInput(BranchId branch, int artUuid, String title) {
       this(null);
-      this.branchUuid = branchUuid;
+      this.branch = branch;
       this.artUuid = artUuid;
       this.title = title;
    }
@@ -51,7 +52,7 @@ public class WfeInput extends ArtifactEditorInput implements IPersistableElement
       final int prime = 31;
       int result = super.hashCode();
       result = prime * result + artUuid;
-      result = prime * result + (int) (branchUuid ^ branchUuid >>> 32);
+      result = prime * result + (int) (branch.getId() ^ branch.getId() >>> 32);
       return result;
    }
 
@@ -70,12 +71,13 @@ public class WfeInput extends ArtifactEditorInput implements IPersistableElement
       if (artUuid != other.artUuid) {
          return false;
       }
-      if (branchUuid != other.branchUuid) {
+      if (!branch.equals(other.branch)) {
          return false;
       }
       return true;
    }
 
+   @Override
    public boolean isReload() {
       return getArtifact() == null;
    }
@@ -103,8 +105,8 @@ public class WfeInput extends ArtifactEditorInput implements IPersistableElement
       return artUuid;
    }
 
-   public long getBranchUuid() {
-      return branchUuid;
+   public BranchId getBranchId() {
+      return branch;
    }
 
    public String getTitle() {
