@@ -49,6 +49,6 @@ public interface IAtsStoreService {
 
    boolean isDateType(IAttributeType attributeType);
 
-   boolean isOfType(ArtifactId artifact, IArtifactType artifactType);
+   boolean isOfType(ArtifactId artifact, IArtifactType... artifactType);
 
 }

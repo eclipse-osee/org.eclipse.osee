@@ -130,7 +130,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
-   public boolean isOfType(ArtifactId artifact, IArtifactType artifactType) {
+   public boolean isOfType(ArtifactId artifact, IArtifactType... artifactType) {
       return ((ArtifactReadable) artifact).isOfType(artifactType);
    }
 
