@@ -452,7 +452,7 @@ public class AtsTestUtil {
          IAtsChangeSet changes =
             AtsClientService.get().createChangeSet(AtsTestUtil.class.getSimpleName() + " - cleanup deleteTeamWf");
 
-         if (teamWfToDelete.getWorkingBranch() != null) {
+         if (teamWfToDelete.getWorkingBranch().isValid()) {
             Result result = AtsBranchUtil.deleteWorkingBranch(teamWfToDelete, true);
             if (result.isFalse()) {
                throw new OseeStateException("Error deleting working branch [%s]", result.getText());
@@ -483,7 +483,7 @@ public class AtsTestUtil {
 
       if (teamWf != null) {
          BranchId workingBranch = teamWf.getWorkingBranch();
-         if (workingBranch != null) {
+         if (workingBranch.isValid()) {
             BranchManager.deleteBranchAndPend(workingBranch);
          }
       }
@@ -575,8 +575,8 @@ public class AtsTestUtil {
    public static void cleanupSimpleTest(Collection<String> titles) throws Exception {
       List<Artifact> artifacts = new ArrayList<>();
       for (String title : titles) {
-         artifacts.addAll(ArtifactQuery.getArtifactListFromName(title, AtsClientService.get().getAtsBranch(), EXCLUDE_DELETED,
-            QueryOption.CONTAINS_MATCH_OPTIONS));
+         artifacts.addAll(ArtifactQuery.getArtifactListFromName(title, AtsClientService.get().getAtsBranch(),
+            EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS));
       }
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artifacts));
       TestUtil.sleep(4000);

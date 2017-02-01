@@ -96,9 +96,10 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
          teamWf.getAtsId()) > 1000) {
          IOseeBranch branch = IOseeBranch.SENTINEL;
          try {
-            branch = getWorkingBranchExcludeStates(teamWf, BranchState.REBASELINED, BranchState.DELETED,
-               BranchState.PURGED, BranchState.COMMIT_IN_PROGRESS, BranchState.CREATION_IN_PROGRESS,
-               BranchState.DELETE_IN_PROGRESS, BranchState.PURGE_IN_PROGRESS);
+            IOseeBranch workingBranch = getWorkingBranchExcludeStates(teamWf, BranchState.REBASELINED,
+               BranchState.DELETED, BranchState.PURGED, BranchState.COMMIT_IN_PROGRESS,
+               BranchState.CREATION_IN_PROGRESS, BranchState.DELETE_IN_PROGRESS, BranchState.PURGE_IN_PROGRESS);
+            branch = workingBranch == null ? IOseeBranch.SENTINEL : workingBranch;
          } catch (ItemDoesNotExist ex) {
             // do nothing
          }
@@ -316,7 +317,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    @Override
    public boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       BranchId branch = getWorkingBranch(teamWf);
-      return (branch != null) && branch.isValid() && !getBranchState(branch).isCommitted();
+      return  branch.isValid() && !getBranchState(branch).isCommitted();
    }
 
    @Override

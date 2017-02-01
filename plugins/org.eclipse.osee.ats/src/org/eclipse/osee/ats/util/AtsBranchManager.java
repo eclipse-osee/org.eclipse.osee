@@ -70,7 +70,7 @@ public final class AtsBranchManager {
          BranchId workingBranch = teamArt.getWorkingBranch();
          List<BranchId> destinationBranches = new ArrayList<>();
 
-         if (workingBranch != null) {
+         if (workingBranch.isValid()) {
             List<MergeBranch> mergeBranches = BranchManager.getMergeBranches(workingBranch);
             BranchId selectedBranch = null;
 

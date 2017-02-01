@@ -63,7 +63,7 @@ public class XWorkingBranchButtonFavorites extends XWorkingBranchButtonAbstract 
             return;
          }
          BranchId branch = getTeamArt().getWorkingBranch();
-         if (branch == null) {
+         if (branch.isInvalid()) {
             AWorkbench.popup("Working branch doesn't exist");
             return;
          }

@@ -61,7 +61,7 @@ public class AtsBranchCommitOperation extends AbstractOperation {
       BranchId workflowWorkingBranch = teamArt.getWorkingBranch();
       try {
          AtsClientService.get().getBranchService().getBranchesInCommit().add(workflowWorkingBranch);
-         if (workflowWorkingBranch == null) {
+         if (workflowWorkingBranch.isInvalid()) {
             throw new OseeStateException("Commit Branch Failed: Can not locate branch for workflow [%s]",
                teamArt.getAtsId());
          }

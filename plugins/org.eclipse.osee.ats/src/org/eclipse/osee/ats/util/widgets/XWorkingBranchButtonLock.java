@@ -74,7 +74,7 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       // just show normal icon if no branch yet
-      if (branch == null) {
+      if (branch.isInvalid()) {
          noBranch = true;
       } else {
          someAccessControlSet = !AccessControlManager.getAccessControlList(branch).isEmpty();
@@ -88,7 +88,7 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
    private void toggleWorkingBranchLock(Button button) {
       try {
          BranchId branch = getTeamArt().getWorkingBranch();
-         if (branch == null) {
+         if (branch.isInvalid()) {
             AWorkbench.popup("Working branch doesn't exist");
             return;
          }
@@ -130,7 +130,7 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
    @Override
    public void handleEvent(org.osgi.service.event.Event event) {
       BranchId branch = getTeamArt().getWorkingBranch();
-      if (branch != null) {
+      if (branch.isValid()) {
          AccessTopicEventPayload accessEvent = EventUtil.getTopicJson(event, AccessTopicEventPayload.class);
          if (branch.equals(accessEvent.getBranch())) {
             refreshWorkingBranchWidget();

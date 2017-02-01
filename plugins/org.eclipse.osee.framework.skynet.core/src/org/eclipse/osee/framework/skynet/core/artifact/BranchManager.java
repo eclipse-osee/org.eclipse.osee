@@ -187,7 +187,6 @@ public final class BranchManager {
             branch = loadBranchToCache(branchId);
          }
       }
-
       return branch;
    }
 

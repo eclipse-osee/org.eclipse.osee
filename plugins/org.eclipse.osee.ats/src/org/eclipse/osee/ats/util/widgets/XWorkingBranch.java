@@ -27,8 +27,8 @@ import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -263,7 +263,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       // just show normal icon if no branch yet
-      if (branch == null) {
+      if (branch.isInvalid()) {
          noBranch = true;
       } else {
          someAccessControlSet = !AccessControlManager.getAccessControlList(branch).isEmpty();
@@ -283,7 +283,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
             return;
          }
          BranchId branch = teamArt.getWorkingBranch();
-         if (branch == null) {
+         if (branch.isInvalid()) {
             AWorkbench.popup("Working branch doesn't exist");
             return;
          }
@@ -302,7 +302,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
    private void toggleWorkingBranchLock() {
       try {
          BranchId branch = teamArt.getWorkingBranch();
-         if (branch == null) {
+         if (branch.isInvalid()) {
             AWorkbench.popup("Working branch doesn't exist");
             return;
          }
@@ -351,7 +351,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
    public void refreshLabel() {
       if (labelWidget != null && Widgets.isAccessible(labelWidget) && !getLabel().equals("")) {
          try {
-            Branch workBranch = enablement.getWorkingBranch();
+            IOseeBranch workBranch = enablement.getWorkingBranch();
             String labelStr =
                getLabel() + ": " + enablement.getStatus().getDisplayName() + (workBranch != null ? " - " + workBranch.getShortName() : "");
             labelWidget.setText(labelStr);

@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.XWorkingBranch.BranchStatus;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -105,7 +105,7 @@ public class XWorkingBranchEnablement {
       return getEnablementData().getBranchStatus();
    }
 
-   public Branch getWorkingBranch() throws OseeCoreException {
+   public IOseeBranch getWorkingBranch() throws OseeCoreException {
       return getEnablementData().getWorkingBranch();
    }
 
@@ -140,8 +140,7 @@ public class XWorkingBranchEnablement {
             public BranchEnablementData call() throws Exception {
                BranchEnablementData enablementData = new BranchEnablementData(teamArt);
                if (teamArt != null) {
-                  Branch workingBranch =
-                     (Branch) AtsClientService.get().getBranchService().getWorkingBranch(teamArt, true);
+                  IOseeBranch workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt, true);
                   enablementData.setWorkingBranch(workingBranch);
 
                   enablementData.setWorkingBranchInWork(
@@ -160,7 +159,7 @@ public class XWorkingBranchEnablement {
 
    private static final class BranchEnablementData {
       private final TeamWorkFlowArtifact teamArt;
-      private Branch workingBranch;
+      private IOseeBranch workingBranch;
 
       private boolean workingBranchInWork;
       private boolean committedBranchExists;
@@ -178,7 +177,7 @@ public class XWorkingBranchEnablement {
          this.committedBranchExists = committedBranchExists;
       }
 
-      public void setWorkingBranch(Branch workingBranch) {
+      public void setWorkingBranch(IOseeBranch workingBranch) {
          this.workingBranch = workingBranch;
       }
 
@@ -187,12 +186,12 @@ public class XWorkingBranchEnablement {
       }
 
       public boolean isWorkingBranchCreationInProgress() {
-         return teamArt.isWorkingBranchCreationInProgress() || (workingBranch != null && BranchManager.getState(
+         return teamArt.isWorkingBranchCreationInProgress() || (workingBranch.isValid() && BranchManager.getState(
             workingBranch).isCreationInProgress());
       }
 
       public boolean isWorkingBranchCommitInProgress() {
-         return teamArt.isWorkingBranchCommitInProgress() || workingBranch != null && BranchManager.getState(
+         return teamArt.isWorkingBranchCommitInProgress() || workingBranch.isValid() && BranchManager.getState(
             workingBranch).isCommitInProgress();
       }
 
@@ -208,7 +207,7 @@ public class XWorkingBranchEnablement {
          return disableAll;
       }
 
-      public Branch getWorkingBranch() {
+      public IOseeBranch getWorkingBranch() {
          return workingBranch;
       }
 

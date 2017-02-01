@@ -68,7 +68,7 @@ public class AtsTestUtilTest extends AtsTestUtil {
       Assert.assertTrue(result.getText(), result.isTrue());
       Thread.sleep(2000);
       BranchId branch = AtsTestUtil.getTeamWf().getWorkingBranch();
-      Assert.assertNotNull(branch);
+      Assert.assertTrue(branch.isValid());
       AtsTestUtil.cleanup();
       Assert.assertTrue(BranchManager.getState(branch).isDeleted());
    }

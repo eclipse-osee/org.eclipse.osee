@@ -239,7 +239,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
          try {
             if (ArtifactTypeManager.getType(guidArt).inheritsFrom(AtsArtifactTypes.TeamWorkflow)) {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) ArtifactCache.getActive(guidArt);
-               if (teamArt != null && teamArt.getWorkingBranch() != null) {
+               if (teamArt != null && teamArt.getWorkingBranch().isValid()) {
                   branchUuidToContextIdCache.remove(teamArt.getWorkingBranch().getGuid());
                }
             }
