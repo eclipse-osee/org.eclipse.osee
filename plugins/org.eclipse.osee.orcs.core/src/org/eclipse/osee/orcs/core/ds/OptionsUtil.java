@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -28,6 +29,7 @@ public final class OptionsUtil {
    private static final String INCLUDE_CACHE = "include.cache";
    private static final String LOAD_LEVEL = "load.level";
    private static final String SHOW_HIDDEN_FIELDS = "show.hidden.fields";
+   private static final String BRANCH_VIEW = "from.branch.view";
 
    public static Options createBranchOptions() {
       Options options = new Options();
@@ -47,6 +49,7 @@ public final class OptionsUtil {
       setIncludeDeletedRelations(options, false);
       setHeadTransaction(options);
       setLoadLevel(options, LoadLevel.ALL);
+      setFromBranchView(options, ArtifactId.SENTINEL);
       return options;
    }
 
@@ -138,6 +141,18 @@ public final class OptionsUtil {
          transactionId = options.getObject(TransactionId.class, FROM_TRANSACTION);
       }
       return transactionId;
+   }
+
+   public static void setFromBranchView(Options options, ArtifactId viewId) {
+      options.put(BRANCH_VIEW, viewId);
+   }
+
+   public static ArtifactId getFromBranchView(Options options) {
+      ArtifactId viewId = ArtifactId.SENTINEL;
+      if (!options.isEmpty(BRANCH_VIEW)) {
+         viewId = options.getObject(ArtifactId.class, BRANCH_VIEW);
+      }
+      return viewId;
    }
 
    public static void setHeadTransaction(Options options) {

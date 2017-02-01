@@ -167,7 +167,7 @@ public class DataLoaderFactoryImplTest {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_DATA;
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-            " jart1.id2, art1.art_type_id, art1.guid\n" + //
+            " jart1.id2, jart1.id4, art1.art_type_id, art1.guid\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_artifact art1, osee_txs txs1\n" + //
             " WHERE \n" + //
@@ -191,7 +191,7 @@ public class DataLoaderFactoryImplTest {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_DATA;
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-            " jart1.id2, art1.art_type_id, art1.guid\n" + //
+            " jart1.id2, jart1.id4, art1.art_type_id, art1.guid\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_artifact art1, osee_txs txs1\n" + //
             " WHERE \n" + //
@@ -216,7 +216,7 @@ public class DataLoaderFactoryImplTest {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_DATA;
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id, txs1.transaction_id as stripe_transaction_id,\n" + //
-            " jart1.id2, art1.art_type_id, art1.guid\n" + //
+            " jart1.id2, jart1.id4, art1.art_type_id, art1.guid\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_artifact art1, osee_txs txs1\n" + //
             " WHERE \n" + //
@@ -240,7 +240,7 @@ public class DataLoaderFactoryImplTest {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_DATA;
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id, txs1.transaction_id as stripe_transaction_id,\n" + //
-            " jart1.id2, art1.art_type_id, art1.guid\n" + //
+            " jart1.id2, jart1.id4, art1.art_type_id, art1.guid\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_artifact art1, osee_txs txs1\n" + //
             " WHERE \n" + //
@@ -267,7 +267,7 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-            " jart1.id2, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+            " jart1.id2, jart1.id4, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_attribute att1, osee_txs txs1\n" + //
             " WHERE \n" + //
@@ -292,7 +292,7 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-            " jart1.id2, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+            " jart1.id2, jart1.id4, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_attribute att1, osee_txs txs1\n" + //
             " WHERE \n" + //
@@ -318,7 +318,7 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-            " jart1.id2, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+            " jart1.id2, jart1.id4, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_join_id jid1, osee_attribute att1, osee_txs txs1\n" + //
             " WHERE \n" + //
@@ -345,7 +345,7 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-            " jart1.id2, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+            " jart1.id2, jart1.id4, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_attribute att1, osee_txs txs1\n" + //
             " WHERE \n" + //
@@ -371,7 +371,7 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-            " jart1.id2, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+            " jart1.id2, jart1.id4, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_join_id jid1, osee_attribute att1, osee_txs txs1\n" + //
             " WHERE \n" + //
@@ -397,7 +397,7 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-            " jart1.id2, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+            " jart1.id2, jart1.id4, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_join_id jid1, osee_join_id jid2, osee_attribute att1, osee_txs txs1\n" + //
             " WHERE \n" + //
@@ -425,7 +425,7 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-            " jart1.id2, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+            " jart1.id2, jart1.id4, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_attribute att1, osee_txs txs1\n" + //
             " WHERE \n" + //
@@ -452,7 +452,7 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-            " jart1.id2, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+            " jart1.id2, jart1.id4, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_attribute att1, osee_txs txs1\n" + //
             " WHERE \n" + //
@@ -478,7 +478,7 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id, txs1.transaction_id as stripe_transaction_id,\n" + //
-            " jart1.id2, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+            " jart1.id2, jart1.id4, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_attribute att1, osee_txs txs1\n" + //
             " WHERE \n" + //
@@ -503,7 +503,7 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id, txs1.transaction_id as stripe_transaction_id,\n" + //
-            " jart1.id2, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+            " jart1.id2, jart1.id4, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_attribute att1, osee_txs txs1\n" + //
             " WHERE \n" + //
@@ -531,7 +531,7 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-            " jart1.id2, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+            " jart1.id2, jart1.id4, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_relation_link rel1, osee_txs txs1\n" + //
             " WHERE \n" + //
@@ -556,7 +556,7 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-            " jart1.id2, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+            " jart1.id2, jart1.id4, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_relation_link rel1, osee_txs txs1\n" + //
             " WHERE \n" + //
@@ -582,7 +582,7 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-            " jart1.id2, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+            " jart1.id2, jart1.id4, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_relation_link rel1, osee_txs txs1\n" + //
             " WHERE \n" + //
@@ -609,7 +609,7 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-            " jart1.id2, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+            " jart1.id2, jart1.id4, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_join_id jid1, osee_relation_link rel1, osee_txs txs1\n" + //
             " WHERE \n" + //
@@ -638,7 +638,7 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-            " jart1.id2, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+            " jart1.id2, jart1.id4, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_relation_link rel1, osee_txs txs1\n" + //
             " WHERE \n" + //
@@ -664,7 +664,7 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-            " jart1.id2, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+            " jart1.id2, jart1.id4, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_join_id jid1, osee_relation_link rel1, osee_txs txs1\n" + //
             " WHERE \n" + //
@@ -690,7 +690,7 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-            " jart1.id2, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+            " jart1.id2, jart1.id4, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_join_id jid1, osee_join_id jid2, osee_relation_link rel1, osee_txs txs1\n" + //
             " WHERE \n" + //
@@ -719,7 +719,7 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-            " jart1.id2, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+            " jart1.id2, jart1.id4, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_relation_link rel1, osee_txs txs1\n" + //
             " WHERE \n" + //
@@ -747,7 +747,7 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id, txs1.transaction_id as stripe_transaction_id,\n" + //
-            " jart1.id2, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+            " jart1.id2, jart1.id4, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_relation_link rel1, osee_txs txs1\n" + //
             " WHERE \n" + //
@@ -771,7 +771,7 @@ public class DataLoaderFactoryImplTest {
       LoadLevel expectedLoadLevel = LoadLevel.ALL;
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-            " jart1.id2, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+            " jart1.id2, jart1.id4, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_relation_link rel1, osee_txs txs1\n" + //
             " WHERE \n" + //
@@ -798,7 +798,7 @@ public class DataLoaderFactoryImplTest {
       LoadLevel expectedLoadLevel = LoadLevel.ALL;
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
-            " jart1.id2, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+            " jart1.id2, jart1.id4, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
             " FROM \n" + //
             "osee_join_id4 jart1, osee_relation_link rel1, osee_txs txs1\n" + //
             " WHERE \n" + //

@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.core.ds.BranchData;
 import org.eclipse.osee.orcs.core.ds.Options;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.db.internal.loader.data.BranchObjectFactory;
 
 /**
@@ -33,7 +34,7 @@ public class BranchLoadProcessor extends LoadProcessor<BranchData, BranchObjectF
 
    @Override
    protected BranchData createData(Object conditions, BranchObjectFactory factory, JdbcStatement chStmt, Options options) throws OseeCoreException {
-      long branchUuid = chStmt.getLong("branch_id");
+      BranchId branch = BranchId.create(chStmt.getLong("branch_id"), OptionsUtil.getFromBranchView(options));
 
       String branchName = chStmt.getString("branch_name");
       BranchState branchState = BranchState.getBranchState(chStmt.getInt("branch_state"));
@@ -46,7 +47,7 @@ public class BranchLoadProcessor extends LoadProcessor<BranchData, BranchObjectF
       ArtifactId assocArtId = ArtifactId.valueOf(chStmt.getLong("associated_art_id"));
       boolean inheritAccessControl = chStmt.getInt("inherit_access_control") != 0;
 
-      return factory.createBranchData(branchUuid, branchType, branchName, parentBranchId, baseTx, sourceTx,
-         archiveState, branchState, assocArtId, inheritAccessControl);
+      return factory.createBranchData(branch, branchType, branchName, parentBranchId, baseTx, sourceTx, archiveState,
+         branchState, assocArtId, inheritAccessControl);
    }
 }

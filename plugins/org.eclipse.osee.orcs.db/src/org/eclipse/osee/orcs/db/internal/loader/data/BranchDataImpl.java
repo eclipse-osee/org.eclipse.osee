@@ -34,12 +34,12 @@ public class BranchDataImpl extends NamedIdBase implements BranchData, BranchRea
    private boolean inheritAccessControl = false;
    private ArtifactId viewId = ArtifactId.SENTINEL;
 
-   public BranchDataImpl(Long branchId, String name) {
-      this(branchId, name, ArtifactId.SENTINEL);
+   public BranchDataImpl(BranchId branch, String name) {
+      this(branch, name, ArtifactId.SENTINEL);
    }
 
-   public BranchDataImpl(Long branchId, String name, ArtifactId viewId) {
-      super(branchId, name);
+   public BranchDataImpl(BranchId branch, String name, ArtifactId viewId) {
+      super(branch.getId(), name);
       this.viewId = viewId;
    }
 

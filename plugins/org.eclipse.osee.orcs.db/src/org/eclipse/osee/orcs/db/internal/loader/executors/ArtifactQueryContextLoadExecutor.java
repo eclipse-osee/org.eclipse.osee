@@ -53,6 +53,7 @@ public class ArtifactQueryContextLoadExecutor extends AbstractLoadExecutor {
 
       Id4JoinQuery join = createId4Join(getJdbcClient(), cancellation, fetchSize);
 
+      OptionsUtil.setFromBranchView(options, queryContext.getBranch().getViewId());
       LoadSqlContext loadContext = new LoadSqlContext(queryContext.getSession(), options, queryContext.getBranch());
       getLoader().loadArtifacts(cancellation, handler, join, criteria, loadContext, fetchSize);
    }
@@ -73,11 +74,12 @@ public class ArtifactQueryContextLoadExecutor extends AbstractLoadExecutor {
             checkCancelled(cancellation);
          }
          TransactionId transactionId = OptionsUtil.getFromTransaction(queryContext.getOptions());
+         ArtifactId viewId = OptionsUtil.getFromBranchView(queryContext.getOptions());
          Consumer<JdbcStatement> consumer = stmt -> {
             checkCancelled(cancellation);
             Integer artId = stmt.getInt("art_id");
             BranchId branchUuid = BranchId.valueOf(stmt.getLong("branch_id"));
-            artifactJoin.add(branchUuid, ArtifactId.valueOf(artId), transactionId);
+            artifactJoin.add(branchUuid, ArtifactId.valueOf(artId), transactionId, viewId);
             checkCancelled(cancellation);
          };
          checkCancelled(cancellation);

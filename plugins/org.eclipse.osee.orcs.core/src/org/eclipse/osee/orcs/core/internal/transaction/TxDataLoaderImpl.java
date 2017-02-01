@@ -81,6 +81,7 @@ public class TxDataLoaderImpl implements TxDataLoader {
    public ResultSet<Artifact> loadArtifacts(OrcsSession session, GraphData graph, Collection<ArtifactId> artifactIds) throws OseeCoreException {
       DataLoader loader = createLoader(session, graph.getBranch(), artifactIds);
       loader.fromTransaction(graph.getTransaction());
+      loader.fromBranchView(graph.getBranch().getViewId());
       GraphBuilder handler = graphBuilderFactory.createBuilderForGraph(graph);
       loader.load(null, handler);
       return ResultSets.newResultSet(handler.getArtifacts());

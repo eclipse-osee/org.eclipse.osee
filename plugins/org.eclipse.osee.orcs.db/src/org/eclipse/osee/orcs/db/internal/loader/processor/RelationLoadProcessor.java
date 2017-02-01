@@ -39,7 +39,7 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
    protected RelationData createData(Object conditions, RelationObjectFactory factory, JdbcStatement chStmt, Options options) throws OseeCoreException {
       RelationData toReturn = null;
 
-      BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
+      BranchId branch = BranchId.create(chStmt.getLong("branch_id"), OptionsUtil.getFromBranchView(options));
       int aArtId = chStmt.getInt("a_art_id");
       int bArtId = chStmt.getInt("b_art_id");
       long typeId = chStmt.getLong("rel_link_type_id");

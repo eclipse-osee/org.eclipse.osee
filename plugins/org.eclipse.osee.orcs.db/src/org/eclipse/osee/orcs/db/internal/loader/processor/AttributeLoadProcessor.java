@@ -44,7 +44,7 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
    protected AttributeData createData(Object conditions, AttributeObjectFactory factory, JdbcStatement chStmt, Options options) throws OseeCoreException {
       AttributeData toReturn = null;
 
-      BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
+      BranchId branch = BranchId.create(chStmt.getLong("branch_id"), OptionsUtil.getFromBranchView(options));
       int artId = chStmt.getInt("id2");
       int attrId = chStmt.getInt("attr_id");
       long gammaId = chStmt.getInt("gamma_id");

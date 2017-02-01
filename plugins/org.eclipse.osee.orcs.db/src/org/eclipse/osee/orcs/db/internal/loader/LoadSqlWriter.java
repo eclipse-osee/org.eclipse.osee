@@ -47,7 +47,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
       if (OptionsUtil.isHistorical(getOptions())) {
          write(", %s.transaction_id as stripe_transaction_id", txAlias);
       }
-      write(",\n %s.id2", artJoinAlias);
+      write(",\n %s.id2, %s.id4", artJoinAlias, artJoinAlias);
       for (SqlHandler<?> handler : handlers) {
          setHandlerLevel(handler);
          write(", ");

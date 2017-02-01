@@ -46,7 +46,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
       "SELECT /*+ ordered */ txs.gamma_id, txs.transaction_id, aj.id1, aj.id4 FROM osee_join_id4 aj, %s item, osee_txs txs WHERE aj.query_id = ? AND %s AND item.gamma_id = txs.gamma_id AND aj.id1 = txs.branch_id";
 
    private static final String COUNT_ARTIFACT_VIOLATIONS =
-      "SELECT art.art_id, txs.branch_id FROM osee_join_id4 aj, osee_artifact art, osee_txs txs WHERE aj.query_id = ? AND aj.id2 = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = aj.id1";
+      "SELECT art.art_id, txs.branch_id, aj.id4 FROM osee_join_id4 aj, osee_artifact art, osee_txs txs WHERE aj.query_id = ? AND aj.id2 = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = aj.id1";
 
    private static final String DELETE_FROM_TXS_USING_JOIN_TRANSACTION =
       "DELETE FROM osee_txs txs WHERE EXISTS (select 1 from osee_join_transaction jt WHERE jt.query_id = ? AND jt.branch_id = txs.branch_id AND jt.gamma_id = txs.gamma_id AND jt.transaction_id = txs.transaction_id)";

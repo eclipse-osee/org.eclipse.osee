@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -28,6 +29,8 @@ public interface DataLoader extends Loader {
    DataLoader setOptions(Options sourceOptions);
 
    DataLoader fromTransaction(TransactionId transactionId);
+
+   DataLoader fromBranchView(ArtifactId viewId);
 
    DataLoader fromHeadTransaction();
 

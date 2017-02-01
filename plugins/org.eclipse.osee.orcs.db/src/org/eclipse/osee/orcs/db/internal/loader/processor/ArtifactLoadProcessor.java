@@ -36,7 +36,7 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
       ArtifactData toReturn = null;
 
       int artifactId = chStmt.getInt("id2");
-      BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
+      BranchId branch = BranchId.create(chStmt.getLong("branch_id"), OptionsUtil.getFromBranchView(options));
 
       CreateConditions onCreate = asConditions(conditions);
       if (!onCreate.isSame(branch, artifactId)) {
