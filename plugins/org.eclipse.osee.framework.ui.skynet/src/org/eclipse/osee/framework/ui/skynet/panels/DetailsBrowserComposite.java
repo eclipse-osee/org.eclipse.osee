@@ -30,8 +30,8 @@ public class DetailsBrowserComposite extends BrowserComposite {
       try {
          addData(sb, "GUID", artifact.getGuid());
          addData(sb, "Branch", artifact.getBranchToken().getName());
-         addData(sb, "Branch Uuid", String.valueOf(artifact.getBranchId()));
-         addData(sb, "Artifact Id", String.valueOf(artifact.getArtId()));
+         addData(sb, "Branch Uuid", artifact.getBranch().getIdString());
+         addData(sb, "Artifact Id", artifact.getIdString());
          addData(sb, "Artifact Type Name", artifact.getArtifactTypeName());
          addData(sb, "Artifact Type Id", String.valueOf(artifact.getArtTypeId()));
          addData(sb, "Gamma Id", String.valueOf(artifact.getGammaId()));

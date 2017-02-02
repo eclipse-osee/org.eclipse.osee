@@ -360,8 +360,8 @@ public final class ArtifactLoader {
       Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery();
 
       try {
-         joinQuery.add(BranchId.valueOf(artifact.getBranchId()), ArtifactId.valueOf(artifact.getId()),
-            TransactionId.SENTINEL, artifact.getBranch().getViewId());
+         joinQuery.add(artifact.getBranch(), ArtifactId.valueOf(artifact.getId()), TransactionId.SENTINEL,
+            artifact.getBranch().getViewId());
          joinQuery.store();
 
          List<Artifact> artifacts = new ArrayList<>(1);

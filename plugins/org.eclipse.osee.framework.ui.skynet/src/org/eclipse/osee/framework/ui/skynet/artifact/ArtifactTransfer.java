@@ -167,6 +167,6 @@ public class ArtifactTransfer extends ByteArrayTransfer {
     */
    private void writeArtifact(DataOutputStream dataOut, Artifact artifact) throws IOException, OseeCoreException {
       dataOut.writeInt(artifact.getArtId());
-      dataOut.writeLong(artifact.getBranchId());
+      dataOut.writeLong(artifact.getBranch().getId());
    }
 }

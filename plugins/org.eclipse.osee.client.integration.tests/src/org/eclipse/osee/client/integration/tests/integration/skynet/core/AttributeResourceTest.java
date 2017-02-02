@@ -82,7 +82,7 @@ public class AttributeResourceTest {
    private String loadAttributeValue(int attrId, TransactionId transactionId, Artifact artifact) {
       String appServer = OseeClientProperties.getOseeApplicationServer();
       URI uri =
-         UriBuilder.fromUri(appServer).path("orcs").path("branch").path(String.valueOf(artifact.getBranchId())).path(
+         UriBuilder.fromUri(appServer).path("orcs").path("branch").path(artifact.getBranch().getIdString()).path(
             "artifact").path(artifact.getIdString()).path("attribute").path(String.valueOf(attrId)).path(
                "version").path(String.valueOf(transactionId)).path("text").build();
       try {

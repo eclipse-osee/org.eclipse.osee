@@ -430,7 +430,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
          Artifact artifact = getDestinationArtifact();
          if (artifact != null) {
             settings.put("destination.artifact.guid", artifact.getGuid());
-            settings.put("destination.branch.uuid", artifact.getBranchId());
+            settings.put("destination.branch.uuid", artifact.getBranch().getId());
          }
          settings.put("is.update.existing.selected", isUpdateExistingSelected());
       }

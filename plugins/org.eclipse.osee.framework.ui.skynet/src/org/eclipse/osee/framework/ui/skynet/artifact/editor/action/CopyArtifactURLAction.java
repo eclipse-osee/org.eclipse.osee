@@ -48,14 +48,14 @@ public final class CopyArtifactURLAction extends Action {
       Clipboard clipboard = null;
       try {
          String urlString =
-            String.format("%sorcs/branch/%d/artifact/%d/attribute/type/%s", ArtifactURL.getSelectedPermanenrLinkUrl(),
-               artifact.getBranchId(), artifact.getId(), getAttributeTypeId().getIdString());
+            String.format("%sorcs/branch/%s/artifact/%s/attribute/type/%s", ArtifactURL.getSelectedPermanenrLinkUrl(),
+               artifact.getBranch().getIdString(), artifact.getIdString(), getAttributeTypeId().getIdString());
          URL url = new URL(urlString);
          clipboard = new Clipboard(null);
          clipboard.setContents(new Object[] {url.toString()}, new Transfer[] {TextTransfer.getInstance()});
       } catch (Exception ex) {
          OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error obtaining url for - guid: [%s] branch:[%s]",
-            artifact.getGuid(), artifact.getBranch());
+            artifact.getGuid(), artifact.getBranch().getIdString());
       } finally {
          if (clipboard != null && !clipboard.isDisposed()) {
             clipboard.dispose();

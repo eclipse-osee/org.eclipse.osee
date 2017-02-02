@@ -364,7 +364,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
          if (explorerRoot != null) {
             memento.putString(ROOT_UUID, explorerRoot.getIdString());
             try {
-               memento.putString(ROOT_BRANCH, String.valueOf(explorerRoot.getBranchId()));
+               memento.putString(ROOT_BRANCH, explorerRoot.getBranch().getIdString());
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }

@@ -38,12 +38,12 @@ public final class OpenArtifactInBrowserAction extends Action {
    @Override
    public void run() {
       try {
-         String urlString = String.format("%sorcs/branch/%d/artifact/%d", ArtifactURL.getSelectedPermanenrLinkUrl(),
-            artifact.getBranchId(), artifact.getUuid());
+         String urlString = String.format("%sorcs/branch/%s/artifact/%s", ArtifactURL.getSelectedPermanenrLinkUrl(),
+            artifact.getBranch().getIdString(), artifact.getIdString());
          Program.launch(urlString);
       } catch (Exception ex) {
          OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error obtaining url for - guid: [%s] branch:[%s]",
-            artifact.getGuid(), artifact.getBranch());
+            artifact.getGuid(), artifact.getBranch().getIdString());
       }
    }
 

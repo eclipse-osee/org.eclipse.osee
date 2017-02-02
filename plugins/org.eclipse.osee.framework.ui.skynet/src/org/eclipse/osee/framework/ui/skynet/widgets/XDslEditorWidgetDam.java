@@ -97,8 +97,8 @@ public class XDslEditorWidgetDam extends XDslEditorWidget implements IAttributeW
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
-      String uriString = String.format("branch/%s/artifact/%s/%s.%s", artifact.getBranchId(), artifact.getGuid(),
-         encodedName, extension);
+      String uriString = String.format("branch/%s/artifact/%s/%s.%s", artifact.getBranch().getIdString(),
+         artifact.getGuid(), encodedName, extension);
       return URI.createURI(uriString);
    }
 

@@ -876,7 +876,7 @@ public class ArtifactQuery {
          + "txs.BRANCH_ID = ? and art.art_id in ( ART_IDS_HERE ) and txs.TX_CURRENT = 1 and attr.ATTR_TYPE_ID = 1152921504606847088 " //
          + "and attr.ART_ID = art.ART_ID and txs.GAMMA_ID = ATTR.GAMMA_ID";
 
-public static List<ArtifactToken> getArtifactTokenListFromSoleAttributeInherited(IArtifactType artifactType, AttributeTypeId attributetype, String value, BranchId branch) {
+   public static List<ArtifactToken> getArtifactTokenListFromSoleAttributeInherited(IArtifactType artifactType, AttributeTypeId attributetype, String value, BranchId branch) {
 
       ArtifactType artifactTypeFull = ArtifactTypeManager.getType(artifactType);
       List<Long> artTypeIds = new LinkedList<>();
@@ -1017,14 +1017,14 @@ public static List<ArtifactToken> getArtifactTokenListFromSoleAttributeInherited
       int attrCount = jdbcClient.fetch(-1,
          "select count(*) from OSEE_ATTRIBUTE attr, osee_txs txs where attr.art_id = ? and " //
             + "txs.GAMMA_ID = ATTR.GAMMA_ID and txs.BRANCH_ID = ? and txs.TX_CURRENT = 1",
-         artifact.getArtId(), artifact.getBranchId());
+         artifact, artifact.getBranch());
       if (artifact.getAttributes().size() != attrCount) {
          return true;
       }
       int relCount = jdbcClient.fetch(-1,
          "select count(*) from OSEE_RELATION_LINK rel, osee_txs txs where (rel.A_ART_ID = ? or rel.B_ART_ID = ?) " //
             + "and txs.GAMMA_ID = rel.GAMMA_ID and txs.BRANCH_ID = ? and txs.TX_CURRENT = 1",
-         artifact.getArtId(), artifact.getArtId(), artifact.getBranchId());
+         artifact, artifact, artifact.getBranch());
       if (!artifact.isHistorical() && artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED).size() != relCount) {
          return true;
       }
@@ -1052,8 +1052,7 @@ public static List<ArtifactToken> getArtifactTokenListFromSoleAttributeInherited
             "and txs.BRANCH_ID = ?) " //
             // order by latest transaction
             + "order by transaction_id desc ";
-      long transactionId = jdbcClient.fetch(-1L, query, artifact.getArtId(), artifact.getBranchId(),
-         artifact.getArtId(), artifact.getBranchId());
+      long transactionId = jdbcClient.fetch(-1L, query, artifact, artifact.getBranch(), artifact, artifact.getBranch());
       return !artifact.getTransaction().getId().equals(transactionId);
    }
 }

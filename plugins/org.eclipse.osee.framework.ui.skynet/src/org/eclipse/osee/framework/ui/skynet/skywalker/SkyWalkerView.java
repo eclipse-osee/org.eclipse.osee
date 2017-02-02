@@ -72,7 +72,7 @@ public class SkyWalkerView extends GenericViewPart {
    private static final String GUID_KEY = "guid";
    private static final String BRANCHID_KEY = "branchUuid";
    private String storedGuid;
-   private String storedBrandId;
+   private String storedBranchId;
    private final SkyWalkerOptions options = new SkyWalkerOptions();
    private final List<Artifact> history = new LinkedList<>();
    private Action filterAction;
@@ -155,7 +155,7 @@ public class SkyWalkerView extends GenericViewPart {
       // Restore current artifact if stored upon shutdown
       try {
          if (storedGuid != null) {
-            Artifact art = ArtifactQuery.getArtifactFromId(storedGuid, BranchId.valueOf(storedBrandId));
+            Artifact art = ArtifactQuery.getArtifactFromId(storedGuid, BranchId.valueOf(storedBranchId));
             if (art != null) {
                explore(art);
             }
@@ -357,7 +357,7 @@ public class SkyWalkerView extends GenericViewPart {
       memento = memento.createChild(INPUT_KEY);
       memento.putString(GUID_KEY, artifact.getGuid());
       try {
-         memento.putString(BRANCHID_KEY, String.valueOf(artifact.getBranchId()));
+         memento.putString(BRANCHID_KEY, artifact.getBranch().getIdString());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.WARNING, "Sky Walker error on save: ", ex);
       }
@@ -371,7 +371,7 @@ public class SkyWalkerView extends GenericViewPart {
             memento = memento.getChild(INPUT_KEY);
             if (memento != null) {
                storedGuid = memento.getString(GUID_KEY);
-               storedBrandId = memento.getString(BRANCHID_KEY);
+               storedBranchId = memento.getString(BRANCHID_KEY);
             }
          }
       } catch (Exception ex) {
