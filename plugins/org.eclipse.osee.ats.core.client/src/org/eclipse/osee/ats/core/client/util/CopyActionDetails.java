@@ -72,6 +72,8 @@ public class CopyActionDetails {
                result = "feature";
             } else if (result.equals("Problem")) {
                result = "bug";
+            } else if (result.equals("Refinement")) {
+               result = "refinement";
             }
          }
       } else if (awa instanceof TaskArtifact) {
