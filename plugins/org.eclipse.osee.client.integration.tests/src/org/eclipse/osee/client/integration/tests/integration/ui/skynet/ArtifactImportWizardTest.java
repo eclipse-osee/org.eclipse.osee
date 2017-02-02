@@ -198,26 +198,4 @@ public final class ArtifactImportWizardTest {
          inputExcelFile.delete();
       }
    }
-   //   private void displayArtifactTree(Artifact artifact) throws OseeCoreException {
-   //      displayArtifactTree(artifact, 0);
-   //   }
-   //
-   //   private void displayArtifactTree(Artifact artifact, int depth) throws OseeCoreException {
-   //      for (int indentCount = 0; indentCount < depth; indentCount++) {
-   //         System.out.print(" ");
-   //      }
-   //      System.out.println(artifact.getName());
-   //
-   //      int longestArtifactNameLength = artifact.getName().length();
-   //      if (longestArtifactNameLength > depth) {
-   //         depth = longestArtifactNameLength;
-   //      }
-   //
-   //      List<Artifact> children = artifact.getChildren();
-   //      if (!children.isEmpty()) {
-   //         for (Artifact child : children) {
-   //            displayArtifactTree(child, depth + 1);
-   //         }
-   //      }
-   //   }
 }

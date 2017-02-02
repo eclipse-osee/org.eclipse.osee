@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
  */
 public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvider {
 
-   private XWidgetRendererItem createDynamicXWidgetLayout(IAttributeType attributeType, int minOccurrence) {
+   private XWidgetRendererItem createDynamicXWidgetLayout(AttributeTypeToken attributeType, int minOccurrence) {
       XWidgetRendererItem defaultData = new XWidgetRendererItem(null);
       defaultData.setName(attributeType.getUnqualifiedName());
       defaultData.setStoreName(attributeType.getName());
@@ -43,13 +43,13 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
       return defaultData;
    }
 
-   public static boolean useMultiLineWidget(IAttributeType attributeType) throws OseeCoreException {
+   public static boolean useMultiLineWidget(AttributeTypeToken attributeType) {
       return AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class, attributeType) || attributeType.equals(
          CoreAttributeTypes.RelationOrder) || attributeType.equals(CoreAttributeTypes.PlainTextContent);
    }
 
    @Override
-   public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(IAttributeType attributeType) throws OseeCoreException {
+   public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(AttributeTypeToken attributeType) {
       List<XWidgetRendererItem> xWidgetLayoutData = new ArrayList<>();
 
       XWidgetRendererItem defaultData =

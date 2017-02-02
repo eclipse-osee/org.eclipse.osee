@@ -10,9 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.internal;
 
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
@@ -22,9 +26,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.DslGrammar;
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 
 /**
  * @author Roberto E. Escobar
@@ -71,7 +72,7 @@ public final class DslGrammarManager {
       return result;
    }
 
-   public static boolean isDslAttributeType(IAttributeType attributeType) {
+   public static boolean isDslAttributeType(AttributeTypeId attributeType) {
       boolean result = false;
       try {
          AttributeType type = AttributeTypeManager.getType(attributeType);

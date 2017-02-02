@@ -128,7 +128,7 @@ public class Collections {
     *
     * @return relative set complement of B in A.
     */
-   public static <T> List<T> setComplement(Collection<T> set_A, Collection<T> set_B) {
+   public static <T> List<T> setComplement(Collection<? extends T> set_A, Collection<? extends T> set_B) {
       ArrayList<T> complement = new ArrayList<>(set_A.size());
       for (T obj : set_A) {
          if (!set_B.contains(obj)) {

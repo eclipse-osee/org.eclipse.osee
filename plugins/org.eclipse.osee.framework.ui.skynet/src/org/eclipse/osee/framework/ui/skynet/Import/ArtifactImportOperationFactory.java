@@ -61,7 +61,7 @@ public final class ArtifactImportOperationFactory {
     * </ol>
     * </p>
     * <br/>
-    * 
+    *
     * @param param
     * @return
     * @throws OseeCoreException

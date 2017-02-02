@@ -12,7 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.util;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -23,5 +23,5 @@ public interface IAttributeXWidgetProvider {
    /**
     * Return widget layout data or empty list if this provider doesn't provide for this attribute type
     */
-   public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(IAttributeType attributeType) throws OseeCoreException;
+   public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(AttributeTypeToken attributeType) throws OseeCoreException;
 }

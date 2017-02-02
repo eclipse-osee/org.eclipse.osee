@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -65,8 +66,8 @@ public final class AttributeTypeEditDisplay implements AttributeTypeEditPresente
    }
 
    @Override
-   public Collection<IAttributeType> getSelections(OperationType operationType, String title, String message, List<IAttributeType> input) {
-      Collection<IAttributeType> toReturn = Collections.emptyList();
+   public Collection<AttributeTypeToken> getSelections(OperationType operationType, String title, String message, List<AttributeTypeToken> input) {
+      Collection<AttributeTypeToken> toReturn = Collections.emptyList();
       CheckedTreeSelectionDialog dialog = createDialog(title, message, getImage(operationType));
       dialog.setInput(input);
       int result = dialog.open();
@@ -97,12 +98,12 @@ public final class AttributeTypeEditDisplay implements AttributeTypeEditPresente
    }
 
    @Override
-   public void addWidgetFor(Collection<IAttributeType> attributeTypes) throws OseeCoreException {
+   public void addWidgetFor(Collection<AttributeTypeToken> attributeTypes) throws OseeCoreException {
       attributesForm.getAttributeFormPart().addWidgetForAttributeType(attributeTypes);
    }
 
    @Override
-   public void removeWidgetFor(Collection<IAttributeType> attributeTypes) {
+   public void removeWidgetFor(Collection<AttributeTypeToken> attributeTypes) {
       attributesForm.getAttributeFormPart().removeWidgetForAttributeType(attributeTypes);
    }
 }

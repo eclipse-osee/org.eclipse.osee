@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -31,11 +31,11 @@ public class AttributeTypeEditPresenter {
 
       void showInformation(String title, String message);
 
-      Collection<IAttributeType> getSelections(OperationType operationType, String title, String message, List<IAttributeType> input);
+      Collection<AttributeTypeToken> getSelections(OperationType operationType, String title, String message, List<AttributeTypeToken> input);
 
-      void addWidgetFor(Collection<IAttributeType> attributeTypes) throws OseeCoreException;
+      void addWidgetFor(Collection<AttributeTypeToken> attributeTypes) throws OseeCoreException;
 
-      void removeWidgetFor(Collection<IAttributeType> attributeTypes) throws OseeCoreException;
+      void removeWidgetFor(Collection<AttributeTypeToken> attributeTypes) throws OseeCoreException;
    }
 
    public static interface Model {
@@ -61,11 +61,11 @@ public class AttributeTypeEditPresenter {
 
    public void onAddAttributeType() throws OseeCoreException {
       Artifact artifact = model.getArtifact();
-      List<IAttributeType> input = AttributeTypeUtil.getEmptyTypes(artifact);
-      Collection<IAttributeType> selectedItems =
+      List<AttributeTypeToken> input = AttributeTypeUtil.getEmptyTypes(artifact);
+      Collection<AttributeTypeToken> selectedItems =
          selectItems(OperationType.ADD_ITEM, "Add Attribute Types", "add", input);
       if (!selectedItems.isEmpty()) {
-         for (IAttributeType attributeType : selectedItems) {
+         for (AttributeTypeToken attributeType : selectedItems) {
             artifact.addAttribute(attributeType);
          }
          display.addWidgetFor(selectedItems);
@@ -75,12 +75,12 @@ public class AttributeTypeEditPresenter {
 
    public void onRemoveAttributeType() throws OseeCoreException {
       Artifact artifact = model.getArtifact();
-      Collection<IAttributeType> validTypesPerBranch = artifact.getAttributeTypes();
-      List<IAttributeType> input = AttributeTypeUtil.getTypesWithData(artifact);
+      Collection<? extends AttributeTypeToken> validTypesPerBranch = artifact.getAttributeTypes();
+      List<AttributeTypeToken> input = AttributeTypeUtil.getTypesWithData(artifact);
 
-      Iterator<IAttributeType> iterator = input.iterator();
+      Iterator<AttributeTypeToken> iterator = input.iterator();
       while (iterator.hasNext()) {
-         IAttributeType type = iterator.next();
+         AttributeTypeToken type = iterator.next();
          if (validTypesPerBranch.contains(type)) {
             int occurrencesAfterRemoval = artifact.getAttributes(type).size() - 1;
             if (occurrencesAfterRemoval < AttributeTypeManager.getMinOccurrences(type)) {
@@ -88,10 +88,10 @@ public class AttributeTypeEditPresenter {
             }
          }
       }
-      Collection<IAttributeType> selectedItems =
+      Collection<AttributeTypeToken> selectedItems =
          selectItems(OperationType.REMOVE_ITEM, "Delete Attribute Types", "remove", input);
       if (!selectedItems.isEmpty()) {
-         for (IAttributeType attributeType : selectedItems) {
+         for (AttributeTypeToken attributeType : selectedItems) {
             artifact.deleteAttributes(attributeType);
          }
          display.removeWidgetFor(selectedItems);
@@ -99,8 +99,8 @@ public class AttributeTypeEditPresenter {
       }
    }
 
-   private Collection<IAttributeType> selectItems(OperationType operationType, String title, String operationName, List<IAttributeType> input) {
-      Collection<IAttributeType> selectedItems = Collections.emptyList();
+   private Collection<AttributeTypeToken> selectItems(OperationType operationType, String title, String operationName, List<AttributeTypeToken> input) {
+      Collection<AttributeTypeToken> selectedItems = Collections.emptyList();
       if (input.isEmpty()) {
          String message = String.format("No attribute types available to %s.", operationName);
          display.showInformation(title, message);

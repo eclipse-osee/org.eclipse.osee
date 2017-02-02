@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
@@ -75,7 +76,7 @@ public class AttributeFormPart extends AbstractFormPart {
    private final ArtifactEditor editor;
    private Composite composite;
    private final XWidgetDecorator decorator = new XWidgetDecorator();
-   private final Map<IAttributeType, Composite> xWidgetsMap = new HashMap<>();
+   private final Map<AttributeTypeToken, Composite> xWidgetsMap = new HashMap<>();
 
    private final XModifiedListener widgetModifiedListener = new XModifiedListener() {
 
@@ -155,7 +156,7 @@ public class AttributeFormPart extends AbstractFormPart {
       try {
          Artifact artifact = editor.getEditorInput().getArtifact();
 
-         List<IAttributeType> types = AttributeTypeUtil.getTypesWithData(artifact);
+         List<AttributeTypeToken> types = AttributeTypeUtil.getTypesWithData(artifact);
          addWidgetForAttributeType(types);
 
          layoutControls(composite);
@@ -166,11 +167,11 @@ public class AttributeFormPart extends AbstractFormPart {
       }
    }
 
-   public void addWidgetForAttributeType(Collection<IAttributeType> attributeTypes) throws OseeCoreException {
+   public void addWidgetForAttributeType(Collection<AttributeTypeToken> attributeTypes) throws OseeCoreException {
       Artifact artifact = editor.getEditorInput().getArtifact();
       boolean isEditable = !artifact.isReadOnly();
 
-      for (IAttributeType attributeType : attributeTypes) {
+      for (AttributeTypeToken attributeType : attributeTypes) {
          Composite internalComposite;
          if (DefaultAttributeXWidgetProvider.useMultiLineWidget(attributeType) || DslGrammarManager.isDslAttributeType(
             attributeType)) {
@@ -222,7 +223,7 @@ public class AttributeFormPart extends AbstractFormPart {
       }
    }
 
-   private Composite createAttributeTypeControls(Composite parent, Artifact artifact, IAttributeType attributeType, boolean isEditable, boolean isExpandable, int leftMargin) {
+   private Composite createAttributeTypeControls(Composite parent, Artifact artifact, AttributeTypeToken attributeType, boolean isEditable, boolean isExpandable, int leftMargin) {
       FormToolkit toolkit = getManagedForm().getToolkit();
       Composite internalComposite = toolkit.createComposite(parent, SWT.WRAP);
 
@@ -272,7 +273,7 @@ public class AttributeFormPart extends AbstractFormPart {
       return internalComposite;
    }
 
-   private Composite createAttributeTypeControlsInSection(Composite parent, IAttributeType attributeType, boolean isEditable, int leftMargin) {
+   private Composite createAttributeTypeControlsInSection(Composite parent, AttributeTypeToken attributeType, boolean isEditable, int leftMargin) {
       FormToolkit toolkit = getManagedForm().getToolkit();
 
       int style = ExpandableComposite.SHORT_TITLE_BAR | ExpandableComposite.TREE_NODE;
@@ -342,8 +343,8 @@ public class AttributeFormPart extends AbstractFormPart {
       refresh();
    }
 
-   public void removeWidgetForAttributeType(Collection<? extends IAttributeType> attributeTypes) {
-      for (IAttributeType attributeType : attributeTypes) {
+   public void removeWidgetForAttributeType(Collection<? extends AttributeTypeId> attributeTypes) {
+      for (AttributeTypeId attributeType : attributeTypes) {
          xWidgetsMap.remove(attributeType).dispose();
          //decorator.addWidget(xWidget)
       }

@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -210,11 +211,11 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
    }
 
    private final static class AttributeTypeContainer {
-      private final List<IAttributeType> types;
+      private final List<AttributeTypeToken> types;
       private final String name;
       private final boolean editable;
 
-      public AttributeTypeContainer(String name, boolean editable, List<IAttributeType> types) {
+      public AttributeTypeContainer(String name, boolean editable, List<AttributeTypeToken> types) {
          this.name = name;
          this.editable = editable;
          this.types = types;
@@ -224,7 +225,7 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
          return name;
       }
 
-      public List<IAttributeType> getTypes() {
+      public List<AttributeTypeToken> getTypes() {
          return types;
       }
 

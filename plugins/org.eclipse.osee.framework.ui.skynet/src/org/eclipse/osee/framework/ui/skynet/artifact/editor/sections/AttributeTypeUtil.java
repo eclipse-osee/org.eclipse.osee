@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -27,9 +27,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
  */
 public class AttributeTypeUtil {
 
-   public static List<IAttributeType> getEmptyTypes(Artifact artifact) throws OseeCoreException {
-      List<IAttributeType> items = new ArrayList<>();
-      for (IAttributeType type : artifact.getAttributeTypes()) {
+   public static List<AttributeTypeToken> getEmptyTypes(Artifact artifact) throws OseeCoreException {
+      List<AttributeTypeToken> items = new ArrayList<>();
+      for (AttributeTypeToken type : artifact.getAttributeTypes()) {
          if (!CoreAttributeTypes.Name.equals(type) && artifact.getAttributes(type).isEmpty()) {
             items.add(type);
          }
@@ -46,8 +46,8 @@ public class AttributeTypeUtil {
       return types;
    }
 
-   public static List<IAttributeType> getTypesWithData(Artifact artifact) throws OseeCoreException {
-      List<IAttributeType> items = new ArrayList<>();
+   public static List<AttributeTypeToken> getTypesWithData(Artifact artifact) throws OseeCoreException {
+      List<AttributeTypeToken> items = new ArrayList<>();
 
       List<Attribute<?>> attributeInstances = artifact.getAttributes(artifact.isDeleted());
       Set<AttributeType> typesInExistence = toTypes(attributeInstances);

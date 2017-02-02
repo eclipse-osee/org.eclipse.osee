@@ -14,9 +14,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -59,13 +59,14 @@ public class FilterArtifactTypesByAttributeTypes extends AbstractOperation {
          names.addAll(artifact.getAttributeTypeNames());
       }
       selectedArtifactTypes.clear();
-      Set<IAttributeType> requiredTypes = new HashSet<>();
+      Set<AttributeTypeId> requiredTypes = new HashSet<>();
       for (String name : names) {
          requiredTypes.add(AttributeTypeManager.getType(name));
       }
+
       Branch fullBranch = BranchManager.getBranch(branch);
       for (ArtifactType artifactType : ArtifactTypeManager.getConcreteArtifactTypes(branch)) {
-         Collection<IAttributeType> attributeTypes = artifactType.getAttributeTypes(fullBranch);
+         Collection<? extends AttributeTypeId> attributeTypes = artifactType.getAttributeTypes(fullBranch);
          if (Collections.setComplement(requiredTypes, attributeTypes).isEmpty()) {
             selectedArtifactTypes.add(artifactType);
          }
