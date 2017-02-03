@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -42,11 +42,11 @@ public class AgileTeamPointsColumn extends AbstractServicesColumn {
             ArtifactToken agileTeamArt =
                services.getRelationResolver().getRelatedOrNull(sprintArt, AtsRelationTypes.AgileTeamToSprint_AgileTeam);
             Conditions.assertNotNull(agileTeamArt, "Agile Team not found for Stpring %s", sprintArt.toStringWithId());
-            IAttributeType pointsAttrType = AtsAttributeTypes.Points;
+            AttributeTypeId pointsAttrType = AtsAttributeTypes.Points;
             String pointsAttrTypeName = services.getAttributeResolver().getSoleAttributeValue(agileTeamArt,
                AtsAttributeTypes.PointsAttributeType, "");
             if (Strings.isValid(pointsAttrTypeName)) {
-               IAttributeType type = services.getStoreService().getAttributeType(pointsAttrTypeName);
+               AttributeTypeId type = services.getStoreService().getAttributeType(pointsAttrTypeName);
                if (type.isValid()) {
                   pointsAttrType = type;
                }

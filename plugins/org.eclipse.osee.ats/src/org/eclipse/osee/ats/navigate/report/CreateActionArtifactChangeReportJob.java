@@ -28,7 +28,8 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -50,9 +51,9 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class CreateActionArtifactChangeReportJob extends Job {
    private final Set<IAtsTeamWorkflow> teamWfs;
-   private final IAttributeType attributeType;
+   private final AttributeTypeToken attributeType;
 
-   public CreateActionArtifactChangeReportJob(String jobName, Set<IAtsTeamWorkflow> teamWfs, IAttributeType attributeType) {
+   public CreateActionArtifactChangeReportJob(String jobName, Set<IAtsTeamWorkflow> teamWfs, AttributeTypeToken attributeType) {
       super(jobName);
       this.teamWfs = teamWfs;
       this.attributeType = attributeType;
@@ -63,7 +64,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
       return runIt(monitor, getName(), teamWfs, attributeType);
    }
 
-   public static IStatus runIt(IProgressMonitor monitor, String jobName, Collection<IAtsTeamWorkflow> teamWfs, IAttributeType attributeType) {
+   public static IStatus runIt(IProgressMonitor monitor, String jobName, Collection<IAtsTeamWorkflow> teamWfs, AttributeTypeToken attributeType) {
       XResultData rd = new XResultData();
       try {
          if (teamWfs.isEmpty()) {
@@ -98,7 +99,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
    /**
     * used recursively when originally passed a directory, thus an array of files is accepted
     */
-   private static void retrieveData(IProgressMonitor monitor, Collection<IAtsTeamWorkflow> teamWfs, IAttributeType attributeType, XResultData rd) throws OseeCoreException {
+   private static void retrieveData(IProgressMonitor monitor, Collection<IAtsTeamWorkflow> teamWfs, AttributeTypeToken attributeType, XResultData rd) throws OseeCoreException {
       monitor.subTask("Retrieving Actions");
 
       int x = 1;
@@ -126,7 +127,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
       rd.addRaw(AHTML.endMultiColumnTable());
    }
 
-   private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, IAttributeType attributeType, ICommitConfigItem commitConfigArt, XResultData rd) throws OseeCoreException {
+   private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, AttributeTypeId attributeType, ICommitConfigItem commitConfigArt, XResultData rd) throws OseeCoreException {
       String rpcrNum = teamArt.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
       ChangeData changeData = AtsBranchManager.getChangeData(teamArt, commitConfigArt);
       for (Artifact modArt : changeData.getArtifacts(KindType.Artifact, ModificationType.NEW,

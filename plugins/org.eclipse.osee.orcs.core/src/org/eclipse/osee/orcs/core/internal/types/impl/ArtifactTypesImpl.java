@@ -49,7 +49,7 @@ public class ArtifactTypesImpl implements ArtifactTypes {
    }
 
    @Override
-   public Collection<? extends IArtifactType> getAll() throws OseeCoreException {
+   public Collection<IArtifactType> getAll() throws OseeCoreException {
       return getArtifactTypesIndex().getAllTokens();
    }
 

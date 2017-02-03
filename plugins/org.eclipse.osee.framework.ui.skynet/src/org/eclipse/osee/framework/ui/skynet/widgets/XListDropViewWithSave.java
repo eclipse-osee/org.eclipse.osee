@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class XListDropViewWithSave extends XListDropViewer implements IAttributeWidget {
 
    private Artifact artifact;
-   private IAttributeType attributeType;
+   private AttributeTypeToken attributeType;
 
    public XListDropViewWithSave(String displayLabel) {
       super(displayLabel);
@@ -45,7 +45,7 @@ public class XListDropViewWithSave extends XListDropViewer implements IAttribute
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, IAttributeType attributeTypeName) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeTypeName) throws OseeCoreException {
       this.artifact = artifact;
       this.attributeType = attributeTypeName;
       List<Artifact> storedArtifacts = getStored();
@@ -73,7 +73,7 @@ public class XListDropViewWithSave extends XListDropViewer implements IAttribute
    }
 
    @Override
-   public IAttributeType getAttributeType() {
+   public AttributeTypeToken getAttributeType() {
       return attributeType;
    }
 

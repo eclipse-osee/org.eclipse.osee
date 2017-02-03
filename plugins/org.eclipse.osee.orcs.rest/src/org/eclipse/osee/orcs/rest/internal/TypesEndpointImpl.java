@@ -30,7 +30,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.OrcsTypeSheet;
 import org.eclipse.osee.framework.core.data.OrcsTypesConfig;
 import org.eclipse.osee.framework.core.data.OrcsTypesData;
@@ -168,7 +168,7 @@ public class TypesEndpointImpl implements TypesEndpoint {
    public Response getEnums() {
       List<JaxEnumAttribute> attributes = new ArrayList<>();
       AttributeTypes attributeTypes = orcsApi.getOrcsTypes().getAttributeTypes();
-      for (IAttributeType type : attributeTypes.getAll()) {
+      for (AttributeTypeToken type : attributeTypes.getAll()) {
          if (attributeTypes.isEnumerated(type)) {
             JaxEnumAttribute enumAttr = createJaxEnumAttribute(attributeTypes, type);
             attributes.add(enumAttr);
@@ -178,7 +178,7 @@ public class TypesEndpointImpl implements TypesEndpoint {
 
    }
 
-   private JaxEnumAttribute createJaxEnumAttribute(AttributeTypes attributeTypes, IAttributeType type) {
+   private JaxEnumAttribute createJaxEnumAttribute(AttributeTypes attributeTypes, AttributeTypeToken type) {
       JaxEnumAttribute enumAttr = new JaxEnumAttribute();
       enumAttr.setName(type.getName());
       enumAttr.setDescription(type.getDescription());
@@ -209,14 +209,14 @@ public class TypesEndpointImpl implements TypesEndpoint {
 
    @Override
    public Response getEnums(Long uuid) {
-      IAttributeType attrType = orcsApi.getOrcsTypes().getAttributeTypes().get(uuid);
+      AttributeTypeToken attrType = orcsApi.getOrcsTypes().getAttributeTypes().get(uuid);
       JaxEnumAttribute jaxEnumAttribute = createJaxEnumAttribute(orcsApi.getOrcsTypes().getAttributeTypes(), attrType);
       return Response.ok().entity(jaxEnumAttribute).build();
    }
 
    @Override
    public Response getEnumEntries(Long uuid) {
-      IAttributeType attrType = orcsApi.getOrcsTypes().getAttributeTypes().get(uuid);
+      AttributeTypeToken attrType = orcsApi.getOrcsTypes().getAttributeTypes().get(uuid);
       JaxEnumAttribute jaxEnumAttribute = createJaxEnumAttribute(orcsApi.getOrcsTypes().getAttributeTypes(), attrType);
       return Response.ok().entity(jaxEnumAttribute.getEntries()).build();
    }

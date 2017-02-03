@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -70,7 +70,7 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
    }
 
    @SuppressWarnings("unchecked")
-   protected <T> T getAttributeValue(IAttributeType attributeType, Object defaultValue) {
+   protected <T> T getAttributeValue(AttributeTypeId attributeType, Object defaultValue) {
       T value = null;
       try {
          value = (T) services.getAttributeResolver().getSoleAttributeValue(artifact, attributeType, defaultValue);

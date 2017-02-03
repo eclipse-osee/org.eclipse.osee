@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -40,7 +40,7 @@ public interface IAtsQuery {
 
    <T extends IAtsWorkItem> Collection<T> getItems(Class<T> clazz);
 
-   IAtsQuery andAttr(IAttributeType attributeType, Collection<String> values, QueryOption... queryOption) throws OseeCoreException;
+   IAtsQuery andAttr(AttributeTypeId attributeType, Collection<String> values, QueryOption... queryOption) throws OseeCoreException;
 
    IAtsQuery andAtsIds(Collection<String> atsIds);
 
@@ -54,7 +54,7 @@ public interface IAtsQuery {
 
    IAtsQuery andUuids(Long... uuid);
 
-   IAtsQuery andAttr(IAttributeType attributeType, String value, QueryOption... queryOption);
+   IAtsQuery andAttr(AttributeTypeId attributeType, String value, QueryOption... queryOption);
 
    <T extends IAtsWorkItem> ResultSet<T> getResults();
 
@@ -102,7 +102,7 @@ public interface IAtsQuery {
 
    IAtsQuery andReleased(ReleasedOption releaseOption);
 
-   IAtsQuery andTeamWorkflowAttr(IAttributeType attributeType, List<String> values, QueryOption... queryOptions);
+   IAtsQuery andTeamWorkflowAttr(AttributeTypeId attributeType, List<String> values, QueryOption... queryOptions);
 
    IAtsQuery andFilter(IAtsQueryFilter queryFilter);
 
@@ -115,6 +115,6 @@ public interface IAtsQuery {
     */
    boolean exists();
 
-   IAtsQuery andNotExists(IAttributeType attributeType);
+   IAtsQuery andNotExists(AttributeTypeId attributeType);
 
 }

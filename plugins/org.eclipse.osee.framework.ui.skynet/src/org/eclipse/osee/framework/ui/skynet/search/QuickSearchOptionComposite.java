@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.HelpContext;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -268,10 +267,10 @@ public class QuickSearchOptionComposite extends Composite {
       return isOptionSelected(SearchOption.Artifact_Types);
    }
 
-   public IAttributeType[] getAttributeTypeFilter() {
+   public AttributeTypeId[] getAttributeTypeFilter() {
       IOptionConfigurationHandler<?> handler = getConfiguration(SearchOption.Attribute_Types);
-      IAttributeType[] types = (IAttributeType[]) handler.getConfigData();
-      return isAttributeTypeFilterEnabled() ? types : new IAttributeType[0];
+      AttributeTypeId[] types = (AttributeTypeId[]) handler.getConfigData();
+      return isAttributeTypeFilterEnabled() ? types : new AttributeTypeId[0];
    }
 
    public IArtifactType[] getArtifactTypeFilter() {
@@ -428,7 +427,7 @@ public class QuickSearchOptionComposite extends Composite {
       }
 
    }
-   private final static class AttributeTypeFilterConfigHandler implements IOptionConfigurationHandler<IAttributeType> {
+   private final static class AttributeTypeFilterConfigHandler implements IOptionConfigurationHandler<AttributeTypeId> {
       private final List<AttributeTypeToken> configuration;
       private final Comparator<AttributeTypeToken> attrTypeComparator;
 
@@ -479,14 +478,14 @@ public class QuickSearchOptionComposite extends Composite {
       }
 
       @Override
-      public IAttributeType[] getConfigData() {
+      public AttributeTypeId[] getConfigData() {
          if (configuration.isEmpty()) {
             configuration.add(getDefault());
          }
-         return configuration.toArray(new IAttributeType[configuration.size()]);
+         return configuration.toArray(new AttributeTypeId[configuration.size()]);
       }
 
-      public IAttributeType getDefault() {
+      public AttributeTypeToken getDefault() {
          return CoreAttributeTypes.Name;
       }
 

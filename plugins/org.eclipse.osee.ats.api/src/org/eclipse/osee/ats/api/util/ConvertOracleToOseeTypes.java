@@ -109,7 +109,7 @@ public class ConvertOracleToOseeTypes {
    }
 
    public String getAttrJavaType(String javaFieldName, String attrTypeName) {
-      return String.format("public static final IAttributeType %s = TokenFactory.createAttributeType(UUIDL, \"%s\");\n",
+      return String.format("public static final AttributeTypeId %s = TokenFactory.createAttributeType(UUIDL, \"%s\");\n",
          javaFieldName, attrTypeName);
    }
 

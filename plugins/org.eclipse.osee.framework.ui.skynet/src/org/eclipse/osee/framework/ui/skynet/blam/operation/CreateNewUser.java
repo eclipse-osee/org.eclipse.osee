@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XList.XListItem;
  * @author Ryan D. Brooks
  */
 public class CreateNewUser extends AbstractBlam {
-   private final static List<IAttributeType> attributeTypes = Arrays.asList(CoreAttributeTypes.Company,
+   private final static List<AttributeTypeToken> attributeTypes = Arrays.asList(CoreAttributeTypes.Company,
       CoreAttributeTypes.CompanyTitle, CoreAttributeTypes.Street, CoreAttributeTypes.City, CoreAttributeTypes.State,
       CoreAttributeTypes.Zip, CoreAttributeTypes.Phone, CoreAttributeTypes.MobilePhone, CoreAttributeTypes.FaxPhone,
       CoreAttributeTypes.Country, CoreAttributeTypes.Website, CoreAttributeTypes.Notes);
@@ -93,7 +93,7 @@ public class CreateNewUser extends AbstractBlam {
       user.setSoleAttributeValue(CoreAttributeTypes.Email, email);
 
       // Process string attribute names
-      for (IAttributeType attributeType : attributeTypes) {
+      for (AttributeTypeToken attributeType : attributeTypes) {
          String value = variableMap.getString(attributeType.getName());
          if (Strings.isValid(value)) {
             user.setSoleAttributeValue(attributeType, value);
@@ -121,16 +121,16 @@ public class CreateNewUser extends AbstractBlam {
    public String getXWidgetsXml() {
       String widgetXml = "<xWidgets>" +
       //
-      "<XWidget xwidgetType=\"XText\" displayName=\"Name (Last, First)\" required=\"true\"/>" +
-      //
-      "<XWidget xwidgetType=\"XText\" displayName=\"UserId (unique)\" required=\"true\"/>" +
-      //
-      "<XWidget xwidgetType=\"XText\" displayName=\"Email\" required=\"true\"/>" +
-      //
-      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Active\" required=\"true\" defaultValue=\"true\"/>";
+         "<XWidget xwidgetType=\"XText\" displayName=\"Name (Last, First)\" required=\"true\"/>" +
+         //
+         "<XWidget xwidgetType=\"XText\" displayName=\"UserId (unique)\" required=\"true\"/>" +
+         //
+         "<XWidget xwidgetType=\"XText\" displayName=\"Email\" required=\"true\"/>" +
+         //
+         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Active\" required=\"true\" defaultValue=\"true\"/>";
 
       // Add all rest of attributes to fill
-      for (IAttributeType attributeType : attributeTypes) {
+      for (AttributeTypeToken attributeType : attributeTypes) {
          widgetXml += "<XWidget xwidgetType=\"XText\" displayName=\"" + attributeType.getUnqualifiedName() + "\"/>";
       }
       // Add groups to belong to

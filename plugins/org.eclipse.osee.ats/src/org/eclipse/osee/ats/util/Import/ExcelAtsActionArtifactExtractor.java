@@ -49,7 +49,7 @@ import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -217,7 +217,7 @@ public class ExcelAtsActionArtifactExtractor {
                      aData.changeType);
 
                   for (JaxAttribute attr : aData.attributes) {
-                     IAttributeType attrType = AttributeTypeManager.getType(attr.getAttrTypeName());
+                     AttributeTypeId attrType = AttributeTypeManager.getType(attr.getAttrTypeName());
                      changes.setValues(teamWorkflow, attrType, attr.getValues());
                   }
                   newTeamArts.add(teamWorkflow);

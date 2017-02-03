@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -26,13 +26,13 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * Select users and store as single userId attributes
- * 
+ *
  * @author Donald G. Dunne
  */
 public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implements IAttributeWidget {
 
    private Artifact artifact;
-   private IAttributeType attributeType;
+   private AttributeTypeToken attributeType;
 
    public XHyperlabelMemberSelDam(String displayLabel) {
       super(displayLabel);
@@ -44,12 +44,12 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
    }
 
    @Override
-   public IAttributeType getAttributeType() {
+   public AttributeTypeToken getAttributeType() {
       return attributeType;
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, IAttributeType attributeType) {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;
 

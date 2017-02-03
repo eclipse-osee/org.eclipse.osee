@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -41,7 +41,7 @@ public class ArtifactTraceCount extends AbstractArtifactRelationReport {
       return header.toArray(new String[header.size()]);
    }
 
-   private IAttributeType getSubsystemAttributeType(Artifact artifact) throws OseeCoreException {
+   private AttributeTypeId getSubsystemAttributeType(Artifact artifact) throws OseeCoreException {
       for (AttributeTypeId attributeType : artifact.getAttributeTypes()) {
          if (attributeType.equals(CoreAttributeTypes.Partition)) {
             return CoreAttributeTypes.Partition;
@@ -65,7 +65,7 @@ public class ArtifactTraceCount extends AbstractArtifactRelationReport {
          for (RelationTypeSide relationType : relations) {
             rowData[index++] = String.valueOf(art.getRelatedArtifactsCount(relationType));
          }
-         IAttributeType attributeType = getSubsystemAttributeType(art);
+         AttributeTypeId attributeType = getSubsystemAttributeType(art);
          if (attributeType == null) {
             rowData[index++] = "Unspecified";
          } else {

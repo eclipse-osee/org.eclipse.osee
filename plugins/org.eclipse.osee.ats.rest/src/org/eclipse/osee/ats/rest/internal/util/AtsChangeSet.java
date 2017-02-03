@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -127,31 +127,31 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void deleteSoleAttribute(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException {
+   public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType) throws OseeCoreException {
       getTransaction().deleteSoleAttribute(getArtifact(workItem), attributeType);
       add(workItem);
    }
 
    @Override
-   public void setSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, String value) throws OseeCoreException {
+   public void setSoleAttributeValue(IAtsWorkItem workItem, AttributeTypeId attributeType, String value) throws OseeCoreException {
       ArtifactReadable artifact = getArtifact(workItem);
       setSoleAttributeValue(artifact, attributeType, value);
    }
 
    @Override
-   public void setSoleAttributeValue(IAtsObject atsObject, IAttributeType attributeType, Object value) throws OseeCoreException {
+   public void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value) throws OseeCoreException {
       getTransaction().setSoleAttributeValue(getArtifact(atsObject), attributeType, value);
       add(atsObject);
    }
 
    @Override
-   public void deleteAttribute(IAtsObject atsObject, IAttributeType attributeType, Object value) throws OseeCoreException {
+   public void deleteAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value) throws OseeCoreException {
       getTransaction().deleteAttributesWithValue(getArtifact(atsObject), attributeType, value);
       add(atsObject);
    }
 
    @Override
-   public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, IAttributeType attributeType, T value) throws OseeCoreException {
+   public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value) throws OseeCoreException {
       ArtifactId artifactId = getArtifact(workItem);
       getTransaction().setAttributeById(artifactId, new AttributeIdWrapper(attr), value);
       add(workItem);
@@ -170,7 +170,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void addAttribute(IAtsObject atsObject, IAttributeType attributeType, Object value) throws OseeCoreException {
+   public void addAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value) throws OseeCoreException {
       ArtifactReadable artifact = getArtifact(atsObject);
       getTransaction().createAttributeFromString(artifact, attributeType, String.valueOf(value));
       add(atsObject);
@@ -184,7 +184,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void deleteAttributes(IAtsObject atsObject, IAttributeType attributeType) {
+   public void deleteAttributes(IAtsObject atsObject, AttributeTypeId attributeType) {
       ArtifactReadable artifact = getArtifact(atsObject);
       getTransaction().deleteAttributes(artifact, attributeType);
       add(atsObject);
@@ -314,7 +314,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void setSoleAttributeValue(ArtifactId artifact, IAttributeType attrType, String value) {
+   public void setSoleAttributeValue(ArtifactId artifact, AttributeTypeId attrType, String value) {
       ArtifactReadable art = getArtifact(artifact);
       getTransaction().setSoleAttributeValue(art, attrType, value);
       add(art);
@@ -348,14 +348,14 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void setSoleAttributeFromString(ArtifactId artifact, IAttributeType attrType, String value) {
+   public void setSoleAttributeFromString(ArtifactId artifact, AttributeTypeId attrType, String value) {
       ArtifactReadable art = getArtifact(artifact);
       getTransaction().setSoleAttributeFromString(artifact, attrType, value);
       add(art);
    }
 
    @Override
-   public void setSoleAttributeFromStream(ArtifactId artifact, IAttributeType attributeType, InputStream inputStream) {
+   public void setSoleAttributeFromStream(ArtifactId artifact, AttributeTypeId attributeType, InputStream inputStream) {
       ArtifactReadable art = getArtifact(artifact);
       getTransaction().setSoleAttributeFromStream(art, attributeType, inputStream);
       add(art);

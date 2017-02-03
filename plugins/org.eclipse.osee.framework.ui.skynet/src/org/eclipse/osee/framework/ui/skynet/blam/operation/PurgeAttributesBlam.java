@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -54,7 +54,7 @@ public class PurgeAttributesBlam extends AbstractBlam {
       List<Attribute<?>> attributesToPurge = new ArrayList<>();
 
       for (Artifact artifact : artifacts) {
-         for (IAttributeType attributeType : purgeAttributeTypes) {
+         for (AttributeTypeId attributeType : purgeAttributeTypes) {
             //if attribute type is invalid purge them
             if (!artifact.isAttributeTypeValid(attributeType)) {
                for (Attribute<?> attribute : artifact.getAllAttributesIncludingHardDeleted(attributeType)) {

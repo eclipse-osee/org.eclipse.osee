@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultAttributeXWidgetProvider;
@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
  */
 public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider {
 
-   private static final Collection<IAttributeType> XFLAT_ATTRIBUTE_TYPES = new ArrayList<>();
+   private static final Collection<AttributeTypeId> XFLAT_ATTRIBUTE_TYPES = new ArrayList<>();
 
    static {
       XFLAT_ATTRIBUTE_TYPES.add(CoreAttributeTypes.WorkTransition);

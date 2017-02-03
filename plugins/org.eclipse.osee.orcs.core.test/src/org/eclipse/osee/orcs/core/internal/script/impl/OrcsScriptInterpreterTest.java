@@ -90,7 +90,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.orcs.OrcsTypes;
@@ -159,7 +159,7 @@ public class OrcsScriptInterpreterTest {
       when(orcsTypes.getRelationTypes()).thenReturn(relTypes);
 
       List<IArtifactType> artTypeList = Collections.emptyList();
-      List<IAttributeType> attrTypeList = Collections.emptyList();
+      List<AttributeTypeId> attrTypeList = Collections.emptyList();
       List<IRelationType> relTypeList = Arrays.asList((IRelationType) CoreRelationTypes.Default_Hierarchical__Child);
 
       when(artTypes.getAll()).thenAnswer(answer(artTypeList));

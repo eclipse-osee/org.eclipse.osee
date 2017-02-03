@@ -37,7 +37,8 @@ import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -103,9 +104,9 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters(true);
       Set<IAtsWorkItem> workItems = new HashSet<>();
       for (String key : queryParameters.keySet()) {
-         IAttributeType attrType = null;
+         AttributeTypeId attrType = null;
          Long attrTypeId = Strings.isNumeric(key) ? Long.valueOf(key) : null;
-         for (IAttributeType type : atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().getAll()) {
+         for (AttributeTypeToken type : atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().getAll()) {
             if (attrTypeId != null && type.equals(attrTypeId)) {
                attrType = type;
                break;

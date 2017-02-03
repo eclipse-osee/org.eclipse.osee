@@ -18,8 +18,8 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -49,7 +49,7 @@ public class AttributeTypeEditPresenterTest {
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   private static final IAttributeType[] selectableTypes = new IAttributeType[] {
+   private static final AttributeTypeToken[] selectableTypes = new AttributeTypeToken[] {
       CoreAttributeTypes.RelationOrder,
       CoreAttributeTypes.ContentUrl,
       CoreAttributeTypes.Annotation,
@@ -115,7 +115,7 @@ public class AttributeTypeEditPresenterTest {
 
       // None Selected
       display.setSelected();
-      List<IAttributeType> selectable = new ArrayList<>(Arrays.asList(selectableTypes));
+      List<AttributeTypeId> selectable = new ArrayList<>(Arrays.asList(selectableTypes));
       performOp(controller, operationType);
 
       Assert.assertNull(display.getAddWidgetsAttributeTypes());
@@ -126,7 +126,7 @@ public class AttributeTypeEditPresenterTest {
       checkDisplay(display, operationType, expectedTitle, expectedOpMessage, selectable);
 
       // Add one at a time
-      for (IAttributeType itemToSelect : selectableTypes) {
+      for (AttributeTypeToken itemToSelect : selectableTypes) {
          editor.setWasDirtyStateCalled(false);
          Assert.assertFalse(editor.wasDirtyStateCalled());
 
@@ -190,7 +190,7 @@ public class AttributeTypeEditPresenterTest {
       Assert.assertEquals(expectedNoneMessage, info.getSecond());
    }
 
-   private static void checkDisplay(MockDisplay display, OperationType expectedType, String title, String message, List<IAttributeType> expectedSelectable) {
+   private static void checkDisplay(MockDisplay display, OperationType expectedType, String title, String message, List<AttributeTypeId> expectedSelectable) {
       List<AttributeTypeToken> selectableItems = display.getInput();
 
       Assert.assertFalse(
@@ -283,7 +283,7 @@ public class AttributeTypeEditPresenterTest {
          return input;
       }
 
-      public void setSelected(IAttributeType... selected) {
+      public void setSelected(AttributeTypeToken... selected) {
          this.selected = Arrays.asList(selected);
       }
 

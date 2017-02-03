@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.search;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer;
@@ -39,8 +39,8 @@ public class AttributeValueFilter extends SearchFilter {
       if (selection.isEmpty()) {
          return;
       }
-      IAttributeType attributeType =
-         (IAttributeType) ((StructuredSelection) filteredTree.getViewer().getSelection()).getFirstElement();
+      AttributeTypeId attributeType =
+         (AttributeTypeId) ((StructuredSelection) filteredTree.getViewer().getSelection()).getFirstElement();
 
       ISearchPrimitive primitive = new AttributeValueSearch(attributeType, attributeValue.getText());
       filterViewer.addItem(primitive, getFilterName(), attributeType.toString(), "");

@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -24,19 +24,19 @@ import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 public class XCheckBoxDam extends XCheckBox implements IAttributeWidget {
 
    private Artifact artifact;
-   private IAttributeType attributeType;
+   private AttributeTypeToken attributeType;
 
    public XCheckBoxDam(String displayLabel) {
       super(displayLabel);
    }
 
    @Override
-   public IAttributeType getAttributeType() {
+   public AttributeTypeToken getAttributeType() {
       return attributeType;
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, IAttributeType attributeType) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) throws OseeCoreException {
       this.artifact = artifact;
       this.attributeType = attributeType;
       super.set(artifact.getSoleAttributeValue(this.attributeType, Boolean.FALSE));

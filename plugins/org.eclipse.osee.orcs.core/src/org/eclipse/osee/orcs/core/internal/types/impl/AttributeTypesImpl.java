@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.core.internal.types.impl;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -50,17 +50,17 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public Collection<? extends IAttributeType> getAll() throws OseeCoreException {
+   public Collection<AttributeTypeToken> getAll() throws OseeCoreException {
       return provider.getAttributeTypeIndex().getAllTokens();
    }
 
    @Override
-   public IAttributeType get(Id id) {
+   public AttributeTypeToken get(Id id) {
       return provider.getAttributeTypeIndex().get(id);
    }
 
    @Override
-   public IAttributeType get(Long id) {
+   public AttributeTypeToken get(Long id) {
       return provider.getAttributeTypeIndex().get(id);
    }
 
@@ -224,9 +224,9 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public IAttributeType getByName(String attrTypeName) {
-      IAttributeType attrType = null;
-      for (IAttributeType type : getAll()) {
+   public AttributeTypeId getByName(String attrTypeName) {
+      AttributeTypeId attrType = null;
+      for (AttributeTypeToken type : getAll()) {
          if (type.getName().equals(attrTypeName)) {
             attrType = type;
             break;

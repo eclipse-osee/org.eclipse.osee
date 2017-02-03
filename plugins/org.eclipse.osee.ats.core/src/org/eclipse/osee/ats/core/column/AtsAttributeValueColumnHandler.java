@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -94,7 +94,7 @@ public class AtsAttributeValueColumnHandler implements IAtsColumn {
       return "";
    }
 
-   public static String getColumnText(IAtsObject atsObject, IAttributeType attributeType, boolean isActionRollup, boolean inheritParent, IAtsServices services) {
+   public static String getColumnText(IAtsObject atsObject, AttributeTypeId attributeType, boolean isActionRollup, boolean inheritParent, IAtsServices services) {
       return getColumnText(atsObject, attributeType.getId(), isActionRollup, inheritParent, services);
    }
 

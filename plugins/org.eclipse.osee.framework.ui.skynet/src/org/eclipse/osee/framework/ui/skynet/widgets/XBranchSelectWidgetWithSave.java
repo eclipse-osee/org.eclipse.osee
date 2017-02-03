@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class XBranchSelectWidgetWithSave extends XBranchSelectWidget implements IAttributeWidget {
 
    private Artifact artifact;
-   private IAttributeType attributeType;
+   private AttributeTypeToken attributeType;
 
    public XBranchSelectWidgetWithSave(String label) {
       super(label);
@@ -69,7 +69,7 @@ public class XBranchSelectWidgetWithSave extends XBranchSelectWidget implements 
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, IAttributeType attributeTypeName) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeTypeName) throws OseeCoreException {
       this.artifact = artifact;
       this.attributeType = attributeTypeName;
       List<BranchId> storedBranchReference = getStored();
@@ -79,7 +79,7 @@ public class XBranchSelectWidgetWithSave extends XBranchSelectWidget implements 
    }
 
    @Override
-   public IAttributeType getAttributeType() {
+   public AttributeTypeToken getAttributeType() {
       return attributeType;
    }
 

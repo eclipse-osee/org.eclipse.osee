@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -34,18 +34,18 @@ public class CriteriaAttributeOther extends Criteria {
       Arrays.asList(QueryOption.TOKEN_COUNT__MATCH, QueryOption.TOKEN_DELIMITER__EXACT,
          QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.CASE__IGNORE, QueryOption.CASE__MATCH);
 
-   private final Collection<IAttributeType> attributeTypes;
+   private final Collection<AttributeTypeId> attributeTypes;
    private final Collection<String> values;
    private final List<QueryOption> options;
 
-   public CriteriaAttributeOther(Collection<IAttributeType> attributeTypes, Collection<String> values, QueryOption... options) {
+   public CriteriaAttributeOther(Collection<AttributeTypeId> attributeTypes, Collection<String> values, QueryOption... options) {
       super();
       this.attributeTypes = attributeTypes;
       this.values = values;
       this.options = Lists.newArrayList(options);
    }
 
-   public Collection<IAttributeType> getAttributeTypes() {
+   public Collection<AttributeTypeId> getAttributeTypes() {
       return attributeTypes;
    }
 

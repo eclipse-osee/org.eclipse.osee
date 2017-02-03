@@ -36,7 +36,8 @@ import org.eclipse.osee.ats.rest.internal.agile.util.AgileBacklogWriter;
 import org.eclipse.osee.ats.rest.internal.agile.util.AgileFolders;
 import org.eclipse.osee.ats.rest.internal.agile.util.AgileItemWriter;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -131,8 +132,8 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public IAttributeType getAgileTeamPointsAttributeType(IAgileTeam team) {
-      IAttributeType type = AtsAttributeTypes.Points;
+   public AttributeTypeId getAgileTeamPointsAttributeType(IAgileTeam team) {
+      AttributeTypeId type = AtsAttributeTypes.Points;
       String attrTypeName =
          atsServer.getAttributeResolver().getSoleAttributeValue(team, AtsAttributeTypes.PointsAttributeType, null);
       if (Strings.isValid(attrTypeName)) {
@@ -141,9 +142,9 @@ public class AgileService implements IAgileService {
       return type;
    }
 
-   private IAttributeType getTypeFromName(String attrTypeName) {
-      IAttributeType type = null;
-      for (IAttributeType attrType : atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().getAll()) {
+   private AttributeTypeId getTypeFromName(String attrTypeName) {
+      AttributeTypeId type = null;
+      for (AttributeTypeToken attrType : atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().getAll()) {
          if (attrType.getName().equals(attrTypeName)) {
             type = attrType;
             break;

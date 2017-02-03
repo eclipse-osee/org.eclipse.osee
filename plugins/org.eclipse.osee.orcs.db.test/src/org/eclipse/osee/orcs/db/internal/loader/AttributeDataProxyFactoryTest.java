@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
@@ -38,7 +38,7 @@ public class AttributeDataProxyFactoryTest {
    //@formatter:off
    @Mock DataProxyFactoryProvider proxyProvider;
    @Mock AttributeTypes attributeTypeCache;
-   @Mock IAttributeType attributeType;
+   @Mock AttributeTypeToken attributeType;
    @Mock DataProxyFactory dataProxyFactory;
    @Mock DataProxy proxy;
    //@formatter:on

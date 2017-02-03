@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.internal.importer.coverage;
 
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 
 /**
@@ -28,7 +28,7 @@ public class CoverageUtil {
    public static final IArtifactType CoverageFolder = TokenFactory.createArtifactType(0x000000000000004D, "Coverage Folder");
 
    // Attributes
-   public static final IAttributeType Item = TokenFactory.createAttributeType(1152921504606847236L, "coverage.Coverage Item");
+   public static final AttributeTypeToken Item = TokenFactory.createAttributeType(1152921504606847236L, "coverage.Coverage Item");
 
    //@formatter:on
 

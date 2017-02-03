@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.lang.ref.WeakReference;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 public class XTextDam extends XText implements IAttributeWidget {
 
    private Artifact artifactStrongRef;
-   private IAttributeType attributeType;
+   private AttributeTypeToken attributeType;
    private final boolean isWeakReference;
    private WeakReference<Artifact> artifactRef;
 
@@ -57,7 +57,7 @@ public class XTextDam extends XText implements IAttributeWidget {
    }
 
    @Override
-   public IAttributeType getAttributeType() {
+   public AttributeTypeToken getAttributeType() {
       return attributeType;
    }
 
@@ -70,7 +70,7 @@ public class XTextDam extends XText implements IAttributeWidget {
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, IAttributeType attributeType) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) throws OseeCoreException {
       this.attributeType = attributeType;
       setArtifact(artifact);
       onAttributeTypeSet();

@@ -15,7 +15,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -87,7 +87,7 @@ public class MassLabelProvider extends XViewerLabelProvider {
             return "";
          }
 
-         IAttributeType attributeType = AttributeTypeManager.getType(col.getName());
+         AttributeTypeId attributeType = AttributeTypeManager.getType(col.getName());
          if (!artifact.isAttributeTypeValid(attributeType)) {
             return "";
          }

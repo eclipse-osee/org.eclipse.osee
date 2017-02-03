@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.core.client.validator.ArtifactValueProvider;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 public class ReviewDefectManager {
 
    private final static String DEFECT_ITEM_TAG = "Item";
-   private static final IAttributeType REVIEW_STORAGE_TYPE = AtsAttributeTypes.ReviewDefect;
+   private static final AttributeTypeToken REVIEW_STORAGE_TYPE = AtsAttributeTypes.ReviewDefect;
 
    private final Matcher defectMatcher =
       java.util.regex.Pattern.compile("<" + DEFECT_ITEM_TAG + ">(.*?)</" + DEFECT_ITEM_TAG + ">",

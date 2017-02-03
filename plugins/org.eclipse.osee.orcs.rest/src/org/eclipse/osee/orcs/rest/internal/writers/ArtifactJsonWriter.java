@@ -26,7 +26,7 @@ import javax.ws.rs.ext.Provider;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -100,10 +100,10 @@ public class ArtifactJsonWriter implements MessageBodyWriter<Object> {
                writer.writeStringField("Name", artifact.getName());
             } else {
                AttributeTypes attributeTypes = getAttibuteTypes();
-               Collection<? extends IAttributeType> attrTypes = attributeTypes.getAll();
+               Collection<AttributeTypeToken> attrTypes = attributeTypes.getAll();
                ResultSet<? extends AttributeReadable<Object>> attributes = artifact.getAttributes();
                if (!attributes.isEmpty()) {
-                  for (IAttributeType attrType : attrTypes) {
+                  for (AttributeTypeToken attrType : attrTypes) {
                      if (artifact.isAttributeTypeValid(attrType)) {
                         List<Object> attributeValues = artifact.getAttributeValues(attrType);
                         if (!attributeValues.isEmpty()) {

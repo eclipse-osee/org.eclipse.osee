@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.db.internal.console;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleParameters;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -126,7 +126,7 @@ public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleComma
 
       private void populateAttributeTypeJoin(IdJoinQuery typeJoin) throws OseeCoreException {
          AttributeTypes types = orcsApi.getOrcsTypes().getAttributeTypes();
-         for (IAttributeType attributeType : types.getAll()) {
+         for (AttributeTypeId attributeType : types.getAll()) {
             if (types.getMaxOccurrences(attributeType) == 1) {
                typeJoin.add(attributeType);
             }

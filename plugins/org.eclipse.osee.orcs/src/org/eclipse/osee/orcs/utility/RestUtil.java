@@ -17,7 +17,7 @@ import com.google.gson.JsonParser;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.core.HttpHeaders;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -98,7 +98,7 @@ public class RestUtil {
    }
 
    private static void addAttribute(OrcsApi orcsApi, JSONObject jsonObj, ArtifactReadable art) throws Exception {
-      for (IAttributeType attrType : orcsApi.getOrcsTypes().getAttributeTypes().getAll()) {
+      for (AttributeTypeToken attrType : orcsApi.getOrcsTypes().getAttributeTypes().getAll()) {
          if (art.isAttributeTypeValid(attrType)) {
             ResultSet<? extends AttributeReadable<Object>> attributeVals = art.getAttributes();
             if (!attributeVals.isEmpty()) {

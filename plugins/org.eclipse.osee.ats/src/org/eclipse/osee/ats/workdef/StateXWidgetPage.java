@@ -40,7 +40,7 @@ import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -258,7 +258,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
          if (layoutData.getXWidgetName().equals(XCommitManager.WIDGET_NAME)) {
             description = XCommitManager.DESCRIPTION;
          }
-         IAttributeType type = AtsAttributeTypes.getTypeByName(layoutData.getStoreName());
+         AttributeTypeToken type = AtsAttributeTypes.getTypeByName(layoutData.getStoreName());
          if (type != null && Strings.isValid(type.getDescription())) {
             description = type.getDescription();
          }

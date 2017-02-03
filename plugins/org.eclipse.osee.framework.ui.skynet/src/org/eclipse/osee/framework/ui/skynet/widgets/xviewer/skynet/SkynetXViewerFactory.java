@@ -25,7 +25,6 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomizations;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -121,7 +120,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
          for (Artifact art : artifacts) {
             attributeTypes.addAll(art.getAttributeTypes());
             // include attribute types that are used even if invalid
-            for (IAttributeType attrType : art.getAttributeTypesUsed()) {
+            for (AttributeTypeToken attrType : art.getAttributeTypesUsed()) {
                attributeTypes.add(attrType);
                attrTypesUsed.add(attrType);
             }

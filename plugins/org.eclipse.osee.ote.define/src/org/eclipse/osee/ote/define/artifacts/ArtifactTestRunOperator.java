@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -236,7 +236,7 @@ public class ArtifactTestRunOperator implements TestRunOperator {
       return processDateAttribute(OteAttributeTypes.START_DATE);
    }
 
-   private Date processDateAttribute(IAttributeType attributeType) throws OseeCoreException {
+   private Date processDateAttribute(AttributeTypeId attributeType) throws OseeCoreException {
       Date date = artifact.getSoleAttributeValue(attributeType, null);
       if (date == null) {
          date = new Date(0);

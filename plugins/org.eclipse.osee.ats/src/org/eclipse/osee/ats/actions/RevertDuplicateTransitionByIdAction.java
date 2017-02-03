@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -120,7 +120,7 @@ public class RevertDuplicateTransitionByIdAction extends Action {
    @SuppressWarnings("deprecation")
    protected static boolean revertTransition(Artifact art, XResultData results, boolean persist, SkynetTransaction persistTransaction) {
       List<Attribute<Object>> attributes = null;
-      for (IAttributeType attrType : Arrays.asList(AtsAttributeTypes.CompletedDate, AtsAttributeTypes.CancelledDate)) {
+      for (AttributeTypeId attrType : Arrays.asList(AtsAttributeTypes.CompletedDate, AtsAttributeTypes.CancelledDate)) {
          attributes = art.getAttributes(attrType);
          if (attributes.size() > 1) {
             break;

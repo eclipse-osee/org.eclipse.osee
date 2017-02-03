@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.search;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeNotExistsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
@@ -34,7 +34,7 @@ public class AttributeNotExistsFilter extends SearchFilter {
 
    @Override
    public void addFilterTo(FilterTableViewer filterViewer) {
-      Collection<IAttributeType> attrTypes = attributeTypeList.getChecked();
+      Collection<AttributeTypeId> attrTypes = attributeTypeList.getChecked();
       List<AttributeTypeId> attributeTypes = Collections.castAll(attrTypes);
 
       ISearchPrimitive primitive = new AttributeNotExistsSearch(attributeTypes);

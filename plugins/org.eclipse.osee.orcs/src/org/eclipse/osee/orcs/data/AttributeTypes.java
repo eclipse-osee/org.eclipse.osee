@@ -12,12 +12,12 @@ package org.eclipse.osee.orcs.data;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface AttributeTypes extends IdCollection<IAttributeType> {
+public interface AttributeTypes extends IdCollection<AttributeTypeToken> {
 
    Collection<AttributeTypeId> getAllTaggable();
 
@@ -55,6 +55,6 @@ public interface AttributeTypes extends IdCollection<IAttributeType> {
 
    boolean isFloatingType(AttributeTypeId attrType);
 
-   IAttributeType getByName(String attrTypeName);
+   AttributeTypeId getByName(String attrTypeName);
 
 }

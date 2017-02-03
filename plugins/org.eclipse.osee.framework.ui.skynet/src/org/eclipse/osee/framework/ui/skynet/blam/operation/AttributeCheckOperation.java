@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -37,12 +37,12 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 public class AttributeCheckOperation extends AbstractOperation {
 
    private final List<Artifact> folders;
-   private final IAttributeType attribute;
+   private final AttributeTypeId attribute;
    private boolean changeValues;
    private final boolean multipleValuesRequested;
    private boolean multipleValuesFound;
 
-   public AttributeCheckOperation(OperationLogger logger, List<Artifact> artifacts, IAttributeType attribute, boolean changeValues, boolean multipleRequested) {
+   public AttributeCheckOperation(OperationLogger logger, List<Artifact> artifacts, AttributeTypeId attribute, boolean changeValues, boolean multipleRequested) {
       super("Attribute Check ", Activator.PLUGIN_ID, logger);
       this.folders = artifacts;
       this.attribute = attribute;

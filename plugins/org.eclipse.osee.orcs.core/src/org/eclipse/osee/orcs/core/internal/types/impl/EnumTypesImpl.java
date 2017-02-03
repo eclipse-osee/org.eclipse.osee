@@ -29,7 +29,7 @@ public class EnumTypesImpl implements EnumTypes {
    }
 
    @Override
-   public Collection<? extends EnumType> getAll() throws OseeCoreException {
+   public Collection<EnumType> getAll() throws OseeCoreException {
       return getIndex().getAllTokens();
    }
 

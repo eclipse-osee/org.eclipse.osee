@@ -17,7 +17,7 @@ import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -90,7 +90,7 @@ public class PurgeAttributeTypeCommand implements ConsoleCommand {
             for (String uuid : typesToPurge) {
                try {
                   Long typeId = Long.valueOf(uuid);
-                  IAttributeType type = attributeTypes.get(typeId);
+                  AttributeTypeId type = attributeTypes.get(typeId);
                   console.writeln("Type [%s] found.", type);
                   toReturn.add(type);
                } catch (OseeArgumentException ex) {

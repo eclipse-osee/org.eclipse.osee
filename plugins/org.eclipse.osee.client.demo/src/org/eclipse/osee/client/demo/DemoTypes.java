@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.client.demo;
 
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 
 /**
@@ -21,9 +21,9 @@ public final class DemoTypes {
 
    // @formatter:off
    public static final IArtifactType DemoTestRequirement = TokenFactory.createArtifactType(86, "Demo Artifact With Selective Partition");
-   
+
    public static final IArtifactType DemoDslArtifact = TokenFactory.createArtifactType(204526342635554L, "Demo DSL Artifact");
-   public static final IAttributeType DemoDslAttribute = TokenFactory.createAttributeType(1153126013769613775L, "AxRbLlj+c2ZHjBeumfgA");
+   public static final AttributeTypeToken DemoDslAttribute = TokenFactory.createAttributeType(1153126013769613775L, "AxRbLlj+c2ZHjBeumfgA");
    // @formatter:on
 
    private DemoTypes() {

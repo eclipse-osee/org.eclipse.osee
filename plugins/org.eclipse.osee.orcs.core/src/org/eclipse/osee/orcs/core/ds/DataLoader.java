@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.core.ds;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -68,7 +68,7 @@ public interface DataLoader extends Loader {
 
    ///////// TYPES
 
-   DataLoader withAttributeTypes(IAttributeType... attributeType) throws OseeCoreException;
+   DataLoader withAttributeTypes(AttributeTypeId... attributeType) throws OseeCoreException;
 
    DataLoader withAttributeTypes(Collection<? extends AttributeTypeId> attributeTypes) throws OseeCoreException;
 

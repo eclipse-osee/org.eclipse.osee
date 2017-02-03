@@ -35,9 +35,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -85,11 +86,11 @@ public class OrcsTypesTest {
    private static final IArtifactType OTHER_ARTIFACT = TokenFactory.createArtifactType(32, "Other Artifact");
    private static final IArtifactType LAST_ARTIFACT = TokenFactory.createArtifactType(33, "Last Artifact");
 
-   private static final IAttributeType NAME = TokenFactory.createAttributeType(1152921504606847088L, "Name");
-   private static final IAttributeType ANNOTATION = TokenFactory.createAttributeType(1152921504606847094L, "Annotation");
-   private static final IAttributeType WORDML = TokenFactory.createAttributeType(1152921504606847098L, "WordML");
-   private static final IAttributeType FIELD_1 = TokenFactory.createAttributeType(1152921504606847104L, "Field 1");
-   private static final IAttributeType FIELD_2 = TokenFactory.createAttributeType(1152921504606847105L, "Field 2");
+   private static final AttributeTypeId NAME = TokenFactory.createAttributeType(1152921504606847088L, "Name");
+   private static final AttributeTypeId ANNOTATION = TokenFactory.createAttributeType(1152921504606847094L, "Annotation");
+   private static final AttributeTypeId WORDML = TokenFactory.createAttributeType(1152921504606847098L, "WordML");
+   private static final AttributeTypeId FIELD_1 = TokenFactory.createAttributeType(1152921504606847104L, "Field 1");
+   private static final AttributeTypeId FIELD_2 = TokenFactory.createAttributeType(1152921504606847105L, "Field 2");
 
    private static final IRelationType REQUIREMENT_REL = TokenFactory.createRelationType(2305843009213694295L, "Requirement Relation");
    private static final IRelationType ANOTHER_REL = TokenFactory.createRelationType(2305843009213694296L, "Another Relation");
@@ -719,7 +720,7 @@ public class OrcsTypesTest {
 
       assertEquals(6, attrTypes.size());
 
-      IAttributeType attrType = attrTypes.get(1152921504606847106L);
+      AttributeTypeToken attrType = attrTypes.get(1152921504606847106L);
 
       //@formatter:off
       assertEquals("Field 3", attrType.getName());

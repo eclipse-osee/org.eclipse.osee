@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class DecisionOptions {
 
-   private final IAttributeType attributeType;
+   private final AttributeTypeId attributeType;
    private final IAtsServices services;
    private final IAtsDecisionReview decRev;
 
@@ -35,7 +35,7 @@ public class DecisionOptions {
       this.attributeType = AtsAttributeTypes.DecisionReviewOptions;
    }
 
-   public IAttributeType getAttributeType() {
+   public AttributeTypeId getAttributeType() {
       return attributeType;
    }
 

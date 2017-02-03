@@ -30,7 +30,7 @@ public class TokenTypeIndex<TOKEN extends Id, DSLTYPE> {
       tokenToType = HashBiMap.create();
    }
 
-   public Collection<? extends TOKEN> getAllTokens() {
+   public Collection<TOKEN> getAllTokens() {
       return tokenToType.keySet();
    }
 

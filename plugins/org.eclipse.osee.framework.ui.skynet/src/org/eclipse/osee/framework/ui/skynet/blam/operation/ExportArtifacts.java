@@ -19,7 +19,7 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -40,7 +40,7 @@ import org.eclipse.swt.program.Program;
 public class ExportArtifacts extends AbstractBlam {
    private CharBackedInputStream charBak;
    private ISheetWriter excelWriter;
-   private IAttributeType[] attributeColumns;
+   private AttributeTypeToken[] attributeColumns;
    private static final int NUM_FIXED_COLUMNS = 3;
 
    @Override
@@ -72,7 +72,7 @@ public class ExportArtifacts extends AbstractBlam {
       excelWriter.writeCell("GUID");
       excelWriter.writeCell("Artifact Type");
       excelWriter.writeCell("Name");
-      for (IAttributeType attributeType : attributeColumns) {
+      for (AttributeTypeToken attributeType : attributeColumns) {
          excelWriter.writeCell(attributeType.getName());
       }
       excelWriter.endRow();

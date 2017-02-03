@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.client.validator.ArtifactValueProvider;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -49,7 +49,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 public class UserRoleManager {
 
    private final static String ROLE_ITEM_TAG = "Role";
-   private static final IAttributeType ATS_ROLE_STORAGE_TYPE = AtsAttributeTypes.Role;
+   private static final AttributeTypeToken ATS_ROLE_STORAGE_TYPE = AtsAttributeTypes.Role;
 
    private final Matcher roleMatcher =
       java.util.regex.Pattern.compile("<" + ROLE_ITEM_TAG + ">(.*?)</" + ROLE_ITEM_TAG + ">",

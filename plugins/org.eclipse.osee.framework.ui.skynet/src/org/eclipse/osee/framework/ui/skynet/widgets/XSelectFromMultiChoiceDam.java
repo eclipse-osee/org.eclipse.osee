@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -29,10 +29,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeD
 /**
  * @author Roberto E. Escobar
  */
-public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String>implements IAttributeWidget {
+public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> implements IAttributeWidget {
 
    private Artifact artifact;
-   private IAttributeType attributeType;
+   private AttributeTypeToken attributeType;
 
    public XSelectFromMultiChoiceDam(String displayLabel) {
       super(displayLabel);
@@ -45,12 +45,12 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String>implemen
    }
 
    @Override
-   public IAttributeType getAttributeType() {
+   public AttributeTypeToken getAttributeType() {
       return attributeType;
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, IAttributeType attributeType) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) throws OseeCoreException {
       this.artifact = artifact;
       this.attributeType = attributeType;
       int minOccurrence = AttributeTypeManager.getMinOccurrences(attributeType);

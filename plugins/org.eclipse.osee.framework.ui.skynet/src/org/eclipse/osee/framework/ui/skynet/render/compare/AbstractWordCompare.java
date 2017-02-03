@@ -21,7 +21,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -51,12 +51,12 @@ import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 public abstract class AbstractWordCompare implements IComparator {
    private final FileSystemRenderer renderer;
    private final ArtifactDeltaToFileConverter converter;
-   private final List<IAttributeType> wordAttributeType = new ArrayList<>();
+   private final List<AttributeTypeId> wordAttributeType = new ArrayList<>();
    protected boolean skipDialogs;
    private static final Pattern authorPattern =
       Pattern.compile("aml:author=\".*?\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
-   public AbstractWordCompare(FileSystemRenderer renderer, IAttributeType... wordAttributeType) {
+   public AbstractWordCompare(FileSystemRenderer renderer, AttributeTypeId... wordAttributeType) {
       this.renderer = renderer;
       this.wordAttributeType.addAll(Arrays.asList(wordAttributeType));
       converter = new ArtifactDeltaToFileConverter(renderer);
@@ -219,7 +219,7 @@ public abstract class AbstractWordCompare implements IComparator {
    private Attribute<String> getWordContent(Artifact artifact) throws OseeCoreException {
       Attribute<String> toReturn = null;
       if (artifact != null && !artifact.isDeleted()) {
-         for (IAttributeType wordAttr : wordAttributeType) {
+         for (AttributeTypeId wordAttr : wordAttributeType) {
             toReturn = artifact.getSoleAttribute(wordAttr);
             if (toReturn != null) {
                break;

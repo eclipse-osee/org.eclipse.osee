@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
@@ -46,7 +46,7 @@ public final class OseeUtil {
       return TokenFactory.createArtifactType(checkAndGetUuid(model), Strings.unquote(model.getName()));
    }
 
-   public static IAttributeType toToken(XAttributeType model) throws OseeCoreException {
+   public static AttributeTypeId toToken(XAttributeType model) throws OseeCoreException {
       return TokenFactory.createAttributeType(checkAndGetUuid(model), Strings.unquote(model.getName()));
    }
 

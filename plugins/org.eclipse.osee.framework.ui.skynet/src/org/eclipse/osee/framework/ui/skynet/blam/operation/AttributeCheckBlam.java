@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -32,7 +32,7 @@ public class AttributeCheckBlam extends AbstractBlam {
 
    @Override
    public IOperation createOperation(VariableMap variableMap, OperationLogger logger) throws Exception {
-      IAttributeType attributeToCheck = variableMap.getAttributeType(ATTRIBUTE);
+      AttributeTypeId attributeToCheck = variableMap.getAttributeType(ATTRIBUTE);
       List<Artifact> artifacts = variableMap.getArtifacts(ARTIFACTS);
       boolean changeValues = variableMap.getBoolean(CHANGE_INCONSISTENT_VALUES);
       boolean multipleValues = variableMap.getBoolean(MULTIPLE_VALUES);

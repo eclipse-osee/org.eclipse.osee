@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
@@ -77,17 +77,17 @@ public interface TransactionBuilder {
 
    void setName(ArtifactId art, String value) throws OseeCoreException;
 
-   AttributeId createAttribute(ArtifactId art, IAttributeType attributeType) throws OseeCoreException;
+   AttributeId createAttribute(ArtifactId art, AttributeTypeId attributeType) throws OseeCoreException;
 
    <T> AttributeId createAttribute(ArtifactId art, AttributeTypeId attributeType, T value) throws OseeCoreException;
 
-   AttributeId createAttributeFromString(ArtifactId art, IAttributeType attributeType, String value) throws OseeCoreException;
+   AttributeId createAttributeFromString(ArtifactId art, AttributeTypeId attributeType, String value) throws OseeCoreException;
 
-   <T> void setSoleAttributeValue(ArtifactId art, IAttributeType attributeType, T value) throws OseeCoreException;
+   <T> void setSoleAttributeValue(ArtifactId art, AttributeTypeId attributeType, T value) throws OseeCoreException;
 
-   void setSoleAttributeFromStream(ArtifactId art, IAttributeType attributeType, InputStream stream) throws OseeCoreException;
+   void setSoleAttributeFromStream(ArtifactId art, AttributeTypeId attributeType, InputStream stream) throws OseeCoreException;
 
-   void setSoleAttributeFromString(ArtifactId art, IAttributeType attributeType, String value) throws OseeCoreException;
+   void setSoleAttributeFromString(ArtifactId art, AttributeTypeId attributeType, String value) throws OseeCoreException;
 
    <T> void setAttributesFromValues(ArtifactId art, AttributeTypeId attributeType, T... values) throws OseeCoreException;
 
@@ -107,11 +107,11 @@ public interface TransactionBuilder {
 
    void deleteByAttributeId(ArtifactId art, AttributeId attrId) throws OseeCoreException;
 
-   void deleteSoleAttribute(ArtifactId art, IAttributeType attributeType) throws OseeCoreException;
+   void deleteSoleAttribute(ArtifactId art, AttributeTypeId attributeType) throws OseeCoreException;
 
-   void deleteAttributes(ArtifactId art, IAttributeType attributeType) throws OseeCoreException;
+   void deleteAttributes(ArtifactId art, AttributeTypeId attributeType) throws OseeCoreException;
 
-   void deleteAttributesWithValue(ArtifactId art, IAttributeType attributeType, Object value) throws OseeCoreException;
+   void deleteAttributesWithValue(ArtifactId art, AttributeTypeId attributeType, Object value) throws OseeCoreException;
 
    /// TX
 

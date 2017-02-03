@@ -13,7 +13,8 @@ package org.eclipse.osee.orcs.core.internal.attribute.primitives;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.Reference;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -188,7 +189,7 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
     * @throws OseeCoreException
     */
    @Override
-   public IAttributeType getAttributeType() throws OseeCoreException {
+   public AttributeTypeToken getAttributeType() throws OseeCoreException {
       return attributeTypeCache.get(getOrcsData().getTypeUuid());
    }
 
@@ -199,7 +200,7 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
     * @throws OseeCoreException
     */
    @Override
-   public boolean isOfType(IAttributeType otherAttributeType) throws OseeCoreException {
+   public boolean isOfType(AttributeTypeId otherAttributeType) throws OseeCoreException {
       return getAttributeType().equals(otherAttributeType);
    }
 

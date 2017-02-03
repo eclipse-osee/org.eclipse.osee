@@ -22,7 +22,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -124,8 +124,8 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
             containers.add(container);
             return container.isEditable() ? ImageManager.getImage(FrameworkImage.EDIT_ARTIFACT) : ImageManager.getImage(
                FrameworkImage.ADD_GREEN);
-         } else if (element instanceof IAttributeType) {
-            IAttributeType type = (IAttributeType) element;
+         } else if (element instanceof AttributeTypeId) {
+            AttributeTypeId type = (AttributeTypeId) element;
             for (AttributeTypeContainer container : containers) {
                if (container.contains(type)) {
                   return container.isEditable() ? ImageManager.getImage(
@@ -233,7 +233,7 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
          return editable;
       }
 
-      public boolean contains(IAttributeType type) {
+      public boolean contains(AttributeTypeId type) {
          return getTypes().contains(type);
       }
    }

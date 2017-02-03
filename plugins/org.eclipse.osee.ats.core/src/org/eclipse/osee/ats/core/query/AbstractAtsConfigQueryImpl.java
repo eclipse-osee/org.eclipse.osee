@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
 import org.eclipse.osee.ats.api.query.IAtsQueryFilter;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -155,7 +155,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    }
 
    @Override
-   public IAtsConfigQuery andAttr(IAttributeType attributeType, Collection<String> values, QueryOption... queryOptions) throws OseeCoreException {
+   public IAtsConfigQuery andAttr(AttributeTypeId attributeType, Collection<String> values, QueryOption... queryOptions) throws OseeCoreException {
       andAttr.add(new AtsAttributeQuery(attributeType, values, queryOptions));
       return this;
    }
@@ -167,7 +167,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    }
 
    @Override
-   public IAtsConfigQuery andAttr(IAttributeType attributeType, String value, QueryOption... queryOption) {
+   public IAtsConfigQuery andAttr(AttributeTypeId attributeType, String value, QueryOption... queryOption) {
       return andAttr(attributeType, Collections.singleton(value), queryOption);
    }
 
@@ -201,7 +201,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
 
    public abstract void queryAndIsOfType(List<IArtifactType> artTypes);
 
-   public abstract void queryAnd(IAttributeType attrType, String value);
+   public abstract void queryAnd(AttributeTypeId attrType, String value);
 
    private void addAttributeCriteria() {
       if (!andAttr.isEmpty()) {
@@ -211,9 +211,9 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
       }
    }
 
-   public abstract void queryAnd(IAttributeType attrType, Collection<String> values, QueryOption[] queryOption);
+   public abstract void queryAnd(AttributeTypeId attrType, Collection<String> values, QueryOption[] queryOption);
 
-   public abstract void queryAnd(IAttributeType attrType, String value, QueryOption[] queryOption);
+   public abstract void queryAnd(AttributeTypeId attrType, String value, QueryOption[] queryOption);
 
    private void addUuidCriteria(Collection<Long> uuids) {
       if (uuids != null) {
@@ -227,7 +227,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
 
    public abstract void queryAndLocalIds(List<Integer> artIds);
 
-   public abstract void queryAnd(IAttributeType attrType, Collection<String> values);
+   public abstract void queryAnd(AttributeTypeId attrType, Collection<String> values);
 
    public IArtifactType getArtifactType() {
       return artifactType;

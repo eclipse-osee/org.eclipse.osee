@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -132,7 +132,7 @@ public class ConvertWorkflowStatesOperation extends AbstractOperation {
    }
 
    @SuppressWarnings("deprecation")
-   private void convertStateAttributes(AbstractWorkflowArtifact awa, IAttributeType attrType) throws OseeCoreException {
+   private void convertStateAttributes(AbstractWorkflowArtifact awa, AttributeTypeToken attrType) throws OseeCoreException {
       for (Attribute<Object> attribute : awa.getAttributes(attrType)) {
          for (Entry<String, String> fromToState : fromStateToStateMap.entrySet()) {
             if (((String) attribute.getValue()).startsWith(fromToState.getKey() + ";")) {
@@ -161,7 +161,7 @@ public class ConvertWorkflowStatesOperation extends AbstractOperation {
       convertExactMatchAttributeValue(awa, AtsAttributeTypes.CancelledFromState);
    }
 
-   private void convertExactMatchAttributeValue(AbstractWorkflowArtifact awa, IAttributeType attrType) throws OseeCoreException {
+   private void convertExactMatchAttributeValue(AbstractWorkflowArtifact awa, AttributeTypeToken attrType) throws OseeCoreException {
       @SuppressWarnings("deprecation")
       List<Attribute<Object>> attributes = awa.getAttributes(attrType);
       if (attributes != null && !attributes.isEmpty()) {

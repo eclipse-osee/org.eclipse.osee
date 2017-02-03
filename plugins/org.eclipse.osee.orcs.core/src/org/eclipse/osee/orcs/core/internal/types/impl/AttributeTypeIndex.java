@@ -14,19 +14,19 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeTypeIndex extends TokenTypeIndex<IAttributeType, XAttributeType> {
+public class AttributeTypeIndex extends TokenTypeIndex<AttributeTypeToken, XAttributeType> {
 
    private final Set<AttributeTypeId> taggables = new HashSet<>();
 
    @Override
-   public void put(IAttributeType token, XAttributeType dslType) {
+   public void put(AttributeTypeToken token, XAttributeType dslType) {
       super.put(token, dslType);
       if (Strings.isValid(dslType.getTaggerId())) {
          taggables.add(token);

@@ -18,7 +18,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -45,8 +45,8 @@ public class AccessDataTest {
    private BranchId branchToCheck1;
    private BranchId branchToCheck2;
    private IArtifactType artifactType;
-   private IAttributeType attributeType;
-   private IAttributeType wordAttributeType;
+   private AttributeTypeId attributeType;
+   private AttributeTypeId wordAttributeType;
 
    private RelationTypeSide relTypeSide1;
    private RelationTypeSide relTypeSide2;

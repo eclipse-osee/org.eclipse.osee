@@ -62,7 +62,7 @@ import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.ats.rest.internal.world.WorldResource;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -619,7 +619,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       Conditions.assertNotNull(itemArt, "Work Item not found with id %s", itemId);
       IAgileItem item = atsServer.getWorkItemFactory().getAgileItem(itemArt);
       IAgileTeam team = atsServer.getAgileService().getAgileTeam(item);
-      IAttributeType agileTeamPointsAttributeType = atsServer.getAgileService().getAgileTeamPointsAttributeType(team);
+      AttributeTypeId agileTeamPointsAttributeType = atsServer.getAgileService().getAgileTeamPointsAttributeType(team);
       IAtsChangeSet changes = atsServer.createChangeSet("Set Points", AtsCoreUsers.SYSTEM_USER);
       changes.setSoleAttributeValue(item, agileTeamPointsAttributeType, points);
       changes.execute();

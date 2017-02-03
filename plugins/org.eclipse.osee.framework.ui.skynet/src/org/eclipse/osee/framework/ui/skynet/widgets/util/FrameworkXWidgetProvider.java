@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -108,7 +108,7 @@ public final class FrameworkXWidgetProvider {
    }
 
    private String getXWidgetNameBasedOnAttribute(String attributeTypeName) throws OseeCoreException {
-      IAttributeType attributeType = AttributeTypeManager.getType(attributeTypeName);
+      AttributeTypeToken attributeType = AttributeTypeManager.getType(attributeTypeName);
       if (attributeType != null) {
          IAttributeXWidgetProvider xWidgetProvider = AttributeXWidgetManager.getAttributeXWidgetProvider(attributeType);
          List<XWidgetRendererItem> concreteWidgets = xWidgetProvider.getDynamicXWidgetLayoutData(attributeType);
@@ -468,7 +468,7 @@ public final class FrameworkXWidgetProvider {
       Artifact artifact = xWidgetLayoutData.getArtifact();
       if (artifact != null) {
          if (xWidget instanceof IAttributeWidget) {
-            IAttributeType attributeType = AttributeTypeManager.getType(xWidgetLayoutData.getStoreName());
+            AttributeTypeToken attributeType = AttributeTypeManager.getType(xWidgetLayoutData.getStoreName());
             ((IAttributeWidget) xWidget).setAttributeType(artifact, attributeType);
          } else if (xWidget instanceof IArtifactWidget) {
             ((IArtifactWidget) xWidget).setArtifact(artifact);

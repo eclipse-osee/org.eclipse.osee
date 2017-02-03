@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -38,7 +38,7 @@ public class AttributeDataProxyFactory implements ProxyDataFactory {
 
    @Override
    public DataProxy createProxy(long typeUuid, Object value, String uri) throws OseeCoreException {
-      IAttributeType attributeType = attributeTypeCache.get(typeUuid);
+      AttributeTypeId attributeType = attributeTypeCache.get(typeUuid);
 
       Conditions.checkNotNull(attributeType, "AttributeType", "Unable to find attributeType for [%s]", typeUuid);
 
@@ -57,7 +57,7 @@ public class AttributeDataProxyFactory implements ProxyDataFactory {
       return proxy;
    }
 
-   private Object intern(IAttributeType attributeType, Object original) throws OseeCoreException {
+   private Object intern(AttributeTypeId attributeType, Object original) throws OseeCoreException {
       Object value = original;
       if (attributeTypeCache.isEnumerated(attributeType) && value instanceof String) {
          value = Strings.intern((String) value);

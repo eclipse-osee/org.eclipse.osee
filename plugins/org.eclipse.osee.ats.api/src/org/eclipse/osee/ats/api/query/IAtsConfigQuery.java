@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
  */
 public interface IAtsConfigQuery {
 
-   IAtsConfigQuery andAttr(IAttributeType attributeType, String value, QueryOption... queryOption);
+   IAtsConfigQuery andAttr(AttributeTypeId attributeType, String value, QueryOption... queryOption);
 
    <T extends IAtsConfigObject> ResultSet<T> getResults();
 
@@ -38,7 +38,7 @@ public interface IAtsConfigQuery {
 
    IAtsConfigQuery isOfType(IArtifactType artifactType);
 
-   IAtsConfigQuery andAttr(IAttributeType attributeType, Collection<String> values, QueryOption... queryOptions) throws OseeCoreException;
+   IAtsConfigQuery andAttr(AttributeTypeId attributeType, Collection<String> values, QueryOption... queryOptions) throws OseeCoreException;
 
    IAtsConfigQuery andUuids(Long... uuids);
 

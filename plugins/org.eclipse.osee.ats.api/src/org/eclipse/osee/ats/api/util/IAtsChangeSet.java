@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -53,27 +53,27 @@ public interface IAtsChangeSet {
 
    boolean isEmpty();
 
-   void deleteSoleAttribute(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException;
+   void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType) throws OseeCoreException;
 
-   void setSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, String value) throws OseeCoreException;
+   void setSoleAttributeValue(IAtsWorkItem workItem, AttributeTypeId attributeType, String value) throws OseeCoreException;
 
-   void setSoleAttributeValue(IAtsObject atsObject, IAttributeType attributeType, Object value) throws OseeCoreException;
+   void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value) throws OseeCoreException;
 
-   void setSoleAttributeValue(ArtifactId artifact, IAttributeType attributeType, String value);
+   void setSoleAttributeValue(ArtifactId artifact, AttributeTypeId attributeType, String value);
 
-   void addAttribute(IAtsObject atsObject, IAttributeType attributeType, Object value) throws OseeCoreException;
+   void addAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value) throws OseeCoreException;
 
-   <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, IAttributeType attributeType, T value) throws OseeCoreException;
+   <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value) throws OseeCoreException;
 
    <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr) throws OseeCoreException;
 
-   void deleteAttribute(IAtsObject atsObject, IAttributeType attributeType, Object value) throws OseeCoreException;
+   void deleteAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value) throws OseeCoreException;
 
    boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeId attributeType);
 
    ArtifactId createArtifact(IArtifactType artifactType, String name);
 
-   void deleteAttributes(IAtsObject atsObject, IAttributeType attributeType);
+   void deleteAttributes(IAtsObject atsObject, AttributeTypeId attributeType);
 
    ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid);
 
@@ -127,11 +127,11 @@ public interface IAtsChangeSet {
 
    void addAttribute(ArtifactId artifactId, AttributeTypeId attrType, Object value);
 
-   void setSoleAttributeFromString(ArtifactId artifact, IAttributeType attrType, String value);
+   void setSoleAttributeFromString(ArtifactId artifact, AttributeTypeId attrType, String value);
 
-   void setSoleAttributeFromString(IAtsObject atsObject, IAttributeType attributeType, String value);
+   void setSoleAttributeFromString(IAtsObject atsObject, AttributeTypeId attributeType, String value);
 
-   void setSoleAttributeFromStream(ArtifactId artifact, IAttributeType attributeType, InputStream inputStream);
+   void setSoleAttributeFromStream(ArtifactId artifact, AttributeTypeId attributeType, InputStream inputStream);
 
    void reset(String string);
 

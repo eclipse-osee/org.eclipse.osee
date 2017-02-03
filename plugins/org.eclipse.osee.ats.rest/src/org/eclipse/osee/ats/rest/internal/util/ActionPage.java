@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.rest.IAtsServer;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -370,7 +370,7 @@ public class ActionPage {
       sb.append(widget.getName());
       sb.append(": <b>");
       try {
-         IAttributeType attributeType = atsServer.getAttributeResolver().getAttributeType(widget.getAtrributeName());
+         AttributeTypeId attributeType = atsServer.getAttributeResolver().getAttributeType(widget.getAtrributeName());
          Collection<String> attributesToStringList =
             atsServer.getAttributeResolver().getAttributesToStringList(workItem, attributeType);
          if (attributesToStringList.size() > 1) {

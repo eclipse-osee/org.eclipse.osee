@@ -43,7 +43,7 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -520,7 +520,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public IAtsQuery andAttr(IAttributeType attributeType, Collection<String> values, QueryOption... queryOptions) throws OseeCoreException {
+   public IAtsQuery andAttr(AttributeTypeId attributeType, Collection<String> values, QueryOption... queryOptions) throws OseeCoreException {
       andAttr.add(new AtsAttributeQuery(attributeType, values, queryOptions));
       return this;
    }
@@ -568,7 +568,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public IAtsQuery andAttr(IAttributeType attributeType, String value, QueryOption... queryOption) {
+   public IAtsQuery andAttr(AttributeTypeId attributeType, String value, QueryOption... queryOption) {
       return andAttr(attributeType, Collections.singleton(value), queryOption);
    }
 
@@ -784,7 +784,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
          services.getAttributeResolver().getSoleAttributeValue(workPackArt, AtsAttributeTypes.ColorTeam, ""));
    }
 
-   public abstract void queryAnd(IAttributeType attrType, String value);
+   public abstract void queryAnd(AttributeTypeId attrType, String value);
 
    private void addVersionCriteria() {
       if (versionUuid != null && versionUuid > 0) {
@@ -825,7 +825,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       }
    }
 
-   public abstract void queryAnd(IAttributeType attrType, Collection<String> values, QueryOption[] queryOption);
+   public abstract void queryAnd(AttributeTypeId attrType, Collection<String> values, QueryOption[] queryOption);
 
    private void addRelationCriteria() {
       if (!andRels.isEmpty()) {
@@ -847,7 +847,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       }
    }
 
-   public abstract void queryAnd(IAttributeType attrType, String value, QueryOption[] queryOption);
+   public abstract void queryAnd(AttributeTypeId attrType, String value, QueryOption[] queryOption);
 
    private void addStateTypeCriteria() {
       if (!stateTypes.isEmpty()) {
@@ -916,7 +916,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       }
    }
 
-   public abstract void queryAnd(IAttributeType attrType, Collection<String> values);
+   public abstract void queryAnd(AttributeTypeId attrType, Collection<String> values);
 
    public void addInsertionActivityCriteria() {
       if (!isWorkPackageSpecified()) {
@@ -973,7 +973,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public IAtsQuery andTeamWorkflowAttr(IAttributeType attributeType, List<String> values, QueryOption... queryOptions) {
+   public IAtsQuery andTeamWorkflowAttr(AttributeTypeId attributeType, List<String> values, QueryOption... queryOptions) {
       teamWorkflowAttr.add(new AtsAttributeQuery(attributeType, values, queryOptions));
       return this;
    }

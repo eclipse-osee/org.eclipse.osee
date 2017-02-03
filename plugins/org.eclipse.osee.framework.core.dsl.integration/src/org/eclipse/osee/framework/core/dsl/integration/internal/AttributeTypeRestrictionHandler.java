@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AttributeTypeRestriction;
@@ -44,7 +44,7 @@ public class AttributeTypeRestrictionHandler implements RestrictionHandler<Attri
       AttributeTypeRestriction restriction = asCastedObject(objectRestriction);
       if (restriction != null) {
          XAttributeType attributeTypeRef = restriction.getAttributeTypeRef();
-         IAttributeType attributeTypeToMatch = OseeUtil.toToken(attributeTypeRef);
+         AttributeTypeId attributeTypeToMatch = OseeUtil.toToken(attributeTypeRef);
          boolean isApplicable = artifactProxy.isAttributeTypeValid(attributeTypeToMatch);
          if (isApplicable) {
             XArtifactType artifactTypeRef = restriction.getArtifactTypeRef();
@@ -58,7 +58,7 @@ public class AttributeTypeRestrictionHandler implements RestrictionHandler<Attri
 
          if (isApplicable) {
             PermissionEnum permission = OseeUtil.getPermission(restriction);
-            collector.collect(new AccessDetail<IAttributeType>(attributeTypeToMatch, permission, scopeLevel));
+            collector.collect(new AccessDetail<AttributeTypeId>(attributeTypeToMatch, permission, scopeLevel));
          }
       }
    }

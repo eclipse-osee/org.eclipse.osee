@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -186,7 +186,7 @@ public class OrcsCollectorValidator {
       for (OwAttribute attribute : artifact.getAttributes()) {
          OwAttributeType owAttrType = attribute.getType();
 
-         IAttributeType attrType = OrcsCollectorWriter.getAttributeType(orcsApi, owAttrType);
+         AttributeTypeId attrType = OrcsCollectorWriter.getAttributeType(orcsApi, owAttrType);
          if (attrType == null) {
             results.errorf("Invalid Attribute Type [%s] for artifact [%s].\n", owAttrType, artifact);
          }

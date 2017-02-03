@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.Collections;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -50,7 +50,7 @@ public class XWidgetAccessDecorationProvider implements XWidgetDecorator.Decorat
    public void onUpdate(XWidget xWidget, Decorator decorator) {
       if (xWidget instanceof IAttributeWidget) {
          IAttributeWidget attributeWidget = (IAttributeWidget) xWidget;
-         IAttributeType attributeType = attributeWidget.getAttributeType();
+         AttributeTypeId attributeType = attributeWidget.getAttributeType();
 
          PermissionStatus permissionStatus = new PermissionStatus();
          Artifact artifact = attributeWidget.getArtifact();

@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -56,7 +56,7 @@ public class OteArtifactFetcher<T extends Artifact> {
     * @return the unique artifact
     */
    @SuppressWarnings("unchecked")
-   public T searchForUniqueArtifactMatching(IAttributeType attributeType, String attributeValue, BranchId branch) throws OseeCoreException {
+   public T searchForUniqueArtifactMatching(AttributeTypeId attributeType, String attributeValue, BranchId branch) throws OseeCoreException {
       Conditions.checkNotNull(attributeType, "attributeType");
       Conditions.checkNotNull(attributeValue, "attributeValue");
       Conditions.checkNotNull(branch, "branch");

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 public class XIntegerDam extends XInteger implements IAttributeWidget {
 
    private Artifact artifact;
-   private IAttributeType attributeType;
+   private AttributeTypeToken attributeType;
 
    public XIntegerDam(String displayLabel) {
       super(displayLabel);
@@ -38,12 +38,12 @@ public class XIntegerDam extends XInteger implements IAttributeWidget {
    }
 
    @Override
-   public IAttributeType getAttributeType() {
+   public AttributeTypeToken getAttributeType() {
       return attributeType;
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, IAttributeType attrName) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attrName) throws OseeCoreException {
       this.artifact = artifact;
       this.attributeType = attrName;
       try {

@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -213,7 +213,7 @@ public class DataFactoryImplTest {
 
    @Test
    public void testCreateAttributeData() throws OseeCoreException {
-      IAttributeType attributeType = mock(IAttributeType.class);
+      AttributeTypeId attributeType = mock(AttributeTypeId.class);
 
       when(attributeType.getId()).thenReturn(2389L);
       when(proxyFactory.createProxy(2389L, "", "")).thenReturn(otherDataProxy);

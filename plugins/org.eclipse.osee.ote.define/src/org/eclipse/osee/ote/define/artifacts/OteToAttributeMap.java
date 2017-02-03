@@ -22,7 +22,7 @@ import static org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes.TOTAL_TEST_P
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.ote.define.TestRunField;
@@ -36,7 +36,7 @@ public class OteToAttributeMap {
    private static final SimpleDateFormat lastModifiedFormat = new SimpleDateFormat("MMM dd, yyyy HH:mm:ss a");
 
    private static OteToAttributeMap instance = null;
-   private static Map<TestRunField, IAttributeType> outfileFieldToAttributeMap;
+   private static Map<TestRunField, AttributeTypeId> outfileFieldToAttributeMap;
 
    private OteToAttributeMap() {
       outfileFieldToAttributeMap = new HashMap<>();
@@ -89,7 +89,7 @@ public class OteToAttributeMap {
       return instance;
    }
 
-   public IAttributeType getAttributeType(String rawName) {
+   public AttributeTypeId getAttributeType(String rawName) {
       TestRunField field = getFieldId(rawName);
       return outfileFieldToAttributeMap.get(field);
    }
@@ -104,7 +104,7 @@ public class OteToAttributeMap {
       return field;
    }
 
-   public Object asTypedObject(IAttributeType attributeType, String value) throws Exception {
+   public Object asTypedObject(AttributeTypeId attributeType, String value) throws Exception {
       Object toReturn = null;
       if (isDate(attributeType)) {
          toReturn = getFormat(attributeType).parse(value);
@@ -124,22 +124,22 @@ public class OteToAttributeMap {
       return toReturn;
    }
 
-   private SimpleDateFormat getFormat(IAttributeType attributeType) {
+   private SimpleDateFormat getFormat(AttributeTypeId attributeType) {
       if (attributeType.equals(LAST_MODIFIED_DATE)) {
          return lastModifiedFormat;
       }
       return scriptStartEndDataFormat;
    }
 
-   private boolean isDate(IAttributeType attributeType) {
+   private boolean isDate(AttributeTypeId attributeType) {
       return attributeType.matches(LAST_MODIFIED_DATE, START_DATE, END_DATE);
    }
 
-   private boolean isInteger(IAttributeType attributeType) {
+   private boolean isInteger(AttributeTypeId attributeType) {
       return attributeType.matches(TOTAL_TEST_POINTS, PASSED, FAILED);
    }
 
-   private boolean isBoolean(IAttributeType attributeType) {
+   private boolean isBoolean(AttributeTypeId attributeType) {
       return attributeType.matches(SCRIPT_ABORTED, RAN_IN_BATCH_MODE, IS_BATCH_MODE_ALLOWED);
    }
 }

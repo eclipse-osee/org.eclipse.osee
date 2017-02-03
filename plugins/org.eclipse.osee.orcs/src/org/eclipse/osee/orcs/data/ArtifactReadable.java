@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -38,9 +38,9 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    ////////////////////
 
-   int getAttributeCount(IAttributeType type) throws OseeCoreException;
+   int getAttributeCount(AttributeTypeId type) throws OseeCoreException;
 
-   int getAttributeCount(IAttributeType type, DeletionFlag deletionFlag) throws OseeCoreException;
+   int getAttributeCount(AttributeTypeId type, DeletionFlag deletionFlag) throws OseeCoreException;
 
    boolean isAttributeTypeValid(AttributeTypeId attributeType) throws OseeCoreException;
 
@@ -48,17 +48,17 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    Collection<AttributeTypeToken> getExistingAttributeTypes() throws OseeCoreException;
 
-   <T> T getSoleAttributeValue(IAttributeType attributeType);
+   <T> T getSoleAttributeValue(AttributeTypeId attributeType);
 
-   <T> T getSoleAttributeValue(IAttributeType attributeType, DeletionFlag flag, T defaultValue);
+   <T> T getSoleAttributeValue(AttributeTypeId attributeType, DeletionFlag flag, T defaultValue);
 
    <T> T getSoleAttributeValue(AttributeTypeId attributeType, T defaultValue);
 
-   String getSoleAttributeAsString(IAttributeType attributeType) throws OseeCoreException;
+   String getSoleAttributeAsString(AttributeTypeId attributeType) throws OseeCoreException;
 
-   String getSoleAttributeAsString(IAttributeType attributeType, String defaultValue) throws OseeCoreException;
+   String getSoleAttributeAsString(AttributeTypeId attributeType, String defaultValue) throws OseeCoreException;
 
-   Long getSoleAttributeId(IAttributeType attributeType);
+   Long getSoleAttributeId(AttributeTypeId attributeType);
 
    <T> List<T> getAttributeValues(AttributeTypeId attributeType) throws OseeCoreException;
 
@@ -72,7 +72,7 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    ResultSet<? extends AttributeReadable<Object>> getAttributes(DeletionFlag deletionFlag) throws OseeCoreException;
 
-   <T> ResultSet<? extends AttributeReadable<T>> getAttributes(IAttributeType attributeType, DeletionFlag deletionFlag) throws OseeCoreException;
+   <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeId attributeType, DeletionFlag deletionFlag) throws OseeCoreException;
 
    ////////////////////
    int getMaximumRelationAllowed(RelationTypeSide relationTypeSide) throws OseeCoreException;

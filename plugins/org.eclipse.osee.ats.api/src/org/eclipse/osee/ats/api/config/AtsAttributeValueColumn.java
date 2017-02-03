@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.api.config;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.ats.api.column.AtsValueColumn;
 import org.eclipse.osee.ats.api.util.ColumnType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -28,7 +28,7 @@ public class AtsAttributeValueColumn extends AtsValueColumn {
       // For JaxRs Instantiation
    }
 
-   public AtsAttributeValueColumn(IAttributeType attributeType, String id, String name, int width, String align, boolean show, ColumnType sortDataType, boolean multiColumnEditable, String description, Boolean actionRollup, Boolean inheritParent) {
+   public AtsAttributeValueColumn(AttributeTypeToken attributeType, String id, String name, int width, String align, boolean show, ColumnType sortDataType, boolean multiColumnEditable, String description, Boolean actionRollup, Boolean inheritParent) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description, actionRollup, inheritParent);
       this.attrTypeId = attributeType.getId();
       this.attrTypeName = attributeType.getName();

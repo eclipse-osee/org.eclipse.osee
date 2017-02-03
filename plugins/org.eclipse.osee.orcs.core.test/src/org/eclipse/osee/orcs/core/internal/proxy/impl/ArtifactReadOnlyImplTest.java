@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -76,7 +76,7 @@ public class ArtifactReadOnlyImplTest {
    @Mock private Artifact proxiedObject;
    @Mock private GraphData graph;
 
-   @Mock private IAttributeType attributeType;
+   @Mock private AttributeTypeId attributeType;
    @Mock private IArtifactType artifactType;
 
    @Mock private ArtifactReadable readable1;
@@ -175,7 +175,7 @@ public class ArtifactReadOnlyImplTest {
 
    @Test
    public void testGetExistingAttributeTypes() throws OseeCoreException {
-      List<? extends IAttributeType> types = Arrays.asList(Active, Name);
+      List<? extends AttributeTypeId> types = Arrays.asList(Active, Name);
       when(proxiedObject.getExistingAttributeTypes()).thenAnswer(answer(types));
 
       Collection<AttributeTypeToken> actual = readOnly.getExistingAttributeTypes();
@@ -186,7 +186,7 @@ public class ArtifactReadOnlyImplTest {
 
    @Test
    public void testGetValidAttributeTypes() throws OseeCoreException {
-      List<? extends IAttributeType> types = Arrays.asList(Active, Name, Annotation);
+      List<? extends AttributeTypeId> types = Arrays.asList(Active, Name, Annotation);
       when(proxiedObject.getValidAttributeTypes()).thenAnswer(answer(types));
 
       Collection<AttributeTypeToken> actual = readOnly.getValidAttributeTypes();

@@ -15,7 +15,7 @@ import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.rest.IAtsServer;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -34,7 +34,7 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 public class ConvertBaselineGuidToBaselineUuid extends AbstractConvertGuidToUuid {
 
    // Leave this attribute definition and conversion for other OSEE sites to convert
-   private static final IAttributeType BaselineBranchGuid =
+   private static final AttributeTypeToken BaselineBranchGuid =
       TokenFactory.createAttributeType(1152921504606847145L, "ats.Baseline Branch Guid");
 
    public ConvertBaselineGuidToBaselineUuid(Log logger, JdbcClient jdbcClient, OrcsApi orcsApi, IAtsServer atsServer) {

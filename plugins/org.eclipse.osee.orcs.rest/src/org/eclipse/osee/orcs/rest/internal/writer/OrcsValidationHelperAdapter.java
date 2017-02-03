@@ -11,8 +11,8 @@
 package org.eclipse.osee.orcs.rest.internal.writer;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -61,7 +61,7 @@ public class OrcsValidationHelperAdapter implements IOrcsValidationHelper {
 
    @Override
    public boolean isAttributeTypeExists(String attributeTypeName) {
-      for (IAttributeType type : orcsApi.getOrcsTypes().getAttributeTypes().getAll()) {
+      for (AttributeTypeToken type : orcsApi.getOrcsTypes().getAttributeTypes().getAll()) {
          if (type.getName().equals(attributeTypeName)) {
             return true;
          }

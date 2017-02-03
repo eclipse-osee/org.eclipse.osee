@@ -14,7 +14,7 @@ import java.net.URLEncoder;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -39,7 +39,7 @@ public class XDslEditorWidgetDam extends XDslEditorWidget implements IAttributeW
    public static final String WIDGET_ID = XDslEditorWidgetDam.class.getSimpleName();
 
    private Artifact artifact;
-   private IAttributeType attributeType;
+   private AttributeTypeToken attributeType;
 
    public XDslEditorWidgetDam(String displayLabel) {
       super(displayLabel);
@@ -75,7 +75,7 @@ public class XDslEditorWidgetDam extends XDslEditorWidget implements IAttributeW
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, IAttributeType attributeType) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) throws OseeCoreException {
       this.artifact = artifact;
       this.attributeType = attributeType;
       DslGrammar grammar = DslGrammarManager.getGrammar(attributeType);
@@ -156,7 +156,7 @@ public class XDslEditorWidgetDam extends XDslEditorWidget implements IAttributeW
    }
 
    @Override
-   public IAttributeType getAttributeType() {
+   public AttributeTypeToken getAttributeType() {
       return attributeType;
    }
 

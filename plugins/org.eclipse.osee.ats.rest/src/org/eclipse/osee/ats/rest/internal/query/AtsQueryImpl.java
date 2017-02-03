@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.core.query.AtsAttributeQuery;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -58,7 +58,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   public void queryAnd(IAttributeType attrType, Collection<String> values) {
+   public void queryAnd(AttributeTypeId attrType, Collection<String> values) {
       query.and(attrType, values);
    }
 
@@ -83,7 +83,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   public void queryAnd(IAttributeType attrType, String value) {
+   public void queryAnd(AttributeTypeId attrType, String value) {
       query.and(attrType, value);
    }
 
@@ -98,12 +98,12 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   public void queryAnd(IAttributeType attrType, Collection<String> values, QueryOption[] queryOption) {
+   public void queryAnd(AttributeTypeId attrType, Collection<String> values, QueryOption[] queryOption) {
       query.and(attrType, values, queryOption);
    }
 
    @Override
-   public void queryAnd(IAttributeType attrType, String value, QueryOption[] queryOption) {
+   public void queryAnd(AttributeTypeId attrType, String value, QueryOption[] queryOption) {
       query.and(attrType, value, queryOption);
    }
 
@@ -154,7 +154,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   public IAtsQuery andNotExists(IAttributeType attributeType) {
+   public IAtsQuery andNotExists(AttributeTypeId attributeType) {
       query.andNotExists(attributeType);
       return this;
    }

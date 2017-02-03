@@ -23,9 +23,9 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -100,7 +100,7 @@ public class AttributeTypeResource {
          } else {
             List<AttributeReadable<Object>> attrs = new ArrayList<>();
             if (attributeTypeId > 0) {
-               IAttributeType attributeType =
+               AttributeTypeId attributeType =
                   OrcsApplication.getOrcsApi().getOrcsTypes().getAttributeTypes().get((long) attributeTypeId);
                for (AttributeReadable<Object> attr : exactlyOne.getAttributes(attributeType)) {
                   attrs.add(attr);
@@ -137,7 +137,7 @@ public class AttributeTypeResource {
                return Response.ok(AHTML.simplePage(values)).build();
 
             } else {
-               IAttributeType attributeType =
+               AttributeTypeToken attributeType =
                   OrcsApplication.getOrcsApi().getOrcsTypes().getAttributeTypes().get((long) attributeTypeId);
                return Response.ok(AHTML.simplePage(String.format("No attributes of type [%s][%d] found.",
                   attributeType.getName(), attributeType.getId()))).build();

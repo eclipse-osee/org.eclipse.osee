@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.data;
 
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -29,7 +29,7 @@ public interface AttributeReadable<T> extends AttributeId, OrcsReadable {
 
    AttributeTypeToken getAttributeType() throws OseeCoreException;
 
-   boolean isOfType(IAttributeType otherAttributeType) throws OseeCoreException;
+   boolean isOfType(AttributeTypeId otherAttributeType) throws OseeCoreException;
 
    T getValue() throws OseeCoreException;
 

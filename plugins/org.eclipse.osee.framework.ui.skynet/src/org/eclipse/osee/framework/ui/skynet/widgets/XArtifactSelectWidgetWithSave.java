@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class XArtifactSelectWidgetWithSave extends XArtifactSelectWidget implements IAttributeWidget {
 
    private Artifact artifact;
-   private IAttributeType attributeType;
+   private AttributeTypeToken attributeType;
 
    public XArtifactSelectWidgetWithSave(String label) {
       super(label);
@@ -84,7 +84,7 @@ public class XArtifactSelectWidgetWithSave extends XArtifactSelectWidget impleme
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, IAttributeType attributeTypeName) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeTypeName) throws OseeCoreException {
       this.artifact = artifact;
       this.attributeType = attributeTypeName;
       Artifact storedArt = getStored();
@@ -94,7 +94,7 @@ public class XArtifactSelectWidgetWithSave extends XArtifactSelectWidget impleme
    }
 
    @Override
-   public IAttributeType getAttributeType() {
+   public AttributeTypeToken getAttributeType() {
       return attributeType;
    }
 

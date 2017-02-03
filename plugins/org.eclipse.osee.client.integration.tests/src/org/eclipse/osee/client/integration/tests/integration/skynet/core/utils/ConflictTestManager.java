@@ -20,7 +20,7 @@ import java.util.List;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.ConflictDeletionTest;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -81,7 +81,7 @@ public class ConflictTestManager {
    public static int REVERT_REL_LINK_QUERY = 6;
 
    protected static class AttributeValue {
-      protected IAttributeType attributeType;
+      protected AttributeTypeId attributeType;
       protected String sourceValue;
       protected String destValue;
       protected String mergeValue;
@@ -309,7 +309,7 @@ public class ConflictTestManager {
       return child;
    }
 
-   protected static Attribute<?> createAttribute(Artifact artifact, IAttributeType attributeType, Class<?> clas, String value) throws OseeCoreException {
+   protected static Attribute<?> createAttribute(Artifact artifact, AttributeTypeId attributeType, Class<?> clas, String value) throws OseeCoreException {
       artifact.addAttribute(attributeType, stringToObject(clas, value));
       artifact.persist(ConflictTestManager.class.getSimpleName());
       return artifact.getSoleAttribute(attributeType);
@@ -369,7 +369,7 @@ public class ConflictTestManager {
 
    public static void resolveAttributeConflict(AttributeConflict conflict) throws Exception {
       int sourceArtifactId = conflict.getSourceArtifact().getArtId();
-      IAttributeType attributeType = conflict.getSourceAttribute(true).getAttributeType();
+      AttributeTypeId attributeType = conflict.getSourceAttribute(true).getAttributeType();
       AttributeValue aValue = null;
       int artNumber = -1;
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {

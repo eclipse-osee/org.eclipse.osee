@@ -11,16 +11,16 @@
 package org.eclipse.osee.define.report;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 
 /**
  * @author David W. Miller
  */
 public class AlternateTypeOutput {
    IArtifactType alternateArtifact;
-   IAttributeType alternateAttribute;
+   AttributeTypeId alternateAttribute;
 
-   public AlternateTypeOutput(IArtifactType alternateArtifact, IAttributeType alternateAttribute) {
+   public AlternateTypeOutput(IArtifactType alternateArtifact, AttributeTypeId alternateAttribute) {
       this.alternateArtifact = alternateArtifact;
       this.alternateAttribute = alternateAttribute;
    }
@@ -29,7 +29,7 @@ public class AlternateTypeOutput {
       return alternateArtifact;
    }
 
-   public IAttributeType getAlternateAttributeType() {
+   public AttributeTypeId getAlternateAttributeType() {
       return alternateAttribute;
    }
 }

@@ -14,8 +14,8 @@ package org.eclipse.osee.orcs.rest.internal.writer;
  * Donald G. Dunne
  */
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -38,7 +38,7 @@ public class OwFactory {
       return type;
    }
 
-   public static OwAttributeType createAttributeType(IAttributeType attrType) {
+   public static OwAttributeType createAttributeType(AttributeTypeToken attrType) {
       String typeStr = String.format("[%s]-[%d]", attrType.getName(), attrType.getId());
       OwAttributeType type = new OwAttributeType(attrType.getId(), attrType.getName());
       type.setData(typeStr);
@@ -86,7 +86,7 @@ public class OwFactory {
       return artifact;
    }
 
-   public static OwAttribute createAttribute(OwArtifact artifact, IAttributeType attrType, Object... values) {
+   public static OwAttribute createAttribute(OwArtifact artifact, AttributeTypeToken attrType, Object... values) {
       OwAttribute attribute = new OwAttribute();
       attribute.setType(OwFactory.createAttributeType(attrType));
       for (Object obj : values) {

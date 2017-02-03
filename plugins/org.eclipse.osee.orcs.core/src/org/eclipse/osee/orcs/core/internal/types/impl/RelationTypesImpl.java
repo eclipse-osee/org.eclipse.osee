@@ -46,7 +46,7 @@ public class RelationTypesImpl implements RelationTypes {
    }
 
    @Override
-   public Collection<? extends RelationTypeToken> getAll() throws OseeCoreException {
+   public Collection<RelationTypeToken> getAll() throws OseeCoreException {
       return provider.getRelationTypeIndex().getAllTokens();
    }
 

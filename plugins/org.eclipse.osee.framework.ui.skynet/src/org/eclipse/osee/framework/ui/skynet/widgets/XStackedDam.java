@@ -16,7 +16,8 @@ import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -53,7 +54,7 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class XStackedDam extends XStackedWidget<String> implements IAttributeWidget, IArtifactEventListener {
    private Artifact artifact;
-   private IAttributeType attributeType;
+   private AttributeTypeToken attributeType;
    private final XModifiedListener xModifiedListener;
    private List<BranchUuidEventFilter> eventFilters;
 
@@ -74,7 +75,7 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
    }
 
    @Override
-   public IAttributeType getAttributeType() {
+   public AttributeTypeToken getAttributeType() {
       return attributeType;
    }
 
@@ -87,7 +88,7 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, IAttributeType attributeType) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) throws OseeCoreException {
       this.artifact = artifact;
       this.attributeType = attributeType;
       int minOccurrence = AttributeTypeManager.getMinOccurrences(attributeType);
@@ -316,7 +317,7 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
       return value;
    }
 
-   private XWidget getWidget(IAttributeType attributeType, Composite parent, String initialInput) throws OseeCoreException {
+   private XWidget getWidget(AttributeTypeId attributeType, Composite parent, String initialInput) throws OseeCoreException {
       XWidget xWidget = null;
       if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {
          XInteger xInteger = new XInteger("");

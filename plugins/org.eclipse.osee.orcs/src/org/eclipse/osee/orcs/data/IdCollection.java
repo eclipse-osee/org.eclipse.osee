@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
  */
 public interface IdCollection<T extends Id> {
 
-   Collection<? extends T> getAll();
+   Collection<T> getAll();
 
    T get(Id id);
 

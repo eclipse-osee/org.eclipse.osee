@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.proxy.impl;
 
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -59,7 +59,7 @@ public class AttributeReadOnlyImpl<T> extends AbstractProxied<Attribute<T>> impl
    }
 
    @Override
-   public boolean isOfType(IAttributeType otherAttributeType) throws OseeCoreException {
+   public boolean isOfType(AttributeTypeId otherAttributeType) throws OseeCoreException {
       return getProxiedObject().isOfType(otherAttributeType);
    }
 

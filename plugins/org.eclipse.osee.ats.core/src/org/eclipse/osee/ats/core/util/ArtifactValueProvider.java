@@ -18,7 +18,8 @@ import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -30,7 +31,7 @@ public class ArtifactValueProvider implements IValueProvider {
    private final ArtifactToken artifact;
    private final String attributeTypeName;
    private final IAtsServices services;
-   private IAttributeType attributeType;
+   private AttributeTypeId attributeType;
 
    public ArtifactValueProvider(ArtifactToken artifact, IAtsWidgetDefinition widgetDef, IAtsServices services) {
       this.artifact = artifact;
@@ -38,7 +39,7 @@ public class ArtifactValueProvider implements IValueProvider {
       this.attributeTypeName = widgetDef.getAtrributeName();
    }
 
-   public ArtifactValueProvider(ArtifactToken artifact, IAttributeType attributeType, IAtsServices services) {
+   public ArtifactValueProvider(ArtifactToken artifact, AttributeTypeToken attributeType, IAtsServices services) {
       this.artifact = artifact;
       this.services = services;
       this.attributeTypeName = attributeType.getName();
@@ -46,7 +47,7 @@ public class ArtifactValueProvider implements IValueProvider {
 
    @Override
    public boolean isEmpty() throws OseeCoreException {
-      IAttributeType attributeType = getAtributeType();
+      AttributeTypeId attributeType = getAtributeType();
       if (attributeType != null) {
          return services.getAttributeResolver().getAttributeCount(artifact, attributeType) == 0;
       }
@@ -55,14 +56,14 @@ public class ArtifactValueProvider implements IValueProvider {
 
    @Override
    public Collection<String> getValues() throws OseeCoreException {
-      IAttributeType attributeType = getAtributeType();
+      AttributeTypeId attributeType = getAtributeType();
       if (attributeType != null) {
          return services.getAttributeResolver().getAttributesToStringList(artifact, attributeType);
       }
       return Collections.emptyList();
    }
 
-   public IAttributeType getAtributeType() throws OseeCoreException {
+   public AttributeTypeId getAtributeType() throws OseeCoreException {
       if (attributeType == null && Strings.isValid(attributeTypeName)) {
          attributeType = services.getStoreService().getAttributeType(attributeTypeName);
       }
@@ -76,7 +77,7 @@ public class ArtifactValueProvider implements IValueProvider {
 
    @Override
    public Collection<Date> getDateValues() throws OseeCoreException {
-      IAttributeType attributeType = getAtributeType();
+      AttributeTypeId attributeType = getAtributeType();
       if (attributeType != null && services.getStoreService().isDateType(attributeType)) {
          return services.getAttributeResolver().getAttributeValues(artifact, attributeType);
       }

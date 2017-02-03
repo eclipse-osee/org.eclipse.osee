@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
 import java.util.Collection;
 import java.util.TreeSet;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -41,13 +41,13 @@ public class EmbeddedEnumAttributeEditor implements IEmbeddedAttributeEditor {
    private static final String PROMPT = "Please select a value from the combo box";
    private static final String ERROR_PROMPT =
       "All artifacts must be of the same type when edited in an enumeration editor.";
-   protected IAttributeType attributeType;
+   protected AttributeTypeId attributeType;
    protected String displayName;
    protected Collection<?> attributeHolder;
    protected boolean persist;
    protected EmbeddedEnumEditor editor;
 
-   public EmbeddedEnumAttributeEditor(String arg, Collection<?> attributeHolder, String displayName, IAttributeType attributeType, boolean persist) {
+   public EmbeddedEnumAttributeEditor(String arg, Collection<?> attributeHolder, String displayName, AttributeTypeId attributeType, boolean persist) {
       this.attributeType = attributeType;
       this.displayName = displayName;
       this.attributeHolder = attributeHolder;

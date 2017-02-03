@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -30,26 +30,26 @@ import org.eclipse.swt.widgets.Control;
  */
 public class FilteredTreeAttributeTypeDialog extends FilteredTreeDialog {
 
-   private Collection<? extends IAttributeType> selectable;
+   private Collection<? extends AttributeTypeId> selectable;
 
    public FilteredTreeAttributeTypeDialog(String title, String message) {
       this(title, message, AttributeTypeManager.getAllTypes(), new AttributeTypeLabelProvider());
    }
 
-   public FilteredTreeAttributeTypeDialog(String title, String message, Collection<? extends IAttributeType> selectable, ILabelProvider labelProvider) {
+   public FilteredTreeAttributeTypeDialog(String title, String message, Collection<? extends AttributeTypeId> selectable, ILabelProvider labelProvider) {
       this(title, message, selectable, new ArrayTreeContentProvider(), labelProvider);
    }
 
-   public FilteredTreeAttributeTypeDialog(String title, String message, Collection<? extends IAttributeType> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider) {
+   public FilteredTreeAttributeTypeDialog(String title, String message, Collection<? extends AttributeTypeId> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider) {
       this(title, message, selectable, contentProvider, labelProvider, new AttributeTypeNameComparator());
    }
 
-   public FilteredTreeAttributeTypeDialog(String title, String message, Collection<? extends IAttributeType> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider, ViewerComparator comparator) {
+   public FilteredTreeAttributeTypeDialog(String title, String message, Collection<? extends AttributeTypeId> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider, ViewerComparator comparator) {
       super(title, message, contentProvider, labelProvider, comparator);
       this.selectable = selectable;
    }
 
-   public FilteredTreeAttributeTypeDialog(String title, Collection<? extends IAttributeType> selectable) {
+   public FilteredTreeAttributeTypeDialog(String title, Collection<? extends AttributeTypeId> selectable) {
       this(title, title, selectable, new AttributeTypeLabelProvider());
    }
 
@@ -76,7 +76,7 @@ public class FilteredTreeAttributeTypeDialog extends FilteredTreeDialog {
       return Result.TrueResult;
    }
 
-   public void setSelectable(Collection<? extends IAttributeType> selectable) {
+   public void setSelectable(Collection<? extends AttributeTypeId> selectable) {
       this.selectable = selectable;
    }
 

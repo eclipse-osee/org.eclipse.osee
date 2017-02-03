@@ -17,7 +17,7 @@ import java.util.Set;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -191,7 +191,7 @@ public class DataLoaderImpl implements DataLoader {
    }
 
    @Override
-   public DataLoader withAttributeTypes(IAttributeType... attributeType) throws OseeCoreException {
+   public DataLoader withAttributeTypes(AttributeTypeId... attributeType) throws OseeCoreException {
       return withAttributeTypes(Arrays.asList(attributeType));
    }
 

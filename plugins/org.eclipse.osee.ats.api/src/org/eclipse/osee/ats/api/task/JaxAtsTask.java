@@ -16,7 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 
 /**
@@ -104,7 +104,7 @@ public class JaxAtsTask extends JaxAtsObject {
       attributes.add(attr);
    }
 
-   public void addAttribute(IAttributeType attrType, Object value) {
+   public void addAttribute(AttributeTypeToken attrType, Object value) {
       addAttribute(attrType.getName(), value);
    }
 

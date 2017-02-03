@@ -16,7 +16,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.MultipleItemsExist;
@@ -47,7 +47,7 @@ public class AttributeResultSetTest {
    private AttributeResultSet<String> rSetWithType;
    private AttributeResultSet<String> rSetNoType;
 
-   private final IAttributeType type = CoreAttributeTypes.Annotation;
+   private final AttributeTypeId type = CoreAttributeTypes.Annotation;
    private List<Attribute<String>> list;
 
    @Before

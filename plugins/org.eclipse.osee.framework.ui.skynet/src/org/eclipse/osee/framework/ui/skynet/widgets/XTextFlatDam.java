@@ -21,7 +21,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -46,9 +47,9 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Donald G. Dunne
  */
-public class XTextFlatDam extends XFlatWidget<String>implements IAttributeWidget {
+public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidget {
    private Artifact artifact;
-   private IAttributeType attributeType;
+   private AttributeTypeToken attributeType;
    private final Map<String, XWidget> xWidgets;
    private final XModifiedListener xModifiedListener;
    public static final String WIDGET_ID = XTextFlatDam.class.getSimpleName();
@@ -75,12 +76,12 @@ public class XTextFlatDam extends XFlatWidget<String>implements IAttributeWidget
    }
 
    @Override
-   public IAttributeType getAttributeType() {
+   public AttributeTypeToken getAttributeType() {
       return attributeType;
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, IAttributeType attributeType) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;
 
@@ -230,7 +231,7 @@ public class XTextFlatDam extends XFlatWidget<String>implements IAttributeWidget
       return new Date();
    }
 
-   private XWidget getWidget(IAttributeType attributeType, Composite parent, String initialInput) throws OseeCoreException {
+   private XWidget getWidget(AttributeTypeId attributeType, Composite parent, String initialInput) throws OseeCoreException {
       XWidget xWidget = null;
 
       if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {

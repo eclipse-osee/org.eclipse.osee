@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.rest.IAtsServer;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -243,7 +243,7 @@ public class SprintBurndownDataBuilder {
    }
 
    private double getPoints(AgileBurndown burn, IAgileItem item) {
-      IAttributeType pointsType =
+      AttributeTypeId pointsType =
          atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().getByName(burn.getPointsAttrTypeName());
       String value = atsServer.getAttributeResolver().getSoleAttributeValueAsString(item, pointsType, "");
       if (Strings.isNumeric(value)) {

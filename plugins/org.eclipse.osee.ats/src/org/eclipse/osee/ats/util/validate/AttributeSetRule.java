@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -26,11 +26,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public final class AttributeSetRule extends AbstractValidationRule {
    private final IArtifactType baseArtifactType;
-   private final IAttributeType attributeType;
+   private final AttributeTypeId attributeType;
    private final Integer minimumValues;
    private final String invalidValue;
 
-   public AttributeSetRule(IArtifactType artifactType, IAttributeType attributeType, Integer minimumValues, String invalidValue) {
+   public AttributeSetRule(IArtifactType artifactType, AttributeTypeId attributeType, Integer minimumValues, String invalidValue) {
       this.baseArtifactType = artifactType;
       this.attributeType = attributeType;
       this.minimumValues = minimumValues;

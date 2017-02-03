@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.AttributeClassProvider;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.BooleanAttribute;
@@ -47,7 +47,7 @@ public class AttributeClassResolverTest {
 
    //@formatter:off
    @Mock private AttributeTypes cache;
-   @Mock private IAttributeType type;
+   @Mock private AttributeTypeId type;
    //@formatter:on
 
    private final String alias;

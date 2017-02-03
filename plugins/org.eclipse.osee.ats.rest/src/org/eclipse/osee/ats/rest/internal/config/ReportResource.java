@@ -29,7 +29,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
@@ -138,7 +138,7 @@ public class ReportResource {
 
       // Was a synthetic artifact change added by AddArtifactChangeDataCallable
       for (ChangeItem change : attrChanges) {
-         IAttributeType attrType = attributeTypes.get(change.getItemTypeId());
+         AttributeTypeId attrType = attributeTypes.get(change.getItemTypeId());
          if (attrType.matches(WordTemplateContent)) {
             toReturn = true;
             break;

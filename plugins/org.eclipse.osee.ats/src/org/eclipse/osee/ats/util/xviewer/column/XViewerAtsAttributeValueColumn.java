@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -59,12 +59,12 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
    String booleanNotSetShow = null;
    List<String> multiLineColumns = Arrays.asList(AtsColumnId.Notes.getId());
 
-   public XViewerAtsAttributeValueColumn(IAttributeType attributeType, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   public XViewerAtsAttributeValueColumn(AttributeTypeToken attributeType, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(attributeType, attributeType.getName(), attributeType.getUnqualifiedName(), width, align, show,
          sortDataType, multiColumnEditable, description);
    }
 
-   public XViewerAtsAttributeValueColumn(IAttributeType attributeType, String id, String name, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   public XViewerAtsAttributeValueColumn(AttributeTypeToken attributeType, String id, String name, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(attributeType, id, name, width, align, show, sortDataType, multiColumnEditable, description);
    }
 

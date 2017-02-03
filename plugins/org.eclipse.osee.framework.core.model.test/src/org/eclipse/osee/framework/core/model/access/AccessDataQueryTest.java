@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.core.model.access;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -86,11 +86,11 @@ public class AccessDataQueryTest {
       AccessData data = testObject.getAccessData();
       ArtifactToken artifactToCheck = testObject.getArtifact();
 
-      IAttributeType attributeType = CoreAttributeTypes.ParagraphNumber;
-      IAttributeType wordAttributeType = CoreAttributeTypes.WordTemplateContent;
+      AttributeTypeId attributeType = CoreAttributeTypes.ParagraphNumber;
+      AttributeTypeId wordAttributeType = CoreAttributeTypes.WordTemplateContent;
 
-      data.add(artifactToCheck, new AccessDetail<IAttributeType>(attributeType, PermissionEnum.WRITE, new Scope()));
-      data.add(artifactToCheck, new AccessDetail<IAttributeType>(wordAttributeType, PermissionEnum.READ, new Scope()));
+      data.add(artifactToCheck, new AccessDetail<AttributeTypeId>(attributeType, PermissionEnum.WRITE, new Scope()));
+      data.add(artifactToCheck, new AccessDetail<AttributeTypeId>(wordAttributeType, PermissionEnum.READ, new Scope()));
 
       AccessDataQuery query = new AccessDataQuery(data);
       PermissionStatus status = new PermissionStatus();

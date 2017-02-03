@@ -31,7 +31,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -158,8 +158,8 @@ public class AttributeFindReplaceDialog extends Dialog {
    protected void okPressed() {
       final Pattern pattern = Pattern.compile(txtFindRegEx.getText());
       final String replaceText = txtReplaceStr.getText();
-      final IAttributeType attributeType =
-         (IAttributeType) ((IStructuredSelection) cmbAttributeDescriptors.getSelection()).getFirstElement();
+      final AttributeTypeId attributeType =
+         (AttributeTypeId) ((IStructuredSelection) cmbAttributeDescriptors.getSelection()).getFirstElement();
 
       Job job = new Job("Find/Replace") {
 

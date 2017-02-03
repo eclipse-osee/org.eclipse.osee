@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -143,7 +143,7 @@ public class HTMLRenderer extends FileSystemRenderer {
          if (type.equals(CoreAttributeTypes.HTMLContent)) {
             htmlContent = artifact.getAttributesToString(type);
          } else if (type.equals(CoreAttributeTypes.ImageContent)) {
-            List<Attribute<Object>> attrs = artifact.getAttributes((IAttributeType) type);
+            List<Attribute<Object>> attrs = artifact.getAttributes((AttributeTypeId) type);
             for (Object a : attrs) {
                if (a instanceof CompressedContentAttribute) {
                   CompressedContentAttribute c = (CompressedContentAttribute) a;
@@ -157,7 +157,7 @@ public class HTMLRenderer extends FileSystemRenderer {
                }
             }
          } else {
-            List<Attribute<Object>> attrs = artifact.getAttributes((IAttributeType) type);
+            List<Attribute<Object>> attrs = artifact.getAttributes((AttributeTypeId) type);
             for (Object o : attrs) {
                if (o instanceof StringAttribute || o instanceof OutlineNumberAttribute) {
                   String attributeValue = artifact.getAttributesToString(type);

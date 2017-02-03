@@ -16,7 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -57,7 +57,7 @@ public class AttributeReadOnlyImplTest {
 
    @Test
    public void testGetAttributeType() throws OseeCoreException {
-      IAttributeType expected = Name;
+      AttributeTypeToken expected = Name;
       when(proxiedObject.getAttributeType()).thenReturn(expected);
 
       assertEquals(expected, readOnly.getAttributeType());

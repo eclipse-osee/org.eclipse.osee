@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -26,13 +26,13 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * Provided to show the contents of an attribute without any ability to edit
- * 
+ *
  * @author Donald G. Dunne
  */
 public class XLabelDam extends GenericXWidget implements IAttributeWidget {
 
    protected Artifact artifact;
-   protected IAttributeType attributeType;
+   protected AttributeTypeToken attributeType;
    protected Text valueTextWidget;
    private Composite parent;
 
@@ -70,12 +70,12 @@ public class XLabelDam extends GenericXWidget implements IAttributeWidget {
    }
 
    @Override
-   public IAttributeType getAttributeType() {
+   public AttributeTypeToken getAttributeType() {
       return attributeType;
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, IAttributeType attributeType) {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;
       refresh();

@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.column;
 
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
@@ -20,9 +20,9 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
  */
 public class AttributeColumn extends AbstractServicesColumn {
 
-   private final IAttributeType attrType;
+   private final AttributeTypeId attrType;
 
-   public AttributeColumn(IAtsServices services, IAttributeType attrType) {
+   public AttributeColumn(IAtsServices services, AttributeTypeId attrType) {
       super(services);
       this.attrType = attrType;
    }

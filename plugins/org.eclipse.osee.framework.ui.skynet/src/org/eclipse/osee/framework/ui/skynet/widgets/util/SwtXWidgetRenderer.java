@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
@@ -267,7 +267,7 @@ public class SwtXWidgetRenderer {
       }
       if (xWidget instanceof IAttributeWidget) {
          try {
-            IAttributeType attributeType = AttributeTypeManager.getType(xWidgetLayoutData.getStoreName());
+            AttributeTypeToken attributeType = AttributeTypeManager.getType(xWidgetLayoutData.getStoreName());
             ((IAttributeWidget) xWidget).setAttributeType(artifact, attributeType);
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

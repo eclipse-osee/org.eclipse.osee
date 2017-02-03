@@ -13,7 +13,7 @@ package org.eclipse.osee.ote.define.utilities;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -45,7 +45,7 @@ public class OutfileDataCollector implements IDataListener {
       Conditions.checkNotNull(artifact, "artifact");
       Conditions.checkNotNull(parent, "parent");
       for (String fieldName : collectedData.keySet()) {
-         IAttributeType attributeType = oteToAttributeMap.getAttributeType(fieldName);
+         AttributeTypeId attributeType = oteToAttributeMap.getAttributeType(fieldName);
          if (attributeType != null && artifact.isAttributeTypeValid(attributeType)) {
             try {
                String value = collectedData.get(fieldName);

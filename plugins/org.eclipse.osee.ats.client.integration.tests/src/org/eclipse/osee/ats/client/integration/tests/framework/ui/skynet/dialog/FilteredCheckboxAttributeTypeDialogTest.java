@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.client.integration.tests.framework.ui.skynet.dialog;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxAttributeTypeDialog;
@@ -27,7 +27,7 @@ public class FilteredCheckboxAttributeTypeDialogTest {
    public void test() {
       FilteredCheckboxAttributeTypeDialog dialog =
          new FilteredCheckboxAttributeTypeDialog("Select Attribute Types", "Select attribute types to display.");
-      List<IAttributeType> types = Collections.castAll(AttributeTypeManager.getAllTypes());
+      List<AttributeTypeId> types = Collections.castAll(AttributeTypeManager.getAllTypes());
       dialog.setSelectable(types);
 
       try {

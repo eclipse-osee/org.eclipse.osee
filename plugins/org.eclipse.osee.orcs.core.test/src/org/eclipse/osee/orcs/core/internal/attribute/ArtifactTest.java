@@ -19,9 +19,10 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -77,7 +78,7 @@ public class ArtifactTest {
 
    private Artifact artifact;
    private final String guid = GUID.create();
-   private final IAttributeType attributeType = CoreAttributeTypes.Annotation;
+   private final AttributeTypeToken attributeType = CoreAttributeTypes.Annotation;
    private final IArtifactType artifactType = CoreArtifactTypes.GeneralData;
 
    @SuppressWarnings("unchecked")
@@ -88,13 +89,13 @@ public class ArtifactTest {
       artifact.setGraph(graph);
 
       when(types.isValidAttributeType(any(IArtifactType.class), any(BranchId.class),
-         any(IAttributeType.class))).thenReturn(true);
-      when(attributeFactory.getMaxOccurrenceLimit(any(IAttributeType.class))).thenReturn(1);
+         any(AttributeTypeId.class))).thenReturn(true);
+      when(attributeFactory.getMaxOccurrenceLimit(any(AttributeTypeId.class))).thenReturn(1);
 
       when(attributeFactory.createAttribute(any(AttributeManager.class), any(AttributeData.class))).thenReturn(
          attribute);
       when(attributeFactory.createAttributeWithDefaults(any(AttributeManager.class), any(ArtifactData.class),
-         any(IAttributeType.class))).thenReturn(attribute);
+         any(AttributeTypeId.class))).thenReturn(attribute);
       when(attribute.getOrcsData()).thenReturn(attributeData);
 
       when(artifactData.getGuid()).thenReturn(guid);

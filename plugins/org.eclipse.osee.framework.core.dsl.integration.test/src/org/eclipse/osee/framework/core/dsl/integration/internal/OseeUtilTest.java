@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
@@ -91,7 +91,7 @@ public class OseeUtilTest {
    @Test
    public void testToTokenAttributeType() throws OseeCoreException {
       XAttributeType type = OseeDslFactory.eINSTANCE.createXAttributeType();
-      IAttributeType expected = CoreAttributeTypes.Description;
+      AttributeTypeId expected = CoreAttributeTypes.Description;
 
       setupToToken(type, expected);
 

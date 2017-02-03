@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
@@ -144,7 +144,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public AttributeId createAttribute(ArtifactId sourceArtifact, IAttributeType attributeType) throws OseeCoreException {
+   public AttributeId createAttribute(ArtifactId sourceArtifact, AttributeTypeId attributeType) throws OseeCoreException {
       Artifact asArtifact = getForWrite(sourceArtifact);
       return asArtifact.createAttribute(attributeType);
    }
@@ -156,25 +156,25 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public AttributeId createAttributeFromString(ArtifactId sourceArtifact, IAttributeType attributeType, String value) throws OseeCoreException {
+   public AttributeId createAttributeFromString(ArtifactId sourceArtifact, AttributeTypeId attributeType, String value) throws OseeCoreException {
       Artifact asArtifact = getForWrite(sourceArtifact);
       return asArtifact.createAttributeFromString(attributeType, value);
    }
 
    @Override
-   public <T> void setSoleAttributeValue(ArtifactId sourceArtifact, IAttributeType attributeType, T value) throws OseeCoreException {
+   public <T> void setSoleAttributeValue(ArtifactId sourceArtifact, AttributeTypeId attributeType, T value) throws OseeCoreException {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setSoleAttributeValue(attributeType, value);
    }
 
    @Override
-   public void setSoleAttributeFromStream(ArtifactId sourceArtifact, IAttributeType attributeType, InputStream stream) throws OseeCoreException {
+   public void setSoleAttributeFromStream(ArtifactId sourceArtifact, AttributeTypeId attributeType, InputStream stream) throws OseeCoreException {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setSoleAttributeFromStream(attributeType, stream);
    }
 
    @Override
-   public void setSoleAttributeFromString(ArtifactId sourceArtifact, IAttributeType attributeType, String value) throws OseeCoreException {
+   public void setSoleAttributeFromString(ArtifactId sourceArtifact, AttributeTypeId attributeType, String value) throws OseeCoreException {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setSoleAttributeFromString(attributeType, value);
    }
@@ -240,19 +240,19 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public void deleteSoleAttribute(ArtifactId sourceArtifact, IAttributeType attributeType) throws OseeCoreException {
+   public void deleteSoleAttribute(ArtifactId sourceArtifact, AttributeTypeId attributeType) throws OseeCoreException {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.deleteSoleAttribute(attributeType);
    }
 
    @Override
-   public void deleteAttributes(ArtifactId sourceArtifact, IAttributeType attributeType) throws OseeCoreException {
+   public void deleteAttributes(ArtifactId sourceArtifact, AttributeTypeId attributeType) throws OseeCoreException {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.deleteAttributes(attributeType);
    }
 
    @Override
-   public void deleteAttributesWithValue(ArtifactId sourceArtifact, IAttributeType attributeType, Object value) throws OseeCoreException {
+   public void deleteAttributesWithValue(ArtifactId sourceArtifact, AttributeTypeId attributeType, Object value) throws OseeCoreException {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.deleteAttributesWithValue(attributeType, value);
    }

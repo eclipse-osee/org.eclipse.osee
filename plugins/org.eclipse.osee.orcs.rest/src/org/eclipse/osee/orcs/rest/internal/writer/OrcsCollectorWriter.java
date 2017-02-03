@@ -17,9 +17,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -109,7 +110,7 @@ public class OrcsCollectorWriter {
 
          try {
             for (OwAttribute owAttribute : owArtifact.getAttributes()) {
-               IAttributeType attrType = getAttributeType(orcsApi, owAttribute.getType());
+               AttributeTypeId attrType = getAttributeType(orcsApi, owAttribute.getType());
 
                if (artifact.getAttributeCount(attrType) <= 1 && owAttribute.getValues().size() <= 1) {
                   String currValue = artifact.getSoleAttributeAsString(attrType, null);
@@ -197,7 +198,7 @@ public class OrcsCollectorWriter {
       }
    }
 
-   private void logChange(ArtifactReadable artifact, IAttributeType attrType, String currValue, String newValue) {
+   private void logChange(ArtifactReadable artifact, AttributeTypeId attrType, String currValue, String newValue) {
       results.log(String.format("Attribute Updated: Current [%s], New [%s] for attr type [%s] and artifact %s",
          currValue, newValue, attrType, artifact.toStringWithId()));
    }
@@ -233,9 +234,9 @@ public class OrcsCollectorWriter {
       return null;
    }
 
-   protected static IAttributeType getAttributeType(OrcsApi orcsApi, OwAttributeType attributeType) {
+   protected static AttributeTypeId getAttributeType(OrcsApi orcsApi, OwAttributeType attributeType) {
       if (attributeType.getId() <= 0L) {
-         for (IAttributeType type : orcsApi.getOrcsTypes().getAttributeTypes().getAll()) {
+         for (AttributeTypeToken type : orcsApi.getOrcsTypes().getAttributeTypes().getAll()) {
             if (type.getName().equals(attributeType.getName())) {
                return type;
             }
@@ -317,7 +318,7 @@ public class OrcsCollectorWriter {
       for (OwAttribute owAttribute : owArtifact.getAttributes()) {
          if (CoreAttributeTypes.Name.notEqual(owAttribute.getType().getId())) {
             OwAttributeType owAttrType = owAttribute.getType();
-            IAttributeType attrType = getAttributeType(orcsApi, owAttrType);
+            AttributeTypeId attrType = getAttributeType(orcsApi, owAttrType);
 
             List<Object> values = owAttribute.getValues();
             for (Object value : values) {

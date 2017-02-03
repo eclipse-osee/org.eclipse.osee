@@ -23,8 +23,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -100,7 +100,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
       }
       try {
          if (AttributeTypeManager.typeExists(colName)) {
-            IAttributeType attributeType = AttributeTypeManager.getType(colName);
+            AttributeTypeToken attributeType = AttributeTypeManager.getType(colName);
             Set<Artifact> artifacts = new HashSet<>();
             for (TreeItem item : treeItems) {
                artifacts.add((Artifact) item.getData());
@@ -136,7 +136,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
          AWorkbench.popup("ERROR", "Can't change the field " + colName);
       }
       try {
-         IAttributeType attributeType = null;
+         AttributeTypeToken attributeType = null;
          try {
             attributeType = AttributeTypeManager.getType(colName);
          } catch (OseeTypeDoesNotExist ex) {
@@ -216,7 +216,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
          return;
       }
       // get attributes that can be deleted (from artifact and validity)
-      Set<IAttributeType> attrTypesUsed = new HashSet<>();
+      Set<AttributeTypeId> attrTypesUsed = new HashSet<>();
       for (Artifact art : artifacts) {
          // include attribute types that are used even if invalid
          for (Attribute<?> attr : art.getAttributes()) {

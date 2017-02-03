@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -94,7 +94,7 @@ public class RevertDuplicateTransitionsAction extends Action {
 
    protected List<Integer> getArtIdsWithDuplicateTransitions() {
       List<Integer> artIds = new LinkedList<>();
-      for (IAttributeType attrType : Arrays.asList(AtsAttributeTypes.CompletedDate, AtsAttributeTypes.CancelledDate)) {
+      for (AttributeTypeId attrType : Arrays.asList(AtsAttributeTypes.CompletedDate, AtsAttributeTypes.CancelledDate)) {
          for (IAtsWorkItem workItem : AtsClientService.get().getQueryService().getWorkItemsFromQuery(
             DUPLICATE_TRANSITION_QUERY, AtsClientService.get().getAtsBranch().getId(), attrType.getId())) {
             artIds.add(workItem.getId().intValue());

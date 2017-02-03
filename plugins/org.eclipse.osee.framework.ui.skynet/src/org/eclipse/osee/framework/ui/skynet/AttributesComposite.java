@@ -23,7 +23,7 @@ import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -255,7 +255,7 @@ public class AttributesComposite extends Composite {
                dialog.setSelectable(selectableTypes);
                if (dialog.open() == 0) {
                   for (Object obj : dialog.getResult()) {
-                     getArtifact().addAttribute((IAttributeType) obj);
+                     getArtifact().addAttribute((AttributeTypeId) obj);
                   }
                   tableViewer.refresh();
                   layout();

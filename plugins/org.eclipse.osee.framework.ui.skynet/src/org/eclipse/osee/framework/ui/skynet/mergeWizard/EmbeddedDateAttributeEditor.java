@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
 import java.util.Collection;
 import java.util.Date;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -36,13 +36,13 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class EmbeddedDateAttributeEditor implements IEmbeddedAttributeEditor {
 
-   protected IAttributeType attributeType;
+   protected AttributeTypeId attributeType;
    protected String displayName;
    protected Collection<?> attributeHolder;
    protected boolean persist;
    protected EmbeddedDateEditor editor;
 
-   public EmbeddedDateAttributeEditor(String notUsed, Collection<?> attributeHolder, String displayName, IAttributeType attributeType, boolean persist) {
+   public EmbeddedDateAttributeEditor(String notUsed, Collection<?> attributeHolder, String displayName, AttributeTypeId attributeType, boolean persist) {
       this.attributeType = attributeType;
       this.displayName = displayName;
       this.attributeHolder = attributeHolder;

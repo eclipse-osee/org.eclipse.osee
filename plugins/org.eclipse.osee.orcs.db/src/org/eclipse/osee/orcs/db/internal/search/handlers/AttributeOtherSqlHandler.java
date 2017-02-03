@@ -14,7 +14,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
@@ -45,7 +45,7 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther>
 
    private Collection<String> values;
    private boolean ignoreCase;
-   private Collection<IAttributeType> types;
+   private Collection<AttributeTypeId> types;
 
    @Override
    public void setData(CriteriaAttributeOther criteria) {
@@ -97,7 +97,7 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther>
 
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
-      Collection<IAttributeType> attributeTypes = criteria.getAttributeTypes();
+      Collection<AttributeTypeId> attributeTypes = criteria.getAttributeTypes();
 
       if (attributeTypes.size() == 1) {
          writer.write(attrAlias);

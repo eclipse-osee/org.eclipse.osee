@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
@@ -112,7 +112,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
    }
 
    private String getTaggerIdByTypeUuid(long typeUuid) throws OseeCoreException {
-      IAttributeType type = attributeTypes.get(typeUuid);
+      AttributeTypeId type = attributeTypes.get(typeUuid);
       return attributeTypes.getTaggerId(type);
    }
 

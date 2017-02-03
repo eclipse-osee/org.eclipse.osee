@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.rest.IAtsServer;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -222,10 +222,10 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
    }
 
    public static void addAttributeData(JsonGenerator writer, AttributeTypes attributeTypes, ArtifactReadable artifact) throws IOException, JsonGenerationException, JsonProcessingException {
-      Collection<? extends IAttributeType> attrTypes = attributeTypes.getAll();
+      Collection<AttributeTypeToken> attrTypes = attributeTypes.getAll();
       ResultSet<? extends AttributeReadable<Object>> attributes = artifact.getAttributes();
       if (!attributes.isEmpty()) {
-         for (IAttributeType attrType : attrTypes) {
+         for (AttributeTypeToken attrType : attrTypes) {
             if (artifact.isAttributeTypeValid(attrType)) {
                List<Object> attributeValues = artifact.getAttributeValues(attrType);
                if (!attributeValues.isEmpty()) {

@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.attribute;
 
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -43,7 +43,7 @@ public class AttributeClassResolver {
       return getBaseClazz(alias);
    }
 
-   public boolean isBaseTypeCompatible(Class<? extends Attribute<?>> baseType, IAttributeType attributeType) throws OseeCoreException {
+   public boolean isBaseTypeCompatible(Class<? extends Attribute<?>> baseType, AttributeTypeId attributeType) throws OseeCoreException {
       Conditions.checkNotNull(baseType, "baseType", "Unable to determine base type from null");
       Conditions.checkNotNull(attributeType, "attributeType");
       Class<? extends Attribute<?>> clazz = getBaseClazz(attributeType);

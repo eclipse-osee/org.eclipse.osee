@@ -18,7 +18,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.nebula.widgets.xviewer.Activator;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -72,7 +72,7 @@ public class FixAttributeOperation extends AbstractOperation {
       checkPreConditions();
 
       monitor.subTask("Aquiring Artifacts");
-      HashCollection<Artifact, IAttributeType> artifactAttributeMap = getArtifactsWithDuplicates(monitor);
+      HashCollection<Artifact, AttributeTypeToken> artifactAttributeMap = getArtifactsWithDuplicates(monitor);
 
       SkynetTransaction transaction = null;
       if (commitChangesBool) {
@@ -80,9 +80,9 @@ public class FixAttributeOperation extends AbstractOperation {
       }
       List<String[]> rowData = new ArrayList<>();
 
-      for (Entry<Artifact, Collection<IAttributeType>> entry : artifactAttributeMap.entrySet()) {
+      for (Entry<Artifact, Collection<AttributeTypeToken>> entry : artifactAttributeMap.entrySet()) {
          Artifact artifact = entry.getKey();
-         for (IAttributeType attributeType : entry.getValue()) {
+         for (AttributeTypeToken attributeType : entry.getValue()) {
             List<Object> attributeValues = artifact.getAttributeValues(attributeType);
             if (hasDuplicates(attributeValues)) {
                logf("duplicates found art[%s] attrType[%s] values[%s]", artifact, attributeType, attributeValues);
@@ -126,9 +126,8 @@ public class FixAttributeOperation extends AbstractOperation {
       }
    }
 
-   private HashCollection<Artifact, IAttributeType> getArtifactsWithDuplicates(IProgressMonitor monitor) throws OseeCoreException {
-      HashCollection<Artifact, IAttributeType> artifactAttributeMap =
-         new HashCollection<Artifact, IAttributeType>(false, HashSet.class);
+   private HashCollection<Artifact, AttributeTypeToken> getArtifactsWithDuplicates(IProgressMonitor monitor) throws OseeCoreException {
+      HashCollection<Artifact, AttributeTypeToken> artifactAttributeMap = new HashCollection<>(false, HashSet.class);
 
       List<Artifact> artifacts =
          ArtifactQuery.getArtifactListFromBranch(branch, LoadLevel.ALL, DeletionFlag.EXCLUDE_DELETED);

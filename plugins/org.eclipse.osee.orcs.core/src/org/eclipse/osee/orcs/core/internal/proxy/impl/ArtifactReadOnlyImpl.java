@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -101,12 +101,12 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public int getAttributeCount(IAttributeType type) throws OseeCoreException {
+   public int getAttributeCount(AttributeTypeId type) throws OseeCoreException {
       return getProxiedObject().getAttributeCount(type);
    }
 
    @Override
-   public int getAttributeCount(IAttributeType type, DeletionFlag deletionFlag) throws OseeCoreException {
+   public int getAttributeCount(AttributeTypeId type, DeletionFlag deletionFlag) throws OseeCoreException {
       return getProxiedObject().getAttributeCount(type, deletionFlag);
    }
 
@@ -126,12 +126,12 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public <T> T getSoleAttributeValue(IAttributeType attributeType) {
+   public <T> T getSoleAttributeValue(AttributeTypeId attributeType) {
       return getProxiedObject().getSoleAttributeValue(attributeType);
    }
 
    @Override
-   public <T> T getSoleAttributeValue(IAttributeType attributeType, DeletionFlag flag, T defaultValue) {
+   public <T> T getSoleAttributeValue(AttributeTypeId attributeType, DeletionFlag flag, T defaultValue) {
       return getProxiedObject().getSoleAttributeValue(attributeType, flag, defaultValue);
    }
 
@@ -141,17 +141,17 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public String getSoleAttributeAsString(IAttributeType attributeType) throws OseeCoreException {
+   public String getSoleAttributeAsString(AttributeTypeId attributeType) throws OseeCoreException {
       return getProxiedObject().getSoleAttributeAsString(attributeType);
    }
 
    @Override
-   public String getSoleAttributeAsString(IAttributeType attributeType, String defaultValue) throws OseeCoreException {
+   public String getSoleAttributeAsString(AttributeTypeId attributeType, String defaultValue) throws OseeCoreException {
       return getProxiedObject().getSoleAttributeAsString(attributeType, defaultValue);
    }
 
    @Override
-   public Long getSoleAttributeId(IAttributeType attributeType) {
+   public Long getSoleAttributeId(AttributeTypeId attributeType) {
       return (long) getProxiedObject().getSoleAttribute(attributeType).getLocalId();
    }
 
@@ -179,7 +179,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(IAttributeType attributeType, DeletionFlag deletionFlag) throws OseeCoreException {
+   public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeId attributeType, DeletionFlag deletionFlag) throws OseeCoreException {
       List<Attribute<T>> attributes = getProxiedObject().getAttributes(attributeType, deletionFlag);
       return getProxyManager().asExternalAttributes(getSession(), attributes);
    }

@@ -20,7 +20,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.lang.ref.WeakReference;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -58,7 +59,7 @@ public class AttributeFactoryTest {
    @Mock private AttributeData attributeData;
    @Mock private VersionData attrVersionData;
 
-   @Mock private IAttributeType attributeType;
+   @Mock private AttributeTypeToken attributeType;
    @Mock private Attribute<Object> attribute;
    @Mock private Attribute<Object> destinationAttribute;
 
@@ -67,7 +68,7 @@ public class AttributeFactoryTest {
    // @formatter:on
 
    private AttributeFactory factory;
-   private IAttributeType expectedGuid;
+   private AttributeTypeId expectedGuid;
 
    @Before
    public void init() throws OseeCoreException {
@@ -194,7 +195,7 @@ public class AttributeFactoryTest {
 
    @Test
    public void testGetMaxOccurrenceLimit() throws OseeCoreException {
-      IAttributeType token = mock(IAttributeType.class);
+      AttributeTypeId token = mock(AttributeTypeId.class);
 
       when(cache.getMaxOccurrences(token)).thenReturn(56);
 
@@ -207,7 +208,7 @@ public class AttributeFactoryTest {
 
    @Test
    public void testGetMinOccurrenceLimit() throws OseeCoreException {
-      IAttributeType token = mock(IAttributeType.class);
+      AttributeTypeId token = mock(AttributeTypeId.class);
 
       when(cache.getMinOccurrences(token)).thenReturn(99);
 

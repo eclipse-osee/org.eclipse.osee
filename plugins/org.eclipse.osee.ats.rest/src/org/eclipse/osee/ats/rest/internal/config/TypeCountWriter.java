@@ -17,9 +17,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
@@ -42,7 +43,7 @@ public class TypeCountWriter {
          Writer writer = new OutputStreamWriter(outputStream, "UTF-8");
          ExcelXmlWriter sheetWriter = new ExcelXmlWriter(writer);
 
-         List<IAttributeType> attributes = getAttrTypes(attrTypes);
+         List<AttributeTypeToken> attributes = getAttrTypes(attrTypes);
          String[] headers = getHeaders(attributes);
          int columns = headers.length;
          sheetWriter.startSheet("Type Count Report", headers.length);
@@ -60,7 +61,7 @@ public class TypeCountWriter {
                row[index++] = art.getName();
                row[index++] = "NEW";
                row[index++] = art.getArtifactType().toString();
-               for (IAttributeType type : attributes) {
+               for (AttributeTypeId type : attributes) {
                   row[index++] = art.getAttributeValues(type).toString();
                }
 
@@ -79,7 +80,7 @@ public class TypeCountWriter {
                row[index++] = art.getName();
                row[index++] = "MODIFIED";
                row[index++] = art.getArtifactType().toString();
-               for (IAttributeType type : attributes) {
+               for (AttributeTypeId type : attributes) {
                   row[index++] = art.getAttributeValues(type).toString();
                }
                sheetWriter.writeRow((Object[]) row);
@@ -97,7 +98,7 @@ public class TypeCountWriter {
                row[index++] = art.getName();
                row[index++] = "DELETED";
                row[index++] = art.getArtifactType().toString();
-               for (IAttributeType type : attributes) {
+               for (AttributeTypeId type : attributes) {
                   row[index++] = art.getAttributeValues(type).toString();
                }
                sheetWriter.writeRow((Object[]) row);
@@ -123,11 +124,11 @@ public class TypeCountWriter {
       return toReturn;
    }
 
-   private List<IAttributeType> getAttrTypes(List<Long> typeIds) {
-      List<IAttributeType> toReturn = new ArrayList<>();
+   private List<AttributeTypeToken> getAttrTypes(List<Long> typeIds) {
+      List<AttributeTypeToken> toReturn = new ArrayList<>();
 
-      Collection<? extends IAttributeType> allTypes = orcsApi.getOrcsTypes().getAttributeTypes().getAll();
-      for (IAttributeType type : allTypes) {
+      Collection<AttributeTypeToken> allTypes = orcsApi.getOrcsTypes().getAttributeTypes().getAll();
+      for (AttributeTypeToken type : allTypes) {
          if (typeIds.contains(type.getId())) {
             toReturn.add(type);
          }
@@ -135,14 +136,14 @@ public class TypeCountWriter {
       return toReturn;
    }
 
-   private String[] getHeaders(List<IAttributeType> types) {
+   private String[] getHeaders(List<AttributeTypeToken> types) {
       orcsApi.getOrcsTypes().getArtifactTypes().getAll();
       String[] toReturn = new String[types.size() + 3];
       int index = 0;
       toReturn[index++] = "Name";
       toReturn[index++] = "Mod Type";
       toReturn[index++] = "Art Type";
-      for (IAttributeType type : types) {
+      for (AttributeTypeToken type : types) {
          toReturn[index++] = type.getName();
       }
       return toReturn;

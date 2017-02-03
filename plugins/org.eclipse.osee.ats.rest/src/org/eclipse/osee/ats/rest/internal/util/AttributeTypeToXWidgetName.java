@@ -3,7 +3,7 @@ package org.eclipse.osee.ats.rest.internal.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -15,7 +15,7 @@ import org.eclipse.osee.orcs.data.EnumEntry;
  */
 public class AttributeTypeToXWidgetName {
 
-   public static String getXWidgetName(OrcsApi orcsApi, IAttributeType attributeType) throws OseeCoreException {
+   public static String getXWidgetName(OrcsApi orcsApi, AttributeTypeId attributeType) throws OseeCoreException {
       int minOccurrence = orcsApi.getOrcsTypes().getAttributeTypes().getMinOccurrences(attributeType);
       int maxOccurrence = orcsApi.getOrcsTypes().getAttributeTypes().getMaxOccurrences(attributeType);
       String xWidgetName = "";
@@ -65,7 +65,7 @@ public class AttributeTypeToXWidgetName {
       return xWidgetName;
    }
 
-   private static Collection<String> getEnumerationValues(OrcsApi orcsApi, IAttributeType attributeType) {
+   private static Collection<String> getEnumerationValues(OrcsApi orcsApi, AttributeTypeId attributeType) {
       List<String> values = new ArrayList<>();
       for (EnumEntry entry : orcsApi.getOrcsTypes().getAttributeTypes().getEnumType(attributeType).values()) {
          values.add(entry.getName());
