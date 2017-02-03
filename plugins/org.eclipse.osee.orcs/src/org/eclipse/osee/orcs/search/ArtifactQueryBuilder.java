@@ -29,7 +29,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public interface ArtifactQueryBuilder<T> {
 
    public static AttributeTypeToken ANY_ATTRIBUTE_TYPE =
-      TokenFactory.createAttributeType(Long.MIN_VALUE, "Any Attribute Type");
+      AttributeTypeToken.valueOf(Long.MIN_VALUE, "Any Attribute Type");
 
    T includeDeletedArtifacts();
 

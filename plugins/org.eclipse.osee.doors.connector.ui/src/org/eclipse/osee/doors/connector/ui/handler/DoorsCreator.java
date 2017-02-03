@@ -9,6 +9,7 @@ import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -66,19 +67,18 @@ public class DoorsCreator {
             if (artifact == null) {
                newArtifact = parentArtifact.addNewChild(PREEXISTING,
                   TokenFactory.createArtifactType(5764607523034243073L, "DoorsRequirement"), reqName);
-               newArtifact.setSoleAttributeFromString(
-                  TokenFactory.createAttributeType(5764607523034243075L, "Door Req Name"), reqName);
-               newArtifact.setSoleAttributeFromString(
-                  TokenFactory.createAttributeType(0x0000000000002006, "Door Req URL"), url);
+               newArtifact.setSoleAttributeFromString(AttributeTypeToken.valueOf(5764607523034243075L, "Door Req Name"),
+                  reqName);
+               newArtifact.setSoleAttributeFromString(AttributeTypeToken.valueOf(0x0000000000002006, "Door Req URL"),
+                  url);
 
                newArtifact.setName(reqName);
                newArtifact.persist(trans);
                trans.execute();
             } else {
-               artifact.setSoleAttributeFromString(
-                  TokenFactory.createAttributeType(5764607523034243075L, "Door Req Name"), reqName);
-               artifact.setSoleAttributeFromString(TokenFactory.createAttributeType(0x0000000000002006, "Door Req URL"),
-                  url);
+               artifact.setSoleAttributeFromString(AttributeTypeToken.valueOf(5764607523034243075L, "Door Req Name"),
+                  reqName);
+               artifact.setSoleAttributeFromString(AttributeTypeToken.valueOf(0x0000000000002006, "Door Req URL"), url);
 
                artifact.setName(reqName);
                artifact.persist(trans);

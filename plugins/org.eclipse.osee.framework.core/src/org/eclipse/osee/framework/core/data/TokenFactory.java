@@ -43,14 +43,6 @@ public final class TokenFactory {
       return null;
    }
 
-   public static IAttributeType createAttributeType(long guid, String name) {
-      return new AttributeTypeToken(guid, name);
-   }
-
-   public static IAttributeType createAttributeType(long guid, String name, String description) {
-      return new AttributeTypeToken(guid, name, description);
-   }
-
    public static RelationTypeToken createRelationType(long id, String name) {
       return RelationTypeToken.create(id, name);
    }
@@ -76,24 +68,6 @@ public final class TokenFactory {
       @Override
       public Long getGuid() {
          return getId();
-      }
-   }
-
-   private final static class AttributeTypeToken extends NamedIdBase implements IAttributeType {
-      private final String description;
-
-      public AttributeTypeToken(Long guid, String name) {
-         this(guid, name, null);
-      }
-
-      public AttributeTypeToken(Long guid, String name, String description) {
-         super(guid, name);
-         this.description = description;
-      }
-
-      @Override
-      public String getDescription() {
-         return description;
       }
    }
 

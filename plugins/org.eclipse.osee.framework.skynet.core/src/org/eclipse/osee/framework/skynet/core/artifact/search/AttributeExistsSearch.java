@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
@@ -49,7 +49,7 @@ public class AttributeExistsSearch implements ISearchPrimitive {
       ArrayList<AttributeTypeId> attributeTypes = new ArrayList<>();
 
       for (String attributeTypeId : storageString.split(",")) {
-         attributeTypes.add(TokenFactory.createAttributeType(Long.valueOf(attributeTypeId), "SearchAttrType"));
+         attributeTypes.add(AttributeTypeToken.valueOf(Long.valueOf(attributeTypeId), "SearchAttrType"));
       }
 
       return new AttributeExistsSearch(attributeTypes);

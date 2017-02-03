@@ -10,40 +10,40 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.define.AUTOGEN;
 
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 
 public final class OteAttributeTypes {
 
    // @formatter:off
-   public static final IAttributeType BUILD_ID = TokenFactory.createAttributeType(1152921504606847306L, "Build Id");
-   public static final IAttributeType CHECKSUM = TokenFactory.createAttributeType(1152921504606847307L, "Checksum");
-   public static final IAttributeType ELAPSED_DATE = TokenFactory.createAttributeType(1152921504606847296L, "Elapsed Date");
-   public static final IAttributeType END_DATE = TokenFactory.createAttributeType(1152921504606847295L, "End Date");
-   public static final IAttributeType EXTENSION = TokenFactory.createAttributeType(1152921504606847064L, "Extension");
-   public static final IAttributeType FAILED = TokenFactory.createAttributeType(1152921504606847298L, "Failed");
-   public static final IAttributeType IS_BATCH_MODE_ALLOWED = TokenFactory.createAttributeType(1152921504606847303L, "Is Batch Mode Allowed");
-   public static final IAttributeType LAST_AUTHOR = TokenFactory.createAttributeType(1152921504606847285L, "Last Author");
-   public static final IAttributeType LAST_DATE_UPLOADED = TokenFactory.createAttributeType(1152921504606847304L, "Last Date Uploaded");
-   public static final IAttributeType LAST_MODIFIED_DATE = TokenFactory.createAttributeType(1152921504606847286L, "Last Modified Date");
-   public static final IAttributeType MODIFIED_FLAG = TokenFactory.createAttributeType(1152921504606847284L, "Modified Flag");
-   public static final IAttributeType OSEE_SERVER_JAR_VERSION = TokenFactory.createAttributeType(1152921504606847292L, "OSEE Server Jar Version");
-   public static final IAttributeType OSEE_SERVER_TITLE = TokenFactory.createAttributeType(1152921504606847291L, "OSEE Server Title");
-   public static final IAttributeType OSEE_VERSION = TokenFactory.createAttributeType(1152921504606847290L, "OSEE Version");
-   public static final IAttributeType OS_ARCHITECTURE = TokenFactory.createAttributeType(1152921504606847287L, "OS Architecture");
-   public static final IAttributeType OS_NAME = TokenFactory.createAttributeType(1152921504606847288L, "OS Name");
-   public static final IAttributeType OS_VERSION = TokenFactory.createAttributeType(1152921504606847289L, "OS Version");
-   public static final IAttributeType OUTFILE_URL = TokenFactory.createAttributeType(1152921504606847281L, "Outfile URL");
-   public static final IAttributeType PASSED = TokenFactory.createAttributeType(1152921504606847297L, "Passed");
-   public static final IAttributeType PROCESSOR_ID = TokenFactory.createAttributeType(1152921504606847293L, "Processor ID");
-   public static final IAttributeType QUALIFICATION_LEVEL = TokenFactory.createAttributeType(1152921504606847305L, "Qualification Level");
-   public static final IAttributeType RAN_IN_BATCH_MODE = TokenFactory.createAttributeType(1152921504606847302L, "Ran In Batch Mode");
-   public static final IAttributeType REVISION = TokenFactory.createAttributeType(1152921504606847283L, "Revision");
-   public static final IAttributeType SCRIPT_ABORTED = TokenFactory.createAttributeType(1152921504606847300L, "Script Aborted");
-   public static final IAttributeType START_DATE = TokenFactory.createAttributeType(1152921504606847294L, "Start Date");
-   public static final IAttributeType TEST_SCRIPT_URL = TokenFactory.createAttributeType(1152921504606847282L, "Test Script URL");
-   public static final IAttributeType TOTAL_TEST_POINTS = TokenFactory.createAttributeType(1152921504606847299L, "Total Test Points");
-   public static final IAttributeType TestDisposition = TokenFactory.createAttributeType(1152921504606847308L, "Disposition");
+   public static final AttributeTypeToken BUILD_ID = AttributeTypeToken.valueOf(1152921504606847306L, "Build Id");
+   public static final AttributeTypeToken CHECKSUM = AttributeTypeToken.valueOf(1152921504606847307L, "Checksum");
+   public static final AttributeTypeToken ELAPSED_DATE = AttributeTypeToken.valueOf(1152921504606847296L, "Elapsed Date");
+   public static final AttributeTypeToken END_DATE = AttributeTypeToken.valueOf(1152921504606847295L, "End Date");
+   public static final AttributeTypeToken EXTENSION = AttributeTypeToken.valueOf(1152921504606847064L, "Extension");
+   public static final AttributeTypeToken FAILED = AttributeTypeToken.valueOf(1152921504606847298L, "Failed");
+   public static final AttributeTypeToken IS_BATCH_MODE_ALLOWED = AttributeTypeToken.valueOf(1152921504606847303L, "Is Batch Mode Allowed");
+   public static final AttributeTypeToken LAST_AUTHOR = AttributeTypeToken.valueOf(1152921504606847285L, "Last Author");
+   public static final AttributeTypeToken LAST_DATE_UPLOADED = AttributeTypeToken.valueOf(1152921504606847304L, "Last Date Uploaded");
+   public static final AttributeTypeToken LAST_MODIFIED_DATE = AttributeTypeToken.valueOf(1152921504606847286L, "Last Modified Date");
+   public static final AttributeTypeToken MODIFIED_FLAG = AttributeTypeToken.valueOf(1152921504606847284L, "Modified Flag");
+   public static final AttributeTypeToken OSEE_SERVER_JAR_VERSION = AttributeTypeToken.valueOf(1152921504606847292L, "OSEE Server Jar Version");
+   public static final AttributeTypeToken OSEE_SERVER_TITLE = AttributeTypeToken.valueOf(1152921504606847291L, "OSEE Server Title");
+   public static final AttributeTypeToken OSEE_VERSION = AttributeTypeToken.valueOf(1152921504606847290L, "OSEE Version");
+   public static final AttributeTypeToken OS_ARCHITECTURE = AttributeTypeToken.valueOf(1152921504606847287L, "OS Architecture");
+   public static final AttributeTypeToken OS_NAME = AttributeTypeToken.valueOf(1152921504606847288L, "OS Name");
+   public static final AttributeTypeToken OS_VERSION = AttributeTypeToken.valueOf(1152921504606847289L, "OS Version");
+   public static final AttributeTypeToken OUTFILE_URL = AttributeTypeToken.valueOf(1152921504606847281L, "Outfile URL");
+   public static final AttributeTypeToken PASSED = AttributeTypeToken.valueOf(1152921504606847297L, "Passed");
+   public static final AttributeTypeToken PROCESSOR_ID = AttributeTypeToken.valueOf(1152921504606847293L, "Processor ID");
+   public static final AttributeTypeToken QUALIFICATION_LEVEL = AttributeTypeToken.valueOf(1152921504606847305L, "Qualification Level");
+   public static final AttributeTypeToken RAN_IN_BATCH_MODE = AttributeTypeToken.valueOf(1152921504606847302L, "Ran In Batch Mode");
+   public static final AttributeTypeToken REVISION = AttributeTypeToken.valueOf(1152921504606847283L, "Revision");
+   public static final AttributeTypeToken SCRIPT_ABORTED = AttributeTypeToken.valueOf(1152921504606847300L, "Script Aborted");
+   public static final AttributeTypeToken START_DATE = AttributeTypeToken.valueOf(1152921504606847294L, "Start Date");
+   public static final AttributeTypeToken TEST_SCRIPT_URL = AttributeTypeToken.valueOf(1152921504606847282L, "Test Script URL");
+   public static final AttributeTypeToken TOTAL_TEST_POINTS = AttributeTypeToken.valueOf(1152921504606847299L, "Total Test Points");
+   public static final AttributeTypeToken TestDisposition = AttributeTypeToken.valueOf(1152921504606847308L, "Disposition");
    // @formatter:on
 
    private OteAttributeTypes() {

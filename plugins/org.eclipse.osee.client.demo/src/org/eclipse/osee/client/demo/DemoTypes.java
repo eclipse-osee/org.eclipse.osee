@@ -23,7 +23,7 @@ public final class DemoTypes {
    public static final IArtifactType DemoTestRequirement = TokenFactory.createArtifactType(86, "Demo Artifact With Selective Partition");
 
    public static final IArtifactType DemoDslArtifact = TokenFactory.createArtifactType(204526342635554L, "Demo DSL Artifact");
-   public static final AttributeTypeToken DemoDslAttribute = TokenFactory.createAttributeType(1153126013769613775L, "AxRbLlj+c2ZHjBeumfgA");
+   public static final AttributeTypeToken DemoDslAttribute = AttributeTypeToken.valueOf(1153126013769613775L, "AxRbLlj+c2ZHjBeumfgA");
    // @formatter:on
 
    private DemoTypes() {

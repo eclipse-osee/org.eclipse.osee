@@ -173,7 +173,7 @@ public class OrcsTypesIndexer {
       AttributeTypeToken token = index.getTokenByDslType(dslType);
       if (token == null) {
          long id = Long.valueOf(dslType.getId());
-         token = TokenFactory.createAttributeType(id, dslType.getName());
+         token = AttributeTypeToken.valueOf(id, dslType.getName());
          index.put(token, dslType);
       }
       return token;

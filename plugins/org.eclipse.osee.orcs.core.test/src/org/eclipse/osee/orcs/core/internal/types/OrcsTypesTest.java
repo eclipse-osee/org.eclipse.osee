@@ -86,11 +86,11 @@ public class OrcsTypesTest {
    private static final IArtifactType OTHER_ARTIFACT = TokenFactory.createArtifactType(32, "Other Artifact");
    private static final IArtifactType LAST_ARTIFACT = TokenFactory.createArtifactType(33, "Last Artifact");
 
-   private static final AttributeTypeId NAME = TokenFactory.createAttributeType(1152921504606847088L, "Name");
-   private static final AttributeTypeId ANNOTATION = TokenFactory.createAttributeType(1152921504606847094L, "Annotation");
-   private static final AttributeTypeId WORDML = TokenFactory.createAttributeType(1152921504606847098L, "WordML");
-   private static final AttributeTypeId FIELD_1 = TokenFactory.createAttributeType(1152921504606847104L, "Field 1");
-   private static final AttributeTypeId FIELD_2 = TokenFactory.createAttributeType(1152921504606847105L, "Field 2");
+   private static final AttributeTypeId NAME = AttributeTypeToken.valueOf(1152921504606847088L, "Name");
+   private static final AttributeTypeId ANNOTATION = AttributeTypeToken.valueOf(1152921504606847094L, "Annotation");
+   private static final AttributeTypeId WORDML = AttributeTypeToken.valueOf(1152921504606847098L, "WordML");
+   private static final AttributeTypeId FIELD_1 = AttributeTypeToken.valueOf(1152921504606847104L, "Field 1");
+   private static final AttributeTypeId FIELD_2 = AttributeTypeToken.valueOf(1152921504606847105L, "Field 2");
 
    private static final IRelationType REQUIREMENT_REL = TokenFactory.createRelationType(2305843009213694295L, "Requirement Relation");
    private static final IRelationType ANOTHER_REL = TokenFactory.createRelationType(2305843009213694296L, "Another Relation");

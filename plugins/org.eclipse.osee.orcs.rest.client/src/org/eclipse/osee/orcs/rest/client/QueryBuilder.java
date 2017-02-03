@@ -15,10 +15,10 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -31,8 +31,7 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
  */
 public interface QueryBuilder {
 
-   public static AttributeTypeId ANY_ATTRIBUTE_TYPE =
-      TokenFactory.createAttributeType(Long.MIN_VALUE, "Any Attribute Type");
+   public static AttributeTypeId ANY_ATTRIBUTE_TYPE = AttributeTypeToken.valueOf(Long.MIN_VALUE, "Any Attribute Type");
 
    QueryBuilder includeDeleted();
 

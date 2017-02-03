@@ -73,7 +73,7 @@ public class ConvertOseeTypesToLong {
          //         results.log("Converting java file " + file);
          String text = Lib.fileToString(file);
 
-         for (String createTypePrefix : Arrays.asList("createType\\(", "TokenFactory.createAttributeType\\(",
+         for (String createTypePrefix : Arrays.asList("createType\\(", "AttributeTypeToken.valueOf\\(",
             "TokenFactory.createArtifactType\\(", "RelationTypeSide.create\\(RelationSide.SIDE_A, ")) {
             Pattern javaTypePattern = Pattern.compile(createTypePrefix + "(.*)L,");
             Matcher matcher = javaTypePattern.matcher(text);
