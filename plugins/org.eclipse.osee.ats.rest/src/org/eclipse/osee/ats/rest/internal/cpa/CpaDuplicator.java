@@ -44,7 +44,7 @@ public class CpaDuplicator {
 
    public XResultData duplicate() {
       XResultData rd = new XResultData(false);
-      ArtifactReadable cpaArt = atsServer.getArtifactByGuid(duplicate.getCpaUuid());
+      ArtifactReadable cpaArt = (ArtifactReadable) atsServer.getArtifactById(duplicate.getCpaUuid());
       String atsId = cpaArt.getSoleAttributeValue(AtsAttributeTypes.AtsId, null);
       String duplicatePcrId = "";
       if (!Strings.isValid(atsId)) {
