@@ -218,7 +218,7 @@ public class ExcelAtsActionArtifactExtractor {
 
                   for (JaxAttribute attr : aData.attributes) {
                      AttributeTypeId attrType = AttributeTypeManager.getType(attr.getAttrTypeName());
-                     changes.setValues(teamWorkflow, attrType, attr.getValues());
+                     changes.setAttributeValues(teamWorkflow, attrType, attr.getValues());
                   }
                   newTeamArts.add(teamWorkflow);
                   addToGoal(Collections.singleton(teamWorkflow), changes);

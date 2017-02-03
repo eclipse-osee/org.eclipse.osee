@@ -214,6 +214,10 @@ public abstract class XWidget {
 
    protected abstract void createControls(Composite parent, int horizontalSpan);
 
+   protected void createControlsAfterLabel(Composite parent, int horizontalSpan) {
+      // Used for widgets desiring to add controls just after the label.
+   }
+
    public final void createWidgets(Composite parent, int horizontalSpan) {
       setNotificationsAllowed(false);
       try {
@@ -388,5 +392,9 @@ public abstract class XWidget {
 
    public void setUseToStringSorter(boolean useToStringSorter) {
       this.useToStringSorter = useToStringSorter;
+   }
+
+   public void setToolkit(FormToolkit toolkit) {
+      this.toolkit = toolkit;
    }
 }

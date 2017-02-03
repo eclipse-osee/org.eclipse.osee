@@ -18,7 +18,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.api.IAtsServices;
@@ -41,12 +40,11 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionHelperAdapter;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
+import org.eclipse.osee.ats.editor.widget.XTransitionToStateComboWidget;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
-import org.eclipse.osee.ats.workdef.StateDefinitionLabelProvider;
-import org.eclipse.osee.ats.workdef.StateDefinitionViewSorter;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -78,7 +76,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  */
 public class WfeTransitionComposite extends Composite {
 
-   private final XComboViewer transitionToStateCombo;
+   private final XTransitionToStateComboWidget transitionToStateCombo;
    private final Label transitionAssigneesLabel;
    private final AbstractWorkflowArtifact awa;
    private final WfeWorkflowSection workflowSection;
@@ -106,7 +104,13 @@ public class WfeTransitionComposite extends Composite {
              * 1.
              */
             if (e.count == 1) {
-               handleTransitionButtonSelection(editor, isEditable);
+               transitionButton.setEnabled(false);
+               try {
+                  handleTransitionButtonSelection(awa, editor.isPrivilegedEditModeEnabled(), isEditable,
+                     (IAtsStateDefinition) transitionToStateCombo.getSelected());
+               } finally {
+                  transitionButton.setEnabled(true);
+               }
             }
          }
 
@@ -116,39 +120,12 @@ public class WfeTransitionComposite extends Composite {
       Label label = editor.getToolkit().createLabel(this, "to");
       label.setBackground(AtsUtil.ACTIVE_COLOR);
 
-      transitionToStateCombo = new XComboViewer("Transition To State Combo", SWT.NONE);
-      transitionToStateCombo.setDisplayLabel(false);
-      List<Object> allPages = new ArrayList<>();
-      for (IAtsStateDefinition nextState : awa.getToStatesWithCompleteCancelReturnStates()) {
-         if (!allPages.contains(nextState)) {
-            allPages.add(nextState);
-         }
-      }
-      transitionToStateCombo.setInput(allPages);
-      transitionToStateCombo.setLabelProvider(new StateDefinitionLabelProvider());
-      transitionToStateCombo.setContentProvider(new ArrayContentProvider());
-      transitionToStateCombo.setComparator(new StateDefinitionViewSorter());
-
+      transitionToStateCombo = new XTransitionToStateComboWidget();
+      transitionToStateCombo.setArtifact(awa);
       transitionToStateCombo.createWidgets(this, 1);
 
-      // Set default page from workflow default
-      ArrayList<Object> defaultPage = new ArrayList<>();
-      if (workflowSection.getPage().getDefaultToPage() != null) {
-         defaultPage.add(workflowSection.getPage().getDefaultToPage());
-         transitionToStateCombo.setSelected(defaultPage);
-      }
-      if (workflowSection.getPage().getStateType().isCancelledState() && Strings.isValid(awa.getCancelledFromState())) {
-         defaultPage.add(awa.getStateDefinitionByName(awa.getCancelledFromState()));
-         transitionToStateCombo.setSelected(defaultPage);
-      }
-      if (workflowSection.getPage().getStateType().isCompletedState() && Strings.isValid(awa.getCompletedFromState())) {
-         defaultPage.add(awa.getStateDefinitionByName(awa.getCompletedFromState()));
-         transitionToStateCombo.setSelected(defaultPage);
-      }
-      // Update transition based on state items
       updateTransitionToState();
 
-      transitionToStateCombo.getCombo().setVisibleItemCount(20);
       transitionToStateCombo.addSelectionChangedListener(new ISelectionChangedListener() {
          @Override
          public void selectionChanged(SelectionChangedEvent event) {
@@ -197,11 +174,8 @@ public class WfeTransitionComposite extends Composite {
 
    }
 
-   private void handleTransitionButtonSelection(final WorkflowEditor editor, final boolean isEditable) {
-      editor.doSave(null);
-      transitionButton.setEnabled(false);
+   public static void handleTransitionButtonSelection(AbstractWorkflowArtifact awa, final boolean isPriviledgedEditModeEnabled, final boolean isEditable, IAtsStateDefinition toStateDef) {
       final List<IAtsWorkItem> workItems = Arrays.asList((IAtsWorkItem) awa);
-      final IAtsStateDefinition toStateDef = (IAtsStateDefinition) transitionToStateCombo.getSelected();
       final IAtsStateDefinition fromStateDef = awa.getStateDefinition();
       ITransitionHelper helper = new TransitionHelperAdapter(AtsClientService.get().getServices()) {
 
@@ -209,7 +183,7 @@ public class WfeTransitionComposite extends Composite {
 
          @Override
          public boolean isPrivilegedEditEnabled() {
-            return editor.isPrivilegedEditModeEnabled();
+            return isPriviledgedEditModeEnabled;
          }
 
          @Override
@@ -237,7 +211,7 @@ public class WfeTransitionComposite extends Composite {
                public void run() {
                   boolean resultBool = false;
                   try {
-                     resultBool = handlePopulateStateMetrics(fromStateDef, toStateDef, changes);
+                     resultBool = handlePopulateStateMetrics(awa, fromStateDef, toStateDef, changes);
                   } catch (OseeCoreException ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                      result.set(false);
@@ -325,7 +299,7 @@ public class WfeTransitionComposite extends Composite {
       });
    }
 
-   private boolean handlePopulateStateMetrics(IAtsStateDefinition fromStateDefinition, IAtsStateDefinition toStateDefinition, IAtsChangeSet changes) throws OseeCoreException {
+   private static boolean handlePopulateStateMetrics(AbstractWorkflowArtifact awa, IAtsStateDefinition fromStateDefinition, IAtsStateDefinition toStateDefinition, IAtsChangeSet changes) throws OseeCoreException {
       int percent = 0;
       // If state weighting, always 100 cause state is completed
       if (AtsClientService.get().getWorkDefinitionAdmin().isStateWeightingEnabled(awa.getWorkDefinition())) {
@@ -361,7 +335,7 @@ public class WfeTransitionComposite extends Composite {
       return true;
    }
 
-   private boolean isRequireStateHoursSpentPrompt(IAtsStateDefinition stateDefinition) {
+   private static boolean isRequireStateHoursSpentPrompt(IAtsStateDefinition stateDefinition) {
       return stateDefinition.hasRule(RuleDefinitionOption.RequireStateHourSpentPrompt.name());
    }
 

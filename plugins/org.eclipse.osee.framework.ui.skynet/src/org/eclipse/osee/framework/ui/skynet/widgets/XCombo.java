@@ -52,6 +52,12 @@ public class XCombo extends XButtonCommon {
       isDefaultSelectionAllowed = isAllowed;
    }
 
+   @Override
+   public void setRequiredEntry(boolean requiredEntry) {
+      super.setRequiredEntry(requiredEntry);
+      validate();
+   }
+
    public boolean isDefaultSelectionAllowed() {
       return isDefaultSelectionAllowed;
    }

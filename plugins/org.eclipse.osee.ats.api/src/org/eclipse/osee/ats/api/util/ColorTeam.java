@@ -12,25 +12,22 @@ package org.eclipse.osee.ats.api.util;
 
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Donald G. Dunne
  */
 @XmlRootElement
-public class ColorTeam {
+public class ColorTeam extends NamedIdBase {
 
-   private String name;
    private List<Long> goalUuids;
 
    public ColorTeam() {
+      this(-1L, "");
    }
 
-   public String getName() {
-      return name;
-   }
-
-   public void setName(String name) {
-      this.name = name;
+   public ColorTeam(Long id, String name) {
+      super(id, name);
    }
 
    public List<Long> getGoalUuids() {
@@ -43,7 +40,7 @@ public class ColorTeam {
 
    @Override
    public String toString() {
-      return "ColorTeam [name=" + name + ", goalUuids=" + goalUuids + "]";
+      return "ColorTeam [id=" + id + ", name=" + getName() + ", id=" + getId() + " goalUuids=" + goalUuids + "]";
    }
 
 }

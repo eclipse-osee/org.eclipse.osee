@@ -16,7 +16,6 @@ import java.util.List;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.ServiceUtil;
@@ -118,7 +117,8 @@ public class XHyperlabelWorkflowApplicabilitySelection extends XHyperlinkLabelCm
       HashMap<ArtifactId, List<ApplicabilityId>> artToApplMap = new HashMap<>();
       artToApplMap.put(workItem.getStoreObject(), Collections.castAll(getSelectedApplicabilities()));
 
-      AtsClientService.getApplicabilityEndpoint(AtsClientService.get().getAtsBranch()).setApplicabilityReference(artToApplMap);
+      AtsClientService.getApplicabilityEndpoint(AtsClientService.get().getAtsBranch()).setApplicabilityReference(
+         artToApplMap);
    }
 
    @Override

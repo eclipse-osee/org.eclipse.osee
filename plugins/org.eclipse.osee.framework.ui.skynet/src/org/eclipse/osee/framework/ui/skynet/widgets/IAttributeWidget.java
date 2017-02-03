@@ -24,7 +24,7 @@ public interface IAttributeWidget extends IArtifactStoredWidget {
    /**
     * Set attributeType used as storage for this widget
     */
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeTypeName) throws OseeCoreException;
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeTypeToken) throws OseeCoreException;
 
    /**
     * Get attributeType used as storage for this widget

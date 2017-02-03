@@ -208,12 +208,7 @@ public class WfeWorkflowSection extends SectionPart {
       }
 
       // Create dynamic XWidgets
-      SwtXWidgetRenderer dynamicXWidgetLayout =
-         statePage.createBody(getManagedForm(), workComp, sma, xModListener, isEditable || isGlobalEditable);
-      for (XWidget xWidget : dynamicXWidgetLayout.getXWidgets()) {
-         allXWidgets.add(xWidget);
-         allXWidgets.addAll(xWidget.getChildrenXWidgets());
-      }
+      createSectionBody(statePage, workComp);
 
       // Add any dynamic XWidgets declared for page by IAtsStateItem extensions
       for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
@@ -236,6 +231,22 @@ public class WfeWorkflowSection extends SectionPart {
 
       computeTextSizesAndReflow();
       return workComp;
+   }
+
+   private void createSectionBody(StateXWidgetPage statePage, Composite workComp) {
+      SwtXWidgetRenderer dynamicXWidgetLayout =
+         statePage.createBody(getManagedForm(), workComp, sma, xModListener, isEditable || isGlobalEditable);
+      for (XWidget xWidget : dynamicXWidgetLayout.getXWidgets()) {
+         addAndCheckChildren(xWidget);
+      }
+   }
+
+   private void addAndCheckChildren(XWidget xWidget) {
+      allXWidgets.add(xWidget);
+      xWidget.addXModifiedListener(xModListener);
+      for (XWidget childWidget : xWidget.getChildrenXWidgets()) {
+         addAndCheckChildren(childWidget);
+      }
    }
 
    private void computeTextSizesAndReflow() {
@@ -336,9 +347,11 @@ public class WfeWorkflowSection extends SectionPart {
       for (XWidget widget : allXWidgets) {
          if (widget instanceof IArtifactStoredWidget) {
             IArtifactStoredWidget artifactStoredWidget = (IArtifactStoredWidget) widget;
-            Result result = artifactStoredWidget.isDirty();
-            if (result.isTrue()) {
-               return result;
+            if (artifactStoredWidget.getArtifact() != null) {
+               Result result = artifactStoredWidget.isDirty();
+               if (result.isTrue()) {
+                  return result;
+               }
             }
          }
       }

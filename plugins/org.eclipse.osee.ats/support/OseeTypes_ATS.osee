@@ -311,6 +311,31 @@ oseeEnumType "enum.color.team" {
    entry "Unspecified" 
 }
 
+attributeType "ats.IPT Team" extends EnumeratedAttribute {
+   id 1364016887343371647
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+	taggerId DefaultAttributeTaggerProvider
+   enumType "enum.ipt.team"
+   mediaType "text/plain"
+}
+
+oseeEnumType "enum.ipt.team" {
+   id 5000742373963153015
+   entry "AH6" 
+   entry "AH6i" 
+   entry "ASE" 
+   entry "CEE" 
+   entry "CommNavASE" 
+   entry "CrewStation" 
+   entry "EQA" 
+   entry "Integration" 
+   entry "ProcDisp" 
+   entry "Software" 
+   entry "WpnSight" 
+}
+
 attributeType "ats.Holiday" extends DateAttribute {
 	id 72064629481881851
 	dataProvider DefaultAttributeDataProvider

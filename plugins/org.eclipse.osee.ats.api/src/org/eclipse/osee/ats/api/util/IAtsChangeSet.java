@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -101,7 +100,7 @@ public interface IAtsChangeSet {
 
    void deleteArtifact(IAtsWorkItem workItem);
 
-   void setValues(IAtsObject atsObject, AttributeTypeId attrType, List<Object> values);
+   void setAttributeValues(IAtsObject atsObject, AttributeTypeId attrType, List<Object> values);
 
    String getComment();
 

@@ -164,6 +164,8 @@ public class XList extends GenericXWidget {
          }
       }
 
+      createControlsAfterLabel(parent, horizontalSpan);
+
       listList = new List(composite, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL);
       String array[] = items.keySet().toArray(new String[items.size()]);
       java.util.Arrays.sort(array);

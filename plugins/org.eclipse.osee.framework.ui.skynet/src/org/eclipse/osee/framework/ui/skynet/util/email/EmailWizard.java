@@ -104,4 +104,8 @@ public class EmailWizard extends Wizard {
       this.initialAddress = initialAddress;
    }
 
+   public List<EmailGroup> getEmailableGroups() {
+      return emailableGroups;
+   }
+
 }

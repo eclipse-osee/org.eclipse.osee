@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2017 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,54 +8,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.widgets;
+package org.eclipse.osee.ats.editor.widget;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
-import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 
 /**
  * @author Donald G. Dunne
  */
-public class XComboDam extends XCombo implements IAttributeWidget {
+public class XColorTeamDam extends XComboDam {
 
-   protected Artifact artifact;
-   protected AttributeTypeToken attributeType;
-
-   @Override
-   public Artifact getArtifact() {
-      return artifact;
-   }
-
-   public XComboDam(String displayLabel) {
+   public XColorTeamDam(String displayLabel) {
       super(displayLabel);
-   }
-
-   @Override
-   public AttributeTypeToken getAttributeType() {
-      return attributeType;
-   }
-
-   @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) throws OseeCoreException {
-      this.artifact = artifact;
-      this.attributeType = attributeType;
-      try {
-         String value = artifact.getSoleAttributeValue(this.attributeType);
-         super.set(value.toString());
-      } catch (AttributeDoesNotExist ex) {
-         super.set("");
-      }
    }
 
    @Override
@@ -88,27 +58,6 @@ public class XComboDam extends XCombo implements IAttributeWidget {
          }
       }
       return Result.FalseResult;
-   }
-
-   @Override
-   public IStatus isValid() {
-      IStatus status = super.isValid();
-      if (status.isOK()) {
-         try {
-            if (getArtifact() != null && getAttributeType() != null) {
-               status =
-                  OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(), getAttributeType(), get());
-            }
-         } catch (OseeCoreException ex) {
-            status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error getting Artifact", ex);
-         }
-      }
-      return status;
-   }
-
-   @Override
-   public void revert() throws OseeCoreException {
-      setAttributeType(artifact, attributeType);
    }
 
 }

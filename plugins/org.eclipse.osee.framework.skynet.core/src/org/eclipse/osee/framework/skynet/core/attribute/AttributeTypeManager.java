@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -125,7 +126,10 @@ public class AttributeTypeManager {
    }
 
    private static Set<String> getEnumerationValues(AttributeType attributeType) throws OseeCoreException {
-      return attributeType.getOseeEnumType().valuesAsOrderedStringSet();
+      if (attributeType.getOseeEnumType() != null) {
+         return attributeType.getOseeEnumType().valuesAsOrderedStringSet();
+      }
+      return Collections.emptySet();
    }
 
    public static Set<String> getEnumerationValues(AttributeTypeId attributeType) throws OseeCoreException {

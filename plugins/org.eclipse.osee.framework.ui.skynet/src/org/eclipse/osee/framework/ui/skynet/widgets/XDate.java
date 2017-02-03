@@ -58,6 +58,12 @@ public class XDate extends XWidget {
       return dateCombo;
    }
 
+   @Override
+   public void setRequiredEntry(boolean requiredEntry) {
+      super.setRequiredEntry(requiredEntry);
+      validate();
+   }
+
    /**
     * Set the default format for the date ADate.MMMDDDYY or ADate MMMDDDYYYHHHMM or use java.util.date format string
     */
@@ -71,7 +77,7 @@ public class XDate extends XWidget {
 
    /**
     * Create Date Widgets Label/DatePickerCombo
-    * 
+    *
     * @param horizontalSpan - horizontalSpan takes up 4 columns, therefore horizontalSpan must be >=4
     */
    @Override

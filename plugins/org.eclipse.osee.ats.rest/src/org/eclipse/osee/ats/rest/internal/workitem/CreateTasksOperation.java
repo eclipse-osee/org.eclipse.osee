@@ -297,7 +297,7 @@ public class CreateTasksOperation {
                   resultData.errorf("Attribute Type [%s] not valid for Task creation in %s",
                      attribute.getAttrTypeName(), task);
                }
-               changes.setValues(task, attrType, attribute.getValues());
+               changes.setAttributeValues(task, attrType, attribute.getValues());
             }
 
             for (JaxRelation relation : jaxTask.getRelations()) {

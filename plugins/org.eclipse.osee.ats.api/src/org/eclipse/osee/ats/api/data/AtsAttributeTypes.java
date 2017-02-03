@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.api.data;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
 /**
@@ -158,6 +157,7 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken Rationale = createType(1152922093379715242L, "Rationale");
 
    public static final AttributeTypeToken ColorTeam = createType(1364016837443371647L, "Color Team");
+   public static final AttributeTypeToken IptTeam = createType(1364016887343371647L, "IPT Team");
 
    // Program
    public static final AttributeTypeToken Namespace = createType(4676151691645786526L, "Namespace");

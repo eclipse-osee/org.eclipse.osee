@@ -44,7 +44,7 @@ import org.eclipse.swt.widgets.Table;
 public class XListViewer extends GenericXWidget {
 
    // XListViewer uses a table so images can be used.  SWT doesn't support images in ListViewer
-   private TableViewer listViewer;
+   protected TableViewer listViewer;
    private Menu listMenu;
    private Composite parent;
    private Composite composite;
@@ -181,6 +181,8 @@ public class XListViewer extends GenericXWidget {
          }
       }
 
+      createControlsAfterLabel(parent, horizontalSpan);
+
       listViewer =
          new TableViewer(composite, (multiSelect ? SWT.MULTI : SWT.SINGLE) | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
       listViewer.setContentProvider(contentProvider);
@@ -268,7 +270,7 @@ public class XListViewer extends GenericXWidget {
    }
 
    protected void updateListWidget() {
-      if(listViewer == null || listViewer.getTable().isDisposed()) {
+      if (listViewer == null || listViewer.getTable().isDisposed()) {
          return;
       }
       listViewer.refresh();
