@@ -11,6 +11,7 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.ParagraphNumber;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
@@ -18,7 +19,6 @@ import java.util.Collection;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -74,15 +74,13 @@ public class ChangeDataTest {
       ArtifactDelta artDelta = new ArtifactDelta(null, artifactEnd, artifactStart);
 
       ModificationType modType = ModificationType.MODIFIED;
-      Change change = new ArtifactChange(workingBranch, GammaId.valueOf(artifactStart.getGammaId()),
-         ArtifactId.valueOf(artifactStart.getArtId()), null, modType, "", "", false, artifactStart, artDelta);
+      Change change = new ArtifactChange(workingBranch, GammaId.valueOf(artifactStart.getGammaId()), artifactStart,
+         null, modType, "", "", false, artifactStart, artDelta);
       theChanges.add(change);
 
-      AttributeType paragraphAttributeType = AttributeTypeManager.getType(CoreAttributeTypes.ParagraphNumber);
-      AttributeId typeID = AttributeId.valueOf(paragraphAttributeType.getId());
-      change = new AttributeChange(workingBranch, GammaId.valueOf(artifactStart.getGammaId()),
-         ArtifactId.valueOf(artifactStart.getArtId()), null, ModificationType.NEW, "1.2", "", typeID,
-         paragraphAttributeType, modType, false, artifactStart, artDelta);
+      change = new AttributeChange(workingBranch, GammaId.valueOf(artifactStart.getGammaId()), artifactStart, null,
+         ModificationType.NEW, "1.2", "", AttributeId.SENTINEL, ParagraphNumber, modType, false, artifactStart,
+         artDelta);
       theChanges.add(change);
 
       artifactStart = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch);
@@ -94,27 +92,25 @@ public class ChangeDataTest {
       artDelta = new ArtifactDelta(null, artifactEnd, artifactStart);
       modType = ModificationType.MODIFIED;
 
-      change = new ArtifactChange(workingBranch, GammaId.valueOf(artifactStart.getGammaId()),
-         ArtifactId.valueOf(artifactStart.getArtId()), null, modType, "", "", false, artifactStart, artDelta);
+      change = new ArtifactChange(workingBranch, GammaId.valueOf(artifactStart.getGammaId()), artifactStart, null,
+         modType, "", "", false, artifactStart, artDelta);
       theChanges.add(change);
-      typeID = AttributeId.valueOf(paragraphAttributeType.getId());
-      change = new AttributeChange(workingBranch, GammaId.valueOf(artifactStart.getGammaId()),
-         ArtifactId.valueOf(artifactStart.getArtId()), null, ModificationType.NEW, "1.2", "", typeID,
-         paragraphAttributeType, modType, false, artifactStart, artDelta);
+      change = new AttributeChange(workingBranch, GammaId.valueOf(artifactStart.getGammaId()), artifactStart, null,
+         ModificationType.NEW, "1.2", "", AttributeId.SENTINEL, ParagraphNumber, modType, false, artifactStart,
+         artDelta);
       theChanges.add(change);
 
       AttributeType nameAttributeType = AttributeTypeManager.getType(CoreAttributeTypes.Name);
-      typeID = AttributeId.valueOf(nameAttributeType.getId());
-      change = new AttributeChange(workingBranch, GammaId.valueOf(artifactStart.getGammaId()),
-         ArtifactId.valueOf(artifactStart.getArtId()), null, modType, "test artifact 2A", "test artifact 2", typeID,
-         nameAttributeType, modType, false, artifactStart, artDelta);
+      change = new AttributeChange(workingBranch, GammaId.valueOf(artifactStart.getGammaId()), artifactStart, null,
+         modType, "test artifact 2A", "test artifact 2", AttributeId.SENTINEL, nameAttributeType, modType, false,
+         artifactStart, artDelta);
       theChanges.add(change);
 
       artifactStart = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch);
       artifactEnd.setSoleAttributeFromString(CoreAttributeTypes.ParagraphNumber, "1.2");
       artDelta = new ArtifactDelta(null, null, artifactStart);
-      change = new ArtifactChange(null, GammaId.valueOf(1L), ArtifactId.valueOf(artifactStart.getArtId()), null,
-         ModificationType.NEW, "", "", false, artifactStart, artDelta);
+      change = new ArtifactChange(null, GammaId.valueOf(1L), artifactStart, null, ModificationType.NEW, "", "", false,
+         artifactStart, artDelta);
       theChanges.add(change);
       theData = new ChangeData(theChanges);
    }
@@ -154,5 +150,4 @@ public class ChangeDataTest {
       theChanges = theData.getArtifacts(KindType.Artifact, typesToIgnore, ModificationType.MODIFIED);
       assertEquals("Wrong number of artifacts detected modified case 2 ", 0, theChanges.size());
    }
-
 }

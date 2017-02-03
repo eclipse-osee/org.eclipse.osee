@@ -21,16 +21,15 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.report.api.WordArtifactChange;
 import org.eclipse.osee.define.report.api.WordUpdateChange;
 import org.eclipse.osee.define.report.api.WordUpdateData;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
@@ -108,9 +107,8 @@ public class UpdateArtifactOperation extends AbstractOperation {
 
    private Collection<AttributeChange> getAttributeChanges(Artifact artifact, WordArtifactChange change) {
       List<AttributeChange> attributeChanges = new LinkedList<>();
-      for (long attrTypeId : change.getChangedAttrTypes()) {
-         AttributeType type = AttributeTypeManager.getTypeByGuid(attrTypeId);
-         Attribute<?> attribute = artifact.getSoleAttribute(type);
+      for (AttributeTypeId attributeType : change.getChangedAttrTypes()) {
+         Attribute<?> attribute = artifact.getSoleAttribute(attributeType);
          if (attribute != null) {
             AttributeChange attributeChange = attribute.createAttributeChangeFromSelf();
             attributeChanges.add(attributeChange);

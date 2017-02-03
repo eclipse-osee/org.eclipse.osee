@@ -16,10 +16,10 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -81,9 +81,8 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
       this.artifact = artifact;
       this.operator = new ArtifactTestRunOperator(artifact);
       try {
-         this.key =
-            String.format("%s:%s:%s", getOperator().getChecksum(), getOperator().isFromLocalWorkspace(),
-               getOperator().hasNotBeenCommitted());
+         this.key = String.format("%s:%s:%s", getOperator().getChecksum(), getOperator().isFromLocalWorkspace(),
+            getOperator().hasNotBeenCommitted());
       } catch (Exception ex) {
          this.key = "";
       }
@@ -127,9 +126,8 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
                   String name = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.Name, "");
                   if (name != "") {
                      try {
-                        Artifact dispoArtifact =
-                           ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.TestRunDisposition, name,
-                              artifact.getBranch());
+                        Artifact dispoArtifact = ArtifactQuery.getArtifactFromTypeAndName(
+                           CoreArtifactTypes.TestRunDisposition, name, artifact.getBranch());
                         if (dispoArtifact != null) {
                            return dispoArtifact.getSoleAttributeValueAsString(OteAttributeTypes.TestDisposition, "");
                         }
@@ -139,7 +137,7 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
                   }
                   return "";
                } else {
-                  AttributeType attributeType = AttributeTypeManager.getType(colName);
+                  AttributeTypeId attributeType = AttributeTypeManager.getType(colName);
                   if (artifact.isAttributeTypeValid(attributeType)) {
                      if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {
                         Date date = null;
@@ -219,26 +217,23 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
       Image defaultImage = ArtifactImageManager.getImage(artifact);
       DecorationOverlayIcon overlay = null;
       if (FROM_LOCAL_WS_COMMIT_ALLOWED_IMAGE == null) {
-         OverlayImage overlayImage =
-            new OverlayImage(defaultImage, ImageManager.getImageDescriptor(OteDefineImage.ADDITION), Location.BOT_RIGHT);
+         OverlayImage overlayImage = new OverlayImage(defaultImage,
+            ImageManager.getImageDescriptor(OteDefineImage.ADDITION), Location.BOT_RIGHT);
          FROM_LOCAL_WS_COMMIT_ALLOWED_IMAGE = overlayImage.createImage();
       }
       if (FROM_LOCAL_WS_COMMIT_NOT_ALLOWED_IMAGE == null) {
-         overlay =
-            new DecorationOverlayIcon(defaultImage, ImageManager.getImageDescriptor(OteDefineImage.CONFAUTO_OV),
-               IDecoration.BOTTOM_RIGHT);
+         overlay = new DecorationOverlayIcon(defaultImage, ImageManager.getImageDescriptor(OteDefineImage.CONFAUTO_OV),
+            IDecoration.BOTTOM_RIGHT);
          FROM_LOCAL_WS_COMMIT_NOT_ALLOWED_IMAGE = overlay.createImage();
       }
       if (FROM_DATABASE_IMAGE == null) {
-         overlay =
-            new DecorationOverlayIcon(defaultImage, ImageManager.getImageDescriptor(OteDefineImage.VERSION_CONTROLLED),
-               IDecoration.BOTTOM_RIGHT);
+         overlay = new DecorationOverlayIcon(defaultImage,
+            ImageManager.getImageDescriptor(OteDefineImage.VERSION_CONTROLLED), IDecoration.BOTTOM_RIGHT);
          FROM_DATABASE_IMAGE = overlay.createImage();
       }
       if (INVALID_SCRIPT_IMAGE == null) {
-         overlay =
-            new DecorationOverlayIcon(defaultImage, ImageManager.getImageDescriptor(OteDefineImage.OBSTRUCTED),
-               IDecoration.BOTTOM_RIGHT);
+         overlay = new DecorationOverlayIcon(defaultImage, ImageManager.getImageDescriptor(OteDefineImage.OBSTRUCTED),
+            IDecoration.BOTTOM_RIGHT);
          INVALID_SCRIPT_IMAGE = overlay.createImage();
       }
    }

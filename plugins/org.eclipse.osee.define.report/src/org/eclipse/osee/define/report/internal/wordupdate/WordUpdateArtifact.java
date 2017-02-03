@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.define.report.internal.wordupdate;
 
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WordOleData;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WordTemplateContent;
 import com.google.common.collect.Lists;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -127,7 +129,7 @@ public class WordUpdateArtifact {
                if (oleDataElement == null && containsOleData) {
                   txBuilder.setSoleAttributeFromString(artifact, CoreAttributeTypes.WordOleData, "");
                   artChange.setChanged(true);
-                  artChange.addChangedAttributeType(CoreAttributeTypes.WordOleData);
+                  artChange.addChangedAttributeType(WordOleData);
                } else if (oleDataElement != null && singleArtifact) {
                   txBuilder.setSoleAttributeFromStream(artifact, CoreAttributeTypes.WordOleData,
                      new ByteArrayInputStream(WordUtilities.getFormattedContent(oleDataElement)));
@@ -135,7 +137,7 @@ public class WordUpdateArtifact {
                   if (!containsOleData) {
                      artChange.setCreated(true);
                   }
-                  artChange.addChangedAttributeType(CoreAttributeTypes.WordOleData);
+                  artChange.addChangedAttributeType(WordOleData);
                }
                String content = Lib.inputStreamToString(
                   new ByteArrayInputStream(WordUtilities.getFormattedContent(extractorData.getParentEelement())));
@@ -170,7 +172,7 @@ public class WordUpdateArtifact {
                      if (!containsWordData) {
                         artChange.setCreated(true);
                      }
-                     artChange.addChangedAttributeType(CoreAttributeTypes.WordTemplateContent);
+                     artChange.addChangedAttributeType(WordTemplateContent);
                      if (hasInvalidApplicabilityTags) {
                         updateChange.setInvalidApplicabilityTagArts(artifact.getId(), artifact.getName());
                      }
@@ -187,7 +189,7 @@ public class WordUpdateArtifact {
                   artChange.setSafetyRelated(checkIfSafetyRelated(artifact,
                      CoreAttributeTypes.LegacyDAL) || checkIfSafetyRelated(artifact, CoreAttributeTypes.ItemDAL));
                   updateChange.addChangedArt(artChange);
-                  artChange.addChangedAttributeType(CoreAttributeTypes.WordTemplateContent);
+                  artChange.addChangedAttributeType(WordTemplateContent);
                }
             }
          }

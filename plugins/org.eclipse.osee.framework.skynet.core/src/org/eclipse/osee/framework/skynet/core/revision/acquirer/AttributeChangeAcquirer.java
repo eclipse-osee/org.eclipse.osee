@@ -18,13 +18,13 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -112,7 +112,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
             int attrId = chStmt.getInt("attr_id");
             int artId = chStmt.getInt("art_id");
             int sourceGamma = chStmt.getInt("gamma_id");
-            long attrTypeId = chStmt.getLong("attr_type_id");
+            AttributeTypeToken attributeType = AttributeTypeManager.getTypeByGuid(chStmt.getLong("attr_type_id"));
             ArtifactTypeId artifactType = ArtifactTypeId.valueOf(chStmt.getLong("art_type_id"));
             String isValue = chStmt.getString("is_value");
             ModificationType modificationType = ModificationType.getMod(chStmt.getInt("mod_type"));
@@ -140,7 +140,6 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
                if (modificationType == ModificationType.MODIFIED && artModType != ModificationType.INTRODUCED) {
                   modificationType = ModificationType.NEW;
                }
-               AttributeType attributeType = AttributeTypeManager.getTypeByGuid(attrTypeId);
                attributeChangeBuilder = new AttributeChangeBuilder(sourceBranch, artifactType, sourceGamma, artId,
                   txDelta, modificationType, !hasBranch, isValue, "", attrId, attributeType, artModType);
 

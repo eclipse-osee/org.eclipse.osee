@@ -197,7 +197,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
                   AttributeChange attributeChange = (AttributeChange) change;
                   org.eclipse.osee.framework.skynet.core.event.model.AttributeChange attrChangeEvent =
                      new org.eclipse.osee.framework.skynet.core.event.model.AttributeChange();
-                  attrChangeEvent.setAttrTypeGuid(attributeChange.getAttributeType().getGuid());
+                  attrChangeEvent.setAttrTypeGuid(attributeChange.getAttributeType().getId());
                   attrChangeEvent.setGammaId(attributeChange.getGamma().getId().intValue());
                   attrChangeEvent.setAttributeId(attributeChange.getAttrId().getId().intValue());
                   attrChangeEvent.setModTypeGuid(

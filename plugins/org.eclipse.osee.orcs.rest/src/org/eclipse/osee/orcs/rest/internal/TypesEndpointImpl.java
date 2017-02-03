@@ -289,13 +289,13 @@ public class TypesEndpointImpl implements TypesEndpoint {
       String query = LOAD_OSEE_TYPE_DEF_NAME_AND_ID.replace("ATTR_IDS", Collections.toString(",", attrIds));
       jdbcService.getClient().runQuery(stmt -> {
          long attrId = stmt.getLong("attr_id");
-         long attrTypeId = stmt.getLong("attr_type_id");
+         Long attrTypeId = stmt.getLong("attr_type_id");
          long artId = stmt.getLong("art_id");
-         if (CoreAttributeTypes.UriGeneralStringData.getId().equals(attrTypeId)) {
+         if (CoreAttributeTypes.UriGeneralStringData.equals(attrTypeId)) {
             for (OrcsTypesSheet sheet : getSheetsFromAttrId(attrId, config)) {
                sheet.setArtifactId(artId);
             }
-         } else if (CoreAttributeTypes.Name.getId().equals(attrTypeId)) {
+         } else if (CoreAttributeTypes.Name.equals(attrTypeId)) {
             for (OrcsTypesSheet sheet : getSheetsFromArtId(artId, config)) {
                sheet.setName(stmt.getString("value"));
             }

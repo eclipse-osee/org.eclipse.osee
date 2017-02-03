@@ -86,7 +86,7 @@ public class AttributeLoader {
       public int gammaId = -1;
       public int modType = -1;
       public Long transactionId = -1L;
-      public long attrTypeId = -1;
+      public AttributeTypeId attributeType = AttributeTypeId.SENTINEL;
       public Object value = "";
       public int stripeId = -1;
       public String uri = "";
@@ -104,9 +104,9 @@ public class AttributeLoader {
          modType = chStmt.getInt("mod_type");
 
          transactionId = chStmt.getLong("transaction_id");
-         attrTypeId = chStmt.getLong("attr_type_id");
+         attributeType = AttributeTypeId.valueOf(chStmt.getLong("attr_type_id"));
 
-         AttributeType typeByGuid = AttributeTypeManager.getTypeByGuid(attrTypeId);
+         AttributeType typeByGuid = AttributeTypeManager.getType(attributeType);
          String baseAttributeType = typeByGuid.getBaseAttributeTypeId();
          if (baseAttributeType.contains("BooleanAttribute")) {
             value = chStmt.getBoolean("value");
@@ -192,10 +192,8 @@ public class AttributeLoader {
    }
 
    private static void loadAttribute(Artifact artifact, AttrData current, AttrData previous) throws OseeCoreException {
-      AttributeTypeId attributeType = AttributeTypeManager.getTypeByGuid(current.attrTypeId);
-
       boolean markDirty = false;
-      artifact.internalInitializeAttribute(attributeType, current.attrId, current.gammaId,
+      artifact.internalInitializeAttribute(current.attributeType, current.attrId, current.gammaId,
          ModificationType.getMod(current.modType), current.applicabilityId, markDirty, current.value, current.uri);
    }
 

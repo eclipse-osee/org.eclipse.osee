@@ -12,16 +12,14 @@ package org.eclipse.osee.define.report.api;
 
 import java.util.LinkedList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 
 /**
  * @author David W. Miller
  */
-@XmlRootElement
 public class WordArtifactChange {
    long artId;
-   List<Long> changedAttrTypes = new LinkedList<>();
+   List<AttributeTypeId> changedAttrTypes = new LinkedList<>();
    boolean changed = false;
    boolean created = false;
    boolean safetyRelated = false;
@@ -34,20 +32,16 @@ public class WordArtifactChange {
       this.artId = artId;
    }
 
-   public List<Long> getChangedAttrTypes() {
+   public List<AttributeTypeId> getChangedAttrTypes() {
       return changedAttrTypes;
    }
 
-   public void setChangedAttrTypes(List<Long> changedAttrs) {
+   public void setChangedAttrTypes(List<AttributeTypeId> changedAttrs) {
       this.changedAttrTypes = changedAttrs;
    }
 
-   public void addChangedAttrType(long attrId) {
-      this.changedAttrTypes.add(attrId);
-   }
-
    public void addChangedAttributeType(AttributeTypeId attributeType) {
-      this.changedAttrTypes.add(attributeType.getId());
+      this.changedAttrTypes.add(attributeType);
    }
 
    public boolean isChanged() {

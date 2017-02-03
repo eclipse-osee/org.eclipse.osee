@@ -11,10 +11,10 @@
 package org.eclipse.osee.framework.skynet.core.change;
 
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 
 /**
  * @author Jeff C. Phillips
@@ -23,10 +23,10 @@ public final class AttributeChangeBuilder extends ChangeBuilder {
    private final String isValue;
    private String wasValue;
    private final int attrId;
-   private final AttributeType attributeType;
+   private final AttributeTypeToken attributeType;
    private final ModificationType artModType;
 
-   public AttributeChangeBuilder(BranchId branch, ArtifactTypeId artifactType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, String isValue, String wasValue, int attrId, AttributeType attributeType, ModificationType artModType) {
+   public AttributeChangeBuilder(BranchId branch, ArtifactTypeId artifactType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, String isValue, String wasValue, int attrId, AttributeTypeToken attributeType, ModificationType artModType) {
       super(branch, artifactType, sourceGamma, artId, txDelta, modType, isHistorical);
       this.isValue = isValue;
       this.wasValue = wasValue;
@@ -55,8 +55,7 @@ public final class AttributeChangeBuilder extends ChangeBuilder {
       return attrId;
    }
 
-   public AttributeType getAttributeType() {
+   public AttributeTypeToken getAttributeType() {
       return attributeType;
    }
-
 }
