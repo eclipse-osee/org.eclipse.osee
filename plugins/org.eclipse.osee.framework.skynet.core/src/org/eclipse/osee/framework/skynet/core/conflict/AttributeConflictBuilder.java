@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -32,9 +33,9 @@ public class AttributeConflictBuilder extends ConflictBuilder {
 
    private final String sourceValue;
    private final AttributeId attrId;
-   private final long attrTypeId;
+   private final AttributeTypeId attrTypeId;
 
-   public AttributeConflictBuilder(int sourceGamma, int destGamma, ArtifactId artId, TransactionToken toTransactionId, IOseeBranch sourceBranch, IOseeBranch destBranch, String sourceValue, AttributeId attrId, long attrTypeId) {
+   public AttributeConflictBuilder(int sourceGamma, int destGamma, ArtifactId artId, TransactionToken toTransactionId, IOseeBranch sourceBranch, IOseeBranch destBranch, String sourceValue, AttributeId attrId, AttributeTypeId attrTypeId) {
       super(sourceGamma, destGamma, artId, toTransactionId, sourceBranch, destBranch);
       this.sourceValue = sourceValue;
       this.attrId = attrId;
@@ -50,7 +51,7 @@ public class AttributeConflictBuilder extends ConflictBuilder {
       }
       AttributeConflict attributeConflict = new AttributeConflict(sourceGamma, destGamma, artId, toTransactionId, null,
          sourceValue, attrId, attrTypeId, mergeBranch, sourceBranch, destBranch);
-      if (attributeConflict.getChangeItem().toString().equals("Word Ole Data")) {
+      if (attributeConflict.getAttributeType().equals(CoreAttributeTypes.WordOleData)) {
          return null;
       } else if (attributeConflict.getAttributeType().equals(CoreAttributeTypes.RelationOrder)) {
          Artifact left = attributeConflict.getSourceArtifact();

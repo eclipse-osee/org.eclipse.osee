@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -27,7 +28,6 @@ import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -56,20 +56,21 @@ public class AttributeConflict extends Conflict {
    public final static String DIFF_MERGE_MARKUP =
       "Can not run a diff against an attribute that has merge markup.  Finish merging the document to be able to resolve the conflict.";
    private final AttributeId attrId;
-   private final long attrTypeId;
    private Object sourceObject;
    private Object destObject;
-   private AttributeType attributeType;
+   private final AttributeTypeId attributeType;
    private boolean mergeEqualsSource;
    private boolean mergeEqualsDest;
    private boolean sourceEqualsDest;
    private static final boolean DEBUG =
       "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Merge"));
 
-   public AttributeConflict(int sourceGamma, int destGamma, ArtifactId artId, TransactionToken toTransactionId, TransactionToken commitTransaction, String sourceValue, AttributeId attrId, long attrTypeId, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) throws OseeCoreException {
+   private String changeItemName;
+
+   public AttributeConflict(int sourceGamma, int destGamma, ArtifactId artId, TransactionToken toTransactionId, TransactionToken commitTransaction, String sourceValue, AttributeId attrId, AttributeTypeId attributeType, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) throws OseeCoreException {
       super(sourceGamma, destGamma, artId, toTransactionId, commitTransaction, mergeBranch, sourceBranch, destBranch);
       this.attrId = attrId;
-      this.attrTypeId = attrTypeId;
+      this.attributeType = attributeType;
       this.status = ConflictStatus.EDITED;
       computeEqualsValues();
    }
@@ -109,13 +110,7 @@ public class AttributeConflict extends Conflict {
       return attribute;
    }
 
-   /**
-    * @return the attributeType
-    */
-   public AttributeType getAttributeType() throws OseeCoreException {
-      if (attributeType == null) {
-         attributeType = AttributeTypeManager.getTypeByGuid(attrTypeId);
-      }
+   public AttributeTypeId getAttributeType() {
       return attributeType;
    }
 
@@ -165,10 +160,6 @@ public class AttributeConflict extends Conflict {
 
    public AttributeId getAttrId() {
       return attrId;
-   }
-
-   public long getTypeId() {
-      return attrTypeId;
    }
 
    @Override
@@ -388,8 +379,11 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public String getChangeItem() throws OseeCoreException {
-      return getAttributeType().getName();
+   public String getChangeItem() {
+      if (changeItemName == null) {
+         changeItemName = AttributeTypeManager.getName(attributeType);
+      }
+      return changeItemName;
    }
 
    @Override

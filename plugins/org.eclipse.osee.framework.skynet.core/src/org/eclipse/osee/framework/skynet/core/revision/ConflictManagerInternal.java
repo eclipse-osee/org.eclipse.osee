@@ -112,7 +112,8 @@ public class ConflictManagerInternal {
             AttributeConflict attributeConflict = new AttributeConflict(chStmt.getInt("source_gamma_id"),
                chStmt.getInt("dest_gamma_id"), ArtifactId.valueOf(chStmt.getLong("art_id")), null, commitTransaction,
                chStmt.getString("source_value"), AttributeId.valueOf(chStmt.getInt("attr_id")),
-               chStmt.getLong("attr_type_id"), BranchId.valueOf(chStmt.getLong("merge_branch_id")), sourceBranch,
+               AttributeTypeId.valueOf(chStmt.getLong("attr_type_id")),
+               BranchId.valueOf(chStmt.getLong("merge_branch_id")), sourceBranch,
                BranchManager.getBranchToken(chStmt.getLong("dest_branch_id")));
             attributeConflict.setStatus(ConflictStatus.valueOf(chStmt.getInt("status")));
             conflicts.add(attributeConflict);
@@ -296,7 +297,7 @@ public class ConflictManagerInternal {
             ArtifactId artId = ArtifactId.valueOf(chStmt.getLong("art_id"));
             int sourceGamma = chStmt.getInt("source_gamma");
             int destGamma = chStmt.getInt("dest_gamma");
-            long attrTypeId = chStmt.getLong("attr_type_id");
+            AttributeTypeId attrTypeId = AttributeTypeId.valueOf(chStmt.getLong("attr_type_id"));
             String sourceValue = chStmt.getString("source_value") != null ? chStmt.getString(
                "source_value") : chStmt.getString("dest_value");
 

@@ -20,7 +20,6 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
@@ -186,5 +185,9 @@ public class AttributeTypeManager {
       }
 
       return removalAllowed || !notAllowed;
+   }
+
+   public static String getName(AttributeTypeId type) {
+      return getCache().get(type).getName();
    }
 }
