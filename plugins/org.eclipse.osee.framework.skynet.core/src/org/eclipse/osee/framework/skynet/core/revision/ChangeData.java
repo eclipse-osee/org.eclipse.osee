@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -84,7 +84,7 @@ public class ChangeData {
    /**
     * Return artifacts of kind and modType.
     */
-   public Collection<Artifact> getArtifacts(KindType kindType, List<IAttributeType> artifactTypesToIgnore, ModificationType... modificationType) throws OseeCoreException {
+   public Collection<Artifact> getArtifacts(KindType kindType, List<AttributeTypeId> artifactTypesToIgnore, ModificationType... modificationType) throws OseeCoreException {
       if (kindType == KindType.RelationOnly) {
          return getArtifactsRelationOnly(modificationType);
       }

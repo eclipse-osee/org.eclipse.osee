@@ -21,7 +21,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -145,7 +145,7 @@ public class ConflictManagerInternal {
       TransactionToken commonTransaction = findCommonTransaction(sourceBranch, destinationBranch);
 
       // check for multiplicity conflicts
-      Collection<IAttributeType> singleMultiplicityTypes = AttributeTypeManager.getSingleMultiplicityTypes();
+      Collection<AttributeTypeId> singleMultiplicityTypes = AttributeTypeManager.getSingleMultiplicityTypes();
       loadMultiplicityConflicts(singleMultiplicityTypes, sourceBranch, destinationBranch, conflictBuilders, artIdSet);
 
       loadArtifactVersionConflicts(ServiceUtil.getSql(OseeSql.CONFLICT_GET_ARTIFACTS_DEST), sourceBranch,
@@ -204,12 +204,12 @@ public class ConflictManagerInternal {
       return artifacts;
    }
 
-   private static void loadMultiplicityConflicts(Collection<IAttributeType> types, BranchId source, BranchId dest, List<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet) {
+   private static void loadMultiplicityConflicts(Collection<AttributeTypeId> types, BranchId source, BranchId dest, List<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet) {
       IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       List<Object[]> batchParams = new LinkedList<>();
       try {
-         for (IAttributeType type : types) {
+         for (AttributeTypeId type : types) {
             joinQuery.add(type);
          }
          joinQuery.store();

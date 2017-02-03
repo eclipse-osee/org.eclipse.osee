@@ -23,6 +23,8 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.HelpContext;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -410,10 +412,10 @@ public class QuickSearchOptionComposite extends Composite {
       }
    }
 
-   private final static class AttributeTypeComparator implements Comparator<IAttributeType> {
+   private final static class AttributeTypeComparator implements Comparator<AttributeTypeToken> {
 
       @Override
-      public int compare(IAttributeType o1, IAttributeType o2) {
+      public int compare(AttributeTypeToken o1, AttributeTypeToken o2) {
          return o1.getName().compareTo(o2.getName());
       }
 
@@ -427,8 +429,8 @@ public class QuickSearchOptionComposite extends Composite {
 
    }
    private final static class AttributeTypeFilterConfigHandler implements IOptionConfigurationHandler<IAttributeType> {
-      private final List<IAttributeType> configuration;
-      private final Comparator<IAttributeType> attrTypeComparator;
+      private final List<AttributeTypeToken> configuration;
+      private final Comparator<AttributeTypeToken> attrTypeComparator;
 
       public AttributeTypeFilterConfigHandler() {
          this.attrTypeComparator = new AttributeTypeComparator();
@@ -439,15 +441,15 @@ public class QuickSearchOptionComposite extends Composite {
       @Override
       public void configure() {
          try {
-            Collection<IAttributeType> taggableItems = AttributeTypeManager.getTaggableTypes();
+            Collection<AttributeTypeId> taggableItems = AttributeTypeManager.getTaggableTypes();
             FilteredCheckboxAttributeTypeDialog dialog = new FilteredCheckboxAttributeTypeDialog(
                "Attribute Type Filter Selection", "Select attribute types to search in.");
             dialog.setSelectable(taggableItems);
             dialog.setShowSelectButtons(true);
             dialog.setInput(taggableItems);
 
-            List<IAttributeType> selectedElements = new ArrayList<>();
-            for (IAttributeType type : taggableItems) {
+            List<AttributeTypeId> selectedElements = new ArrayList<>();
+            for (AttributeTypeId type : taggableItems) {
                if (configuration.contains(type)) {
                   selectedElements.add(type);
                }
@@ -457,8 +459,8 @@ public class QuickSearchOptionComposite extends Composite {
             int result = dialog.open();
             if (result == Window.OK) {
                configuration.clear();
-               Collection<IAttributeType> results = dialog.getChecked();
-               for (IAttributeType selected : results) {
+               Collection<AttributeTypeToken> results = dialog.getChecked();
+               for (AttributeTypeToken selected : results) {
                   configuration.add(selected);
                }
                if (configuration.isEmpty()) {
@@ -509,7 +511,7 @@ public class QuickSearchOptionComposite extends Composite {
 
       @Override
       public String toString() {
-         Collection<IAttributeType> taggableItems;
+         Collection<AttributeTypeId> taggableItems;
          try {
             taggableItems = AttributeTypeManager.getTaggableTypes();
             if (taggableItems.size() == configuration.size()) {
@@ -525,7 +527,7 @@ public class QuickSearchOptionComposite extends Composite {
       public String[] toStore() {
          String[] guids = new String[configuration.size()];
          int index = 0;
-         for (IAttributeType type : configuration) {
+         for (AttributeTypeToken type : configuration) {
             guids[index++] = type.getIdString();
          }
          return guids;
@@ -599,7 +601,7 @@ public class QuickSearchOptionComposite extends Composite {
 
       @Override
       public String toString() {
-         Collection<IAttributeType> taggableItems;
+         Collection<AttributeTypeId> taggableItems;
          try {
             taggableItems = AttributeTypeManager.getTaggableTypes();
             if (taggableItems.size() == configuration.size()) {

@@ -12,8 +12,8 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 
 /**
@@ -27,9 +27,9 @@ public final class AttributeRow {
    private final ModificationType modType;
    private final String value;
    private final AttributeId attrId;
-   private final IAttributeType attributeType;
+   private final AttributeTypeId attributeType;
 
-   public AttributeRow(BranchId branch, Long gammaId, Integer artId, ModificationType modType, String value, AttributeId attrId, IAttributeType attributeType) {
+   public AttributeRow(BranchId branch, Long gammaId, Integer artId, ModificationType modType, String value, AttributeId attrId, AttributeTypeId attributeType) {
       this.branch = branch;
       this.gammaId = gammaId;
       this.artId = artId;
@@ -63,7 +63,7 @@ public final class AttributeRow {
       return attrId;
    }
 
-   public IAttributeType getAttributeType() {
+   public AttributeTypeId getAttributeType() {
       return attributeType;
    }
 

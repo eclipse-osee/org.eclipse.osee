@@ -16,22 +16,22 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * Allows easy storage/loading of key/value pairs for any artifact with string attribute type. Any attributes that match
  * key=value will be processed. All others will be ignored. Multiple instances of same key are allowed.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class KeyValueArtifact {
 
    private final Artifact artifact;
-   private final IAttributeType keyValueAttributeType;
+   private final AttributeTypeId keyValueAttributeType;
 
-   public KeyValueArtifact(Artifact artifact, IAttributeType keyValueAttributeType) throws OseeCoreException {
+   public KeyValueArtifact(Artifact artifact, AttributeTypeId keyValueAttributeType) throws OseeCoreException {
       this.artifact = artifact;
       this.keyValueAttributeType = keyValueAttributeType;
       load();

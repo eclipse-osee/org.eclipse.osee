@@ -24,10 +24,10 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
@@ -279,7 +279,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       valueLabel.setText("Attribute Value:");
       Text attributeValue = new Text(attributeTypeControls, SWT.BORDER);
       attributeValue.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-      Collection<IAttributeType> taggableTypes = AttributeTypeManager.getTaggableTypes();
+      Collection<AttributeTypeId> taggableTypes = AttributeTypeManager.getTaggableTypes();
       attributeValueList.getViewer().setInput(taggableTypes);
       attributeValue.addModifyListener(new ModifyListener() {
 

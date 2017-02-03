@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map.Entry;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.CaseInsensitiveString;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -34,7 +34,7 @@ public class RoughArtifactTranslatorImpl implements IRoughArtifactTranslator {
 
       for (Entry<CaseInsensitiveString, Collection<RoughAttribute>> entry : attributeSet) {
          String attributeTypeName = entry.getKey().toString();
-         IAttributeType attributeType = AttributeTypeManager.getType(attributeTypeName);
+         AttributeTypeToken attributeType = AttributeTypeManager.getType(attributeTypeName);
 
          Collection<String> values = attributeSet.getAttributeValueList(attributeType);
          if (!values.isEmpty()) {

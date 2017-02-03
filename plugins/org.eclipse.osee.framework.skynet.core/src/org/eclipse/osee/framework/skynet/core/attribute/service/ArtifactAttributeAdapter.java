@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.attribute.service;
 
 import java.util.Collection;
 import java.util.Collections;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -39,7 +39,7 @@ public class ArtifactAttributeAdapter implements AttributeAdapter<Artifact> {
    }
 
    @Override
-   public Collection<IAttributeType> getSupportedTypes() {
+   public Collection<AttributeTypeId> getSupportedTypes() {
       return Collections.singleton(CoreAttributeTypes.ArtifactReference);
    }
 }

@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
@@ -20,9 +20,9 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  * @author John Misinco
  */
 public class AttributeNotExistsSearch implements ISearchPrimitive {
-   private final List<IAttributeType> attributeTypes;
+   private final List<AttributeTypeId> attributeTypes;
 
-   public AttributeNotExistsSearch(List<IAttributeType> attributeTypes) {
+   public AttributeNotExistsSearch(List<AttributeTypeId> attributeTypes) {
       Conditions.checkNotNull(attributeTypes, "attributeTypes");
       this.attributeTypes = attributeTypes;
    }
@@ -36,7 +36,7 @@ public class AttributeNotExistsSearch implements ISearchPrimitive {
    public String getStorageString() {
       StringBuilder storageString = new StringBuilder();
 
-      for (IAttributeType attrType : attributeTypes) {
+      for (AttributeTypeId attrType : attributeTypes) {
          storageString.append(attrType.getIdString());
          storageString.append(",");
       }
@@ -45,7 +45,7 @@ public class AttributeNotExistsSearch implements ISearchPrimitive {
    }
 
    public static AttributeNotExistsSearch getPrimitive(String storageString) {
-      ArrayList<IAttributeType> attributeTypes = new ArrayList<>();
+      ArrayList<AttributeTypeId> attributeTypes = new ArrayList<>();
 
       for (String attributeTypeId : storageString.split(",")) {
          attributeTypes.add(TokenFactory.createAttributeType(Long.valueOf(attributeTypeId), "SearchAttrType"));

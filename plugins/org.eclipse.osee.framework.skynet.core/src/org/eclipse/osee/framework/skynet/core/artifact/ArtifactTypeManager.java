@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.OrcsTypesData;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -68,7 +68,7 @@ public class ArtifactTypeManager {
       return ServiceUtil.getOseeCacheService();
    }
 
-   public static Collection<ArtifactType> getArtifactTypesFromAttributeType(IAttributeType attributeType, BranchId branchToken) throws OseeCoreException {
+   public static Collection<ArtifactType> getArtifactTypesFromAttributeType(AttributeTypeId attributeType, BranchId branchToken) throws OseeCoreException {
       Branch branch = getCacheService().getBranchCache().get(branchToken);
       List<ArtifactType> artifactTypes = new ArrayList<>();
       for (ArtifactType artifactType : getAllTypes()) {

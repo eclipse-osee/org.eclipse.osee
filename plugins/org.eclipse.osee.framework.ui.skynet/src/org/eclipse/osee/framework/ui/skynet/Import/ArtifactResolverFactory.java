@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.AttributeBasedArtifactResolver;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.DoorsBestFitArtifactResolver;
@@ -52,7 +52,7 @@ public final class ArtifactResolverFactory {
       return new NewArtifactImportResolver(translator, primaryArtifactType, secondaryArtifactType);
    }
 
-   public static IArtifactImportResolver createResolver(ArtifactCreationStrategy strategy, IArtifactType primaryArtifactType, Collection<IAttributeType> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
+   public static IArtifactImportResolver createResolver(ArtifactCreationStrategy strategy, IArtifactType primaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
       IArtifactImportResolver toReturn;
       switch (strategy) {
          case CREATE_ON_DIFFERENT_ATTRIBUTES:

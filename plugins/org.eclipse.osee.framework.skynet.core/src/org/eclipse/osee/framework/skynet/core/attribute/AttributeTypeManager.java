@@ -19,7 +19,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
@@ -66,8 +66,8 @@ public class AttributeTypeManager {
       return getCache().getAll();
    }
 
-   public static Collection<IAttributeType> getTaggableTypes() throws OseeCoreException {
-      Collection<IAttributeType> taggableTypes = new ArrayList<>();
+   public static Collection<AttributeTypeId> getTaggableTypes() throws OseeCoreException {
+      Collection<AttributeTypeId> taggableTypes = new ArrayList<>();
       for (AttributeType type : getAllTypes()) {
          if (type.isTaggable()) {
             taggableTypes.add(type);
@@ -76,8 +76,8 @@ public class AttributeTypeManager {
       return taggableTypes;
    }
 
-   public static Collection<IAttributeType> getSingleMultiplicityTypes() throws OseeCoreException {
-      Collection<IAttributeType> types = new ArrayList<>();
+   public static Collection<AttributeTypeId> getSingleMultiplicityTypes() throws OseeCoreException {
+      Collection<AttributeTypeId> types = new ArrayList<>();
       for (AttributeType type : getAllTypes()) {
          if (type.getMaxOccurrences() == 1) {
             types.add(type);

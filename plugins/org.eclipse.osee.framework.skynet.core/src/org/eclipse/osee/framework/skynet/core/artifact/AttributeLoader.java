@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -185,7 +185,7 @@ public class AttributeLoader {
    }
 
    private static void loadAttribute(Artifact artifact, AttrData current, AttrData previous) throws OseeCoreException {
-      IAttributeType attributeType = AttributeTypeManager.getTypeByGuid(current.attrTypeId);
+      AttributeTypeId attributeType = AttributeTypeManager.getTypeByGuid(current.attrTypeId);
 
       boolean markDirty = false;
       artifact.internalInitializeAttribute(attributeType, current.attrId, current.gammaId,

@@ -16,9 +16,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -31,10 +31,10 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public class AttributeBasedArtifactResolver extends NewArtifactImportResolver {
 
-   private final Collection<IAttributeType> nonChangingAttributes;
+   private final Collection<AttributeTypeToken> nonChangingAttributes;
    private final boolean createNewIfNotExist;
 
-   public AttributeBasedArtifactResolver(IRoughArtifactTranslator translator, IArtifactType primaryArtifactType, IArtifactType secondaryArtifactType, Collection<IAttributeType> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
+   public AttributeBasedArtifactResolver(IRoughArtifactTranslator translator, IArtifactType primaryArtifactType, IArtifactType secondaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
       super(translator, primaryArtifactType, secondaryArtifactType);
       this.nonChangingAttributes = nonChangingAttributes;
       this.createNewIfNotExist = createNewIfNotExist;
@@ -43,7 +43,7 @@ public class AttributeBasedArtifactResolver extends NewArtifactImportResolver {
    private boolean attributeValuesMatch(RoughArtifact roughArtifact, Artifact artifact) throws OseeCoreException {
       RoughAttributeSet roughAttributeSet = roughArtifact.getAttributes();
 
-      for (IAttributeType attributeType : nonChangingAttributes) {
+      for (AttributeTypeToken attributeType : nonChangingAttributes) {
          Collection<String> attributeValues = artifact.getAttributesToStringList(attributeType);
          Collection<String> roughAttributes =
             roughAttributeSet.getAttributeValueList(attributeType, new ArrayList<String>());

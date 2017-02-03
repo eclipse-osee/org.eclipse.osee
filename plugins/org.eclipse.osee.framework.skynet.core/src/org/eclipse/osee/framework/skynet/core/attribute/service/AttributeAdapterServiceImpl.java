@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -29,7 +29,7 @@ import org.osgi.framework.ServiceReference;
 
 public class AttributeAdapterServiceImpl implements AttributeAdapterService {
 
-   private final Map<IAttributeType, AttributeAdapter<?>> adapterByType;
+   private final Map<AttributeTypeId, AttributeAdapter<?>> adapterByType;
 
    private final Map<String, AttributeAdapter<?>> registered;
    private final List<ServiceReference<AttributeAdapter<?>>> pending;
@@ -95,7 +95,7 @@ public class AttributeAdapterServiceImpl implements AttributeAdapterService {
    private void unregister(ServiceReference<AttributeAdapter<?>> reference) {
       String key = generateKey(reference);
       AttributeAdapter<?> adapter = registered.remove(key);
-      for (IAttributeType type : adapter.getSupportedTypes()) {
+      for (AttributeTypeId type : adapter.getSupportedTypes()) {
          adapterByType.remove(type);
       }
    }
@@ -108,7 +108,7 @@ public class AttributeAdapterServiceImpl implements AttributeAdapterService {
       String key = generateKey(reference);
       registered.put(key, adapter);
 
-      for (IAttributeType type : adapter.getSupportedTypes()) {
+      for (AttributeTypeId type : adapter.getSupportedTypes()) {
          if (adapterByType.containsKey(type)) {
             String storedAdatperName = String.valueOf(adapterByType.get(type));
             throw new OseeArgumentException("Attribute type [%s] already in registry with adapter [%s]", type,
@@ -121,14 +121,14 @@ public class AttributeAdapterServiceImpl implements AttributeAdapterService {
 
    @Override
    public <T> T adapt(Attribute<?> attribute, Id identity) throws OseeCoreException {
-      IAttributeType type = attribute.getAttributeType();
+      AttributeTypeId type = attribute.getAttributeType();
       AttributeAdapter<T> adapter = getAdapter(type);
       Conditions.checkNotNull(adapter, "adapter");
       return adapter.adapt(attribute, identity);
    }
 
    @SuppressWarnings("unchecked")
-   public <T> AttributeAdapter<T> getAdapter(IAttributeType type) {
+   public <T> AttributeAdapter<T> getAdapter(AttributeTypeId type) {
       return (AttributeAdapter<T>) adapterByType.get(type);
    }
 

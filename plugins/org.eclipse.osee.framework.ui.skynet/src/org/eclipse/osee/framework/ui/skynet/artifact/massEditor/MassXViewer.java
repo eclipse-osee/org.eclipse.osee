@@ -23,6 +23,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -232,7 +233,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
          SkynetTransaction transaction = TransactionManager.createTransaction(
             selectedArtifacts.iterator().next().getBranch(), "Mass Editor - Delete Attributes");
          for (Artifact art : selectedArtifacts) {
-            for (IAttributeType attributeType : dialog.getChecked()) {
+            for (AttributeTypeToken attributeType : dialog.getChecked()) {
                art.deleteAttributes(attributeType);
                art.persist(transaction);
             }

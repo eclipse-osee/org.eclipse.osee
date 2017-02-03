@@ -22,7 +22,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -403,7 +403,7 @@ public final class TransactionManager {
    }
 
    private static AttributeRow loadAttributeChange(JdbcStatement chStmt) {
-      IAttributeType attributeType = AttributeTypeManager.getTypeByGuid(chStmt.getLong("attr_type_id"));
+      AttributeTypeId attributeType = AttributeTypeManager.getTypeByGuid(chStmt.getLong("attr_type_id"));
       BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
       Long gammaId = Long.valueOf(chStmt.getLong("gamma_id"));
       Integer artId = Integer.valueOf(chStmt.getInt("art_id"));

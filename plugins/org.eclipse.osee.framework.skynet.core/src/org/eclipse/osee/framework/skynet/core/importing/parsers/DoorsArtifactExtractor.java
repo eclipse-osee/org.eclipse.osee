@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -22,7 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
@@ -70,7 +69,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       "Verified By:",
       VERIFICATION_ACCEPTANCE_CRITERIA,
       CRITERIA};
-   private final static IAttributeType[] FIELD_TYPE = {
+   private final static AttributeTypeToken[] FIELD_TYPE = {
       null,
       null,
       CoreAttributeTypes.QualificationMethod,
@@ -113,7 +112,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       doExtraction(logger, source, collector, "");
    }
 
-   public void doExtraction(OperationLogger logger, URI source, RoughArtifactCollector collector, String documentApplicabilty) throws IOException {
+   public void doExtraction(OperationLogger logger, URI source, RoughArtifactCollector collector, String documentApplicabilty) {
 
       InputStream htmlStream = null;
       try {
@@ -730,7 +729,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       }
    }
 
-   private void parseAndStoreEnum(RoughArtifact roughArtifact, String data, IAttributeType type) {
+   private void parseAndStoreEnum(RoughArtifact roughArtifact, String data, AttributeTypeToken type) {
       StringTokenizer theTokens = new StringTokenizer(data, " ");
       OseeEnumType enumType = AttributeTypeManager.getType(type).getOseeEnumType();
       Set<String> theValues = enumType.valuesAsOrderedStringSet();

@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.skynet.core.attribute.service;
 
 import java.util.Collection;
 import java.util.Collections;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -28,7 +28,7 @@ public class BranchAttributeAdapter implements AttributeAdapter<BranchId> {
    }
 
    @Override
-   public Collection<IAttributeType> getSupportedTypes() {
+   public Collection<AttributeTypeId> getSupportedTypes() {
       return Collections.singleton(CoreAttributeTypes.BranchReference);
    }
 

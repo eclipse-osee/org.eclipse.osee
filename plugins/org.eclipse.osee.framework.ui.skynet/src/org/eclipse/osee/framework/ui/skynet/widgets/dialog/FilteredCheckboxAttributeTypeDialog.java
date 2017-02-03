@@ -17,7 +17,7 @@ import java.util.Set;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -59,13 +59,13 @@ public class FilteredCheckboxAttributeTypeDialog extends FilteredCheckboxTreeDia
 
    @SuppressWarnings("unchecked")
    @Override
-   public Collection<IAttributeType> getChecked() {
+   public Collection<AttributeTypeToken> getChecked() {
       if (super.getTreeViewer() == null) {
          return Collections.emptyList();
       }
-      Set<IAttributeType> checked = new HashSet<>();
+      Set<AttributeTypeToken> checked = new HashSet<>();
       for (Object obj : getResult()) {
-         checked.add((IAttributeType) obj);
+         checked.add((AttributeTypeToken) obj);
       }
       return checked;
    }

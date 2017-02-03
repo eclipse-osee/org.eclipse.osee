@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -23,6 +23,6 @@ public interface AttributeAdapter<T> {
 
    T adapt(Attribute<?> attribute, Id identity) throws OseeCoreException;
 
-   Collection<IAttributeType> getSupportedTypes();
+   Collection<AttributeTypeId> getSupportedTypes();
 
 }

@@ -20,9 +20,9 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -139,7 +139,7 @@ public class ChangeDataTest {
 
    @Test
    public void testGetSubset() throws Exception {
-      ArrayList<IAttributeType> typesToIgnore = new ArrayList<>();
+      ArrayList<AttributeTypeId> typesToIgnore = new ArrayList<>();
       typesToIgnore.add(CoreAttributeTypes.CrewInterfaceRequirement);
 
       Collection<Artifact> theChanges =

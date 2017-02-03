@@ -14,7 +14,6 @@ import java.util.Collection;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxAttributeTypeDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -22,7 +21,7 @@ import org.eclipse.swt.widgets.Shell;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeTypeSelectPanel extends AbstractItemSelectPanel<Collection<IAttributeType>> {
+public class AttributeTypeSelectPanel extends AbstractItemSelectPanel<Collection<AttributeTypeToken>> {
 
    private Collection<AttributeTypeToken> attributeTypes;
    private String title;
@@ -47,7 +46,7 @@ public class AttributeTypeSelectPanel extends AbstractItemSelectPanel<Collection
    }
 
    @Override
-   protected Dialog createSelectDialog(Shell shell, Collection<IAttributeType> lastSelected) {
+   protected Dialog createSelectDialog(Shell shell, Collection<AttributeTypeToken> lastSelected) {
       FilteredCheckboxAttributeTypeDialog dialog =
          new FilteredCheckboxAttributeTypeDialog(title, message, attributeTypes);
       if (lastSelected != null) {
@@ -60,9 +59,9 @@ public class AttributeTypeSelectPanel extends AbstractItemSelectPanel<Collection
    protected boolean updateFromDialogResult(Dialog dialog) {
       boolean wasUpdated = false;
       FilteredCheckboxAttributeTypeDialog castedDialog = (FilteredCheckboxAttributeTypeDialog) dialog;
-      Collection<IAttributeType> artifactTypes = castedDialog.getChecked();
-      if (artifactTypes != null) {
-         setSelected(artifactTypes);
+      Collection<AttributeTypeToken> attributeTypes = castedDialog.getChecked();
+      if (attributeTypes != null) {
+         setSelected(attributeTypes);
          wasUpdated = true;
       }
       return wasUpdated;

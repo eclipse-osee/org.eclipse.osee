@@ -24,7 +24,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.CaseInsensitiveString;
 import org.eclipse.osee.framework.skynet.core.importing.RoughAttributeSet.RoughAttribute;
 
@@ -76,14 +76,14 @@ public final class RoughAttributeSet implements Iterable<Entry<CaseInsensitiveSt
       return values != null && !values.isEmpty() ? values.iterator().next() : null;
    }
 
-   public Collection<String> getAttributeValueList(IAttributeType attributeType) {
+   public Collection<String> getAttributeValueList(AttributeTypeToken attributeType) {
       return getAttributeValueList(attributeType.getName());
    }
 
    /**
     * @return Same as getAttributeValueList, returns defaultList if getAttributeValueList is null.
     */
-   public Collection<String> getAttributeValueList(IAttributeType attributeType, Collection<String> defaultList) {
+   public Collection<String> getAttributeValueList(AttributeTypeToken attributeType, Collection<String> defaultList) {
       Collection<String> list = getAttributeValueList(attributeType);
       return list != null ? list : defaultList;
    }

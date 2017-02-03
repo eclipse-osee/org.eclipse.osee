@@ -14,8 +14,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -83,7 +83,7 @@ public class RoughArtifact {
       return roughParent;
    }
 
-   public void addAttribute(IAttributeType attrType, String value) throws OseeCoreException {
+   public void addAttribute(AttributeTypeToken attrType, String value) throws OseeCoreException {
       addAttribute(attrType.getName(), value);
    }
 
@@ -110,7 +110,7 @@ public class RoughArtifact {
       attributes.addAttribute(name, uri);
    }
 
-   public void addAttribute(IAttributeType attributeType, URI uri) {
+   public void addAttribute(AttributeTypeToken attributeType, URI uri) {
       addAttribute(attributeType.getName(), uri);
    }
 

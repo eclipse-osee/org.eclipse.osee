@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -19,11 +19,11 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  * @author Robert A. Fisher
  */
 public class AttributeValueSearch implements ISearchPrimitive {
-   private final IAttributeType attributeType;
+   private final AttributeTypeId attributeType;
    private final String attributeValue;
    private final static String TOKEN = ";";
 
-   public AttributeValueSearch(IAttributeType attributeType, String attributeValue) {
+   public AttributeValueSearch(AttributeTypeId attributeType, String attributeValue) {
       Conditions.checkNotNull(attributeType, "attributeType");
       Conditions.checkNotNullOrEmpty(attributeValue, "attributeValue");
       this.attributeType = attributeType;
@@ -41,7 +41,7 @@ public class AttributeValueSearch implements ISearchPrimitive {
          throw new IllegalStateException("Value for " + AttributeValueSearch.class.getSimpleName() + " not parsable");
       }
 
-      IAttributeType type = TokenFactory.createAttributeType(Long.valueOf(values[0]), "SearchAttrType");
+      AttributeTypeId type = TokenFactory.createAttributeType(Long.valueOf(values[0]), "SearchAttrType");
       return new AttributeValueSearch(type, values[1]);
    }
 

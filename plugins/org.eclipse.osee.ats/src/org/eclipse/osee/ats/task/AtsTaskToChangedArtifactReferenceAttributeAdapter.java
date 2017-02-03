@@ -18,8 +18,8 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -36,11 +36,11 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeAdapter;
  */
 public class AtsTaskToChangedArtifactReferenceAttributeAdapter implements AttributeAdapter<Artifact> {
 
-   private static final List<IAttributeType> TASK_CHANGED_ARTIFACT_REFERENCE_ATTR =
+   private static final List<AttributeTypeId> TASK_CHANGED_ARTIFACT_REFERENCE_ATTR =
       Arrays.asList(AtsAttributeTypes.TaskToChangedArtifactReference);
 
    @Override
-   public Collection<IAttributeType> getSupportedTypes() {
+   public Collection<AttributeTypeId> getSupportedTypes() {
       return TASK_CHANGED_ARTIFACT_REFERENCE_ATTR;
    }
 

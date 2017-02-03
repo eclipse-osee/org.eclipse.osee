@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -28,10 +28,10 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeAdapter;
  */
 public class ProgramArtifactReferenceAttributeAdapter implements AttributeAdapter<Artifact> {
 
-   private static final List<IAttributeType> PROGRAM_UUID_LIST = Arrays.asList(AtsAttributeTypes.ProgramUuid);
+   private static final List<AttributeTypeId> PROGRAM_UUID_LIST = Arrays.asList(AtsAttributeTypes.ProgramUuid);
 
    @Override
-   public Collection<IAttributeType> getSupportedTypes() {
+   public Collection<AttributeTypeId> getSupportedTypes() {
       return PROGRAM_UUID_LIST;
    }
 
