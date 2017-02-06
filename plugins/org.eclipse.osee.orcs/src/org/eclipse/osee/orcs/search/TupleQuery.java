@@ -32,7 +32,7 @@ public interface TupleQuery {
 
    <E1, E2> void getTupleType2ForArtifactIds(List<ArtifactId> artIds, BranchId branch, BiConsumer<Long, String> consumer);
 
-   <E1, E2> void getTuple2KeyValuePair(Tuple2Type<E1, E2> tupleType, BranchId branch, BiConsumer<Long, String> consumer);
+   <E1, E2> void getTuple2KeyValuePair(Tuple2Type<E1, E2> tupleType, E1 e1, BranchId branch, BiConsumer<Long, String> consumer);
 
    <E1, E2> boolean doesTuple2Exist(Tuple2Type<E1, E2> tupleType, E1 e1, E2 e2);
 

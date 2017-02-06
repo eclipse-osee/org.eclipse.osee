@@ -107,11 +107,9 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
-   public HashCollection<String, String> getBranchViewFeatureValues(BranchId branch) {
+   public HashCollection<String, String> getBranchViewFeatureValues(BranchId branch, ArtifactId viewId) {
       HashCollection<String, String> toReturn = new HashCollection<>();
-      List<ApplicabilityToken> result = new ArrayList<>();
-      BiConsumer<Long, String> consumer = (id, name) -> result.add(new ApplicabilityToken(id, name));
-      tupleQuery.getTuple2KeyValuePair(CoreTupleTypes.ViewApplicability, branch, consumer);
+      List<ApplicabilityToken> result = getViewApplicabilityTokens(viewId, branch);
 
       for (ApplicabilityToken app : result) {
          if (!app.getName().equals("Base")) {
@@ -127,7 +125,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    public List<ApplicabilityToken> getViewApplicabilityTokens(ArtifactId artId, BranchId branch) {
       List<ApplicabilityToken> result = new ArrayList<>();
       BiConsumer<Long, String> consumer = (id, name) -> result.add(new ApplicabilityToken(id, name));
-      tupleQuery.getTuple2KeyValuePair(CoreTupleTypes.ViewApplicability, branch, consumer);
+      tupleQuery.getTuple2KeyValuePair(CoreTupleTypes.ViewApplicability, artId, branch, consumer);
       return result;
    }
 

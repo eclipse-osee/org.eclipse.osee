@@ -37,7 +37,7 @@ public interface ApplicabilityQuery {
 
    List<ApplicabilityToken> getViewApplicabilityTokens(ArtifactId artId, BranchId branch);
 
-   HashCollection<String, String> getBranchViewFeatureValues(BranchId branch);
+   HashCollection<String, String> getBranchViewFeatureValues(BranchId branch, ArtifactId viewId);
 
    List<BranchViewData> getViews();
 }
