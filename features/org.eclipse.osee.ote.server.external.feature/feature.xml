@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.osee.ote.server.external.feature"
       label="OTE Server External Feature"
-      version="0.24.3.qualifier"
+      version="0.24.4.qualifier"
       provider-name="Eclipse Open System Engineering Environment">
 
    <description url="http://www.example.com/description">

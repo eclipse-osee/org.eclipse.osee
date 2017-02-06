@@ -6,14 +6,14 @@
 	<parent>
 		<groupId>org.eclipse.osee</groupId>
 		<artifactId>org.eclipse.osee.ote.parent</artifactId>
-		<version>0.24.3-SNAPSHOT</version>
+		<version>0.24.4-SNAPSHOT</version>
 		<relativePath>../../plugins/org.eclipse.osee.ote.parent</relativePath>
 	</parent>
 
 	<artifactId>org.eclipse.osee.ote.master.product</artifactId>
 	<packaging>eclipse-repository</packaging>
 	<name>OSEE Lookup - Product</name>
-	<version>0.24.3-SNAPSHOT</version>
+	<version>0.24.4-SNAPSHOT</version>
 
 	<build>
 		<plugins>
