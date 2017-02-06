@@ -104,7 +104,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
          monitor.setTaskName("Fixing Branch State data");
          List<Object[]> data = new ArrayList<>();
          for (BranchData branchData : itemsToFix) {
-            data.add(new Object[] {branchData.getBranchState().getValue(), branchData.getId()});
+            data.add(new Object[] {branchData.getBranchState().getValue(), branchData});
          }
          ConnectionHandler.runBatchUpdate("update osee_branch set branch_state = ? where branch_id = ?", data);
       }

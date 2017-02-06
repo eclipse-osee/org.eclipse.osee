@@ -17,8 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -173,8 +173,7 @@ public class PreviewAndMultiPreviewTest {
    @Test
    public void testWholeWordPreview() throws Exception {
       Artifact art = createArtifact(CoreArtifactTypes.TestProcedureWML, SAW_Bld_1, addPrefix("4g"));
-      art.persist(String.format("%s, persist on %s, uuid: %d", PreviewAndMultiPreviewTest.class.getSimpleName(),
-         SAW_Bld_1.getName(), SAW_Bld_1.getUuid()));
+      art.persist(String.format("%s, persist on %s", PreviewAndMultiPreviewTest.class.getSimpleName(), SAW_Bld_1));
       WholeWordRenderer renderer = new WholeWordRenderer();
       renderer.open(Arrays.asList(art), PresentationType.PREVIEW);
    }
@@ -182,8 +181,7 @@ public class PreviewAndMultiPreviewTest {
    @Test
    public void testWholeWordPreviewUsingRendererManager() throws Exception {
       Artifact art = createArtifact(CoreArtifactTypes.TestProcedureWML, SAW_Bld_1, addPrefix("4h"));
-      art.persist(String.format("%s, persist on %s, uuid: %d", PreviewAndMultiPreviewTest.class.getSimpleName(),
-         SAW_Bld_1.getName(), SAW_Bld_1.getUuid()));
+      art.persist(String.format("%s, persist on %s", PreviewAndMultiPreviewTest.class.getSimpleName(), SAW_Bld_1));
       RendererManager.openInJob(Arrays.asList(art), PresentationType.PREVIEW);
    }
 

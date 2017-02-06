@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -138,8 +138,8 @@ public class ConflictManagerInternal {
       if (commitTransactionId.isValid()) {
          return getConflictsPerBranch(commitTransactionId, monitor);
       }
-      monitor.beginTask(String.format("Loading Merge Manager for Branch %d into Branch %d", sourceBranch.getUuid(),
-         destinationBranch.getUuid()), 100);
+      monitor.beginTask(
+         String.format("Loading Merge Manager for Branch %s into Branch %s", sourceBranch, destinationBranch), 100);
       monitor.subTask("Finding Database stored conflicts");
 
       TransactionToken commonTransaction = findCommonTransaction(sourceBranch, destinationBranch);
@@ -214,8 +214,8 @@ public class ConflictManagerInternal {
          }
          joinQuery.store();
 
-         chStmt.runPreparedQuery(MULTIPLICITY_DETECTION, source.getUuid(),
-            BranchManager.getBaseTransaction(source).getId(), joinQuery.getQueryId(), dest.getUuid());
+         chStmt.runPreparedQuery(MULTIPLICITY_DETECTION, source, BranchManager.getBaseTransaction(source),
+            joinQuery.getQueryId(), dest);
 
          while (chStmt.next()) {
             Long artId = chStmt.getLong("art_id");
@@ -433,8 +433,8 @@ public class ConflictManagerInternal {
          }
       }
       if (commonAncestor == null) {
-         throw new OseeCoreException("Cannot find a common ancestor for Branch %s and Branch %s",
-            sourceBranch.getUuid(), destBranch.getUuid());
+         throw new OseeCoreException("Cannot find a common ancestor for Branch %s and Branch %s", sourceBranch,
+            destBranch);
       }
       TransactionToken sourceTransaction = null;
       TransactionToken destTransaction = null;

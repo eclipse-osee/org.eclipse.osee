@@ -109,7 +109,7 @@ public class User extends Artifact {
          }
          if (!branchUuids.contains(uuid)) {
             attribute.delete();
-         } else if (favoriteBranch.getUuid().equals(uuid)) {
+         } else if (favoriteBranch.equals(uuid)) {
             attribute.delete();
             found = true;
             // Do not break here in case there are multiples of same branch uuid
@@ -128,7 +128,7 @@ public class User extends Artifact {
       Collection<String> attributes = getAttributesToStringList(CoreAttributeTypes.FavoriteBranch);
       for (String value : attributes) {
          try {
-            if (Long.valueOf(value).equals(branch.getUuid())) {
+            if (branch.equals(Long.valueOf(value))) {
                return true;
             }
          } catch (Exception ex) {

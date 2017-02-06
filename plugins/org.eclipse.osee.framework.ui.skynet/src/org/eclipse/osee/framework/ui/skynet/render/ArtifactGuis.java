@@ -139,8 +139,7 @@ public final class ArtifactGuis {
          JdbcStatement chStmt = ConnectionHandler.getStatement();
          try {
             BranchId branch = artifact.getBranch();
-            chStmt.runPreparedQuery(OTHER_EDIT_SQL, artifact.getArtId(), branch.getUuid(),
-               BranchManager.getParentBranch(branch).getId(), BranchType.WORKING.getValue());
+            chStmt.runPreparedQuery(OTHER_EDIT_SQL, artifact, branch, branch, BranchType.WORKING.getValue());
 
             while (chStmt.next()) {
                long modifiedOnBranchId = chStmt.getLong("branch_id");

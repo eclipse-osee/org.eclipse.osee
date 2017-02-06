@@ -345,7 +345,7 @@ public class BranchQuerySqlContextFactoryImplTest {
       assertEquals(0, joins.size());
 
       Iterator<Object> iterator = parameters.iterator();
-      assertEquals(COMMON.getId(), iterator.next());
+      assertEquals(COMMON, iterator.next());
    }
 
    @Test
@@ -375,7 +375,7 @@ public class BranchQuerySqlContextFactoryImplTest {
       assertEquals(0, joins.size());
 
       Iterator<Object> iterator = parameters.iterator();
-      assertEquals(COMMON.getId(), iterator.next());
+      assertEquals(COMMON, iterator.next());
    }
 
    @Test
@@ -415,7 +415,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
       Iterator<Object> iterator = parameters.iterator();
 
-      assertEquals(COMMON.getId(), iterator.next());
+      assertEquals(COMMON, iterator.next());
       assertEquals(WORKING.getValue(), iterator.next());
       assertEquals(joins.get(0).getQueryId(), iterator.next());
       assertEquals(ARCHIVED.getValue(), iterator.next());

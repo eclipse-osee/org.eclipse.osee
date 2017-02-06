@@ -84,7 +84,7 @@ public class WfeReloadTab extends FormPage {
          bodyComp.setLayout(new GridLayout(1, false));
          bodyComp.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, true, false));
 
-         if (!AtsClientService.get().getAtsBranch().equals(branch)) {
+         if (AtsClientService.get().getAtsBranch().notEqual(branch)) {
             Label imageLabel = new Label(bodyComp, SWT.NONE);
             imageLabel.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, true));
             Image image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);

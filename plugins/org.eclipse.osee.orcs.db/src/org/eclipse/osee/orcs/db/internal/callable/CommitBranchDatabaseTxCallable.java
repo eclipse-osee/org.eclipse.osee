@@ -92,8 +92,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
          updatePreviousCurrentsOnDestinationBranch(connection);
          insertCommitAddressing(newTx, connection);
 
-         getJdbcClient().runPreparedUpdate(connection, UPDATE_MERGE_COMMIT_TX, newTx, sourceBranch.getUuid(),
-            destinationBranch.getUuid());
+         getJdbcClient().runPreparedUpdate(connection, UPDATE_MERGE_COMMIT_TX, newTx, sourceBranch, destinationBranch);
 
          manageBranchStates();
          if (mergeBranch.isValid()) {
@@ -154,8 +153,8 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       String comment = COMMIT_COMMENT + sourceBranch.getName();
 
       getJdbcClient().runPreparedUpdate(connection, INSERT_COMMIT_TRANSACTION,
-         TransactionDetailsType.NonBaselined.getId(), destinationBranch.getUuid(), newTransactionNumber, comment,
-         timestamp, committer, sourceBranch.getAssociatedArtifact());
+         TransactionDetailsType.NonBaselined.getId(), destinationBranch, newTransactionNumber, comment, timestamp,
+         committer, sourceBranch.getAssociatedArtifact());
       return newTransactionNumber;
    }
 
@@ -166,11 +165,11 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
          ApplicabilityToken appToken = change.getNetChange().getApplicabilityToken();
          insertData.add(new Object[] {
             newTx,
-            destinationBranch.getUuid(),
+            destinationBranch,
             change.getNetChange().getGammaId(),
             modType.getValue(),
             TxChange.getCurrent(modType).getValue(),
-            appToken.getId()});
+            appToken});
       }
       getJdbcClient().runBatchUpdate(connection, INSERT_COMMIT_ADDRESSING, insertData);
    }

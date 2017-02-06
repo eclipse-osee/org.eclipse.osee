@@ -127,7 +127,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
       Set<AttrData> attrData = new HashSet<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt.runPreparedQuery(FIND_REPEAT_ENUMS, branch.getUuid(), branch.getUuid());
+         chStmt.runPreparedQuery(FIND_REPEAT_ENUMS, branch, branch);
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
             attrData.add(

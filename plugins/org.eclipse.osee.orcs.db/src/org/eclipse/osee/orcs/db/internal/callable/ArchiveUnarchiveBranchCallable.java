@@ -46,13 +46,13 @@ public class ArchiveUnarchiveBranchCallable extends AbstractDatastoreTxCallable<
       String destinationTableName = archive ? "osee_txs_archived" : "osee_txs";
 
       String sql = String.format(INSERT_ADDRESSING, destinationTableName, sourceTableName);
-      jdbcClient.runPreparedUpdate(connection, sql, branch.getUuid());
+      jdbcClient.runPreparedUpdate(connection, sql, branch);
 
       sql = String.format(DELETE_ADDRESSING, sourceTableName);
-      jdbcClient.runPreparedUpdate(connection, sql, branch.getUuid());
+      jdbcClient.runPreparedUpdate(connection, sql, branch);
 
       BranchArchivedState newState = archive ? BranchArchivedState.ARCHIVED : BranchArchivedState.UNARCHIVED;
-      Object[] params = new Object[] {newState.getValue(), branch.getUuid()};
+      Object[] params = new Object[] {newState.getValue(), branch};
       jdbcClient.runPreparedUpdate(connection, UPDATE_BRANCH, params);
       return null;
    }

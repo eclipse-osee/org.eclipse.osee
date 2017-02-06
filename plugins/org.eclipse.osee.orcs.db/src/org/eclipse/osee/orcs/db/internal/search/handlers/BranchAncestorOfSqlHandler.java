@@ -47,7 +47,7 @@ public class BranchAncestorOfSqlHandler extends SqlHandler<CriteriaBranchAncesto
       body.append("  SELECT parent_branch_id, branch_level - 1 FROM ").append(withAlias);
       body.append(" recurse, osee_branch br");
       body.append(" WHERE br.branch_id = recurse.parent_id");
-      writer.addParameter(criteria.getChild().getUuid());
+      writer.addParameter(criteria.getChild());
       writer.addWithClause(newRecursiveWithClause(withAlias, "(parent_id, branch_level)", body.toString()));
       writer.addTable(withAlias);
    }

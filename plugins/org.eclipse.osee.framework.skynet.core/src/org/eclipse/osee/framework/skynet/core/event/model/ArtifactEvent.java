@@ -76,7 +76,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
    }
 
    public boolean isForBranch(BranchId branch) {
-      return getBranch().equals(branch.getUuid());
+      return getBranch().equals(branch);
    }
 
    public TransactionId getTransactionId() {

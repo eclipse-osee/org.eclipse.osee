@@ -76,7 +76,7 @@ public class PurgeBranchDatabaseCallable extends AbstractDatastoreTxCallable<Voi
    private List<Pair<Long, Boolean>> findMergeBranches(JdbcConnection connection) {
       List<Pair<Long, Boolean>> toReturn = new LinkedList<>();
       JdbcStatement stmt = getJdbcClient().getStatement(connection);
-      stmt.runPreparedQuery(SELECT_MERGE_BRANCHES, toDelete.getUuid(), toDelete.getUuid());
+      stmt.runPreparedQuery(SELECT_MERGE_BRANCHES, toDelete, toDelete);
       while (stmt.next()) {
          Pair<Long, Boolean> toAdd =
             new Pair<Long, Boolean>(stmt.getLong("merge_branch_id"), stmt.getBoolean("archived"));

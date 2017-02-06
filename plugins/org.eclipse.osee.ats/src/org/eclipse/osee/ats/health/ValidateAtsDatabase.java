@@ -805,7 +805,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       xResultData.log(null, "getCommonArtifactIds - Started " + DateUtil.getMMDDYYHHMM());
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt.runPreparedQuery(SELECT_COMMON_ART_IDS, new Object[] {AtsClientService.get().getAtsBranch().getUuid()});
+         chStmt.runPreparedQuery(SELECT_COMMON_ART_IDS, AtsClientService.get().getAtsBranch());
          while (chStmt.next()) {
             artIds.add(chStmt.getInt(1));
          }

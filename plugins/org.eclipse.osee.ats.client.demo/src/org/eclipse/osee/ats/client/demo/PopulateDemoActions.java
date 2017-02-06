@@ -256,8 +256,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
          DemoDbUtil.sleep(5000);
          // need to update the branch type;
-         ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_TYPE,
-            new Object[] {BranchType.BASELINE.getValue(), childBranch.getUuid()});
+         ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_TYPE, BranchType.BASELINE.getValue(), childBranch);
          BranchManager.refreshBranches();
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

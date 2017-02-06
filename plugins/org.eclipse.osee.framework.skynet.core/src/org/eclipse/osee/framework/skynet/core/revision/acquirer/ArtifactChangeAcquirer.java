@@ -56,8 +56,8 @@ public class ArtifactChangeAcquirer extends ChangeAcquirer {
             fromTransactionId = getSourceBaseTransaction();
             toTransactionId = TransactionManager.getHeadTransaction(getSourceBranch());
 
-            chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CHANGE_BRANCH_ARTIFACT), getSourceBranch().getUuid(),
-               fromTransactionId.getId());
+            chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CHANGE_BRANCH_ARTIFACT), getSourceBranch(),
+               fromTransactionId);
          } else { //Changes per a transaction
             toTransactionId = getTransaction();
 

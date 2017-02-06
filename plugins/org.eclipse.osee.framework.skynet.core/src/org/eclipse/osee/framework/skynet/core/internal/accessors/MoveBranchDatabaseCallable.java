@@ -33,10 +33,10 @@ public class MoveBranchDatabaseCallable {
          String destinationTableName = archive ? "osee_txs_archived" : "osee_txs";
 
          String sql = String.format(INSERT_ADDRESSING, destinationTableName, sourceTableName);
-         jdbcClient.runPreparedUpdate(connection, sql, branch.getUuid());
+         jdbcClient.runPreparedUpdate(connection, sql, branch);
 
          sql = String.format(DELETE_ADDRESSING, sourceTableName);
-         jdbcClient.runPreparedUpdate(connection, sql, branch.getUuid());
+         jdbcClient.runPreparedUpdate(connection, sql, branch);
       } finally {
          connection.close();
       }

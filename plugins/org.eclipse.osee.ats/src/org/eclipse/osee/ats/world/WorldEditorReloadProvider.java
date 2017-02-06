@@ -73,9 +73,9 @@ public class WorldEditorReloadProvider extends WorldEditorProvider {
          AWorkbench.popup("No valid ids to load");
       } else {
          artifacts = new ArrayList<>();
-         if (AtsClientService.get().getAtsBranch().getUuid().equals(branchUuid)) {
-            artifacts.addAll(
-               ArtifactQuery.getArtifactListFromIds(new ArrayList<Integer>(validartUuids), AtsClientService.get().getAtsBranch()));
+         if (AtsClientService.get().getAtsBranch().equals(branchUuid)) {
+            artifacts.addAll(ArtifactQuery.getArtifactListFromIds(new ArrayList<Integer>(validartUuids),
+               AtsClientService.get().getAtsBranch()));
             AtsBulkLoad.bulkLoadArtifacts(artifacts);
          }
       }

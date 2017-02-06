@@ -107,16 +107,15 @@ public class ConvertFavoriteBranchGuidToUuid extends AbstractConvertGuidToUuid {
 
    private void addUuid(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art, AttributeReadable<Object> attr, BranchReadable branch) throws OseeCoreException {
       numChanges++;
-      Long branchUuid = branch.getUuid();
-      data.logf("Adding uuid attribute of value %d to artifact type [%s] name [%s] id [%s]\n", branchUuid,
+      data.logf("Adding uuid attribute of value %s to artifact type [%s] name [%s] id [%s]\n", branch,
          art.getArtifactType(), art.getName(), art.getGuid());
       if (!reportOnly) {
          try {
-            tx.setAttributeById(art, attr, String.valueOf(branchUuid));
+            tx.setAttributeById(art, attr, branch.getIdString());
          } catch (OseeCoreException ex) {
             data.errorf(
-               "Error building transaction for convert to uuid attribute of value %d for artifact type [%s] name [%s] id [%s]\n",
-               branch.getUuid(), art.getArtifactType(), art.getName(), art.getGuid());
+               "Error building transaction for convert to uuid attribute of value %s for artifact type [%s] name [%s] id [%s]\n",
+               branch, art.getArtifactType(), art.getName(), art.getGuid());
          }
       }
    }

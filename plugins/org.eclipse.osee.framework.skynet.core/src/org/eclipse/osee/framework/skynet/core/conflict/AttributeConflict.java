@@ -80,7 +80,7 @@ public class AttributeConflict extends Conflict {
       if (sourceAttribute == null) {
          if (sourceBranch != null) {
             throw new AttributeDoesNotExist("Attribute %d could not be found on artifact %d on branch %s", attrId,
-               getArtId(), sourceBranch.getUuid());
+               getArtId(), sourceBranch);
          } else {
             throw new AttributeDoesNotExist("Attribute %d could not be found on artifact %d", attrId, getArtId());
          }
@@ -92,7 +92,7 @@ public class AttributeConflict extends Conflict {
       Attribute<?> destAttribute = getDestArtifact().getAttributeById(attrId, false);
       if (destAttribute == null) {
          throw new AttributeDoesNotExist("Attribute %d could not be found on artifact %d on branch %s", attrId,
-            getArtId(), destBranch.getUuid());
+            getArtId(), destBranch);
       }
       return destAttribute;
    }

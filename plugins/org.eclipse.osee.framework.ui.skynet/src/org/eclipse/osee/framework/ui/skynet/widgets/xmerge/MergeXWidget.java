@@ -696,7 +696,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
                   Collection<Long> destBranches =
                      ConflictManagerInternal.getDestinationBranchesMerged(sourceBranch.getUuid());
                   for (Long branchUuid : destBranches) {
-                     if (!branchUuid.equals(destBranch.getUuid())) {
+                     if (destBranch.notEqual(branchUuid)) {
                         selections.add(BranchManager.getBranchName(branchUuid));
                         branchUuids.add(branchUuid);
                      }

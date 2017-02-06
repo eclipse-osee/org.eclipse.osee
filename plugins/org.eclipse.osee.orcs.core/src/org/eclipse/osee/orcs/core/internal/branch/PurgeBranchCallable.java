@@ -71,7 +71,7 @@ public class PurgeBranchCallable extends AbstractBranchCallable<List<BranchId>> 
       for (BranchReadable child : branchQuery.getResults()) {
          if (child.getBranchType() != BranchType.MERGE) {
             throw new OseeArgumentException(
-               "Unable to purge a branch containing children: branchUuid[%s] branchType[%s]", aBranch.getUuid(),
+               "Unable to purge a branch containing children: branchUuid[%s] branchType[%s]", aBranch,
                aBranch.getBranchType());
          }
       }

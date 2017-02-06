@@ -61,7 +61,7 @@ public class DatabaseConflictAccessor {
          conflicts.add(
             new Conflict(StorageState.LOADED, uniqueId, conflictType, mergeBranch, status, sourceGammaId, destGammaId));
       };
-      getJdbcClient().runQuery(consumer, SELECT_CONFLICTS, mergeBranch.getUuid());
+      getJdbcClient().runQuery(consumer, SELECT_CONFLICTS, mergeBranch);
    }
 
    public void store(Collection<Conflict> conflicts) throws OseeCoreException {

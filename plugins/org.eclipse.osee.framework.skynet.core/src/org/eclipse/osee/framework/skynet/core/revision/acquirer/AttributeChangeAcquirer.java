@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.sql.OseeSql;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -72,8 +73,8 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
          if (hasBranch) {
             fromTransactionId = getSourceBaseTransaction();
             toTransaction = TransactionManager.getHeadTransaction(getSourceBranch());
-            chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CHANGE_BRANCH_ATTRIBUTE_IS), getSourceBranch().getUuid(),
-               fromTransactionId.getId());
+            chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CHANGE_BRANCH_ATTRIBUTE_IS), getSourceBranch(),
+               fromTransactionId);
 
          } //Changes per transaction number
          else {
@@ -161,18 +162,18 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
 
    private void loadAttributeWasValues(BranchId sourceBranch, TransactionToken transactionId, Set<Integer> artIds, IProgressMonitor monitor, Map<Integer, ChangeBuilder> attributesWasValueCache, boolean hasBranch) throws OseeCoreException, OseeDataStoreException {
       if (!artIds.isEmpty()) {
-         long sqlParamter; // Will either be a branch uuid or transaction id
+         Id sqlParamter; // Will either be a branch uuid or transaction id
          BranchId wasValueBranch;
          String sql;
 
          if (hasBranch) {
             wasValueBranch = sourceBranch;
             sql = ServiceUtil.getSql(OseeSql.CHANGE_BRANCH_ATTRIBUTE_WAS);
-            sqlParamter = wasValueBranch.getUuid();
+            sqlParamter = wasValueBranch;
          } else {
             wasValueBranch = transactionId.getBranch();
             sql = ServiceUtil.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_WAS);
-            sqlParamter = transactionId.getId();
+            sqlParamter = transactionId;
          }
 
          Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery();
