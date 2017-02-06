@@ -71,11 +71,11 @@ public class ChangeReportEditorInputFactory implements IElementFactory {
 
    public static void saveState(IMemento memento, ChangeReportEditorInput input) {
       TransactionDelta txDelta = input.getChangeData().getTxDelta();
-      memento.putString(START_TX_KEY, txDelta.getStartTx().getId().toString());
-      memento.putString(END_TX_KEY, txDelta.getEndTx().getId().toString());
+      memento.putString(START_TX_KEY, txDelta.getStartTx().getIdString());
+      memento.putString(END_TX_KEY, txDelta.getEndTx().getIdString());
       memento.putString(COMPARE_TYPE, input.getChangeData().getCompareType().name());
       if (input.getBranch() != null) {
-         memento.putString(BRANCH_ID_KEY, String.valueOf(input.getBranch().getUuid()));
+         memento.putString(BRANCH_ID_KEY, input.getBranch().getIdString());
          memento.putBoolean(TRANSACTION_TAB_ACTIVE_KEY, input.isTransactionTabActive());
       }
    }

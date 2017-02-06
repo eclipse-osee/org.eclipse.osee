@@ -117,10 +117,10 @@ public class User extends Artifact {
       }
 
       if (!found) {
-         addAttribute(CoreAttributeTypes.FavoriteBranch, String.valueOf(favoriteBranch.getUuid()));
+         addAttribute(CoreAttributeTypes.FavoriteBranch, favoriteBranch.getIdString());
       }
 
-      setSetting(CoreAttributeTypes.FavoriteBranch.getName(), String.valueOf(favoriteBranch.getUuid()));
+      setSetting(CoreAttributeTypes.FavoriteBranch.getName(), favoriteBranch.getIdString());
       saveSettings();
    }
 

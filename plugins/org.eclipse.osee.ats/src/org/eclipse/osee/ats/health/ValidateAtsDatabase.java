@@ -740,7 +740,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      if (!branchesCommittedTo.isEmpty()) {
                         results.log(artifact, "testAtsBranchManagerA",
                            "Error: TeamWorkflow " + XResultDataUI.getHyperlink(
-                              teamArt) + " has committed branches but working branch [" + workingBranch.getUuid() + "] != COMMITTED");
+                              teamArt) + " has committed branches but working branch [" + workingBranch + "] != COMMITTED");
                      }
                   } else if (!BranchManager.isArchived(workingBranch)) {
                      Collection<BranchId> branchesLeftToCommit =
@@ -748,7 +748,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      if (branchesLeftToCommit.isEmpty()) {
                         results.log(artifact, "testAtsBranchManagerA",
                            "Error: TeamWorkflow " + XResultDataUI.getHyperlink(
-                              teamArt) + " has committed all branches but working branch [" + workingBranch.getUuid() + "] != ARCHIVED");
+                              teamArt) + " has committed all branches but working branch [" + workingBranch + "] != ARCHIVED");
                      }
                   }
                }

@@ -17,7 +17,7 @@ public class BranchReferenceAttribute extends IdentityReferenceAttribute<IOseeBr
 
    @Override
    protected boolean subClassSetValue(IOseeBranch value) throws OseeCoreException {
-      return getAttributeDataProvider().setValue(value == null ? "" : String.valueOf(value.getUuid()));
+      return getAttributeDataProvider().setValue(value == null ? "" : value.getIdString());
    }
 
 }

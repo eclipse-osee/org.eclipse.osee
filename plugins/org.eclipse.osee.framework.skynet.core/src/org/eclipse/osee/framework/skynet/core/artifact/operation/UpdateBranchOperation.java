@@ -63,7 +63,7 @@ public class UpdateBranchOperation extends AbstractOperation {
          BranchId parentBranch = BranchManager.getParentBranch(originalBranch);
          proxy.logBranchActivity(
             String.format("Branch Operation Update Branch {branchUUID: %s, branchName: %s parentBranchId: %s",
-               originalBranch.getUuid(), originalBranch.getName(), parentBranch.getId()));
+               originalBranch.getIdString(), originalBranch.getName(), parentBranch.getId()));
       }
    }
 

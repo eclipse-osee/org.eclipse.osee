@@ -108,7 +108,7 @@ public class RemoteBasicGuidRelation1 extends RemoteEvent {
     * @param value allowed object is {@link String }
     */
    public void setBranchGuid(BranchId branch) {
-      this.branchGuid = branch.getId().toString();
+      this.branchGuid = branch.getIdString();
    }
 
    /**

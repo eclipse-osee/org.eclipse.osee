@@ -322,7 +322,7 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
 
    @Override
    public void storeAtsBranch(BranchId branch, String name) {
-      AtsPreferencesService.get().put(ATS_BRANCH_UUID, String.valueOf(branch.getUuid()));
+      AtsPreferencesService.get().put(ATS_BRANCH_UUID, branch.getIdString());
       AtsPreferencesService.get().put(ATS_BRANCH_NAME, name);
    }
 

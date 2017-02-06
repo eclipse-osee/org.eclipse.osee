@@ -58,7 +58,7 @@ public class XBranchSelectWidgetDam extends XBranchSelectWidget implements IAttr
       if (selection == null) {
          artifact.deleteAttributes(attributeType);
       } else {
-         artifact.setSoleAttributeValue(attributeType, String.valueOf(selection.getUuid()));
+         artifact.setSoleAttributeValue(attributeType, selection.getIdString());
       }
    }
 

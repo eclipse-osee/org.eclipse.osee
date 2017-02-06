@@ -79,7 +79,7 @@ public class RemoteBasicGuidRelationReorder1 extends RemoteEvent {
    }
 
    public void setBranchGuid(BranchId branch) {
-      this.branchGuid = branch.getId().toString();
+      this.branchGuid = branch.getIdString();
    }
 
    /**

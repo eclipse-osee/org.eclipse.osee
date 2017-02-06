@@ -103,6 +103,7 @@ public class OseeLinkBuilder {
    public OseeLinkBuilder() {
       super();
    }
+
    public String getWordMlLink(LinkType destLinkType, Artifact artifact) throws OseeCoreException {
       return getWordMlLink(destLinkType, artifact, PresentationType.DEFAULT_OPEN);
    }
@@ -116,13 +117,13 @@ public class OseeLinkBuilder {
 
    public String getUnknownArtifactLink(String guid, BranchId branch) {
       String processType = "unknown";
-      return getArtifactLinkWithMessage(processType, guid, branch, String.format(
-         "Invalid Link: artifact with guid:[%s] on branchUuid:[%s] does not exist", guid, branch.getUuid()));
+      return getArtifactLinkWithMessage(processType, guid, branch,
+         String.format("Invalid Link: artifact with guid:[%s] on branch:[%s] does not exist", guid, branch));
    }
 
    private String getArtifactLinkWithMessage(String processType, String guid, BranchId branch, String message) {
       String internalLink =
-         String.format("http://none/%s?guid=%s&amp;branchUuid=%s", processType, guid, branch.getUuid());
+         String.format("http://none/%s?guid=%s&amp;branchUuid=%s", processType, guid, branch.getIdString());
       return String.format(WORDML_LINK_FORMAT, internalLink, message);
    }
 

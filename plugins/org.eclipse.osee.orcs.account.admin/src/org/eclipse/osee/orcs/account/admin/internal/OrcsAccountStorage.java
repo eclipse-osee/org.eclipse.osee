@@ -133,7 +133,7 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    }
 
    private String asString(ArtifactId artId, Map<String, String> preferences) {
-      PropertyStore settings = new PropertyStore(Long.toString(artId.getUuid()));
+      PropertyStore settings = new PropertyStore(artId.getIdString());
       for (Entry<String, String> entry : preferences.entrySet()) {
          settings.put(entry.getKey(), entry.getValue());
       }

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.resource;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT_ID;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import java.net.URL;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.OseeData;
@@ -39,6 +39,6 @@ public class OseeDatastoreMigrationResource extends AbstractJdbcMigrationResourc
       placeholders.put(SYS_ROOT_TYPE_PLACEHOLDER, String.valueOf(BranchType.SYSTEM_ROOT.getValue()));
       placeholders.put(SYS_ROOT_STATE_PLACEHOLDER, String.valueOf(BranchState.MODIFIED.getValue()));
       placeholders.put(SYS_ROOT_NAME_PLACEHOLDER, CoreBranches.SYSTEM_ROOT.getName());
-      placeholders.put(SYS_ROOT_ID_PLACEHOLDER, SYSTEM_ROOT_ID.toString());
+      placeholders.put(SYS_ROOT_ID_PLACEHOLDER, SYSTEM_ROOT.getIdString());
    }
 }

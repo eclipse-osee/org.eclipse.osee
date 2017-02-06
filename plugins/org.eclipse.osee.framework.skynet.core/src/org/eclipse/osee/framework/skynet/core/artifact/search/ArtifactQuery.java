@@ -883,7 +883,7 @@ public static List<ArtifactToken> getArtifactTokenListFromSoleAttributeInherited
       String ids = "";
       for (ArtifactType artType : artifactTypeFull.getAllDescendantTypes()) {
          artTypeIds.add(artType.getId());
-         ids += artType.getId().toString() + ",";
+         ids += artType.getIdString() + ",";
       }
       artTypeIds.add(artifactTypeFull.getId());
       ids = ids.replaceFirst(",$", "");
@@ -997,7 +997,7 @@ public static List<ArtifactToken> getArtifactTokenListFromSoleAttributeInherited
                org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", artIds));
             chStmt.runPreparedQuery(query, branchId.getId());
             for (ArtifactToken token : extractTokensFromQuery(chStmt)) {
-               guidToToken.put(token.getId().toString(), token);
+               guidToToken.put(token.getIdString(), token);
             }
          } finally {
             chStmt.close();

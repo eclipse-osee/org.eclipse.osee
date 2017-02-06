@@ -51,7 +51,7 @@ public class ArtifactEditorInputFactory implements IElementFactory {
       String title = input.getName();
       Artifact artifact = input.getArtifact();
       if (artifact != null) {
-         String artUuid = artifact.getUuid().toString();
+         String artUuid = artifact.getIdString();
          long branchUuid = artifact.getBranchId();
          if (Strings.isValid(artUuid) && branchUuid > 0 && Strings.isValid(title)) {
             memento.putString(BRANCH_KEY, String.valueOf(branchUuid));

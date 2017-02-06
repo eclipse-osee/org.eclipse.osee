@@ -79,8 +79,8 @@ public class BranchFavoriteTest {
       assertFalse(joeSmith.isFavoriteBranch(SAW_Bld_2));
       assertEquals(0, joeSmith.getAttributeCount(CoreAttributeTypes.FavoriteBranch));
 
-      joeSmith.addAttribute(CoreAttributeTypes.FavoriteBranch, String.valueOf(SAW_Bld_1.getUuid()));
-      joeSmith.addAttribute(CoreAttributeTypes.FavoriteBranch, String.valueOf(SAW_Bld_1.getUuid()));
+      joeSmith.addAttribute(CoreAttributeTypes.FavoriteBranch, SAW_Bld_1.getIdString());
+      joeSmith.addAttribute(CoreAttributeTypes.FavoriteBranch, SAW_Bld_1.getIdString());
       joeSmith.persist(testInfo.getTestName() + " - testFavoriteBranchCleanup");
       assertEquals(2, joeSmith.getAttributeCount(CoreAttributeTypes.FavoriteBranch));
 

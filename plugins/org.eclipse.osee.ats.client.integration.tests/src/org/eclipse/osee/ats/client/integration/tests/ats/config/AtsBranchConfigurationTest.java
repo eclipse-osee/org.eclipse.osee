@@ -144,7 +144,7 @@ public class AtsBranchConfigurationTest {
       Assert.assertNotNull(versionToTarget);
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       changes.setSoleAttributeValue(versionToTarget, AtsAttributeTypes.BaselineBranchUuid,
-         viaTeamDefBranch.getUuid().toString());
+         viaTeamDefBranch.getIdString());
       changes.setSoleAttributeValue(versionToTarget, AtsAttributeTypes.AllowCommitBranch, true);
       changes.setSoleAttributeValue(versionToTarget, AtsAttributeTypes.AllowCreateBranch, true);
       changes.execute();
@@ -252,8 +252,7 @@ public class AtsBranchConfigurationTest {
       }
       IAtsTeamDefinition teamDef = operation.getTeamDefinition();
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
-      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchUuid,
-         viaTeamDefBranch.getUuid().toString());
+      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchUuid, viaTeamDefBranch.getIdString());
       // setup team def to allow create/commit of branch
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.AllowCommitBranch, true);
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.AllowCreateBranch, true);
@@ -348,7 +347,8 @@ public class AtsBranchConfigurationTest {
       transaction.execute();
 
       // Delete Team Definitions
-      transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Branch Configuration Test");
+      transaction =
+         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Branch Configuration Test");
       for (Artifact teamDefArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.TeamDefinition,
          branch.getName(), AtsClientService.get().getAtsBranch())) {
          teamDefArt.deleteAndPersist(transaction, false);
@@ -360,7 +360,8 @@ public class AtsBranchConfigurationTest {
       transaction.execute();
 
       // Delete AIs
-      transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Branch Configuration Test");
+      transaction =
+         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Branch Configuration Test");
       for (Artifact aiaArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.ActionableItem,
          branch.getName(), AtsClientService.get().getAtsBranch())) {
          for (Artifact childArt : aiaArt.getChildren()) {
@@ -384,7 +385,8 @@ public class AtsBranchConfigurationTest {
       Collection<Artifact> arts =
          ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.WorkDefinition, AtsClientService.get().getAtsBranch());
       if (arts.size() > 0) {
-         transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Branch Configuration Test");
+         transaction =
+            TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Branch Configuration Test");
          for (Artifact workArt : arts) {
             if (workArt.getName().startsWith(namespace)) {
                workArt.deleteAndPersist(transaction, true);

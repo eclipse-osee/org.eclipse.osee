@@ -40,7 +40,7 @@ public class XProgramSelectionWidget extends XArtifactSelectWidgetWithSave {
          AtsClientService.get().getProgramService().getPrograms(AtsArtifactTypes.Program);
       for (IAtsProgram program : programs) {
          if (program.isActive()) {
-            programArts.add(AtsClientService.get().getArtifactById(program.getId().toString()));
+            programArts.add(AtsClientService.get().getArtifactById(program.getIdString()));
          }
       }
    }

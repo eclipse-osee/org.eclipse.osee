@@ -102,7 +102,7 @@ public class RemoteBasicGuidArtifact1 extends RemoteEvent {
 
    public void setBranch(BranchId branch) {
       this.branch = branch;
-      this.branchGuid = branch.getId().toString();
+      this.branchGuid = branch.getIdString();
    }
 
    /**

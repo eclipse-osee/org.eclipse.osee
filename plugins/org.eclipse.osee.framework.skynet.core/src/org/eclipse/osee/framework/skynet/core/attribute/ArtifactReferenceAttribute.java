@@ -23,7 +23,7 @@ public class ArtifactReferenceAttribute extends IdentityReferenceAttribute<Artif
    @Override
    protected boolean subClassSetValue(Artifact artifact) throws OseeCoreException {
       rawValue = artifact == null ? null : artifact.getUuid();
-      return getAttributeDataProvider().setValue(artifact == null ? "" : String.valueOf(artifact.getUuid()));
+      return getAttributeDataProvider().setValue(artifact == null ? "" : artifact.getIdString());
    }
 
    public Long getRawValue() {

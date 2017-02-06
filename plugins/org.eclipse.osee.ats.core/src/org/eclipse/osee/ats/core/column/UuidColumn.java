@@ -24,6 +24,6 @@ public class UuidColumn extends AbstractServicesColumn {
 
    @Override
    public String getText(IAtsObject atsObject) {
-      return atsObject.getId().toString();
+      return atsObject.getIdString();
    }
 }

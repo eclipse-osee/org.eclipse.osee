@@ -64,7 +64,7 @@ public class AtsBranchServiceImplTest {
       //Test Team Def-base Team Arts
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
-      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchUuid, SAW_Bld_1.getUuid().toString());
+      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchUuid, SAW_Bld_1.getIdString());
       // clear versions to config item is from teamDef
       for (IAtsVersion version : teamDef.getVersions()) {
          changes.deleteArtifact(version.getStoreObject());
@@ -106,7 +106,7 @@ public class AtsBranchServiceImplTest {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
-      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchUuid, SAW_Bld_1.getUuid().toString());
+      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchUuid, SAW_Bld_1.getIdString());
       // clear versions to config item is from teamDef
       for (IAtsVersion version : teamDef.getVersions()) {
          changes.deleteArtifact(version.getStoreObject());

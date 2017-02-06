@@ -37,7 +37,7 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
    private boolean isIncludeDetails;
 
    public DispoItemArtifact(ArtifactReadable artifact) {
-      super(String.valueOf(artifact.getUuid()));
+      super(artifact.getIdString());
       this.artifact = artifact;
    }
 

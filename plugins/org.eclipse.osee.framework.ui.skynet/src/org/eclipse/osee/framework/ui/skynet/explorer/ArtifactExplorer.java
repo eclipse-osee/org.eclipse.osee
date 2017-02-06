@@ -362,7 +362,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
       super.saveState(memento);
       if (DbConnectionExceptionComposite.dbConnectionIsOk()) {
          if (explorerRoot != null) {
-            memento.putString(ROOT_UUID, String.valueOf(explorerRoot.getUuid()));
+            memento.putString(ROOT_UUID, explorerRoot.getIdString());
             try {
                memento.putString(ROOT_BRANCH, String.valueOf(explorerRoot.getBranchId()));
             } catch (OseeCoreException ex) {

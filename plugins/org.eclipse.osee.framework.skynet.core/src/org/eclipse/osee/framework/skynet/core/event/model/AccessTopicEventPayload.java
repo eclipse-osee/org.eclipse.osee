@@ -64,7 +64,7 @@ public class AccessTopicEventPayload implements ISerializeableTopicPayload {
     */
    public boolean matches(ArtifactToken artifact) {
       if (!artifactUuids.isEmpty()) {
-         return artifact.getBranchId().equals(branch) && artifactUuids.contains(String.valueOf(artifact.getUuid()));
+         return artifact.isOnBranch(branch) && artifactUuids.contains(artifact.getIdString());
       }
       return false;
    }

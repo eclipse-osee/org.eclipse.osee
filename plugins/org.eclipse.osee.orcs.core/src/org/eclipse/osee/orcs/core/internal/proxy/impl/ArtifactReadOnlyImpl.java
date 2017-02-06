@@ -311,7 +311,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
 
    @Override
    public String toString() {
-      return String.format("Artifact: Id [%s] Type [%s] Name [%s]", getId().toString(), getArtifactType().getName(),
+      return String.format("Artifact: Id [%s] Type [%s] Name [%s]", getIdString(), getArtifactType().getName(),
          getName());
    }
 

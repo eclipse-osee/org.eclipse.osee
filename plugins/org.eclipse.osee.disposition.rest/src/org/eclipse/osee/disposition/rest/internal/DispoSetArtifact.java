@@ -32,7 +32,7 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
    private final ArtifactReadable artifact;
 
    public DispoSetArtifact(ArtifactReadable artifact) {
-      super(String.valueOf(artifact.getUuid()));
+      super(artifact.getIdString());
       this.artifact = artifact;
    }
 

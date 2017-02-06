@@ -672,8 +672,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
             burndownqry = burndownqry.replace("BASE_URI", uriInfo.getBaseUri().toString());
             IAgileTeam team =
                atsServer.getConfigItemFactory().getAgileTeam(atsServer.getArtifact(sprint.getTeamUuid()));
-            burndownqry = burndownqry.replace("TEAM_ID", team.getId().toString());
-            burndownqry = burndownqry.replace("SPRINT_ID", sprintArt.getId().toString());
+            burndownqry = burndownqry.replace("TEAM_ID", team.getIdString());
+            burndownqry = burndownqry.replace("SPRINT_ID", sprintArt.getIdString());
             ArtifactId burndownQryArt =
                changes.createArtifact(CoreArtifactTypes.GeneralDocument, "OSEE_Sprint_Burndown");
             changes.setSoleAttributeValue(burndownQryArt, CoreAttributeTypes.Extension, "iqy");

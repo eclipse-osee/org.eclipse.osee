@@ -30,7 +30,7 @@ public class IdSerializer extends SerializerBase<Id> {
 
    @Override
    public void serialize(Id id, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonGenerationException {
-      jgen.writeString(id.getId().toString());
+      jgen.writeString(id.getIdString());
    }
 
    /**

@@ -132,9 +132,9 @@ public class PredicateFactoryImpl implements PredicateFactory {
       List<String> values = new LinkedList<>();
       String side = relationTypeSide.getSide().isSideA() ? "A" : "B";
       for (ArtifactId id : ids) {
-         values.add(id.getId().toString());
+         values.add(id.getIdString());
       }
-      return new Predicate(SearchMethod.RELATED_TO, Arrays.asList(side + relationTypeSide.getId().toString()), values);
+      return new Predicate(SearchMethod.RELATED_TO, Arrays.asList(side + relationTypeSide.getIdString()), values);
    }
 
    private List<String> getLongIds(Collection<? extends Id> types) {

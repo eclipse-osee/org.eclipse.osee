@@ -247,16 +247,16 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
          try {
             IMemento childMemento = memento.createChild(INPUT);
             if (commitTrans != null) {
-               childMemento.putString(COMMIT_NUMBER, commitTrans.getId().toString());
+               childMemento.putString(COMMIT_NUMBER, commitTrans.getIdString());
             }
             if (sourceBranch != null) {
-               childMemento.putString(SOURCE_BRANCH_ID, Long.toString(sourceBranch.getUuid()));
+               childMemento.putString(SOURCE_BRANCH_ID, sourceBranch.getIdString());
             }
             if (destBranch != null) {
-               childMemento.putString(DEST_BRANCH_ID, Long.toString(destBranch.getUuid()));
+               childMemento.putString(DEST_BRANCH_ID, destBranch.getIdString());
             }
             if (transactionId != null) {
-               childMemento.putString(TRANSACTION_NUMBER, transactionId.getId().toString());
+               childMemento.putString(TRANSACTION_NUMBER, transactionId.getIdString());
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.WARNING, "Merge View save state error", ex);

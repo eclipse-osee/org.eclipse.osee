@@ -108,9 +108,9 @@ public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionServic
          public void changesStored(IAtsChangeSet changes) {
             try {
                HashMap<String, Object> properties = new HashMap<String, Object>();
-               properties.put(AtsTopicEvent.WORK_ITEM_UUIDS_KEY, teamWf.getId().toString());
-               properties.put(AtsTopicEvent.NEW_ATS_VERSION_ID, newVersion.getId().toString());
-               properties.put(AtsTopicEvent.PREVIOUS_ATS_VERSION_ID, previousVersion.getId().toString());
+               properties.put(AtsTopicEvent.WORK_ITEM_UUIDS_KEY, teamWf.getIdString());
+               properties.put(AtsTopicEvent.NEW_ATS_VERSION_ID, newVersion.getIdString());
+               properties.put(AtsTopicEvent.PREVIOUS_ATS_VERSION_ID, previousVersion.getIdString());
 
                Event event = new Event(AtsTopicEvent.TARGETED_VERSION_MODIFIED, properties);
 

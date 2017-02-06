@@ -21,7 +21,6 @@ import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TestRunStorageKey;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -127,7 +126,7 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
          try {
             BranchId branch = getSelection();
             if (branch != null) {
-               String lastBranchSelected = Long.toString(branch.getUuid());
+               String lastBranchSelected = branch.getIdString();
 
                List<String> history = new ArrayList<>(Arrays.asList(branchUuids));
                history.remove(lastBranchSelected);

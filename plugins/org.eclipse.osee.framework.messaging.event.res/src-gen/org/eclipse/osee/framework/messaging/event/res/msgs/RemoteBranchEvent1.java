@@ -79,7 +79,7 @@ public class RemoteBranchEvent1 extends RemoteEvent {
    }
 
    public void setBranch(BranchId banch) {
-      this.branchGuid = banch.getId().toString();
+      this.branchGuid = banch.getIdString();
    }
 
    public String getDestinationBranchGuid() {
@@ -91,7 +91,7 @@ public class RemoteBranchEvent1 extends RemoteEvent {
    }
 
    public void setDestinationBranch(BranchId branch) {
-      this.destinationBranchGuid = branch == null ? null : branch.getId().toString();
+      this.destinationBranchGuid = branch == null ? null : branch.getIdString();
    }
 
    /**

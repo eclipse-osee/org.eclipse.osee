@@ -190,7 +190,7 @@ public class TypesEndpointImpl implements TypesEndpoint {
       enumAttr.setMediaType(attributeTypes.getMediaType(type));
       EnumType enumType = attributeTypes.getEnumType(type);
       enumAttr.setEnumTypeName(enumType.getName());
-      enumAttr.setEnumTypeUuid(enumType.getId().toString());
+      enumAttr.setEnumTypeUuid(enumType.getIdString());
       for (EnumEntry enumEntry : enumType.values()) {
          JaxEnumEntry entry = new JaxEnumEntry();
          entry.setName(enumEntry.getName());

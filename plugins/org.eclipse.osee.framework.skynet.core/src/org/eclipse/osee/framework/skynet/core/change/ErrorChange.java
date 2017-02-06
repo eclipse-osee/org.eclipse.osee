@@ -30,7 +30,7 @@ public final class ErrorChange extends Change {
       super(branch, GammaId.valueOf(0L), artId, null, null, false, null, null);
       this.errorMessage = String.format("%s %s", ERROR_STRING, exception);
       this.name = String.format("%s ArtID: %s BranchUuid: %s - %s", ERROR_STRING, getArtId(),
-         branch == null ? null : branch.getUuid(), exception);
+         branch == null ? null : branch.getIdString(), exception);
    }
 
    @Override

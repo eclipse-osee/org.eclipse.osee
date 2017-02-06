@@ -92,7 +92,7 @@ public class AttributeTypeResource {
                sb.append(AHTML.addRowMultiColumnTable(AHTML.bold("Name:"), attrType.getName()));
                sb.append(AHTML.addRowMultiColumnTable(AHTML.bold("AttributeTypeId:"),
                   AHTML.getHyperlink(String.format("/orcs/branch/%d/artifact/%d/attribute/type/%d", branchId,
-                     artifactUuid, attrType.getId()), attrType.getId().toString())));
+                     artifactUuid, attrType.getId()), attrType.getIdString())));
                sb.append(AHTML.addRowMultiColumnTable(""));
             }
             sb.append(AHTML.endMultiColumnTable());
