@@ -101,7 +101,8 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
 
    @Override
    public String toString() {
-      return String.format("[%s - G:%s - B:%s - A:%s]", eventModType, getGuid(), getBranchId(), getArtTypeGuid());
+      return String.format("[%s - G:%s - B:%s - A:%s]", eventModType, getGuid(), getBranch().getIdString(),
+         getArtTypeGuid());
    }
 
    public boolean is(EventModType... eventModTypes) {

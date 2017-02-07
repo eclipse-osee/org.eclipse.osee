@@ -43,8 +43,8 @@ public class EventBasicGuidRelation extends DefaultBasicUuidRelation {
 
    @Override
    public String toString() {
-      return String.format("[%s - B:%s - TG:%s - GI:%d - RI:%d - A:%s - B:%s]", relationEventType, getBranchId(),
-         getBranchId(), getGammaId(), getRelationId(), getArtA(), getArtB());
+      return String.format("[%s - B:%s - TG:%s - GI:%d - RI:%d - A:%s - B:%s]", relationEventType,
+         getBranch().getIdString(), getBranch().getIdString(), getGammaId(), getRelationId(), getArtA(), getArtB());
    }
 
    @Override
