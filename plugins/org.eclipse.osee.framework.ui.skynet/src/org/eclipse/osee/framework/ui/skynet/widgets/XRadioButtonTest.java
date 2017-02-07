@@ -20,13 +20,20 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 public class XRadioButtonTest extends Composite {
 
    public XRadioButtonTest(Composite parent, int style) {
       super(parent, style);
-      Composite c = new Composite(parent, SWT.NONE);
+      setLayout(new GridLayout(1, false));
+      setLayoutData(new GridData(GridData.FILL_BOTH));
+
+      Label label = new Label(this, SWT.NONE);
+      label.setText("Radio Button Examples");
+
+      Composite c = new Composite(this, SWT.NONE);
       c.setLayout(new GridLayout(2, false));
       c.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 
@@ -44,7 +51,7 @@ public class XRadioButtonTest extends Composite {
          };
       });
 
-      c = new Composite(parent, SWT.NONE);
+      c = new Composite(this, SWT.NONE);
       c.setLayout(new GridLayout(2, false));
       c.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 
@@ -63,7 +70,7 @@ public class XRadioButtonTest extends Composite {
          };
       });
 
-      c = new Composite(parent, SWT.NONE);
+      c = new Composite(this, SWT.NONE);
       c.setLayout(new GridLayout(2, false));
       c.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 
@@ -84,7 +91,7 @@ public class XRadioButtonTest extends Composite {
          };
       });
 
-      c = new Composite(parent, SWT.NONE);
+      c = new Composite(this, SWT.NONE);
       c.setLayout(new GridLayout(1, false));
       c.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 
@@ -94,14 +101,14 @@ public class XRadioButtonTest extends Composite {
       rb4.addButton("bbbbb", "3rd tool tip");
       rb4.createWidgets(c, 1);
 
-      c = new Composite(parent, SWT.NONE);
+      c = new Composite(this, SWT.NONE);
       c.setLayout(new GridLayout(2, false));
 
       rb4.setLabel("Sorted Radios");
       rb4.setSortNames(true);
       rb4.createWidgets(c, 7);
 
-      c = new Composite(parent, SWT.NONE);
+      c = new Composite(this, SWT.NONE);
       c.setLayout(new GridLayout(1, false));
       final XRadioButtons rb5 = new XRadioButtons("Multi Select", "multiSelect");
       rb5.addButton("aaaaaa", "First tool tip");
@@ -112,14 +119,14 @@ public class XRadioButtonTest extends Composite {
       rb5.setMultiSelect(true);
       rb5.createWidgets(c, 11);
 
-      c = new Composite(parent, SWT.NONE);
+      c = new Composite(this, SWT.NONE);
       c.setLayout(new GridLayout(1, false));
 
       rb5.setLabel("Sorted Multi Select");
       rb5.setSortNames(true);
       rb5.createWidgets(c, 11);
 
-      c = new Composite(parent, SWT.NONE);
+      c = new Composite(this, SWT.NONE);
       c.setLayout(new GridLayout(1, false));
       final XRadioButtons rb6 = new XRadioButtons("Multi Select", "multiSelect");
       rb6.addButtons(new String[] {"a", "k", "b", "c", "l", "d", "e", "m", "f", "g", "h", "i", "j"});

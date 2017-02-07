@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtonTest;
 import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromMultiChoiceBranch;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
@@ -93,6 +94,8 @@ public class XWidgetsExampleBlam extends AbstractBlam {
                System.err.println("mouseDoubleClick " + e.count);
             }
          });
+
+         new XRadioButtonTest(sel.getStyledText().getParent(), SWT.BORDER);
 
       }
    }

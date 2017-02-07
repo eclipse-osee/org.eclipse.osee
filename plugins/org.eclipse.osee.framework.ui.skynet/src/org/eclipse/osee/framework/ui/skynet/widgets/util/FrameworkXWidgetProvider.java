@@ -453,6 +453,8 @@ public final class FrameworkXWidgetProvider {
                XHyperlinkLabel widget = (XHyperlinkLabel) xWidget;
                widget.setUrl(xWidgetLayoutData.getDefaultValue());
             }
+         } else if (xWidgetName.equals("XRadioButton")) {
+            xWidget = new XRadioButton(name);
          } else {
             xWidget = new XLabel("Error: Unhandled XWidget \"" + xWidgetName + "\"");
          }

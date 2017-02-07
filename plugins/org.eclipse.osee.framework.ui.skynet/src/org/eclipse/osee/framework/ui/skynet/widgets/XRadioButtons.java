@@ -35,17 +35,18 @@ import org.eclipse.swt.widgets.Label;
 
 /**
  * Generic label and radiobutton field object for use by single entry artifact attributes
- * 
+ *
  * @author Donald G. Dunne
  */
 public class XRadioButtons extends GenericXWidget {
 
    private Composite comp;
-   private final ArrayList<XRadioButton> xButtons = new ArrayList<>();
+   protected final ArrayList<XRadioButton> xButtons = new ArrayList<>();
    private boolean multiSelect;
    private boolean vertical;
    private int verticalColumns;
    private boolean sortNames;
+   private Integer marginWidgth = null;
 
    public XRadioButtons(String displayLabel, String xmlRoot) {
       super(displayLabel);
@@ -138,7 +139,11 @@ public class XRadioButtons extends GenericXWidget {
       }
       // System.out.println("numColumns *" + numColumns + "*");
       comp = new Composite(parent, SWT.NONE);
-      comp.setLayout(new GridLayout(numColumns, false));
+      GridLayout layout = new GridLayout(numColumns, false);
+      if (marginWidgth != null) {
+         layout.marginWidth = marginWidgth;
+      }
+      comp.setLayout(layout);
       GridData gd = new GridData();
       gd.horizontalSpan = horizontalSpan;
       comp.setLayoutData(gd);
@@ -214,6 +219,12 @@ public class XRadioButtons extends GenericXWidget {
       if (comp != null && !comp.isDisposed()) {
          comp.dispose();
       }
+   }
+
+   @Override
+   public void setRequiredEntry(boolean requiredEntry) {
+      super.setRequiredEntry(requiredEntry);
+      validate();
    }
 
    public void addSelectionListener(SelectionListener selectionListener) {
@@ -315,5 +326,18 @@ public class XRadioButtons extends GenericXWidget {
    @Override
    public Object getData() {
       return getSelectedNames();
+   }
+
+   public Integer getMarginWidgth() {
+      return marginWidgth;
+   }
+
+   public void setMarginWidgth(Integer marginWidgth) {
+      this.marginWidgth = marginWidgth;
+   }
+
+   @Override
+   public Collection<? extends XWidget> getChildrenXWidgets() {
+      return xButtons;
    }
 }

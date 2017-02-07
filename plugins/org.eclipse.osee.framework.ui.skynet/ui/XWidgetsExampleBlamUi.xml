@@ -9,6 +9,13 @@
 		labelAfter="false" displayName="XCheckBox" />
 	<XWidget xwidgetType="XCheckBoxThreeState" horizontalLabel="true"
 		labelAfter="false" displayName="XCheckBoxThreeState" />
+		
+	<XWidget xwidgetType="XLabel" displayName="XRadioButton (more examples below)" beginComposite="5" />
+	<XWidget xwidgetType="XRadioButton" horizontalLabel="true" 
+		labelAfter="false" displayName="Yes" />
+	<XWidget xwidgetType="XRadioButton" horizontalLabel="true" endComposite="true" 
+		labelAfter="false" displayName="No" />
+		
 	<XWidget xwidgetType="XText" displayName="XText" />
 	<XWidget xwidgetType="XBranchSelectWidget" horizontalLabel="true"
 		displayName="Branch" />
