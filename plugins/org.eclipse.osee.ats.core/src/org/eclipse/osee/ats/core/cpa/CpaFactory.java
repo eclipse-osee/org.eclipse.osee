@@ -33,7 +33,7 @@ public class CpaFactory {
 
    public static CpaProgram getProgram(IAtsProgram program, Object storeObject) {
       CpaProgram prog = new CpaProgram(program.getId(), program.getName());
-      setStoreObject(String.valueOf(program.getId()), storeObject);
+      setStoreObject(program.getIdString(), storeObject);
       return prog;
    }
 

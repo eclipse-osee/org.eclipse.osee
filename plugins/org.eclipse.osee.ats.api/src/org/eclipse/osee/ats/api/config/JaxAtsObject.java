@@ -15,7 +15,6 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.ser.std.ToStringSerializer;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 
 /**
  * @author Donald G. Dunne
@@ -63,15 +62,6 @@ public class JaxAtsObject {
 
    public boolean matches(JaxAtsObject... identities) {
       for (JaxAtsObject identity : identities) {
-         if (equals(identity)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   public boolean matches(UuidIdentity... identities) {
-      for (UuidIdentity identity : identities) {
          if (equals(identity)) {
             return true;
          }

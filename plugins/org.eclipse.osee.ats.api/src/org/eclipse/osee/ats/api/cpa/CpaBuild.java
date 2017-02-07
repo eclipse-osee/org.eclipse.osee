@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.cpa;
 
-import org.eclipse.osee.framework.jdk.core.type.UuidNamedIdentityJaxRs;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Donald G. Dunne
  */
-public class CpaBuild extends UuidNamedIdentityJaxRs {
+public class CpaBuild extends NamedIdBase {
 
-   public CpaBuild(Long uuid, String name) {
-      super(uuid, name);
+   public CpaBuild(Long id, String name) {
+      super(id, name);
    }
 }
