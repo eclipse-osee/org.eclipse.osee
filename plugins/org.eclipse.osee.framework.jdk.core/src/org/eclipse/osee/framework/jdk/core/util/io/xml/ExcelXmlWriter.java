@@ -51,28 +51,28 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
 
    public static final String XML_HEADER = //
       "<?xml version=\"1.0\"?>\n" + //
-      "<?mso-application progid=\"Excel.Sheet\"?>\n" + //
-      "<Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\"\n" + //
-      " xmlns:o=\"urn:schemas-microsoft-com:office:office\"\n" + //
-      " xmlns:x=\"urn:schemas-microsoft-com:office:excel\"\n" + //
-      " xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\"\n" + //
-      " xmlns:html=\"http://www.w3.org/TR/REC-html40\">\n";
+         "<?mso-application progid=\"Excel.Sheet\"?>\n" + //
+         "<Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\"\n" + //
+         " xmlns:o=\"urn:schemas-microsoft-com:office:office\"\n" + //
+         " xmlns:x=\"urn:schemas-microsoft-com:office:excel\"\n" + //
+         " xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\"\n" + //
+         " xmlns:html=\"http://www.w3.org/TR/REC-html40\">\n";
 
    public static final String DEFAULT_OSEE_STYLES = //
       "<Style ss:ID=\"Default\" ss:Name=\"Normal\">\n" + //
-      " <Alignment ss:Vertical=\"Bottom\"/>\n" + //
-      " <Borders/>\n" + //
-      " <Font ss:FontName=\"Calibri\" x:Family=\"Swiss\" ss:Size=\"%d\" ss:Color=\"#000000\"/>\n" + //
-      " <Interior/>\n" + //
-      " <NumberFormat/>\n" + //
-      " <Protection/>\n" + //
-      "</Style>\n" + //
-      "<Style ss:ID=\"OseeDate\"><NumberFormat ss:Format=\"Short Date\"/></Style>\n" + //
-      "<Style ss:ID=\"OseeBoldStyle\"><Font x:Family=\"Swiss\" ss:Bold=\"1\"/></Style>\n" + //
-      "<Style ss:ID=\"OseeItalicStyle\"><Font x:Family=\"Swiss\" ss:Italic=\"1\"/></Style>\n" + //
-      "<Style ss:ID=\"OseeErrorStyle\"><Font x:Family=\"Swiss\" ss:Color=\"#FF0000\" ss:Bold=\"1\"/></Style>\n" + //
-      "<Style ss:ID=\"OseeCentered\"><Alignment ss:Horizontal=\"Center\" ss:Vertical=\"Bottom\"/></Style>\n" + //
-      "<Style ss:ID=\"OseeWraped\"><Alignment ss:Vertical=\"Top\" ss:WrapText=\"1\"/></Style>";
+         " <Alignment ss:Vertical=\"Bottom\"/>\n" + //
+         " <Borders/>\n" + //
+         " <Font ss:FontName=\"Calibri\" x:Family=\"Swiss\" ss:Size=\"%d\" ss:Color=\"#000000\"/>\n" + //
+         " <Interior/>\n" + //
+         " <NumberFormat/>\n" + //
+         " <Protection/>\n" + //
+         "</Style>\n" + //
+         "<Style ss:ID=\"OseeDate\"><NumberFormat ss:Format=\"Short Date\"/></Style>\n" + //
+         "<Style ss:ID=\"OseeBoldStyle\"><Font x:Family=\"Swiss\" ss:Bold=\"1\"/></Style>\n" + //
+         "<Style ss:ID=\"OseeItalicStyle\"><Font x:Family=\"Swiss\" ss:Italic=\"1\"/></Style>\n" + //
+         "<Style ss:ID=\"OseeErrorStyle\"><Font x:Family=\"Swiss\" ss:Color=\"#FF0000\" ss:Bold=\"1\"/></Style>\n" + //
+         "<Style ss:ID=\"OseeCentered\"><Alignment ss:Horizontal=\"Center\" ss:Vertical=\"Bottom\"/></Style>\n" + //
+         "<Style ss:ID=\"OseeWraped\"><Alignment ss:Vertical=\"Top\" ss:WrapText=\"1\"/></Style>";
 
    private final BufferedWriter out;
    private boolean inSheet;
@@ -372,5 +372,10 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
       } else {
          throw new OseeArgumentException("Cannot set active sheet higher than the number of sheets written");
       }
+   }
+
+   @Override
+   protected void writeCellText(Object data, int cellIndex, int rowLength) throws IOException {
+      writeCellText(data, cellIndex);
    }
 }

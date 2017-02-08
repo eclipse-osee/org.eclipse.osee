@@ -89,4 +89,9 @@ public class WordMlTableWriter extends AbstractSheetWriter {
    public void setActiveSheet(int sheetNum) {
       //
    }
+
+   @Override
+   protected void writeCellText(Object data, int cellIndex, int rowLength) throws IOException {
+      writeCellText(data, cellIndex);
+   }
 }

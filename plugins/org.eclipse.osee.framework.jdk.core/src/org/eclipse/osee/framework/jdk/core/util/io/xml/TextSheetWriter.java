@@ -26,7 +26,7 @@ public final class TextSheetWriter extends AbstractSheetWriter {
 
    public TextSheetWriter() {
       sheetMap = new LinkedHashMap<>();
-      lineSeparator = System.getProperty("line.separator", "\n");
+      lineSeparator = System.getProperty("line.separator", "\r\n");
       currentStream = null;
       wasDataAdded = false;
    }
@@ -54,12 +54,19 @@ public final class TextSheetWriter extends AbstractSheetWriter {
 
    @Override
    protected void writeCellText(Object data, int cellIndex) throws IOException {
+      writeCellText(data, cellIndex, cellIndex + 1);
+   }
+
+   @Override
+   protected void writeCellText(Object data, int cellIndex, int rowLength) throws IOException {
       if (data instanceof String) {
          String dataStr = (String) data;
          if (Strings.isValid(dataStr)) {
             currentStream.append(dataStr);
          }
-         currentStream.append("\t");
+         if (cellIndex < rowLength) {
+            currentStream.append("\t");
+         }
          wasDataAdded = true;
       }
    }
