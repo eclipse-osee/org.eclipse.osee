@@ -303,7 +303,6 @@ public class OrcsStorageImpl implements Storage {
 
          tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemNeedsRerun, item.getNeedsRerun());
          tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemAborted, item.getAborted());
-         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemNeedsReview, item.getAborted());
 
          // Need to convert to Json String
          String discrepanciesAsJsonString = DispoUtil.disrepanciesMapToJson(item.getDiscrepanciesList()).toString();
