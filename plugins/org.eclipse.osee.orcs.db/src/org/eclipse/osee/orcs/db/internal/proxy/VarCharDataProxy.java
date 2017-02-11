@@ -68,7 +68,13 @@ public class VarCharDataProxy extends AbstractDataProxy implements CharacterData
    @Override
    public boolean setValue(Object value) throws OseeCoreException {
       boolean response = false;
-      Object currentValue = getValue();
+      Object currentValue;
+      if (value instanceof String) {
+         currentValue = getValueAsString();
+      } else {
+         currentValue = getValue();
+      }
+
       if (currentValue == value || currentValue != null && currentValue.equals(value)) {
          response = false;
       } else {
