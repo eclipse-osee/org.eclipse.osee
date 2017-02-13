@@ -283,6 +283,9 @@ public final class ChangeItemUtil {
    }
 
    public static boolean hasApplicabilityChange(ChangeItem changeItem) {
+      if (changeItem.isApplicabilityCopy()) {
+         return true;
+      }
       if (changeItem.getCurrentVersion().isValid() && changeItem.getDestinationVersion().isValid()) {
          if (!areApplicabilitiesEqual(changeItem.getCurrentVersion(), changeItem.getDestinationVersion())) {
             return true;
@@ -291,4 +294,18 @@ public final class ChangeItemUtil {
       return false;
    }
 
+   public static boolean hasApplicabilityOnlyChange(ChangeItem changeItem) {
+      if (changeItem.isApplicabilityCopy()) {
+         return false;
+      }
+      if (isDeleted(changeItem.getCurrentVersion())) {
+         return false;
+      }
+      if (changeItem.getCurrentVersion().isValid() && changeItem.getDestinationVersion().isValid()) {
+         if (!areApplicabilitiesEqual(changeItem.getCurrentVersion(), changeItem.getDestinationVersion())) {
+            return true;
+         }
+      }
+      return false;
+   }
 }

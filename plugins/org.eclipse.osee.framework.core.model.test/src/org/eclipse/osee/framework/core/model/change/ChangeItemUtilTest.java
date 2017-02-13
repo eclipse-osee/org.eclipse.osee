@@ -382,6 +382,32 @@ public class ChangeItemUtilTest {
    }
 
    @Test
+   public void testHasApplicabilityOnlyChange() {
+      ChangeVersion base = ChangeTestUtility.createChange(1111L, ModificationType.NEW);
+      ChangeVersion first = ChangeTestUtility.createChange(2222L, ModificationType.MODIFIED);
+      ChangeVersion current = ChangeTestUtility.createChange(3333L, ModificationType.INTRODUCED);
+      ChangeVersion destination = ChangeTestUtility.createChange(4444L, ModificationType.MERGED);
+      ChangeVersion net = ChangeTestUtility.createChange(5555L, ModificationType.DELETED);
+
+      current.setApplicabilityToken(new ApplicabilityToken(789L, "TestAppl"));
+      destination.setApplicabilityToken(ApplicabilityToken.BASE);
+
+      ChangeItem item = ChangeTestUtility.createItem(200, base, first, current, destination, net);
+      Assert.assertTrue(ChangeItemUtil.hasApplicabilityOnlyChange(item));
+
+      item.setApplicabilityCopy(true);
+      Assert.assertFalse(ChangeItemUtil.hasApplicabilityOnlyChange(item));
+
+      item.setApplicabilityCopy(false);
+      item.getCurrentVersion().setModType(ModificationType.DELETED);
+      Assert.assertFalse(ChangeItemUtil.hasApplicabilityOnlyChange(item));
+
+      item.getCurrentVersion().setModType(ModificationType.INTRODUCED);
+      item.getDestinationVersion().setApplicabilityToken(new ApplicabilityToken(789L, "TestAppl"));
+      Assert.assertFalse(ChangeItemUtil.hasApplicabilityOnlyChange(item));
+   }
+
+   @Test
    public void testSplitForApplicability() {
       ChangeVersion base = ChangeTestUtility.createChange(1111L, ModificationType.NEW);
       ChangeVersion first = ChangeTestUtility.createChange(2222L, ModificationType.MODIFIED);

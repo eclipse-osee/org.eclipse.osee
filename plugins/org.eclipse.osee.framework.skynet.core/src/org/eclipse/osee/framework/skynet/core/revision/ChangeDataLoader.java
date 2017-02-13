@@ -87,6 +87,11 @@ public class ChangeDataLoader extends AbstractOperation {
          BranchId startTxBranch = txDelta.getStartTx().getBranch();
          for (ChangeItem item : changeItems) {
             checkForCancelledStatus(monitor);
+            if (ChangeItemUtil.hasValueChange(item) && ChangeItemUtil.hasApplicabilityChange(item)) {
+               ChangeItem splitItem = ChangeItemUtil.splitForApplicability(item);
+               Change splitChange = computeChange(bulkLoaded, startTxBranch, splitItem);
+               changes.add(splitChange);
+            }
             Change change = computeChange(bulkLoaded, startTxBranch, item);
             changes.add(change);
             monitor.worked(calculateWork(workAmount));
@@ -203,9 +208,8 @@ public class ChangeDataLoader extends AbstractOperation {
       switch (item.getChangeType()) {
          case ARTIFACT_CHANGE:
 
-            if (ChangeItemUtil.hasApplicabilityChange(item)) {
+            if (item.isApplicabilityCopy() || ChangeItemUtil.hasApplicabilityOnlyChange(item)) {
                netModType = ModificationType.APPLICABILITY;
-
                change = new ArtifactChange(startTxBranch, itemGammaId, itemId, txDelta, netModType,
                   item.getCurrentVersion().getApplicabilityToken().getName(),
                   item.getDestinationVersion().getApplicabilityToken().getName(), isHistorical, changeArtifact,
@@ -217,7 +221,7 @@ public class ChangeDataLoader extends AbstractOperation {
             break;
          case ATTRIBUTE_CHANGE:
             AttributeType attributeType = AttributeTypeManager.getTypeByGuid(item.getItemTypeId());
-            if (ChangeItemUtil.hasApplicabilityChange(item)) {
+            if (item.isApplicabilityCopy() || ChangeItemUtil.hasApplicabilityOnlyChange(item)) {
                netModType = ModificationType.APPLICABILITY;
                change = new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType,
                   item.getCurrentVersion().getApplicabilityToken().getName(),
@@ -261,7 +265,7 @@ public class ChangeDataLoader extends AbstractOperation {
 
             String rationale = item.getCurrentVersion().getValue();
 
-            if (ChangeItemUtil.hasApplicabilityChange(item)) {
+            if (item.isApplicabilityCopy() || ChangeItemUtil.hasApplicabilityOnlyChange(item)) {
                netModType = ModificationType.APPLICABILITY;
                change = new RelationChange(startTxBranch, itemGammaId, artId, txDelta, netModType,
                   endTxBArtifact.getArtId(), itemId, item.getCurrentVersion().getApplicabilityToken().getName(),

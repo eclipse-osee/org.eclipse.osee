@@ -54,6 +54,7 @@ public enum ModificationType {
 
    DELETED_ON_DESTINATION("Deleted on Destination", 9),
 
+   // This should never appear in the database, it is only used by the gui to show applicability changes
    APPLICABILITY("Applicability", 10);
 
    private final static Set<ModificationType> ALL_NOT_HARD_DELETED = new HashSet<>();
