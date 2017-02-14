@@ -2,6 +2,7 @@ artifactType "Artifact" {
 	uuid 0x0000000000000001
 	attribute "Name"
 	attribute "Annotation"
+	attribute "Content URL"
 	attribute "Static Id"
 	attribute "Relation Order"
 }
@@ -407,7 +408,6 @@ artifactType "General Document" extends "Native Artifact" {
 artifactType "Url" extends "Artifact" {
 	uuid 0x000000000000000F
 	attribute "Description"
-	attribute "Content URL"
 }
 
 attributeType "Name" extends StringAttribute {

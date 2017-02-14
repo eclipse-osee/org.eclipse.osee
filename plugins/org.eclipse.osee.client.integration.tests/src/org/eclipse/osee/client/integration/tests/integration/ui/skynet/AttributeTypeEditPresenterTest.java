@@ -37,7 +37,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link AttributeTypeEditPresenter}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class AttributeTypeEditPresenterTest {
@@ -50,6 +50,7 @@ public class AttributeTypeEditPresenterTest {
 
    private static final IAttributeType[] selectableTypes = new IAttributeType[] {
       CoreAttributeTypes.RelationOrder,
+      CoreAttributeTypes.ContentUrl,
       CoreAttributeTypes.Annotation,
       CoreAttributeTypes.StaticId};
 
