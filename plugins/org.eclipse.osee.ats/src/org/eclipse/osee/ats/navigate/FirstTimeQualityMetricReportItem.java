@@ -18,11 +18,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
-import org.eclipse.osee.ats.core.client.workflow.PriorityUtil;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
@@ -151,9 +151,9 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
             Collection<TeamWorkFlowArtifact> arts =
                teamMet.getWorkflowsOriginatedBetween(nextReleaseStartDate, nextReleaseEndDate);
             for (TeamWorkFlowArtifact team : arts) {
+               String priorityStr = team.getSoleAttributeValue(AtsAttributeTypes.PriorityType, "");
                if (!team.isCancelled() && ChangeTypeUtil.getChangeType(
-                  team) == ChangeType.Problem && (PriorityUtil.getPriorityStr(team).equals(
-                     "1") || PriorityUtil.getPriorityStr(team).equals("2"))) {
+                  team) == ChangeType.Problem && (priorityStr.equals("1") || priorityStr.equals("2"))) {
                   numOrigDurningNextReleaseCycle++;
                }
             }

@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 
 /**
  * {@link StringsTest}
- * 
+ *
  * @author Jeff C. Phillips
  * @author Donald G. Dunne
  * @author Karol M. Wilk
@@ -65,7 +65,7 @@ public class Strings {
    /**
     * Adjusts '&'-containing strings to break the keyboard shortcut ("Accelerator") feature some widgets offer, where
     * &Test will make Alt+T a shortcut. This method breaks the accelerator by escaping ampersands.
-    * 
+    *
     * @return a string with doubled ampersands.
     */
    public static String escapeAmpersands(String stringWithAmp) {
@@ -83,7 +83,7 @@ public class Strings {
 
    /**
     * <b>NOTE</b> isValid() check is only applied to <code>inputStr</code>.
-    * 
+    *
     * @param inputStr string to be evaluated
     * @param target
     * @param replacement
@@ -102,7 +102,7 @@ public class Strings {
 
    /**
     * Trims ASCII <code>value</code> from end of <code>str</code> iff <b>found</b>.
-    * 
+    *
     * @param str "Requirement."
     * @param value of the character from the ASCII charset, i.e. <code>0x2E</code> for '.'
     * @return "Requirement"
@@ -141,7 +141,7 @@ public class Strings {
    /**
     * Wrap <code>value</code> with <code>surroundStr</code>. <br/>
     * <b>NOTE</b> <code>value</code> will be trimmed of whitespace.
-    * 
+    *
     * @param value <code>A</code>
     * @param surroundStr <code>"</code>
     * @param unWrap reverse behavior. Takes out 2 * surroundStr.lenth() from value.length()
@@ -174,7 +174,7 @@ public class Strings {
    /**
     * Provides a nicer list of items with an 'and' at the end. <br/>
     * TODO:This could be done using iterator().
-    * 
+    *
     * @param items Lists of form { apple, banana, orange } or { apple, banana }
     * @return string of form "apple, banana and orange" or "apple and banana" depending on size of list
     */
@@ -213,14 +213,14 @@ public class Strings {
     * For a word based algorithm, see {@link WordUtils#capitalize(String)}. A <code>null</code> input String returns
     * <code>null</code>.
     * </p>
-    * 
+    *
     * <pre>
     * StringUtils.capitalize(null) = null
     * StringUtils.capitalize("") = ""
     * StringUtils.capitalize("cat") = "Cat"
     * StringUtils.capitalize("cAt") = "CAt"
     * </pre>
-    * 
+    *
     * @param str the String to capitalize, may be null
     * @return the capitalized String, <code>null</code> if null String input
     */
@@ -239,6 +239,10 @@ public class Strings {
          result = matcher.matches();
       }
       return result;
+   }
+
+   public static boolean isInValid(String value) {
+      return !isValid(value);
    }
 
 }

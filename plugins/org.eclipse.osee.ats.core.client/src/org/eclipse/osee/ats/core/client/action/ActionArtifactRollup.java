@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
-import org.eclipse.osee.ats.core.client.workflow.PriorityUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -125,13 +124,13 @@ public class ActionArtifactRollup {
       String priorityType = null;
       Collection<TeamWorkFlowArtifact> teamArts = action.getTeams();
       if (teamArts.size() == 1) {
-         priorityType = PriorityUtil.getPriorityStr(teamArts.iterator().next());
+         priorityType = teamArts.iterator().next().getSoleAttributeValue(AtsAttributeTypes.PriorityType, "");
       } else {
          for (TeamWorkFlowArtifact team : teamArts) {
             if (!team.isCancelled()) {
                if (priorityType == null) {
-                  priorityType = PriorityUtil.getPriorityStr(team);
-               } else if (!priorityType.equals(PriorityUtil.getPriorityStr(team))) {
+                  priorityType = team.getSoleAttributeValue(AtsAttributeTypes.PriorityType, "");
+               } else if (!priorityType.equals(team.getSoleAttributeValue(AtsAttributeTypes.PriorityType, ""))) {
                   return;
                }
             }

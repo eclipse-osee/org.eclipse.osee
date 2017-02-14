@@ -74,20 +74,28 @@ public class XComboDam extends XCombo implements IAttributeWidget {
 
    @Override
    public Result isDirty() throws OseeCoreException {
+      Result dirty = Result.FalseResult;
       if (isEditable()) {
          try {
             String enteredValue = get();
             String storedValue = artifact.getSoleAttributeValue(attributeType);
+            if (getLabel().equals("Priority")) {
+               System.err.println(String.format("entered [%s] stored [%s]", enteredValue, storedValue));
+            }
             if (!enteredValue.equals(storedValue)) {
-               return new Result(true, attributeType + " is dirty");
+               dirty = new Result(true, attributeType + " is dirty");
             }
          } catch (AttributeDoesNotExist ex) {
             if (!get().equals("")) {
-               return new Result(true, attributeType + " is dirty");
+               dirty = new Result(true, attributeType + " is dirty");
             }
          }
       }
-      return Result.FalseResult;
+      if (getLabel().equals("Priority")) {
+         System.err.println(String.format("dirty [%s]", dirty));
+      }
+
+      return dirty;
    }
 
    @Override

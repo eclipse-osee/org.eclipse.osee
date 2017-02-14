@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
-import org.eclipse.osee.ats.core.client.workflow.PriorityUtil;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
@@ -95,7 +94,8 @@ public class WfePrint extends Action {
       resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Change Type: ", ChangeTypeUtil.getChangeTypeStr(sma)),
-         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Priority: ", PriorityUtil.getPriorityStr(sma)),
+         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Priority: ",
+            sma.getSoleAttributeValue(AtsAttributeTypes.PriorityType, "")),
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Need By: ", DeadlineColumn.getDateStr(sma))}));
 
       String combinedPcrId = AtsClientService.get().getWorkItemService().getComputedPcrId(sma);

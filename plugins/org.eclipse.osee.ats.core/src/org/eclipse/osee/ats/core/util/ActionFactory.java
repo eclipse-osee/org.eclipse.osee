@@ -360,7 +360,9 @@ public class ActionFactory implements IAtsActionFactory {
       if (Strings.isValid(desc)) {
          changes.addAttribute(atsObject, AtsAttributeTypes.Description, desc);
       }
-      services.setChangeType(atsObject, changeType, changes);
+      if (changeType != null) {
+         services.setChangeType(atsObject, changeType, changes);
+      }
       if (Strings.isValid(priority)) {
          changes.addAttribute(atsObject, AtsAttributeTypes.PriorityType, priority);
       }

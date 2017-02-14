@@ -21,12 +21,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
-import org.eclipse.osee.ats.core.client.workflow.PriorityUtil;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -168,7 +168,7 @@ public class VersionReportJob extends Job {
                   new String[] {
                      "Action",
                      team.getTeamName(),
-                     PriorityUtil.getPriorityStr(team),
+                     team.getSoleAttributeValue(AtsAttributeTypes.PriorityType, ""),
                      ChangeTypeUtil.getChangeTypeStr(team),
                      team.getName(),
                      team.getAtsId()},
