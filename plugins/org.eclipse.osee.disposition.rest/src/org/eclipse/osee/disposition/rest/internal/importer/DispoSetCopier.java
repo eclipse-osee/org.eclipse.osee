@@ -89,7 +89,9 @@ public class DispoSetCopier {
             destItem = itemsWithSameName.iterator().next();
          } else {
             for (DispoItemData itemWithSameName : itemsWithSameName) {
-               if (itemWithSameName.getMethodNumber().equals(sourceItem.getMethodNumber())) {
+               if (itemWithSameName.getMethodNumber().equals(
+                  sourceItem.getMethodNumber()) && itemWithSameName.getFileNumber().equals(
+                     sourceItem.getFileNumber())) {
                   destItem = itemWithSameName;
                }
             }
