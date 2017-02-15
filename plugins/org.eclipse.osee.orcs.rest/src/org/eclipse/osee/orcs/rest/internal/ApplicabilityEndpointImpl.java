@@ -11,6 +11,8 @@
 package org.eclipse.osee.orcs.rest.internal;
 
 import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +24,8 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -30,6 +34,7 @@ import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -133,7 +138,6 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
    @Override
    public Response setApplicability(ApplicabilityId applicId, List<? extends ArtifactId> artifacts) {
-
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(branch, account, "Set Applicability Ids for Artifacts");
       for (ArtifactId artId : artifacts) {
@@ -199,7 +203,6 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    public void setView(ArtifactId branchView) {
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON,
          SystemUser.OseeSystem, "Create Branch View");
-
       tx.addTuple2(CoreTupleTypes.BranchView, branch.getId(), branchView.getId());
       tx.commit();
    }
@@ -210,5 +213,63 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
          orcsApi.getTransactionFactory().createTransaction(branch, SystemUser.OseeSystem, "Create new applicability");
       tx.addTuple2(CoreTupleTypes.ViewApplicability, viewId, applicability);
       tx.commit();
+   }
+
+   @Override
+   public List<BranchId> getAffectedBranches(Long injectDateMs, Long removalDateMs, List<ApplicabilityId> applicabilityIds) {
+      ArrayList<BranchId> toReturn = new ArrayList<>();
+      Date injection = new Date(injectDateMs);
+      Date removal = new Date(removalDateMs);
+
+      // Get all Branch Views
+      List<BranchViewData> branchViews = orcsApi.getQueryFactory().applicabilityQuery().getViews();
+
+      HashMap<Long, BranchReadable> childBaselineBranchIds = new HashMap<>();
+      for (BranchReadable childBranch : orcsApi.getQueryFactory().branchQuery().andIsChildOf(branch).getResults()) {
+         if (childBranch.getBranchType().equals(BranchType.BASELINE)) {
+            childBaselineBranchIds.put(childBranch.getId(), childBranch);
+         }
+      }
+
+      HashMap<Long, ApplicabilityId> applicabilityIdsMap = new HashMap<>();
+      for (ApplicabilityId applicId : applicabilityIds) {
+         applicabilityIdsMap.put(applicId.getId(), applicId);
+      }
+
+      for (BranchViewData branchView : branchViews) {
+         BranchReadable baseBranch = childBaselineBranchIds.get(branchView.getBranch().getId());
+         if (baseBranch != null) {
+            // Check Dates on baseBranch
+            Date baseDate = orcsApi.getTransactionFactory().getTx(baseBranch.getBaseTransaction()).getDate();
+            if (baseDate.after(injection) && (removalDateMs == -1 || baseDate.before(removal))) {
+               // now determine what views of this branch are applicable
+               for (ArtifactId view : branchView.getBranchViews()) {
+                  // Get all applicability tokens for the view of this branch
+                  List<ApplicabilityToken> viewApplicabilityTokens =
+                     orcsApi.getQueryFactory().applicabilityQuery().getViewApplicabilityTokens(view,
+                        branchView.getBranch());
+                  // Cross check applicabilityTokens with valid ApplicabilityIds sent in
+                  for (ApplicabilityToken applicToken : viewApplicabilityTokens) {
+                     // If applictoken is found, add toReturn list
+                     if (applicabilityIdsMap.containsKey(applicToken.getId())) {
+                        toReturn.add(BranchId.create(branchView.getBranch().getId(), view));
+                        break;
+                     }
+                  }
+               }
+            }
+         }
+      }
+
+      return toReturn;
+   }
+
+   @Override
+   public List<BranchId> getAffectedBranches(TransactionId injectionTx, TransactionId removalTx, List<ApplicabilityId> applicabilityIds) {
+      long timeInjectionMs = orcsApi.getTransactionFactory().getTx(injectionTx).getDate().getTime();
+      long timeRemovalMs =
+         removalTx.isInvalid() ? -1 : orcsApi.getTransactionFactory().getTx(removalTx).getDate().getTime();
+
+      return getAffectedBranches(timeInjectionMs, timeRemovalMs, applicabilityIds);
    }
 }

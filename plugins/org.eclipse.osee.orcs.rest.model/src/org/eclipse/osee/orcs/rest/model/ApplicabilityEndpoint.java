@@ -13,19 +13,23 @@ package org.eclipse.osee.orcs.rest.model;
 import java.util.HashMap;
 import java.util.List;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
+import org.eclipse.osee.framework.core.data.TransactionId;
 
 /**
  * @author Donald G. Dunne
@@ -103,7 +107,26 @@ public interface ApplicabilityEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    void setView(@PathParam("branchView") ArtifactId branchView);
 
+   /**
+    * @return a list of branches that contain the injected change (prior to removalDate)
+    * @param injectDateMs & removalDateMs are relative to the change injection/removal into the root branch.
+    * @param removalDateMs if default value of -1 is used, return list of branches after injectionDate
+    */
+   @PUT
+   @Path("change/")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces(MediaType.APPLICATION_JSON)
+   List<BranchId> getAffectedBranches(@QueryParam("injectionDateMs") Long injectDateMs, @QueryParam("removalDateMs") @DefaultValue("-1") Long removalDateMs, List<ApplicabilityId> applicabilityIds);
+
+   @PUT
+   @Path("change/")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces(MediaType.APPLICATION_JSON)
+   List<BranchId> getAffectedBranches(@QueryParam("injectiontx") TransactionId injectionTx, @QueryParam("removaltx") @DefaultValue("-1") TransactionId removalTx, List<ApplicabilityId> applicabilityIds);
+
    @POST
    @Path("view/{viewId}/applic/{applicability}/")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces(MediaType.APPLICATION_JSON)
    void createNewApplicabilityForView(@PathParam("viewId") ArtifactId viewId, @PathParam("applicability") String applicability);
 }
