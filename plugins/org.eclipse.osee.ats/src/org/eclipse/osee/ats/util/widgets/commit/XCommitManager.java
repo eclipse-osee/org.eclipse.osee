@@ -11,12 +11,9 @@
 
 package org.eclipse.osee.ats.util.widgets.commit;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -30,7 +27,6 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
@@ -154,19 +150,12 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
                            return;
                         }
                         try {
-                           // commit all branches in order
-                           Map<Long, Branch> branchUuidToBranchMap = new HashMap<>();
-                           for (BranchId destinationBranch : AtsClientService.get().getBranchService().getBranchesLeftToCommit(
-                              teamArt)) {
-                              branchUuidToBranchMap.put(destinationBranch.getUuid(), (Branch) destinationBranch);
-                           }
-                           List<Long> branchUuids = new ArrayList<>();
-                           branchUuids.addAll(branchUuidToBranchMap.keySet());
-                           Arrays.sort(branchUuids.toArray(new Integer[branchUuids.size()]));
-                           for (Long branchUuid : branchUuids) {
-                              Branch destinationBranch = branchUuidToBranchMap.get(branchUuid);
+                           Collection<BranchId> branches =
+                              AtsClientService.get().getBranchService().getBranchesLeftToCommit(teamArt);
+                           for (Iterator<BranchId> it = branches.iterator(); it.hasNext();) {
+                              BranchId destinationBranch = it.next();
                               IOperation operation = AtsBranchManager.commitWorkingBranch(teamArt, false, true,
-                                 destinationBranch, branchUuid.equals(branchUuids.get(branchUuids.size() - 1)));
+                                 destinationBranch, !it.hasNext());
                               Operations.executeWorkAndCheckStatus(operation);
                            }
                         } catch (Exception ex) {

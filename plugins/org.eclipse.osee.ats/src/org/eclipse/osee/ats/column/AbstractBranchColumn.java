@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -57,7 +56,7 @@ public abstract class AbstractBranchColumn extends XViewerAtsColumn implements I
                      workingBranch = AtsClientService.get().getBranchService().getCommittedWorkingBranch(teamArt);
                   }
                   if (workingBranch != null) {
-                     result = getColumnText((Branch) workingBranch);
+                     result = getColumnText(workingBranch);
                   }
                } catch (Exception ex) {
                   result = "Exception: " + ex.getLocalizedMessage();
@@ -79,6 +78,6 @@ public abstract class AbstractBranchColumn extends XViewerAtsColumn implements I
       return result;
    }
 
-   abstract String getColumnText(Branch branch);
+   abstract String getColumnText(BranchId branch);
 
 }

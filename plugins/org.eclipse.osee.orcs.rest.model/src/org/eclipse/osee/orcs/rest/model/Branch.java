@@ -130,25 +130,14 @@ public class Branch {
 
    @Override
    public boolean equals(Object obj) {
-      if (this == obj) {
-         return true;
+      if (obj instanceof Branch) {
+         return branchUuid == ((Branch) obj).branchUuid;
       }
-      if (obj == null) {
-         return false;
-      }
-      if (getClass() != obj.getClass()) {
-         return false;
-      }
-      Branch other = (Branch) obj;
-      if (branchUuid != other.branchUuid) {
-         return false;
-      }
-      return true;
+      return false;
    }
 
    @Override
    public String toString() {
       return "Branch [branchUuid=" + getBranchUuid() + ", name=" + name + ", parentBranchUuid=" + getParentBranch() + ", associatedArtifactId=" + associatedArtifact + ", baseTransaction=" + baseTransaction + ", sourceTransaction=" + sourceTransaction + ", archiveState=" + archiveState + ", branchState=" + branchState + ", branchType=" + branchType + ", inheritAccessControl=" + inheritAccessControl + "]";
    }
-
 }

@@ -54,7 +54,6 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -732,7 +731,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
             try {
-               Branch workingBranch = (Branch) AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
+               BranchId workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
                if (workingBranch != null && !BranchManager.getType(workingBranch).isBaselineBranch()) {
                   if (!BranchManager.getState(workingBranch).isCommitted()) {
                      Collection<BranchId> branchesCommittedTo =

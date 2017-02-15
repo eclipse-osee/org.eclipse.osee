@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -62,7 +62,7 @@ public class XWorkingBranchLabel extends XWorkingBranchWidgetAbstract {
                @Override
                public void run() {
                   if (labelWidget != null && Widgets.isAccessible(labelWidget) && !getLabel().equals("")) {
-                     Branch workBranch = getWorkingBranch();
+                     IOseeBranch workBranch = getWorkingBranch();
                      String labelStr =
                         getLabel() + ": " + getStatus().getDisplayName() + (workBranch != null ? " - " + workBranch.getShortName() : "");
                      labelWidget.setText(labelStr);

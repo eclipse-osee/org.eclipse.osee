@@ -19,8 +19,8 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.XWorkingBranch.BranchStatus;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -48,7 +48,7 @@ public abstract class XWorkingBranchWidgetAbstract extends GenericXWidget implem
    private boolean workingBranchInWork = false;
    private boolean committedBranchExists = false;
    protected boolean disableAll = false;
-   private Branch workingBranch = null;
+   private IOseeBranch workingBranch = null;
 
    public XWorkingBranchWidgetAbstract() {
       OseeEventManager.addListener(this);
@@ -133,7 +133,7 @@ public abstract class XWorkingBranchWidgetAbstract extends GenericXWidget implem
    }
 
    private void updateBranchState() throws OseeCoreException {
-      workingBranch = (Branch) AtsClientService.get().getBranchService().getWorkingBranch(teamArt, true);
+      workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt, true);
       workingBranchCreationInProgress = teamArt.isWorkingBranchCreationInProgress();
       workingBranchInWork = AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt);
 
@@ -169,7 +169,7 @@ public abstract class XWorkingBranchWidgetAbstract extends GenericXWidget implem
       return teamArt;
    }
 
-   public Branch getWorkingBranch() {
+   public IOseeBranch getWorkingBranch() {
       return workingBranch;
    }
 

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 
 /**
  * @author Donald G. Dunne
@@ -39,7 +39,7 @@ public class WorkingBranchUuidColumn extends AbstractBranchColumn {
    }
 
    @Override
-   String getColumnText(Branch branch) {
+   String getColumnText(BranchId branch) {
       return branch.getIdString();
    }
 

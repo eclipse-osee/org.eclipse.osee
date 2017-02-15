@@ -293,7 +293,7 @@ public final class BranchManager {
       return Operations.executeAsJob(operation, true);
    }
 
-   public static Job updateBranch(Branch branch, BranchId fromBranch, ConflictResolverOperation resolver) {
+   public static Job updateBranch(IOseeBranch branch, BranchId fromBranch, ConflictResolverOperation resolver) {
       IOperation operation = new UpdateBranchOperation(branch, fromBranch, resolver);
       return Operations.executeAsJob(operation, true);
    }

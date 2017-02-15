@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -59,7 +59,7 @@ public class XWorkingBranchUpdate extends XWorkingBranchButtonAbstract {
          @Override
          public void handleEvent(Event e) {
             try {
-               Branch branchToUpdate = getWorkingBranch();
+               IOseeBranch branchToUpdate = getWorkingBranch();
                if (branchToUpdate != null) {
                   Artifact associatedArtifact = BranchManager.getAssociatedArtifact(branchToUpdate);
                   IAtsWorkItem workItem = AtsClientService.get().getWorkItemFactory().getWorkItem(associatedArtifact);

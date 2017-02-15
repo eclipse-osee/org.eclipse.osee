@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -85,7 +84,7 @@ public final class AtsBranchManager {
                         destinationBranches);
                      int result = dialog.open();
                      if (result == 0) {
-                        selectedBranch = (Branch) dialog.getSelectedFirst();
+                        selectedBranch = (BranchId) dialog.getSelectedFirst();
                      }
                   } else {
                      MergeBranch updateFromParentMergeBranch = BranchManager.getFirstMergeBranch(workingBranch);

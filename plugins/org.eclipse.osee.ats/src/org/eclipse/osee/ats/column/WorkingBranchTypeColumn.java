@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
@@ -40,7 +40,7 @@ public class WorkingBranchTypeColumn extends AbstractBranchColumn {
    }
 
    @Override
-   String getColumnText(Branch branch) {
+   String getColumnText(BranchId branch) {
       return BranchManager.getType(branch).name();
    }
 
