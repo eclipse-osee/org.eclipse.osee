@@ -9,9 +9,6 @@ CREATE TABLE OSEE_TUPLE2 (
  
 CREATE INDEX OSEE_TUPLE2__G_IDX ON OSEE_TUPLE2 (GAMMA_ID);
 
-${db.synonym2}
-${db.grant2}
-
 -- 3 Element Tuple
 CREATE TABLE OSEE_TUPLE3 ( 
 	TUPLE_TYPE ${db.bigint} NOT NULL,
@@ -23,9 +20,6 @@ CREATE TABLE OSEE_TUPLE3 (
 	${db.organization_index};
  
 CREATE INDEX OSEE_TUPLE3__G_IDX ON OSEE_TUPLE3 (GAMMA_ID);
-
-${db.synonym3}
-${db.grant3}
 
 -- 4 Element Tuple
 CREATE TABLE OSEE_TUPLE4 ( 
@@ -40,19 +34,12 @@ CREATE TABLE OSEE_TUPLE4 (
 
 CREATE INDEX OSEE_TUPLE4__G_IDX ON OSEE_TUPLE4 (GAMMA_ID);
 
-${db.synonym3}
-${db.grant3}
-
 CREATE TABLE OSEE_KEY_VALUE (
-	KEY ${db.bigint} NOT NULL,
-	VALUE varchar(4000) NOT NULL,
-	CONSTRAINT OSEE_KEY_VALUE PRIMARY KEY (KEY))
+   KEY ${db.bigint} PRIMARY KEY NOT NULL,
+	VALUE varchar(4000) NOT NULL)
 	${db.tablespace}
 	${db.pctthreshold}
 	${db.overflow}
    ${db.organization_index_key_value};
 	
 CREATE INDEX OSEE_KEY_VALUE__V_IDX ON OSEE_KEY_VALUE (VALUE);
-
-${db.synonym_key_value}
-${db.grant_key_value}

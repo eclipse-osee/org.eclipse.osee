@@ -125,41 +125,25 @@ public class JdbcMigration {
       placeholders.put(DB_TABLESPACE, "");
       placeholders.put(DB_PCTTHRESHOLD, "");
       placeholders.put(DB_OVERFLOW, "");
-	  placeholders.put(DB_DEFERRABLE, "");
+      placeholders.put(DB_DEFERRABLE, "");
 
       if (JdbcDriverType.postgresql.getDriver().equals(driver)) {
          placeholders.put(DB_BLOB, "bytea");
          placeholders.put(DB_CLOB, "text");
-         placeholders.put(DB_SYNONYM_2, "create synonym OSEE_TUPLE2 for OSEE.OSEE_TUPLE2;");
-         placeholders.put(DB_GRANT_2, "GRANT select, insert, delete, update on osee_tuple2 to osee_client;");
-         placeholders.put(DB_SYNONYM_3, "create synonym OSEE_TUPLE3 for OSEE.OSEE_TUPLE3;");
-         placeholders.put(DB_GRANT_3, "GRANT select, insert, delete, update on osee_tuple3 to osee_client;");
-         placeholders.put(DB_SYNONYM_4, "create synonym OSEE_TUPLE4 for OSEE.OSEE_TUPLE4;");
-         placeholders.put(DB_GRANT_4, "GRANT select, insert, delete, update on osee_tuple4 to osee_client;");
-         placeholders.put(DB_SYNONYM_KEY_VALUE, "create synonym OSEE_KEY_VALUE for OSEE.OSEE_KEY_VALUE;");
-         placeholders.put(DB_GRANT_KEY_VALUE, "GRANT select, insert, delete, update on osee_key_value to osee_client;");
          placeholders.put(DB_TABLESPACE, "TABLESPACE osee_data");
          placeholders.put(DB_PCTTHRESHOLD, "");
          placeholders.put(DB_OVERFLOW, "");
-		 placeholders.put(DB_DEFERRABLE, "DEFERRABLE INITIALLY DEFERRED");
+         placeholders.put(DB_DEFERRABLE, "DEFERRABLE INITIALLY DEFERRED");
 
       } else if (JdbcDriverType.oracle_thin.getDriver().equals(driver)) {
          placeholders.put(DB_BIGINT, "number");
          placeholders.put(DB_ORGANIZATION_INDEX, "ORGANIZATION INDEX COMPRESS 2");
          placeholders.put(DB_ORGANIZATION_INDEX_3, "ORGANIZATION INDEX COMPRESS 3");
          placeholders.put(DB_ORGANIZATION_INDEX_KEY_VALUE, "ORGANIZATION INDEX");
-         placeholders.put(DB_SYNONYM_2, "create public synonym OSEE_TUPLE2 for OSEE.OSEE_TUPLE2;");
-         placeholders.put(DB_GRANT_2, "GRANT select, insert, delete, update on osee_tuple2 to osee_client;");
-         placeholders.put(DB_SYNONYM_3, "create public synonym OSEE_TUPLE3 for OSEE.OSEE_TUPLE3;");
-         placeholders.put(DB_GRANT_3, "GRANT select, insert, delete, update on osee_tuple3 to osee_client;");
-         placeholders.put(DB_SYNONYM_4, "create public synonym OSEE_TUPLE4 for OSEE.OSEE_TUPLE4;");
-         placeholders.put(DB_GRANT_4, "GRANT select, insert, delete, update on osee_tuple4 to osee_client;");
-         placeholders.put(DB_SYNONYM_KEY_VALUE, "create public synonym OSEE_KEY_VALUE for OSEE.OSEE_KEY_VALUE;");
-         placeholders.put(DB_GRANT_KEY_VALUE, "GRANT select, insert, delete, update on osee_key_value to osee_client;");
          placeholders.put(DB_TABLESPACE, "TABLESPACE osee_data");
          placeholders.put(DB_PCTTHRESHOLD, "PCTTHRESHOLD 20");
          placeholders.put(DB_OVERFLOW, "OVERFLOW TABLESPACE osee_data");
-		 placeholders.put(DB_DEFERRABLE, "DEFERRABLE INITIALLY DEFERRED");
+         placeholders.put(DB_DEFERRABLE, "DEFERRABLE INITIALLY DEFERRED");
       }
 
    }
