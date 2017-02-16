@@ -115,10 +115,12 @@ public class XHyperlabelWorkflowApplicabilitySelection extends XHyperlinkLabelCm
    @Override
    public void saveToArtifact() throws OseeCoreException {
       HashMap<ArtifactId, List<ApplicabilityId>> artToApplMap = new HashMap<>();
-      artToApplMap.put(workItem.getStoreObject(), Collections.castAll(getSelectedApplicabilities()));
-
-      AtsClientService.getApplicabilityEndpoint(AtsClientService.get().getAtsBranch()).setApplicabilityReference(
-         artToApplMap);
+      List<ApplicabilityToken> selectedApplicabilities = getSelectedApplicabilities();
+      if (!selectedApplicabilities.isEmpty()) {
+         artToApplMap.put(workItem.getStoreObject(), Collections.castAll(selectedApplicabilities));
+         AtsClientService.getApplicabilityEndpoint(AtsClientService.get().getAtsBranch()).setApplicabilityReference(
+            artToApplMap);
+      }
    }
 
    @Override
@@ -127,17 +129,13 @@ public class XHyperlabelWorkflowApplicabilitySelection extends XHyperlinkLabelCm
    }
 
    private List<ApplicabilityToken> getStoredApplicabilities() {
-      List<ApplicabilityToken> appls = new LinkedList<>();
-      for (ApplicabilityToken appId : AtsClientService.getApplicabilityEndpoint(
-         AtsClientService.get().getAtsBranch()).getApplicabilityReferenceTokens(workItem.getStoreObject())) {
-         appId.getName();
-      }
-      return appls;
+      return AtsClientService.getApplicabilityEndpoint(
+         AtsClientService.get().getAtsBranch()).getApplicabilityReferenceTokens(workItem.getStoreObject());
    }
 
    @Override
    public Result isDirty() throws OseeCoreException {
-      if (Collections.isEqual(getStoredApplicabilities(), getSelectedApplicabilities())) {
+      if (!Collections.isEqual(getStoredApplicabilities(), getSelectedApplicabilities())) {
          return Result.TrueResult;
       }
       return Result.FalseResult;
