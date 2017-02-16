@@ -133,7 +133,7 @@ public class TargetedVersionColumnUI extends XViewerAtsColumnIdColumn implements
                continue;
             }
          }
-         if (teamDefHoldingVersions != null && teamDefHoldingVersions != teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions()) {
+         if (teamDefHoldingVersions != null && !teamDefHoldingVersions.equals(teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions())) {
             AWorkbench.popup("ERROR", "Can't change version on Workflows that have different release version sets.");
             return false;
          }
