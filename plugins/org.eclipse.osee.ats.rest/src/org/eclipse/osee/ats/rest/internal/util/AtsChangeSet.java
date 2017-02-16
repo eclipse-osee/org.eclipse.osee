@@ -275,6 +275,9 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public <T> void setAttribute(IAtsWorkItem workItem, int attributeId, T value) {
+      Conditions.checkExpressionFailOnTrue(attributeId <= 0,
+         "Can not set attribute by id that has not be persisted.  Atrribute Id [%s] Work Item [%s]", attributeId,
+         workItem.toStringWithId());
       ArtifactReadable artifact = getArtifact(workItem);
       boolean found = false;
       for (AttributeReadable<Object> attribute : artifact.getAttributes()) {
@@ -305,6 +308,9 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public <T> void setAttribute(ArtifactId artifact, AttributeId attrId, T value) {
+      Conditions.checkExpressionFailOnTrue(attrId.isInvalid(),
+         "Can not set attribute by id that has not been persisted.  Atrribute Id [%s] ArtifactId [%s]", attrId,
+         artifact.toString());
       for (AttributeReadable<?> attribute : getArtifact(artifact).getAttributes()) {
          if (attrId.equals(attribute)) {
             getTransaction().setAttributeById(getArtifact(artifact), attribute, value);

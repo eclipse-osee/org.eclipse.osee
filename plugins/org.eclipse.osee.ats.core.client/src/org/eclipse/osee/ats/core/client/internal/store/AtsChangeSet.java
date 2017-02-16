@@ -314,6 +314,9 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @SuppressWarnings("unchecked")
    @Override
    public <T> void setAttribute(IAtsWorkItem workItem, int attributeId, T value) {
+      Conditions.checkExpressionFailOnTrue(attributeId <= 0,
+         "Can not set attribute by id that has not be persisted.  Atrribute Id [%s] Work Item [%s]", attributeId,
+         workItem.toStringWithId());
       Artifact artifact = getArtifact(workItem);
       Conditions.checkNotNull(artifact, "artifact");
       boolean found = false;
@@ -346,6 +349,9 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public <T> void setAttribute(ArtifactId artifact, AttributeId attrId, T value) {
+      Conditions.checkExpressionFailOnTrue(attrId.isInvalid(),
+         "Can not set attribute by id that has not been persisted.  Atrribute Id [%s] ArtifactId [%s]", attrId,
+         artifact.toString());
       boolean found = false;
       for (Attribute<?> attribute : getArtifact(artifact).getAttributes()) {
          if (attrId.equals(attribute)) {
