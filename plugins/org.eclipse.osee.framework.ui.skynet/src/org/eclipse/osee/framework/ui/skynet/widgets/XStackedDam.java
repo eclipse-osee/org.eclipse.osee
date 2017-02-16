@@ -164,7 +164,9 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
                   String.format("Attribute Type " + getAttributeType() + " is dirty; attribute added"));
             } else if (page instanceof XStackedWidgetAttrPage) {
                XStackedWidgetAttrPage attrPage = (XStackedWidgetAttrPage) page;
-               if (attrPage.getAttribute().isDirty()) {
+               Object enteredValue = attrPage.getWidget().getData();
+               Object storedValue = attrPage.getValue();
+               if (!enteredValue.equals(storedValue)) {
                   return new Result(true,
                      String.format("Attribute Type " + getAttributeType() + " is dirty; attribute modified"));
                }
