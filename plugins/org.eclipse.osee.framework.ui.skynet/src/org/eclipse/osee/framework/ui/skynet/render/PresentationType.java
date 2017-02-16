@@ -26,7 +26,8 @@ public enum PresentationType {
    RENDER_AS_HUMAN_READABLE_TEXT, // Used to pre and post process text based attributes.
    DEFAULT_OPEN, // up to the renderer to determine what is used for default
    GENERAL_REQUESTED, // this is the case where default open is selected and the preference "Default Presentation opens in Artifact Editor if applicable" is true
-   PRODUCE_ATTRIBUTE; // used in conjunction with renderAttribute()
+   PRODUCE_ATTRIBUTE, // used in conjunction with renderAttribute()
+   WEB_PREVIEW;
 
    public boolean matches(PresentationType... presentationTypes) throws OseeCoreException {
       Conditions.checkExpressionFailOnTrue(presentationTypes.length == 0, "presentationTypes to match cannot be empty");

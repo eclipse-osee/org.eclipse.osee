@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.ContentUrl;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERAL_REQUESTED;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.WEB_PREVIEW;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -47,6 +47,9 @@ public class UrlRenderer extends DefaultArtifactRenderer {
       Artifact aArtifact = artifact.getFullArtifact();
       if (!presentationType.matches(GENERALIZED_EDIT,
          GENERAL_REQUESTED) && aArtifact.getAttributeCount(ContentUrl) > 0) {
+         if (presentationType.equals(WEB_PREVIEW)) {
+            return SPECIALIZED_MATCH;
+         }
          return ARTIFACT_TYPE_MATCH;
       }
       return NO_MATCH;
@@ -55,7 +58,7 @@ public class UrlRenderer extends DefaultArtifactRenderer {
    @Override
    public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
       if (artifact.getAttributeCount(ContentUrl) > 0) {
-         commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "Web Browser", PluginUiImage.URL));
+         commands.add(new MenuCmdDef(CommandGroup.PREVIEW, WEB_PREVIEW, "Web Browser", PluginUiImage.URL));
       }
    }
 
