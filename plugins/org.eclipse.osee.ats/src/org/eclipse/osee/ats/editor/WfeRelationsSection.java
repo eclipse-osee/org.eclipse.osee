@@ -33,7 +33,7 @@ import org.eclipse.ui.forms.widgets.Section;
 public class WfeRelationsSection extends RelationsFormSection {
 
    public WfeRelationsSection(WorkflowEditor editor, Composite parent, FormToolkit toolkit, int style) {
-      super(editor, parent, toolkit, style | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
+      super(editor, parent, toolkit, style | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR, true);
    }
 
    @Override

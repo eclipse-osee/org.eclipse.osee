@@ -224,7 +224,7 @@ public class ArtifactFormPage extends FormPage {
       sectionParts.put(SectionEnum.Attributes,
          new AttributesFormSection(getEditor(), form.getBody(), toolkit, sectionStyle | ExpandableComposite.EXPANDED));
       sectionParts.put(SectionEnum.Relations,
-         new RelationsFormSection(getEditor(), form.getBody(), toolkit, sectionStyle));
+         new RelationsFormSection(getEditor(), form.getBody(), toolkit, sectionStyle | ExpandableComposite.EXPANDED, true));
       sectionParts.put(SectionEnum.Details, new DetailsFormSection(getEditor(), form.getBody(), toolkit, sectionStyle));
 
       for (SectionPart part : sectionParts.values()) {

@@ -41,9 +41,11 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
 
    private RelationsComposite relationComposite;
    private boolean sectionCreated = false;
+   private final boolean expandOnCreate;
 
-   public RelationsFormSection(AbstractArtifactEditor editor, Composite parent, FormToolkit toolkit, int style) {
+   public RelationsFormSection(AbstractArtifactEditor editor, Composite parent, FormToolkit toolkit, int style, boolean expandOnCreate) {
       super(editor, parent, toolkit, style);
+      this.expandOnCreate = expandOnCreate;
    }
 
    @Override
@@ -56,14 +58,18 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
 
       section.setLayout(new GridLayout());
       section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-      // Only load when users selects section
-      section.addListener(SWT.Activate, new Listener() {
+      if (expandOnCreate) {
+         createSection(section, toolkit);
+      } else {
+         // Only load when users selects section
+         section.addListener(SWT.Activate, new Listener() {
 
-         @Override
-         public void handleEvent(Event e) {
-            createSection(section, toolkit);
-         }
-      });
+            @Override
+            public void handleEvent(Event e) {
+               createSection(section, toolkit);
+            }
+         });
+      }
    }
 
    protected synchronized void createSection(Section section, FormToolkit toolkit) {
