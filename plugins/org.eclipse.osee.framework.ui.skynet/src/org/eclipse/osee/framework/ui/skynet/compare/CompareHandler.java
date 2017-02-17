@@ -63,7 +63,8 @@ public class CompareHandler {
          String editor = EditorsPreferencePage.getExternalCompareEditorForText();
          if (Strings.isValid(editor)) {
             try {
-               File leftFile = OseeData.getFile(getDiffFilename(leftCompareItem));
+               String diffFilename = getDiffFilename(leftCompareItem);
+               File leftFile = OseeData.getFile(diffFilename);
                Lib.writeStringToFile(leftCompareItem.getStringContent(), leftFile);
                File rightFile = OseeData.getFile(getDiffFilename(rightCompareItem));
                Lib.writeStringToFile(rightCompareItem.getStringContent(), rightFile);

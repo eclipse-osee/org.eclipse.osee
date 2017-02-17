@@ -14,13 +14,18 @@ import java.io.File;
 import java.util.logging.Level;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -106,11 +111,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
    }
 
    private void createCompareEditorPreference(Composite parent) {
-      Composite composite = new Composite(parent, SWT.NULL);
-      composite.setLayout(new GridLayout());
-      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-
-      useCompareEditorForTextCompares = new Button(composite, SWT.CHECK);
+      useCompareEditorForTextCompares = new Button(parent, SWT.CHECK);
       useCompareEditorForTextCompares.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
       useCompareEditorForTextCompares.setText("Use External Compare Editor for text compares");
       try {
@@ -119,6 +120,10 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
+
+      Composite composite = new Composite(parent, SWT.NULL);
+      composite.setLayout(new GridLayout(3, false));
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       compareEditorTextBox = new Text(composite, SWT.BORDER);
       try {
@@ -132,12 +137,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
       fileDialog.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE));
       final Shell shell = composite.getShell();
       final Text fUserNameTextBox = compareEditorTextBox;
-      fileDialog.addSelectionListener(new SelectionListener() {
-
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-            widgetSelected(e);
-         }
+      fileDialog.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -155,6 +155,18 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
             if (Strings.isValid(result)) {
                fUserNameTextBox.setText(result);
             }
+         }
+      });
+      Button helpButton = new Button(composite, SWT.NONE);
+      helpButton.setImage(ImageManager.getImage(FrameworkImage.HELP));
+      helpButton.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            HtmlDialog dialog = new HtmlDialog("External Compare Editor", "", AHTML.simplePage(
+               "Example: </br></br>C:\\Program Files (x86)\\Beyond Compare 4\\BComp.exe \"%s\" \"%s\"</br></br>" + //
+            "%s will be replaced with filenames."));
+            dialog.open();
          }
       });
    }
