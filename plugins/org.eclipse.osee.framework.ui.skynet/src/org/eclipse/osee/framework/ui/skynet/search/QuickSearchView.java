@@ -217,7 +217,6 @@ public class QuickSearchView extends GenericViewPart {
 
          createClearHistoryAction();
 
-         sc.setMinSize(group.computeSize(SWT.DEFAULT, SWT.DEFAULT));
          setFocusWidget(attrSearchComposite);
       }
    }
