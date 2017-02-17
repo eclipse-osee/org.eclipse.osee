@@ -92,7 +92,7 @@ public class OAuth2RequestFilter extends OAuthRequestFilter {
    public void filter(ContainerRequestContext context) {
       boolean isSecurePath = isPathSecure(context);
       UriInfo uriInfo = context.getUriInfo();
-      String path = uriInfo.getPath();
+      String path = uriInfo.getAbsolutePath().getPath();
       if (isSecurePath && path.contains("oauth2") || path.contains("accounts/self")) {
          if (isResourceOwnerRequest(context)) {
             handleResourceOwnerRequest(context);

@@ -36,19 +36,19 @@ import org.osgi.framework.BundleListener;
 
 /**
  * Class responsible for managing static web resources contributed by bundles.
- * 
+ *
  * <pre>
  * Contributions are specified in the bundle's MANIFEST.MF file using the following header and syntax:
- * 
+ *
  * <b>Osee-JaxRs-Resource:</b> <i>path_to_resource<i><b>;path=</b><i>web_address</i><b>,</b> ...
- * 
+ *
  * Example:
  *    <b>Osee-JaxRs-Resource:</b> <i>/web/js/*<i><b>;path=</b><i>/lib</i>
- * 
+ *
  *    Make all files in <b>/web/js/</b> available through <b>/lib/</b>.
  *    Therefore, if we have a file - /web/js/script.js it will be available at /lib/script.js
  * </pre>
- * 
+ *
  * @author Roberto E. Escobar
  */
 public final class JaxRsResourceManager implements BundleListener {
@@ -114,7 +114,7 @@ public final class JaxRsResourceManager implements BundleListener {
 
    public Resource findResource(ContainerRequestContext requestContext) {
       UriInfo uriInfo = requestContext.getUriInfo();
-      String path = uriInfo.getPath(false); 
+      String path = uriInfo.getAbsolutePath().getPath();
 
       Resource resource = getResource(path);
       if (resource == null) {
