@@ -130,7 +130,6 @@ public class JdbcMigration {
       if (JdbcDriverType.postgresql.getDriver().equals(driver)) {
          placeholders.put(DB_BLOB, "bytea");
          placeholders.put(DB_CLOB, "text");
-         placeholders.put(DB_TABLESPACE, "TABLESPACE osee_data");
          placeholders.put(DB_PCTTHRESHOLD, "");
          placeholders.put(DB_OVERFLOW, "");
          placeholders.put(DB_DEFERRABLE, "DEFERRABLE INITIALLY DEFERRED");
