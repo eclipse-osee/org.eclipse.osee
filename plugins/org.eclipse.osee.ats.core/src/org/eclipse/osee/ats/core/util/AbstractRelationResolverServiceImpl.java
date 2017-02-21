@@ -43,4 +43,15 @@ public abstract class AbstractRelationResolverServiceImpl implements IRelationRe
       ArtifactId artifact = getArtifact(workItem);
       return Collections.castAll(getRelated(artifact, relationTypeSide));
    }
+
+   @Override
+   public Collection<ArtifactToken> getChildren(ArtifactId artifact) {
+      return getRelated(artifact, CoreRelationTypes.Default_Hierarchical__Child);
+   }
+
+   @Override
+   public ArtifactToken getParent(ArtifactId artifact) {
+      return getRelatedOrNull(artifact, CoreRelationTypes.Default_Hierarchical__Parent);
+   }
+
 }

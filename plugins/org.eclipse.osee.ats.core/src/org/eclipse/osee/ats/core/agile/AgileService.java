@@ -8,14 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.rest.internal.agile;
+package org.eclipse.osee.ats.core.agile;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
@@ -30,24 +34,17 @@ import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.agile.AgileBacklog;
-import org.eclipse.osee.ats.rest.IAtsServer;
-import org.eclipse.osee.ats.rest.internal.agile.util.AgileBacklogWriter;
-import org.eclipse.osee.ats.rest.internal.agile.util.AgileFolders;
-import org.eclipse.osee.ats.rest.internal.agile.util.AgileItemWriter;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -55,11 +52,11 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 public class AgileService implements IAgileService {
 
    private final Log logger;
-   private final IAtsServer atsServer;
+   private final IAtsServices services;
 
-   public AgileService(Log logger, IAtsServer atsServer) {
+   public AgileService(Log logger, IAtsServices services) {
       this.logger = logger;
-      this.atsServer = atsServer;
+      this.services = services;
    }
 
    /********************************
@@ -67,13 +64,13 @@ public class AgileService implements IAgileService {
     ***********************************/
    @Override
    public IAgileTeam getAgileTeam(ArtifactId artifact) {
-      return AgileFactory.getAgileTeam(logger, atsServer, artifact);
+      return AgileFactory.getAgileTeam(logger, services, artifact);
    }
 
    @Override
    public IAgileTeam getAgileTeam(long uuid) {
       IAgileTeam team = null;
-      ArtifactReadable teamArt = atsServer.getArtifact(uuid);
+      ArtifactId teamArt = services.getArtifact(uuid);
       if (teamArt != null) {
          team = getAgileTeam(teamArt);
       }
@@ -83,7 +80,7 @@ public class AgileService implements IAgileService {
    @Override
    public IAgileTeam getAgileTeamById(long teamUuid) {
       IAgileTeam team = null;
-      ArtifactReadable artifact = getArtifact(teamUuid);
+      ArtifactId artifact = services.getArtifact(teamUuid);
       if (artifact != null) {
          team = getAgileTeam(artifact);
       }
@@ -92,40 +89,40 @@ public class AgileService implements IAgileService {
 
    @Override
    public IAgileTeam createAgileTeam(JaxNewAgileTeam newTeam) {
-      return AgileFactory.createAgileTeam(logger, atsServer, newTeam);
+      return AgileFactory.createAgileTeam(logger, services, newTeam);
    }
 
    @Override
    public IAgileTeam updateAgileTeam(JaxAgileTeam team) {
-      return AgileFactory.updateAgileTeam(logger, atsServer, team);
+      return AgileFactory.updateAgileTeam(logger, services, team);
    }
 
    @Override
    public void deleteAgileTeam(long uuid) {
-      ArtifactReadable team = atsServer.getArtifact(uuid);
-      if (!team.isOfType(AtsArtifactTypes.AgileTeam)) {
+      ArtifactToken team = services.getArtifact(uuid);
+      if (!services.getStoreService().isOfType(team, AtsArtifactTypes.AgileTeam)) {
          throw new OseeArgumentException("UUID %d is not a valid Agile Team", uuid);
       }
-      TransactionBuilder transaction = atsServer.getOrcsApi().getTransactionFactory().createTransaction(
-         atsServer.getAtsBranch(), team, "Delete Agile Team");
-      deleteRecurse(transaction, team.getChildren());
-      transaction.deleteArtifact(team);
-      transaction.commit();
+      IAtsChangeSet changes = services.createChangeSet("Delete Agile Team");
+      deleteRecurse(services.getRelationResolver().getChildren(team), changes);
+      changes.deleteArtifact(team);
+      changes.execute();
    }
 
-   private void deleteRecurse(TransactionBuilder transaction, ResultSet<ArtifactReadable> resultSet) {
-      Iterator<ArtifactReadable> iterator = resultSet.iterator();
+   private void deleteRecurse(Collection<ArtifactToken> resultSet, IAtsChangeSet changes) {
+      Iterator<ArtifactToken> iterator = resultSet.iterator();
       while (iterator.hasNext()) {
-         ArtifactReadable art = iterator.next();
-         deleteRecurse(transaction, art.getChildren());
-         transaction.deleteArtifact(art);
+         ArtifactId art = iterator.next();
+         deleteRecurse(services.getRelationResolver().getChildren(art), changes);
+         changes.deleteArtifact(art);
       }
    }
 
    @Override
    public Collection<IAgileTeam> getTeams() {
       List<IAgileTeam> teams = new ArrayList<>();
-      for (ArtifactReadable teamArt : atsServer.getQuery().andTypeEquals(AtsArtifactTypes.AgileTeam).getResults()) {
+      for (ArtifactId teamArt : services.getQueryService().createQuery(
+         AtsArtifactTypes.AgileTeam).getResultArtifacts()) {
          teams.add(getAgileTeam(teamArt));
       }
       return teams;
@@ -135,7 +132,7 @@ public class AgileService implements IAgileService {
    public AttributeTypeId getAgileTeamPointsAttributeType(IAgileTeam team) {
       AttributeTypeId type = AtsAttributeTypes.Points;
       String attrTypeName =
-         atsServer.getAttributeResolver().getSoleAttributeValue(team, AtsAttributeTypes.PointsAttributeType, null);
+         services.getAttributeResolver().getSoleAttributeValue(team, AtsAttributeTypes.PointsAttributeType, null);
       if (Strings.isValid(attrTypeName)) {
          type = getTypeFromName(attrTypeName);
       }
@@ -144,7 +141,7 @@ public class AgileService implements IAgileService {
 
    private AttributeTypeId getTypeFromName(String attrTypeName) {
       AttributeTypeId type = null;
-      for (AttributeTypeToken attrType : atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().getAll()) {
+      for (AttributeTypeToken attrType : services.getStoreService().getAttributeTypes()) {
          if (attrType.getName().equals(attrTypeName)) {
             type = attrType;
             break;
@@ -161,37 +158,37 @@ public class AgileService implements IAgileService {
     ***********************************/
    @Override
    public IAgileFeatureGroup getAgileFeatureGroup(ArtifactId artifact) {
-      return AgileFactory.getAgileFeatureGroup(logger, atsServer, artifact);
+      return AgileFactory.getAgileFeatureGroup(logger, services, artifact);
    }
 
    @Override
    public void deleteAgileFeatureGroup(long uuid) {
-      ArtifactReadable featureGroup = atsServer.getArtifact(uuid);
-      if (!featureGroup.isOfType(AtsArtifactTypes.AgileFeatureGroup)) {
+      ArtifactId featureGroup = services.getArtifact(uuid);
+      if (!services.getStoreService().isOfType(featureGroup, AtsArtifactTypes.AgileFeatureGroup)) {
          throw new OseeArgumentException("UUID %d is not a valid Agile Feature Group", uuid);
       }
-      TransactionBuilder transaction = atsServer.getOrcsApi().getTransactionFactory().createTransaction(
-         atsServer.getAtsBranch(), featureGroup, "Delete Agile Feature Group");
-      transaction.deleteArtifact(featureGroup);
-      transaction.commit();
+      IAtsChangeSet changes = services.createChangeSet("Delete Agile Feature Group");
+      changes.deleteArtifact(featureGroup);
+      changes.execute();
    }
 
    @Override
    public IAgileFeatureGroup createAgileFeatureGroup(long teamUuid, String name, String guid, Long uuid) {
-      return AgileFactory.createAgileFeatureGroup(logger, atsServer, teamUuid, name, guid, uuid);
+      return AgileFactory.createAgileFeatureGroup(logger, services, teamUuid, name, guid, uuid);
    }
 
    @Override
    public IAgileFeatureGroup createAgileFeatureGroup(JaxAgileFeatureGroup newFeatureGroup) {
-      return AgileFactory.createAgileFeatureGroup(logger, atsServer, newFeatureGroup);
+      return AgileFactory.createAgileFeatureGroup(logger, services, newFeatureGroup);
    }
 
    @Override
    public Collection<IAgileFeatureGroup> getAgileFeatureGroups(IAgileTeam team) {
       List<IAgileFeatureGroup> groups = new LinkedList<>();
-      ArtifactReadable artifact = (ArtifactReadable) team.getStoreObject();
-      for (ArtifactReadable groupArt : artifact.getRelated(AtsRelationTypes.AgileTeamToFeatureGroup_FeatureGroup)) {
-         groups.add(atsServer.getConfigItemFactory().getAgileFeatureGroup(groupArt));
+      ArtifactId artifact = team.getStoreObject();
+      for (ArtifactId groupArt : services.getRelationResolver().getRelated(artifact,
+         AtsRelationTypes.AgileTeamToFeatureGroup_FeatureGroup)) {
+         groups.add(services.getConfigItemFactory().getAgileFeatureGroup(groupArt));
       }
       return groups;
    }
@@ -199,10 +196,9 @@ public class AgileService implements IAgileService {
    @Override
    public IAgileBacklog getBacklogForTeam(long teamUuid) {
       IAgileBacklog backlog = null;
-      ArtifactReadable teamArt =
-         atsServer.getQuery().andUuid(Long.valueOf(teamUuid).intValue()).getResults().getAtMostOneOrNull();
-      ArtifactReadable backlogArt =
-         teamArt.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).getAtMostOneOrNull();
+      ArtifactId teamArt = services.getArtifact(teamUuid);
+      ArtifactId backlogArt =
+         services.getRelationResolver().getRelatedOrNull(teamArt, AtsRelationTypes.AgileTeamToBacklog_Backlog);
       if (backlogArt != null) {
          backlog = getAgileBacklog(backlogArt);
       }
@@ -214,24 +210,20 @@ public class AgileService implements IAgileService {
     ***********************************/
    @Override
    public IAgileSprint getAgileSprint(ArtifactId artifact) {
-      return AgileFactory.getAgileSprint(logger, atsServer, artifact);
+      return AgileFactory.getAgileSprint(logger, services, artifact);
    }
 
    @Override
    public IAgileSprint createAgileSprint(long teamUuid, String name, String guid, Long uuid) {
-      return AgileFactory.createAgileSprint(logger, atsServer, teamUuid, name, guid, uuid);
-   }
-
-   private ArtifactReadable getArtifact(long teamUuid) {
-      return atsServer.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andUuid(
-         new Long(teamUuid).intValue()).getResults().getAtMostOneOrNull();
+      return AgileFactory.createAgileSprint(logger, services, teamUuid, name, guid, uuid);
    }
 
    @Override
    public Collection<IAgileSprint> getSprintsForTeam(long teamUuid) {
       List<IAgileSprint> sprints = new ArrayList<>();
-      ArtifactReadable team = getArtifact(teamUuid);
-      for (ArtifactReadable sprintArt : team.getRelated(AtsRelationTypes.AgileTeamToSprint_Sprint)) {
+      ArtifactId team = services.getArtifact(teamUuid);
+      for (ArtifactId sprintArt : services.getRelationResolver().getRelated(team,
+         AtsRelationTypes.AgileTeamToSprint_Sprint)) {
          sprints.add(getAgileSprint(sprintArt));
       }
       return sprints;
@@ -240,9 +232,10 @@ public class AgileService implements IAgileService {
    @Override
    public Collection<IAgileSprint> getAgileSprints(IAgileTeam team) {
       List<IAgileSprint> sprints = new LinkedList<>();
-      ArtifactReadable artifact = (ArtifactReadable) team.getStoreObject();
-      for (ArtifactReadable groupArt : artifact.getRelated(AtsRelationTypes.AgileTeamToSprint_Sprint)) {
-         sprints.add(atsServer.getWorkItemFactory().getAgileSprint(groupArt));
+      ArtifactId artifact = team.getStoreObject();
+      for (ArtifactToken groupArt : services.getRelationResolver().getRelated(artifact,
+         AtsRelationTypes.AgileTeamToSprint_Sprint)) {
+         sprints.add(services.getWorkItemFactory().getAgileSprint(groupArt));
       }
       return sprints;
    }
@@ -252,26 +245,27 @@ public class AgileService implements IAgileService {
     ***********************************/
    @Override
    public IAgileBacklog getAgileBacklog(ArtifactId artifact) {
-      return AgileFactory.getAgileBacklog(logger, atsServer, artifact);
+      return AgileFactory.getAgileBacklog(logger, services, artifact);
    }
 
    @Override
    public IAgileBacklog getAgileBacklog(IAgileTeam team) {
-      ArtifactReadable teamFolder = AgileFolders.getTeamFolder(atsServer, team.getId());
+      ArtifactId teamFolder = AgileFolders.getTeamFolder(services, team.getId());
       if (teamFolder == null) {
          return null;
       }
-      ArtifactReadable backlogArt = teamFolder.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).getOneOrNull();
+      ArtifactToken backlogArt =
+         services.getRelationResolver().getRelatedOrNull(teamFolder, AtsRelationTypes.AgileTeamToBacklog_Backlog);
       if (backlogArt == null) {
          return null;
       }
-      return new AgileBacklog(logger, atsServer, backlogArt);
+      return new AgileBacklog(logger, services, backlogArt);
    }
 
    @Override
    public IAgileBacklog getAgileBacklog(long uuid) {
       IAgileBacklog backlog = null;
-      ArtifactReadable teamArt = atsServer.getArtifact(uuid);
+      ArtifactId teamArt = services.getArtifact(uuid);
       if (teamArt != null) {
          backlog = getAgileBacklog(teamArt);
       }
@@ -280,26 +274,26 @@ public class AgileService implements IAgileService {
 
    @Override
    public IAgileBacklog createAgileBacklog(long teamUuid, String name, String guid, Long uuid) {
-      return AgileFactory.createAgileBacklog(logger, atsServer, teamUuid, name, guid, uuid);
+      return AgileFactory.createAgileBacklog(logger, services, teamUuid, name, guid, uuid);
    }
 
    @Override
    public IAgileBacklog updateAgileBacklog(JaxAgileBacklog updatedBacklog) {
-      AgileBacklogWriter writer = new AgileBacklogWriter(atsServer, this, updatedBacklog);
+      AgileBacklogWriter writer = new AgileBacklogWriter(services, this, updatedBacklog);
       return writer.write();
    }
 
    @Override
    public JaxAgileItem updateItem(JaxAgileItem newItem) {
-      AgileItemWriter writer = new AgileItemWriter(atsServer, this, newItem);
+      AgileItemWriter writer = new AgileItemWriter(services, this, newItem);
       return writer.write();
    }
 
    @Override
    public Collection<IAgileFeatureGroup> getAgileFeatureGroups(List<Long> uuids) {
       List<IAgileFeatureGroup> features = new LinkedList<>();
-      for (ArtifactReadable featureArt : atsServer.getArtifacts(uuids)) {
-         features.add(atsServer.getConfigItemFactory().getAgileFeatureGroup(featureArt));
+      for (ArtifactId featureArt : services.getArtifacts(uuids)) {
+         features.add(services.getConfigItemFactory().getAgileFeatureGroup(featureArt));
       }
       return features;
    }
@@ -311,10 +305,10 @@ public class AgileService implements IAgileService {
 
    private Collection<IAgileItem> getItems(IAtsObject backlogOrSprint, RelationTypeSide relationType) {
       List<IAgileItem> items = new LinkedList<>();
-      ArtifactReadable backlogArt = (ArtifactReadable) backlogOrSprint.getStoreObject();
-      for (ArtifactReadable art : backlogArt.getRelated(relationType)) {
-         if (art.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-            items.add(atsServer.getWorkItemFactory().getAgileItem(art));
+      ArtifactId backlogArt = backlogOrSprint.getStoreObject();
+      for (ArtifactToken art : services.getRelationResolver().getRelated(backlogArt, relationType)) {
+         if (services.getStoreService().isOfType(art, AtsArtifactTypes.AbstractWorkflowArtifact)) {
+            items.add(services.getWorkItemFactory().getAgileItem(art));
          } else {
             throw new OseeStateException("Inavlid artifact [%s] in [%s].  Only workflows are allowed, not [%s]",
                art.toStringWithId(), backlogOrSprint, art.getArtifactType().getName());
@@ -331,9 +325,10 @@ public class AgileService implements IAgileService {
    @Override
    public Collection<IAgileFeatureGroup> getFeatureGroups(IAgileItem aItem) {
       List<IAgileFeatureGroup> groups = new LinkedList<>();
-      ArtifactReadable itemArt = atsServer.getArtifact(aItem);
-      for (ArtifactReadable featureGroup : itemArt.getRelated(AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
-         groups.add(atsServer.getAgileService().getAgileFeatureGroup(featureGroup));
+      ArtifactId itemArt = services.getArtifact(aItem);
+      for (ArtifactId featureGroup : services.getRelationResolver().getRelated(itemArt,
+         AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
+         groups.add(services.getAgileService().getAgileFeatureGroup(featureGroup));
       }
       return groups;
    }
@@ -341,45 +336,85 @@ public class AgileService implements IAgileService {
    @Override
    public IAgileSprint getSprint(IAgileItem item) {
       IAgileSprint sprint = null;
-      ArtifactReadable itemArt = atsServer.getArtifact(item);
-      ArtifactReadable sprintArt = itemArt.getRelated(AtsRelationTypes.AgileSprintToItem_Sprint).getAtMostOneOrNull();
+      ArtifactToken itemArt = services.getArtifact(item);
+      ArtifactToken sprintArt =
+         services.getRelationResolver().getRelatedOrNull(itemArt, AtsRelationTypes.AgileSprintToItem_Sprint);
       if (sprintArt != null) {
-         sprint = atsServer.getWorkItemFactory().getAgileSprint(sprintArt);
+         sprint = services.getWorkItemFactory().getAgileSprint(sprintArt);
       }
       return sprint;
    }
 
    @Override
    public void deleteSprint(long sprintUuid) {
-      ArtifactReadable sprint = atsServer.getArtifact(sprintUuid);
+      ArtifactId sprint = services.getArtifact(sprintUuid);
       if (sprint != null) {
-         TransactionBuilder transaction = atsServer.getOrcsApi().getTransactionFactory().createTransaction(
-            atsServer.getAtsBranch(), sprint, "Delete Agile Sprint");
-         transaction.deleteArtifact(sprint);
-         transaction.commit();
+         IAtsChangeSet changes = services.createChangeSet("Delete Agile Sprint");
+         changes.deleteArtifact(sprint);
+         changes.execute();
       }
    }
 
    @Override
    public IAgileTeam getAgileTeam(IAgileItem item) {
-      ArtifactReadable itemArt = atsServer.getArtifact(item);
-      ArtifactReadable backlogArt = itemArt.getRelated(AtsRelationTypes.Goal_Member).getAtMostOneOrNull();
+      ArtifactId itemArt = services.getArtifact(item);
+      ArtifactId backlogArt = services.getRelationResolver().getRelatedOrNull(itemArt, AtsRelationTypes.Goal_Member);
       if (backlogArt != null) {
-         ArtifactReadable teamArt =
-            backlogArt.getRelated(AtsRelationTypes.AgileTeamToBacklog_AgileTeam).getAtMostOneOrNull();
+         ArtifactId teamArt =
+            services.getRelationResolver().getRelatedOrNull(backlogArt, AtsRelationTypes.AgileTeamToBacklog_AgileTeam);
          if (teamArt != null) {
-            return atsServer.getConfigItemFactory().getAgileTeam(teamArt);
+            return services.getConfigItemFactory().getAgileTeam(teamArt);
          }
       }
-      ArtifactReadable sprintArt = itemArt.getRelated(AtsRelationTypes.AgileSprintToItem_Sprint).getAtMostOneOrNull();
+      ArtifactId sprintArt =
+         services.getRelationResolver().getRelatedOrNull(itemArt, AtsRelationTypes.AgileSprintToItem_Sprint);
       if (sprintArt != null) {
-         ArtifactReadable teamArt =
-            sprintArt.getRelated(AtsRelationTypes.AgileTeamToSprint_AgileTeam).getAtMostOneOrNull();
+         ArtifactId teamArt =
+            services.getRelationResolver().getRelatedOrNull(sprintArt, AtsRelationTypes.AgileTeamToSprint_AgileTeam);
          if (teamArt != null) {
-            return atsServer.getConfigItemFactory().getAgileTeam(teamArt);
+            return services.getConfigItemFactory().getAgileTeam(teamArt);
          }
       }
       return null;
+   }
+
+   @Override
+   public ArtifactToken getRelatedBacklogArt(IAtsWorkItem workItem) {
+      ArtifactToken relatedBacklogArt = null;
+      for (ArtifactToken backlogArt : services.getRelationResolver().getRelated(workItem, AtsRelationTypes.Goal_Goal)) {
+         if (isBacklog(backlogArt)) {
+            relatedBacklogArt = backlogArt;
+         }
+      }
+      return relatedBacklogArt;
+   }
+
+   @Override
+   public boolean isBacklog(Object object) {
+      boolean backlog = false;
+      if (object instanceof IAtsWorkItem) {
+         backlog = services.getRelationResolver().getRelatedCount((IAtsWorkItem) object,
+            AtsRelationTypes.AgileTeamToBacklog_AgileTeam) == 1;
+      } else if (object instanceof ArtifactToken) {
+         backlog = services.getRelationResolver().getRelatedCount((ArtifactToken) object,
+            AtsRelationTypes.AgileTeamToBacklog_AgileTeam) == 1;
+      }
+      return backlog;
+   }
+
+   @Override
+   public boolean isSprint(ArtifactId artifact) {
+      return services.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileSprint);
+   }
+
+   @Override
+   public Collection<ArtifactToken> getRelatedSprints(ArtifactId artifact) {
+      Set<ArtifactToken> sprints = new HashSet<>();
+      for (ArtifactToken sprintArt : services.getRelationResolver().getRelatedArtifacts(artifact,
+         AtsRelationTypes.AgileSprintToItem_Sprint)) {
+         sprints.add(sprintArt);
+      }
+      return sprints;
    }
 
 }

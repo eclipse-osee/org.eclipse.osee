@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.editor;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.agile.AgileUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -69,12 +69,12 @@ public class WfeInput extends ArtifactEditorInput {
    }
 
    boolean isBacklog() {
-      return AgileUtilClient.isBacklog(getArtifact());
+      return AtsClientService.get().getAgileService().isBacklog(getArtifact());
    }
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      if (AgileUtilClient.isBacklog(getArtifact())) {
+      if (AtsClientService.get().getAgileService().isBacklog(getArtifact())) {
          return ImageManager.getImageDescriptor(AtsImage.AGILE_BACKLOG);
       }
       return ImageManager.getImageDescriptor(AtsImage.TEAM_WORKFLOW);

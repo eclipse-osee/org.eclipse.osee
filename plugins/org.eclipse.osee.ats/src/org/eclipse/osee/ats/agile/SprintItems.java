@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * Used to validate workflows for use in sprints / backlogs
- * 
+ *
  * @author Donald G. Dunne
  */
 public class SprintItems {
@@ -50,7 +50,8 @@ public class SprintItems {
          if (artifact instanceof AbstractWorkflowArtifact) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
             try {
-               Artifact relatedBacklogArt = AgileUtilClient.getRelatedBacklogArt(awa);
+               Artifact relatedBacklogArt =
+                  (Artifact) AtsClientService.get().getAgileService().getRelatedBacklogArt(awa);
                if (relatedBacklogArt == null) {
                   noBacklogDetected = true;
                } else if (commonBacklog == null) {

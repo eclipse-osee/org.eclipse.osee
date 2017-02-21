@@ -195,4 +195,10 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
       return getRelated(artifact, relationTypeSide);
    }
 
+   @Override
+   public int getRelatedCount(ArtifactToken artifact, RelationTypeSide relationTypeSide) {
+      ArtifactReadable art = getArtifact(artifact);
+      return art.getRelatedCount(relationTypeSide);
+   }
+
 }

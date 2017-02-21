@@ -8,11 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.rest.internal.agile.util;
+package org.eclipse.osee.ats.core.agile;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
@@ -20,60 +21,61 @@ import org.eclipse.osee.ats.api.agile.JaxAgileItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
-import org.eclipse.osee.ats.rest.IAtsServer;
-import org.eclipse.osee.ats.rest.internal.util.AtsChangeSet;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
  * @author Donald G. Dunne
  */
 public class AgileItemWriter {
 
-   private final IAtsServer atsServer;
+   private final IAtsServices services;
    private final JaxAgileItem newItem;
    private final IAgileService agileService;
 
-   public AgileItemWriter(IAtsServer atsServer, IAgileService agileService, JaxAgileItem newItem) {
-      this.atsServer = atsServer;
+   public AgileItemWriter(IAtsServices services, IAgileService agileService, JaxAgileItem newItem) {
+      this.services = services;
       this.agileService = agileService;
       this.newItem = newItem;
    }
 
    public JaxAgileItem write() {
-      IAtsChangeSet changes = (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Update new Agile Item",
-         AtsCoreUsers.SYSTEM_USER);
+      IAtsChangeSet changes =
+         services.getStoreService().createAtsChangeSet("Update new Agile Item", AtsCoreUsers.SYSTEM_USER);
 
       if (newItem.isSetFeatures()) {
          Collection<IAgileFeatureGroup> features = agileService.getAgileFeatureGroups(newItem.getFeatures());
-         List<ArtifactReadable> featureArts = new LinkedList<>();
+         List<ArtifactToken> featureArts = new LinkedList<>();
          for (IAgileFeatureGroup feature : features) {
-            featureArts.add((ArtifactReadable) feature.getStoreObject());
+            featureArts.add(feature.getStoreObject());
          }
-         for (ArtifactReadable awa : atsServer.getArtifacts(newItem.getUuids())) {
+         for (ArtifactToken awa : services.getArtifacts(newItem.getUuids())) {
             for (IAgileFeatureGroup feature : features) {
-               ArtifactReadable featureArt = (ArtifactReadable) feature.getStoreObject();
-               if (!featureArt.areRelated(AtsRelationTypes.AgileFeatureToItem_FeatureGroup, awa)) {
+               ArtifactToken featureArt = feature.getStoreObject();
+               if (!services.getRelationResolver().areRelated(featureArt,
+                  AtsRelationTypes.AgileFeatureToItem_FeatureGroup, awa)) {
                   changes.relate(feature, AtsRelationTypes.AgileFeatureToItem_AtsItem, awa);
                }
             }
-            for (ArtifactReadable featureArt : awa.getRelated(AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
+            for (ArtifactToken featureArt : services.getRelationResolver().getRelated(awa,
+               AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
                if (!featureArts.contains(featureArt)) {
                   changes.unrelate(featureArt, AtsRelationTypes.AgileFeatureToItem_AtsItem, awa);
                }
             }
          }
       } else if (newItem.isRemoveFeatures()) {
-         for (ArtifactReadable awa : atsServer.getArtifacts(newItem.getUuids())) {
-            for (ArtifactReadable feature : awa.getRelated(AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
+         for (ArtifactToken awa : services.getArtifacts(newItem.getUuids())) {
+            for (ArtifactToken feature : services.getRelationResolver().getRelated(awa,
+               AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
                changes.unrelate(feature, AtsRelationTypes.AgileFeatureToItem_FeatureGroup, awa);
             }
          }
       }
 
       if (newItem.isSetSprint()) {
-         ArtifactReadable sprintArt = atsServer.getArtifact(newItem.getSprintUuid());
-         IAgileSprint sprint = atsServer.getAgileService().getAgileSprint(sprintArt);
-         for (ArtifactReadable awa : atsServer.getArtifacts(newItem.getUuids())) {
+         ArtifactToken sprintArt = services.getArtifact(newItem.getSprintUuid());
+         IAgileSprint sprint = services.getAgileService().getAgileSprint(sprintArt);
+         for (ArtifactToken awa : services.getArtifacts(newItem.getUuids())) {
             if (sprint != null) {
                changes.setRelation(sprint, AtsRelationTypes.AgileSprintToItem_AtsItem, awa);
             } else {
@@ -84,9 +86,9 @@ public class AgileItemWriter {
       }
 
       if (newItem.isSetBacklog()) {
-         ArtifactReadable backlogArt = atsServer.getArtifact(newItem.getBacklogUuid());
-         IAgileSprint backlog = atsServer.getAgileService().getAgileSprint(backlogArt);
-         for (ArtifactReadable awa : atsServer.getArtifacts(newItem.getUuids())) {
+         ArtifactToken backlogArt = services.getArtifact(newItem.getBacklogUuid());
+         IAgileSprint backlog = services.getAgileService().getAgileSprint(backlogArt);
+         for (ArtifactToken awa : services.getArtifacts(newItem.getUuids())) {
             if (backlog != null) {
                changes.setRelation(backlog, AtsRelationTypes.Goal_Member, awa);
             } else {

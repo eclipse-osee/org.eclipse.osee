@@ -40,7 +40,6 @@ import org.eclipse.osee.ats.actions.ReloadAction;
 import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.actions.ShowChangeReportAction;
 import org.eclipse.osee.ats.actions.ShowMergeManagerAction;
-import org.eclipse.osee.ats.agile.AgileUtilClient;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
@@ -184,7 +183,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          String titleString = editor.getTitleStr();
          String displayableTitle = Strings.escapeAmpersands(titleString);
          managedForm.getForm().setText(displayableTitle);
-         if (AgileUtilClient.isBacklog(awa)) {
+         if (AtsClientService.get().getAgileService().isBacklog(awa)) {
             managedForm.getForm().setImage(ImageManager.getImage(AtsImage.AGILE_BACKLOG));
          } else {
             managedForm.getForm().setImage(ArtifactImageManager.getImage(awa));

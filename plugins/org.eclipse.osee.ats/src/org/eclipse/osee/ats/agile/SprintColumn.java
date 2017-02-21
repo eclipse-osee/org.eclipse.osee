@@ -26,11 +26,13 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -137,13 +139,15 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
 
       if (dialog.open() == 0) {
          if (dialog.isRemoveFromSprint()) {
+            IAtsChangeSet changes = AtsClientService.get().createChangeSet("Remove Sprint");
             for (Artifact awa : awas) {
-               Collection<Artifact> relatedSprintArts = AgileUtilClient.getRelatedSprints(awa);
-               for (Artifact relatedSprint : relatedSprintArts) {
-                  awa.deleteRelation(AtsRelationTypes.AgileSprintToItem_Sprint, relatedSprint);
+               Collection<ArtifactToken> relatedSprintArts =
+                  AtsClientService.get().getAgileService().getRelatedSprints(awa);
+               for (ArtifactToken relatedSprint : relatedSprintArts) {
+                  changes.unrelate(awa, AtsRelationTypes.AgileSprintToItem_Sprint, relatedSprint);
                }
             }
-            Artifacts.persistInTransaction("Remove Sprint", awas);
+            changes.executeIfNeeded();
 
          } else {
             IAgileSprint selectedSprint = dialog.getSelectedFirst();
@@ -152,12 +156,14 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
                newSprintArt = (Artifact) selectedSprint.getStoreObject();
             }
 
+            IAtsChangeSet changes = AtsClientService.get().createChangeSet("Set Sprint");
             for (Artifact awa : awas) {
-               Collection<Artifact> relatedSprintArts = AgileUtilClient.getRelatedSprints(awa);
-               for (Artifact relatedSprint : relatedSprintArts) {
-                  awa.deleteRelation(AtsRelationTypes.AgileSprintToItem_Sprint, relatedSprint);
+               Collection<ArtifactToken> relatedSprintArts =
+                  AtsClientService.get().getAgileService().getRelatedSprints(awa);
+               for (ArtifactToken relatedSprint : relatedSprintArts) {
+                  changes.unrelate(awa, AtsRelationTypes.AgileSprintToItem_Sprint, relatedSprint);
                }
-               awa.addRelation(AtsRelationTypes.AgileSprintToItem_Sprint, newSprintArt);
+               changes.relate(awa, AtsRelationTypes.AgileSprintToItem_Sprint, newSprintArt);
             }
             Artifacts.persistInTransaction("Set Sprint", awas);
          }

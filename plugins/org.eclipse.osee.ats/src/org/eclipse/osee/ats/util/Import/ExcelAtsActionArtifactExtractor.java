@@ -46,9 +46,9 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -237,7 +237,8 @@ public class ExcelAtsActionArtifactExtractor {
             }
             if (aData.estimatedHours != null) {
                for (TeamWorkFlowArtifact team : newTeamArts) {
-                  changes.setSoleAttributeValue(team, AtsAttributeTypes.EstimatedHours, aData.estimatedHours);
+                  changes.setSoleAttributeValue((ArtifactId) team, AtsAttributeTypes.EstimatedHours,
+                     aData.estimatedHours);
                }
             }
             if (aData.assigneeStrs.size() > 0) {

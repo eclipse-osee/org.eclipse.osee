@@ -12,13 +12,19 @@ package org.eclipse.osee.ats.api.agile;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IAgileService {
+
+   public static final String SPRINT_FOLDER_NAME = "Sprints";
+   public static String FEATURE_GROUP_FOLDER_NAME = "Feature Groups";
+   public static long EMPTY_VALUE = -1;
 
    IAgileTeam getAgileTeam(ArtifactId artifact);
 
@@ -81,5 +87,13 @@ public interface IAgileService {
    Collection<IAgileItem> getItems(IAgileSprint sprint);
 
    IAgileTeam getAgileTeam(IAgileItem item);
+
+   ArtifactToken getRelatedBacklogArt(IAtsWorkItem workItem);
+
+   boolean isBacklog(Object object);
+
+   boolean isSprint(ArtifactId artifact);
+
+   Collection<ArtifactToken> getRelatedSprints(ArtifactId artifact);
 
 }

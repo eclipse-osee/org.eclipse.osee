@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.goal;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.agile.AgileUtilClient;
 import org.eclipse.osee.ats.agile.BacklogXViewerFactory;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
@@ -113,7 +112,7 @@ public class GoalMemberProvider extends AbstractMemberProvider {
 
    @Override
    public boolean isBacklog() {
-      return AgileUtilClient.isBacklog(getArtifact());
+      return AtsClientService.get().getAgileService().isBacklog(getArtifact());
    }
 
    @Override

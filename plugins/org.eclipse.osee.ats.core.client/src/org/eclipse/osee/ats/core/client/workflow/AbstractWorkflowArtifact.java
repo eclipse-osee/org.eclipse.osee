@@ -53,6 +53,7 @@ import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.state.StateManagerUtility;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -500,7 +501,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
             changes.setSoleAttributeValue((IAtsWorkItem) this, AtsAttributeTypes.CreatedBy, user.getUserId());
          }
          if (date != null && changes.isAttributeTypeValid(this, AtsAttributeTypes.CreatedDate)) {
-            changes.setSoleAttributeValue(this, AtsAttributeTypes.CreatedDate, date);
+            changes.setSoleAttributeValue((ArtifactId) this, AtsAttributeTypes.CreatedDate, date);
          }
          try {
             changes.getNotifications().addWorkItemNotificationEvent(
@@ -532,7 +533,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    public void internalSetCreatedDate(Date date, IAtsChangeSet changes) throws OseeCoreException {
       getLog().internalResetCreatedDate(date);
       if (changes.isAttributeTypeValid(this, AtsAttributeTypes.CreatedDate)) {
-         changes.setSoleAttributeValue(this, AtsAttributeTypes.CreatedDate, date);
+         changes.setSoleAttributeValue((ArtifactId) this, AtsAttributeTypes.CreatedDate, date);
       }
    }
 

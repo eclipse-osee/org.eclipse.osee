@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.IAtsCache;
@@ -80,11 +81,11 @@ public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfig
 
    IAtsVersionService getVersionService();
 
-   ArtifactId getArtifact(Long uuid);
+   ArtifactToken getArtifact(Long uuid);
 
-   ArtifactId getArtifact(ArtifactId artifact);
+   ArtifactToken getArtifact(ArtifactId artifact);
 
-   ArtifactId getArtifact(IAtsObject atsObject);
+   ArtifactToken getArtifact(IAtsObject atsObject);
 
    void setChangeType(IAtsObject atsObject, ChangeType changeType, IAtsChangeSet changes);
 
@@ -114,9 +115,9 @@ public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfig
 
    IAtsTaskService getTaskService();
 
-   ArtifactId getArtifactByName(IArtifactType artifactType, String name);
+   ArtifactToken getArtifactByName(IArtifactType artifactType, String name);
 
-   ArtifactId getArtifactByGuid(String guid);
+   ArtifactToken getArtifactByGuid(String guid);
 
    IAtsProgramService getProgramService();
 
@@ -184,4 +185,8 @@ public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfig
    IAtsTeamDefinitionService getTeamDefinitionService();
 
    void sendNotifications(AtsNotificationCollector notifications);
+
+   Collection<ArtifactToken> getArtifacts(List<Long> ids);
+
+   IAgileService getAgileService();
 }

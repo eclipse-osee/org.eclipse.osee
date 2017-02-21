@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -37,6 +38,7 @@ import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
+import org.eclipse.osee.ats.core.agile.AgileService;
 import org.eclipse.osee.ats.core.ai.ActionableItemManager;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
@@ -67,6 +69,7 @@ import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreServiceImpl;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -99,6 +102,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    private ArtifactCollectorsCache<SprintArtifact> sprintItemsCache;
    private IAtsEventService eventService;
    private EventAdmin eventAdmin;
+   private IAgileService agileService;
 
    public AtsClientImpl() {
       super();
@@ -143,6 +147,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       taskService = new AtsTaskService(this);
 
       eventService = new AtsEventServiceImpl();
+      agileService = new AgileService(logger, this);
 
    }
 
@@ -466,7 +471,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public ArtifactId getArtifactByName(IArtifactType artType, String name) {
+   public ArtifactToken getArtifactByName(IArtifactType artType, String name) {
       return ArtifactQuery.getArtifactFromTypeAndNameNoException(artType, name, getAtsBranch());
    }
 
@@ -483,6 +488,21 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    @Override
    public OseeClient getOseeClient() {
       return OsgiUtil.getService(getClass(), OseeClient.class);
+   }
+
+   @Override
+   public Collection<ArtifactToken> getArtifacts(List<Long> ids) {
+      List<Integer> intIds = new LinkedList<>();
+      for (Long id : ids) {
+         intIds.add(id.intValue());
+      }
+      return Collections.castAll(
+         ArtifactQuery.getArtifactListFromIds(intIds, getAtsBranch(), DeletionFlag.EXCLUDE_DELETED));
+   }
+
+   @Override
+   public IAgileService getAgileService() {
+      return agileService;
    }
 
 }

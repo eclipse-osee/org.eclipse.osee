@@ -15,16 +15,15 @@ import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactoryProvider;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
 import org.eclipse.osee.ats.core.config.IAtsCacheProvider;
 import org.eclipse.osee.ats.rest.util.IArtifactProvider;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -59,14 +58,10 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
    void setEmailEnabled(boolean emailEnabled);
 
    @Override
-   IAtsTeamDefinitionService getTeamDefinitionService();
-
-   @Override
    ArtifactReadable getArtifact(Long uuid);
 
-   IAgileService getAgileService();
-
-   Collection<ArtifactReadable> getArtifacts(List<Long> uuids);
+   @Override
+   Collection<ArtifactToken> getArtifacts(List<Long> uuids);
 
    void addAtsDatabaseConversion(IAtsDatabaseConversion conversion);
 

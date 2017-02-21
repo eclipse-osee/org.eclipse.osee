@@ -36,10 +36,10 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.AgileBurndown;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.AgileItem;
-import org.eclipse.osee.ats.api.agile.AgileUtil;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
+import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.agile.JaxAgileBacklog;
@@ -184,7 +184,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       List<JaxAgileFeatureGroup> groups = new LinkedList<>();
       ArtifactReadable agileTeamArt = atsServer.getArtifact(teamUuid);
       for (ArtifactReadable child : agileTeamArt.getChildren()) {
-         if (child.getName().equals(AgileUtil.FEATURE_GROUP_FOLDER_NAME)) {
+         if (child.getName().equals(IAgileService.FEATURE_GROUP_FOLDER_NAME)) {
             for (ArtifactReadable subChild : child.getChildren()) {
                if (subChild.isOfType(AtsArtifactTypes.AgileFeatureGroup)) {
                   IAgileFeatureGroup group = atsServer.getConfigItemFactory().getAgileFeatureGroup(subChild);

@@ -35,12 +35,12 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
+import org.eclipse.osee.ats.core.agile.AgileService;
 import org.eclipse.osee.ats.core.ai.ActionableItemManager;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreServiceImpl;
 import org.eclipse.osee.ats.rest.IAtsServer;
-import org.eclipse.osee.ats.rest.internal.agile.AgileService;
 import org.eclipse.osee.ats.rest.internal.config.AtsConfigEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertBaselineGuidToBaselineUuid;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertFavoriteBranchGuidToUuid;
@@ -62,6 +62,7 @@ import org.eclipse.osee.ats.rest.internal.workitem.WorkItemFactory;
 import org.eclipse.osee.ats.rest.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.rest.util.IAtsNotifierServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -261,8 +262,8 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    }
 
    @Override
-   public Collection<ArtifactReadable> getArtifacts(List<Long> uuids) {
-      Collection<ArtifactReadable> artifacts = new LinkedList<>();
+   public Collection<ArtifactToken> getArtifacts(List<Long> uuids) {
+      Collection<ArtifactToken> artifacts = new LinkedList<>();
       Iterator<ArtifactReadable> iterator =
          orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andUuids(uuids).getResults().iterator();
       while (iterator.hasNext()) {
@@ -398,7 +399,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    }
 
    @Override
-   public ArtifactId getArtifactByName(IArtifactType artifactType, String name) {
+   public ArtifactToken getArtifactByName(IArtifactType artifactType, String name) {
       return orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andIsOfType(artifactType).andNameEquals(
          name).getResults().getAtMostOneOrNull();
    }

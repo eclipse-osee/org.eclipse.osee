@@ -52,4 +52,10 @@ public interface IRelationResolver {
 
    Collection<ArtifactToken> getChildren(ArtifactId artifact, IArtifactType artifactType);
 
+   Collection<ArtifactToken> getChildren(ArtifactId artifact);
+
+   ArtifactToken getParent(ArtifactId artifact);
+
+   int getRelatedCount(ArtifactToken artifact, RelationTypeSide relationTypeSide);
+
 }

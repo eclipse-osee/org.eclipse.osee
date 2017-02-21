@@ -58,7 +58,7 @@ public interface IAtsChangeSet {
 
    void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value) throws OseeCoreException;
 
-   void setSoleAttributeValue(ArtifactId artifact, AttributeTypeId attributeType, String value);
+   void setSoleAttributeValue(ArtifactId artifact, AttributeTypeId attributeType, Object value);
 
    void addAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value) throws OseeCoreException;
 
@@ -133,5 +133,11 @@ public interface IAtsChangeSet {
    void setSoleAttributeFromStream(ArtifactId artifact, AttributeTypeId attributeType, InputStream inputStream);
 
    void reset(String string);
+
+   void addChild(ArtifactId parent, ArtifactId child);
+
+   void unrelateFromAll(RelationTypeSide relationSide, ArtifactId artifact);
+
+   void setName(ArtifactToken artifact, String name);
 
 }

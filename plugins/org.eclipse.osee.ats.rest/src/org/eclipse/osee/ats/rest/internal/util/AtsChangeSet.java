@@ -319,7 +319,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void setSoleAttributeValue(ArtifactId artifact, AttributeTypeId attrType, String value) {
+   public void setSoleAttributeValue(ArtifactId artifact, AttributeTypeId attrType, Object value) {
       ArtifactReadable art = getArtifact(artifact);
       getTransaction().setSoleAttributeValue(art, attrType, value);
       add(art);
@@ -363,6 +363,20 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    public void setSoleAttributeFromStream(ArtifactId artifact, AttributeTypeId attributeType, InputStream inputStream) {
       ArtifactReadable art = getArtifact(artifact);
       getTransaction().setSoleAttributeFromStream(art, attributeType, inputStream);
+      add(art);
+   }
+
+   @Override
+   public void unrelateFromAll(RelationTypeSide relationSide, ArtifactId artifact) {
+      ArtifactReadable art = getArtifact(artifact);
+      getTransaction().unrelateFromAll(relationSide, art);
+      add(art);
+   }
+
+   @Override
+   public void setName(ArtifactToken artifact, String name) {
+      ArtifactReadable art = getArtifact(artifact);
+      getTransaction().setName(artifact, name);
       add(art);
    }
 

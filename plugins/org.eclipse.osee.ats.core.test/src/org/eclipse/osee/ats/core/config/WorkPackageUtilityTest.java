@@ -46,7 +46,7 @@ public class WorkPackageUtilityTest {
    @Mock private IAtsGoal goal;
    @Mock private IAtsTeamWorkflow teamWf;
    @Mock private IAtsTask task;
-   @Mock private ArtifactId workPackageArt;
+   @Mock private ArtifactToken workPackageArt;
 
    @Mock private IAtsServices services;
    @Mock private IAttributeResolver attributeResolver;
