@@ -11,6 +11,11 @@
 
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WordTemplateContent;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DIFF;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERAL_REQUESTED;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
 import java.io.ByteArrayOutputStream;
@@ -129,10 +134,18 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact, Object... objects) throws OseeCoreException {
       int rating = NO_MATCH;
       Artifact aArtifact = artifact.getFullArtifact();
-      if (!presentationType.matches(PresentationType.GENERALIZED_EDIT, PresentationType.GENERAL_REQUESTED)) {
-         if (aArtifact.isAttributeTypeValid(CoreAttributeTypes.WordTemplateContent)) {
-            rating = PRESENTATION_SUBTYPE_MATCH;
-         } else if (presentationType.matches(PresentationType.PREVIEW, PresentationType.DIFF)) {
+      if (!presentationType.matches(GENERALIZED_EDIT, GENERAL_REQUESTED)) {
+         if (aArtifact.isAttributeTypeValid(WordTemplateContent)) {
+            if (presentationType.matches(DEFAULT_OPEN, PREVIEW)) {
+               if (aArtifact.getAttributeCount(WordTemplateContent) > 0) {
+                  rating = PRESENTATION_SUBTYPE_MATCH;
+               } else {
+                  rating = SUBTYPE_TYPE_MATCH;
+               }
+            } else {
+               rating = PRESENTATION_SUBTYPE_MATCH;
+            }
+         } else if (presentationType.matches(PREVIEW, DIFF)) {
             rating = BASE_MATCH;
          }
       }

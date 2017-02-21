@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.ContentUrl;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERAL_REQUESTED;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.WEB_PREVIEW;
@@ -49,8 +50,9 @@ public class UrlRenderer extends DefaultArtifactRenderer {
          GENERAL_REQUESTED) && aArtifact.getAttributeCount(ContentUrl) > 0) {
          if (presentationType.equals(WEB_PREVIEW)) {
             return SPECIALIZED_MATCH;
+         } else if (presentationType.equals(DEFAULT_OPEN)) {
+            return PRESENTATION_TYPE;
          }
-         return ARTIFACT_TYPE_MATCH;
       }
       return NO_MATCH;
    }
