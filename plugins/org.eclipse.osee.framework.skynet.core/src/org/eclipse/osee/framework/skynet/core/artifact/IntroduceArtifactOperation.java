@@ -125,7 +125,7 @@ public class IntroduceArtifactOperation {
 
          if (destinationAttribute == null) {
             destinationArtifact.internalInitializeAttribute(sourceAttribute.getAttributeType(), sourceAttribute.getId(),
-               sourceAttribute.getGammaId(), sourceAttribute.getModificationType(), true,
+               sourceAttribute.getGammaId(), sourceAttribute.getModificationType(), sourceAttribute.getApplicabilityId(), true,
                sourceAttribute.getAttributeDataProvider().getData()).internalSetModType(
                   sourceAttribute.getModificationType(), true, true);
          } else {
@@ -160,7 +160,7 @@ public class IntroduceArtifactOperation {
                ModificationType modType = sourceRelation.getModificationType();
                destinationRelation = RelationManager.getOrCreate(aArtifactId, bArtifactId, destinationBranch,
                   sourceRelation.getRelationType(), sourceRelation.getId(), sourceRelation.getGammaId(),
-                  sourceRelation.getRationale(), modType);
+                  sourceRelation.getRationale(), modType, sourceRelation.getApplicabilityId());
                destinationRelation.internalSetModType(modType, true, true);
             }
          } else {

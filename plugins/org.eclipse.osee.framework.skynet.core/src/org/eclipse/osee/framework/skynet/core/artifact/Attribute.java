@@ -17,6 +17,7 @@ import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -45,12 +46,13 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
    private ModificationType modificationType;
    private boolean useBackingData;
    private IAttributeType attributeTypeToken;
+   private ApplicabilityId applicabilityId;
 
-   void internalInitialize(IAttributeType attributeType, Artifact artifact, ModificationType modificationType, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
+   void internalInitialize(IAttributeType attributeType, Artifact artifact, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
       this.attributeTypeToken = attributeType;
       this.artifactRef = new WeakReference<>(artifact);
       internalSetModType(modificationType, false, markDirty);
-
+      internalSetApplicabilityId(applicabilityId);
       try {
          Class<? extends IAttributeDataProvider> providerClass =
             AttributeTypeManager.getAttributeProviderClass(AttributeTypeManager.getType(attributeTypeToken));
@@ -65,6 +67,10 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
          setToDefaultValue();
       }
       uponInitialize();
+   }
+
+   private void internalSetApplicabilityId(ApplicabilityId applicabilityId) {
+      this.applicabilityId = applicabilityId;
    }
 
    /**
@@ -94,8 +100,8 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
       return attributeChange;
    }
 
-   public void internalInitialize(IAttributeType attributeType, Artifact artifact, ModificationType modificationType, int attributeId, int gammaId, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
-      internalInitialize(attributeType, artifact, modificationType, markDirty, setDefaultValue);
+   public void internalInitialize(IAttributeType attributeType, Artifact artifact, ModificationType modificationType, ApplicabilityId applicabilityId, int attributeId, int gammaId, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
+      internalInitialize(attributeType, artifact, modificationType, applicabilityId, markDirty, setDefaultValue);
       this.attrId = attributeId;
       this.gammaId = gammaId;
    }
@@ -304,6 +310,10 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
 
    public int getGammaId() {
       return gammaId;
+   }
+
+   public ApplicabilityId getApplicabilityId() {
+      return applicabilityId;
    }
 
    public void internalSetGammaId(int gammaId) {

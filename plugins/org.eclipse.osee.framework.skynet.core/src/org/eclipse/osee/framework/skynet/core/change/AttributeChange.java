@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
  */
 public final class AttributeChange extends Change {
    private final static LoadChangeType changeType = LoadChangeType.attribute;
-   private final static Class<AttributeChangeWorker> worker = AttributeChangeWorker.class;
 
    private final String isValue;
    private final String wasValue;
@@ -146,10 +145,5 @@ public final class AttributeChange extends Change {
    @Override
    public LoadChangeType getChangeType() {
       return changeType;
-   }
-
-   @Override
-   public Class<? extends IChangeWorker> getWorker() {
-      return worker;
    }
 }

@@ -92,8 +92,8 @@ public class RelationTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected ApplicabilityId getApplicabilityId() {
-      return ApplicabilityId.BASE;
+   protected ApplicabilityId getApplicabilityId() throws OseeCoreException {
+      return relation.getApplicabilityId();
    }
 
 }

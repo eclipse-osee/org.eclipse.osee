@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
  */
 public final class RelationChange extends Change {
    private final static LoadChangeType changeType = LoadChangeType.relation;
-   private final static Class<RelationChangeWorker> worker = RelationChangeWorker.class;
 
    private final int bArtId;
    private final Artifact endTxBArtifact;
@@ -112,10 +111,5 @@ public final class RelationChange extends Change {
    @Override
    public int getItemId() {
       return relLinkId;
-   }
-
-   @Override
-   public Class<? extends IChangeWorker> getWorker() {
-      return worker;
    }
 }

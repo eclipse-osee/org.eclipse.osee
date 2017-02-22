@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,6 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.change.AttributeChangeWorker;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.IChangeWorker;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -74,12 +73,10 @@ public class ReplaceAttributeWithBaselineOperation extends AbstractOperation {
       }
    }
 
-   private void revertAttribute(Artifact artifact, Change change) throws OseeStateException, OseeCoreException, SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
+   private void revertAttribute(Artifact artifact, Change change) throws OseeStateException, OseeCoreException, SecurityException, IllegalArgumentException {
       Attribute<?> attribute = artifact.getAttributeById(change.getItemId(), true);
       if (attribute != null && change.getItemId() == attribute.getId()) {
-         Class<? extends IChangeWorker> workerClass = change.getWorker();
-         Constructor<?> ctor = workerClass.getConstructor(Change.class, Artifact.class);
-         IChangeWorker worker = (IChangeWorker) ctor.newInstance(change, artifact);
+         IChangeWorker worker = new AttributeChangeWorker(change, artifact);
          worker.revert();
       }
    }

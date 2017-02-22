@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -524,7 +525,7 @@ public class RelationManager {
          ensureRelationCanBeAdded(relationTypeToken, artifactA, artifactB);
 
          relation = getOrCreate(artifactA.getArtId(), artifactB.getArtId(), artifactA.getBranch(), relationType, 0, 0,
-            rationale, ModificationType.NEW);
+            rationale, ModificationType.NEW, ApplicabilityId.BASE);
          relation.setDirty();
          if (relation.isDeleted()) {
             relation.undelete();
@@ -596,7 +597,7 @@ public class RelationManager {
     * @param relationId 0 or relationId if already created
     * @throws OseeCoreException
     */
-   public static synchronized RelationLink getOrCreate(int aArtifactId, int bArtifactId, BranchId branch, RelationType relationType, int relationId, int gammaId, String rationale, ModificationType modificationType) throws OseeCoreException {
+   public static synchronized RelationLink getOrCreate(int aArtifactId, int bArtifactId, BranchId branch, RelationType relationType, int relationId, int gammaId, String rationale, ModificationType modificationType, ApplicabilityId applicabilityId) throws OseeCoreException {
       RelationLink relation = null;
       if (relationId != 0) {
          relation = getLoadedRelationById(relationId, aArtifactId, bArtifactId, branch);
@@ -605,7 +606,7 @@ public class RelationManager {
       }
       if (relation == null) {
          relation = new RelationLink(new RelationArtifactLinker(), aArtifactId, bArtifactId, branch, relationType,
-            relationId, gammaId, rationale, modificationType);
+            relationId, gammaId, rationale, modificationType, applicabilityId);
       }
       manageRelation(relation, RelationSide.SIDE_A);
       manageRelation(relation, RelationSide.SIDE_B);

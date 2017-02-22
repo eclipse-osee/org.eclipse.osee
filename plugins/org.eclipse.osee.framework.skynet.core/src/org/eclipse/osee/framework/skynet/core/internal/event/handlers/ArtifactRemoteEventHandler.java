@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.internal.event.handlers;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -151,7 +152,7 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
                            continue;
                         }
                         artifact.internalInitializeAttribute(attributeType, attrChange.getAttributeId(),
-                           attrChange.getGammaId(), modificationType, false,
+                           attrChange.getGammaId(), modificationType, attrChange.getApplicabilityId(), false,
                            attrChange.getData().toArray(new Object[attrChange.getData().size()]));
                      }
                   } catch (OseeCoreException ex) {
@@ -192,10 +193,14 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
                RelationEventType eventType = guidArt.getModType();
                switch (eventType) {
                   case Added:
-                     if (relation == null || relation.getModificationType() == ModificationType.DELETED || relation.getModificationType() == ModificationType.ARTIFACT_DELETED) {
+                     if (relation == null) {
                         relation = RelationManager.getOrCreate(guidArt.getArtAId(), guidArt.getArtBId(), branch,
                            relationType, guidArt.getRelationId(), guidArt.getGammaId(), guidArt.getRationale(),
-                           ModificationType.NEW);
+                           ModificationType.NEW, ApplicabilityId.BASE);
+                     } else if (relation.getModificationType() == ModificationType.DELETED || relation.getModificationType() == ModificationType.ARTIFACT_DELETED) {
+                        relation = RelationManager.getOrCreate(guidArt.getArtAId(), guidArt.getArtBId(), branch,
+                           relationType, guidArt.getRelationId(), guidArt.getGammaId(), guidArt.getRationale(),
+                           ModificationType.NEW, relation.getApplicabilityId());
                      }
                      break;
                   case ModifiedRationale:

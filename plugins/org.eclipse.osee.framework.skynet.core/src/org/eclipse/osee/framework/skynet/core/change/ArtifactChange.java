@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
  */
 public final class ArtifactChange extends Change {
    private static LoadChangeType changeType = LoadChangeType.artifact;
-   private static Class<ArtifactChangeWorker> worker = ArtifactChangeWorker.class;
    private final String isValue;
    private final String wasValue;
 
@@ -69,10 +68,5 @@ public final class ArtifactChange extends Change {
    @Override
    public LoadChangeType getChangeType() {
       return changeType;
-   }
-
-   @Override
-   public Class<? extends IChangeWorker> getWorker() {
-      return worker;
    }
 }

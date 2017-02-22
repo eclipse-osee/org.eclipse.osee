@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -87,6 +88,7 @@ public class AttributeLoader {
       public String value = "";
       public int stripeId = -1;
       public String uri = "";
+      public ApplicabilityId applicabilityId = ApplicabilityId.BASE;
 
       public AttrData() {
          // do nothing
@@ -106,6 +108,7 @@ public class AttributeLoader {
             stripeId = chStmt.getInt("stripe_transaction_id");
          }
          uri = chStmt.getString("uri");
+         applicabilityId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
       }
 
       public static boolean isDifferentArtifact(AttrData previous, AttrData current) {
@@ -171,7 +174,7 @@ public class AttributeLoader {
       }
       boolean markDirty = false;
       artifact.internalInitializeAttribute(attributeType, current.attrId, current.gammaId,
-         ModificationType.getMod(current.modType), markDirty, value, current.uri);
+         ModificationType.getMod(current.modType), current.applicabilityId, markDirty, value, current.uri);
    }
 
    private static boolean isEnumOrBoolean(IAttributeType attributeType) throws OseeCoreException {

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.relation;
 
 import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.USER_DEFINED;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
@@ -58,6 +59,7 @@ public class RelationLink implements HasBranch {
    private final int bArtifactId;
    private final BranchId branch;
    private ModificationType modificationType;
+   private ApplicabilityId applicabilityId;
 
    private static final boolean SET_DIRTY = true;
    private static final boolean SET_NOT_DIRTY = false;
@@ -65,7 +67,7 @@ public class RelationLink implements HasBranch {
    private final ArtifactLinker artifactLinker;
    private boolean useBackingData;
 
-   public RelationLink(ArtifactLinker artifactLinker, int aArtifactId, int bArtifactId, BranchId branch, RelationType relationType, int relationId, int gammaId, String rationale, ModificationType modificationType) {
+   public RelationLink(ArtifactLinker artifactLinker, int aArtifactId, int bArtifactId, BranchId branch, RelationType relationType, int relationId, int gammaId, String rationale, ModificationType modificationType, ApplicabilityId applicabilityId) {
       this.artifactLinker = artifactLinker;
       this.relationType = relationType;
       this.relationId = relationId;
@@ -75,6 +77,7 @@ public class RelationLink implements HasBranch {
       this.aArtifactId = aArtifactId;
       this.bArtifactId = bArtifactId;
       this.branch = branch;
+      this.applicabilityId = applicabilityId;
       internalSetModType(modificationType, false, false);
    }
 
@@ -135,9 +138,12 @@ public class RelationLink implements HasBranch {
       return dirty;
    }
 
+   public ApplicabilityId getApplicabilityId() {
+      return applicabilityId;
+   }
+
    public void delete(boolean reorderRelations) {
       delete(reorderRelations, null);
-
    }
 
    public void delete(boolean reorderRelations, SkynetTransaction transaction) {

@@ -19,6 +19,7 @@ import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.T
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitor;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -370,7 +371,7 @@ public class RelationCacheTest {
       RelationType type = new RelationType(0x00L, "type name", artifactA.getName(), artifactB.getName(),
          CoreArtifactTypes.Artifact, CoreArtifactTypes.Artifact, RelationTypeMultiplicity.MANY_TO_MANY, "");
       RelationLink link = new RelationLink(new MockLinker("linker"), artifactA.getArtId(), artifactB.getArtId(),
-         testBranch, type, 77, 88, "", ModificationType.MODIFIED);
+         testBranch, type, 77, 88, "", ModificationType.MODIFIED, ApplicabilityId.BASE);
       relCache.cache(artifactA, link);
       relCache.cache(artifactB, link);
 

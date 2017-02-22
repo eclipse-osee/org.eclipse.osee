@@ -464,13 +464,15 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
 
    private <T> Attribute<T> initializeAttribute(IAttributeType attributeType, ModificationType modificationType, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
       Attribute<T> attribute = createAttribute(attributeType);
-      attribute.internalInitialize(attributeType, this, modificationType, markDirty, setDefaultValue);
+      attribute.internalInitialize(attributeType, this, modificationType, ApplicabilityId.BASE, markDirty,
+         setDefaultValue);
       return attribute;
    }
 
-   public final <T> Attribute<T> internalInitializeAttribute(IAttributeType attributeType, int attributeId, int gammaId, ModificationType modificationType, boolean markDirty, Object... data) throws OseeCoreException {
+   public final <T> Attribute<T> internalInitializeAttribute(IAttributeType attributeType, int attributeId, int gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty, Object... data) throws OseeCoreException {
       Attribute<T> attribute = createAttribute(attributeType);
-      attribute.internalInitialize(attributeType, this, modificationType, attributeId, gammaId, markDirty, false);
+      attribute.internalInitialize(attributeType, this, modificationType, applicabilityId, attributeId, gammaId,
+         markDirty, false);
       attribute.getAttributeDataProvider().loadData(data);
       return attribute;
    }

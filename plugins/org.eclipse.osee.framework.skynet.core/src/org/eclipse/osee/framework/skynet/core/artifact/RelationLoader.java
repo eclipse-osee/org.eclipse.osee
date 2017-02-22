@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import static org.eclipse.osee.framework.core.enums.LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 import static org.eclipse.osee.framework.core.enums.LoadLevel.ARTIFACT_DATA;
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -54,9 +55,10 @@ class RelationLoader {
             int gammaId = chStmt.getInt("gamma_id");
             String rationale = chStmt.getString("rationale");
             ModificationType modificationType = ModificationType.getMod(chStmt.getInt("mod_type"));
+            ApplicabilityId applicabilityId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
 
             RelationManager.getOrCreate(aArtifactId, bArtifactId, branch, relationType, relationId, gammaId, rationale,
-               modificationType);
+               modificationType, applicabilityId);
          }
       } finally {
          chStmt.close();

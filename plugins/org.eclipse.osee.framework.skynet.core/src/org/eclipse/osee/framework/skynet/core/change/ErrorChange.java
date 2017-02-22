@@ -68,10 +68,4 @@ public final class ErrorChange extends Change {
    public LoadChangeType getChangeType() {
       return null;
    }
-
-   @Override
-   public Class<? extends IChangeWorker> getWorker() {
-      return null;
-   }
-
 }

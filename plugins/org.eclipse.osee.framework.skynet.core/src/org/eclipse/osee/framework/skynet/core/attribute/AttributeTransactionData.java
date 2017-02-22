@@ -140,8 +140,8 @@ public class AttributeTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected ApplicabilityId getApplicabilityId() {
-      return ApplicabilityId.BASE;
+   protected ApplicabilityId getApplicabilityId() throws OseeCoreException {
+      return attribute.getApplicabilityId();
    }
 
 }
