@@ -14,9 +14,11 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -132,4 +134,10 @@ public interface IAtsBranchService {
    String getBranchName(BranchId branchId);
 
    void setBranchName(IOseeBranch branch, String name);
+
+   Result moveWorkingBranch(IAtsTeamWorkflow fromTeamWf, IAtsTeamWorkflow toTeamWf, String newBranchName);
+
+   Collection<BranchId> getBranches(BranchArchivedState unarchived, BranchType working);
+
+   ArtifactId getAssociatedArtifactId(BranchId branch);
 }

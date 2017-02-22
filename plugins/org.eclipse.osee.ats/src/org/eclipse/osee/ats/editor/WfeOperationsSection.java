@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.actions.EditActionableItemsAction;
 import org.eclipse.osee.ats.actions.EmailActionAction;
 import org.eclipse.osee.ats.actions.FavoriteAction;
 import org.eclipse.osee.ats.actions.ModifyActionableItemAction;
+import org.eclipse.osee.ats.actions.MoveWorkflowWorkingBranchToWorkflowAction;
 import org.eclipse.osee.ats.actions.OpenInArtifactEditorAction;
 import org.eclipse.osee.ats.actions.OpenInAtsWorldAction;
 import org.eclipse.osee.ats.actions.OpenInSkyWalkerAction;
@@ -36,6 +37,7 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.operation.MoveTeamWorkflowsAction;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -198,6 +200,8 @@ public class WfeOperationsSection extends SectionPart {
       if (ShowBranchChangeDataAction.isApplicable(editor.getAwa())) {
          new XButtonViaAction(new ShowBranchChangeDataAction(editor.getAwa())).createWidgets(sectionBody, 2);
       }
+      new XButtonViaAction(new MoveWorkflowWorkingBranchToWorkflowAction(editor, AtsClientService.get())).createWidgets(
+         sectionBody, 2);
 
       for (IWfeOperationsSection operation : operationsSectionProviders) {
          operation.createAdminSection(editor, sectionBody, toolkit);

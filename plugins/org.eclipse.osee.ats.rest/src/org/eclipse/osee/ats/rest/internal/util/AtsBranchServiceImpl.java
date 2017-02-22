@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
@@ -23,10 +24,12 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -161,4 +164,25 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    public String getBranchName(BranchId branchId) {
       return getBranch(branchId).getName();
    }
+
+   @Override
+   public Result moveWorkingBranch(IAtsTeamWorkflow fromTeamWf, IAtsTeamWorkflow toTeamWf, String newBranchName) {
+      throw new UnsupportedOperationException("Not yet supported on server");
+   }
+
+   @Override
+   public Collection<BranchId> getBranches(BranchArchivedState archivedState, BranchType branchTypes) {
+      List<BranchId> branches = new LinkedList<>();
+      for (BranchReadable branch : orcsApi.getQueryFactory().branchQuery().andIsOfType(
+         branchTypes).excludeArchived().getResults()) {
+         branches.add(branch);
+      }
+      return branches;
+   }
+
+   @Override
+   public ArtifactId getAssociatedArtifactId(BranchId branch) {
+      throw new UnsupportedOperationException("Not yet supported on server");
+   }
+
 }

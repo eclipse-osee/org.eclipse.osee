@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -31,14 +32,20 @@ import org.eclipse.swt.graphics.Image;
  */
 public class AtsObjectLabelProvider extends LabelProvider {
    private final boolean showActive;
+   private final boolean showAtsId;
 
    public AtsObjectLabelProvider() {
       this(false);
    }
 
    public AtsObjectLabelProvider(boolean showActive) {
+      this(showActive, false);
+   }
+
+   public AtsObjectLabelProvider(boolean showActive, boolean showAtsId) {
       super();
       this.showActive = showActive;
+      this.showAtsId = showAtsId;
    }
 
    @Override
@@ -75,7 +82,16 @@ public class AtsObjectLabelProvider extends LabelProvider {
             result = element.toString();
          }
       }
+      result = getAtsId(element, result);
       result = getActiveTag(element, result);
+      return result;
+   }
+
+   private String getAtsId(Object element, String result) {
+      if (showAtsId && element instanceof IAtsWorkItem) {
+         IAtsWorkItem iAtsObject = (IAtsWorkItem) element;
+         result = String.format("[%s] - %s", iAtsObject.getAtsId(), result);
+      }
       return result;
    }
 

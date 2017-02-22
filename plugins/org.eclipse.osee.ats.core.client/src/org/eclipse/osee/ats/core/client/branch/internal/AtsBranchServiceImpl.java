@@ -12,17 +12,23 @@ package org.eclipse.osee.ats.core.client.branch.internal;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
+import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.util.AbstractAtsBranchService;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
@@ -117,5 +123,53 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public boolean branchExists(BranchId branch) {
       return BranchManager.branchExists(branch);
+   }
+
+   @Override
+   public Result moveWorkingBranch(IAtsTeamWorkflow fromTeamWf, IAtsTeamWorkflow toTeamWf, String newBranchName) {
+      if (isCommittedBranchExists(fromTeamWf)) {
+         return new Result(false, "Can not move a branch that has commits");
+      }
+      IOseeBranch workingBranch = getWorkingBranch(fromTeamWf);
+      if (workingBranch == null) {
+         return new Result(false, "Working Branch does not exist for workflow " + toTeamWf.toStringWithId());
+      }
+      if (getWorkingBranch(toTeamWf).isValid()) {
+         return new Result(false, String.format(
+            "Can not move Working Branch to workflow %s; It already has a working branch.", toTeamWf.toStringWithId()));
+      }
+      try {
+         BranchManager.setAssociatedArtifactId(workingBranch, toTeamWf.getStoreObject());
+      } catch (Exception ex) {
+         return new Result(false, String.format("Failure setting new associated artifact %s for branch [%s] ",
+            toTeamWf.toStringWithId(), workingBranch));
+      }
+      String log = String.format("Working Branch [%s] moved from %s to %s.", workingBranch, fromTeamWf.toStringWithId(),
+         toTeamWf.toStringWithId());
+      try {
+         BranchManager.setName(workingBranch, newBranchName);
+      } catch (Exception ex) {
+         return new Result(false,
+            String.format("Failure setting new branch name [%s] for branch [%s] ", newBranchName, workingBranch));
+      }
+      IAtsChangeSet changes = services.createChangeSet(log);
+      fromTeamWf.getLog().addLog(LogType.Note, fromTeamWf.getStateMgr().getCurrentStateName(), log,
+         services.getUserService().getCurrentUserId());
+      changes.add(fromTeamWf);
+      toTeamWf.getLog().addLog(LogType.Note, toTeamWf.getStateMgr().getCurrentStateName(), log,
+         services.getUserService().getCurrentUserId());
+      changes.add(toTeamWf);
+      changes.execute();
+      return Result.TrueResult;
+   }
+
+   @Override
+   public Collection<BranchId> getBranches(BranchArchivedState archivedState, BranchType branchTypes) {
+      return Collections.castAll(BranchManager.getBranches(archivedState, branchTypes));
+   }
+
+   @Override
+   public ArtifactId getAssociatedArtifactId(BranchId branch) {
+      return BranchManager.getAssociatedArtifactId(branch);
    }
 }
