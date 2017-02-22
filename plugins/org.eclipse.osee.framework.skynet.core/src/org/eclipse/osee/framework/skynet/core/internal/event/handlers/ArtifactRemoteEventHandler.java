@@ -193,14 +193,11 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
                RelationEventType eventType = guidArt.getModType();
                switch (eventType) {
                   case Added:
-                     if (relation == null) {
+                     if (relation == null || relation.getModificationType() == ModificationType.DELETED || relation.getModificationType() == ModificationType.ARTIFACT_DELETED) {
+                        ApplicabilityId appId = relation == null ? ApplicabilityId.BASE : relation.getApplicabilityId();
                         relation = RelationManager.getOrCreate(guidArt.getArtAId(), guidArt.getArtBId(), branch,
                            relationType, guidArt.getRelationId(), guidArt.getGammaId(), guidArt.getRationale(),
-                           ModificationType.NEW, ApplicabilityId.BASE);
-                     } else if (relation.getModificationType() == ModificationType.DELETED || relation.getModificationType() == ModificationType.ARTIFACT_DELETED) {
-                        relation = RelationManager.getOrCreate(guidArt.getArtAId(), guidArt.getArtBId(), branch,
-                           relationType, guidArt.getRelationId(), guidArt.getGammaId(), guidArt.getRationale(),
-                           ModificationType.NEW, relation.getApplicabilityId());
+                           ModificationType.NEW, appId);
                      }
                      break;
                   case ModifiedRationale:
