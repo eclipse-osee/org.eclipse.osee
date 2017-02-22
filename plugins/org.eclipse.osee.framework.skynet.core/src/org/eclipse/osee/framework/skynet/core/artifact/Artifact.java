@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.Adaptable;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -111,13 +112,14 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    private EditState objectEditState;
    private boolean useBackingData;
    private IArtifactType artifactTypeToken;
+   private ApplicabilityId applicabilityId;
 
    public Artifact(String guid, BranchId branch, IArtifactType artifactType) throws OseeCoreException {
       super(GUID.checkOrCreate(guid), "");
       this.artifactTypeToken = artifactType;
       objectEditState = EditState.NO_CHANGE;
       internalSetModType(ModificationType.NEW, false);
-
+      internalSetApplicablityId(ApplicabilityId.BASE);
       this.branch = branch;
    }
 
@@ -1039,6 +1041,10 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       this.gammaId = gammaId;
    }
 
+   public final void internalSetApplicablityId(ApplicabilityId applicabilityId) {
+      this.applicabilityId = applicabilityId;
+   }
+
    protected final void internalSetModType(ModificationType modType, boolean useBackingData) {
       lastValidModType = this.modType;
       this.modType = modType;
@@ -1457,7 +1463,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
 
    Artifact introduceShallowArtifact(BranchId destinationBranch) throws OseeCoreException {
       Artifact shallowArt = ArtifactTypeManager.getFactory(getArtifactType()).reflectExisitingArtifact(artId, getGuid(),
-         getArtifactType(), gammaId, destinationBranch, modType);
+         getArtifactType(), gammaId, destinationBranch, modType, applicabilityId);
       return shallowArt;
    }
 
@@ -1476,11 +1482,12 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       return transaction;
    }
 
-   /**
-    * @return Returns the gammaId.
-    */
    public final int getGammaId() {
       return gammaId;
+   }
+
+   public final ApplicabilityId getApplicablityId() {
+      return applicabilityId;
    }
 
    public final Collection<AttributeChange> getDirtyFrameworkAttributeChanges() throws OseeDataStoreException {
@@ -1637,10 +1644,11 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    /**
     * This method should never be called from outside the OSEE Application Framework
     */
-   void internalSetPersistenceData(int gammaId, TransactionToken transactionId, ModificationType modType, boolean historical, boolean useBackingData) {
+   void internalSetPersistenceData(int gammaId, TransactionToken transactionId, ModificationType modType, ApplicabilityId applicabilityId, boolean historical, boolean useBackingData) {
       this.gammaId = gammaId;
       this.transaction = transactionId;
       this.historical = historical;
+      internalSetApplicablityId(applicabilityId);
       internalSetModType(modType, useBackingData);
       this.objectEditState = EditState.NO_CHANGE;
    }

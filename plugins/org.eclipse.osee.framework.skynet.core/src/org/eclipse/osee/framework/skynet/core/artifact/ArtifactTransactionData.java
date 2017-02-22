@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -48,7 +49,8 @@ public class ArtifactTransactionData extends BaseTransactionData {
 
    @Override
    protected void internalUpdate(TransactionRecord transactionId) throws OseeCoreException {
-      artifact.internalSetPersistenceData(getGammaId(), transactionId, getModificationType(), false, false);
+      artifact.internalSetPersistenceData(getGammaId(), transactionId, getModificationType(), getApplicabilityId(),
+         false, false);
    }
 
    @Override
@@ -81,6 +83,11 @@ public class ArtifactTransactionData extends BaseTransactionData {
                new EventBasicGuidArtifact(EventModType.Added, artifact.getBasicGuidArtifact()));
             break;
       }
+   }
+
+   @Override
+   protected ApplicabilityId getApplicabilityId() {
+      return artifact.getApplicablityId();
    }
 
 }

@@ -21,6 +21,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -317,6 +318,7 @@ public final class ArtifactLoader {
       int artifactId = chStmt.getInt("art_id");
       BranchId branch = TokenFactory.createBranch(chStmt.getLong("branch_id"));
       TransactionToken transactionId = TransactionToken.SENTINEL;
+      ApplicabilityId appId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
       if (historical) {
          transactionId = TransactionToken.valueOf(chStmt.getLong("stripe_transaction_id"), branch);
       }
@@ -328,12 +330,12 @@ public final class ArtifactLoader {
 
          artifact =
             factory.loadExisitingArtifact(artifactId, chStmt.getString("guid"), artifactType, chStmt.getInt("gamma_id"),
-               branch, transactionId, ModificationType.getMod(chStmt.getInt("mod_type")), historical);
+               branch, transactionId, ModificationType.getMod(chStmt.getInt("mod_type")), appId, historical);
       }
 
       if (reload == LoadType.RELOAD_CACHE) {
          artifact.internalSetPersistenceData(chStmt.getInt("gamma_id"), transactionId,
-            ModificationType.getMod(chStmt.getInt("mod_type")), historical, false);
+            ModificationType.getMod(chStmt.getInt("mod_type")), appId, historical, false);
       }
       return artifact;
    }

@@ -30,10 +30,10 @@ import org.eclipse.osee.orcs.search.TupleQuery;
  */
 public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    private static final String SELECT_APPLIC_FOR_ART =
-      "SELECT distinct e2, value FROM osee_artifact art, osee_txs txs1, osee_tuple2 app, osee_txs txs2, osee_key_value WHERE art_id = ? and art.gamma_id = txs1.gamma_id and txs1.branch_id = ? AND txs1.tx_current = 1 and tuple_type = 2 AND e2 = txs1.app_id AND app.gamma_id = txs2.gamma_id AND txs2.branch_id = txs1.branch_id AND txs2.tx_current = 1 AND e2 = key";
+      "SELECT distinct e2, value FROM osee_artifact art, osee_txs txs1, osee_tuple2 app, osee_txs txs2, osee_key_value WHERE art_id = ? and art.gamma_id = txs1.gamma_id and txs1.branch_id = ? AND txs1.tx_current in (1, 2) and tuple_type = 2 AND e2 = txs1.app_id AND app.gamma_id = txs2.gamma_id AND txs2.branch_id = txs1.branch_id AND txs2.tx_current in (1, 2) AND e2 = key";
 
    private static final String SELECT_APPLIC_FOR_ARTS =
-      "SELECT distinct e2, value, art.art_id FROM osee_artifact art, osee_txs txs1, osee_tuple2 app, osee_txs txs2, osee_key_value, osee_join_id jid WHERE art_id = jid.id and jid.query_id =? and art.gamma_id = txs1.gamma_id and txs1.branch_id = ? AND txs1.tx_current = 1 and tuple_type = 2 AND e2 = txs1.app_id AND app.gamma_id = txs2.gamma_id AND txs2.branch_id = txs1.branch_id AND txs2.tx_current = 1 AND e2 = key";
+      "SELECT distinct e2, value, art.art_id FROM osee_artifact art, osee_txs txs1, osee_tuple2 app, osee_txs txs2, osee_key_value, osee_join_id jid WHERE art_id = jid.id and jid.query_id =? and art.gamma_id = txs1.gamma_id and txs1.branch_id = ? AND txs1.tx_current in (1, 2) and tuple_type = 2 AND e2 = txs1.app_id AND app.gamma_id = txs2.gamma_id AND txs2.branch_id = txs1.branch_id AND txs2.tx_current in (1, 2) AND e2 = key";
 
    private final TupleQuery tupleQuery;
    private final JdbcClient jdbcClient;

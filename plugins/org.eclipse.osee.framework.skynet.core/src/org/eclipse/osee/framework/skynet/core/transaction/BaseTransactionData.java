@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.transaction;
 
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -42,6 +43,7 @@ public abstract class BaseTransactionData {
    private final int itemId;
    private ModificationType modificationType;
    private Integer gammaId;
+   private ApplicabilityId applicabilityId;
 
    public BaseTransactionData(int itemId, ModificationType modificationType) {
       this.modificationType = modificationType;
@@ -65,10 +67,9 @@ public abstract class BaseTransactionData {
    protected void addInsertToBatch(InsertDataCollector collector) throws OseeCoreException {
       ModificationType modTypeToStore = getAdjustedModificationType();
 
-      internalAddInsertToBatch(collector, Integer.MAX_VALUE, INSERT_INTO_TRANSACTION_TABLE,
-         collector.getTransaction(), getGammaId(), modTypeToStore.getValue(),
-         TxChange.getCurrent(modTypeToStore).getValue(), collector.getBranchId(), 1);
-      //TODO: remove hack defaulting to 1
+      internalAddInsertToBatch(collector, Integer.MAX_VALUE, INSERT_INTO_TRANSACTION_TABLE, collector.getTransaction(),
+         getGammaId(), modTypeToStore.getValue(), TxChange.getCurrent(modTypeToStore).getValue(),
+         collector.getBranchId(), getApplicId());
    }
 
    //Replaces the replace_with_version modtype with modification for storage.
@@ -86,6 +87,13 @@ public abstract class BaseTransactionData {
 
    protected final ModificationType getModificationType() {
       return modificationType;
+   }
+
+   protected final ApplicabilityId getApplicId() {
+      if (applicabilityId == null) {
+         applicabilityId = getApplicabilityId();
+      }
+      return applicabilityId;
    }
 
    protected final int getGammaId() throws OseeCoreException {
@@ -128,6 +136,11 @@ public abstract class BaseTransactionData {
     * Should not be called by application. This method will be called by the base class when required;
     */
    protected abstract int createGammaId() throws OseeCoreException;
+
+   /**
+    * Should not be called by application. This method will be called by the base class when required;
+    */
+   protected abstract ApplicabilityId getApplicabilityId();
 
    /**
     * Should not be called by application. This should only be called once after the transaction has been committed.

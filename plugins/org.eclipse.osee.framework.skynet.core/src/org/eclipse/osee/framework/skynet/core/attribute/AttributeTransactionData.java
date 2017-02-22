@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -136,6 +137,11 @@ public class AttributeTransactionData extends BaseTransactionData {
    @Override
    protected void internalAddToEvents(ArtifactEvent artifactEvent) {
       return;
+   }
+
+   @Override
+   protected ApplicabilityId getApplicabilityId() {
+      return ApplicabilityId.BASE;
    }
 
 }
