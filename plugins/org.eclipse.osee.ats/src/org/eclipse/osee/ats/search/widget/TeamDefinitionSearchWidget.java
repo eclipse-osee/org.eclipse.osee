@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
  */
 public class TeamDefinitionSearchWidget {
 
-   public static final String TEAM_DEFINITIONS = "Team Definitions(s)";
+   public static final String TEAM_DEFINITIONS = "Team Definition(s)";
    private final WorldEditorParameterSearchItem searchItem;
 
    public TeamDefinitionSearchWidget(WorldEditorParameterSearchItem searchItem) {
@@ -68,8 +68,7 @@ public class TeamDefinitionSearchWidget {
          getWidget().handleClear();
          List<IAtsTeamDefinition> teamDefs = new LinkedList<>();
          for (Long uuid : data.getTeamDefUuids()) {
-            IAtsTeamDefinition teamDef =
-               AtsClientService.get().getCache().getAtsObject(uuid);
+            IAtsTeamDefinition teamDef = AtsClientService.get().getCache().getAtsObject(uuid);
             if (teamDef != null) {
                teamDefs.add(teamDef);
             }
