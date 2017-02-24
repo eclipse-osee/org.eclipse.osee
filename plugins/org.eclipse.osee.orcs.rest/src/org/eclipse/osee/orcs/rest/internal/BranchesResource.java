@@ -22,6 +22,7 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.BranchReadable;
@@ -63,6 +64,7 @@ public class BranchesResource {
 
    @Path("{branch}/applic")
    public ApplicabilityEndpoint getApplicability(@PathParam("branch") BranchId branch, @HeaderParam("osee.account.id") String accountId) {
-      return new ApplicabilityEndpointImpl(OrcsApplication.getOrcsApi(), branch, ArtifactId.valueOf(accountId));
+      ArtifactId account = accountId == null ? SystemUser.Anonymous : ArtifactId.valueOf(accountId);
+      return new ApplicabilityEndpointImpl(OrcsApplication.getOrcsApi(), branch, account);
    }
 }
