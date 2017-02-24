@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
-import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
+import java.util.Collection;
+import java.util.Map;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 /**
  * @author Morgan E. Cook
  */
-public class RelatedArtifactChangedColumn extends XViewerAtsColumn implements IXViewerValueColumn {
+public class RelatedArtifactChangedColumn extends XViewerAtsColumn implements IAtsXViewerPreComputedColumn {
 
    public static RelatedArtifactChangedColumn instance = new RelatedArtifactChangedColumn();
 
@@ -52,29 +52,34 @@ public class RelatedArtifactChangedColumn extends XViewerAtsColumn implements IX
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      try {
-         if (element instanceof Artifact) {
-            Artifact refArt =
-               ((Artifact) element).getSoleAttributeValue(AtsAttributeTypes.TaskToChangedArtifactReference, null);
+   public void populateCachedValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
+      for (Object object : objects) {
+         String value = "";
+         try {
+            if (object instanceof Artifact) {
+               Artifact refArt =
+                  ((Artifact) object).getSoleAttributeValue(AtsAttributeTypes.TaskToChangedArtifactReference, null);
 
-            if (refArt != null) {
-               BranchId refBranch = refArt.getBranch();
-               if (refArt.isDeleted()) {
-                  return "Deleted";
-               } else if (BranchManager.getState(refBranch).isCommitted() || BranchManager.getType(
-                  refBranch).isBaselineBranch()) {
-                  return "Commited";
-               } else if (refArt.getLastModified().after(((Artifact) element).getLastModified())) {
-                  return refArt.getLastModified().toString();
-               } else {
-                  return "Unmodified";
+               if (refArt != null) {
+                  BranchId refBranch = refArt.getBranch();
+                  if (refArt.isDeleted()) {
+                     value = "Deleted";
+                  } else if (BranchManager.getState(refBranch).isCommitted() || BranchManager.getType(
+                     refBranch).isBaselineBranch()) {
+                     value = "Commited";
+                  } else if (refArt.getLastModified().after(((Artifact) object).getLastModified())) {
+                     value = refArt.getLastModified().toString();
+                  } else {
+                     value = "Unmodified";
+                  }
                }
             }
+         } catch (OseeCoreException ex) {
+            value = LogUtil.getCellExceptionString(ex);
          }
-      } catch (OseeCoreException ex) {
-         return LogUtil.getCellExceptionString(ex);
+         Long key = getKey(object);
+         preComputedValueMap.put(key, value);
       }
-      return "";
    }
+
 }

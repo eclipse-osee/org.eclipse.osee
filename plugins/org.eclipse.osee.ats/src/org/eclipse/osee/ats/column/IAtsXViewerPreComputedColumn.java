@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Donald G. Dunne
@@ -28,6 +29,8 @@ public interface IAtsXViewerPreComputedColumn extends IXViewerPreComputedColumn 
       Long result = 0L;
       if (obj instanceof IAtsObject) {
          result = ((IAtsObject) obj).getUuid();
+      } else if (obj instanceof Id) {
+         return ((Id) obj).getId();
       }
       return result;
    }
