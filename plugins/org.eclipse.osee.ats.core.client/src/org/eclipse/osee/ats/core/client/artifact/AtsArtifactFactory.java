@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.client.artifact;
 
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Action;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.ActionableItem;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileBacklog;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileFeatureGroup;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileSprint;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.AgileTeam;
@@ -84,6 +85,8 @@ public class AtsArtifactFactory extends ArtifactFactory {
       } else if (artifactType.equals(PeerToPeerReview)) {
          toReturn = new PeerToPeerReviewArtifact(guid, branch, artifactType);
       } else if (artifactType.equals(Goal)) {
+         toReturn = new GoalArtifact(guid, branch, artifactType);
+      } else if (artifactType.equals(AgileBacklog)) {
          toReturn = new GoalArtifact(guid, branch, artifactType);
       } else if (artifactType.equals(AgileSprint)) {
          toReturn = new SprintArtifact(guid, branch, artifactType);

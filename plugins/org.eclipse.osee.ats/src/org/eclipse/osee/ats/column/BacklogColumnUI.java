@@ -10,21 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
-import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.core.column.BacklogColumn;
-import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 
 /**
  * @author Donald G. Dunne
+ * @author David W Miller
  */
-public class BacklogColumnUI extends XViewerAtsColumn implements IXViewerValueColumn {
+public class BacklogColumnUI extends BaseGoalsColumn {
+
+   private final WorkItemType goalType = WorkItemType.AgileBacklog;
+   private final String persistString = "Set Backlogs";
+   private final boolean isBacklogGoal = true;
 
    public static BacklogColumnUI instance = new BacklogColumnUI();
 
@@ -33,9 +32,23 @@ public class BacklogColumnUI extends XViewerAtsColumn implements IXViewerValueCo
    }
 
    private BacklogColumnUI() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".backlog", "Backlog", 100, XViewerAlign.Left, false, SortDataType.String,
-         true,
-         "Backlog that this item belongs to.  (BL) if Agile Backlog, else Goal (which are sometimes used as backlogs)");
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".backlog", "Backlog", 100, XViewerAlign.Left, false,
+         SortDataType.String, true, "Backlog that this item belongs to.");
+   }
+
+   @Override
+   protected WorkItemType getWorkItemType() {
+      return goalType;
+   }
+
+   @Override
+   protected String getPersistString() {
+      return persistString;
+   }
+
+   @Override
+   protected boolean isBacklogGoal() {
+      return isBacklogGoal;
    }
 
    /**
@@ -47,17 +60,6 @@ public class BacklogColumnUI extends XViewerAtsColumn implements IXViewerValueCo
       BacklogColumnUI newXCol = new BacklogColumnUI();
       super.copy(this, newXCol);
       return newXCol;
-   }
-
-   @Override
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      String result = "";
-      try {
-         result = BacklogColumn.getColumnText(element, AtsClientService.get().getRelationResolver());
-      } catch (OseeCoreException ex) {
-         return LogUtil.getCellExceptionString(ex);
-      }
-      return result;
    }
 
 }

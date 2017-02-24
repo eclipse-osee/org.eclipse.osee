@@ -20,6 +20,10 @@ artifactType "Agile Team" extends "ats.Ats Config Artifact" {
 	attribute "ats.Points Attribute Type"
 }
 
+artifactType "Agile Backlog" extends "Goal" {
+	id 7553335770333667393
+}
+
 artifactType "Agile Feature Group" extends "ats.Ats Config Artifact" {
 	id 560322181883393633
 	attribute "ats.Description"

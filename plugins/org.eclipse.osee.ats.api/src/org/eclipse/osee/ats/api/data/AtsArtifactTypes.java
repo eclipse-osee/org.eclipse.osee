@@ -37,6 +37,7 @@ public final class AtsArtifactTypes {
    public static final IArtifactType Program = TokenFactory.createArtifactType(52374361342017540L, "Program");
    public static final IArtifactType Country = TokenFactory.createArtifactType(4955822638391722788L, "Country");
 
+   public static final IArtifactType AgileBacklog = TokenFactory.createArtifactType(7553335770333667393L, "Agile Backlog");
    public static final IArtifactType AgileTeam = TokenFactory.createArtifactType(7553778770333667393L, "Agile Team");
    public static final IArtifactType AgileFeatureGroup = TokenFactory.createArtifactType(560322181883393633L, "Agile Feature Group");
    public static final IArtifactType AgileSprint = TokenFactory.createArtifactType(9088615648290692675L, "Agile Sprint");

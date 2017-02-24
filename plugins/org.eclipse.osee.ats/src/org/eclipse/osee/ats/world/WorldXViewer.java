@@ -206,8 +206,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          public void run() {
             SkynetTransaction transaction;
             try {
-               transaction =
-                  TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Reset Action off Children");
+               transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(),
+                  "Reset Action off Children");
                for (ActionArtifact actionArt : getSelectedActionArtifacts()) {
                   ActionArtifactRollup rollup = new ActionArtifactRollup(actionArt);
                   rollup.resetAttributesOffChildren();
@@ -549,7 +549,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    @Override
    protected void doUpdateItem(Item item, Object element) {
       if (item instanceof TreeItem) {
-         GoalArtifact parentGoalArtifact = GoalOrderColumn.getParentGoalArtifact((TreeItem) item);
+         GoalArtifact parentGoalArtifact =
+            GoalOrderColumn.getParentGoalArtifact((TreeItem) item, AtsArtifactTypes.Goal);
          if (parentGoalArtifact != null) {
             this.parentGoalArtifact = parentGoalArtifact;
          }

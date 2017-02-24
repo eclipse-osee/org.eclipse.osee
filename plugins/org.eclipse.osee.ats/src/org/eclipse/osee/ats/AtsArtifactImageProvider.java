@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats;
 
-import org.eclipse.osee.ats.agile.AgileUtilClient;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.util.SubscribeManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -24,7 +22,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
 
 /**
@@ -44,6 +41,7 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.RuleDefinition, AtsImage.RULE_DEFINITION, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.WorkDefinition, AtsImage.WORK_DEFINITION, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Goal, AtsImage.GOAL, this);
+      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.AgileBacklog, AtsImage.AGILE_BACKLOG, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.PeerToPeerReview, AtsImage.PEER_REVIEW, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Program, AtsImage.PROGRAM, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Insertion, AtsImage.INSERTION, this);
@@ -58,6 +56,7 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.PeerToPeerReview);
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.DecisionReview);
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Goal);
+      ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.AgileBacklog);
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.AgileSprint);
       for (IArtifactType artifactType : AtsClientService.get().getStoreService().getTeamWorkflowArtifactTypes()) {
          ArtifactImageManager.registerOverrideImageProvider(this, artifactType);
@@ -77,23 +76,6 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
             false) && !artifact.getSoleAttributeValue(AtsAttributeTypes.Released, false)) {
             return ArtifactImageManager.setupImage(artifact, AtsImage.VERSION_LOCKED, Location.BOT_RIGHT);
          }
-      }
-
-      if (artifact instanceof GoalArtifact) {
-         GoalArtifact goalArt = (GoalArtifact) artifact;
-         KeyedImage keyedImage = AtsImage.GOAL;
-         if (AgileUtilClient.isBacklog(goalArt)) {
-            keyedImage = AtsImage.AGILE_BACKLOG;
-         }
-         if (SubscribeManager.isSubscribed(goalArt, AtsClientService.get().getUserService().getCurrentUser())) {
-            // was 8,6
-            return ArtifactImageManager.setupImage(keyedImage, AtsImage.SUBSCRIBED_OVERLAY, Location.BOT_RIGHT);
-         }
-         if (FavoritesManager.isFavorite(goalArt, AtsClientService.get().getUserService().getCurrentUser())) {
-            // was 7,0
-            return ArtifactImageManager.setupImage(keyedImage, AtsImage.FAVORITE_OVERLAY, Location.TOP_RIGHT);
-         }
-         return ArtifactImageManager.setupImage(keyedImage);
       }
       if (artifact instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact stateMachine = (AbstractWorkflowArtifact) artifact;

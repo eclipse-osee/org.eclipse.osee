@@ -190,7 +190,8 @@ public class AgileFactory {
       IAtsChangeSet changes =
          atsServer.getStoreService().createAtsChangeSet("Create new Agile Backlog", AtsCoreUsers.SYSTEM_USER);
 
-      ArtifactReadable backlogArt = (ArtifactReadable) changes.createArtifact(AtsArtifactTypes.Goal, name, guid, uuid);
+      ArtifactReadable backlogArt =
+         (ArtifactReadable) changes.createArtifact(AtsArtifactTypes.AgileBacklog, name, guid, uuid);
       IAgileBacklog sprint = atsServer.getWorkItemFactory().getAgileBacklog(backlogArt);
 
       atsServer.getUtilService().setAtsId(atsServer.getSequenceProvider(), sprint,

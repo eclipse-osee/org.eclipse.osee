@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.goal.GoalXViewerFactory;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -100,9 +101,17 @@ public class GoalOrderColumn extends AbstractMembersOrderColumn {
       }
    }
 
-   public static GoalArtifact getParentGoalArtifact(TreeItem treeItem) {
+   public IArtifactType getArtifactType() {
+      return AtsArtifactTypes.Goal;
+   }
+
+   public GoalArtifact getParentGoalArtifact(TreeItem treeItem) {
+      return getParentGoalArtifact(treeItem, getArtifactType());
+   }
+
+   public static GoalArtifact getParentGoalArtifact(TreeItem treeItem, IArtifactType artifactType) {
       if (Widgets.isAccessible(treeItem) && Widgets.isAccessible(treeItem.getParentItem()) && Artifacts.isOfType(
-         treeItem.getParentItem().getData(), AtsArtifactTypes.Goal)) {
+         treeItem.getParentItem().getData(), artifactType)) {
          return (GoalArtifact) treeItem.getParentItem().getData();
       }
       return null;

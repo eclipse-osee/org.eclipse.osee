@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 
 /**
  * @author Donald G. Dunne
@@ -40,4 +42,8 @@ public class BacklogOrderColumn extends GoalOrderColumn {
       return newXCol;
    }
 
+   @Override
+   public IArtifactType getArtifactType() {
+      return AtsArtifactTypes.AgileBacklog;
+   }
 }

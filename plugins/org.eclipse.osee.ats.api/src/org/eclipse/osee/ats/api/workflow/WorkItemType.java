@@ -26,7 +26,7 @@ public enum WorkItemType {
    PeerReview("Peer Review", AtsArtifactTypes.PeerToPeerReview),
    DecisionReview("Decision Review", AtsArtifactTypes.DecisionReview),
    AgileSprint("Agile Sprint", AtsArtifactTypes.AgileSprint),
-   AgileBacklog("Agile Backlog", AtsArtifactTypes.Goal);
+   AgileBacklog("Agile Backlog", AtsArtifactTypes.AgileBacklog);
 
    private final String displayName;
    private final IArtifactType artifactType;

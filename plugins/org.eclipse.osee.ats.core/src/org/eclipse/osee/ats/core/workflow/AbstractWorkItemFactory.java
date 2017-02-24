@@ -63,6 +63,9 @@ public abstract class AbstractWorkItemFactory implements IAtsWorkItemFactory {
             workItem = getReview(artifact);
          } else if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.Task)) {
             workItem = getTask(artifact);
+         } else if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileBacklog)) {
+            // note, an agile backlog is also a goal type, so this has to be before the goal
+            workItem = getAgileBacklog((ArtifactToken) artifact);
          } else if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.Goal)) {
             workItem = getGoal(artifact);
          } else if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileSprint)) {
