@@ -70,7 +70,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public IAtsConfigQuery createQuery(IArtifactType artifactType) {
+   public IAtsConfigQuery createQuery(IArtifactType... artifactType) {
       AtsConfigQueryImpl query = new AtsConfigQueryImpl(atsClient);
       query.isOfType(artifactType);
       return query;

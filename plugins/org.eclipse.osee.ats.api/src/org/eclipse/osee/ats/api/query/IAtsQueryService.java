@@ -47,7 +47,8 @@ public interface IAtsQueryService {
 
    AtsSearchData createSearchData(String namespace, String searchName);
 
-   @NonNull IAtsConfigQuery createQuery(IArtifactType artifactType);
+   @NonNull
+   IAtsConfigQuery createQuery(IArtifactType... artifactType);
 
    Collection<ArtifactId> getArtifacts(List<Integer> ids, BranchId branch);
 

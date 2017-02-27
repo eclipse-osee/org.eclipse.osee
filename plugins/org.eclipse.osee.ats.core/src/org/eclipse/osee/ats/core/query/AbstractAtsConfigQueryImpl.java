@@ -28,8 +28,8 @@ import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
 import org.eclipse.osee.ats.api.query.IAtsQueryFilter;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -45,7 +45,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
 
    protected final List<AtsAttributeQuery> andAttr;
-   protected IArtifactType artifactType;
+   protected List<IArtifactType> artifactTypes;
    protected Collection<Long> uuids;
    protected final IAtsServices services;
    protected Collection<Long> aiUuids;
@@ -73,8 +73,8 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    public <T extends IAtsConfigObject> Collection<T> getItems() {
       createQueryBuilder();
 
-      if (artifactType != null) {
-         queryAndIsOfType(artifactType);
+      if (artifactTypes != null) {
+         queryAndIsOfType(artifactTypes);
       }
 
       if (uuids != null && uuids.size() > 0) {
@@ -84,7 +84,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
       addAttributeCriteria();
 
       Set<T> allResults = new HashSet<>();
-      collectResults(allResults, artifactType);
+      collectResults(allResults, artifactTypes);
 
       return allResults;
    }
@@ -92,7 +92,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    public abstract Collection<ArtifactId> runQuery();
 
    @SuppressWarnings("unchecked")
-   private <T> Collection<T> collectResults(Set<T> allResults, IArtifactType artifactType) {
+   private <T> Collection<T> collectResults(Set<T> allResults, List<IArtifactType> artifactTypes) {
       Set<T> results = new HashSet<>();
       if (isOnlyIds()) {
          onlyIds.addAll(queryGetIds());
@@ -101,7 +101,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
       else {
          Collection<ArtifactId> artifacts = runQuery();
          for (ArtifactId artifact : artifacts) {
-            if (artifactType != null || isArtifactTypeMatch(artifact, artifactType)) {
+            if (artifactTypes != null || isArtifactTypeMatch(artifact, artifactTypes)) {
                results.add((T) createFromFactory(artifact));
             }
          }
@@ -124,12 +124,14 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
       }
    }
 
-   private boolean isArtifactTypeMatch(ArtifactId artifact, IArtifactType artType) {
-      if (artType == null) {
+   private boolean isArtifactTypeMatch(ArtifactId artifact, List<IArtifactType> artTypes) {
+      if (artTypes == null || artTypes.isEmpty()) {
          return true;
       }
-      if (services.getArtifactResolver().isOfType(artifact, artType)) {
-         return true;
+      for (IArtifactType artType : artTypes) {
+         if (services.getArtifactResolver().isOfType(artifact, artType)) {
+            return true;
+         }
       }
       return false;
    }
@@ -147,11 +149,14 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    public abstract List<? extends ArtifactId> queryGetIds();
 
    @Override
-   public IAtsConfigQuery isOfType(IArtifactType artifactType) {
-      if (this.artifactType != null) {
+   public IAtsConfigQuery isOfType(IArtifactType... artifactType) {
+      if (this.artifactTypes != null) {
          throw new OseeArgumentException("Can only specify one artifact type");
       }
-      this.artifactType = artifactType;
+      this.artifactTypes = new LinkedList<>();
+      for (IArtifactType type : artifactType) {
+         this.artifactTypes.add(type);
+      }
       return this;
    }
 
@@ -192,7 +197,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
       // filter on original artifact types
       List<T> artifacts = new LinkedList<>();
       for (ArtifactId artifact : items) {
-         boolean artifactTypeMatch = isArtifactTypeMatch(artifact, artifactType);
+         boolean artifactTypeMatch = isArtifactTypeMatch(artifact, artifactTypes);
          if (artifactTypeMatch) {
             artifacts.add((T) artifact);
          }
@@ -230,12 +235,12 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
 
    public abstract void queryAnd(AttributeTypeId attrType, Collection<String> values);
 
-   public IArtifactType getArtifactType() {
-      return artifactType;
+   public Collection<IArtifactType> getArtifactTypes() {
+      return artifactTypes;
    }
 
-   public void setArtifactType(IArtifactType artifactType) {
-      this.artifactType = artifactType;
+   public void setArtifactType(List<IArtifactType> artifactTypes) {
+      this.artifactTypes = artifactTypes;
    }
 
    @Override
