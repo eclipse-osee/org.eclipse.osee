@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Boeing.
+ * Copyright (c) 2017 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,12 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.team;
+package org.eclipse.osee.ats.core.config;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -23,31 +24,28 @@ import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.core.client.IAtsClient;
-import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsTeamDefinitionService implements IAtsTeamDefinitionService {
+public class TeamDefinitionService implements IAtsTeamDefinitionService {
 
-   private final IAtsClient atsClient;
+   protected final IAtsServices services;
 
-   public AtsTeamDefinitionService(IAtsClient atsClient) {
-      this.atsClient = atsClient;
+   public TeamDefinitionService(IAtsServices services) {
+      this.services = services;
    }
 
    @Override
    public IAtsTeamDefinition getTeamDefinition(IAtsWorkItem workItem) throws OseeCoreException {
       IAtsTeamDefinition teamDef = null;
       String teamDefGuid =
-         ((Artifact) workItem.getStoreObject()).getSoleAttributeValue(AtsAttributeTypes.TeamDefinition, "");
+         services.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.TeamDefinition, "");
       if (Strings.isValid(teamDefGuid)) {
-         teamDef = atsClient.getConfigItem(teamDefGuid);
+         teamDef = services.getConfigItem(teamDefGuid);
       }
       return teamDef;
    }
@@ -55,9 +53,9 @@ public class AtsTeamDefinitionService implements IAtsTeamDefinitionService {
    @Override
    public Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef) {
       List<IAtsVersion> versions = new ArrayList<>();
-      for (Artifact verArt : ((Artifact) teamDef.getStoreObject()).getRelatedArtifacts(
+      for (ArtifactId verArt : services.getRelationResolver().getRelated(teamDef,
          AtsRelationTypes.TeamDefinitionToVersion_Version)) {
-         versions.add(atsClient.getConfigItemFactory().getVersion(verArt));
+         versions.add(services.getConfigItemFactory().getVersion(verArt));
       }
       return versions;
    }
@@ -69,15 +67,15 @@ public class AtsTeamDefinitionService implements IAtsTeamDefinitionService {
 
    @Override
    public IAtsTeamDefinition getTeamDefHoldingVersions(IAtsProgram program) {
-      return atsClient.getProgramService().getTeamDefHoldingVersions(program);
+      return services.getProgramService().getTeamDefHoldingVersions(program);
    }
 
    @Override
    public IAtsTeamDefinition getTeamDefinition(String name) {
       IAtsTeamDefinition teamDef = null;
-      ArtifactId teamDefArt = AtsClientService.get().getArtifactByName(AtsArtifactTypes.TeamDefinition, name);
+      ArtifactId teamDefArt = services.getArtifactByName(AtsArtifactTypes.TeamDefinition, name);
       if (teamDefArt != null) {
-         teamDef = AtsClientService.get().getConfigItemFactory().getTeamDef(teamDefArt);
+         teamDef = services.getConfigItemFactory().getTeamDef(teamDefArt);
       }
       return teamDef;
    }
@@ -85,9 +83,9 @@ public class AtsTeamDefinitionService implements IAtsTeamDefinitionService {
    @Override
    public Collection<IAtsTeamDefinition> getTeamDefinitions(IAgileTeam agileTeam) {
       List<IAtsTeamDefinition> teamDefs = new LinkedList<>();
-      for (Artifact atsTeamArt : AtsClientService.get().getArtifact(agileTeam).getRelatedArtifacts(
+      for (ArtifactId atsTeamArt : services.getRelationResolver().getRelated(agileTeam,
          AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam)) {
-         teamDefs.add(atsClient.getConfigItemFactory().getTeamDef(atsTeamArt));
+         teamDefs.add(services.getConfigItemFactory().getTeamDef(atsTeamArt));
       }
       return teamDefs;
    }

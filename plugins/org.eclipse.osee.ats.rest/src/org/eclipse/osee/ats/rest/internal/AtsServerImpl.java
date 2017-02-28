@@ -56,7 +56,6 @@ import org.eclipse.osee.ats.rest.internal.util.AtsRelationResolverServiceImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsStoreServiceImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsTaskService;
-import org.eclipse.osee.ats.rest.internal.workitem.AtsTeamDefinitionService;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsVersionServiceImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.ConfigItemFactory;
 import org.eclipse.osee.ats.rest.internal.workitem.WorkItemFactory;
@@ -154,7 +153,6 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
       actionableItemManager = new ActionableItemManager(attributeResolverService, storeService, this);
       actionFactory = new ActionFactory(workItemFactory, utilService, getSequenceProvider(), actionableItemManager,
          attributeResolverService, stateFactory, getServices());
-      teamDefinitionService = new AtsTeamDefinitionService(this);
 
       agileService = new AgileService(logger, this);
       versionService = new AtsVersionServiceImpl(getServices(), eventAdmin);

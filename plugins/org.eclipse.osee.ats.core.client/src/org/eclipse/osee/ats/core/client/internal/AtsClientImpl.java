@@ -55,7 +55,6 @@ import org.eclipse.osee.ats.core.client.internal.workdef.ArtifactResolverImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsRelationResolverServiceImpl;
 import org.eclipse.osee.ats.core.client.task.AtsTaskService;
-import org.eclipse.osee.ats.core.client.team.AtsTeamDefinitionService;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.util.IArtifactMembersCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -138,8 +137,6 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       queryService = new AtsQueryServiceImpl(this, jdbcService);
       actionableItemManager = new ActionableItemManager(attributeResolverService, storeService, this);
       utilService = AtsCoreFactory.getUtilService(attributeResolverService);
-
-      teamDefinitionService = new AtsTeamDefinitionService(this);
 
       actionFactory = new ActionFactory(workItemFactory, utilService, getSequenceProvider(), actionableItemManager,
          attributeResolverService, stateFactory, getServices());
