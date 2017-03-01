@@ -1731,6 +1731,13 @@ public final class Lib {
    }
 
    /**
+    * Now Is The Time to nowIsTheTime
+    */
+   public static String toCamelCaseFromStringsWithSpaces(String str) {
+      return toCamelCase(str.replaceAll(" ", "_"));
+   }
+
+   /**
     * NOW_IS_THE_TIME to nowIsTheTime
     */
    public static String toCamelCase(String str) {

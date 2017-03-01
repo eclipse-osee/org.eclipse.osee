@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.config;
 
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -36,12 +37,20 @@ public interface AtsConfigEndpointApi {
 
    /**
     * @return html5 action entry page
-    * @throws Exception
     */
    @GET
    @Path("ui/NewAtsBranchConfig")
    @Produces(MediaType.TEXT_HTML)
    public ViewModel getNewSource() throws Exception;
+
+   /**
+    * @return json representation of all Attribute Types as AtsAttributeValueColumn for use as a starting point in the
+    * views configuration of AtsConfig
+    */
+   @GET
+   @Path("genAttrTypeViews")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<AtsAttributeValueColumn> generateAttrTypeViews() throws Exception;
 
    /**
     * Create new ATS configuration branch and ATS config object on Common branch

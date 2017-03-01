@@ -12,6 +12,11 @@ package org.eclipse.osee.ats.rest.internal.config;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import javax.ws.rs.GET;
@@ -25,10 +30,13 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfiguration;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.AtsViews;
+import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -39,6 +47,7 @@ import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -48,6 +57,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -289,6 +299,81 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       tx.commit();
       atsServer.getWorkDefAdmin().clearCaches();
       return Response.ok().build();
+   }
+
+   @Override
+   public List<AtsAttributeValueColumn> generateAttrTypeViews() throws Exception {
+      Map<String, AttributeTypeToken> idToToken = new HashMap<>();
+      for (AttributeTypeToken attrType : atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().getAll()) {
+         idToToken.put(attrType.getName(), attrType);
+      }
+
+      List<String> sortedIds = new LinkedList<>();
+      sortedIds.addAll(idToToken.keySet());
+      Collections.sort(sortedIds);
+
+      List<AtsAttributeValueColumn> columns = new LinkedList<>();
+      for (String id : sortedIds) {
+         AttributeTypeToken attrType = idToToken.get(id);
+         ColumnAlign columnAlign = ColumnAlign.Left;
+         SortDataType sortDataType = SortDataType.String;
+         int width = 60;
+
+         boolean isBoolean = atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().isBooleanType(attrType);
+         if (atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().isEnumerated(attrType)) {
+            width = 40;
+         } else if (isBoolean) {
+            width = 50;
+         } else if (atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().isIntegerType(attrType)) {
+            width = 45;
+            sortDataType = SortDataType.Integer;
+            columnAlign = ColumnAlign.Center;
+         } else if (atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().isFloatingType(attrType)) {
+            width = 40;
+            sortDataType = SortDataType.Float;
+            columnAlign = ColumnAlign.Center;
+         } else if (atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().isDateType(attrType)) {
+            width = 80;
+            sortDataType = SortDataType.Date;
+         }
+
+         AtsAttributeValueColumn valueColumn = new AtsAttributeValueColumn();
+         valueColumn.setAttrTypeId(attrType.getId());
+         valueColumn.setAttrTypeName(attrType.getName());
+         valueColumn.setWidth(width);
+         valueColumn.setAlign(columnAlign);
+         valueColumn.setVisible(true);
+         valueColumn.setSortDataType(sortDataType.name());
+         valueColumn.setColumnMultiEdit(true);
+         valueColumn.setDescription(attrType.getDescription());
+         valueColumn.setNamespace("org.eclipse.osee.ats.WorldXViewer");
+         String name = attrType.getName().replaceAll("^.*\\.", "");
+         valueColumn.setName(name);
+         valueColumn.setId(generateId(attrType.getName(), name));
+         if (isBoolean) {
+            valueColumn.setBooleanNotSetShow("");
+            valueColumn.setBooleanOnFalseShow("false");
+            valueColumn.setBooleanOnTrueShow("true");
+         }
+         columns.add(valueColumn);
+      }
+      return columns;
+   }
+
+   private String generateId(String id, String name) {
+      System.err.println(String.format("\nid [%s] name [%s]", id, name));
+      String cleanName = name.replaceAll("-", " ");
+      cleanName = cleanName.replaceAll("\\(", " ");
+      cleanName = cleanName.replaceAll("\\)", " ");
+      cleanName = cleanName.replaceAll("/", " ");
+      cleanName = cleanName.replaceAll(" +", " ");
+      cleanName = cleanName.replaceAll("^ ", "");
+      System.err.println(String.format("cleanName [%s]", cleanName));
+      String replaceValue = Lib.toCamelCaseFromStringsWithSpaces(cleanName);
+      System.err.println(String.format("replaceValue [%s]", replaceValue));
+      String result = id.replaceFirst(Lib.escapeForRegex(name), replaceValue);
+      System.err.println(String.format("result [%s]", result));
+      return result;
    }
 
 }
