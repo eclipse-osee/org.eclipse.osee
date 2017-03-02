@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2017 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import java.nio.charset.CharacterCodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,10 +45,12 @@ import org.eclipse.osee.define.report.api.DataRightInput;
 import org.eclipse.osee.define.report.api.DataRightResult;
 import org.eclipse.osee.define.report.api.PageOrientation;
 import org.eclipse.osee.define.report.api.ReportConstants;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -57,6 +60,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
+import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -74,6 +78,7 @@ import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
+import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.swt.program.Program;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -89,14 +94,18 @@ import org.json.JSONObject;
 public class WordTemplateProcessor {
 
    private static final String ARTIFACT = "Artifact";
+   private static final String ARTIFACT_TYPE = "Artifact Type";
+   private static final Object ARTIFACT_ID = "Artifact Id";
+   private static final String APPLICABILITY = "Applicability";
    private static final String INSERT_LINK = "INSERT_LINK_HERE";
    private static final String INSERT_ARTIFACT_HERE = "INSERT_ARTIFACT_HERE";
    private static final String NESTED_TEMPLATE = "NestedTemplate";
    public static final String PGNUMTYPE_START_1 = "<w:pgNumType [^>]*w:start=\"1\"/>";
    public static final String STYLES = "<w:lists>.*?</w:lists><w:styles>.*?</w:styles>";
 
-   private static final Pattern headElementsPattern = Pattern.compile("(" + INSERT_ARTIFACT_HERE + ")" + "|" + INSERT_LINK,
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern headElementsPattern =
+      Pattern.compile("(" + INSERT_ARTIFACT_HERE + ")" + "|" + INSERT_LINK,
+         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
    private static final Program wordApp = Program.findProgram("doc");
    public static final String ATTRIBUTE_NAME = "AttributeName";
@@ -124,6 +133,11 @@ public class WordTemplateProcessor {
    private String formatPre;
    private String formatPost;
 
+   //Metadata Options
+   private String metadataType;
+   private String metadataLabel;
+   private String metadataFormat;
+
    //Nested Template Options
    private String outlineType;
    private String sectionNumber;
@@ -133,6 +147,7 @@ public class WordTemplateProcessor {
    private int nestedCount;
 
    private final List<AttributeElement> attributeElements = new LinkedList<>();
+   private final List<MetadataElement> metadataElements = new LinkedList<>();
    final List<Artifact> nonTemplateArtifacts = new LinkedList<>();
    private final Set<String> ignoreAttributeExtensions = new HashSet<>();
    private final Set<Artifact> processedArtifacts = new HashSet<>();
@@ -143,6 +158,7 @@ public class WordTemplateProcessor {
    private final DataRightInput request;
    private final DataRightProvider provider;
    private IArtifactType[] excludeArtifactTypes;
+   private HashMap<ApplicabilityId, ApplicabilityToken> applicabilityTokens;
 
    public WordTemplateProcessor(WordTemplateRenderer renderer, DataRightProvider provider) {
       this.renderer = renderer;
@@ -189,10 +205,12 @@ public class WordTemplateProcessor {
 
       try {
          attributeElements.clear();
+         metadataElements.clear();
          JSONObject jsonObject = new JSONObject(masterTemplateOptions);
          elementType = jsonObject.getString("ElementType");
          if (elementType.equals(ARTIFACT)) {
             parseAttributeOptions(masterTemplateOptions);
+            parseMetadataOptions(masterTemplateOptions);
          }
       } catch (JSONException ex) {
          OseeCoreException.wrapAndThrow(ex);
@@ -242,6 +260,18 @@ public class WordTemplateProcessor {
     */
    public InputStream applyTemplate(List<Artifact> artifacts, String templateContent, String templateOptions, String templateStyles, IContainer folder, String outlineNumber, String outlineType, PresentationType presentationType) throws OseeCoreException {
       excludeFolders = renderer.getBooleanOption("Exclude Folders");
+
+      if (!artifacts.isEmpty()) {
+         ApplicabilityEndpoint applEndpoint =
+            ServiceUtil.getOseeClient().getApplicabilityEndpoint(artifacts.get(0).getBranch());
+
+         applicabilityTokens = new HashMap<>();
+         Collection<ApplicabilityToken> appTokens = applEndpoint.getApplicabilityTokenMap();
+         for (ApplicabilityToken token : appTokens) {
+            applicabilityTokens.put(token, token);
+         }
+      }
+
       WordMLProducer wordMl = null;
       CharBackedInputStream charBak = null;
 
@@ -396,11 +426,11 @@ public class WordTemplateProcessor {
             formatPre = options.getString("FormatPre");
             formatPost = options.getString("FormatPost");
 
-            AttributeElement temp = new AttributeElement();
+            AttributeElement attrElement = new AttributeElement();
 
             if (attributeType.equals("*") || AttributeTypeManager.typeExists(attributeType)) {
-               temp.setElements(attributeType, attributeLabel, formatPre, formatPost);
-               attributeElements.add(temp);
+               attrElement.setElements(attributeType, attributeLabel, formatPre, formatPost);
+               attributeElements.add(attrElement);
             }
 
          }
@@ -420,6 +450,31 @@ public class WordTemplateProcessor {
          String headingAttrType = options.getString("HeadingAttributeType");
          headingAttributeType = AttributeTypeManager.getType(headingAttrType);
          artifactName = options.getString("ArtifactName");
+
+      } catch (JSONException ex) {
+         OseeCoreException.wrapAndThrow(ex);
+      }
+   }
+
+   private void parseMetadataOptions(String metadataOptions) {
+      try {
+         JSONObject jsonObject = new JSONObject(metadataOptions);
+
+         if (!jsonObject.has("MetadataOptions")) {
+            return;
+         }
+
+         JSONArray optionsArray = jsonObject.getJSONArray("MetadataOptions");
+         JSONObject options = optionsArray.getJSONObject(0);
+
+         metadataType = options.getString("Type");
+         metadataFormat = options.getString("Format");
+         metadataLabel = options.getString("Label");
+
+         MetadataElement metadataElement = new MetadataElement();
+
+         metadataElement.setElements(metadataType, metadataFormat, metadataLabel);
+         metadataElements.add(metadataElement);
 
       } catch (JSONException ex) {
          OseeCoreException.wrapAndThrow(ex);
@@ -467,6 +522,10 @@ public class WordTemplateProcessor {
          parseAttributeOptions(templateOptions);
       }
 
+      if (metadataElements.isEmpty()) {
+         parseMetadataOptions(templateOptions);
+      }
+
       if (renderer.getBooleanOption(PUBLISH_AS_DIFF)) {
          WordTemplateFileDiffer templateFileDiffer = new WordTemplateFileDiffer(renderer);
          templateFileDiffer.generateFileDifferences(artifacts, "/results/", outlineNumber, outlineType,
@@ -477,7 +536,6 @@ public class WordTemplateProcessor {
 
          for (Artifact artifact : artifacts) {
             processObjectArtifact(artifact, wordMl, outlineType, presentationType, response);
-
          }
       }
       // maintain a list of artifacts that have been processed so we do not
@@ -541,6 +599,8 @@ public class WordTemplateProcessor {
                PageOrientation orientation = WordRendererUtil.getPageOrientation(artifact);
                String footer = data.getContent(artifact.getGuid(), orientation);
 
+               processMetadata(artifact, wordMl);
+
                processAttributes(artifact, wordMl, presentationType, publishInline, footer);
             }
 
@@ -596,6 +656,12 @@ public class WordTemplateProcessor {
       }
    }
 
+   private void processMetadata(Artifact artifact, WordMLProducer wordMl) {
+      for (MetadataElement metadataElement : metadataElements) {
+         processMetadata(artifact, wordMl, metadataElement.getType(), metadataElement.getFormat());
+      }
+   }
+
    private void processAttributes(Artifact artifact, WordMLProducer wordMl, PresentationType presentationType, boolean publishInLine, String footer) throws OseeCoreException {
       for (AttributeElement attributeElement : attributeElements) {
          String attributeName = attributeElement.getAttributeName();
@@ -609,13 +675,32 @@ public class WordTemplateProcessor {
             }
          } else {
             AttributeType attributeType = AttributeTypeManager.getType(attributeName);
-
             if (artifact.isAttributeTypeValid(attributeType)) {
                processAttribute(artifact, wordMl, attributeElement, attributeType, false, presentationType,
                   publishInLine, footer);
             }
          }
       }
+   }
+
+   private void processMetadata(Artifact artifact, WordMLProducer wordMl, String name, String format) {
+      wordMl.startParagraph();
+
+      String value = "";
+      if (name.equals(APPLICABILITY)) {
+         ApplicabilityToken applicabilityToken = applicabilityTokens.get(artifact.getApplicablityId());
+         value = applicabilityToken.getName();
+      } else if (name.equals(ARTIFACT_TYPE)) {
+         value = artifact.getArtifactTypeName();
+      } else if (name.equals(ARTIFACT_ID)) {
+         value = artifact.getIdString();
+      }
+      if (format.contains(">x<")) {
+         wordMl.addWordMl(format.replace(">x<", ">" + Xml.escape(name + ": " + value).toString() + "<"));
+      } else {
+         wordMl.addTextInsideParagraph(name + ": " + value);
+      }
+      wordMl.endParagraph();
    }
 
    private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, AttributeTypeToken attributeType, boolean allAttrs, PresentationType presentationType, boolean publishInLine, String footer) throws OseeCoreException {

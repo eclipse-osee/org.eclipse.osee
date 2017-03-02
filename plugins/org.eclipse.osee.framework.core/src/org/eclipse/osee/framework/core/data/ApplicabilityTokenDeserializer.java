@@ -35,6 +35,7 @@ public class ApplicabilityTokenDeserializer extends StdDeserializer<Applicabilit
       JsonNode readTree = jp.getCodec().readTree(jp);
       ApplicabilityToken applicabilityToken =
          ApplicabilityToken.create(readTree.get("id").asLong(), (readTree.get("name").getTextValue()));
+
       return applicabilityToken;
    }
 
