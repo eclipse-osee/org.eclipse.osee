@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.AtsViews;
+import org.eclipse.osee.ats.api.config.IAtsConfigurationViewsProvider;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.ColorColumns;
@@ -89,20 +90,25 @@ public class UpdateAtsConfiguration {
       }
    }
 
+   private List<String> getViewsJsonStrings() throws Exception {
+      List<String> viewsJson = new LinkedList<>();
+      viewsJson.add(RestUtil.getResource("support/views.json"));
+      for (IAtsConfigurationViewsProvider provider : AtsConfigurationViewsService.getViewsProviders()) {
+         viewsJson.add(provider.getViewsJson());
+      }
+      return viewsJson;
+   }
+
    private void createUpdateConfigAttributes(ArtifactReadable configArt, ArtifactReadable userArt, XResultData rd) throws OseeCoreException {
       try {
-         String viewsJson = RestUtil.getResource("support/views.json");
-         AtsViews defaultViews = gson.fromJson(viewsJson, AtsViews.class);
+         int x = 1;
          AtsViews databaseViews = getConfigViews();
-         TransactionBuilder tx = atsServer.getOrcsApi().getTransactionFactory().createTransaction(CoreBranches.COMMON,
-            userArt, "Create Update Config Attributes");
-         if (databaseViews.getAttrColumns().isEmpty()) {
-            tx.createAttribute(configArt, CoreAttributeTypes.GeneralStringData, getViewsAttrValue(defaultViews));
-            rd.log("Creating VIEWS attribute\n");
-         } else {
+         for (String viewsJson : getViewsJsonStrings()) {
+            String comment = "Create Update Config Attributes - " + x++;
+            AtsViews atsViews = gson.fromJson(viewsJson, AtsViews.class);
             // merge any new default view items to current database view items
             List<AtsAttributeValueColumn> toAdd = new LinkedList<>();
-            for (AtsAttributeValueColumn defaultView : defaultViews.getAttrColumns()) {
+            for (AtsAttributeValueColumn defaultView : atsViews.getAttrColumns()) {
                boolean found = false;
                for (AtsAttributeValueColumn dbView : databaseViews.getAttrColumns()) {
                   boolean defaultViewNameValid =
@@ -121,17 +127,26 @@ public class UpdateAtsConfiguration {
                }
             }
             databaseViews.getAttrColumns().addAll(toAdd);
-            Iterator<? extends AttributeReadable<Object>> iterator =
-               configArt.getAttributes(CoreAttributeTypes.GeneralStringData, DeletionFlag.EXCLUDE_DELETED).iterator();
-            while (iterator.hasNext()) {
-               AttributeReadable<Object> attributeReadable = iterator.next();
+         }
 
-               if (attributeReadable != null && ((String) attributeReadable.getValue()).startsWith(VIEWS_EQUAL_KEY)) {
-                  tx.setAttributeById(configArt, attributeReadable, getViewsAttrValue(databaseViews));
-                  rd.log("Create or update AtsConfig.VIEWS attribute\n");
-                  break;
-               }
+         TransactionBuilder tx = atsServer.getOrcsApi().getTransactionFactory().createTransaction(CoreBranches.COMMON,
+            userArt, "Create Update Config Attributes");
+         Iterator<? extends AttributeReadable<Object>> iterator =
+            configArt.getAttributes(CoreAttributeTypes.GeneralStringData, DeletionFlag.EXCLUDE_DELETED).iterator();
+         boolean found = false;
+         while (iterator.hasNext()) {
+            AttributeReadable<Object> attributeReadable = iterator.next();
+
+            if (attributeReadable != null && ((String) attributeReadable.getValue()).startsWith(VIEWS_EQUAL_KEY)) {
+               tx.setAttributeById(configArt, attributeReadable, getViewsAttrValue(databaseViews));
+               rd.log("Create or update AtsConfig.VIEWS attribute\n");
+               found = true;
+               break;
             }
+         }
+         if (!found) {
+            tx.createAttribute(configArt, CoreAttributeTypes.GeneralStringData, getViewsAttrValue(databaseViews));
+            rd.log("Creating VIEWS attribute\n");
          }
          tx.commit();
       } catch (Exception ex) {
