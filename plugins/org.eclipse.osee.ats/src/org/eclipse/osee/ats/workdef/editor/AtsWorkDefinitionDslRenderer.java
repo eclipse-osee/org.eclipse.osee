@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.workdef.editor;
 
 import static org.eclipse.osee.framework.core.enums.PresentationType.DEFAULT_OPEN;
 import static org.eclipse.osee.framework.core.enums.PresentationType.GENERALIZED_EDIT;
+import static org.eclipse.osee.framework.core.enums.PresentationType.GENERAL_REQUESTED;
 import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED_EDIT;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -66,8 +67,9 @@ public final class AtsWorkDefinitionDslRenderer extends FileSystemRenderer {
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Object... objects) throws OseeCoreException {
-      if (artifact.isOfType(AtsArtifactTypes.WorkDefinition) && presentationType != GENERALIZED_EDIT) {
-         return ARTIFACT_TYPE_MATCH;
+      if (artifact.isOfType(
+         AtsArtifactTypes.WorkDefinition) && !presentationType.matches(GENERALIZED_EDIT, GENERAL_REQUESTED)) {
+         return SUBTYPE_TYPE_MATCH;
       }
       return NO_MATCH;
    }
