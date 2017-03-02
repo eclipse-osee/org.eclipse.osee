@@ -142,8 +142,8 @@ public interface BranchEndpoint {
    Response deleteBranchExchange(@QueryParam("path") String path);
 
    @PUT
-   @Path("{branch-uuid}/name/{branch-name}")
-   Response setBranchName(@PathParam("branch-uuid") long branchUuid, @PathParam("branch-name") String newName);
+   @Path("{branch-uuid}/name")
+   Response setBranchName(@PathParam("branch-uuid") long branchUuid, String newName);
 
    @PUT
    @Path("{branch-uuid}/type/{branch-type}")
