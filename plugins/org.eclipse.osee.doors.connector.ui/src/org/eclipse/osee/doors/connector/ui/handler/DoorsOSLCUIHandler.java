@@ -50,13 +50,12 @@ public class DoorsOSLCUIHandler extends AbstractHandler {
    public Object execute(final ExecutionEvent event) {
 
       DoorsArtifact doorsArtifact1 = DoorsModel.getDoorsArtifact();
-
       if (doorsArtifact1 == null) {
          LoginDialog dialog = new LoginDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
          if (dialog.open() == Window.OK) {
             DoorsOSLCDWAProviderInfoExtn config = new DoorsOSLCDWAProviderInfoExtn();
             DoorsOSLCConnector connector = new DoorsOSLCConnector();
-            DWAOAuthService service1 = new DWAOAuthService(config, "key", "key");
+            DWAOAuthService service1 = new DWAOAuthService(config, "Open System Engineering Environment", "BoeingOSEE");
             DoorsArtifact doorsArtifact = connector.getAuthentication(service1, dialog.getName(), dialog.getPassword());
             DoorsModel.setDoorsArtifact(doorsArtifact);
 

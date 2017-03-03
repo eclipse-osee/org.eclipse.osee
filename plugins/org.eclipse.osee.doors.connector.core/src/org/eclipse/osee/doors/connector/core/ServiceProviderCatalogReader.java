@@ -5,6 +5,9 @@
  */
 package org.eclipse.osee.doors.connector.core;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.StringReader;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -12,7 +15,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -30,16 +32,15 @@ public class ServiceProviderCatalogReader implements IDoorsArtifactParser {
     * {@inheritDoc}
     */
    @Override
-   public DoorsArtifact parse(final String path) throws Exception {
-      ServiceProviderCatalog serviceProviderCatalog = new ServiceProviderCatalog();
-      serviceProviderCatalog.setPath(path);
+   public DoorsArtifact parse(DoorsArtifact provider) throws Exception {
+
+      String path = provider.getPath();
 
       DoorsOSLCConnector doors = new DoorsOSLCConnector();
       String catalogResponse = doors.getCatalogResponse(path, null);
       while (catalogResponse.contains("500")) {
          catalogResponse = doors.getCatalogResponse(path, null);
       }
-
       XPath xpath = XPathFactory.newInstance().newXPath();
 
       DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
@@ -53,48 +54,63 @@ public class ServiceProviderCatalogReader implements IDoorsArtifactParser {
       if (rootNodes.getLength() > 0) {
          for (int i = 0; i < rootNodes.getLength(); i++) {
             Node node = rootNodes.item(i);
-
+            Node catalogUri = node.getAttributes().getNamedItem("rdf:about");
+            if (catalogUri == null) {
+               continue;
+            }
+            String cleanedPath = catalogUri.toString().substring(11, catalogUri.toString().length() - 1);
+            if (cleanedPath.equals(path)) {
+               continue;
+            }
             NodeList childNodes = node.getChildNodes();
+            if (childNodes == null) {
+               continue;
+            }
             for (int j = 0; j < childNodes.getLength(); j++) {
                Node item = childNodes.item(j);
-               if ((item.getLocalName() != null) && item.getLocalName().equalsIgnoreCase("title")) {
-                  serviceProviderCatalog.setName(item.getTextContent());
+               if (item != null && (item.getLocalName() != null) && item.getLocalName().equalsIgnoreCase("title")) {
+                  ServiceProviderCatalog child = new ServiceProviderCatalog();
+                  child.setName(item.getTextContent());
+                  child.setPath(cleanedPath);
+                  provider.addChild(child);
+                  break;
                }
             }
-            NodeList childNodes1 = node.getChildNodes();
-            for (int j = 0; j < childNodes1.getLength(); j++) {
-               Node item = childNodes1.item(j);
-               if ((item.getLocalName() != null) && item.getLocalName().equalsIgnoreCase("serviceProviderCatalog")) {
-                  NamedNodeMap attributes = item.getAttributes();
-
-                  for (int k1 = 0; k1 < attributes.getLength(); k1++) {
-                     Node item1 = attributes.item(k1);
-                     String nodeValue = item1.getNodeValue();
-                     this.flag = true;
-                     String replace = replace(nodeValue);
-                     DoorsArtifact child = parse(replace);
-                     serviceProviderCatalog.addChild(child);
-                  }
-               } else {
-                  if (this.flag) {
-                     if ((item.getLocalName() != null) && item.getLocalName().equalsIgnoreCase("serviceProvider")) {
-                        NamedNodeMap attributes = item.getAttributes();
-
-                        for (int k1 = 0; k1 < attributes.getLength(); k1++) {
-                           Node item1 = attributes.item(k1);
-                           String nodeValue = item1.getNodeValue();
-                           ServiceProviderReader providerReader = new ServiceProviderReader();
-                           DoorsArtifact serviceProviderObj = providerReader.parse(nodeValue);
-                           serviceProviderCatalog.addChild(serviceProviderObj);
-                        }
-                     }
-                  }
-               }
-            }
-            this.flag = false;
          }
       }
-      return serviceProviderCatalog;
+      InputSource is2 = new InputSource(new StringReader(catalogResponse));
+      Document doc2 = builder.parse(is2);
+      Object result2 = xpath.evaluate("//*[local-name()='ServiceProvider']", doc2, XPathConstants.NODESET);
+      NodeList spNodes = (NodeList) result2;
+      if (spNodes.getLength() > 0) {
+         for (int i = 0; i < spNodes.getLength(); i++) {
+            Node node = spNodes.item(i);
+            Node catalogUri = node.getAttributes().getNamedItem("rdf:about");
+            if (catalogUri == null) {
+               continue;
+            }
+            String cleanedPath = catalogUri.toString().substring(11, catalogUri.toString().length() - 1);
+            if (cleanedPath.equals(path)) {
+               continue;
+            }
+            NodeList childNodes = node.getChildNodes();
+            if (childNodes == null) {
+               continue;
+            }
+            for (int j = 0; j < childNodes.getLength(); j++) {
+               Node item = childNodes.item(j);
+               if (item != null && (item.getLocalName() != null) && item.getLocalName().equalsIgnoreCase("title")) {
+                  ServiceProvider child = new ServiceProvider();
+                  child.setName(item.getTextContent());
+                  child.setPath(cleanedPath);
+                  provider.addChild(child);
+                  break;
+               }
+            }
+         }
+      }
+
+      return provider;
    }
 
    /**
@@ -104,5 +120,36 @@ public class ServiceProviderCatalogReader implements IDoorsArtifactParser {
    public String replace(final String url) {
       String newUrl = url.toLowerCase();
       return newUrl;
+   }
+
+   public void debugPrintToFile(String content) {
+
+      BufferedWriter bw = null;
+      FileWriter fw = null;
+      String FILENAME = String.format("C:\\UserData\\debugout\\%d.txt", System.currentTimeMillis());
+      try {
+         fw = new FileWriter(FILENAME);
+         bw = new BufferedWriter(fw);
+         bw.write(content);
+
+      } catch (IOException e) {
+         e.printStackTrace();
+      } finally {
+
+         try {
+
+            if (bw != null) {
+               bw.close();
+            }
+
+            if (fw != null) {
+               fw.close();
+            }
+
+         } catch (IOException ex) {
+            ex.printStackTrace();
+         }
+      }
+
    }
 }

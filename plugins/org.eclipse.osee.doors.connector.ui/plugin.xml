@@ -14,6 +14,7 @@
             name="Doors"
             restorable="true">
       </view>
+		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.doors.connector.ui.viewer.RdfExplorer" icon="images/rdfExplorer.gif" id="org.eclipse.osee.doors.connector.ui.viewer.RdfExplorer" name="RDF Explorer"/>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">

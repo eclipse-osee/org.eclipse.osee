@@ -28,9 +28,8 @@ public class ServiceProviderReader implements IDoorsArtifactParser {
     * {@inheritDoc}
     */
    @Override
-   public DoorsArtifact parse(final String path) throws Exception {
-      DoorsArtifact serviceProvider = new ServiceProvider();
-      serviceProvider.setPath(path);
+   public DoorsArtifact parse(DoorsArtifact provider) throws Exception {
+      String path = provider.getPath();
 
       DoorsOSLCConnector doors = new DoorsOSLCConnector();
       String catalogResponse = doors.getCatalogResponse(replace(path), null);
@@ -54,7 +53,7 @@ public class ServiceProviderReader implements IDoorsArtifactParser {
             for (int j = 0; j < childNodes.getLength(); j++) {
                Node item = childNodes.item(j);
                if ((item.getLocalName() != null) && item.getLocalName().equalsIgnoreCase("label")) {
-                  serviceProvider.setName(item.getTextContent());
+                  provider.setName(item.getTextContent());
                }
             }
          }
@@ -73,7 +72,7 @@ public class ServiceProviderReader implements IDoorsArtifactParser {
             for (int k1 = 0; k1 < attributes.getLength(); k1++) {
                Node item1 = attributes.item(k1);
                String nodeValue = item1.getNodeValue();
-               serviceProvider.setSelectionDialogUrl(nodeValue);
+               provider.setSelectionDialogUrl(nodeValue);
             }
             break;
          }
@@ -91,12 +90,14 @@ public class ServiceProviderReader implements IDoorsArtifactParser {
                Node item1 = attributes.item(k1);
                String nodeValue = item1.getNodeValue();
                QueryReader queryReader = new QueryReader();
-               DoorsArtifact queryObj = queryReader.parse(replace(nodeValue));
-               serviceProvider.addChild(queryObj);
+               QueryCapabilities queryObjIn = new QueryCapabilities();
+               queryObjIn.setPath(replace(nodeValue));
+               DoorsArtifact queryObj = queryReader.parse(queryObjIn);
+               provider.addChild(queryObj);
             }
          }
       }
-      return serviceProvider;
+      return provider;
    }
 
    /**

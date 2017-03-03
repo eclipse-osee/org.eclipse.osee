@@ -30,9 +30,14 @@ public class QueryReader implements IDoorsArtifactParser {
     * Method to parse the DWA URL to get the response
     */
    @Override
-   public DoorsArtifact parse(final String path) throws Exception {
-      QueryCapabilities queryObj = new QueryCapabilities();
-      queryObj.setPath(path);
+   public DoorsArtifact parse(DoorsArtifact queryObjIn) throws Exception {
+      QueryCapabilities queryObj;
+      if (queryObjIn instanceof QueryCapabilities) {
+         queryObj = (QueryCapabilities) queryObjIn;
+      } else {
+         return queryObjIn; // this only parses QueryCapabilites, if not the right type take no action
+      }
+      String path = queryObj.getPath();
 
       String url = "oslc.where=dcterms:created<" + getDate();
 

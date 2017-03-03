@@ -181,6 +181,7 @@ public enum FrameworkImage implements KeyedImage {
    REMOVE("remove.gif"),
    REMOVE_ALL("removeAll.gif"),
    REPORT("report.gif"),
+   REPOSITORY("repository.gif"),
    REJECT("reject.gif"),
    RIGHT_ARROW_1("rightarrow1.png"),
    RIGHT_ARROW_N("rightarrowN.png"),

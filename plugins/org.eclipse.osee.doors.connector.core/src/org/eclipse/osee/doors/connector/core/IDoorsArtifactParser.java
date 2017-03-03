@@ -5,26 +5,24 @@
  */
 package org.eclipse.osee.doors.connector.core;
 
-
 /**
  * Interface to parse the doors reponse and to replace the url
- * 
+ *
  * @author Chandan Bandemutt
  */
 public interface IDoorsArtifactParser {
 
-  /**
-   * @param path : DWA url to get the response
-   * @return : the doors artifact
-   * @throws Exception : XML exception
-   */
-  DoorsArtifact parse(final String path) throws Exception;
+   /**
+    * @param provider : Pass in the artifact to parse, for recursive parsing
+    * @return : the doors artifact
+    * @throws Exception : XML exception
+    */
+   DoorsArtifact parse(DoorsArtifact provider) throws Exception;
 
-  /**
-   * @param url : response url to change to lower case
-   * @return the url changed to lower case
-   */
-  String replace(final String url);
-
+   /**
+    * @param url : response url to change to lower case
+    * @return the url changed to lower case
+    */
+   String replace(final String url);
 
 }

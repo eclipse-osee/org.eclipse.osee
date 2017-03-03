@@ -8,105 +8,68 @@ package org.eclipse.osee.doors.connector.core;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Model Class to store the name, path and children to doorsArtifact
- * 
+ *
  * @author Chandan Bandemutt
  */
 public class DoorsArtifact implements INamedElement {
 
-  String path;
+   String path;
+   List<DoorsArtifact> children;
+   String name;
+   public String SelectionDialogUrl;
 
-  List<DoorsArtifact> children;
+   public String getSelectionDialogUrl() {
+      return this.SelectionDialogUrl;
+   }
 
-  String name;
+   public void setSelectionDialogUrl(final String selectionDialogUrl) {
+      this.SelectionDialogUrl = selectionDialogUrl;
+   }
 
-  /**
-   * 
-   */
-  public String SelectionDialogUrl;
+   public DoorsArtifact() {
+      this.children = new ArrayList<>();
+      this.path = "";
+      this.name = "";
+   }
 
-  /**
-   * @return the delegated UI url
-   */
-  public String getSelectionDialogUrl() {
-    return this.SelectionDialogUrl;
-  }
+   public DoorsArtifact(final String name) {
+      this();
+      this.name = name;
+   }
 
-  /**
-   * @param selectionDialogUrl : Url of the delegated UI
-   */
-  public void setSelectionDialogUrl(final String selectionDialogUrl) {
-    this.SelectionDialogUrl = selectionDialogUrl;
-  }
+   public String getPath() {
+      return this.path;
+   }
 
-  /**
-   * 
-   */
-  public DoorsArtifact() {
-    this.children = new ArrayList<>();
-  }
+   public void setPath(final String path) {
+      this.path = path;
+   }
 
-  /**
-   * Constructor which sets the name of the DoorsArtifact
-   * 
-   * @param name String
-   */
-  public DoorsArtifact(final String name) {
-    this();
-    this.name = name;
-  }
+   public void addChild(final DoorsArtifact child) {
+      // don't add duplicate children
+      boolean addable = true;
+      for (DoorsArtifact sibling : children) {
+         if (sibling.getName().equals(child.getName())) {
+            addable = false;
+         }
+      }
+      if (addable) {
+         this.children.add(child);
+      }
+   }
 
-  /**
-   * Returns the URL path of this object
-   * 
-   * @return Path of the object obtained from DWA
-   */
-  public String getPath() {
-    return this.path;
-  }
+   @Override
+   public String getName() {
+      return this.name;
+   }
 
+   public void setName(final String name) {
+      this.name = name;
+   }
 
-  /**
-   * Sets the URL path of this object
-   * 
-   * @param path URL of the object returned from DWA
-   */
-  public void setPath(final String path) {
-    this.path = path;
-  }
-
-
-  /**
-   * Method to add children objects
-   * 
-   * @param child Object which is a child
-   */
-  public void addChild(final DoorsArtifact child) {
-    this.children.add(child);
-  }
-
-  @Override
-  public String getName() {
-    return this.name;
-  }
-
-  /**
-   * Sets name of this object
-   * 
-   * @param name String
-   */
-  public void setName(final String name) {
-    this.name = name;
-  }
-
-  /**
-   * Method to add children objects
-   * 
-   * @return Returns the children
-   */
-  public List<DoorsArtifact> getChildren() {
-    return this.children;
-  }
+   public List<DoorsArtifact> getChildren() {
+      return this.children;
+   }
 }

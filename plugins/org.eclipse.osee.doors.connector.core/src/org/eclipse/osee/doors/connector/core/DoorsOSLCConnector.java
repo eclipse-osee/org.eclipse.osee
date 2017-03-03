@@ -25,7 +25,7 @@ public class DoorsOSLCConnector {
 
    /**
     * Method to authenticate
-    * 
+    *
     * @param service : ICTeamOAuthService
     * @param name : username
     * @param password : password
@@ -41,7 +41,10 @@ public class DoorsOSLCConnector {
       if (accessToken != null) {
          ServiceProviderCatalogReader catalogReader = new ServiceProviderCatalogReader();
          try {
-            parse = catalogReader.parse(service1.getResourceUrl());
+            ServiceProviderCatalog child = new ServiceProviderCatalog();
+            child.setName("Top Level");
+            child.setPath(service1.getResourceUrl());
+            parse = catalogReader.parse(child);
          } catch (Exception e) {
             e.printStackTrace();
          }

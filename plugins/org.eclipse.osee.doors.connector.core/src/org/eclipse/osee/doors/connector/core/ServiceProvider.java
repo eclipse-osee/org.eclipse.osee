@@ -5,13 +5,12 @@
  */
 package org.eclipse.osee.doors.connector.core;
 
-
 /**
  * Model Class to create a ServiceProvider oblect. Currently it extends Doors artifact. Further more objects can be
  * added to extend it in future
- * 
+ *
  * @author Chandan Bandemutt
  */
 public class ServiceProvider extends DoorsArtifact {
-  //
+   //
 }
