@@ -299,7 +299,6 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    }
 
    @Override
-   @Nullable
    public <T extends IAtsConfigObject> T getOneOrNull(Class<T> clazz) {
       Collection<T> items = getItems(clazz);
       if (!items.isEmpty()) {
