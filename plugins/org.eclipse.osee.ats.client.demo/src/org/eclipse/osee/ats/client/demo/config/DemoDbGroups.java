@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
-import org.eclipse.osee.ats.demo.api.DemoGroups;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -35,6 +34,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
  * @author Donald G. Dunne
  */
 public class DemoDbGroups {
+   private static String TEST_GROUP_NAME = "Test Group";
 
    public static List<TeamWorkFlowArtifact> createGroups(boolean DEBUG) throws Exception {
 
@@ -46,8 +46,7 @@ public class DemoDbGroups {
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Create Groups and add objects");
       }
-      Artifact groupArt =
-         UniversalGroup.addGroup(DemoGroups.TEST_GROUP_NAME, AtsClientService.get().getAtsBranch(), transaction);
+      Artifact groupArt = UniversalGroup.addGroup(TEST_GROUP_NAME, AtsClientService.get().getAtsBranch(), transaction);
       for (TeamWorkFlowArtifact codeArt : DemoDbUtil.getSampleCodeWorkflows()) {
 
          // Add Action to Universal Group
