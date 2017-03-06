@@ -19,10 +19,18 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
  */
 public final class AtsArtifactToken {
 
+   /**
+    * This token points to the ATS Access Control artifact that matches the current code base. Production and other code
+    * bases may be looking at different artifacts for their access control based on the current OSEE Types and Access
+    * grammar.
+    */
+   public static final ArtifactToken AtsCmAccessControl = TokenFactory.createArtifactToken(8635612,
+      "ADUOdcYzrH0PxbbPaFwA", "ATS CM Access Control", CoreArtifactTypes.GeneralData);
+
    public static final ArtifactToken AtsConfig =
       TokenFactory.createArtifactToken(5367053, "Af7L9SYYgCcBCKZ8CCwA", "ATS Config", CoreArtifactTypes.GeneralData);
-   public static final ArtifactToken RuleDefinitions = TokenFactory.createArtifactToken(7880473,
-      "Ar1Z9KIRtUZgcxbnyFwA", "Rule Definitions", AtsArtifactTypes.RuleDefinition);
+   public static final ArtifactToken RuleDefinitions = TokenFactory.createArtifactToken(7880473, "Ar1Z9KIRtUZgcxbnyFwA",
+      "Rule Definitions", AtsArtifactTypes.RuleDefinition);
    public static final ArtifactToken Users =
       TokenFactory.createArtifactToken(95459, "AAABGTAGb+8BauB5Cw1QNA", "Users", CoreArtifactTypes.Folder);
    public static ArtifactToken HeadingFolder = TokenFactory.createArtifactToken(114713, "AAABER+3yR4A8O7WYQ+Xbw",
@@ -53,8 +61,8 @@ public final class AtsArtifactToken {
    // Default Work Definitions
    public static ArtifactToken WorkDef_Goal =
       TokenFactory.createArtifactToken(142177, "BAB1YhIbUQWluN2+SVgA", "WorkDef_Goal", AtsArtifactTypes.WorkDefinition);
-   public static ArtifactToken WorkDef_Review_Decision = TokenFactory.createArtifactToken(25335,
-      "A__fwv3zpnS2oEVTaDQA", "WorkDef_Review_Decision", AtsArtifactTypes.WorkDefinition);
+   public static ArtifactToken WorkDef_Review_Decision = TokenFactory.createArtifactToken(25335, "A__fwv3zpnS2oEVTaDQA",
+      "WorkDef_Review_Decision", AtsArtifactTypes.WorkDefinition);
    public static ArtifactToken WorkDef_Review_PeerToPeer = TokenFactory.createArtifactToken(25334,
       "A__WLyb77Cl_diWCUmAA", "WorkDef_Review_PeerToPeer", AtsArtifactTypes.WorkDefinition);
    public static ArtifactToken WorkDef_Task_Default = TokenFactory.createArtifactToken(105373, "BABAJntqsGoKosWZtKgA",

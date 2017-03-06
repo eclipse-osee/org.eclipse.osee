@@ -10,9 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.internal;
 
-import org.eclipse.osee.ats.access.AtsAccessUtil;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.framework.core.dsl.ui.integration.operations.AbstractOseeDslProvider;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -31,8 +30,7 @@ public class AtsAccessOseeDslProvider extends AbstractOseeDslProvider {
 
    private Artifact getStorageArtifact() {
       try {
-         return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.AccessControlModel,
-            AtsAccessUtil.ATS_ACCESS_MODEL_NAME, CoreBranches.COMMON);
+         return ArtifactQuery.getArtifactFromToken(AtsArtifactToken.AtsCmAccessControl, CoreBranches.COMMON);
       } catch (OseeCoreException ex) {
          return null;
       }
