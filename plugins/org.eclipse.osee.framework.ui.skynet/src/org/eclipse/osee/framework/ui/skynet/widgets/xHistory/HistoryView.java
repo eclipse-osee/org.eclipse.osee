@@ -318,7 +318,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
       this.artifact = artifact;
 
       if (isInitialized()) {
-         setPartName("History: " + artifact.getName());
+         setPartName(String.format("History: (%s) - [%s]", artifact.getId(), artifact.getName()));
          xHistoryWidget.setInputData(artifact, loadHistory);
       }
    }

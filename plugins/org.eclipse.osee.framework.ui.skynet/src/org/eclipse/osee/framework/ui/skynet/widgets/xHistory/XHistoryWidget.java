@@ -82,7 +82,6 @@ public class XHistoryWidget extends GenericXWidget {
    private final Set<Long> shadedTransactions = new HashSet<>();
    private int numberTransactionsToShow = 25;
    private ToolItem show25Item, showXItem, showAllItem, show50Item;
-   private final boolean fireShowXSelectionListener = true;
 
    public XHistoryWidget() {
       super("History");
@@ -325,7 +324,8 @@ public class XHistoryWidget extends GenericXWidget {
                         }
                         String infoLabel = NO_HISTORY;
                         if (!changes.isEmpty()) {
-                           infoLabel = String.format("History: %s on branch: %s", artifact.getName(), shortName);
+                           infoLabel = String.format("History (%s): %s on branch: %s", artifact.getId(),
+                              artifact.getName(), shortName);
                         }
 
                         if (Widgets.isAccessible(extraInfoLabel)) {
