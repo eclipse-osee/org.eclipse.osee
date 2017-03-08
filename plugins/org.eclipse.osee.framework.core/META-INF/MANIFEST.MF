@@ -6,8 +6,8 @@ Bundle-Version: 0.25.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.core.internal.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.antlr.runtime;
- org.antlr.runtime.tree;
+Import-Package: org.antlr.runtime,
+ org.antlr.runtime.tree,
  org.apache.commons.httpclient,
  org.apache.commons.httpclient.methods,
  org.apache.commons.httpclient.params,
@@ -17,6 +17,7 @@ Import-Package: org.antlr.runtime;
  org.codehaus.jackson.map.annotate,
  org.codehaus.jackson.map.deser.std,
  org.codehaus.jackson.map.ser.std,
+ org.codehaus.jackson.map.type,
  org.codehaus.jackson.node,
  org.eclipse.core.net.proxy,
  org.eclipse.osee.framework.jdk.core.text,

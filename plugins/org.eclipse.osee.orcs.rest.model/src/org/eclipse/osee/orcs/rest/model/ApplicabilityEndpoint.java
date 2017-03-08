@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.model;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import javax.ws.rs.Consumes;
@@ -96,6 +97,11 @@ public interface ApplicabilityEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces(MediaType.APPLICATION_JSON)
    List<ApplicabilityToken> getApplicabilityTokensForArts(List<ArtifactId> artIds);
+
+   @GET
+   @Path("tokenMap")
+   @Produces({MediaType.APPLICATION_JSON})
+   Collection<ApplicabilityToken> getApplicabilityTokenMap();
 
    @GET
    @Path("views")

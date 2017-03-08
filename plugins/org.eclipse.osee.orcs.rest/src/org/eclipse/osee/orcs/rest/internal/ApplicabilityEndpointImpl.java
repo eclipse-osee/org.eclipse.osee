@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.rest.internal;
 
 import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -130,6 +131,11 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
+   public Collection<ApplicabilityToken> getApplicabilityTokenMap() {
+      return orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityTokens(branch).values();
+   }
+
+   @Override
    public List<FeatureDefinitionData> getFeatureDefinitionData() {
       List<ArtifactReadable> featureDefinitionArts = orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(
          CoreArtifactTypes.FeatureDefinition).getResults().getList();
@@ -166,7 +172,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    public List<ApplicabilityToken> getApplicabilityReferenceTokens(ArtifactId artifact) {
       List<ApplicabilityToken> tokens = new LinkedList<>();
       orcsApi.getQueryFactory().tupleQuery().getTuple2NamedId(CoreTupleTypes.ArtifactReferenceApplicabilityType, branch,
-         artifact, (e2, value) -> tokens.add(ApplicabilityToken.c(e2, value)));
+         artifact, (e2, value) -> tokens.add(ApplicabilityToken.create(e2, value)));
       return tokens;
    }
 
