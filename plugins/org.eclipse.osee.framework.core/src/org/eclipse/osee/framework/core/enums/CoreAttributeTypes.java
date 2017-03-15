@@ -26,6 +26,7 @@ public final class CoreAttributeTypes {
    public static final AttributeTypeToken PlainTextContent = AttributeTypeToken.valueOf(1152921504606847866L, "Plain Text Content");
    public static final AttributeTypeToken BranchReference = AttributeTypeToken.valueOf(1153126013769613563L, "Branch Reference");
    public static final AttributeTypeToken Category = AttributeTypeToken.valueOf(1152921504606847121L, "Category");
+   public static final AttributeTypeToken CircuitBreakerId = AttributeTypeToken.valueOf(188458869981238L, "Circuit Breaker ID");
    public static final AttributeTypeToken City = AttributeTypeToken.valueOf(1152921504606847068L, "City");
    public static final AttributeTypeToken CommonNalRequirement = AttributeTypeToken.valueOf(1152921504606847105L, "Common NAL Requirement");
    public static final AttributeTypeToken Company = AttributeTypeToken.valueOf(1152921504606847066L, "Company");
