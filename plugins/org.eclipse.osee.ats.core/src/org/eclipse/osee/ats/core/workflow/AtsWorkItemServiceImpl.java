@@ -155,8 +155,9 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
                }
             }
          }
+         return services.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.LegacyPcrId, "");
       }
-      return services.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.LegacyPcrId, "");
+      return "";
    }
 
    /**
