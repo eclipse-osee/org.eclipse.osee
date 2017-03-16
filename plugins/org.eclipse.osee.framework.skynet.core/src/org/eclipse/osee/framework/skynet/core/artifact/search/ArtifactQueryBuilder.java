@@ -316,6 +316,9 @@ public class ArtifactQueryBuilder {
       if (emptyCriteria) {
          throw new ArtifactDoesNotExist("received an empty list in the criteria for this search");
       }
+      if (branch.isInvalid()) {
+         throw new OseeArgumentException("Branch specified [%s] is invalid", branch);
+      }
       Collection<Artifact> artifacts = getArtifacts(1, null);
 
       if (artifacts.isEmpty()) {

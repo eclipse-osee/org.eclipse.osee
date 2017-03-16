@@ -47,6 +47,7 @@ import org.junit.runners.Suite;
    NativeArtifactTest.class,
    OseeEnumerationValidationTest.class,
    OseeInfoTest.class,
+   PurgeArtifactsTest.class,
    PurgeTransactionTest.class,
    RelationCacheTest.class,
    RelationDeletionTest.class,

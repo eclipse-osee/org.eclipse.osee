@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -84,8 +85,22 @@ public class ArtifactQuery {
       return getArtifactFromId(artifactToken.getUuid(), branch);
    }
 
-   public static Artifact getArtifactFromToken(ArtifactToken artifactToken, DeletionFlag allowDeleted) {
-      return getArtifactFromId(artifactToken.getUuid(), artifactToken.getBranch(), allowDeleted);
+   public static Artifact getArtifactFromToken(ArtifactToken artifactToken, DeletionFlag deletionFlag) {
+      return getArtifactFromId(artifactToken.getUuid(), artifactToken.getBranch(), deletionFlag);
+   }
+
+   public static Artifact getArtifactFromToken(ArtifactToken artifactToken, BranchId branch, DeletionFlag deletionFlag) {
+      return getArtifactFromId(artifactToken.getUuid(), branch, deletionFlag);
+   }
+
+   public static Artifact getArtifactFromTokenOrNull(Artifact artifactToken, IOseeBranch branch, DeletionFlag deletionFlag) {
+      Artifact artifact = null;
+      try {
+         artifact = getArtifactFromToken(artifactToken, branch, deletionFlag);
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+      return artifact;
    }
 
    public static Artifact getArtifactFromToken(ArtifactToken artifactToken) {
@@ -1055,4 +1070,5 @@ public class ArtifactQuery {
       long transactionId = jdbcClient.fetch(-1L, query, artifact, artifact.getBranch(), artifact, artifact.getBranch());
       return !artifact.getTransaction().getId().equals(transactionId);
    }
+
 }

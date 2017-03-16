@@ -96,7 +96,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
          TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery(getJdbcClient());
 
          insertSelectItems(txJoin, connection, "osee_relation_link",
-            "(aj.id2 = item.a_art_id OR aj.id1 = item.b_art_id)", queryId);
+            "(aj.id2 = item.a_art_id OR aj.id2 = item.b_art_id)", queryId);
          insertSelectItems(txJoin, connection, "osee_attribute", "aj.id2 = item.art_id", queryId);
          insertSelectItems(txJoin, connection, "osee_artifact", "aj.id2 = item.art_id", queryId);
 
