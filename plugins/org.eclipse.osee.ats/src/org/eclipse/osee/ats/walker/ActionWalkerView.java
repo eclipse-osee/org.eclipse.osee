@@ -155,10 +155,12 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
             artifact = art;
          } else if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             artifact = ((TeamWorkFlowArtifact) art).getParentActionArtifact();
+         } else if (art.isOfType(AtsArtifactTypes.AgileSprint)) {
+            artifact = art;
          } else if (art.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
             if (!PeerToPeerReviewManager.isStandAlongReview(art)) {
                Artifact parentArtifact = ((AbstractWorkflowArtifact) art).getParentAWA();
-               if (parentArtifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+               if (parentArtifact != null && parentArtifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                   artifact = ((TeamWorkFlowArtifact) parentArtifact).getParentActionArtifact();
                } else {
                   OseeLog.log(Activator.class, Level.SEVERE, "Unknown parent " + AtsUtilClient.getAtsId(art));

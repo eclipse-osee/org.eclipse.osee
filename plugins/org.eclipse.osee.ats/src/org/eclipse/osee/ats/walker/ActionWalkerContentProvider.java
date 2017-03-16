@@ -15,13 +15,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.ats.api.agile.IAgileSprint;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
 
 /**
@@ -77,6 +81,14 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
             } else {
                objs.addAll(goal.getMembers());
             }
+         } else if (entity instanceof Artifact && ((Artifact) entity).isOfType(AtsArtifactTypes.AgileSprint)) {
+            objs.add(entity);
+            IAgileSprint sprint = AtsClientService.get().getWorkItemFactory().getAgileSprint((Artifact) entity);
+            if (!view.isShowAll() && AtsClientService.get().getAgileService().getItems(sprint).size() > 10) {
+               objs.add(new SprintMemberWrapper(sprint));
+            } else {
+               objs.addAll(AtsClientService.get().getAgileService().getItems(sprint));
+            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -120,6 +132,16 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
                objs.add(new GoalMemberWrapper(goal));
             } else {
                objs.addAll(goal.getMembers());
+            }
+            return objs.toArray();
+         } else if (inputElement instanceof Artifact && ((Artifact) inputElement).isOfType(
+            AtsArtifactTypes.AgileSprint)) {
+            List<Object> objs = new ArrayList<>(5);
+            IAgileSprint sprint = AtsClientService.get().getWorkItemFactory().getAgileSprint((Artifact) inputElement);
+            if (!view.isShowAll() && AtsClientService.get().getAgileService().getItems(sprint).size() > 10) {
+               objs.add(new SprintMemberWrapper(sprint));
+            } else {
+               objs.addAll(AtsClientService.get().getAgileService().getItems(sprint));
             }
             return objs.toArray();
          }

@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.walker;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -48,6 +49,12 @@ public class ActionWalkerLabelProvider implements ILabelProvider {
       } else if (obj instanceof GoalArtifact) {
          try {
             str = ((GoalArtifact) obj).getEditorTitle();
+         } catch (OseeCoreException ex) {
+            str = "Exception - " + ex.getLocalizedMessage();
+         }
+      } else if (obj instanceof Artifact && ((Artifact) obj).isOfType(AtsArtifactTypes.AgileSprint)) {
+         try {
+            str = "Agile Sprint : " + ((Artifact) obj).getName();
          } catch (OseeCoreException ex) {
             str = "Exception - " + ex.getLocalizedMessage();
          }
