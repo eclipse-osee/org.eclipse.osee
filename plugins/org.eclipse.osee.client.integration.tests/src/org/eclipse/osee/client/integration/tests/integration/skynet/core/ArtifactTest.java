@@ -20,17 +20,20 @@ import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import org.eclipse.osee.client.demo.DemoTypes;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -45,11 +48,27 @@ public final class ArtifactTest {
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   private Artifact artifactWithSpecialAttr;
+   private static final String BREAKER_NAME = "ArtifactTest Breaker";
+   private static Artifact artifactWithSpecialAttr;
+   private static Artifact breakerArt;
 
-   @Before
-   public void setUp() throws Exception {
+   @BeforeClass
+   public static void setUp() throws Exception {
       artifactWithSpecialAttr = ArtifactTypeManager.addArtifact(DemoTypes.DemoTestRequirement, SAW_Bld_1);
+      breakerArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Breaker, COMMON);
+      breakerArt.setName(BREAKER_NAME);
+      breakerArt.persist("ArtifactTest");
+   }
+
+   @BeforeClass
+   @AfterClass
+   public static void cleanUp() throws Exception {
+      if (breakerArt != null) {
+         breakerArt.deleteAndPersist();
+      }
+      if (artifactWithSpecialAttr != null) {
+         ArtifactCache.deCache(artifactWithSpecialAttr);
+      }
    }
 
    @After
@@ -94,9 +113,58 @@ public final class ArtifactTest {
    }
 
    @Test
-   public void setSoleAttributeValueTest() throws Exception {
+   public void testSetSoleAttributeValue() throws Exception {
       artifactWithSpecialAttr.setName("ArtifactTest-artifactWithSpecialAttr");
       artifactWithSpecialAttr.setSoleAttributeValue(CoreAttributeTypes.Partition, "Navigation");
+   }
+
+   /**
+    * Setting same value should not change artifact
+    */
+   @Test
+   public void testSetSoleAttributeValueSameValueBoolean() throws Exception {
+      breakerArt.setSoleAttributeValue(CoreAttributeTypes.RequireConfirmation, true);
+      breakerArt.persist("Set RequireConfirmation");
+      Assert.assertEquals(true, breakerArt.getSoleAttributeValue(CoreAttributeTypes.RequireConfirmation, false));
+      TransactionToken currentTrans = breakerArt.getTransaction();
+
+      breakerArt.setSoleAttributeValue(CoreAttributeTypes.RequireConfirmation, true);
+      breakerArt.persist("Re-set RequireConfirmation");
+      Assert.assertEquals(true, breakerArt.getSoleAttributeValue(CoreAttributeTypes.RequireConfirmation, false));
+
+      TransactionToken newTransaction = breakerArt.getTransaction();
+      Assert.assertEquals(currentTrans, newTransaction);
+   }
+
+   @Test
+   public void testSetSoleAttributeValueSameValueString() throws Exception {
+      Assert.assertEquals(BREAKER_NAME, breakerArt.getName());
+      TransactionToken currentTrans = breakerArt.getTransaction();
+
+      breakerArt.setName(BREAKER_NAME);
+      breakerArt.persist("Re-set Name");
+      Assert.assertEquals(BREAKER_NAME, breakerArt.getName());
+
+      TransactionToken newTransaction = breakerArt.getTransaction();
+      Assert.assertEquals(currentTrans, newTransaction);
+   }
+
+   @Test
+   public void testSetSoleAttributeValueSameValueInteger() throws Exception {
+      breakerArt.setSoleAttributeValue(CoreAttributeTypes.CircuitBreakerId, 34);
+      breakerArt.persist("Set CircuitBreakerId");
+
+      Assert.assertEquals(Integer.valueOf(34),
+         breakerArt.getSoleAttributeValue(CoreAttributeTypes.CircuitBreakerId, 0));
+      TransactionToken currentTrans = breakerArt.getTransaction();
+
+      breakerArt.setSoleAttributeValue(CoreAttributeTypes.CircuitBreakerId, 34);
+      breakerArt.persist("Re-Set CircuitBreakerId");
+      Assert.assertEquals(Integer.valueOf(34),
+         breakerArt.getSoleAttributeValue(CoreAttributeTypes.CircuitBreakerId, 0));
+
+      TransactionToken newTransaction = breakerArt.getTransaction();
+      Assert.assertEquals(currentTrans, newTransaction);
    }
 
    @Test

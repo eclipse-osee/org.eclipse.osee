@@ -75,6 +75,7 @@ public final class CoreAttributeTypes {
    public static final AttributeTypeToken QualificationMethod = AttributeTypeToken.valueOf(1152921504606847113L, "Qualification Method");
    public static final AttributeTypeToken RendererOptions = AttributeTypeToken.valueOf(904, "Renderer Options");
    public static final AttributeTypeToken RelationOrder = AttributeTypeToken.valueOf(1152921504606847089L, "Relation Order");
+   public static final AttributeTypeToken RequireConfirmation = AttributeTypeToken.valueOf(188458869981239L, "Require Confirmation");
    public static final AttributeTypeToken Sfha = AttributeTypeToken.valueOf(1152921504606847140L, "SFHA");
    public static final AttributeTypeToken SeverityCategory = AttributeTypeToken.valueOf(1152921504606847114L, "Severity Category");
    public static final AttributeTypeToken SoftwareControlCategory = AttributeTypeToken.valueOf(1958401980089733639L, "Software Control Category");

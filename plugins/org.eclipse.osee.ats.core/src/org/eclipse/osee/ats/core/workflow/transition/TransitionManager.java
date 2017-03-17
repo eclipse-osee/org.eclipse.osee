@@ -454,7 +454,9 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
       if (attrResolver.isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
          attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledBy, cancelBy.getUserId(), changes);
          attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledDate, cancelDate, changes);
-         attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledReason, reason, changes);
+         if (Strings.isValid(reason)) {
+            attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledReason, reason, changes);
+         }
          attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledFromState, fromState.getName(),
             changes);
       }

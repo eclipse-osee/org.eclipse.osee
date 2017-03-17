@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.attribute.providers;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeResourceProcessor;
@@ -67,8 +68,9 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
 
    @Override
    public boolean setValue(Object value) throws OseeCoreException {
+      Conditions.checkNotNull(value, "attribute value");
       boolean response = false;
-      if (getValueAsString() == value || getValueAsString() != null && getValueAsString().equals(value)) {
+      if (value.toString().equals(getValueAsString())) {
          response = false;
       } else {
          storeValue(value);
