@@ -103,8 +103,10 @@ public abstract class XFlatWidget<T> extends XLabel {
 
    @Override
    public void refresh() {
-      updateCurrentPageLabel();
-      flatControl.refresh();
+      if (Widgets.isAccessible(flatControl.flatComposite)) {
+         updateCurrentPageLabel();
+         flatControl.refresh();
+      }
    }
 
    @Override
