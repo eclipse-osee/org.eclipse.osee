@@ -79,4 +79,13 @@ public class WfeInput extends ArtifactEditorInput {
       }
       return ImageManager.getImageDescriptor(AtsImage.TEAM_WORKFLOW);
    }
+
+   @Override
+   public boolean equals(Object obj) {
+      boolean equals = super.equals(obj);
+      if (equals && getClass() != obj.getClass()) {
+         equals = false;
+      }
+      return equals;
+   }
 }

@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -71,18 +70,17 @@ public class AtsTaskService extends AbstractAtsTaskService {
 
       ArtifactEvent artifactEvent = new ArtifactEvent(AtsClientService.get().getAtsBranch());
       for (NewTaskData newTaskData : newTaskDatas.getTaskDatas()) {
-         processForEvents(newTaskData, response, tasks);
+         processForEvents(newTaskData, response, tasks, artifactEvent);
       }
 
       OseeEventManager.kickPersistEvent(getClass(), artifactEvent);
       return tasks;
    }
 
-   private void processForEvents(NewTaskData newTaskData, Response response, List<IAtsTask> tasks) {
+   private void processForEvents(NewTaskData newTaskData, Response response, List<IAtsTask> tasks, ArtifactEvent artifactEvent) {
       Artifact teamWf = atsClient.getArtifact(newTaskData.getTeamWfUuid());
 
       JaxAtsTasks jaxTasks = response.readEntity(JaxAtsTasks.class);
-      ArtifactEvent artifactEvent = new ArtifactEvent(AtsClientService.get().getAtsBranch());
       List<Long> artUuids = new LinkedList<>();
 
       teamWf.reloadAttributesAndRelations();
@@ -90,12 +88,11 @@ public class AtsTaskService extends AbstractAtsTaskService {
 
       for (JaxAtsTask task : jaxTasks.getTasks()) {
          String guid = ArtifactQuery.getGuidFromUuid(task.getUuid(), AtsClientService.get().getAtsBranch());
-         artifactEvent.getArtifacts().add(
-            new EventBasicGuidArtifact(EventModType.Added, AtsClientService.get().getAtsBranch(), AtsArtifactTypes.Task, guid));
+         artifactEvent.getArtifacts().add(new EventBasicGuidArtifact(EventModType.Added,
+            AtsClientService.get().getAtsBranch(), AtsArtifactTypes.Task, guid));
          artUuids.add(task.getUuid());
 
          RelationLink relation = getRelation(teamWf, task);
-         relation = getRelation(teamWf, task);
          if (relation != null) {
             Artifact taskArt = atsClient.getArtifact(task.getUuid());
 

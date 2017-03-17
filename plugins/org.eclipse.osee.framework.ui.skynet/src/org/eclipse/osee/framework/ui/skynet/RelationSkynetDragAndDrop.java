@@ -25,7 +25,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -60,7 +59,7 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
    boolean isFeedbackAfter = false;
    private final TreeViewer treeViewer;
    private final Artifact artifact;
-   private final ToolTip errorToolTip;
+   private ToolTip errorToolTip;
    private final IDirtiableEditor editor;
 
    public RelationSkynetDragAndDrop(String viewId, TreeViewer treeViewer, Artifact artifact, IDirtiableEditor editor) {
@@ -68,7 +67,13 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
       this.treeViewer = treeViewer;
       this.artifact = artifact;
       this.editor = editor;
-      errorToolTip = new ToolTip(Displays.getActiveShell(), SWT.ICON_ERROR);
+   }
+
+   private ToolTip getErrorToolTip() {
+      if (errorToolTip == null) {
+         errorToolTip = new ToolTip(Displays.getActiveShell(), SWT.ICON_ERROR);
+      }
+      return errorToolTip;
    }
 
    @Override
@@ -105,7 +110,7 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
       event.feedback = DND.FEEDBACK_EXPAND;
       event.detail = DND.DROP_NONE;
 
-      errorToolTip.setVisible(false);
+      getErrorToolTip().setVisible(false);
 
       if (selected != null && selected.getData() instanceof RelationTypeSideSorter) {
          ArtifactTransfer artTransfer = ArtifactTransfer.getInstance();
@@ -148,9 +153,9 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
 
                }
                if (!matched || !canRelate) {
-                  errorToolTip.setText("RELATION ERROR");
-                  errorToolTip.setMessage(toolTipText);
-                  errorToolTip.setVisible(true);
+                  getErrorToolTip().setText("RELATION ERROR");
+                  getErrorToolTip().setMessage(toolTipText);
+                  getErrorToolTip().setVisible(true);
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -193,18 +198,17 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
                AccessPolicy policyHandlerService = ServiceUtil.getAccessPolicy();
                RelationTypeSide rts = new RelationTypeSide(dropTarget.getRelationType(), dropTarget.getRelationSide());
 
-               matched = policyHandlerService.canRelationBeModified(artifact,
-                  Arrays.asList(artifact.equals(
-                     dropTarget.getArtifactA()) ? dropTarget.getArtifactB() : dropTarget.getArtifactA()),
+               matched = policyHandlerService.canRelationBeModified(artifact, Arrays.asList(
+                  artifact.equals(dropTarget.getArtifactA()) ? dropTarget.getArtifactB() : dropTarget.getArtifactA()),
                   rts, Level.INFO).matched();
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
             if (!matched) {
                event.detail = DND.DROP_NONE;
-               errorToolTip.setText("MOVE ERROR");
-               errorToolTip.setMessage("Access Control has restricted this action.");
-               errorToolTip.setVisible(true);
+               getErrorToolTip().setText("MOVE ERROR");
+               getErrorToolTip().setMessage("Access Control has restricted this action.");
+               getErrorToolTip().setVisible(true);
                return;
             }
             // the links must be in the same group
@@ -224,8 +228,8 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
 
    private boolean relationLinkIsInSameGroup(WrapperForRelationLink targetLink, WrapperForRelationLink dropTarget) {
       return targetLink.getRelationType().equals(dropTarget.getRelationType()) && //same type
-      (targetLink.getArtifactA().equals(dropTarget.getArtifactA()) || //either the A or B side is equal, meaning they are on the same side
-      targetLink.getArtifactB().equals(dropTarget.getArtifactB()));
+         (targetLink.getArtifactA().equals(dropTarget.getArtifactA()) || //either the A or B side is equal, meaning they are on the same side
+            targetLink.getArtifactB().equals(dropTarget.getArtifactB()));
    }
 
    @Override

@@ -183,13 +183,13 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
    }
 
    private void handleCachesForDeletedPurged(EventBasicGuidArtifact guidArt) throws OseeCoreException {
-      if (guidArt.is(AtsArtifactTypes.Task) && guidArt.is(EventModType.Deleted)) {
+      if (guidArt.is(AtsArtifactTypes.Task) && guidArt.is(EventModType.Deleted, EventModType.Purged)) {
          Artifact artifact = ArtifactCache.getActive(guidArt);
          if (artifact != null && !artifact.isDeleted()) {
             AtsTaskCache.decache(((TaskArtifact) artifact).getParentAWA());
          }
       }
-      if (guidArt.is(AtsArtifactTypes.ReviewArtifact) && guidArt.is(EventModType.Deleted)) {
+      if (guidArt.is(AtsArtifactTypes.ReviewArtifact) && guidArt.is(EventModType.Deleted, EventModType.Purged)) {
          Artifact artifact = ArtifactCache.getActive(guidArt);
          if (artifact != null && !artifact.isDeleted()) {
             AtsReviewCache.decache(((AbstractReviewArtifact) artifact).getParentAWA());

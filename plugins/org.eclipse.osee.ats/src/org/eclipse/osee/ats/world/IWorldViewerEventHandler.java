@@ -20,8 +20,6 @@ public interface IWorldViewerEventHandler {
 
    public WorldXViewer getWorldXViewer();
 
-   public void removeItems(Collection<? extends Object> objects);
-
    public void relationsModifed(Collection<Artifact> relModifiedArts, Collection<Artifact> goalMemberReordered, Collection<Artifact> sprintMemberReordered);
 
    public boolean isDisposed();

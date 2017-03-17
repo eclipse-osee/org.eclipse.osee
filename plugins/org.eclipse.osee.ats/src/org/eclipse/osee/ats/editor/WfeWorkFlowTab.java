@@ -67,8 +67,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
@@ -762,19 +760,6 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    public WorldXViewer getWorldXViewer() {
       // do nothing
       return null;
-   }
-
-   @Override
-   public void removeItems(Collection<? extends Object> objects) {
-      for (Object obj : objects) {
-         if (obj instanceof EventBasicGuidArtifact) {
-            EventBasicGuidArtifact guidArt = (EventBasicGuidArtifact) obj;
-            if (guidArt.getModType() == EventModType.Purged) {
-               refresh();
-               return;
-            }
-         }
-      }
    }
 
    @Override

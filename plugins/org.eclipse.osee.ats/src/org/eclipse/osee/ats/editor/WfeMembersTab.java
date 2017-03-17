@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -72,8 +71,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
-import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -423,32 +420,10 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
          @Override
          public void run() {
             if (Widgets.isAccessible(worldComposite)) {
-               updateShown();
-               worldComposite.update();
-               worldComposite.getXViewer().refresh();
+               worldComposite.getXViewer().setInput(provider.getMembers());
             }
          }
       });
-   }
-
-   private void updateShown() {
-      List<Artifact> members;
-      try {
-         members = provider.getMembers();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-         return;
-      }
-      List<Artifact> loadedArtifacts = worldComposite.getLoadedArtifacts();
-      List<Artifact> toRemoveFromLoaded = new LinkedList<>(members);
-      members.removeAll(loadedArtifacts);
-      for (Artifact art : members) {
-         worldComposite.insert(art, -1);
-      }
-      loadedArtifacts.removeAll(toRemoveFromLoaded);
-      worldComposite.removeItems(loadedArtifacts);
-      worldComposite.getXViewer().remove(loadedArtifacts);
-      worldComposite.getXViewer().refresh(provider.getArtifact());
    }
 
    private void refreshToolbar() {
@@ -479,19 +454,6 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
          return null;
       }
       return worldComposite.getWorldXViewer();
-   }
-
-   @Override
-   public void removeItems(Collection<? extends Object> objects) {
-      for (Object obj : objects) {
-         if (obj instanceof EventBasicGuidArtifact) {
-            EventBasicGuidArtifact guidArt = (EventBasicGuidArtifact) obj;
-            if (guidArt.getModType() == EventModType.Purged) {
-               refresh();
-               return;
-            }
-         }
-      }
    }
 
    @Override
@@ -642,9 +604,7 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
 
          @Override
          public void removedFromCollector(Collection<? extends Artifact> removed) {
-            worldComposite.removeItems(removed);
-            worldComposite.getXViewer().remove(removed);
-            worldComposite.getXViewer().refresh(provider.getArtifact());
+            worldComposite.getXViewer().setInput(provider.getMembers());
          }
 
       };

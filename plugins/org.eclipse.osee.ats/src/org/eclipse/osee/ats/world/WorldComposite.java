@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -78,8 +79,6 @@ import org.eclipse.swt.widgets.Control;
 public class WorldComposite extends Composite implements IOseeTreeReportProvider, ISelectedAtsArtifacts, IWorldViewerEventHandler, IOpenNewAtsWorldEditorHandler, IOpenNewAtsWorldEditorSelectedHandler, IOpenNewAtsTaskEditorHandler, IOpenNewAtsTaskEditorSelectedHandler, IRefreshActionHandler, ITaskAddActionHandler {
 
    private final WorldXViewer worldXViewer;
-   private final Set<Artifact> worldArts = new HashSet<>(200);
-   private final Set<Artifact> otherArts = new HashSet<>(200);
    protected IWorldEditor iWorldEditor;
 
    public WorldComposite(IWorldEditor worldEditor, Composite parent, int style) {
@@ -120,7 +119,7 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
          xViewerFactory != null ? xViewerFactory : new WorldXViewerFactory(this), null);
    }
 
-   public double getManHoursPerDayPreference() throws OseeCoreException {
+   public static double getManHoursPerDayPreference(Collection<Artifact> worldArts) throws OseeCoreException {
       if (worldArts.size() > 0) {
          Artifact artifact = worldArts.iterator().next();
          if (artifact.isOfType(AtsArtifactTypes.Action)) {
@@ -168,8 +167,8 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
          return;
       }
 
-      worldArts.clear();
-      otherArts.clear();
+      List<Artifact> worldArts = new LinkedList<Artifact>();
+      List<Artifact> otherArts = new LinkedList<Artifact>();
       for (Artifact art : arts) {
          if (AtsUtil.isAtsArtifact(art)) {
             worldArts.add(art);
@@ -291,11 +290,6 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
       return getXViewer().getLoadedArtifacts();
    }
 
-   public void insert(Artifact toInsert, int position) {
-      worldArts.add(toInsert);
-      getXViewer().insert(toInsert, position);
-   }
-
    public void disposeComposite() {
       if (worldXViewer != null && !worldXViewer.getTree().isDisposed()) {
          worldXViewer.dispose();
@@ -338,12 +332,6 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
    @Override
    public List<Artifact> getSelectedArtifacts() {
       return worldXViewer.getSelectedArtifacts();
-   }
-
-   @Override
-   public void removeItems(Collection<? extends Object> objects) {
-      // remove from model
-      worldArts.removeAll(objects);
    }
 
    @Override

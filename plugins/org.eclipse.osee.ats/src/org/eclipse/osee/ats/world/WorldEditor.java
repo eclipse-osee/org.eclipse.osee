@@ -242,7 +242,7 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
 
    @Override
    public double getManHoursPerDayPreference() throws OseeCoreException {
-      return worldXWidgetActionPage.getWorldComposite().getManHoursPerDayPreference();
+      return WorldComposite.getManHoursPerDayPreference(getLoadedArtifacts());
    }
 
    @Override

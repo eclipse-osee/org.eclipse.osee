@@ -97,8 +97,11 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
       return object;
    }
 
+   /*
+    * Return artifact or null if it has not been loaded yet
+    */
    public Artifact getArtifact() {
-      return loadArtifact();
+      return artifact;
    }
 
    public boolean isReadOnly() {

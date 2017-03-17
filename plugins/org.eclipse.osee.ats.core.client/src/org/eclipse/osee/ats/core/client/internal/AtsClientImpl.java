@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsEventService;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
@@ -76,6 +77,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -181,7 +183,14 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
          @Override
          public void run() {
             workDefCache.invalidate();
-            workDefCache.getAllWorkDefinitions();
+            XResultData resultData = new XResultData();
+            try {
+               for (IAtsWorkDefinition workDef : workDefService.getAllWorkDefinitions(resultData)) {
+                  workDefCache.cache(workDef.getId(), workDef);
+               }
+            } catch (Exception ex) {
+               // do nothing
+            }
          }
       };
       if (pend) {

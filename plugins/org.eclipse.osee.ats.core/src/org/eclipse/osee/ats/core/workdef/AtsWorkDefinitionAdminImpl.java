@@ -79,7 +79,7 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
    @Override
    public void addWorkDefinition(IAtsWorkDefinition workDef) throws OseeCoreException {
       WorkDefinitionMatch match =
-         new WorkDefinitionMatch(workDef.getId(), "programatically added via WorkDefinitionFactory.addWorkDefinition");
+         new WorkDefinitionMatch(workDef.getId(), "programatically added via " + getClass() + ".addWorkDefinition");
       match.setWorkDefinition(workDef);
       getCache().cache(workDef, match);
    }

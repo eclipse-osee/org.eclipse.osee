@@ -41,11 +41,16 @@ public class AtsWorkDefinitionCache {
       awaUuidToWorkDefinition.put(workItem.getId(), match);
    }
 
+   public void cache(String id, IAtsWorkDefinition workDef) {
+      WorkDefinitionMatch match = new WorkDefinitionMatch(id, null);
+      match.setWorkDefinition(workDef);
+      workDefIdToWorkDefintion.put(id, match);
+   }
+
    public IWorkDefinitionMatch getWorkDefinition(IAtsWorkItem workItem) {
       return awaUuidToWorkDefinition.get(workItem.getId());
    }
 
-   //IAtsWorkDefinition
    public IWorkDefinitionMatch getWorkDefinition(String id) {
       return workDefIdToWorkDefintion.get(id);
    }
@@ -61,12 +66,6 @@ public class AtsWorkDefinitionCache {
    public void invalidate() {
       awaUuidToWorkDefinition.clear();
       workDefIdToWorkDefintion.clear();
-   }
-
-   public void cache(String id, IAtsWorkDefinition workDef) {
-      WorkDefinitionMatch match = new WorkDefinitionMatch(id, null);
-      match.setWorkDefinition(workDef);
-      workDefIdToWorkDefintion.put(id, match);
    }
 
 }

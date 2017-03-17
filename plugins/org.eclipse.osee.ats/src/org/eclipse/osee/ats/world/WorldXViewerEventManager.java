@@ -215,13 +215,7 @@ public class WorldXViewerEventManager {
       private void processPurged(WorldXViewer worldViewer, IWorldViewerEventHandler handler) {
          if (!deletedPurgedArts.isEmpty()) {
             try {
-               // allow handler to remove from model
-               handler.removeItems(deletedPurgedArts);
-               IContentProvider contentProvider = worldViewer.getContentProvider();
-               // remove from UI
-               if (contentProvider instanceof WorldContentProvider) {
-                  handler.getWorldXViewer().remove(deletedPurgedArts.toArray(new Object[deletedPurgedArts.size()]));
-               }
+               worldViewer.refresh();
             } catch (Exception ex) {
                OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error processing event handler for deleted - %s",
                   handler);

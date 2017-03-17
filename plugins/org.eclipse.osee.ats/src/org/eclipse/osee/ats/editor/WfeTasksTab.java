@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -78,8 +77,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
@@ -387,32 +384,10 @@ public class WfeTasksTab extends FormPage implements IWorldEditor, ISelectedAtsA
          @Override
          public void run() {
             if (Widgets.isAccessible(taskComposite)) {
-               updateShown();
-               taskComposite.update();
-               taskComposite.getXViewer().refresh();
+               taskComposite.getXViewer().setInput(getTaskArtifacts());
             }
          }
       });
-   }
-
-   private void updateShown() {
-      Collection<TaskArtifact> members;
-      try {
-         members = getTaskArtifacts();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-         return;
-      }
-      List<Artifact> loadedArtifacts = taskComposite.getLoadedArtifacts();
-      List<Artifact> toRemoveFromLoaded = new LinkedList<>(members);
-      members.removeAll(loadedArtifacts);
-      for (Artifact art : members) {
-         taskComposite.insert(art, -1);
-      }
-      loadedArtifacts.removeAll(toRemoveFromLoaded);
-      taskComposite.removeItems(loadedArtifacts);
-      taskComposite.getXViewer().remove(loadedArtifacts);
-      taskComposite.getXViewer().refresh(getTaskArtifacts());
    }
 
    private void refreshToolbar() {
@@ -595,19 +570,6 @@ public class WfeTasksTab extends FormPage implements IWorldEditor, ISelectedAtsA
          return null;
       }
       return taskComposite.getWorldXViewer();
-   }
-
-   @Override
-   public void removeItems(Collection<? extends Object> objects) {
-      for (Object obj : objects) {
-         if (obj instanceof EventBasicGuidArtifact) {
-            EventBasicGuidArtifact guidArt = (EventBasicGuidArtifact) obj;
-            if (guidArt.getModType() == EventModType.Purged) {
-               refresh();
-               return;
-            }
-         }
-      }
    }
 
    @Override
