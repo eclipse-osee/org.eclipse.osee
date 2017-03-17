@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.internal.event.handlers;
 
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -132,8 +133,15 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
                            if (modificationType.isDeleted()) {
                               attribute.internalSetModType(modificationType, false, false);
                            } else {
-                              attribute.getAttributeDataProvider().loadData(
-                                 attrChange.getData().toArray(new Object[attrChange.getData().size()]));
+                              List<Object> attrData = attrChange.getData();
+                              if (!attrData.isEmpty()) {
+                                 Object attrValueString = attrData.get(0);
+                                 if (attrValueString instanceof String) {
+                                    attrData.set(0, attribute.convertStringToValue((String) attrValueString));
+                                 }
+                              }
+                              Object[] array = attrData.toArray(new Object[attrData.size()]);
+                              attribute.getAttributeDataProvider().loadData(array);
                            }
                            attribute.setNotDirty();
                            attribute.internalSetGammaId(attrChange.getGammaId());

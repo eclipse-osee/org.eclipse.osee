@@ -24,7 +24,7 @@ public abstract class IdentityReferenceAttribute<T extends Id> extends Character
    }
 
    @Override
-   protected T convertStringToValue(String value) throws OseeCoreException {
+   public T convertStringToValue(String value) {
       AttributeAdapterService service = getAttributeAdapter();
       T identity = service.adapt(this, new BaseId(Long.valueOf(value)));
       return identity;

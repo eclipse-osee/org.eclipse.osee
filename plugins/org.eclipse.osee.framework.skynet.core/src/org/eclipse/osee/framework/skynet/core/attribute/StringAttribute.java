@@ -27,7 +27,7 @@ public class StringAttribute extends CharacterBackedAttribute<String> {
    }
 
    @Override
-   protected String convertStringToValue(String value) {
+   public String convertStringToValue(String value) {
       return value;
    }
 

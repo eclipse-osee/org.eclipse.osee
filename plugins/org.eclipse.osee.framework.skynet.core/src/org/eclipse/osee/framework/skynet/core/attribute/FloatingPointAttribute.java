@@ -35,7 +35,7 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
    }
 
    @Override
-   protected Double convertStringToValue(String value) {
+   public Double convertStringToValue(String value) {
       Double toReturn = null;
       if (isValidDouble(value)) {
          toReturn = Double.valueOf(value);

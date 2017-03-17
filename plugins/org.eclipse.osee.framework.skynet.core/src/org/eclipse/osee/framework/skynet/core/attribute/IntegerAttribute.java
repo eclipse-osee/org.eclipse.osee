@@ -35,7 +35,7 @@ public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
    }
 
    @Override
-   protected Integer convertStringToValue(String value) {
+   public Integer convertStringToValue(String value) {
       Integer toReturn = null;
       if (isValidInteger(value)) {
          toReturn = Integer.valueOf(value);

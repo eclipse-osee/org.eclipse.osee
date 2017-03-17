@@ -16,7 +16,6 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.AttributeId;
@@ -113,21 +112,21 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
       }
    }
 
-   public void setValue(T value) throws OseeCoreException {
+   public boolean setValue(T value) {
       checkIsRenameable(value);
-      if (subClassSetValue(value)) {
-         markAsNewOrChanged();
-      }
-   }
-
-   public boolean setFromString(String value) throws OseeCoreException {
-      T toSet = convertStringToValue(value);
-      checkIsRenameable(toSet);
-      boolean response = subClassSetValue(toSet);
+      boolean response = subClassSetValue(value);
       if (response) {
          markAsNewOrChanged();
       }
       return response;
+   }
+
+   protected boolean setFromStringNoDirty(String value) {
+      return subClassSetValue(convertStringToValue(value));
+   }
+
+   public boolean setFromString(String value) throws OseeCoreException {
+      return setValue(convertStringToValue(value));
    }
 
    private void checkIsRenameable(T value) throws OseeCoreException {
@@ -142,7 +141,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
       }
    }
 
-   protected abstract T convertStringToValue(String value) throws OseeCoreException;
+   public abstract T convertStringToValue(String value);
 
    public final void resetToDefaultValue() throws OseeCoreException {
       setToDefaultValue();
@@ -151,7 +150,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
    protected void setToDefaultValue() throws OseeCoreException {
       String defaultValue = getAttributeType().getDefaultValue();
       if (defaultValue != null) {
-         subClassSetValue(convertStringToValue(defaultValue));
+         setFromStringNoDirty(defaultValue);
       }
    }
 

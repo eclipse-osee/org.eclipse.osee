@@ -29,7 +29,7 @@ public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
    }
 
    @Override
-   protected Boolean convertStringToValue(String value) {
+   public Boolean convertStringToValue(String value) {
       return Boolean.valueOf(value);
    }
 

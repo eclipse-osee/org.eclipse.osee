@@ -29,7 +29,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
 
    /**
     * Return current date or null if not set
-    * 
+    *
     * @return date or null if not set
     */
    @Override
@@ -42,7 +42,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
    protected void setToDefaultValue() throws OseeCoreException {
       String defaultValue = getAttributeType().getDefaultValue();
       if (Strings.isValid(defaultValue)) {
-         subClassSetValue(convertStringToValue(defaultValue));
+         setFromStringNoDirty(defaultValue);
       } else {
          subClassSetValue(new Date());
       }
@@ -50,7 +50,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
 
    /**
     * Sets date
-    * 
+    *
     * @param value value or null to clear
     */
    @Override
@@ -64,7 +64,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
    }
 
    @Override
-   protected Date convertStringToValue(String value) {
+   public Date convertStringToValue(String value) {
       if (!Strings.isValid(value)) {
          return null;
       }
@@ -73,7 +73,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
 
    /**
     * Return date in format given by pattern or "" if not set
-    * 
+    *
     * @param pattern DateAttribute.MMDDYY, etc...
     * @return formated date
     */

@@ -35,7 +35,7 @@ public class LongAttribute extends CharacterBackedAttribute<Long> {
    }
 
    @Override
-   protected Long convertStringToValue(String value) {
+   public Long convertStringToValue(String value) {
       Long toReturn = null;
       if (isValidLong(value)) {
          toReturn = Long.valueOf(value);
