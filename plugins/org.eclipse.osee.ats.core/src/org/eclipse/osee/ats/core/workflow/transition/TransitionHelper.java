@@ -158,4 +158,8 @@ public class TransitionHelper extends TransitionHelperAdapter {
       return services;
    }
 
+   public TransitionOption[] getTransitionOptions() {
+      return transitionOption;
+   }
+
 }

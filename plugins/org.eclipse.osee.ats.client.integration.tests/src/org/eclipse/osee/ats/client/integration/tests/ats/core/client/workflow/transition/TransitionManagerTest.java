@@ -193,11 +193,22 @@ public class TransitionManagerTest {
       teamArt.getStateMgr().setAssignee(
          AtsClientService.get().getUserServiceClient().getUserFromToken(SystemUser.UnAssigned));
       transMgr.handleTransitionValidation(results);
-      Assert.assertTrue(results.isEmpty());
+      Assert.assertTrue(getResultsAndDebug(results, teamArt, helper), results.isEmpty());
 
       // cleanup test
       teamArt.getStateMgr().setAssignee(
          AtsClientService.get().getUserServiceClient().getUserFromToken(SystemUser.UnAssigned));
+   }
+
+   private String getResultsAndDebug(TransitionResults results, TeamWorkFlowArtifact teamArt, TransitionHelper helper) {
+      StringBuilder sb = new StringBuilder(results.toString());
+      sb.append("\n\n");
+      sb.append("assignees: ");
+      sb.append(teamArt.getStateMgr().getAssigneesStr());
+      sb.append("\n\n");
+      sb.append("transitionOptions: ");
+      sb.append(helper.getTransitionOptions());
+      return sb.toString();
    }
 
    @org.junit.Test
@@ -659,7 +670,6 @@ public class TransitionManagerTest {
       Assert.assertTrue("Transition Error: " + results.toString(), results.isEmpty());
       Assert.assertEquals("Cancelled", teamArt.getCurrentStateName());
       Assert.assertEquals(100, teamArt.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 100).intValue());
-
    }
 
    @org.junit.Test
