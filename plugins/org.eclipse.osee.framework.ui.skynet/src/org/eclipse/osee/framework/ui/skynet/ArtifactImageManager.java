@@ -113,69 +113,76 @@ public final class ArtifactImageManager {
 
    private static Image getChangeImage(Change change, ChangeImageType changeImageType) {
       Image toReturn = null;
-      KeyedImage keyedImage = null;
-      ModificationType modType = null;
-      if (change.getItemKind().equals("Artifact")) {
-         modType = change.getModificationType();
-         if (ChangeImageType.CHANGE_TYPE == changeImageType) {
-            keyedImage = BaseImage.getBaseImageEnum(change.getArtifactType());
-         } else {
-            ChangeItem changeItem = change.getChangeItem();
-            if (changeItem != null && isArtDeletedOnDestination(changeItem.getIgnoreType())) {
-               keyedImage = FrameworkImage.DELETE;
-               modType = ModificationType.DELETED_ON_DESTINATION;
-            } else {
+      try {
+         KeyedImage keyedImage = null;
+         ModificationType modType = null;
+         if (change.getItemKind().equals("Artifact")) {
+            modType = change.getModificationType();
+            if (ChangeImageType.CHANGE_TYPE == changeImageType) {
                keyedImage = BaseImage.getBaseImageEnum(change.getArtifactType());
+            } else {
+               ChangeItem changeItem = change.getChangeItem();
+               if (changeItem != null && isArtDeletedOnDestination(changeItem.getIgnoreType())) {
+                  keyedImage = FrameworkImage.DELETE;
+                  modType = ModificationType.DELETED_ON_DESTINATION;
+               } else {
+                  keyedImage = BaseImage.getBaseImageEnum(change.getArtifactType());
+               }
             }
          }
-      }
-      if (change.getItemKind().equals("Attribute")) {
-         modType = change.getModificationType();
-         if (ChangeImageType.CHANGE_TYPE == changeImageType) {
-            keyedImage = FrameworkImage.ATTRIBUTE_MOLECULE;
-         } else {
-            ChangeItem changeItem = change.getChangeItem();
-            if (changeItem != null && isArtDeletedOnDestination(changeItem.getIgnoreType())) {
-               keyedImage = FrameworkImage.DELETE;
-               modType = ModificationType.DELETED_ON_DESTINATION;
+         if (change.getItemKind().equals("Attribute")) {
+            modType = change.getModificationType();
+            if (ChangeImageType.CHANGE_TYPE == changeImageType) {
+               keyedImage = FrameworkImage.ATTRIBUTE_MOLECULE;
             } else {
-               keyedImage = BaseImage.getBaseImageEnum(change.getArtifactType());
+               ChangeItem changeItem = change.getChangeItem();
+               if (changeItem != null && isArtDeletedOnDestination(changeItem.getIgnoreType())) {
+                  keyedImage = FrameworkImage.DELETE;
+                  modType = ModificationType.DELETED_ON_DESTINATION;
+               } else {
+                  keyedImage = BaseImage.getBaseImageEnum(change.getArtifactType());
+               }
             }
          }
-      }
-      if (change.getItemKind().equals("Relation")) {
-         modType = change.getModificationType();
-         if (ChangeImageType.CHANGE_TYPE == changeImageType) {
-            keyedImage = FrameworkImage.RELATION;
-         } else {
-            ChangeItem changeItem = change.getChangeItem();
-            if (changeItem != null && isArtDeletedOnDestination(changeItem.getIgnoreType())) {
-               keyedImage = FrameworkImage.DELETE;
-               modType = ModificationType.DELETED_ON_DESTINATION;
-            } else {
+         if (change.getItemKind().equals("Relation")) {
+            modType = change.getModificationType();
+            if (ChangeImageType.CHANGE_TYPE == changeImageType) {
                keyedImage = FrameworkImage.RELATION;
-            }
-         }
-      }
-      if (change.getItemKind().equals("Tuple")) {
-         modType = change.getModificationType();
-         if (ChangeImageType.CHANGE_TYPE == changeImageType) {
-            keyedImage = FrameworkImage.TUPLE;
-         } else {
-            ChangeItem changeItem = change.getChangeItem();
-            if (changeItem != null && isArtDeletedOnDestination(changeItem.getIgnoreType())) {
-               keyedImage = FrameworkImage.DELETE;
-               modType = ModificationType.DELETED_ON_DESTINATION;
             } else {
-               keyedImage = FrameworkImage.RELATION;
+               ChangeItem changeItem = change.getChangeItem();
+               if (changeItem != null && isArtDeletedOnDestination(changeItem.getIgnoreType())) {
+                  keyedImage = FrameworkImage.DELETE;
+                  modType = ModificationType.DELETED_ON_DESTINATION;
+               } else {
+                  keyedImage = FrameworkImage.RELATION;
+               }
             }
          }
+         if (change.getItemKind().equals("Tuple")) {
+            modType = change.getModificationType();
+            if (ChangeImageType.CHANGE_TYPE == changeImageType) {
+               keyedImage = FrameworkImage.TUPLE;
+            } else {
+               ChangeItem changeItem = change.getChangeItem();
+               if (changeItem != null && isArtDeletedOnDestination(changeItem.getIgnoreType())) {
+                  keyedImage = FrameworkImage.DELETE;
+                  modType = ModificationType.DELETED_ON_DESTINATION;
+               } else {
+                  keyedImage = FrameworkImage.RELATION;
+               }
+            }
+         }
+         if (keyedImage != null && modType != null) {
+            KeyedImage overlay = FrameworkImage.valueOf("OUTGOING_" + modType.toString());
+            toReturn =
+               ImageManager.getImage(ImageManager.setupImageWithOverlay(keyedImage, overlay, Location.TOP_LEFT));
+         }
       }
-      if (keyedImage != null && modType != null) {
-         KeyedImage overlay = FrameworkImage.valueOf("OUTGOING_" + modType.toString());
-         toReturn = ImageManager.getImage(ImageManager.setupImageWithOverlay(keyedImage, overlay, Location.TOP_LEFT));
+      // Do not want to stop UI just cause image isn't resolved correctly
+      catch (Exception ex) {
+         OseeLog.logf(Activator.class, Level.WARNING, ex, "Error retrieving Aritfact Image for Change [%s]", change);
       }
-      return toReturn;
+      return toReturn == null ? ImageManager.getImage(FrameworkImage.QUESTION) : toReturn;
    }
 
    private static boolean isArtDeletedOnDestination(ChangeIgnoreType type) {

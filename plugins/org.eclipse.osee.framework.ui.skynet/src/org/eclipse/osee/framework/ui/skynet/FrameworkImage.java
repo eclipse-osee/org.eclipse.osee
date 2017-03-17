@@ -160,6 +160,7 @@ public enum FrameworkImage implements KeyedImage {
    OUTGOING_APPLICABILITY("OUTGOING_Modified.gif"),
    OUTGOING_ARTIFACT_DELETED("OUTGOING_Deleted.gif"),
    OUTGOING_DELETED("OUTGOING_Deleted.gif"),
+   OUTGOING_UNDELETED("OUTGOING_New.gif"),
    OUTGOING_INTRODUCED("OUTGOING_New.gif"),
    OUTGOING_MERGED("branch_merge.gif"),
    OUTGOING_MODIFIED("OUTGOING_Modified.gif"),
