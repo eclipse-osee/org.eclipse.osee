@@ -121,7 +121,8 @@ public final class TokenFactory {
 
       @Override
       public String toString() {
-         return String.format("UserToken [userId=[%s], active=[%s], admin=[%s], email=[%s], creationRequired=[%s]",
+         return String.format(
+            "UserToken [name [%s], userId=[%s], active=[%s], admin=[%s], email=[%s], creationRequired=[%s]", getName(),
             userId, active, admin, email, creationRequired);
       }
 
