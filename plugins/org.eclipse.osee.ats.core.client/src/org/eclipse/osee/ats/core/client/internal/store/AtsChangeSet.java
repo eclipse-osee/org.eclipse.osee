@@ -263,7 +263,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public void deleteAttributes(IAtsObject atsObject, AttributeTypeId attributeType) {
       Artifact artifact = AtsClientService.get().getArtifact(atsObject);
-      artifact.delete();
+      artifact.deleteAttributes(attributeType);
       add(artifact);
    }
 

@@ -26,10 +26,12 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
@@ -39,7 +41,6 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -47,7 +48,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -123,46 +123,46 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
-      Artifact actionArt = job.getActionArt();
-      resultData.log("Created Action " + actionArt);
-      TeamWorkFlowArtifact teamArt = ActionManager.getFirstTeam(actionArt);
+      IAtsAction action = job.getResults().getFirst();
+      resultData.log("Created Action " + action.toStringWithId());
+      IAtsTeamWorkflow teamWf = (TeamWorkFlowArtifact) job.getResults().getSecond().iterator().next().getStoreObject();
 
       // Make current user assignee for convenience to developer
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " - set assignee");
-      teamArt.getStateMgr().addAssignee(AtsClientService.get().getUserService().getCurrentUser());
-      changes.add(teamArt);
+      teamWf.getStateMgr().addAssignee(AtsClientService.get().getUserService().getCurrentUser());
+      changes.add(teamWf);
       changes.execute();
 
-      validateActionAtStart(actionArt);
+      validateActionAtStart(teamWf);
 
       // Wait for destination client to start
       if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(),
-         "Launch \"Destination Client - Start\" test, enter \"" + actionArt.getName().replaceFirst("tt ",
+         "Launch \"Destination Client - Start\" test, enter \"" + action.getName().replaceFirst("tt ",
             "") + "\" and press Ok")) {
          return;
       }
 
       int sleepTime = 250;
-      makeChanges1(teamArt);
+      makeChanges1(teamWf);
       sleep(sleepTime);
-      makeChanges2(teamArt);
+      makeChanges2(teamWf);
       sleep(sleepTime);
-      makeChanges3(teamArt);
+      makeChanges3(teamWf);
       sleep(sleepTime);
-      makeChanges4(teamArt);
+      makeChanges4(teamWf);
       sleep(sleepTime);
-      makeChanges5(teamArt);
+      makeChanges5(teamWf);
       sleep(sleepTime);
-      makeChanges6(teamArt);
+      makeChanges6(teamWf);
       sleep(sleepTime);
-      makeChanges7(teamArt);
+      makeChanges7(teamWf);
       sleep(sleepTime);
 
-      validateActionAtEnd(actionArt);
+      validateActionAtEnd(teamWf);
 
       // Wait for destination client to end
       if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(),
-         "Launch \"Destination Client - End\" test, enter \"" + actionArt.getName().replaceFirst("tt ",
+         "Launch \"Destination Client - End\" test, enter \"" + action.getName().replaceFirst("tt ",
             "") + "\" and press Ok")) {
          return;
       }
@@ -180,9 +180,9 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       }
    }
 
-   private void makeChanges7(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   private void makeChanges7(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Remote Event Test");
-      TransitionHelper helper = new TransitionHelper("Remote Event Test", Arrays.asList(teamArt),
+      TransitionHelper helper = new TransitionHelper("Remote Event Test", Arrays.asList(teamWf),
          TeamState.Analyze.getName(), Collections.singleton(AtsClientService.get().getUserService().getCurrentUser()),
          null, changes, AtsClientService.get().getServices(), TransitionOption.None);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
@@ -190,65 +190,60 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       if (!results.isEmpty()) {
          throw new OseeStateException(results.toString());
       }
+      changes.execute();
    }
 
-   private void makeChanges6(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   private void makeChanges6(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       // Make changes and transition
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes6");
-      AtsClientService.get().getVersionService().setTargetedVersion(teamArt, getSawBld2(), changes);
-      changes.setSoleAttributeFromString(ArtifactId.valueOf(teamArt.getId()), AtsAttributeTypes.ValidationRequired,
-         "false");
+      AtsClientService.get().getVersionService().setTargetedVersion(teamWf, getSawBld2(), changes);
+      changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.ValidationRequired, "false");
       changes.execute();
    }
 
-   private void makeChanges5(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   private void makeChanges5(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       // Make changes and persist
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes5");
-      changes.setSoleAttributeFromString(ArtifactId.valueOf(teamArt.getId()), AtsAttributeTypes.ValidationRequired,
-         "true");
+      changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.ValidationRequired, "true");
       changes.execute();
    }
 
-   private void makeChanges4(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   private void makeChanges4(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       // Make changes and persist
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes4");
-      ArtifactId artId = ArtifactId.valueOf(teamArt.getId());
-      changes.deleteAttributes(teamArt, AtsAttributeTypes.ValidationRequired);
-      changes.deleteAttributes(teamArt, AtsAttributeTypes.Resolution);
-      changes.setSoleAttributeFromString(artId, AtsAttributeTypes.Description, "description 4");
-      ChangeTypeUtil.setChangeType(teamArt, ChangeType.Support);
-      changes.setSoleAttributeFromString(artId, AtsAttributeTypes.PriorityType, "3");
-      AtsClientService.get().getVersionService().setTargetedVersion(teamArt, getSawBld3(), changes);
+      changes.deleteAttributes(teamWf, AtsAttributeTypes.ValidationRequired);
+      changes.deleteAttributes(teamWf, AtsAttributeTypes.Resolution);
+      changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.Description, "description 4");
+      ChangeTypeUtil.setChangeType(teamWf, ChangeType.Support);
+      changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.PriorityType, "3");
+      AtsClientService.get().getVersionService().setTargetedVersion(teamWf, getSawBld3(), changes);
       changes.execute();
    }
 
-   private void makeChanges3(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   private void makeChanges3(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       // Make changes and persist
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes3");
-      AtsClientService.get().getVersionService().setTargetedVersion(teamArt, getSawBld2(), changes);
-      changes.setSoleAttributeFromString(ArtifactId.valueOf(teamArt.getId()), AtsAttributeTypes.ValidationRequired,
-         "false");
+      AtsClientService.get().getVersionService().setTargetedVersion(teamWf, getSawBld2(), changes);
+      changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.ValidationRequired, "false");
       changes.execute();
    }
 
-   private void makeChanges2(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   private void makeChanges2(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       // Make changes and persist
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes2");
-      ArtifactId artId = ArtifactId.valueOf(teamArt.getId());
-      changes.setSoleAttributeFromString(artId, AtsAttributeTypes.Description, "description 3");
-      changes.setSoleAttributeFromString(artId, AtsAttributeTypes.ProposedResolution, "this is resolution");
+      changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.Description, "description 3");
+      changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.ProposedResolution, "this is resolution");
       changes.execute();
    }
 
-   private void makeChanges1(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   private void makeChanges1(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       // Make changes and persist
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes1");
-      ArtifactId artId = ArtifactId.valueOf(teamArt.getId());
-      changes.setSoleAttributeFromString(artId, AtsAttributeTypes.Description, "description 2");
-      changes.setSoleAttributeValue(artId, AtsAttributeTypes.ChangeType, ChangeType.Problem.name());
-      changes.setSoleAttributeFromString(artId, AtsAttributeTypes.PriorityType, "2");
-      changes.setSoleAttributeFromString(artId, AtsAttributeTypes.ValidationRequired, "true");
-      AtsClientService.get().getVersionService().setTargetedVersion(teamArt, getSawBld1(), changes);
+      changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.Description, "description 2");
+      changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.ChangeType, ChangeType.Problem.name());
+      changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.PriorityType, "2");
+      changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.ValidationRequired, "true");
+      AtsClientService.get().getVersionService().setTargetedVersion(teamWf, getSawBld1(), changes);
       changes.execute();
    }
 
@@ -264,7 +259,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       return AtsClientService.get().getVersionService().getById(SAW_Bld_3);
    }
 
-   private void validateActionAtStart(Artifact actionArt) throws OseeCoreException {
+   private void validateActionAtStart(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       resultData.log("\nValidating Start...");
       // Ensure event service is connected
       if (!OseeEventManager.isEventManagerConnected()) {
@@ -274,13 +269,14 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       resultData.log("Remote Event Service connected");
 
       // Validate values
-      TeamWorkFlowArtifact teamArt = ActionManager.getFirstTeam(actionArt);
-      testEquals("Description", "description", teamArt.getSoleAttributeValue(AtsAttributeTypes.Description, null));
-      testEquals("Change Type", ChangeType.Improvement, ChangeTypeUtil.getChangeType(teamArt));
-      testEquals("Priority", "1", teamArt.getSoleAttributeValue(AtsAttributeTypes.PriorityType, null));
+      testEquals("Description", "description", AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
+         teamWf, AtsAttributeTypes.Description, null));
+      testEquals("Change Type", ChangeType.Improvement, ChangeTypeUtil.getChangeType(teamWf));
+      testEquals("Priority", "1", AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf,
+         AtsAttributeTypes.PriorityType, null));
    }
 
-   private void validateActionAtEnd(Artifact actionArt) throws OseeCoreException {
+   private void validateActionAtEnd(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       resultData.log("\nValidating End...");
       // Ensure event service is connected
       if (!OseeEventManager.isEventManagerConnected()) {
@@ -290,14 +286,15 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       resultData.log("Remote Event Service connected");
 
       // Validate values
-      TeamWorkFlowArtifact teamArt = ActionManager.getFirstTeam(actionArt);
-      testEquals("Description", "description 4", teamArt.getSoleAttributeValue(AtsAttributeTypes.Description, null));
-      testEquals("Change Type", ChangeType.Support, ChangeTypeUtil.getChangeType(teamArt));
-      testEquals("Priority", "3", teamArt.getSoleAttributeValue(AtsAttributeTypes.PriorityType, null));
-      testEquals("Validation Required", false,
-         teamArt.getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, null));
+      testEquals("Description", "description 4", AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
+         teamWf, AtsAttributeTypes.Description, null));
+      testEquals("Change Type", ChangeType.Support, ChangeTypeUtil.getChangeType(teamWf));
+      testEquals("Priority", "3", AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf,
+         AtsAttributeTypes.PriorityType, null));
+      testEquals("Validation Required", false, AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
+         teamWf, AtsAttributeTypes.ValidationRequired, null));
 
-      IAtsVersion verArt = AtsClientService.get().getVersionService().getTargetedVersion(teamArt);
+      IAtsVersion verArt = AtsClientService.get().getVersionService().getTargetedVersion(teamWf);
       String expectedTargetedVersion;
       if (verArt != null) {
          expectedTargetedVersion = verArt.toString();
@@ -305,7 +302,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
          expectedTargetedVersion = "not set";
       }
       testEquals("Targeted Version", expectedTargetedVersion, "SAW_Bld_2");
-      testEquals("State", TeamState.Analyze.getName(), teamArt.getStateMgr().getCurrentStateName());
+      testEquals("State", TeamState.Analyze.getName(), teamWf.getStateMgr().getCurrentStateName());
    }
 
    private void testEquals(String name, Object expected, Object actual) {
@@ -321,16 +318,18 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       String actionTitle = "tt " + ttNum;
       resultData.log("Running " + title);
 
-      Artifact actionArt = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, actionTitle,
-         AtsClientService.get().getAtsBranch());
+      IAtsTeamWorkflow teamWf =
+         AtsClientService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).andName(actionTitle).getItems(
+            IAtsTeamWorkflow.class).iterator().next();
 
-      if (actionArt == null) {
-         resultData.error(String.format("Couldn't load Action named [%s]", actionTitle));
+      if (teamWf == null) {
+         resultData.error(String.format("Couldn't load TeamWf named [%s]", actionTitle));
       } else {
-         resultData.log("Loaded Action " + actionArt);
-         AtsUtil.openATSAction(actionArt, AtsOpenOption.OpenOneOrPopupSelect);
+         resultData.log("Loaded TeamWf " + teamWf);
+         AtsUtil.openATSAction((Artifact) teamWf.getParentAction().getStoreObject(),
+            AtsOpenOption.OpenOneOrPopupSelect);
       }
-      validateActionAtStart(actionArt);
+      validateActionAtStart(teamWf);
       XResultDataUI.report(resultData, title);
    }
 
@@ -339,16 +338,18 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       String actionTitle = "tt " + ttNum;
       resultData.log("Running " + title);
 
-      Artifact actionArt = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, actionTitle,
-         AtsClientService.get().getAtsBranch());
+      IAtsTeamWorkflow teamWf =
+         AtsClientService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).andName(actionTitle).getItems(
+            IAtsTeamWorkflow.class).iterator().next();
 
-      if (actionArt == null) {
-         resultData.error(String.format("Couldn't load Action named [%s]", actionTitle));
+      if (teamWf == null) {
+         resultData.error(String.format("Couldn't load TeamWf named [%s]", actionTitle));
       } else {
-         resultData.log("Loaded Action " + actionArt);
-         AtsUtil.openATSAction(actionArt, AtsOpenOption.OpenOneOrPopupSelect);
+         resultData.log("Loaded TeamWf " + teamWf);
+         AtsUtil.openATSAction((Artifact) teamWf.getParentAction().getStoreObject(),
+            AtsOpenOption.OpenOneOrPopupSelect);
       }
-      validateActionAtEnd(actionArt);
+      validateActionAtEnd(teamWf);
       XResultDataUI.report(resultData, title);
    }
 

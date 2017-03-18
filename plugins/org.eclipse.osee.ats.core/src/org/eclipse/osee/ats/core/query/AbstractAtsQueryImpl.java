@@ -42,8 +42,8 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -1003,6 +1003,11 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    @Override
    public <T extends IAtsWorkItem> Collection<T> getItems(Class<T> clazz) {
       return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(getItems());
+   }
+
+   @Override
+   public IAtsQuery andName(String name) {
+      return andAttr(CoreAttributeTypes.Name, name);
    }
 
 }
