@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsEventService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
@@ -46,14 +47,12 @@ import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.core.client.branch.internal.AtsBranchServiceImpl;
-import org.eclipse.osee.ats.core.client.config.IAtsClientVersionService;
 import org.eclipse.osee.ats.core.client.internal.config.ActionableItemFactory;
 import org.eclipse.osee.ats.core.client.internal.config.TeamDefinitionFactory;
 import org.eclipse.osee.ats.core.client.internal.config.VersionFactory;
 import org.eclipse.osee.ats.core.client.internal.ev.AtsEarnedValueImpl;
 import org.eclipse.osee.ats.core.client.internal.query.AtsQueryServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.review.AtsReviewServiceImpl;
-import org.eclipse.osee.ats.core.client.internal.store.AtsVersionServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.workdef.ArtifactResolverImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsRelationResolverServiceImpl;
@@ -90,7 +89,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
-import org.osgi.service.event.EventAdmin;
 
 /**
  * @author Donald G. Dunne
@@ -103,15 +101,10 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    private ArtifactCollectorsCache<GoalArtifact> goalMembersCache;
    private ArtifactCollectorsCache<SprintArtifact> sprintItemsCache;
    private IAtsEventService eventService;
-   private EventAdmin eventAdmin;
    private IAgileService agileService;
 
    public AtsClientImpl() {
       super();
-   }
-
-   public void setEventAdmin(EventAdmin eventAdmin) {
-      this.eventAdmin = eventAdmin;
    }
 
    @Override
@@ -123,7 +116,6 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       earnedValueService = new AtsEarnedValueImpl(logger, getServices());
 
       configItemFactory = new ConfigItemFactory(logger, this);
-      versionService = new AtsVersionServiceImpl(this, atsCache, eventAdmin);
 
       actionableItemFactory = new ActionableItemFactory();
       teamDefFactory = new TeamDefinitionFactory();
@@ -291,8 +283,8 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public IAtsClientVersionService getVersionService() throws OseeStateException {
-      return (IAtsClientVersionService) versionService;
+   public IAtsVersionService getVersionService() throws OseeStateException {
+      return versionService;
    }
 
    @Override

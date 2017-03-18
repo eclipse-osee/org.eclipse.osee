@@ -22,12 +22,12 @@ import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.util.IAtsEventService;
+import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.version.IAtsVersionServiceProvider;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolverProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
-import org.eclipse.osee.ats.core.client.config.IAtsClientVersionService;
 import org.eclipse.osee.ats.core.client.util.IArtifactMembersCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
@@ -82,7 +82,7 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
    Artifact getArtifact(Long uuid);
 
    @Override
-   IAtsClientVersionService getVersionService();
+   IAtsVersionService getVersionService();
 
    @Override
    IAtsWorkItemFactory getWorkItemFactory();

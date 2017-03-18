@@ -186,7 +186,7 @@ public class AtsConfigOperation extends AbstractOperation {
          for (String name : versionNames) {
             IAtsVersion version = AtsClientService.get().getVersionService().createVersion(name, changes);
             teamDef.getVersions().add(version);
-            AtsClientService.get().getVersionService().setTeamDefinition(version, teamDef);
+            AtsClientService.get().getVersionService().setTeamDefinition(version, teamDef, changes);
          }
       }
    }

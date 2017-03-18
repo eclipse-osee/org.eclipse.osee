@@ -43,12 +43,12 @@ import org.osgi.service.event.EventAdmin;
 /**
  * @author Donald G Dunne
  */
-public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionService {
+public class AtsVersionServiceImpl implements IAtsVersionService {
 
    private final IAtsServices services;
    private final EventAdmin eventAdmin;
 
-   public AbstractAtsVersionServiceImpl(IAtsServices services, EventAdmin eventAdmin) {
+   public AtsVersionServiceImpl(IAtsServices services, EventAdmin eventAdmin) {
       super();
       this.services = services;
       this.eventAdmin = eventAdmin;
@@ -200,7 +200,7 @@ public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionServic
    }
 
    @Override
-   public BranchId getBranchId(IAtsVersion version) {
+   public BranchId getBranch(IAtsVersion version) {
       return services.getAttributeResolver().getSoleAttributeValue(version, AtsAttributeTypes.BaselineBranchUuid,
          BranchId.SENTINEL);
    }
@@ -220,4 +220,20 @@ public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionServic
    public IAtsVersion getVersion(IAtsProgram program, String versionName, IAtsChangeSet changes) {
       return services.getProgramService().getVersion(program, versionName);
    }
+
+   @Override
+   public IAtsVersion createVersion(String title, String guid, long uuid, IAtsChangeSet changes) throws OseeCoreException {
+      return services.getVersionFactory().createVersion(title, guid, uuid, changes, services);
+   }
+
+   @Override
+   public IAtsVersion createVersion(String name, IAtsChangeSet changes) throws OseeCoreException {
+      return services.getVersionFactory().createVersion(name, changes, services);
+   }
+
+   @Override
+   public Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef) {
+      return services.getTeamDefinitionService().getVersions(teamDef);
+   }
+
 }

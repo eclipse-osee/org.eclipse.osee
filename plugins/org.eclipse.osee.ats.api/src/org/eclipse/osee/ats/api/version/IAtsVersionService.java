@@ -43,7 +43,7 @@ public interface IAtsVersionService {
 
    IAtsVersion getById(Identity<String> id) throws OseeCoreException;
 
-   BranchId getBranchId(IAtsVersion version);
+   BranchId getBranch(IAtsVersion version);
 
    IAtsVersion getTargetedVersionByTeamWf(IAtsTeamWorkflow team) throws OseeCoreException;
 
@@ -52,5 +52,11 @@ public interface IAtsVersionService {
    IAtsVersion createVersion(IAtsProgram program, String versionName, IAtsChangeSet changes);
 
    IAtsVersion getVersion(IAtsProgram program, String versionName, IAtsChangeSet changes);
+
+   IAtsVersion createVersion(String name, String guid, long uuid, IAtsChangeSet changes);
+
+   IAtsVersion createVersion(String name, IAtsChangeSet changes);
+
+   Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef);
 
 }

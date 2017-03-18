@@ -60,6 +60,7 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.core.config.AtsCache;
 import org.eclipse.osee.ats.core.config.TeamDefinitionService;
 import org.eclipse.osee.ats.core.program.AtsProgramService;
+import org.eclipse.osee.ats.core.version.AtsVersionServiceImpl;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionCache;
 import org.eclipse.osee.ats.core.workflow.AtsImplementersService;
@@ -78,6 +79,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
+import org.osgi.service.event.EventAdmin;
 
 /**
  * @author Donald G. Dunne
@@ -126,6 +128,7 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
    protected IAtsTeamDefinitionService teamDefinitionService;
    protected IAtsQueryService queryService;
    protected IAtsStoreService storeService;
+   private EventAdmin eventAdmin;
 
    public AtsCoreServiceImpl() {
       searchDataProviders = new ArrayList<>();
@@ -133,6 +136,10 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
 
    public void setJdbcService(JdbcService jdbcService) {
       this.jdbcService = jdbcService;
+   }
+
+   public void setEventAdmin(EventAdmin eventAdmin) {
+      this.eventAdmin = eventAdmin;
    }
 
    public void setAtsWorkDefinitionService(IAtsWorkDefinitionService workDefService) {
@@ -172,6 +179,7 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
       workItemService = new AtsWorkItemServiceImpl(this, teamWorkflowProvidersLazy);
       programService = new AtsProgramService(this);
       teamDefinitionService = new TeamDefinitionService(this);
+      versionService = new AtsVersionServiceImpl(this, eventAdmin);
 
    }
 
