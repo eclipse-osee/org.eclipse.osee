@@ -53,7 +53,6 @@ import org.eclipse.osee.ats.rest.internal.util.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsBranchServiceImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsEarnedValueImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsRelationResolverServiceImpl;
-import org.eclipse.osee.ats.rest.internal.util.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsStoreServiceImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsTaskService;
 import org.eclipse.osee.ats.rest.internal.workitem.ConfigItemFactory;
@@ -131,7 +130,6 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
 
       artifactResolver = new ArtifactResolverImpl(this, orcsApi);
       branchService = new AtsBranchServiceImpl(getServices(), orcsApi, teamWorkflowProvidersLazy);
-      reviewService = new AtsReviewServiceImpl(this, this, workItemService);
 
       relationResolver = new AtsRelationResolverServiceImpl(this);
       ((AtsAttributeResolverServiceImpl) attributeResolverService).setOrcsApi(orcsApi);

@@ -416,10 +416,4 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       art.deleteRelations(relationSide);
    }
 
-   @Override
-   public void setName(ArtifactToken artifact, String name) {
-      Artifact art = getArtifact(artifact);
-      art.setName(name);
-   }
-
 }

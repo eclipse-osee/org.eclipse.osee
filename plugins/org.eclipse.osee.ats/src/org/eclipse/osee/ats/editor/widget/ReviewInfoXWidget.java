@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
-import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -143,9 +142,10 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                         AWorkbench.popup("ERROR", "Must enter review title");
                         return;
                      }
-                     NewDecisionReviewJob job = new NewDecisionReviewJob(teamArt, null, dialog.getReviewTitle(),
-                        dialog.getSelectedState(), null, DecisionReviewManager.getDefaultDecisionReviewOptions(), null,
-                        new Date(), AtsClientService.get().getUserService().getCurrentUser());
+                     NewDecisionReviewJob job =
+                        new NewDecisionReviewJob(teamArt, null, dialog.getReviewTitle(), dialog.getSelectedState(),
+                           null, AtsClientService.get().getReviewService().getDefaultDecisionReviewOptions(), null,
+                           new Date(), AtsClientService.get().getUserService().getCurrentUser());
                      job.setUser(true);
                      job.setPriority(Job.LONG);
                      job.schedule();

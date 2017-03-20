@@ -11,34 +11,20 @@
 
 package org.eclipse.osee.ats.core.client.review;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
-import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 
 /**
  * Methods in support of Decision Reviews
@@ -128,86 +114,6 @@ public class DecisionReviewManager {
       reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete, true,
          AtsClientService.get().getUserService().getCurrentUser());
       return Result.TrueResult;
-   }
-
-   public static DecisionReviewArtifact createNewDecisionReviewAndTransitionToDecision(TeamWorkFlowArtifact teamArt, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, Collection<IAtsDecisionReviewOption> options, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
-      DecisionReviewArtifact decRev = createNewDecisionReview(teamArt, reviewBlockType, reviewTitle, againstState,
-         description, options, assignees, createdDate, createdBy, changes);
-      changes.add(decRev);
-
-      // transition to decision
-      TransitionHelper helper =
-         new TransitionHelper("Transition to Decision", Arrays.asList(decRev), DecisionReviewState.Decision.getName(),
-            assignees, null, changes, AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck);
-      IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
-      TransitionResults results = transitionMgr.handleAll();
-
-      if (!results.isEmpty()) {
-         throw new OseeStateException("Error auto-transitioning review %s to Decision state. Results [%s]",
-            decRev.toStringWithId(), results.toString());
-      }
-      // ensure assignees are as requested
-      decRev.getStateMgr().setAssignees(assignees);
-      changes.add(decRev);
-      return decRev;
-   }
-
-   public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, ReviewBlockType reviewBlockType, boolean againstCurrentState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
-      return createNewDecisionReview(teamArt, reviewBlockType,
-         "Should we do this?  Yes will require followup, No will not",
-         againstCurrentState ? teamArt.getStateMgr().getCurrentStateName() : null,
-         "Enter description of the decision, if any", getDefaultDecisionReviewOptions(), null, createdDate, createdBy,
-         changes);
-   }
-
-   public static List<IAtsDecisionReviewOption> getDefaultDecisionReviewOptions() throws OseeCoreException {
-      List<IAtsDecisionReviewOption> options = new ArrayList<>();
-      options.add(new SimpleDecisionReviewOption("Yes", true,
-         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser().getUserId())));
-      options.add(new SimpleDecisionReviewOption("No", false, null));
-      return options;
-   }
-
-   public static String getDecisionReviewOptionsString(Collection<IAtsDecisionReviewOption> options) {
-      StringBuffer sb = new StringBuffer();
-      for (IAtsDecisionReviewOption opt : options) {
-         sb.append(opt.getName());
-         sb.append(";");
-         sb.append(opt.isFollowupRequired() ? "Followup" : "Completed");
-         sb.append(";");
-         for (String userId : opt.getUserIds()) {
-            sb.append("<" + userId + ">");
-         }
-         sb.append("\n");
-      }
-      return sb.toString();
-   }
-
-   public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, Collection<IAtsDecisionReviewOption> options, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
-      DecisionReviewArtifact decRev =
-         (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.DecisionReview,
-            AtsClientService.get().getAtsBranch(), title);
-
-      teamArt.addRelation(AtsRelationTypes.TeamWorkflowToReview_Review, decRev);
-      AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), decRev,
-         decRev.getParentTeamWorkflow().getTeamDefinition(), changes);
-
-      // Initialize state machine
-      decRev.initializeNewStateMachine(assignees, createdDate, createdBy, changes);
-
-      if (Strings.isValid(relatedToState)) {
-         decRev.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, relatedToState);
-      }
-      if (Strings.isValid(description)) {
-         decRev.setSoleAttributeValue(AtsAttributeTypes.Description, description);
-      }
-      decRev.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions, getDecisionReviewOptionsString(options));
-      if (reviewBlockType != null) {
-         decRev.setSoleAttributeFromString(AtsAttributeTypes.ReviewBlocks, reviewBlockType.name());
-      }
-      AtsReviewCache.decache(teamArt);
-      changes.add(decRev);
-      return decRev;
    }
 
 }

@@ -195,7 +195,6 @@ public class PeerToPeerReviewManager {
 
       peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.ReviewBlocks, ReviewBlockType.None.name());
       changes.add(peerToPeerRev);
-      AtsReviewCache.decache(teamArt);
       return peerToPeerRev;
    }
 

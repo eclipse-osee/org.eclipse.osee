@@ -51,7 +51,6 @@ import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
-import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
@@ -408,10 +407,10 @@ public class AtsTestUtil {
          options.add(new SimpleDecisionReviewOption(DecisionReviewState.Completed.getName(), false, null));
          options.add(new SimpleDecisionReviewOption(DecisionReviewState.Followup.getName(), true,
             Arrays.asList(AtsClientService.get().getUserService().getCurrentUser().getUserId())));
-         decRevArt = DecisionReviewManager.createNewDecisionReview(teamWf, reviewBlockType,
-            AtsTestUtil.class.getSimpleName() + " Test Decision Review", relatedToState.getName(), "Decision Review",
-            options, Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), new Date(),
-            AtsClientService.get().getUserService().getCurrentUser(), changes);
+         decRevArt = (DecisionReviewArtifact) AtsClientService.get().getReviewService().createNewDecisionReview(teamWf,
+            reviewBlockType, AtsTestUtil.class.getSimpleName() + " Test Decision Review", relatedToState.getName(),
+            "Decision Review", options, Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()),
+            new Date(), AtsClientService.get().getUserService().getCurrentUser(), changes).getStoreObject();
       }
       return decRevArt;
    }

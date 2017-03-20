@@ -19,9 +19,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
-import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.editor.stateItem.AtsDecisionReviewPrepareStateItem;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -34,7 +32,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link AtsDecisionReviewPrepareStateItem}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsDecisionReviewPrepareStateItemTest {
@@ -66,8 +64,8 @@ public class AtsDecisionReviewPrepareStateItemTest {
       Assert.assertNotNull(decRevArt);
 
       // set valid options
-      String decisionOptionStr =
-         DecisionReviewManager.getDecisionReviewOptionsString(DecisionReviewManager.getDefaultDecisionReviewOptions());
+      String decisionOptionStr = AtsClientService.get().getReviewService().getDecisionReviewOptionsString(
+         AtsClientService.get().getReviewService().getDefaultDecisionReviewOptions());
       decRevArt.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions, decisionOptionStr);
       decRevArt.persist(getClass().getSimpleName());
 

@@ -52,7 +52,6 @@ import org.eclipse.osee.ats.core.client.internal.config.TeamDefinitionFactory;
 import org.eclipse.osee.ats.core.client.internal.config.VersionFactory;
 import org.eclipse.osee.ats.core.client.internal.ev.AtsEarnedValueImpl;
 import org.eclipse.osee.ats.core.client.internal.query.AtsQueryServiceImpl;
-import org.eclipse.osee.ats.core.client.internal.review.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.workdef.ArtifactResolverImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsRelationResolverServiceImpl;
@@ -126,7 +125,6 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       relationResolver = new AtsRelationResolverServiceImpl(this);
 
       branchService = new AtsBranchServiceImpl(this, teamWorkflowProvidersLazy);
-      reviewService = new AtsReviewServiceImpl(this);
 
       logFactory = AtsCoreFactory.newLogFactory();
       stateFactory = AtsCoreFactory.newStateFactory(getServices(), logFactory);

@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
  * Create DecisionReview from transition if defined by StateDefinition.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class DecisionReviewDefinitionManager extends TransitionAdapter {
@@ -58,13 +58,14 @@ public class DecisionReviewDefinitionManager extends TransitionAdapter {
       }
       DecisionReviewArtifact decArt = null;
       if (revDef.isAutoTransitionToDecision()) {
-         decArt = DecisionReviewManager.createNewDecisionReviewAndTransitionToDecision(teamArt, revDef.getReviewTitle(),
-            revDef.getDescription(), revDef.getRelatedToState(), revDef.getBlockingType(), revDef.getOptions(), users,
-            createdDate, createdBy, changes);
+         decArt =
+            (DecisionReviewArtifact) AtsClientService.get().getReviewService().createNewDecisionReviewAndTransitionToDecision(
+               teamArt, revDef.getReviewTitle(), revDef.getDescription(), revDef.getRelatedToState(),
+               revDef.getBlockingType(), revDef.getOptions(), users, createdDate, createdBy, changes).getStoreObject();
       } else {
-         decArt = DecisionReviewManager.createNewDecisionReview(teamArt, revDef.getBlockingType(),
-            revDef.getReviewTitle(), revDef.getRelatedToState(), revDef.getDescription(), revDef.getOptions(), users,
-            createdDate, createdBy, changes);
+         decArt = (DecisionReviewArtifact) AtsClientService.get().getReviewService().createNewDecisionReview(teamArt,
+            revDef.getBlockingType(), revDef.getReviewTitle(), revDef.getRelatedToState(), revDef.getDescription(),
+            revDef.getOptions(), users, createdDate, createdBy, changes);
       }
       decArt.getLog().addLog(LogType.Note, null, String.format("Review [%s] auto-generated", revDef.getName()),
          AtsClientService.get().getUserService().getCurrentUser().getUserId());

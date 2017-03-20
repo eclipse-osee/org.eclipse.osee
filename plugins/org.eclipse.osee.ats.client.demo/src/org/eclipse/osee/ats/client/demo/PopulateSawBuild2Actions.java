@@ -484,7 +484,6 @@ public class PopulateSawBuild2Actions {
       }
       AtsBranchUtil.createWorkingBranch_Create(reqTeam, true);
 
-
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.Functional,
          reqTeam.getWorkingBranch())) {
          if (DEBUG) {

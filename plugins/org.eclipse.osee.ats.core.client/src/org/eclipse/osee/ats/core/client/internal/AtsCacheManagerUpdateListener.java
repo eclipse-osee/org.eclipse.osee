@@ -18,8 +18,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
-import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
-import org.eclipse.osee.ats.core.client.review.AtsReviewCache;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
@@ -105,18 +103,6 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
                   }
                }
             }
-            if (guidRel.is(AtsRelationTypes.TeamWorkflowToReview_Review)) {
-               for (AbstractReviewArtifact review : ArtifactCache.getActive(guidRel, AbstractReviewArtifact.class)) {
-                  if (!review.isDeleted()) {
-                     AtsReviewCache.decache(review.getParentAWA());
-                  }
-               }
-               for (Artifact artifact : ArtifactCache.getActive(guidRel)) {
-                  if (artifact instanceof AbstractReviewArtifact) {
-                     AtsReviewCache.decache(artifact);
-                  }
-               }
-            }
 
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -166,12 +152,6 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
          if (artifact instanceof TeamWorkFlowArtifact) {
             AtsTaskCache.decache(artifact);
          }
-         if (artifact.isOfType(AtsArtifactTypes.ReviewArtifact) && !artifact.isDeleted()) {
-            AtsReviewCache.decache(((AbstractReviewArtifact) artifact).getParentAWA());
-         }
-         if (artifact instanceof AbstractReviewArtifact) {
-            AtsReviewCache.decache(artifact);
-         }
       }
       if (artifact instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
@@ -189,18 +169,9 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
             AtsTaskCache.decache(((TaskArtifact) artifact).getParentAWA());
          }
       }
-      if (guidArt.is(AtsArtifactTypes.ReviewArtifact) && guidArt.is(EventModType.Deleted, EventModType.Purged)) {
-         Artifact artifact = ArtifactCache.getActive(guidArt);
-         if (artifact != null && !artifact.isDeleted()) {
-            AtsReviewCache.decache(((AbstractReviewArtifact) artifact).getParentAWA());
-         }
-      }
       Artifact artifact = ArtifactCache.getActive(guidArt);
       if (artifact instanceof TeamWorkFlowArtifact) {
          AtsTaskCache.decache(artifact);
-      }
-      if (artifact instanceof AbstractReviewArtifact) {
-         AtsReviewCache.decache(artifact);
       }
    }
 

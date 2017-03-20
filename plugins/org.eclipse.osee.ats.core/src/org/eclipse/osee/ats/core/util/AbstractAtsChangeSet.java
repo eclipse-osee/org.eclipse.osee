@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -172,6 +173,16 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    @Override
    public void addChild(ArtifactId parent, ArtifactId child) {
       relate(parent, CoreRelationTypes.Default_Hierarchical__Child, child);
+   }
+
+   @Override
+   public void setName(ArtifactToken artifact, String name) {
+      setSoleAttributeValue(artifact, CoreAttributeTypes.Name, name);
+   }
+
+   @Override
+   public void setName(IAtsObject atsObject, String name) {
+      setSoleAttributeValue(atsObject, CoreAttributeTypes.Name, name);
    }
 
 }

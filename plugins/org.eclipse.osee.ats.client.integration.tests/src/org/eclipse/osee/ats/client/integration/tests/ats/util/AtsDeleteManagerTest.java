@@ -27,10 +27,8 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
-import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.demo.api.DemoActionableItems;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
@@ -162,8 +160,8 @@ public class AtsDeleteManagerTest {
    }
 
    private void verifyExists(TestNames testName, int expectedNumActions, int expectedNumCodeWorkflows, int expectedNumReqWorkflows, int expectedNumTasks, int expectedNumReviews) throws OseeCoreException {
-      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(testName.toString(), AtsClientService.get().getAtsBranch(),
-         EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS);
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(testName.toString(),
+         AtsClientService.get().getAtsBranch(), EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS);
       CountingMap<IArtifactType> countMap = new CountingMap<>();
       for (Artifact artifact : artifacts) {
          countMap.put(artifact.getArtifactType());
@@ -197,9 +195,11 @@ public class AtsDeleteManagerTest {
       }
 
       DecisionReviewArtifact decRev =
-         DecisionReviewManager.createNewDecisionReview(teamArt, ReviewBlockType.None, testName.name(),
-            TeamState.Endorse.getName(), "Description", DecisionReviewManager.getDefaultDecisionReviewOptions(),
-            Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), createdDate, createdBy, changes);
+         (DecisionReviewArtifact) AtsClientService.get().getReviewService().createNewDecisionReview(teamArt,
+            ReviewBlockType.None, testName.name(), TeamState.Endorse.getName(), "Description",
+            AtsClientService.get().getReviewService().getDefaultDecisionReviewOptions(),
+            Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), createdDate, createdBy,
+            changes).getStoreObject();
       changes.add(decRev);
 
       changes.execute();

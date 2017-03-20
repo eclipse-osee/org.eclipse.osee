@@ -373,11 +373,4 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       add(art);
    }
 
-   @Override
-   public void setName(ArtifactToken artifact, String name) {
-      ArtifactReadable art = getArtifact(artifact);
-      getTransaction().setName(artifact, name);
-      add(art);
-   }
-
 }

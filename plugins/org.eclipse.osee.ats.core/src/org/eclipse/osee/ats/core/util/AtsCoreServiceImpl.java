@@ -60,6 +60,7 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.core.config.AtsCache;
 import org.eclipse.osee.ats.core.config.TeamDefinitionService;
 import org.eclipse.osee.ats.core.program.AtsProgramService;
+import org.eclipse.osee.ats.core.review.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.core.version.AtsVersionServiceImpl;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionCache;
@@ -180,6 +181,7 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
       programService = new AtsProgramService(this);
       teamDefinitionService = new TeamDefinitionService(this);
       versionService = new AtsVersionServiceImpl(this, eventAdmin);
+      reviewService = new AtsReviewServiceImpl(this);
 
    }
 

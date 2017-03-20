@@ -40,7 +40,6 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
-import org.eclipse.osee.ats.core.client.review.AtsReviewCache;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
@@ -227,7 +226,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             for (Artifact artifact : artifacts) {
                if (artifact instanceof TeamWorkFlowArtifact) {
                   AtsTaskCache.decache((TeamWorkFlowArtifact) artifact);
-                  AtsReviewCache.decache((TeamWorkFlowArtifact) artifact);
                }
                if (!(artifact instanceof User)) {
                   ArtifactCache.deCache(artifact);

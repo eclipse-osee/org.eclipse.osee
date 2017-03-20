@@ -76,7 +76,7 @@ public class ReviewManager {
    }
 
    public static Collection<AbstractReviewArtifact> getReviews(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      return AtsReviewCache.getReviewArtifacts(teamArt);
+      return teamArt.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowToReview_Review, AbstractReviewArtifact.class);
    }
 
    public static Collection<IAtsAbstractReview> getReviewsFromCurrentState(TeamWorkFlowArtifact teamArt) throws OseeCoreException {

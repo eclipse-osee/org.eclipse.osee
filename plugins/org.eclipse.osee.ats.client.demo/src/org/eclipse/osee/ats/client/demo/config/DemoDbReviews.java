@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.Role;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -28,7 +29,6 @@ import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewState;
-import org.eclipse.osee.ats.core.client.review.ValidateReviewManager;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Disposition;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.InjectionActivity;
@@ -75,22 +75,24 @@ public class DemoDbReviews {
       TeamWorkFlowArtifact secondTestArt = getSampleReviewTestWorkflows().get(1);
 
       // Create a Decision review and transition to ReWork
-      DecisionReviewArtifact reviewArt =
-         ValidateReviewManager.createValidateReview(firstTestArt, true, createdDate, createdBy, changes);
-      Result result =
-         DecisionReviewManager.transitionTo(reviewArt, DecisionReviewState.Followup, createdBy, false, changes);
+      IAtsDecisionReview review = AtsClientService.get().getReviewService().createValidateReview(firstTestArt, true,
+         createdDate, createdBy, changes);
+      Result result = DecisionReviewManager.transitionTo((DecisionReviewArtifact) review.getStoreObject(),
+         DecisionReviewState.Followup, createdBy, false, changes);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Followup: " + result.getText());
       }
-      changes.add(reviewArt);
+      changes.add(review);
 
       // Create a Decision review and transition to Completed
-      reviewArt = ValidateReviewManager.createValidateReview(secondTestArt, true, createdDate, createdBy, changes);
-      DecisionReviewManager.transitionTo(reviewArt, DecisionReviewState.Completed, createdBy, false, changes);
+      review = AtsClientService.get().getReviewService().createValidateReview(secondTestArt, true, createdDate,
+         createdBy, changes);
+      DecisionReviewManager.transitionTo((DecisionReviewArtifact) review.getStoreObject(),
+         DecisionReviewState.Completed, createdBy, false, changes);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Completed: " + result.getText());
       }
-      changes.add(reviewArt);
+      changes.add(review);
 
    }
 

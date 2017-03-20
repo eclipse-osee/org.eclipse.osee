@@ -19,9 +19,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
-import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.editor.stateItem.AtsDecisionReviewDecisionStateItem;
 import org.eclipse.osee.ats.mocks.MockStateDefinition;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -37,7 +35,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link AtsDecisionReviewDecisionStateItem}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsDecisionReviewDecisionStateItemTest {
@@ -55,8 +53,8 @@ public class AtsDecisionReviewDecisionStateItemTest {
             AtsClientService.get().getAtsBranch());
          decRevArt.setName(getClass().getSimpleName());
          decRevArt.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions,
-            DecisionReviewManager.getDecisionReviewOptionsString(
-               DecisionReviewManager.getDefaultDecisionReviewOptions()));
+            AtsClientService.get().getReviewService().getDecisionReviewOptionsString(
+               AtsClientService.get().getReviewService().getDefaultDecisionReviewOptions()));
          decRevArt.persist(getClass().getSimpleName());
       }
    }

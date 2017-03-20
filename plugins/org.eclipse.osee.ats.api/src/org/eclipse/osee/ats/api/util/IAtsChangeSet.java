@@ -140,4 +140,6 @@ public interface IAtsChangeSet {
 
    void setName(ArtifactToken artifact, String name);
 
+   void setName(IAtsObject atsObject, String name);
+
 }
