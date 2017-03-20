@@ -1,0 +1,54 @@
+<!--
+   Inputs needed:
+
+   version - The OSEE version (0.24.4)
+   ReleaseDir - Where the releases reside (/home/data/httpd/download.eclipse.org/osee/updates/releases/)
+   ClientSourceDir - Where the client zip resides:
+   	https://hudson.eclipse.org/osee/job/osee_dev/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.client.all.p2/target/
+   ServerSourceDir - Where the server zip resides:
+   	https://hudson.eclipse.org/osee/job/osee_dev/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.x.server.p2/target/
+-->
+
+
+<project name="Open Systems Engineering Environment" basedir=".">
+
+    <!-- ================================================================= -->
+    <!-- P R O P E R T I E S                                               -->
+    <!-- ================================================================= -->
+
+	<property name="clientZip" value="org.eclipse.osee.client.all.p2-${version}-SNAPSHOT.zip" />
+        <property name="serverZip" value="org.eclipse.osee.x.server.runtime.zip" />
+
+    <!-- ================================================================= -->
+    <!-- P U B L I S H                                                     -->
+    <!-- ================================================================= -->
+    <target name="publish"
+            description="Copies the OSEE Client and Server zip files to the release site.">
+
+        <!-- Recreate the target directory. It can happen that this task
+             fails seemingly at random. To be sure, we wrap it in a retry
+             task that repeats the mkdir call up to 10 times, with a pause
+             between each pair of attempts (the retrydelay is measured in
+             milliseconds). -->
+        <!--<retry retrycount="10" retrydelay="1000">-->
+            <mkdir dir="${targetDir}/releases"/>
+	    <mkdir dir="${targetDir}/releases/${version}"/> 
+        <!--</retry> -->
+
+        <!-- Copy to target directory -->
+        <copy file="${ClientSourceDir}/${clientZip}" todir="${targetDir}" />
+        <copy file="${ServerSourceDir}/${serverZip}" todir="${targetDir}"/>
+    </target>
+
+
+    <!-- ================================================================= -->
+    <!-- P U R G E                                                         -->
+    <!-- ================================================================= -->
+    <target name="purge"
+            description="Purges the target directory by removing it.">
+        <delete dir="${targetDir}" />
+    </target>
+
+</project>
+
+
