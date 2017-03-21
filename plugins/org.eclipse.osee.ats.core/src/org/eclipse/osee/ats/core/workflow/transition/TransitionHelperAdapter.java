@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow.transition;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -102,7 +103,17 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    @Override
    public void handleWorkflowReload(TransitionResults results) {
       if (!workflowsReloaded) {
-         services.getStoreService().reload(new ArrayList<>(getWorkItems()));
+         // Only reload work items that have been changed in the database and not updated locally
+         List<IAtsWorkItem> workItemsToReload = new LinkedList<>();
+         for (IAtsWorkItem workItem : getWorkItems()) {
+            boolean changed = services.getStoreService().isChangedInDb(workItem);
+            if (changed) {
+               workItemsToReload.add(workItem);
+            }
+         }
+         if (!workItemsToReload.isEmpty()) {
+            services.getStoreService().reload(workItemsToReload);
+         }
          for (IAtsWorkItem workItem : getWorkItems()) {
             if (services.getStoreService().isDeleted(workItem)) {
                results.addResult(workItem, TransitionResult.WORKITEM_DELETED);

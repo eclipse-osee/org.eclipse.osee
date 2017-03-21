@@ -163,4 +163,12 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
       return atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().getAll();
    }
 
+   /**
+    * return false cause server always loads workItems fresh
+    */
+   @Override
+   public boolean isChangedInDb(IAtsWorkItem workItem) {
+      return false;
+   }
+
 }

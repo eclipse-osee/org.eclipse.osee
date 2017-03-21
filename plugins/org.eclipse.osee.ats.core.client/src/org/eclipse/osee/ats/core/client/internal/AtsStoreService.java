@@ -174,4 +174,9 @@ public class AtsStoreService implements IAtsStoreService {
       return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(AttributeTypeManager.getAllTypes());
    }
 
+   @Override
+   public boolean isChangedInDb(IAtsWorkItem workItem) {
+      return ArtifactQuery.isArtifactChangedViaTransaction((Artifact) workItem.getStoreObject());
+   }
+
 }

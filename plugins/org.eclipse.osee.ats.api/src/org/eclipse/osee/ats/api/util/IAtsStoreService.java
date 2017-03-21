@@ -62,4 +62,6 @@ public interface IAtsStoreService {
 
    Collection<AttributeTypeToken> getAttributeTypes();
 
+   boolean isChangedInDb(IAtsWorkItem workItem);
+
 }
