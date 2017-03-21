@@ -20,13 +20,17 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.utility.AbstractDbTxOperation;
@@ -57,6 +61,8 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
    private final List<Artifact> artifactsToPurge;
    private boolean success;
    private final boolean recurseChildrenBranches;
+
+   private ArtifactEvent artifactEvent;
 
    public PurgeArtifacts(Collection<? extends Artifact> artifactsToPurge) throws OseeCoreException {
       this(artifactsToPurge, false);
@@ -109,16 +115,27 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
             txJoin.delete(connection);
          }
 
+         BranchId branch = artifactsToPurge.iterator().next().getBranch();
+         artifactEvent = new ArtifactEvent(branch);
          for (Artifact artifact : artifactsToPurge) {
-            ArtifactCache.deCache(artifact);
-            RelationManager.deCache(artifact);
-            artifact.internalSetDeleted();
+            EventBasicGuidArtifact guidArt = new EventBasicGuidArtifact(EventModType.Purged, artifact);
+            artifactEvent.addArtifact(guidArt);
+
             for (RelationLink rel : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
+               DefaultBasicUuidRelation guidRelation =
+                  new DefaultBasicUuidRelation(branch, rel.getRelationType().getId(), rel.getId(), rel.getGammaId(),
+                     new DefaultBasicGuidArtifact(branch, rel.getArtifactA().getArtifactTypeId(), rel.getArtifactA()),
+                     new DefaultBasicGuidArtifact(branch, rel.getArtifactB().getArtifactTypeId(), rel.getArtifactB()));
+               artifactEvent.addRelation(new EventBasicGuidRelation(RelationEventType.Purged, rel.getAArtifactId(),
+                  rel.getBArtifactId(), guidRelation));
                rel.markAsPurged();
             }
             for (Attribute<?> attr : artifact.internalGetAttributes()) {
                attr.markAsPurged();
             }
+            ArtifactCache.deCache(artifact);
+            RelationManager.deCache(artifact);
+            artifact.internalSetDeleted();
          }
          success = true;
       } finally {
@@ -129,15 +146,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
    @Override
    protected void handleTxFinally(IProgressMonitor monitor) throws OseeCoreException {
       if (success) {
-         Set<EventBasicGuidArtifact> artifactChanges = new HashSet<>();
-         for (Artifact artifact : artifactsToPurge) {
-            artifactChanges.add(new EventBasicGuidArtifact(EventModType.Purged, artifact));
-         }
          // Kick Local and Remote Events
-         ArtifactEvent artifactEvent = new ArtifactEvent(artifactsToPurge.iterator().next().getBranch());
-         for (EventBasicGuidArtifact guidArt : artifactChanges) {
-            artifactEvent.getArtifacts().add(guidArt);
-         }
          OseeEventManager.kickPersistEvent(PurgeArtifacts.class, artifactEvent);
       }
    }

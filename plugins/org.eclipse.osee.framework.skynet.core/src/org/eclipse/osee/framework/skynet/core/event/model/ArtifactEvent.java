@@ -87,8 +87,16 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return this.artifacts;
    }
 
+   public void addArtifact(EventBasicGuidArtifact eventGuidArt) {
+      artifacts.add(eventGuidArt);
+   }
+
    public List<EventBasicGuidRelation> getRelations() {
       return this.relations;
+   }
+
+   public void addRelation(EventBasicGuidRelation eventGuidRelation) {
+      relations.add(eventGuidRelation);
    }
 
    @Override
