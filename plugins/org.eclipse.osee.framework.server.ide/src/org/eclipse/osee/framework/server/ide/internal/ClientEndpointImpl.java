@@ -111,6 +111,7 @@ public class ClientEndpointImpl implements ClientEndpoint {
    @Path("client/{idOrName}")
    @Produces({MediaType.APPLICATION_JSON})
    public Response getClientsForUser(@PathParam("idOrName") String idOrName) {
+      System.out.println(String.format("getClientsForUser [%s]", idOrName));
       Sessions sessions = new Sessions();
       Map<String, Boolean> portToAlive = new HashMap<>();
       List<String> resolvedUserIds = getUserIds(idOrName);

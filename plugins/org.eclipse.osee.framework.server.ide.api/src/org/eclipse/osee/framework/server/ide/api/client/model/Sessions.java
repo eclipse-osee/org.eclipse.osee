@@ -31,4 +31,9 @@ public class Sessions {
       return sessions;
    }
 
+   @Override
+   public String toString() {
+      return "Sessions [sessions=" + sessions + "]";
+   }
+
 }
