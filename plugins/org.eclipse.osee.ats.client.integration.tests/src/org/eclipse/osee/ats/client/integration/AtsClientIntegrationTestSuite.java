@@ -28,11 +28,11 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    DbInitTest.class,
    DemoDbPopulateSuite.class,
-   ClientEndpointTest.class,
    AtsTest_AllAts_Suite.class,
    SkyentCoreArtifact_Suite.class,
    FrameworkUiSkynetTest_Suite.class,
    FrameworkUiSkynetTest_Dialog_Suite.class,
+   ClientEndpointTest.class,
    DirtyArtifactCacheTest.class})
 public class AtsClientIntegrationTestSuite {
    // Test Suite
