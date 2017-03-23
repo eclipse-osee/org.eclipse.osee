@@ -66,6 +66,7 @@
 
 				<module>../../plugins/org.eclipse.osee.framework.ui.branch.graph</module>
 				<module>../../plugins/org.eclipse.osee.framework.ui.data.model.editor</module>
+				<module>../../plugins/org.eclipse.osee.framework.ui.workspacebundleloader</module>
 				<module>../../plugins/org.eclipse.osee.framework.ui.product</module>
 				<module>../../plugins/org.eclipse.osee.ote.ui.define</module>
 
@@ -142,6 +143,7 @@
 
 				<module>../../plugins/org.eclipse.osee.framework.ui.branch.graph</module>
 				<module>../../plugins/org.eclipse.osee.framework.ui.data.model.editor</module>
+				<module>../../plugins/org.eclipse.osee.framework.ui.workspacebundleloader</module>
 				<module>../../plugins/org.eclipse.osee.framework.ui.product</module>
 				<module>../../plugins/org.eclipse.osee.ote.ui.define</module>
 
