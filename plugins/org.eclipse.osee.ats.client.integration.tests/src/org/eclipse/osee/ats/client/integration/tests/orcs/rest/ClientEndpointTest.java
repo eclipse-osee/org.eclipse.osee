@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
 import org.eclipse.osee.framework.server.ide.api.client.model.Sessions;
 import org.eclipse.osee.framework.server.ide.api.model.IdeVersion;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -49,6 +50,7 @@ public class ClientEndpointTest {
    }
 
    @Test
+   @Ignore
    public void testGetClientsForUser() {
       ClientEndpoint clientEp = AtsClientService.getClientEndpoint();
       Response response = clientEp.getClientsForUser(DemoUsers.Joe_Smith.getUserId());
