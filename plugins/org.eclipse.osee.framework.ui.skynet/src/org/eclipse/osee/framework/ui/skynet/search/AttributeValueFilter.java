@@ -42,8 +42,9 @@ public class AttributeValueFilter extends SearchFilter {
       AttributeTypeId attributeType =
          (AttributeTypeId) ((StructuredSelection) filteredTree.getViewer().getSelection()).getFirstElement();
 
-      ISearchPrimitive primitive = new AttributeValueSearch(attributeType, attributeValue.getText());
-      filterViewer.addItem(primitive, getFilterName(), attributeType.toString(), "");
+      String attVal = attributeValue.getText();
+      ISearchPrimitive primitive = new AttributeValueSearch(attributeType, attVal);
+      filterViewer.addItem(primitive, getFilterName(), attributeType.toString(), attVal);
    }
 
    @Override
