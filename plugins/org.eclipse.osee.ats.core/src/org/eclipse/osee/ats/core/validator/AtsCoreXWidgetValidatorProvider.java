@@ -27,8 +27,7 @@ public class AtsCoreXWidgetValidatorProvider implements IAtsXWidgetValidatorProv
    public Collection<IAtsXWidgetValidator> getValidators() {
       if (atsValidators == null) {
          atsValidators = new ArrayList<>();
-         atsValidators.add(new AtsXIntegerValidator());
-         atsValidators.add(new AtsXFloatValidator());
+         atsValidators.add(new AtsXNumberValidator());
          atsValidators.add(new AtsXTextValidator());
          atsValidators.add(new AtsXDateValidator());
          atsValidators.add(new AtsXComboValidator());

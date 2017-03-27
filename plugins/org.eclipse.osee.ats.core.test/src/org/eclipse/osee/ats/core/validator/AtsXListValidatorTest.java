@@ -13,12 +13,10 @@ package org.eclipse.osee.ats.core.validator;
 import java.util.Arrays;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinitionListMinMaxSelectedConstraint;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
-import org.eclipse.osee.ats.core.workdef.SimpleWidgetDefinitionListMinMaxSelectedConstraint;
 import org.eclipse.osee.ats.mocks.MockStateDefinition;
 import org.eclipse.osee.ats.mocks.MockValueProvider;
 import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
@@ -70,12 +68,9 @@ public class AtsXListValidatorTest {
    public void testValidateTransition_MinMaxConstraint() throws OseeCoreException {
       AtsXListValidator validator = new AtsXListValidator();
 
-      IAtsWidgetDefinitionListMinMaxSelectedConstraint constraint =
-         new SimpleWidgetDefinitionListMinMaxSelectedConstraint("0", "0");
-
       MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
       widgetDef.setXWidgetName("XListDam");
-      widgetDef.getConstraints().add(constraint);
+      widgetDef.setConstraint(0, 0);
 
       MockStateDefinition fromStateDef = new MockStateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
@@ -88,28 +83,21 @@ public class AtsXListValidatorTest {
       ValidatorTestUtil.assertValidResult(result);
 
       //Invalid_Range if select more than supposed to
-      constraint.set(0, 2);
+      widgetDef.setConstraint(0, 2);
       MockValueProvider provider = new MockValueProvider(Arrays.asList("this", "is", "selected"));
       result = validator.validateTransition(workItem, provider, widgetDef, fromStateDef, toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Range, result.getStatus());
 
       //Invalid_Range if less than supposed to
-      constraint.set(2, 2);
+      widgetDef.setConstraint(2, 2);
       provider = new MockValueProvider(Arrays.asList("this"));
       result = validator.validateTransition(workItem, provider, widgetDef, fromStateDef, toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Range, result.getStatus());
 
       //Valid if less what supposed to
-      constraint.set(2, 2);
+      widgetDef.setConstraint(2, 2);
       provider = new MockValueProvider(Arrays.asList("this", "is"));
       result = validator.validateTransition(workItem, provider, widgetDef, fromStateDef, toStateDef, atsServices);
       ValidatorTestUtil.assertValidResult(result);
-
-      // test nulls
-      constraint = new SimpleWidgetDefinitionListMinMaxSelectedConstraint((String) null, null);
-      Assert.assertEquals(null, constraint.getMinSelected());
-      Assert.assertEquals(null, constraint.getMaxSelected());
-
    }
-
 }

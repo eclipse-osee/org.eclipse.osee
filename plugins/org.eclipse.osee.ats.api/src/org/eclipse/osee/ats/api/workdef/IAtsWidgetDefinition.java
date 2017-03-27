@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workdef;
 
-import java.util.List;
-
 /**
  * @author Donald G. Dunne
  */
@@ -21,42 +19,46 @@ public interface IAtsWidgetDefinition extends IAtsLayoutItem {
     * Identification
     */
    @Override
-   public abstract String getName();
+   public String getName();
 
-   public abstract String getToolTip();
+   public String getToolTip();
 
-   public abstract String getDescription();
+   public String getDescription();
 
    /**
     * Storage
     */
-   public abstract String getAtrributeName();
+   public String getAtrributeName();
 
-   public abstract String getDefaultValue();
+   public String getDefaultValue();
 
    /**
     * Options
     */
-   public abstract boolean is(WidgetOption widgetOption);
+   public boolean is(WidgetOption widgetOption);
 
-   public abstract IAtsWidgetOptionHandler getOptions();
+   public IAtsWidgetOptionHandler getOptions();
 
-   public abstract List<IAtsWidgetConstraint> getConstraints();
+   public void setConstraint(double min, double max);
 
-   public abstract void set(WidgetOption widgetOption);
+   public Double getMax();
+
+   public Double getMin();
+
+   public void set(WidgetOption widgetOption);
 
    /**
     * Widget Type
     */
-   public abstract String getXWidgetName();
+   public String getXWidgetName();
 
-   public abstract void setXWidgetName(String xWidgetName);
+   public void setXWidgetName(String xWidgetName);
 
-   public abstract int getHeight();
+   public int getHeight();
 
-   public abstract void setHeight(int height);
+   public void setHeight(int height);
 
    @Override
-   public abstract String toString();
+   public String toString();
 
 }

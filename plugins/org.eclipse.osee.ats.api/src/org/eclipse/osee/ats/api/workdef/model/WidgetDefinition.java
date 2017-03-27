@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workdef.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetConstraint;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetOptionHandler;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
@@ -30,7 +27,8 @@ public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition
    private String xWidgetName;
    private String defaultValue;
    private final WidgetOptionHandler options = new WidgetOptionHandler();
-   private final List<IAtsWidgetConstraint> constraints = new ArrayList<>();
+   private Double min;
+   private Double max;
 
    public WidgetDefinition(String name) {
       super(name);
@@ -114,8 +112,19 @@ public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition
    }
 
    @Override
-   public List<IAtsWidgetConstraint> getConstraints() {
-      return constraints;
+   public void setConstraint(double min, double max) {
+      this.min = min;
+      this.max = max;
+   }
+
+   @Override
+   public Double getMin() {
+      return min;
+   }
+
+   @Override
+   public Double getMax() {
+      return max;
    }
 
 }

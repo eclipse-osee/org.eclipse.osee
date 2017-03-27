@@ -17,16 +17,10 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinitionFloatMinMaxConstraint;
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinitionIntMinMaxConstraint;
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinitionListMinMaxSelectedConstraint;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
-import org.eclipse.osee.ats.core.workdef.SimpleWidgetDefinitionFloatMinMaxConstraint;
-import org.eclipse.osee.ats.core.workdef.SimpleWidgetDefinitionIntMinMaxConstraint;
-import org.eclipse.osee.ats.core.workdef.SimpleWidgetDefinitionListMinMaxSelectedConstraint;
 import org.eclipse.osee.ats.mocks.MockStateDefinition;
 import org.eclipse.osee.ats.mocks.MockValueProvider;
 import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
@@ -136,159 +130,12 @@ public class AtsXWidgetValidatorTest {
    }
 
    @org.junit.Test
-   public void testIsInteger() {
-      Assert.assertFalse(validator.isInteger("asf"));
-
-      Assert.assertFalse(validator.isInteger("4.5"));
-
-      Assert.assertTrue(validator.isInteger("345"));
-   }
-
-   @org.junit.Test
-   public void testGetInteger() {
-      Assert.assertEquals(null, validator.getInteger("asf"));
-
-      Assert.assertEquals(null, validator.getInteger("4.5"));
-
-      Assert.assertEquals(new Integer(345), validator.getInteger("345"));
-   }
-
-   @org.junit.Test
-   public void testGetConstraintOfType() {
-      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
-
-      Assert.assertNull(validator.getConstraintOfType(widgetDef, IAtsWidgetDefinitionIntMinMaxConstraint.class));
-
-      IAtsWidgetDefinitionIntMinMaxConstraint constraint = new SimpleWidgetDefinitionIntMinMaxConstraint(34, 45);
-      widgetDef.getConstraints().add(constraint);
-
-      Assert.assertEquals(constraint,
-         validator.getConstraintOfType(widgetDef, IAtsWidgetDefinitionIntMinMaxConstraint.class));
-   }
-
-   @org.junit.Test
-   public void testGetIntMinMaxValueSet() {
-
-      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
-
-      Assert.assertNull(validator.getConstraintOfType(widgetDef, IAtsWidgetDefinitionIntMinMaxConstraint.class));
-      Assert.assertEquals(null, validator.getIntMinValueSet(widgetDef));
-      Assert.assertEquals(null, validator.getIntMaxValueSet(widgetDef));
-
-      IAtsWidgetDefinitionIntMinMaxConstraint constraint = new SimpleWidgetDefinitionIntMinMaxConstraint(34, 45);
-      widgetDef.getConstraints().add(constraint);
-
-      Assert.assertEquals(new Integer(34), validator.getIntMinValueSet(widgetDef));
-      Assert.assertEquals(new Integer(45), validator.getIntMaxValueSet(widgetDef));
-   }
-
-   @org.junit.Test
-   public void testIsValidInteger() throws OseeCoreException {
-      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
-
-      WidgetResult result = validator.isValidInteger(new MockValueProvider(Arrays.asList("asdf", "345")), widgetDef);
-      Assert.assertEquals(WidgetStatus.Invalid_Type, result.getStatus());
-      Assert.assertEquals(widgetDef.getName(), result.getWidgetDef().getName());
-      Assert.assertTrue(Strings.isValid(result.getDetails()));
-
-      result = validator.isValidInteger(new MockValueProvider(Arrays.asList("23", "345")), widgetDef);
-      ValidatorTestUtil.assertValidResult(result);
-
-      IAtsWidgetDefinitionIntMinMaxConstraint constraint = new SimpleWidgetDefinitionIntMinMaxConstraint(34, 45);
-      widgetDef.getConstraints().add(constraint);
-      result = validator.isValidInteger(new MockValueProvider(Arrays.asList("37", "42")), widgetDef);
-      ValidatorTestUtil.assertValidResult(result);
-
-      result = validator.isValidInteger(new MockValueProvider(Arrays.asList("12", "42")), widgetDef);
-      Assert.assertEquals(WidgetStatus.Invalid_Range, result.getStatus());
-      Assert.assertEquals(widgetDef.getName(), result.getWidgetDef().getName());
-      Assert.assertTrue(Strings.isValid(result.getDetails()));
-   }
-
-   @org.junit.Test
-   public void testIsFloat() {
-      Assert.assertFalse(validator.isFloat("asf"));
-
-      Assert.assertFalse(validator.isFloat("4a"));
-
-      Assert.assertTrue(validator.isFloat("345.0"));
-   }
-
-   @org.junit.Test
-   public void testGetFloat() {
-      Assert.assertEquals(null, validator.getFloat("asf"));
-
-      Assert.assertEquals(null, validator.getFloat("4a"));
-
-      Assert.assertEquals(new Double(345.0), validator.getFloat("345.0"));
-   }
-
-   @org.junit.Test
-   public void testGetFloatMinMaxValueSet() {
-
-      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
-
-      Assert.assertNull(validator.getConstraintOfType(widgetDef, IAtsWidgetDefinitionFloatMinMaxConstraint.class));
-      Assert.assertEquals(null, validator.getFloatMinValueSet(widgetDef));
-      Assert.assertEquals(null, validator.getFloatMaxValueSet(widgetDef));
-
-      IAtsWidgetDefinitionFloatMinMaxConstraint constraint =
-         new SimpleWidgetDefinitionFloatMinMaxConstraint(34.3, 45.5);
-      widgetDef.getConstraints().add(constraint);
-
-      Assert.assertEquals(new Double(34.3), validator.getFloatMinValueSet(widgetDef));
-      Assert.assertEquals(new Double(45.5), validator.getFloatMaxValueSet(widgetDef));
-   }
-
-   @org.junit.Test
-   public void testIsValidFloat() throws OseeCoreException {
-      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
-
-      WidgetResult result = validator.isValidFloat(new MockValueProvider(Arrays.asList("asdf", "345.0")), widgetDef);
-      Assert.assertEquals(WidgetStatus.Invalid_Type, result.getStatus());
-      Assert.assertEquals(widgetDef.getName(), result.getWidgetDef().getName());
-      Assert.assertTrue(Strings.isValid(result.getDetails()));
-
-      result = validator.isValidFloat(new MockValueProvider(Arrays.asList("23.2", "345.0")), widgetDef);
-      ValidatorTestUtil.assertValidResult(result);
-
-      IAtsWidgetDefinitionFloatMinMaxConstraint constraint =
-         new SimpleWidgetDefinitionFloatMinMaxConstraint(34.3, 45.5);
-      widgetDef.getConstraints().add(constraint);
-      result = validator.isValidFloat(new MockValueProvider(Arrays.asList("37.3", "42.1")), widgetDef);
-      ValidatorTestUtil.assertValidResult(result);
-
-      result = validator.isValidFloat(new MockValueProvider(Arrays.asList("12.0", "42.1")), widgetDef);
-      Assert.assertEquals(WidgetStatus.Invalid_Range, result.getStatus());
-      Assert.assertEquals(widgetDef.getName(), result.getWidgetDef().getName());
-      Assert.assertTrue(Strings.isValid(result.getDetails()));
-   }
-
-   @org.junit.Test
    public void testIsValidDate() throws OseeCoreException {
       MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
 
       WidgetResult result = validator.isValidDate(new MockDateValueProvider(Arrays.asList(new Date())), widgetDef);
       Assert.assertEquals(WidgetStatus.Valid, result.getStatus());
 
-   }
-
-   @org.junit.Test
-   public void testGetListMinMaxValueSelected() {
-
-      MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
-
-      Assert.assertNull(
-         validator.getConstraintOfType(widgetDef, IAtsWidgetDefinitionListMinMaxSelectedConstraint.class));
-      Assert.assertEquals(null, validator.getListMinSelected(widgetDef));
-      Assert.assertEquals(null, validator.getListMaxSelected(widgetDef));
-
-      IAtsWidgetDefinitionListMinMaxSelectedConstraint constraint =
-         new SimpleWidgetDefinitionListMinMaxSelectedConstraint(2, 4);
-      widgetDef.getConstraints().add(constraint);
-
-      Assert.assertEquals(new Integer(2), validator.getListMinSelected(widgetDef));
-      Assert.assertEquals(new Integer(4), validator.getListMaxSelected(widgetDef));
    }
 
 }

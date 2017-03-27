@@ -21,20 +21,19 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Donald G. Dunne
  */
-public class AtsXIntegerValidator extends AtsXWidgetValidator {
+public class AtsXNumberValidator extends AtsXWidgetValidator {
 
    @Override
    public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices atsServices) throws OseeCoreException {
       WidgetResult result = WidgetResult.Valid;
-      if ("XIntegerDam".equals(widgetDef.getXWidgetName())) {
+      String name = widgetDef.getXWidgetName();
+
+      if ("XFloatDam".equals(name) || "XIntegerDam".equals(name)) {
          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, toStateDef);
          if (!result.isValid()) {
             return result;
          }
-         result = isValidInteger(provider, widgetDef);
-         if (!result.isValid()) {
-            return result;
-         }
+         return isValid(provider, widgetDef);
       }
       return result;
    }

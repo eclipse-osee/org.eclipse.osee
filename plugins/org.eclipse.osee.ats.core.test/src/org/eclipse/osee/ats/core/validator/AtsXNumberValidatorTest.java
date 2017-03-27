@@ -13,12 +13,10 @@ package org.eclipse.osee.ats.core.validator;
 import java.util.Arrays;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinitionIntMinMaxConstraint;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
-import org.eclipse.osee.ats.core.workdef.SimpleWidgetDefinitionIntMinMaxConstraint;
 import org.eclipse.osee.ats.mocks.MockStateDefinition;
 import org.eclipse.osee.ats.mocks.MockValueProvider;
 import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
@@ -29,7 +27,7 @@ import org.mockito.Mock;
 /**
  * @author Donald G. Dunne
  */
-public class AtsXIntegerValidatorTest {
+public class AtsXNumberValidatorTest {
    private IAtsServices atsServices;
    // @formatter:off
    @Mock IAtsWorkItem workItem;
@@ -37,7 +35,7 @@ public class AtsXIntegerValidatorTest {
 
    @org.junit.Test
    public void testValidateTransition() throws OseeCoreException {
-      AtsXIntegerValidator validator = new AtsXIntegerValidator();
+      AtsXNumberValidator validator = new AtsXNumberValidator();
 
       MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
       widgetDef.setXWidgetName("xList");
@@ -52,7 +50,7 @@ public class AtsXIntegerValidatorTest {
          fromStateDef, toStateDef, atsServices);
       ValidatorTestUtil.assertValidResult(result);
 
-      widgetDef.setXWidgetName("XIntegerDam");
+      widgetDef.setXWidgetName("XFloatDam");
 
       result = validator.validateTransition(workItem, ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef,
          toStateDef, atsServices);
@@ -68,13 +66,11 @@ public class AtsXIntegerValidatorTest {
 
    @org.junit.Test
    public void testValidateTransition_MinMaxConstraint() throws OseeCoreException {
-      AtsXIntegerValidator validator = new AtsXIntegerValidator();
-
-      IAtsWidgetDefinitionIntMinMaxConstraint constraint = new SimpleWidgetDefinitionIntMinMaxConstraint("0", "0");
+      AtsXNumberValidator validator = new AtsXNumberValidator();
 
       MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
-      widgetDef.setXWidgetName("XIntegerDam");
-      widgetDef.getConstraints().add(constraint);
+      widgetDef.setXWidgetName("XFloatDam");
+      widgetDef.setConstraint(0.0, 0.0);
 
       MockStateDefinition fromStateDef = new MockStateDefinition("from");
       fromStateDef.setStateType(StateType.Working);
@@ -87,28 +83,22 @@ public class AtsXIntegerValidatorTest {
       ValidatorTestUtil.assertValidResult(result);
 
       //Invalid_Range if > than what should be
-      constraint.set(0, 2);
-      MockValueProvider provider = new MockValueProvider(Arrays.asList("0", "2", "3"));
+      widgetDef.setConstraint(0.0, 2.0);
+      MockValueProvider provider = new MockValueProvider(Arrays.asList("0.0", "2.0", "3.0"));
       result = validator.validateTransition(workItem, provider, widgetDef, fromStateDef, toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Range, result.getStatus());
 
       //Invalid_Range if less than supposed to
-      constraint.set(1, 2);
-      provider = new MockValueProvider(Arrays.asList("0"));
+      widgetDef.setConstraint(1.0, 2.0);
+      provider = new MockValueProvider(Arrays.asList("0.0"));
       result = validator.validateTransition(workItem, provider, widgetDef, fromStateDef, toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Range, result.getStatus());
 
       //Valid if == what supposed to be
-      constraint.set(2, 2);
-      provider = new MockValueProvider(Arrays.asList("2", "2"));
+      widgetDef.setConstraint(2.0, 2.0);
+      provider = new MockValueProvider(Arrays.asList("2.0", "2.0"));
       result = validator.validateTransition(workItem, provider, widgetDef, fromStateDef, toStateDef, atsServices);
       ValidatorTestUtil.assertValidResult(result);
-
-      // test nulls
-      constraint = new SimpleWidgetDefinitionIntMinMaxConstraint((String) null, null);
-      Assert.assertEquals(null, constraint.getMinValue());
-      Assert.assertEquals(null, constraint.getMaxValue());
-
    }
 
 }

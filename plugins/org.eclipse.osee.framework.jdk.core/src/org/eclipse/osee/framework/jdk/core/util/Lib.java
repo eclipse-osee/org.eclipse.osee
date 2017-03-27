@@ -1786,4 +1786,16 @@ public final class Lib {
       return names;
    }
 
+   /**
+    * {@value #EPSILON} EPSILON is used to ignore extra floating numbers for compare
+    */
+   private static final double EPSILON = 1E-7;
+
+   public static boolean lessThan(double d1, double d2) {
+      return d1 + EPSILON < d2;
+   }
+
+   public static boolean greaterThan(double d1, double d2) {
+      return d1 > d2 + EPSILON;
+   }
 }

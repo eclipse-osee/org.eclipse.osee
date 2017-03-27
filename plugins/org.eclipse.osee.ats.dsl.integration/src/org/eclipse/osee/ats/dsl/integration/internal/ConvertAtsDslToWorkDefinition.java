@@ -40,9 +40,6 @@ import org.eclipse.osee.ats.api.workdef.model.PeerReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinitionFloatMinMaxConstraint;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinitionIntMinMaxConstraint;
-import org.eclipse.osee.ats.api.workdef.model.WidgetDefinitionListMinMaxSelectedConstraint;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.dsl.BooleanDefUtil;
 import org.eclipse.osee.ats.dsl.UserRefUtil;
@@ -422,14 +419,11 @@ public class ConvertAtsDslToWorkDefinition {
       if (!Strings.isValid(minConstraint) && !Strings.isValid(maxConstraint)) {
          return;
       }
-      if (widgetDef.getXWidgetName().contains("Float")) {
-         widgetDef.getConstraints().add(new WidgetDefinitionFloatMinMaxConstraint(minConstraint, minConstraint));
-      }
-      if (widgetDef.getXWidgetName().contains("Integer")) {
-         widgetDef.getConstraints().add(new WidgetDefinitionIntMinMaxConstraint(minConstraint, minConstraint));
-      }
-      if (widgetDef.getXWidgetName().contains("List")) {
-         widgetDef.getConstraints().add(new WidgetDefinitionListMinMaxSelectedConstraint(minConstraint, minConstraint));
+      String name = widgetDef.getXWidgetName();
+
+      if ((name.contains("Float") || name.contains("Integer") || name.contains("List")) && minConstraint.matches(
+         "[-+]?\\d*\\.?\\d*") && maxConstraint.matches("[-+]?\\d*\\.?\\d*")) {
+         widgetDef.setConstraint(Double.parseDouble(minConstraint), Double.parseDouble(minConstraint));
       }
    }
 
