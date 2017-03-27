@@ -54,20 +54,10 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
 
    @Override
    public List<ApplicabilityToken> getApplicabilityTokens(List<ArtifactId> artIds, BranchId branch) {
-      List<ApplicabilityToken> toReturn = new ArrayList<>();
       List<ApplicabilityToken> result = new ArrayList<>();
       BiConsumer<Long, String> consumer = (id, name) -> result.add(new ApplicabilityToken(id, name));
       tupleQuery.getTupleType2ForArtifactIds(artIds, branch, consumer);
-
-      for (ArtifactId artId : artIds) {
-         if (result.contains(artId.getId())) {
-            toReturn.add(result.get(result.indexOf(artId.getId())));
-         } else {
-            toReturn.add(ApplicabilityToken.BASE);
-         }
-      }
-
-      return toReturn;
+      return result;
    }
 
    @Override
