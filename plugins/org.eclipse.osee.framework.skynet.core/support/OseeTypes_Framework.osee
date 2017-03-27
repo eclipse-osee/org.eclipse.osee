@@ -398,6 +398,8 @@ artifactType "General Data" extends "Artifact" {
 
 artifactType "Support Document" extends "MS Word Template" {
 	id 13
+	attribute "Data Rights Classification"
+	attribute "Data Rights Basis"
 }
 
 artifactType "General Document" extends "Native Artifact" {
