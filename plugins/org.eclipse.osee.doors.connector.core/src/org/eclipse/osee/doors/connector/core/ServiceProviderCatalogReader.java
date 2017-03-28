@@ -38,9 +38,6 @@ public class ServiceProviderCatalogReader implements IDoorsArtifactParser {
 
       DoorsOSLCConnector doors = new DoorsOSLCConnector();
       String catalogResponse = doors.getCatalogResponse(path, null);
-      while (catalogResponse.contains("500")) {
-         catalogResponse = doors.getCatalogResponse(path, null);
-      }
       XPath xpath = XPathFactory.newInstance().newXPath();
 
       DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();

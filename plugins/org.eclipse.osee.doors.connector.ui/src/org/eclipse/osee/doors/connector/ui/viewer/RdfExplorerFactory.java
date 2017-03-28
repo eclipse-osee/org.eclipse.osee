@@ -12,6 +12,7 @@ package org.eclipse.osee.doors.connector.ui.viewer;
 
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.doors.connector.core.DoorsArtifact;
+import org.eclipse.osee.doors.connector.core.Requirement;
 import org.eclipse.osee.doors.connector.core.ServiceProvider;
 import org.eclipse.osee.doors.connector.core.ServiceProviderCatalog;
 
@@ -26,6 +27,8 @@ public class RdfExplorerFactory {
          return (T) new RdfSevPro(name, treeViewer, rootItem, rdfExplorer, item);
       } else if (item instanceof ServiceProviderCatalog) {
          return (T) new RdfSevProCat(name, treeViewer, rootItem, rdfExplorer, item);
+      } else if (item instanceof Requirement) {
+         return (T) new RdfRequirement(name, treeViewer, rootItem, rdfExplorer, item);
       }
       return (T) new RdfExplorerItem(name, treeViewer, rootItem, rdfExplorer, item);
    }

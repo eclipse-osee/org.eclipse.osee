@@ -314,6 +314,7 @@ public class DWAOAuthService {
       GetMethod authorizeGetMethod = new GetMethod(path);
 
       authorizeGetMethod.addRequestHeader("Content-Type", "application/x-oslc-rm-requirement-collection-1.0+xml");
+      authorizeGetMethod.addRequestHeader("OSLC-Core-Version", "2.0");
       authorizeGetMethod.addRequestHeader("Accept", "application/rdf+xml");
       authorizeGetMethod.addRequestHeader("Accept-Charset", "UTF-8");
       if ((queryString != null) && !queryString.isEmpty()) {

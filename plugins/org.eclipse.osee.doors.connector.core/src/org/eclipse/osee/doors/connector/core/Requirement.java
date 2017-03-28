@@ -5,13 +5,25 @@
  */
 package org.eclipse.osee.doors.connector.core;
 
-
 /**
  * Model Class to create a requirement oblect. Currently it extends Doors artifact. Further more objects can be added to
  * extend it in future
- * 
+ *
  * @author Chandan Bandemutt
  */
 public class Requirement extends DoorsArtifact {
-  //
+   private String shortName;
+
+   public String getShortName() {
+      return shortName;
+   }
+
+   public void setShortName(String shortName) {
+      this.shortName = shortName;
+   }
+
+   @Override
+   public IDoorsArtifactParser getReader() {
+      return new ReqReader();
+   }
 }

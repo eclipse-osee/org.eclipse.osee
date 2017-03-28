@@ -18,8 +18,6 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.doors.connector.core.DoorsArtifact;
-import org.eclipse.osee.doors.connector.core.ServiceProviderCatalogReader;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -40,23 +38,8 @@ public class RdfTreeViewer extends TreeViewer {
             ISelection selection = getSelection();
             if (selection instanceof IStructuredSelection) {
                RdfExplorerItem item = (RdfExplorerItem) ((IStructuredSelection) selection).getFirstElement();
-
                if (item != null && item.getParentItem() != null) {
-                  DoorsArtifact provider = item.getDwaItem();
-                  if (provider.getChildren().size() < 1) {
-                     ServiceProviderCatalogReader catalogReader = new ServiceProviderCatalogReader();
-
-                     try {
-                        catalogReader.parse(provider);
-                        for (DoorsArtifact dwaItem : provider.getChildren()) {
-                           item.addItem(RdfExplorerFactory.getExplorerItem(dwaItem.getName(), item.getTreeViewer(),
-                              item, item.getRdfExplorer(), dwaItem));
-                        }
-                        rdfExplorer.reload();
-                     } catch (Exception e) {
-                        e.printStackTrace();
-                     }
-                  }
+                  rdfExplorer.expandItem((IStructuredSelection) selection);
                }
             }
          }

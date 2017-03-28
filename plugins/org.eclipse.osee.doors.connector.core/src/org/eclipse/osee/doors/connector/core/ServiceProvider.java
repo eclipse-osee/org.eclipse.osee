@@ -12,5 +12,8 @@ package org.eclipse.osee.doors.connector.core;
  * @author Chandan Bandemutt
  */
 public class ServiceProvider extends DoorsArtifact {
-   //
+   @Override
+   public IDoorsArtifactParser getReader() {
+      return new ServiceProviderReader();
+   }
 }

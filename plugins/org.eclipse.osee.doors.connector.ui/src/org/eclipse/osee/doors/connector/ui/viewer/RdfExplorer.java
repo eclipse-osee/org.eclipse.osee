@@ -26,7 +26,10 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.doors.connector.core.DoorsArtifact;
 import org.eclipse.osee.doors.connector.core.DoorsModel;
 import org.eclipse.osee.doors.connector.core.DoorsOSLCConnector;
+import org.eclipse.osee.doors.connector.core.IDoorsArtifactParser;
 import org.eclipse.osee.doors.connector.core.LoginDialog;
+import org.eclipse.osee.doors.connector.core.QueryCapabilities;
+import org.eclipse.osee.doors.connector.core.Requirement;
 import org.eclipse.osee.doors.connector.core.oauth.DWAOAuthService;
 import org.eclipse.osee.doors.connector.ui.oauth.extension.DoorsOSLCDWAProviderInfoExtn;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -53,6 +56,7 @@ import org.eclipse.ui.PlatformUI;
 public class RdfExplorer extends GenericViewPart implements IRebuildMenuListener {
    public static final String VIEW_ID = "org.eclipse.osee.doors.connector.ui.viewer.RdfExplorer";
    private RdfTreeViewer treeViewer;
+   private RdfExplorerDragAndDrop dragAndDropWorker;
    private Composite parentComp;
    private RdfExplorerItem rootItem;
 
@@ -80,6 +84,7 @@ public class RdfExplorer extends GenericViewPart implements IRebuildMenuListener
       treeViewer.setUseHashlookup(true);
       treeViewer.getControl().setLayoutData(gridData);
 
+      dragAndDropWorker = new RdfExplorerDragAndDrop(treeViewer.getTree());
       getSite().setSelectionProvider(treeViewer);
       parentComp.layout();
       createActions();
@@ -190,22 +195,65 @@ public class RdfExplorer extends GenericViewPart implements IRebuildMenuListener
 
    }
 
-   private ArrayList<RdfExplorerItem> getSelectedItems() {
-      ArrayList<RdfExplorerItem> arts = new ArrayList<>();
-      Iterator<?> i = ((IStructuredSelection) treeViewer.getSelection()).iterator();
+   private ArrayList<Requirement> getSelectedItems(IStructuredSelection selection) {
+      ArrayList<Requirement> reqs = new ArrayList<>();
+      Iterator<?> i = selection.iterator();
       while (i.hasNext()) {
          Object obj = i.next();
          if (obj instanceof RdfExplorerItem) {
-            arts.add((RdfExplorerItem) obj);
+            DoorsArtifact dwaItem = ((RdfExplorerItem) obj).getDwaItem();
+            if (dwaItem instanceof Requirement) {
+               reqs.add((Requirement) dwaItem);
+            }
          }
       }
-      return arts;
+      return reqs;
    }
 
    private void expandAll(IStructuredSelection selection) {
       Iterator<?> iter = selection.iterator();
       while (iter.hasNext()) {
          treeViewer.expandToLevel(iter.next(), AbstractTreeViewer.ALL_LEVELS);
+      }
+   }
+
+   public void expandItem(IStructuredSelection selection) {
+      RdfExplorerItem item = (RdfExplorerItem) selection.getFirstElement();
+      DoorsArtifact provider = item.getDwaItem();
+      if (provider.getChildren().size() < 1) {
+         IDoorsArtifactParser reader = provider.getReader();
+         try {
+            reader.parse(provider);
+            for (DoorsArtifact dwaItem : provider.getChildren()) {
+               if (dwaItem instanceof QueryCapabilities) {
+                  // root level, contains requirements
+                  QueryCapabilities qc = (QueryCapabilities) dwaItem;
+                  for (DoorsArtifact reqt : qc.getRequirements()) {
+                     item.addItem(RdfExplorerFactory.getExplorerItem(reqt.getName(), item.getTreeViewer(), item,
+                        item.getRdfExplorer(), reqt));
+                  }
+               } else {
+                  item.addItem(RdfExplorerFactory.getExplorerItem(dwaItem.getName(), item.getTreeViewer(), item,
+                     item.getRdfExplorer(), dwaItem));
+               }
+            }
+            if (provider instanceof Requirement) {
+               List<Requirement> selected = getSelectedItems(selection);
+               if (selected.size() > 0) {
+                  dragAndDropWorker.clearRequirements();
+                  for (Requirement req : selected) {
+                     // set up drag and drop for selected requirements only
+                     // make sure they are all parsed
+                     IDoorsArtifactParser reqReader = req.getReader();
+                     reqReader.parse(req);
+                     dragAndDropWorker.addRequirement(req);
+                  }
+               }
+            }
+            reload();
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
       }
    }
 
@@ -233,15 +281,16 @@ public class RdfExplorer extends GenericViewPart implements IRebuildMenuListener
             DWAOAuthService service1 = new DWAOAuthService(config, "Open System Engineering Environment", "BoeingOSEE");
             DoorsArtifact doorsArtifact = connector.getAuthentication(service1, dialog.getName(), dialog.getPassword());
             DoorsModel.setDoorsArtifact(doorsArtifact);
-            for (DoorsArtifact item : doorsArtifact.getChildren()) {
-               rootItem.addItem(RdfExplorerFactory.getExplorerItem(item.getName(), treeViewer, rootItem, this, item));
-            }
 
             Cookie[] cookies = service1.getHttpClient().getState().getCookies();
             for (Cookie cookie : cookies) {
                DoorsModel.setJSessionID(cookie.getValue());
             }
          }
+      }
+      DoorsArtifact da = DoorsModel.getDoorsArtifact();
+      for (DoorsArtifact item : da.getChildren()) {
+         rootItem.addItem(RdfExplorerFactory.getExplorerItem(item.getName(), treeViewer, rootItem, this, item));
       }
    }
 

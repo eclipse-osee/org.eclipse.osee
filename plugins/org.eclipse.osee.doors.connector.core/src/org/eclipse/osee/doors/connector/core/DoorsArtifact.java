@@ -72,4 +72,8 @@ public class DoorsArtifact implements INamedElement {
    public List<DoorsArtifact> getChildren() {
       return this.children;
    }
+
+   public IDoorsArtifactParser getReader() {
+      return new ServiceProviderCatalogReader();
+   }
 }

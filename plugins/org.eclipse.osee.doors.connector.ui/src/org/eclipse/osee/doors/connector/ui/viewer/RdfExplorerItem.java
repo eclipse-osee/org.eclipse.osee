@@ -119,6 +119,6 @@ public class RdfExplorerItem implements IAdaptable {
 
    @Override
    public <T> T getAdapter(Class<T> adapter) {
-      return (T) this;
+      return null;
    }
 }

@@ -90,6 +90,7 @@ public final class CoreArtifactTypes {
    public static final IArtifactType TestSupport = TokenFactory.createArtifactType(83, "Test Support");
    public static final IArtifactType TestUnit = TokenFactory.createArtifactType(4, "Test Unit");
    public static final IArtifactType UniversalGroup = TokenFactory.createArtifactType(8, "Universal Group");
+   public static final IArtifactType Url = TokenFactory.createArtifactType(15, "Url");
    public static final IArtifactType User = TokenFactory.createArtifactType(5, "User");
    public static final IArtifactType UserGroup = TokenFactory.createArtifactType(7, "User Group");
    public static final IArtifactType XViewerGlobalCustomization = TokenFactory.createArtifactType(55, "XViewer Global Customization");

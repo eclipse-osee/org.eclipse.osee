@@ -73,12 +73,16 @@
 				<module>../../plugins/org.eclipse.osee.define</module>
 				<module>../../plugins/org.eclipse.osee.define.test</module>
 
+				<module>../../plugins/org.eclipse.osee.doors.connector.core</module>
+				<module>../../plugins/org.eclipse.osee.doors.connector.ui</module>
 
 				<module>../../features/org.eclipse.osee.framework.feature</module>
 
 				<module>../../features/org.eclipse.osee.framework.ui.feature</module>
 
 				<module>../../features/org.eclipse.osee.define.feature</module>
+				
+				<module>../../features/org.eclipse.osee.doors.feature</module>
 
 				<module>../../plugins/org.eclipse.osee.client.demo</module>
 
@@ -150,12 +154,15 @@
 				<module>../../plugins/org.eclipse.osee.define</module>
 				<module>../../plugins/org.eclipse.osee.define.test</module>
 
-
 				<module>../../features/org.eclipse.osee.framework.feature</module>
-
 				<module>../../features/org.eclipse.osee.framework.ui.feature</module>
 
+				<module>../../plugins/org.eclipse.osee.doors.connector.core</module>
+				<module>../../plugins/org.eclipse.osee.doors.connector.ui</module>
+
 				<module>../../features/org.eclipse.osee.define.feature</module>
+				
+				<module>../../features/org.eclipse.osee.doors.feature</module>
 
 				<module>../../plugins/org.eclipse.osee.client.demo</module>
 
