@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Morgan E. Cook
  */
-public class MatchingApplicabilityTagsRule extends AbstractValidationRule {
+public class MatchingApplicabilityTagsRule { //extends AbstractValidationRule {
 
    private final IAtsClient atsClient;
 
@@ -33,7 +33,7 @@ public class MatchingApplicabilityTagsRule extends AbstractValidationRule {
       this.atsClient = atsClient;
    }
 
-   @Override
+  // @Override
    protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor) throws OseeCoreException {
       Collection<String> errorMessages = new ArrayList<>();
       String wordml = artToValidate.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, "");
@@ -57,7 +57,7 @@ public class MatchingApplicabilityTagsRule extends AbstractValidationRule {
       return new ValidationResult(errorMessages, validationPassed);
    }
 
-   @Override
+ //  @Override
    public String getRuleDescription() {
       return "<b>Applicability Check: </b>" + "Ensure applicability tags are valid (" + getHyperLink() + ")" + " in the artifact(s)";
    }
@@ -66,7 +66,7 @@ public class MatchingApplicabilityTagsRule extends AbstractValidationRule {
       return null;
    }
 
-   @Override
+//   @Override
    public String getRuleTitle() {
       return "Applicability Check:";
    }
