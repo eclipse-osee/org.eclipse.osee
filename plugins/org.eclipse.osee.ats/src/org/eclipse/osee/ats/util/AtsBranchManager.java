@@ -14,7 +14,9 @@ package org.eclipse.osee.ats.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -47,7 +49,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditorInput;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
-import org.eclipse.osee.framework.ui.skynet.util.TransactionIdLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.util.NameLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeBranchDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
@@ -176,17 +178,19 @@ public final class AtsBranchManager {
       Collection<TransactionToken> transactionIds = new HashSet<>();
       Collection<TransactionRecord> transactions =
          AtsClientService.get().getBranchService().getTransactionIds(teamArt, showMergeManager);
+      final Map<IOseeBranch, TransactionId> branchToTx = new LinkedHashMap<>();
 
+      if (transactionIds.size() == 1) {
+         return transactionIds.iterator().next();
+      }
       for (TransactionRecord id : transactions) {
          // ignore working branches that have been committed or re-baselined (e.g. update form parent branch)
          boolean workingBranch = BranchManager.getType(id).isWorkingBranch();
          BranchState state = BranchManager.getState(id.getBranch());
          if (!workingBranch || !(state.isRebaselined() && state.isCommitted())) {
-            transactionIds.add(id);
+            IOseeBranch branch = BranchManager.getBranchToken(id.getBranch());
+            branchToTx.put(branch, id);
          }
-      }
-      if (transactionIds.size() == 1) {
-         return transactionIds.iterator().next();
       }
 
       ViewerSorter sorter = new ViewerSorter() {
@@ -195,17 +199,27 @@ public final class AtsBranchManager {
             if (e1 == null || e2 == null) {
                return 0;
             }
-            TransactionId tx1 = (TransactionId) e1;
-            TransactionId tx2 = (TransactionId) e2;
-            return (int) (tx1.getId() - tx2.getId());
+            Long b1 = ((IOseeBranch) e1).getId();
+            Long b2 = ((IOseeBranch) e1).getId();
+            if (b1 > b2) {
+               return -1;
+            }
+            if (b2 > b1) {
+               return 1;
+            }
+            return 0;
          }
       };
       FilteredTreeDialog dialog = new FilteredTreeDialog(title, "Select Commit Branch", new ArrayTreeContentProvider(),
-         new TransactionIdLabelProvider(), sorter);
+         new NameLabelProvider(), sorter);
 
-      dialog.setInput(transactionIds);
+      dialog.setInput(branchToTx.keySet());
       if (dialog.open() == 0) {
-         return dialog.getSelectedFirst();
+         IOseeBranch branch = dialog.getSelectedFirst();
+         if (branch != null) {
+            TransactionId id = branchToTx.get(branch);
+            return TransactionToken.valueOf(id, branch);
+         }
       }
       return TransactionToken.SENTINEL;
    }
@@ -224,7 +238,7 @@ public final class AtsBranchManager {
             ChangeUiUtil.open(input);
          } else if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt)) {
             TransactionToken transactionId = getTransactionIdOrPopupChoose(teamArt, "Show Change Report", false);
-            if (transactionId == null) {
+            if (TransactionToken.SENTINEL.equals(transactionId)) {
                return;
             }
             ChangeUiUtil.open(transactionId);
