@@ -346,8 +346,10 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
             @Override
             public void modifyText(ModifyEvent e) {
-               // only enable slave template selection if Master is for SRS.
-               if (masterCombo.get().contains("srsMaster")) {
+               // only enable slave template selection if Master is for SRS or Engineering Worksheets (EWS)
+               String masterTemplate = masterCombo.get();
+               if (masterTemplate.contains("srsMaster") || // 
+               masterTemplate.contains("ewsMaster")) {
                   slaveWidget.setEnabled(true);
                   orcsQueryWidget.setEditable(false);
                   orcsQueryWidget.set("");
