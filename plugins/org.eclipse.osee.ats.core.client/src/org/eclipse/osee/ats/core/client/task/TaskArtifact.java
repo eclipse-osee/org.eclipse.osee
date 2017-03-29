@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.task;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -64,16 +63,12 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
       if (parentAwa != null) {
          return parentAwa;
       }
-      if (taskHasNoParent.contains(getId())) {
-         return null;
-      }
-      Collection<AbstractWorkflowArtifact> awas =
-         getRelatedArtifacts(AtsRelationTypes.TeamWfToTask_TeamWf, AbstractWorkflowArtifact.class);
-      if (awas.isEmpty()) {
+      parentAwa = (AbstractWorkflowArtifact) getRelatedArtifactOrNull(AtsRelationTypes.TeamWfToTask_TeamWf);
+      // only display error once
+      if (parentAwa == null && !taskHasNoParent.contains(getId())) {
          taskHasNoParent.add(getId());
          throw new OseeStateException("Task has no parent [%s]", getAtsId());
       }
-      parentAwa = awas.iterator().next();
       return parentAwa;
    }
 
