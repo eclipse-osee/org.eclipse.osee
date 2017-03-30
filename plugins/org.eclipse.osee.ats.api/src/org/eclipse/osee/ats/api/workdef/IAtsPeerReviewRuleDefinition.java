@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workdef;
 
+import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
+
 /**
  * @author Mark Joy
  */

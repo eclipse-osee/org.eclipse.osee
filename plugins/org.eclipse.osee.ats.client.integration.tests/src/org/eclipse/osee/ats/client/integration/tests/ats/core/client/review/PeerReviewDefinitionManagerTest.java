@@ -14,7 +14,7 @@ import java.util.Arrays;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.JaxAtsWorkDef;
-import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
+import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;

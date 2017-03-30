@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
-import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
+import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;

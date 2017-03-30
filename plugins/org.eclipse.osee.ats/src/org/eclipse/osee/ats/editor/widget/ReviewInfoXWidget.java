@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.ReviewFormalType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
-import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
+import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;

@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStore;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
-import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.dsl.ModelUtil;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;

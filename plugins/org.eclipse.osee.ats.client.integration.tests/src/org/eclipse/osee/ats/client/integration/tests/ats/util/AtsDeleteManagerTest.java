@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
+import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;

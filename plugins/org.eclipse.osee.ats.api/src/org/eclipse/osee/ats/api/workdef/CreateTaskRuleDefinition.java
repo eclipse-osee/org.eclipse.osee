@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.model.RuleDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 

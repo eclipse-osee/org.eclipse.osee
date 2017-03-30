@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.dsl.integration.internal.model;
 
 import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
 import org.junit.Assert;
 import org.junit.Test;
 

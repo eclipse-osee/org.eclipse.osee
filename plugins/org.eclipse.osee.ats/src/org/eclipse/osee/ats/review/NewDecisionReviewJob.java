@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
-import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
+import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;

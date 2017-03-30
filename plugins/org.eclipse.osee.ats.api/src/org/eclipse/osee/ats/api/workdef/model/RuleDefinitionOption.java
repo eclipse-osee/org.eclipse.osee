@@ -8,10 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.workdef;
+package org.eclipse.osee.ats.api.workdef.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.ats.api.workdef.RuleLocations;
 
 /**
  * @author Donald G. Dunne

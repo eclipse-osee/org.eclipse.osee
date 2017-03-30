@@ -15,6 +15,8 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
+import org.eclipse.osee.ats.api.workdef.model.RuleDefinition;
 
 /**
  * @author Mark Joy

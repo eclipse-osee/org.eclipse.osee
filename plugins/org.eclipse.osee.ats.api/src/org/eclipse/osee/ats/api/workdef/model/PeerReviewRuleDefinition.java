@@ -8,11 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.workdef;
+package org.eclipse.osee.ats.api.workdef.model;
 
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.IAtsPeerReviewRuleDefinition;
+import org.eclipse.osee.ats.api.workdef.RunRuleResults;
 
 /**
  * @author Mark Joy

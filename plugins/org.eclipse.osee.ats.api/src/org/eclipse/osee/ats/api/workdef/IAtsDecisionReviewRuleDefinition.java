@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.workdef;
 
 import java.util.List;
+import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 
 /**
  * @author Mark Joy

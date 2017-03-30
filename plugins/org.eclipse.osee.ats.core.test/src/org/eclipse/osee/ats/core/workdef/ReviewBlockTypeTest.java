@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workdef;
 
-import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
+import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.junit.Assert;
 import org.junit.Test;
 

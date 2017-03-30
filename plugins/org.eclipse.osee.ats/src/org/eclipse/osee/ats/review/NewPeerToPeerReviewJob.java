@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.ReviewFormalType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
+import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;

@@ -15,7 +15,7 @@ import java.util.Arrays;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
-import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;

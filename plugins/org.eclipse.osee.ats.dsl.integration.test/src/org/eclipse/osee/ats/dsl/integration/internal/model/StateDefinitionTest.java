@@ -12,9 +12,16 @@ package org.eclipse.osee.ats.dsl.integration.internal.model;
 
 import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
-import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.DecisionReviewDefinition;
+import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.PeerReviewDefinition;
+import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.dsl.integration.internal.AtsWorkDefinitionServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;

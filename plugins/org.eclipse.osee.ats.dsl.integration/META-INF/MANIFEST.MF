@@ -9,15 +9,6 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.emf.common.util,
  org.eclipse.emf.ecore,
- org.eclipse.osee.ats.api,
- org.eclipse.osee.ats.api.config,
- org.eclipse.osee.ats.api.review,
- org.eclipse.osee.ats.api.rule,
- org.eclipse.osee.ats.api.team,
- org.eclipse.osee.ats.api.user,
- org.eclipse.osee.ats.api.workdef,
- org.eclipse.osee.ats.api.workflow,
- org.eclipse.osee.ats.api.workflow.state,
  org.eclipse.osee.ats.dsl,
  org.eclipse.osee.ats.dsl.atsDsl,
  org.eclipse.osee.ats.dsl.atsDsl.impl,
@@ -27,3 +18,4 @@ Import-Package: org.eclipse.emf.common.util,
  org.eclipse.osee.framework.jdk.core.util.io,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.logger
+Require-Bundle: org.eclipse.osee.ats.api

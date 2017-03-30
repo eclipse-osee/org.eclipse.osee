@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Boeing.
+ * Copyright (c) 2011 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,17 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.dsl.integration.internal.model;
-
-import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
+package org.eclipse.osee.ats.api.workdef.model;
 
 /**
  * @author Donald G. Dunne
  */
-public class LayoutItem extends AbstractWorkDefItem implements IAtsLayoutItem {
-
-   public LayoutItem(String name) {
-      super(name);
-   }
-
-}
+public enum ReviewBlockType {
+   None,
+   Transition,
+   Commit
+};

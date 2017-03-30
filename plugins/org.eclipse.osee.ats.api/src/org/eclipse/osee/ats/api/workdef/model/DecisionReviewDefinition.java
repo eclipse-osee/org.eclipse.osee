@@ -8,29 +8,30 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.dsl.integration.internal.model;
+package org.eclipse.osee.ats.api.workdef.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.api.workdef.IAtsPeerReviewDefinition;
-import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
+import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
+import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
 
 /**
  * @author Donald G. Dunne
  */
-public class PeerReviewDefinition implements IAtsPeerReviewDefinition {
+public class DecisionReviewDefinition implements IAtsDecisionReviewDefinition {
 
    public String name;
    public String reviewTitle;
    public String description = "";
-   public String location = "";
    public String relatedToState;
    public ReviewBlockType blockingType;
    public StateEventType stateEventType;
    public List<String> assignees = new ArrayList<>();
+   public boolean autoTransitionToDecision = false;
+   public List<IAtsDecisionReviewOption> options = new ArrayList<>();
 
-   public PeerReviewDefinition(String name) {
+   public DecisionReviewDefinition(String name) {
       this.name = name;
    }
 
@@ -71,8 +72,22 @@ public class PeerReviewDefinition implements IAtsPeerReviewDefinition {
    }
 
    @Override
+   public boolean isAutoTransitionToDecision() {
+      return autoTransitionToDecision;
+   }
+
+   public void setAutoTransitionToDecision(boolean autoTransitionToDecision) {
+      this.autoTransitionToDecision = autoTransitionToDecision;
+   }
+
+   @Override
    public List<String> getAssignees() {
       return assignees;
+   }
+
+   @Override
+   public List<IAtsDecisionReviewOption> getOptions() {
+      return options;
    }
 
    @Override
@@ -96,15 +111,6 @@ public class PeerReviewDefinition implements IAtsPeerReviewDefinition {
 
    public void setRelatedToState(String relatedToState) {
       this.relatedToState = relatedToState;
-   }
-
-   @Override
-   public String getLocation() {
-      return location;
-   }
-
-   public void setLocation(String location) {
-      this.location = location;
    }
 
 }

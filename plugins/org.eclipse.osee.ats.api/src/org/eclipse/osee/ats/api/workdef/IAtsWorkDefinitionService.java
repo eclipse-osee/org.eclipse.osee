@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.IWorkDefinitionStringProvider;
+import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
