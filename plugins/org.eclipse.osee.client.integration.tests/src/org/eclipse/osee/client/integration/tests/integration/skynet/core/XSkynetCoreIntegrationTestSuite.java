@@ -15,6 +15,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   AccessControlTest.class,
    ArtifactEventLoopbackTest.class,
    ArtifactEventTest.class,
    ArtifactGetLastModifiedTest.class,
