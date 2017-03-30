@@ -551,8 +551,16 @@ app.controller('userController', [
         	$scope.editItem(item, null);
         }
         
+        $scope.editAssignees = function(item) {
+        	$scope.editItem(item, 'assignee');
+        }
+        
         $scope.editNotes = function (item) {
         	$scope.editItem(item, 'itemNotes');
+        }
+        
+        $scope.editCategories = function (item) {
+        	$scope.editItem(item, 'category');
         }
         
         $scope.editNeedsRerun = function (item) {
@@ -748,7 +756,7 @@ app.controller('userController', [
             	for(var i = 0; i < size; i++) {
             		if($scope.selectedItems[i].assignee != inputs.multiAssignee){
 	            		$scope.selectedItems[i].assignee = inputs.multiAssignee;
-	            		$scope.editItem($scope.selectedItems[i]);
+	            		$scope.editAssignees($scope.selectedItems[i]);
             		}
             	}
             });
@@ -783,7 +791,7 @@ app.controller('userController', [
             	for(var i = 0; i < size; i++) {
             		if($scope.selectedItems[i].category != inputs.category){
 	            		$scope.selectedItems[i].category = inputs.category;
-	            		$scope.editItem($scope.selectedItems[i]);
+	            		$scope.editCategories($scope.selectedItems[i]);
             		}
             	}
             });
@@ -818,7 +826,7 @@ app.controller('userController', [
             	for(var i = 0; i < size; i++) {
             		if($scope.selectedItems[i].needsRerun != inputs.needsRerun) {
             			$scope.selectedItems[i].needsRerun = inputs.needsRerun;
-            			$scope.editItem($scope.selectedItems[i]);
+            			$scope.editNeedsRerun($scope.selectedItems[i]);
             		}
             	}
             });
