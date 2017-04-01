@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.define.traceability.report;
 
-import java.io.IOException;
 import java.util.List;
 import org.eclipse.osee.define.traceability.ArtifactOperations;
 import org.eclipse.osee.define.traceability.RequirementTraceabilityData;
@@ -100,8 +99,13 @@ public class StpCsciToTestTable implements ISimpleTable {
    }
 
    @Override
-   public void initializeSheet(ExcelXmlWriter sheetWriter) throws IOException {
-      sheetWriter.startSheet("STP - CSCI Requirements to Test Traceability", 5);
+   public String getWorksheetName() {
+      return "STP - CSCI Requirements to Test Traceability";
+   }
+
+   @Override
+   public int getColumnCount() {
+      return 5;
    }
 
    @Override

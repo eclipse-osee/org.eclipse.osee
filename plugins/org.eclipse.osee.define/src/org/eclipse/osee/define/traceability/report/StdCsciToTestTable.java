@@ -98,8 +98,13 @@ public class StdCsciToTestTable implements ISimpleTable {
    }
 
    @Override
-   public void initializeSheet(ExcelXmlWriter sheetWriter) throws Exception {
-      sheetWriter.startSheet("STD - CSCI Requirements to Test Traceability", 5);
+   public String getWorksheetName() {
+      return "STD - CSCI Requirements to Test Traceability";
+   }
+
+   @Override
+   public int getColumnCount() {
+      return 5;
    }
 
    @Override

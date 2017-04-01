@@ -17,7 +17,9 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
  */
 public interface ISimpleTable {
 
-   public void initializeSheet(ExcelXmlWriter sheetWriter) throws Exception;
+   public String getWorksheetName();
+
+   public int getColumnCount();
 
    public String getHeader();
 
