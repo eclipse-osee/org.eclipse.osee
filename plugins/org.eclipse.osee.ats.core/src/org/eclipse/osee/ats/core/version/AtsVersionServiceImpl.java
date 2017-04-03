@@ -201,8 +201,12 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
 
    @Override
    public BranchId getBranch(IAtsVersion version) {
-      return services.getAttributeResolver().getSoleAttributeValue(version, AtsAttributeTypes.BaselineBranchUuid,
-         BranchId.SENTINEL);
+      String branchId =
+         services.getAttributeResolver().getSoleAttributeValue(version, AtsAttributeTypes.BaselineBranchUuid, "");
+      if (branchId == null || branchId.isEmpty()) {
+         return BranchId.SENTINEL;
+      }
+      return BranchId.valueOf(branchId);
    }
 
    @Override
