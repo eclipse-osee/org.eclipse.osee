@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -175,13 +174,12 @@ public final class AtsBranchManager {
     * Either return a single commit transaction or user must choose from a list of valid commit transactions
     */
    public static TransactionToken getTransactionIdOrPopupChoose(TeamWorkFlowArtifact teamArt, String title, boolean showMergeManager) throws OseeCoreException {
-      Collection<TransactionToken> transactionIds = new HashSet<>();
       Collection<TransactionRecord> transactions =
          AtsClientService.get().getBranchService().getTransactionIds(teamArt, showMergeManager);
       final Map<IOseeBranch, TransactionId> branchToTx = new LinkedHashMap<>();
 
-      if (transactionIds.size() == 1) {
-         return transactionIds.iterator().next();
+      if (transactions.size() == 1) {
+         return transactions.iterator().next();
       }
       for (TransactionRecord id : transactions) {
          // ignore working branches that have been committed or re-baselined (e.g. update form parent branch)
