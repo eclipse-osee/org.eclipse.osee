@@ -72,7 +72,7 @@ public final class RelationChange extends Change {
 
    @Override
    public String getName() {
-      return getArtifactName() + " <-> " + getEndTxBArtifact().getName();
+      return String.format("%s <- [%s] -> %s", getArtifactName(), getItemTypeName(), getEndTxBArtifact().getName());
    }
 
    @Override
