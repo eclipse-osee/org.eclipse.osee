@@ -192,7 +192,7 @@ public class WorkflowManager {
       if (workItem != null) {
          IAtsWorkDefinition definition = workItem.getWorkDefinition();
          ATSXWidgetOptionResolver optionResolver = ATSXWidgetOptionResolver.getInstance();
-         for (IAtsStateDefinition stateDefinition : AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByOrdinal(
+         for (IAtsStateDefinition stateDefinition : AtsClientService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(
             definition)) {
             try {
                StateXWidgetPage statePage = new StateXWidgetPage(definition, stateDefinition, null, optionResolver);

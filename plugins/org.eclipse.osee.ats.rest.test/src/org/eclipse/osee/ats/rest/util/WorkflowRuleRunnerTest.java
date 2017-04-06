@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.workdef.IAtsCreateTaskRuleDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.NullRuleDefinition;
 import org.eclipse.osee.ats.api.workdef.RuleEventType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -58,7 +58,7 @@ public class WorkflowRuleRunnerTest {
    @Mock IAtsServices atsServices;
    @Mock IAtsStoreService atsStoreService;
    @Mock IAtsWorkDefinition atsWorkDef;
-   @Mock IAtsWorkDefinitionAdmin atsWorkDefAdmin;
+   @Mock IAtsWorkDefinitionService atsWorkDefAdmin;
    @Mock IAtsStateManager atsStateMgr;
 
    List<IAtsWorkItem> workflowsCreated = new ArrayList<>();
@@ -77,7 +77,7 @@ public class WorkflowRuleRunnerTest {
       when(atsStoreService.createAtsChangeSet("ATS Rule Runner", AtsCoreUsers.SYSTEM_USER)).thenReturn(changes);
       when(workItem.isTeamWorkflow()).thenReturn(true);
       when(workItem.getParentTeamWorkflow()).thenReturn(teamWf);
-      when(atsServer.getWorkDefAdmin()).thenReturn(atsWorkDefAdmin);
+      when(atsServer.getWorkDefinitionService()).thenReturn(atsWorkDefAdmin);
       when(workItem.getParentTeamWorkflow()).thenReturn(teamWf);
       when(teamWf.getTeamDefinition()).thenReturn(teamDef);
       when(createTaskRule.getRuleEvents()).thenReturn(eventList);

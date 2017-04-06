@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -66,7 +67,11 @@ public class UpdateAtsConfiguration {
       createRuleDefinitions(userArt, configFolder, rd);
       createUpdateColorColumnAttributes(atsConfigArt, userArt, rd);
       createUpdateConfigAttributes(atsConfigArt, userArt, rd);
-      createUpdateValidStateAttributes(atsConfigArt, userArt, rd);
+      try {
+         createUpdateValidStateAttributes(atsConfigArt, userArt, rd);
+      } catch (Exception ex) {
+         rd.errorf("Error in createUpdateValidStateAttributes [%s]", Lib.exceptionToString(ex));
+      }
       return rd;
    }
 
@@ -197,8 +202,9 @@ public class UpdateAtsConfiguration {
       atsServer.setConfigValue(COLOR_COLUMN_KEY, colorColumnsJson);
    }
 
-   private void createUpdateValidStateAttributes(ArtifactReadable atsConfigArt, ArtifactReadable userArt, XResultData rd) {
-      Collection<String> validStateNames = atsServer.getWorkDefService().getAllValidStateNames(new XResultData());
+   private void createUpdateValidStateAttributes(ArtifactReadable atsConfigArt, ArtifactReadable userArt, XResultData rd) throws Exception {
+
+      Collection<String> validStateNames = atsServer.getWorkDefinitionService().getAllValidStateNames(new XResultData());
       atsServer.setConfigValue(VALID_STATE_NAMES_KEY, Collections.toString(",", validStateNames));
    }
 

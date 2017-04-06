@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
@@ -34,9 +33,7 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -47,7 +44,6 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    protected final ArtifactToken artifact;
    private IAtsStateManager stateMgr;
    private IAtsLog atsLog;
-   private IWorkDefinitionMatch match;
    protected final IAtsServices services;
    protected final Log logger;
    IAtsTeamWorkflow parentTeamWf;
@@ -104,7 +100,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    @Override
    public IAtsAction getParentAction() {
       if (parentAction == null) {
-         ArtifactId actionArt = null;
+         ArtifactToken actionArt = null;
          IAtsTeamWorkflow teamWf = getParentTeamWorkflow();
          if (teamWf != null) {
             Collection<ArtifactToken> results = services.getRelationResolver().getRelated(teamWf.getStoreObject(),
@@ -131,19 +127,9 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    @Override
    public IAtsStateManager getStateMgr() {
       if (stateMgr == null) {
-         try {
-            stateMgr = services.getStateFactory().getStateManager(this, true);
-         } catch (OseeCoreException ex) {
-            logger.error(ex, "Error getting stateManager for artifact[%s]", artifact);
-         }
+         stateMgr = services.getStateFactory().getStateManager(this);
       }
       return stateMgr;
-   }
-
-   @Override
-   public void setStateManager(IAtsStateManager stateMgr) {
-      Conditions.assertNotNull(stateMgr, "stateMgr");
-      this.stateMgr = stateMgr;
    }
 
    @Override
@@ -160,29 +146,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public IAtsWorkDefinition getWorkDefinition() {
-      if (match == null) {
-         match = getWorkDefinitionMatch();
-         if (match == null) {
-            return null;
-         }
-         if (!match.isMatched()) {
-            logger.error("Error getting work definition for artifact[%s] - using match [%s]", artifact, match);
-            return null;
-         }
-      }
-      return match.getWorkDefinition();
-   }
-
-   public IWorkDefinitionMatch getWorkDefinitionMatch() {
-      if (match == null) {
-         try {
-            match = services.getWorkDefinitionAdmin().getWorkDefinition(this);
-         } catch (Exception ex) {
-            logger.error("Error getting work definition match for artifact[%s]: Exception %s", artifact,
-               ex.getLocalizedMessage());
-         }
-      }
-      return match;
+      return services.getWorkDefinitionService().getWorkDefinition(this);
    }
 
    @Override
@@ -309,15 +273,13 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    }
 
    @Override
-   public boolean isOfType(ArtifactTypeId... artifactTypes) {
-      return services.getStoreService().isOfType(this.getStoreObject(), artifactTypes);
+   public void setStateMgr(IAtsStateManager stateMgr) {
+      this.stateMgr = stateMgr;
    }
 
    @Override
    public void clearCaches() {
       stateMgr = null;
       atsLog = null;
-      match = null;
    }
-
 }

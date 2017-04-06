@@ -42,7 +42,7 @@ import org.eclipse.osee.ats.actions.ShowChangeReportAction;
 import org.eclipse.osee.ats.actions.ShowMergeManagerAction;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.note.NoteItem;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
@@ -690,9 +690,8 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       headerComp.setLayout(ALayout.getZeroMarginLayout(6, false));
       toolkit.adapt(headerComp);
 
-      IWorkDefinitionMatch workDefMatch = workflow.getWorkDefinitionMatch();
-      Label label = FormsUtil.createLabelValue(toolkit, headerComp, "Work Definition: ",
-         workDefMatch.getWorkDefinition().getName());
+      IAtsWorkDefinition workDef = workflow.getWorkDefinition();
+      Label label = FormsUtil.createLabelValue(toolkit, headerComp, "Work Definition: ", workDef.getName());
       label.addListener(SWT.MouseDoubleClick, new Listener() {
 
          @Override

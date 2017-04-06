@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactSelectWidgetWithSave;
@@ -47,7 +48,7 @@ public class XProgramSelectionWidget extends XArtifactSelectWidgetWithSave {
 
    @Override
    public Collection<Artifact> getSelectableArtifacts() {
-      List<ArtifactId> programArts =
+      List<ArtifactToken> programArts =
          AtsClientService.get().getQueryService().createQuery(AtsArtifactTypes.Program).andAttr(
             AtsAttributeTypes.Active, "true").getResultArtifacts().getList();
       return Collections.castAll(programArts);

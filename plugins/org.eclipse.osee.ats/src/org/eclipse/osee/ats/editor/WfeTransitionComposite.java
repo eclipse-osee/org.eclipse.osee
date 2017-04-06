@@ -245,7 +245,7 @@ public class WfeTransitionComposite extends Composite {
                   IAtsStateDefinition toStateDef;
                   try {
                      toStateDef =
-                        AtsClientService.get().getWorkDefinitionAdmin().getStateDefinitionByName(awa, getToStateName());
+                        AtsClientService.get().getWorkDefinitionService().getStateDefinitionByName(awa, getToStateName());
                      if (toStateDef.getStateType().isCancelledState()) {
                         EntryDialog cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
                         if (cancelDialog.open() != 0) {
@@ -310,7 +310,7 @@ public class WfeTransitionComposite extends Composite {
    private static boolean handlePopulateStateMetrics(AbstractWorkflowArtifact awa, IAtsStateDefinition fromStateDefinition, IAtsStateDefinition toStateDefinition, IAtsChangeSet changes) throws OseeCoreException {
       int percent = 0;
       // If state weighting, always 100 cause state is completed
-      if (AtsClientService.get().getWorkDefinitionAdmin().isStateWeightingEnabled(awa.getWorkDefinition())) {
+      if (AtsClientService.get().getWorkDefinitionService().isStateWeightingEnabled(awa.getWorkDefinition())) {
          percent = 100;
       } else {
          if (toStateDefinition.getStateType().isCompletedOrCancelledState()) {

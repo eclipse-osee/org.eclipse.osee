@@ -8,22 +8,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.workdef;
+package org.eclipse.osee.ats.core.workflow;
 
-import java.util.List;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsWorkDefinitionStore {
+public class Task extends WorkItem implements IAtsTask {
 
-   boolean isWorkDefinitionExists(String workDefId) throws OseeCoreException;
+   public Task(Log logger, IAtsServices services, ArtifactToken artifact) {
+      super(logger, services, artifact);
+   }
 
-   String loadWorkDefinitionString(String workDefId) throws OseeCoreException;
-
-   String loadRuleDefinitionString() throws OseeCoreException;
-
-   List<Pair<String, String>> getWorkDefinitionStrings() throws OseeCoreException;
 }

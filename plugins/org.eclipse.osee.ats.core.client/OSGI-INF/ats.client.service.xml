@@ -5,11 +5,11 @@
       <provide interface="org.eclipse.osee.ats.core.client.IAtsClient"/>
       <provide interface="org.eclipse.osee.ats.api.IAtsServices"/>
    </service>
-   <reference bind="setAtsWorkDefinitionService" cardinality="1..1" interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService" name="IAtsWorkDefinitionService" policy="static"/>
    <reference bind="setJdbcService" cardinality="1..1" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="static" target="(osgi.binding=skynet.jdbc.service)"/>
+	<reference bind="setEventAdmin" cardinality="1..1" interface="org.osgi.service.event.EventAdmin" name="EventAdmin" policy="static"/>
    <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
-   <reference bind="addSearchDataProvider" cardinality="0..n" interface="org.eclipse.osee.ats.api.query.IAtsSearchDataProvider" name="IAtsSearchDataProvider" policy="dynamic" unbind="removeSearchDataProvider"/>
    <reference bind="setConfigurationsService" cardinality="1..1" interface="org.eclipse.osee.ats.api.config.IAtsConfigurationProvider" name="IAtsConfigurationProvider" policy="static"/>
    <reference bind="setAtsUserService" cardinality="1..1" interface="org.eclipse.osee.ats.core.client.IAtsUserServiceClient" name="IAtsUserServiceClient" policy="static"/>
-	<reference bind="setEventAdmin" cardinality="1..1" interface="org.osgi.service.event.EventAdmin" name="EventAdmin" policy="static"/>
+   <reference bind="addSearchDataProvider" cardinality="0..n" interface="org.eclipse.osee.ats.api.query.IAtsSearchDataProvider" name="IAtsSearchDataProvider" policy="dynamic" unbind="removeSearchDataProvider"/>
+   <reference bind="setWorkDefinitionDslService" cardinality="1..1" interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionDslService" name="IAtsWorkDefinitionDslService" policy="static"/>
 </scr:component>

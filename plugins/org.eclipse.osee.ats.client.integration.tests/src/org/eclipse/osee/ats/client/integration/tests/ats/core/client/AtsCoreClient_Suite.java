@@ -16,7 +16,6 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.branch.AtsC
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.config.AtsCoreClient_Config_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.operation.AtsCoreClient_Operation_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.review.AtsCoreClient_Review_Suite;
-import org.eclipse.osee.ats.client.integration.tests.ats.core.client.task.AtsCoreClient_Task_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.util.AtsCoreClient_Util_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.workflow.AtsCoreClient_Workflow_Suite;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -36,7 +35,6 @@ import org.junit.runners.Suite;
    AtsCoreClient_Config_Suite.class,
    AtsCoreClient_Operation_Suite.class,
    AtsCoreClient_Review_Suite.class,
-   AtsCoreClient_Task_Suite.class,
    AtsCoreClient_Util_Suite.class,
    AtsCoreClient_Workflow_Suite.class})
 public class AtsCoreClient_Suite {

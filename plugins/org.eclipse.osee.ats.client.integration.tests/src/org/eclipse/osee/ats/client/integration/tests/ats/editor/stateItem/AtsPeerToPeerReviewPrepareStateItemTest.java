@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.editor.stateItem;
 
 import static org.junit.Assert.assertFalse;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import java.util.Date;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -19,12 +19,12 @@ import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.demo.api.DemoActionableItems;
 import org.eclipse.osee.ats.editor.stateItem.AtsPeerToPeerReviewPrepareStateItem;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -51,17 +51,15 @@ public class AtsPeerToPeerReviewPrepareStateItemTest {
       assertFalse("Test should not be run in production db", AtsUtil.isProductionDb());
 
       if (peerRevArt == null) {
-         // setup fake review artifact with decision options set
-         peerRevArt = (PeerToPeerReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.PeerToPeerReview,
-            AtsClientService.get().getAtsBranch());
-         peerRevArt.setName(getClass().getSimpleName());
-         // Setup actionable item so don't get error that there is no parent team workflow
          IAtsChangeSet changes = AtsClientService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName(),
             AtsClientService.get().getUserService().getCurrentUser());
+         peerRevArt = PeerToPeerReviewManager.createNewPeerToPeerReview(
+            DemoTestUtil.getActionableItem(DemoActionableItems.CIS_Code), getClass().getSimpleName(), null, new Date(),
+            AtsClientService.get().getUserService().getCurrentUser(), changes);
+         // Setup actionable item so don't get error that there is no parent team workflow
          AtsClientService.get().getWorkItemService().getActionableItemService().addActionableItem(peerRevArt,
             DemoTestUtil.getActionableItem(DemoActionableItems.CIS_Code), changes);
          changes.execute();
-         peerRevArt.persist(getClass().getSimpleName());
       }
    }
 

@@ -50,7 +50,7 @@ public class AtsRuleEndpointImpl implements AtsRuleEndpointApi {
    @Override
    public JaxRuleDefinitions get() throws Exception {
       JaxRuleDefinitions rules = new JaxRuleDefinitions();
-      for (IAtsRuleDefinition rule : atsServer.getWorkDefAdmin().getAllRuleDefinitions()) {
+      for (IAtsRuleDefinition rule : atsServer.getWorkDefinitionService().getAllRuleDefinitions()) {
          rules.getRules().add(rule);
       }
       return rules;

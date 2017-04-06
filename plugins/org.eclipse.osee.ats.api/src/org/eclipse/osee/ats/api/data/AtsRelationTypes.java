@@ -11,6 +11,10 @@
 package org.eclipse.osee.ats.api.data;
 
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.Tuple2Type;
+import org.eclipse.osee.framework.core.data.TupleFamilyId;
+import org.eclipse.osee.framework.core.data.TupleTypeId;
+import org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 
 /**
@@ -19,6 +23,11 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 public final class AtsRelationTypes {
 
    //@formatter:off
+
+   // tuple relations
+   public static final Tuple2Type<TupleFamilyId, TupleTypeId> WorkItem_To_WorkDefinition =  Tuple2Type.valueOf(CoreTupleFamilyTypes.AttribueFamily, 1457L);
+
+   // relation links
 
    public static final RelationTypeSide ProgramToInsertion_Program = RelationTypeSide.create(RelationSide.SIDE_A, 8921796037933812267L, "Program To Insertion");
    public static final RelationTypeSide ProgramToInsertion_Insertion = ProgramToInsertion_Program.getOpposite();

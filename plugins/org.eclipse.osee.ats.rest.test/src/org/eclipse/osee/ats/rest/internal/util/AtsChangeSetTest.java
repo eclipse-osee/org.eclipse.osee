@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.db.mocks.AtsClassDatabase;
 import org.eclipse.osee.ats.db.mocks.AtsIntegrationByClassRule;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -233,7 +234,7 @@ public class AtsChangeSetTest {
       IAtsChangeSet changes = createAtsChangeSet();
       ArtifactId ver1 = changes.createArtifact(AtsArtifactTypes.Version, "Version 1 " + className);
       ArtifactId ver2 = changes.createArtifact(AtsArtifactTypes.Version, "Version 2 " + className);
-      ArtifactId teamWf = changes.createArtifact(AtsArtifactTypes.TeamWorkflow, "Workflow " + className);
+      ArtifactToken teamWf = changes.createArtifact(AtsArtifactTypes.TeamWorkflow, "Workflow " + className);
       changes.execute();
 
       // setRelation/setRelations - teamWf to version

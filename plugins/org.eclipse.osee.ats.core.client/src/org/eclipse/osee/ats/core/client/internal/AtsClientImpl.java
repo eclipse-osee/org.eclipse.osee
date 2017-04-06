@@ -37,8 +37,8 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsEventService;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+import org.eclipse.osee.ats.api.workdef.WorkDefData;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
@@ -71,6 +71,8 @@ import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreServiceImpl;
 import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionServiceImpl;
+import org.eclipse.osee.ats.core.workflow.WorkItemFactory;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -79,7 +81,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
-import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -116,8 +117,11 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
       super.start();
 
-      earnedValueService = new AtsEarnedValueImpl(logger, getServices());
+      // ATS Client loads it Work Definitions configurations
+      workDefinitionService = new AtsWorkDefinitionServiceImpl(this, workDefinitionStore, this,
+         workDefinitionDslService, teamWorkflowProvidersLazy);
 
+      earnedValueService = new AtsEarnedValueImpl(logger, getServices());
       configItemFactory = new ConfigItemFactory(logger, this);
 
       actionableItemFactory = new ActionableItemFactory();
@@ -137,8 +141,8 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       queryService = new AtsQueryServiceImpl(this, jdbcService);
       actionableItemManager = new ActionableItemManager(attributeResolverService, storeService, this);
 
-      actionFactory = new ActionFactory(workItemFactory, actionableItemManager, attributeResolverService, stateFactory,
-         getServices());
+      actionFactory = new ActionFactory(workItemFactory, sequenceProvider, actionableItemManager,
+         attributeResolverService, stateFactory, getServices());
       taskService = new AtsTaskService(this);
 
       eventService = new AtsEventServiceImpl();
@@ -175,15 +179,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
          @Override
          public void run() {
-            workDefCache.invalidate();
-            XResultData resultData = new XResultData();
-            try {
-               for (IAtsWorkDefinition workDef : workDefService.getAllWorkDefinitions(resultData)) {
-                  workDefCache.cache(workDef.getId(), workDef);
-               }
-            } catch (Exception ex) {
-               // do nothing
-            }
+            getWorkDefinitionService().reloadAll();
          }
       };
       if (pend) {
@@ -523,6 +519,11 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    @Override
    public IAgileService getAgileService() {
       return agileService;
+   }
+
+   @Override
+   public List<WorkDefData> getWorkDefinitionsData() {
+      return getConfigurations().getWorkDefinitionsData();
    }
 
    @Override

@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
-import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
@@ -416,20 +415,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    @Override
    public IAtsWorkDefinition getWorkDefinition() {
-      IWorkDefinitionMatch match = getWorkDefinitionMatch();
-      if (match == null) {
-         return null;
-      }
-      if (!match.isMatched()) {
-         OseeLog.log(Activator.class, Level.SEVERE, match.toString());
-         return null;
-      }
-      return match.getWorkDefinition();
-   }
-
-   public IWorkDefinitionMatch getWorkDefinitionMatch() {
       try {
-         return AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinition(this);
+         return AtsClientService.get().getWorkDefinitionService().getWorkDefinition(this);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -683,9 +670,9 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    @Override
    public IAtsStateManager getStateMgr() {
-      if (stateMgr == null || getTransaction().notEqual(stateMgrTransactionNumber)) {
+      if (stateMgr == null || (getTransaction().isValid() && getTransaction().notEqual(stateMgrTransactionNumber))) {
          try {
-            stateMgr = AtsClientService.get().getStateFactory().getStateManager(this, isInDb());
+            stateMgr = AtsClientService.get().getStateFactory().getStateManager(this);
             stateMgrTransactionNumber = getTransaction();
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -778,11 +765,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return toReturn;
    }
 
-   @Override
-   public void setStateManager(IAtsStateManager stateManager) {
-      this.stateMgr = stateManager;
-   }
-
    /**
     * Return Estimated Task Hours of "Related to State" stateName
     *
@@ -829,6 +811,11 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          }
       }
       return result;
+   }
+
+   @Override
+   public void setStateMgr(IAtsStateManager stateMgr) {
+      this.stateMgr = stateMgr;
    }
 
 }

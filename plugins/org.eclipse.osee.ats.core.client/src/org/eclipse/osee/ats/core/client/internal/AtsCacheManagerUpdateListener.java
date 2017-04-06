@@ -151,7 +151,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
          awa.clearCaches();
       }
       if (artifact != null && artifact.equals(AtsArtifactToken.RuleDefinitions)) {
-         AtsClientService.get().getWorkDefinitionAdmin().clearRuleDefinitionsCache();
+         AtsClientService.get().getWorkDefinitionService().clearRuleDefinitionsCache();
       }
    }
 

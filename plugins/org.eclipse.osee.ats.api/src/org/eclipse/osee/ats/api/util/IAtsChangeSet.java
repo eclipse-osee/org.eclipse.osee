@@ -72,7 +72,7 @@ public interface IAtsChangeSet {
 
    boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeId attributeType);
 
-   ArtifactId createArtifact(IArtifactType artifactType, String name);
+   ArtifactToken createArtifact(IArtifactType artifactType, String name);
 
    void deleteAttributes(IAtsObject atsObject, AttributeTypeId attributeType);
 

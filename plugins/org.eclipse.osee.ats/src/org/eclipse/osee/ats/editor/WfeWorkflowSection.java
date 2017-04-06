@@ -289,7 +289,7 @@ public class WfeWorkflowSection extends SectionPart {
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          try {
-            if (AtsClientService.get().getWorkDefinitionAdmin().isStateWeightingEnabled(sma.getWorkDefinition())) {
+            if (AtsClientService.get().getWorkDefinitionService().isStateWeightingEnabled(sma.getWorkDefinition())) {
                allXWidgets.add(new StatePercentCompleteXWidget(getManagedForm(), statePage, sma, comp, 2, xModListener,
                   isCurrentState, editor));
             }

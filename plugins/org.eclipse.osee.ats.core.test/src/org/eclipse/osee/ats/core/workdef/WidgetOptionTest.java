@@ -8,25 +8,27 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.dsl.integration.internal.model;
+package org.eclipse.osee.ats.core.workdef;
 
-import org.eclipse.osee.ats.api.workdef.model.AbstractWorkDefItem;
+import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test case for {@link AbstractWorkDefItem}
+ * Test case for {@link WidgetOption}
  *
  * @author Donald G. Dunne
  */
-public class AbstractWorkDefItemTest {
+public class WidgetOptionTest {
 
    @Test
-   public void testToString() {
-      AbstractWorkDefItem item = new AbstractWorkDefItem("name");
-      Assert.assertEquals("name", item.toString());
-      item.setName("that");
-      Assert.assertEquals("that", item.toString());
+   public void testValues() {
+      Assert.assertEquals(31, WidgetOption.values().length);
+   }
+
+   @Test
+   public void testValueOf() {
+      Assert.assertEquals(WidgetOption.ADD_DEFAULT_VALUE, WidgetOption.valueOf(WidgetOption.ADD_DEFAULT_VALUE.name()));
    }
 
 }

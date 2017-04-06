@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -146,7 +147,7 @@ public class CreateTasksOperation {
             if (Strings.isValid(task.getTaskWorkDef())) {
                try {
                   XResultData rd = new XResultData();
-                  workDefinition = atsServer.getWorkDefService().getWorkDef(task.getTaskWorkDef(), rd);
+                  workDefinition = atsServer.getWorkDefinitionService().getWorkDefinition(task.getTaskWorkDef(), rd);
                   if (rd.isErrors()) {
                      resultData.errorf("Error finding Task Work Def [%s].  Exception: %s", task.getTaskWorkDef(),
                         rd.toString());
@@ -254,7 +255,8 @@ public class CreateTasksOperation {
                uuid = Lib.generateArtifactIdAsInt();
                jaxTask.setUuid(uuid);
             }
-            ArtifactId taskArt = changes.createArtifact(AtsArtifactTypes.Task, jaxTask.getName(), GUID.create(), uuid);
+            ArtifactToken taskArt =
+               changes.createArtifact(AtsArtifactTypes.Task, jaxTask.getName(), GUID.create(), uuid);
             IAtsTask task = atsServer.getWorkItemFactory().getTask(taskArt);
 
             IAtsTeamWorkflow teamWf = uuidToTeamWf.get(newTaskData.getTeamWfUuid());
@@ -273,7 +275,7 @@ public class CreateTasksOperation {
             if (Strings.isValid(jaxTask.getTaskWorkDef())) {
                try {
                   workDefinition =
-                     atsServer.getWorkDefService().getWorkDef(jaxTask.getTaskWorkDef(), new XResultData());
+                     atsServer.getWorkDefinitionService().getWorkDefinition(jaxTask.getTaskWorkDef(), new XResultData());
                } catch (Exception ex) {
                   throw new OseeArgumentException("Exception finding Task Work Def [%s]", jaxTask.getTaskWorkDef(), ex);
                }

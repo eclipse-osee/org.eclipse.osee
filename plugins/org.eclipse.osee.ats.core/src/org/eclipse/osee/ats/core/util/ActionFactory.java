@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -45,13 +46,13 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
-import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.internal.util.AtsIdProvider;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.workflow.state.StateManagerUtility;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -68,15 +69,13 @@ public class ActionFactory implements IAtsActionFactory {
    private final IAtsWorkItemFactory workItemFactory;
    private final IAtsActionableItemService actionableItemManager;
    private final IAttributeResolver attrResolver;
-   private final IAtsStateFactory stateFactory;
    private final IAtsServices services;
    private IAtsTeamDefinition topTeamDefinition;
 
-   public ActionFactory(IAtsWorkItemFactory workItemFactory, IAtsActionableItemService actionableItemManager, IAttributeResolver attrResolver, IAtsStateFactory stateFactory, IAtsServices atsServices) {
+   public ActionFactory(IAtsWorkItemFactory workItemFactory, ISequenceProvider sequenceProvider, IAtsActionableItemService actionableItemManager, IAttributeResolver attrResolver, IAtsStateFactory stateFactory, IAtsServices atsServices) {
       this.workItemFactory = workItemFactory;
       this.actionableItemManager = actionableItemManager;
       this.attrResolver = attrResolver;
-      this.stateFactory = stateFactory;
       this.services = atsServices;
    }
 
@@ -86,10 +85,10 @@ public class ActionFactory implements IAtsActionFactory {
       // if "tt" is title, this is an action created for development. To
       // make it easier, all fields are automatically filled in for ATS developer
 
-      Object actionArt = changes.createArtifact(AtsArtifactTypes.Action, title);
-      IAtsAction action = workItemFactory.getAction((ArtifactId) actionArt);
+      ArtifactToken actionArt = changes.createArtifact(AtsArtifactTypes.Action, title);
+      IAtsAction action = workItemFactory.getAction(actionArt);
       IAtsTeamDefinition topTeamDefinition = getTopTeamDef();
-      setAtsId(action, topTeamDefinition, changes);
+      services.getActionFactory().setAtsId(action, topTeamDefinition, changes);
       changes.add(action);
       setArtifactIdentifyData(action, title, desc, changeType, priority, validationRequired, needByDate, changes);
 
@@ -297,9 +296,9 @@ public class ActionFactory implements IAtsActionFactory {
          startState = workDefinition.getStartState();
          changes.addAttribute(workItem, AtsAttributeTypes.WorkflowDefinition, workDefinition.getName());
       }
-      IAtsStateManager stateManager = stateFactory.getStateManager(workItem);
-      workItem.setStateManager(stateManager);
-      StateManagerUtility.initializeStateMachine(workItem.getStateMgr(), startState, assignees,
+      StateManager stateMgr = new StateManager(workItem, services.getLogFactory(), services);
+      workItem.setStateMgr(stateMgr);
+      StateManagerUtility.initializeStateMachine(stateMgr, startState, assignees,
          createdBy == null ? changes.getAsUser() : createdBy, changes);
       IAtsUser user = createdBy == null ? changes.getAsUser() : createdBy;
       setCreatedBy(workItem, user, true, createdDate, changes);

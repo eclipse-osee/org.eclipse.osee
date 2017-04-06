@@ -111,7 +111,7 @@ public class StateManager implements IAtsStateManager {
          setHoursSpent(state.getName(), remaining);
       }
 
-      if (services.getWorkDefService().isStateWeightingEnabled(workItem.getWorkDefinition())) {
+      if (services.getWorkDefinitionService().isStateWeightingEnabled(workItem.getWorkDefinition())) {
          setPercentComplete(state.getName(), percentComplete);
       } else {
          this.percentCompleteValue = percentComplete;
@@ -367,13 +367,15 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public List<IAtsUser> getAssignees() throws OseeStateException {
+   public List<IAtsUser> getAssignees() {
+      List<IAtsUser> assignees = new ArrayList<>();
       WorkState state = getState(getCurrentStateName());
       if (state != null) {
-         return state.getAssignees();
+         assignees.addAll(state.getAssignees());
       } else {
          throw new OseeStateException("State not found for %s", workItem.toStringWithId());
       }
+      return assignees;
    }
 
    @Override
@@ -408,7 +410,7 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public void setPercentComplete(String stateName, int percentComplete) throws OseeStateException {
+   public void setPercentComplete(String stateName, int percentComplete) {
       WorkState state = getState(stateName);
       if (state != null) {
          state.setPercentComplete(percentComplete);
@@ -419,7 +421,7 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public void setHoursSpent(String stateName, double hoursSpent) throws OseeStateException {
+   public void setHoursSpent(String stateName, double hoursSpent) {
       WorkState state = getState(stateName);
       if (state != null) {
          state.setHoursSpent(hoursSpent);

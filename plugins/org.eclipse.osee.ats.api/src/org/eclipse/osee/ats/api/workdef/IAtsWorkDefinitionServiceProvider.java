@@ -18,5 +18,5 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
  */
 public interface IAtsWorkDefinitionServiceProvider {
 
-   public IAtsWorkDefinitionService getWorkDefService() throws OseeStateException, OseeCoreException;
+   public IAtsWorkDefinitionDslService getWorkDefService() throws OseeStateException, OseeCoreException;
 }

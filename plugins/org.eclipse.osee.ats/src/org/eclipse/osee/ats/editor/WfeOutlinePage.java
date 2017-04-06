@@ -33,12 +33,10 @@ import org.eclipse.osee.ats.api.workdef.IAtsPeerReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.Activator;
@@ -138,9 +136,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             return ImageManager.getImage(AtsImage.STATE_DEFINITION);
          } else if (element instanceof IAtsStateItem || element instanceof WrappedStateItems) {
             return ImageManager.getImage(AtsImage.STATE_ITEM);
-         } else if (element instanceof WrappedTrace) {
-            return ImageManager.getImage(AtsImage.TRACE);
-         } else if (element instanceof WorkDefinitionMatch) {
+         } else if (element instanceof IAtsWorkDefinition) {
             return ImageManager.getImage(AtsImage.WORKFLOW_CONFIG);
          } else if (element instanceof IAtsWidgetDefinition) {
             return ImageManager.getImage(FrameworkImage.GEAR);
@@ -192,14 +188,12 @@ public class WfeOutlinePage extends ContentOutlinePage {
             add(items, ((WorkflowEditor) element).getAwa());
             items.add(new WrappedStateItems(AtsStateItemManager.getStateItems()));
          } else if (element instanceof AbstractWorkflowArtifact) {
-            add(items, ((AbstractWorkflowArtifact) element).getWorkDefinitionMatch());
+            add(items, ((AbstractWorkflowArtifact) element).getWorkDefinition());
          } else if (element instanceof WrappedLayout) {
             items.addAll(((WrappedLayout) element).getStateItems());
          } else if (element instanceof WrappedPercentWeight) {
             getChildrenFromWrappedPercentDefinition((WrappedPercentWeight) element, items);
-         } else if (element instanceof WrappedTrace) {
-            items.addAll(((WrappedTrace) element).getTrace());
-         } else if (element instanceof WorkDefinitionMatch) {
+         } else if (element instanceof IAtsWorkDefinition) {
             getChildrenFromWorkDefinitionMatch(element, items);
          } else if (element instanceof IAtsStateDefinition) {
             getChildrenFromStateDefinition(element, items);
@@ -262,7 +256,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             return false;
          } else if (element instanceof AbstractWorkflowArtifact) {
             return true;
-         } else if (element instanceof WorkDefinitionMatch) {
+         } else if (element instanceof IAtsWorkDefinition) {
             return true;
          } else if (element instanceof IAtsStateDefinition) {
             return true;
@@ -282,7 +276,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             return true;
          } else if (element instanceof WrappedPercentWeight) {
             try {
-               return AtsClientService.get().getWorkDefinitionAdmin().isStateWeightingEnabled(
+               return AtsClientService.get().getWorkDefinitionService().isStateWeightingEnabled(
                   ((WrappedPercentWeight) element).getWorkDef());
             } catch (OseeStateException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -294,8 +288,6 @@ public class WfeOutlinePage extends ContentOutlinePage {
             return !((WrappedDecisionReviews) element).decReviews.isEmpty();
          } else if (element instanceof WrappedPeerReviews) {
             return !((WrappedPeerReviews) element).decReviews.isEmpty();
-         } else if (element instanceof WrappedTrace) {
-            return !((WrappedTrace) element).trace.isEmpty();
          } else if (element instanceof WrappedStateItems) {
             return !((WrappedStateItems) element).stateItems.isEmpty();
          } else if (element instanceof WrappedStates) {
@@ -310,7 +302,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
 
       private void getChildrenFromWrappedPercentDefinition(WrappedPercentWeight weightDef, List<Object> items) {
          try {
-            for (IAtsStateDefinition stateDef : AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByOrdinal(
+            for (IAtsStateDefinition stateDef : AtsClientService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(
                weightDef.getWorkDef())) {
                items.add(String.format("State [%s]: %d", stateDef.getName(), stateDef.getStateWeight()));
             }
@@ -405,13 +397,12 @@ public class WfeOutlinePage extends ContentOutlinePage {
 
       private void getChildrenFromWorkDefinitionMatch(Object element, List<Object> items) {
          try {
-            items.addAll(AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByOrdinal(
-               ((IWorkDefinitionMatch) element).getWorkDefinition()));
+            items.addAll(AtsClientService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(
+               ((IAtsWorkDefinition) element)));
          } catch (OseeStateException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
-         items.add(new WrappedPercentWeight(((IWorkDefinitionMatch) element).getWorkDefinition()));
-         items.add(new WrappedTrace(((IWorkDefinitionMatch) element).getTrace()));
+         items.add(new WrappedPercentWeight(((IAtsWorkDefinition) element)));
       }
 
       private void getUsersFromDecisionReviewOpt(IAtsDecisionReviewOption revOpt, List<Object> items) {
@@ -528,7 +519,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
       @Override
       public String toString() {
          try {
-            if (AtsClientService.get().getWorkDefinitionAdmin().isStateWeightingEnabled(workDef)) {
+            if (AtsClientService.get().getWorkDefinitionService().isStateWeightingEnabled(workDef)) {
                return "Total Percent Weighting";
             } else {
                return "Total Percent Weighting: Single Percent";
@@ -595,23 +586,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
       }
 
    }
-   private static class WrappedTrace {
-      private final Collection<String> trace;
 
-      public WrappedTrace(Collection<String> trace) {
-         this.trace = trace;
-      }
-
-      @Override
-      public String toString() {
-         return "From" + (trace.isEmpty() ? " (Empty)" : "");
-      }
-
-      public Collection<String> getTrace() {
-         return trace;
-      }
-
-   }
    private static class WrappedLayout {
       private final Collection<IAtsLayoutItem> stateItems;
 

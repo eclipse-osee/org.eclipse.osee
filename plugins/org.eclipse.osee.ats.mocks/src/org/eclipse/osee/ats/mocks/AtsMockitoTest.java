@@ -44,7 +44,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Class in support of testing ATS using Mocks. Sets up a standard configuration of mocks to use.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsMockitoTest {
@@ -88,7 +88,7 @@ public class AtsMockitoTest {
       when(atsServices.getAttributeResolver()).thenReturn(attrResolver);
       when(atsServices.getVersionService()).thenReturn(versionService);
       when(atsServices.getBranchService()).thenReturn(branchService);
-      when(atsServices.getWorkDefService()).thenReturn(workDefService);
+      when(atsServices.getWorkDefinitionService()).thenReturn(workDefService);
       when(atsServices.getWorkItemService()).thenReturn(workItemService);
 
       when(currentUser.getName()).thenReturn("User1");

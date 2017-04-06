@@ -72,7 +72,7 @@ public class CreateTaskRuleTest {
       AtsTestUtil.cleanupSimpleTest(CREATE_TASK_ACTION_FROM_AI_TITLE);
       AtsTestUtil.cleanupSimpleTest(getClass().getSimpleName());
 
-      AtsClientService.get().getWorkDefinitionAdmin().clearRuleDefinitionsCache();
+      AtsClientService.get().getWorkDefinitionService().clearRuleDefinitionsCache();
    }
 
    @Test
@@ -89,10 +89,10 @@ public class CreateTaskRuleTest {
 
    public void test(ArtifactToken configObjectToken, ArtifactToken actionableItem, String title) {
       IAtsClient atsClient = AtsClientService.get();
-      Collection<IAtsRuleDefinition> allRuleDefs = atsClient.getWorkDefinitionAdmin().getAllRuleDefinitions();
+      Collection<IAtsRuleDefinition> allRuleDefs = atsClient.getWorkDefinitionService().getAllRuleDefinitions();
       Assert.assertEquals("We should have no rules", 0, allRuleDefs.size());
 
-      IAtsRuleDefinition ruleDef = atsClient.getWorkDefinitionAdmin().getRuleDefinition(TEST_CREATE_TASK_RULE);
+      IAtsRuleDefinition ruleDef = atsClient.getWorkDefinitionService().getRuleDefinition(TEST_CREATE_TASK_RULE);
       Assert.assertTrue("Should be a NullRuleDefinition", ruleDef instanceof NullRuleDefinition);
 
       // Retrieve Rule DSL artifact and add new rules for testing with
@@ -102,7 +102,7 @@ public class CreateTaskRuleTest {
 
       ruleArtifact.reloadAttributesAndRelations();
       // check that rule is added successfully
-      ruleDef = atsClient.getWorkDefinitionAdmin().getRuleDefinition(TEST_CREATE_TASK_RULE);
+      ruleDef = atsClient.getWorkDefinitionService().getRuleDefinition(TEST_CREATE_TASK_RULE);
       Assert.assertEquals("Should have found rule " + TEST_CREATE_TASK_RULE, TEST_CREATE_TASK_RULE, ruleDef.getName());
 
       // Update/Create? TeamWorkflow with rule for testing create task rule

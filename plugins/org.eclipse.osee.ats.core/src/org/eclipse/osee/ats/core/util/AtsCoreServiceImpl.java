@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.core.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -43,7 +42,7 @@ import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.version.IVersionFactory;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionDslService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
@@ -60,8 +59,7 @@ import org.eclipse.osee.ats.core.config.TeamDefinitionService;
 import org.eclipse.osee.ats.core.program.AtsProgramService;
 import org.eclipse.osee.ats.core.review.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.core.version.AtsVersionServiceImpl;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
-import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionCache;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionStoreService;
 import org.eclipse.osee.ats.core.workflow.AtsImplementersService;
 import org.eclipse.osee.ats.core.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
@@ -98,13 +96,13 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
    protected IAtsCache atsCache;
    protected JdbcService jdbcService;
 
-   protected IAtsWorkDefinitionAdmin workDefAdmin;
-   protected IAtsWorkDefinitionService workDefService;
+   protected AtsWorkDefinitionStoreService workDefinitionStore;
+   protected IAtsWorkDefinitionService workDefinitionService;
+   protected IAtsWorkDefinitionDslService workDefinitionDslService;
    protected IAtsUserService userService;
    protected IAtsConfigurationProvider configProvider;
    protected IAtsEarnedValueService earnedValueService;
    protected TeamWorkflowProviders teamWorkflowProvidersLazy;
-   protected AtsWorkDefinitionCache workDefCache;
    protected IAttributeResolver attributeResolverService;
    protected IAtsActionFactory actionFactory;
    protected IAtsImplementerService implementerService;
@@ -128,6 +126,7 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
    protected IAtsTeamDefinitionService teamDefinitionService;
    protected IAtsQueryService queryService;
    protected IAtsStoreService storeService;
+
    private EventAdmin eventAdmin;
 
    public AtsCoreServiceImpl() {
@@ -140,10 +139,6 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
 
    public void setEventAdmin(EventAdmin eventAdmin) {
       this.eventAdmin = eventAdmin;
-   }
-
-   public void setAtsWorkDefinitionService(IAtsWorkDefinitionService workDefService) {
-      this.workDefService = workDefService;
    }
 
    public void setLogger(Log logger) {
@@ -166,31 +161,30 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
       searchDataProviders.remove(provider);
    }
 
+   public void setWorkDefinitionDslService(IAtsWorkDefinitionDslService workDefinitionDslService) {
+      this.workDefinitionDslService = workDefinitionDslService;
+   }
+
    public void start() throws OseeCoreException {
-      Conditions.checkNotNull(workDefService, "IAtsWorkDefinitionService");
+      Conditions.checkNotNull(workDefinitionDslService, "IAtsWorkDefinitionService");
 
       atsCache = new AtsCache(this);
-      workDefService.setWorkDefinitionStringProvider(this);
       teamWorkflowProvidersLazy = new TeamWorkflowProviders();
-      workDefCache = new AtsWorkDefinitionCache();
-
-      workDefAdmin = new AtsWorkDefinitionAdminImpl(workDefCache, workDefService, attributeResolverService,
-         teamWorkflowProvidersLazy);
       workItemService = new AtsWorkItemServiceImpl(this, teamWorkflowProvidersLazy);
+
+      workDefinitionStore = new AtsWorkDefinitionStoreService(this);
       programService = new AtsProgramService(this);
       teamDefinitionService = new TeamDefinitionService(this);
       versionService = new AtsVersionServiceImpl(this, eventAdmin);
       reviewService = new AtsReviewServiceImpl(this);
-
    }
 
    public void stop() {
-      if (workDefAdmin != null) {
-         workDefAdmin.clearCaches();
+      if (workDefinitionService != null) {
+         workDefinitionService.clearCaches();
       }
-      workDefAdmin = null;
+      workDefinitionService = null;
       atsCache = null;
-      workDefCache = null;
       jdbcService = null;
       versionFactory = null;
    }
@@ -202,7 +196,7 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
 
    @Override
    public void invalidateWorkDefinitionCache() {
-      workDefCache.invalidate();
+      workDefinitionService.clearCaches();
    }
 
    @Override
@@ -226,10 +220,6 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
          toReturn = artifact.getGuid();
       }
       return toReturn;
-   }
-
-   public IAtsWorkDefinitionAdmin getWorkDefAdmin() {
-      return workDefAdmin;
    }
 
    @Override
@@ -286,11 +276,6 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
          }
          changes.executeIfNeeded();
       }
-   }
-
-   @Override
-   public Map<String, String> getWorkDefIdToWorkDef() {
-      return getConfigurations().getWorkDefIdToWorkDef();
    }
 
    @Override
@@ -353,18 +338,13 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
    }
 
    @Override
-   public IAtsEarnedValueService getEarnedValueService() throws OseeStateException {
+   public IAtsEarnedValueService getEarnedValueService() {
       return earnedValueService;
    }
 
    @Override
-   public IAtsWorkDefinitionService getWorkDefService() {
-      return workDefService;
-   }
-
-   @Override
-   public IAtsWorkDefinitionAdmin getWorkDefinitionAdmin() throws OseeStateException {
-      return workDefAdmin;
+   public IAtsWorkDefinitionService getWorkDefinitionService() {
+      return workDefinitionService;
    }
 
    @Override

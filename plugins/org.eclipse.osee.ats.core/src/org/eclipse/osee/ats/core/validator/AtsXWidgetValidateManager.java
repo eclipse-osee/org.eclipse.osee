@@ -70,7 +70,7 @@ public class AtsXWidgetValidateManager {
 
    public static Collection<WidgetResult> validateTransition(IAtsWorkItem workItem, IAtsStateDefinition toStateDef, IAtsServices services) {
       List<WidgetResult> results = new ArrayList<>();
-      for (IAtsWidgetDefinition widgetDef : services.getWorkDefinitionAdmin().getWidgetsFromLayoutItems(
+      for (IAtsWidgetDefinition widgetDef : services.getWorkDefinitionService().getWidgetsFromLayoutItems(
          workItem.getStateDefinition())) {
          ArtifactValueProvider provider = new ArtifactValueProvider(workItem.getStoreObject(), widgetDef, services);
          AtsXWidgetValidateManager.validateTransition(workItem, results, provider, widgetDef,

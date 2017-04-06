@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 public class LayoutItem extends AbstractWorkDefItem implements IAtsLayoutItem {
 
    public LayoutItem(String name) {
-      super(name);
+      super(Long.valueOf(name.hashCode()), name);
    }
 
 }

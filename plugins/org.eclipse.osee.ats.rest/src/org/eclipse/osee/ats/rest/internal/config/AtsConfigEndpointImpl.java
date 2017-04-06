@@ -46,6 +46,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.JaxAtsUser;
 import org.eclipse.osee.ats.api.workdef.JaxAtsWorkDef;
+import org.eclipse.osee.ats.api.workdef.WorkDefData;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -185,7 +186,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          AtsArtifactTypes.WorkDefinition).getResults()) {
          String workDefStr =
             services.getAttributeResolver().getSoleAttributeValueAsString(workDefArt, AtsAttributeTypes.DslSheet, "");
-         configs.addWorkDefinition(workDefArt.getName(), workDefStr);
+         configs.getWorkDefinitionsData().add(new WorkDefData(workDefArt.getId(), workDefArt.getName(), workDefStr));
       }
       return configs;
    }
@@ -476,7 +477,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          tx.addChildren(workDefFolder, workDefArt);
       }
       tx.commit();
-      ((IAtsServer) services).getWorkDefAdmin().clearCaches();
+      ((IAtsServer) services).getWorkDefinitionService().clearCaches();
       return Response.ok().build();
    }
 

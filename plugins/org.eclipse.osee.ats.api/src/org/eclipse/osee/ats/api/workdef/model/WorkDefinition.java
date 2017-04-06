@@ -21,12 +21,10 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefinition {
 
    private final List<IAtsStateDefinition> states = new ArrayList<>(5);
-   private String id;
    private IAtsStateDefinition startState;
 
-   public WorkDefinition(String name) {
-      super(name);
-      this.id = name;
+   public WorkDefinition(Long id, String name) {
+      super(id, name);
    }
 
    @Override
@@ -40,53 +38,12 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
    }
 
    @Override
-   public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + (getId() == null ? 0 : getId().hashCode());
-      return result;
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      if (this == obj) {
-         return true;
-      }
-      if (obj == null) {
-         return false;
-      }
-      if (getClass() != obj.getClass()) {
-         return false;
-      }
-      WorkDefinition other = (WorkDefinition) obj;
-      if (getId() == null) {
-         if (other.getId() != null) {
-            return false;
-         } else {
-            return false;
-         }
-      } else if (!getId().equals(other.getId())) {
-         return false;
-      }
-      return true;
-   }
-
-   @Override
    public IAtsStateDefinition getStartState() {
       return startState;
    }
 
    public void setStartState(IAtsStateDefinition startState) {
       this.startState = startState;
-   }
-
-   @Override
-   public String getId() {
-      return id;
-   }
-
-   public void setId(String id) {
-      this.id = id;
    }
 
    public IAtsStateDefinition addState(IAtsStateDefinition state) {
@@ -101,11 +58,6 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
    @Override
    public List<IAtsStateDefinition> getStates() {
       return states;
-   }
-
-   @Override
-   public String getGuid() {
-      return null;
    }
 
 }

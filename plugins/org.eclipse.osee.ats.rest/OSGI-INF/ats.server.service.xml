@@ -5,12 +5,12 @@
       <provide interface="org.eclipse.osee.ats.rest.IAtsServer"/>
       <provide interface="org.eclipse.osee.ats.api.IAtsServices"/>
    </service>
-   <reference bind="addNotifier" cardinality="1..n" interface="org.eclipse.osee.ats.rest.util.IAtsNotifierServer" name="IAtsNotifierServer" policy="dynamic" unbind="removeNotifier"/>
-   <reference bind="addAtsDatabaseConversion" cardinality="0..n" interface="org.eclipse.osee.ats.api.util.IAtsDatabaseConversion" name="IAtsDatabaseConversion" policy="dynamic" unbind="removeAtsDatabaseConversion"/>
-   <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
-   <reference bind="setJdbcService" cardinality="1..1" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="static" target="(osgi.binding=orcs.jdbc.service)"/>
    <reference bind="setOrcsApi" cardinality="1..1" interface="org.eclipse.osee.orcs.OrcsApi" name="OrcsApi" policy="static"/>
-   <reference bind="setAtsWorkDefinitionService" cardinality="1..1" interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService" name="IAtsWorkDefinitionService" policy="static"/>
-   <reference bind="setAtsUserService" cardinality="1..1" interface="org.eclipse.osee.ats.api.user.IAtsUserService" name="IAtsUserService" policy="static"/>
+   <reference bind="addAtsDatabaseConversion" cardinality="0..n" interface="org.eclipse.osee.ats.api.util.IAtsDatabaseConversion" name="IAtsDatabaseConversion" policy="dynamic" unbind="removeAtsDatabaseConversion"/>
+   <reference bind="addNotifier" cardinality="1..n" interface="org.eclipse.osee.ats.rest.util.IAtsNotifierServer" name="IAtsNotifierServer" policy="dynamic" unbind="removeNotifier"/>
+   <reference bind="setJdbcService" cardinality="1..1" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="static" target="(osgi.binding=orcs.jdbc.service)"/>
 	<reference bind="setEventAdmin" cardinality="1..1" interface="org.osgi.service.event.EventAdmin" name="EventAdmin" policy="static"/>
+   <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
+   <reference bind="setAtsUserService" cardinality="1..1" interface="org.eclipse.osee.ats.api.user.IAtsUserService" name="IAtsUserService" policy="static"/>
+   <reference bind="setWorkDefinitionDslService" cardinality="1..1" interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionDslService" name="IAtsWorkDefinitionDslService" policy="static"/>
 </scr:component>

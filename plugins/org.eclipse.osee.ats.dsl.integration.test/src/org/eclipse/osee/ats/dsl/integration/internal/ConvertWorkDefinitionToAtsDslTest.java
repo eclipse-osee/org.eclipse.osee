@@ -50,13 +50,13 @@ import org.junit.Test;
  */
 public class ConvertWorkDefinitionToAtsDslTest {
 
-   AtsWorkDefinitionServiceImpl service = new AtsWorkDefinitionServiceImpl();
+   AtsWorkDefinitionDslServiceImpl service = new AtsWorkDefinitionDslServiceImpl();
 
    @Test
    public void test_stateDescription() {
       XResultData resultData = new XResultData(false);
 
-      WorkDefinition workDef = new WorkDefinition("this");
+      WorkDefinition workDef = new WorkDefinition(15L, "this");
       StateDefinition endorse = new StateDefinition("endorse");
       endorse.setStateType(StateType.Working);
       workDef.addState(endorse);
@@ -72,7 +72,7 @@ public class ConvertWorkDefinitionToAtsDslTest {
    public void test_stateTransitionExceptions() {
       XResultData resultData = new XResultData(false);
 
-      WorkDefinition workDef = new WorkDefinition("this");
+      WorkDefinition workDef = new WorkDefinition(15L, "this");
       StateDefinition endorse = new StateDefinition("endorse");
       endorse.setStateType(StateType.Working);
       workDef.addState(endorse);
@@ -122,7 +122,7 @@ public class ConvertWorkDefinitionToAtsDslTest {
    public void test_processStateWidgets() {
       StateDef dslState = AtsDslFactoryImpl.init().createStateDef();
       XResultData resultData = new XResultData(false);
-      WorkDefinition workDef = new WorkDefinition("this");
+      WorkDefinition workDef = new WorkDefinition(15L, "this");
       StateDefinition endorse = new StateDefinition("endorse");
       endorse.setStateType(StateType.Working);
       workDef.addState(endorse);
@@ -146,7 +146,7 @@ public class ConvertWorkDefinitionToAtsDslTest {
       revDef.setStateEventType(StateEventType.CommitBranch);
 
       XResultData resultData = new XResultData(false);
-      WorkDefinition workDef = new WorkDefinition("this");
+      WorkDefinition workDef = new WorkDefinition(15L, "this");
       StateDefinition endorse = new StateDefinition("endorse");
       endorse.setStateType(StateType.Working);
       endorse.getDecisionReviews().add(revDef);
@@ -216,7 +216,7 @@ public class ConvertWorkDefinitionToAtsDslTest {
       revDef.setStateEventType(StateEventType.CommitBranch);
 
       XResultData resultData = new XResultData(false);
-      WorkDefinition workDef = new WorkDefinition("this");
+      WorkDefinition workDef = new WorkDefinition(15L, "this");
       StateDefinition endorse = new StateDefinition("endorse");
       endorse.setStateType(StateType.Working);
       endorse.getPeerReviews().add(revDef);

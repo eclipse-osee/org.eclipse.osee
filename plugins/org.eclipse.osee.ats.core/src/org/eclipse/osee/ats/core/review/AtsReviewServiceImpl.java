@@ -41,7 +41,7 @@ import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -172,7 +172,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
 
    @Override
    public IAtsDecisionReview createNewDecisionReview(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, Collection<IAtsDecisionReviewOption> options, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
-      ArtifactId decRevArt = changes.createArtifact(AtsArtifactTypes.DecisionReview, title);
+      ArtifactToken decRevArt = changes.createArtifact(AtsArtifactTypes.DecisionReview, title);
       IAtsDecisionReview decRev = (IAtsDecisionReview) services.getWorkItemFactory().getReview(decRevArt);
 
       changes.relate(teamWf, AtsRelationTypes.TeamWorkflowToReview_Review, decRev);
@@ -252,7 +252,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    public Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf) {
       List<IAtsAbstractReview> reviews = new ArrayList<>();
 
-      for (ArtifactId reviewArt : services.getRelationResolver().getRelated(teamWf,
+      for (ArtifactToken reviewArt : services.getRelationResolver().getRelated(teamWf,
          AtsRelationTypes.TeamWorkflowToReview_Review)) {
          reviews.add(services.getWorkItemFactory().getReview(reviewArt));
       }

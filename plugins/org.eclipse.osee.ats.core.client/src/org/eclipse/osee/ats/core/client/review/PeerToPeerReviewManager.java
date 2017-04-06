@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 
 /**
@@ -157,17 +158,18 @@ public class PeerToPeerReviewManager {
 
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
       return createNewPeerToPeerReview(
-         AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinitionForPeerToPeerReviewNotYetCreated(
-            teamArt).getWorkDefinition(),
+         AtsClientService.get().getWorkDefinitionService().getWorkDefinitionForPeerToPeerReviewNotYetCreated(teamArt),
          teamArt, teamArt.getTeamDefinition(), reviewTitle, againstState, createdDate, createdBy, changes);
    }
 
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(IAtsActionableItem actionableItem, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
       IAtsTeamDefinition teamDef = actionableItem.getTeamDefinitionInherited();
-      PeerToPeerReviewArtifact peerArt = createNewPeerToPeerReview(
-         AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(
-            actionableItem).getWorkDefinition(),
-         null, teamDef, reviewTitle, againstState, createdDate, createdBy, changes);
+      IAtsWorkDefinition workDefinition =
+         AtsClientService.get().getWorkDefinitionService().getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(
+            actionableItem);
+      Conditions.assertNotNull(workDefinition, "WorkDefinition");
+      PeerToPeerReviewArtifact peerArt = createNewPeerToPeerReview(workDefinition, null, teamDef, reviewTitle,
+         againstState, createdDate, createdBy, changes);
       AtsClientService.get().getWorkItemService().getActionableItemService().addActionableItem(peerArt, actionableItem,
          changes);
       return peerArt;
@@ -185,8 +187,9 @@ public class PeerToPeerReviewManager {
       AtsClientService.get().getActionFactory().setAtsId(peerToPeerRev, teamDef, changes);
 
       // Initialize state machine
-      peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, workDefinition.getId());
-      peerToPeerRev.initializeNewStateMachine(null, new Date(), createdBy, changes);
+      peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, workDefinition.getName());
+      AtsClientService.get().getActionFactory().initializeNewStateMachine(peerToPeerRev, null, createdDate, createdBy,
+         changes);
 
       if (teamArt != null && againstState != null) {
          peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, againstState);

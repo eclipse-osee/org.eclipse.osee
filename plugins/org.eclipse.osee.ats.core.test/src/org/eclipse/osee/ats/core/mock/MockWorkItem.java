@@ -187,11 +187,6 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public void setStateManager(IAtsStateManager stateManager) {
-      this.stateMgr = stateManager;
-   }
-
-   @Override
    public Long getId() {
       return Long.valueOf(456);
    }
@@ -259,6 +254,11 @@ public class MockWorkItem implements IAtsWorkItem {
    @Override
    public boolean isOfType(ArtifactTypeId... artifactTypes) {
       return false;
+   }
+
+   @Override
+   public void setStateMgr(IAtsStateManager stateMgr) {
+      this.stateMgr = stateMgr;
    }
 
    @Override

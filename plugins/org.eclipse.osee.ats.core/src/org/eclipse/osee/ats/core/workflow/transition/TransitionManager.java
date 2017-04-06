@@ -75,7 +75,7 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
       this.userService = helper.getServices().getUserService();
       this.reviewService = helper.getServices().getReviewService();
       this.workItemService = helper.getServices().getWorkItemService();
-      this.workDefService = helper.getServices().getWorkDefService();
+      this.workDefService = helper.getServices().getWorkDefinitionService();
       this.attrResolver = helper.getServices().getAttributeResolver();
       this.taskService = helper.getServices().getTaskService();
       this.workItemFromStateMap = new HashMap<>();

@@ -180,7 +180,7 @@ public class TransitionToMenu {
                public void run() {
                   try {
                      IAtsStateDefinition toStateDef =
-                        AtsClientService.get().getWorkDefinitionAdmin().getStateDefinitionByName(
+                        AtsClientService.get().getWorkDefinitionService().getStateDefinitionByName(
                            workItems.iterator().next(), toStateName);
 
                      IAtsStateDefinition fromStateDefinition = workItems.iterator().next().getStateDefinition();
@@ -256,7 +256,7 @@ public class TransitionToMenu {
                   IAtsWorkItem workItem = getWorkItems().iterator().next();
                   IAtsStateDefinition stateDef = null;
                   try {
-                     stateDef = AtsClientService.get().getWorkDefinitionAdmin().getStateDefinitionByName(workItem,
+                     stateDef = AtsClientService.get().getWorkDefinitionService().getStateDefinitionByName(workItem,
                         getToStateName());
                   } catch (OseeCoreException ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

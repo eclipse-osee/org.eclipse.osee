@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
 import org.eclipse.osee.ats.api.query.IAtsQueryFilter;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -182,7 +183,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T extends ArtifactId> ResultSet<T> getResultArtifacts() {
+   public <T extends ArtifactToken> ResultSet<T> getResultArtifacts() {
       List<T> items = new ArrayList<>();
       ResultSet<IAtsConfigObject> results = getResults();
       for (IAtsConfigObject configObject : results) {

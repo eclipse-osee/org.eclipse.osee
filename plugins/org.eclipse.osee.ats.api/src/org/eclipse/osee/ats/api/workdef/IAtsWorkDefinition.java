@@ -12,27 +12,13 @@ package org.eclipse.osee.ats.api.workdef;
 
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.HasDescription;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsWorkDefinition extends Identifiable<String>, HasDescription {
+public interface IAtsWorkDefinition extends NamedId, HasDescription {
 
-   /**
-    * Identification
-    */
-   @Override
-   String getName();
-
-   String getId();
-
-   @Override
-   String getDescription();
-
-   /**
-    * States
-    */
    List<IAtsStateDefinition> getStates();
 
    IAtsStateDefinition getStateByName(String name);

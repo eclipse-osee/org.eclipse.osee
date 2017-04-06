@@ -41,7 +41,7 @@ public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem implemen
    @Override
    public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) throws OseeCoreException {
       if (workItem instanceof IAtsTeamWorkflow && isForceAssigneesToTeamLeads(
-         AtsClientService.get().getWorkDefinitionAdmin().getStateDefinitionByName(workItem, toState.getName()))) {
+         AtsClientService.get().getWorkDefinitionService().getStateDefinitionByName(workItem, toState.getName()))) {
          Collection<IAtsUser> teamLeads = ((TeamWorkFlowArtifact) workItem).getTeamDefinition().getLeads();
          if (!teamLeads.isEmpty()) {
             workItem.getStateMgr().setAssignees(teamLeads);

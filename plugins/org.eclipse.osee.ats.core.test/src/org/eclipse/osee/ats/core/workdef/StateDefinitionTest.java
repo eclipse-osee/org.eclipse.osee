@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.dsl.integration.internal.model;
+package org.eclipse.osee.ats.core.workdef;
 
 import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
-import org.eclipse.osee.ats.dsl.integration.internal.AtsWorkDefinitionServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -95,7 +94,7 @@ public class StateDefinitionTest {
 
    @Test
    public void testGetSetWorkDefinition() {
-      WorkDefinition workDef = new WorkDefinition("mine");
+      WorkDefinition workDef = new WorkDefinition(15L, "mine");
       StateDefinition state = new StateDefinition("endorse");
       Assert.assertNull(state.getWorkDefinition());
       state.setWorkDefinition(workDef);
@@ -137,7 +136,8 @@ public class StateDefinitionTest {
    @Test
    public void testGetWidgetsFromStateItems() {
       StateDefinition def = new StateDefinition("endorse");
-      Assert.assertEquals(0, new AtsWorkDefinitionServiceImpl().getWidgetsFromLayoutItems(def).size());
+      Assert.assertEquals(0,
+         new AtsWorkDefinitionServiceImpl(null, null, null, null, null).getWidgetsFromLayoutItems(def).size());
 
       IAtsWidgetDefinition widget1 = new WidgetDefinition("item 1");
       def.getLayoutItems().add(widget1);
@@ -155,7 +155,8 @@ public class StateDefinitionTest {
       LayoutItem widget4 = new LayoutItem("item 4");
       stateItem3.getaLayoutItems().add(widget4);
 
-      Assert.assertEquals(3, new AtsWorkDefinitionServiceImpl().getWidgetsFromLayoutItems(def).size());
+      Assert.assertEquals(3,
+         new AtsWorkDefinitionServiceImpl(null, null, null, null, null).getWidgetsFromLayoutItems(def).size());
    }
 
    @Test
@@ -199,22 +200,6 @@ public class StateDefinitionTest {
       Assert.assertNull(endorse.getColor());
       endorse.setColor(StateColor.BLUE);
       Assert.assertEquals(StateColor.BLUE, endorse.getColor());
-   }
-
-   @Test
-   public void testHasWidgetNamed() {
-      StateDefinition def = new StateDefinition("endorse");
-      Assert.assertFalse(new AtsWorkDefinitionServiceImpl().hasWidgetNamed(def, "item 2"));
-
-      IAtsCompositeLayoutItem stateItem2 = new CompositeLayoutItem(2);
-      def.getLayoutItems().add(stateItem2);
-      IAtsWidgetDefinition widget2 = new WidgetDefinition("item 2");
-      stateItem2.getaLayoutItems().add(widget2);
-      IAtsWidgetDefinition widget3 = new WidgetDefinition("item 3");
-      stateItem2.getaLayoutItems().add(widget3);
-
-      Assert.assertFalse(new AtsWorkDefinitionServiceImpl().hasWidgetNamed(def, "item 45"));
-      Assert.assertTrue(new AtsWorkDefinitionServiceImpl().hasWidgetNamed(def, "item 2"));
    }
 
    @Test

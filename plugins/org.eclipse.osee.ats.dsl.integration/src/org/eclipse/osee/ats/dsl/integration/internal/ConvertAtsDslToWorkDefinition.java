@@ -75,8 +75,10 @@ public class ConvertAtsDslToWorkDefinition {
    private final XResultData resultData;
    private final IAttributeResolver attrResolver;
    private final IAtsUserService userService;
+   private final Long id;
 
-   public ConvertAtsDslToWorkDefinition(String name, AtsDsl atsDsl, XResultData resultData, IAttributeResolver attrResolver, IAtsUserService userService) {
+   public ConvertAtsDslToWorkDefinition(Long id, String name, AtsDsl atsDsl, XResultData resultData, IAttributeResolver attrResolver, IAtsUserService userService) {
+      this.id = id;
       this.name = name;
       this.atsDsl = atsDsl;
       this.resultData = resultData;
@@ -87,8 +89,8 @@ public class ConvertAtsDslToWorkDefinition {
    public Collection<IAtsWorkDefinition> convert() {
       List<IAtsWorkDefinition> workDefs = new ArrayList<>();
       for (WorkDef dslWorkDef : atsDsl.getWorkDef()) {
-         WorkDefinition workDef = new WorkDefinition(Strings.unquote(dslWorkDef.getName()));
-         workDef.setId(dslWorkDef.getId().iterator().next());
+         WorkDefinition workDef = new WorkDefinition(id, Strings.unquote(dslWorkDef.getName()));
+         workDef.setName(dslWorkDef.getId().iterator().next());
 
          List<IAtsWidgetDefinition> widgetDefs = retrieveWigetDefs(atsDsl, dslWorkDef, name);
          Map<IAtsStateDefinition, String> copyLayoutFromMap = new HashMap<>();
@@ -194,7 +196,6 @@ public class ConvertAtsDslToWorkDefinition {
          // Set the start state
          workDef.setStartState(workDef.getStateByName(Strings.unquote(dslWorkDef.getStartState().getName())));
          workDef.setName(name);
-         workDef.setId(name);
          workDefs.add(workDef);
       }
       return workDefs;

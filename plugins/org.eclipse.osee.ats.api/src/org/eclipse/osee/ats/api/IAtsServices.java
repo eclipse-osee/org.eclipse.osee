@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationProvider;
-import org.eclipse.osee.ats.api.config.IWorkDefinitionStringProvider;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
@@ -38,8 +37,8 @@ import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.version.IVersionFactory;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStringProvider;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -62,7 +61,7 @@ import org.eclipse.osee.logger.Log;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfigurationProvider, IWorkDefinitionStringProvider, IAtsWorkItemServiceProvider {
+public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfigurationProvider, IAtsWorkDefinitionStringProvider, IAtsWorkItemServiceProvider {
 
    IOseeBranch getAtsBranch();
 
@@ -76,7 +75,7 @@ public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfig
 
    IAtsBranchService getBranchService();
 
-   IAtsWorkDefinitionService getWorkDefService();
+   IAtsWorkDefinitionService getWorkDefinitionService();
 
    IAtsVersionService getVersionService();
 
@@ -133,8 +132,6 @@ public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfig
    IAtsImplementerService getImplementerService();
 
    IAtsColumnService getColumnService();
-
-   IAtsWorkDefinitionAdmin getWorkDefinitionAdmin();
 
    IAtsCache getCache();
 

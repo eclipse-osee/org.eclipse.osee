@@ -68,9 +68,9 @@ public class GoalManager extends MembersManager<GoalArtifact> {
       AtsClientService.get().getActionFactory().setAtsId(goalArt,
          TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()), changes);
 
-      // Initialize state machine
-      goalArt.initializeNewStateMachine(Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()),
-         new Date(), AtsClientService.get().getUserService().getCurrentUser(), changes);
+      AtsClientService.get().getActionFactory().initializeNewStateMachine(goalArt,
+         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), new Date(),
+         AtsClientService.get().getUserService().getCurrentUser(), changes);
 
       changes.add(goalArt);
       return goalArt;

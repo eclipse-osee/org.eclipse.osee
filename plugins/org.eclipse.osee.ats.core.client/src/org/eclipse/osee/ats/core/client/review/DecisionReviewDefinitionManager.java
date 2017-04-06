@@ -84,9 +84,9 @@ public class DecisionReviewDefinitionManager extends TransitionAdapter {
       }
       Date createdDate = new Date();
       IAtsUser createdBy = AtsCoreUsers.SYSTEM_USER;
-      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) workItem;
+      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) workItem.getStoreObject();
 
-      for (IAtsDecisionReviewDefinition decRevDef : teamArt.getStateDefinition().getDecisionReviews()) {
+      for (IAtsDecisionReviewDefinition decRevDef : workItem.getStateDefinition().getDecisionReviews()) {
          if (decRevDef.getStateEventType() != null && decRevDef.getStateEventType().equals(
             StateEventType.TransitionTo)) {
             DecisionReviewArtifact decArt = DecisionReviewDefinitionManager.createNewDecisionReview(decRevDef, changes,

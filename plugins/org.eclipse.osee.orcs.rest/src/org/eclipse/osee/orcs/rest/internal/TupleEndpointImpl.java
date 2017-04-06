@@ -12,12 +12,14 @@ package org.eclipse.osee.orcs.rest.internal;
 
 import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.DefaultFamily;
 import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.ProductLineFamily;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
@@ -26,13 +28,14 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.rest.model.TupleEndpoint;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * @author Angel Avila
  */
-public class TupleResource {
+public class TupleEndpointImpl implements TupleEndpoint {
 
    private final OrcsApi orcsApi;
 
@@ -40,11 +43,12 @@ public class TupleResource {
    private UriInfo uriInfo;
    private final BranchId branch;
 
-   public TupleResource(OrcsApi orcsApi, BranchId branch) {
+   public TupleEndpointImpl(OrcsApi orcsApi, BranchId branch) {
       this.orcsApi = orcsApi;
       this.branch = branch;
    }
 
+   @Override
    @Path("init")
    @POST
    public void addTuples() {
@@ -59,6 +63,19 @@ public class TupleResource {
       tx.commit();
    }
 
+   @Override
+   @Path("/tuple2")
+   @GET
+   public <E1, E2> Long getTuple2(@QueryParam("tupleType") Long tupleType, @QueryParam("e1") String e1) {
+      Iterable<Object> iterable =
+         orcsApi.getQueryFactory().tupleQuery().getTuple2(Tuple2Type.valueOf(tupleType), branch, e1);
+      if (iterable.iterator().hasNext()) {
+         return (Long) iterable.iterator().next();
+      }
+      return -1L;
+   }
+
+   @Override
    @Path("/tuple2")
    @POST
    public <E1, E2> Long addTuple2(@QueryParam("tupleType") Long tupleType, @QueryParam("e1") String e1, @QueryParam("e2") String e2) {
@@ -80,6 +97,7 @@ public class TupleResource {
       return toReturn;
    }
 
+   @Override
    @Path("/tuple3")
    @POST
    public <E1, E2> Long addTuple3(@QueryParam("tupleType") Long tupleType, @QueryParam("e1") String e1, @QueryParam("e2") String e2, @QueryParam("e3") String e3) {
@@ -104,6 +122,7 @@ public class TupleResource {
       return toReturn;
    }
 
+   @Override
    @Path("/tuple4")
    @POST
    public <E1, E2> Long addTuple4(@QueryParam("tupleType") Long tupleType, @QueryParam("e1") String e1, @QueryParam("e2") String e2, @QueryParam("e3") String e3, @QueryParam("e4") String e4) {
@@ -136,7 +155,6 @@ public class TupleResource {
       return CoreBranches.COMMON;
    }
 
-   @SuppressWarnings("unchecked")
    private ArtifactReadable getUser() {
       return getQuery().fromBranch(getAdminBranch()).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
    }

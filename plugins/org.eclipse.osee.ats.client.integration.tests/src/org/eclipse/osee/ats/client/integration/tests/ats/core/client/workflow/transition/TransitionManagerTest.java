@@ -461,7 +461,7 @@ public class TransitionManagerTest {
          jaxWorkDef.setName(AtsTestUtil.WORK_DEF_NAME);
          jaxWorkDef.setWorkDefDsl(atsDsl);
          AtsTestUtil.importWorkDefinition(jaxWorkDef);
-         AtsClientService.get().getWorkDefinitionAdmin().clearCaches();
+         AtsClientService.get().getWorkDefinitionService().clearCaches();
       } catch (Exception ex) {
          throw new OseeCoreException(ex, "Error importing " + workDefFilename);
       }

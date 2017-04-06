@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -83,7 +83,7 @@ public final class StateResource {
       }
 
       if (operation.equals("transition")) {
-         ArtifactId action = null;
+         ArtifactToken action = null;
          try {
             action = atsServer.getArtifactById(id);
          } catch (Exception ex) {

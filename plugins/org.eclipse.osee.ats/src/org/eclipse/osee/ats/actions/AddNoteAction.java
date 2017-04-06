@@ -53,7 +53,7 @@ public class AddNoteAction extends AbstractAtsAction {
       ArrayList<String> artifactNames = new ArrayList<>();
       Map<String, String> selectedToStateName = new HashMap<>();
       artifactNames.add("Whole \"" + sma.getArtifactTypeName() + "\"");
-      for (IAtsStateDefinition stateDefinition : AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByOrdinal(
+      for (IAtsStateDefinition stateDefinition : AtsClientService.get().getWorkDefinitionService().getStatesOrderedByOrdinal(
          sma.getWorkDefinition())) {
          String displayName = "\"" + stateDefinition.getName() + "\" State";
          artifactNames.add(displayName);

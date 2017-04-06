@@ -8,15 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.config;
+package org.eclipse.osee.ats.api.workdef;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IWorkDefinitionStringProvider {
+public interface IAtsWorkDefinitionStringProvider {
 
-   public Map<String, String> getWorkDefIdToWorkDef();
+   public List<WorkDefData> getWorkDefinitionsData();
 
 }

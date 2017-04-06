@@ -19,6 +19,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.eclipse.osee.ats.api.user.JaxAtsUser;
 import org.eclipse.osee.ats.api.util.ColorColumns;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStringProvider;
+import org.eclipse.osee.ats.api.workdef.WorkDefData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -26,7 +28,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Donald G. Dunne
  */
 @XmlRootElement
-public class AtsConfigurations implements IWorkDefinitionStringProvider {
+public class AtsConfigurations implements IAtsWorkDefinitionStringProvider {
 
    private List<AtsConfiguration> configs = new ArrayList<>();
    private AtsViews views = new AtsViews();
@@ -37,7 +39,7 @@ public class AtsConfigurations implements IWorkDefinitionStringProvider {
    Long topTeamDefinition;
    List<JaxVersion> versions = new ArrayList<>();
    private Collection<String> validStateNames = new ArrayList<>();
-   private Map<String, String> workDefIdToWorkDef = new HashMap<>();
+   private List<WorkDefData> workDefinitions = new ArrayList<>();
    private Map<Long, JaxActionableItem> idToAi = new HashMap<>();
    private Map<Long, JaxTeamDefinition> idToTeamDef = new HashMap<>();
    private Map<Long, JaxVersion> idToVersion = new HashMap<>();
@@ -104,12 +106,12 @@ public class AtsConfigurations implements IWorkDefinitionStringProvider {
    }
 
    @Override
-   public Map<String, String> getWorkDefIdToWorkDef() {
-      return workDefIdToWorkDef;
+   public List<WorkDefData> getWorkDefinitionsData() {
+      return workDefinitions;
    }
 
-   public void setWorkDefIdToWorkDef(Map<String, String> workDefIdToWorkDef) {
-      this.workDefIdToWorkDef = workDefIdToWorkDef;
+   public void setWorkDefinitions(List<WorkDefData> workDefinitions) {
+      this.workDefinitions = workDefinitions;
    }
 
    public Map<Long, JaxActionableItem> getIdToAi() {
@@ -164,8 +166,8 @@ public class AtsConfigurations implements IWorkDefinitionStringProvider {
       idToVersion.put(version.getUuid(), version);
    }
 
-   public void addWorkDefinition(String id, String workDefStr) {
-      workDefIdToWorkDef.put(id, workDefStr);
+   public void addWorkDefinition(WorkDefData workDef) {
+      workDefinitions.add(workDef);
    }
 
 }

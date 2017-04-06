@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
+import org.eclipse.osee.ats.api.workdef.WorkDefData;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.agile.AgileService;
@@ -39,6 +40,8 @@ import org.eclipse.osee.ats.core.ai.ActionableItemManager;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreServiceImpl;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionServiceImpl;
+import org.eclipse.osee.ats.core.workflow.WorkItemFactory;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.config.AtsConfigEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertBaselineGuidToBaselineUuid;
@@ -55,7 +58,6 @@ import org.eclipse.osee.ats.rest.internal.util.AtsRelationResolverServiceImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsStoreServiceImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsTaskService;
 import org.eclipse.osee.ats.rest.internal.workitem.ConfigItemFactory;
-import org.eclipse.osee.ats.rest.internal.workitem.WorkItemFactory;
 import org.eclipse.osee.ats.rest.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.rest.util.IAtsNotifierServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -82,7 +84,6 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    private AtsNotifierServiceImpl notifyService;
    private AtsNotificationEventProcessor notificationEventProcessor;
    private IAgileService agileService;
-
    private volatile boolean emailEnabled = true;
    private boolean loggedNotificationDisabled = false;
 
@@ -122,6 +123,10 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
 
       super.start();
 
+      // ATS Server loads it Work Definitions from the database
+      workDefinitionService = new AtsWorkDefinitionServiceImpl(this, workDefinitionStore, workDefinitionStore,
+         workDefinitionDslService, teamWorkflowProvidersLazy);
+
       notifyService = new AtsNotifierServiceImpl();
       workItemFactory = new WorkItemFactory(this);
       configItemFactory = new ConfigItemFactory(logger, this);
@@ -132,7 +137,6 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
       relationResolver = new AtsRelationResolverServiceImpl(this);
       ((AtsAttributeResolverServiceImpl) attributeResolverService).setOrcsApi(orcsApi);
       ((AtsAttributeResolverServiceImpl) attributeResolverService).setServices(this);
-      workDefService.setWorkDefinitionStringProvider(this);
 
       logFactory = AtsCoreFactory.newLogFactory();
       stateFactory = AtsCoreFactory.newStateFactory(getServices(), logFactory);
@@ -141,8 +145,8 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
 
       queryService = new AtsQueryServiceImpl(this, jdbcService);
       actionableItemManager = new ActionableItemManager(attributeResolverService, storeService, this);
-      actionFactory = new ActionFactory(workItemFactory, actionableItemManager, attributeResolverService, stateFactory,
-         getServices());
+      actionFactory = new ActionFactory(workItemFactory, sequenceProvider, actionableItemManager,
+         attributeResolverService, stateFactory, getServices());
 
       agileService = new AgileService(logger, this);
       taskService = new AtsTaskService(this);
@@ -486,5 +490,10 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    @Override
    public void setNotifactionsEnabled(boolean enabled) {
       throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public List<WorkDefData> getWorkDefinitionsData() {
+      return workDefinitionStore.getWorkDefinitionsData();
    }
 }

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
+import org.eclipse.osee.orcs.rest.model.TupleEndpoint;
 import org.eclipse.osee.orcs.search.BranchQuery;
 
 /**
@@ -57,8 +58,8 @@ public class BranchesResource {
    }
 
    @Path("{branch}/tuples")
-   public TupleResource getTuples(@PathParam("branch") BranchId branch) {
-      return new TupleResource(OrcsApplication.getOrcsApi(), branch);
+   public TupleEndpoint getTuples(@PathParam("branch") BranchId branch) {
+      return new TupleEndpointImpl(OrcsApplication.getOrcsApi(), branch);
    }
 
    @Path("{branch}/applic")

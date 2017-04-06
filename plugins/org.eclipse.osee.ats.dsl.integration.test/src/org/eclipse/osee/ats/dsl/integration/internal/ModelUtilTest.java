@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.dsl.integration.internal.model;
+package org.eclipse.osee.ats.dsl.integration.internal;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.dsl.IResourceProvider;
 import org.eclipse.osee.ats.dsl.ModelUtil;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
-import org.eclipse.osee.ats.dsl.integration.internal.ConvertWorkDefinitionToAtsDsl;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Test;
@@ -89,7 +88,7 @@ public class ModelUtilTest {
    }
 
    public IAtsWorkDefinition getWorkDefinition() {
-      WorkDefinition workDef = new WorkDefinition("WorkDef_Team_Default");
+      WorkDefinition workDef = new WorkDefinition(15L, "WorkDef_Team_Default");
 
       StateDefinition analyze = new StateDefinition("Analyze");
       analyze.setWorkDefinition(workDef);

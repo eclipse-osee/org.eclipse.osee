@@ -221,7 +221,7 @@ public class ActionPage {
       IAtsStateManager stateMgr = workItem.getStateMgr();
       Collection<String> visitedStates = stateMgr.getVisitedStateNames();
       List<IAtsStateDefinition> statesOrderedByOrdinal =
-         atsServer.getWorkDefService().getStatesOrderedByOrdinal(workDefinition);
+         atsServer.getWorkDefinitionService().getStatesOrderedByOrdinal(workDefinition);
       for (int index = statesOrderedByOrdinal.size() - 1; index >= 0; index--) {
          IAtsStateDefinition state = statesOrderedByOrdinal.get(index);
          if (visitedStates.contains(state.getName())) {

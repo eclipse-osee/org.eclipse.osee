@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -52,7 +53,7 @@ public interface IAtsConfigQuery {
 
    IAtsConfigQuery andCsci(Collection<String> cscis);
 
-   <T extends ArtifactId> ResultSet<T> getResultArtifacts();
+   <T extends ArtifactToken> ResultSet<T> getResultArtifacts();
 
    IAtsConfigQuery andName(String name);
 

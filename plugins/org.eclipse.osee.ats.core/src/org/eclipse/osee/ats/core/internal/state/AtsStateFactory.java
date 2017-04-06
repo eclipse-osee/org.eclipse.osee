@@ -38,15 +38,7 @@ public class AtsStateFactory implements IAtsStateFactory {
    @Override
    public IAtsStateManager getStateManager(IAtsWorkItem workItem) {
       StateManager stateMgr = new StateManager(workItem, logFactory, services);
-      return stateMgr;
-   }
-
-   @Override
-   public IAtsStateManager getStateManager(IAtsWorkItem workItem, boolean load) throws OseeCoreException {
-      IAtsStateManager stateMgr = getStateManager(workItem);
-      if (load) {
-         StateManagerStore.load(workItem, stateMgr, services.getAttributeResolver(), workStateFactory);
-      }
+      StateManagerStore.load(workItem, stateMgr, services.getAttributeResolver(), workStateFactory);
       return stateMgr;
    }
 

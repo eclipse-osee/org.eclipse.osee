@@ -79,6 +79,7 @@ Import-Package: com.google.common.base,
  org.eclipse.osee.jdbc,
  org.eclipse.osee.logger,
  org.eclipse.osee.orcs.rest.client,
+ org.eclipse.osee.orcs.rest.model,
  org.osgi.framework,
  org.osgi.service.event
 Export-Package: org.eclipse.osee.ats.core.client,

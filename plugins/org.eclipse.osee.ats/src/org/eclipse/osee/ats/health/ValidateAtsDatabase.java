@@ -503,8 +503,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       for (Artifact artifact : artifacts) {
          try {
             String workDefName = artifact.getSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, "");
-            if (Strings.isValid(
-               workDefName) && AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinition(workDefName) == null) {
+            if (Strings.isValid(workDefName) && AtsClientService.get().getWorkDefinitionService().getWorkDefinition(
+               workDefName) == null) {
                results.log(artifact, "testAttributeSetWorkDefinitionsExist",
                   String.format(
                      "Error: ats.Work Definition attribute value [%s] not valid work definition for " + XResultDataUI.getHyperlink(
@@ -719,7 +719,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
             try {
                BranchId workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
-               if (workingBranch != null && !BranchManager.getType(workingBranch).isBaselineBranch()) {
+               if (workingBranch != null && workingBranch.isValid() && !BranchManager.getType(
+                  workingBranch).isBaselineBranch()) {
                   if (!BranchManager.getState(workingBranch).isCommitted()) {
                      Collection<BranchId> branchesCommittedTo =
                         AtsClientService.get().getBranchService().getBranchesCommittedTo(teamArt);

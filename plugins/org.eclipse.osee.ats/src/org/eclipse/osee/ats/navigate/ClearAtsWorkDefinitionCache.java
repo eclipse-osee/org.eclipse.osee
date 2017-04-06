@@ -34,7 +34,7 @@ public class ClearAtsWorkDefinitionCache extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       try {
-         AtsClientService.get().getWorkDefinitionAdmin().clearCaches();
+         AtsClientService.get().getWorkDefinitionService().clearCaches();
       } catch (OseeStateException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

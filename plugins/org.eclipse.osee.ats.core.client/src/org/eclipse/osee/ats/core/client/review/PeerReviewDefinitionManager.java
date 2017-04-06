@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionAdapter;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -32,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
  * Create PeerToPeer Review from transition if defined by StateDefinition.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class PeerReviewDefinitionManager extends TransitionAdapter {
@@ -77,16 +76,15 @@ public class PeerReviewDefinitionManager extends TransitionAdapter {
 
    @Override
    public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) throws OseeCoreException {
-      AbstractWorkflowArtifact sma = (AbstractWorkflowArtifact) workItem;
       // Create any decision or peerToPeer reviews for transitionTo and transitionFrom
-      if (!sma.isTeamWorkflow()) {
+      if (!workItem.isTeamWorkflow()) {
          return;
       }
       Date createdDate = new Date();
       IAtsUser createdBy = AtsCoreUsers.SYSTEM_USER;
-      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) sma;
+      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) workItem.getStoreObject();
 
-      for (IAtsPeerReviewDefinition peerRevDef : teamArt.getStateDefinition().getPeerReviews()) {
+      for (IAtsPeerReviewDefinition peerRevDef : workItem.getStateDefinition().getPeerReviews()) {
          if (peerRevDef.getStateEventType() != null && peerRevDef.getStateEventType().equals(
             StateEventType.TransitionTo)) {
             PeerToPeerReviewArtifact decArt =

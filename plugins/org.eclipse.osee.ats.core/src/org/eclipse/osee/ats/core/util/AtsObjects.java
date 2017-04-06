@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
@@ -110,8 +111,8 @@ public class AtsObjects {
    public static Collection<ArtifactId> getTeamWfArtifacts(Collection<?> objects, IAtsServices services) {
       List<ArtifactId> artifacts = new LinkedList<>();
       for (Object object : objects) {
-         if (object instanceof ArtifactId) {
-            ArtifactId artId = (ArtifactId) object;
+         if (object instanceof ArtifactToken) {
+            ArtifactToken artId = (ArtifactToken) object;
             if (services.getStoreService().isOfType(artId, AtsArtifactTypes.Action)) {
                artifacts.addAll(AtsObjects.getArtifacts(
                   services.getWorkItemService().getTeams(services.getWorkItemFactory().getAction(artId))));

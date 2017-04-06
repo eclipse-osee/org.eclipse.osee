@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -72,10 +72,10 @@ public class AtsWorkDefConfigRenderer extends DefaultArtifactRenderer {
          public void run() {
             for (Artifact artifact : artifacts) {
                try {
-                  IWorkDefinitionMatch match =
-                     AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinition(artifact.getName());
-                  if (match.isMatched()) {
-                     IEditorInput input = new AtsWorkDefConfigEditorInput(match.getWorkDefinition());
+                  IAtsWorkDefinition workDef =
+                     AtsClientService.get().getWorkDefinitionService().getWorkDefinition(artifact.getName());
+                  if (workDef != null) {
+                     IEditorInput input = new AtsWorkDefConfigEditorInput(workDef);
                      AWorkbench.getActivePage().openEditor(input, AtsWorkDefConfigEditor.EDITOR_ID);
                   } else {
                      AWorkbench.popup("No Work Definition matches artifact " + artifact.toStringWithId());

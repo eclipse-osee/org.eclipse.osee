@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start">
-   <implementation class="org.eclipse.osee.ats.dsl.integration.internal.AtsWorkDefinitionServiceImpl"/>
-   <service>
-      <provide interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService"/>
-   </service>
-   <reference bind="setAtsWorkDefinitionStore" cardinality="1..1" interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStore" name="IAtsWorkDefinitionStore" policy="static"/>
+   <implementation class="org.eclipse.osee.ats.dsl.integration.internal.AtsWorkDefinitionDslServiceImpl"/>ce>
    <reference bind="setAttributeResolver" cardinality="1..1" interface="org.eclipse.osee.ats.api.workdef.IAttributeResolver" name="IAttributeResolver" policy="static"/>
    <reference bind="setAtsUserService" cardinality="1..1" interface="org.eclipse.osee.ats.api.user.IAtsUserService" name="IAtsUserService" policy="static"/>
    <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
+   <service>
+      <provide interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionDslService"/>
+   </service>"/>
 </scr:component>

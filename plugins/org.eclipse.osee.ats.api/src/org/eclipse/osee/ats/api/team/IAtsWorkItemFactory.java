@@ -22,35 +22,36 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G Dunne
  */
 public interface IAtsWorkItemFactory {
 
-   IAtsTeamWorkflow getTeamWf(ArtifactId artifact) throws OseeCoreException;
+   IAtsTeamWorkflow getTeamWf(ArtifactToken artifact);
 
-   IAtsWorkItem getWorkItem(ArtifactId artifact) throws OseeCoreException;
+   IAtsWorkItem getWorkItem(ArtifactToken artifact);
 
-   IAtsTask getTask(ArtifactId artifact) throws OseeCoreException;
+   IAtsTask getTask(ArtifactToken artifact);
 
-   IAtsAbstractReview getReview(ArtifactId artifact) throws OseeCoreException;
+   IAtsAbstractReview getReview(ArtifactToken artifact);
 
-   IAtsGoal getGoal(ArtifactId artifact) throws OseeCoreException;
+   IAtsGoal getGoal(ArtifactToken artifact);
 
-   IAtsAction getAction(ArtifactId artifact);
+   IAtsAction getAction(ArtifactToken artifact);
 
    IAtsWorkItem getWorkItemByAtsId(String atsId);
 
-   IAgileSprint getAgileSprint(ArtifactToken artifact) throws OseeCoreException;
+   IAgileSprint getAgileSprint(ArtifactToken artifact);
 
    IAgileBacklog getAgileBacklog(ArtifactToken artifact);
 
-   IAgileItem getAgileItem(ArtifactId artifact);
+   IAgileItem getAgileItem(ArtifactToken artifact);
 
-   Collection<IAtsWorkItem> getWorkItems(Collection<? extends ArtifactId> artifacts);
+   Collection<IAtsWorkItem> getWorkItems(Collection<? extends ArtifactToken> artifacts);
 
-   IAtsWorkItem getTeamWfNoCache(ArtifactId artifact);
+   IAtsTeamWorkflow getTeamWfNoCache(ArtifactId artifact);
+
+   IAtsTeamWorkflow getTeamWf(ArtifactId artifact);
 
 }

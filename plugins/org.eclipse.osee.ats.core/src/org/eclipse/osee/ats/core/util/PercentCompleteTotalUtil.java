@@ -40,7 +40,7 @@ public class PercentCompleteTotalUtil {
          if (workItem.getStateMgr().getStateType().isCompletedOrCancelled()) {
             percent = 100;
          } else {
-            if (services.getWorkDefService().isStateWeightingEnabled(workItem.getWorkDefinition())) {
+            if (services.getWorkDefinitionService().isStateWeightingEnabled(workItem.getWorkDefinition())) {
                // Calculate total percent using configured weighting
                for (IAtsStateDefinition stateDef : workItem.getWorkDefinition().getStates()) {
                   if (!stateDef.getStateType().isCompletedState() && !stateDef.getStateType().isCancelledState()) {

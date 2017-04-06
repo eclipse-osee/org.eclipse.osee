@@ -173,7 +173,7 @@ public final class AtsWorkDefinitionDslRenderer extends FileSystemRenderer {
             String dslStr = Lib.fileToString(file);
             saveArt.setSoleAttributeValue(AtsAttributeTypes.DslSheet, dslStr);
             saveArt.persist(getName());
-            AtsClientService.get().getWorkDefinitionAdmin().clearCaches();
+            AtsClientService.get().getWorkDefinitionService().clearCaches();
          }
 
       }

@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactoryProvider;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
 import org.eclipse.osee.ats.core.config.IAtsCacheProvider;
 import org.eclipse.osee.ats.rest.util.IArtifactProvider;
@@ -35,8 +34,6 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFactoryProvider, IAtsCacheProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IArtifactProvider {
 
    OrcsApi getOrcsApi() throws OseeCoreException;
-
-   IAtsWorkDefinitionAdmin getWorkDefAdmin();
 
    @Override
    ArtifactReadable getArtifactByGuid(String guid);

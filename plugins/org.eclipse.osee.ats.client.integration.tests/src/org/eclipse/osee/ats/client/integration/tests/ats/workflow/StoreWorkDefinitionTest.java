@@ -53,7 +53,7 @@ public class StoreWorkDefinitionTest {
 
       XResultData resultData = new XResultData();
       IAtsWorkDefinition workDef =
-         AtsClientService.get().getWorkDefService().getWorkDef(AtsTestUtil.WORK_DEF_NAME, resultData);
+         AtsClientService.get().getWorkDefinitionService().getWorkDefinition(AtsTestUtil.WORK_DEF_NAME, resultData);
       Assert.assertNotNull(workDef);
    }
 

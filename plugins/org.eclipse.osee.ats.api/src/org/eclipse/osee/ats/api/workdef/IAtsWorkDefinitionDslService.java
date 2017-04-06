@@ -8,27 +8,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.dsl.integration.internal.model;
+package org.eclipse.osee.ats.api.workdef;
 
-import org.eclipse.osee.ats.api.workdef.WidgetOption;
-import org.junit.Assert;
-import org.junit.Test;
+import java.util.List;
+import org.eclipse.osee.framework.core.util.XResultData;
 
 /**
- * Test case for {@link WidgetOption}
- *
  * @author Donald G. Dunne
  */
-public class WidgetOptionTest {
+public interface IAtsWorkDefinitionDslService {
 
-   @Test
-   public void testValues() {
-      Assert.assertEquals(31, WidgetOption.values().length);
-   }
+   String getStorageString(IAtsWorkDefinition workDef, XResultData resultData);
 
-   @Test
-   public void testValueOf() {
-      Assert.assertEquals(WidgetOption.ADD_DEFAULT_VALUE, WidgetOption.valueOf(WidgetOption.ADD_DEFAULT_VALUE.name()));
-   }
+   IAtsWorkDefinition getWorkDefinition(Long id, String workDefinitionDsl);
+
+   IAtsWorkDefinition copyWorkDefinition(String newName, IAtsWorkDefinition workDef, XResultData resultData);
+
+   List<IAtsRuleDefinition> getRuleDefinitions(String ruleDefintionsDslStr);
 
 }

@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -160,9 +161,11 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
          Collection<ArtifactId> artifacts = runQuery();
          for (ArtifactId artifact : artifacts) {
             if (allArtTypes.isEmpty() || isArtifactTypeMatch(artifact, allArtTypes)) {
-               IAtsWorkItem workItem = services.getWorkItemFactory().getWorkItem(artifact);
-               if (workItem != null) {
-                  workItems.add((T) workItem);
+               if (artifact instanceof ArtifactToken) {
+                  IAtsWorkItem workItem = services.getWorkItemFactory().getWorkItem((ArtifactToken) artifact);
+                  if (workItem != null) {
+                     workItems.add((T) workItem);
+                  }
                }
             }
          }
@@ -623,12 +626,14 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
          return true;
       }
       boolean match = false;
-      IAtsWorkItem workItem = services.getWorkItemFactory().getWorkItem(artifact);
-      IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
-      if (teamWf != null) {
-         boolean released = services.getVersionService().isReleased(teamWf);
-         if (releasedOption == ReleasedOption.Released && released || releasedOption == ReleasedOption.UnReleased && !released) {
-            match = true;
+      if (artifact instanceof ArtifactToken) {
+         IAtsWorkItem workItem = services.getWorkItemFactory().getWorkItem((ArtifactToken) artifact);
+         IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
+         if (teamWf != null) {
+            boolean released = services.getVersionService().isReleased(teamWf);
+            if (releasedOption == ReleasedOption.Released && released || releasedOption == ReleasedOption.UnReleased && !released) {
+               match = true;
+            }
          }
       }
       return match;

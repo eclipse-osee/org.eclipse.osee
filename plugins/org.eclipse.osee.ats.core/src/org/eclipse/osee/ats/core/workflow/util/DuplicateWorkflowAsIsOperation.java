@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -84,7 +84,7 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
    }
 
    private IAtsWorkItem duplicateWorkItem(IAtsChangeSet changes, IAtsWorkItem workItem) {
-      ArtifactId newWorkItemArt = changes.createArtifact(
+      ArtifactToken newWorkItemArt = changes.createArtifact(
          services.getStoreService().getArtifactType(workItem.getStoreObject()), getTitle(workItem));
 
       if (workItem.isTeamWorkflow()) {

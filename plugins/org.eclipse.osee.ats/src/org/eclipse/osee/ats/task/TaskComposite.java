@@ -130,7 +130,7 @@ public class TaskComposite extends WorldComposite {
                return;
             }
             TaskMover mover =
-               new TaskMover(AtsClientService.get().getWorkDefinitionAdmin(), iXTaskViewer.getTeamWf(), taskArts);
+               new TaskMover(AtsClientService.get().getWorkDefinitionService(), iXTaskViewer.getTeamWf(), taskArts);
             mover.moveTasks();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

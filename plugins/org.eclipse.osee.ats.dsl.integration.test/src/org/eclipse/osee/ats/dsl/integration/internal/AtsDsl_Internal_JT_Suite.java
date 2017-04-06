@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.dsl.integration.internal;
 
-import org.eclipse.osee.ats.dsl.integration.internal.model.AtsDsl_Internal_Model_JT_Suite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -19,9 +18,9 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   AtsDsl_Internal_Model_JT_Suite.class,
    ConvertWorkDefinitionToAtsDslTest.class,
-   ConvertAtsDslToRuleDefinitionTest.class})
+   ConvertAtsDslToRuleDefinitionTest.class,
+   ModelUtilTest.class})
 public class AtsDsl_Internal_JT_Suite {
    // Test Suite
 }

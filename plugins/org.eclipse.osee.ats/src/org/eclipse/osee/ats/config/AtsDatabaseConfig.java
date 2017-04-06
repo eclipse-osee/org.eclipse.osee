@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.AtsActivity;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -62,7 +62,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       IAtsTeamDefinition teamDef = AtsClientService.get().getConfigItem(topTeamDefArt);
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Set Top Team Work Definition");
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.WorkflowDefinition,
-         IAtsWorkDefinitionAdmin.TeamWorkflowDefaultDefinitionId);
+         IAtsWorkDefinitionService.TeamWorkflowDefaultDefinitionId);
       changes.execute();
 
       // load top ai into cache

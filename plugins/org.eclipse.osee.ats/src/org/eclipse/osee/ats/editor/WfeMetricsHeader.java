@@ -46,14 +46,14 @@ public class WfeMetricsHeader extends Composite {
       try {
 
          int numColumns = 8;
-         if (!AtsClientService.get().getWorkDefinitionAdmin().isStateWeightingEnabled(awa.getWorkDefinition())) {
+         if (!AtsClientService.get().getWorkDefinitionService().isStateWeightingEnabled(awa.getWorkDefinition())) {
             numColumns = 10;
          }
          toolkit.adapt(this);
          setLayout(ALayout.getZeroMarginLayout(numColumns, false));
          setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-         if (AtsClientService.get().getWorkDefinitionAdmin().isStateWeightingEnabled(awa.getWorkDefinition())) {
+         if (AtsClientService.get().getWorkDefinitionService().isStateWeightingEnabled(awa.getWorkDefinition())) {
             percentLabel = FormsUtil.createLabelValue(toolkit, this, "Total Percent: ", "",
                "Calculation: Sum of percent for all states (including all tasks and reviews) / # statusable states (if configured)");
          } else {

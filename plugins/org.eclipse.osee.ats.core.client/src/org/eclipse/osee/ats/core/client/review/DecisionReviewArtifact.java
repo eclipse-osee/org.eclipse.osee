@@ -28,4 +28,5 @@ public class DecisionReviewArtifact extends AbstractReviewArtifact implements IA
       super(guid, branch, artifactType);
       decisionOptions = new DecisionOptions(this, AtsClientService.get());
    }
+
 }

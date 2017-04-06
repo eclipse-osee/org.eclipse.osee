@@ -90,7 +90,7 @@ public class AutoAddActionToGoalTest {
 
       goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_ConfigObject, testAI2);
 
-      AtsClientService.get().getWorkDefinitionAdmin().addWorkDefinition(workDef);
+      AtsClientService.get().getWorkDefinitionService().addWorkDefinition(workDef);
 
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
 
@@ -155,7 +155,7 @@ public class AutoAddActionToGoalTest {
       goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_ConfigObject, teamDefArtifact);
       changes.execute();
 
-      AtsClientService.get().getWorkDefinitionAdmin().addWorkDefinition(workDef);
+      AtsClientService.get().getWorkDefinitionService().addWorkDefinition(workDef);
 
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
       List<Artifact> memArt = goalArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member);
@@ -197,7 +197,7 @@ public class AutoAddActionToGoalTest {
       goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_ConfigObject, testAI3);
       goalArt2.addRelation(AtsRelationTypes.AutoAddActionToGoal_ConfigObject, testAI2);
 
-      AtsClientService.get().getWorkDefinitionAdmin().addWorkDefinition(workDef);
+      AtsClientService.get().getWorkDefinitionService().addWorkDefinition(workDef);
 
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
       TeamWorkFlowArtifact teamWf3 = AtsTestUtil.getTeamWf3();

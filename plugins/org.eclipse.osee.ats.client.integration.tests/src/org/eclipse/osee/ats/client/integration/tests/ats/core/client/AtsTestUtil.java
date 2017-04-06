@@ -229,7 +229,7 @@ public class AtsTestUtil {
 
    private static void clearCaches() throws OseeCoreException {
       if (workDef != null) {
-         AtsClientService.get().getWorkDefinitionAdmin().removeWorkDefinition(workDef);
+         AtsClientService.get().getWorkDefinitionService().removeWorkDefinition(workDef);
       }
       analyze = null;
       implement = null;
@@ -381,9 +381,9 @@ public class AtsTestUtil {
       Artifact workDefArt = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, WORK_DEF_NAME,
          AtsClientService.get().getAtsBranch());
       workDefArt.reloadAttributesAndRelations();
-      AtsClientService.get().getWorkDefinitionAdmin().clearCaches();
+      AtsClientService.get().getWorkDefinitionService().clearCaches();
       XResultData results = new XResultData();
-      workDef = AtsClientService.get().getWorkDefService().getWorkDef(WORK_DEF_NAME, results);
+      workDef = AtsClientService.get().getWorkDefinitionService().getWorkDefinition(WORK_DEF_NAME, results);
       if (results.isErrors()) {
          throw new OseeCoreException("Error importing " + WORK_DEF_NAME + " - " + results.toString());
       }
@@ -654,8 +654,8 @@ public class AtsTestUtil {
       try {
          if (peerRevArt == null) {
             peerRevArt = PeerToPeerReviewManager.createNewPeerToPeerReview(
-               AtsClientService.get().getWorkDefinitionAdmin().getDefaultPeerToPeerWorkflowDefinitionMatch().getWorkDefinition(),
-               teamWf, AtsTestUtil.class.getSimpleName() + " Test Peer Review", relatedToState.getName(), changes);
+               AtsClientService.get().getWorkDefinitionService().getDefaultPeerToPeerWorkflowDefinition(), teamWf,
+               AtsTestUtil.class.getSimpleName() + " Test Peer Review", relatedToState.getName(), changes);
             peerRevArt.setSoleAttributeValue(AtsAttributeTypes.ReviewBlocks, reviewBlockType.name());
          }
       } catch (OseeCoreException ex) {

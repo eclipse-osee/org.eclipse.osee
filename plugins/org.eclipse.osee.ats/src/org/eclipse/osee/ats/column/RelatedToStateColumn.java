@@ -130,7 +130,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
 
    public static List<String> getValidInWorkStates(TeamWorkFlowArtifact teamArt) throws OseeStateException {
       List<String> names = new ArrayList<>();
-      for (String state : AtsClientService.get().getWorkDefinitionAdmin().getStateNames(teamArt.getWorkDefinition())) {
+      for (String state : AtsClientService.get().getWorkDefinitionService().getStateNames(teamArt.getWorkDefinition())) {
          if (teamArt.getStateDefinitionByName(state).getStateType().isWorkingState()) {
             names.add(state);
          }

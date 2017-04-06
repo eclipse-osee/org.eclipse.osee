@@ -10,24 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workdef.model;
 
+import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
+
 /**
  * @author Donald G. Dunne
  */
-public class AbstractWorkDefItem {
+public class AbstractWorkDefItem extends NamedIdBase {
 
-   private String name;
    protected String description;
 
-   public AbstractWorkDefItem(String name) {
-      this.name = name;
-   }
-
-   public String getName() {
-      return name;
-   }
-
-   public void setName(String name) {
-      this.name = name;
+   public AbstractWorkDefItem(Long id, String name) {
+      super(id, name);
    }
 
    public String getDescription() {
@@ -36,11 +29,6 @@ public class AbstractWorkDefItem {
 
    public void setDescription(String description) {
       this.description = description;
-   }
-
-   @Override
-   public String toString() {
-      return getName();
    }
 
 }

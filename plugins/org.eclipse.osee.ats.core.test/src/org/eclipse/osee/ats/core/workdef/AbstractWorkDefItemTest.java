@@ -8,21 +8,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.rest.internal.workitem.model;
+package org.eclipse.osee.ats.core.workdef;
 
-import org.eclipse.osee.ats.api.workflow.IAtsGoal;
-import org.eclipse.osee.ats.core.workflow.WorkItem;
-import org.eclipse.osee.ats.rest.IAtsServer;
-import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.ats.api.workdef.model.AbstractWorkDefItem;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
+ * Test case for {@link AbstractWorkDefItem}
+ *
  * @author Donald G. Dunne
  */
-public class Goal extends WorkItem implements IAtsGoal {
+public class AbstractWorkDefItemTest {
 
-   public Goal(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
-      super(logger, atsServer, artifact);
+   @Test
+   public void testToString() {
+      AbstractWorkDefItem item = new AbstractWorkDefItem(15L, "name");
+      Assert.assertEquals("name", item.toString());
+      item.setName("that");
+      Assert.assertEquals("that", item.toString());
    }
 
 }

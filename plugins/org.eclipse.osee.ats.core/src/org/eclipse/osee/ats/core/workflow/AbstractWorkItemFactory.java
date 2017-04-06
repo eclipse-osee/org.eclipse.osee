@@ -48,9 +48,9 @@ public abstract class AbstractWorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public Collection<IAtsWorkItem> getWorkItems(Collection<? extends ArtifactId> artifacts) {
+   public Collection<IAtsWorkItem> getWorkItems(Collection<? extends ArtifactToken> artifacts) {
       List<IAtsWorkItem> workItems = new LinkedList<>();
-      for (ArtifactId artifact : artifacts) {
+      for (ArtifactToken artifact : artifacts) {
          IAtsWorkItem workItem = getWorkItem(artifact);
          if (workItem != null) {
             workItems.add(workItem);
@@ -60,7 +60,7 @@ public abstract class AbstractWorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public IAtsWorkItem getWorkItem(ArtifactId artifact) {
+   public IAtsWorkItem getWorkItem(ArtifactToken artifact) {
       IAtsWorkItem workItem = null;
       try {
          if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamWorkflow)) {
@@ -73,11 +73,11 @@ public abstract class AbstractWorkItemFactory implements IAtsWorkItemFactory {
             workItem = getTask(artifact);
          } else if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileBacklog)) {
             // note, an agile backlog is also a goal type, so this has to be before the goal
-            workItem = getAgileBacklog((ArtifactToken) artifact);
+            workItem = getAgileBacklog(artifact);
          } else if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.Goal)) {
             workItem = getGoal(artifact);
          } else if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileSprint)) {
-            workItem = getAgileSprint((ArtifactToken) artifact);
+            workItem = getAgileSprint(artifact);
          }
       } catch (OseeCoreException ex) {
          services.getLogger().error(ex, "Error getting work item for [%s]", artifact);
@@ -128,7 +128,7 @@ public abstract class AbstractWorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public IAgileItem getAgileItem(ArtifactId artifact) {
+   public IAgileItem getAgileItem(ArtifactToken artifact) {
       IAgileItem item = null;
       ArtifactId art = services.getArtifact(artifact);
       if (services.getStoreService().isOfType(art, AtsArtifactTypes.AbstractWorkflowArtifact)) {

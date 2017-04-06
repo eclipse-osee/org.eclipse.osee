@@ -41,7 +41,7 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
    private StateColor color = null;
 
    public StateDefinition(String name) {
-      super(name);
+      super(Long.valueOf(name.hashCode()), name);
    }
 
    @Override

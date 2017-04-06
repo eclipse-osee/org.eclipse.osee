@@ -91,7 +91,7 @@ public class TransitionStatusDialog extends MessageDialog {
                int currentPercent = 0;
                AbstractWorkflowArtifact awa =
                   (AbstractWorkflowArtifact) AtsClientService.get().getArtifact(data.getWorkItems().iterator().next());
-               if (!AtsClientService.get().getWorkDefinitionAdmin().isStateWeightingEnabled(awa.getWorkDefinition())) {
+               if (!AtsClientService.get().getWorkDefinitionService().isStateWeightingEnabled(awa.getWorkDefinition())) {
                   currentPercent = awa.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0);
                } else {
                   currentPercent = awa.getStateMgr().getPercentComplete(awa.getCurrentStateName());

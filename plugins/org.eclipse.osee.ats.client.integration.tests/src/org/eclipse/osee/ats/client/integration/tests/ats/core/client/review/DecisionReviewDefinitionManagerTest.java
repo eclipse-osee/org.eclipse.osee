@@ -62,7 +62,7 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
          jaxWorkDef.setName(AtsTestUtil.WORK_DEF_NAME);
          jaxWorkDef.setWorkDefDsl(atsDsl);
          AtsTestUtil.importWorkDefinition(jaxWorkDef);
-         AtsClientService.get().getWorkDefinitionAdmin().clearCaches();
+         AtsClientService.get().getWorkDefinitionService().clearCaches();
       } catch (Exception ex) {
          throw new OseeCoreException(ex, "Error importing " + WORK_DEF_FILE_NAME);
       }
@@ -108,7 +108,7 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
          jaxWorkDef.setName(AtsTestUtil.WORK_DEF_NAME);
          jaxWorkDef.setWorkDefDsl(atsDsl);
          AtsTestUtil.importWorkDefinition(jaxWorkDef);
-         AtsClientService.get().getWorkDefinitionAdmin().clearCaches();
+         AtsClientService.get().getWorkDefinitionService().clearCaches();
       } catch (Exception ex) {
          throw new OseeCoreException(ex, "Error importing " + WORK_DEF_FILE_NAME_PREPARE);
       }

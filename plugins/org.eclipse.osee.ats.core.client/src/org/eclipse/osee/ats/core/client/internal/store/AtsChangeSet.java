@@ -73,7 +73,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          for (IAtsObject atsObject : new ArrayList<>(atsObjects)) {
             if (atsObject instanceof IAtsWorkItem) {
                IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-               if (workItem.getStateMgr().isDirty()) {
+               if (workItem.getStateMgr() != null && workItem.getStateMgr().isDirty()) {
                   AtsClientService.get().getStateFactory().writeToStore(asUser, workItem, this);
                }
                if (workItem.getLog().isDirty()) {
@@ -248,7 +248,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public ArtifactId createArtifact(IArtifactType artifactType, String name) {
+   public ArtifactToken createArtifact(IArtifactType artifactType, String name) {
       Artifact artifact = ArtifactTypeManager.addArtifact(artifactType, AtsClientService.get().getAtsBranch(), name);
       add(artifact);
       return artifact;
