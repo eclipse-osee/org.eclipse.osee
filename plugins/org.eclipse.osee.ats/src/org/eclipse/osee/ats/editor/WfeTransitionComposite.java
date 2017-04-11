@@ -343,7 +343,7 @@ public class WfeTransitionComposite extends Composite {
       Collection<IAtsUser> assignees = null;
       // Determine if the is an override set of assigness
       for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
-         String decisionValueIfApplicable = null;
+         String decisionValueIfApplicable = "";
          if (awa.isOfType(AtsArtifactTypes.DecisionReview) && workflowSection.getPage().getLayoutData(
             AtsAttributeTypes.Decision.getName()) != null) {
             XComboDam xWidget =

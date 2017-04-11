@@ -73,7 +73,8 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
          if (section.getTransitionToStateCombo() == null || section.getTransitionToStateCombo().getSelected() == null) {
             return null;
          }
-         XWidget xWidget = section.getPage().getLayoutData(AtsAttributeTypes.Decision.getName()).getXWidget();
+         XWidget xWidget =
+            section.getPage().getLayoutData(AtsAttributeTypes.Decision.getUnqualifiedName()).getXWidget();
          XComboDam decisionComboDam = (XComboDam) xWidget;
          DecisionReviewArtifact decArt = (DecisionReviewArtifact) section.getSma();
          return getOverrideTransitionToStateName(decArt, decisionComboDam);
