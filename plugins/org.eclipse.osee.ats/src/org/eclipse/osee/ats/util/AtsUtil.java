@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
@@ -30,6 +31,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
@@ -327,6 +329,10 @@ public final class AtsUtil {
       if (otherArts.size() > 0) {
          WorldEditor.open(new WorldEditorSimpleProvider(name, otherArts, customizeData));
       }
+   }
+
+   public static void openInAtsWorldEditor(String name, List<IAtsTeamWorkflow> newTeamWfs) {
+      openInAtsWorldEditor(name, AtsObjects.getArtifacts(newTeamWfs));
    }
 
    public static void openInAtsTaskEditor(String name, Collection<Artifact> artifacts) throws OseeCoreException {

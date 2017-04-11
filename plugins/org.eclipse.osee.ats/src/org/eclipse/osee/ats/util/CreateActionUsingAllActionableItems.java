@@ -18,8 +18,8 @@ import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -49,21 +50,22 @@ public class CreateActionUsingAllActionableItems extends XNavigateItemAction {
          return;
       }
       try {
-         ActionArtifact action = createActionWithAllAis();
-         int numWfs = action.getTeams().size();
+         ActionResult action = createActionWithAllAis();
+         int numWfs = action.getTeamWfs().size();
          if (numWfs > 30) {
             AWorkbench.popup(numWfs + " Workflows were created.  Only opening one.");
-            AtsUtil.openATSAction(action.getTeams().iterator().next(), AtsOpenOption.OpenOneOrPopupSelect);
+            AtsUtil.openATSAction((Artifact) action.getTeamWfs().iterator().next().getStoreObject(),
+               AtsOpenOption.OpenOneOrPopupSelect);
          } else {
             AWorkbench.popup("Completed", "Completed");
-            AtsUtil.openATSAction(action, AtsOpenOption.OpenAll);
+            AtsUtil.openATSAction((ActionArtifact) action.getAction().getStoreObject(), AtsOpenOption.OpenAll);
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
-   public static ActionArtifact createActionWithAllAis() throws OseeCoreException {
+   public static ActionResult createActionWithAllAis() throws OseeCoreException {
       Set<IAtsActionableItem> aias = new HashSet<>();
       for (IAtsActionableItem aia : ActionableItems.getActionableItems(Active.Active,
          AtsClientService.get().getQueryService())) {
@@ -73,9 +75,9 @@ public class CreateActionUsingAllActionableItems extends XNavigateItemAction {
       }
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Create Action using all AIs");
-      ActionArtifact action =
-         ActionManager.createAction(null, "Big Action Test - Delete Me", "Description", ChangeType.Improvement, "1",
-            false, null, aias, new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);
+      ActionResult action = AtsClientService.get().getActionFactory().createAction(null, "Big Action Test - Delete Me",
+         "Description", ChangeType.Improvement, "1", false, null, aias, new Date(),
+         AtsClientService.get().getUserService().getCurrentUser(), null, changes);
       changes.execute();
       return action;
    }

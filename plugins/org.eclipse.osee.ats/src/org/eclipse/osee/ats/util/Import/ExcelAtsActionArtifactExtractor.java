@@ -26,7 +26,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -39,7 +38,9 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -78,7 +79,7 @@ public class ExcelAtsActionArtifactExtractor {
 
    private final List<ActionData> actionDatas = new ArrayList<>();
    private final Set<Artifact> actionArts = new HashSet<>();
-   private final Map<String, Artifact> actionNameToAction = new HashMap<>(100);
+   private final Map<String, ActionResult> actionNameToAction = new HashMap<>(100);
    private final boolean emailPOCs;
    private boolean dataIsValid = true;
    private final IAtsGoal toGoal;
@@ -180,17 +181,17 @@ public class ExcelAtsActionArtifactExtractor {
       try {
          IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
          for (ActionData aData : actionDatas) {
-            Artifact actionArt = actionNameToAction.get(aData.title);
+            ActionResult result = actionNameToAction.get(aData.title);
             Collection<TeamWorkFlowArtifact> newTeamArts = new HashSet<>();
-            if (actionArt == null) {
-               actionArt = ActionManager.createAction(null, aData.title, aData.desc,
+            if (result == null) {
+               result = AtsClientService.get().getActionFactory().createAction(null, aData.title, aData.desc,
                   ChangeType.getChangeType(aData.changeType), aData.priorityStr, false, null,
                   ActionableItems.getActionableItems(aData.actionableItems, AtsClientService.get()), createdDate,
                   createdBy, null, changes);
-               newTeamArts = ActionManager.getTeams(actionArt);
+               newTeamArts = ActionManager.getTeams(result);
                addToGoal(newTeamArts, changes);
-               actionNameToAction.put(aData.title, actionArt);
-               actionArts.add(actionArt);
+               actionNameToAction.put(aData.title, result);
+               actionArts.add((Artifact) result.getActionArt());
             } else {
                Set<IAtsActionableItem> aias = new HashSet<>();
                for (String actionableItemName : aData.actionableItems) {
@@ -205,23 +206,21 @@ public class ExcelAtsActionArtifactExtractor {
                Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> teamDefToAias = getTeamDefToAias(aias);
                for (Entry<IAtsTeamDefinition, Collection<IAtsActionableItem>> entry : teamDefToAias.entrySet()) {
 
-                  TeamWorkFlowArtifact teamWorkflow =
-                     ActionManager.createTeamWorkflow(actionArt, entry.getKey(), entry.getValue(), aData.assignees,
-                        changes, createdDate, createdBy, null, CreateTeamOption.Duplicate_If_Exists);
-                  changes.setSoleAttributeValue((IAtsWorkItem) teamWorkflow, AtsAttributeTypes.Description, aData.desc);
+                  IAtsTeamWorkflow teamWorkflow = AtsClientService.get().getActionFactory().createTeamWorkflow(
+                     result.getAction(), entry.getKey(), entry.getValue(), aData.assignees, changes, createdDate,
+                     createdBy, null, CreateTeamOption.Duplicate_If_Exists);
+                  changes.setSoleAttributeValue(teamWorkflow, AtsAttributeTypes.Description, aData.desc);
                   if (Strings.isValid(aData.priorityStr) && !aData.priorityStr.equals("<Select>")) {
-                     changes.setSoleAttributeValue((IAtsWorkItem) teamWorkflow, AtsAttributeTypes.PriorityType,
-                        aData.priorityStr);
+                     changes.setSoleAttributeValue(teamWorkflow, AtsAttributeTypes.PriorityType, aData.priorityStr);
                   }
-                  changes.setSoleAttributeValue((IAtsWorkItem) teamWorkflow, AtsAttributeTypes.ChangeType,
-                     aData.changeType);
+                  changes.setSoleAttributeValue(teamWorkflow, AtsAttributeTypes.ChangeType, aData.changeType);
 
                   for (JaxAttribute attr : aData.attributes) {
                      AttributeTypeId attrType = AttributeTypeManager.getType(attr.getAttrTypeName());
                      changes.setAttributeValues(teamWorkflow, attrType, attr.getValues());
                   }
-                  newTeamArts.add(teamWorkflow);
-                  addToGoal(Collections.singleton(teamWorkflow), changes);
+                  newTeamArts.add((TeamWorkFlowArtifact) teamWorkflow.getStoreObject());
+                  addToGoal(Collections.singleton((TeamWorkFlowArtifact) teamWorkflow.getStoreObject()), changes);
                }
             }
             if (!aData.version.equals("")) {

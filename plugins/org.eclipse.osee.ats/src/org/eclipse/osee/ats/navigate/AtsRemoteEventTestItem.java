@@ -123,9 +123,9 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
-      IAtsAction action = job.getResults().getFirst();
+      IAtsAction action = job.getResults().getAction();
       resultData.log("Created Action " + action.toStringWithId());
-      IAtsTeamWorkflow teamWf = (TeamWorkFlowArtifact) job.getResults().getSecond().iterator().next().getStoreObject();
+      IAtsTeamWorkflow teamWf = (TeamWorkFlowArtifact) job.getResults().getTeams().iterator().next().getStoreObject();
 
       // Make current user assignee for convenience to developer
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " - set assignee");

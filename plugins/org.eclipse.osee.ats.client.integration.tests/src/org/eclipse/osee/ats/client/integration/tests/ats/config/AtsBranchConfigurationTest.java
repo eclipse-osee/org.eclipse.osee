@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.config.AtsConfigOperation;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
@@ -161,10 +162,10 @@ public class AtsBranchConfigurationTest {
          ActionableItems.getActionableItems(appendToName(BRANCH_VIA_VERSIONS, "A1"), AtsClientService.get());
       assertFalse(selectedActionableItems.isEmpty());
 
-      Artifact actionArt = ActionManager.createAction(null, BRANCH_VIA_VERSIONS.getName() + " Req Changes",
-         "description", ChangeType.Problem, "1", false, null, selectedActionableItems, new Date(),
-         AtsClientService.get().getUserService().getCurrentUser(), null, changes);
-      TeamWorkFlowArtifact teamWf = ActionManager.getTeams(actionArt).iterator().next();
+      ActionResult result = AtsClientService.get().getActionFactory().createAction(null,
+         BRANCH_VIA_VERSIONS.getName() + " Req Changes", "description", ChangeType.Problem, "1", false, null,
+         selectedActionableItems, new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);
+      TeamWorkFlowArtifact teamWf = ActionManager.getTeams(result).iterator().next();
       AtsClientService.get().getVersionService().setTargetedVersion(teamWf, versionToTarget, changes);
       changes.execute();
 
@@ -271,12 +272,12 @@ public class AtsBranchConfigurationTest {
       changes.reset("Test branch via team definition: create action");
       String actionTitle = BRANCH_VIA_TEAM_DEFINITION.getName() + " Req Changes";
       changes.clear();
-      Artifact actionArt = ActionManager.createAction(null, actionTitle, "description", ChangeType.Problem, "1", false,
-         null, selectedActionableItems, new Date(), AtsClientService.get().getUserService().getCurrentUser(), null,
-         changes);
+      ActionResult result = AtsClientService.get().getActionFactory().createAction(null, actionTitle, "description",
+         ChangeType.Problem, "1", false, null, selectedActionableItems, new Date(),
+         AtsClientService.get().getUserService().getCurrentUser(), null, changes);
       changes.execute();
 
-      final TeamWorkFlowArtifact teamWf = ActionManager.getTeams(actionArt).iterator().next();
+      final TeamWorkFlowArtifact teamWf = ActionManager.getTeams(result).iterator().next();
       TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get().getServices());
 
       // Transition to desired state

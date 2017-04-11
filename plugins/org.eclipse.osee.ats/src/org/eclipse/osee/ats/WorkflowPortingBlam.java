@@ -22,10 +22,11 @@ import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.AtsWorldEditorRenderer;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -65,25 +66,24 @@ public class WorkflowPortingBlam extends AbstractBlam {
       Date createdDate = new Date();
 
       for (TeamWorkFlowArtifact sourceWorkflow : sourceWorkflows) {
-         Artifact destinationWorkflow;
+         IAtsTeamWorkflow destinationWorkflow;
          if (sourceWorkflow.getRelatedArtifacts(AtsRelationTypes.Port_To).isEmpty()) {
             List<IAtsUser> assignees = sourceWorkflow.getStateMgr().getAssignees();
 
-            destinationWorkflow = ActionManager.createTeamWorkflow(sourceWorkflow.getParentActionArtifact(),
-               teamDefinition, actionableItems, assignees, changes, createdDate, createdBy, null,
-               CreateTeamOption.Duplicate_If_Exists);
+            destinationWorkflow = AtsClientService.get().getActionFactory().createTeamWorkflow(
+               sourceWorkflow.getParentActionArtifact(), teamDefinition, actionableItems, assignees, changes,
+               createdDate, createdBy, null, CreateTeamOption.Duplicate_If_Exists);
 
-            destinationWorkflow.setName(sourceWorkflow.getName());
-            changes.add(destinationWorkflow);
-
-            sourceWorkflow.addRelation(AtsRelationTypes.Port_To, destinationWorkflow);
-            changes.add(sourceWorkflow);
+            changes.setName(destinationWorkflow, sourceWorkflow.getName());
+            changes.relate(sourceWorkflow, AtsRelationTypes.Port_To, destinationWorkflow);
          } else {
-            destinationWorkflow = sourceWorkflow.getRelatedArtifact(AtsRelationTypes.Port_To);
+            destinationWorkflow = AtsClientService.get().getWorkItemFactory().getTeamWf(
+               AtsClientService.get().getRelationResolver().getRelatedOrNull((ArtifactId) sourceWorkflow,
+                  AtsRelationTypes.Port_To));
             log("Reusing destination workflow " + destinationWorkflow);
          }
 
-         destinationWorkflows.add(destinationWorkflow);
+         destinationWorkflows.add((Artifact) destinationWorkflow.getStoreObject());
       }
 
       return destinationWorkflows;

@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.util;
 
+import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
-import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.util.CreateActionUsingAllActionableItems;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -49,7 +49,7 @@ public class CreateActionUsingAllActionableItemsTest {
    @org.junit.Test
    public void test() throws Exception {
       SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
-      ActionArtifact action = CreateActionUsingAllActionableItems.createActionWithAllAis();
+      ActionResult action = CreateActionUsingAllActionableItems.createActionWithAllAis();
       if (TestUtil.isDemoDb()) {
          Assert.assertEquals("Should be 15 workflows created", 15, action.getTeams().size());
       } else {

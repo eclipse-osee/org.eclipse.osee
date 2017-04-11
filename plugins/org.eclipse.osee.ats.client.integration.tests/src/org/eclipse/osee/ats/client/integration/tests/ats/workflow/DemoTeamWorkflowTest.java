@@ -11,13 +11,12 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
-import org.eclipse.osee.ats.core.client.action.ActionArtifact;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
@@ -55,10 +54,11 @@ public class DemoTeamWorkflowTest {
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Create SAW Test Action title: " + title);
 
-      ActionArtifact actionArt = ActionManager.createAction(null, title, title, ChangeType.Improvement, "1", false,
-         null, aias, new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);
+      ActionResult result =
+         AtsClientService.get().getActionFactory().createAction(null, title, title, ChangeType.Improvement, "1", false,
+            null, aias, new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);
 
-      TeamWorkFlowArtifact teamWf = actionArt.getFirstTeam();
+      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) result.getFirstTeam().getStoreObject();
 
       //*** Transition Action to Analyze
       TransitionHelper helper = new TransitionHelper("Transition to Analyze", Arrays.asList(teamWf),

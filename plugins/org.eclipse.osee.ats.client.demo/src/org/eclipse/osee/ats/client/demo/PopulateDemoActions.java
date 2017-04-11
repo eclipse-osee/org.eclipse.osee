@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
+import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.client.demo.config.DemoDbActionData;
 import org.eclipse.osee.ats.client.demo.config.DemoDbActionData.CreateReview;
@@ -322,11 +323,11 @@ public class PopulateDemoActions extends XNavigateItemAction {
          IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
 
          for (String prefixTitle : aData.prefixTitles) {
-            ActionArtifact actionArt = ActionManager.createAction(null, prefixTitle + " " + aData.postFixTitle,
-               TITLE_PREFIX[x] + " " + aData.postFixTitle, CHANGE_TYPE[x], aData.priority, false, null,
-               aData.getActionableItems(), createdDate, createdBy, null, changes);
-            actionArts.add(actionArt);
-            for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(actionArt)) {
+            ActionResult actionResult = AtsClientService.get().getActionFactory().createAction(null,
+               prefixTitle + " " + aData.postFixTitle, TITLE_PREFIX[x] + " " + aData.postFixTitle, CHANGE_TYPE[x],
+               aData.priority, false, null, aData.getActionableItems(), createdDate, createdBy, null, changes);
+            actionArts.add((ActionArtifact) actionResult.getActionArt());
+            for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(actionResult)) {
                TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get().getServices(),
                   TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
                // Add validation required flag if Decision review is required

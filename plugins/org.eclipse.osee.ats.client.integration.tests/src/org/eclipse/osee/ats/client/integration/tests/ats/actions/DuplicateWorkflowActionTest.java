@@ -24,9 +24,9 @@ import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.demo.api.DemoUsers;
@@ -40,8 +40,8 @@ import org.junit.Test;
  */
 public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
 
-   private TeamWorkFlowArtifact newTeamArt;
-   private TeamWorkFlowArtifact dupArt;
+   private IAtsTeamWorkflow newTeamWf;
+   private IAtsTeamWorkflow dupTeamWf;
 
    @Override
    public DuplicateWorkflowAction createAction() throws OseeCoreException {
@@ -51,7 +51,7 @@ public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
    @Test
    public void testAssigneesAndNotifications() {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
-      TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
+      IAtsTeamWorkflow teamWf = AtsTestUtil.getTeamWf();
 
       List<IAtsUser> assignees = setupAssignees(teamWf);
 
@@ -60,31 +60,34 @@ public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
 
       // new workflow
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Duplicate Workflow");
-      newTeamArt = ActionManager.createTeamWorkflow(teamWf.getParentActionArtifact(), teamWf.getTeamDefinition(),
+      newTeamWf = AtsClientService.get().getActionFactory().createTeamWorkflow(teamWf.getParentAction(),
+         teamWf.getTeamDefinition(),
          AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(teamWf), assignees,
          changes, new Date(), originator, null, CreateTeamOption.Duplicate_If_Exists);
 
-      assertEquals("invalid number of assignees", 2, newTeamArt.getAssignees().size());
+      assertEquals("invalid number of assignees", 2, newTeamWf.getAssignees().size());
       assertEquals("invalid number of notifications", 2,
          changes.getNotifications().getWorkItemNotificationEvents().size());
 
       // duplicate workflow
-      dupArt =
-         (TeamWorkFlowArtifact) teamWf.duplicate(AtsClientService.get().getAtsBranch(), Arrays.asList(AtsAttributeTypes.AtsId));
-      dupArt.initializeNewStateMachine(assignees, new Date(), AtsCoreUsers.SYSTEM_USER, changes);
+      dupTeamWf = AtsClientService.get().getWorkItemFactory().getTeamWf(
+         ((TeamWorkFlowArtifact) teamWf.getStoreObject()).duplicate(AtsClientService.get().getAtsBranch(),
+            Arrays.asList(AtsAttributeTypes.AtsId)));
+      AtsClientService.get().getActionFactory().initializeNewStateMachine(dupTeamWf, assignees, new Date(),
+         AtsCoreUsers.SYSTEM_USER, changes);
 
-      changes.add(dupArt);
+      changes.add(dupTeamWf);
       changes.getNotifications().addWorkItemNotificationEvent(
-         AtsNotificationEventFactory.getWorkItemNotificationEvent(teamWf.getAssignees().iterator().next(), dupArt,
+         AtsNotificationEventFactory.getWorkItemNotificationEvent(teamWf.getAssignees().iterator().next(), dupTeamWf,
             AtsNotifyType.Originator, AtsNotifyType.Assigned, AtsNotifyType.SubscribedTeamOrAi));
 
       assertTrue(changes.getNotifications().getWorkItemNotificationEvents().size() == 4);
-      assertTrue(dupArt.getAssignees().size() == 2);
+      assertTrue(dupTeamWf.getAssignees().size() == 2);
 
       changes.execute();
    }
 
-   private List<IAtsUser> setupAssignees(TeamWorkFlowArtifact teamWf) {
+   private List<IAtsUser> setupAssignees(IAtsTeamWorkflow teamWf) {
       List<IAtsUser> assignees = new LinkedList<>();
       assignees.addAll(teamWf.getAssignees());
       IAtsUser lead =
@@ -95,12 +98,12 @@ public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
 
    @After
    public void tearDown() throws Exception {
-      if (newTeamArt != null) {
-         newTeamArt.deleteAndPersist();
+      if (newTeamWf != null) {
+         ((TeamWorkFlowArtifact) newTeamWf.getStoreObject()).deleteAndPersist();
       }
 
-      if (dupArt != null) {
-         dupArt.deleteAndPersist();
+      if (dupTeamWf != null) {
+         ((TeamWorkFlowArtifact) dupTeamWf.getStoreObject()).deleteAndPersist();
       }
    }
 

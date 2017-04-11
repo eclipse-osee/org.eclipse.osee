@@ -24,9 +24,8 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
-import org.eclipse.osee.ats.core.client.action.ActionArtifact;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.demo.api.DemoActionableItems;
@@ -86,13 +85,13 @@ public class StateResourceTest extends AbstractRestTest {
       form.param("operation", "transition");
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(StateResourceTest.class.getName());
-      ActionArtifact action = ActionManager.createAction(null, StateResourceTest.class.getName(), "description",
-         ChangeType.Improvement, "1", false, null,
+      ActionResult result = AtsClientService.get().getActionFactory().createAction(null,
+         StateResourceTest.class.getName(), "description", ChangeType.Improvement, "1", false, null,
          ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName()),
             AtsClientService.get()),
          new Date(), AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith), null,
          changes);
-      TeamWorkFlowArtifact teamWf = action.getFirstTeam();
+      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) result.getFirstTeam().getStoreObject();
       changes.execute();
       Assert.assertEquals("Endorse", teamWf.getCurrentStateName());
 

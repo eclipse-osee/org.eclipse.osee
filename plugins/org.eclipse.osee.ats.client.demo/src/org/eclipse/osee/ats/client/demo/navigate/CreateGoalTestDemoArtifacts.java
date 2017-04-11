@@ -23,10 +23,10 @@ import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
-import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
@@ -106,11 +106,11 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
    }
 
    private void createAction7(IAtsChangeSet changes, GoalArtifact facilitiesGoal) throws OseeCoreException {
-      Artifact action =
-         ActionManager.createAction(null, "Add the Improvement", "Description", ChangeType.Improvement, "4", false,
-            null, ActionableItems.getActionableItems(Arrays.asList("Network"), AtsClientService.get().getServices()),
-            createdDate, createdBy, null, changes);
-      facilitiesGoal.addMember(action);
+      ActionResult action = AtsClientService.get().getActionFactory().createAction(null, "Add the Improvement",
+         "Description", ChangeType.Improvement, "4", false, null,
+         ActionableItems.getActionableItems(Arrays.asList("Network"), AtsClientService.get().getServices()),
+         createdDate, createdBy, null, changes);
+      facilitiesGoal.addMember(action.getActionArt());
       changes.add(facilitiesGoal);
    }
 
@@ -118,8 +118,8 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getName());
       NewTaskDatas newTaskDatas = new NewTaskDatas();
       for (String msaTool : Arrays.asList("Backups", "Computers", "Network")) {
-         Artifact action = ActionManager.createAction(null, "Fix " + msaTool + " button", "Description",
-            ChangeType.Problem, "4", false, null,
+         ActionResult action = AtsClientService.get().getActionFactory().createAction(null,
+            "Fix " + msaTool + " button", "Description", ChangeType.Problem, "4", false, null,
             ActionableItems.getActionableItems(Arrays.asList(msaTool), AtsClientService.get().getServices()),
             createdDate, createdBy, null, changes);
          facilitiesGoal.addMember(ActionManager.getFirstTeam(action));
@@ -137,8 +137,8 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
 
       changes = AtsClientService.get().createChangeSet(getName());
       for (IAtsTask task : createTasks) {
-         facilitiesGoal.addMember((Artifact) task.getStoreObject());
-         sawCodeGoal.addMember((Artifact) task.getStoreObject());
+         facilitiesGoal.addMember(task.getStoreObject());
+         sawCodeGoal.addMember(task.getStoreObject());
          changes.add(task);
       }
       changes.execute();
@@ -147,8 +147,9 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
    }
 
    private void createAction3(IAtsChangeSet changes, GoalArtifact sawCodeGoal, GoalArtifact cisReqGoal) throws OseeCoreException {
-      Artifact action = ActionManager.createAction(null, "Remove Workflow button", "Description", ChangeType.Problem,
-         "4", false, null, ActionableItems.getActionableItems(Arrays.asList("SAW Code", "CIS Requirements"),
+      ActionResult action = AtsClientService.get().getActionFactory().createAction(null, "Remove Workflow button",
+         "Description", ChangeType.Problem, "4", false, null,
+         ActionableItems.getActionableItems(Arrays.asList("SAW Code", "CIS Requirements"),
             AtsClientService.get().getServices()),
          createdDate, createdBy, null, changes);
       sawCodeGoal.addMember(ActionManager.getFirstTeam(action));
@@ -156,20 +157,20 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
    }
 
    private void createAction2(IAtsChangeSet changes, GoalArtifact sawCodeGoal, GoalArtifact cisReqGoal) throws OseeCoreException {
-      ActionArtifact action =
-         ActionManager.createAction(null, "Add CDB Check Signals", "Description", ChangeType.Problem, "4", false, null,
-            ActionableItems.getActionableItems(Arrays.asList("SAW Code", "CIS Requirements"),
-               AtsClientService.get().getServices()),
-            createdDate, createdBy, null, changes);
+      ActionResult action = AtsClientService.get().getActionFactory().createAction(null, "Add CDB Check Signals",
+         "Description", ChangeType.Problem, "4", false, null,
+         ActionableItems.getActionableItems(Arrays.asList("SAW Code", "CIS Requirements"),
+            AtsClientService.get().getServices()),
+         createdDate, createdBy, null, changes);
       sawCodeGoal.addMember(ActionManager.getFirstTeam(action));
       cisReqGoal.addMember(ActionManager.getFirstTeam(action));
    }
 
    private TeamWorkFlowArtifact createAction1(IAtsChangeSet changes, GoalArtifact sawCodeGoal) throws OseeCoreException {
-      Artifact action =
-         ActionManager.createAction(null, "Fix this model", "Description", ChangeType.Problem, "2", false, null,
-            ActionableItems.getActionableItems(Arrays.asList("SAW Code"), AtsClientService.get().getServices()),
-            createdDate, createdBy, null, changes);
+      ActionResult action = AtsClientService.get().getActionFactory().createAction(null, "Fix this model",
+         "Description", ChangeType.Problem, "2", false, null,
+         ActionableItems.getActionableItems(Arrays.asList("SAW Code"), AtsClientService.get().getServices()),
+         createdDate, createdBy, null, changes);
       sawCodeGoal.addMember(ActionManager.getFirstTeam(action));
       TeamWorkFlowArtifact teamArt = ActionManager.getFirstTeam(action);
       PeerToPeerReviewArtifact peerReviewArt =

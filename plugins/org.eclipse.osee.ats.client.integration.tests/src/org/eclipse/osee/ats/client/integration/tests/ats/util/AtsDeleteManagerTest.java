@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
+import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
@@ -184,11 +185,11 @@ public class AtsDeleteManagerTest {
 
       Date createdDate = new Date();
       IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
-      Artifact actionArt = ActionManager.createAction(null, testName.name(), "Description", ChangeType.Improvement, "2",
-         false, null, actionableItems, createdDate, createdBy, null, changes);
+      ActionResult result = AtsClientService.get().getActionFactory().createAction(null, testName.name(), "Description",
+         ChangeType.Improvement, "2", false, null, actionableItems, createdDate, createdBy, null, changes);
 
       TeamWorkFlowArtifact teamArt = null;
-      for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
+      for (TeamWorkFlowArtifact team : ActionManager.getTeams(result)) {
          if (team.getTeamDefinition().getName().contains("Code")) {
             teamArt = team;
          }

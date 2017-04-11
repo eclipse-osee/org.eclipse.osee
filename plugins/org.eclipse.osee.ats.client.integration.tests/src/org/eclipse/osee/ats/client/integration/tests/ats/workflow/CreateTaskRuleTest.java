@@ -22,16 +22,14 @@ import org.eclipse.osee.ats.api.workdef.AddRuleData;
 import org.eclipse.osee.ats.api.workdef.CreateTaskRuleDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsRuleDefinition;
 import org.eclipse.osee.ats.api.workdef.NullRuleDefinition;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.After;
 import org.junit.Assert;
@@ -118,14 +116,14 @@ public class CreateTaskRuleTest {
       // Create new Workflow - rule should be triggered
       IAtsUser currentUser = atsClient.getUserService().getCurrentUser();
       IAtsChangeSet changes = atsClient.getStoreService().createAtsChangeSet(getClass().getSimpleName(), currentUser);
-      Pair<IAtsAction, Collection<IAtsTeamWorkflow>> pair = atsClient.getActionFactory().createAction(currentUser,
-         getClass().getSimpleName(), title, ChangeType.Improvement, "priority", false, null,
+      ActionResult result = atsClient.getActionFactory().createAction(currentUser, getClass().getSimpleName(), title,
+         ChangeType.Improvement, "priority", false, null,
          ActionableItems.getActionableItems(Arrays.asList(actionableItem.getName()), AtsClientService.get()),
          new Date(), currentUser, null, changes);
       changes.execute();
 
       // verify that tasks have been created
-      Collection<IAtsTask> tasks = atsClient.getTaskService().getTasks(pair.getSecond().iterator().next());
+      Collection<IAtsTask> tasks = atsClient.getTaskService().getTasks(result.getFirstTeam());
       Assert.assertEquals("There can be only one", 1, tasks.size());
       IAtsTask next = tasks.iterator().next();
       Assert.assertEquals("Name should be *Create a Task from Rule*", "Create a Task from Rule - CreateTaskRuleTest",

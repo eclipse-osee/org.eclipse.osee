@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.ai.ModifyActionableItems;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitionUtility;
@@ -322,7 +321,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
       @Override
       public void done(IJobChangeEvent event) {
          super.done(event);
-         List<TeamWorkFlowArtifact> newTeamWfs = op.getNewTeamWfs();
+         List<IAtsTeamWorkflow> newTeamWfs = op.getNewTeamWfs();
          refreshTables(op.getTeamWf());
          if (!newTeamWfs.isEmpty()) {
             AtsUtil.openInAtsWorldEditor("New Team Workflows", newTeamWfs);
@@ -333,7 +332,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
    public class ModifyActionableItemOperation extends AbstractOperation {
 
       private final ModifyActionableItems job;
-      List<TeamWorkFlowArtifact> newTeamWfs = new ArrayList<>();
+      List<IAtsTeamWorkflow> newTeamWfs = new ArrayList<>();
       private final TeamWorkFlowArtifact teamWf;
 
       public TeamWorkFlowArtifact getTeamWf() {
@@ -354,10 +353,11 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
          IAtsChangeSet changes = AtsClientService.get().createChangeSet(getName());
          Date createdDate = new Date();
          for (CreateTeamData data : job.getTeamDatas()) {
-            TeamWorkFlowArtifact teamArt = ActionManager.createTeamWorkflow(teamWf.getParentActionArtifact(),
-               data.getTeamDef(), data.getActionableItems(), new LinkedList<IAtsUser>(data.getAssignees()), changes,
-               createdDate, data.getCreatedBy(), null, data.getCreateTeamOption());
-            newTeamWfs.add(teamArt);
+            IAtsTeamWorkflow newTeamWf =
+               AtsClientService.get().getActionFactory().createTeamWorkflow(teamWf.getParentActionArtifact(),
+                  data.getTeamDef(), data.getActionableItems(), new LinkedList<IAtsUser>(data.getAssignees()), changes,
+                  createdDate, data.getCreatedBy(), null, data.getCreateTeamOption());
+            newTeamWfs.add(newTeamWf);
          }
 
          for (IAtsActionableItem checkedAi : job.getAddAis()) {
@@ -376,7 +376,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
          }
       }
 
-      public List<TeamWorkFlowArtifact> getNewTeamWfs() {
+      public List<IAtsTeamWorkflow> getNewTeamWfs() {
          return newTeamWfs;
       }
    }

@@ -29,6 +29,8 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.ActionResult;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
@@ -36,7 +38,6 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.demo.api.DemoActionableItems;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.ats.demo.api.DemoTeam;
@@ -100,14 +101,14 @@ public class DemoTestUtil {
     * Creates an action with the name title and demo code workflow
     */
    public static TeamWorkFlowArtifact createSimpleAction(String title, IAtsChangeSet changes) throws OseeCoreException {
-      Artifact actionArt =
-         ActionManager.createAction(null, title, "Description", ChangeType.Improvement, "2", false, null,
-            ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName()),
-               AtsClientService.get()),
-            new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);
+      ActionResult result = AtsClientService.get().getActionFactory().createAction(null, title, "Description",
+         ChangeType.Improvement, "2", false, null,
+         ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName()),
+            AtsClientService.get()),
+         new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);
 
       TeamWorkFlowArtifact teamArt = null;
-      for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
+      for (TeamWorkFlowArtifact team : ActionManager.getTeams(result)) {
          if (team.getTeamDefinition().getName().contains("Code")) {
             teamArt = team;
          }
@@ -123,16 +124,16 @@ public class DemoTestUtil {
       return getActionableItems(demoActionableItems).iterator().next();
    }
 
-   public static TeamWorkFlowArtifact addTeamWorkflow(Artifact actionArt, String title, IAtsChangeSet changes) throws OseeCoreException {
+   public static TeamWorkFlowArtifact addTeamWorkflow(IAtsAction action, String title, IAtsChangeSet changes) throws OseeCoreException {
       Set<IAtsActionableItem> actionableItems = getActionableItems(DemoActionableItems.SAW_Test);
       Collection<IAtsTeamDefinition> teamDefs = TeamDefinitions.getImpactedTeamDefs(actionableItems);
 
-      ActionManager.createTeamWorkflow(actionArt, teamDefs.iterator().next(), actionableItems,
+      AtsClientService.get().getActionFactory().createTeamWorkflow(action, teamDefs.iterator().next(), actionableItems,
          Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), changes, new Date(),
          AtsClientService.get().getUserService().getCurrentUser(), null);
 
       TeamWorkFlowArtifact teamArt = null;
-      for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
+      for (TeamWorkFlowArtifact team : ActionManager.getTeams(action)) {
          if (team.getTeamDefinition().getName().contains("Test")) {
             teamArt = team;
          }
@@ -171,7 +172,8 @@ public class DemoTestUtil {
       if (unCommittedWorkflows == null) {
          unCommittedWorkflows = new HashMap<>();
          for (Artifact art : ArtifactQuery.getArtifactListFromName(
-            "SAW (uncommitted) More Reqt Changes for Diagram View", AtsClientService.get().getAtsBranch(), EXCLUDE_DELETED)) {
+            "SAW (uncommitted) More Reqt Changes for Diagram View", AtsClientService.get().getAtsBranch(),
+            EXCLUDE_DELETED)) {
             if (art.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow)) {
                unCommittedWorkflows.put(DemoWorkType.Code, art);
             } else if (art.isOfType(DemoArtifactTypes.DemoTestTeamWorkflow)) {

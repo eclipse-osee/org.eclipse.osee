@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.actions.wizard;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 import java.util.logging.Level;
@@ -23,14 +22,12 @@ import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -48,7 +45,7 @@ public class NewActionJob extends Job {
    private final NewActionWizard wizard;
    private final INewActionListener newActionListener;
    private boolean openOnComplete = true;
-   private Pair<IAtsAction, Collection<IAtsTeamWorkflow>> result;
+   private ActionResult result;
 
    public NewActionJob(String title, String desc, ChangeType changeType, String priority, Date needByDate, boolean validationRequired, Set<IAtsActionableItem> actionableItems, NewActionWizard wizard, INewActionListener newActionListener) {
       super("Creating New Action");
@@ -79,7 +76,7 @@ public class NewActionJob extends Job {
             AtsClientService.get().getUserService().getCurrentUser(), newActionListener, changes);
 
          if (wizard != null) {
-            wizard.notifyAtsWizardItemExtensions((Artifact) result.getFirst().getStoreObject(), changes);
+            wizard.notifyAtsWizardItemExtensions((Artifact) result.getFirstTeam().getStoreObject(), changes);
          }
 
          if (monitor != null) {
@@ -91,7 +88,7 @@ public class NewActionJob extends Job {
             // Because this is a job, it will automatically kill any popups that are created during.
             // Thus, if multiple teams were selected to create, don't popup on openAction or dialog
             // will exception out when it is killed at the end of this job.
-            AtsUtil.openATSAction((Artifact) result.getFirst().getStoreObject(), AtsOpenOption.OpenAll);
+            AtsUtil.openATSAction((Artifact) result.getFirstTeam().getStoreObject(), AtsOpenOption.OpenAll);
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -104,7 +101,7 @@ public class NewActionJob extends Job {
       return Status.OK_STATUS;
    }
 
-   public Pair<IAtsAction, Collection<IAtsTeamWorkflow>> getResults() {
+   public ActionResult getResults() {
       return result;
    }
 

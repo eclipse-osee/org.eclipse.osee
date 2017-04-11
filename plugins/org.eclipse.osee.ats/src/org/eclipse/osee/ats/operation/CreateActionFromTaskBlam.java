@@ -23,8 +23,8 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.client.action.ActionArtifact;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
+import org.eclipse.osee.ats.api.workflow.ActionResult;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
@@ -128,14 +128,15 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
          if (!Strings.isValid(useTitle)) {
             useTitle = task.getName();
          }
-         ActionArtifact action =
-            ActionManager.createAction(monitor, useTitle, getDescription(task), changeType, priority, false, null, aias,
-               new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);
+         ActionResult result = AtsClientService.get().getActionFactory().createAction(
+            AtsClientService.get().getUserService().getCurrentUser(), useTitle, getDescription(task), changeType,
+            priority, false, null, aias, new Date(), AtsClientService.get().getUserService().getCurrentUser(), null,
+            changes);
 
-         for (TeamWorkFlowArtifact teamArt : action.getTeams()) {
-            newTeamArts.add(teamArt);
-            teamArt.addRelation(CoreRelationTypes.SupportingInfo_SupportingInfo, task);
-            changes.add(teamArt);
+         for (IAtsTeamWorkflow teamWf : result.getTeams()) {
+            newTeamArts.add((TeamWorkFlowArtifact) teamWf.getStoreObject());
+            changes.relate(teamWf, CoreRelationTypes.SupportingInfo_SupportingInfo, task);
+            changes.add(teamWf);
          }
       }
       changes.execute();

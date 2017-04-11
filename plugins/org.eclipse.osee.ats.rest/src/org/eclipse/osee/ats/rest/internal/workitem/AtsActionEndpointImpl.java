@@ -33,8 +33,8 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -208,12 +208,12 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       }
 
       // create action
-      IAtsAction action = atsServer.getActionFactory().createAction(atsUser, title, description, changeType, priority,
-         false, null, aias, new Date(), atsUser, null, changes).getFirst();
+      ActionResult action = atsServer.getActionFactory().createAction(atsUser, title, description, changeType, priority,
+         false, null, aias, new Date(), atsUser, null, changes);
       changes.execute();
 
       // Redirect to action ui
-      return RestUtil.redirect(action.getTeamWorkflows(), ATS_UI_ACTION_PREFIX, atsServer);
+      return RestUtil.redirect(action.getTeamWfs(), ATS_UI_ACTION_PREFIX, atsServer);
    }
 
 }
