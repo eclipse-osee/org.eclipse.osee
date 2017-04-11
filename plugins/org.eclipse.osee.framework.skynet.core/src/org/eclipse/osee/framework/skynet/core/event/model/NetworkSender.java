@@ -35,4 +35,9 @@ public class NetworkSender implements Serializable {
       this.port = port;
       this.clientVersion = clientVersion;
    }
+
+   @Override
+   public String toString() {
+      return "NetworkSender [source=" + sourceObject + ", sessionId=" + sessionId + ", machName=" + machineName + ", userId=" + userId + ", machIp=" + machineIp + ", clientVer=" + clientVersion + ", port=" + port + "]";
+   }
 }

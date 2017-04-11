@@ -54,7 +54,7 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements Ha
 
    @Override
    public String toString() {
-      return String.format("[%s]", getGuid());
+      return String.format("branchId = %s; artType = %s; guid = %s", branch.getId(), artifactType.getId(), getGuid());
    }
 
    @Override

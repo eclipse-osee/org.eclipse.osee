@@ -23,7 +23,7 @@ public class TransactionChange implements FrameworkEvent {
 
    /**
     * Gets the value of the branchUuid property.
-    * 
+    *
     * @return possible object is {@link String }
     */
    public long getBranchUuid() {
@@ -32,7 +32,7 @@ public class TransactionChange implements FrameworkEvent {
 
    /**
     * Sets the value of the branchUuid property.
-    * 
+    *
     * @param value allowed object is {@link String }
     */
    public void setBranchUuid(long value) {
@@ -61,7 +61,7 @@ public class TransactionChange implements FrameworkEvent {
     * the artifacts property.
     * <p>
     * For example, to add a new item, do as follows:
-    * 
+    *
     * <pre>
     * getArtifacts().add(newItem);
     * </pre>
@@ -70,5 +70,10 @@ public class TransactionChange implements FrameworkEvent {
     */
    public Collection<DefaultBasicGuidArtifact> getArtifacts() {
       return artifacts;
+   }
+
+   @Override
+   public String toString() {
+      return "Transaction [branchId=" + branchUuid + ", transId=" + transactionId + ", arts=" + artifacts + "]";
    }
 }

@@ -11,18 +11,18 @@
 
 package org.eclipse.osee.framework.skynet.core.utility;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
@@ -36,15 +36,16 @@ public class PurgeTransactionOperation extends AbstractOperation {
 
    private final List<Long> txIdsToDelete;
    public static interface PurgeTransactionListener {
-      void onPurgeTransactionSuccess(Collection<TransactionRecord> transactions);
+      void onPurgeTransactionSuccess(List<Long> txIdsToDelete, Pair<TransactionEvent, Map<String, Long>> transEventAndIds);
    }
 
    private final Set<PurgeTransactionListener> listeners = new CopyOnWriteArraySet<>();
-   private final Collection<TransactionRecord> changedTransactions = new ArrayList<>();
+   private final Pair<TransactionEvent, Map<String, Long>> transEventAndIds;
 
-   public PurgeTransactionOperation(List<Long> txIdsToDelete) {
+   public PurgeTransactionOperation(List<Long> txIdsToDelete, Pair<TransactionEvent, Map<String, Long>> transEventAndIds) {
       super("Purge transactions " + txIdsToDelete, Activator.PLUGIN_ID, NullOperationLogger.getSingleton());
       this.txIdsToDelete = txIdsToDelete;
+      this.transEventAndIds = transEventAndIds;
    }
 
    public void addListener(PurgeTransactionListener listener) {
@@ -69,7 +70,7 @@ public class PurgeTransactionOperation extends AbstractOperation {
          Response result = txEndpoint.purgeTxs(deleteTxs);
          if (Status.OK.getStatusCode() == result.getStatus()) {
             for (PurgeTransactionListener listener : listeners) {
-               listener.onPurgeTransactionSuccess(changedTransactions);
+               listener.onPurgeTransactionSuccess(txIdsToDelete, transEventAndIds);
             }
          }
       } catch (Exception ex) {

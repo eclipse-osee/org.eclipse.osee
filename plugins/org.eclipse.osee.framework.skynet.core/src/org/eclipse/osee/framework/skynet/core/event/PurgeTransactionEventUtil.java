@@ -10,21 +10,30 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionChange;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 
 /**
  * @author Roberto E. Escobar
@@ -35,11 +44,31 @@ public final class PurgeTransactionEventUtil {
       //Utility Class
    }
 
-   public static TransactionEvent createPurgeTransactionEvent(Collection<TransactionRecord> purgedTransactions) {
+   public static Pair<TransactionEvent, Map<String, Long>> createPurgeTransactionEvent(Collection<TransactionRecord> purgedTransactions) {
       TransactionEvent transactionEvent = new TransactionEvent();
       transactionEvent.setEventType(TransactionEventType.Purged);
+      Map<String, Long> guidToId = new HashMap<>();
+      for (TransactionRecord transId : purgedTransactions) {
 
-      return transactionEvent;
+         TransactionChange txChg = new TransactionChange();
+         txChg.setBranchUuid(transId.getBranchId());
+         txChg.setTransactionId(transId.getId().intValue());
+         transactionEvent.getTransactionChanges().add(txChg);
+
+         Collection<Change> changes = new ArrayList<>();
+         IOperation operation = ChangeManager.comparedToPreviousTx(transId, changes);
+         Operations.executeWorkAndCheckStatus(operation);
+         if (!changes.isEmpty()) {
+            for (Change change : changes) {
+               Artifact art = ArtifactQuery.getArtifactFromId(change.getArtId(), transId.getBranch());
+               guidToId.put(art.getGuid(), art.getId());
+               DefaultBasicGuidArtifact guidArt = new DefaultBasicGuidArtifact(change.getBranch(),
+                  ArtifactTypeId.valueOf(change.getArtifactType().getId()), art.getGuid());
+               txChg.getArtifacts().add(guidArt);
+            }
+         }
+      }
+      return new Pair<TransactionEvent, Map<String, Long>>(transactionEvent, guidToId);
    }
 
    public static void handleRemotePurgeTransactionEvent(TransactionEvent transEvent) {

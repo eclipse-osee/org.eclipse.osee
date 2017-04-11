@@ -28,7 +28,7 @@ public class TransactionEvent implements FrameworkEvent, HasNetworkSender {
     * the artifacts property.
     * <p>
     * For example, to add a new item, do as follows:
-    * 
+    *
     * <pre>
     * getArtifacts().add(newItem);
     * </pre>
@@ -45,7 +45,7 @@ public class TransactionEvent implements FrameworkEvent, HasNetworkSender {
 
    /**
     * Gets the value of the networkSender property.
-    * 
+    *
     * @return possible object is {@link NetworkSender }
     */
    @Override
@@ -55,7 +55,7 @@ public class TransactionEvent implements FrameworkEvent, HasNetworkSender {
 
    /**
     * Sets the value of the networkSender property.
-    * 
+    *
     * @param value allowed object is {@link NetworkSender }
     */
    @Override
@@ -69,6 +69,11 @@ public class TransactionEvent implements FrameworkEvent, HasNetworkSender {
 
    public void setEventType(TransactionEventType eventType) {
       this.eventType = eventType;
+   }
+
+   @Override
+   public String toString() {
+      return "TransactionEvent [type=" + eventType + ", sender=" + networkSender + ", txs=" + transactions + "]";
    }
 
 }

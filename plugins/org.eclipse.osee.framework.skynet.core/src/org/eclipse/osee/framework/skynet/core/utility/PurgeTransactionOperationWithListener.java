@@ -14,16 +14,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
+import org.eclipse.osee.activity.api.Activity;
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.PurgeTransactionEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperation.PurgeTransactionListener;
 
 public class PurgeTransactionOperationWithListener {
@@ -42,17 +47,30 @@ public class PurgeTransactionOperationWithListener {
 
    public static IOperation getPurgeTransactionOperationById(List<Long> txIdsToDelete) throws OseeCoreException {
 
-      final PurgeTransactionOperation op = new PurgeTransactionOperation(txIdsToDelete);
+      Collection<TransactionRecord> changedTransactions = new ArrayList<>();
+      for (Long txId : txIdsToDelete) {
+         changedTransactions.add(TransactionManager.getTransaction(TransactionId.valueOf(txId)));
+      }
+      Pair<TransactionEvent, Map<String, Long>> transEventAndIds =
+         PurgeTransactionEventUtil.createPurgeTransactionEvent(changedTransactions);
+
+      final PurgeTransactionOperation op = new PurgeTransactionOperation(txIdsToDelete, transEventAndIds);
 
       PurgeTransactionListener listener = new PurgeTransactionListener() {
 
          @Override
-         public void onPurgeTransactionSuccess(Collection<TransactionRecord> transactions) {
-            TransactionEvent transactionEvent = PurgeTransactionEventUtil.createPurgeTransactionEvent(transactions);
+         public void onPurgeTransactionSuccess(List<Long> transactions, Pair<TransactionEvent, Map<String, Long>> transEventAndIds) {
             try {
-               OseeEventManager.kickTransactionEvent(op, transactionEvent);
+               OseeEventManager.kickTransactionEvent(op, transEventAndIds.getFirst());
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, "Error sending purge transaction events", ex);
+            }
+            try {
+               String message = String.format("Purge Transaction [%s] - Guid to Id Map [%s]",
+                  transEventAndIds.getFirst().toString(), transEventAndIds.getSecond().toString());
+               ActivityLogJaxRsService.create(Activity.PURGE_TRANSACTION, 0L, ActivityLog.COMPLETE_STATUS, message);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, "Error activity logging purge transaction", ex);
             }
          }
       };
