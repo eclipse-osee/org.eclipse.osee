@@ -777,8 +777,14 @@ artifactType "Indirect Software Requirement" extends "Abstract Software Requirem
 	id 25
 }
 
-artifactType "Implementation Details" extends "Indirect Software Requirement" {
+artifactType "Implementation Details" extends "MS Word Template" {
 	id 26
+	attribute "Data Rights Classification"
+	attribute "Data Rights Basis"
+	attribute "Subject Matter Expert"	
+	attribute "Subsystem"	
+	attribute "CSCI"
+	attribute "Partition"		
 }
 
 artifactType "Implementation Details Procedure" extends "Implementation Details" {
@@ -1602,6 +1608,16 @@ relationType "Supercedes" {
 	sideAArtifactType "Artifact"
 	sideBName "superceded by"
 	sideBArtifactType "Artifact"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
+}
+
+relationType "Implementation Info" {
+	id 3094530921867614694
+	sideAName "software requirement"
+	sideAArtifactType "Abstract Software Requirement"
+	sideBName "implementation details"
+	sideBArtifactType "Implementation Details"
 	defaultOrderType Unordered
 	multiplicity MANY_TO_MANY
 }
