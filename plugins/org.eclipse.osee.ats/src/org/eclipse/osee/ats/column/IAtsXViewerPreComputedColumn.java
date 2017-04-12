@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Donald G. Dunne

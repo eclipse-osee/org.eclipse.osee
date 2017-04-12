@@ -17,9 +17,9 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -59,8 +59,8 @@ public class OperationalImpactDesciptionColumn extends XViewerValueColumn {
             return ((TeamWorkFlowArtifact) element).getSoleAttributeValue(
                AtsAttributeTypes.OperationalImpactDescription, "");
          }
-         if (Artifacts.isOfType(element, AtsArtifactTypes.Action) && ActionManager.getTeams(element).size() == 1) {
-            return getColumnText(ActionManager.getFirstTeam(element), column, columnIndex);
+         if (Artifacts.isOfType(element, AtsArtifactTypes.Action) && AtsClientService.get().getWorkItemService().getTeams(element).size() == 1) {
+            return getColumnText(AtsClientService.get().getWorkItemService().getFirstTeam(element), column, columnIndex);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

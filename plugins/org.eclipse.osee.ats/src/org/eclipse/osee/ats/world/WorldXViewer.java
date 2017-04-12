@@ -46,7 +46,6 @@ import org.eclipse.osee.ats.column.GoalOrderColumn;
 import org.eclipse.osee.ats.column.IPersistAltLeftClickProvider;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionArtifactRollup;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.client.actions.ISelectedTeamWorkflowArtifacts;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
@@ -55,6 +54,7 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -65,6 +65,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -475,8 +476,9 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             }
             if (Artifacts.isOfType(item.getData(), AtsArtifactTypes.Action)) {
                try {
-                  if (ActionManager.getTeams(item.getData()).size() == 1) {
-                     teamArts.addAll(ActionManager.getTeams(item.getData()));
+                  if (AtsClientService.get().getWorkItemService().getTeams(item.getData()).size() == 1) {
+                     teamArts.addAll(Collections.castAll(
+                        AtsObjects.getArtifacts(AtsClientService.get().getWorkItemService().getTeams(item.getData()))));
                   }
                } catch (OseeCoreException ex) {
                   // Do Nothing
@@ -491,8 +493,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
     * @return all selected Workflow and any workflow that have Actions with single workflow
     */
    @Override
-   public Set<AbstractWorkflowArtifact> getSelectedWorkflowArtifacts() {
-      Set<AbstractWorkflowArtifact> smaArts = new HashSet<>();
+   public Set<Artifact> getSelectedWorkflowArtifacts() {
+      Set<Artifact> smaArts = new HashSet<>();
       try {
          Iterator<?> i = ((IStructuredSelection) getSelection()).iterator();
          while (i.hasNext()) {
@@ -500,7 +502,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             if (obj instanceof AbstractWorkflowArtifact) {
                smaArts.add((AbstractWorkflowArtifact) obj);
             } else if (Artifacts.isOfType(obj, AtsArtifactTypes.Action)) {
-               smaArts.addAll(ActionManager.getTeams(obj));
+               smaArts.addAll(Collections.castAll(
+                  AtsObjects.getArtifacts(AtsClientService.get().getWorkItemService().getTeams(obj))));
             }
          }
       } catch (OseeCoreException ex) {

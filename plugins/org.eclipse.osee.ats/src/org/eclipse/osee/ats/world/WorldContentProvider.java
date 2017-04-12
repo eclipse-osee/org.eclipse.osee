@@ -23,7 +23,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
@@ -32,6 +31,7 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -84,8 +84,9 @@ public class WorldContentProvider implements ITreeContentProvider {
                return new Object[] {};
             }
             if (artifact.isOfType(AtsArtifactTypes.Action)) {
-               relatedArts.addAll(ActionManager.getTeams(artifact));
-               return ActionManager.getTeams(artifact).toArray();
+               relatedArts.addAll(org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
+                  AtsObjects.getArtifacts(AtsClientService.get().getWorkItemService().getTeams(artifact))));
+               return AtsClientService.get().getWorkItemService().getTeams(artifact).toArray();
             }
             if (artifact.isOfType(AtsArtifactTypes.Goal)) {
                List<Artifact> arts = AtsClientService.get().getGoalMembersCache().getMembers((GoalArtifact) artifact);

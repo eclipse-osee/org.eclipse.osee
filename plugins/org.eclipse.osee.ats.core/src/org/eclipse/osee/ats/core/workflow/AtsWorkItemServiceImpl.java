@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
+import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
@@ -31,12 +32,14 @@ import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.ai.ActionableItemManager;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.validator.AtsXWidgetValidateManager;
 import org.eclipse.osee.ats.core.workflow.note.ArtifactNote;
 import org.eclipse.osee.ats.core.workflow.note.AtsWorkItemNotes;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -85,18 +88,23 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
-   public IAtsTeamWorkflow getFirstTeam(IAtsAction action) throws OseeCoreException {
-      Collection<IAtsTeamWorkflow> related = getTeams(action);
+   public IAtsTeamWorkflow getFirstTeam(Object object) throws OseeCoreException {
+      Collection<IAtsTeamWorkflow> related = getTeams(object);
       return related.isEmpty() ? null : related.iterator().next();
    }
 
    @Override
-   public Collection<IAtsTeamWorkflow> getTeams(IAtsAction action) {
-      ArtifactId artifact = services.getArtifactResolver().get(action);
-      Conditions.checkNotNull(artifact, "action", "Can't Find Artifact matching [%s]", action.toString());
-      Collection<IAtsTeamWorkflow> related = services.getRelationResolver().getRelated(action,
-         AtsRelationTypes.ActionToWorkflow_WorkFlow, IAtsTeamWorkflow.class);
-      return related;
+   public Collection<IAtsTeamWorkflow> getTeams(Object object) {
+      List<IAtsTeamWorkflow> teams = new LinkedList<>();
+      if (object instanceof IAtsAction) {
+         for (ArtifactId teamWfArt : services.getRelationResolver().getRelated((IAtsAction) object,
+            AtsRelationTypes.ActionToWorkflow_WorkFlow)) {
+            teams.add(services.getWorkItemFactory().getTeamWf(teamWfArt));
+         }
+      } else if (object instanceof ActionResult) {
+         return Collections.castAll(AtsObjects.getArtifacts(((ActionResult) object).getTeamWfArts()));
+      }
+      return teams;
    }
 
    @Override

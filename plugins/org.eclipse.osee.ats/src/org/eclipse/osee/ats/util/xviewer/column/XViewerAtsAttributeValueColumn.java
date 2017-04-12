@@ -25,11 +25,11 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -141,7 +141,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
          }
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action) && (isActionRollupWithDefault())) {
             Set<String> strs = new LinkedHashSet<>();
-            for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
+            for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(element)) {
                String str = getColumnText(team, column, columnIndex);
                if (Strings.isValid(str)) {
                   strs.add(str);

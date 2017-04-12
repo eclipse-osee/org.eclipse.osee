@@ -16,6 +16,7 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
@@ -69,6 +70,9 @@ public class ActionableItemOwner extends XViewerAtsColumn implements IXViewerVal
 
    public static Set<User> getActionableItemOwners(Object element) throws OseeCoreException {
       Set<User> users = new HashSet<>();
+      if (element instanceof IAtsWorkItem) {
+         return getActionableItemOwners(((IAtsWorkItem) element).getStoreObject());
+      }
       if (element instanceof ActionArtifact) {
          for (TeamWorkFlowArtifact teamArt : ((ActionArtifact) element).getTeams()) {
             users.addAll(getActionableItemOwners(teamArt));

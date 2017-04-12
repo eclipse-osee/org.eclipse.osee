@@ -22,7 +22,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -74,8 +75,8 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
          if (treeItem.getData() instanceof Artifact) {
             Artifact useArt = (Artifact) treeItem.getData();
             if (useArt.isOfType(AtsArtifactTypes.Action)) {
-               if (ActionManager.getTeams(useArt).size() == 1) {
-                  useArt = ActionManager.getFirstTeam(useArt);
+               if (AtsClientService.get().getWorkItemService().getTeams(useArt).size() == 1) {
+                  useArt = (Artifact) AtsClientService.get().getWorkItemService().getFirstTeam(useArt).getStoreObject();
                } else {
                   return false;
                }
@@ -128,8 +129,9 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
             Artifact actionArt = (Artifact) element;
             groups.addAll(actionArt.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Group));
             // Roll up if same for all children
-            for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
-               groups.addAll(team.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Group));
+            for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(actionArt)) {
+               groups.addAll(Collections.castAll(AtsClientService.get().getRelationResolver().getRelatedArtifacts(team,
+                  CoreRelationTypes.Universal_Grouping__Group)));
             }
             return Artifacts.toString("; ", groups);
          }

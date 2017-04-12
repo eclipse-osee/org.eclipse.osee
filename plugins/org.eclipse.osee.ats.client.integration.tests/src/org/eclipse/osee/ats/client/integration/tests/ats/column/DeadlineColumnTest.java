@@ -44,7 +44,8 @@ public class DeadlineColumnTest {
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(CancelledDateColumnTest.class.getSimpleName());
       TeamWorkFlowArtifact teamArt =
-         DemoTestUtil.createSimpleAction(CancelledDateColumnTest.class.getSimpleName(), changes);
+         (TeamWorkFlowArtifact) DemoTestUtil.createSimpleAction(CancelledDateColumnTest.class.getSimpleName(),
+            changes).getStoreObject();
       changes.execute();
 
       Assert.assertNull(DeadlineColumn.getDate(teamArt));

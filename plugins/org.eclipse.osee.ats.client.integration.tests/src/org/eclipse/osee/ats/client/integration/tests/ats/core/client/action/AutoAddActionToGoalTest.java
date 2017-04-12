@@ -19,10 +19,8 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -47,10 +45,10 @@ public class AutoAddActionToGoalTest {
    public static void cleanup() throws Exception {
       AtsTestUtil.cleanup();
 
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "AutoAddActionToGoalTest - cleanup");
-      for (Artifact art : ArtifactQuery.getArtifactListFromName("AutoAddActionToGoalTest", AtsClientService.get().getAtsBranch(),
-         DeletionFlag.EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS)) {
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(),
+         "AutoAddActionToGoalTest - cleanup");
+      for (Artifact art : ArtifactQuery.getArtifactListFromName("AutoAddActionToGoalTest",
+         AtsClientService.get().getAtsBranch(), DeletionFlag.EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS)) {
          art.deleteAndPersist(transaction);
       }
       transaction.execute();

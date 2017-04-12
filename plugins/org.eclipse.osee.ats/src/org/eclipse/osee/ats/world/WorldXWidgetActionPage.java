@@ -35,18 +35,21 @@ import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorSelectedAction;
 import org.eclipse.osee.ats.actions.TaskAddAction;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.artifact.GoalManager;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.task.TaskComposite;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -660,7 +663,8 @@ public class WorldXWidgetActionPage extends FormPage {
                final Set<Artifact> arts = new HashSet<>();
                for (Artifact art : artifacts) {
                   if (art.isOfType(AtsArtifactTypes.Action)) {
-                     arts.addAll(ActionManager.getTeams(art));
+                     arts.addAll(Collections.castAll(
+                        AtsObjects.getArtifacts(AtsClientService.get().getWorkItemService().getTeams(art))));
                   } else if (art instanceof AbstractWorkflowArtifact) {
                      Artifact parentArt = ((AbstractWorkflowArtifact) art).getParentTeamWorkflow();
                      if (parentArt != null) {
@@ -687,8 +691,9 @@ public class WorldXWidgetActionPage extends FormPage {
                final Set<Artifact> arts = new HashSet<>();
                for (Artifact art : artifacts) {
                   if (art.isOfType(AtsArtifactTypes.Action)) {
-                     for (TeamWorkFlowArtifact team : ActionManager.getTeams(art)) {
-                        arts.addAll(team.getTaskArtifacts());
+                     for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(art)) {
+                        arts.addAll(Collections.castAll(
+                           AtsObjects.getArtifacts(AtsClientService.get().getTaskService().getTasks(team))));
                      }
                   } else if (art instanceof TeamWorkFlowArtifact) {
                      arts.addAll(((TeamWorkFlowArtifact) art).getTaskArtifacts());
@@ -713,8 +718,9 @@ public class WorldXWidgetActionPage extends FormPage {
                final Set<Artifact> arts = new HashSet<>();
                for (Artifact art : artifacts) {
                   if (art.isOfType(AtsArtifactTypes.Action)) {
-                     for (TeamWorkFlowArtifact team : ActionManager.getTeams(art)) {
-                        arts.addAll(ReviewManager.getReviews(team));
+                     for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(art)) {
+                        arts.addAll(Collections.castAll(
+                           AtsObjects.getArtifacts(AtsClientService.get().getReviewService().getReviews(team))));
                      }
                   } else if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                      arts.addAll(ReviewManager.getReviews((TeamWorkFlowArtifact) art));

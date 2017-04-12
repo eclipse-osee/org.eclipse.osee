@@ -21,9 +21,8 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.artifact.AbstractAtsArtifact;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.WorkflowEditor;
@@ -53,7 +52,7 @@ public class AtsDeleteManager {
       Purge
    };
 
-   public static void handleDeletePurgeAtsObject(Collection<? extends Artifact> selectedArts, boolean forcePend, DeleteOption... deleteOption) throws OseeCoreException {
+   public static void handleDeletePurgeAtsObject(Collection<Artifact> selectedArts, boolean forcePend, DeleteOption... deleteOption) throws OseeCoreException {
       final Collection<DeleteOption> deleteOptions = new ArrayList<DeleteOption>(Arrays.asList(deleteOption));
       boolean purgeOption = deleteOptions.contains(DeleteOption.Purge);
       List<Artifact> delArts = new ArrayList<>();
@@ -143,8 +142,8 @@ public class AtsDeleteManager {
          delBuilder.append(String.format("\n<b>Selected</b>:[%s][%s][%s]", deleteArt.getArtifactTypeName(),
             AtsUtilClient.getAtsId(deleteArt), deleteArt.getName()) + "\n");
          if (deleteArt.isOfType(AtsArtifactTypes.Action)) {
-            for (TeamWorkFlowArtifact art : ActionManager.getTeams(deleteArt)) {
-               art.atsDelete(relatedArts, ignoredArts);
+            for (IAtsTeamWorkflow art : AtsClientService.get().getWorkItemService().getTeams(deleteArt)) {
+               ((AbstractWorkflowArtifact) art).atsDelete(relatedArts, ignoredArts);
             }
          } else if (deleteArt.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
             WorkflowEditor.close(java.util.Collections.singleton((AbstractWorkflowArtifact) deleteArt), true);
@@ -161,7 +160,7 @@ public class AtsDeleteManager {
             if (art instanceof AbstractWorkflowArtifact) {
                Artifact actionArt = ((AbstractWorkflowArtifact) art).getParentActionArtifact();
                if (actionArt != null && !allDeleteArts.contains(actionArt) && allDeleteArts.containsAll(
-                  ActionManager.getTeams(actionArt))) {
+                  AtsClientService.get().getWorkItemService().getTeams(actionArt))) {
                   relatedArts.add(actionArt);
                   delBuilder.append(String.format(AHTML.addSpace(4) + "<b>Related</b>:[%s][%s][%s]",
                      actionArt.getArtifactTypeName(), AtsUtilClient.getAtsId(actionArt), actionArt.getName()) + "\n");

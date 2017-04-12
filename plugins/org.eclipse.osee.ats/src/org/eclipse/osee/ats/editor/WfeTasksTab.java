@@ -591,7 +591,7 @@ public class WfeTasksTab extends FormPage implements IWorldEditor, ISelectedAtsA
    }
 
    @Override
-   public Set<? extends Artifact> getSelectedWorkflowArtifacts() {
+   public Set<Artifact> getSelectedWorkflowArtifacts() {
       Set<Artifact> artifacts = new HashSet<>();
       for (Artifact art : taskComposite.getSelectedArtifacts()) {
          if (art instanceof AbstractWorkflowArtifact) {

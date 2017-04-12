@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public interface ISelectedAtsArtifacts {
 
-   Set<? extends Artifact> getSelectedWorkflowArtifacts() throws OseeCoreException;
+   Set<Artifact> getSelectedWorkflowArtifacts() throws OseeCoreException;
 
    List<Artifact> getSelectedAtsArtifacts() throws OseeCoreException;
 

@@ -17,10 +17,11 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DeadlineManager;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
@@ -48,8 +49,8 @@ public class EstimatedCompletionDateColumn extends XViewerAtsAttributeValueColum
    private EstimatedCompletionDateColumn() {
       super(AtsAttributeTypes.EstimatedCompletionDate,
          WorldXViewerFactory.COLUMN_NAMESPACE + ".estimatedCompletionDate",
-         AtsAttributeTypes.EstimatedCompletionDate.getUnqualifiedName(), 80, XViewerAlign.Left, false, SortDataType.Date, true,
-         "");
+         AtsAttributeTypes.EstimatedCompletionDate.getUnqualifiedName(), 80, XViewerAlign.Left, false,
+         SortDataType.Date, true, "");
    }
 
    /**
@@ -80,7 +81,7 @@ public class EstimatedCompletionDateColumn extends XViewerAtsAttributeValueColum
 
    public static Result isWorldViewEcdAlerting(Object object) throws OseeCoreException {
       if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
-         for (TeamWorkFlowArtifact team : ActionManager.getTeams(object)) {
+         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(object)) {
             Result result = isWorldViewEcdAlerting(team);
             if (result.isTrue()) {
                return result;
@@ -94,7 +95,7 @@ public class EstimatedCompletionDateColumn extends XViewerAtsAttributeValueColum
 
    public static Date getDate(Object object) throws OseeCoreException {
       if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
-         return getDate(ActionManager.getFirstTeam(object));
+         return getDate(AtsClientService.get().getWorkItemService().getFirstTeam(object));
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.TeamWorkflow)) {
          Date date =
             ((TeamWorkFlowArtifact) object).getSoleAttributeValue(AtsAttributeTypes.EstimatedCompletionDate, null);

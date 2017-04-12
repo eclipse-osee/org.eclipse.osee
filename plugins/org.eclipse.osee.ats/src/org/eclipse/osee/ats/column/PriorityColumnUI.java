@@ -18,7 +18,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.internal.Activator;
@@ -89,8 +88,8 @@ public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
          if (treeItem.getData() instanceof Artifact) {
             Artifact useArt = (Artifact) treeItem.getData();
             if (useArt.isOfType(AtsArtifactTypes.Action)) {
-               if (ActionManager.getTeams(useArt).size() == 1) {
-                  useArt = ActionManager.getFirstTeam(useArt);
+               if (AtsClientService.get().getWorkItemService().getTeams(useArt).size() == 1) {
+                  useArt = (Artifact) AtsClientService.get().getWorkItemService().getFirstTeam(useArt).getStoreObject();
                } else {
                   return false;
                }

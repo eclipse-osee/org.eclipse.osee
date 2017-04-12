@@ -20,8 +20,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
@@ -72,8 +71,8 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
          if (treeItem.getData() instanceof Artifact) {
             Artifact useArt = (Artifact) treeItem.getData();
             if (useArt.isOfType(AtsArtifactTypes.Action)) {
-               if (ActionManager.getTeams(useArt).size() == 1) {
-                  useArt = ActionManager.getFirstTeam(useArt);
+               if (AtsClientService.get().getWorkItemService().getTeams(useArt).size() == 1) {
+                  useArt = (Artifact) AtsClientService.get().getWorkItemService().getFirstTeam(useArt).getStoreObject();
                } else {
                   return false;
                }
@@ -157,8 +156,10 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
             if (art instanceof AbstractWorkflowArtifact) {
                awas.add((AbstractWorkflowArtifact) art);
             }
-            if (art.isOfType(AtsArtifactTypes.Action) && ActionManager.getTeams(art).size() == 1) {
-               awas.add(ActionManager.getFirstTeam(art));
+            if (art.isOfType(
+               AtsArtifactTypes.Action) && AtsClientService.get().getWorkItemService().getTeams(art).size() == 1) {
+               awas.add((AbstractWorkflowArtifact) AtsClientService.get().getWorkItemService().getFirstTeam(
+                  art).getStoreObject());
             }
          }
          if (awas.isEmpty()) {
@@ -192,8 +193,8 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
             ((AbstractWorkflowArtifact) artifact).getStateMgr().getAssignees()));
       }
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
-         for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
-            Image image = AssigneeColumnUI.getAssigneeImage(team);
+         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(artifact)) {
+            Image image = AssigneeColumnUI.getAssigneeImage((Artifact) team.getStoreObject());
             if (image != null) {
                return image;
             }

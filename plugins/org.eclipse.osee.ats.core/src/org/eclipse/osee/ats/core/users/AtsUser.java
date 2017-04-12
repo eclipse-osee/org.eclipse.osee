@@ -11,9 +11,12 @@
 package org.eclipse.osee.ats.core.users;
 
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
  * @author Donald G. Dunne
@@ -86,4 +89,15 @@ public class AtsUser extends NamedIdBase implements IAtsUser {
    public boolean isActive() {
       return true;
    }
+
+   @Override
+   public IArtifactType getArtifactType() {
+      return CoreArtifactTypes.User;
+   }
+
+   @Override
+   public boolean isOfType(IArtifactType... artifactTypes) {
+      return Collections.asHashSet(artifactTypes).contains(getArtifactType());
+   }
+
 }

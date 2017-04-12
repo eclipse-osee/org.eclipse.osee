@@ -32,7 +32,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link AtsForceAssigneesToTeamLeadsStateItem}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsForceAssigneesToTeamLeadsStateItemTest {
@@ -49,7 +49,8 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
 
       if (teamArt == null) {
          IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
-         teamArt = DemoTestUtil.createSimpleAction(getClass().getSimpleName(), changes);
+         teamArt = (TeamWorkFlowArtifact) DemoTestUtil.createSimpleAction(getClass().getSimpleName(),
+            changes).getStoreObject();
          changes.execute();
       }
    }

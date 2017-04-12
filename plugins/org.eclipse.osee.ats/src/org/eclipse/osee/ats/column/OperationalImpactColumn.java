@@ -19,10 +19,11 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -76,8 +77,8 @@ public class OperationalImpactColumn extends XViewerValueColumn {
       }
       if (art.isOfType(AtsArtifactTypes.Action)) {
          Set<String> strs = new HashSet<>();
-         for (TeamWorkFlowArtifact team : ActionManager.getTeams(art)) {
-            strs.add(getOperationalImpact(team));
+         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(art)) {
+            strs.add(getOperationalImpact((Artifact) team.getStoreObject()));
          }
          return Collections.toString(", ", strs);
       }

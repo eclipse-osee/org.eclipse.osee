@@ -764,7 +764,7 @@ public class AtsTestUtil {
       return new ISelectedAtsArtifacts() {
 
          @Override
-         public Set<? extends Artifact> getSelectedWorkflowArtifacts() throws OseeCoreException {
+         public Set<Artifact> getSelectedWorkflowArtifacts() throws OseeCoreException {
             return Collections.singleton(getTeamWf());
          }
 

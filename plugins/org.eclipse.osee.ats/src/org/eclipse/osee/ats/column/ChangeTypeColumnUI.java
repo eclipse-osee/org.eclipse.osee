@@ -21,8 +21,8 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.internal.Activator;
@@ -120,8 +120,9 @@ public class ChangeTypeColumnUI extends XViewerAtsAttributeValueColumn {
          if (treeItem.getData() instanceof Artifact) {
             Artifact useArt = (Artifact) treeItem.getData();
             if (useArt.isOfType(AtsArtifactTypes.Action)) {
-               if (ActionManager.getTeams(useArt).size() == 1) {
-                  useArt = ActionManager.getFirstTeam(useArt);
+               if (AtsClientService.get().getWorkItemService().getTeams(useArt).size() == 1) {
+                  useArt = (AbstractWorkflowArtifact) AtsClientService.get().getWorkItemService().getFirstTeam(
+                     useArt).getStoreObject();
                } else {
                   return false;
                }

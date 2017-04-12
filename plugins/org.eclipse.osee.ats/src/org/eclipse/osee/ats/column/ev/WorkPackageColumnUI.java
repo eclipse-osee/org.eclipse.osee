@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.column.WorkPackageFilterTreeDialog;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.ev.WorkPackageCollectionProvider;
@@ -92,8 +91,10 @@ public class WorkPackageColumnUI extends XViewerAtsColumn implements IMultiColum
          if (treeItem.getData() instanceof Artifact) {
             Artifact selectedArt = (Artifact) treeItem.getData();
             AbstractWorkflowArtifact useAwa = null;
-            if (selectedArt instanceof IAtsAction && ActionManager.getTeams(selectedArt).size() == 1) {
-               useAwa = ActionManager.getFirstTeam(selectedArt);
+            if (selectedArt instanceof IAtsAction && AtsClientService.get().getWorkItemService().getTeams(
+               selectedArt).size() == 1) {
+               useAwa = (AbstractWorkflowArtifact) AtsClientService.get().getWorkItemService().getFirstTeam(
+                  selectedArt).getStoreObject();
             } else if (selectedArt instanceof AbstractWorkflowArtifact) {
                useAwa = (AbstractWorkflowArtifact) selectedArt;
             }

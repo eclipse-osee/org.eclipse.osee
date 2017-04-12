@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
@@ -102,9 +102,9 @@ public class WfeActionableItemHeader extends Composite {
       } else {
          StringBuffer sb = new StringBuffer(
             AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItemsStr(teamWf));
-         if (ActionManager.getTeams(parentAction).size() > 1) {
+         if (AtsClientService.get().getWorkItemService().getTeams(parentAction).size() > 1) {
             sb.append("         Other: ");
-            for (TeamWorkFlowArtifact workflow : ActionManager.getTeams(parentAction)) {
+            for (IAtsTeamWorkflow workflow : AtsClientService.get().getWorkItemService().getTeams(parentAction)) {
                if (!workflow.equals(teamWf)) {
                   sb.append(
                      AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItemsStr(

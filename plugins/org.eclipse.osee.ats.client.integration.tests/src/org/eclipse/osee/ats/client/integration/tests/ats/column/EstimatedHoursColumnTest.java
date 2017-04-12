@@ -49,11 +49,12 @@ public class EstimatedHoursColumnTest {
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(EstimatedHoursColumnTest.class.getSimpleName());
       TeamWorkFlowArtifact teamArt1 =
-         DemoTestUtil.createSimpleAction(EstimatedHoursColumnTest.class.getSimpleName(), changes);
+         (TeamWorkFlowArtifact) DemoTestUtil.createSimpleAction(EstimatedHoursColumnTest.class.getSimpleName(),
+            changes).getStoreObject();
 
       IAtsAction action = teamArt1.getParentAction();
-      TeamWorkFlowArtifact teamArt2 =
-         DemoTestUtil.addTeamWorkflow(action, EstimatedHoursColumnTest.class.getSimpleName(), changes);
+      TeamWorkFlowArtifact teamArt2 = (TeamWorkFlowArtifact) DemoTestUtil.addTeamWorkflow(action,
+         EstimatedHoursColumnTest.class.getSimpleName(), changes).getStoreObject();
       PeerToPeerReviewArtifact peerArt = PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt1,
          getClass().getSimpleName(), teamArt1.getStateMgr().getCurrentStateName(), changes);
       changes.add(peerArt);

@@ -16,9 +16,10 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DeadlineManager;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
@@ -79,7 +80,7 @@ public class DeadlineColumn extends XViewerAtsAttributeValueColumn {
       if (object instanceof AbstractWorkflowArtifact) {
          return DeadlineManager.isDeadlineDateAlerting((AbstractWorkflowArtifact) object);
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
-         for (TeamWorkFlowArtifact team : ActionManager.getTeams(object)) {
+         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(object)) {
             Result result = isDeadlineAlerting(team);
             if (result.isTrue()) {
                return result;
@@ -91,7 +92,7 @@ public class DeadlineColumn extends XViewerAtsAttributeValueColumn {
 
    public static Date getDate(Object object) throws OseeCoreException {
       if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
-         return getDate(ActionManager.getFirstTeam(object));
+         return getDate(AtsClientService.get().getWorkItemService().getFirstTeam(object));
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.TeamWorkflow)) {
          return ((TeamWorkFlowArtifact) object).getSoleAttributeValue(AtsAttributeTypes.NeedBy, null);
       } else if (object instanceof AbstractWorkflowArtifact) {

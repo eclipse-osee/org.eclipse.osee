@@ -16,10 +16,11 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -72,15 +73,15 @@ public class PercentCompleteStateReviewColumn extends XViewerAtsColumn implement
    public static int getPercentCompleteStateReview(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
          double percent = 0;
-         for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
+         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(artifact)) {
             if (!team.isCancelled()) {
-               percent += getPercentCompleteStateReview(team);
+               percent += getPercentCompleteStateReview((Artifact) team.getStoreObject());
             }
          }
          if (percent == 0) {
             return 0;
          }
-         Double rollPercent = percent / ActionManager.getTeams(artifact).size();
+         Double rollPercent = percent / AtsClientService.get().getWorkItemService().getTeams(artifact).size();
          return rollPercent.intValue();
       }
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {

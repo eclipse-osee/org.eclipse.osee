@@ -25,9 +25,9 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
@@ -73,7 +73,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
       GoalArtifact facilitiesGoal = GoalManager.createGoal("Facilities Team", changes);
       GoalArtifact cisReqGoal = GoalManager.createGoal("CIS Requirements", changes);
 
-      TeamWorkFlowArtifact teamArt = createAction1(changes, sawCodeGoal);
+      IAtsTeamWorkflow teamArt = createAction1(changes, sawCodeGoal);
       createAction2(changes, sawCodeGoal, cisReqGoal);
       createAction3(changes, sawTestGoal, cisReqGoal);
       createAction7(changes, facilitiesGoal);
@@ -114,7 +114,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
       changes.add(facilitiesGoal);
    }
 
-   private TeamWorkFlowArtifact createAction456(GoalArtifact sawCodeGoal, GoalArtifact facilitiesGoal, TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   private IAtsTeamWorkflow createAction456(GoalArtifact sawCodeGoal, GoalArtifact facilitiesGoal, IAtsTeamWorkflow teamArt) throws OseeCoreException {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getName());
       NewTaskDatas newTaskDatas = new NewTaskDatas();
       for (String msaTool : Arrays.asList("Backups", "Computers", "Network")) {
@@ -122,8 +122,8 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
             "Fix " + msaTool + " button", "Description", ChangeType.Problem, "4", false, null,
             ActionableItems.getActionableItems(Arrays.asList(msaTool), AtsClientService.get().getServices()),
             createdDate, createdBy, null, changes);
-         facilitiesGoal.addMember(ActionManager.getFirstTeam(action));
-         teamArt = ActionManager.getFirstTeam(action);
+         facilitiesGoal.addMember(AtsClientService.get().getWorkItemService().getFirstTeam(action).getStoreObject());
+         teamArt = AtsClientService.get().getWorkItemService().getFirstTeam(action);
          NewTaskData newTaskData = NewTaskDataFactory.get("createAction456", createdBy, teamArt);
          newTaskDatas.add(newTaskData);
          JaxAtsTaskFactory.get(newTaskData, "Task 1", createdBy, createdDate);
@@ -152,8 +152,8 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
          ActionableItems.getActionableItems(Arrays.asList("SAW Code", "CIS Requirements"),
             AtsClientService.get().getServices()),
          createdDate, createdBy, null, changes);
-      sawCodeGoal.addMember(ActionManager.getFirstTeam(action));
-      cisReqGoal.addMember(ActionManager.getFirstTeam(action));
+      sawCodeGoal.addMember(AtsClientService.get().getWorkItemService().getFirstTeam(action).getStoreObject());
+      cisReqGoal.addMember(AtsClientService.get().getWorkItemService().getFirstTeam(action).getStoreObject());
    }
 
    private void createAction2(IAtsChangeSet changes, GoalArtifact sawCodeGoal, GoalArtifact cisReqGoal) throws OseeCoreException {
@@ -162,20 +162,20 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
          ActionableItems.getActionableItems(Arrays.asList("SAW Code", "CIS Requirements"),
             AtsClientService.get().getServices()),
          createdDate, createdBy, null, changes);
-      sawCodeGoal.addMember(ActionManager.getFirstTeam(action));
-      cisReqGoal.addMember(ActionManager.getFirstTeam(action));
+      sawCodeGoal.addMember(AtsClientService.get().getWorkItemService().getFirstTeam(action).getStoreObject());
+      cisReqGoal.addMember(AtsClientService.get().getWorkItemService().getFirstTeam(action).getStoreObject());
    }
 
-   private TeamWorkFlowArtifact createAction1(IAtsChangeSet changes, GoalArtifact sawCodeGoal) throws OseeCoreException {
+   private IAtsTeamWorkflow createAction1(IAtsChangeSet changes, GoalArtifact sawCodeGoal) throws OseeCoreException {
       ActionResult action = AtsClientService.get().getActionFactory().createAction(null, "Fix this model",
          "Description", ChangeType.Problem, "2", false, null,
          ActionableItems.getActionableItems(Arrays.asList("SAW Code"), AtsClientService.get().getServices()),
          createdDate, createdBy, null, changes);
-      sawCodeGoal.addMember(ActionManager.getFirstTeam(action));
-      TeamWorkFlowArtifact teamArt = ActionManager.getFirstTeam(action);
-      PeerToPeerReviewArtifact peerReviewArt =
-         PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt, "New Review", "Implement", changes);
+      sawCodeGoal.addMember(AtsClientService.get().getWorkItemService().getFirstTeam(action).getStoreObject());
+      IAtsTeamWorkflow teamWf = AtsClientService.get().getWorkItemService().getFirstTeam(action);
+      PeerToPeerReviewArtifact peerReviewArt = PeerToPeerReviewManager.createNewPeerToPeerReview(
+         (TeamWorkFlowArtifact) teamWf.getStoreObject(), "New Review", "Implement", changes);
       sawCodeGoal.addMember(peerReviewArt);
-      return teamArt;
+      return teamWf;
    }
 }

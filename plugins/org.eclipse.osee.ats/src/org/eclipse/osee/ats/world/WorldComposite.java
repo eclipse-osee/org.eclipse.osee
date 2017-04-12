@@ -39,13 +39,13 @@ import org.eclipse.osee.ats.actions.TaskAddAction.ITaskAddActionHandler;
 import org.eclipse.osee.ats.agile.SprintOrderColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.column.GoalOrderColumn;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.task.ITaskEditorProvider;
 import org.eclipse.osee.ats.task.TaskXViewer;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -123,7 +123,7 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
       if (worldArts.size() > 0) {
          Artifact artifact = worldArts.iterator().next();
          if (artifact.isOfType(AtsArtifactTypes.Action)) {
-            artifact = ActionManager.getFirstTeam(artifact);
+            artifact = (Artifact) AtsClientService.get().getWorkItemService().getFirstTeam(artifact).getStoreObject();
          }
          return ((AbstractWorkflowArtifact) artifact).getManHrsPerDayPreference();
       }

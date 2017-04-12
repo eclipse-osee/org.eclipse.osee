@@ -18,10 +18,10 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -63,7 +63,7 @@ public class StateAssigneesColumn extends XViewerAtsColumn implements IXViewerVa
             return AtsObjects.toString(";", users);
          } else if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<IAtsUser> users = new HashSet<>();
-            for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
+            for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(element)) {
                users.addAll(team.getStateMgr().getAssignees(stateName));
             }
             return AtsObjects.toString(";", users);

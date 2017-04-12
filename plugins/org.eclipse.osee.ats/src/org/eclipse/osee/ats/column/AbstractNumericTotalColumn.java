@@ -17,11 +17,11 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
@@ -52,6 +52,9 @@ public abstract class AbstractNumericTotalColumn extends XViewerAtsColumn implem
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
+      if (element instanceof IAtsWorkItem) {
+         return getColumnText(((IAtsWorkItem) element).getStoreObject(), column, columnIndex);
+      }
       if (element instanceof AbstractWorkflowArtifact) {
          try {
             Result result = isPointsNumericValid(element);
@@ -73,8 +76,10 @@ public abstract class AbstractNumericTotalColumn extends XViewerAtsColumn implem
          if (treeItem.getData() instanceof AbstractWorkflowArtifact) {
             aba = (AbstractWorkflowArtifact) treeItem.getData();
          } else if (Artifacts.isOfType(treeItem.getData(),
-            AtsArtifactTypes.Action) && ActionManager.getTeams(treeItem.getData()).size() == 1) {
-            aba = ActionManager.getFirstTeam(treeItem.getData());
+            AtsArtifactTypes.Action) && AtsClientService.get().getWorkItemService().getTeams(
+               treeItem.getData()).size() == 1) {
+            aba = (AbstractWorkflowArtifact) AtsClientService.get().getWorkItemService().getFirstTeam(
+               treeItem.getData()).getStoreObject();
          }
          if (aba != null) {
             AWorkbench.popup("Calculated Field", getDescription() + "\n\n" + calulationStr);
@@ -105,7 +110,7 @@ public abstract class AbstractNumericTotalColumn extends XViewerAtsColumn implem
                ex.getClass().getName() + ": " + ex.getLocalizedMessage() + "\n\n" + Lib.exceptionToString(ex));
          }
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
-         for (TeamWorkFlowArtifact team : ActionManager.getTeams(object)) {
+         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(object)) {
             if (!isPointsNumericValid(team).isFalse()) {
                return Result.FalseResult;
             }
@@ -120,7 +125,7 @@ public abstract class AbstractNumericTotalColumn extends XViewerAtsColumn implem
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          double hours = 0;
          // Add up points for all children
-         for (TeamWorkFlowArtifact team : ActionManager.getTeams(object)) {
+         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(object)) {
             hours += getRemainingPoints(team);
          }
          return hours;

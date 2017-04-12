@@ -171,4 +171,14 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
       return false;
    }
 
+   @Override
+   public IArtifactType getArtifactType(IAtsObject atsObject) {
+      return getArtifactType(atsObject.getStoreObject());
+   }
+
+   @Override
+   public boolean isOfType(IAtsObject atsObject, IArtifactType artifactType) {
+      return isOfType(atsObject.getStoreObject());
+   }
+
 }

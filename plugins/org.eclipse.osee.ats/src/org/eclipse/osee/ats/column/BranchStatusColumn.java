@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -55,7 +57,9 @@ public class BranchStatusColumn extends XViewerAtsColumn implements IAtsXViewerP
       for (Object element : objects) {
          Long key = getKey(element);
          try {
-            if (Artifacts.isOfType(element, AtsArtifactTypes.TeamWorkflow)) {
+            if (element instanceof IAtsWorkItem) {
+               populateCachedValues(Arrays.asList(((IAtsWorkItem) element).getStoreObject()), preComputedValueMap);
+            } else if (Artifacts.isOfType(element, AtsArtifactTypes.TeamWorkflow)) {
                String status = getBranchStatus((IAtsTeamWorkflow) element);
                preComputedValueMap.put(key, status);
             } else {

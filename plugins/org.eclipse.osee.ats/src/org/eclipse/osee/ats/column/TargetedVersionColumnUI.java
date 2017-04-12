@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -78,8 +77,8 @@ public class TargetedVersionColumnUI extends XViewerAtsColumnIdColumn implements
          if (treeItem.getData() instanceof Artifact) {
             Artifact useArt = (Artifact) treeItem.getData();
             if (useArt.isOfType(AtsArtifactTypes.Action)) {
-               if (ActionManager.getTeams(useArt).size() == 1) {
-                  useArt = ActionManager.getFirstTeam(useArt);
+               if (AtsClientService.get().getWorkItemService().getTeams(useArt).size() == 1) {
+                  useArt = (Artifact) AtsClientService.get().getWorkItemService().getFirstTeam(useArt).getStoreObject();
                } else {
                   return false;
                }
@@ -133,7 +132,8 @@ public class TargetedVersionColumnUI extends XViewerAtsColumnIdColumn implements
                continue;
             }
          }
-         if (teamDefHoldingVersions != null && !teamDefHoldingVersions.equals(teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions())) {
+         if (teamDefHoldingVersions != null && !teamDefHoldingVersions.equals(
+            teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions())) {
             AWorkbench.popup("ERROR", "Can't change version on Workflows that have different release version sets.");
             return false;
          }

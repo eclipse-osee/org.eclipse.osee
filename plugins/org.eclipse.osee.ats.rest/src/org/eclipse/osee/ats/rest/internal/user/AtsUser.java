@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -119,4 +120,15 @@ public class AtsUser implements IAtsUser {
    public Long getId() {
       return this.user.getId();
    }
+
+   @Override
+   public IArtifactType getArtifactType() {
+      return user.getArtifactType();
+   }
+
+   @Override
+   public boolean isOfType(IArtifactType... artifactTypes) {
+      return user.isOfType(artifactTypes);
+   }
+
 }

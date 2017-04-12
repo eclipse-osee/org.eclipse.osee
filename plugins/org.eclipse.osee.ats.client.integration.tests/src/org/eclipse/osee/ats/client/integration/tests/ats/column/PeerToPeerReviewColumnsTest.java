@@ -60,7 +60,8 @@ public class PeerToPeerReviewColumnsTest {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(PeerToPeerReviewColumnsTest.class.getSimpleName());
 
       TeamWorkFlowArtifact teamArt =
-         DemoTestUtil.createSimpleAction(PeerToPeerReviewColumnsTest.class.getSimpleName(), changes);
+         (TeamWorkFlowArtifact) DemoTestUtil.createSimpleAction(PeerToPeerReviewColumnsTest.class.getSimpleName(),
+            changes).getStoreObject();
       PeerToPeerReviewArtifact peerArt = PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt,
          getClass().getSimpleName(), teamArt.getStateMgr().getCurrentStateName(), changes);
       changes.add(peerArt);

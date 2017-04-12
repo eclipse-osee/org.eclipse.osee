@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.goal.GoalMemberProvider;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -485,6 +486,11 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       });
    }
 
+   public static void close(Set<IAtsTeamWorkflow> singleton, boolean save) {
+      close(org.eclipse.osee.framework.jdk.core.util.Collections.castAll(AbstractWorkflowArtifact.class,
+         AtsObjects.getArtifacts(singleton)), save);
+   }
+
    public static void close(final Collection<? extends AbstractWorkflowArtifact> artifacts, boolean save) {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
@@ -615,7 +621,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    }
 
    @Override
-   public Set<? extends Artifact> getSelectedWorkflowArtifacts() {
+   public Set<Artifact> getSelectedWorkflowArtifacts() {
       return Collections.singleton(awa);
    }
 
@@ -696,6 +702,10 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
 
    public AbstractWorkflowArtifact getAwa() {
       return awa;
+   }
+
+   public static void edit(IAtsTeamWorkflow team) {
+      editArtifact((TeamWorkFlowArtifact) team.getStoreObject());
    }
 
 }

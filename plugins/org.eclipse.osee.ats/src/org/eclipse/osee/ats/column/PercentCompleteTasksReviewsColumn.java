@@ -18,7 +18,6 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
@@ -75,15 +74,15 @@ public class PercentCompleteTasksReviewsColumn extends XViewerAtsColumn implemen
    public static int getPercentCompleteFromTasksAndReviews(Artifact artifact) throws OseeCoreException {
       if (IAtsAction.isOfType(artifact)) {
          double percent = 0;
-         for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
+         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(artifact)) {
             if (!team.isCancelled()) {
-               percent += getPercentCompleteFromTasksAndReviews(team);
+               percent += getPercentCompleteFromTasksAndReviews((Artifact) team.getStoreObject());
             }
          }
          if (percent == 0) {
             return 0;
          }
-         Double rollPercent = percent / ActionManager.getTeams(artifact).size();
+         Double rollPercent = percent / AtsClientService.get().getWorkItemService().getTeams(artifact).size();
          return rollPercent.intValue();
       }
       int spent = 0;
@@ -95,8 +94,7 @@ public class PercentCompleteTasksReviewsColumn extends XViewerAtsColumn implemen
             spent += PercentCompleteTotalUtil.getPercentCompleteTotal(taskArt, AtsClientService.get().getServices());
          }
          size = taskArts.size();
-      }
-      if (IAtsTeamWorkflow.isOfType(artifact)) {
+
          TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) artifact;
          Collection<IAtsAbstractReview> reviewArts = AtsClientService.get().getReviewService().getReviews(teamWf);
          for (IAtsAbstractReview reviewArt : reviewArts) {

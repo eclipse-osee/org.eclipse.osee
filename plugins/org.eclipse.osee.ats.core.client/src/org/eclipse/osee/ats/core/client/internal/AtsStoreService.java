@@ -179,4 +179,14 @@ public class AtsStoreService implements IAtsStoreService {
       return ArtifactQuery.isArtifactChangedViaTransaction((Artifact) workItem.getStoreObject());
    }
 
+   @Override
+   public IArtifactType getArtifactType(IAtsObject atsObject) {
+      return getArtifactType(atsObject.getStoreObject());
+   }
+
+   @Override
+   public boolean isOfType(IAtsObject atsObject, IArtifactType artifactType) {
+      return isOfType(atsObject.getStoreObject());
+   }
+
 }

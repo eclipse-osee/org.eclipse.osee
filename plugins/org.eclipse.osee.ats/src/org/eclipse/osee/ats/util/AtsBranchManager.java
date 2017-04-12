@@ -20,6 +20,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
@@ -130,10 +131,10 @@ public final class AtsBranchManager {
    /**
     * If working branch has no changes, allow for deletion.
     */
-   public static void deleteWorkingBranch(TeamWorkFlowArtifact teamArt, boolean promptUser) {
+   public static void deleteWorkingBranch(TeamWorkFlowArtifact teamWf, boolean promptUser) {
       boolean isExecutionAllowed = !promptUser;
       try {
-         BranchId branch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
+         BranchId branch = AtsClientService.get().getBranchService().getWorkingBranch(teamWf);
          if (promptUser) {
             StringBuilder message = new StringBuilder();
             if (BranchManager.hasChanges(branch)) {
@@ -151,7 +152,7 @@ public final class AtsBranchManager {
             Exception exception = null;
             Result result = Result.FalseResult;
             try {
-               result = AtsBranchUtil.deleteWorkingBranch(teamArt, true);
+               result = AtsBranchUtil.deleteWorkingBranch(teamWf, true);
             } catch (Exception ex) {
                exception = ex;
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Problem deleting branch.", ex);
@@ -173,9 +174,9 @@ public final class AtsBranchManager {
    /**
     * Either return a single commit transaction or user must choose from a list of valid commit transactions
     */
-   public static TransactionToken getTransactionIdOrPopupChoose(TeamWorkFlowArtifact teamArt, String title, boolean showMergeManager) throws OseeCoreException {
+   public static TransactionToken getTransactionIdOrPopupChoose(IAtsTeamWorkflow teamWf, String title, boolean showMergeManager) throws OseeCoreException {
       Collection<TransactionRecord> transactions =
-         AtsClientService.get().getBranchService().getTransactionIds(teamArt, showMergeManager);
+         AtsClientService.get().getBranchService().getTransactionIds(teamWf, showMergeManager);
       final Map<IOseeBranch, TransactionId> branchToTx = new LinkedHashMap<>();
 
       if (transactions.size() == 1) {
@@ -225,7 +226,7 @@ public final class AtsBranchManager {
    /**
     * Display change report associated with the branch, if exists, or transaction, if branch has been committed.
     */
-   public static void showChangeReport(TeamWorkFlowArtifact teamArt) {
+   public static void showChangeReport(IAtsTeamWorkflow teamArt) {
       try {
          if (AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt)) {
             BranchId parentBranch = AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamArt);

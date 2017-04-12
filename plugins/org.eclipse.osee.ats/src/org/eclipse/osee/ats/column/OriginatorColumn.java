@@ -24,7 +24,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
@@ -79,8 +79,8 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
          if (treeItem.getData() instanceof Artifact) {
             Artifact useArt = (Artifact) treeItem.getData();
             if (useArt.isOfType(AtsArtifactTypes.Action)) {
-               if (ActionManager.getTeams(useArt).size() == 1) {
-                  useArt = ActionManager.getFirstTeam(useArt);
+               if (AtsClientService.get().getWorkItemService().getTeams(useArt).size() == 1) {
+                  useArt = (Artifact) AtsClientService.get().getWorkItemService().getFirstTeam(useArt).getStoreObject();
                } else {
                   return false;
                }
@@ -136,7 +136,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
          }
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<String> strs = new HashSet<>();
-            for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
+            for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(element)) {
                strs.add(team.getCreatedBy().getName());
             }
             return Collections.toString("; ", strs);
@@ -155,7 +155,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
          }
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<IAtsUser> users = new HashSet<>();
-            for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
+            for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(element)) {
                users.add(team.getCreatedBy());
             }
             return AtsUtil.getImage(users);

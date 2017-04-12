@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.access.AtsBranchAccessContextId;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
@@ -136,13 +137,13 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
    /**
     * Provided for testing purposes only.
     */
-   public static Collection<IAccessContextId> internalGetFromWorkflow(TeamWorkFlowArtifact teamArt) {
+   public static Collection<IAccessContextId> internalGetFromWorkflow(IAtsTeamWorkflow teamWf) {
       Set<IAccessContextId> contextIds = new HashSet<>();
       try {
-         contextIds.addAll(getFromArtifact(teamArt));
+         contextIds.addAll(getFromArtifact((Artifact) teamWf.getStoreObject()));
          if (contextIds.isEmpty()) {
             for (IAtsActionableItem aia : AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(
-               teamArt)) {
+               teamWf)) {
                Artifact artifact = AtsClientService.get().getConfigArtifact(aia);
                if (artifact != null) {
                   contextIds.addAll(getFromArtifact(artifact));
@@ -152,7 +153,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
                }
             }
             if (contextIds.isEmpty()) {
-               Artifact artifact = AtsClientService.get().getConfigArtifact(teamArt.getTeamDefinition());
+               Artifact artifact = AtsClientService.get().getConfigArtifact(teamWf.getTeamDefinition());
                if (artifact != null) {
                   contextIds.addAll(getFromArtifact(artifact));
                }

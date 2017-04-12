@@ -14,13 +14,15 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.util.Result;
@@ -43,8 +45,8 @@ public class AnnualCostAvoidanceColumn extends XViewerAtsColumn implements IXVie
    }
 
    private AnnualCostAvoidanceColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".annualCostAvoidance", "Annual Cost Avoidance", 50, XViewerAlign.Left, false,
-         SortDataType.Float, false,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".annualCostAvoidance", "Annual Cost Avoidance", 50,
+         XViewerAlign.Left, false, SortDataType.Float, false,
          "Hours that would be saved for the first year if this change were completed.\n\n" + "(Weekly Benefit Hours * 52 weeks) - Remaining Hours\n\n" + "If number is high, benefit is great given hours remaining.");
    }
 
@@ -74,10 +76,12 @@ public class AnnualCostAvoidanceColumn extends XViewerAtsColumn implements IXVie
    }
 
    public static double getWorldViewAnnualCostAvoidance(Object object) throws OseeCoreException {
-      if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
+      if (object instanceof IAtsWorkItem) {
+         return getWorldViewAnnualCostAvoidance(((IAtsWorkItem) object).getStoreObject());
+      } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          double hours = 0;
          // Add up hours for all children
-         for (TeamWorkFlowArtifact team : ActionManager.getTeams(object)) {
+         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(object)) {
             if (!team.isCompleted() && !team.isCancelled()) {
                hours += getWorldViewAnnualCostAvoidance(team);
             }
@@ -94,7 +98,7 @@ public class AnnualCostAvoidanceColumn extends XViewerAtsColumn implements IXVie
 
    public static Result isWorldViewAnnualCostAvoidanceValid(Object object) throws OseeCoreException {
       if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
-         for (TeamWorkFlowArtifact team : ActionManager.getTeams(object)) {
+         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(object)) {
             Result result = isWorldViewAnnualCostAvoidanceValid(team);
             if (result.isFalse()) {
                return result;

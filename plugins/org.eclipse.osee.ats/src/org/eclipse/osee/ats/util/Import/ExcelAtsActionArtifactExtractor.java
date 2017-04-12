@@ -41,12 +41,12 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -176,20 +176,21 @@ public class ExcelAtsActionArtifactExtractor {
 
    public void createArtifactsAndNotify(IAtsChangeSet changes) {
       AtsUtilClient.setEmailEnabled(false);
-      Set<TeamWorkFlowArtifact> teamWfs = new HashSet<>();
+      Set<IAtsTeamWorkflow> teamWfs = new HashSet<>();
       Date createdDate = new Date();
       try {
          IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
          for (ActionData aData : actionDatas) {
             ActionResult result = actionNameToAction.get(aData.title);
-            Collection<TeamWorkFlowArtifact> newTeamArts = new HashSet<>();
+            Collection<IAtsTeamWorkflow> newTeamWfs = new HashSet<>();
             if (result == null) {
                result = AtsClientService.get().getActionFactory().createAction(null, aData.title, aData.desc,
                   ChangeType.getChangeType(aData.changeType), aData.priorityStr, false, null,
                   ActionableItems.getActionableItems(aData.actionableItems, AtsClientService.get()), createdDate,
                   createdBy, null, changes);
-               newTeamArts = ActionManager.getTeams(result);
-               addToGoal(newTeamArts, changes);
+               newTeamWfs = AtsClientService.get().getWorkItemService().getTeams(result);
+               addToGoal(org.eclipse.osee.framework.jdk.core.util.Collections.castAll(TeamWorkFlowArtifact.class,
+                  AtsObjects.getArtifacts(newTeamWfs)), changes);
                actionNameToAction.put(aData.title, result);
                actionArts.add((Artifact) result.getActionArt());
             } else {
@@ -219,12 +220,12 @@ public class ExcelAtsActionArtifactExtractor {
                      AttributeTypeId attrType = AttributeTypeManager.getType(attr.getAttrTypeName());
                      changes.setAttributeValues(teamWorkflow, attrType, attr.getValues());
                   }
-                  newTeamArts.add((TeamWorkFlowArtifact) teamWorkflow.getStoreObject());
+                  newTeamWfs.add((TeamWorkFlowArtifact) teamWorkflow.getStoreObject());
                   addToGoal(Collections.singleton((TeamWorkFlowArtifact) teamWorkflow.getStoreObject()), changes);
                }
             }
             if (!aData.version.equals("")) {
-               for (TeamWorkFlowArtifact team : newTeamArts) {
+               for (IAtsTeamWorkflow team : newTeamWfs) {
                   IAtsVersion version =
                      team.getTeamDefinition().getTeamDefinitionHoldingVersions().getVersion(aData.version);
                   if (version == null) {
@@ -235,24 +236,24 @@ public class ExcelAtsActionArtifactExtractor {
                }
             }
             if (aData.estimatedHours != null) {
-               for (TeamWorkFlowArtifact team : newTeamArts) {
+               for (IAtsTeamWorkflow team : newTeamWfs) {
                   changes.setSoleAttributeValue((ArtifactId) team, AtsAttributeTypes.EstimatedHours,
                      aData.estimatedHours);
                }
             }
             if (aData.assigneeStrs.size() > 0) {
-               for (TeamWorkFlowArtifact team : newTeamArts) {
+               for (IAtsTeamWorkflow team : newTeamWfs) {
                   team.getStateMgr().setAssignees(aData.assignees);
                }
             }
-            for (TeamWorkFlowArtifact team : newTeamArts) {
+            for (IAtsTeamWorkflow team : newTeamWfs) {
                changes.add(team);
             }
-            teamWfs.addAll(newTeamArts);
+            teamWfs.addAll(newTeamWfs);
          }
          AtsUtilClient.setEmailEnabled(true);
          if (emailPOCs) {
-            for (TeamWorkFlowArtifact teamWf : teamWfs) {
+            for (IAtsTeamWorkflow teamWf : teamWfs) {
                try {
                   changes.getNotifications().addWorkItemNotificationEvent(
                      AtsNotificationEventFactory.getWorkItemNotificationEvent(

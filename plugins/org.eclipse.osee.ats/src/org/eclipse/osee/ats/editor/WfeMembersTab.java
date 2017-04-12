@@ -624,7 +624,7 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
    }
 
    @Override
-   public Set<? extends Artifact> getSelectedWorkflowArtifacts() {
+   public Set<Artifact> getSelectedWorkflowArtifacts() {
       Set<Artifact> artifacts = new HashSet<>();
       for (Artifact art : worldComposite.getSelectedArtifacts()) {
          if (art instanceof AbstractWorkflowArtifact) {

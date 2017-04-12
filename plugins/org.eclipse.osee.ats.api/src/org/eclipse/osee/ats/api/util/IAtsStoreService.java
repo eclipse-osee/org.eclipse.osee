@@ -48,6 +48,8 @@ public interface IAtsStoreService {
 
    IArtifactType getArtifactType(ArtifactId artifact);
 
+   IArtifactType getArtifactType(IAtsObject atsObject);
+
    boolean isDateType(AttributeTypeId attributeType);
 
    boolean isOfType(ArtifactId artifact, IArtifactType... artifactType);
@@ -63,5 +65,7 @@ public interface IAtsStoreService {
    Collection<AttributeTypeToken> getAttributeTypes();
 
    boolean isChangedInDb(IAtsWorkItem workItem);
+
+   boolean isOfType(IAtsObject atsObject, IArtifactType artifactType);
 
 }

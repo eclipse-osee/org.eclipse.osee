@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.column.BacklogColumn;
 import org.eclipse.osee.ats.goal.GoalCheckTreeDialog;
@@ -80,8 +79,9 @@ public abstract class BaseGoalsColumn extends XViewerAtsColumn implements IXView
          if (treeItem.getData() instanceof Artifact) {
             Artifact useArt = (Artifact) treeItem.getData();
             if (useArt.isOfType(AtsArtifactTypes.Action)) {
-               if (ActionManager.getTeams(useArt).size() == 1) {
-                  useArt = ActionManager.getFirstTeam(useArt);
+               if (AtsClientService.get().getWorkItemService().getTeams(useArt).size() == 1) {
+                  useArt = (AbstractWorkflowArtifact) AtsClientService.get().getWorkItemService().getFirstTeam(
+                     useArt).getStoreObject();
                } else {
                   return false;
                }

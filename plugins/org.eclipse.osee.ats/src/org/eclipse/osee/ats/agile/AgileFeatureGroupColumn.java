@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
@@ -33,9 +32,8 @@ import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxAgileItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.column.IAtsXViewerPreComputedColumn;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
@@ -137,8 +135,9 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
          return false;
       }
 
-      FilteredCheckboxTreeDialog dialog = new FilteredCheckboxTreeDialog("Select Feature Group(s)",
-         "Select Feature Group(s)", new ArrayTreeContentProvider(), new StringLabelProvider(), new StringNameComparator());
+      FilteredCheckboxTreeDialog dialog =
+         new FilteredCheckboxTreeDialog("Select Feature Group(s)", "Select Feature Group(s)",
+            new ArrayTreeContentProvider(), new StringLabelProvider(), new StringNameComparator());
       dialog.setInput(activeFeatureGroups);
       Collection<IAgileFeatureGroup> selectedFeatureGroups = getSelectedFeatureGroups(awas);
       if (!selectedFeatureGroups.isEmpty()) {
@@ -213,8 +212,8 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
             try {
                if (Artifacts.isOfType(entry.getKey(), AtsArtifactTypes.Action)) {
                   Set<String> strs = new HashSet<>();
-                  for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(entry.getKey())) {
-                     for (ArtifactToken artToken : artifactToTokens.getValues(teamWf)) {
+                  for (IAtsTeamWorkflow teamWf : AtsClientService.get().getWorkItemService().getTeams(entry.getKey())) {
+                     for (ArtifactToken artToken : artifactToTokens.getValues(teamWf.getStoreObject())) {
                         strs.add(artToken.getName());
                      }
                   }

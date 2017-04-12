@@ -12,9 +12,9 @@ package org.eclipse.osee.ats.core.client.workflow;
 
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -28,14 +28,15 @@ public class PercentCompleteSMAStateUtil {
     */
    public static int getPercentCompleteSMAState(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
-         if (ActionManager.getTeams(artifact).size() == 1) {
-            return getPercentCompleteSMAState(ActionManager.getFirstTeam(artifact));
+         if (AtsClientService.get().getWorkItemService().getTeams(artifact).size() == 1) {
+            return getPercentCompleteSMAState(
+               (Artifact) AtsClientService.get().getWorkItemService().getFirstTeam(artifact).getStoreObject());
          } else {
             double percent = 0;
             int items = 0;
-            for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
+            for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(artifact)) {
                if (!team.isCancelled()) {
-                  percent += getPercentCompleteSMAState(team);
+                  percent += getPercentCompleteSMAState((Artifact) team.getStoreObject());
                   items++;
                }
             }

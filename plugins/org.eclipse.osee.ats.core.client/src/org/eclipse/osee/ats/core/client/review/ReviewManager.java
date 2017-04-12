@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -75,8 +76,9 @@ public class ReviewManager {
 
    }
 
-   public static Collection<AbstractReviewArtifact> getReviews(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      return teamArt.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowToReview_Review, AbstractReviewArtifact.class);
+   public static Collection<AbstractReviewArtifact> getReviews(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+      return ((TeamWorkFlowArtifact) teamWf.getStoreObject()).getRelatedArtifacts(
+         AtsRelationTypes.TeamWorkflowToReview_Review, AbstractReviewArtifact.class);
    }
 
    public static Collection<IAtsAbstractReview> getReviewsFromCurrentState(TeamWorkFlowArtifact teamArt) throws OseeCoreException {

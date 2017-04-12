@@ -20,8 +20,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.column.CreatedDateColumn;
@@ -82,19 +81,19 @@ public class OriginatingWorkFlowColumn extends XViewerAtsColumn implements IXVie
 
    public static String getWorldViewOriginatingWorkflowStr(Artifact actionArt) throws OseeCoreException {
       Set<String> strs = new HashSet<>();
-      for (TeamWorkFlowArtifact team : getWorldViewOriginatingWorkflows(actionArt)) {
+      for (IAtsTeamWorkflow team : getWorldViewOriginatingWorkflows(actionArt)) {
          strs.add(AtsClientService.get().getColumnService().getColumn(AtsColumnId.Team).getColumnText(team));
       }
       return Collections.toString(";", strs);
    }
 
-   public static Collection<TeamWorkFlowArtifact> getWorldViewOriginatingWorkflows(Artifact actionArt) throws OseeCoreException {
-      if (ActionManager.getTeams(actionArt).size() == 1) {
-         return ActionManager.getTeams(actionArt);
+   public static Collection<IAtsTeamWorkflow> getWorldViewOriginatingWorkflows(Artifact actionArt) throws OseeCoreException {
+      if (AtsClientService.get().getWorkItemService().getTeams(actionArt).size() == 1) {
+         return AtsClientService.get().getWorkItemService().getTeams(actionArt);
       }
-      Collection<TeamWorkFlowArtifact> results = new ArrayList<>();
+      Collection<IAtsTeamWorkflow> results = new ArrayList<>();
       Date origDate = null;
-      for (TeamWorkFlowArtifact teamArt : ActionManager.getTeams(actionArt)) {
+      for (IAtsTeamWorkflow teamArt : AtsClientService.get().getWorkItemService().getTeams(actionArt)) {
          if (teamArt.isCancelled()) {
             continue;
          }

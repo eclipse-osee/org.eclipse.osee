@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -243,16 +242,16 @@ public final class AtsUtil {
       try {
          if (art.isOfType(AtsArtifactTypes.Action)) {
             ActionArtifact action = (ActionArtifact) art;
-            Collection<TeamWorkFlowArtifact> teams = ActionManager.getTeams(art);
+            Collection<IAtsTeamWorkflow> teams = AtsClientService.get().getWorkItemService().getTeams(art);
             if (atsOpenOption == AtsOpenOption.OpenAll) {
-               for (TeamWorkFlowArtifact team : teams) {
-                  WorkflowEditor.editArtifact(team);
+               for (IAtsTeamWorkflow team : teams) {
+                  WorkflowEditor.edit(team);
                }
             } else if (atsOpenOption == AtsOpenOption.AtsWorld) {
                WorldEditor.open(new WorldEditorSimpleProvider("Action " + action.getAtsId(), Arrays.asList(art)));
             } else if (atsOpenOption == AtsOpenOption.OpenOneOrPopupSelect) {
                if (teams.size() == 1) {
-                  WorkflowEditor.editArtifact(teams.iterator().next());
+                  WorkflowEditor.edit(teams.iterator().next());
                } else {
                   Displays.ensureInDisplayThread(new Runnable() {
                      @Override
@@ -285,7 +284,7 @@ public final class AtsUtil {
       ld.setLabelProvider(new TeamWorkflowLabelProvider());
       ld.setTitle("Select Team Workflow");
       ld.setMessage("Select Team Workflow");
-      ld.setInput(ActionManager.getTeams(actArt));
+      ld.setInput(AtsClientService.get().getWorkItemService().getTeams(actArt));
       if (ld.open() == 0) {
          if (ld.getResult().length == 0) {
             AWorkbench.popup("Error", "No Workflow Selected");

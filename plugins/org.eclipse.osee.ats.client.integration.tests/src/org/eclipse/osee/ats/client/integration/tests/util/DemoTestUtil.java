@@ -32,8 +32,8 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
@@ -100,20 +100,20 @@ public class DemoTestUtil {
    /**
     * Creates an action with the name title and demo code workflow
     */
-   public static TeamWorkFlowArtifact createSimpleAction(String title, IAtsChangeSet changes) throws OseeCoreException {
+   public static IAtsTeamWorkflow createSimpleAction(String title, IAtsChangeSet changes) throws OseeCoreException {
       ActionResult result = AtsClientService.get().getActionFactory().createAction(null, title, "Description",
          ChangeType.Improvement, "2", false, null,
          ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName()),
             AtsClientService.get()),
          new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);
 
-      TeamWorkFlowArtifact teamArt = null;
-      for (TeamWorkFlowArtifact team : ActionManager.getTeams(result)) {
+      IAtsTeamWorkflow teamWf = null;
+      for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(result)) {
          if (team.getTeamDefinition().getName().contains("Code")) {
-            teamArt = team;
+            teamWf = team;
          }
       }
-      return teamArt;
+      return teamWf;
    }
 
    public static Set<IAtsActionableItem> getActionableItems(DemoActionableItems demoActionableItems) throws OseeCoreException {
@@ -124,7 +124,7 @@ public class DemoTestUtil {
       return getActionableItems(demoActionableItems).iterator().next();
    }
 
-   public static TeamWorkFlowArtifact addTeamWorkflow(IAtsAction action, String title, IAtsChangeSet changes) throws OseeCoreException {
+   public static IAtsTeamWorkflow addTeamWorkflow(IAtsAction action, String title, IAtsChangeSet changes) throws OseeCoreException {
       Set<IAtsActionableItem> actionableItems = getActionableItems(DemoActionableItems.SAW_Test);
       Collection<IAtsTeamDefinition> teamDefs = TeamDefinitions.getImpactedTeamDefs(actionableItems);
 
@@ -132,8 +132,8 @@ public class DemoTestUtil {
          Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), changes, new Date(),
          AtsClientService.get().getUserService().getCurrentUser(), null);
 
-      TeamWorkFlowArtifact teamArt = null;
-      for (TeamWorkFlowArtifact team : ActionManager.getTeams(action)) {
+      IAtsTeamWorkflow teamArt = null;
+      for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(action)) {
          if (team.getTeamDefinition().getName().contains("Test")) {
             teamArt = team;
          }

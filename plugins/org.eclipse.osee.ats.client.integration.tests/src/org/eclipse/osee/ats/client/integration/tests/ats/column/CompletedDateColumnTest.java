@@ -50,7 +50,8 @@ public class CompletedDateColumnTest {
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(CancelledDateColumnTest.class.getSimpleName());
       TeamWorkFlowArtifact teamArt =
-         DemoTestUtil.createSimpleAction(CompletedDateColumnTest.class.getSimpleName(), changes);
+         (TeamWorkFlowArtifact) DemoTestUtil.createSimpleAction(CompletedDateColumnTest.class.getSimpleName(),
+            changes).getStoreObject();
       changes.execute();
 
       changes.clear();

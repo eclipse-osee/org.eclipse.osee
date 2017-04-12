@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.world;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.WorkflowMetrics;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -51,7 +52,7 @@ public class WorkflowMetricsUI {
          if (worldComposite.getXViewer() != null && worldComposite.getXViewer().getSelectedWorkflowArtifacts() != null && !worldComposite.getXViewer().getSelectedWorkflowArtifacts().isEmpty()) {
             showReleaseMetricsLabel.setText(
                WorkflowMetrics.getEstRemainMetrics(worldComposite.getXViewer().getSelectedWorkflowArtifacts(), null,
-                  worldComposite.getXViewer().getSelectedWorkflowArtifacts().iterator().next().getManHrsPerDayPreference(),
+                  ((TeamWorkFlowArtifact) worldComposite.getXViewer().getSelectedWorkflowArtifacts().iterator().next()).getManHrsPerDayPreference(),
                   null));
          } else {
             showReleaseMetricsLabel.setText("");

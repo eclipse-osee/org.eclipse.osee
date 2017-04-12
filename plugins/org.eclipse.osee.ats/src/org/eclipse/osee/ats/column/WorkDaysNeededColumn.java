@@ -16,11 +16,11 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.util.Result;
@@ -45,8 +45,8 @@ public class WorkDaysNeededColumn extends XViewerAtsColumn implements IXViewerVa
    }
 
    private WorkDaysNeededColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".workDaysNeeded", "Hours Per Work Day", 40, XViewerAlign.Center, false,
-         SortDataType.Float, false, null);
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".workDaysNeeded", "Hours Per Work Day", 40, XViewerAlign.Center,
+         false, SortDataType.Float, false, null);
    }
 
    /**
@@ -83,8 +83,10 @@ public class WorkDaysNeededColumn extends XViewerAtsColumn implements IXViewerVa
          if (treeItem.getData() instanceof AbstractWorkflowArtifact) {
             aba = (AbstractWorkflowArtifact) treeItem.getData();
          } else if (Artifacts.isOfType(treeItem.getData(),
-            AtsArtifactTypes.Action) && ActionManager.getTeams(treeItem.getData()).size() == 1) {
-            aba = ActionManager.getFirstTeam(treeItem.getData());
+            AtsArtifactTypes.Action) && AtsClientService.get().getWorkItemService().getTeams(
+               treeItem.getData()).size() == 1) {
+            aba = (AbstractWorkflowArtifact) AtsClientService.get().getWorkItemService().getFirstTeam(
+               treeItem.getData()).getStoreObject();
          }
          if (aba != null) {
             AWorkbench.popup("Calculated Field",
@@ -109,7 +111,7 @@ public class WorkDaysNeededColumn extends XViewerAtsColumn implements IXViewerVa
 
          return Result.TrueResult;
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
-         for (TeamWorkFlowArtifact team : ActionManager.getTeams(object)) {
+         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(object)) {
             if (!isWorldViewManDaysNeededValid(team).isFalse()) {
                return Result.FalseResult;
             }
@@ -129,7 +131,7 @@ public class WorkDaysNeededColumn extends XViewerAtsColumn implements IXViewerVa
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          double hours = 0;
          // Add up hours for all children
-         for (TeamWorkFlowArtifact team : ActionManager.getTeams(object)) {
+         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(object)) {
             hours += getWorldViewManDaysNeeded(team);
          }
          return hours;

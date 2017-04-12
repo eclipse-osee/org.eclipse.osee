@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.client.demo.config.DemoDbActionData;
 import org.eclipse.osee.ats.client.demo.config.DemoDbActionData.CreateReview;
@@ -39,7 +40,6 @@ import org.eclipse.osee.ats.client.demo.internal.Activator;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionArtifactRollup;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
@@ -327,14 +327,15 @@ public class PopulateDemoActions extends XNavigateItemAction {
                prefixTitle + " " + aData.postFixTitle, TITLE_PREFIX[x] + " " + aData.postFixTitle, CHANGE_TYPE[x],
                aData.priority, false, null, aData.getActionableItems(), createdDate, createdBy, null, changes);
             actionArts.add((ActionArtifact) actionResult.getActionArt());
-            for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(actionResult)) {
+            for (IAtsTeamWorkflow teamWf : AtsClientService.get().getWorkItemService().getTeams(actionResult)) {
                TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get().getServices(),
                   TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
                // Add validation required flag if Decision review is required
                if (aData.getCreateReviews().length > 0) {
                   for (CreateReview createReview : aData.getCreateReviews()) {
                      if (createReview == CreateReview.Decision) {
-                        teamWf.setSoleAttributeValue(AtsAttributeTypes.ValidationRequired, true);
+                        ((TeamWorkFlowArtifact) teamWf.getStoreObject()).setSoleAttributeValue(
+                           AtsAttributeTypes.ValidationRequired, true);
                      }
                   }
                }

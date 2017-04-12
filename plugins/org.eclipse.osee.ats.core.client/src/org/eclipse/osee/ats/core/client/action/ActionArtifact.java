@@ -83,4 +83,5 @@ public class ActionArtifact extends Artifact implements IAtsAction {
    public ArtifactToken getStoreObject() {
       return this;
    }
+
 }

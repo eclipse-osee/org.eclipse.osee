@@ -22,9 +22,9 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.artifact.WorkflowLabelProvider;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.WorkflowEditor;
@@ -117,10 +117,10 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
       final Set<Artifact> addedArts = new HashSet<>();
       for (Artifact artifact : artifacts) {
          if (artifact.isOfType(AtsArtifactTypes.Action)) {
-            for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
+            for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(artifact)) {
                if (AtsClientService.get().getBranchService().isCommittedBranchExists(
                   team) || AtsClientService.get().getBranchService().isWorkingBranchInWork(team)) {
-                  addedArts.add(team);
+                  addedArts.add((Artifact) team.getStoreObject());
                }
             }
          }

@@ -14,9 +14,9 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.column.IPersistAltLeftClickProvider;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -41,8 +41,9 @@ public class AtsAttributeColumnUtility {
             if (item instanceof Artifact) {
                Artifact useArt = (Artifact) item;
                if (useArt.isOfType(AtsArtifactTypes.Action)) {
-                  if (ActionManager.getTeams(useArt).size() == 1) {
-                     useArt = ActionManager.getFirstTeam(useArt);
+                  if (AtsClientService.get().getWorkItemService().getTeams(useArt).size() == 1) {
+                     useArt = (AbstractWorkflowArtifact) AtsClientService.get().getWorkItemService().getFirstTeam(
+                        useArt).getStoreObject();
                   } else {
                      return false;
                   }

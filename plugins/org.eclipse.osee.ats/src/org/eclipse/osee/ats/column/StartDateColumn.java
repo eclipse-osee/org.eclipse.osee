@@ -18,9 +18,9 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -68,7 +68,7 @@ public class StartDateColumn extends XViewerAtsAttributeValueColumn {
 
    public static Date getDate(Object object) throws OseeCoreException {
       if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
-         return getDate(ActionManager.getFirstTeam(object));
+         return getDate(AtsClientService.get().getWorkItemService().getFirstTeam(object));
       } else if (object instanceof AbstractWorkflowArtifact) {
          return ((AbstractWorkflowArtifact) object).getSoleAttributeValue(AtsAttributeTypes.StartDate, null);
       }
@@ -78,7 +78,7 @@ public class StartDateColumn extends XViewerAtsAttributeValueColumn {
    public static String getDateStr(Object object) throws OseeCoreException {
       Set<String> strs = new HashSet<>();
       if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
-         for (TeamWorkFlowArtifact team : ActionManager.getTeams(object)) {
+         for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(object)) {
             Date date = getDate(team);
             if (date == null) {
                strs.add("");

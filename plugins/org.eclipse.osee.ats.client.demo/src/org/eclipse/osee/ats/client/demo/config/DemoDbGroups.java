@@ -15,9 +15,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.client.demo.internal.Activator;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -53,8 +53,9 @@ public class DemoDbGroups {
          groupArt.addRelation(CoreRelationTypes.Universal_Grouping__Members, codeArt.getParentActionArtifact());
 
          // Add All Team Workflows to Universal Group
-         for (Artifact teamWorkflow : ActionManager.getTeams(codeArt.getParentActionArtifact())) {
-            groupArt.addRelation(CoreRelationTypes.Universal_Grouping__Members, teamWorkflow);
+         for (IAtsTeamWorkflow teamWf : AtsClientService.get().getWorkItemService().getTeams(
+            codeArt.getParentActionArtifact())) {
+            groupArt.addRelation(CoreRelationTypes.Universal_Grouping__Members, (Artifact) teamWf.getStoreObject());
          }
 
          codeArt.persist(transaction);

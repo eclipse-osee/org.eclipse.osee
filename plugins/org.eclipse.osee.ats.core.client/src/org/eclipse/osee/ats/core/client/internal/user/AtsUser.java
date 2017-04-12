@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.client.internal.user;
 
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 
@@ -115,5 +116,15 @@ public class AtsUser implements IAtsUser {
    @Override
    public Long getId() {
       return user.getId();
+   }
+
+   @Override
+   public IArtifactType getArtifactType() {
+      return user.getArtifactType();
+   }
+
+   @Override
+   public boolean isOfType(IArtifactType... artifactTypes) {
+      return user.isOfType(artifactTypes);
    }
 }

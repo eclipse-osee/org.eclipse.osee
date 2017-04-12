@@ -17,10 +17,10 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -42,8 +42,8 @@ public class DaysInCurrentStateColumn extends XViewerAtsColumn implements IXView
    }
 
    private DaysInCurrentStateColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".daysInCurrState", "Days in Current State", 40, XViewerAlign.Center, false,
-         SortDataType.Float, false, null);
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".daysInCurrState", "Days in Current State", 40, XViewerAlign.Center,
+         false, SortDataType.Float, false, null);
    }
 
    /**
@@ -68,7 +68,7 @@ public class DaysInCurrentStateColumn extends XViewerAtsColumn implements IXView
             return AtsUtilCore.doubleToI18nString(timeInCurrState / DateUtil.MILLISECONDS_IN_A_DAY);
          } else if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<String> strs = new HashSet<>();
-            for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
+            for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(element)) {
                String str = getColumnText(team, column, columnIndex);
                if (Strings.isValid(str)) {
                   strs.add(str);

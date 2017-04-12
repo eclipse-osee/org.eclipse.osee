@@ -18,9 +18,9 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
-import org.eclipse.osee.ats.core.client.action.ActionArtifact;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
@@ -177,10 +177,12 @@ public class WfeArtifactEventManager implements IArtifactEventListener {
          try {
             // Since SMAEditor is refreshed when a sibling workflow is changed, need to refresh this
             // list of actionable items when a sibling changes
-            for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(awa.getParentActionArtifact())) {
-               ActionArtifact parentAction = teamWf.getParentActionArtifact();
+            for (IAtsTeamWorkflow teamWf : AtsClientService.get().getWorkItemService().getTeams(
+               awa.getParentAction())) {
+               IAtsAction parentAction = teamWf.getParentAction();
                if (!awa.equals(teamWf) && artifactEvent.isHasEvent(
-                  teamWf) && parentAction != null && artifactEvent.isRelAddedChangedDeleted(parentAction)) {
+                  (Artifact) teamWf.getStoreObject()) && parentAction != null && artifactEvent.isRelAddedChangedDeleted(
+                     (Artifact) parentAction.getStoreObject())) {
                   refreshed = true;
                   Displays.ensureInDisplayThread(new Runnable() {
                      @Override

@@ -71,7 +71,8 @@ public class WfePromptChangeStatusTest {
    @Test
    public void test01Initialize() throws Exception {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Prompt Change Status Test");
-      teamArt = DemoTestUtil.createSimpleAction(getClass().getSimpleName(), changes);
+      teamArt =
+         (TeamWorkFlowArtifact) DemoTestUtil.createSimpleAction(getClass().getSimpleName(), changes).getStoreObject();
       changes.execute();
       assertNotNull(teamArt);
    }

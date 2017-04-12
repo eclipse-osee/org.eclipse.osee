@@ -33,7 +33,7 @@ public interface IAtsWorkItemService {
 
    Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf, IStateToken state) throws OseeCoreException;
 
-   IAtsTeamWorkflow getFirstTeam(IAtsAction action) throws OseeCoreException;
+   IAtsTeamWorkflow getFirstTeam(Object object) throws OseeCoreException;
 
    void clearImplementersCache(IAtsWorkItem workItem);
 
@@ -45,7 +45,7 @@ public interface IAtsWorkItemService {
 
    String getArtifactTypeShortName(IAtsTeamWorkflow teamWf);
 
-   Collection<IAtsTeamWorkflow> getTeams(IAtsAction action);
+   Collection<IAtsTeamWorkflow> getTeams(Object object);
 
    IAtsActionableItemService getActionableItemService();
 
