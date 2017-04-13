@@ -17,9 +17,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.apache.commons.io.FilenameUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -27,6 +30,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -34,12 +38,15 @@ import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.NativeDocumentExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.WholeWordDocumentExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.skynet.core.utility.JsonArtifactRepresentation;
+import org.eclipse.osee.framework.skynet.core.utility.JsonAttributeRepresentation;
 import org.eclipse.osee.framework.ui.plugin.util.Wizards;
 import org.eclipse.osee.framework.ui.skynet.ArtifactStructuredSelection;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationFactory;
@@ -55,6 +62,7 @@ import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
+import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.ui.IViewPart;
 
 /**
@@ -103,6 +111,8 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
          event.detail = DND.DROP_COPY;
       } else if (isValidForArtifactDrop(event)) {
          event.detail = DND.DROP_MOVE;
+      } else if (TextTransfer.getInstance().isSupportedType(event.currentDataType)) {
+         event.detail = DND.DROP_COPY;
       } else {
          event.detail = DND.DROP_NONE;
       }
@@ -171,79 +181,129 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
 
       if (parentArtifact != null) {
          if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
-            ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
-            final Artifact[] artifactsToBeRelated = artData.getArtifacts();
-            if (artifactsToBeRelated != null && artifactsToBeRelated.length > 0 && !artifactsToBeRelated[0].isOnSameBranch(
-               parentArtifact)) {
-               InterArtifactExplorerDropHandlerOperation interDropHandler =
-                  new InterArtifactExplorerDropHandlerOperation(parentArtifact, artifactsToBeRelated, true);
-               Operations.executeAsJob(interDropHandler, true);
-            } else if (artifactsToBeRelated != null && isValidForArtifactDrop(event) && MessageDialog.openQuestion(
-               viewPart.getViewSite().getShell(), "Confirm Move",
-               "Are you sure you want to make each of the selected artifacts a child of " + parentArtifact.getName() + "?")) {
+            performArtifactTransfer(event, parentArtifact);
+         } else if (FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
+            performFileTransfer(event, parentArtifact);
+         } else if (TextTransfer.getInstance().isSupportedType(event.currentDataType)) {
+            performTextTransfer(event, parentArtifact);
+         }
+      }
+   }
+
+   private void performArtifactTransfer(final DropTargetEvent event, Artifact parentArtifact) {
+      ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
+      final Artifact[] artifactsToBeRelated = artData.getArtifacts();
+      if (artifactsToBeRelated != null && artifactsToBeRelated.length > 0 && !artifactsToBeRelated[0].isOnSameBranch(
+         parentArtifact)) {
+         InterArtifactExplorerDropHandlerOperation interDropHandler =
+            new InterArtifactExplorerDropHandlerOperation(parentArtifact, artifactsToBeRelated, true);
+         Operations.executeAsJob(interDropHandler, true);
+      } else if (artifactsToBeRelated != null && isValidForArtifactDrop(event) && MessageDialog.openQuestion(
+         viewPart.getViewSite().getShell(), "Confirm Move",
+         "Are you sure you want to make each of the selected artifacts a child of " + parentArtifact.getName() + "?")) {
+         try {
+            SkynetTransaction transaction =
+               TransactionManager.createTransaction(parentArtifact.getBranch(), "Artifact explorer drag & drop");
+            // Replace all of the parent relations
+            for (Artifact artifact : artifactsToBeRelated) {
+               Artifact currentParent = artifact.getParent();
+               if (currentParent != null) {
+                  currentParent.deleteRelation(CoreRelationTypes.Default_Hierarchical__Child, artifact);
+                  currentParent.persist(transaction);
+               }
+               parentArtifact.addChild(USER_DEFINED, artifact);
+               parentArtifact.persist(transaction);
+            }
+            transaction.execute();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
+         }
+      }
+   }
+
+   private void performFileTransfer(final DropTargetEvent event, Artifact parentArtifact) {
+      Object object = FileTransfer.getInstance().nativeToJava(event.currentDataType);
+
+      if (object instanceof String[]) {
+         String[] items = (String[]) object;
+         File importFile = new File(items[0]);
+
+         ArtifactImportWizard wizard = new ArtifactImportWizard();
+         wizard.setImportFile(importFile);
+         wizard.setDestinationArtifact(parentArtifact);
+
+         String fileName = importFile.getName();
+         if (isSameName(parentArtifact, fileName)) {
+            String promptMsg = String.format(
+               "Artifact [%s] has same base file name as [%s]. \n\nDo you want to update the exisiting file? \nIf 'NO' selected, you'll be taken to the Artifact Import Wizard",
+               parentArtifact.getName(), FilenameUtils.getName(fileName));
+
+            if (MessageDialog.openQuestion(viewPart.getViewSite().getShell(), "Confirm Import", promptMsg)) {
+
+               IArtifactImportResolver resolver =
+                  ArtifactResolverFactory.createResolver(ArtifactCreationStrategy.CREATE_ON_DIFFERENT_ATTRIBUTES,
+                     parentArtifact.getArtifactType(), Arrays.asList(CoreAttributeTypes.Name), true, false);
                try {
-                  SkynetTransaction transaction =
-                     TransactionManager.createTransaction(parentArtifact.getBranch(), "Artifact explorer drag & drop");
-                  // Replace all of the parent relations
-                  for (Artifact artifact : artifactsToBeRelated) {
-                     Artifact currentParent = artifact.getParent();
-                     if (currentParent != null) {
-                        currentParent.deleteRelation(CoreRelationTypes.Default_Hierarchical__Child, artifact);
-                        currentParent.persist(transaction);
-                     }
-                     parentArtifact.addChild(USER_DEFINED, artifact);
-                     parentArtifact.persist(transaction);
-                  }
-                  transaction.execute();
+                  ArtifactImportOperationParameter parameter = new ArtifactImportOperationParameter();
+                  parameter.setSourceFile(importFile);
+                  parameter.setDestinationArtifact(parentArtifact.getParent());
+                  parameter.setExtractor(getArtifactExtractor(parentArtifact.getArtifactType()));
+                  parameter.setResolver(resolver);
+                  parameter.setStopOnError(true);
+
+                  IOperation operation = ArtifactImportOperationFactory.completeOperation(parameter);
+                  Operations.executeWorkAndCheckStatus(operation);
                } catch (OseeCoreException ex) {
                   OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
                }
+
+            } else {
+               Wizards.initAndOpen(wizard, viewPart, new ArtifactStructuredSelection(parentArtifact));
             }
-         } else if (FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
+         } else {
+            Wizards.initAndOpen(wizard, viewPart, new ArtifactStructuredSelection(parentArtifact));
+         }
+      }
+   }
 
-            Object object = FileTransfer.getInstance().nativeToJava(event.currentDataType);
-
-            if (object instanceof String[]) {
-               String[] items = (String[]) object;
-               File importFile = new File(items[0]);
-
-               ArtifactImportWizard wizard = new ArtifactImportWizard();
-               wizard.setImportFile(importFile);
-               wizard.setDestinationArtifact(parentArtifact);
-
-               String fileName = importFile.getName();
-               if (isSameName(parentArtifact, fileName)) {
-                  String promptMsg = String.format(
-                     "Artifact [%s] has same base file name as [%s]. \n\nDo you want to update the exisiting file? \nIf 'NO' selected, you'll be taken to the Artifact Import Wizard",
-                     parentArtifact.getName(), FilenameUtils.getName(fileName));
-
-                  if (MessageDialog.openQuestion(viewPart.getViewSite().getShell(), "Confirm Import", promptMsg)) {
-
-                     IArtifactImportResolver resolver =
-                        ArtifactResolverFactory.createResolver(ArtifactCreationStrategy.CREATE_ON_DIFFERENT_ATTRIBUTES,
-                           parentArtifact.getArtifactType(), Arrays.asList(CoreAttributeTypes.Name), true, false);
-                     try {
-                        ArtifactImportOperationParameter parameter = new ArtifactImportOperationParameter();
-                        parameter.setSourceFile(importFile);
-                        parameter.setDestinationArtifact(parentArtifact.getParent());
-                        parameter.setExtractor(getArtifactExtractor(parentArtifact.getArtifactType()));
-                        parameter.setResolver(resolver);
-                        parameter.setStopOnError(true);
-
-                        IOperation operation = ArtifactImportOperationFactory.completeOperation(parameter);
-                        Operations.executeWorkAndCheckStatus(operation);
-                     } catch (OseeCoreException ex) {
-                        OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
-                     }
-
-                  } else {
-                     Wizards.initAndOpen(wizard, viewPart, new ArtifactStructuredSelection(parentArtifact));
-                  }
-               } else {
-                  Wizards.initAndOpen(wizard, viewPart, new ArtifactStructuredSelection(parentArtifact));
-               }
+   private void performTextTransfer(final DropTargetEvent event, Artifact parentArtifact) {
+      Object object = TextTransfer.getInstance().nativeToJava(event.currentDataType);
+      try {
+         if (object instanceof String) {
+            String fromJson = (String) object;
+            if (fromJson.trim().charAt(0) == '[') {
+               transferJsonArtifacts(parentArtifact, fromJson);
+            } else {
+               throw new OseeArgumentException("Dropped text formatted incorrectly", fromJson);
             }
          }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+
+   private void transferJsonArtifacts(Artifact parentArtifact, String fromJson) {
+      ObjectMapper mapper = new ObjectMapper();
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(parentArtifact.getBranch(), "Artifact explorer drag & drop");
+      try {
+         List<JsonArtifactRepresentation> reqts =
+            mapper.readValue(fromJson, new TypeReference<List<JsonArtifactRepresentation>>() { //
+            });
+         for (JsonArtifactRepresentation item : reqts) {
+            Artifact art = ArtifactTypeManager.addArtifact(ArtifactTypeManager.getTypeByGuid(item.getArtifactTypeId()),
+               parentArtifact.getBranch(), item.getName());
+            List<JsonAttributeRepresentation> attrs = item.getAttrs();
+            for (JsonAttributeRepresentation attr : attrs) {
+               art.addAttributeFromString(AttributeTypeId.valueOf(attr.getAttributeTypeId()), attr.getValue());
+            }
+            art.persist(transaction);
+            parentArtifact.addChild(art);
+            parentArtifact.persist(transaction);
+         }
+         transaction.execute();
+      } catch (Exception ex) {
+         OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
