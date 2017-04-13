@@ -40,6 +40,7 @@ public enum AtsColumnId implements IAtsColumnId {
    PercentCompleteTasks("ats.column.taskPercentComplete"),
    Points("ats.column.points"),
    Priority("ats.column.priority"),
+   ReleaseDate("ats.column.releaseDate"),
    State("ats.column.state"),
    SprintOrder("ats.column.sprintOrder"),
    TaskToRelatedArtifactType("ats.column.taskToRelArtType"),

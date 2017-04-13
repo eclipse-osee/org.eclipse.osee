@@ -81,9 +81,9 @@ public class AtsColumnToken {
       AtsColumnId.CompletedCancelledBy, "Completed or Cancelled By", 80, ColumnAlign.Left.name(), false,
       ColumnType.String, false, "User transitioning action to completed or cancelled state.", true, false);
    public static AtsColumnIdValueColumn CancelledDateColumn = new AtsColumnIdValueColumn(AtsColumnId.CancelledDate,
-      "Cancelled Date", 80, ColumnAlign.Center.name(), false, ColumnType.Date, false, null, true, false);
+      "Cancelled Date", 80, ColumnAlign.Left.name(), false, ColumnType.Date, false, null, true, false);
    public static AtsColumnIdValueColumn CompletedDateColumn = new AtsColumnIdValueColumn(AtsColumnId.CompletedDate,
-      "Completed Date", 80, ColumnAlign.Center.name(), false, ColumnType.Date, false, null, true, false);
+      "Completed Date", 80, ColumnAlign.Left.name(), false, ColumnType.Date, false, null, true, false);
 
    /**
     * Attribute Value columns. These are backed directly by an attribute with the possible ability to change with edit

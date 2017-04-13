@@ -20,6 +20,8 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.util.ColorColumn;
+import org.eclipse.osee.ats.column.CancelledDateColumnUI;
+import org.eclipse.osee.ats.column.CompletedDateColumnUI;
 import org.eclipse.osee.ats.column.CreatedDateColumnUI;
 import org.eclipse.osee.ats.column.IPersistAltLeftClickProvider;
 import org.eclipse.osee.ats.column.ReleaseDateColumn;
@@ -116,12 +118,19 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
     * Returns the backing data object for operations like sorting
     */
    public Object getBackingData(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
-      if (xCol.getId().equals(AtsColumnId.CreatedDate.getId())) {
-         return CreatedDateColumnUI.getInstance().getBackingData(element, xCol, columnIndex);
-      } else if (xCol.getId().equals(ReleaseDateColumn.getInstance().getId())) {
-         return ReleaseDateColumn.getInstance().getBackingData(element, xCol, columnIndex);
+      XViewerAtsColumn xViewerAtsColumn;
+      if (xCol.equals(AtsColumnId.CreatedDate.getId())) {
+         xViewerAtsColumn = CreatedDateColumnUI.getInstance();
+      } else if (xCol.equals(AtsColumnId.ReleaseDate.getId())) {
+         xViewerAtsColumn = ReleaseDateColumn.getInstance();
+      } else if (xCol.equals(AtsColumnId.CompletedDate.getId())) {
+         xViewerAtsColumn = CompletedDateColumnUI.getInstance();
+      } else if (xCol.equals(AtsColumnId.CancelledDate.getId())) {
+         xViewerAtsColumn = CancelledDateColumnUI.getInstance();
+      } else {
+         return null;
       }
-      return null;
+      return xViewerAtsColumn.getBackingData(element, xCol, columnIndex);
    }
 
    private Color getColor(Object element, boolean background, int columnIndex) {
