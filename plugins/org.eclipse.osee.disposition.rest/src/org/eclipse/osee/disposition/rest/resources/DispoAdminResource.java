@@ -29,6 +29,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.disposition.model.CopySetParams;
 import org.eclipse.osee.disposition.model.DispoSet;
+import org.eclipse.osee.disposition.model.MassTeamAssignParams;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.DispoRoles;
 import org.eclipse.osee.disposition.rest.internal.report.ExportSet;
@@ -111,8 +112,7 @@ public class DispoAdminResource {
    @Produces(MediaType.APPLICATION_JSON)
    public Response getDispoSetCopyCoverage(@QueryParam("destinationSet") String destinationSet, @QueryParam("sourceBranch") BranchId sourceBranch, @QueryParam("sourcePackage") Long sourcePackage, CopySetParams params) {
       Response.Status status;
-      final DispoSet destination = dispoApi.getDispoSetById(branch, destinationSet);
-      dispoApi.copyDispoSetCoverage(sourceBranch, sourcePackage, branch, destination, params);
+      dispoApi.copyDispoSetCoverage(sourceBranch, sourcePackage, branch, destinationSet, params);
       status = Status.OK;
       return Response.status(status).build();
    }
@@ -123,9 +123,19 @@ public class DispoAdminResource {
    @Produces(MediaType.APPLICATION_JSON)
    public Response getDispoSetCopy(@QueryParam("destinationSet") String destinationSet, @QueryParam("sourceProgram") BranchId sourceBranch, @QueryParam("sourceSet") String sourceSet, CopySetParams params) {
       Response.Status status;
-      final DispoSet destination = dispoApi.getDispoSetById(branch, destinationSet);
-      final DispoSet source = dispoApi.getDispoSetById(sourceBranch, sourceSet);
-      dispoApi.copyDispoSet(branch, destination, sourceBranch, source, params);
+      dispoApi.copyDispoSet(branch, destinationSet, sourceBranch, sourceSet, params);
+      status = Status.OK;
+      return Response.status(status).build();
+   }
+
+   @Path("/multiItemEdit")
+   @POST
+   @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
+   @Consumes(MediaType.APPLICATION_JSON)
+   public Response multiItemEdit(MassTeamAssignParams params) {
+      Response.Status status;
+      dispoApi.massEditTeam(branch, params.getSetId(), params.getNamesList(), params.getTeam(),
+         String.format("Mult Item Edit by: $s", params.getUserName()));
       status = Status.OK;
       return Response.status(status).build();
    }

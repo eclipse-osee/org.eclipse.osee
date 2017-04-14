@@ -126,6 +126,7 @@ public final class DispoUtil {
       dispoItemData.setItemNotes(dispoItemArt.getItemNotes());
       dispoItemData.setFileNumber(dispoItemArt.getFileNumber());
       dispoItemData.setMethodNumber(dispoItemArt.getMethodNumber());
+      dispoItemData.setTeam(dispoItemArt.getTeam());
       if (isIncludeDiscrepancies) {
          Map<String, Discrepancy> discrepanciesList = dispoItemArt.getDiscrepanciesList();
          dispoItemData.setDiscrepanciesList(discrepanciesList);
@@ -222,6 +223,9 @@ public final class DispoUtil {
          if (jsonObject.has("methodNumber")) {
             dispoItem.setMethodNumber(jsonObject.getString("methodNumber"));
          }
+         if (jsonObject.has("team")) {
+            dispoItem.setTeam(jsonObject.getString("team"));
+         }
       } catch (JSONException ex) {
          throw new OseeCoreException("Error deserializing a Dispositionable Item.", ex);
       }
@@ -279,6 +283,7 @@ public final class DispoUtil {
          jsonObject.put("version", dispoItem.getVersion());
          jsonObject.put("fileNumber", dispoItem.getFileNumber());
          jsonObject.put("methodNumber", dispoItem.getMethodNumber());
+         jsonObject.put("team", dispoItem.getTeam());
       } catch (JSONException ex) {
          throw new OseeCoreException("Error deserializing a Dispositionable Item.", ex);
       }

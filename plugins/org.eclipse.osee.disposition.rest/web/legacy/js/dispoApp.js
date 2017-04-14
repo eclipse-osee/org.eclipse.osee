@@ -89,6 +89,19 @@ app.provider('CopySet', function() {
     ];
 });
 
+app.provider('MultiItemEdit', function() {
+    this.$get = [
+        '$resource',
+        function($resource) {
+            var MultiItemEdit = $resource(
+                '/dispo/program/:programId/admin/multiItemEdit', {}, {
+                });
+            return MultiItemEdit;
+        }
+    ];
+});
+
+
 app.provider('Set', function() {
     this.$get = ['$resource',
         function($resource) {
@@ -153,7 +166,6 @@ app.provider('SetSearch', function() {
         }
     ];
 });
-
 
 app.provider('Annotation', function() {
     this.$get = [

@@ -44,6 +44,7 @@ public class DispoItemData implements DispoItem {
    private String fileNumber;
    private String methodNumber;
    private boolean isIncludeDetails;
+   private String team;
 
    public DispoItemData() {
 
@@ -157,6 +158,11 @@ public class DispoItemData implements DispoItem {
       return needsReview;
    }
 
+   @Override
+   public String getTeam() {
+      return team;
+   }
+
    public void setName(String name) {
       this.name = name;
    }
@@ -243,5 +249,9 @@ public class DispoItemData implements DispoItem {
 
    public void setNeedsReview(boolean needsReview) {
       this.needsReview = needsReview;
+   }
+
+   public void setTeam(String team) {
+      this.team = team;
    }
 }

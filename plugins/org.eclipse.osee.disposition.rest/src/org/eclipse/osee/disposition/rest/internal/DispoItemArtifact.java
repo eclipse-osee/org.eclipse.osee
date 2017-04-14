@@ -170,4 +170,9 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
    public Boolean getNeedsReview() {
       return artifact.getSoleAttributeValue(DispoConstants.DispoItemNeedsReview, false);
    }
+
+   @Override
+   public String getTeam() {
+      return artifact.getSoleAttributeAsString(DispoConstants.DispoItemTeam, "");
+   }
 }

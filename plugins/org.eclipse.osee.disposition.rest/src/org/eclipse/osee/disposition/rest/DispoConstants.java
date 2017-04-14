@@ -12,8 +12,8 @@ package org.eclipse.osee.disposition.rest;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 
@@ -46,6 +46,7 @@ public final class DispoConstants {
    public static final AttributeTypeToken DispoItemAborted = AttributeTypeToken.valueOf(3458764513820541448L, "dispo.Aborted");
    public static final AttributeTypeToken DispoItemItemNotes = AttributeTypeToken.valueOf(3458764513820541456L, "dispo.Item Notes");
    public static final AttributeTypeToken DispoItemNeedsReview = AttributeTypeToken.valueOf(3458764513820541458L, "dispo.Needs Review");
+   public static final AttributeTypeToken DispoItemTeam = AttributeTypeToken.valueOf(3160880792426011047L, "dispo.Team");
    public static final AttributeTypeToken DispoItemFileNumber = AttributeTypeToken.valueOf(3458764513820541715L, "dispo.File Number");
    public static final AttributeTypeToken DispoItemMethodNumber = AttributeTypeToken.valueOf(3458764513820541460L, "dispo.Method Number");
 

@@ -1,14 +1,15 @@
-		app.controller('adminController', ['$scope', '$rootScope', '$modal', 'Program', 'Set', 'Report', 'CopySet',
-		    function($scope, $rootScope,  $modal, Program, Set, Report, CopySet) {
+		app.controller('adminController', ['$scope', '$rootScope', '$modal', 'Program', 'Set', 'Report', 'CopySet', 'MultiItemEdit',
+		    function($scope, $rootScope,  $modal, Program, Set, Report, CopySet, MultiItemEdit) {
 		        $scope.readOnly = true;
 		        $scope.programSelection = null;
 		        $scope.modalShown = false;
 		        $scope.primarySet = "";
 		        $scope.secondarySet = "";
 		        $scope.sets = {};
-			     $scope.addNew = false;
+			    $scope.addNew = false;
 		        $scope.newProgramName = ""
-		        $scope.isCopying = false;
+		        $scope.selectedItems = [];
+		        $scope.isRunningOperation = false;
 
 		        $scope.cachedValue = "";
 
@@ -35,6 +36,7 @@
 		            enableColumnResize: false,
 		            enableRowReordering: true,
 		            multiSelect: false,
+		            selectedItems: $scope.selectedItems,
 		            columnDefs: 'columnDefs' // link to scope variable which we will define dynamically				
 		        }
 		        
@@ -43,7 +45,7 @@
 		        }
 
 		        var editCellTmpl = '<input editable="true" >'
-			    var dellCellTmpl = '<button width="50px" class="btn btn-default btn-sm setDelete" ng-show="!readOnly" ng-click="deleteSet(row.entity)">X</button>';
+			    var dellCellTmpl = '<button width="50px" class="btn btn-danger btn-sm setDelete" ng-show="!readOnly" ng-click="deleteSet(row.entity)">X</button>';
 			    var importCellTmpl = '<button width="50px" class="btn btn-primary" ng-disabled="row.entity.processingImport" ng-click="importSet(row.entity)">Import</button>';
 			    var exportCellTmpl = '<button width="50px" class="btn btn-primary" ng-disabled="row.entity.processingImport" ng-click="exportSet(row.entity)">Export</button>';
 			    var lastOperationCellTmpl = '<id="stateButton" button width="99%" ng-disabled="row.entity.processingImport || row.entity.gettingDetails" ng-class="{btn: true, \'btn-primary\': \'isPrimary(row.entity.importState)\',' +
@@ -52,67 +54,67 @@
 		        $scope.columnDefs1 = [{
 		            field: "",
 		            displayName: "Import",
-		            width: 70,
+		            width: '9%',
 		            enableCellEdit: false,
 		            cellTemplate: importCellTmpl
 		        }, {
 		        	field: "",
 		        	displayName: "Export",
-		        	width: 70,
+		        	width: '9%',
 		        	cellTemplate: exportCellTmpl
 		        }, {
 		        	field: "",
 		            displayName: "Last Operation",
-		            width: 120,
+		            width: '15%',
 		        	cellTemplate: lastOperationCellTmpl
 		        }, {
 		            field: "name",
 		            displayName: "Name",
-		            width: 140,
+		            width: '20%',
 		            enableCellEdit: false
 		        }, {
 		            field: "importPath",
 		            displayName: "Path",
-		            width: 432,
+		            width: '47%',
 		            enableCellEdit: false
 		        }];
 
 		        $scope.columnDefs2 = [{
 		            field: "",
 		            displayName: "Import",
-		            width: 70,
+		            width: '9%',
 		            enableCellEdit: false,
 		            cellTemplate: importCellTmpl
 		        }, {
 		        	field: "",
 		        	displayName: "Export",
-		        	width: 70,
+		        	width: '9%',
 		        	cellTemplate: exportCellTmpl
 		        },{
 		        	field: "",
 		            displayName: "Last Operation",
-		            width: 120,
+		            width: '15%',
 		        	cellTemplate: lastOperationCellTmpl
 		        }, {
 		            field: "name",
 		            displayName: "Name",
-		            width: 140,
+		            width: '20%',
 		            enableCellEdit: true
 		        }, {
 		            field: "importPath",
 		            displayName: "Path",
-		            width: 375,
+		            width: '42%',
 		            enableCellEdit: true
 		        }, {
 		            field: "delete",
-		            displayName: "Delete",
-		            width: 57,
+		            displayName: "",
+		            width: '5%',
 		            cellTemplate: dellCellTmpl
 		        }];
 		        
 		        $scope.createNewProgram = function() {
 		            if ($scope.newProgramName != "") {
-		        		    var loadingModal = $scope.showLoadingModal();
+		        		var loadingModal = $scope.showLoadingModal();
 		                var newProgram = new Program;
 		                newProgram.name = $scope.newProgramName;
 		                newProgram.$save({
@@ -145,7 +147,7 @@
 		            $scope.modalShown = !$scope.modalShown
 		        };
 
-		        $scope.toggleReadOnly = function() {
+				$scope.toggleReadOnly = function() {
 		            if ($scope.readOnly) {
 		                $scope.columnDefs = $scope.columnDefs2;
 		                $scope.readOnly = false;
@@ -208,18 +210,41 @@
 		                setId: set.guid
 		            }, set);
 		        };
+		        
+		        $scope.massAssignTeam = function(setId, team, namesList) {
+		        	$scope.isRunningOperation = true;
+		        	var loadingModal = $scope.showLoadingModal();
+		        	var multiItemEditOp = new MultiItemEdit;
+		        	multiItemEditOp.namesList = namesList;
+		        	multiItemEditOp.team = team;
+		        	multiItemEditOp.setId = setId;
+		        	multiItemEditOp.userName = $rootScope.cachedName;
+		        	
+		        	multiItemEditOp.$save({
+		        		programId: $scope.programSelection      		
+		        	}, function(data) {
+		        		$scope.isRunningOperation = false;
+		        		loadingModal.close();
+		        		$scope.getSetImportDetails($scope.getSetById(setId));
+		        	}, function() {
+		        		$scope.isRunningOperation = false;
+		        		loadingModal.close();
+		        		alert("Oops...Something went wrong");
+		        		// boo
+		        	})
+		        };
+		        
+		        $scope.getSetById = function(setId) {
+		        	for(var i =0; i < $scope.sets.length; i++) {
+		        		if($scope.sets[i].guid == setId) {
+		        			return $scope.sets[i];
+		        		}
+		        	}
+		        	return null;
+		        }
 
 		        $scope.deleteSet = function deleteSet(set) {
-		            Set.delete({
-		                programId: $scope.programSelection,
-		                setId: set.guid
-		            }, function() {
-		                var index = $scope.sets.indexOf(set);
-		                if (index > -1) {
-		                    $scope.sets.splice(index, 1);
-		                }
-		            });
-
+		        	var loadingModal = $scope.openConfirmDeleteModal(set);
 		        }
 		        
 		        var populateReportField = function(set) {
@@ -278,7 +303,7 @@
 		        };
 		        
 		        $scope.copySet = function(inputs)	 {
-		        	$scope.isCopying = true;
+		        	$scope.isRunningOperation = true;
 		        	var copySetOp = new CopySet;
 		        	copySetOp.annotationParam = inputs.annotationParam;
 		        	copySetOp.categoryParam = inputs.categoryParam;
@@ -292,11 +317,11 @@
 		                sourceProgram: inputs.sourceProgram,
 		                sourceSet: inputs.sourceSet,
 		            }, function(data) {
-		            	$scope.isCopying = false;
+		            	$scope.isRunningOperation = false;
 		            	var reportUrl = data.operationStatus;
 		            	$scope.getSetImportDetails(destinationSet);
 		            }, function(data) {
-		               $scope.isCopying = false;
+		               $scope.isRunningOperation = false;
 		            	$scope.getSetImportDetails(destinationSet);
 		            });
 		        }
@@ -397,6 +422,52 @@
 		                $modalInstance.dismiss('cancel');
 		            };
 		        };
+		        
+			     // Edit Set Modal
+		        $scope.openMassAssignTeamModal = function() {
+		            var modalInstance = $modal.open({
+		                templateUrl: 'massAssignTeam.html',
+		                controller: MassAssignTeamCtrl,
+		                size: 'lg',
+		                windowClass: 'massAssignTeamModal',
+		                resolve: {
+		                	sets: function() {
+		                		return $scope.sets;
+		                	},
+		                	gridSelectedSetId: function() {
+		                		if($scope.selectedItems.legnth > 0) {
+			                		return $scope.selectedItems[0].guid;
+		                		} else {
+		                			return null;
+		                		}
+		                	}
+		                }
+		            });
+
+		            modalInstance.result.then(function(inputs) {
+		            	$scope.massAssignTeam(inputs.setId, inputs.team, inputs.nameList);
+		            });
+		        }
+
+		        var MassAssignTeamCtrl = function($scope, $modalInstance, gridSelectedSetId, sets) {	
+		        	$scope.setsLocal = sets.slice();
+		            $scope.nameListAsString = "";
+		            $scope.team = "";
+		            $scope.setId = gridSelectedSetId;
+		            
+		            $scope.ok = function() {
+		                var inputs = {};
+		                inputs.nameList = this.nameListAsString.split(",");
+		                inputs.team = this.team;
+		                inputs.setId = this.setId;
+		                
+		                $modalInstance.close(inputs);
+		            };
+
+		            $scope.cancel = function() {
+		                $modalInstance.dismiss('cancel');
+		            };
+		        }
 		        
 		        // Copy Set Modal
 		        $scope.openCopySetModal = function() {
@@ -506,6 +577,59 @@
 		                inputs.sourceBranch = this.sourceBranch;
 		                inputs.sourcePackage = this.sourcePackage;
 		                
+		                $modalInstance.close(inputs);
+		            };
+
+		            $scope.cancel = function() {
+		                $modalInstance.dismiss('cancel');
+		            };
+		        };
+		        
+		        // Confirm Delete Modal
+		        $scope.openConfirmDeleteModal = function(set) {
+		            var modalInstance = $modal.open({
+		                templateUrl: 'confirmDelete.html',
+		                controller: ConfirmDeleteCtrl,
+		                size: 'sm',
+		                windowClass: 'confirmDeleteModal',
+		                resolve: {
+		                	selectedProgram: function() {
+		                		return $scope.programSelection;
+		                	},
+		                	selectedSet: function() {
+		                		return set;
+		                	}
+		                	
+		                }
+		            });
+
+		            modalInstance.result.then(function(inputs) {
+		            	if(inputs.isConfirmed) {
+					        Set.delete({
+				                programId: inputs.program,
+				                setId: inputs.set.guid
+				            }, function() {
+				                var index = $scope.sets.indexOf(inputs.set);
+				                if (index > -1) {
+				                    $scope.sets.splice(index, 1);
+				                }
+				            });
+		            	}
+		            });
+		        }
+
+		        var ConfirmDeleteCtrl = function($scope, $modalInstance, selectedProgram, selectedSet) {
+		            $scope.text = "";
+		            
+		            $scope.ok = function() {
+		                var inputs = {};
+		                inputs.isConfirmed = false;
+		                inputs.program = selectedProgram;
+		                inputs.set = selectedSet;
+		                
+		                if(this.text.toUpperCase() == "DELETE") {
+		                	inputs.isConfirmed = true;
+		                }
 		                $modalInstance.close(inputs);
 		            };
 

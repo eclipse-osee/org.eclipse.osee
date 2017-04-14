@@ -354,6 +354,7 @@ public class OrcsStorageImpl implements Storage {
       String itemNotes = newItemData.getItemNotes();
       String fileNumber = newItemData.getFileNumber();
       String methodNumber = newItemData.getMethodNumber();
+      String team = newItemData.getTeam();
 
       Boolean needsRerun;
       if (resetRerunFlag) {
@@ -410,6 +411,9 @@ public class OrcsStorageImpl implements Storage {
       if (methodNumber != null && !methodNumber.equals(origItem.getMethodNumber())) {
          tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoItemMethodNumber, methodNumber);
       }
+      if (team != null && !team.equals(origItem.getTeam())) {
+         tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoItemTeam, team);
+      }
 
    }
 
@@ -424,13 +428,20 @@ public class OrcsStorageImpl implements Storage {
    @Override
    public void updateDispoItems(ArtifactReadable author, BranchId branch, Collection<DispoItem> data, boolean resetRerunFlag, String operation) {
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, operation);
+      boolean isCommitNeeded = false;
 
       for (DispoItem newItem : data) {
-         ArtifactReadable dispoItemArt = findDispoArtifact(branch, newItem.getGuid(), DispoConstants.DispoItem);
-         updateSingleItem(author, branch, dispoItemArt, newItem, tx, resetRerunFlag);
+         String itemId = newItem.getGuid();
+         if (Strings.isValid(itemId)) {
+            isCommitNeeded = true;
+            ArtifactReadable dispoItemArt = findDispoArtifact(branch, newItem.getGuid(), DispoConstants.DispoItem);
+            updateSingleItem(author, branch, dispoItemArt, newItem, tx, resetRerunFlag);
+         }
       }
 
-      tx.commit();
+      if (isCommitNeeded) {
+         tx.commit();
+      }
    }
 
    @Override
@@ -551,9 +562,9 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public void updateOperationSummary(ArtifactReadable author, BranchId branch, DispoSet set, OperationReport summary) {
+   public void updateOperationSummary(ArtifactReadable author, BranchId branch, String setId, OperationReport summary) {
       OperationReport newReport = DispoUtil.cleanOperationReport(summary);
-      ArtifactReadable dispoSet = findDispoArtifact(branch, set.getGuid(), DispoConstants.DispoSet);
+      ArtifactReadable dispoSet = findDispoArtifact(branch, setId, DispoConstants.DispoSet);
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Update Dispo Operation Report");
 
       tx.setSoleAttributeFromString(dispoSet, DispoConstants.ImportState, newReport.getStatus().getName());

@@ -297,13 +297,20 @@ app.controller('userController', [
             enableCellEdit: false,
             visible: false,
             headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-            }, {
-                field: 'version',
-                displayName: 'Version',
-                enableCellEdit: false,
-                visible: false,
-                headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        }];
+        }, 
+        {
+            field: 'version',
+            displayName: 'Version',
+            enableCellEdit: false,
+            visible: false,
+            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
+        },{
+            field: 'team',
+            displayName: 'Team',
+            enableCellEdit: false,
+            visible: false,
+            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
+         }];
         
         $scope.wideColumns = [{
             field: 'name',
@@ -391,7 +398,13 @@ app.controller('userController', [
                 enableCellEdit: false,
                 visible: false,
                 headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        }];
+        },{
+            field: 'team',
+            displayName: 'Team',
+            enableCellEdit: false,
+            visible: false,
+            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
+         }];
         
         if(window.innerWidth < 1000) {
         	$scope.columns = $scope.smallColumns;

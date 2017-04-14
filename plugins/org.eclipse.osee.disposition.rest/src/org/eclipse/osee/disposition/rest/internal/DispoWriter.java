@@ -39,7 +39,7 @@ public interface DispoWriter {
 
    void updateDispoItems(ArtifactReadable author, BranchId branch, Collection<DispoItem> data, boolean resetRerunFlag, String operation);
 
-   void updateOperationSummary(ArtifactReadable author, BranchId branch, DispoSet set, OperationReport summary);
+   void updateOperationSummary(ArtifactReadable author, BranchId branch, String setId, OperationReport summary);
 
    String createDispoReport(BranchId branch, ArtifactReadable author, String contens, String operationTitle);
 

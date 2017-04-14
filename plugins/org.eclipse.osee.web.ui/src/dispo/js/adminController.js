@@ -1,5 +1,5 @@
-		app.controller('adminController', ['$scope', '$rootScope', '$modal', 'Program', 'Set', 'Report', 'CopySet', 'CopySetCoverage',
-		    function($scope, $rootScope,  $modal, Program, Set, Report, CopySet, CopySetCoverage) {
+		app.controller('adminController', ['$scope', '$rootScope', '$modal', 'Program', 'Set', 'Report', 'CopySet', 'CopySetCoverage', 'MultItemEdit',
+		    function($scope, $rootScope,  $modal, Program, Set, Report, CopySet, CopySetCoverage, MultItemEdit) {
 		        $scope.readOnly = true;
 		        $scope.programSelection = null;
 		        $scope.modalShown = false;
@@ -402,6 +402,48 @@
 		                $modalInstance.dismiss('cancel');
 		            };
 		        };
+		        
+		     // Edit Set Modal
+		        $scope.editSetModal = function() {
+		            var modalInstance = $modal.open({
+		                templateUrl: 'editSet.html',
+		                controller: EditSetModalCtrl,
+		                size: 'lg',
+		                windowClass: 'createSetModal'
+		            });
+
+		            modalInstance.result.then(function(inputs) {
+		            	if(inputs.isSetEdit) {
+			            	var newSet = {};
+			            	newSet.name = inputs.name;
+			            	newSet.path = 
+			                $scope.editSet(newSet);
+		            	} 
+		            	if(inputs.isMultItemEdit) {
+		            		$scope.editMultiItems(inputs.nameList, inputs.team);
+		            	}
+		            });
+		        }
+
+		        var CreateSetModalCtrl = function($scope, $modalInstance, setName, setPath) {		        	
+		            $scope.setName = setName;
+		            $scope.importPath = setPath;
+		            $scope.nameListAsString = "";
+		            
+		            $scope.ok = function() {
+		                var inputs = {};
+		                inputs.name = this.setName;
+		                inputs.path = this.importPath;
+		                inputs.nameList = nameListAsString.split(",");
+		                
+		                $modalInstance.close(inputs);
+		            };
+
+		            $scope.cancel = function() {
+		                $modalInstance.dismiss('cancel');
+		            };
+		        };
+		        
 		        
 		        // Copy Set Modal
 		        $scope.openCopySetModal = function() {

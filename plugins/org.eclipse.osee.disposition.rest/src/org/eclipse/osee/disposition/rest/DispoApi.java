@@ -56,11 +56,13 @@ public interface DispoApi {
 
    boolean editDispoItem(BranchId branch, String itemId, DispoItemData newDispoItem);
 
+   boolean massEditTeam(BranchId branch, String setId, List<String> itemNames, String team, String commitMessage);
+
    boolean editDispoAnnotation(BranchId branch, String itemId, String annotationId, DispoAnnotationData newAnnotation, String userName);
 
-   void copyDispoSet(BranchId branch, DispoSet destination, BranchId sourceBranch, DispoSet sourceSet, CopySetParams params);
+   void copyDispoSet(BranchId branch, String destSetId, BranchId sourceBranch, String sourceSetId, CopySetParams params);
 
-   void copyDispoSetCoverage(BranchId sourceBranch, Long sourceCoverageUuid, BranchId destBranch, DispoSet destination, CopySetParams params);
+   void copyDispoSetCoverage(BranchId sourceBranch, Long sourceCoverageUuid, BranchId destBranch, String destSetId, CopySetParams params);
 
    // Deletes
 

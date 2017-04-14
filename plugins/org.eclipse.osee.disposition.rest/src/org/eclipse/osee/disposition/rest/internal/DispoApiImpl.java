@@ -43,6 +43,7 @@ import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -176,6 +177,60 @@ public class DispoApiImpl implements DispoApi {
          getWriter().updateDispoItem(author, branch, dispoItemToEdit.getGuid(), newDispoItem);
          wasUpdated = true;
       }
+      return wasUpdated;
+   }
+
+   @Override
+   public boolean massEditTeam(BranchId branch, String setId, List<String> itemNames, String team, String operation) {
+      boolean wasUpdated = false;
+      Set<DispoItem> dispoItems = new HashSet<>();
+      List<DispoItem> itemsFromSet = getDispoItems(branch, setId);
+      Map<String, String> nameToId = new HashMap<>();
+      OperationReport report = new OperationReport();
+
+      for (DispoItem item : itemsFromSet) {
+         nameToId.put(item.getName(), item.getGuid());
+      }
+
+      Set<String> itemsUpdated = new HashSet<>();
+      for (String name : itemNames) {
+         name = name.trim();
+         String matchingItemId = nameToId.get(name);
+         if (matchingItemId == null) {
+            report.addEntry(name, "No existing item with this name for the selected set", DispoSummarySeverity.WARNING);
+         } else {
+            itemsUpdated.add(name);
+            DispoItemData newItem = new DispoItemData();
+            newItem.setGuid(matchingItemId);
+            newItem.setTeam(team);
+            dispoItems.add(newItem);
+         }
+
+      }
+
+      if (!itemsUpdated.isEmpty()) {
+         report.addEntry(team, String.format("Team Applied to %s of %s items", itemsUpdated.size(), itemNames.size()),
+            DispoSummarySeverity.UPDATE);
+         if (itemsUpdated.size() != itemNames.size()) {
+            Set<String> uniqueNames = new HashSet<>(itemNames);
+            itemNames.removeAll(uniqueNames);
+            if (!itemNames.isEmpty()) {
+               String duplicatesAsString = Collections.toString(", ", itemNames);
+               report.addEntry(team,
+                  String.format("There were %s duplciates: %s", itemNames.size(), duplicatesAsString),
+                  DispoSummarySeverity.WARNING);
+            }
+         }
+         editDispoItems(branch, dispoItems, false, operation);
+      } else {
+         report.addEntry("Womp womp womp",
+            "No items were updated. Please check your 'Items' list and make sure it's a comma seperated list of item names",
+            DispoSummarySeverity.ERROR);
+      }
+
+      // Generate report
+      ArtifactReadable author = getQuery().findUser();
+      getWriter().updateOperationSummary(author, branch, setId, report);
       return wasUpdated;
    }
 
@@ -373,7 +428,7 @@ public class DispoApiImpl implements DispoApi {
       newSet.setNotesList(notesList);
 
       // Generate report
-      getWriter().updateOperationSummary(author, branch, setToEdit, report);
+      getWriter().updateOperationSummary(author, branch, setToEdit.getGuid(), report);
    }
 
    private HashMap<String, DispoItem> getItemsMap(BranchId branch, DispoSet set) {
@@ -413,9 +468,9 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public void copyDispoSetCoverage(BranchId sourceBranch, Long sourceCoverageUuid, BranchId destBranch, DispoSet destination, CopySetParams params) {
+   public void copyDispoSetCoverage(BranchId sourceBranch, Long sourceCoverageUuid, BranchId destBranch, String destSetId, CopySetParams params) {
       Map<String, ArtifactReadable> coverageUnits = getQuery().getCoverageUnits(sourceBranch, sourceCoverageUuid);
-      List<DispoItem> destItems = getDispoItems(destBranch, destination.getGuid());
+      List<DispoItem> destItems = getDispoItems(destBranch, destSetId);
 
       OperationReport report = new OperationReport();
 
@@ -426,15 +481,15 @@ public class DispoApiImpl implements DispoApi {
          String.format("Copy From Legacy Coverage - Branch [%s] and Source Set [%s]", sourceBranch, sourceCoverageUuid);
       if (!copyData.isEmpty()) {
          editDispoItems(destBranch, copyData, false, operation);
-         storageProvider.get().updateOperationSummary(getQuery().findUser(), destBranch, destination, report);
+         storageProvider.get().updateOperationSummary(getQuery().findUser(), destBranch, destSetId, report);
       }
    }
 
    @Override
-   public void copyDispoSet(BranchId branch, DispoSet destination, BranchId sourceBranch, DispoSet sourceSet, CopySetParams params) {
-      List<DispoItem> sourceItems = getDispoItems(sourceBranch, sourceSet.getGuid());
+   public void copyDispoSet(BranchId branch, String destSetId, BranchId sourceBranch, String sourceSetId, CopySetParams params) {
+      List<DispoItem> sourceItems = getDispoItems(sourceBranch, sourceSetId);
       Map<String, Set<DispoItemData>> namesToDestItems = new HashMap<>();
-      for (DispoItem itemArt : getDispoItems(branch, destination.getGuid())) {
+      for (DispoItem itemArt : getDispoItems(branch, destSetId)) {
          DispoItemData itemData = DispoUtil.itemArtToItemData(itemArt, true, true);
 
          String name = itemData.getName();
@@ -463,10 +518,10 @@ public class DispoApiImpl implements DispoApi {
       copier.copyAssignee(namesToDestItems, sourceItems, namesToToEditItems, params.getAssigneeParam());
       copier.copyNotes(namesToDestItems, sourceItems, namesToToEditItems, params.getNoteParam());
 
-      String operation = String.format("Copy Set from Program [%s] and Set [%s]", sourceBranch, sourceSet.getGuid());
+      String operation = String.format("Copy Set from Program [%s] and Set [%s]", sourceBranch, sourceSetId);
       if (!namesToToEditItems.isEmpty() && !report.getStatus().isFailed()) {
          editDispoItems(branch, namesToToEditItems.values(), false, operation);
-         storageProvider.get().updateOperationSummary(getQuery().findUser(), branch, destination, report);
+         storageProvider.get().updateOperationSummary(getQuery().findUser(), branch, destSetId, report);
       }
 
    }

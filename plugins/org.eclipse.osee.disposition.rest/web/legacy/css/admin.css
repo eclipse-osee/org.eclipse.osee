@@ -57,9 +57,9 @@ button.btn.btn-success.ng-scope {
 	margin-top:20px;
 }
 
-button#mergetAnnotationsBtn {
-    margin-top: 20px;
-    margin-bottom: 20px;
+#operationsPanel {
+	background-color: inherit;	
+	text-align: center;
 }
 
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
