@@ -783,8 +783,7 @@ artifactType "Implementation Details" extends "MS Word Template" {
 	attribute "Data Rights Basis"
 	attribute "Subject Matter Expert"	
 	attribute "Subsystem"	
-	attribute "CSCI"
-	attribute "Partition"		
+	attribute "Partition"				
 }
 
 artifactType "Implementation Details Procedure" extends "Implementation Details" {
