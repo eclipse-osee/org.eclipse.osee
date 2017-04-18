@@ -5,9 +5,9 @@
  */
 package org.eclipse.osee.doors.connector.core;
 
-import org.eclipse.jface.dialogs.MessageDialog;
+import java.util.logging.Level;
 import org.eclipse.osee.doors.connector.core.oauth.DWAOAuthService;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.scribe.model.Token;
 
 /**
@@ -49,8 +49,7 @@ public class DoorsOSLCConnector {
             e.printStackTrace();
          }
       } else {
-         MessageDialog.openError(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Error",
-            "Failed to obtain valid authentication response");
+         OseeLog.log(DWAOAuthService.class, Level.WARNING, "Failed to obtain valid authentication response");
       }
       return parse;
    }

@@ -19,9 +19,7 @@ import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.util.URIUtil;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.ui.PlatformUI;
 import org.scribe.extractors.TokenExtractorImpl;
 import org.scribe.model.OAuthConstants;
 import org.scribe.model.Token;
@@ -88,11 +86,9 @@ public class DWAOAuthService {
       try {
          requestTokenResponse = this.httpClient.executeMethod(requestPostMethod);
       } catch (HttpException e1) {
-         MessageDialog.openError(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Error",
-            "Failed to obtain valid authentication response");
+         OseeLog.log(DWAOAuthService.class, Level.WARNING, "Failed to obtain valid authentication response");
       } catch (IOException e1) {
-         MessageDialog.openError(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Error",
-            "Failed to obtain valid authentication response");
+         OseeLog.log(DWAOAuthService.class, Level.WARNING, "Failed to obtain valid authentication response");
       }
 
       Token requestToken = null;
@@ -105,8 +101,7 @@ public class DWAOAuthService {
          requestToken = tokenextractor.extract(StreamUtils.getStreamContents(responseBodyAsStream));
 
       } catch (IOException e1) {
-         MessageDialog.openError(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Error",
-            "Failed to obtain valid authentication response");
+         OseeLog.log(DWAOAuthService.class, Level.WARNING, "Failed to obtain valid authentication response");
       }
 
       return requestToken;

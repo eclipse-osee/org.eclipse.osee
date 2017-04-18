@@ -21,7 +21,6 @@ Import-Package: org.apache.commons.codec;version="1.6.0",
  org.codehaus.jackson,
  org.codehaus.jackson.annotate,
  org.codehaus.jackson.node,
- org.eclipse.core.runtime,
  org.eclipse.jface.dialogs,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.logging,
@@ -32,4 +31,3 @@ Import-Package: org.apache.commons.codec;version="1.6.0",
  org.scribe.builder.api
 Bundle-ClassPath: .,
  lib/scribe-1.3.7.jar
-Require-Bundle: org.eclipse.ui.workbench;bundle-version="3.108.0"
