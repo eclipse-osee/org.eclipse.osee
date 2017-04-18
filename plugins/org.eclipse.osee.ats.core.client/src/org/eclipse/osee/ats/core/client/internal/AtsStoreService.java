@@ -186,7 +186,7 @@ public class AtsStoreService implements IAtsStoreService {
 
    @Override
    public boolean isOfType(IAtsObject atsObject, IArtifactType artifactType) {
-      return isOfType(atsObject.getStoreObject());
+      return isOfType(atsObject.getStoreObject(), artifactType);
    }
 
 }
