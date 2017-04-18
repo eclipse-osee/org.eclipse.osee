@@ -94,11 +94,11 @@ public class ChangeItemConflictTest {
       // but since we don't seem to handle the mixed case of say artifact on src and attribute on destination
       ChangeItem item;
       if (itemType == ItemType.artifact) {
-         item = ChangeItemUtil.newArtifactChange(ArtifactId.valueOf(0), ArtifactTypeId.valueOf(0), GAMMA,
+         item = ChangeItemUtil.newArtifactChange(ArtifactId.SENTINEL, ArtifactTypeId.SENTINEL, GAMMA,
             ModificationType.MODIFIED, ApplicabilityToken.BASE);
       } else {
-         item = ChangeItemUtil.newAttributeChange(AttributeId.valueOf(0), AttributeTypeId.valueOf(0),
-            ArtifactId.valueOf(0), GAMMA, ModificationType.MODIFIED, "change", ApplicabilityToken.BASE);
+         item = ChangeItemUtil.newAttributeChange(AttributeId.SENTINEL, AttributeTypeId.SENTINEL, ArtifactId.SENTINEL,
+            GAMMA, ModificationType.MODIFIED, "change", ApplicabilityToken.BASE);
       }
 
       buildTestCase(GAMMA, item);

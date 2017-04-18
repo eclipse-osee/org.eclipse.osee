@@ -251,9 +251,9 @@ public final class RevisionChangeLoader {
                Artifact bArtifact = loadedMap.get(builder.getTxDelta().getEndTx(), relBuilder.getbArtId());
                toReturn = new RelationChange(branch, GammaId.valueOf(builder.getSourceGamma()),
                   ArtifactId.valueOf(builder.getArtId()), builder.getTxDelta(), builder.getModType(),
-                  ArtifactId.valueOf(relBuilder.getbArtId()), RelationId.valueOf(relBuilder.getRelLinkId()),
-                  relBuilder.getRationale(), "", relBuilder.getRelationType(), isHistorical, changeArtifact, delta,
-                  bArtifact);
+                  ArtifactId.valueOf(relBuilder.getbArtId()),
+                  RelationId.valueOf(Long.valueOf(relBuilder.getRelLinkId())), relBuilder.getRationale(), "",
+                  relBuilder.getRelationType(), isHistorical, changeArtifact, delta, bArtifact);
             }
          } else {
             toReturn = new ArtifactChange(branch, GammaId.valueOf(builder.getSourceGamma()),

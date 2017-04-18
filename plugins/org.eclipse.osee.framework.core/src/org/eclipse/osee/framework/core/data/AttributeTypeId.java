@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -24,11 +23,6 @@ public interface AttributeTypeId extends Id {
    AttributeTypeId SENTINEL = valueOf(Id.SENTINEL);
 
    public static AttributeTypeId valueOf(String id) {
-      return valueOf(Long.valueOf(id));
-   }
-
-   @JsonCreator
-   public static AttributeTypeId valueOf(long id) {
       return valueOf(Long.valueOf(id));
    }
 

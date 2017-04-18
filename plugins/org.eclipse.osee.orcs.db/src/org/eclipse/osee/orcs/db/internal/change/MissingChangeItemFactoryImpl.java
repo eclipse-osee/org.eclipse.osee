@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.change;
 
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,8 +45,6 @@ import org.eclipse.osee.orcs.core.ds.LoadDataHandlerAdapter;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
 
 /**
  * @author John Misinco
@@ -239,7 +239,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
 
    private ChangeItem createRelationChangeItem(RelationData data) throws OseeCoreException {
       ApplicabilityId appId = data.getApplicabilityId();
-      return ChangeItemUtil.newRelationChange(RelationId.valueOf(data.getLocalId()),
+      return ChangeItemUtil.newRelationChange(RelationId.valueOf(Long.valueOf(data.getLocalId())),
          RelationTypeId.valueOf(data.getTypeUuid()), GammaId.valueOf(data.getVersion().getGammaId()),
          determineModType(data), ArtifactId.valueOf(data.getArtIdA()), ArtifactId.valueOf(data.getArtIdB()),
          data.getRationale(), getApplicabilityToken(appId));
