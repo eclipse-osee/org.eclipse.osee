@@ -85,6 +85,7 @@ public class ExportSet {
             }
             row[index++] = String.valueOf(uncoveredDiscrepancies);
             row[index++] = String.valueOf(item.getAssignee());
+            row[index++] = String.valueOf(item.getTeam());
             row[index++] = String.valueOf(item.getItemNotes());
             row[index++] = String.valueOf(item.getNeedsRerun());
             row[index++] = String.valueOf(item.getAborted());
@@ -324,6 +325,7 @@ public class ExportSet {
          "Remaining Count", //
          "Remaining Points", //
          "Assignee", //
+         "Team", //
          "Item Notes", //
          "Needs Rerun", //
          "Aborted", //
