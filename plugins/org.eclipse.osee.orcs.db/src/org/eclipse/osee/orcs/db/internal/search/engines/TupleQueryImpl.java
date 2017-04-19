@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -19,6 +20,8 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
+import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.jdk.core.type.TriConsumer;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
@@ -69,7 +72,7 @@ public class TupleQueryImpl implements TupleQuery {
       "SELECT distinct e2, value FROM osee_artifact art, osee_txs txs1, osee_tuple2 app, osee_txs txs2, osee_key_value WHERE art_id = ? and art.gamma_id = txs1.gamma_id and txs1.branch_id = ? AND txs1.tx_current in (1,2) and tuple_type = 2 AND e2 = txs1.app_id AND app.gamma_id = txs2.gamma_id AND txs2.branch_id = txs1.branch_id AND txs2.tx_current = 1 AND e2 = key";
 
    private static final String SELECT_APPLIC_FOR_ARTS =
-      "SELECT distinct e2, value, art.art_id FROM osee_artifact art, osee_txs txs1, osee_tuple2 app, osee_txs txs2, osee_key_value, osee_join_id jid WHERE art_id = jid.id and jid.query_id =? and art.gamma_id = txs1.gamma_id and txs1.branch_id = ? AND txs1.tx_current in (1,2) and tuple_type = 2 AND e2 = txs1.app_id AND app.gamma_id = txs2.gamma_id AND txs2.branch_id = txs1.branch_id AND txs2.tx_current = 1 AND e2 = key";
+      "SELECT art_id, key, value FROM osee_join_id jid, osee_artifact art, osee_txs txs1, osee_key_value WHERE jid.query_id = ? and jid.id = art_id and art.gamma_id = txs1.gamma_id and txs1.branch_id = ? AND txs1.tx_current <> ? AND txs1.app_id = key";
 
    private static final String SELECT_TUPLE2_BY_TUPLE_TYPE =
       "select distinct e1, e2 from osee_txs txs, osee_tuple2 app where tuple_type = ? and txs.gamma_id = app.gamma_id and branch_id = ? and tx_current = 1";
@@ -120,13 +123,17 @@ public class TupleQueryImpl implements TupleQuery {
    }
 
    @Override
-   public <E1, E2> void getTupleType2ForArtifactIds(List<ArtifactId> artIds, BranchId branchId, BiConsumer<Long, String> consumer) {
+   public <E1, E2> void getTuple2ForArtifactIds(Tuple2Type<E1, E2> tupleType, Collection<? extends ArtifactId> artIds, BranchId branchId, TriConsumer<ArtifactId, Long, String> consumer) {
       IdJoinQuery idJoin = sqlJoinFactory.createIdJoinQuery();
       for (ArtifactId artId : artIds) {
-         idJoin.add(artId.getId());
+         idJoin.add(artId);
       }
       idJoin.store();
-      runQuery(consumer, SELECT_APPLIC_FOR_ARTS, "e2", idJoin.getQueryId(), branchId);
+
+      jdbcClient.runQuery(
+         stmt -> consumer.accept(ArtifactId.valueOf(stmt.getLong("art_id")), stmt.getLong("key"),
+            stmt.getString("value")),
+         SELECT_APPLIC_FOR_ARTS, idJoin.getQueryId(), branchId, TxChange.NOT_CURRENT.getValue());
       idJoin.delete();
    }
 

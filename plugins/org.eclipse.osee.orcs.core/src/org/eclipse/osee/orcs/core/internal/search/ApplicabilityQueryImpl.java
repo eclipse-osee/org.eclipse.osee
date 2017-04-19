@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
+import static org.eclipse.osee.framework.core.enums.CoreTupleTypes.ViewApplicability;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -26,6 +28,8 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.type.TriConsumer;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;
 import org.eclipse.osee.orcs.search.TupleQuery;
@@ -53,10 +57,11 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
-   public List<ApplicabilityToken> getApplicabilityTokens(List<ArtifactId> artIds, BranchId branch) {
-      List<ApplicabilityToken> result = new ArrayList<>();
-      BiConsumer<Long, String> consumer = (id, name) -> result.add(new ApplicabilityToken(id, name));
-      tupleQuery.getTupleType2ForArtifactIds(artIds, branch, consumer);
+   public List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(Collection<? extends ArtifactId> artIds, BranchId branch) {
+      List<Pair<ArtifactId, ApplicabilityToken>> result = new ArrayList<>();
+      TriConsumer<ArtifactId, Long, String> consumer =
+         (artId, id, name) -> result.add(new Pair<>(artId, new ApplicabilityToken(id, name)));
+      tupleQuery.getTuple2ForArtifactIds(ViewApplicability, artIds, branch, consumer);
       return result;
    }
 
@@ -64,7 +69,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    public HashMap<Long, ApplicabilityToken> getApplicabilityTokens(BranchId branch) {
       HashMap<Long, ApplicabilityToken> tokens = new HashMap<>();
       BiConsumer<Long, String> consumer = (id, name) -> tokens.put(id, new ApplicabilityToken(id, name));
-      tupleQuery.getTuple2UniqueE2Pair(CoreTupleTypes.ViewApplicability, branch, consumer);
+      tupleQuery.getTuple2UniqueE2Pair(ViewApplicability, branch, consumer);
       return tokens;
    }
 
@@ -72,8 +77,8 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    public HashMap<Long, ApplicabilityToken> getApplicabilityTokens(BranchId branch1, BranchId branch2) {
       HashMap<Long, ApplicabilityToken> tokens = new HashMap<>();
       BiConsumer<Long, String> consumer = (id, name) -> tokens.put(id, new ApplicabilityToken(id, name));
-      tupleQuery.getTuple2UniqueE2Pair(CoreTupleTypes.ViewApplicability, branch1, consumer);
-      tupleQuery.getTuple2UniqueE2Pair(CoreTupleTypes.ViewApplicability, branch2, consumer);
+      tupleQuery.getTuple2UniqueE2Pair(ViewApplicability, branch1, consumer);
+      tupleQuery.getTuple2UniqueE2Pair(ViewApplicability, branch2, consumer);
       return tokens;
    }
 
@@ -115,7 +120,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    public List<ApplicabilityToken> getViewApplicabilityTokens(ArtifactId artId, BranchId branch) {
       List<ApplicabilityToken> result = new ArrayList<>();
       BiConsumer<Long, String> consumer = (id, name) -> result.add(new ApplicabilityToken(id, name));
-      tupleQuery.getTuple2KeyValuePair(CoreTupleTypes.ViewApplicability, artId, branch, consumer);
+      tupleQuery.getTuple2KeyValuePair(ViewApplicability, artId, branch, consumer);
       return result;
    }
 

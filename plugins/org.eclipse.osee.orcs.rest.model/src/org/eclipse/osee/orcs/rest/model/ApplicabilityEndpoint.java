@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 
 /**
  * @author Donald G. Dunne
@@ -96,7 +97,7 @@ public interface ApplicabilityEndpoint {
    @PUT
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces(MediaType.APPLICATION_JSON)
-   List<ApplicabilityToken> getApplicabilityTokensForArts(List<ArtifactId> artIds);
+   List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokensForArts(Collection<? extends ArtifactId> artIds);
 
    @GET
    @Path("tokenMap")
