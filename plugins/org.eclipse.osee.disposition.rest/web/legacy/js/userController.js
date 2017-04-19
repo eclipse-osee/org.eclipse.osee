@@ -315,37 +315,50 @@ app.controller('userController', [
         $scope.wideColumns = [{
             field: 'name',
             displayName: 'Name',
-            width: 350,
+            width: '22%',
             cellTemplate: origCellTmpl,
             headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
         }, {
             field: 'status',
             displayName: 'Status',
-            width: 100,
+            width: '10%',
             headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
         }, {
             field: 'totalPoints',
             displayName: 'Total',
-            width: 100,
+            width: '10%',
             headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
         }, {
             field: 'failureCount',
             displayName: 'Failure Count',
+            width: '7%',
             headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
         }, {
             field: 'discrepanciesAsRanges',
             displayName: 'Failed Points',
+            width: '15%',
             headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
         }, {
             field: 'assignee',
             displayName: 'Assignee',
             enableCellEdit: false,
             cellTemplate: assigneeCellTmpl,
+            width: '12%',
             headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        }, {
+        }, 
+        {
+            field: 'team',
+            displayName: 'Team',
+            enableCellEdit: false,
+            visible: true,
+            width: '7%',
+            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
+        },
+        {
             field: 'itemNotes',
             displayName: 'Script Notes',
             cellTemplate: cellEditNotes,
+            width: '10%',
             headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
         },{
             field: 'needsRerun',
@@ -353,8 +366,9 @@ app.controller('userController', [
             enableCellEdit: false,
             cellTemplate: chkBoxTemplate,
             sortFn: checkboxSorting,
-            width: 70
-        },{
+            width: '5%',
+        },
+        {
             field: 'lastUpdated',
             displayName: 'Last Ran',
             enableCellEdit: false,
@@ -398,13 +412,7 @@ app.controller('userController', [
                 enableCellEdit: false,
                 visible: false,
                 headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        },{
-            field: 'team',
-            displayName: 'Team',
-            enableCellEdit: false,
-            visible: false,
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-         }];
+        }];
         
         if(window.innerWidth < 1000) {
         	$scope.columns = $scope.smallColumns;
