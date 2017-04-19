@@ -166,16 +166,16 @@ public class HashCollection<K, V> {
    public Collection<V> put(K key, Collection<V> values) {
       Collection<V> items = null;
       if (values == null || values.isEmpty()) {
-         Collection<V> values2 = this.getValues(key);
-         if (values2 == null) {
+         if (!map.containsKey(key)) {
             map.put(key, new LinkedList<>());
          }
-      }
-      for (V value : values) {
-         if (items == null) {
-            items = this.put(key, value);
-         } else {
-            items.add(value);
+      } else {
+         for (V value : values) {
+            if (items == null) {
+               items = this.put(key, value);
+            } else {
+               items.add(value);
+            }
          }
       }
       return items;

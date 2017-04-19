@@ -31,23 +31,27 @@ public class OseeInfo {
 
    private static Map<String, Pair<Long, String>> cache = new ConcurrentHashMap<>();
 
+   public static String getValue(String key, String defaultValue) {
+      return getValue(ConnectionHandler.getJdbcClient(), key, defaultValue, (long) Integer.MAX_VALUE);
+   }
+
    public static String getValue(String key) throws OseeCoreException {
       return getValue(key, (long) Integer.MAX_VALUE);
    }
 
    public static String getValue(String key, Long maxStaleness) throws OseeCoreException {
-      return getValue(ConnectionHandler.getJdbcClient(), key, maxStaleness);
+      return getValue(ConnectionHandler.getJdbcClient(), key, "", maxStaleness);
    }
 
    public static String getValue(JdbcClient jdbcClient, String key) {
-      return getValue(jdbcClient, key, (long) Integer.MAX_VALUE);
+      return getValue(jdbcClient, key, "", (long) Integer.MAX_VALUE);
    }
 
-   public static String getValue(JdbcClient jdbcClient, String key, Long maxStaleness) {
+   public static String getValue(JdbcClient jdbcClient, String key, String defaultValue, Long maxStaleness) {
       Pair<Long, String> pair = cache.get(key);
       String value;
       if (pair == null || pair.getFirst() + maxStaleness < System.currentTimeMillis()) {
-         value = jdbcClient.fetch("", GET_VALUE_SQL, key);
+         value = jdbcClient.fetch(defaultValue, GET_VALUE_SQL, key);
          cacheValue(key, value);
       } else {
          value = pair.getSecond();

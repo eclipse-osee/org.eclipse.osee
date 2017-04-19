@@ -158,17 +158,13 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
          }
 
          //Unfortunately Word seems to need a little extra time to close, otherwise Word 2007 will crash periodically if too many files are being compared.
-         String propertyWordDiffSleepMs = null;
+         String propertyWordDiffSleepMs = "250"; // Quarter second is the default sleep value
          try {
-            propertyWordDiffSleepMs = OseeInfo.getValue(OSEE_WORD_DIFF_SLEEP_MS);
+            propertyWordDiffSleepMs = OseeInfo.getValue(OSEE_WORD_DIFF_SLEEP_MS, "250");
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.INFO,
                String.format("Word Diff Sleep lookup failed in %s, set to default %s", this.getClass().getSimpleName(),
                   propertyWordDiffSleepMs));
-         }
-
-         if (!Strings.isValid(propertyWordDiffSleepMs)) {
-            propertyWordDiffSleepMs = "250"; // Quarter second is the default sleep value
          }
 
          if (!propertyWordDiffSleepMs.equals("0")) {

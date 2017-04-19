@@ -256,7 +256,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
 
    private void refreshLockImage() {
       boolean noBranch = false, someAccessControlSet = false;
-      BranchId branch = null;
+      BranchId branch = BranchId.SENTINEL;
       try {
          branch = teamArt.getWorkingBranch();
       } catch (OseeCoreException ex) {

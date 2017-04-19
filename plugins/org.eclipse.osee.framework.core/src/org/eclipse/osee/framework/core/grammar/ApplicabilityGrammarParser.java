@@ -70,10 +70,12 @@ public class ApplicabilityGrammarParser extends Parser {
       return adaptor;
    }
 
+   @Override
    public String[] getTokenNames() {
       return ApplicabilityGrammarParser.tokenNames;
    }
 
+   @Override
    public String getGrammarFileName() {
       return "ApplicabilityGrammar.g";
    }
@@ -81,9 +83,9 @@ public class ApplicabilityGrammarParser extends Parser {
    private String applicabilityType = null;
    private String featureId = null;
 
-   private ArrayList<String> configIds = new ArrayList<>();
-   private HashMap<String, List<String>> featureId_values_map = new HashMap<>();
-   private ArrayList<String> featureOperators = new ArrayList<>();
+   private final ArrayList<String> configIds = new ArrayList<>();
+   private final HashMap<String, List<String>> featureId_values_map = new HashMap<>();
+   private final ArrayList<String> featureOperators = new ArrayList<>();
 
    public ArrayList<String> getFeatureOperators() {
       return featureOperators;
@@ -104,6 +106,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class start_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -158,6 +161,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class applicability_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -241,6 +245,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class config_applicability_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -297,7 +302,9 @@ public class ApplicabilityGrammarParser extends Parser {
                      break;
 
                   default:
-                     if (cnt2 >= 1) break loop2;
+                     if (cnt2 >= 1) {
+                        break loop2;
+                     }
                      EarlyExitException eee = new EarlyExitException(2, input);
                      throw eee;
                }
@@ -329,6 +336,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class config_expressions_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -402,6 +410,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class feature_applicability_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -458,7 +467,9 @@ public class ApplicabilityGrammarParser extends Parser {
                      break;
 
                   default:
-                     if (cnt4 >= 1) break loop4;
+                     if (cnt4 >= 1) {
+                        break loop4;
+                     }
                      EarlyExitException eee = new EarlyExitException(4, input);
                      throw eee;
                }
@@ -490,6 +501,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class feature_expressions_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -572,6 +584,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class feature_expression_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -658,6 +671,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class feature_value_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -739,6 +753,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class start_compound_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -803,6 +818,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class compound_value_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -865,7 +881,9 @@ public class ApplicabilityGrammarParser extends Parser {
                         break;
 
                      default:
-                        if (cnt8 >= 1) break loop8;
+                        if (cnt8 >= 1) {
+                           break loop8;
+                        }
                         EarlyExitException eee = new EarlyExitException(8, input);
                         throw eee;
                   }
@@ -909,6 +927,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class multiple_compounds_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -947,8 +966,7 @@ public class ApplicabilityGrammarParser extends Parser {
             state._fsp--;
 
             adaptor.addChild(root_0, operator25.getTree());
-            featureId_values_map.get(featureId).add(
-               (operator25 != null ? input.toString(operator25.start, operator25.stop) : null));
+            featureId_values_map.get(featureId).add((input.toString(operator25.start, operator25.stop)));
             pushFollow(FOLLOW_compound_value_in_multiple_compounds340);
             compound_value26 = compound_value();
 
@@ -977,6 +995,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class value_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -1028,8 +1047,9 @@ public class ApplicabilityGrammarParser extends Parser {
             ID27_tree = (CommonTree) adaptor.create(ID27);
             adaptor.addChild(root_0, ID27_tree);
 
-            if ((temp != null ? input.toString(temp.start, temp.stop) : null) != null) featureId_values_map.get(
-               featureId).add((temp != null ? input.toString(temp.start, temp.stop) : null));
+            if ((temp != null ? input.toString(temp.start, temp.stop) : null) != null) {
+               featureId_values_map.get(featureId).add((temp != null ? input.toString(temp.start, temp.stop) : null));
+            }
 
             featureId_values_map.get(featureId).add((ID27 != null ? ID27.getText() : null));
 
@@ -1054,6 +1074,7 @@ public class ApplicabilityGrammarParser extends Parser {
    public static class operator_return extends ParserRuleReturnScope {
       CommonTree tree;
 
+      @Override
       public Object getTree() {
          return tree;
       }
@@ -1077,10 +1098,10 @@ public class ApplicabilityGrammarParser extends Parser {
          {
             root_0 = (CommonTree) adaptor.nil();
 
-            set28 = (Token) input.LT(1);
+            set28 = input.LT(1);
             if (input.LA(1) == OR || input.LA(1) == AND) {
                input.consume();
-               adaptor.addChild(root_0, (CommonTree) adaptor.create(set28));
+               adaptor.addChild(root_0, adaptor.create(set28));
                state.errorRecovery = false;
             } else {
                MismatchedSetException mse = new MismatchedSetException(null, input);

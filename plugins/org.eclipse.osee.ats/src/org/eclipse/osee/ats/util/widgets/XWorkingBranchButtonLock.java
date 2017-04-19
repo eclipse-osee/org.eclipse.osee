@@ -67,7 +67,7 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
 
    private void refreshLockImage(Button button) {
       boolean noBranch = false, someAccessControlSet = false;
-      BranchId branch = null;
+      BranchId branch = BranchId.SENTINEL;
       try {
          branch = getTeamArt().getWorkingBranch();
       } catch (OseeCoreException ex) {
