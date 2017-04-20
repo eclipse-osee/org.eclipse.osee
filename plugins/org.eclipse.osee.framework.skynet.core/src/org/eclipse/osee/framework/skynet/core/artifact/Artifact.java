@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Child;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -27,7 +26,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
-
 import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -462,18 +460,20 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
 
    private <T> Attribute<T> initializeAttribute(AttributeTypeId attributeType, ModificationType modificationType, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
       Attribute<T> attribute = createAttribute(attributeType);
-      attribute.internalInitialize(attributeType, this, modificationType, ApplicabilityId.BASE, markDirty, setDefaultValue);
+      attribute.internalInitialize(attributeType, this, modificationType, ApplicabilityId.BASE, markDirty,
+         setDefaultValue);
       return attribute;
    }
 
    public final <T> Attribute<T> internalInitializeAttribute(AttributeTypeId attributeType, int attributeId, int gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty, Object... data) {
-      return internalInitializeAttribute(attributeType, AttributeId.valueOf(attributeId), gammaId, modificationType, applicabilityId,
-         markDirty, data);
+      return internalInitializeAttribute(attributeType, AttributeId.valueOf(attributeId), gammaId, modificationType,
+         applicabilityId, markDirty, data);
    }
 
    public final <T> Attribute<T> internalInitializeAttribute(AttributeTypeId attributeType, AttributeId attributeId, int gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty, Object... data) {
       Attribute<T> attribute = createAttribute(attributeType);
-      attribute.internalInitialize(attributeType, this, modificationType, applicabilityId, attributeId, gammaId, markDirty, false);
+      attribute.internalInitialize(attributeType, this, modificationType, applicabilityId, attributeId, gammaId,
+         markDirty, false);
       attribute.getAttributeDataProvider().loadData(data);
       return attribute;
    }
@@ -673,7 +673,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
             return value;
          } else if (soleAttributes.size() > 1) {
             throw new MultipleAttributesExist(
-               "Attribute [%s] must have exactly one instance.  It currently has %d for artifact [%s] on branch [%d]",
+               "Attribute [%s] must have exactly one instance.  It currently has %d for artifact [%s] on branch [%s]",
                attributeType, soleAttributes.size(), getGuid(), getBranch());
          } else {
             return defaultReturnValue;
@@ -722,7 +722,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
          return value;
       } else if (soleAttributes.size() > 1) {
          throw new MultipleAttributesExist(
-            "Attribute [%s] must have exactly one instance.  It currently has %d for artifact [%s] on branch [%d]",
+            "Attribute [%s] must have exactly one instance.  It currently has %d for artifact [%s] on branch [%s]",
             attributeType, soleAttributes.size(), getGuid(), getBranch());
       } else {
          return defaultReturnValue;
@@ -731,7 +731,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
 
    /**
     * Delete attribute if exactly one exists. Does nothing if attribute does not exist and throw MultipleAttributesExist
-    * is more than one instance of the attribute type exsits for this artifact
+    * is more than one instance of the attribute type exists for this artifact
     */
    public final void deleteSoleAttribute(AttributeTypeId attributeType) throws OseeCoreException {
       Attribute<?> attribute = getSoleAttribute(attributeType);
