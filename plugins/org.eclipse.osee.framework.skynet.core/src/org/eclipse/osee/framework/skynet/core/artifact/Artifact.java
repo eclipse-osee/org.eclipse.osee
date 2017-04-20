@@ -271,7 +271,8 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       if (parentCount == 1) {
          toReturn = artifacts.iterator().next();
       } else if (parentCount > 1) {
-         throw new MultipleArtifactsExist("artifact [%s] has %d parents", getGuid(), parentCount);
+         throw new MultipleArtifactsExist("artifact %s branch [%s]-[%s] has %d parents", toStringWithId(),
+            getBranchToken().getName(), getBranchId(), parentCount);
       }
       return toReturn;
    }

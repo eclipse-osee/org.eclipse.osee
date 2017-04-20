@@ -45,7 +45,7 @@ public interface IOseeBranch extends BranchId, Named {
 
    public static IOseeBranch create(Long id, String name, ArtifactId viewId) {
       final class BranchTokenImpl extends NamedIdBase implements IOseeBranch {
-         private ArtifactId viewId;
+         private final ArtifactId viewId;
 
          public BranchTokenImpl(Long id, String name, ArtifactId viewId) {
             super(id, name);
@@ -65,6 +65,12 @@ public interface IOseeBranch extends BranchId, Named {
 
             return false;
          }
+
+         @Override
+         public String toStringWithId() {
+            return String.format("[%s]-[%s]", getName(), getId());
+         }
+
       }
       return new BranchTokenImpl(id, name, viewId);
    }
@@ -72,4 +78,5 @@ public interface IOseeBranch extends BranchId, Named {
    public static IOseeBranch create(Long id, String name) {
       return create(id, name, ArtifactId.SENTINEL);
    }
+
 }
