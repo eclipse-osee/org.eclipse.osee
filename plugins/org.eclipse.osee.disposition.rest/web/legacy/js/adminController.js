@@ -103,12 +103,12 @@
 		        }, {
 		            field: "importPath",
 		            displayName: "Path",
-		            width: '42%',
+		            width: '41%',
 		            enableCellEdit: true
 		        }, {
 		            field: "delete",
 		            displayName: "",
-		            width: '5%',
+		            width: '6%',
 		            cellTemplate: dellCellTmpl
 		        }];
 		        
@@ -423,7 +423,7 @@
 		            };
 		        };
 		        
-			     // Edit Set Modal
+		        // Mass Assign Modal
 		        $scope.openMassAssignTeamModal = function() {
 		            var modalInstance = $modal.open({
 		                templateUrl: 'massAssignTeam.html',

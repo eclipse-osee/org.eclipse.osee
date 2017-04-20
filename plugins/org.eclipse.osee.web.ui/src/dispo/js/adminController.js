@@ -46,7 +46,7 @@
 		        }
 
 		        var editCellTmpl = '<input editable="true" >'
-		        var dellCellTmpl = '<button width="50px" class="btn btn-default btn-sm setDelete" ng-show="!readOnly" ng-click="deleteSet(row.entity)">X</button>';
+		        var dellCellTmpl = '<button width="50px" class="btn btn-danger btn-sm setDelete" ng-show="!readOnly" ng-click="deleteSet(row.entity)">X</button>';
 		        var importCellTmpl = '<button width="50px" class="btn btn-primary" ng-disabled="row.entity.processingImport" ng-click="importSet(row.entity)">Import</button>';
 		        var exportCellTmpl = '<button width="50px" class="btn btn-primary" ng-disabled="row.entity.processingImport" ng-click="exportSet(row.entity)">Export</button>';
 		        var lastOperationCellTmpl = '<id="stateButton" button width="99%" ng-disabled="row.entity.processingImport || row.entity.gettingDetails" ng-class="{btn: true, \'btn-primary\': \'isPrimary(row.entity.importState)\',' +
@@ -104,12 +104,12 @@
 		        }, {
 		            field: "importPath",
 		            displayName: "Path",
-		            width: '42%',
+		            width: '41%',
 		            enableCellEdit: true
 		        }, {
 		            field: "delete",
 		            displayName: "Delete",
-		            width: '5%',
+		            width: '6%',
 		            cellTemplate: dellCellTmpl
 		        }];
 		        
@@ -429,49 +429,8 @@
 		            };
 		        };
 		        
-		     // Edit Set Modal
-		        $scope.editSetModal = function() {
-		            var modalInstance = $modal.open({
-		                templateUrl: 'editSet.html',
-		                controller: EditSetModalCtrl,
-		                size: 'lg',
-		                windowClass: 'createSetModal'
-		            });
-
-		            modalInstance.result.then(function(inputs) {
-		            	if(inputs.isSetEdit) {
-			            	var newSet = {};
-			            	newSet.name = inputs.name;
-			            	newSet.path = 
-			                $scope.editSet(newSet);
-		            	} 
-		            	if(inputs.isMultItemEdit) {
-		            		$scope.editMultiItems(inputs.nameList, inputs.team);
-		            	}
-		            });
-		        }
-
-		        var CreateSetModalCtrl = function($scope, $modalInstance, setName, setPath) {		        	
-		            $scope.setName = setName;
-		            $scope.importPath = setPath;
-		            $scope.nameListAsString = "";
-		            
-		            $scope.ok = function() {
-		                var inputs = {};
-		                inputs.name = this.setName;
-		                inputs.path = this.importPath;
-		                inputs.nameList = nameListAsString.split(",");
-		                
-		                $modalInstance.close(inputs);
-		            };
-
-		            $scope.cancel = function() {
-		                $modalInstance.dismiss('cancel');
-		            };
-		        };
 		        
-		        
-		        // Edit Set Modal
+		        // Mass Assign Modal
 		        $scope.openMassAssignTeamModal = function() {
 		            var modalInstance = $modal.open({
 		                templateUrl: 'massAssignTeam.html',
