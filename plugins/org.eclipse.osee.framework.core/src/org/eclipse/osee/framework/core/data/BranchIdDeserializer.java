@@ -16,6 +16,7 @@ import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.DeserializationContext;
 import org.codehaus.jackson.map.deser.std.StdDeserializer;
+import org.codehaus.jackson.node.TextNode;
 
 /**
  * @author Morgan E. Cook
@@ -33,10 +34,10 @@ public class BranchIdDeserializer extends StdDeserializer<BranchId> {
    @Override
    public BranchId deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
       JsonNode readTree = jp.getCodec().readTree(jp);
-      BranchId branch =
-         BranchId.create(readTree.get("id").getLongValue(), ArtifactId.valueOf(readTree.get("viewId").getLongValue()));
-
-      return branch;
+      if (readTree instanceof TextNode) {
+         return BranchId.valueOf(readTree.asText());
+      }
+      return BranchId.create(readTree.get("id").asLong(), ArtifactId.valueOf(readTree.get("viewId").asLong()));
    }
 
 }
