@@ -9,7 +9,8 @@ app.controller('userController', [
     'SetSearch',
     'SourceFile',
     'Config',
-    function($scope, $modal, $rootScope, Program, Set, Item, Annotation, SetSearch, SourceFile, Config) {
+    'ColumnFactory',
+    function($scope, $modal, $rootScope, Program, Set, Item, Annotation, SetSearch, SourceFile, Config, ColumnFactory) {
     	$scope.unselectingItem = false;
     	$scope.editItems = false;
     	$scope.selectedItems = [];
@@ -18,7 +19,7 @@ app.controller('userController', [
         $scope.lastFocused = null;
         $scope.isMulitEditRequest = false;
         $scope.loading = false;
-		  $scope.isSearchView = false;
+		$scope.isSearchView = false;
 		
         $scope.getDispoType = function() {
         	if($rootScope.type == 'codeCoverage') {
@@ -213,213 +214,7 @@ app.controller('userController', [
         	return  item.assignee != $rootScope.cachedName;
         }
 
-        var origCellTmpl = '<div ng-dblclick="getItemDetails(row.entity, row)">{{row.entity.name}}</div>';
-        var editCellTmpl = '<input ng-model="row.getProperty(col.field)" ng-model-onblur ng-change="editItem(row.entity);" value="row.getProperty(col.field);></input>';
-        var cellEditNotes = '<input class="cellInput" ng-model="COL_FIELD" ng-disabled="checkEditable(row.entity);" ng-model-onblur ng-change="editNotes(row.entity)"/>'
-        var chkBoxTemplate = '<input type="checkbox" class="form-control" ng-model="COL_FIELD" ng-change="editNeedsRerun(row.entity)"></input>';
-        var assigneeCellTmpl = '<div ng-dblclick="stealItem(row.entity)">{{row.entity.assignee}}</div>';
-        var dateCellTmpl = '<div>getReadableDate({{row.getProperty(col.field)}})</div>';
-        
-        
-        $scope.smallColumns = [{
-            field: 'name',
-            displayName: 'Name',
-            cellTemplate: origCellTmpl,
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        }, {
-            field: 'status',
-            displayName: 'Status',
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        }, {
-            field: 'totalPoints',
-            displayName: 'Total',
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        }, {
-            field: 'failureCount',
-            displayName: 'Failure Count',
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        }, {
-            field: 'discrepanciesAsRanges',
-            displayName: 'Failed Points',
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        }, {
-            field: 'assignee',
-            displayName: 'Assignee',
-            enableCellEdit: false,
-            cellTemplate: assigneeCellTmpl,
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        }, {
-            field: 'itemNotes',
-            displayName: 'Script Notes',
-            cellTemplate: cellEditNotes,
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        },{
-            field: 'needsRerun',
-            displayName: 'Rerun?',
-            enableCellEdit: false,
-            cellTemplate: chkBoxTemplate,
-            sortFn: checkboxSorting
-        },{
-            field: 'lastUpdated',
-            displayName: 'Last Ran',
-            enableCellEdit: false,
-            visible: false,
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html',
-            sortFn: dateSorting
-        }, {
-            field: 'category',
-            displayName: 'Category',
-            enableCellEdit: true,
-            visible: false,
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        }, {
-            field: 'machine',
-            displayName: 'Station',
-            enableCellEdit: true,
-            visible: false,
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        }, {
-            field: 'elapsedTime',
-            displayName: 'Elapsed Time',
-            enableCellEdit: false,
-            visible: false,
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        },{
-            field: 'creationDate',
-            displayName: 'Creation Date',
-            enableCellEdit: false,
-            visible: false,
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html',
-            sortFn: dateSorting
-        },{
-            field: 'aborted',
-            displayName: 'Aborted',
-            enableCellEdit: false,
-            visible: false,
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        }, 
-        {
-            field: 'version',
-            displayName: 'Version',
-            enableCellEdit: false,
-            visible: false,
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        },{
-            field: 'team',
-            displayName: 'Team',
-            enableCellEdit: false,
-            visible: false,
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-         }];
-        
-        $scope.wideColumns = [{
-            field: 'name',
-            displayName: 'Name',
-            width: '22%',
-            cellTemplate: origCellTmpl,
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        }, {
-            field: 'status',
-            displayName: 'Status',
-            width: '10%',
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        }, {
-            field: 'totalPoints',
-            displayName: 'Total',
-            width: '10%',
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        }, {
-            field: 'failureCount',
-            displayName: 'Failure Count',
-            width: '7%',
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        }, {
-            field: 'discrepanciesAsRanges',
-            displayName: 'Failed Points',
-            width: '15%',
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        }, {
-            field: 'assignee',
-            displayName: 'Assignee',
-            enableCellEdit: false,
-            cellTemplate: assigneeCellTmpl,
-            width: '12%',
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        }, 
-        {
-            field: 'team',
-            displayName: 'Team',
-            enableCellEdit: false,
-            visible: true,
-            width: '7%',
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        },
-        {
-            field: 'itemNotes',
-            displayName: 'Script Notes',
-            cellTemplate: cellEditNotes,
-            width: '10%',
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        },{
-            field: 'needsRerun',
-            displayName: 'Rerun?',
-            enableCellEdit: false,
-            cellTemplate: chkBoxTemplate,
-            sortFn: checkboxSorting,
-            width: '5%',
-        },
-        {
-            field: 'lastUpdated',
-            displayName: 'Last Ran',
-            enableCellEdit: false,
-            visible: false,
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html',
-            sortFn: dateSorting
-        }, {
-            field: 'category',
-            displayName: 'Category',
-            enableCellEdit: true,
-            visible: false,
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        }, {
-            field: 'machine',
-            displayName: 'Station',
-            enableCellEdit: true,
-            visible: false,
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        }, {
-            field: 'elapsedTime',
-            displayName: 'Elapsed Time',
-            enableCellEdit: false,
-            visible: false,
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        },{
-            field: 'creationDate',
-            displayName: 'Creation Date',
-            enableCellEdit: false,
-            visible: false,
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html',
-            sortFn: dateSorting
-        },{
-            field: 'aborted',
-            displayName: 'Aborted',
-            enableCellEdit: false,
-            visible: false,
-            headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        },  {
-                field: 'version',
-                displayName: 'Version',
-                enableCellEdit: false,
-                visible: false,
-                headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
-        }];
-        
-        if(window.innerWidth < 1000) {
-        	$scope.columns = $scope.smallColumns;
-        } else {
-        	$scope.columns = $scope.wideColumns;
-        }
-        
+        $scope.columns = ColumnFactory.getColumns($scope.type, window.innerWidth);
         
         var filterBarPlugin = {
                 init: function(scope, grid) {

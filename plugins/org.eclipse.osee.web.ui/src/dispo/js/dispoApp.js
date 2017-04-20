@@ -90,6 +90,18 @@ app.provider('CopySet', function() {
     ];
 });
 
+app.provider('MultiItemEdit', function() {
+    this.$get = [
+        '$resource',
+        function($resource) {
+            var MultiItemEdit = $resource(
+                '/dispo/program/:programId/admin/multiItemEdit', {}, {
+                });
+            return MultiItemEdit;
+        }
+    ];
+});
+
 app.provider('CopySetCoverage', function() {
     this.$get = ['$resource',
         function($resource) {

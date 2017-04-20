@@ -33,7 +33,7 @@
 }
 
 #annotationsGrid {
-	    margin-top: 20px;
+	    margin-top: 35px;
 		background-color: lightslategray;
 }
 
@@ -42,11 +42,25 @@
 }
 
 #itemSelectedBar {
-    height: 25px;
+    height: 40px;
     width: 100%;
     position: fixed;
     background-color: lightcyan;
     border-bottom: 3px solid Black;
+}
+
+#itemSelectedText {
+    overflow: auto;
+    height: 100%;
+    display: inline-block;
+}
+
+#itemSelectedFailureText {
+    margin-top: 6px;
+    margin-bottom: 6px;
+    overflow: auto;
+    height: 100%;
+    display: inline-block;
 }
 
 

@@ -3,7 +3,7 @@ app.factory('ColumnFactory', function() {
 	
 	ColumnFactory.getColumns = function(dispoType, width) {
 		var toReturn; 
-        if(window.width < 1000) {
+        if(width < 1000) {
         	if(dispoType = '') {
         		toReturn = smallColumnsTestScript;
         	} else {
@@ -77,7 +77,14 @@ app.factory('ColumnFactory', function() {
         enableCellEdit: false,
         cellTemplate: assigneeCellTmpl,
         headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-    }, {
+    }, 
+    {
+        field: 'team',
+        displayName: 'Team',
+        enableCellEdit: false,
+        visible: true,
+        headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
+    },{
         field: 'itemNotes',
         displayName: 'Script Notes',
         cellTemplate: cellEditNotes,
@@ -137,37 +144,49 @@ app.factory('ColumnFactory', function() {
 	var wideColumnsTestScript = [{
         field: 'name',
         displayName: 'Name',
-        width: 350,
+        width: '22%',
         cellTemplate: origCellTmpl,
         headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
     }, {
         field: 'status',
         displayName: 'Status',
-        width: 100,
+        width: '10%',
         headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
     }, {
         field: 'totalPoints',
         displayName: 'Total',
-        width: 100,
+        width: '10%',
         headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
     }, {
         field: 'failureCount',
         displayName: 'Failure Count',
+        width: '7%',
         headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
     }, {
         field: 'discrepanciesAsRanges',
         displayName: 'Failed Points',
+        width: '15%',
         headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
     }, {
         field: 'assignee',
         displayName: 'Assignee',
         enableCellEdit: false,
         cellTemplate: assigneeCellTmpl,
+        width: '12%',
         headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-    }, {
+    }, 
+    {
+        field: 'team',
+        displayName: 'Team',
+        enableCellEdit: false,
+        visible: true,
+        width: '7%',
+        headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
+    },{
         field: 'itemNotes',
         displayName: 'Script Notes',
         cellTemplate: cellEditNotes,
+        width: '12%',
         headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
     },{
         field: 'needsRerun',
@@ -175,7 +194,7 @@ app.factory('ColumnFactory', function() {
         enableCellEdit: false,
         cellTemplate: chkBoxTemplate,
         sortFn: checkboxSorting,
-        width: 70
+        width: '10%',
     },{
         field: 'lastUpdated',
         displayName: 'Last Ran',
@@ -249,7 +268,14 @@ app.factory('ColumnFactory', function() {
         enableCellEdit: false,
         cellTemplate: assigneeCellTmpl,
         headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-    }, {
+    },
+    {
+        field: 'team',
+        displayName: 'Team',
+        enableCellEdit: false,
+        visible: true,
+        headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
+    },{
         field: 'itemNotes',
         displayName: 'Script Notes',
         cellTemplate: cellEditNotes,
@@ -321,37 +347,49 @@ app.factory('ColumnFactory', function() {
 	var wideColumnsCoverage = [{
         field: 'name',
         displayName: 'Name',
-        width: 350,
+        width: '22%',
         cellTemplate: origCellTmpl,
         headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
     }, {
         field: 'status',
         displayName: 'Status',
-        width: 100,
+        width: '10%',
         headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
     }, {
         field: 'totalPoints',
         displayName: 'Total',
-        width: 100,
+        width: '10%',
         headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
     }, {
         field: 'failureCount',
         displayName: 'Failure Count',
+        width: '7%',
         headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
     }, {
         field: 'discrepanciesAsRanges',
         displayName: 'Failed Points',
+        width: '15%',
         headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
     }, {
         field: 'assignee',
         displayName: 'Assignee',
         enableCellEdit: false,
         cellTemplate: assigneeCellTmpl,
+        width: '12%',
         headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
+    }, 
+    {
+        field: 'team',
+        displayName: 'Team',
+        enableCellEdit: false,
+        visible: true,
+        width: '7%',
+        headerCellTemplate: '/dispo/legacy/templates/nameFilterTmpl.html'
     }, {
         field: 'itemNotes',
         displayName: 'Script Notes',
         cellTemplate: cellEditNotes,
+        width: '10%',
         headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
     },{
         field: 'needsRerun',
@@ -359,7 +397,7 @@ app.factory('ColumnFactory', function() {
         enableCellEdit: false,
         cellTemplate: chkBoxTemplate,
         sortFn: checkboxSorting,
-        width: 70
+        width: '5%',
     },{
         field: 'lastUpdated',
         displayName: 'Last Ran',

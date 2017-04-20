@@ -38,7 +38,7 @@
          </div>
          <div id="bottom-content">
             <div ng-dblclick="getSourceFlie()" id="itemSelectedBar">
-               <p id="itemSelectedText">Item: {{ selectedItem.name || "Select an Item"}} Failures: {{ selectedItem.discrepanciesAsRanges || "N/A"}}</p>
+               <h4 id="itemSelectedText">Item: {{ selectedItem.name || "Select an Item"}} :: </h4><h6 ng-show="selectedItem" id="itemSelectedFailureText"> Failures: {{ selectedItem.discrepanciesAsRanges || "N/A"}}</h6>
             </div>
             <div id="annotationsGrid">
                <table class="table subTable">

@@ -5,10 +5,20 @@
     overflow: auto;
 }
 
-p#itemSelectedText {
-	margin: 0px;
-	
+#itemSelectedText {
+    overflow: auto;
+    height: 100%;
+    display: inline-block;
 }
+
+#itemSelectedFailureText {
+    margin-top: 6px;
+    margin-bottom: 6px;
+    overflow: auto;
+    height: 100%;
+    display: inline-block;
+}
+
 #bottom-content {
     position: fixed;
     height: 300px;
@@ -38,7 +48,7 @@ p#itemSelectedText {
 }
 
 #annotationsGrid {
-	    margin-top: 20px;
+	    margin-top: 35px;
 		background-color: lightslategray;
 }
 
@@ -47,7 +57,7 @@ p#itemSelectedText {
 }
 
 #itemSelectedBar {
-    height: 25px;
+    height: 40px;
     width: 100%;
     position: fixed;
     background-color: lightcyan;
