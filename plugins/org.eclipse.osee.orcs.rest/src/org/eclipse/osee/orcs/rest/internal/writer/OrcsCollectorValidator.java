@@ -14,8 +14,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -179,10 +179,6 @@ public class OrcsCollectorValidator {
    }
 
    private void validateCreateUpdateAttributes(OwArtifact artifact, XResultData results) {
-      String name = artifact.getName();
-      if (!Strings.isValid(name)) {
-         results.errorf("Artifact [%s] does not have Name attribute.\n", artifact);
-      }
       for (OwAttribute attribute : artifact.getAttributes()) {
          OwAttributeType owAttrType = attribute.getType();
 

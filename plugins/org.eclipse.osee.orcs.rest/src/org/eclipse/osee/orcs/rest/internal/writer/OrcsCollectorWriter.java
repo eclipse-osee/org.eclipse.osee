@@ -97,7 +97,7 @@ public class OrcsCollectorWriter {
             throw new OseeArgumentException("Artifact not found for OwArtifact %s", owArtifact);
          }
 
-         if (!owArtifact.getName().equals(artifact.getName())) {
+         if (Strings.isValid(owArtifact.getName()) && !owArtifact.getName().equals(artifact.getName())) {
             getTransaction().setName(artifact, owArtifact.getName());
             logChange(artifact, CoreAttributeTypes.Name, artifact.getName(), owArtifact.getName());
          }

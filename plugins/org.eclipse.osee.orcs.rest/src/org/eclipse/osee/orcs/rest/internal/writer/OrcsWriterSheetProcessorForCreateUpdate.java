@@ -193,7 +193,7 @@ public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
                   }
                }
             }
-            if (nameColumn == colCount) {
+            if (nameColumn != null && nameColumn == colCount) {
                String value = row[colCount];
                if (Strings.isValid(value)) {
                   artifact.setName(value);
