@@ -17,13 +17,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
@@ -36,6 +39,9 @@ import org.eclipse.osee.framework.skynet.core.change.RelationChange;
  * @author Donald G. Dunne
  */
 public class ChangeData {
+
+   private static final String IMPL_DETAILS = " (Impl Details)";
+   private static final String DELETED = " (Deleted)";
 
    public static enum KindType {
       Artifact,
@@ -58,12 +64,22 @@ public class ChangeData {
       return changes;
    }
 
-   public Collection<Change> getArtifactChangesByName(String name) throws OseeCoreException {
+   public Collection<Change> getArtifactChangesByName(String name, String appendedInfo) throws OseeCoreException {
       Collection<Change> foundChanges = new HashSet<>();
       try {
          for (Change change : changes) {
             if (change instanceof ArtifactChange) {
-               if (change.getArtifactName().equals(name)) {
+               if (isDeleted(change) && isAppendedDeleted(appendedInfo)) {
+                  if (change.getArtifactName().equals(name)) {
+                     foundChanges.add(change);
+                  }
+               } else if (isImplDetails(change) && isAppendedImplDetails(appendedInfo)) {
+                  if (change.getArtifactName().equals(name)) {
+                     foundChanges.add(change);
+                  }
+               } else if (Strings.isInValid(appendedInfo) && //
+                  !isDeleted(change) && !isImplDetails(change) && //
+                  change.getArtifactName().equals(name)) {
                   foundChanges.add(change);
                }
             }
@@ -72,6 +88,22 @@ public class ChangeData {
       } catch (Exception ex) {
          throw OseeCoreException.wrap(ex);
       }
+   }
+
+   private boolean isImplDetails(Change change) {
+      return ArtifactTypeManager.inheritsFrom(change.getArtifactType(), CoreArtifactTypes.ImplementationDetails);
+   }
+
+   private boolean isDeleted(Change change) {
+      return change.getModificationType().equals(ModificationType.DELETED);
+   }
+
+   private boolean isAppendedImplDetails(String otherDetails) {
+      return Strings.isValid(otherDetails) && otherDetails.equals(IMPL_DETAILS);
+   }
+
+   private boolean isAppendedDeleted(String otherDetails) {
+      return Strings.isValid(otherDetails) && otherDetails.equals(DELETED);
    }
 
    /**
