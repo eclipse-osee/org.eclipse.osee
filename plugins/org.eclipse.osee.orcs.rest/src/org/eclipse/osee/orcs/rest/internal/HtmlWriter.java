@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
@@ -80,6 +81,12 @@ public class HtmlWriter {
       data.put("Artifact Id", artifact.getUuid());
       data.put("Tx Id", artifact.getTransaction());
       Long branchId = artifact.getBranch().getId();
+      String branchName = null;
+      ResultSet<BranchReadable> results =
+         OrcsApplication.getOrcsApi().getQueryFactory().branchQuery().andUuids(branchId).getResults();
+      if (!results.isEmpty()) {
+         branchName = results.iterator().next().getName();
+      }
 
       URI uri;
       if (isAtEndOfPath(uriInfo.getPath(), "artifact")) {
@@ -87,7 +94,8 @@ public class HtmlWriter {
       } else {
          uri = uriInfo.getAbsolutePathBuilder().path("../../../{uuid}").build(branchId);
       }
-      data.put("Branch", asLink(uri.toASCIIString(), "Branch " + branchId));
+      data.put("Branch Id", asLink(uri.toASCIIString(), branchId.toString()));
+      data.put("Branch Name", asLink(uri.toASCIIString(), branchName));
 
       Collection<AttributeTypeToken> types = artifact.getExistingAttributeTypes();
       for (AttributeTypeToken type : types) {
