@@ -29,6 +29,8 @@ public interface QueryEngine {
 
    TupleQuery createTupleQuery();
 
+   ApplicabilityDsQuery createApplicabilityDsQuery();
+
    CancellableCallable<Integer> createTxCount(OrcsSession session, QueryData queryData);
 
    CancellableCallable<Integer> createTxQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler);

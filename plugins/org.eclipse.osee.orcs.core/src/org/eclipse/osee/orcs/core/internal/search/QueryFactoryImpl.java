@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
@@ -44,9 +45,9 @@ public class QueryFactoryImpl implements QueryFactory {
    private final TransactionCallableQueryFactory txQueryFactory;
    private final TransactionCriteriaFactory txCriteriaFactory;
    private final TupleQuery tupleQuery;
+   private final ApplicabilityDsQuery applicabilityDsQuery;
 
-   public QueryFactoryImpl(OrcsSession context, CriteriaFactory criteriaFctry, CallableQueryFactory queryFctry, BranchCriteriaFactory branchCriteriaFactory, BranchCallableQueryFactory branchQueryFactory, TransactionCallableQueryFactory txQueryFactory, TransactionCriteriaFactory txCriteriaFactory, TupleQuery tupleQuery) {
-      super();
+   public QueryFactoryImpl(OrcsSession context, CriteriaFactory criteriaFctry, CallableQueryFactory queryFctry, BranchCriteriaFactory branchCriteriaFactory, BranchCallableQueryFactory branchQueryFactory, TransactionCallableQueryFactory txQueryFactory, TransactionCriteriaFactory txCriteriaFactory, TupleQuery tupleQuery, ApplicabilityDsQuery applicabilityDsQuery) {
       this.context = context;
       this.criteriaFctry = criteriaFctry;
       this.queryFctry = queryFctry;
@@ -55,6 +56,7 @@ public class QueryFactoryImpl implements QueryFactory {
       this.txQueryFactory = txQueryFactory;
       this.txCriteriaFactory = txCriteriaFactory;
       this.tupleQuery = tupleQuery;
+      this.applicabilityDsQuery = applicabilityDsQuery;
    }
 
    private QueryBuilder createBuilder(BranchId branchId) {
@@ -116,6 +118,6 @@ public class QueryFactoryImpl implements QueryFactory {
 
    @Override
    public ApplicabilityQuery applicabilityQuery() {
-      return new ApplicabilityQueryImpl(tupleQuery);
+      return new ApplicabilityQueryImpl(tupleQuery, applicabilityDsQuery);
    }
 }

@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.search.engines;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
@@ -84,5 +85,10 @@ public class QueryEngineImpl implements QueryEngine {
    @Override
    public TupleQuery createTupleQuery() {
       return new TupleQueryImpl(jdbcClient, sqlJoinFactory);
+   }
+
+   @Override
+   public ApplicabilityDsQuery createApplicabilityDsQuery() {
+      return new ApplicabilityDsQueryImpl(jdbcClient, sqlJoinFactory);
    }
 }

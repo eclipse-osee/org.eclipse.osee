@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.CoreTupleTypes.BranchView;
 import static org.eclipse.osee.framework.core.enums.CoreTupleTypes.ViewApplicability;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,12 +28,10 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.jdk.core.type.TriConsumer;
+import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;
 import org.eclipse.osee.orcs.search.TupleQuery;
@@ -41,30 +41,21 @@ import org.eclipse.osee.orcs.search.TupleQuery;
  */
 public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    private final TupleQuery tupleQuery;
+   private final ApplicabilityDsQuery applicabilityDsQuery;
 
-   public ApplicabilityQueryImpl(TupleQuery tupleQuery) {
+   public ApplicabilityQueryImpl(TupleQuery tupleQuery, ApplicabilityDsQuery applicabilityDsQuery) {
       this.tupleQuery = tupleQuery;
+      this.applicabilityDsQuery = applicabilityDsQuery;
    }
 
    @Override
    public ApplicabilityToken getApplicabilityToken(ArtifactId artId, BranchId branch) {
-      List<ApplicabilityToken> result = new ArrayList<>();
-      BiConsumer<Long, String> consumer = (id, name) -> result.add(new ApplicabilityToken(id, name));
-      tupleQuery.getTupleType2ForArtifactId(artId, branch, consumer);
-
-      if (result.size() == 0) {
-         result.add(ApplicabilityToken.BASE);
-      }
-      return result.get(0);
+      return applicabilityDsQuery.getApplicabilityToken(artId, branch);
    }
 
    @Override
    public List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(Collection<? extends ArtifactId> artIds, BranchId branch) {
-      List<Pair<ArtifactId, ApplicabilityToken>> result = new ArrayList<>();
-      TriConsumer<ArtifactId, Long, String> consumer =
-         (artId, id, name) -> result.add(new Pair<>(artId, new ApplicabilityToken(id, name)));
-      tupleQuery.getTuple2ForArtifactIds(ViewApplicability, artIds, branch, consumer);
-      return result;
+      return applicabilityDsQuery.getApplicabilityTokens(artIds, branch);
    }
 
    @Override
@@ -149,7 +140,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       HashCollection<BranchId, ArtifactId> branchAndViewIds = new HashCollection<>();
       BiConsumer<Long, Long> consumer =
          (branchId, artifactId) -> branchAndViewIds.put(BranchId.valueOf(branchId), ArtifactId.valueOf(artifactId));
-      tupleQuery.getTuple2E1E2Pair(CoreTupleTypes.BranchView, BranchId.valueOf(CoreBranches.COMMON.getId()), consumer);
+      tupleQuery.getTuple2E1E2Pair(BranchView, COMMON, consumer);
 
       List<BranchViewData> branchViews = new ArrayList<>();
       for (BranchId branchId : branchAndViewIds.keySet()) {

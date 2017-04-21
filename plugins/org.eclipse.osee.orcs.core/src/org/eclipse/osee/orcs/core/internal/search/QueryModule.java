@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.search;
 
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.internal.HasStatistics;
 import org.eclipse.osee.orcs.core.internal.graph.GraphBuilderFactory;
@@ -39,6 +40,7 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
    private final TransactionCallableQueryFactory txQueryFactory;
    private final TransactionCriteriaFactory txCriteriaFactory;
    private final TupleQuery tupleQuery;
+   private final ApplicabilityDsQuery applicabilityDsQuery;
 
    public static interface QueryModuleProvider {
       QueryFactory getQueryFactory(OrcsSession session);
@@ -56,11 +58,12 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
       txQueryFactory = new TransactionCallableQueryFactory(logger, queryEngine, queryStatsCollector);
       txCriteriaFactory = new TransactionCriteriaFactory();
       tupleQuery = queryEngine.createTupleQuery();
+      applicabilityDsQuery = queryEngine.createApplicabilityDsQuery();
    }
 
    public QueryFactory createQueryFactory(OrcsSession session) {
       return new QueryFactoryImpl(session, criteriaFctry, artQueryFactory, branchCriteriaFactory, branchQueryFactory,
-         txQueryFactory, txCriteriaFactory, tupleQuery);
+         txQueryFactory, txCriteriaFactory, tupleQuery, applicabilityDsQuery);
    }
 
    @Override
