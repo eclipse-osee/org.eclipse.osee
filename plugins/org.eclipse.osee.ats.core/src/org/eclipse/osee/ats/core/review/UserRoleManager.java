@@ -213,7 +213,7 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
       }
       if (numNewCompleted != numCurrentCompleted) {
          try {
-            changes.getNotifications().addWorkItemNotificationEvent(
+            changes.addWorkItemNotificationEvent(
                AtsNotificationEventFactory.getWorkItemNotificationEvent(services.getUserService().getCurrentUser(),
                   (IAtsWorkItem) peerRev, AtsNotifyType.Peer_Reviewers_Completed));
          } catch (OseeCoreException ex) {

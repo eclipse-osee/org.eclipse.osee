@@ -19,6 +19,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
+import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
+import org.eclipse.osee.ats.api.notify.AtsWorkItemNotificationEvent;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
@@ -183,6 +185,16 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    @Override
    public void setName(IAtsObject atsObject, String name) {
       setSoleAttributeValue(atsObject, CoreAttributeTypes.Name, name);
+   }
+
+   @Override
+   public void addWorkItemNotificationEvent(AtsWorkItemNotificationEvent workItemNotificationEvent) {
+      notifications.getWorkItemNotificationEvents().add(workItemNotificationEvent);
+   }
+
+   @Override
+   public void addNotificationEvent(AtsNotificationEvent notifyEvent) {
+      notifications.getNotificationEvents().add(notifyEvent);
    }
 
 }

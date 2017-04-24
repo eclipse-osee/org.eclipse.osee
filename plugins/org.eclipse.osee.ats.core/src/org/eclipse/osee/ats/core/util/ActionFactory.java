@@ -240,7 +240,7 @@ public class ActionFactory implements IAtsActionFactory {
 
       changes.add(teamWf);
 
-      changes.getNotifications().addWorkItemNotificationEvent(AtsNotificationEventFactory.getWorkItemNotificationEvent(
+      changes.addWorkItemNotificationEvent(AtsNotificationEventFactory.getWorkItemNotificationEvent(
          AtsCoreUsers.SYSTEM_USER, teamWf, AtsNotifyType.SubscribedTeamOrAi));
 
       changes.addWorkflowCreated(teamWf);
@@ -307,8 +307,8 @@ public class ActionFactory implements IAtsActionFactory {
       if (attrResolver.isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedDate)) {
          changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CreatedDate, date);
       }
-      changes.getNotifications().addWorkItemNotificationEvent(AtsNotificationEventFactory.getWorkItemNotificationEvent(
-         changes.getAsUser(), workItem, AtsNotifyType.Originator));
+      changes.addWorkItemNotificationEvent(AtsNotificationEventFactory.getWorkItemNotificationEvent(changes.getAsUser(),
+         workItem, AtsNotifyType.Originator));
    }
 
    /**

@@ -16,6 +16,8 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
+import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
+import org.eclipse.osee.ats.api.notify.AtsWorkItemNotificationEvent;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
@@ -81,6 +83,10 @@ public interface IAtsChangeSet {
    void relate(Object object1, RelationTypeSide relationSide, Object object2);
 
    AtsNotificationCollector getNotifications();
+
+   void addWorkItemNotificationEvent(AtsWorkItemNotificationEvent workItemNotificationEvent);
+
+   void addNotificationEvent(AtsNotificationEvent notifyEvent);
 
    void unrelateAll(Object object, RelationTypeSide relationType);
 

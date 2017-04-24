@@ -39,7 +39,7 @@ public class AtsNotificationTransitionListener implements ITransitionListener {
    @Override
    public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) throws OseeCoreException {
       try {
-         changes.getNotifications().addWorkItemNotificationEvent(
+         changes.addWorkItemNotificationEvent(
             AtsNotificationEventFactory.getWorkItemNotificationEvent(AtsCoreUsers.SYSTEM_USER, workItem,
                AtsNotifyType.Subscribed, AtsNotifyType.Completed, AtsNotifyType.Cancelled));
       } catch (OseeCoreException ex) {

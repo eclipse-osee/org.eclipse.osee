@@ -135,7 +135,7 @@ public class StateManagerStoreTest {
       StateManagerStore.postPersistNotifyReset(asUser, workItem, stateMgr, stateMgr.getAssigneesAdded(), attrResolver,
          workStateFactory, changes);
 
-      verify(notifications).addWorkItemNotificationEvent(any(AtsWorkItemNotificationEvent.class));
+      verify(changes).addWorkItemNotificationEvent(any(AtsWorkItemNotificationEvent.class));
    }
 
    @Test
@@ -162,6 +162,6 @@ public class StateManagerStoreTest {
          stateMgr.getAssigneesAdded(), attrResolver, workStateFactory, changes);
       listener.changesStored(changes);
 
-      verify(notifications).addWorkItemNotificationEvent(any(AtsWorkItemNotificationEvent.class));
+      verify(changes).addWorkItemNotificationEvent(any(AtsWorkItemNotificationEvent.class));
    }
 }
