@@ -57,8 +57,15 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 public class AtsArtifactFactory extends ArtifactFactory {
    private final List<ArtifactTypeId> disabledUserCreationTypes = new ArrayList<>(20);
    private final List<ArtifactTypeId> supportedTypes = new ArrayList<>(20);
-   private static final ArtifactTypeId[] subclassesTypes =
-      new ArtifactTypeId[] {Action, PeerToPeerReview, DecisionReview, Task, TeamWorkflow, Goal, AgileSprint};
+   private static final ArtifactTypeId[] subclassesTypes = new ArtifactTypeId[] {
+      Action,
+      PeerToPeerReview,
+      DecisionReview,
+      Task,
+      TeamWorkflow,
+      Goal,
+      AgileSprint,
+      AgileBacklog};
 
    private void setupSupportedTypes() {
       Collections.addAll(supportedTypes, subclassesTypes);
