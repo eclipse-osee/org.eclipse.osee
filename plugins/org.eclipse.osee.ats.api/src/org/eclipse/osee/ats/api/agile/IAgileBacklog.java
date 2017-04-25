@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.agile;
 
-import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAgileBacklog extends IAtsWorkItem, IAgileObject {
+public interface IAgileBacklog extends IAtsGoal, IAgileObject {
 
    public long getTeamUuid();
 
