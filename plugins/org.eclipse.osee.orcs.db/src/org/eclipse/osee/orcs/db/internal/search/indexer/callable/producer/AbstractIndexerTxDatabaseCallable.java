@@ -106,7 +106,7 @@ public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastor
 
    protected void addEntry(JdbcConnection connection, long gammaId) throws OseeCoreException {
       if (currentJoinQuery == null) {
-         currentJoinQuery = joinFactory.createTagQueueJoinQuery();
+         currentJoinQuery = joinFactory.createTagQueueJoinQuery(connection);
       }
       currentJoinQuery.add(gammaId);
       if (isStorageNeeded()) {
@@ -120,7 +120,7 @@ public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastor
 
    private void storeQueryIds(JdbcConnection connection) throws OseeCoreException {
       if (currentJoinQuery != null && !currentJoinQuery.isEmpty()) {
-         currentJoinQuery.store(connection);
+         currentJoinQuery.store();
          queryIds.add(currentJoinQuery.getQueryId());
          totalGammas += currentJoinQuery.size();
       }

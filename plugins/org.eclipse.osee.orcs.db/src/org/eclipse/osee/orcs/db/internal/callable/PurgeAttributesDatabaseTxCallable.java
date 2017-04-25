@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
-import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.jdbc.OseePreparedStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -40,8 +39,7 @@ public final class PurgeAttributesDatabaseTxCallable extends AbstractDatastoreTx
 
    @Override
    protected Void handleTxWork(JdbcConnection connection) throws OseeCoreException {
-      IdJoinQuery idJoin = joinFactory.createIdJoinQuery();
-      try (JdbcStatement chStmt = getJdbcClient().getStatement(connection)) {
+      try (IdJoinQuery idJoin = joinFactory.createIdJoinQuery(connection)) {
          OseePreparedStatement attrBatch =
             getJdbcClient().getBatchStatement(connection, "delete from osee_attribute where attr_id = ?");
          OseePreparedStatement txBatch =
@@ -51,12 +49,9 @@ public final class PurgeAttributesDatabaseTxCallable extends AbstractDatastoreTx
             idJoin.add(id);
             attrBatch.addToBatch(id);
          }
-         idJoin.store(connection);
-
-         chStmt.runPreparedQuery(SELECT_ATTRIBUTE_GAMMAS, idJoin.getQueryId());
-         while (chStmt.next()) {
-            txBatch.addToBatch(chStmt.getLong("gamma_id"));
-         }
+         idJoin.store();
+         getJdbcClient().runQuery(stmt -> txBatch.addToBatch(stmt.getLong("gamma_id")), SELECT_ATTRIBUTE_GAMMAS,
+            idJoin.getQueryId());
 
          writeToConsole("Deleting gammas from osee_txs...");
          int deleted = txBatch.execute();
@@ -67,8 +62,6 @@ public final class PurgeAttributesDatabaseTxCallable extends AbstractDatastoreTx
          deleted = attrBatch.execute();
          writeToConsole(deleted + " rows deleted.");
          writeToConsole("Operation Finished");
-      } finally {
-         idJoin.delete(connection);
       }
       return null;
    }

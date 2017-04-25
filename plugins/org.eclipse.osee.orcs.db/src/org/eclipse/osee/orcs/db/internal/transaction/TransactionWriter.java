@@ -169,7 +169,7 @@ public class TransactionWriter {
             chStmt.close();
          }
       } finally {
-         join.delete();
+         join.close();
       }
    }
 }

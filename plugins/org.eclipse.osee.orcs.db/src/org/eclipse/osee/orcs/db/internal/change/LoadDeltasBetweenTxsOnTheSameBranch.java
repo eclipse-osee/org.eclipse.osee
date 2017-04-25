@@ -183,8 +183,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
    }
 
    private List<ChangeItem> loadItemsByItemId(DoubleKeyHashMap<Integer, Long, ChangeItem> changeData, boolean isArchived) throws OseeCoreException {
-      ExportImportJoinQuery idJoin = joinFactory.createExportImportJoinQuery();
-      try {
+      try (ExportImportJoinQuery idJoin = joinFactory.createExportImportJoinQuery()) {
          for (Integer i : changeData.getKeySetOne()) {
             for (ChangeItem item : changeData.get(i)) {
                idJoin.add(Long.valueOf(i), item.getItemId().getId());
@@ -192,8 +191,6 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
          }
          idJoin.store();
          loadCurrentVersionData(idJoin.getQueryId(), changeData, getStartTx(), isArchived);
-      } finally {
-         idJoin.delete();
       }
       List<ChangeItem> list = new LinkedList<ChangeItem>(changeData.allValues());
       return list;

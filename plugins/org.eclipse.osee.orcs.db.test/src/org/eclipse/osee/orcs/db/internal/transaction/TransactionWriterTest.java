@@ -146,11 +146,11 @@ public class TransactionWriterTest {
 
       inOrder.verify(join1).store();
       inOrder.verify(chStmt).runPreparedQuery(SqlOrderEnum.ARTIFACTS.getTxsNotCurrentQuery(), QUERY_ID_1, COMMON);
-      inOrder.verify(join1).delete();
+      inOrder.verify(join1).close();
 
       inOrder.verify(join2).store();
       inOrder.verify(chStmt).runPreparedQuery(SqlOrderEnum.ATTRIBUTES.getTxsNotCurrentQuery(), QUERY_ID_2, COMMON);
-      inOrder.verify(join2).delete();
+      inOrder.verify(join2).close();
 
       inOrder.verify(builder).getInsertData(SqlOrderEnum.ARTIFACTS);
       inOrder.verify(builder).getInsertData(SqlOrderEnum.ATTRIBUTES);

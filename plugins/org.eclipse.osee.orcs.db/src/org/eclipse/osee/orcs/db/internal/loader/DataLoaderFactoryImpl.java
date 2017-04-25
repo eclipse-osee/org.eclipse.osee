@@ -73,7 +73,7 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
       } finally {
          for (AbstractJoinQuery join : context.getJoins()) {
             try {
-               join.delete();
+               join.close();
             } catch (Exception ex) {
                // Do nothing
             }

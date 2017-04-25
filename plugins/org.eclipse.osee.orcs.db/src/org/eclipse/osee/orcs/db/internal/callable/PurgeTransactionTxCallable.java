@@ -19,9 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -65,11 +65,13 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
 
    private final SqlJoinFactory joinFactory;
    private final Collection<? extends TransactionId> txIdsToDelete;
+   private int previousItem;
 
    public PurgeTransactionTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, Collection<? extends TransactionId> txIdsToDelete) {
       super(logger, session, jdbcClient);
       this.joinFactory = joinFactory;
       this.txIdsToDelete = txIdsToDelete;
+      previousItem = -1;
    }
 
    private List<TransactionId> sortTxs(Collection<? extends TransactionId> txIdsToDelete) {
@@ -142,31 +144,25 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
 
       for (Entry<BranchId, IdJoinQuery> entry : affected.entrySet()) {
          BranchId branch = entry.getKey();
-         IdJoinQuery joinQuery = entry.getValue();
-         try {
-            JdbcStatement statement = getJdbcClient().getStatement(connection);
-            try {
-               statement.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, joinQuery.getQueryId(), branch);
-               int previousItem = -1;
-               while (statement.next()) {
-                  int currentItem = statement.getInt("item_id");
+         try (IdJoinQuery joinQuery = entry.getValue()) {
 
-                  if (previousItem != currentItem) {
-                     ModificationType modType = ModificationType.getMod(statement.getInt("mod_type"));
-                     TxChange txCurrent = TxChange.getCurrent(modType);
-                     updateData.add(new Object[] {
-                        txCurrent.getValue(),
-                        branch,
-                        statement.getLong("transaction_id"),
-                        statement.getLong("gamma_id")});
-                     previousItem = currentItem;
-                  }
+            Consumer<JdbcStatement> consumer = stmt -> {
+               int currentItem = stmt.getInt("item_id");
+
+               if (previousItem != currentItem) {
+                  ModificationType modType = ModificationType.getMod(stmt.getInt("mod_type"));
+                  TxChange txCurrent = TxChange.getCurrent(modType);
+                  updateData.add(new Object[] {
+                     txCurrent.getValue(),
+                     branch,
+                     stmt.getLong("transaction_id"),
+                     stmt.getLong("gamma_id")});
+                  previousItem = currentItem;
                }
-            } finally {
-               statement.close();
-            }
-         } finally {
-            joinQuery.delete(connection);
+            };
+
+            getJdbcClient().runQuery(connection, consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, query,
+               joinQuery.getQueryId(), branch);
          }
       }
    }

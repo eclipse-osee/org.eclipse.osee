@@ -89,7 +89,6 @@ public class PurgeAttributeTest {
 
       Assert.assertEquals(3, preAttributeRows);
 
-      int prePurgeTxsCount = getCount(jdbcClient, "osee_txs");
       List<AttributeId> toPurge = getAttributesToPurge(jdbcClient);
 
       PurgeAttributesDatabaseTxCallable callable =
@@ -100,12 +99,10 @@ public class PurgeAttributeTest {
       int postPurgeAttributeCount = getCount(jdbcClient, "osee_attribute");
       int postAttributeRows =
          getCount(jdbcClient, String.format("osee_attribute where value = '%s'", UNIQUE_ATTR_VALUE));
-      int postPurgeTxsCount = getCount(jdbcClient, "osee_txs");
 
       Assert.assertEquals(0, postAttributeRows);
       Assert.assertEquals(prePurgeAttributeCount - preAttributeRows, postPurgeAttributeCount);
       Assert.assertTrue(postPurgeAttributeCount < prePurgeAttributeCount);
-      Assert.assertTrue(postPurgeTxsCount < prePurgeTxsCount);
    }
 
    private List<AttributeId> getAttributesToPurge(JdbcClient jdbcClient) {

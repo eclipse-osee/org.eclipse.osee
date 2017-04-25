@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.console;
 
+import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_FETCH_SIZE;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleParameters;
@@ -18,7 +19,6 @@ import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
-import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -80,33 +80,22 @@ public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleComma
 
       @Override
       protected Object handleTxWork(JdbcConnection connection) throws OseeCoreException {
-         ExportImportJoinQuery gammaJoin = joinFactory.createExportImportJoinQuery();
-         try {
+         try (ExportImportJoinQuery gammaJoin = joinFactory.createExportImportJoinQuery(connection)) {
             selectAttributes(gammaJoin, connection);
-            gammaJoin.store(connection);
+            gammaJoin.store();
             selectDuplicates(gammaJoin, connection);
          } catch (Exception ex) {
             console.write(ex);
             getLogger().error(ex, "Error fixing duplicate attributes");
-         } finally {
-            gammaJoin.delete(connection);
          }
          return null;
       }
 
       private void selectAttributes(ExportImportJoinQuery gammaJoin, JdbcConnection connection) throws OseeCoreException {
-         IdJoinQuery typeJoin = joinFactory.createIdJoinQuery();
-         populateAttributeTypeJoin(typeJoin);
-
-         JdbcStatement chStmt = getJdbcClient().getStatement(connection);
-         try {
-            chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_ATTRIBUTES, typeJoin.getQueryId());
-            while (chStmt.next()) {
-               gammaJoin.add(chStmt.getLong("gamma1"), chStmt.getLong("gamma2"));
-            }
-         } finally {
-            chStmt.close();
-            typeJoin.delete(connection);
+         try (IdJoinQuery typeJoin = joinFactory.createIdJoinQuery(connection)) {
+            populateAttributeTypeJoin(typeJoin);
+            getJdbcClient().runQuery(stmt -> gammaJoin.add(stmt.getLong("gamma1"), stmt.getLong("gamma2")),
+               JDBC__MAX_FETCH_SIZE, SELECT_ATTRIBUTES, typeJoin.getQueryId());
          }
       }
 

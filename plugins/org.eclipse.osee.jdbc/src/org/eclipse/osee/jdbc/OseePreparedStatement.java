@@ -97,17 +97,16 @@ public class OseePreparedStatement implements Closeable {
    }
 
    public int execute() {
-      if (currentBatchSize == 0) {
-         return resultCount;
-      } else {
-         try {
+      try {
+         if (currentBatchSize == 0) {
+            return resultCount;
+         } else {
             return resultCount += JdbcUtil.calculateBatchUpdateResults(preparedStatement.executeBatch());
-         } catch (SQLException ex) {
-            throw JdbcException.newJdbcException(ex);
-         } finally {
-            close();
          }
-
+      } catch (SQLException ex) {
+         throw JdbcException.newJdbcException(ex);
+      } finally {
+         close();
       }
    }
 

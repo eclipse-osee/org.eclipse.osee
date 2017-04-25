@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
+import static org.eclipse.osee.orcs.db.intergration.IntegrationUtil.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import com.google.common.collect.Lists;
@@ -46,13 +47,14 @@ import org.eclipse.osee.orcs.db.internal.sql.QueryType;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
+import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.Operator;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 /**
  * Test Case for {@link QuerySqlContextFactoryImpl}
@@ -74,11 +76,11 @@ public class TxQuerySqlContextFactoryImplTest {
    private static final Criteria COMMITS = byCommitId(Arrays.asList(new Integer(1), new Integer(2)));
 
    // @formatter:off
+   @Rule public TestRule integrationRule = integrationRule(this);
+   @OsgiService public SqlJoinFactory joinFactory;
    @Mock private Log logger;
    @Mock private IdentityLocator identityService;
-
    @Mock private OrcsSession session;
-   @Mock private SqlJoinFactory joinFactory;
    @Mock private IdJoinQuery idJoinQuery;
    // @formatter:on
 
@@ -97,15 +99,6 @@ public class TxQuerySqlContextFactoryImplTest {
       CriteriaSet criteriaSet = new CriteriaSet();
       Options options = OptionsUtil.createOptions();
       queryData = new QueryData(criteriaSet, options);
-
-      when(joinFactory.createIdJoinQuery()).thenAnswer(new Answer<IdJoinQuery>() {
-
-         @Override
-         public IdJoinQuery answer(InvocationOnMock invocation) throws Throwable {
-            return new IdJoinQuery(null, -1L, 23);
-         }
-
-      });
    }
 
    @Test

@@ -65,24 +65,22 @@ public final class PurgeAttributeTypeDatabaseTxCallable extends AbstractDatastor
 
    private List<Object[]> retrieveGammaIds(JdbcConnection connection, Collection<? extends AttributeTypeId> types) throws OseeCoreException {
       List<Object[]> gammas = new LinkedList<>();
-      JdbcStatement chStmt = getJdbcClient().getStatement(connection);
-      IdJoinQuery joinQuery = joinFactory.createIdJoinQuery();
-      try {
+      String sql;
+      Object param;
+
+      try (IdJoinQuery joinQuery = joinFactory.createIdJoinQuery(connection)) {
          if (types.size() == 1) {
-            chStmt.runPreparedQuery(RETRIEVE_GAMMAS_OF_ATTR_TYPE, types.iterator().next());
+            sql = RETRIEVE_GAMMAS_OF_ATTR_TYPE;
+            param = types.iterator().next();
          } else {
             for (AttributeTypeId type : types) {
                joinQuery.add(type);
             }
-            joinQuery.store(connection);
-            chStmt.runPreparedQuery(RETRIEVE_GAMMAS_OF_ATTR_MULT_TYPES, joinQuery.getQueryId());
+            joinQuery.store();
+            sql = RETRIEVE_GAMMAS_OF_ATTR_MULT_TYPES;
+            param = joinQuery.getQueryId();
          }
-         while (chStmt.next()) {
-            gammas.add(new Integer[] {chStmt.getInt("gamma_id")});
-         }
-      } finally {
-         joinQuery.delete(connection);
-         chStmt.close();
+         getJdbcClient().runQuery(stmt -> gammas.add(new Integer[] {stmt.getInt("gamma_id")}), sql, param);
       }
       return gammas;
    }

@@ -62,25 +62,19 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
    }
 
    private Id4JoinQuery createIdJoin(JdbcClient jdbcClient, Options options) throws OseeCoreException {
-
       Id4JoinQuery toReturn = joinFactory.createId4JoinQuery();
 
-      CharJoinQuery guidJoin = joinFactory.createCharJoinQuery();
-      try {
+      try (CharJoinQuery guidJoin = joinFactory.createCharJoinQuery()) {
          for (String id : artifactIds) {
             guidJoin.add(id);
          }
          guidJoin.store();
-
          TransactionId transactionId = OptionsUtil.getFromTransaction(options);
 
          getJdbcClient().runQuery(stmt -> {
             Integer artId = stmt.getInt("art_id");
             toReturn.add(branch, ArtifactId.valueOf(artId), transactionId);
          }, artifactIds.size(), GUIDS_TO_IDS, guidJoin.getQueryId());
-
-      } finally {
-         guidJoin.delete();
       }
       return toReturn;
    }

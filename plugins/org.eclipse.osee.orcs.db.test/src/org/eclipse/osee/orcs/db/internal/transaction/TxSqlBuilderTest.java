@@ -19,6 +19,7 @@ import static org.eclipse.osee.framework.core.enums.ModificationType.MODIFIED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import static org.eclipse.osee.framework.core.enums.ModificationType.REPLACED_WITH_VERSION;
 import static org.eclipse.osee.framework.core.enums.ModificationType.UNDELETED;
+import static org.eclipse.osee.orcs.db.intergration.IntegrationUtil.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -53,13 +54,13 @@ import org.eclipse.osee.orcs.db.internal.loader.data.VersionDataImpl;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.db.internal.transaction.TransactionWriter.SqlOrderEnum;
+import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 /**
  * Test Case for {@link TxSqlBuilderImpl}
@@ -95,13 +96,11 @@ public class TxSqlBuilderTest {
    private static final String ATTR_VALUE = "ksahfkashfdlakshfashfaer";
 
    // @formatter:off
-   @Mock private SqlJoinFactory joinFactory;
+   @Rule public TestRule integrationRule = integrationRule(this);
+   @OsgiService public SqlJoinFactory joinFactory;
    @Mock private IdentityManager idManager;
-
    @Mock private OrcsChangeSet txData;
-
    @Mock private DataProxy dataProxy;
-   @Mock private IdJoinQuery join;
    // @formatter:on
 
    private VersionData versionData;
@@ -151,15 +150,6 @@ public class TxSqlBuilderTest {
       tx.setTxType(EXPECTED_TX_TYPE);
 
       when(idManager.getNextGammaId()).thenReturn(NEXT_GAMMA_ID);
-
-      when(joinFactory.createIdJoinQuery()).thenAnswer(new Answer<IdJoinQuery>() {
-
-         @Override
-         public IdJoinQuery answer(InvocationOnMock invocation) throws Throwable {
-            return join;
-         }
-
-      });
    }
 
    @Test
@@ -362,7 +352,6 @@ public class TxSqlBuilderTest {
    }
 
    private void reset(OrcsData data) {
-      Mockito.reset(join);
       data.getVersion().setTransactionId(LOADED_TX_ID);
       data.getVersion().setGammaId(RelationalConstants.GAMMA_SENTINEL);
    }
@@ -371,9 +360,7 @@ public class TxSqlBuilderTest {
       assertEquals(1, builder.getTxNotCurrents().size());
       Entry<SqlOrderEnum, IdJoinQuery> entry = builder.getTxNotCurrents().iterator().next();
       assertEquals(key, entry.getKey());
-      assertEquals(join, entry.getValue());
-
-      verify(entry.getValue()).add(ITEM_ID);
+      assertEquals(IdJoinQuery.class, entry.getValue().getClass());
    }
 
    private void verifyRow(SqlOrderEnum key, Object... expecteds) {

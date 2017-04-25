@@ -77,9 +77,9 @@ public class ArtifactQueryContextLoadExecutor extends AbstractLoadExecutor {
          ArtifactId viewId = OptionsUtil.getFromBranchView(queryContext.getOptions());
          Consumer<JdbcStatement> consumer = stmt -> {
             checkCancelled(cancellation);
-            Integer artId = stmt.getInt("art_id");
-            BranchId branchUuid = BranchId.valueOf(stmt.getLong("branch_id"));
-            artifactJoin.add(branchUuid, ArtifactId.valueOf(artId), transactionId, viewId);
+            ArtifactId artiafct = ArtifactId.valueOf(stmt.getLong("art_id"));
+            BranchId branch = BranchId.valueOf(stmt.getLong("branch_id"));
+            artifactJoin.add(branch, artiafct, transactionId, viewId);
             checkCancelled(cancellation);
          };
          checkCancelled(cancellation);
@@ -89,7 +89,7 @@ public class ArtifactQueryContextLoadExecutor extends AbstractLoadExecutor {
       } finally {
          for (AbstractJoinQuery join : queryContext.getJoins()) {
             try {
-               join.delete();
+               join.close();
             } catch (OseeCoreException ex) {
                // Ensure we try to delete all
             }

@@ -115,18 +115,19 @@ public class SqlObjectLoader {
 
    public void loadArtifacts(HasCancellation cancellation, LoadDataHandler handler, Id4JoinQuery join, CriteriaOrcsLoad criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
       logger.trace("Sql Artifact Load - artifactJoinQuery[%s] loadSqlContext[%s]", join, loadContext);
-      if (!join.isEmpty()) {
-         try {
+      try {
+         if (!join.isEmpty()) {
             join.store();
             criteria.setQueryId(join.getQueryId());
 
             loadArtifacts(cancellation, handler, criteria, loadContext, fetchSize);
-         } finally {
-            join.delete();
+
+         } else {
+            logger.trace("Sql Artifact Load - artifactJoinQuery was empty - skipping load - loadSqlContext[%s]",
+               loadContext);
          }
-      } else {
-         logger.trace("Sql Artifact Load - artifactJoinQuery was empty - skipping load - loadSqlContext[%s]",
-            loadContext);
+      } finally {
+         join.close();
       }
    }
 
@@ -255,7 +256,7 @@ public class SqlObjectLoader {
       } finally {
          for (AbstractJoinQuery join : loadContext.getJoins()) {
             try {
-               join.delete();
+               join.close();
             } catch (Exception ex) {
                // Do nothing
             }

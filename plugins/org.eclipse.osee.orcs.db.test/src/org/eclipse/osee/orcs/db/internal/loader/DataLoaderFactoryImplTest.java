@@ -50,9 +50,7 @@ import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
-import org.eclipse.osee.orcs.db.internal.sql.join.IJoinAccessor;
 import org.eclipse.osee.orcs.db.internal.sql.join.Id4JoinQuery;
-import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.junit.Before;
@@ -64,8 +62,6 @@ import org.mockito.Captor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 /**
  * Test Case for {@link DataLoaderFactoryImpl}
@@ -77,20 +73,15 @@ public class DataLoaderFactoryImplTest {
    //@formatter:off
    @Rule public TestRule db = integrationRule(this);
    @OsgiService public OrcsApi orcsApi;
+   @OsgiService public SqlJoinFactory joinFactory;
 
    @Mock private Log logger;
-
    @Mock private JdbcClient jdbcClient;
    @Mock private JdbcStatement chStmt;
-
    @Mock private IdentityManager identityService;
-
    @Mock private LoadDataHandler builder;
-
    @Mock private OrcsObjectFactory rowDataFactory;
    @Mock private HasCancellation cancellation;
-   @Mock private SqlJoinFactory joinFactory;
-   @Mock private IJoinAccessor joinAccessor;
 
    @Captor private ArgumentCaptor<LoadSqlContext> contextCaptor;
    @Captor private ArgumentCaptor<Id4JoinQuery> joinCaptor;
@@ -122,24 +113,6 @@ public class DataLoaderFactoryImplTest {
 
       when(jdbcClient.getStatement()).thenReturn(chStmt);
       when(jdbcClient.fetch(eq(TransactionId.SENTINEL), Matchers.anyString(), eq(COMMON))).thenReturn(EXPECTED_HEAD_TX);
-
-      when(joinFactory.createId4JoinQuery()).thenAnswer(new Answer<Id4JoinQuery>() {
-
-         @Override
-         public Id4JoinQuery answer(InvocationOnMock invocation) throws Throwable {
-            return new Id4JoinQuery(joinAccessor, -1L, 23, Integer.MAX_VALUE);
-         }
-
-      });
-
-      when(joinFactory.createIdJoinQuery()).thenAnswer(new Answer<IdJoinQuery>() {
-
-         @Override
-         public IdJoinQuery answer(InvocationOnMock invocation) throws Throwable {
-            return new IdJoinQuery(joinAccessor, -1L, 23);
-         }
-
-      });
    }
 
    @Test

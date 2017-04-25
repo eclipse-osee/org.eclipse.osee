@@ -137,7 +137,7 @@ public class ExportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
          exportItem.cleanUp();
       }
       try {
-         joinQuery.delete();
+         joinQuery.close();
       } catch (OseeCoreException ex) {
          getLogger().warn(ex, "Error during export clean-up");
       }

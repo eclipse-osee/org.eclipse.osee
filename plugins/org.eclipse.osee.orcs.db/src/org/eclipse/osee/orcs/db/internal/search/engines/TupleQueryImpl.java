@@ -124,17 +124,17 @@ public class TupleQueryImpl implements TupleQuery {
 
    @Override
    public <E1, E2> void getTuple2ForArtifactIds(Tuple2Type<E1, E2> tupleType, Collection<? extends ArtifactId> artIds, BranchId branchId, TriConsumer<ArtifactId, Long, String> consumer) {
-      IdJoinQuery idJoin = sqlJoinFactory.createIdJoinQuery();
-      for (ArtifactId artId : artIds) {
-         idJoin.add(artId);
-      }
-      idJoin.store();
+      try (IdJoinQuery idJoin = sqlJoinFactory.createIdJoinQuery()) {
+         for (ArtifactId artId : artIds) {
+            idJoin.add(artId);
+         }
+         idJoin.store();
 
-      jdbcClient.runQuery(
-         stmt -> consumer.accept(ArtifactId.valueOf(stmt.getLong("art_id")), stmt.getLong("key"),
-            stmt.getString("value")),
-         SELECT_APPLIC_FOR_ARTS, idJoin.getQueryId(), branchId, TxChange.NOT_CURRENT.getValue());
-      idJoin.delete();
+         jdbcClient.runQuery(
+            stmt -> consumer.accept(ArtifactId.valueOf(stmt.getLong("art_id")), stmt.getLong("key"),
+               stmt.getString("value")),
+            SELECT_APPLIC_FOR_ARTS, idJoin.getQueryId(), branchId, TxChange.NOT_CURRENT.getValue());
+      }
    }
 
    //////  Tuple3 //////

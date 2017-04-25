@@ -16,7 +16,6 @@ import org.eclipse.osee.orcs.db.internal.loader.Loader_JUnit_TestSuite;
 import org.eclipse.osee.orcs.db.internal.proxy.Proxy_JUnit_TestSuite;
 import org.eclipse.osee.orcs.db.internal.resource.Resource_JUnit_TestSuite;
 import org.eclipse.osee.orcs.db.internal.search.Query_JUnit_TestSuite;
-import org.eclipse.osee.orcs.db.internal.sql.Sql_JUnit_TestSuite;
 import org.eclipse.osee.orcs.db.internal.transaction.Transaction_JUnit_TestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -32,7 +31,6 @@ import org.junit.runners.Suite;
    Proxy_JUnit_TestSuite.class,
    Resource_JUnit_TestSuite.class,
    Query_JUnit_TestSuite.class,
-   Sql_JUnit_TestSuite.class,
    Transaction_JUnit_TestSuite.class})
 public class Internal_JUnit_TestSuite {
    // Test Suite

@@ -111,7 +111,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
 
          determineAffectedAddressing();
       } finally {
-         gammaJoin.delete();
+         gammaJoin.close();
       }
 
       updateGammas();

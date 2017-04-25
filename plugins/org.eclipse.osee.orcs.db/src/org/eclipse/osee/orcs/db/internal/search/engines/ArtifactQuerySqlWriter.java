@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -42,7 +42,7 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
       String txAlias = getLastAlias(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
       String artAlias = getLastAlias(TableEnum.ARTIFACT_TABLE);
 
-      write("SELECT%s ", getSqlHint());
+      write("SELECT DISTINCT%s ", getSqlHint());
       if (OptionsUtil.isHistorical(getOptions())) {
          write("%s.transaction_id, %s.art_id, %s.branch_id", txAlias, artAlias, txAlias);
       } else {

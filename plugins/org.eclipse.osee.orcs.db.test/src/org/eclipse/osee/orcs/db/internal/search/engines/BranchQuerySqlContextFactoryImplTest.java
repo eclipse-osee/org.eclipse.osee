@@ -18,6 +18,7 @@ import static org.eclipse.osee.framework.core.enums.BranchType.SYSTEM_ROOT;
 import static org.eclipse.osee.framework.core.enums.BranchType.WORKING;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.DefaultHierarchyRoot;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.orcs.db.intergration.IntegrationUtil.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
@@ -57,14 +58,14 @@ import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContextFactory;
 import org.eclipse.osee.orcs.db.internal.sql.QueryType;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
-import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
+import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 /**
  * Test Case for {@link QuerySqlContextFactoryImpl}
@@ -83,8 +84,9 @@ public class BranchQuerySqlContextFactoryImplTest {
    private static final Criteria ALL_BRANCHES = new CriteriaAllBranches();
 
    // @formatter:off
+   @Rule public TestRule integrationRule = integrationRule(this);
+   @OsgiService public SqlJoinFactory joinFactory;
    @Mock private Log logger;
-   @Mock private SqlJoinFactory joinFactory;
    @Mock private IdentityLocator identityService;
    @Mock private JdbcClient jdbcClient;
    @Mock private OrcsSession session;
@@ -104,15 +106,6 @@ public class BranchQuerySqlContextFactoryImplTest {
       CriteriaSet criteriaSet = new CriteriaSet();
       Options options = OptionsUtil.createBranchOptions();
       queryData = new QueryData(criteriaSet, options);
-
-      when(joinFactory.createIdJoinQuery()).thenAnswer(new Answer<IdJoinQuery>() {
-
-         @Override
-         public IdJoinQuery answer(InvocationOnMock invocation) throws Throwable {
-            return new IdJoinQuery(null, -1L, 23);
-         }
-
-      });
    }
 
    @Test

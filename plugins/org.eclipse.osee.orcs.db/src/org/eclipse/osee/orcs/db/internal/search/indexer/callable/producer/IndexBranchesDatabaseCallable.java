@@ -87,9 +87,8 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
          branchUuids.add(branch.getUuid());
       }
 
-      IdJoinQuery branchJoin = joinFactory.createIdJoinQuery();
-      IdJoinQuery typeJoin = joinFactory.createIdJoinQuery();
-      try {
+      try (IdJoinQuery branchJoin = joinFactory.createIdJoinQuery();
+         IdJoinQuery typeJoin = joinFactory.createIdJoinQuery()) {
          Triplet<String, String, Object[]> data = createQueries(branchUuids, branchJoin, typeJoin);
          String countQuery = data.getFirst();
          String searchQuery = data.getSecond();
@@ -110,9 +109,6 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
          }
 
          fetchAndProcessGammas(searchQuery, params);
-      } finally {
-         typeJoin.delete();
-         branchJoin.delete();
       }
       return branchUuids.size();
    }
