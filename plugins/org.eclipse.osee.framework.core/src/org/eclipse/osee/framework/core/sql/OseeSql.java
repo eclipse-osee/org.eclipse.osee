@@ -124,7 +124,7 @@ public enum OseeSql {
          "SELECT%s aj.id2, txs.gamma_id, mod_type, art_type_id, guid, txs.branch_id, txs.app_id, aj.id4 FROM osee_join_id4 aj, osee_artifact art, osee_txs txs WHERE aj.query_id = ? AND aj.id2 = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = aj.id1 AND txs.tx_current ";
 
       private static final String SELECT_CURRENT_ARCHIVED_ATTRIBUTES_PREFIX =
-         "SELECT%s att1.art_id, att1.attr_id, att1.value, att1.gamma_id, att1.attr_type_id, att1.uri, al1.id1, txs.mod_type, txs.transaction_id, txs.app_id, aj.id4 FROM osee_join_id4 al1, osee_attribute att1, osee_txs_archived txs WHERE al1.query_id = ? AND al1.id2 = att1.art_id AND att1.gamma_id = txs.gamma_id AND txs.branch_id = al1.id1 AND txs.tx_current ";
+         "SELECT%s att1.art_id, att1.attr_id, att1.value, att1.gamma_id, att1.attr_type_id, att1.uri, al1.id1, txs.mod_type, txs.transaction_id, txs.app_id, al1.id4 FROM osee_join_id4 al1, osee_attribute att1, osee_txs_archived txs WHERE al1.query_id = ? AND al1.id2 = att1.art_id AND att1.gamma_id = txs.gamma_id AND txs.branch_id = al1.id1 AND txs.tx_current ";
 
       private static final String SELECT_CURRENT_ARCHIVED_ARTIFACTS_PREFIX =
          "SELECT%s aj.id2, txs.gamma_id, mod_type, art_type_id, guid, txs.branch_id, txs.app_id, aj.id4 FROM osee_join_id4 aj, osee_artifact art, osee_txs_archived txs WHERE aj.query_id = ? AND aj.id2 = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = aj.id1 AND txs.tx_current ";
