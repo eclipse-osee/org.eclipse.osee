@@ -76,9 +76,7 @@ public class AnnualCostAvoidanceColumn extends XViewerAtsColumn implements IXVie
    }
 
    public static double getWorldViewAnnualCostAvoidance(Object object) throws OseeCoreException {
-      if (object instanceof IAtsWorkItem) {
-         return getWorldViewAnnualCostAvoidance(((IAtsWorkItem) object).getStoreObject());
-      } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
+      if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          double hours = 0;
          // Add up hours for all children
          for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(object)) {
@@ -92,6 +90,8 @@ public class AnnualCostAvoidanceColumn extends XViewerAtsColumn implements IXVie
          double benefit = teamArt.getWorldViewWeeklyBenefit();
          double remainHrs = teamArt.getRemainHoursTotal();
          return benefit * 52 - remainHrs;
+      } else if (object instanceof IAtsWorkItem) {
+         return getWorldViewAnnualCostAvoidance(((IAtsWorkItem) object).getStoreObject());
       }
       return 0;
    }

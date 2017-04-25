@@ -52,9 +52,6 @@ public abstract class AbstractNumericTotalColumn extends XViewerAtsColumn implem
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      if (element instanceof IAtsWorkItem) {
-         return getColumnText(((IAtsWorkItem) element).getStoreObject(), column, columnIndex);
-      }
       if (element instanceof AbstractWorkflowArtifact) {
          try {
             Result result = isPointsNumericValid(element);
@@ -65,6 +62,8 @@ public abstract class AbstractNumericTotalColumn extends XViewerAtsColumn implem
          } catch (OseeCoreException ex) {
             LogUtil.getCellExceptionString(ex);
          }
+      } else if (element instanceof IAtsWorkItem) {
+         return getColumnText(((IAtsWorkItem) element).getStoreObject(), column, columnIndex);
       }
       return "";
    }

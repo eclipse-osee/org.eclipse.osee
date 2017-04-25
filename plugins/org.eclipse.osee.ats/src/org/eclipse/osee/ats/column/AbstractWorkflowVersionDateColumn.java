@@ -47,9 +47,7 @@ public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttrib
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (element instanceof IAtsWorkItem) {
-            return getColumnText(((IAtsWorkItem) element).getStoreObject(), column, columnIndex);
-         } else if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
+         if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<String> strs = new HashSet<>();
             for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(element)) {
                String str = getColumnText(team, column, columnIndex);
@@ -61,6 +59,8 @@ public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttrib
 
          } else if (element instanceof AbstractWorkflowArtifact) {
             return getDateStr(getAttributeType(), (AbstractWorkflowArtifact) element);
+         } else if (element instanceof IAtsWorkItem) {
+            return getColumnText(((IAtsWorkItem) element).getStoreObject(), column, columnIndex);
          }
       } catch (Exception ex) {
          return LogUtil.getCellExceptionString(ex);

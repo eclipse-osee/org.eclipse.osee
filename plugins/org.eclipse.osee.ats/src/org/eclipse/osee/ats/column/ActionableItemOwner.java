@@ -70,15 +70,11 @@ public class ActionableItemOwner extends XViewerAtsColumn implements IXViewerVal
 
    public static Set<User> getActionableItemOwners(Object element) throws OseeCoreException {
       Set<User> users = new HashSet<>();
-      if (element instanceof IAtsWorkItem) {
-         return getActionableItemOwners(((IAtsWorkItem) element).getStoreObject());
-      }
       if (element instanceof ActionArtifact) {
          for (TeamWorkFlowArtifact teamArt : ((ActionArtifact) element).getTeams()) {
             users.addAll(getActionableItemOwners(teamArt));
          }
-      }
-      if (element instanceof AbstractWorkflowArtifact) {
+      } else if (element instanceof AbstractWorkflowArtifact) {
          TeamWorkFlowArtifact teamArt = ((AbstractWorkflowArtifact) element).getParentTeamWorkflow();
          if (teamArt != null) {
             for (IAtsActionableItem aia : AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(
@@ -87,6 +83,8 @@ public class ActionableItemOwner extends XViewerAtsColumn implements IXViewerVal
                   AtsRelationTypes.ActionableItem_User, User.class));
             }
          }
+      } else if (element instanceof IAtsWorkItem) {
+         return getActionableItemOwners(((IAtsWorkItem) element).getStoreObject());
       }
       return users;
    }
