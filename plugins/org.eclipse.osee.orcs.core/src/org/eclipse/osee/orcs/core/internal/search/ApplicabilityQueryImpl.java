@@ -70,6 +70,9 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       HashMap<Long, ApplicabilityToken> tokens = new HashMap<>();
       BiConsumer<Long, String> consumer = (id, name) -> tokens.put(id, new ApplicabilityToken(id, name));
       tupleQuery.getTuple2UniqueE2Pair(ViewApplicability, branch, consumer);
+      if (tokens.isEmpty()) {
+         tokens.put(1L, ApplicabilityToken.BASE);
+      }
       return tokens;
    }
 
