@@ -639,17 +639,33 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       List<Attribute<T>> soleAttributes = getAttributes(attributeType);
       if (soleAttributes.isEmpty()) {
          if (!isAttributeTypeValid(attributeType)) {
-            throw new OseeArgumentException("The attribute type %s is not valid for artifacts of type [%s]",
-               attributeType, getArtifactTypeName());
+            throw new OseeArgumentException(
+               "The attribute type %s is not valid for artifacts of type [%s] on artifact [%s] on branch [%s]",
+               attributeType, getArtifactTypeName(), toStringWithId(), getBranch());
          }
          throw new AttributeDoesNotExist("Attribute of type [%s] could not be found on artifact [%s] on branch [%s]",
-            attributeType, this, getBranch());
+            attributeType, toStringWithId(), getBranch());
       } else if (soleAttributes.size() > 1) {
-         throw new MultipleAttributesExist(
-            "Attribute [%s] must have exactly one instance.  It currently has %d for artifact [%s]", attributeType,
-            soleAttributes.size(), getGuid());
+         String errMsg = String.format(
+            "Attribute [%s] must have exactly one instance.  It currently has %d for artifact %s; Attributes [%s]",
+            attributeType, soleAttributes.size(), toStringWithId(), getAttributeString(soleAttributes));
+         throw new MultipleAttributesExist(errMsg);
       }
       return soleAttributes.iterator().next().getValue();
+   }
+
+   private <T> String getAttributeString(List<Attribute<T>> attributes) {
+      StringBuilder sb = new StringBuilder();
+      for (Attribute<T> attr : attributes) {
+         sb.append("attribute id=[");
+         sb.append(attr.getId());
+         sb.append("] gamma=[");
+         sb.append(attr.getGammaId());
+         sb.append("] ");
+      }
+      String result = sb.toString();
+      System.err.println(result);
+      return result;
    }
 
    /**
