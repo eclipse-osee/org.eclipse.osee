@@ -46,7 +46,7 @@ public class FilteredTree extends org.eclipse.ui.dialogs.FilteredTree {
       }
       ImageDescriptor descriptor2 =
          AbstractUIPlugin.imageDescriptorFromPlugin(PlatformUI.PLUGIN_ID, "$nl$/icons/full/dtool16/clear_co.gif"); //$NON-NLS-1$
-      if (descriptor == null) {
+      if (descriptor2 == null) {
          descriptor2 = descriptor;
       }
       if (descriptor2 != null) {
