@@ -26,14 +26,13 @@ import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.demo.api.DemoActionableItems;
 import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.junit.After;
 import org.junit.Assert;
@@ -47,13 +46,8 @@ import org.junit.Test;
 public class StateResourceTest extends AbstractRestTest {
 
    @After
-   public void tearDown() {
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(StateResourceTest.class.getName() + " - cleanup");
-      changes.addToDelete(ArtifactQuery.getArtifactListFromName(StateResourceTest.class.getName(),
-         AtsClientService.get().getAtsBranch(), DeletionFlag.EXCLUDE_DELETED));
-      if (!changes.isEmpty()) {
-         changes.execute();
-      }
+   public void tearDown() throws Exception {
+      AtsTestUtil.cleanupSimpleTest(getClass().getSimpleName());
    }
 
    @Test

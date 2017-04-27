@@ -372,12 +372,13 @@ public class StateManager implements IAtsStateManager {
       if (state != null) {
          return state.getAssignees();
       } else {
-         throw new OseeStateException("State [%s] not found for %s", getCurrentStateName(), workItem.toStringWithId());
+         throw new OseeStateException("State not found for %s", workItem.toStringWithId());
       }
    }
 
    @Override
    public void setCurrentStateName(String currentStateName) {
+      Conditions.assertNotNull(currentStateName, "currentStateName");
       this.currentStateName = currentStateName;
       setDirty(true);
    }

@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
@@ -40,8 +41,11 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    protected String comment;
-   protected final List<Object> objects = new ArrayList<>();
-   protected final Set<Object> deleteObjects = new CopyOnWriteArraySet<>();
+   protected final List<AtsRelationChange> relations = new ArrayList<>();
+   protected final Set<IAtsObject> atsObjects = new CopyOnWriteArraySet<>();
+   protected final Set<ArtifactId> artifacts = new CopyOnWriteArraySet<>();
+   protected final Set<IAtsObject> deleteAtsObjects = new CopyOnWriteArraySet<>();
+   protected final Set<ArtifactId> deleteArtifacts = new CopyOnWriteArraySet<>();
    protected final Set<IExecuteListener> listeners = new CopyOnWriteArraySet<>();
    protected final IAtsUser asUser;
    protected final AtsNotificationCollector notifications = new AtsNotificationCollector();
@@ -59,9 +63,15 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    public void add(Object obj) throws OseeCoreException {
       Conditions.checkNotNull(obj, "object");
       if (obj instanceof Collection) {
-         objects.addAll((Collection<?>) obj);
+         for (Object object : (Collection<?>) obj) {
+            add(object);
+         }
+      } else if (obj instanceof IAtsObject) {
+         atsObjects.add((IAtsObject) obj);
+      } else if (obj instanceof ArtifactId) {
+         artifacts.add((ArtifactId) obj);
       } else {
-         objects.add(obj);
+         throw new OseeArgumentException("Object not supported: " + obj);
       }
    }
 
@@ -79,8 +89,10 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    @Override
    public void clear() {
-      objects.clear();
-      deleteObjects.clear();
+      atsObjects.clear();
+      artifacts.clear();
+      deleteArtifacts.clear();
+      deleteAtsObjects.clear();
       listeners.clear();
    }
 
@@ -92,7 +104,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    @Override
    public boolean isEmpty() {
-      return objects.isEmpty() && deleteObjects.isEmpty();
+      return artifacts.isEmpty() && deleteArtifacts.isEmpty() && atsObjects.isEmpty() && deleteAtsObjects.isEmpty();
    }
 
    @Override
@@ -105,9 +117,15 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    public void addToDelete(Object obj) throws OseeCoreException {
       Conditions.checkNotNull(obj, "object");
       if (obj instanceof Collection) {
-         deleteObjects.addAll((Collection<?>) obj);
+         for (Object object : (Collection<?>) obj) {
+            add(object);
+         }
+      } else if (obj instanceof IAtsObject) {
+         deleteAtsObjects.add((IAtsObject) obj);
+      } else if (obj instanceof ArtifactId) {
+         deleteArtifacts.add((ArtifactId) obj);
       } else {
-         deleteObjects.add(obj);
+         throw new OseeArgumentException("Object not supported: " + obj);
       }
    }
 

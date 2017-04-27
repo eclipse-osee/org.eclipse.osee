@@ -113,7 +113,7 @@ public class AtsTestUtil {
       final Collection<Artifact> dirtyArtifacts = ArtifactCache.getDirtyArtifacts();
       if (!dirtyArtifacts.isEmpty()) {
          for (Artifact artifact : dirtyArtifacts) {
-            System.err.println(String.format("Artifact [%s] is dirty [%s]", artifact.toStringWithId(),
+            System.err.println(String.format("Dirty Artifact [%s] attribute [%s]", artifact.toStringWithId(),
                Artifacts.getDirtyReport(artifact)));
          }
          throw new OseeStateException("[%d] Dirty Artifacts found after populate (see console for details)",

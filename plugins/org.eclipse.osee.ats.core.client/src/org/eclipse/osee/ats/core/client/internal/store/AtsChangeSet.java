@@ -69,15 +69,15 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public TransactionId execute() throws OseeCoreException {
       Conditions.checkNotNull(comment, "comment");
-      if (objects.isEmpty() && deleteObjects.isEmpty() && execptionIfEmpty) {
+      if (isEmpty() && execptionIfEmpty) {
          throw new OseeArgumentException("objects/deleteObjects cannot be empty");
       }
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), comment);
       // First, create or update any artifacts that changed
-      for (Object obj : new ArrayList<>(objects)) {
-         if (obj instanceof IAtsWorkItem) {
-            IAtsWorkItem workItem = (IAtsWorkItem) obj;
+      for (IAtsObject atsObject : new ArrayList<>(atsObjects)) {
+         if (atsObject instanceof IAtsWorkItem) {
+            IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
             if (workItem.getStateMgr().isDirty()) {
                AtsClientService.get().getStateFactory().writeToStore(asUser, workItem, this);
             }
@@ -86,26 +86,25 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
                   AtsClientService.get().getAttributeResolver(), this);
             }
          }
-
-         if (obj instanceof Artifact) {
-            transaction.addArtifact((Artifact) obj);
-         } else if (obj instanceof IAtsObject && ((IAtsObject) obj).getStoreObject() instanceof Artifact) {
-            transaction.addArtifact((Artifact) ((IAtsObject) obj).getStoreObject());
+         transaction.addArtifact((Artifact) atsObject.getStoreObject());
+      }
+      for (ArtifactId artifact : artifacts) {
+         if (artifact instanceof Artifact) {
+            transaction.addArtifact((Artifact) artifact);
          }
       }
       // Second, add or delete any relations; this has to be done separate so all artifacts are created
-      for (Object obj : objects) {
-         if (obj instanceof AtsRelationChange) {
-            execute((AtsRelationChange) obj, transaction);
-         }
+      for (AtsRelationChange rel : relations) {
+         execute(rel, transaction);
       }
       // Third, delete any desired objects
-      for (Object obj : deleteObjects) {
-         if (obj instanceof Artifact) {
-            ((Artifact) obj).deleteAndPersist(transaction);
-         } else {
-            throw new OseeArgumentException("ATsChangeSet: Unhandled deleteObject type: " + obj);
+      for (ArtifactId artifact : deleteArtifacts) {
+         if (artifact instanceof Artifact) {
+            ((Artifact) artifact).deleteAndPersist(transaction);
          }
+      }
+      for (IAtsObject atsObject : deleteAtsObjects) {
+         ((Artifact) atsObject.getStoreObject()).deleteAndPersist(transaction);
       }
       TransactionId transactionRecord = transaction.execute();
       for (IExecuteListener listener : listeners) {
@@ -173,17 +172,6 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          }
       }
       return art;
-   }
-
-   public void addTo(SkynetTransaction transaction) throws OseeCoreException {
-      Conditions.checkNotNull(transaction, "transaction");
-      for (Object obj : objects) {
-         if (obj instanceof Artifact) {
-            ((Artifact) obj).persist(transaction);
-         } else {
-            throw new OseeArgumentException("Unhandled object type");
-         }
-      }
    }
 
    public static TransactionId execute(String comment, Object object, Object... objects) throws OseeCoreException {

@@ -30,7 +30,6 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   AtsTestUtilTest.class,
    AtsCoreClient_Action_Suite.class,
    AtsCoreClient_Artifact_Suite.class,
    AtsCoreClient_Branch_Suite.class,

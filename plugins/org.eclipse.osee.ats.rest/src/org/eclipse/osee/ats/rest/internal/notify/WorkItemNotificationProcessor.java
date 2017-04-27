@@ -264,7 +264,10 @@ public class WorkItemNotificationProcessor {
       if (actionUrl == null) {
          actionUrl = atsServer.getConfigValue("ActionUrl");
       }
-      return actionUrl.replaceFirst("UUID", String.valueOf(workItem.getId()));
+      if (Strings.isValid(actionUrl)) {
+         return actionUrl.replaceFirst("UUID", String.valueOf(workItem.getId()));
+      }
+      return "Not Configured";
    }
 
    private IAtsUser getFromUser(AtsWorkItemNotificationEvent event) {

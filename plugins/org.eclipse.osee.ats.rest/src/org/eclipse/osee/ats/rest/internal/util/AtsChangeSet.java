@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.api.workdef.RuleEventType;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
-import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.util.AbstractAtsChangeSet;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -52,10 +51,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    private TransactionBuilder transaction;
 
-   private final IAttributeResolver attributeResolver;
    private final OrcsApi orcsApi;
-   private final IAtsStateFactory stateFactory;
-   private final IAtsLogFactory logFactory;
    private final IAtsNotifier notifier;
 
    private final IAtsServer atsServer;
@@ -63,10 +59,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    public AtsChangeSet(IAtsServer atsServer, IAttributeResolver attributeResolver, OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, String comment, IAtsUser user, IAtsNotifier notifier) {
       super(comment, user);
       this.atsServer = atsServer;
-      this.attributeResolver = attributeResolver;
       this.orcsApi = orcsApi;
-      this.stateFactory = stateFactory;
-      this.logFactory = logFactory;
       this.notifier = notifier;
    }
 
@@ -89,27 +82,19 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public TransactionId execute() throws OseeCoreException {
       Conditions.checkNotNull(comment, "comment");
-      if (objects.isEmpty() && deleteObjects.isEmpty() && execptionIfEmpty) {
+      if (isEmpty() && execptionIfEmpty) {
          throw new OseeArgumentException("objects/deleteObjects cannot be empty");
       }
-      for (Object obj : new ArrayList<>(objects)) {
-         if (obj instanceof IAtsWorkItem) {
-            IAtsWorkItem workItem = (IAtsWorkItem) obj;
-            IAtsStateManager stateMgr = workItem.getStateMgr();
-            if (stateMgr.isDirty()) {
-               stateFactory.writeToStore(asUser, workItem, this);
+      // First, create or update any artifacts that changed
+      for (IAtsObject atsObject : new ArrayList<>(atsObjects)) {
+         if (atsObject instanceof IAtsWorkItem) {
+            IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
+            if (workItem.getStateMgr().isDirty()) {
+               atsServer.getStateFactory().writeToStore(asUser, workItem, this);
             }
             if (workItem.getLog().isDirty()) {
-               logFactory.writeToStore(workItem, attributeResolver, this);
+               atsServer.getLogFactory().writeToStore(workItem, atsServer.getAttributeResolver(), this);
             }
-         }
-      }
-      for (Object obj : deleteObjects) {
-         if (obj instanceof IAtsWorkItem) {
-            ArtifactReadable artifact = getArtifact(obj);
-            getTransaction().deleteArtifact(artifact);
-         } else {
-            throw new OseeArgumentException("AtsChangeSet: Unhandled deleteObject type: " + obj);
          }
       }
       TransactionReadable transactionReadable = getTransaction().commit();

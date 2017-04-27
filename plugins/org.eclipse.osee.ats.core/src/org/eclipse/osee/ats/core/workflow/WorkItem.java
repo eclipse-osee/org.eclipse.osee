@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.core.model.impl.AtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -146,6 +147,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public void setStateManager(IAtsStateManager stateMgr) {
+      Conditions.assertNotNull(stateMgr, "stateMgr");
       this.stateMgr = stateMgr;
    }
 
