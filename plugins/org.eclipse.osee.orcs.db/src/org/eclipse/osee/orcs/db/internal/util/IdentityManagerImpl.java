@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 
@@ -39,7 +38,7 @@ public class IdentityManagerImpl implements IdentityManager {
 
    @Override
    public int getNextArtifactId() {
-      return Lib.generateArtifactIdAsInt().intValue();
+      return (int) client.getNextSequence(OseeData.ART_ID_SEQ, true);
    }
 
    @Override
@@ -54,7 +53,7 @@ public class IdentityManagerImpl implements IdentityManager {
 
    @Override
    public long getNextGammaId() {
-      return (int) client.getNextSequence(OseeData.GAMMA_ID_SEQ, true);
+      return client.getNextSequence(OseeData.GAMMA_ID_SEQ, true);
    }
 
    @Override
