@@ -11,7 +11,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.authentication.ldap.core.internal.LDAPConnector;
 import org.eclipse.osee.framework.authentication.ldap.core.service.ILDAPService;
-import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.server.AbstractAuthenticationProvider;
 import org.osgi.framework.Bundle;
@@ -46,9 +46,9 @@ public class LDAPAuthenticationProvider extends AbstractAuthenticationProvider {
     * @return Returns IUserToken created for the given OSeeCrendtial.
     */
    @Override
-   public IUserToken asOseeUserId(final OseeCredential credential) {
+   public UserToken asOseeUserId(final OseeCredential credential) {
       String userName = credential.getUserName();
-      IUserToken userToken = getUserTokenFromOseeDb(userName);
+      UserToken userToken = getUserTokenFromOseeDb(userName);
       return userToken != null ? userToken : createUserToken(true, userName, userName, "", true);
    }
 

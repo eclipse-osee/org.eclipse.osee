@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.core.server.internal;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
@@ -60,8 +60,8 @@ public class AuthenticationManager implements IAuthenticationManager {
    }
 
    @Override
-   public IUserToken asUserToken(OseeCredential credential) throws OseeAuthenticationException {
-      IUserToken toReturn = null;
+   public UserToken asUserToken(OseeCredential credential) throws OseeAuthenticationException {
+      UserToken toReturn = null;
       if (isGuestLogin(credential)) {
          toReturn = SystemUser.Anonymous;
       } else if (isBootStrap(credential)) {

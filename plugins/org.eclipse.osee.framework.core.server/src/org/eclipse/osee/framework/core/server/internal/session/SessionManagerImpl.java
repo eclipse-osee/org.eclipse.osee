@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.cache.admin.Cache;
-import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -54,7 +54,7 @@ public final class SessionManagerImpl implements ISessionManager {
       final String newSessionId = GUID.create();
       boolean isAuthenticated = authenticationManager.authenticate(credential);
       if (isAuthenticated) {
-         final IUserToken userToken = authenticationManager.asUserToken(credential);
+         final UserToken userToken = authenticationManager.asUserToken(credential);
 
          Callable<Session> callable = new Callable<Session>() {
 

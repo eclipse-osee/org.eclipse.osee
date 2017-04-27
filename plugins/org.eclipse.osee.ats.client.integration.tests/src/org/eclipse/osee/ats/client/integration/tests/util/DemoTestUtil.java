@@ -44,7 +44,7 @@ import org.eclipse.osee.ats.demo.api.DemoTeam;
 import org.eclipse.osee.ats.demo.api.DemoWorkType;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
@@ -93,7 +93,7 @@ public class DemoTestUtil {
       return getTaskTitles(false).size() + getTaskTitles(true).size();
    }
 
-   public static User getDemoUser(IUserToken demoUser) throws OseeCoreException {
+   public static User getDemoUser(UserToken demoUser) throws OseeCoreException {
       return UserManager.getUserByName(demoUser.getName());
    }
 

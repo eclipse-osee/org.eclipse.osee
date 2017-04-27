@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server;
 
-import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -48,8 +48,8 @@ public abstract class AbstractAuthenticationProvider implements IAuthenticationP
       return orcsApi;
    }
 
-   protected IUserToken getUserTokenFromOseeDb(String userId) {
-      IUserToken toReturn = null;
+   protected UserToken getUserTokenFromOseeDb(String userId) {
+      UserToken toReturn = null;
       try {
          QueryFactory queryFactory = orcsApi.getQueryFactory();
          QueryBuilder query = queryFactory.fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.User).and(
@@ -57,7 +57,7 @@ public abstract class AbstractAuthenticationProvider implements IAuthenticationP
 
          ArtifactReadable artifact = query.getResults().getOneOrNull();
          if (artifact != null) {
-            toReturn = TokenFactory.createUserToken(artifact.getUuid(), artifact.getGuid(), artifact.getName(),
+            toReturn = UserToken.create(artifact.getUuid(), artifact.getGuid(), artifact.getName(),
                artifact.getSoleAttributeAsString(CoreAttributeTypes.Email, ""), userId, true, false, false);
          } else {
             getLogger().info("Unable to find userId:[%s] on [%s]", userId, CoreBranches.COMMON);
@@ -68,8 +68,8 @@ public abstract class AbstractAuthenticationProvider implements IAuthenticationP
       return toReturn;
    }
 
-   protected IUserToken createUserToken(boolean isCreationRequired, String userName, String userId, String userEmail, boolean isActive) {
-      return TokenFactory.createUserToken(Lib.generateArtifactIdAsInt(), GUID.create(), userName, userEmail, userId,
+   protected UserToken createUserToken(boolean isCreationRequired, String userName, String userId, String userEmail, boolean isActive) {
+      return UserToken.create(Lib.generateArtifactIdAsInt(), GUID.create(), userName, userEmail, userId,
          isActive, false, isCreationRequired);
    }
 }

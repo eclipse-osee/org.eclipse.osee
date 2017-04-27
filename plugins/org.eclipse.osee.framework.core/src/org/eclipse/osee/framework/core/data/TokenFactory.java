@@ -12,11 +12,8 @@ package org.eclipse.osee.framework.core.data;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 public final class TokenFactory {
 
@@ -55,11 +52,6 @@ public final class TokenFactory {
       return ArtifactToken.valueOf(id, guid, name, BranchId.SENTINEL, artifactType);
    }
 
-   public static IUserToken createUserToken(long uuid, String guid, String name, String email, String userId, boolean active, boolean admin, boolean creationRequired) {
-      Conditions.checkExpressionFailOnTrue(uuid <= 0, "User Token Uuid must be > 0 for userId [%s]", userId);
-      return new UserToken(uuid, guid, name, userId, active, admin, email, creationRequired);
-   }
-
    private final static class ArtifactTypeToken extends NamedIdBase implements IArtifactType {
       public ArtifactTypeToken(Long id, String name) {
          super(id, name);
@@ -68,72 +60,6 @@ public final class TokenFactory {
       @Override
       public Long getGuid() {
          return getId();
-      }
-   }
-
-   private static class UserToken extends NamedIdBase implements IUserToken {
-      private final String userId;
-      private final boolean active;
-      private final boolean admin;
-      private final String email;
-      private final String guid;
-      private final boolean creationRequired;
-
-      public UserToken(long id, String guid, String name, String userId, boolean active, boolean admin, String email, boolean creationRequired) {
-         super(id, name);
-         this.guid = guid;
-         this.userId = userId;
-         this.active = active;
-         this.admin = admin;
-         this.email = email;
-         this.creationRequired = creationRequired;
-      }
-
-      @Override
-      public IArtifactType getArtifactType() {
-         return CoreArtifactTypes.User;
-      }
-
-      @Override
-      public String getUserId() {
-         return userId;
-      }
-
-      @Override
-      public boolean isActive() {
-         return active;
-      }
-
-      @Override
-      public boolean isAdmin() {
-         return admin;
-      }
-
-      @Override
-      public String getEmail() {
-         return email;
-      }
-
-      @Override
-      public boolean isCreationRequired() {
-         return creationRequired;
-      }
-
-      @Override
-      public String toString() {
-         return String.format(
-            "UserToken [name [%s], userId=[%s], active=[%s], admin=[%s], email=[%s], creationRequired=[%s]", getName(),
-            userId, active, admin, email, creationRequired);
-      }
-
-      @Override
-      public String getGuid() {
-         return guid;
-      }
-
-      @Override
-      public BranchId getBranch() {
-         return CoreBranches.COMMON;
       }
    }
 

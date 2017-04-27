@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.users;
 
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -25,7 +25,7 @@ public class AtsUser extends NamedIdBase implements IAtsUser {
 
    private String userId;
 
-   public AtsUser(IUserToken user) {
+   public AtsUser(UserToken user) {
       this(user.getId(), user.getName(), user.getUserId());
    }
 

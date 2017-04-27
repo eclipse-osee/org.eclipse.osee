@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.internal.authentication;
 
-import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.server.AbstractAuthenticationProvider;
@@ -32,8 +32,8 @@ public class TrustAllAuthenticationProvider extends AbstractAuthenticationProvid
    }
 
    @Override
-   public IUserToken asOseeUserId(OseeCredential credential) {
-      IUserToken userToken = SystemUser.Anonymous;
+   public UserToken asOseeUserId(OseeCredential credential) {
+      UserToken userToken = SystemUser.Anonymous;
       String userName = credential.getUserName();
       if (Strings.isValid(userName)) {
          userToken = getUserTokenFromOseeDb(userName);

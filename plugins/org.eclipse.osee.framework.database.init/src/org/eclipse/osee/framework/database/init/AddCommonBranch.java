@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.database.init;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.OrcsTypeSheet;
 import org.eclipse.osee.framework.core.data.OrcsTypesData;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -92,7 +92,7 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
          everyonGroup.persist(transaction);
 
          // Create Default Users
-         for (IUserToken userToken : SystemUser.values()) {
+         for (UserToken userToken : SystemUser.values()) {
             UserManager.createUser(userToken, transaction);
          }
          // Create Global Preferences artifact that lives on common branch

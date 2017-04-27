@@ -18,7 +18,7 @@ import java.util.concurrent.FutureTask;
 import java.util.logging.Level;
 import org.eclipse.osee.cache.admin.CacheAdmin;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -158,7 +158,7 @@ public final class UserManager {
       return getUserAdmin().getUserByName(name);
    }
 
-   public static User getUser(IUserToken user) throws OseeCoreException {
+   public static User getUser(UserToken user) throws OseeCoreException {
       return getUserAdmin().getUser(user);
    }
 
@@ -174,7 +174,7 @@ public final class UserManager {
       return getUserAdmin().isDuringCurrentUserCreation();
    }
 
-   public static User createUser(IUserToken userToken, SkynetTransaction transaction) throws OseeCoreException {
+   public static User createUser(UserToken userToken, SkynetTransaction transaction) throws OseeCoreException {
       return getUserAdmin().createUser(userToken, transaction);
    }
 

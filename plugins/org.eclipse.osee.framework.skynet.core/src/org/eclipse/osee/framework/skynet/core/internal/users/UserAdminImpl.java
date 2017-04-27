@@ -17,7 +17,7 @@ import org.eclipse.osee.cache.admin.Cache;
 import org.eclipse.osee.cache.admin.CacheAdmin;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.UserDataStoreException;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
@@ -244,7 +244,7 @@ public class UserAdminImpl implements UserAdmin {
    }
 
    @Override
-   public User getUser(IUserToken user) throws OseeCoreException {
+   public User getUser(UserToken user) throws OseeCoreException {
       Conditions.checkNotNull(user, "user data");
       return getUserByUserId(user.getUserId());
    }
@@ -297,12 +297,12 @@ public class UserAdminImpl implements UserAdmin {
    }
 
    @Override
-   public User createUser(IUserToken userToken, String comment) throws OseeCoreException {
+   public User createUser(UserToken userToken, String comment) throws OseeCoreException {
       return userWriteAccessor.createUser(userToken, comment);
    }
 
    @Override
-   public User createUser(IUserToken userToken, SkynetTransaction transaction) throws OseeCoreException {
+   public User createUser(UserToken userToken, SkynetTransaction transaction) throws OseeCoreException {
       return userWriteAccessor.createUser(userToken, transaction);
    }
 

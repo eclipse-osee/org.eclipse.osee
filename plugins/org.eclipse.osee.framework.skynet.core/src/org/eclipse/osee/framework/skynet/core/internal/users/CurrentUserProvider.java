@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import org.eclipse.osee.cache.admin.Cache;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.IdeClientSession;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
@@ -67,7 +67,7 @@ public class CurrentUserProvider extends LazyObject<User> {
             if (SystemUser.BootStrap.getUserId().equals(userId)) {
                currentUser = BootStrapUser.getInstance();
             } else {
-               IUserToken currentUserToken = ClientSessionManager.getCurrentUserToken();
+               UserToken currentUserToken = ClientSessionManager.getCurrentUserToken();
                if (ClientSessionManager.isUserCreationRequired()) {
                   try {
                      duringCreateUser.set(true);
@@ -129,7 +129,7 @@ public class CurrentUserProvider extends LazyObject<User> {
          return currentUser;
       }
 
-      private User getUser(IUserToken token) throws OseeCoreException {
+      private User getUser(UserToken token) throws OseeCoreException {
          User user = null;
          try {
             user = cacheProvider.get().get(token.getUserId());

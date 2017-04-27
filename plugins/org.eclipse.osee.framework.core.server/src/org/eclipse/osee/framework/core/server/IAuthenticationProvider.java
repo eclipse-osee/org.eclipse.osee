@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server;
 
-import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 
@@ -23,6 +23,6 @@ public interface IAuthenticationProvider {
 
    public boolean authenticate(OseeCredential credential) throws OseeAuthenticationException;
 
-   public IUserToken asOseeUserId(OseeCredential credential) throws OseeAuthenticationException;
+   public UserToken asOseeUserId(OseeCredential credential) throws OseeAuthenticationException;
 
 }

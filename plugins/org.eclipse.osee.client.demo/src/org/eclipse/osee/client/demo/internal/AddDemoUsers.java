@@ -13,7 +13,7 @@ package org.eclipse.osee.client.demo.internal;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.demo.api.DemoUsers;
-import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -33,7 +33,7 @@ public class AddDemoUsers implements IDbInitializationTask {
       List<User> admins = new ArrayList<>();
 
       SkynetTransaction transaction = TransactionManager.createTransaction(CoreBranches.COMMON, "Add Dev Users");
-      for (IUserToken userEnum : DemoUsers.values()) {
+      for (UserToken userEnum : DemoUsers.values()) {
          User user = UserManager.createUser(userEnum, transaction);
          if (userEnum.isAdmin()) {
             admins.add(user);

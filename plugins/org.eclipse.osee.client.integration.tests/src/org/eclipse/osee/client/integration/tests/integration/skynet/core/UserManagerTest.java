@@ -17,7 +17,7 @@ import java.util.Set;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -98,7 +98,7 @@ public final class UserManagerTest {
    }
 
    private User createUser(SkynetTransaction transaction, int index) throws OseeCoreException {
-      IUserToken token = TokenFactory.createUserToken(Lib.generateArtifactIdAsInt(), GUID.create(),
+      UserToken token = UserToken.create(Lib.generateArtifactIdAsInt(), GUID.create(),
          NEW_USER_NAMES[index], "this" + index + "@that.com", "9999999" + index, true, index % 2 == 0, true);
       User user = UserManager.createUser(token, transaction);
       user.persist(transaction);

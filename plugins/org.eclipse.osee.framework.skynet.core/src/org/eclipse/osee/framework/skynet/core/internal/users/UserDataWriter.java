@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import org.eclipse.osee.cache.admin.Cache;
-import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -45,14 +45,14 @@ public class UserDataWriter {
       this.cacheProvider = cacheProvider;
    }
 
-   public User createUser(IUserToken userToken, String comment) throws OseeCoreException {
+   public User createUser(UserToken userToken, String comment) throws OseeCoreException {
       SkynetTransaction transaction = TransactionManager.createTransaction(CoreBranches.COMMON, comment);
       User user = createUser(userToken, transaction);
       Operations.executeWorkAndCheckStatus(transaction);
       return user;
    }
 
-   public User createUser(IUserToken userToken, SkynetTransaction transaction) throws OseeCoreException {
+   public User createUser(UserToken userToken, SkynetTransaction transaction) throws OseeCoreException {
       // Determine if user with id has already been created; boot strap issue with dbInit
       User user = cacheProvider.get().getIfPresent(userToken.getUserId());
       if (user != null) {

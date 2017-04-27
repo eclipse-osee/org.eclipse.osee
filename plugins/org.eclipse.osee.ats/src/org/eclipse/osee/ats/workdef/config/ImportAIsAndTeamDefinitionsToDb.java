@@ -37,7 +37,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.UserRef;
 import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -107,8 +107,8 @@ public class ImportAIsAndTeamDefinitionsToDb {
       }
    }
 
-   private IUserToken getOseeUser(final UserDef dslUserDef) {
-      return TokenFactory.createUserToken(Lib.generateArtifactIdAsInt(), GUID.create(),
+   private UserToken getOseeUser(final UserDef dslUserDef) {
+      return UserToken.create(Lib.generateArtifactIdAsInt(), GUID.create(),
          Strings.unquote(dslUserDef.getName()),
          Strings.isValid(dslUserDef.getEmail()) ? dslUserDef.getEmail() : Strings.unquote(dslUserDef.getName()),
          Strings.isValid(dslUserDef.getUserId()) ? dslUserDef.getUserId() : Strings.unquote(dslUserDef.getName()),

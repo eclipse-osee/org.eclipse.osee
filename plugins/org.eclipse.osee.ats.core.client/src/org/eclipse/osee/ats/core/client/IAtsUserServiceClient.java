@@ -15,7 +15,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
-import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -40,7 +40,7 @@ public interface IAtsUserServiceClient extends IAtsUserService {
 
    Collection<User> getOseeUsers(Collection<? extends IAtsUser> users) throws OseeCoreException;
 
-   IAtsUser getUserFromToken(IUserToken userToken);
+   IAtsUser getUserFromToken(UserToken userToken);
 
    List<User> getOseeUsersSorted(Active active);
 

@@ -77,7 +77,7 @@ public class OseeSessionGrant {
       return oseeApplicationServerDataPath;
    }
 
-   public IUserToken getUserToken() {
+   public UserToken getUserToken() {
       return getGrantedUserToken();
    }
 
@@ -89,8 +89,8 @@ public class OseeSessionGrant {
       this.oseeAuthenticationProtocol = protocol;
    }
 
-   private IUserToken getGrantedUserToken() {
-      return TokenFactory.createUserToken(Lib.generateArtifactIdAsInt(), GUID.create(), oseeUserName, oseeUserEmail,
+   private UserToken getGrantedUserToken() {
+      return UserToken.create(Lib.generateArtifactIdAsInt(), GUID.create(), oseeUserName, oseeUserEmail,
          oseeUserId, isOseeUserActive, false, false);
    }
 

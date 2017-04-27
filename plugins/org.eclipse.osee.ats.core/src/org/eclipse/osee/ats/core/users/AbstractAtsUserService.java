@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.AtsUserNameComparator;
-import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -131,7 +131,7 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
       return users;
    }
 
-   public IAtsUser getUserFromToken(IUserToken userToken) {
+   public IAtsUser getUserFromToken(UserToken userToken) {
       return getUserById(userToken.getUserId());
    }
 

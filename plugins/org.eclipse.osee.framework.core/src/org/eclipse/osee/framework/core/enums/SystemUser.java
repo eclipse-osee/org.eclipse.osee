@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.enums;
 
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 
@@ -22,18 +22,18 @@ import org.eclipse.osee.framework.jdk.core.type.Identity;
 public final class SystemUser {
 
    // @formatter:off
-   public static final IUserToken OseeSystem = TokenFactory.createUserToken(11, "AAABDBYPet4AGJyrc9dY1w", "OSEE System", "", "99999999", false, false, false);
-   public static final IUserToken Anonymous = TokenFactory.createUserToken(1896, "AAABDi35uzwAxJLISLBZdA", "Anonymous", "", "99999998", false, false, false);
-   public static final IUserToken BootStrap = TokenFactory.createUserToken(2184322, "noguid", "Boot Strap", "bootstrap@osee.org", "bootstrap", true, false, false);
-   public static final IUserToken UnAssigned = TokenFactory.createUserToken(33429, "AAABDi1tMx8Al92YWMjeRw", "UnAssigned", "", "99999997", true, false, false);
-   public static final List<IUserToken> values = Arrays.asList(OseeSystem, Anonymous, BootStrap, UnAssigned);
+   public static final UserToken OseeSystem = UserToken.create(11, "AAABDBYPet4AGJyrc9dY1w", "OSEE System", "", "99999999", false, false, false);
+   public static final UserToken Anonymous = UserToken.create(1896, "AAABDi35uzwAxJLISLBZdA", "Anonymous", "", "99999998", false, false, false);
+   public static final UserToken BootStrap = UserToken.create(2184322, "noguid", "Boot Strap", "bootstrap@osee.org", "bootstrap", true, false, false);
+   public static final UserToken UnAssigned = UserToken.create(33429, "AAABDi1tMx8Al92YWMjeRw", "UnAssigned", "", "99999997", true, false, false);
+   public static final List<UserToken> values = Arrays.asList(OseeSystem, Anonymous, BootStrap, UnAssigned);
    // @formatter:on
 
    private SystemUser() {
       // Constants
    }
 
-   public static List<IUserToken> values() {
+   public static List<UserToken> values() {
       return values;
    }
 

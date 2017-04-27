@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.server.internal.session;
 
 import java.util.Date;
 import java.util.Properties;
-import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.model.cache.IOseeTypeFactory;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
@@ -47,7 +47,7 @@ public final class SessionFactory implements IOseeTypeFactory {
       return toReturn;
    }
 
-   public OseeSessionGrant createSessionGrant(Session session, IUserToken userToken, String authenticationType) throws OseeCoreException {
+   public OseeSessionGrant createSessionGrant(Session session, UserToken userToken, String authenticationType) throws OseeCoreException {
       Conditions.checkNotNull(session, "Session");
       Conditions.checkNotNull(userToken, "IUserToken");
 
