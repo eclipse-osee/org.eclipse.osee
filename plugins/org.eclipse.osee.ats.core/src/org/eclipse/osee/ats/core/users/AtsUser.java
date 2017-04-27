@@ -24,14 +24,19 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 public class AtsUser extends NamedIdBase implements IAtsUser {
 
    private String userId;
+   private final String email;
+   private final boolean isActive;
 
    public AtsUser(UserToken user) {
-      this(user.getId(), user.getName(), user.getUserId());
+      this(user.getId(), user.getName(), user.getUserId(), user.getEmail(), user.isActive());
    }
 
-   public AtsUser(Long id, String name, String userId) {
+   public AtsUser(Long id, String name, String userId, String email, boolean isActive) {
       super(id, name);
       this.userId = userId;
+      this.email = email;
+      this.isActive = isActive;
+
    }
 
    @Override
@@ -45,7 +50,7 @@ public class AtsUser extends NamedIdBase implements IAtsUser {
 
    @Override
    public String getEmail() {
-      return "";
+      return email;
    }
 
    @Override
@@ -87,7 +92,7 @@ public class AtsUser extends NamedIdBase implements IAtsUser {
 
    @Override
    public boolean isActive() {
-      return true;
+      return isActive;
    }
 
    @Override

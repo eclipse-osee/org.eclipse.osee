@@ -8,6 +8,7 @@ Fragment-Host: org.eclipse.osee.ats.rest
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.emf.common.util,
  org.eclipse.osee.ats.api.workdef,
+ org.eclipse.osee.ats.core.users,
  org.eclipse.osee.ats.db.mocks,
  org.eclipse.osee.ats.dsl.atsDsl.impl,
  org.eclipse.osee.event,

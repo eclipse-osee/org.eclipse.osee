@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.demo.api.DemoUsers;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

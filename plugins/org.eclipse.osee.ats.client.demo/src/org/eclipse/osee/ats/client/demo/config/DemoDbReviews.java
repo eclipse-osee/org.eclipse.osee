@@ -35,8 +35,8 @@ import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Injection
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
-import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;

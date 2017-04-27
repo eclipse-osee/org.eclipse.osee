@@ -10,6 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.notify;
 
+import static org.eclipse.osee.framework.core.enums.DemoUsers.Alex_Kay;
+import static org.eclipse.osee.framework.core.enums.DemoUsers.Inactive_Steve;
+import static org.eclipse.osee.framework.core.enums.DemoUsers.Jason_Michael;
+import static org.eclipse.osee.framework.core.enums.DemoUsers.Joe_Smith;
+import static org.eclipse.osee.framework.core.enums.DemoUsers.Kay_Jones;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
@@ -35,8 +40,10 @@ import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
+import org.eclipse.osee.ats.core.users.AtsUser;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
@@ -53,8 +60,8 @@ import org.mockito.MockitoAnnotations;
  */
 public class WorkItemNotificationProcessorTest {
 
+   IAtsUser joeSmith_CurrentUser, kay_ValidEmail, jason_ValidEmail, alex_NoValidEmail, inactiveSteve;
    // @formatter:off
-   @Mock IAtsUser joeSmith_CurrentUser, kay_ValidEmail, jason_ValidEmail, alex_NoValidEmail, inactiveSteve;
    @Mock ArtifactToken kayArtifact;
    @Mock IAtsTeamWorkflow teamWf;
    @Mock ArtifactToken teamWfArt;
@@ -73,15 +80,21 @@ public class WorkItemNotificationProcessorTest {
 
    // @formatter:on
 
+   private IAtsUser setupUser(UserToken userToken) {
+      IAtsUser user = new AtsUser(userToken);
+      when(userService.getUserById(userToken.getUserId())).thenReturn(user);
+      return user;
+   }
+
    @Before
    public void setup() {
       MockitoAnnotations.initMocks(this);
 
-      setupUser(joeSmith_CurrentUser, 61106791L, "Joe Smith", "joe@boeing.com", "3333", true, false);
-      setupUser(kay_ValidEmail, 5896672L, "Kay Jones", "kay@boeing.com", "4444", true, false);
-      setupUser(jason_ValidEmail, 277990L, "Jason Michael", "jason@boeing.com", "5555", true, false);
-      setupUser(alex_NoValidEmail, 8006939L, "Alex Kay", "", "6666", true, false);
-      setupUser(inactiveSteve, 5808093L, "Inactive Steve", "insactiveSteve@boeing.com", "7777", false, false);
+      joeSmith_CurrentUser = setupUser(Joe_Smith);
+      kay_ValidEmail = setupUser(Kay_Jones);
+      jason_ValidEmail = setupUser(Jason_Michael);
+      alex_NoValidEmail = setupUser(Alex_Kay);
+      inactiveSteve = setupUser(Inactive_Steve);
 
       when(teamWf.getName()).thenReturn(WorkItemNotificationProcessorTest.class.getSimpleName() + "-testNotify");
       List<IAtsUser> assignees = new ArrayList<>();
@@ -331,17 +344,5 @@ public class WorkItemNotificationProcessorTest {
       when(ai.getSubscribed()).thenReturn(Arrays.asList(kay_ValidEmail));
       processor.run(notifications, event);
       Assert.assertEquals(2, notifications.getNotificationEvents().size());
-
    }
-
-   private void setupUser(IAtsUser user, long uuid, String name, String email, String userId, boolean active, boolean admin) {
-      when(user.getId()).thenReturn(uuid);
-      when(user.getName()).thenReturn(name);
-      when(user.getEmail()).thenReturn(email);
-      when(user.isActive()).thenReturn(active);
-      when(user.getUserId()).thenReturn(userId);
-
-      when(userService.getUserById(userId)).thenReturn(user);
-   }
-
 }

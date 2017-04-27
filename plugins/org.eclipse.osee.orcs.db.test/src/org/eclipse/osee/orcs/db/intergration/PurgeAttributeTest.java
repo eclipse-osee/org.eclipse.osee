@@ -11,10 +11,10 @@
 package org.eclipse.osee.orcs.db.intergration;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.DemoUsers.Joe_Smith;
 import static org.eclipse.osee.orcs.db.intergration.IntegrationUtil.integrationRule;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -40,7 +40,6 @@ import org.junit.rules.TestRule;
  */
 public class PurgeAttributeTest {
 
-   private static final ArtifactId Joe_Smith = ArtifactId.valueOf(61106791L);
    private static final String UNIQUE_ATTR_VALUE = "AEqvcQoyRV8zNDZSBVAA";
 
    @Rule

@@ -15,7 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import java.util.Collection;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
-import org.eclipse.osee.ats.demo.api.DemoUsers;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
 import org.eclipse.osee.framework.server.ide.api.client.model.Sessions;
 import org.eclipse.osee.framework.server.ide.api.model.IdeVersion;

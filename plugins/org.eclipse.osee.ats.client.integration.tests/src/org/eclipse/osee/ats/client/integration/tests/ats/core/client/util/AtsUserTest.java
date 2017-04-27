@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
-import org.eclipse.osee.ats.demo.api.DemoUsers;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.User;

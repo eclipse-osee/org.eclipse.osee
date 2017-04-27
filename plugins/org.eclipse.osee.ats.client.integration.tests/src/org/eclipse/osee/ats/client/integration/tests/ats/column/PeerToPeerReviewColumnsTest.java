@@ -35,7 +35,7 @@ import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Injection
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.demo.api.DemoUsers;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;

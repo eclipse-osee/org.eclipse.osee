@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.server;
 
 import org.eclipse.osee.framework.core.data.UserToken;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -69,7 +68,7 @@ public abstract class AbstractAuthenticationProvider implements IAuthenticationP
    }
 
    protected UserToken createUserToken(boolean isCreationRequired, String userName, String userId, String userEmail, boolean isActive) {
-      return UserToken.create(Lib.generateArtifactIdAsInt(), GUID.create(), userName, userEmail, userId,
-         isActive, false, isCreationRequired);
+      return UserToken.create(Lib.generateArtifactIdAsInt(), GUID.create(), userName, userEmail, userId, isActive,
+         false, isCreationRequired);
    }
 }

@@ -150,13 +150,13 @@ public class CoreAtsUsersTest {
 
    private class TestUser extends AtsUser {
       public TestUser() {
-         super(999994L, "Test User", "999994");
+         super(999994L, "Test User", "999994", "", true);
       }
    };
 
    private class ExceptionUser extends AtsUser {
       public ExceptionUser() {
-         super(0L, "Exception User", null);
+         super(0L, "Exception User", null, "", true);
       }
 
       @Override

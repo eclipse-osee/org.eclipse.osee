@@ -18,8 +18,8 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.Test;
 

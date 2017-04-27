@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.client.demo.internal;
 
-import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.client.demo.DemoSubsystems;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;

@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.client.demo.internal.Activator;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.demo.api.DemoUsers;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**

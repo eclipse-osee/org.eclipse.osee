@@ -30,8 +30,8 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.demo.api.DemoActionableItems;
-import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.junit.After;
