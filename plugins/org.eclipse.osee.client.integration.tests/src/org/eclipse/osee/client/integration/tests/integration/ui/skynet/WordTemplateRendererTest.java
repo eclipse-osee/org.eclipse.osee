@@ -88,46 +88,19 @@ public class WordTemplateRendererTest {
    private static String MASTER_TEMPLATE_STRING_IDONLY;
    private static String MASTER_TEMPLATE_STRING_IDANDNAME;
    private static String SLAVE_TEMPLATE_STRING;
-// @formatter:off
+
    private static String RECURSIVE_RENDERER_OPTIONS =
-      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : true, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : " +
-         "\"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Word Template Content\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : " +
-         "\"\"}, {\"AttrType\" : \"Applicability ID\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}, {\"AttrType\" : \"Artifact Type\",  \"Label\" : " +
-         "\"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
+      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : true, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Word Template Content\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}], \"MetadataOptions\" : [{\"Type\" : \"Applicability\", \"Format\" : \"\", \"Label\" : \"\"}, {\"Type\" : \"Artifact Type\", \"Format\" : \"\", \"Label\" : \"\"}, {\"Type\" : \"Artifact Id\", \"Format\" : \"\", \"Label\" : \"\"}]}";
    private static String SINGLE_RENDERER_OPTIONS =
-      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : " +
-         "\"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Word Template Content\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : " +
-         "\"\"}, {\"AttrType\" : \"Applicability ID\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}, {\"AttrType\" : \"Artifact Type\",  \"Label\" : " +
-         "\"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
+      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Word Template Content\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}], \"MetadataOptions\" : [{\"Type\" : \"Applicability\", \"Format\" : \"\", \"Label\" : \"\"}, {\"Type\" : \"Artifact Type\", \"Format\" : \"\", \"Label\" : \"\"}, {\"Type\" : \"Artifact Id\", \"Format\" : \"\", \"Label\" : \"\"}]}";
    private static String SINGLE_ATTRIBUTE_RENDERER_OPTIONS =
-      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : " +
-         "\"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"*\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : " +
-         "\"\"}, {\"AttrType\" : \"Applicability ID\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}, {\"AttrType\" : \"Artifact Type\",  \"Label\" : " +
-         "\"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
+      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"*\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}], \"MetadataOptions\" : [{\"Type\" : \"Applicability\", \"Format\" : \"\", \"Label\" : \"\"}, {\"Type\" : \"Artifact Type\", \"Format\" : \"\", \"Label\" : \"\"}, {\"Type\" : \"Artifact Id\", \"Format\" : \"\", \"Label\" : \"\"}]}";
    private static String MASTER_RENDERER_OPTIONS =
-      "{\"ElementType\" : \"NestedTemplate\", \"NestedTemplates\" : [{\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.1\", \"SubDocName\" : " +
-         "\"Communication Subsystem Crew Interface\", \"Key\" : \"Name\", \"Value\" : \"Communication Subsystem Crew Interface\"}, {\"OutlineType\" : " +
-         "\"\", \"SectionNumber\" : \"3.2.2\", \"SubDocName\" : \"Navigation Subsystem Crew Interface\", \"Key\" : \"Name\", \"Value\" : " +
-         "\"Navigation Subsystem Crew Interface\"}, {\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.3\", \"SubDocName\" : " +
-         "\"Aircraft Systems Management Subsystem Crew Interface\", \"Key\" : \"Name\", \"Value\" : \"Aircraft Systems Management Subsystem Crew Interface\"}, " +
-         "{\"AttrType\" : \"Applicability ID\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}, {\"AttrType\" : \"Artifact Type\",  \"Label\" : " +
-         "\"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
+      "{\"ElementType\" : \"NestedTemplate\", \"NestedTemplates\" : [{\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.1\", \"SubDocName\" : \"Communication Subsystem Crew Interface\", \"Key\" : \"Name\", \"Value\" : \"Communication Subsystem Crew Interface\"}, {\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.2\", \"SubDocName\" : \"Navigation Subsystem Crew Interface\", \"Key\" : \"Name\", \"Value\" : \"Navigation Subsystem Crew Interface\"}, {\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.3\", \"SubDocName\" : \"Aircraft Systems Management Subsystem Crew Interface\", \"Key\" : \"Name\", \"Value\" : \"Aircraft Systems Management Subsystem Crew Interface\"}]}";
    private static String MASTER_ID_RENDERER_OPTIONS =
-      "{\"ElementType\" : \"NestedTemplate\", \"NestedTemplates\" : [{\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.1\", \"SubDocName\" : " +
-         "\"Communication Subsystem Crew Interface\", \"Key\" : \"Id\", \"Value\" : \"249\"}, {\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.2\", \"SubDocName\" : " +
-         "\"Navigation Subsystem Crew Interface\", \"Key\" : \"Id\", \"Value\" : \"250\"}, {\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.3\", \"SubDocName\" : " +
-         "\"Aircraft Systems Management Subsystem Crew Interface\", \"Key\" : \"Id\", \"Value\" : \"251\"}, {\"AttrType\" : \"Applicability ID\",  \"Label\" : " +
-         "\"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}, {\"AttrType\" : \"Artifact Type\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
+      "{\"ElementType\" : \"NestedTemplate\", \"NestedTemplates\" : [{\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.1\", \"SubDocName\" : \"Communication Subsystem Crew Interface\", \"Key\" : \"Id\", \"Value\" : \"249\"}, {\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.2\", \"SubDocName\" : \"Navigation Subsystem Crew Interface\", \"Key\" : \"Id\", \"Value\" : \"250\"}, {\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.3\", \"SubDocName\" : \"Aircraft Systems Management Subsystem Crew Interface\", \"Key\" : \"Id\", \"Value\" : \"251\"}]}";
    private static String SLAVE_RENDERER_OPTIONS =
-      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [{\"Outlining\" : true, \"RecurseChildren\" : true, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : " +
-         "\"srsProducer.objects\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Partition\", \"Label\" : " +
-         "\"<w:r wsp:rsidR=\\\"00591321\\\" wsp:rsidRPr=\\\"00D60E72\\\"><w:rPr><w:b/></w:rPr><w:t>Partition</w:t></w:r>\", \"FormatPre\" : " +
-         "\"<w:r wsp:rsidR=\\\"00591321\\\" wsp:rsidRPr=\\\"0004616A\\\"><w:rPr><w:i/></w:rPr><w:t>x</w:t></w:r>\", \"FormatPost\" : \"\"}, {\"AttrType\" : " +
-         "\"Legacy DAL\", \"Label\" : \"<w:r wsp:rsidR=\\\"00E16D7B\\\"><w:rPr><w:rFonts w:cs=\\\"Arial\\\"/><w:b/><w:sz-cs w:val=\\\"22\\\"/></w:rPr>" +
-         "<w:t>Development Assurance Level:</w:t></w:r>\", \"FormatPre\" : \"<w:r wsp:rsidR=\\\"00591321\\\" wsp:rsidRPr=\\\"0004616A\\\"><w:rPr><w:i/></w:rPr><w:t>x</w:t></w:r>\", " +
-         "\"FormatPost\" : \"\"}, {\"AttrType\" : \"Word Template Content\", \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}, {\"AttrType\" : " +
-         "\"Applicability ID\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}, {\"AttrType\" : \"Artifact Type\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
-// @formatter:on
+      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [{\"Outlining\" : true, \"RecurseChildren\" : true, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"srsProducer.objects\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Partition\", \"Label\" : \"<w:r wsp:rsidR=\\\"00591321\\\" wsp:rsidRPr=\\\"00D60E72\\\"><w:rPr><w:b/></w:rPr><w:t>Partition</w:t></w:r>\", \"FormatPre\" : \"<w:r wsp:rsidR=\\\"00591321\\\" wsp:rsidRPr=\\\"0004616A\\\"><w:rPr><w:i/></w:rPr><w:t>x</w:t></w:r>\", \"FormatPost\" : \"\"}, {\"AttrType\" : \"Legacy DAL\", \"Label\" : \"<w:r wsp:rsidR=\\\"00E16D7B\\\"><w:rPr><w:rFonts w:cs=\\\"Arial\\\"/><w:b/><w:sz-cs w:val=\\\"22\\\"/></w:rPr><w:t>Development Assurance Level:</w:t></w:r>\", \"FormatPre\" : \"<w:r wsp:rsidR=\\\"00591321\\\" wsp:rsidRPr=\\\"0004616A\\\"><w:rPr><w:i/></w:rPr><w:t>x</w:t></w:r>\", \"FormatPost\" : \"\"}, {\"AttrType\" : \"Word Template Content\", \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}], \"MetadataOptions\" : [{\"Type\" : \"Applicability\", \"Format\" : \"\", \"Label\" : \"\"}, {\"Type\" : \"Artifact Type\", \"Format\" : \"\", \"Label\" : \"\"}, {\"Type\" : \"Artifact Id\", \"Format\" : \"\", \"Label\" : \"\"}]}";
 
    private BranchId rootBranch;
    private BranchId updateBranch;
@@ -469,9 +442,9 @@ public class WordTemplateRendererTest {
             contents.contains("<w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>2.1 Hardware</w:t></w:r>"));
          basicDocumentCheck(contents, tabString, false, false);
          Assert.assertTrue("Paragraph Number 2 is not updated", contents.contains(
-            "<w:r><w:t>Notes</w:t></w:r></w:p><w:p><w:r><w:t> Paragraph Number: </w:t></w:r><w:r><w:t>2</w:t></w:r>"));
+            "<w:r><w:t>Notes</w:t></w:r></w:p><w:p><w:r><w:t>Applicability: Base</w:t></w:r></w:p><w:p><w:r><w:t> Paragraph Number: </w:t></w:r><w:r><w:t>2</w:t></w:r>"));
          Assert.assertTrue("Paragraph Number 2.1 is not updated", contents.contains(
-            "<w:r><w:t>More Notes</w:t></w:r></w:p><w:p><w:r><w:t> Paragraph Number: </w:t></w:r><w:r><w:t>2.1</w:t></w:r>"));
+            "<w:r><w:t>More Notes</w:t></w:r></w:p><w:p><w:r><w:t>Applicability: Base</w:t></w:r></w:p><w:p><w:r><w:t> Paragraph Number: </w:t></w:r><w:r><w:t>2.1</w:t></w:r>"));
          Matcher m = findBlankPage.matcher(contents);
          int counter = 0;
          while (m.find()) {
