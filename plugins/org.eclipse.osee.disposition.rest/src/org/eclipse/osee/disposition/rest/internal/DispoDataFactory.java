@@ -83,7 +83,6 @@ public class DispoDataFactory {
          itemToInit.setAssignee("UnAssigned");
       }
 
-      itemToInit.setAborted(false);
       itemToInit.setNeedsRerun(false);
       itemToInit.setNeedsReview(false);
 
