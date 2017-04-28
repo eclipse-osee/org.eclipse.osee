@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.ev;
 
 import java.util.Collection;
 import java.util.LinkedList;
-
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.column.WorkPackageFilterTreeDialog.IWorkPackageProvider;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -33,8 +33,8 @@ public class WorkPackageSearchProvider implements IWorkPackageProvider {
 
    @Override
    public Collection<IAtsWorkPackage> getActiveWorkPackages() {
-      Collection<ArtifactToken> selectableWorkPackageTokens = ArtifactQuery.getArtifactTokenListFromType(
-         AtsArtifactTypes.WorkPackage, AtsClientService.get().getAtsBranch());
+      Collection<ArtifactToken> selectableWorkPackageTokens = ArtifactQuery.getArtifactTokenListFromTypeAndActive(
+         AtsArtifactTypes.WorkPackage, AtsAttributeTypes.Active, AtsClientService.get().getAtsBranch());
       Collection<IAtsWorkPackage> items = new LinkedList<>();
       for (Artifact art : ArtifactQuery.getArtifactListFromTokens(selectableWorkPackageTokens,
          AtsClientService.get().getAtsBranch())) {
