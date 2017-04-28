@@ -468,16 +468,6 @@ attributeType "Word Ole Data" extends StringAttribute {
 	mediaType "application/msword"
 }
 
-attributeType "Workflow Definition" extends StringAttribute {
-	id 1152921504606847093
-	dataProvider UriAttributeDataProvider
-	min 0
-	max 1
-	description "xml definition of a Workflow"
-	fileExtension "vue"
-	mediaType "text/xml"
-}
-
 attributeType "Annotation" extends StringAttribute {
 	id 1152921504606847094
 	dataProvider DefaultAttributeDataProvider
