@@ -352,6 +352,8 @@ public class LisFileParser implements DispoImporterApi {
       File resultsFile = new File(resultPathAbs);
       if (!resultsFile.exists()) {
          report.addEntry("SQL", String.format("Could not find DAT file [%s]", resultPathAbs), ERROR);
+      } else if (!resultsFile.getName().endsWith(".DAT")) {
+         // Ignore
       } else {
          //Start reading line by line
          BufferedReader br = null;
@@ -395,46 +397,45 @@ public class LisFileParser implements DispoImporterApi {
 
    private void processSingleResult(String resultPath, Matcher m) {
       DispoItemData item = datIdToItem.get(generateDatId(m.group(1), m.group(2)));
-	  if(item != null) {
-	      String location = m.group(3);
-	      String text = "";
-	      Discrepancy matchingDiscrepancy = matchDiscrepancy(location, item.getDiscrepanciesList());
-	      if (matchingDiscrepancy != null) {
-	         text = matchingDiscrepancy.getText();
-	         Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
-	         discrepancies.remove(matchingDiscrepancy.getId());
-	         item.setDiscrepanciesList(discrepancies);
-	         addAnnotationForForCoveredLine(item, location, Test_Unit_Resolution, text, resultPath);
-	      }   
-	  }
-	  
+      if (item != null) {
+         String location = m.group(3);
+         String text = "";
+         Discrepancy matchingDiscrepancy = matchDiscrepancy(location, item.getDiscrepanciesList());
+         if (matchingDiscrepancy != null) {
+            text = matchingDiscrepancy.getText();
+            Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
+            discrepancies.remove(matchingDiscrepancy.getId());
+            item.setDiscrepanciesList(discrepancies);
+            addAnnotationForForCoveredLine(item, location, Test_Unit_Resolution, text, resultPath);
+         }
+      }
 
    }
 
    private void processSingleResultMCDC(String resultPath, Matcher m) {
       DispoItemData item = datIdToItem.get(generateDatId(m.group(1), m.group(2)));
-	  
-	  if(item != null) {
-	      Integer lineNumber = Integer.valueOf(m.group(3));
-	      Integer bitsTrue = Integer.valueOf(m.group(4));
-	      Integer bitsUsed = Integer.valueOf(m.group(5));
 
-	      Map<String, Boolean> bitsTrueMap = getBitToBoolean(Integer.toString(bitsTrue, 2), Integer.toString(bitsUsed, 2));
+      if (item != null) {
+         Integer lineNumber = Integer.valueOf(m.group(3));
+         Integer bitsTrue = Integer.valueOf(m.group(4));
+         Integer bitsUsed = Integer.valueOf(m.group(5));
 
-	      for (String abbrevCond : bitsTrueMap.keySet()) {
-	         String TorF = bitsTrueMap.get(abbrevCond) ? "T" : "F";
-	         String location = String.format("%s.%s.%s", lineNumber, abbrevCond, TorF);
-	         Discrepancy matchingDiscrepancy = matchDiscrepancy(location, item.getDiscrepanciesList());
-	         if (matchingDiscrepancy != null) {
-	            String text = matchingDiscrepancy.getText();
-	            Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
-	            discrepancies.remove(matchingDiscrepancy.getId());
-	            item.setDiscrepanciesList(discrepancies);
-	            addAnnotationForForCoveredLine(item, location, Test_Unit_Resolution, resultPath, text);
-	         } 
-	      }	  
-	  }
+         Map<String, Boolean> bitsTrueMap =
+            getBitToBoolean(Integer.toString(bitsTrue, 2), Integer.toString(bitsUsed, 2));
 
+         for (String abbrevCond : bitsTrueMap.keySet()) {
+            String TorF = bitsTrueMap.get(abbrevCond) ? "T" : "F";
+            String location = String.format("%s.%s.%s", lineNumber, abbrevCond, TorF);
+            Discrepancy matchingDiscrepancy = matchDiscrepancy(location, item.getDiscrepanciesList());
+            if (matchingDiscrepancy != null) {
+               String text = matchingDiscrepancy.getText();
+               Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
+               discrepancies.remove(matchingDiscrepancy.getId());
+               item.setDiscrepanciesList(discrepancies);
+               addAnnotationForForCoveredLine(item, location, Test_Unit_Resolution, resultPath, text);
+            }
+         }
+      }
 
    }
 
