@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -49,9 +50,9 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    private final OrcsApi orcsApi;
    private final BranchId branch;
    private final TupleQuery tupleQuery;
-   private final ArtifactId account;
+   private final UserId account;
 
-   public ApplicabilityEndpointImpl(OrcsApi orcsApi, BranchId branch, ArtifactId account) {
+   public ApplicabilityEndpointImpl(OrcsApi orcsApi, BranchId branch, UserId account) {
       this.orcsApi = orcsApi;
       this.branch = branch;
       this.tupleQuery = orcsApi.getQueryFactory().tupleQuery();
