@@ -41,6 +41,7 @@ import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.search.Engines;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContextFactory;
+import org.eclipse.osee.orcs.db.internal.sql.QueryType;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
@@ -114,7 +115,7 @@ public class TxQuerySqlContextFactoryImplTest {
          "txd1.transaction_id = jid1.id AND jid1.query_id = ?";
       queryData.addCriteria(IDS);
 
-      QuerySqlContext context = queryEngine.createCountContext(session, queryData);
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData, QueryType.COUNT);
 
       assertEquals(expected, context.getSql());
 
@@ -139,7 +140,7 @@ public class TxQuerySqlContextFactoryImplTest {
 
       queryData.addCriteria(IDS);
 
-      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData, QueryType.SELECT);
 
       assertEquals(expected, context.getSql());
 
@@ -164,7 +165,7 @@ public class TxQuerySqlContextFactoryImplTest {
 
       queryData.addCriteria(COMMENT);
 
-      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData, QueryType.SELECT);
 
       assertEquals(expected, context.getSql());
 
@@ -184,7 +185,7 @@ public class TxQuerySqlContextFactoryImplTest {
 
       queryData.addCriteria(TYPES);
 
-      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData, QueryType.SELECT);
 
       assertEquals(expected, context.getSql());
 
@@ -213,7 +214,7 @@ public class TxQuerySqlContextFactoryImplTest {
 
       queryData.addCriteria(TYPES, IDS);
 
-      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData, QueryType.SELECT);
 
       assertEquals(expected, context.getSql());
 
@@ -250,7 +251,7 @@ public class TxQuerySqlContextFactoryImplTest {
 
       queryData.addCriteria(BRANCHIDS, IDS_WITH_OPERATOR, DATE_WITH_OPERATOR, AUTHORS, COMMITS);
 
-      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData, QueryType.SELECT);
 
       assertEquals(expected, context.getSql());
 
@@ -285,7 +286,7 @@ public class TxQuerySqlContextFactoryImplTest {
       TransactionId tx = TransactionId.valueOf(3);
       queryData.addCriteria(new CriteriaTxGetPrior(tx));
 
-      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData, QueryType.SELECT);
 
       assertEquals(expected, context.getSql());
 

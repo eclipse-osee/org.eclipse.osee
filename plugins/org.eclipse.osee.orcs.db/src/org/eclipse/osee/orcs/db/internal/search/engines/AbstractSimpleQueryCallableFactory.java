@@ -21,6 +21,7 @@ import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.search.QueryCallableFactory;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContextFactory;
+import org.eclipse.osee.orcs.db.internal.sql.QueryType;
 
 /**
  * @author Roberto E. Escobar
@@ -44,7 +45,8 @@ public abstract class AbstractSimpleQueryCallableFactory implements QueryCallabl
 
          @Override
          protected Integer innerCall() throws Exception {
-            QuerySqlContext queryContext = queryContextFactory.createCountContext(getSession(), getQueryData());
+            QuerySqlContext queryContext =
+               queryContextFactory.createQueryContext(getSession(), getQueryData(), QueryType.COUNT);
             checkForCancelled();
             return objectLoader.getCount(this, queryContext);
          }
@@ -58,7 +60,8 @@ public abstract class AbstractSimpleQueryCallableFactory implements QueryCallabl
 
          @Override
          protected Integer innerCall() throws Exception {
-            QuerySqlContext queryContext = queryContextFactory.createQueryContext(getSession(), getQueryData());
+            QuerySqlContext queryContext =
+               queryContextFactory.createQueryContext(getSession(), getQueryData(), QueryType.SELECT);
             checkForCancelled();
 
             DataLoader loader = objectLoader.newDataLoader(queryContext);

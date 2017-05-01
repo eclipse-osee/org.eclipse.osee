@@ -51,16 +51,7 @@ public class ArtifactQuerySqlContextFactoryImpl implements QuerySqlContextFactor
    }
 
    @Override
-   public QuerySqlContext createCountContext(OrcsSession session, QueryData queryData) throws OseeCoreException {
-      return createQueryContext(session, queryData, QueryType.COUNT);
-   }
-
-   @Override
-   public QuerySqlContext createQueryContext(OrcsSession session, QueryData queryData) throws OseeCoreException {
-      return createQueryContext(session, queryData, QueryType.SELECT);
-   }
-
-   private QuerySqlContext createQueryContext(OrcsSession session, QueryData queryData, QueryType queryType) throws OseeCoreException {
+   public QuerySqlContext createQueryContext(OrcsSession session, QueryData queryData, QueryType queryType) {
       QuerySqlContext context = createContext(session, queryData);
 
       AbstractSqlWriter writer = createQueryWriter(context, queryData, queryType);

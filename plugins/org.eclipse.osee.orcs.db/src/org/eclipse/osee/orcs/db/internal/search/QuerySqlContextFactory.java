@@ -13,13 +13,11 @@ package org.eclipse.osee.orcs.db.internal.search;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.QueryData;
+import org.eclipse.osee.orcs.db.internal.sql.QueryType;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface QuerySqlContextFactory {
-
-   QuerySqlContext createCountContext(OrcsSession session, QueryData queryData) throws OseeCoreException;
-
-   QuerySqlContext createQueryContext(OrcsSession session, QueryData queryData) throws OseeCoreException;
+   QuerySqlContext createQueryContext(OrcsSession session, QueryData queryData, QueryType queryType) throws OseeCoreException;
 }

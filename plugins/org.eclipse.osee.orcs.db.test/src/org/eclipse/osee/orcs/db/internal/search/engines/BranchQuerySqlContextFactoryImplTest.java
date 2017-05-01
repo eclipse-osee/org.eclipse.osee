@@ -53,6 +53,7 @@ import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.search.Engines;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContextFactory;
+import org.eclipse.osee.orcs.db.internal.sql.QueryType;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
@@ -124,7 +125,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
       queryData.addCriteria(UUIDS, TYPES);
 
-      QuerySqlContext context = queryEngine.createCountContext(session, queryData);
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData, QueryType.COUNT);
 
       assertEquals(expected, context.getSql());
 
@@ -153,7 +154,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
       queryData.addCriteria(UUIDS, TYPES);
 
-      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData, QueryType.SELECT);
 
       assertEquals(expected, context.getSql());
 
@@ -178,7 +179,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
       queryData.addCriteria(ALL_BRANCHES);
 
-      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData, QueryType.SELECT);
 
       assertEquals(expected, context.getSql());
 
@@ -201,7 +202,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
       queryData.addCriteria(uuid(2L), type(SYSTEM_ROOT));
 
-      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData, QueryType.SELECT);
 
       assertEquals(expected, context.getSql());
 
@@ -226,7 +227,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
       queryData.addCriteria(name("Hello"));
 
-      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData, QueryType.SELECT);
 
       assertEquals(expected, context.getSql());
 
@@ -250,7 +251,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
       queryData.addCriteria(NAME_PATTERN);
 
-      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData, QueryType.SELECT);
 
       assertEquals(expected, context.getSql());
 
@@ -276,7 +277,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
       queryData.addCriteria(STATE, IS_ARCHIVED);
 
-      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData, QueryType.SELECT);
 
       assertEquals(expected, context.getSql());
 
@@ -304,7 +305,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
       queryData.addCriteria(state(CREATION_IN_PROGRESS), IS_ARCHIVED);
 
-      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData, QueryType.SELECT);
 
       assertEquals(expected, context.getSql());
 
@@ -335,7 +336,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
       queryData.addCriteria(childOf(COMMON));
 
-      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData, QueryType.SELECT);
 
       assertEquals(expected, context.getSql());
 
@@ -365,7 +366,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
       queryData.addCriteria(ancestorOf(COMMON));
 
-      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData, QueryType.SELECT);
 
       assertEquals(expected, context.getSql());
 
@@ -403,7 +404,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
       queryData.addCriteria(STATE, IS_ARCHIVED, type(WORKING), childOf(COMMON), NAME_PATTERN);
 
-      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData, QueryType.SELECT);
 
       assertEquals(expected, context.getSql());
 
@@ -437,7 +438,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
       queryData.addCriteria(new CriteriaMergeBranchFor(CoreBranches.SYSTEM_ROOT, COMMON));
 
-      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData, QueryType.SELECT);
 
       assertEquals(expected, context.getSql());
 
@@ -462,7 +463,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
       queryData.addCriteria(new CriteriaAssociatedArtId(DefaultHierarchyRoot));
 
-      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData, QueryType.SELECT);
 
       assertEquals(expected, context.getSql());
 

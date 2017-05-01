@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import java.util.List;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -50,16 +49,7 @@ public class QuerySqlContextFactoryImpl implements QuerySqlContextFactory {
    }
 
    @Override
-   public QuerySqlContext createCountContext(OrcsSession session, QueryData queryData) throws OseeCoreException {
-      return createQueryContext(session, queryData, QueryType.COUNT);
-   }
-
-   @Override
-   public QuerySqlContext createQueryContext(OrcsSession session, QueryData queryData) throws OseeCoreException {
-      return createQueryContext(session, queryData, QueryType.SELECT);
-   }
-
-   private QuerySqlContext createQueryContext(OrcsSession session, QueryData queryData, QueryType queryType) throws OseeCoreException {
+   public QuerySqlContext createQueryContext(OrcsSession session, QueryData queryData, QueryType queryType) {
       QuerySqlContext context = new QuerySqlContext(session, queryData.getOptions(), type);
       AbstractSqlWriter writer =
          new QuerySqlWriter(logger, joinFactory, jdbcClient, context, queryType, table, idColumn);
