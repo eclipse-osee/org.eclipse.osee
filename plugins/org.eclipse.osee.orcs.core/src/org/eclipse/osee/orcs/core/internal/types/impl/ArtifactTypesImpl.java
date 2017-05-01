@@ -14,6 +14,7 @@ import com.google.common.collect.Sets;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -88,14 +89,14 @@ public class ArtifactTypesImpl implements ArtifactTypes {
    }
 
    @Override
-   public Collection<? extends IArtifactType> getAllDescendantTypes(IArtifactType artType) throws OseeCoreException {
+   public Collection<? extends IArtifactType> getAllDescendantTypes(ArtifactTypeId artType) {
       Conditions.checkNotNull(artType, "artifactType");
       LinkedHashSet<IArtifactType> descendants = Sets.newLinkedHashSet();
       walkDescendants(artType, descendants);
       return descendants;
    }
 
-   private void walkDescendants(IArtifactType artifactType, Collection<IArtifactType> descendants) throws OseeCoreException {
+   private void walkDescendants(ArtifactTypeId artifactType, Collection<IArtifactType> descendants) {
       Collection<IArtifactType> childTypes = getArtifactTypesIndex().getDescendantTypes(artifactType);
       if (!childTypes.isEmpty()) {
          for (IArtifactType type : childTypes) {

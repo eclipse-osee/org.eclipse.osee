@@ -17,8 +17,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -194,23 +194,23 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
    }
 
    @Override
-   public T andIsOfType(IArtifactType... artifactType) {
+   public T andIsOfType(ArtifactTypeId... artifactType) {
       return andIsOfType(Arrays.asList(artifactType));
    }
 
    @Override
-   public T andIsOfType(Collection<? extends IArtifactType> artifactType) {
+   public T andIsOfType(Collection<? extends ArtifactTypeId> artifactType) {
       Criteria criteria = criteriaFactory.createArtifactTypeCriteriaWithInheritance(artifactType);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T andTypeEquals(IArtifactType... artifactType) {
+   public T andTypeEquals(ArtifactTypeId... artifactType) {
       return andTypeEquals(Arrays.asList(artifactType));
    }
 
    @Override
-   public T andTypeEquals(Collection<? extends IArtifactType> artifactType) {
+   public T andTypeEquals(Collection<? extends ArtifactTypeId> artifactType) {
       Criteria criteria = criteriaFactory.createArtifactTypeCriteria(artifactType);
       return addAndCheck(getQueryData(), criteria);
    }

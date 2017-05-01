@@ -16,9 +16,9 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -126,23 +126,23 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder andIsOfType(IArtifactType... artifactType) {
+   public QueryBuilder andIsOfType(ArtifactTypeId... artifactType) {
       return andIsOfType(Arrays.asList(artifactType));
    }
 
    @Override
-   public QueryBuilder andIsOfType(Collection<? extends IArtifactType> artifactTypes) {
+   public QueryBuilder andIsOfType(Collection<? extends ArtifactTypeId> artifactTypes) {
       predicates.add(predicateFactory.createIsOfTypeSearch(artifactTypes));
       return this;
    }
 
    @Override
-   public QueryBuilder andTypeEquals(IArtifactType... artifactType) {
+   public QueryBuilder andTypeEquals(ArtifactTypeId... artifactType) {
       return andTypeEquals(Arrays.asList(artifactType));
    }
 
    @Override
-   public QueryBuilder andTypeEquals(Collection<? extends IArtifactType> artifactTypes) {
+   public QueryBuilder andTypeEquals(Collection<? extends ArtifactTypeId> artifactTypes) {
       predicates.add(predicateFactory.createTypeEqualsSearch(artifactTypes));
       return this;
    }

@@ -31,6 +31,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -398,7 +399,7 @@ public class ArtifactQuery {
    /**
     * Does not return any inherited artifacts. Use getArtifactListFromTypeWithInheritence instead.
     */
-   public static List<Artifact> getArtifactListFromType(IArtifactType artifactTypeToken, BranchId branch, DeletionFlag allowDeleted) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromType(ArtifactTypeId artifactTypeToken, BranchId branch, DeletionFlag allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(artifactTypeToken, branch, ALL, allowDeleted).getArtifacts(1000, null);
    }
 
@@ -406,7 +407,7 @@ public class ArtifactQuery {
       return new ArtifactQueryBuilder(artifactTypeTokens, branch, ALL, allowDeleted).getArtifacts(1000, null);
    }
 
-   public static List<Artifact> getArtifactListFromType(IArtifactType artifactTypeToken, BranchId branch) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromType(ArtifactTypeId artifactTypeToken, BranchId branch) throws OseeCoreException {
       return getArtifactListFromType(artifactTypeToken, branch, EXCLUDE_DELETED);
    }
 

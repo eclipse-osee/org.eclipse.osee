@@ -14,9 +14,9 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -82,22 +82,22 @@ public interface QueryBuilder {
    /**
     * Search criteria that finds a given artifact type using type inheritance
     */
-   QueryBuilder andIsOfType(IArtifactType... artifactType) throws OseeCoreException;
+   QueryBuilder andIsOfType(ArtifactTypeId... artifactType) throws OseeCoreException;
 
    /**
     * Search criteria that finds a given artifact types using type inheritance
     */
-   QueryBuilder andIsOfType(Collection<? extends IArtifactType> artifactType) throws OseeCoreException;
+   QueryBuilder andIsOfType(Collection<? extends ArtifactTypeId> artifactType) throws OseeCoreException;
 
    /**
     * Search criteria that finds a given artifact type by matching type exactly
     */
-   QueryBuilder andTypeEquals(IArtifactType... artifactType) throws OseeCoreException;
+   QueryBuilder andTypeEquals(ArtifactTypeId... artifactType);
 
    /**
     * Search criteria that finds a given artifact types by matching type exactly
     */
-   QueryBuilder andTypeEquals(Collection<? extends IArtifactType> artifactType) throws OseeCoreException;
+   QueryBuilder andTypeEquals(Collection<? extends ArtifactTypeId> artifactType);
 
    /**
     * Search criteria that checks for the existence of an attribute type(s).

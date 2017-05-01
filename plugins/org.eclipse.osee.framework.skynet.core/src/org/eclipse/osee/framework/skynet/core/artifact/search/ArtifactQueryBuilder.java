@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -58,7 +59,7 @@ public class ArtifactQueryBuilder {
    private final BranchId branch;
    private ArtifactId artifactId;
    private Collection<Integer> artifactIds;
-   private final Collection<? extends IArtifactType> artifactTypes;
+   private final Collection<? extends ArtifactTypeId> artifactTypes;
    private final DeletionFlag allowDeleted;
    private final LoadLevel loadLevel;
    private boolean emptyCriteria = false;
@@ -114,7 +115,7 @@ public class ArtifactQueryBuilder {
          loadLevel);
    }
 
-   public ArtifactQueryBuilder(IArtifactType artifactType, BranchId branch, LoadLevel loadLevel, DeletionFlag allowDeleted) {
+   public ArtifactQueryBuilder(ArtifactTypeId artifactType, BranchId branch, LoadLevel loadLevel, DeletionFlag allowDeleted) {
       this(null, ArtifactId.SENTINEL, null, null, Arrays.asList(artifactType), branch, TransactionToken.SENTINEL,
          allowDeleted, loadLevel);
    }
@@ -141,19 +142,19 @@ public class ArtifactQueryBuilder {
       emptyCriteria = criteria.isEmpty();
    }
 
-   public ArtifactQueryBuilder(IArtifactType artifactType, BranchId branch, LoadLevel loadLevel, ArtifactSearchCriteria... criteria) {
+   public ArtifactQueryBuilder(ArtifactTypeId artifactType, BranchId branch, LoadLevel loadLevel, ArtifactSearchCriteria... criteria) {
       this(null, ArtifactId.SENTINEL, null, null, Arrays.asList(artifactType), branch, TransactionToken.SENTINEL,
          EXCLUDE_DELETED, loadLevel, criteria);
       emptyCriteria = criteria.length == 0;
    }
 
-   public ArtifactQueryBuilder(IArtifactType artifactType, BranchId branch, LoadLevel loadLevel, List<ArtifactSearchCriteria> criteria) {
+   public ArtifactQueryBuilder(ArtifactTypeId artifactType, BranchId branch, LoadLevel loadLevel, List<ArtifactSearchCriteria> criteria) {
       this(null, ArtifactId.SENTINEL, null, null, Arrays.asList(artifactType), branch, TransactionToken.SENTINEL,
          EXCLUDE_DELETED, loadLevel, toArray(criteria));
       emptyCriteria = criteria.isEmpty();
    }
 
-   private ArtifactQueryBuilder(Collection<Integer> artifactIds, ArtifactId artifactId, List<String> guids, String guid, Collection<? extends IArtifactType> artifactTypes, BranchId branch, TransactionToken transactionId, DeletionFlag allowDeleted, LoadLevel loadLevel, ArtifactSearchCriteria... criteria) {
+   private ArtifactQueryBuilder(Collection<Integer> artifactIds, ArtifactId artifactId, List<String> guids, String guid, Collection<? extends ArtifactTypeId> artifactTypes, BranchId branch, TransactionToken transactionId, DeletionFlag allowDeleted, LoadLevel loadLevel, ArtifactSearchCriteria... criteria) {
       this.artifactTypes = artifactTypes;
       this.branch = branch;
       this.criteria = criteria;

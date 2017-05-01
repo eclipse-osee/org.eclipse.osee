@@ -16,8 +16,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -68,13 +68,13 @@ public class PredicateFactoryImpl implements PredicateFactory {
    }
 
    @Override
-   public Predicate createIsOfTypeSearch(Collection<? extends IArtifactType> artifactType) {
+   public Predicate createIsOfTypeSearch(Collection<? extends ArtifactTypeId> artifactType) {
       List<String> typeIds = getLongIds(artifactType);
       return new Predicate(SearchMethod.IS_OF_TYPE, emptyStringList, typeIds);
    }
 
    @Override
-   public Predicate createTypeEqualsSearch(Collection<? extends IArtifactType> artifactType) {
+   public Predicate createTypeEqualsSearch(Collection<? extends ArtifactTypeId> artifactType) {
       List<String> typeIds = getLongIds(artifactType);
       return new Predicate(SearchMethod.TYPE_EQUALS, emptyStringList, typeIds);
    }

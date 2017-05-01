@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
@@ -69,10 +69,10 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType> {
    }
 
    private Collection<Long> getLocalTypeIds() throws OseeCoreException {
-      Collection<? extends IArtifactType> types = criteria.getTypes();
+      Collection<? extends ArtifactTypeId> types = criteria.getTypes();
       Collection<Long> toReturn = new HashSet<>();
-      for (IArtifactType type : types) {
-         toReturn.add(type.getGuid());
+      for (ArtifactTypeId type : types) {
+         toReturn.add(type.getId());
       }
       return toReturn;
    }

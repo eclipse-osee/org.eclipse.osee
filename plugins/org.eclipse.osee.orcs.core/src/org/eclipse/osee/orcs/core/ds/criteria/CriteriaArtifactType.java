@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.core.ds.criteria;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
@@ -24,11 +24,11 @@ import org.eclipse.osee.orcs.data.ArtifactTypes;
  */
 public class CriteriaArtifactType extends Criteria {
 
-   private final Collection<? extends IArtifactType> artifactTypes;
+   private final Collection<? extends ArtifactTypeId> artifactTypes;
    private final ArtifactTypes artTypeCache;
    private final boolean includeTypeInheritance;
 
-   public CriteriaArtifactType(ArtifactTypes artTypeCache, Collection<? extends IArtifactType> artifactTypes, boolean includeTypeInheritance) {
+   public CriteriaArtifactType(ArtifactTypes artTypeCache, Collection<? extends ArtifactTypeId> artifactTypes, boolean includeTypeInheritance) {
       super();
       this.artifactTypes = artifactTypes;
       this.artTypeCache = artTypeCache;
@@ -40,16 +40,16 @@ public class CriteriaArtifactType extends Criteria {
       Conditions.checkNotNullOrEmpty(artifactTypes, "artifact types");
    }
 
-   public Collection<? extends IArtifactType> getOriginalTypes() {
+   public Collection<? extends ArtifactTypeId> getOriginalTypes() {
       return artifactTypes;
    }
 
-   public Collection<? extends IArtifactType> getTypes() throws OseeCoreException {
-      Collection<? extends IArtifactType> toReturn;
+   public Collection<? extends ArtifactTypeId> getTypes() throws OseeCoreException {
+      Collection<? extends ArtifactTypeId> toReturn;
       if (includeTypeInheritance) {
-         Collection<IArtifactType> typesToUse = new LinkedHashSet<>();
-         for (IArtifactType type : getOriginalTypes()) {
-            for (IArtifactType descendant : artTypeCache.getAllDescendantTypes(type)) {
+         Collection<ArtifactTypeId> typesToUse = new LinkedHashSet<>();
+         for (ArtifactTypeId type : getOriginalTypes()) {
+            for (ArtifactTypeId descendant : artTypeCache.getAllDescendantTypes(type)) {
                typesToUse.add(descendant);
             }
             typesToUse.add(type);

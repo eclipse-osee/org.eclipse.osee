@@ -12,12 +12,11 @@ package org.eclipse.osee.orcs.search;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -90,22 +89,22 @@ public interface ArtifactQueryBuilder<T> {
    /**
     * Search criteria that finds a given artifact type using type inheritance
     */
-   T andIsOfType(IArtifactType... artifactType);
+   T andIsOfType(ArtifactTypeId... artifactType);
 
    /**
     * Search criteria that finds a given artifact types using type inheritance
     */
-   T andIsOfType(Collection<? extends IArtifactType> artifactType);
+   T andIsOfType(Collection<? extends ArtifactTypeId> artifactType);
 
    /**
     * Search criteria that finds a given artifact types by matching type exactly
     */
-   T andTypeEquals(IArtifactType... artifactType);
+   T andTypeEquals(ArtifactTypeId... artifactType);
 
    /**
     * Search criteria that finds a given artifact types by matching type exactly
     */
-   T andTypeEquals(Collection<? extends IArtifactType> artifactType);
+   T andTypeEquals(Collection<? extends ArtifactTypeId> artifactType);
 
    /**
     * Search criteria that checks for the existence of an attribute type(s).

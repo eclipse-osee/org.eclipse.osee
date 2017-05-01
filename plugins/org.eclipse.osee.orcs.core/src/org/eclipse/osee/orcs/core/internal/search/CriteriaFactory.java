@@ -14,8 +14,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -96,11 +96,11 @@ public class CriteriaFactory {
       return new CriteriaAttributeKeywords(isIncludeAllTypes, types, attributeTypeCache, values, options);
    }
 
-   public Criteria createArtifactTypeCriteria(Collection<? extends IArtifactType> artifactTypes) throws OseeCoreException {
+   public Criteria createArtifactTypeCriteria(Collection<? extends ArtifactTypeId> artifactTypes) {
       return new CriteriaArtifactType(artifactTypeCache, artifactTypes, false);
    }
 
-   public Criteria createArtifactTypeCriteriaWithInheritance(Collection<? extends IArtifactType> artifactTypes) throws OseeCoreException {
+   public Criteria createArtifactTypeCriteriaWithInheritance(Collection<? extends ArtifactTypeId> artifactTypes) throws OseeCoreException {
       return new CriteriaArtifactType(artifactTypeCache, artifactTypes, true);
    }
 

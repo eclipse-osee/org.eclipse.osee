@@ -67,7 +67,7 @@ public class ArtifactTypeIndex extends TokenTypeIndex<IArtifactType, XArtifactTy
       return metaData != null ? metaData.getSuperTypes() : Collections.<IArtifactType> emptyList();
    }
 
-   public Collection<IArtifactType> getDescendantTypes(IArtifactType artifactType) {
+   public Collection<IArtifactType> getDescendantTypes(ArtifactTypeId artifactType) {
       ArtifactTypeMetaData metaData = tokenToTypeData.get(artifactType);
       return metaData != null ? metaData.getDescendantTypes() : Collections.<IArtifactType> emptyList();
    }
