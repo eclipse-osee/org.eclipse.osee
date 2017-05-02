@@ -46,24 +46,6 @@ public class QuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   protected void write(Iterable<SqlHandler<?>> handlers) throws OseeCoreException {
-      computeTables(handlers);
-      computeWithClause(handlers);
-
-      writeWithClause();
-      writeSelect(handlers);
-      write("\n FROM \n");
-      writeTables();
-      write("\n WHERE \n");
-      writePredicates(handlers);
-
-      if (toString().endsWith("\n WHERE \n")) {
-         removeDanglingSeparator("\n WHERE \n");
-      }
-      writeGroupAndOrder();
-   }
-
-   @Override
    public void writeGroupAndOrder() throws OseeCoreException {
       if (!isCountQueryType()) {
          String tableAlias = getLastAlias(table);

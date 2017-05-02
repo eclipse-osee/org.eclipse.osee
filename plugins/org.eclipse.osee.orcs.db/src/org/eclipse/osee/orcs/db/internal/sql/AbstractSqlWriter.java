@@ -100,6 +100,10 @@ public abstract class AbstractSqlWriter implements HasOptions {
       writeTables();
       write("\n WHERE \n");
       writePredicates(handlers);
+
+      if (toString().endsWith("\n WHERE \n")) {
+         removeDanglingSeparator("\n WHERE \n");
+      }
       writeGroupAndOrder();
    }
 
