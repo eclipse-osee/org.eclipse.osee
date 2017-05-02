@@ -14,7 +14,6 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import static org.eclipse.osee.framework.core.enums.LoadLevel.ALL;
 import static org.eclipse.osee.framework.skynet.core.artifact.LoadType.INCLUDE_CACHE;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -30,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -93,7 +91,7 @@ public class ArtifactQuery {
       return getArtifactFromId(artifactToken.getUuid(), branch, deletionFlag);
    }
 
-   public static Artifact getArtifactFromTokenOrNull(Artifact artifactToken, IOseeBranch branch, DeletionFlag deletionFlag) {
+   public static Artifact getArtifactFromTokenOrNull(ArtifactToken artifactToken, IOseeBranch branch, DeletionFlag deletionFlag) {
       Artifact artifact = null;
       try {
          artifact = getArtifactFromToken(artifactToken, branch, deletionFlag);
@@ -979,6 +977,7 @@ public class ArtifactQuery {
       }
       return artToRelatedTokens;
    }
+
    public static Map<String, ArtifactToken> getArtifactTokensFromGuids(BranchId branchId, List<String> guids) {
       Map<String, ArtifactToken> guidToToken = new HashMap<>();
       if (!guids.isEmpty()) {
@@ -1020,6 +1019,7 @@ public class ArtifactQuery {
       }
       return guidToToken;
    }
+
    /**
     * Quick way to determine if artifact has changed. This first compares the number of current attributes against db,
     * if not equal, return true. Then compares number of current relations against db, if not equal, true.<br/>
