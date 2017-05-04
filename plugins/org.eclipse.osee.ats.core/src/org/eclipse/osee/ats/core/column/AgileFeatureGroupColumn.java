@@ -22,9 +22,9 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 /**
  * @author Donald G. Dunne
  */
-public class AgileFeatureGroupColum extends AbstractServicesColumn {
+public class AgileFeatureGroupColumn extends AbstractServicesColumn {
 
-   public AgileFeatureGroupColum(IAtsServices services) {
+   public AgileFeatureGroupColumn(IAtsServices services) {
       super(services);
    }
 

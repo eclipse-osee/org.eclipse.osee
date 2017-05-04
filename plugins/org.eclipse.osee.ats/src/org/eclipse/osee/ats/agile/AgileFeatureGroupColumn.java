@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
@@ -42,7 +41,6 @@ import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -201,33 +199,30 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
 
    @Override
    public void populateCachedValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
-      Collection<ArtifactId> artifacts = AtsObjects.getTeamWfArtifacts(objects, AtsClientService.get());
-
-      if (!artifacts.isEmpty()) {
-         // Change NamedId to ArtifactToken when merge to 25.0
-         HashCollection<ArtifactId, ArtifactToken> artifactToTokens =
-            ArtifactQuery.getArtifactTokenListFromRelated(AtsClientService.get().getAtsBranch(), artifacts,
-               AtsArtifactTypes.Version, AtsRelationTypes.AgileFeatureToItem_FeatureGroup);
-         for (Entry<ArtifactId, Collection<ArtifactToken>> entry : artifactToTokens.entrySet()) {
-            try {
-               if (Artifacts.isOfType(entry.getKey(), AtsArtifactTypes.Action)) {
-                  Set<String> strs = new HashSet<>();
-                  for (IAtsTeamWorkflow teamWf : AtsClientService.get().getWorkItemService().getTeams(entry.getKey())) {
-                     for (ArtifactToken artToken : artifactToTokens.getValues(teamWf.getStoreObject())) {
-                        strs.add(artToken.getName());
-                     }
+      Collection<ArtifactId> workItemArts = AtsObjects.getTeamWfArtifacts(objects, AtsClientService.get());
+      // Change NamedId to ArtifactToken when merge to 25.0
+      for (ArtifactId workItemId : workItemArts) {
+         try {
+            Artifact workItem = (Artifact) workItemId;
+            List<Artifact> featureArts = workItem.getRelatedArtifacts(AtsRelationTypes.AgileFeatureToItem_FeatureGroup);
+            if (Artifacts.isOfType(workItem, AtsArtifactTypes.Action)) {
+               Set<String> strs = new HashSet<>();
+               for (IAtsTeamWorkflow teamWf : AtsClientService.get().getWorkItemService().getTeams(workItem)) {
+                  for (ArtifactToken featureArt : ((Artifact) teamWf.getStoreObject()).getRelatedArtifacts(
+                     AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
+                     strs.add(featureArt.getName());
                   }
-                  preComputedValueMap.put(getKey(entry.getKey()), Collections.toString(", ", strs));
-               } else {
-                  Set<String> strs = new HashSet<>();
-                  for (ArtifactToken artToken : entry.getValue()) {
-                     strs.add(artToken.getName());
-                  }
-                  preComputedValueMap.put(getKey(entry.getKey()), Collections.toString(", ", strs));
                }
-            } catch (OseeCoreException ex) {
-               preComputedValueMap.put(getKey(entry.getKey()), LogUtil.getCellExceptionString(ex));
+               preComputedValueMap.put(getKey(workItem), Collections.toString(", ", strs));
+            } else {
+               Set<String> strs = new HashSet<>();
+               for (ArtifactToken featureArt : featureArts) {
+                  strs.add(featureArt.getName());
+               }
+               preComputedValueMap.put(getKey(workItem), Collections.toString(", ", strs));
             }
+         } catch (OseeCoreException ex) {
+            preComputedValueMap.put(getKey(workItemId), LogUtil.getCellExceptionString(ex));
          }
       }
    }
@@ -246,6 +241,8 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
          }
 
          promptChangeFeatureGroup(awas);
+         populateCachedValues(awas, preComputedValueMap);
+
          ((XViewer) getXViewer()).update(awas.toArray(), null);
          return;
       } catch (OseeCoreException ex) {

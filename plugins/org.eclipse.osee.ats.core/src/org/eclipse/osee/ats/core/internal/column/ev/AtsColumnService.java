@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.core.column.ActionableItemsColumn;
-import org.eclipse.osee.ats.core.column.AgileFeatureGroupColum;
+import org.eclipse.osee.ats.core.column.AgileFeatureGroupColumn;
 import org.eclipse.osee.ats.core.column.AgileTeamPointsColumn;
 import org.eclipse.osee.ats.core.column.AssigneeColumn;
 import org.eclipse.osee.ats.core.column.AtsAttributeValueColumnHandler;
@@ -160,7 +160,7 @@ public class AtsColumnService implements IAtsColumnService {
          } else if (id.equals(AtsColumnId.CompletedCancelledDate.getId())) {
             column = new CompletedCancelledDateColumn(services);
          } else if (id.equals(AtsColumnId.AgileFeatureGroup.getId())) {
-            column = new AgileFeatureGroupColum(services);
+            column = new AgileFeatureGroupColumn(services);
          } else if (id.equals(AtsColumnId.TaskToRelatedArtifactType.getId())) {
             column = new TaskRelatedArtifactTypeColumn(services);
          }
