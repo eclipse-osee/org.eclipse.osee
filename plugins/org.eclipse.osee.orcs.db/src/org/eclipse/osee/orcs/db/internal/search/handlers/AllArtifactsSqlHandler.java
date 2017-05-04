@@ -27,11 +27,6 @@ public class AllArtifactsSqlHandler extends SqlHandler<CriteriaAllArtifacts> {
    private String txsAlias;
 
    @Override
-   public void setData(CriteriaAllArtifacts criteria) {
-      // Criteria not used
-   }
-
-   @Override
    public void addTables(AbstractSqlWriter writer) {
       List<String> artAliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       List<String> txsAliases = writer.getAliases(TableEnum.TXS_TABLE);

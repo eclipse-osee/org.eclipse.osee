@@ -52,7 +52,9 @@ public abstract class SqlHandler<T extends Criteria> implements HasPriority {
    @Override
    public abstract int getPriority();
 
-   public abstract void setData(T criteria);
+   public void setData(T criteria) {
+      // do nothing
+   }
 
    public abstract void addTables(AbstractSqlWriter writer) throws OseeCoreException;
 

@@ -22,11 +22,6 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 public class AllBranchesSqlHandler extends SqlHandler<CriteriaAllBranches> {
 
    @Override
-   public void setData(CriteriaAllBranches criteria) {
-      // Criteria not used
-   }
-
-   @Override
    public void addTables(AbstractSqlWriter writer) {
       List<String> branchAliases = writer.getAliases(TableEnum.BRANCH_TABLE);
       if (branchAliases.isEmpty()) {

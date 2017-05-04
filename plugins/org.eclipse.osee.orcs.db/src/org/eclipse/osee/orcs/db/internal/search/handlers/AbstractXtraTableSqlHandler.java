@@ -17,9 +17,4 @@ import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
  * @author Roberto E. Escobar
  */
 public abstract class AbstractXtraTableSqlHandler extends SqlHandler<Criteria> {
-
-   @Override
-   public void setData(Criteria criteria) {
-      // do nothing
-   }
 }

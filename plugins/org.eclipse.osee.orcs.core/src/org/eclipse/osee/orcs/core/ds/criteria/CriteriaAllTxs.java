@@ -16,13 +16,4 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
  * @author Roberto E. Escobar
  */
 public class CriteriaAllTxs extends Criteria implements TxCriteria {
-
-   public CriteriaAllTxs() {
-      super();
-   }
-
-   @Override
-   public String toString() {
-      return "CriteriaAllTxs";
-   }
 }

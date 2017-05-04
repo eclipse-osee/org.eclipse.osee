@@ -24,11 +24,6 @@ public class AllTxsSqlHandler extends SqlHandler<CriteriaAllTxs> {
    private String txAlias;
 
    @Override
-   public void setData(CriteriaAllTxs criteria) {
-      // Criteria not used
-   }
-
-   @Override
    public void addTables(AbstractSqlWriter writer) {
       List<String> aliases = writer.getAliases(TableEnum.TX_DETAILS_TABLE);
       if (aliases.isEmpty()) {

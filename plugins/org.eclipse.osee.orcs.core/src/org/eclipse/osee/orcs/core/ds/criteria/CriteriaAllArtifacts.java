@@ -16,13 +16,4 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
  * @author Roberto E. Escobar
  */
 public class CriteriaAllArtifacts extends Criteria {
-
-   public CriteriaAllArtifacts() {
-      super();
-   }
-
-   @Override
-   public String toString() {
-      return "CriteriaAllArtifacts";
-   }
 }
