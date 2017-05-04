@@ -51,7 +51,7 @@ public class ParentIdColumn extends XViewerAtsColumn implements IAtsXViewerPreCo
    public String getText(Object element) {
       try {
          if (element instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) element).getParentAWA() != null) {
-            return AtsClientService.get().getWorkItemService().getComputedPcrId(
+            return AtsClientService.get().getWorkItemService().getCombinedPcrId(
                ((AbstractWorkflowArtifact) element).getParentAWA());
          }
       } catch (OseeCoreException ex) {

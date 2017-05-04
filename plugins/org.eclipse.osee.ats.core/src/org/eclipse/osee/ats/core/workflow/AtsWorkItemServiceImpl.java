@@ -152,32 +152,26 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
-   public String getComputedPcrId(IAtsWorkItem workItem) throws OseeCoreException {
-      IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
-      if (teamWf != null) {
-         for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getTeamWorkflowProviders()) {
-            if (provider.isResponsibleFor(workItem)) {
-               String computedPcrId = provider.getComputedPcrId(teamWf);
-               if (Strings.isValid(computedPcrId)) {
-                  return computedPcrId;
-               }
+   public String getCombinedPcrId(IAtsWorkItem workItem) throws OseeCoreException {
+      String id = "";
+      for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getTeamWorkflowProviders()) {
+         if (provider.isResponsibleFor(workItem)) {
+            String computedPcrId = provider.getComputedPcrId(workItem);
+            if (Strings.isValid(computedPcrId)) {
+               id = computedPcrId;
             }
          }
-         return services.getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.LegacyPcrId, "");
       }
-      return "";
-   }
-
-   /**
-    * Join ATS Id with computedPcrId (if set)
-    */
-   @Override
-   public String getCombinedPcrId(IAtsWorkItem workItem) {
-      String computedPcrId = getComputedPcrId(workItem);
-      if (Strings.isValid(computedPcrId)) {
-         return String.format("%s / %s", workItem.getAtsId(), computedPcrId);
+      if (Strings.isInValid(id)) {
+         String legacyPcrId =
+            services.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.LegacyPcrId, "");
+         if (Strings.isValid(legacyPcrId)) {
+            return String.format("%s - %s", workItem.getAtsId(), legacyPcrId);
+         } else {
+            id = workItem.getAtsId();
+         }
       }
-      return workItem.getAtsId();
+      return id;
    }
 
    @Override

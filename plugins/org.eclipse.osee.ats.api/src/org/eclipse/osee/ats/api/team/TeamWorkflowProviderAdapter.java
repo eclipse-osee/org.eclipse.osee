@@ -30,7 +30,7 @@ public abstract class TeamWorkflowProviderAdapter implements ITeamWorkflowProvid
    }
 
    @Override
-   public String getComputedPcrId(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   public String getComputedPcrId(IAtsWorkItem workItem) throws OseeCoreException {
       return null;
    }
 

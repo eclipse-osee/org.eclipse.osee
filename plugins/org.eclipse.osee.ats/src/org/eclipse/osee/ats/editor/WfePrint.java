@@ -98,11 +98,11 @@ public class WfePrint extends Action {
             sma.getSoleAttributeValue(AtsAttributeTypes.PriorityType, "")),
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Need By: ", DeadlineColumn.getDateStr(sma))}));
 
-      String combinedPcrId = AtsClientService.get().getWorkItemService().getComputedPcrId(sma);
+      String computedId = AtsClientService.get().getWorkItemService().getCombinedPcrId(sma);
       resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Workflow: ", sma.getArtifactTypeName()),
-         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "ID: ", combinedPcrId)}));
+         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "ID: ", computedId)}));
       resultData.addRaw(AHTML.endMultiColumnTable());
       for (NoteItem note : AtsClientService.get().getWorkItemService().getNotes(sma).getNoteItems()) {
          if (note.getState().equals("")) {

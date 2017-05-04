@@ -24,9 +24,9 @@ public interface ITeamWorkflowProvider {
    public String getRelatedTaskWorkflowDefinitionId(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
    /**
-    * Assigned or computed Id that will show at the top of the editor
+    * Assigned or computed Id that will show at the top of the editor. Default is <ATS Id> - <Legacy PCR Id (if any)>
     */
-   public String getComputedPcrId(IAtsTeamWorkflow teamWf) throws OseeCoreException;
+   public String getComputedPcrId(IAtsWorkItem workItem) throws OseeCoreException;
 
    /**
     * 5-9 character short name for UI and display purposes
