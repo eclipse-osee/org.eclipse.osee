@@ -562,12 +562,8 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
                try {
                   RelationManager.deleteRelation(wrapper.getRelationType(), wrapper.getArtifactA(),
                      wrapper.getArtifactB());
-                  Object parent = ((ITreeContentProvider) treeViewer.getContentProvider()).getParent(object);
-                  if (parent != null) {
-                     treeViewer.refresh(parent);
-                  } else {
-                     treeViewer.refresh();
-                  }
+                  Object parent = ((ITreeContentProvider) treeViewer.getContentProvider()).getParent(wrapper);
+                  refreshParent(parent);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
@@ -575,7 +571,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
                RelationTypeSideSorter group = (RelationTypeSideSorter) object;
                try {
                   RelationManager.deleteRelations(artifact, group.getRelationType(), group.getSide());
-                  treeViewer.refresh(group);
+                  refreshParent(group);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
@@ -589,6 +585,15 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       if (!treeViewer.getTree().isDisposed()) {
          treeViewer.refresh();
          packColumnData();
+      }
+   }
+
+   public void refreshParent(Object parent) {
+      if (parent != null) {
+         treeViewer.update(parent, null);
+         treeViewer.refresh(parent);
+      } else {
+         treeViewer.refresh();
       }
    }
 
