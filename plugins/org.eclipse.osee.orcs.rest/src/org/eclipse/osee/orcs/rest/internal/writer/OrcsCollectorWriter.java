@@ -397,8 +397,8 @@ public class OrcsCollectorWriter {
 
    private BranchId getBranch() {
       if (branch == null) {
-         branch = orcsApi.getQueryFactory().branchQuery().andUuids(
-            collector.getBranch().getId()).getResults().getAtMostOneOrNull();
+         branch = orcsApi.getQueryFactory().branchQuery().andId(
+            BranchId.valueOf(collector.getBranch().getId())).getResults().getAtMostOneOrNull();
       }
       return branch;
    }

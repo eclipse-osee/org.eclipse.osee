@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.rest.internal.convert;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -56,7 +57,7 @@ public abstract class AbstractConvertGuidToUuid implements IAtsDatabaseConversio
    }
 
    protected BranchReadable getBranch(String guid) throws OseeCoreException {
-      return orcsApi.getQueryFactory().branchQuery().andUuids(getBranchIdLegacy(guid)).getResults().getExactlyOne();
+      return orcsApi.getQueryFactory().branchQuery().andId(getBranchIdLegacy(guid)).getResults().getExactlyOne();
    }
 
    protected TransactionBuilder createTransactionBuilder() throws OseeCoreException {
@@ -68,10 +69,10 @@ public abstract class AbstractConvertGuidToUuid implements IAtsDatabaseConversio
    /**
     * Temporary method till all code uses branch uuid. Remove after 0.17.0
     */
-   private long getBranchIdLegacy(String branchGuid) {
-      Long longId = getJdbcClient().fetch(0L, SELECT_BRANCH_ID_BY_GUID, branchGuid);
-      Conditions.checkExpressionFailOnTrue(longId <= 0, "Error getting branch_id for branch: [%s]", branchGuid);
-      return longId;
+   private BranchId getBranchIdLegacy(String branchGuid) {
+      BranchId branch = getJdbcClient().fetch(BranchId.SENTINEL, SELECT_BRANCH_ID_BY_GUID, branchGuid);
+      Conditions.checkExpressionFailOnTrue(branch.isInvalid(), "Error getting branch_id for branch: [%s]", branchGuid);
+      return branch;
    }
 
 }

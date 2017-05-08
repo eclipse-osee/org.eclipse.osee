@@ -10,11 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.exportImport;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
-import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.BranchImportOptions;
@@ -24,7 +23,7 @@ import org.eclipse.osee.orcs.rest.model.BranchImportOptions;
  */
 public class HttpBranchExchange {
 
-   public static void importBranches(String path, boolean cleanAllBeforeImport, boolean allAsRootBranches, long... branchUuids) throws OseeCoreException {
+   public static void importBranches(String path, boolean cleanAllBeforeImport, boolean allAsRootBranches, BranchId... branchIds) throws OseeCoreException {
       OseeClient oseeClient = ServiceUtil.getOseeClient();
       BranchEndpoint endpoint = oseeClient.getBranchEndpoint();
 
@@ -33,18 +32,7 @@ public class HttpBranchExchange {
       options.setCleanBeforeImport(cleanAllBeforeImport);
       options.setAllAsRootBranches(allAsRootBranches);
 
-      if (branchUuids != null && branchUuids.length > 0) {
-         List<Long> ids = new ArrayList<>();
-         for (Long entry : branchUuids) {
-            ids.add(entry);
-         }
-         options.setBranchUuids(ids);
-      }
-      try {
-         endpoint.importBranches(options);
-      } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
-      }
+      options.setBranchUuids(Arrays.asList(branchIds));
+      endpoint.importBranches(options);
    }
-
 }

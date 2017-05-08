@@ -109,11 +109,6 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       return query.getCount() > 0;
    }
 
-   @Override
-   public BranchReadable getBranchByUuid(long branchUuid) {
-      return orcsApi.getQueryFactory().branchQuery().andUuids(branchUuid).getResults().getExactlyOne();
-   }
-
    private BranchReadable getBranch(BranchId branch) {
       return orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getExactlyOne();
    }

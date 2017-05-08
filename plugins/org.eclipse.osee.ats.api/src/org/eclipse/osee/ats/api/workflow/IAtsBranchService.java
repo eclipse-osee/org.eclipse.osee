@@ -111,8 +111,6 @@ public interface IAtsBranchService {
 
    Result isCreateBranchAllowed(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
-   IOseeBranch getBranchByUuid(long branchId);
-
    boolean branchExists(BranchId branch);
 
    boolean isArchived(BranchId branch);

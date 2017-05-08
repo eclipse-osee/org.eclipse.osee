@@ -20,7 +20,9 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.DefaultHi
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -44,10 +46,10 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAssociatedArtId;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchAncestorOf;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchArchived;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchChildOf;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchName;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchState;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchType;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchUuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaMergeBranchFor;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.search.Engines;
@@ -200,7 +202,7 @@ public class BranchQuerySqlContextFactoryImplTest {
          "br1.branch_type = ?\n" + //
          " ORDER BY br1.branch_id";
 
-      queryData.addCriteria(uuid(2L), type(SYSTEM_ROOT));
+      queryData.addCriteria(uuid(CoreBranches.SYSTEM_ROOT.getId()), type(SYSTEM_ROOT));
 
       QuerySqlContext context = queryEngine.createQueryContext(session, queryData, QueryType.SELECT);
 
@@ -212,7 +214,7 @@ public class BranchQuerySqlContextFactoryImplTest {
       assertEquals(0, joins.size());
 
       Iterator<Object> iterator = parameters.iterator();
-      assertEquals(2L, iterator.next());
+      assertEquals(CoreBranches.SYSTEM_ROOT, iterator.next());
       assertEquals(SYSTEM_ROOT.getValue(), iterator.next());
    }
 
@@ -485,7 +487,11 @@ public class BranchQuerySqlContextFactoryImplTest {
    }
 
    private static Criteria uuid(Long... values) {
-      return new CriteriaBranchUuids(Arrays.asList(values));
+      Collection<BranchId> branchIds = new ArrayList<>(values.length);
+      for (Long id : values) {
+         branchIds.add(BranchId.valueOf(id));
+      }
+      return new CriteriaBranchIds(branchIds);
    }
 
    private static Criteria type(BranchType... values) {

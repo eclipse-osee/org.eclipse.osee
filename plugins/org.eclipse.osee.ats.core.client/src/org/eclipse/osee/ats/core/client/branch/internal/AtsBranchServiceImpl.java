@@ -91,11 +91,6 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public IOseeBranch getBranchByUuid(long branchUuid) {
-      return BranchManager.getBranchToken(branchUuid);
-   }
-
-   @Override
    public boolean isArchived(BranchId branch) {
       return BranchManager.isArchived(branch);
    }

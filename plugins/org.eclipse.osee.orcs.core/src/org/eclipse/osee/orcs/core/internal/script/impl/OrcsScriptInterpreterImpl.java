@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.script.impl;
 
 import com.google.common.collect.Iterables;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -450,7 +451,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
             newBranchQuery().andNameEquals(value);
          } else {
             Long id = resolver.resolveSingle(Long.class, expression);
-            newBranchQuery().andUuids(id);
+            newBranchQuery().andId(BranchId.valueOf(id));
          }
          return null;
       }
@@ -470,7 +471,9 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       @Override
       public Void caseOsBranchIdCriteria(OsBranchIdCriteria object) {
          Collection<Long> ids = resolver.resolve(Long.class, object.getIds());
-         getBranchQuery().andUuids(ids);
+         Collection<BranchId> branchIds = new ArrayList<>(ids.size());
+         ids.forEach(id -> branchIds.add(BranchId.valueOf(id)));
+         getBranchQuery().andIds(branchIds);
          return null;
       }
 

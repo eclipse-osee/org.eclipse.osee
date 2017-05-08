@@ -39,13 +39,9 @@ public interface BranchQueryBuilder<T> {
 
    boolean areArchivedIncluded();
 
-   T andUuids(long... uuids) throws OseeCoreException;
-
-   T andUuids(Collection<Long> uuids) throws OseeCoreException;
-
    T andIds(Collection<? extends BranchId> ids) throws OseeCoreException;
 
-   T andId(BranchId branch);
+   T andId(BranchId branchId);
 
    T andIsOfType(BranchType... branchType) throws OseeCoreException;
 

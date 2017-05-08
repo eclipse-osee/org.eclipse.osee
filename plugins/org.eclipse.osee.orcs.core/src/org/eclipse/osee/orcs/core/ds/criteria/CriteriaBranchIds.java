@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds.criteria;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
@@ -19,27 +22,31 @@ import org.eclipse.osee.orcs.core.ds.Options;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaBranchUuids extends Criteria implements BranchCriteria {
+public class CriteriaBranchIds extends Criteria implements BranchCriteria {
 
-   private final Collection<Long> uuids;
+   private final Collection<? extends BranchId> branchIds;
 
-   public CriteriaBranchUuids(Collection<Long> ids) {
-      super();
-      this.uuids = ids;
+   public CriteriaBranchIds(Collection<? extends BranchId> branchIds) {
+      this.branchIds = branchIds;
    }
 
-   public Collection<Long> getUuids() {
-      return uuids;
+   public CriteriaBranchIds(BranchId branchId) {
+      List<BranchId> ids = new ArrayList<>(1);
+      ids.add(branchId);
+      this.branchIds = ids;
+   }
+
+   public Collection<? extends BranchId> getIds() {
+      return branchIds;
    }
 
    @Override
    public void checkValid(Options options) throws OseeCoreException {
-      Conditions.checkExpressionFailOnTrue(getUuids().isEmpty(), "Branch Uuids cannot be empty");
+      Conditions.checkExpressionFailOnTrue(getIds().isEmpty(), "Branch Uuids cannot be empty");
    }
 
    @Override
    public String toString() {
-      return "CriteriaBranchUuids [uuids=" + uuids + "]";
+      return "CriteriaBranchIds " + branchIds;
    }
-
 }

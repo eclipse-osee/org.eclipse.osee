@@ -26,7 +26,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -92,10 +91,14 @@ public class OrcsBranchQueryTest {
 
       // list, IOseeBranch, BranchType, BranchState, isArchived, parentId, baseTx, sourceTx, assocArtId
       assertBranch(list, SYSTEM_ROOT, BranchType.SYSTEM_ROOT, MODIFIED, false, BranchId.SENTINEL, ArtifactId.SENTINEL);
-      assertBranch(list, SAW_Bld_1, BASELINE, MODIFIED, false, SYSTEM_ROOT, ArtifactId.valueOf(SystemUser.OseeSystem.getId()));
-      assertBranch(list, CIS_Bld_1, BASELINE, MODIFIED, false, SYSTEM_ROOT, ArtifactId.valueOf(SystemUser.OseeSystem.getId()));
-      assertBranch(list, SAW_Bld_2, BASELINE, MODIFIED, false, SAW_Bld_1, ArtifactId.valueOf(SystemUser.OseeSystem.getId()));
-      assertBranch(list, COMMON, BASELINE, MODIFIED, false, SYSTEM_ROOT, ArtifactId.valueOf(SystemUser.OseeSystem.getId()));
+      assertBranch(list, SAW_Bld_1, BASELINE, MODIFIED, false, SYSTEM_ROOT,
+         ArtifactId.valueOf(SystemUser.OseeSystem.getId()));
+      assertBranch(list, CIS_Bld_1, BASELINE, MODIFIED, false, SYSTEM_ROOT,
+         ArtifactId.valueOf(SystemUser.OseeSystem.getId()));
+      assertBranch(list, SAW_Bld_2, BASELINE, MODIFIED, false, SAW_Bld_1,
+         ArtifactId.valueOf(SystemUser.OseeSystem.getId()));
+      assertBranch(list, COMMON, BASELINE, MODIFIED, false, SYSTEM_ROOT,
+         ArtifactId.valueOf(SystemUser.OseeSystem.getId()));
    }
 
    @Test
@@ -126,9 +129,9 @@ public class OrcsBranchQueryTest {
    }
 
    @Test
-   public void testGetByUuid() throws OseeCoreException {
+   public void testGetById() throws OseeCoreException {
       BranchQuery query = factory.branchQuery();
-      query.andUuids(5, 3);
+      query.andIds(Arrays.asList(SAW_Bld_2, SAW_Bld_1));
 
       ResultSet<BranchReadable> results = query.getResults();
       assertEquals(2, results.size());

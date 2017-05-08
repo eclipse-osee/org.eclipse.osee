@@ -101,7 +101,7 @@ import org.eclipse.osee.orcs.core.ds.DynamicObject;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.SelectSet;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchUuids;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIds;
 import org.eclipse.osee.orcs.core.internal.script.OrcsScriptInterpreter;
@@ -187,7 +187,7 @@ public class OrcsScriptInterpreterTest {
 
       CriteriaSet criteriaSet = Iterables.getFirst(queryData.getCriteriaSets(), null);
       assertEquals(1, criteriaSet.getCriterias().size());
-      assertEquals(true, criteriaSet.hasCriteriaType(CriteriaBranchUuids.class));
+      assertEquals(true, criteriaSet.hasCriteriaType(CriteriaBranchIds.class));
 
       SelectSet selectSet = Iterables.getFirst(queryData.getSelectSets(), null);
       assertEquals(-1, selectSet.getLimit());
@@ -257,7 +257,7 @@ public class OrcsScriptInterpreterTest {
 
       CriteriaSet criteriaSet = Iterables.getFirst(queryData.getCriteriaSets(), null);
       assertEquals(2, criteriaSet.getCriterias().size());
-      assertEquals(true, criteriaSet.hasCriteriaType(CriteriaBranchUuids.class));
+      assertEquals(true, criteriaSet.hasCriteriaType(CriteriaBranchIds.class));
       assertEquals(true, criteriaSet.hasCriteriaType(CriteriaArtifactIds.class));
 
       SelectSet selectSet = Iterables.getFirst(queryData.getSelectSets(), null);
@@ -292,7 +292,7 @@ public class OrcsScriptInterpreterTest {
 
       CriteriaSet criteriaSet = Iterables.getFirst(queryData.getCriteriaSets(), null);
       assertEquals(2, criteriaSet.getCriterias().size());
-      assertEquals(true, criteriaSet.hasCriteriaType(CriteriaBranchUuids.class));
+      assertEquals(true, criteriaSet.hasCriteriaType(CriteriaBranchIds.class));
       assertEquals(true, criteriaSet.hasCriteriaType(CriteriaArtifactIds.class));
 
       SelectSet selectSet = Iterables.getFirst(queryData.getSelectSets(), null);
@@ -363,7 +363,7 @@ public class OrcsScriptInterpreterTest {
 
       CriteriaSet criteriaSet = Iterables.getFirst(queryData.getCriteriaSets(), null);
       assertEquals(2, criteriaSet.getCriterias().size());
-      assertEquals(true, criteriaSet.hasCriteriaType(CriteriaBranchUuids.class));
+      assertEquals(true, criteriaSet.hasCriteriaType(CriteriaBranchIds.class));
       assertEquals(true, criteriaSet.hasCriteriaType(CriteriaArtifactIds.class));
 
       SelectSet selectSet = Iterables.getFirst(queryData.getSelectSets(), null);
@@ -450,7 +450,7 @@ public class OrcsScriptInterpreterTest {
 
       CriteriaSet criteriaSet = Iterables.getFirst(queryData.getCriteriaSets(), null);
       assertEquals(3, criteriaSet.getCriterias().size());
-      assertEquals(true, criteriaSet.hasCriteriaType(CriteriaBranchUuids.class));
+      assertEquals(true, criteriaSet.hasCriteriaType(CriteriaBranchIds.class));
       assertEquals(true, criteriaSet.hasCriteriaType(CriteriaArtifactIds.class));
       assertEquals(true, criteriaSet.hasCriteriaType(CriteriaRelationTypeFollow.class));
 

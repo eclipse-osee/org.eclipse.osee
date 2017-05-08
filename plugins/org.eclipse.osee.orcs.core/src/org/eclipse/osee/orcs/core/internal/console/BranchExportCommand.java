@@ -59,7 +59,7 @@ public final class BranchExportCommand implements ConsoleCommand {
    @Override
    public String getUsage() {
       return "uri=<EXCHANGE_FILE_LOCATION> [compress=<TRUE|FALSE>] [minTx=<TX_ID>] [maxTx=<TX_ID>] [includeArchivedBranches=<TRUE|FALSE>] " + //
-      "[excludeBranchIds=<BRANCH_IDS,...>] [includeBranchIds=<BRANCH_IDS>]";
+         "[excludeBranchIds=<BRANCH_IDS,...>] [includeBranchIds=<BRANCH_IDS>]";
    }
 
    @Override
@@ -124,7 +124,7 @@ public final class BranchExportCommand implements ConsoleCommand {
             }
          } else {
             for (String branchUuidString : includeBranchIds) {
-               branches.add(branchQuery.andUuids(Long.valueOf(branchUuidString)).getResults().getExactlyOne());
+               branches.add(branchQuery.andId(BranchId.valueOf(branchUuidString)).getResults().getExactlyOne());
             }
          }
 
@@ -132,7 +132,7 @@ public final class BranchExportCommand implements ConsoleCommand {
          if (!excludeBranchIds.isEmpty()) {
             for (String branchUuidString : excludeBranchIds) {
                BranchReadable toExclude =
-                  branchQuery.andUuids(Long.valueOf(branchUuidString)).getResults().getExactlyOne();
+                  branchQuery.andId(BranchId.valueOf(branchUuidString)).getResults().getExactlyOne();
                branches.remove(toExclude);
             }
          }

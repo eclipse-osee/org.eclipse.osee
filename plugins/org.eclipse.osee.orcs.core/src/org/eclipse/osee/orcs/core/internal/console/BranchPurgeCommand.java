@@ -156,7 +156,8 @@ public final class BranchPurgeCommand implements ConsoleCommand {
             if (uuid <= 0) {
                console.writeln("UUID listed %s is not a valid UUID", uuid);
             } else {
-               BranchReadable cached = queryFactory.branchQuery().andUuids(uuid).getResults().getExactlyOne();
+               BranchReadable cached =
+                  queryFactory.branchQuery().andId(BranchId.valueOf(uuid)).getResults().getExactlyOne();
                if (cached != null) {
                   specifiedBranches.add(cached);
                }

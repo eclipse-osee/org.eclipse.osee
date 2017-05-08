@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.rest.model;
 import java.util.Collections;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 
@@ -22,7 +23,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 @XmlRootElement
 public class BranchQueryData {
 
-   private List<Long> branchUuids;
+   private List<BranchId> branchIds;
    private List<BranchType> branchTypes;
    private List<BranchState> branchStates;
    private boolean includeDeleted;
@@ -32,12 +33,12 @@ public class BranchQueryData {
    private Long isChildOf = -1L;
    private Long isAncestorOf = -1L;
 
-   public List<Long> getBranchIds() {
-      return branchUuids != null ? branchUuids : Collections.<Long> emptyList();
+   public List<BranchId> getBranchIds() {
+      return branchIds != null ? branchIds : Collections.emptyList();
    }
 
-   public void setBranchIds(List<Long> branchUuids) {
-      this.branchUuids = branchUuids;
+   public void setBranchIds(List<BranchId> branchUuids) {
+      this.branchIds = branchUuids;
    }
 
    public List<BranchType> getBranchTypes() {

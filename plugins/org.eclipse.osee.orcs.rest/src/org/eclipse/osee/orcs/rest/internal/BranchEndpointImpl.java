@@ -22,7 +22,6 @@ import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
 import java.net.URI;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,6 +49,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -170,13 +170,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    @Override
    public List<Branch> getBranches(String branchUuids, String branchTypes, String branchStates, boolean deleted, boolean archived, String nameEquals, String namePattern, Long childOf, Long ancestorOf) {
       BranchQueryData options = new BranchQueryData();
-      if (Strings.isValid(branchUuids)) {
-         List<Long> branchUuidVals = new LinkedList<>();
-         for (String branchUuid : branchUuids.split(",")) {
-            branchUuidVals.add(Long.parseLong(branchUuid));
-         }
-         options.setBranchIds(branchUuidVals);
-      }
+      options.setBranchIds(Collections.fromString(branchUuids, ",", BranchId::valueOf));
 
       if (Strings.isValid(branchTypes)) {
          List<BranchType> branchTypeVals = new LinkedList<>();
@@ -490,7 +484,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       if (!options.getBranchUuids().isEmpty()) {
          branches = getExportImportBranches(options.getBranchUuids());
       } else {
-         branches = Collections.emptyList();
+         branches = java.util.Collections.emptyList();
       }
       String path = options.getExchangeFile();
       String exchangePath = asExchangeLocator(path);
@@ -567,8 +561,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
       return toReturn;
    }
 
-   private List<IOseeBranch> getExportImportBranches(Collection<Long> branchUids) {
-      ResultSet<IOseeBranch> resultsAsId = newBranchQuery().andUuids(branchUids) //
+   private List<IOseeBranch> getExportImportBranches(Collection<BranchId> branchUids) {
+      ResultSet<IOseeBranch> resultsAsId = newBranchQuery().andIds(branchUids) //
          .includeArchived()//
          .includeDeleted()//
          .getResultsAsId();
@@ -753,7 +747,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    @Override
    public Response purgeTxs(BranchId branch, String txIds) {
       boolean modified = false;
-      List<Long> txsToDelete = org.eclipse.osee.framework.jdk.core.util.Collections.fromString(txIds, Long::parseLong);
+      List<Long> txsToDelete = Collections.fromString(txIds, Long::parseLong);
       if (!txsToDelete.isEmpty()) {
          ResultSet<? extends TransactionId> results = newTxQuery().andBranch(branch).andTxIds(txsToDelete).getResults();
          if (!results.isEmpty()) {
@@ -794,8 +788,10 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    private ResultSet<BranchReadable> searchBranches(BranchQueryData options) {
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
-      if (Conditions.hasValues(options.getBranchIds())) {
-         query.andUuids(options.getBranchIds());
+
+      List<BranchId> branchIds = options.getBranchIds();
+      if (Conditions.hasValues(branchIds)) {
+         query.andIds(branchIds);
       }
 
       List<BranchState> branchStates = options.getBranchStates();
@@ -806,11 +802,6 @@ public class BranchEndpointImpl implements BranchEndpoint {
       List<BranchType> branchTypes = options.getBranchTypes();
       if (Conditions.hasValues(branchTypes)) {
          query.andIsOfType(branchTypes.toArray(new BranchType[branchTypes.size()]));
-      }
-
-      List<Long> branchUuids = options.getBranchIds();
-      if (Conditions.hasValues(branchUuids)) {
-         query.andUuids(branchUuids);
       }
 
       if (options.isIncludeArchived()) {

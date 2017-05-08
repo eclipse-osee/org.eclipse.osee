@@ -83,7 +83,7 @@ public class HtmlWriter {
       Long branchId = artifact.getBranch().getId();
       String branchName = null;
       ResultSet<BranchReadable> results =
-         OrcsApplication.getOrcsApi().getQueryFactory().branchQuery().andUuids(branchId).getResults();
+         OrcsApplication.getOrcsApi().getQueryFactory().branchQuery().andId(artifact.getBranch()).getResults();
       if (!results.isEmpty()) {
          branchName = results.iterator().next().getName();
       }

@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.rest.model;
 import java.util.Collections;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.core.data.BranchId;
 
 /**
  * @author Roberto E. Escobar
@@ -20,14 +21,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class BranchExportOptions {
 
-   private List<Long> branchUuids;
+   private List<BranchId> branchIds;
    private long minTx = -1L;
    private long maxTx = -1L;
    private String filename;
    private boolean compress;
 
-   public List<Long> getBranchUuids() {
-      return branchUuids != null ? branchUuids : Collections.<Long> emptyList();
+   public List<BranchId> getBranchUuids() {
+      return branchIds != null ? branchIds : Collections.emptyList();
    }
 
    public long getMinTx() {
@@ -46,8 +47,8 @@ public class BranchExportOptions {
       return compress;
    }
 
-   public void setBranchUuids(List<Long> branchUuids) {
-      this.branchUuids = branchUuids;
+   public void setBranchUuids(List<BranchId> branchIds) {
+      this.branchIds = branchIds;
    }
 
    public void setMinTx(long minTx) {

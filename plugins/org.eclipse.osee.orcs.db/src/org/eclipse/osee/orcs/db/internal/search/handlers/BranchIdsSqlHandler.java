@@ -12,8 +12,9 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchUuids;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchIds;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
@@ -22,21 +23,21 @@ import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 /**
  * @author Roberto E. Escobar
  */
-public class BranchIdsSqlHandler extends SqlHandler<CriteriaBranchUuids> {
+public class BranchIdsSqlHandler extends SqlHandler<CriteriaBranchIds> {
 
-   private CriteriaBranchUuids criteria;
+   private CriteriaBranchIds criteria;
 
    private String brAlias;
    private String jIdAlias;
 
    @Override
-   public void setData(CriteriaBranchUuids criteria) {
+   public void setData(CriteriaBranchIds criteria) {
       this.criteria = criteria;
    }
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      if (criteria.getUuids().size() > 1) {
+      if (criteria.getIds().size() > 1) {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
       List<String> branchAliases = writer.getAliases(TableEnum.BRANCH_TABLE);
@@ -49,9 +50,9 @@ public class BranchIdsSqlHandler extends SqlHandler<CriteriaBranchUuids> {
 
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
-      Collection<Long> ids = criteria.getUuids();
+      Collection<? extends BranchId> ids = criteria.getIds();
       if (ids.size() > 1) {
-         AbstractJoinQuery joinQuery = writer.writeIdJoin(ids);
+         AbstractJoinQuery joinQuery = writer.writeJoin(ids);
          writer.write(brAlias);
          writer.write(".branch_id = ");
          writer.write(jIdAlias);

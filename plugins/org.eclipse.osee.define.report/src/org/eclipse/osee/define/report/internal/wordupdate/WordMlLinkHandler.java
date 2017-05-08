@@ -193,8 +193,8 @@ public class WordMlLinkHandler {
          arts.addAll(queryFactory.fromBranch(branch).fromTransaction(txId).andGuids(
             guidsFromLinks).includeDeletedArtifacts().includeDeletedAttributes().getResults().getList());
       } else {
-         arts.addAll(
-            queryFactory.fromBranch(branch).andGuids(guidsFromLinks).includeDeletedArtifacts().includeDeletedAttributes().getResults().getList());
+         arts.addAll(queryFactory.fromBranch(branch).andGuids(
+            guidsFromLinks).includeDeletedArtifacts().includeDeletedAttributes().getResults().getList());
       }
 
       return arts;

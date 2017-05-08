@@ -48,6 +48,7 @@ import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -162,7 +163,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       // get parameters
       String query = uriInfo.getPath();
       System.out.println("query [" + query + "]");
-      long fromBranchUuid = Long.valueOf(form.getFirst("fromBranchUuid"));
+      BranchId fromBranchUuid = BranchId.valueOf(form.getFirst("fromBranchUuid"));
       String newBranchName = form.getFirst("newBranchName");
       Conditions.checkNotNullOrEmpty(newBranchName, "newBranchName");
       String userId = form.getFirst("userId");
@@ -172,7 +173,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          logger.error("User by id [%s] does not exist", userId);
       }
       org.eclipse.osee.orcs.data.BranchReadable fromBranch =
-         orcsApi.getQueryFactory().branchQuery().andUuids(fromBranchUuid).getResults().getExactlyOne();
+         orcsApi.getQueryFactory().branchQuery().andId(fromBranchUuid).getResults().getExactlyOne();
 
       // Create new baseline branch off Root
       Callable<BranchReadable> newBranchCallable =

@@ -18,8 +18,6 @@ import static org.eclipse.osee.framework.core.enums.BranchState.PURGE_IN_PROGRES
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -30,6 +28,7 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchIds;
 import org.eclipse.osee.orcs.search.BranchQueryBuilder;
 
 /**
@@ -101,32 +100,13 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
    }
 
    @Override
-   public T andUuids(long... uuids) throws OseeCoreException {
-      Set<Long> allUuids = new HashSet<>();
-      for (Long uuid : uuids) {
-         allUuids.add(uuid);
-      }
-      return andUuids(allUuids);
+   public T andIds(Collection<? extends BranchId> branchIds) {
+      return addAndCheck(getQueryData(), new CriteriaBranchIds(branchIds));
    }
 
    @Override
-   public T andUuids(Collection<Long> uuids) throws OseeCoreException {
-      Criteria criteria = criteriaFactory.createBranchUuidsCriteria(uuids);
-      return addAndCheck(getQueryData(), criteria);
-   }
-
-   @Override
-   public T andId(BranchId branch) {
-      return andIds(Arrays.asList(branch));
-   }
-
-   @Override
-   public T andIds(Collection<? extends BranchId> ids) throws OseeCoreException {
-      Set<Long> allIds = new HashSet<>();
-      for (BranchId token : ids) {
-         allIds.add(token.getId());
-      }
-      return andUuids(allIds);
+   public T andId(BranchId branchId) {
+      return addAndCheck(getQueryData(), new CriteriaBranchIds(branchId));
    }
 
    @Override
