@@ -92,7 +92,7 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
       } else {
          if (!historical) {
             logger.warn(
-               "multiple attribute versions for attribute id [%d] artifact id[%d] branch[%d] previousGammaId[%s] currentGammaId[%s] previousModType[%s] currentModType[%s]",
+               "multiple attribute versions for attribute id [%s] artifact id[%s] branch[%s] previousGammaId[%s] currentGammaId[%s] previousModType[%s] currentModType[%s]",
                attrId, artId, branch, condition.previousGammaId, gammaId, condition.previousModType, modType);
          }
       }
