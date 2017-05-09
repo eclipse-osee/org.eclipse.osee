@@ -753,7 +753,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    @Override
    public Response purgeTxs(BranchId branch, String txIds) {
       boolean modified = false;
-      List<Long> txsToDelete = OrcsRestUtil.asLongList(txIds);
+      List<Long> txsToDelete = org.eclipse.osee.framework.jdk.core.util.Collections.fromString(txIds, Long::parseLong);
       if (!txsToDelete.isEmpty()) {
          ResultSet<? extends TransactionId> results = newTxQuery().andBranch(branch).andTxIds(txsToDelete).getResults();
          if (!results.isEmpty()) {

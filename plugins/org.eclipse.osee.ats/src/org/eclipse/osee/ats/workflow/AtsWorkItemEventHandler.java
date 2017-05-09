@@ -11,9 +11,9 @@
 package org.eclipse.osee.ats.workflow;
 
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
-import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.editor.WfeArtifactEventManager;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.osgi.service.event.Event;
@@ -30,10 +30,9 @@ public class AtsWorkItemEventHandler implements EventHandler {
    public void handleEvent(Event event) {
       try {
          if (event.getTopic().equals(AtsTopicEvent.WORK_ITEM_MODIFIED)) {
-            for (Long workItemUuid : AtsObjects.uuidsToLong(";",
-               (String) event.getProperty(AtsTopicEvent.WORK_ITEM_UUIDS_KEY))) {
+            String ids = (String) event.getProperty(AtsTopicEvent.WORK_ITEM_UUIDS_KEY);
+            for (Long workItemUuid : Collections.fromString(ids, ";", Long::valueOf)) {
                Artifact artifact = ArtifactCache.getActive(workItemUuid, AtsClientService.get().getAtsBranch());
-
                if (artifact != null) {
                   if (WfeArtifactEventManager.isLoaded(artifact)) {
                      artifact.reloadAttributesAndRelations();

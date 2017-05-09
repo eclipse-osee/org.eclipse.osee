@@ -91,17 +91,6 @@ public class AtsObjects {
       return Collections.toString(", ", guids);
    }
 
-   /**
-    * @param semicolon delimited list of uuids
-    */
-   public static Collection<Long> uuidsToLong(String separator, String uuidsList) {
-      List<Long> uuids = new ArrayList<>();
-      for (String uuid : uuidsList.split(separator)) {
-         uuids.add(Long.valueOf(uuid));
-      }
-      return uuids;
-   }
-
    public static Collection<ArtifactId> getArtifacts(Collection<?> objects) {
       List<ArtifactId> artifacts = new LinkedList<>();
       for (Object object : objects) {

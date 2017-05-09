@@ -25,8 +25,6 @@ import static org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.en
 import static org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.endpoints.ClientConstants.CLIENT_REGISTRATION__DECISION_REGISTER;
 import static org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.endpoints.ClientConstants.CLIENT_REGISTRATION__IS_CONFIDENTIAL;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -48,8 +46,8 @@ import org.apache.cxf.rs.security.oauth2.common.UserSubject;
 import org.apache.cxf.rs.security.oauth2.utils.OAuthConstants;
 import org.apache.cxf.security.SecurityContext;
 import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.OAuthUtil;
 import org.eclipse.osee.logger.Log;
 
@@ -83,7 +81,7 @@ public class ClientRegistrationEndpoint extends AbstractClientService {
    @Path("/complete")
    @Consumes(MediaType.MULTIPART_FORM_DATA)
    public Response finishRegistration(@Context UriInfo uriInfo, //
-   MultipartBody multiPart) {
+      MultipartBody multiPart) {
       SecurityContext securityContext = getAndValidateSecurityContext();
       UserSubject userSubject = createUserSubject(securityContext);
 
@@ -162,18 +160,6 @@ public class ClientRegistrationEndpoint extends AbstractClientService {
    }
 
    private List<String> parseMultilined(String rawData) {
-      List<String> toReturn = Collections.emptyList();
-      if (Strings.isValid(rawData)) {
-         toReturn = new ArrayList<>();
-         String[] entries = rawData.split("\\s+");
-         for (String entry : entries) {
-            entry = entry.trim();
-            if (Strings.isValid(entry)) {
-               toReturn.add(entry);
-            }
-         }
-      }
-      return toReturn;
+      return Collections.fromString(rawData, "\\s+");
    }
-
 }

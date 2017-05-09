@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.CompareResults;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.KeyValueOps;
@@ -95,12 +96,15 @@ public class TransactionFactoryImpl implements TransactionFactory {
    public CompareResults compareTxs(TransactionId txId1, TransactionId txId2) {
       TransactionToken sourceTx = getTx(txId1);
       TransactionToken destinationTx = getTx(txId2);
-      Callable<List<ChangeItem>> callable = orcsBranch.compareBranch(sourceTx, destinationTx);
-      List<ChangeItem> changes = OrcsTransactionUtil.executeCallable(callable);
 
-      CompareResults data = new CompareResults();
-      data.setChanges(changes);
-      return data;
+      try {
+         List<ChangeItem> changes = orcsBranch.compareBranch(sourceTx, destinationTx).call();
+         CompareResults data = new CompareResults();
+         data.setChanges(changes);
+         return data;
+      } catch (Exception ex) {
+         throw OseeCoreException.wrap(ex);
+      }
    }
 
    @Override
@@ -128,15 +132,19 @@ public class TransactionFactoryImpl implements TransactionFactory {
    @Override
    public boolean purgeTxs(String txIds) {
       boolean modified = false;
-      List<Long> txsToDelete = OrcsTransactionUtil.asLongList(txIds);
+      List<Long> txsToDelete = Collections.fromString(txIds, Long::parseLong);
+
       if (!txsToDelete.isEmpty()) {
          ResultSet<? extends TransactionId> results =
             queryFactory.transactionQuery().andTxIds(txsToDelete).getResults();
          if (!results.isEmpty()) {
             checkAllTxsFound("Purge Transaction", txsToDelete, results);
             List<TransactionId> list = Lists.newArrayList(results);
-            Callable<?> op = purgeTransaction(list);
-            OrcsTransactionUtil.executeCallable(op);
+            try {
+               purgeTransaction(list).call();
+            } catch (Exception ex) {
+               throw OseeCoreException.wrap(ex);
+            }
             modified = true;
          }
       }

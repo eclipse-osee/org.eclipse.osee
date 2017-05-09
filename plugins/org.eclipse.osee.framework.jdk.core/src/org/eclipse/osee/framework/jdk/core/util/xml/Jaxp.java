@@ -42,6 +42,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.w3c.dom.Attr;
@@ -68,7 +69,7 @@ public class Jaxp {
 
    /**
     * Obtains a list of all direct descendants of element
-    * 
+    *
     * @param element the element to find the children of
     * @return A list of elements that are direct children of element. If no children exist, an empty list is returned.
     */
@@ -86,7 +87,7 @@ public class Jaxp {
 
    /**
     * Obtains a list of all direct descendants of element with the matching tag.
-    * 
+    *
     * @param element the element to find the children of
     * @param childTagName the tag name for the children
     * @return A list of elements that are direct children of element whose tag names match childTagName. If no such
@@ -106,7 +107,7 @@ public class Jaxp {
 
    /**
     * Obtains the first child that is a direct descendant of element with the matching tag
-    * 
+    *
     * @param element the element to find the child of
     * @param childTagName the tag name for the child
     * @return the first child with the given tag one level deep from element, null if no such child exists.
@@ -124,7 +125,7 @@ public class Jaxp {
 
    /**
     * Obtains the first child that is a descendant of element with the matching tag
-    * 
+    *
     * @param element the element to find the child of
     * @param childTagName the tag name for the child
     * @return the first child with the given tag, or null if no such children exist
@@ -143,7 +144,7 @@ public class Jaxp {
    /**
     * Obtains the character data for the Element. Note this differs from the Node.getTextContext(); call, which returns
     * the concatenation of the character data for all children of this Element.
-    * 
+    *
     * @param e The element go get the character data for
     * @param trimWhitespace if true, each segment will be trimmed.
     * @return All of the character data for the Element e. This means if there are elements separating the character
@@ -178,7 +179,7 @@ public class Jaxp {
    /**
     * Obtains the character data for the Element. Note this differs from the Node.getTextContext(); call, which returns
     * the concatenation of the character data for all children of this Element.
-    * 
+    *
     * @param e The element go get the character data for
     * @return All of the character data for the Element e. This means if there are elements separating the character
     * data, it will all be concatenated together. Each segment will be trimmed of whitespace, with a single space
@@ -216,7 +217,7 @@ public class Jaxp {
 
    /**
     * Obtains a list of Strings of the character data for all elements in the document whose tag name matches.
-    * 
+    *
     * @param document The document to be searched
     * @param tagName The tagName for the children whose text we will obtain
     * @return An ArrayList<String> of the text for all child nodes matching tagName
@@ -227,7 +228,7 @@ public class Jaxp {
 
    /**
     * Obtains a list of Strings of the character data for all descendants of element whose tag name matches.
-    * 
+    *
     * @param document The document to be searched
     * @param tagName The tagName for the children whose text we will obtain
     * @return An ArrayList<String> of the text for all child nodes matching tagName
@@ -270,7 +271,7 @@ public class Jaxp {
 
    /**
     * Searches for all sub-elements found at the path provided.
-    * 
+    *
     * @param element The element underneath which we will search
     * @param elementPath The path to follow. For example ["script","configuration","element_i_want"]
     * @param firstIsRoot If true, the first item in elementPath must match element. That is, in the above example, e's
@@ -303,7 +304,7 @@ public class Jaxp {
    }
 
    private static List<Element> findElementsSinglePath(Element e, String elementPath, boolean firstIsRoot) {
-      return findElements(e, Arrays.asList(elementPath.split("/")), firstIsRoot);
+      return findElements(e, Collections.fromString(elementPath, "/"), firstIsRoot);
    }
 
    private static List<Element> findElements(Element e, String elementPath, boolean firstIsRoot) {
@@ -327,7 +328,7 @@ public class Jaxp {
    /**
     * Searches for a sub-element found at the path provided. Each list element indicates the tag name for the next
     * sub-element.
-    * 
+    *
     * @param e The element underneath which we will search
     * @param elementPath The path to follow. For example ["script","configuration","element_i_want"]
     * @return The first element that matches the provided path, beneath the provided element e, or null if no such
@@ -356,7 +357,7 @@ public class Jaxp {
    /**
     * Searches the Document for the Element found at the '/' delimited path provided. The path should begin with the
     * root node of the document.
-    * 
+    *
     * @param d The document to search
     * @param elementPath The path to follow. For example "script/configuration/element_i_want"
     * @return The first element that matches the provided path, or null if no such element exists.
@@ -381,7 +382,7 @@ public class Jaxp {
    /**
     * Searches for a sub-element found at the '/' delimited path provided. The path should begin with the first node
     * underneath the provided element.
-    * 
+    *
     * @param e The element underneath which we will search
     * @param elementPath The path to follow. For example "script/configuration/element_i_want"
     * @return The first element that matches the provided path, beneath the provided element e, or null if no such
@@ -468,7 +469,7 @@ public class Jaxp {
 
    /**
     * Writes the XML document 'document' to the 'file'.
-    * 
+    *
     * @param document The XML document to output
     * @param file Where to put the output
     * @throws TransformerException
@@ -479,7 +480,7 @@ public class Jaxp {
 
    /**
     * Writes the XML document 'document' to the 'file'.
-    * 
+    *
     * @param document The XML document to output
     * @param file Where to put the output
     * @param prettyOutput If true, turns on indentation so the output is more easily readable, if False turns
@@ -494,7 +495,7 @@ public class Jaxp {
 
    /**
     * Gets the XML document 'document' as a string
-    * 
+    *
     * @param document The XML document to output
     * @param file Where to put the output
     * @param prettyOutput If true, turns on indentation so the output is more easily readable, if False turns
@@ -510,7 +511,7 @@ public class Jaxp {
 
    /**
     * Sends the XML to the output
-    * 
+    *
     * @param node The source XML
     * @param output Where the XML is 'printed' to
     * @param format The format style to use

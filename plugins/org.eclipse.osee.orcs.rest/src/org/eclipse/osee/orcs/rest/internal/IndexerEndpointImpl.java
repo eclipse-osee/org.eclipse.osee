@@ -19,7 +19,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.BranchReadable;
@@ -53,9 +55,9 @@ public class IndexerEndpointImpl implements IndexerEndpoint {
    }
 
    @Override
-   public Response indexBranches(String branchUuids, boolean missingItemsOnly) {
-      List<Long> ids = OrcsRestUtil.asLongList(branchUuids);
-      ResultSet<BranchReadable> results = newBranchQuery().andUuids(ids).getResults();
+   public Response indexBranches(String branchIdsStr, boolean missingItemsOnly) {
+      List<BranchId> branchIds = Collections.fromString(branchIdsStr, BranchId::valueOf);
+      ResultSet<BranchReadable> results = newBranchQuery().andIds(branchIds).getResults();
       Callable<Integer> op = getIndexer().indexBranches(Sets.newLinkedHashSet(results), missingItemsOnly);
       Integer result = executeCallable(op);
       boolean modified = result > 0;

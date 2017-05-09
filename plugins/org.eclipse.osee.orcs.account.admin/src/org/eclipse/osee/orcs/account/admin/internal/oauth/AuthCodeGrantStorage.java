@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.jaxrs.server.database.AbstractDatabaseStorage;
 import org.eclipse.osee.jaxrs.server.security.OAuthCodeGrant;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -79,24 +77,10 @@ public class AuthCodeGrantStorage extends AbstractDatabaseStorage<OAuthCodeGrant
       deleteItems(DELETE_AUTH_CODE_BY_ID, datas);
    }
 
-   private List<String> parseScopes(String scopes) {
-      List<String> toReturn = Collections.emptyList();
-      if (scopes != null) {
-         toReturn = new ArrayList<>();
-         String[] scopeValues = scopes.split(SCOPES_SEPARATOR);
-         for (String scope : scopeValues) {
-            if (Strings.isValid(scope)) {
-               toReturn.add(scope);
-            }
-         }
-      }
-      return toReturn;
-   }
-
    private Object asScopesStore(List<String> scopes) {
       String scopeData = null;
       if (scopes != null && !scopes.isEmpty()) {
-         scopeData = org.eclipse.osee.framework.jdk.core.util.Collections.toString(SCOPES_SEPARATOR, scopes);
+         scopeData = Collections.toString(SCOPES_SEPARATOR, scopes);
       }
       return asVarcharOrNull(scopeData);
    }
@@ -112,7 +96,7 @@ public class AuthCodeGrantStorage extends AbstractDatabaseStorage<OAuthCodeGrant
       final String redirect_uri = chStmt.getString("redirect_uri");
       final String verifier = chStmt.getString("verifier");
       final String audience = chStmt.getString("audience");
-      final List<String> approvedScopes = parseScopes(chStmt.getString("approved_scopes"));
+      final List<String> approvedScopes = Collections.fromString(chStmt.getString("approved_scopes"), SCOPES_SEPARATOR);
       return new OAuthCodeGrant() {
 
          @Override

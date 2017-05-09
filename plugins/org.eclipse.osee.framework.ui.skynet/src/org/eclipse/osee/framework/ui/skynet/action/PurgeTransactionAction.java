@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -96,12 +95,7 @@ public class PurgeTransactionAction extends Action {
       EntryDialog dialog = new EntryDialog(NAME, "Enter Transaction(s), comma delimited");
       boolean success = false;
       if (dialog.open() == 0) {
-         for (String transId : dialog.getEntry().split(",")) {
-            transId = transId.trim();
-            if (Strings.isValid(transId)) {
-               transactions.add(TransactionId.valueOf(transId));
-            }
-         }
+         transactions.addAll(Collections.fromString(dialog.getEntry(), TransactionId::valueOf));
          success = !transactions.isEmpty();
       }
       return success;

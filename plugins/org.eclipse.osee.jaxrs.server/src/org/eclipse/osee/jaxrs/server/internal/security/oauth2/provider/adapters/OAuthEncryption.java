@@ -11,8 +11,6 @@
 package org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.adapters;
 
 import java.security.Key;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +24,7 @@ import org.apache.cxf.rs.security.oauth2.provider.OAuthDataProvider;
 import org.apache.cxf.rs.security.oauth2.tokens.refresh.RefreshToken;
 import org.apache.cxf.rs.security.oauth2.utils.crypto.CryptoUtils;
 import org.apache.cxf.rs.security.oauth2.utils.crypto.KeyProperties;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.server.session.SessionData;
 
@@ -167,12 +166,7 @@ public class OAuthEncryption {
    }
 
    private static List<String> parseSimpleList(String listStr) {
-      String pureStringList = prepareSimpleString(listStr);
-      if (pureStringList.isEmpty()) {
-         return Collections.emptyList();
-      } else {
-         return Arrays.asList(pureStringList.split(","));
-      }
+      return Collections.fromString(prepareSimpleString(listStr), ",");
    }
 
    private static String getStringPart(String str) {
@@ -218,17 +212,10 @@ public class OAuthEncryption {
 
    private static ServerAccessToken recreateAccessToken(OAuthDataProvider provider, String newTokenKey, String[] parts) {
 
-      @SuppressWarnings("serial")
-      final ServerAccessToken newToken =
-         new ServerAccessToken(provider.getClient(parts[4]), parts[1], newTokenKey == null ? parts[0] : newTokenKey,
-            Long.valueOf(parts[2]), Long.valueOf(parts[3])) {
-
-            /**
-             * 
-             */
-            private static final long serialVersionUID = 7381031812625396582L;
-            //
-         };
+      final ServerAccessToken newToken = new ServerAccessToken(provider.getClient(parts[4]), parts[1],
+         newTokenKey == null ? parts[0] : newTokenKey, Long.valueOf(parts[2]), Long.valueOf(parts[3])) {
+         private static final long serialVersionUID = 7381031812625396582L;
+      };
 
       newToken.setRefreshToken(getStringPart(parts[5]));
       newToken.setGrantType(getStringPart(parts[6]));

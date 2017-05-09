@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * @author David Diepenbrock
@@ -25,8 +26,29 @@ import java.util.Set;
 public class Collections {
    public static Object[] EMPTY_ARRAY = new Object[0];
 
-   public static Collection<String> fromString(String string, String seperator) {
-      return Arrays.asList(string.split(seperator));
+   public static List<String> fromString(String rawValue, String seperator) {
+      return fromString(rawValue, seperator, Function.identity());
+   }
+
+   public static <R> List<R> fromString(String rawValue, Function<String, R> function) {
+      return fromString(rawValue, ",", function);
+   }
+
+   public static <R> List<R> fromString(String rawValue, String seperator, Function<String, R> function) {
+      List<R> toReturn;
+      if (Strings.isValid(rawValue)) {
+         String[] entries = rawValue.split(seperator);
+         toReturn = new ArrayList<>(entries.length);
+         for (String entry : entries) {
+            String token = entry.trim();
+            if (Strings.isValid(token)) {
+               toReturn.add(function.apply(token));
+            }
+         }
+      } else {
+         toReturn = java.util.Collections.emptyList();
+      }
+      return toReturn;
    }
 
    /**
@@ -347,5 +369,4 @@ public class Collections {
       }
       return result;
    }
-
 }

@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.jaxrs.server.database.AbstractDatabaseStorage;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -111,26 +109,12 @@ public class ClientCredentialStorage extends AbstractDatabaseStorage<OAuthClient
       final String clientSecret = chStmt.getString("client_secret");
       final String clientCert = chStmt.getString("client_cert");
 
-      List<String> certs = fromCertString(clientCert);
+      List<String> certs = Collections.fromString(clientCert, ";");
       return newCredential(clientId, applicationId, subjectId, clientKey, clientSecret, certs);
    }
 
    private String asCertString(List<String> certs) {
       return certs != null ? org.eclipse.osee.framework.jdk.core.util.Collections.toString(";", certs) : null;
-   }
-
-   private List<String> fromCertString(String certs) {
-      List<String> toReturn = null;
-      if (Strings.isValid(certs)) {
-         toReturn = new ArrayList<>();
-         String[] certArray = certs.split(";");
-         for (String cert : certArray) {
-            toReturn.add(cert);
-         }
-      } else {
-         toReturn = Collections.emptyList();
-      }
-      return toReturn;
    }
 
    public OAuthClientCredential newCredential(final long clientId, final long applicationId, final long subjectId, final String clientKey, final String clientSecret, final List<String> clientCert) {
