@@ -44,7 +44,7 @@ public class OseeCredential extends IdeClientSession {
          getPassword() + ", getClientAddress()=" + getClientAddress() + ", getClientPort()=" + getClientPort() + ", getUserId()=" + getUserId() + //
          ", getClientVersion()=" + getClientVersion() + ", getSessionId()=" + getSessionId() + ", getCreatedOn()=" + getCreatedOn() + //
          ", getSessionLog()=" + getSessionLog() + ", getAuthenticationProtocol()=" + getAuthenticationProtocol() + ", getId()=" + getId() + //
-         ", getClientName()=" + getClientName() + "]";
+         ", getClientName()=" + getClientName() + ", useOracleHints()=" + getUseOracleHints() + "]";
    }
 
 }

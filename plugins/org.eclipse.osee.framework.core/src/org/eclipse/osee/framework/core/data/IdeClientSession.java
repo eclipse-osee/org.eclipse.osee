@@ -25,6 +25,7 @@ public class IdeClientSession {
    private String sessionLog;
    private String authenticationProtocol;
    private String clientName;
+   private String useOracleHints;
 
    public IdeClientSession() {
       // For JAX-RS instantiation
@@ -122,6 +123,14 @@ public class IdeClientSession {
    @Override
    public String toString() {
       return "IdeClientSession [id=" + id + ", clientAddress=" + clientAddress + ", clientPort=" + clientPort + ", userId=" + userId + ", clientVersion=" + clientVersion + ", sessionId=" + sessionId + ", createdOn=" + createdOn + ", sessionLog=" + sessionLog + ", authenticationProtocol=" + authenticationProtocol + ", clientName=" + clientName + "]";
+   }
+
+   public String getUseOracleHints() {
+      return useOracleHints;
+   }
+
+   public void setUseOracleHints(String useOracleHints) {
+      this.useOracleHints = useOracleHints;
    }
 
 }

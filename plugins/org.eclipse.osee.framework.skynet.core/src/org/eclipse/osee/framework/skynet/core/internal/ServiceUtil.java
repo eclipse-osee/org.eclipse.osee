@@ -70,6 +70,10 @@ public final class ServiceUtil {
       return getService(AccessPolicy.class);
    }
 
+   public static boolean useOracleHints() {
+      return ClientSessionManager.useOracleHints();
+   }
+
    public static String getSql(OseeSql sqlEnum) throws OseeCoreException {
       Properties properties = ClientSessionManager.getSqlProperties();
       String sql = properties.getProperty(sqlEnum.toString());

@@ -136,8 +136,8 @@ public class JdbcClientConfig {
       setDbUri(get(src, JDBC__CONNECTION_URI, DEFAULT_JDBC__CONNECTION_URI));
       setDbUsername(get(src, JDBC__CONNECTION_USERNAME, DEFAULT_JDBC__CONNECTION_USERNAME));
       setDbPassword(get(src, JDBC__CONNECTION_PASSWORD, DEFAULT_JDBC__CONNECTION_PASSWORD));
-      setDbAppendPropsToUri(
-         getBoolean(src, JDBC__CONNECTION_APPEND_PROPS_TO_URI, DEFAULT_JDBC__CONNECTION_APPEND_PROPS_TO_URI));
+      setDbAppendPropsToUri(getBoolean(src, JDBC__CONNECTION_APPEND_PROPS_TO_URI,
+         DEFAULT_JDBC__CONNECTION_APPEND_PROPS_TO_URI));
 
       for (Entry<String, Object> entry : src.entrySet()) {
          String key = entry.getKey();

@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -47,7 +48,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 public class PurgeArtifacts extends AbstractDbTxOperation {
 
    private static final String SELECT_ITEM_GAMMAS =
-      "SELECT /*+ ordered */ txs.gamma_id, txs.transaction_id, aj.id1, aj.id4 FROM osee_join_id4 aj, %s item, osee_txs txs WHERE aj.query_id = ? AND %s AND item.gamma_id = txs.gamma_id AND aj.id1 = txs.branch_id";
+      "SELECT %s txs.gamma_id, txs.transaction_id, aj.id1, aj.id4 FROM osee_join_id4 aj, %s item, osee_txs txs WHERE aj.query_id = ? AND %s AND item.gamma_id = txs.gamma_id AND aj.id1 = txs.branch_id";
 
    private static final String COUNT_ARTIFACT_VIOLATIONS =
       "SELECT art.art_id, txs.branch_id, aj.id4 FROM osee_join_id4 aj, osee_artifact art, osee_txs txs WHERE aj.query_id = ? AND aj.id2 = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = aj.id1";
@@ -152,7 +153,8 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
    }
 
    public void insertSelectItems(TransactionJoinQuery txJoin, JdbcConnection connection, String tableName, String artifactJoinSql, int queryId) throws OseeCoreException {
-      String query = String.format(SELECT_ITEM_GAMMAS, tableName, artifactJoinSql);
+      String query = String.format(SELECT_ITEM_GAMMAS, ServiceUtil.useOracleHints() ? " /*+ ordered */ " : "",
+         tableName, artifactJoinSql);
       JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {
          chStmt.runPreparedQuery(query, queryId);

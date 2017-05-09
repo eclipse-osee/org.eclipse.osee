@@ -367,8 +367,8 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    protected String getSqlHint() throws OseeCoreException {
       String hint = Strings.EMPTY_STRING;
-      if (!Conditions.hasValues(withClauses)) {
-         hint = OseeSql.Strings.HintsOrdered;
+      if (!Conditions.hasValues(withClauses) && jdbcClient != null && jdbcClient.getConfig() != null) {
+         hint = OseeSql.Strings.getHintsOrdered(jdbcClient.getConfig().getDbProps());
       }
       return hint;
    }

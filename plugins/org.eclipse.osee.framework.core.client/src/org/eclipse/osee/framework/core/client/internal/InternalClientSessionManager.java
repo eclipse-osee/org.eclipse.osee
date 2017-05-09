@@ -122,6 +122,7 @@ public class InternalClientSessionManager {
             oseeSession.setClientPort(String.valueOf(clientInfo.getPort()));
             oseeSession.setClientVersion(clientInfo.getVersion());
             oseeSession.setAuthenticationProtocol(oseeSessionGrant.getAuthenticationProtocol());
+            oseeSession.setUseOracleHints(String.valueOf(oseeSessionGrant.getUseOracleHints()));
          } catch (Exception ex) {
             OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.SEVERE, ex));
             OseeCoreException.wrapAndThrow(ex);

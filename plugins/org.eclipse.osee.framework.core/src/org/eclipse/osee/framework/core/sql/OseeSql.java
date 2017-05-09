@@ -92,16 +92,17 @@ public enum OseeSql {
       return hints;
    }
 
-   public static Properties getSqlProperties(boolean areHintsSupported) throws OseeCoreException {
+   public static Properties getSqlProperties(boolean areHintsSupported, boolean useOracleHints) throws OseeCoreException {
       Properties sqlProperties = new Properties();
       for (OseeSql oseeSql : OseeSql.values()) {
          String sql;
 
          if (oseeSql.hints == null) {
             sql = oseeSql.sql;
+         } else if (areHintsSupported && useOracleHints) {
+            sql = String.format(oseeSql.sql, oseeSql.hints);
          } else {
-            String hints = areHintsSupported ? oseeSql.hints : "";
-            sql = String.format(oseeSql.sql, hints);
+            sql = String.format(oseeSql.sql, "");
          }
 
          sqlProperties.setProperty(oseeSql.toString(), sql);
@@ -109,8 +110,29 @@ public enum OseeSql {
       return sqlProperties;
    }
 
+   public static boolean useOracleHints(Properties properties) {
+      boolean useOracleHints = false;
+      String useOracleHintsStr = (String) properties.get("useOracleHints");
+      if (org.eclipse.osee.framework.jdk.core.util.Strings.isValid(useOracleHintsStr)) {
+         try {
+            useOracleHints = Boolean.valueOf(useOracleHintsStr);
+         } catch (Exception ex) {
+            // do nothing
+         }
+      }
+      return useOracleHints;
+   }
+
    public static class Strings {
-      public static final String HintsOrdered = "/*+ ordered */";
+
+      public static String getHintsOrdered(Properties dbProps) {
+         String result = "";
+         if (useOracleHints(dbProps)) {
+            result = HintsOrdered;
+         }
+         return result;
+      }
+      private static final String HintsOrdered = "/*+ ordered */";
 
       private static final String HINTS__ORDERED__INDEX__ARTIFACT_CONFLICT =
          " /*+ ordered index(atr1) index(atr2) index(txs2) */";
@@ -128,5 +150,6 @@ public enum OseeSql {
 
       private static final String SELECT_CURRENT_ARCHIVED_ARTIFACTS_PREFIX =
          "SELECT%s aj.id2, txs.gamma_id, mod_type, art_type_id, guid, txs.branch_id, txs.app_id, aj.id4 FROM osee_join_id4 aj, osee_artifact art, osee_txs_archived txs WHERE aj.query_id = ? AND aj.id2 = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = aj.id1 AND txs.tx_current ";
+
    }
 }

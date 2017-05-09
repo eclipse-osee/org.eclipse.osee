@@ -13,11 +13,12 @@ package org.eclipse.osee.framework.core.client;
 import java.util.List;
 import java.util.Properties;
 import org.eclipse.osee.framework.core.client.internal.InternalClientSessionManager;
-import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.IdeClientSession;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -82,6 +83,11 @@ public class ClientSessionManager {
 
    public static boolean isProductionDataStore() throws OseeAuthenticationRequiredException {
       return getSessionGrant().isDbIsProduction();
+   }
+
+   public static boolean useOracleHints() {
+      return Strings.isValid(getSessionGrant().getUseOracleHints()) ? Boolean.valueOf(
+         getSessionGrant().getUseOracleHints()) : false;
    }
 
    public static Properties getSqlProperties() {

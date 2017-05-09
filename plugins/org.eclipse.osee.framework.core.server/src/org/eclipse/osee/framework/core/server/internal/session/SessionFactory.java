@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.core.server.internal.session;
 
 import java.util.Date;
 import java.util.Properties;
-import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.model.cache.IOseeTypeFactory;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.core.sql.OseeSql;
@@ -66,11 +66,13 @@ public final class SessionFactory implements IOseeTypeFactory {
       sessionGrant.setDbDriver(config.getDbDriver());
       sessionGrant.setDbLogin(config.getDbUsername());
       sessionGrant.setDbUrl(config.getDbUri());
+      boolean useOracleHints = OseeSql.useOracleHints(config.getDbProps());
       sessionGrant.setDbConnectionProperties(config.getDbProps());
       sessionGrant.setDbDatabaseName(jdbcService.hasServer() ? jdbcService.getServerConfig().getDbName() : "");
       sessionGrant.setDbDatabasePath(jdbcService.hasServer() ? jdbcService.getServerConfig().getDbPath() : "");
 
-      Properties properties = OseeSql.getSqlProperties(jdbcService.getClient().getDbType().areHintsSupported());
+      Properties properties =
+         OseeSql.getSqlProperties(jdbcService.getClient().getDbType().areHintsSupported(), useOracleHints);
       sessionGrant.setSqlProperties(properties);
 
       sessionGrant.setDataStorePath(OseeServerProperties.getOseeApplicationServerData(logger));

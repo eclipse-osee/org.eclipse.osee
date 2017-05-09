@@ -115,7 +115,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testCount() throws Exception {
-      String expected = "SELECT/*+ ordered */ count(br1.branch_id)\n" + //
+      String expected = "SELECT count(br1.branch_id)\n" + //
          " FROM \n" + //
          "osee_join_id jid1, osee_branch br1, osee_join_id jid2\n" + //
          " WHERE \n" + //
@@ -143,7 +143,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryUuidIdsTypes() throws Exception {
-      String expected = "SELECT/*+ ordered */ br1.*\n" + //
+      String expected = "SELECT br1.*\n" + //
          " FROM \n" + //
          "osee_join_id jid1, osee_branch br1, osee_join_id jid2\n" + //
          " WHERE \n" + //
@@ -172,7 +172,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryAllBranches() throws Exception {
-      String expected = "SELECT/*+ ordered */ br1.*\n" + //
+      String expected = "SELECT br1.*\n" + //
          " FROM \n" + //
          "osee_branch br1\n" + //
          " ORDER BY br1.branch_id";
@@ -191,7 +191,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryUuidIdsTypesSingles() throws Exception {
-      String expected = "SELECT/*+ ordered */ br1.*\n" + //
+      String expected = "SELECT br1.*\n" + //
          " FROM \n" + //
          "osee_branch br1\n" + //
          " WHERE \n" + //
@@ -218,7 +218,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryName() throws Exception {
-      String expected = "SELECT/*+ ordered */ br1.*\n" + //
+      String expected = "SELECT br1.*\n" + //
          " FROM \n" + //
          "osee_branch br1\n" + //
          " WHERE \n" + //
@@ -242,7 +242,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryNamePattern() throws Exception {
-      String expected = "SELECT/*+ ordered */ br1.*\n" + //
+      String expected = "SELECT br1.*\n" + //
          " FROM \n" + //
          "osee_branch br1\n" + //
          " WHERE \n" + //
@@ -266,7 +266,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryStateArchive() throws Exception {
-      String expected = "SELECT/*+ ordered */ br1.*\n" + //
+      String expected = "SELECT br1.*\n" + //
          " FROM \n" + //
          "osee_join_id jid1, osee_branch br1\n" + //
          " WHERE \n" + //
@@ -294,7 +294,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQuerySingleStateArchive() throws Exception {
-      String expected = "SELECT/*+ ordered */ br1.*\n" + //
+      String expected = "SELECT br1.*\n" + //
          " FROM \n" + //
          "osee_branch br1\n" + //
          " WHERE \n" + //
@@ -425,7 +425,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testMergeBranchFor() throws Exception {
-      String expected = "SELECT/*+ ordered */ br1.*\n" + //
+      String expected = "SELECT br1.*\n" + //
          " FROM \n" + //
          "osee_merge mbr1, osee_branch br1\n" + //
          " WHERE \n" + //
@@ -454,7 +454,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testAssociatedArtId() throws Exception {
-      String expected = "SELECT/*+ ordered */ br1.*\n" + //
+      String expected = "SELECT br1.*\n" + //
          " FROM \n" + //
          "osee_branch br1\n" + //
          " WHERE \n" + //

@@ -108,7 +108,7 @@ public class TxQuerySqlContextFactoryImplTest {
 
    @Test
    public void testCount() throws Exception {
-      String expected = "SELECT/*+ ordered */ count(txd1.transaction_id)\n" + //
+      String expected = "SELECT count(txd1.transaction_id)\n" + //
          " FROM \n" + //
          "osee_join_id jid1, osee_tx_details txd1\n" + //
          " WHERE \n" + //
@@ -131,7 +131,7 @@ public class TxQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryTxIds() throws Exception {
-      String expected = "SELECT/*+ ordered */ txd1.*\n" + //
+      String expected = "SELECT txd1.*\n" + //
          " FROM \n" + //
          "osee_join_id jid1, osee_tx_details txd1\n" + //
          " WHERE \n" + //
@@ -156,7 +156,7 @@ public class TxQuerySqlContextFactoryImplTest {
 
    @Test
    public void testComment() throws Exception {
-      String expected = "SELECT/*+ ordered */ txd1.*\n" + //
+      String expected = "SELECT txd1.*\n" + //
          " FROM \n" + //
          "osee_tx_details txd1\n" + //
          " WHERE \n" + //
@@ -176,7 +176,7 @@ public class TxQuerySqlContextFactoryImplTest {
 
    @Test
    public void testBranchType() throws Exception {
-      String expected = "SELECT/*+ ordered */ txd1.*\n" + //
+      String expected = "SELECT txd1.*\n" + //
          " FROM \n" + //
          "osee_join_id jid1, osee_tx_details txd1\n" + //
          " WHERE \n" + //
@@ -203,7 +203,7 @@ public class TxQuerySqlContextFactoryImplTest {
 
    @Test
    public void testBranchTypeAndTxId() throws Exception {
-      String expected = "SELECT/*+ ordered */ txd1.*\n" + //
+      String expected = "SELECT txd1.*\n" + //
          " FROM \n" + //
          "osee_join_id jid1, osee_tx_details txd1, osee_join_id jid2\n" + //
          " WHERE \n" + //
@@ -234,7 +234,7 @@ public class TxQuerySqlContextFactoryImplTest {
 
    @Test
    public void testSixItemQuery() throws Exception {
-      String expected = "SELECT/*+ ordered */ txd1.*\n" + //
+      String expected = "SELECT txd1.*\n" + //
          " FROM \n" + //
          "osee_tx_details txd1, osee_join_id jid1, osee_join_id jid2, osee_join_id jid3\n" + //
          " WHERE \n" + //
@@ -276,7 +276,7 @@ public class TxQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryTxPrior() throws Exception {
-      String expected = "SELECT/*+ ordered */ txd1.*\n" + //
+      String expected = "SELECT txd1.*\n" + //
          " FROM \n" + //
          "osee_tx_details txd1\n" + //
          " WHERE \n" + //

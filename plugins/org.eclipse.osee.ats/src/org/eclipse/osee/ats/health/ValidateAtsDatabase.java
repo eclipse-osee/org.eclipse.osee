@@ -86,7 +86,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  */
 public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
-   private static String SELECT_COMMON_ART_IDS = "SELECT /*+ ordered */ art1.art_id, txs1.branch_id " + //
+   private static String SELECT_COMMON_ART_IDS = "SELECT art1.art_id, txs1.branch_id " + //
       "FROM osee_artifact art1, osee_txs txs1 " + //
       "WHERE art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ? " + //
       "ORDER BY art1.art_id, txs1.branch_id ";
