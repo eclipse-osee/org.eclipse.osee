@@ -391,7 +391,7 @@ public class AtsProgramService implements IAtsProgramService {
             useWorkItem = ((IAtsTeamWorkflow) useWorkItem).getParentAction();
          }
          if (useWorkItem != null && useWorkItem instanceof IAtsAction) {
-            for (IAtsTeamWorkflow team : services.getWorkItemService().getTeams((IAtsAction) useWorkItem)) {
+            for (IAtsTeamWorkflow team : services.getWorkItemService().getTeams(useWorkItem)) {
                if (workTypeTeamDefs.contains(team.getTeamDefinition())) {
                   teamArts.add(team);
                }

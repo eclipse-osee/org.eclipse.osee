@@ -132,15 +132,15 @@ public class AtsColumnService implements IAtsColumnService {
          } else if (id.equals(AtsColumnId.Priority.getId())) {
             column = new AtsAttributeValueColumnHandler(AtsColumnToken.PriorityColumn, services);
          } else if (id.equals(AtsColumnId.WorkPackageName.getId())) {
-            column = new WorkPackageNameColumn(services.getEarnedValueServiceProvider());
+            column = new WorkPackageNameColumn(services.getEarnedValueServiceProvider(), services);
          } else if (id.equals(AtsColumnId.WorkPackageId.getId())) {
-            column = new WorkPackageIdColumn(services.getEarnedValueServiceProvider());
+            column = new WorkPackageIdColumn(services.getEarnedValueServiceProvider(), services);
          } else if (id.equals(AtsColumnId.WorkPackageType.getId())) {
-            column = new WorkPackageTypeColumn(services.getEarnedValueServiceProvider());
+            column = new WorkPackageTypeColumn(services.getEarnedValueServiceProvider(), services);
          } else if (id.equals(AtsColumnId.WorkPackageProgram.getId())) {
-            column = new WorkPackageProgramColumn(services.getEarnedValueServiceProvider());
+            column = new WorkPackageProgramColumn(services.getEarnedValueServiceProvider(), services);
          } else if (id.equals(AtsColumnId.WorkPackageGuid.getId())) {
-            column = new WorkPackageGuidColumn(services.getEarnedValueServiceProvider());
+            column = new WorkPackageGuidColumn(services.getEarnedValueServiceProvider(), services);
          } else if (id.equals(AtsColumnId.State.getId())) {
             column = new StateColumn(services);
          } else if (id.equals(AtsColumnId.Uuid.getId())) {

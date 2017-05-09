@@ -10,21 +10,28 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.internal.column.ev;
 
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
  * @author Donald G. Dunne
  */
 public class WorkPackageNameColumn extends AbstractRelatedWorkPackageColumn {
 
-   public WorkPackageNameColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider) {
-      super(earnedValueServiceProvider);
+   public WorkPackageNameColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider, IAtsServices services) {
+      super(earnedValueServiceProvider, services);
    }
 
    @Override
    protected String getColumnValue(IAtsWorkPackage workPkg) {
       return workPkg.getName();
+   }
+
+   @Override
+   protected String getColumnValue(ArtifactToken wpArt) {
+      return wpArt.getName();
    }
 
 }

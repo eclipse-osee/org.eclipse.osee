@@ -19,7 +19,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link WorkPackageNameColumn}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class WorkPackageNameUtilityTest extends AbstractWorkPackageUtilityTest {
@@ -30,7 +30,7 @@ public class WorkPackageNameUtilityTest extends AbstractWorkPackageUtilityTest {
    @Before
    public void setup() throws OseeCoreException {
       super.setup();
-      util = new WorkPackageNameColumn(earnedValueServiceProvider);
+      util = new WorkPackageNameColumn(earnedValueServiceProvider, null);
    }
 
    @Test

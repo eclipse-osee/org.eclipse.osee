@@ -31,4 +31,10 @@ public class AttributeColumn extends AbstractServicesColumn {
    public String getText(IAtsObject atsObject) {
       return Collections.toString("; ", services.getAttributeResolver().getAttributesToStringList(atsObject, attrType));
    }
+
+   @Override
+   public String toString() {
+      return "AttributeColumn [attrType=" + attrType + "]";
+   }
+
 }

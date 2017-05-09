@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.column;
 
+import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -17,16 +18,26 @@ import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.core.config.WorkPackageUtility;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
  */
 public class InsertionColumn extends AbstractServicesColumn {
 
+   private Map<Object, ArtifactToken> idToInsertion;
+
    public InsertionColumn(IAtsServices services) {
       super(services);
+   }
+
+   /**
+    * Set optional map to use as a cache of work item id (Long) or work package guid (String) to Insertion artifact.
+    */
+   public void setIdToInsertionCache(Map<Object, ArtifactToken> idToInsertion) {
+      this.idToInsertion = idToInsertion;
    }
 
    @Override
@@ -35,27 +46,47 @@ public class InsertionColumn extends AbstractServicesColumn {
       if (services.getStoreService().isDeleted(atsObject)) {
          format = "<Deleted> %s";
       }
-      return String.format(format, getInsertionStr(atsObject, services));
+      return String.format(format, getInsertionStr(atsObject, services, CountryColumn.getUtil(), idToInsertion));
    }
 
-   public static String getInsertionStr(IAtsObject atsObject, IAtsServices services) throws OseeCoreException {
+   public static String getInsertionStr(IAtsObject atsObject, IAtsServices services) {
       return getInsertionStr(atsObject, services, CountryColumn.getUtil());
    }
 
-   public static String getInsertionStr(IAtsObject atsObject, IAtsServices services, WorkPackageUtility util) throws OseeCoreException {
+   public static String getInsertionStr(IAtsObject atsObject, IAtsServices services, WorkPackageUtility util) {
+      return getInsertionStr(atsObject, services, util, null);
+   }
+
+   public static String getInsertionStr(IAtsObject atsObject, IAtsServices services, WorkPackageUtility util, Map<Object, ArtifactToken> idToInsertion) {
       String result = "";
       if (atsObject instanceof IAtsWorkItem) {
-         IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-         Pair<IAtsInsertion, Boolean> insertion = util.getInsertion(services, workItem);
-         if (insertion.getFirst() != null) {
-            result = String.format("%s%s", insertion.getFirst().getName(), insertion.getSecond() ? " (I)" : "");
+         if (idToInsertion != null) {
+            ArtifactToken insertionArt = idToInsertion.get(atsObject.getId());
+            if (insertionArt != null) {
+               result = insertionArt.getName();
+            }
+         }
+         if (Strings.isInValid(result)) {
+            IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
+            Pair<IAtsInsertion, Boolean> insertion = util.getInsertion(services, workItem);
+            if (insertion.getFirst() != null) {
+               result = String.format("%s%s", insertion.getFirst().getName(), insertion.getSecond() ? " (I)" : "");
+            }
          }
       } else if (atsObject instanceof IAtsWorkPackage) {
-         IAtsWorkPackage workPackage = (IAtsWorkPackage) atsObject;
-         IAtsInsertionActivity insertionActivity = services.getProgramService().getInsertionActivity(workPackage);
-         if (insertionActivity != null) {
-            IAtsInsertion insertion = services.getProgramService().getInsertion(insertionActivity);
-            result = insertion.getName();
+         if (idToInsertion != null) {
+            ArtifactToken insertionArt = idToInsertion.get(((IAtsWorkPackage) atsObject).getGuid());
+            if (insertionArt != null) {
+               result = insertionArt.getName();
+            }
+         }
+         if (Strings.isInValid(result)) {
+            IAtsWorkPackage workPackage = (IAtsWorkPackage) atsObject;
+            IAtsInsertionActivity insertionActivity = services.getProgramService().getInsertionActivity(workPackage);
+            if (insertionActivity != null) {
+               IAtsInsertion insertion = services.getProgramService().getInsertion(insertionActivity);
+               result = insertion.getName();
+            }
          }
       }
       return result;
