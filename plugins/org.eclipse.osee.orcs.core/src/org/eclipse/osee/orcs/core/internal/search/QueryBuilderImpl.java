@@ -62,6 +62,10 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
       }
    }
 
+   public boolean exists() {
+      return getCount() > 0;
+   }
+
    @Override
    public ResultSet<? extends ArtifactId> getResultsAsLocalIds() throws OseeCoreException {
       try {

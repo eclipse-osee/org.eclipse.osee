@@ -23,6 +23,7 @@ public class OwCollector {
 
    private String instructions;
    private OwBranch branch;
+   private BranchId branchId;
    private String persistComment;
    private String asUserId;
    private List<OwArtifact> create;
@@ -37,6 +38,7 @@ public class OwCollector {
    public OwCollector() {
       create = new LinkedList<>();
       branch = new OwBranch(BranchId.SENTINEL.getId(), "");
+      branchId = BranchId.SENTINEL;
    }
 
    public List<OwArtifact> getCreate() {
@@ -120,8 +122,16 @@ public class OwCollector {
       return branch;
    }
 
+   public BranchId getBranchId() {
+      return branchId;
+   }
+
    public void setBranch(OwBranch branch) {
       this.branch = branch;
+   }
+
+   public void setBranchId(BranchId branchId) {
+      this.branchId = branchId;
    }
 
    public List<OwBranch> getBranches() {

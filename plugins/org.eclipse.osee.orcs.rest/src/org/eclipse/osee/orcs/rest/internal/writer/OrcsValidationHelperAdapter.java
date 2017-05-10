@@ -15,53 +15,56 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.OrcsTypes;
+import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author Donald G. Dunne
  */
 public class OrcsValidationHelperAdapter implements IOrcsValidationHelper {
 
-   private final OrcsApi orcsApi;
+   private final QueryFactory queryFactory;
+   private final OrcsTypes orcsTypes;
 
    public OrcsValidationHelperAdapter(OrcsApi orcsApi) {
-      this.orcsApi = orcsApi;
+      queryFactory = orcsApi.getQueryFactory();
+      orcsTypes = orcsApi.getOrcsTypes();
    }
 
    @Override
    public boolean isBranchExists(BranchId branch) {
-      return orcsApi.getQueryFactory().branchQuery().andId(branch).getResultsAsId().size() == 1;
+      return queryFactory.branchQuery().andId(branch).getResultsAsId().size() == 1;
    }
 
    @Override
    public boolean isUserExists(String userId) {
-      return orcsApi.getQueryFactory().fromBranch(COMMON).and(CoreAttributeTypes.UserId,
+      return queryFactory.fromBranch(COMMON).and(CoreAttributeTypes.UserId,
          userId).getResults().getAtMostOneOrNull() != null;
    }
 
    @Override
    public boolean isArtifactExists(BranchId branch, long artifactUuid) {
-      int matchedArtifacts = orcsApi.getQueryFactory().fromBranch(branch).andUuid(artifactUuid).getResults().size();
-      return matchedArtifacts == 1;
+      return queryFactory.fromBranch(branch).andUuid(artifactUuid).exists();
    }
 
    @Override
    public boolean isArtifactTypeExist(long artifactTypeUuid) {
-      return orcsApi.getOrcsTypes().getArtifactTypes().get(artifactTypeUuid) != null;
+      return orcsTypes.getArtifactTypes().get(artifactTypeUuid) != null;
    }
 
    @Override
    public boolean isRelationTypeExist(long relationTypeUuid) {
-      return orcsApi.getOrcsTypes().getRelationTypes().get(relationTypeUuid) != null;
+      return orcsTypes.getRelationTypes().get(relationTypeUuid) != null;
    }
 
    @Override
    public boolean isAttributeTypeExists(long attributeTypeUuid) {
-      return orcsApi.getOrcsTypes().getAttributeTypes().get(attributeTypeUuid) != null;
+      return orcsTypes.getAttributeTypes().get(attributeTypeUuid) != null;
    }
 
    @Override
    public boolean isAttributeTypeExists(String attributeTypeName) {
-      for (AttributeTypeToken type : orcsApi.getOrcsTypes().getAttributeTypes().getAll()) {
+      for (AttributeTypeToken type : orcsTypes.getAttributeTypes().getAll()) {
          if (type.getName().equals(attributeTypeName)) {
             return true;
          }

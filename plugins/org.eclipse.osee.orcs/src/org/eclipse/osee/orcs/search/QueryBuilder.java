@@ -50,6 +50,8 @@ public interface QueryBuilder extends ArtifactQueryBuilder<QueryBuilder>, Query 
    @Override
    int getCount() throws OseeCoreException;
 
+   boolean exists();
+
    /**
     * Schedule a count search results
     */

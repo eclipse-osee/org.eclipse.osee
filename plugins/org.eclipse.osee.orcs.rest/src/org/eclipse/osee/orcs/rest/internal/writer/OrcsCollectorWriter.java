@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -36,6 +35,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifact;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactToken;
 import org.eclipse.osee.orcs.rest.model.writer.reader.OwArtifactType;
@@ -63,6 +63,7 @@ public class OrcsCollectorWriter {
       this.orcsApi = orcsApi;
       this.collector = collector;
       this.results = results;
+      this.branch = BranchId.valueOf(collector.getBranch().getId());
       idToArtifact = new HashMap<>();
    }
 
@@ -77,8 +78,8 @@ public class OrcsCollectorWriter {
 
    private void processDelete(XResultData results) {
       for (OwArtifactToken owArtifact : collector.getDelete()) {
-         ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(getBranch()).andUuid(
-            owArtifact.getId()).getResults().getAtMostOneOrNull();
+         ArtifactReadable artifact =
+            orcsApi.getQueryFactory().fromBranch(branch).andUuid(owArtifact.getId()).getResults().getAtMostOneOrNull();
          if (artifact == null) {
             results.warningf("Delete Artifact Token %s does not exist in database.  Skipping", owArtifact);
          } else {
@@ -90,8 +91,8 @@ public class OrcsCollectorWriter {
 
    private void processUpdate(XResultData results) {
       for (OwArtifact owArtifact : collector.getUpdate()) {
-         ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(getBranch()).andUuid(
-            owArtifact.getId()).getResults().getAtMostOneOrNull();
+         ArtifactReadable artifact =
+            orcsApi.getQueryFactory().fromBranch(branch).andUuid(owArtifact.getId()).getResults().getAtMostOneOrNull();
 
          if (artifact == null) {
             throw new OseeArgumentException("Artifact not found for OwArtifact %s", owArtifact);
@@ -110,7 +111,8 @@ public class OrcsCollectorWriter {
 
          try {
             for (OwAttribute owAttribute : owArtifact.getAttributes()) {
-               AttributeTypeId attrType = getAttributeType(orcsApi, owAttribute.getType());
+               AttributeTypeId attrType =
+                  getAttributeType(orcsApi.getOrcsTypes().getAttributeTypes(), owAttribute.getType());
 
                if (artifact.getAttributeCount(attrType) <= 1 && owAttribute.getValues().size() <= 1) {
                   String currValue = artifact.getSoleAttributeAsString(attrType, null);
@@ -234,16 +236,15 @@ public class OrcsCollectorWriter {
       return null;
    }
 
-   protected static AttributeTypeId getAttributeType(OrcsApi orcsApi, OwAttributeType attributeType) {
+   protected static AttributeTypeId getAttributeType(AttributeTypes attributeTypeCache, OwAttributeType attributeType) {
       if (attributeType.getId() <= 0L) {
-         for (AttributeTypeToken type : orcsApi.getOrcsTypes().getAttributeTypes().getAll()) {
-            if (type.getName().equals(attributeType.getName())) {
-               return type;
-            }
+         AttributeTypeId attributeTypeId = attributeTypeCache.getByName(attributeType.getName());
+         if (attributeTypeId == null) {
+            throw new OseeArgumentException("Invalid attribute type name [%s]", attributeType);
          }
-         throw new OseeArgumentException("Invalid attribute type name [%s]", attributeType);
+         return attributeTypeId;
       }
-      return orcsApi.getOrcsTypes().getAttributeTypes().get(attributeType.getId());
+      return attributeTypeCache.get(attributeType.getId());
    }
 
    private void processCreate(XResultData results) {
@@ -288,14 +289,14 @@ public class OrcsCollectorWriter {
          IRelationType relType = orcsApi.getOrcsTypes().getRelationTypes().get(owRelType.getId());
 
          OwArtifactToken artToken = relation.getArtToken();
-         BranchId branchId = BranchId.valueOf(collector.getBranch().getId());
+
          ArtifactReadable otherArtifact = null;
 
          if (idToArtifact.containsKey(artToken.getId())) {
             otherArtifact = (ArtifactReadable) idToArtifact.get(artToken.getId());
          } else {
             otherArtifact =
-               orcsApi.getQueryFactory().fromBranch(branchId).andUuid(artToken.getId()).getResults().getExactlyOne();
+               orcsApi.getQueryFactory().fromBranch(branch).andUuid(artToken.getId()).getResults().getExactlyOne();
             idToArtifact.put(artToken.getId(), otherArtifact);
          }
          if (relation.getType().isSideA()) {
@@ -318,7 +319,7 @@ public class OrcsCollectorWriter {
       for (OwAttribute owAttribute : owArtifact.getAttributes()) {
          if (CoreAttributeTypes.Name.notEqual(owAttribute.getType().getId())) {
             OwAttributeType owAttrType = owAttribute.getType();
-            AttributeTypeId attrType = getAttributeType(orcsApi, owAttrType);
+            AttributeTypeId attrType = getAttributeType(orcsApi.getOrcsTypes().getAttributeTypes(), owAttrType);
 
             List<Object> values = owAttribute.getValues();
             for (Object value : values) {
@@ -395,18 +396,10 @@ public class OrcsCollectorWriter {
       return date;
    }
 
-   private BranchId getBranch() {
-      if (branch == null) {
-         branch = orcsApi.getQueryFactory().branchQuery().andId(
-            BranchId.valueOf(collector.getBranch().getId())).getResults().getAtMostOneOrNull();
-      }
-      return branch;
-   }
-
    public TransactionBuilder getTransaction() throws OseeCoreException {
       if (transaction == null) {
          transaction =
-            orcsApi.getTransactionFactory().createTransaction(getBranch(), getUser(), collector.getPersistComment());
+            orcsApi.getTransactionFactory().createTransaction(branch, getUser(), collector.getPersistComment());
       }
       return transaction;
    }

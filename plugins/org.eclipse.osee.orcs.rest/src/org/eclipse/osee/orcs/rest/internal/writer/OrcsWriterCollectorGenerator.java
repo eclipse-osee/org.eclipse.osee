@@ -66,6 +66,7 @@ public class OrcsWriterCollectorGenerator {
       collector.setAsUserId(SystemUser.OseeSystem.getUserId());
       collector.getBranch().setName(COMMON.getName());
       collector.getBranch().setId(COMMON.getId());
+      collector.setBranchId(COMMON);
       collector.getBranch().setData(String.format("[%s]-[%s]", COMMON.getName(), COMMON.getId()));
       createInstructions();
       createCreateSheet();

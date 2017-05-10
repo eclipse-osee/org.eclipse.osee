@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal.writer;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -67,8 +68,9 @@ public class OrcsWriterSheetProcessorForSettings implements RowProcessor {
                if (Strings.isValid(branchTokenStr)) {
                   OwBranch branchToken = factory.getOrCreateBranchToken(branchTokenStr);
                   collector.setBranch(branchToken);
-                  branchToken.setData(OrcsWriterUtil.getData(OrcsWriterUtil.INSTRUCTIONS_AND_SETTINGS_SHEET_NAME, rowCount, colCount,
-                     branchTokenStr));
+                  collector.setBranchId(BranchId.valueOf(branchToken.getId()));
+                  branchToken.setData(OrcsWriterUtil.getData(OrcsWriterUtil.INSTRUCTIONS_AND_SETTINGS_SHEET_NAME,
+                     rowCount, colCount, branchTokenStr));
                }
             } else if (key.equals(OrcsWriterUtil.AS_USER_ID_SETTING)) {
                String userId = row[1];
