@@ -322,13 +322,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
          AtsClientService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).andName(actionTitle).getItems(
             IAtsTeamWorkflow.class).iterator().next();
 
-      if (teamWf == null) {
-         resultData.error(String.format("Couldn't load TeamWf named [%s]", actionTitle));
-      } else {
-         resultData.log("Loaded TeamWf " + teamWf);
-         AtsUtil.openATSAction((Artifact) teamWf.getParentAction().getStoreObject(),
-            AtsOpenOption.OpenOneOrPopupSelect);
-      }
+      resultData.log("Loaded TeamWf " + teamWf);
+      AtsUtil.openATSAction((Artifact) teamWf.getParentAction().getStoreObject(), AtsOpenOption.OpenOneOrPopupSelect);
       validateActionAtStart(teamWf);
       XResultDataUI.report(resultData, title);
    }
@@ -342,13 +337,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
          AtsClientService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).andName(actionTitle).getItems(
             IAtsTeamWorkflow.class).iterator().next();
 
-      if (teamWf == null) {
-         resultData.error(String.format("Couldn't load TeamWf named [%s]", actionTitle));
-      } else {
-         resultData.log("Loaded TeamWf " + teamWf);
-         AtsUtil.openATSAction((Artifact) teamWf.getParentAction().getStoreObject(),
-            AtsOpenOption.OpenOneOrPopupSelect);
-      }
+      resultData.log("Loaded TeamWf " + teamWf);
+      AtsUtil.openATSAction((Artifact) teamWf.getParentAction().getStoreObject(), AtsOpenOption.OpenOneOrPopupSelect);
       validateActionAtEnd(teamWf);
       XResultDataUI.report(resultData, title);
    }
