@@ -16,23 +16,18 @@ output=AST;
 @members {
 
 	private String applicabilityType = null;
-	private String featureId = null;
-	
-	private ArrayList<String> configIds = new ArrayList<>();
-	private HashMap<String, List<String>> featureId_values_map = new HashMap<>();
-   private ArrayList<String> featureOperators = new ArrayList<>();
+	private String id = null;
+
+	private HashMap<String, List<String>> id_values_map = new HashMap<>();
+   private ArrayList<String> operators = new ArrayList<>();
    
    
-   public ArrayList<String> getFeatureOperators() {
-    	return featureOperators;
+   public ArrayList<String> getOperators() {
+    	return operators;
    }
    
-   public ArrayList<String> getConfigIds() {
-    	return configIds;
-   }
-   
-   public HashMap<String, List<String>> getFeatureIdValuesMap() {
-   	return featureId_values_map;
+   public HashMap<String, List<String>> getIdValuesMap() {
+   	return id_values_map;
   	}
   	
   	public String getApplicabilityType() {
@@ -40,51 +35,47 @@ output=AST;
   	}
 }
 
-start                  :  applicability EOF! { featureOperators.removeAll(Collections.singleton(null)); };
+start                  :  applicability EOF! { operators.removeAll(Collections.singleton(null)); };
 
-applicability           : config_applicability { applicabilityType="config"; } 
-								| feature_applicability { applicabilityType="feature"; } ;
+applicability           : config_applicability { applicabilityType="Config"; } 
+								| feature_applicability { applicabilityType="Feature"; } ;
 									
-config_applicability    : 'Configuration[' config_expressions+ ']';
+config_applicability    : 'CONFIGURATION[' expressions+ ']';
 
-config_expressions		:  OR? ID { configIds.add($ID.text); };
+feature_applicability   : 'FEATURE[' expressions+ ']' ;
 
-feature_applicability   : 'Feature[' feature_expressions+ ']' ;
+expressions     : (operator? expression) { operators.add($operator.text); };
 
-feature_expressions     : (operator? feature_expression) { featureOperators.add($operator.text); };
-
-feature_expression		: ID { featureId = $ID.text; 
-										 featureId_values_map.put(featureId, new ArrayList<String>());
+expression		: ID { id = $ID.text.trim(); 
+										 id_values_map.put(id, new ArrayList<String>());
 										} 
-								('=' temp=feature_value)? { if($temp.text == null) {
-																		featureId_values_map.put(featureId, Arrays.asList("Default"));
+								('=' temp=val)? { if($temp.text == null) {
+																		id_values_map.put(id, Arrays.asList("Default"));
 																	  }
 																	};
 																	
-feature_value			:  value	| start_compound ;
+val			:  value	| start_compound ;
 							
-start_compound			: '(' { featureId_values_map.get(featureId).add("("); } 
+start_compound			: '(' { id_values_map.get(id).add("("); } 
 							   compound_value 
-								')' {	featureId_values_map.get(featureId).add(")"); };
+								')' {	id_values_map.get(id).add(")"); };
 
 compound_value			: value+ | multiple_compounds;
 							
 multiple_compounds   : start_compound 
-							  operator { featureId_values_map.get(featureId).add($operator.text); } 
+							  operator { id_values_map.get(id).add($operator.text); } 
 							  compound_value;
 
 value				      : temp=operator? ID { 	
 														if($temp.text != null)
-															featureId_values_map.get(featureId).add($temp.text);
-															
-														featureId_values_map.get(featureId).add($ID.text);
-													
+															id_values_map.get(id).add($temp.text);
+														id_values_map.get(id).add($ID.text.trim());
 												 		};
 
 operator					: AND | OR;
 OR							: '|';
 AND						: '&';
-ID : ('a'..'z'|'A'..'Z')('a'..'z'|'A'..'Z'|'0'..'9'|'_'|'-')* ;
+ID : ('a'..'z'|'A'..'Z')('a'..'z'|'A'..'Z'|'0'..'9'|'_'|'-'|' ')* ;
 
 WS : (' '|'\r'|'\t'|'\n')+ {$channel=HIDDEN;};
 

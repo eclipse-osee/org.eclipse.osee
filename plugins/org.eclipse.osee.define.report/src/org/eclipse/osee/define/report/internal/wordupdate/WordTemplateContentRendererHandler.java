@@ -29,8 +29,10 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class WordTemplateContentRendererHandler {
 
    public static final String PGNUMTYPE_START_1 = "<w:pgNumType [^>]*w:start=\"1\"/>";
-   public static final String PL_STYLE =
+   public static final String PL_STYLE_WITH_RETURN =
       "<w:rPr><w:rStyle w:val=\"ProductLineApplicability\"((?=/>)(/>)|(.*?</w:rStyle>)).*?</w:rPr>";
+   public static final String PL_STYLE =
+      "<w:rStyle w:val=\"ProductLineApplicability\"((?=/>)(/>)|(.*?</w:rStyle>))";
    public static final String PL_HIGHLIGHT =
       "<w:highlight w:val=\"light-gray\"></w:highlight><w:shd w:color=\"auto\" w:fill=\"BFBFBF\" w:val=\"clear\"></w:shd>";
    public static final String EMPTY_PARAGRAPHS = "<w:r wsp:rsidRPr=\"\\d+\"><w:t></w:t></w:r>";
@@ -97,6 +99,7 @@ public class WordTemplateContentRendererHandler {
             }
 
             if (!wtcData.getIsEdit() && wtcData.getBranch().getViewId().notEqual(ArtifactId.SENTINEL)) {
+               data = data.replaceAll(PL_STYLE_WITH_RETURN, "");
                data = data.replaceAll(PL_STYLE, "");
                data = data.replaceAll(PL_HIGHLIGHT, "");
                data = WordMLApplicabilityHandler.previewValidApplicabilityContent(orcsApi, data, wtcData.getBranch());

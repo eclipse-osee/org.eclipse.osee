@@ -1,5 +1,5 @@
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 ApplicabilityGrammar.g 2017-04-26 12:09:41
 package org.eclipse.osee.framework.core.grammar;
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 ApplicabilityGrammar.g 2016-12-19 11:00:12
 
 import org.antlr.runtime.BaseRecognizer;
 import org.antlr.runtime.CharStream;
@@ -13,12 +13,12 @@ import org.antlr.runtime.RecognizerSharedState;
 public class ApplicabilityGrammarLexer extends Lexer {
    public static final int T__9 = 9;
    public static final int T__8 = 8;
-   public static final int OR = 4;
-   public static final int AND = 6;
+   public static final int OR = 6;
+   public static final int AND = 5;
    public static final int T__11 = 11;
    public static final int T__12 = 12;
    public static final int T__13 = 13;
-   public static final int ID = 5;
+   public static final int ID = 4;
    public static final int WS = 7;
    public static final int EOF = -1;
    public static final int T__10 = 10;
@@ -48,10 +48,10 @@ public class ApplicabilityGrammarLexer extends Lexer {
       try {
          int _type = T__8;
          int _channel = DEFAULT_TOKEN_CHANNEL;
-         // ApplicabilityGrammar.g:3:6: ( 'Configuration[' )
-         // ApplicabilityGrammar.g:3:8: 'Configuration['
+         // ApplicabilityGrammar.g:3:6: ( 'CONFIGURATION[' )
+         // ApplicabilityGrammar.g:3:8: 'CONFIGURATION['
          {
-            match("Configuration[");
+            match("CONFIGURATION[");
 
          }
 
@@ -86,10 +86,10 @@ public class ApplicabilityGrammarLexer extends Lexer {
       try {
          int _type = T__10;
          int _channel = DEFAULT_TOKEN_CHANNEL;
-         // ApplicabilityGrammar.g:5:7: ( 'Feature[' )
-         // ApplicabilityGrammar.g:5:9: 'Feature['
+         // ApplicabilityGrammar.g:5:7: ( 'FEATURE[' )
+         // ApplicabilityGrammar.g:5:9: 'FEATURE['
          {
-            match("Feature[");
+            match("FEATURE[");
 
          }
 
@@ -162,8 +162,8 @@ public class ApplicabilityGrammarLexer extends Lexer {
       try {
          int _type = OR;
          int _channel = DEFAULT_TOKEN_CHANNEL;
-         // ApplicabilityGrammar.g:85:10: ( '|' )
-         // ApplicabilityGrammar.g:85:12: '|'
+         // ApplicabilityGrammar.g:76:10: ( '|' )
+         // ApplicabilityGrammar.g:76:12: '|'
          {
             match('|');
 
@@ -181,8 +181,8 @@ public class ApplicabilityGrammarLexer extends Lexer {
       try {
          int _type = AND;
          int _channel = DEFAULT_TOKEN_CHANNEL;
-         // ApplicabilityGrammar.g:86:10: ( '&' )
-         // ApplicabilityGrammar.g:86:12: '&'
+         // ApplicabilityGrammar.g:77:10: ( '&' )
+         // ApplicabilityGrammar.g:77:12: '&'
          {
             match('&');
 
@@ -200,8 +200,8 @@ public class ApplicabilityGrammarLexer extends Lexer {
       try {
          int _type = ID;
          int _channel = DEFAULT_TOKEN_CHANNEL;
-         // ApplicabilityGrammar.g:87:4: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '-' )* )
-         // ApplicabilityGrammar.g:87:6: ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '-' )*
+         // ApplicabilityGrammar.g:78:4: ( ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '-' | ' ' )* )
+         // ApplicabilityGrammar.g:78:6: ( 'a' .. 'z' | 'A' .. 'Z' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '-' | ' ' )*
          {
             if ((input.LA(1) >= 'A' && input.LA(1) <= 'Z') || (input.LA(1) >= 'a' && input.LA(1) <= 'z')) {
                input.consume();
@@ -212,12 +212,12 @@ public class ApplicabilityGrammarLexer extends Lexer {
                throw mse;
             }
 
-            // ApplicabilityGrammar.g:87:25: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '-' )*
+            // ApplicabilityGrammar.g:78:25: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '-' | ' ' )*
             loop1: do {
                int alt1 = 2;
                int LA1_0 = input.LA(1);
 
-               if ((LA1_0 == '-' || (LA1_0 >= '0' && LA1_0 <= '9') || (LA1_0 >= 'A' && LA1_0 <= 'Z') || LA1_0 == '_' || (LA1_0 >= 'a' && LA1_0 <= 'z'))) {
+               if ((LA1_0 == ' ' || LA1_0 == '-' || (LA1_0 >= '0' && LA1_0 <= '9') || (LA1_0 >= 'A' && LA1_0 <= 'Z') || LA1_0 == '_' || (LA1_0 >= 'a' && LA1_0 <= 'z'))) {
                   alt1 = 1;
                }
 
@@ -225,9 +225,10 @@ public class ApplicabilityGrammarLexer extends Lexer {
                   case 1:
                   // ApplicabilityGrammar.g:
                   {
-                     if (input.LA(1) == '-' || (input.LA(1) >= '0' && input.LA(1) <= '9') || (input.LA(
-                        1) >= 'A' && input.LA(1) <= 'Z') || input.LA(
-                           1) == '_' || (input.LA(1) >= 'a' && input.LA(1) <= 'z')) {
+                     if (input.LA(1) == ' ' || input.LA(
+                        1) == '-' || (input.LA(1) >= '0' && input.LA(1) <= '9') || (input.LA(
+                           1) >= 'A' && input.LA(1) <= 'Z') || input.LA(
+                              1) == '_' || (input.LA(1) >= 'a' && input.LA(1) <= 'z')) {
                         input.consume();
 
                      } else {
@@ -258,10 +259,10 @@ public class ApplicabilityGrammarLexer extends Lexer {
       try {
          int _type = WS;
          int _channel = DEFAULT_TOKEN_CHANNEL;
-         // ApplicabilityGrammar.g:89:4: ( ( ' ' | '\\r' | '\\t' | '\\n' )+ )
-         // ApplicabilityGrammar.g:89:6: ( ' ' | '\\r' | '\\t' | '\\n' )+
+         // ApplicabilityGrammar.g:80:4: ( ( ' ' | '\\r' | '\\t' | '\\n' )+ )
+         // ApplicabilityGrammar.g:80:6: ( ' ' | '\\r' | '\\t' | '\\n' )+
          {
-            // ApplicabilityGrammar.g:89:6: ( ' ' | '\\r' | '\\t' | '\\n' )+
+            // ApplicabilityGrammar.g:80:6: ( ' ' | '\\r' | '\\t' | '\\n' )+
             int cnt2 = 0;
             loop2: do {
                int alt2 = 2;
@@ -390,9 +391,9 @@ public class ApplicabilityGrammarLexer extends Lexer {
    static final String DFA3_eotS = "\1\uffff\1\11\1\uffff\1\11\7\uffff\15\11\1\uffff\5\11\1\uffff";
    static final String DFA3_eofS = "\37\uffff";
    static final String DFA3_minS =
-      "\1\11\1\157\1\uffff\1\145\7\uffff\1\156\1\141\1\146\1\164\1\151" + "\1\165\1\147\1\162\1\165\1\145\1\162\1\133\1\141\1\uffff\1\164\1" + "\151\1\157\1\156\1\133\1\uffff";
+      "\1\11\1\117\1\uffff\1\105\7\uffff\1\116\1\101\1\106\1\124\1\111" + "\1\125\1\107\1\122\1\125\1\105\1\122\1\133\1\101\1\uffff\1\124\1" + "\111\1\117\1\116\1\133\1\uffff";
    static final String DFA3_maxS =
-      "\1\174\1\157\1\uffff\1\145\7\uffff\1\156\1\141\1\146\1\164\1\151" + "\1\165\1\147\1\162\1\165\1\145\1\162\1\133\1\141\1\uffff\1\164\1" + "\151\1\157\1\156\1\133\1\uffff";
+      "\1\174\1\117\1\uffff\1\105\7\uffff\1\116\1\101\1\106\1\124\1\111" + "\1\125\1\107\1\122\1\125\1\105\1\122\1\133\1\101\1\uffff\1\124\1" + "\111\1\117\1\116\1\133\1\uffff";
    static final String DFA3_acceptS =
       "\2\uffff\1\2\1\uffff\1\4\1\5\1\6\1\7\1\10\1\11\1\12\15\uffff\1" + "\3\5\uffff\1\1";
    static final String DFA3_specialS = "\37\uffff}>";

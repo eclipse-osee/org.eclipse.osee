@@ -166,8 +166,9 @@ public class UpdateArtifactOperation extends AbstractOperation {
                      XResultData resultData = new XResultData(false);
                      resultData.setTitle("Artifacts with Invalid Applicability Tags");
                      resultData.addRaw(
-                        "The following artifacts contain invalid feature values and/or inconsistent start and ends tags and could not be saved." //
-                           + "\nPlease make sure the feature values used are found in the Feature Definition artifact and the start and end tags match, then try to save the artifact again.\n\n");
+                        "The following artifacts contain invalid feature values and/or inconsistent start and ends tags." //
+                           + "\nPlease make sure the feature values used are found in the FeatureDefinition Artifact and the start and end tags match.\n"
+                           + "This must be fixed before commit into the parent branch occurs.\n\n");
 
                      for (Map.Entry<Long, String> entry : change.getInvalidApplicabilityTagArts().entrySet()) {
                         resultData.addRaw("Artifact ");

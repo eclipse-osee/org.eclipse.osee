@@ -62,7 +62,8 @@ public abstract class AbstractAddRequirementsBranch implements IDbInitialization
          Requirements.HARDWARE_REQUIREMENTS,
          "Verification Tests",
          "Validation Tests",
-         "Integration Tests"}) {
+         "Integration Tests",
+         "Applicability Tests"}) {
          programRoot.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, requirementsBranch, name));
       }
 

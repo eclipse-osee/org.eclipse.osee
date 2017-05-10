@@ -23,6 +23,7 @@ import javax.script.ScriptException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -87,27 +88,27 @@ public class ApplicabilityExpression {
       content = text;
       elseContent = null;
 
-      Matcher match = WordMLApplicabilityHandler.ELSE_PATTERN.matcher(text);
+      Matcher match = WordCoreUtil.ELSE_PATTERN.matcher(text);
 
       if (match.find()) {
          content = text.substring(0, match.start());
 
          elseContent = text.substring(match.end());
          if (isFeature) {
-            elseContent = elseContent.replaceAll(WordMLApplicabilityHandler.ENDFEATURE, "");
-            elseContent = elseContent.replaceAll(WordMLApplicabilityHandler.BEGINFEATURE, "");
+            elseContent = elseContent.replaceAll(WordCoreUtil.ENDFEATURE, "");
+            elseContent = elseContent.replaceAll(WordCoreUtil.BEGINFEATURE, "");
          } else {
-            elseContent = elseContent.replaceAll(WordMLApplicabilityHandler.ENDCONFIG, "");
-            elseContent = elseContent.replaceAll(WordMLApplicabilityHandler.BEGINCONFIG, "");
+            elseContent = elseContent.replaceAll(WordCoreUtil.ENDCONFIG, "");
+            elseContent = elseContent.replaceAll(WordCoreUtil.BEGINCONFIG, "");
          }
 
       }
       if (isFeature) {
-         content = content.replaceAll(WordMLApplicabilityHandler.ENDFEATURE, "");
-         content = content.replaceAll(WordMLApplicabilityHandler.BEGINFEATURE, "");
+         content = content.replaceAll(WordCoreUtil.ENDFEATURE, "");
+         content = content.replaceAll(WordCoreUtil.BEGINFEATURE, "");
       } else {
-         content = content.replaceAll(WordMLApplicabilityHandler.ENDCONFIG, "");
-         content = content.replaceAll(WordMLApplicabilityHandler.BEGINCONFIG, "");
+         content = content.replaceAll(WordCoreUtil.ENDCONFIG, "");
+         content = content.replaceAll(WordCoreUtil.BEGINCONFIG, "");
       }
    }
 

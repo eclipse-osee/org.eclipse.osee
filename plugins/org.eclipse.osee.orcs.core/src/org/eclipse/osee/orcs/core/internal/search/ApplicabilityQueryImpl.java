@@ -16,6 +16,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
@@ -105,14 +107,24 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
-   public HashCollection<String, String> getBranchViewFeatureValues(BranchId branch, ArtifactId viewId) {
-      HashCollection<String, String> toReturn = new HashCollection<>();
+   public Map<String, List<String>> getBranchViewFeatureValues(BranchId branch, ArtifactId viewId) {
+      Map<String, List<String>> toReturn = new TreeMap<>();
       List<ApplicabilityToken> result = getViewApplicabilityTokens(viewId, branch);
 
       for (ApplicabilityToken app : result) {
          if (!app.getName().equals("Base")) {
             String[] nameValue = app.getName().split("=");
-            toReturn.put(nameValue[0].trim().toUpperCase(), nameValue[1].trim());
+            String name = nameValue[0].trim();
+            String value = nameValue[1].trim();
+
+            if (toReturn.containsKey(name)) {
+               List<String> list = new ArrayList<>();
+               list.addAll(toReturn.get(name));
+               list.add(value);
+               toReturn.put(name, list);
+            } else {
+               toReturn.put(name, Arrays.asList(value));
+            }
          }
       }
 

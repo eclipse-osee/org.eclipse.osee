@@ -13,12 +13,15 @@ package org.eclipse.osee.framework.core.util;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock;
+import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock.ApplicabilityType;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarLexer;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarParser;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -30,29 +33,65 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
  */
 
 public class WordCoreUtil {
-   private static String MAX_TAG_OCCURENCE = "30";
-   private static String WORD_ML_TAGS = "(\\<[^>]*?>){0," + MAX_TAG_OCCURENCE + "}";
+   public static String FEATUREAPP = "feature";
+   public static String CONFIGAPP = "config";
+
+   public static String MAX_TAG_OCCURENCE = "30";
+   public static String WORD_ML_TAGS = "(\\<[^>]*?>){0," + MAX_TAG_OCCURENCE + "}";
+
+   public static String TABLE_CELL = "<w:tc>";
+   public static String TABLE = "<w:tbl>";
+   public static String LIST = "<w:listPr>";
 
    public static String END = "E" + WORD_ML_TAGS + "n" + WORD_ML_TAGS + "d ?" + WORD_ML_TAGS + " ?";
    public static String ELSE = "E" + WORD_ML_TAGS + "l" + WORD_ML_TAGS + "s" + WORD_ML_TAGS + "e ?";
    public static String FEATURE =
-      "F" + WORD_ML_TAGS + "e" + WORD_ML_TAGS + "a" + WORD_ML_TAGS + "t" + WORD_ML_TAGS + "u" + WORD_ML_TAGS + "r" + WORD_ML_TAGS + "e ?";
+      "F" + WORD_ML_TAGS + "e" + WORD_ML_TAGS + "a" + WORD_ML_TAGS + "t" + WORD_ML_TAGS + "u" + WORD_ML_TAGS + "r" + WORD_ML_TAGS + "e";
    public static String CONFIG =
-      "C" + WORD_ML_TAGS + "o" + WORD_ML_TAGS + "n" + WORD_ML_TAGS + "f" + WORD_ML_TAGS + "i" + WORD_ML_TAGS + "g" + WORD_ML_TAGS + "u" + WORD_ML_TAGS + "r" + WORD_ML_TAGS + "a" + WORD_ML_TAGS + "t" + WORD_ML_TAGS + "i" + WORD_ML_TAGS + "o" + WORD_ML_TAGS + "n ?";
+      "C" + WORD_ML_TAGS + "o" + WORD_ML_TAGS + "n" + WORD_ML_TAGS + "f" + WORD_ML_TAGS + "i" + WORD_ML_TAGS + "g" + WORD_ML_TAGS + "u" + WORD_ML_TAGS + "r" + WORD_ML_TAGS + "a" + WORD_ML_TAGS + "t" + WORD_ML_TAGS + "i" + WORD_ML_TAGS + "o" + WORD_ML_TAGS + "n";
 
    public static String ENDBRACKETS = WORD_ML_TAGS + " ?(\\[(.*?)\\]) ?";
-   public static String OPTIONAL_ENDBRACKETS = " ?(" + WORD_ML_TAGS + " ?(\\[.*?\\]))?";
-   public static String BEGINFEATURE = FEATURE + ENDBRACKETS;
-   public static String ENDFEATURE = END + FEATURE + OPTIONAL_ENDBRACKETS;
-   public static String BEGINCONFIG = CONFIG + ENDBRACKETS;
-   public static String ENDCONFIG = END + CONFIG + OPTIONAL_ENDBRACKETS;
+   public static String OPTIONAL_ENDBRACKETS = " ?(" + WORD_ML_TAGS + "(\\[.*?\\]))?";
+   public static String BEGINFEATURE = FEATURE + WORD_ML_TAGS + " ?" + ENDBRACKETS;
+   public static String ENDFEATURE = END + WORD_ML_TAGS + FEATURE + OPTIONAL_ENDBRACKETS;
+   public static String BEGINCONFIG = CONFIG + WORD_ML_TAGS + " ?" + ENDBRACKETS;
+   public static String ENDCONFIG = END + WORD_ML_TAGS + CONFIG + OPTIONAL_ENDBRACKETS;
+   public static String ELSE_EXP = "(" + FEATURE + "|" + CONFIG + ")" + " " + ELSE;
+
+   public static String LOGICAL_STRING = WORD_ML_TAGS + " ?(LM|ID).*?";
+
+   public static Pattern LOGICAL_PATTERN =
+      Pattern.compile(LOGICAL_STRING, Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
    public static Pattern FEATURE_CONFIG_PATTERN =
       Pattern.compile("(" + BEGINFEATURE + "(.*?)" + ENDFEATURE + ")|(" + BEGINCONFIG + "(.*?)" + ENDCONFIG + ")",
          Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
-   private static final Pattern tagKiller = Pattern.compile("<.*?>", Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern paragraphPattern = Pattern.compile("<w:p( .*?)?>");
+   public static Pattern ELSE_PATTERN =
+      Pattern.compile(ELSE_EXP, Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+
+   public static String BIN_DATA_STRING = "<w:binData.*?w:name=\"(.*?)\".*?</w:binData>";
+   public static Pattern BIN_DATA_PATTERN =
+      Pattern.compile(BIN_DATA_STRING, Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   public static Pattern IMG_SRC_PATTERN = Pattern.compile("<v:imagedata.*?src=\"(.*?)\".*?/>",
+      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+
+   public static Pattern FULL_PATTERN =
+      Pattern.compile("(" + BEGINFEATURE + ")|(" + ENDFEATURE + ")|(" + BEGINCONFIG + ")|(" + ENDCONFIG + ")",
+         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+
+   public static Pattern START_PATTERN = Pattern.compile("(" + BEGINFEATURE + ") | (" + BEGINCONFIG + ")",
+      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   public static Pattern END_PATTERN = Pattern.compile("(" + ENDFEATURE + ") | (" + ENDCONFIG + ")",
+      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+
+   public static String EMPTY_LIST_REGEX =
+      "<w:p wsp:rsidP=\"[^\"]*?\" wsp:rsidR=\"[^\"]*?\" wsp:rsidRDefault=\"[^\"]*?\"><w:pPr><w:pStyle w:val=\"[^\"]*?\"></w:pStyle><w:listPr><wx:t wx:val=\"([^>]*?)\"></wx:t><wx:font wx:val=\"[^\"]*?\"></wx:font></w:listPr></w:pPr><w:r><w:t></w:t></w:r></w:p>";
+
+   private static final Pattern tagKiller =
+      Pattern.compile("<.*?>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern paragraphPattern =
+      Pattern.compile("<w:p( .*?)?>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
    private static final String AML_ANNOTATION = "<.??aml:annotation.*?>";
    private static final String AML_CONTENT = "<.??aml:content.*?>";
    private static final String DELETIONS = "<w:delText>.*?</w:delText>";
@@ -74,57 +113,86 @@ public class WordCoreUtil {
 
    public static boolean areApplicabilityTagsInvalid(String wordml, BranchId branch, HashCollection<String, String> validFeatureValues) {
 
-      Matcher match = FEATURE_CONFIG_PATTERN.matcher(wordml);
+      Matcher matcher = FULL_PATTERN.matcher(wordml);
+      Stack<ApplicabilityBlock> applicabilityBlocks = new Stack<>();
+      int applicBlockCount = 0;
 
-      boolean isFeature = false;
-      String expression = null;
+      while (matcher.find()) {
+         String beginFeature = matcher.group(1) != null ? WordCoreUtil.textOnly(matcher.group(1)) : null;
+         String beginConfiguration = matcher.group(26) != null ? WordCoreUtil.textOnly(matcher.group(26)) : null;
 
-      while (match.find()) {
-         String plainText = textOnly(match.group());
+         String endFeature = matcher.group(12) != null ? WordCoreUtil.textOnly(matcher.group(12)) : null;
+         String endConfiguration = matcher.group(43) != null ? WordCoreUtil.textOnly(matcher.group(43)) : null;
 
-         if (plainText.startsWith("Feature")) {
-
-            // Check if start and end are inconsistent
-            int featStartTagGroup = 9;
-            int featEndTagGroup = 23;
-
-            String start = textOnly(match.group(featStartTagGroup));
-            String end = match.group(featEndTagGroup);
-            if (end != null) {
-               end = textOnly(end);
-               if (!start.equalsIgnoreCase(end)) {
-                  return true;
-               }
+         if (beginFeature != null && beginFeature.toLowerCase().contains(FEATUREAPP)) {
+            applicBlockCount += 1;
+            applicabilityBlocks.add(createApplicabilityBlock(ApplicabilityType.Feature, beginFeature));
+         } else if (beginConfiguration != null && beginConfiguration.toLowerCase().contains(CONFIGAPP)) {
+            applicBlockCount += 1;
+            applicabilityBlocks.add(createApplicabilityBlock(ApplicabilityType.Configuration, beginConfiguration));
+         } else if ((endFeature != null && endFeature.toLowerCase().contains(FEATUREAPP))) {
+            applicBlockCount -= 1;
+            if (isInvalidFeatureBlock(applicabilityBlocks.pop(), matcher, branch, validFeatureValues)) {
+               return true;
             }
 
-            isFeature = true;
-            expression = "Feature" + textOnly(match.group(featStartTagGroup));
-
-         } else if (plainText.startsWith("Configuration")) {
-
-            // Check if start and end are inconsistent
-            int configStartTagGroup = 38;
-            int configEndTagGroup = 58;
-
-            String start = textOnly(match.group(configStartTagGroup));
-            String end = match.group(configEndTagGroup);
-            if (end != null) {
-               end = textOnly(end);
-               if (!start.equalsIgnoreCase(end)) {
-                  return true;
-               }
+         } else if ((endConfiguration != null && endConfiguration.toLowerCase().contains(CONFIGAPP))) {
+            applicBlockCount -= 1;
+            if (isInvalidConfigurationBlock(applicabilityBlocks.pop(), matcher)) {
+               return true;
             }
-
-            expression = "Configuration" + textOnly(match.group(configStartTagGroup));
-         }
-
-         // Check if applicability expression is valid
-         if (isExpressionInvalid(expression, branch, validFeatureValues, isFeature)) {
-            return true;
          }
       }
 
+      if (applicBlockCount != 0) {
+         return true;
+      }
+
       return false;
+   }
+
+   private static boolean isInvalidConfigurationBlock(ApplicabilityBlock applicabilityBlock, Matcher matcher) {
+      if (applicabilityBlock.getType() != ApplicabilityType.Configuration) {
+         return true;
+      }
+      String optionalEndBracketConfig =
+         matcher.group(60) != null ? WordCoreUtil.textOnly("Configuration" + matcher.group(60)) : null;
+
+      String applicabilityExpression = applicabilityBlock.getApplicabilityExpression();
+      if (optionalEndBracketConfig != null && !optionalEndBracketConfig.equalsIgnoreCase(applicabilityExpression)) {
+         return true;
+      }
+
+      return false;
+   }
+
+   private static boolean isInvalidFeatureBlock(ApplicabilityBlock applicabilityBlock, Matcher matcher, BranchId branch, HashCollection<String, String> validFeatureValues) {
+
+      if (applicabilityBlock.getType() != ApplicabilityType.Feature) {
+         return true;
+      }
+      String applicabilityExpression = applicabilityBlock.getApplicabilityExpression();
+
+      String optionalEndBracketFeature =
+         matcher.group(23) != null ? WordCoreUtil.textOnly("Feature" + matcher.group(23)) : null;
+
+      if (optionalEndBracketFeature != null && !optionalEndBracketFeature.equalsIgnoreCase(applicabilityExpression)) {
+         return true;
+      }
+
+      if (isExpressionInvalid(applicabilityExpression, branch, validFeatureValues)) {
+         return true;
+      }
+
+      return false;
+   }
+
+   private static ApplicabilityBlock createApplicabilityBlock(ApplicabilityType applicType, String beginExpression) {
+      ApplicabilityBlock beginApplic = new ApplicabilityBlock();
+      beginApplic.setType(applicType);
+      beginExpression = beginExpression.replace(" [", "[");
+      beginApplic.setApplicabilityExpression(beginExpression);
+      return beginApplic;
    }
 
    public static String textOnly(String str) {
@@ -133,8 +201,8 @@ public class WordCoreUtil {
       return Xml.unescape(str).toString();
    }
 
-   public static boolean isExpressionInvalid(String expression, BranchId branch, HashCollection<String, String> validFeatureValues, boolean isFeature) {
-      ApplicabilityGrammarLexer lex = new ApplicabilityGrammarLexer(new ANTLRStringStream(expression));
+   public static boolean isExpressionInvalid(String expression, BranchId branch, HashCollection<String, String> validFeatureValues) {
+      ApplicabilityGrammarLexer lex = new ApplicabilityGrammarLexer(new ANTLRStringStream(expression.toUpperCase()));
       ApplicabilityGrammarParser parser = new ApplicabilityGrammarParser(new CommonTokenStream(lex));
 
       try {
@@ -143,24 +211,25 @@ public class WordCoreUtil {
          return true;
       }
 
-      if (isFeature) {
-         HashMap<String, List<String>> featureIdValuesMap = parser.getFeatureIdValuesMap();
+      HashMap<String, List<String>> featureIdValuesMap = parser.getIdValuesMap();
 
-         for (String featureId : featureIdValuesMap.keySet()) {
-            if (validFeatureValues.containsKey(featureId.toUpperCase())) {
-               List<String> values = featureIdValuesMap.get(featureId);
-               if (values.contains("Default")) {
+      for (String featureId : featureIdValuesMap.keySet()) {
+         if (validFeatureValues.containsKey(featureId.toUpperCase())) {
+            List<String> values = featureIdValuesMap.get(featureId);
+            if (values.contains("Default")) {
+               continue;
+            }
+            Collection<String> validValues = validFeatureValues.getValues(featureId.toUpperCase());
+            for (String val : values) {
+               if (val.equals("(") || val.equals(")") || val.equals("|") || val.equals("&")) {
                   continue;
                }
-               Collection<String> validValues = validFeatureValues.getValues(featureId.toUpperCase());
-               for (String val : values) {
-                  if (!containsIgnoreCase(validValues, val)) {
-                     return true;
-                  }
+               if (!containsIgnoreCase(validValues, val)) {
+                  return true;
                }
-            } else {
-               return true;
             }
+         } else {
+            return true;
          }
       }
 
@@ -174,5 +243,41 @@ public class WordCoreUtil {
          }
       }
       return false;
+   }
+
+   public static int endIndexOf(String str, String regex) {
+      int toReturn = -1;
+
+      Pattern pattern = Pattern.compile(regex);
+      Matcher matcher = pattern.matcher(str);
+      if (matcher.find()) {
+         toReturn = matcher.end();
+      }
+
+      return toReturn;
+   }
+
+   public static int lastIndexOf(String str, String regex) {
+      int toReturn = -1;
+
+      Pattern pattern = Pattern.compile(regex);
+      Matcher matcher = pattern.matcher(str);
+      while (matcher.find()) {
+         toReturn = matcher.start();
+      }
+
+      return toReturn;
+   }
+
+   public static int indexOf(String str, String regex) {
+      int toReturn = -1;
+
+      Pattern pattern = Pattern.compile(regex);
+      Matcher matcher = pattern.matcher(str);
+      if (matcher.find()) {
+         toReturn = matcher.start();
+      }
+
+      return toReturn;
    }
 }

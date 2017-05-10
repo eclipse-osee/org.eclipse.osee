@@ -33,37 +33,53 @@ public class WordApplicabilityTest {
    private static final String TEST_INCONSISTENT_TAGS = "support/WordInconsistentApplicabilityTags.xml";
    private static final String TEST_INVALID_TAGS = "support/WordInvalidApplicabilityTags.xml";
    private static final String TEST_VALID_TAGS = "support/WordValidApplicabilityTags.xml";
+   private static final String TEST_ElSE_TAGS = "support/WordApplicabilityElseTags.xml";
+   private static final String TEST_EMBEDDED_TAGS = "support/WordApplicabilityEmbeddedTags.xml";
 
    private OseeClient oseeClient;
+   HashCollection<String, String> validFeatureValuesForBranch = null;
 
    @Before
    public void setup() {
       oseeClient = ServiceUtil.getOseeClient();
+      validFeatureValuesForBranch = getValidFeatureValuesForBranch(DemoBranches.SAW_Bld_1);
    }
 
    @Test
-   public void testSaveInconsistentApplicabilityTags() throws IOException {
+   public void testInconsistentApplicabilityTags() throws IOException {
       String content = Lib.fileToString(getClass(), TEST_INCONSISTENT_TAGS);
-      HashCollection<String, String> validFeatureValuesForBranch =
-         getValidFeatureValuesForBranch(DemoBranches.SAW_Bld_1);
+
       assertTrue(
          WordCoreUtil.areApplicabilityTagsInvalid(content, DemoBranches.SAW_Bld_1, validFeatureValuesForBranch));
    }
 
    @Test
-   public void testSaveInvalidApplicabilityTags() throws IOException {
+   public void testInvalidApplicabilityTags() throws IOException {
       String content = Lib.fileToString(getClass(), TEST_INVALID_TAGS);
-      HashCollection<String, String> validFeatureValuesForBranch =
-         getValidFeatureValuesForBranch(DemoBranches.SAW_Bld_1);
+
       assertTrue(
          WordCoreUtil.areApplicabilityTagsInvalid(content, DemoBranches.SAW_Bld_1, validFeatureValuesForBranch));
    }
 
    @Test
-   public void testSaveValidApplicabilityTags() throws IOException {
+   public void testValidElseApplicabilityTags() throws IOException {
+      String content = Lib.fileToString(getClass(), TEST_ElSE_TAGS);
+
+      assertFalse(
+         WordCoreUtil.areApplicabilityTagsInvalid(content, DemoBranches.SAW_Bld_1, validFeatureValuesForBranch));
+   }
+
+   @Test
+   public void testValidEmbeddedApplicabilityTags() throws IOException {
+      String content = Lib.fileToString(getClass(), TEST_EMBEDDED_TAGS);
+
+      assertFalse(
+         WordCoreUtil.areApplicabilityTagsInvalid(content, DemoBranches.SAW_Bld_1, validFeatureValuesForBranch));
+   }
+
+   @Test
+   public void testValidApplicabilityTags() throws IOException {
       String content = Lib.fileToString(getClass(), TEST_VALID_TAGS);
-      HashCollection<String, String> validFeatureValuesForBranch =
-         getValidFeatureValuesForBranch(DemoBranches.SAW_Bld_1);
 
       assertFalse(
          WordCoreUtil.areApplicabilityTagsInvalid(content, DemoBranches.SAW_Bld_1, validFeatureValuesForBranch));

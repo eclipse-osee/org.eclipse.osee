@@ -13,12 +13,12 @@ package org.eclipse.osee.orcs.search;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -39,7 +39,7 @@ public interface ApplicabilityQuery {
 
    List<ApplicabilityToken> getViewApplicabilityTokens(ArtifactId artId, BranchId branch);
 
-   HashCollection<String, String> getBranchViewFeatureValues(BranchId branch, ArtifactId viewId);
+   Map<String, List<String>> getBranchViewFeatureValues(BranchId branch, ArtifactId viewId);
 
    List<BranchViewData> getViews();
 }
