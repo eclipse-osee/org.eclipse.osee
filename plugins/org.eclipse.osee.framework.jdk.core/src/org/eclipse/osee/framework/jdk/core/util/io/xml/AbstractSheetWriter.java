@@ -44,13 +44,14 @@ public abstract class AbstractSheetWriter implements ISheetWriter {
    @Override
    public void writeRow(Object... row) throws IOException {
       if (row[0] instanceof Collection<?>) {
+         int rowLength = ((Collection<?>)row[0]).size();
          Collection<?> values = (Collection<?>) row[0];
          for (Object obj : values) {
-            writeCell(obj);
+            writeCell(obj, implicitCellIndex, rowLength);
          }
       }
       for (int i = 0; i < row.length; i++) {
-         writeCell(row[i]);
+         writeCell(row[i], implicitCellIndex, row.length);
       }
 
       endRow();
