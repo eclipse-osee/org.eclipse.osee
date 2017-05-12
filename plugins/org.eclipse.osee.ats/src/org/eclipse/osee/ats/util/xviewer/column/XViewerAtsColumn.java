@@ -119,13 +119,13 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
     */
    public Object getBackingData(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
       XViewerAtsColumn xViewerAtsColumn;
-      if (xCol.equals(AtsColumnId.CreatedDate.getId())) {
+      if (xCol.getId().equals(AtsColumnId.CreatedDate.getId())) {
          xViewerAtsColumn = CreatedDateColumnUI.getInstance();
-      } else if (xCol.equals(AtsColumnId.ReleaseDate.getId())) {
+      } else if (xCol.getId().equals(AtsColumnId.ReleaseDate.getId())) {
          xViewerAtsColumn = ReleaseDateColumn.getInstance();
-      } else if (xCol.equals(AtsColumnId.CompletedDate.getId())) {
+      } else if (xCol.getId().equals(AtsColumnId.CompletedDate.getId())) {
          xViewerAtsColumn = CompletedDateColumnUI.getInstance();
-      } else if (xCol.equals(AtsColumnId.CancelledDate.getId())) {
+      } else if (xCol.getId().equals(AtsColumnId.CancelledDate.getId())) {
          xViewerAtsColumn = CancelledDateColumnUI.getInstance();
       } else {
          return null;
