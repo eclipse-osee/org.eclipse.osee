@@ -29,8 +29,9 @@ public class XButton extends XButtonCommon {
 
    protected Label button;
    private Composite parent;
-   private Composite bComp;
+   protected Composite bComp;
    private boolean labelAfter = true;
+   protected int numColumns = 2;
 
    public XButton(String displayLabel) {
       super(displayLabel);
@@ -57,7 +58,7 @@ public class XButton extends XButtonCommon {
       this.parent = parent;
 
       bComp = new Composite(parent, SWT.NONE);
-      bComp.setLayout(ALayout.getZeroMarginLayout(2, false));
+      bComp.setLayout(ALayout.getZeroMarginLayout(numColumns, false));
       bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       if (toolkit != null) {
          toolkit.adapt(bComp);
@@ -106,6 +107,7 @@ public class XButton extends XButtonCommon {
             labelWidget.setToolTipText(getToolTip());
          }
       }
+
       button.setLayoutData(gd);
       validate();
       button.setEnabled(isEditable());
