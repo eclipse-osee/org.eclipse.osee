@@ -22,6 +22,7 @@ public enum WorkType {
    Test,
    Test_Librarian,
    Requirements,
+   ImplDetails("Impl Details"),
    Applicability,
    SW_Design,
    SW_TechAppr,
