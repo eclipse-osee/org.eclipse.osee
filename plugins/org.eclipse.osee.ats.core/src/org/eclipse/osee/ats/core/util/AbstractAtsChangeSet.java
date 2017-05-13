@@ -41,7 +41,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    protected String comment;
-   protected final List<AtsRelationChange> relations = new ArrayList<>();
+   protected final Set<AtsRelationChange> relations = new CopyOnWriteArraySet<>();
    protected final Set<IAtsObject> atsObjects = new CopyOnWriteArraySet<>();
    protected final Set<ArtifactId> artifacts = new CopyOnWriteArraySet<>();
    protected final Set<IAtsObject> deleteAtsObjects = new CopyOnWriteArraySet<>();
@@ -70,6 +70,8 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
          atsObjects.add((IAtsObject) obj);
       } else if (obj instanceof ArtifactId) {
          artifacts.add((ArtifactId) obj);
+      } else if (obj instanceof AtsRelationChange) {
+         relations.add((AtsRelationChange) obj);
       } else {
          throw new OseeArgumentException("Object not supported: " + obj);
       }
@@ -89,6 +91,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    @Override
    public void clear() {
+      relations.clear();
       atsObjects.clear();
       artifacts.clear();
       deleteArtifacts.clear();
@@ -104,7 +107,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    @Override
    public boolean isEmpty() {
-      return artifacts.isEmpty() && deleteArtifacts.isEmpty() && atsObjects.isEmpty() && deleteAtsObjects.isEmpty();
+      return artifacts.isEmpty() && deleteArtifacts.isEmpty() && atsObjects.isEmpty() && deleteAtsObjects.isEmpty() && relations.isEmpty();
    }
 
    @Override
