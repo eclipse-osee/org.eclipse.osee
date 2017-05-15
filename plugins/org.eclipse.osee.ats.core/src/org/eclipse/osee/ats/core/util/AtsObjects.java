@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -121,6 +122,17 @@ public class AtsObjects {
          }
       }
       return artifacts;
+   }
+
+   @SuppressWarnings("unchecked")
+   public static <T> Collection<T> getActive(Collection<? extends IAtsConfigObject> objects) {
+      List<T> active = new LinkedList<>();
+      for (IAtsConfigObject obj : objects) {
+         if (obj.isActive()) {
+            active.add((T) obj);
+         }
+      }
+      return active;
    }
 
 }

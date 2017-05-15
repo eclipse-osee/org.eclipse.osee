@@ -86,7 +86,7 @@ public class NewActionToGoalAction extends Action {
          }
          NewActionWizard wizard = new NewActionWizard();
          if (!ais.isEmpty()) {
-            wizard.setInitialAias(ais);
+            wizard.getSelectableAis(ais);
          }
          wizard.setNewActionListener(new NewActionAdapter() {
 

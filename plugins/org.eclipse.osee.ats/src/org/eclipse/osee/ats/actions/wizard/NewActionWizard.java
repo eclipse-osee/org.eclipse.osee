@@ -19,13 +19,13 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
@@ -42,7 +42,7 @@ public class NewActionWizard extends Wizard implements INewWizard {
    protected NewActionPage1 page1;
    protected NewActionPage2 page2;
    protected NewActionPage3 page3;
-   private Collection<IAtsActionableItem> initialAias;
+   private Collection<IAtsActionableItem> initialAias, selectableAis;
    private String initialDescription;
    private NewActionJob job = null;
    private INewActionListener newActionListener;
@@ -128,9 +128,9 @@ public class NewActionWizard extends Wizard implements INewWizard {
       return ((XDate) page2.getXWidget(NewActionPage2.DEADLINE)).getDate();
    }
 
-   public void notifyAtsWizardItemExtensions(Artifact action, IAtsChangeSet changes) {
+   public void notifyAtsWizardItemExtensions(ActionResult actionResult, IAtsChangeSet changes) {
       if (page3 != null) {
-         page3.notifyAtsWizardItemExtensions(action, changes);
+         page3.notifyAtsWizardItemExtensions(actionResult, changes);
       }
    }
 
@@ -174,6 +174,14 @@ public class NewActionWizard extends Wizard implements INewWizard {
 
    public void setOpenOnComplete(boolean openOnComplete) {
       this.openOnComplete = openOnComplete;
+   }
+
+   public void getSelectableAis(Collection<IAtsActionableItem> ais) {
+      this.selectableAis = ais;
+   }
+
+   public Collection<IAtsActionableItem> getSelectableAis() {
+      return selectableAis;
    }
 
 }

@@ -76,7 +76,7 @@ public class NewActionJob extends Job {
             AtsClientService.get().getUserService().getCurrentUser(), newActionListener, changes);
 
          if (wizard != null) {
-            wizard.notifyAtsWizardItemExtensions((Artifact) result.getFirstTeam().getStoreObject(), changes);
+            wizard.notifyAtsWizardItemExtensions(result, changes);
          }
 
          if (monitor != null) {

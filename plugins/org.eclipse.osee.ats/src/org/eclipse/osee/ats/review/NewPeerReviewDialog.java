@@ -83,7 +83,7 @@ public class NewPeerReviewDialog extends EntryDialog {
    }
 
    private void createAisSelection(Composite parent) {
-      Pair<FilteredCheckboxTree, Text> results = NewActionPage1.createActionableItemTreeViewer(parent);
+      Pair<FilteredCheckboxTree, Text> results = NewActionPage1.createActionableItemTreeViewer(parent, null);
       aiFilteredTree = results.getFirst();
       descriptionLabel = results.getSecond();
       aiFilteredTree.getCheckboxTreeViewer().addCheckStateListener(new CheckStateListener());

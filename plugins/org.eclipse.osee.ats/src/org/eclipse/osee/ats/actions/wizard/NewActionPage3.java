@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.core.util.Result;
@@ -29,9 +30,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -59,11 +60,11 @@ public class NewActionPage3 extends WizardPage {
       getWizardXWidgetExtensions();
    }
 
-   public void notifyAtsWizardItemExtensions(Artifact action, IAtsChangeSet changes) {
+   public void notifyAtsWizardItemExtensions(ActionResult actionResult, IAtsChangeSet changes) {
       for (IAtsWizardItem item : wizardExtensionItems) {
          try {
             if (item.hasWizardXWidgetExtensions(wizard.getSelectedIAtsActionableItems())) {
-               item.wizardCompleted(action, wizard, changes);
+               item.wizardCompleted(actionResult, wizard, changes);
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -90,18 +91,26 @@ public class NewActionPage3 extends WizardPage {
          if (page == null) {
             StringBuffer stringBuffer = new StringBuffer(500);
             stringBuffer.append("<WorkPage>");
+            IDynamicWidgetLayoutListener dynamicWidgetLayoutListener = null;
             for (IAtsWizardItem item : wizardExtensionItems) {
-               try {
-                  if (item.hasWizardXWidgetExtensions(wizard.getSelectedIAtsActionableItems())) {
+               boolean hasWizardXWidgetExtensions =
+                  item.hasWizardXWidgetExtensions(wizard.getSelectedIAtsActionableItems());
+               if (hasWizardXWidgetExtensions) {
+                  stringBuffer.append(
+                     "<XWidget displayName=\"--- Extra fields for " + item.getName() + " ---\" xwidgetType=\"XLabel\" horizontalLabel=\"true\" toolTip=\"These fields are available for only the team workflow specified here.\"/>");
+                  try {
+                     if (item instanceof IDynamicWidgetLayoutListener) {
+                        dynamicWidgetLayoutListener = (IDynamicWidgetLayoutListener) item;
+                     }
                      item.getWizardXWidgetExtensions(wizard.getSelectedIAtsActionableItems(), stringBuffer);
+                  } catch (Exception ex) {
+                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }
-               } catch (Exception ex) {
-                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
             stringBuffer.append("</WorkPage>");
-
-            page = new XWidgetPage(stringBuffer.toString(), ATSXWidgetOptionResolver.getInstance());
+            page = new XWidgetPage(stringBuffer.toString(), ATSXWidgetOptionResolver.getInstance(),
+               dynamicWidgetLayoutListener);
             page.createBody(null, comp, null, xModListener, true);
 
             comp.layout();

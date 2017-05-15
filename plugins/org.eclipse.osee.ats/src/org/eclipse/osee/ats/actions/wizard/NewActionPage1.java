@@ -112,7 +112,7 @@ public class NewActionPage1 extends WizardPage {
             }
          });
 
-         Pair<FilteredCheckboxTree, Text> results = createActionableItemTreeViewer(comp);
+         Pair<FilteredCheckboxTree, Text> results = createActionableItemTreeViewer(comp, wizard.getSelectableAis());
          treeViewer = results.getFirst();
          descriptionLabel = results.getSecond();
          treeViewer.getCheckboxTreeViewer().addCheckStateListener(new ICheckStateListener() {
@@ -136,7 +136,7 @@ public class NewActionPage1 extends WizardPage {
       }
    }
 
-   public static Pair<FilteredCheckboxTree, Text> createActionableItemTreeViewer(Composite comp) {
+   public static Pair<FilteredCheckboxTree, Text> createActionableItemTreeViewer(Composite comp, Collection<IAtsActionableItem> selectableAis) {
       Composite aiComp = new Composite(comp, SWT.NONE);
       aiComp.setLayout(new GridLayout(1, false));
       aiComp.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -148,9 +148,13 @@ public class NewActionPage1 extends WizardPage {
       treeViewer.getViewer().setContentProvider(new AITreeContentProvider(Active.Active));
       treeViewer.getViewer().setLabelProvider(new AtsObjectLabelProvider());
       try {
-         List<IAtsActionableItem> topLevelActionableItems =
-            ActionableItems.getTopLevelActionableItems(Active.Active, AtsClientService.get().getQueryService());
-         treeViewer.getViewer().setInput(topLevelActionableItems);
+         if (selectableAis == null) {
+            List<IAtsActionableItem> topLevelActionableItems =
+               ActionableItems.getTopLevelActionableItems(Active.Active, AtsClientService.get().getQueryService());
+            treeViewer.getViewer().setInput(topLevelActionableItems);
+         } else {
+            treeViewer.getViewer().setInput(selectableAis);
+         }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

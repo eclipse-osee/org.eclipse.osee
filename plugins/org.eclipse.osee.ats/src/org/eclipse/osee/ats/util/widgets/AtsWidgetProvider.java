@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.core.client.review.defect.AtsXDefectValidator;
 import org.eclipse.osee.ats.core.client.review.role.AtsXUserRoleValidator;
 import org.eclipse.osee.ats.core.client.validator.AtsOperationalImpactValidator;
 import org.eclipse.osee.ats.core.client.validator.AtsOperationalImpactWithWorkaroundValidator;
+import org.eclipse.osee.ats.editor.widget.XAssigneesListWidget;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.XVersionList;
@@ -149,6 +150,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XWorkPackageWidget();
       } else if (widgetName.equals(XHyperlabelWorkflowApplicabilitySelection.WIDGET_ID)) {
          return new XHyperlabelWorkflowApplicabilitySelection();
+      } else if (widgetName.equals(XAssigneesListWidget.WIDGET_ID)) {
+         return new XAssigneesListWidget();
       }
 
       return toReturn;
