@@ -191,4 +191,22 @@ public abstract class XHyperlinkLabelCmdValueSelection extends GenericXWidget {
    public void setTruncateValueLength(Integer truncateValueLength) {
       this.truncateValueLength = truncateValueLength;
    }
+
+   public void setDisableHyperLink() {
+      if (selectHyperLinkLabel != null && !selectHyperLinkLabel.isDisposed()) {
+         selectHyperLinkLabel.setEnabled(false);
+      }
+      if (clearHyperLinkLabel != null && !clearHyperLinkLabel.isDisposed()) {
+         clearHyperLinkLabel.setEnabled(false);
+      }
+   }
+
+   public void setEnableHyperLink() {
+      if (selectHyperLinkLabel != null && !selectHyperLinkLabel.isDisposed()) {
+         selectHyperLinkLabel.setEnabled(true);
+      }
+      if (clearHyperLinkLabel != null && !clearHyperLinkLabel.isDisposed()) {
+         clearHyperLinkLabel.setEnabled(true);
+      }
+   }
 }
