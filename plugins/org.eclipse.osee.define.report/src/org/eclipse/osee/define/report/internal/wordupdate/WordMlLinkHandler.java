@@ -215,9 +215,9 @@ public class WordMlLinkHandler {
       List<String> guidsFromLinks = new ArrayList<>(matchMap.keySet());
 
       artifactsFromSearch = findArtifacts(queryFactory, branch, guidsFromLinks, txId);
-      boolean isMergeBranch = queryFactory.branchQuery().andIds(branch).andIsOfType(BranchType.MERGE).getCount() > 0;
+      boolean isMergeBranch = queryFactory.branchQuery().andId(branch).andIsOfType(BranchType.MERGE).getCount() > 0;
       if (guidsFromLinks.size() != artifactsFromSearch.size() && isMergeBranch) {
-         BranchReadable branchReadable = queryFactory.branchQuery().andIds(branch).getResults().getExactlyOne();
+         BranchReadable branchReadable = queryFactory.branchQuery().andId(branch).getResults().getExactlyOne();
          List<String> unknownGuids = getGuidsNotFound(guidsFromLinks, artifactsFromSearch);
 
          List<ArtifactReadable> union = new ArrayList<>();

@@ -116,8 +116,8 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
    }
 
    @Override
-   public T andIds(BranchId... ids) throws OseeCoreException {
-      return andIds(Arrays.asList(ids));
+   public T andId(BranchId branch) {
+      return andIds(Arrays.asList(branch));
    }
 
    @Override

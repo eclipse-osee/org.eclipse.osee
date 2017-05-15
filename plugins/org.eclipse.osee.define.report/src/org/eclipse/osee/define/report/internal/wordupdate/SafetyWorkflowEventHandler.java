@@ -78,7 +78,7 @@ public class SafetyWorkflowEventHandler implements EventHandler {
 
          checkEventObjects(branchId, userArt); // throws exception if incorrect
 
-         BranchReadable branch = queryFactory.branchQuery().andIds((BranchId) branchId).getResults().getExactlyOne();
+         BranchReadable branch = queryFactory.branchQuery().andId((BranchId) branchId).getResults().getExactlyOne();
          ArtifactId workflowId = branch.getAssociatedArtifact();
          if (workflowId.notEqual(SystemUser.OseeSystem)) {
             ArtifactReadable assocArt = atsServer.getQuery().andId(workflowId).andIsOfType(

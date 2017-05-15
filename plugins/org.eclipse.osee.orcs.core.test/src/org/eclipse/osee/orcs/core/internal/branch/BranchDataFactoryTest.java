@@ -63,7 +63,7 @@ public class BranchDataFactoryTest {
       when(queryFactory.branchQuery()).thenReturn(branchQuery);
       factory = new BranchDataFactory(queryFactory);
 
-      when(branchQuery.andIds(txRecord.getBranch())).thenReturn(branchQuery);
+      when(branchQuery.andId(txRecord.getBranch())).thenReturn(branchQuery);
       when(branchQuery.getResults()).thenReturn(branchResults);
       when(branchResults.getExactlyOne()).thenReturn(parentBranch);
 
@@ -120,7 +120,7 @@ public class BranchDataFactoryTest {
       CreateBranchData result = factory.createCopyTxBranchData(branch, author, txRecord, ArtifactId.SENTINEL);
 
       verify(txQuery).andTxId(txRecord);
-      verify(branchQuery).andIds(txRecord.getBranch());
+      verify(branchQuery).andId(txRecord.getBranch());
 
       String comment = String.format("Transaction %d copied from %s to create Branch %s", txRecord.getId(),
          parentBranch.getName(), branch.getName());
@@ -135,7 +135,7 @@ public class BranchDataFactoryTest {
       CreateBranchData result = factory.createPortBranchData(branch, author, txRecord, ArtifactId.SENTINEL);
 
       verify(txQuery).andTxId(txRecord);
-      verify(branchQuery).andIds(txRecord.getBranch());
+      verify(branchQuery).andId(txRecord.getBranch());
 
       String comment = String.format("Transaction %d ported from %s to create Branch %s", txRecord.getId(),
          parentBranch.getName(), branch.getName());

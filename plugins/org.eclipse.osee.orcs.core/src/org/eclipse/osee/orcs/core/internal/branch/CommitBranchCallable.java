@@ -42,9 +42,9 @@ public class CommitBranchCallable extends AbstractBranchCallable<TransactionToke
       Conditions.checkNotNull(source, "sourceBranch");
       Conditions.checkNotNull(destination, "destinationBranch");
 
-      BranchReadable sourceBranch = queryFactory.branchQuery().andIds(source).getResults().getExactlyOne();
+      BranchReadable sourceBranch = queryFactory.branchQuery().andId(source).getResults().getExactlyOne();
       TransactionToken sourceHead = queryFactory.transactionQuery().andIsHead(source).getResults().getExactlyOne();
-      BranchReadable destinationBranch = queryFactory.branchQuery().andIds(destination).getResults().getExactlyOne();
+      BranchReadable destinationBranch = queryFactory.branchQuery().andId(destination).getResults().getExactlyOne();
       TransactionToken destinationHead =
          queryFactory.transactionQuery().andIsHead(destination).getResults().getExactlyOne();
 

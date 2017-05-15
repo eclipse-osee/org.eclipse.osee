@@ -54,6 +54,6 @@ public class CreateBranchCallable extends AbstractBranchCallable<BranchReadable>
          getBranchStore().createBranch(branchData);
       }
 
-      return queryFactory.branchQuery().andIds(branchData.getBranch()).getResults().getExactlyOne();
+      return queryFactory.branchQuery().andId(branchData.getBranch()).getResults().getExactlyOne();
    }
 }

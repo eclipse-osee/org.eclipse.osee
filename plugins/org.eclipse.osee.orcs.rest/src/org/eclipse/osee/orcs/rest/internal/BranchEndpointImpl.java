@@ -137,7 +137,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    private BranchReadable getBranchById(BranchId branch) {
-      ResultSet<BranchReadable> results = newBranchQuery().andIds(branch)//
+      ResultSet<BranchReadable> results = newBranchQuery().andId(branch)//
          .includeArchived()//
          .includeDeleted()//
          .getResults();

@@ -156,7 +156,7 @@ public class HtmlWriter {
    }
 
    private IOseeBranch getBranchFromId(BranchId branch) {
-      return OrcsApplication.getOrcsApi().getQueryFactory().branchQuery().andIds(
+      return OrcsApplication.getOrcsApi().getQueryFactory().branchQuery().andId(
          branch).getResultsAsId().getExactlyOne();
    }
 

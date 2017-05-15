@@ -46,7 +46,7 @@ public class PurgeBranchCallable extends AbstractBranchCallable<List<BranchId>> 
       Conditions.checkNotNull(branchToken, "branchToPurge");
 
       BranchQuery branchQuery = queryFactory.branchQuery();
-      branchQuery.andIds(branchToken);
+      branchQuery.andId(branchToken);
       if (isRecursive) {
          branchQuery.andIsChildOf(branchToken);
       }

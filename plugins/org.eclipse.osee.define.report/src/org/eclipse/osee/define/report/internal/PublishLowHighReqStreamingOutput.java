@@ -64,7 +64,7 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
       this.logger = logger;
       this.queryApi = orcsApi.getQueryFactory();
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
-      this.branch = query.andIds(branch).getResults().getExactlyOne();
+      this.branch = query.andId(branch).getResults().getExactlyOne();
       this.types = orcsApi.getOrcsTypes();
       includeOnlyArtifactTypes = convertStringTypes(selectedTypes);
    }

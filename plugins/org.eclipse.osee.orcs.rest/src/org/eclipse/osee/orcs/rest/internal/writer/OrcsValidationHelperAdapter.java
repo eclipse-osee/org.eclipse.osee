@@ -29,7 +29,7 @@ public class OrcsValidationHelperAdapter implements IOrcsValidationHelper {
 
    @Override
    public boolean isBranchExists(BranchId branch) {
-      return orcsApi.getQueryFactory().branchQuery().andIds(branch).getResultsAsId().size() == 1;
+      return orcsApi.getQueryFactory().branchQuery().andId(branch).getResultsAsId().size() == 1;
    }
 
    @Override

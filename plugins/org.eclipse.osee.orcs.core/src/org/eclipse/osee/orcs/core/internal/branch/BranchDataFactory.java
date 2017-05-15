@@ -65,7 +65,7 @@ public class BranchDataFactory {
       TransactionQuery txQuery = queryFactory.transactionQuery();
       BranchQuery branchQuery = queryFactory.branchQuery();
       TransactionToken fromTx = txQuery.andTxId(fromTransaction).getTokens().getExactlyOne();
-      IOseeBranch parent = branchQuery.andIds(fromTx.getBranch()).getResults().getExactlyOne();
+      IOseeBranch parent = branchQuery.andId(fromTx.getBranch()).getResults().getExactlyOne();
 
       String creationComment = String.format("Transaction %d %s from %s to create Branch %s", fromTransaction.getId(),
          verb, parent.getName(), branch.getName());

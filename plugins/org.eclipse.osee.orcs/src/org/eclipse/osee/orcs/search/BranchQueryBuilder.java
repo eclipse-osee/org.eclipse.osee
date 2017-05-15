@@ -45,7 +45,7 @@ public interface BranchQueryBuilder<T> {
 
    T andIds(Collection<? extends BranchId> ids) throws OseeCoreException;
 
-   T andIds(BranchId... ids) throws OseeCoreException;
+   T andId(BranchId branch);
 
    T andIsOfType(BranchType... branchType) throws OseeCoreException;
 

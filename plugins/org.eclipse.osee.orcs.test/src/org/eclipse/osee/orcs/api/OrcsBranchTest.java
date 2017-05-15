@@ -246,7 +246,7 @@ public class OrcsBranchTest {
    }
 
    private BranchReadable getBranch(BranchId branch) {
-      return query.branchQuery().andIds(branch).getResults().getExactlyOne();
+      return query.branchQuery().andId(branch).getResults().getExactlyOne();
    }
 
    private void ensureExpectedAreInActual(List<ChangeItem> expected, List<ChangeItem> actual) {

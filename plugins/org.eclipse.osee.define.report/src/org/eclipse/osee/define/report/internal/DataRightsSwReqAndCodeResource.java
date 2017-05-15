@@ -174,7 +174,7 @@ public final class DataRightsSwReqAndCodeResource {
          queryFactory.fromBranch(destinationBranch).andIsOfType(artifactType).getResults();
 
       String branchName =
-         orcsApi.getQueryFactory().branchQuery().andIds(sourceBranch).getResults().getExactlyOne().getName();
+         orcsApi.getQueryFactory().branchQuery().andId(sourceBranch).getResults().getExactlyOne().getName();
 
       String txMsg = "Copy data rights for " + artifactType + " from " + branchName;
       TransactionBuilder txBuilder = createTxBuilder(txMsg, destinationBranch);

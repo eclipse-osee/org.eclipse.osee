@@ -58,7 +58,7 @@ public final class DataRightsStreamingOutput implements StreamingOutput {
    public DataRightsStreamingOutput(OrcsApi orcsApi, BranchId branch, String codeRoot, TraceAccumulator traceAccumulator, Log logger) {
       this.queryFactory = orcsApi.getQueryFactory();
       BranchQuery branchQuery = orcsApi.getQueryFactory().branchQuery();
-      this.branch = branchQuery.andIds(branch).getResults().getExactlyOne();
+      this.branch = branchQuery.andId(branch).getResults().getExactlyOne();
       this.codeRoot = codeRoot.trim();
       this.traceAccumulator = traceAccumulator;
       this.logger = logger;

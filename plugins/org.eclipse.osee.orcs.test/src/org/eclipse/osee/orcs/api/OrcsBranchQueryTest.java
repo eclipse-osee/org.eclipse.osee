@@ -233,7 +233,7 @@ public class OrcsBranchQueryTest {
       IOseeBranch child = IOseeBranch.create(testName.getMethodName());
 
       BranchQuery query = factory.branchQuery();
-      query.andIds(CIS_Bld_1);
+      query.andId(CIS_Bld_1);
       BranchReadable cisBranch = query.getResults().getExactlyOne();
 
       IOseeBranch actual = createBranch(cisBranch, child);
@@ -242,7 +242,7 @@ public class OrcsBranchQueryTest {
       getBranchOps().archiveUnarchiveBranch(actual, ArchiveOperation.ARCHIVE).call();
 
       query = factory.branchQuery();
-      query.andIds(child);
+      query.andId(child);
       query.excludeArchived();
       assertNull(query.getResults().getOneOrNull());
 
@@ -257,20 +257,20 @@ public class OrcsBranchQueryTest {
       IOseeBranch child = IOseeBranch.create(testName.getMethodName());
 
       BranchQuery query = factory.branchQuery();
-      query.andIds(CIS_Bld_1);
+      query.andId(CIS_Bld_1);
       BranchReadable cisBranch = query.getResults().getExactlyOne();
 
       IOseeBranch actual = createBranch(cisBranch, child);
       assertEquals(child, actual);
 
       query = factory.branchQuery();
-      query.andIds(child);
+      query.andId(child);
       assertEquals(child, query.getResults().getOneOrNull());
 
       getBranchOps().changeBranchState(actual, BranchState.DELETED).call();
 
       query = factory.branchQuery();
-      query.andIds(child);
+      query.andId(child);
       query.excludeDeleted();
       assertNull(query.getResults().getOneOrNull());
 

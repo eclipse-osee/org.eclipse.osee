@@ -83,7 +83,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public BranchState getBranchState(BranchId branch) {
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
-      BranchReadable fullBranch = query.andIds(branch).getResults().getExactlyOne();
+      BranchReadable fullBranch = query.andId(branch).getResults().getExactlyOne();
       return fullBranch.getBranchState();
    }
 
@@ -115,13 +115,13 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    private BranchReadable getBranch(BranchId branch) {
-      return orcsApi.getQueryFactory().branchQuery().andIds(branch).getResults().getExactlyOne();
+      return orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getExactlyOne();
    }
 
    @Override
    public boolean branchExists(BranchId branch) {
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
-      return query.andIds(branch).getCount() > 0;
+      return query.andId(branch).getCount() > 0;
    }
 
    @Override
@@ -145,7 +145,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public BranchId getParentBranch(BranchId branch) {
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
-      BranchReadable fullBranch = query.andIds(branch).getResults().getExactlyOne();
+      BranchReadable fullBranch = query.andId(branch).getResults().getExactlyOne();
       return fullBranch.getParentBranch();
    }
 
