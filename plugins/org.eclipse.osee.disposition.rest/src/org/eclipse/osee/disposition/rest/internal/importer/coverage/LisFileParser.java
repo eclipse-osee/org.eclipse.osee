@@ -162,10 +162,6 @@ public class LisFileParser implements DispoImporterApi {
 
    private void processExceptionHandled(OperationReport report) {
       for (String datId : datIdsCoveredByException) {
-         if (datId.contains("4:46") || datId.contains("4:47")) {
-            System.out.println();
-         }
-
          Matcher matcher = Pattern.compile("\\d*:\\d*:").matcher(datId);
          matcher.find();
          String itemDatId = matcher.group();
@@ -179,7 +175,7 @@ public class LisFileParser implements DispoImporterApi {
             text = matchingDiscrepancy.getText();
             Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
             discrepancies.remove(matchingDiscrepancy.getId());
-            addAnnotationForForCoveredLine(item, line, Exception_Handling_Resolution, text, "");
+            addAnnotationForForCoveredLine(item, line, Exception_Handling_Resolution, "", text);
          }
       }
    }
@@ -290,11 +286,6 @@ public class LisFileParser implements DispoImporterApi {
             String.format("Error parsing LIS file: [%s], on function [%s]", lisFile.getLISFile(), function.getName()),
             ERROR);
       }
-
-      if (fileNum == 41 && functionNum == 1) {
-         System.out.println();
-      }
-
       String location;
       if (lineData != null) {
          boolean isMCDCPair = statementCoverageItem.getIsMCDCPair();
@@ -406,7 +397,7 @@ public class LisFileParser implements DispoImporterApi {
             Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
             discrepancies.remove(matchingDiscrepancy.getId());
             item.setDiscrepanciesList(discrepancies);
-            addAnnotationForForCoveredLine(item, location, Test_Unit_Resolution, text, resultPath);
+            addAnnotationForForCoveredLine(item, location, Test_Unit_Resolution, resultPath, text);
          }
       }
 
@@ -510,7 +501,6 @@ public class LisFileParser implements DispoImporterApi {
       newAnnotation.setResolution(coveringFile);
       newAnnotation.setIsResolutionValid(true);
       newAnnotation.setCustomerNotes(text);
-      //      dispoConnector.connectAnnotation(newAnnotation, item.getDiscrepanciesList());
 
       List<DispoAnnotationData> annotationsList = item.getAnnotationsList();
       int newIndex = annotationsList.size();
