@@ -121,7 +121,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
 
    /**
     * Expects the {@code <className>} of blam. Gets {@code /bundleName/ui/<className>Ui.xml } and returns its contents.
-    * 
+    *
     * @param className class name of blam
     * @param nameOfBundle name of bundle i.e. org.eclipse.rcp.xyz
     * @return contents of the {@code /bundleName/ui/<className>Ui.xml }
@@ -185,21 +185,6 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    @SuppressWarnings("unused")
    public List<XWidgetRendererItem> getLayoutDatas() throws IllegalArgumentException, ParserConfigurationException, SAXException, IOException, CoreException, OseeCoreException {
       return XWidgetParser.extractWorkAttributes(new SwtXWidgetRenderer(), getXWidgetsXml());
-   }
-
-   @Override
-   public void createXWidgetLayoutData(XWidgetRendererItem layoutData, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
-      // provided for subclass implementation
-   }
-
-   @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
-      // provided for subclass implementation
-   }
-
-   @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
-      // provided for subclass implementation
    }
 
    public String getRunText() {

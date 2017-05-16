@@ -281,11 +281,6 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    }
 
    @Override
-   public void createXWidgetLayoutData(XWidgetRendererItem layoutData, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
-      // do nothing
-   }
-
-   @Override
    public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() {
       return null;
    }
