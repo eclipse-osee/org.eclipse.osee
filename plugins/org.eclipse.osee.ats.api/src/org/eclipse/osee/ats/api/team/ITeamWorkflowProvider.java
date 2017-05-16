@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2004, 2007 Boeing.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse public default  License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
@@ -12,28 +12,39 @@ package org.eclipse.osee.ats.api.team;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
  */
-public interface ITeamWorkflowProvider {
+public
 
-   public String getWorkflowDefinitionId(IAtsWorkItem workItem) throws OseeCoreException;
+interface ITeamWorkflowProvider {
 
-   public String getRelatedTaskWorkflowDefinitionId(IAtsTeamWorkflow teamWf) throws OseeCoreException;
+   public default String getWorkflowDefinitionId(IAtsWorkItem workItem) {
+      return null;
+   }
+
+   public default String getRelatedTaskWorkflowDefinitionId(IAtsTeamWorkflow teamWf) {
+      return null;
+   }
 
    /**
     * Assigned or computed Id that will show at the top of the editor. Default is <ATS Id> - <Legacy PCR Id (if any)>
     */
-   public String getComputedPcrId(IAtsWorkItem workItem) throws OseeCoreException;
+   public default String getComputedPcrId(IAtsWorkItem workItem) {
+      return null;
+   }
 
    /**
     * 5-9 character short name for UI and display purposes
     */
-   public String getArtifactTypeShortName(IAtsTeamWorkflow teamWf);
+   public default String getArtifactTypeShortName(IAtsTeamWorkflow teamWf) {
+      return null;
+   }
 
-   public String getBranchName(IAtsTeamWorkflow teamWf, String defaultBranchName);
+   public default String getBranchName(IAtsTeamWorkflow teamWf, String defaultBranchName) {
+      return null;
+   }
 
    public boolean isResponsibleFor(IAtsWorkItem workItem);
 }
