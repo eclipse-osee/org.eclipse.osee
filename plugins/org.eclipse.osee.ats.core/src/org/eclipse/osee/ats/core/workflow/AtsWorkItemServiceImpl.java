@@ -179,4 +179,9 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       return new AtsWorkItemNotes(new ArtifactNote(workItem, services), services);
    }
 
+   @Override
+   public ITeamWorkflowProvidersLazy getTeamWorkflowProviders() {
+      return teamWorkflowProvidersLazy;
+   }
+
 }

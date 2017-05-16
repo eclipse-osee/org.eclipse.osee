@@ -16,9 +16,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 /**
  * @author Donald G. Dunne
  */
-public
-
-interface ITeamWorkflowProvider {
+public interface ITeamWorkflowProvider {
 
    public default String getWorkflowDefinitionId(IAtsWorkItem workItem) {
       return null;
@@ -47,4 +45,8 @@ interface ITeamWorkflowProvider {
    }
 
    public boolean isResponsibleFor(IAtsWorkItem workItem);
+
+   public default String getOverrideWorkflowDefinitionId(IAtsTeamWorkflow teamWf) {
+      return null;
+   }
 }

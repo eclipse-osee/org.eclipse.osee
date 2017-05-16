@@ -287,25 +287,25 @@ public final class AtsBranchManager {
     *
     * @param commitConfigArt that configures commit or null
     */
-   public static ChangeData getChangeData(TeamWorkFlowArtifact teamArt, ICommitConfigItem commitConfigArt) throws OseeCoreException {
+   public static ChangeData getChangeData(IAtsTeamWorkflow teamWf, ICommitConfigItem commitConfigArt) throws OseeCoreException {
       if (commitConfigArt != null && !isBaselinBranchConfigured(commitConfigArt)) {
          throw new OseeArgumentException("Parent Branch not configured for [%s]", commitConfigArt);
       }
       Collection<Change> changes = new ArrayList<>();
 
       IOperation operation = null;
-      if (AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt)) {
-         operation = ChangeManager.comparedToParent(AtsClientService.get().getBranchService().getWorkingBranch(teamArt),
-            changes);
+      if (AtsClientService.get().getBranchService().isWorkingBranchInWork(teamWf)) {
+         operation =
+            ChangeManager.comparedToParent(AtsClientService.get().getBranchService().getWorkingBranch(teamWf), changes);
          Operations.executeWorkAndCheckStatus(operation);
       } else {
-         if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt)) {
+         if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamWf)) {
             TransactionToken transactionId = null;
             if (commitConfigArt == null) {
-               transactionId = AtsClientService.get().getBranchService().getEarliestTransactionId(teamArt);
+               transactionId = AtsClientService.get().getBranchService().getEarliestTransactionId(teamWf);
             } else {
                Collection<TransactionRecord> transIds =
-                  AtsClientService.get().getBranchService().getTransactionIds(teamArt, false);
+                  AtsClientService.get().getBranchService().getTransactionIds(teamWf, false);
                if (transIds.size() == 1) {
                   transactionId = transIds.iterator().next();
                } else {

@@ -55,4 +55,6 @@ public interface IAtsWorkItemService {
    String getCombinedPcrId(IAtsWorkItem workItem) throws OseeCoreException;
 
    IAtsWorkItemNotes getNotes(IAtsWorkItem workItem);
+
+   ITeamWorkflowProvidersLazy getTeamWorkflowProviders();
 }

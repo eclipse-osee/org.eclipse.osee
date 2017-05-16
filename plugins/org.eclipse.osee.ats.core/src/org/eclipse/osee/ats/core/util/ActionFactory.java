@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
+import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsUtilService;
@@ -217,6 +218,15 @@ public class ActionFactory implements IAtsActionFactory {
          String overrideWorkDefId = newActionListener.getOverrideWorkDefinitionId(teamWf);
          if (Strings.isValid(overrideWorkDefId)) {
             changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.WorkflowDefinition, overrideWorkDefId);
+         }
+      }
+      // else if work def is specified by provider, set as attribute
+      else {
+         for (ITeamWorkflowProvider provider : services.getWorkItemService().getTeamWorkflowProviders().getProviders()) {
+            String overrideWorkDefId = provider.getOverrideWorkflowDefinitionId(teamWf);
+            if (Strings.isValid(overrideWorkDefId)) {
+               changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.WorkflowDefinition, overrideWorkDefId);
+            }
          }
       }
 
