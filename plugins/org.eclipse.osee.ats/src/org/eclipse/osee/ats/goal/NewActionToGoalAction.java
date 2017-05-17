@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.NewActionAdapter;
+import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.client.artifact.CollectorArtifact;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
@@ -88,7 +88,7 @@ public class NewActionToGoalAction extends Action {
          if (!ais.isEmpty()) {
             wizard.getSelectableAis(ais);
          }
-         wizard.setNewActionListener(new NewActionAdapter() {
+         wizard.setNewActionListener(new INewActionListener() {
 
             @Override
             public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) throws OseeCoreException {

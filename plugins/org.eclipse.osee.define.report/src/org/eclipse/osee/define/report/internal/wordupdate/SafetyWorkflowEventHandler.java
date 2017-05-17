@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.NewActionAdapter;
+import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -137,7 +137,7 @@ public class SafetyWorkflowEventHandler implements EventHandler {
          IAtsAction action = atsServer.getActionFactory().getAction(teamWf);
          teamWorkflow =
             atsServer.getActionFactory().createTeamWorkflow(action, teamDef, java.util.Collections.singleton(ai),
-               Arrays.asList(AtsCoreUsers.UNASSIGNED_USER), changes, new Date(), createdBy, new NewActionAdapter() {
+               Arrays.asList(AtsCoreUsers.UNASSIGNED_USER), changes, new Date(), createdBy, new INewActionListener() {
 
                   @Override
                   public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) throws OseeCoreException {
