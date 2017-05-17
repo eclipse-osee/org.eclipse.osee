@@ -17,11 +17,8 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 /**
  * @author Donald G. Dunne
  */
+@SuppressWarnings("deprecation")
 public class StateDefinitionViewSorter extends ViewerSorter {
-
-   public StateDefinitionViewSorter() {
-      super();
-   }
 
    @Override
    public int compare(Viewer viewer, Object e1, Object e2) {
@@ -36,7 +33,6 @@ public class StateDefinitionViewSorter extends ViewerSorter {
       }
    }
 
-   @SuppressWarnings("unchecked")
    private int compareByName(IAtsStateDefinition def1, IAtsStateDefinition def2) {
       return getComparator().compare(def1.getName(), def2.getName());
    }

@@ -24,8 +24,6 @@ package org.eclipse.osee.ats.workdef;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
@@ -43,7 +41,6 @@ import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -69,7 +66,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateToken {
 
-   private static final Pair<IStatus, XWidget> OK_PAIR = new Pair<>(Status.OK_STATUS, null);
    protected SwtXWidgetRenderer dynamicXWidgetLayout;
    protected final IAtsStateDefinition stateDefinition;
    protected final IAtsWorkDefinition workDefinition;

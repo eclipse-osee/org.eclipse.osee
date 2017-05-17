@@ -70,4 +70,8 @@ public class XGoalCombo extends XComboViewer {
       }
    }
 
+   public Artifact getSelectedGoal() {
+      return selectedGoal;
+   }
+
 }

@@ -33,11 +33,9 @@ import org.eclipse.swt.graphics.Image;
  * @author Donald G. Dunne
  */
 public class DefectLabelProvider extends XViewerLabelProvider {
-   private final DefectXViewer xViewer;
 
    public DefectLabelProvider(DefectXViewer xViewer) {
       super(xViewer);
-      this.xViewer = xViewer;
    }
 
    @Override

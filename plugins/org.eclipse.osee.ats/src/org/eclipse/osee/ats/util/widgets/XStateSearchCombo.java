@@ -74,4 +74,8 @@ public class XStateSearchCombo extends XComboViewer {
       }
    }
 
+   public String getSelectedState() {
+      return selectedState;
+   }
+
 }

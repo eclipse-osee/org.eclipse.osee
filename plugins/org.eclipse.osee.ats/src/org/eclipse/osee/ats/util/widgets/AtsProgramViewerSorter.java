@@ -17,9 +17,9 @@ import org.eclipse.osee.ats.api.program.IAtsProgram;
 /**
  * @author Donald G. Dunne
  */
+@SuppressWarnings("deprecation")
 public class AtsProgramViewerSorter extends ViewerSorter {
 
-   @SuppressWarnings("unchecked")
    @Override
    public int compare(Viewer viewer, Object e1, Object e2) {
       return getComparator().compare(((IAtsProgram) e1).getName(), ((IAtsProgram) e2).getName());
