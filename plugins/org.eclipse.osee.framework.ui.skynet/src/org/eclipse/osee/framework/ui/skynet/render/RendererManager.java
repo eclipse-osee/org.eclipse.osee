@@ -55,8 +55,8 @@ public final class RendererManager {
    /**
     * @return Returns the intersection of renderers applicable for all of the artifacts
     */
-   public static List<IRenderer> getCommonRenderers(Collection<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
-      List<IRenderer> commonRenders = getApplicableRenderers(presentationType, artifacts.iterator().next());
+   public static List<IRenderer> getCommonRenderers(Collection<Artifact> artifacts, PresentationType presentationType, Object... data) throws OseeCoreException {
+      List<IRenderer> commonRenders = getApplicableRenderers(presentationType, artifacts.iterator().next(), data);
 
       for (Artifact artifact : artifacts) {
          List<IRenderer> applicableRenders = getApplicableRenderers(presentationType, artifact);
@@ -114,6 +114,7 @@ public final class RendererManager {
       int bestRating = IRenderer.NO_MATCH;
       ensurePopulated();
       for (IRenderer renderer : renderers) {
+         renderer.setOptions(options);
          int rating = renderer.getApplicabilityRating(presentationType, artifact, options);
          if (rating > bestRating) {
             bestRendererPrototype = renderer;
@@ -137,9 +138,9 @@ public final class RendererManager {
          artifact.getAttributeTypes());
    }
 
-   private static List<IRenderer> getApplicableRenderers(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
+   private static List<IRenderer> getApplicableRenderers(PresentationType presentationType, Artifact artifact, Object... data) throws OseeCoreException {
       ArrayList<IRenderer> applicableRenderers = new ArrayList<>();
-      IRenderer bestRenderer = getBestRenderer(presentationType, artifact);
+      IRenderer bestRenderer = getBestRenderer(presentationType, artifact, data);
       int rendererMinimumRanking = bestRenderer.minimumRanking();
       int minimumRank = Math.max(rendererMinimumRanking, IRenderer.BASE_MATCH);
 

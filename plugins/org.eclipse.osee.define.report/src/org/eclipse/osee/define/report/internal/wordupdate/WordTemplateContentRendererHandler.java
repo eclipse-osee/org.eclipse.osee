@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -36,10 +37,13 @@ public class WordTemplateContentRendererHandler {
       "<w:highlight w:val=\"light-gray\"></w:highlight><w:shd w:color=\"auto\" w:fill=\"BFBFBF\" w:val=\"clear\"></w:shd>";
    public static final String EMPTY_PARAGRAPHS = "<w:r wsp:rsidRPr=\"\\d+\"><w:t></w:t></w:r>";
    public static final String EXTRA_SPACES = "<w:r><w:t> </w:t></w:r>";
-   private final OrcsApi orcsApi;
 
-   public WordTemplateContentRendererHandler(OrcsApi orcsApi) {
+   private OrcsApi orcsApi;
+   private Log logger;
+
+   public WordTemplateContentRendererHandler(OrcsApi orcsApi, Log logger) {
       this.orcsApi = orcsApi;
+      this.logger = logger;
    }
 
    public Pair<String, Set<String>> renderWordML(WordTemplateContentData wtcData) throws OseeCoreException {
@@ -97,11 +101,13 @@ public class WordTemplateContentRendererHandler {
                }
             }
 
-            if (!wtcData.getIsEdit() && wtcData.getBranch().getViewId().notEqual(ArtifactId.SENTINEL)) {
+            if (!wtcData.getIsEdit() && (wtcData.getBranch().getViewId().notEqual(
+               ArtifactId.SENTINEL) || isWtcViewIdValid(wtcData))) {
                data = data.replaceAll(PL_STYLE_WITH_RETURN, "");
                data = data.replaceAll(PL_STYLE, "");
                data = data.replaceAll(PL_HIGHLIGHT, "");
-               data = WordMLApplicabilityHandler.previewValidApplicabilityContent(orcsApi, data, wtcData.getBranch());
+               data = WordMLApplicabilityHandler.previewValidApplicabilityContent(orcsApi, logger, data,
+                  wtcData.getBranch(), wtcData.getViewId());
                data = data.replaceAll(EMPTY_PARAGRAPHS, "");
             }
 
@@ -116,5 +122,9 @@ public class WordTemplateContentRendererHandler {
       }
 
       return null;
+   }
+
+   private boolean isWtcViewIdValid(WordTemplateContentData wtcData) {
+      return (wtcData.getViewId() != null && wtcData.getViewId().notEqual(ArtifactId.SENTINEL));
    }
 }

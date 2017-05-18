@@ -29,6 +29,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -114,6 +115,9 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    public ArtifactExplorerMenu artifactExplorerMenu;
    private ArtifactExplorerToolbar artifactExplorerToolbar;
 
+   private ArtifactExplorerViewApplicability view;
+   private ArtifactId viewId;
+
    public static void explore(Collection<Artifact> artifacts) {
       explore(artifacts, AWorkbench.getActivePage());
    }
@@ -166,6 +170,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
                         branch = selectedBranch;
                         dragAndDropWorker.updateBranch(branch);
                         explore(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch));
+                        refreshView();
                      }
                   } catch (Exception ex) {
                      setErrorString("Error loading branch (see error log for details): " + ex.getLocalizedMessage());
@@ -174,6 +179,9 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
                }
 
             });
+
+            view = new ArtifactExplorerViewApplicability(parent, this);
+            view.create();
 
             stackComposite = new Composite(parent, SWT.NONE);
             stackLayout = new StackLayout();
@@ -417,6 +425,14 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
       if (branch != null && branchSelect != null && !branch.equals(branchSelect.getData())) {
          branchSelect.setSelection(branch);
          refreshBranchWarning();
+         refreshView();
+      }
+   }
+
+   private void refreshView() {
+      setViewId(branch.getViewId());
+      if (view != null) {
+         view.refresh();
       }
    }
 
@@ -522,6 +538,14 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
 
    public Composite getStackComposite() {
       return stackComposite;
+   }
+
+   public ArtifactId getViewId() {
+      return viewId;
+   }
+
+   public void setViewId(ArtifactId viewId) {
+      this.viewId = viewId;
    }
 
 }

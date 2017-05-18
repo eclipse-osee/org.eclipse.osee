@@ -18,12 +18,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -35,6 +38,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
@@ -66,10 +70,12 @@ import org.json.JSONObject;
 public class PublishWithSpecifiedTemplate extends AbstractBlam {
    private List<Artifact> templates;
    private BranchId branch;
+   private Map<Long, String> branchViews;
 
    private XBranchSelectWidget branchWidget;
    private XCombo slaveWidget;
    private XDslEditorWidget orcsQueryWidget;
+   private XCombo branchViewWidget;
    private XListDropViewer artifactsWidget;
    private final String USE_ARTIFACT_NAMES = "Use Artifact Names";
    private final String USE_PARAGRAPH_NUMBERS = "Use Paragraph Numbers";
@@ -82,6 +88,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    private final String WAS_BRANCH = "WAS Branch";
    private final String INCLUDE_ARTIFACT_UUIDS = "Include Artifact UUIDs";
    private final String ORCS_QUERY = "Orcs Query";
+   private final String VIEW = "Branch View (For IS Artifacts)";
 
    @Override
    public String getName() {
@@ -135,6 +142,14 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
          throw new OseeArgumentException("Cannot determine IS branch.");
       }
 
+      Object view = variableMap.getValue(VIEW);
+      ArtifactId viewId = ArtifactId.SENTINEL;
+      for (Entry<Long, String> entry : branchViews.entrySet()) {
+         if (entry.getValue().equals(view)) {
+            viewId = ArtifactId.valueOf(entry.getKey());
+         }
+      }
+
       WordTemplateRenderer renderer = new WordTemplateRenderer();
       SkynetTransaction transaction =
          TransactionManager.createTransaction(branch, "BLAM: Publish with specified template");
@@ -169,7 +184,9 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
          ITemplateRenderer.USE_TEMPLATE_ONCE,
          true,
          WordTemplateRenderer.FIRST_TIME,
-         true};
+         true,
+         "ViewId",
+         viewId};
 
       Boolean isDiff = (Boolean) variableMap.getValue(PUBLISH_AS_DIFF);
       int toProcessSize = 0;
@@ -299,6 +316,10 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
          ")\" displayName=\"%s\" horizontalLabel=\"true\"/><XWidget xwidgetType=\"XLabel\" displayName=\" \" />",
          SLAVE_TEMPLATE));
       builder.append(String.format("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"%s\" />", IS_ARTIFACTS));
+
+      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XCombo(");
+      builder.append(String.format(")\" displayName=\"%s\" horizontalLabel=\"true\"/>", VIEW));
+
       builder.append(
          String.format("<XWidget xwidgetType=\"XDslEditorWidget\" displayName=\"%s\"  defaultValue=\"", ORCS_QUERY));
       builder.append("orcs");
@@ -348,7 +369,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
             public void modifyText(ModifyEvent e) {
                // only enable slave template selection if Master is for SRS or Engineering Worksheets (EWS)
                String masterTemplate = masterCombo.get();
-               if (masterTemplate.contains("srsMaster") || // 
+               if (masterTemplate.contains("srsMaster") || //
                masterTemplate.contains("ewsMaster")) {
                   slaveWidget.setEnabled(true);
                   orcsQueryWidget.setEditable(false);
@@ -368,9 +389,35 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       } else if (xWidget.getLabel().equals(IS_ARTIFACTS)) {
          artifactsWidget = (XListDropViewer) xWidget;
          artifactsWidget.setEditable(true);
+
+         artifactsWidget.addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               if (branchViewWidget != null) {
+                  branchViewWidget.setEditable(true);
+                  List<Artifact> artifacts = artifactsWidget.getArtifacts();
+                  if (artifacts != null && !artifacts.isEmpty()) {
+                     Artifact art = artifacts.iterator().next();
+                     BranchId isArtBranch = art.getBranch();
+                     if (isArtBranch != null) {
+                        if (ViewApplicabilityUtil.isBranchOfProductLine(isArtBranch)) {
+                           branchViews =
+                              ViewApplicabilityUtil.getBranchViews(ViewApplicabilityUtil.getParentBranch(isArtBranch));
+                           branchViewWidget.setDataStrings(branchViews.values());
+                        }
+                     }
+                  }
+               }
+            }
+         });
+
       } else if (xWidget.getLabel().equals(ORCS_QUERY)) {
          orcsQueryWidget = (XDslEditorWidget) xWidget;
          orcsQueryWidget.setEditable(true);
+      } else if (xWidget.getLabel().equals(VIEW)) {
+         branchViewWidget = (XCombo) xWidget;
+         branchViewWidget.setEditable(false);
       }
    }
 

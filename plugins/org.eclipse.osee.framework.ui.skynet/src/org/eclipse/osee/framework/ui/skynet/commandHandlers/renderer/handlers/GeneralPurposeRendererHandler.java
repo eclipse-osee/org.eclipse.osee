@@ -13,7 +13,9 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers;
 import java.util.ArrayList;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -27,10 +29,11 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 public class GeneralPurposeRendererHandler extends AbstractEditorHandler {
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
-      ArrayList<Object> options = new ArrayList<>(4);
+      ArrayList<Object> options = new ArrayList<>(6);
       String presentationTypeStr = event.getParameter(PresentationType.class.getSimpleName());
       String template = event.getParameter(ITemplateRenderer.TEMPLATE_OPTION);
       String openOption = event.getParameter(IRenderer.OPEN_OPTION);
+      ArtifactId viewId = Handlers.getViewId();
 
       PresentationType presentationType = PresentationType.valueOf(presentationTypeStr);
       if (template != null) {
@@ -40,6 +43,10 @@ public class GeneralPurposeRendererHandler extends AbstractEditorHandler {
       if (openOption != null) {
          options.add(IRenderer.OPEN_OPTION);
          options.add(openOption);
+      }
+      if (!viewId.equals(ArtifactId.SENTINEL)) {
+         options.add(IRenderer.VIEW_ID);
+         options.add(viewId);
       }
 
       RendererManager.openInJob(artifacts, presentationType, options.toArray());

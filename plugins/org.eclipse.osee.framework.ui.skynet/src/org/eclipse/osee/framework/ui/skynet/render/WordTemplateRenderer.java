@@ -18,7 +18,6 @@ import static org.eclipse.osee.framework.core.enums.PresentationType.GENERALIZED
 import static org.eclipse.osee.framework.core.enums.PresentationType.GENERAL_REQUESTED;
 import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW;
 import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED_EDIT;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
@@ -28,14 +27,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.define.report.api.WordTemplateContentData;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -186,6 +184,8 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          wtcData.setTxId(txId);
          wtcData.setSessionId(ClientSessionManager.getSessionId());
          wtcData.setOseeLink(oseeLink);
+         ArtifactId view = (ArtifactId) getOption(IRenderer.VIEW_ID);
+         wtcData.setViewId(view == null ? ArtifactId.SENTINEL : view);
 
          Pair<String, Set<String>> content = null;
          try {
@@ -346,4 +346,5 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word Preview with children", imageDescriptor,
          TEMPLATE_OPTION, PREVIEW_WITH_RECURSE_VALUE));
    }
+
 }

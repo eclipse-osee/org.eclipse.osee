@@ -47,6 +47,7 @@ import org.eclipse.osee.define.report.api.PageOrientation;
 import org.eclipse.osee.define.report.api.ReportConstants;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -308,7 +309,8 @@ public class WordTemplateProcessor {
                   // for single edit override outlining options
                   outlining = false;
                }
-               processArtifactSet(templateOptions, artifacts, wordMl, outlineType, presentationType);
+               processArtifactSet(templateOptions, artifacts, wordMl, outlineType, presentationType,
+                  (ArtifactId) renderer.getOption(IRenderer.VIEW_ID));
             } else if (elementType.equals(NESTED_TEMPLATE)) {
                parseNestedTemplateOptions(templateOptions, folder, wordMl, presentationType);
             } else {
@@ -511,8 +513,10 @@ public class WordTemplateProcessor {
       return startParagraphNumber;
    }
 
-   private void processArtifactSet(String templateOptions, List<Artifact> artifacts, WordMLProducer wordMl, String outlineType, PresentationType presentationType) throws OseeCoreException {
+   private void processArtifactSet(String templateOptions, List<Artifact> artifacts, WordMLProducer wordMl, String outlineType, PresentationType presentationType, ArtifactId viewId) throws OseeCoreException {
       nonTemplateArtifacts.clear();
+      renderer.setOption(IRenderer.VIEW_ID, viewId == null ? ArtifactId.SENTINEL : viewId);
+
       if (Strings.isValid(outlineNumber)) {
          wordMl.setNextParagraphNumberTo(outlineNumber);
       }
@@ -607,6 +611,7 @@ public class WordTemplateProcessor {
             // Check for option that may have been set from Publish with Diff BLAM to recurse
             if (recurseChildren && !renderer.getBooleanOption(RECURSE_ON_LOAD) || renderer.getBooleanOption(
                RECURSE_ON_LOAD) && !renderer.getBooleanOption("Orig Publish As Diff")) {
+
                for (Artifact childArtifact : artifact.getChildren()) {
                   processObjectArtifact(childArtifact, wordMl, outlineType, presentationType, data);
                }

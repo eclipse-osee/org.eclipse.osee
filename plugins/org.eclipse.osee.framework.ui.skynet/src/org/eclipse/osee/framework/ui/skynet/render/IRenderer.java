@@ -48,6 +48,7 @@ public interface IRenderer {
    public static final String OPEN_OPTION = "open.option";
    public static final String EXECUTE_VB_SCRIPT = "execute.vb.script";
    public static final String OVERRIDE_DATA_RIGHTS_OPTION = "overrideDataRights";
+   public static final String VIEW_ID = "ViewId";
 
    public static enum DataRightsClassification {
       governmentPurposeRights("Government Purpose Rights"),

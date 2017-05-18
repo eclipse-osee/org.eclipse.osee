@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.change.view;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -46,6 +47,7 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
    private BranchTransactionActionBarContributor branchTransactionActionBarContributor;
    private final EventRelay eventRelay;
    private BranchTransactionPage branchTransactionPage;
+   private ArtifactId viewId;
 
    public ChangeReportEditor() {
       eventRelay = new EventRelay();
@@ -144,6 +146,14 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
       if (changeReportPage != null) {
          changeReportPage.refresh();
       }
+   }
+
+   public ArtifactId getViewId() {
+      return viewId;
+   }
+
+   public void setViewId(ArtifactId viewId) {
+      this.viewId = viewId;
    }
 
    private final class EventRelay implements IBranchEventListener, ITransactionEventListener {

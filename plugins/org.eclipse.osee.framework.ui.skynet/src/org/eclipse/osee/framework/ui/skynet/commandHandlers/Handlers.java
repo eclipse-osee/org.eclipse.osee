@@ -15,12 +15,21 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.change.view.ChangeReportEditor;
+import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 import org.eclipse.search.ui.text.Match;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * This is a utility class for OSEE handlers
@@ -88,5 +97,29 @@ public class Handlers {
          }
       }
       return objects;
+   }
+
+   public static ArtifactId getViewId() {
+      IWorkbench workbench = PlatformUI.getWorkbench();
+      if (!workbench.isStarting() && !workbench.isClosing()) {
+         IWorkbenchPage page = AWorkbench.getActivePage();
+         if (page != null) {
+            IWorkbenchPart activePart = page.getActivePart();
+            if (activePart instanceof ArtifactExplorer) {
+               ArtifactId viewId = ((ArtifactExplorer) activePart).getViewId();
+               return viewId == null ? ArtifactId.SENTINEL : viewId;
+            }
+            if (activePart instanceof ChangeReportEditor) {
+               ArtifactId viewId = ((ChangeReportEditor) activePart).getViewId();
+               return viewId == null ? ArtifactId.SENTINEL : viewId;
+            }
+            IEditorPart activeEditor = page.getActiveEditor();
+            if (activeEditor instanceof ChangeReportEditor) {
+               ArtifactId viewId = ((ChangeReportEditor) activeEditor).getViewId();
+               return viewId == null ? ArtifactId.SENTINEL : viewId;
+            }
+         }
+      }
+      return ArtifactId.SENTINEL;
    }
 }

@@ -26,7 +26,9 @@ import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -36,15 +38,18 @@ import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarLexer;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarParser;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 public class WordMLApplicabilityHandler {
 
-   public static String previewValidApplicabilityContent(OrcsApi orcsApi, String content, BranchId branch) throws OseeCoreException {
+   public static String previewValidApplicabilityContent(OrcsApi orcsApi, Log logger, String content, BranchId branch, ArtifactId viewId) throws OseeCoreException {
       Map<String, List<String>> featureValuesAllowed = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+      BranchId branchToUse = getBranchToUse(orcsApi, branch, viewId);
+
       featureValuesAllowed =
-         orcsApi.getQueryFactory().applicabilityQuery().getBranchViewFeatureValues(branch, branch.getViewId());
+         orcsApi.getQueryFactory().applicabilityQuery().getBranchViewFeatureValues(branchToUse, viewId);
 
       String toReturn = content;
 
@@ -52,7 +57,15 @@ public class WordMLApplicabilityHandler {
          CoreArtifactTypes.FeatureDefinition).getResults().getExactlyOne();
       String featureDefJson = featureDefArt.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
 
-      Collection<String> configurationsAllowed = featureValuesAllowed.get("Config");
+      Collection<String> configurations = featureValuesAllowed.get("Config");
+      // Only care about the configuration that is included (all others assumed to be excluded)
+      String includedConfiguration = "";
+      for (String config : configurations) {
+         if (!config.toLowerCase().contains("excluded")) {
+            includedConfiguration = config;
+         }
+      }
+
       Stack<ApplicabilityBlock> applicabilityBlocks = new Stack<>();
 
       Matcher matcher = WordCoreUtil.FULL_PATTERN.matcher(toReturn);
@@ -86,7 +99,7 @@ public class WordMLApplicabilityHandler {
                matcher.group(endBracketGroup) != null ? WordCoreUtil.textOnly(matcher.group(endBracketGroup)) : null;
 
             String toInsert = evaluateApplicabilityBlock(applicabilityBlock, optionalEndBracket, toReturn,
-               featureDefJson, featureValuesAllowed, configurationsAllowed);
+               featureDefJson, featureValuesAllowed, includedConfiguration);
 
             String toReplace =
                toReturn.substring(applicabilityBlock.getStartInsertIndex(), applicabilityBlock.getEndInsertIndex());
@@ -100,13 +113,39 @@ public class WordMLApplicabilityHandler {
 
       toReturn = removeEmptyLists(toReturn);
       if (applicBlockCount != 0) {
-         throw new OseeCoreException("An applicability block of text is missing an End Feature/Configuration tag");
+         logger.error("An applicability block of text is missing an End Feature/Configuration tag");
       }
 
       return toReturn;
    }
 
-   private static String evaluateApplicabilityBlock(ApplicabilityBlock applicabilityBlock, String optionalEndBracket, String fullWordML, String featureDefJson, Map<String, List<String>> featureValuesAllowed, Collection<String> configurationsAllowed) {
+   private static BranchId getBranchToUse(OrcsApi orcsApi, BranchId branch, ArtifactId viewId) {
+      BranchId branchView = findBranchView(orcsApi, viewId);
+      return branchView == null ? branch : branchView;
+
+   }
+
+   private static BranchId findBranchView(OrcsApi orcsApi, ArtifactId viewId) {
+      BranchId branchToUse = null;
+      boolean foundBranchView = false;
+      List<BranchViewData> views = orcsApi.getQueryFactory().applicabilityQuery().getViews();
+      for (BranchViewData viewData : views) {
+         List<ArtifactId> branchViews = viewData.getBranchViews();
+         for (ArtifactId id : branchViews) {
+            if (viewId.equals(id)) {
+               branchToUse = viewData.getBranch();
+               foundBranchView = true;
+               break;
+            }
+         }
+         if (foundBranchView) {
+            break;
+         }
+      }
+      return branchToUse;
+   }
+
+   private static String evaluateApplicabilityBlock(ApplicabilityBlock applicabilityBlock, String optionalEndBracket, String fullWordML, String featureDefJson, Map<String, List<String>> featureValuesAllowed, String configurations) {
       //Remove Logical Messages that were mistaken for optional end brackets
       if (optionalEndBracket != null && optionalEndBracket.contains(".")) {
          int originalEnd = applicabilityBlock.getEndInsertIndex();
@@ -124,8 +163,8 @@ public class WordMLApplicabilityHandler {
 
       Map<String, String> binDataMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
       saveBinData(applicabilityBlock.getFullText(), binDataMap);
-      String toInsert = evaluateApplicabilityExpression(applicabilityBlock, featureDefJson, configurationsAllowed,
-         featureValuesAllowed);
+      String toInsert =
+         evaluateApplicabilityExpression(applicabilityBlock, featureDefJson, configurations, featureValuesAllowed);
       toInsert = insertMissingbinData(toInsert, binDataMap);
 
       return toInsert;
@@ -210,7 +249,7 @@ public class WordMLApplicabilityHandler {
       return applic;
    }
 
-   private static String evaluateApplicabilityExpression(ApplicabilityBlock applic, String featureDefJson, Collection<String> configurationsAllowed, Map<String, List<String>> featureValuesAllowed) {
+   private static String evaluateApplicabilityExpression(ApplicabilityBlock applic, String featureDefJson, String configuration, Map<String, List<String>> featureValuesAllowed) {
       String applicabilityExpression = applic.getApplicabilityExpression();
       String toInsert = "";
       try {
@@ -227,7 +266,7 @@ public class WordMLApplicabilityHandler {
             toInsert = getValidFeatureContent(fullText, applic.isInTable(), parser.getIdValuesMap(),
                parser.getOperators(), featureDefJson, featureValuesAllowed);
          } else if (applic.getType().equals(ApplicabilityType.Configuration)) {
-            toInsert = getValidConfigurationContent(fullText, parser.getIdValuesMap(), configurationsAllowed);
+            toInsert = getValidConfigurationContent(fullText, parser.getIdValuesMap(), configuration);
          }
 
       } catch (RecognitionException ex) {
@@ -238,7 +277,7 @@ public class WordMLApplicabilityHandler {
       return toInsert;
    }
 
-   public static String getValidConfigurationContent(String fullText, HashMap<String, List<String>> id_value_map, Collection<String> configurationsAllowed) {
+   public static String getValidConfigurationContent(String fullText, HashMap<String, List<String>> id_value_map, String configuration) {
       Matcher match = WordCoreUtil.ELSE_PATTERN.matcher(fullText);
       String beginningText = fullText;
       String elseText = "";
@@ -254,18 +293,11 @@ public class WordMLApplicabilityHandler {
       String toReturn = "";
 
       // Note: this assumes only OR's are put in between configurations
-      for (String id : id_value_map.keySet()) {
-         boolean isIncluded = true;
-         List<String> values = id_value_map.get(id);
-         for (String val : values) {
-            if (val.equalsIgnoreCase("excluded")) {
-               isIncluded = false;
-            }
-         }
-
-         if (containsIgnoreCase(configurationsAllowed, id) == isIncluded) {
+      List<String> values = id_value_map.get(configuration.toUpperCase());
+      if (values != null) {
+         String value = values.get(0);
+         if (!value.toLowerCase().equals("excluded")) {
             toReturn = beginningText;
-            break;
          }
       }
 

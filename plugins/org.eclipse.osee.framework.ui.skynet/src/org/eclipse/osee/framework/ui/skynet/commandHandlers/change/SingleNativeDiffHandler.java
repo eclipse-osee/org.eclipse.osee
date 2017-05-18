@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
+import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 
@@ -46,7 +47,7 @@ public class SingleNativeDiffHandler extends CommandHandler {
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
       Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
       String pathPrefix = RenderingUtil.getAssociatedArtifactName(changes);
-      RendererManager.diffInJob(artifactDeltas, pathPrefix);
+      RendererManager.diffInJob(artifactDeltas, pathPrefix, IRenderer.VIEW_ID, Handlers.getViewId());
       return null;
    }
 }

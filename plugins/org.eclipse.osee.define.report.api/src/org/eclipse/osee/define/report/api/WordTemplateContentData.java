@@ -28,6 +28,7 @@ public class WordTemplateContentData {
    private TransactionId txId;
    private String sessionId;
    private String oseeLink;
+   private ArtifactId viewId;
 
    public Long getArtId() {
       return artId;
@@ -91,5 +92,13 @@ public class WordTemplateContentData {
 
    public void setOseeLink(String oseeLink) {
       this.oseeLink = oseeLink;
+   }
+
+   public ArtifactId getViewId() {
+      return viewId;
+   }
+
+   public void setViewId(ArtifactId viewId) {
+      this.viewId = viewId;
    }
 }

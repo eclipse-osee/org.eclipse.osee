@@ -112,18 +112,22 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       List<ApplicabilityToken> result = getViewApplicabilityTokens(viewId, branch);
 
       for (ApplicabilityToken app : result) {
-         if (!app.getName().equals("Base")) {
-            String[] nameValue = app.getName().split("=");
-            String name = nameValue[0].trim();
-            String value = nameValue[1].trim();
+         if (!app.getName().equalsIgnoreCase("Base")) {
+            String[] values = app.getName().split("=");
 
-            if (toReturn.containsKey(name)) {
-               List<String> list = new ArrayList<>();
-               list.addAll(toReturn.get(name));
-               list.add(value);
-               toReturn.put(name, list);
-            } else {
-               toReturn.put(name, Arrays.asList(value));
+            // This will not return Excluded Configurations
+            if (values.length <= 2) {
+               String name = values[0].trim();
+               String value = values[1].trim();
+
+               if (toReturn.containsKey(name)) {
+                  List<String> list = new ArrayList<>();
+                  list.addAll(toReturn.get(name));
+                  list.add(value);
+                  toReturn.put(name, list);
+               } else {
+                  toReturn.put(name, Arrays.asList(value));
+               }
             }
          }
       }

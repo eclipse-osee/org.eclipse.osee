@@ -61,6 +61,7 @@ public class ChangeReportPage extends FormPage {
 
    private ChangeReportTable changeReportTable;
    private ChangeReportInfoPresenter infoPresenter;
+   private ChangeReportPageViewApplicability viewApplicability;
 
    public ChangeReportPage(ChangeReportEditor editor) {
       super(editor, "change.report", "Change Report");
@@ -97,11 +98,13 @@ public class ChangeReportPage extends FormPage {
       ChangeUiData uiData = getEditorInput().getChangeData();
       changeReportTable = new ChangeReportTable(uiData);
       infoPresenter = new ChangeReportInfoPresenter(new ChangeReportInfo(), uiData);
+      viewApplicability = new ChangeReportPageViewApplicability(getEditor(), toolkit, form);
 
       int sectionStyle = ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED | ExpandableComposite.TWISTIE;
 
       managedForm.addPart(
          new EditorSection(infoPresenter, "Info", form.getBody(), managedForm.getToolkit(), sectionStyle, false));
+      viewApplicability.create();
       // Can not place table in section or double scroll-bars and maintaining correct table size becomes an issue
       changeReportTable.onCreate(getManagedForm(), form.getBody());
 

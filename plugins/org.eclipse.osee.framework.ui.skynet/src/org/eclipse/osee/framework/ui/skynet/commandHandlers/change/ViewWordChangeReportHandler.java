@@ -54,6 +54,7 @@ public class ViewWordChangeReportHandler extends CommandHandler {
          if (ArtifactGuis.checkDeletedOnParent(artifacts)) {
             String pathPrefix = RenderingUtil.getAssociatedArtifactName(localChanges);
             IRenderer preferredRenderer = new WordTemplateRenderer();
+            preferredRenderer.setOption(IRenderer.VIEW_ID, Handlers.getViewId());
             RendererManager.diffInJobWithPreferedRenderer(artifactDeltas, pathPrefix, preferredRenderer);
          }
       }
