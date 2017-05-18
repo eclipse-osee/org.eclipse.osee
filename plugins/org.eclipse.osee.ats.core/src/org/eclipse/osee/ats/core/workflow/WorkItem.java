@@ -56,6 +56,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
       this.logger = logger;
       this.services = services;
       this.artifact = artifact;
+      setStoreObject(artifact);
    }
 
    @Override

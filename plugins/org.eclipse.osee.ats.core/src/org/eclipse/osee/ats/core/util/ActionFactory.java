@@ -214,14 +214,16 @@ public class ActionFactory implements IAtsActionFactory {
       utilService.setAtsId(sequenceProvider, teamWf, teamWf.getTeamDefinition(), changes);
 
       // If work def id is specified by listener, set as attribute
+      boolean set = false;
       if (newActionListener != null) {
          String overrideWorkDefId = newActionListener.getOverrideWorkDefinitionId(teamWf);
          if (Strings.isValid(overrideWorkDefId)) {
             changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.WorkflowDefinition, overrideWorkDefId);
+            set = true;
          }
       }
       // else if work def is specified by provider, set as attribute
-      else {
+      if (!set) {
          for (ITeamWorkflowProvider provider : services.getWorkItemService().getTeamWorkflowProviders().getProviders()) {
             String overrideWorkDefId = provider.getOverrideWorkflowDefinitionId(teamWf);
             if (Strings.isValid(overrideWorkDefId)) {
