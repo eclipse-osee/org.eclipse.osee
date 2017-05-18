@@ -266,7 +266,7 @@ public final class BranchManager {
             ArtifactId associatedArtifactId = getAssociatedArtifactId(branch);
             if (getState(branch) != BranchState.DELETED && artIdsToCheck.contains(associatedArtifactId)) {
                return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-                  String.format("Cannot delete artId [%d] because it is the associated artifact of branch [%s]",
+                  String.format("Cannot delete artId [%s] because it is the associated artifact of branch [%s]",
                      associatedArtifactId, branch.getName()));
             }
          }
