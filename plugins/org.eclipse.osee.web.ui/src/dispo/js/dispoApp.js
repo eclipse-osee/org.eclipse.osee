@@ -1,7 +1,7 @@
 /**
  * Dispo app definition
  */
-var app = angular.module('dispoApp', ['oauth', 'ngRoute','ngResource', 'ui.bootstrap', 'ngGrid', 'mc.resizer', 'ngCookies', 'aLinkRewrite', 'oseeProvider']);
+var app = angular.module('dispoApp', ['oauth', 'ngRoute', 'ngResource', 'ui.bootstrap', 'ui.grid', 'ui.grid.selection', 'ui.grid.exporter', 'ui.grid.edit', 'ui.grid.resizeColumns', 'mc.resizer', 'ngCookies', 'ngStorage', 'ui.grid.autoResize', 'ui.grid.cellNav', 'ui.grid.treeView', 'ui.grid.grouping']);
 
 app.config(['$routeProvider',
 function($routeProvider) {
@@ -24,6 +24,90 @@ function($routeProvider) {
     });
   }
 ]);
+
+/**
+ *  @ngdoc directive
+ *  @name ui.grid.edit.directive:uiGridEditDropdown
+ *  @element div
+ *  @restrict A
+ *
+ *  @description dropdown editor for editable fields.
+ *  Provides EndEdit and CancelEdit events
+ *
+ *  Events that end editing:
+ *     blur and enter keydown, and any left/right nav
+ *
+ *  Events that cancel editing:
+ *    - Esc keydown
+ *
+ */
+app.directive('uiGridEditDropdownOsee',
+  ['uiGridConstants', 'uiGridEditConstants',
+    function (uiGridConstants, uiGridEditConstants) {
+      return {
+        require: ['?^uiGrid', '?^uiGridRenderContainer'],
+        scope: true,
+        compile: function () {
+          return {
+            pre: function ($scope, $elm, $attrs) {
+
+            },
+            post: function ($scope, $elm, $attrs, controllers) {
+              var uiGridCtrl = controllers[0];
+              var renderContainerCtrl = controllers[1];
+
+              //set focus at start of edit
+              $scope.$on(uiGridEditConstants.events.BEGIN_CELL_EDIT, function () {
+                $elm[0].focus();
+                $elm[0].style.width = ($elm[0].parentElement.offsetWidth - 1) + 'px';
+                $elm.on('blur', function (evt) {
+                  $scope.stopEdit(evt);
+                });
+                $elm.on('change', function (evt) {
+                    $elm[0].blur();
+                  });
+              });
+
+
+              $scope.stopEdit = function (evt) {
+                // no need to validate a dropdown - invalid values shouldn't be
+                // available in the list
+                $scope.$emit(uiGridEditConstants.events.END_CELL_EDIT);
+              };
+
+              $elm.on('keydown', function (evt) {
+                switch (evt.keyCode) {
+                  case uiGridConstants.keymap.ESC:
+                    evt.stopPropagation();
+                    $scope.$emit(uiGridEditConstants.events.CANCEL_CELL_EDIT);
+                    break;
+                }
+                if (uiGridCtrl && uiGridCtrl.grid.api.cellNav) {
+                  evt.uiGridTargetRenderContainerId = renderContainerCtrl.containerId;
+                  if (uiGridCtrl.cellNav.handleKeyDown(evt) !== null) {
+                    $scope.stopEdit(evt);
+                  }
+                }
+                else {
+                  //handle enter and tab for editing not using cellNav
+                  switch (evt.keyCode) {
+                    case uiGridConstants.keymap.ENTER: // Enter (Leave Field)
+                    case uiGridConstants.keymap.TAB:
+                      evt.stopPropagation();
+                      evt.preventDefault();
+                      $scope.stopEdit(evt);
+                      break;
+                  }
+                }
+                return true;
+              });
+            }
+          };
+        }
+      };
+    }]);
+
+
 
 app.directive('focusMe', function($timeout) {
     return function(scope, element, attrs) {

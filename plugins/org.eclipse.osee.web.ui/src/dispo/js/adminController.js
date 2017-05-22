@@ -1,118 +1,33 @@
-		app.controller('adminController', ['$scope', '$rootScope', '$modal', 'Program', 'Set', 'Report', 'CopySet', 'CopySetCoverage', 'MultiItemEdit',
-		    function($scope, $rootScope,  $modal, Program, Set, Report, CopySet, CopySetCoverage, MultiItemEdit) {
+app.controller('adminController', [
+	'$scope', 
+	'$rootScope', 
+	'$modal', 
+	'Program', 
+	'Set', 
+	'Report', 
+	'CopySet', 
+	'CopySetCoverage', 
+	'MultiItemEdit',
+    'uiGridConstants',
+		    function($scope, $rootScope,  $modal, Program, Set, Report, CopySet, CopySetCoverage, MultiItemEdit, uiGridConstants) {
 		        $scope.readOnly = true;
 		        $scope.programSelection = null;
 		        $scope.modalShown = false;
 		        $scope.primarySet = "";
 		        $scope.secondarySet = "";
-		        $scope.sets = {};
+		        $scope.sets = [];
 			    $scope.addNew = false;
 		        $scope.newProgramName = ""
 		        $scope.selectedItems = [];
 		        $scope.isRunningOperation = false;
-
-
 		        $scope.cachedValue = "";
 
-		        $scope.$on('ngGridEventStartCellEdit', function(data) {
-		            var field = data.targetScope.col.field;
-		            $scope.cachedValue = data.targetScope.row.getProperty(field);
-		        });
-
-		        $scope.$on('ngGridEventEndCellEdit', function(data) {
-		            var field = data.targetScope.col.field;
-		            var row = data.targetScope.row;
-		            var newValue = row.getProperty(field);
-
-		            if ($scope.cachedValue != newValue) {
-		                $scope.editSet(row.entity);
-		            }
-		        });
-
-
-
-		        $scope.gridOptions = {
-		            data: 'sets',
-		            enableHighlighting: true,
-		            enableColumnResize: false,
-		            enableRowReordering: true,
-		            multiSelect: false,
-		            selectedItems: $scope.selectedItems,
-		            columnDefs: 'columnDefs' // link to scope variable which we will define dynamically				
-		        }
+		        $scope.programs = Program.query();
 		        
 		        var isPrimary = function(importState) {
 		        	return row.entity.importState != "Warnings" && row.entity.importState != "Failed";
 		        }
 
-		        var editCellTmpl = '<input editable="true" >'
-		        var dellCellTmpl = '<button width="50px" class="btn btn-danger btn-sm setDelete" ng-show="!readOnly" ng-click="deleteSet(row.entity)">X</button>';
-		        var importCellTmpl = '<button width="50px" class="btn btn-primary" ng-disabled="row.entity.processingImport" ng-click="importSet(row.entity)">Import</button>';
-		        var exportCellTmpl = '<button width="50px" class="btn btn-primary" ng-disabled="row.entity.processingImport" ng-click="exportSet(row.entity)">Export</button>';
-		        var lastOperationCellTmpl = '<id="stateButton" button width="99%" ng-disabled="row.entity.processingImport || row.entity.gettingDetails" ng-class="{btn: true, \'btn-primary\': \'isPrimary(row.entity.importState)\',' +
-		        '\'btn-warning\': row.entity.importState == \'Warnings\', \'btn-danger\': row.entity.importState == \'Failed\', \'btn-success\': row.entity.importState == \'OK\'}" ng-click="getSetImportDetails(row.entity)">{{row.entity.importState}}</button>';
-		         
-		        $scope.columnDefs1 = [{
-		            field: "",
-		            displayName: "Import",
-		            width: '9%',
-		            enableCellEdit: false,
-		            cellTemplate: importCellTmpl
-		        }, {
-		        	field: "",
-		        	displayName: "Export",
-		        	width: '9%',
-		        	cellTemplate: exportCellTmpl
-		        }, {
-		        	field: "",
-		            displayName: "Last Operation",
-		            width: '15%',
-		        	cellTemplate: lastOperationCellTmpl
-		        }, {
-		            field: "name",
-		            displayName: "Name",
-		            width: '20%',
-		            enableCellEdit: false
-		        }, {
-		            field: "importPath",
-		            displayName: "Path",
-		            width: '47%',
-		            enableCellEdit: false
-		        }];
-
-		        $scope.columnDefs2 = [{
-		            field: "",
-		            displayName: "Import",
-		            width: '9%',
-		            enableCellEdit: false,
-		            cellTemplate: importCellTmpl
-		        }, {
-		        	field: "",
-		        	displayName: "Export",
-		        	width: '9%',
-		        	cellTemplate: exportCellTmpl
-		        },{
-		        	field: "",
-		            displayName: "Last Operation",
-		            width: '15%',
-		        	cellTemplate: lastOperationCellTmpl
-		        }, {
-		            field: "name",
-		            displayName: "Name",
-		            width: '20%',
-		            enableCellEdit: true
-		        }, {
-		            field: "importPath",
-		            displayName: "Path",
-		            width: '41%',
-		            enableCellEdit: true
-		        }, {
-		            field: "delete",
-		            displayName: "Delete",
-		            width: '6%',
-		            cellTemplate: dellCellTmpl
-		        }];
-		        
 		        $scope.createNewProgram = function() {
 		            if ($scope.newProgramName != "") {
 		        		    var loadingModal = $scope.showLoadingModal();
@@ -139,10 +54,99 @@
 		        			$scope.addNew = true;
 		        		}
 		        }
+		        
+		        $scope.gridOptions = {
+		            data: 'sets',
+		            selectedItems: $scope.selectedItems,
+		            showGroupPanel: false,
+		            enableGridMenu: false,
+		            enableCellEdit: false
+		        }
 
-		        $scope.columnDefs = $scope.columnDefs1;
+		        var editCellTmpl = '<input editable="true" >'
+		        var dellCellTmpl = '<button width="50px" class="btn btn-danger btn-sm setDelete" ng-show="!readOnly" ng-click="grid.appScope.deleteSet(row.entity)">X</button>';
+		        var importCellTmpl = '<button width="50px" class="btn btn-primary" ng-disabled="row.entity.processingImport" ng-click="grid.appScope.importSet(row.entity)">Import</button>';
+		        var exportCellTmpl = '<button width="50px" class="btn btn-primary" ng-disabled="row.entity.processingImport" ng-click="grid.appScope.exportSet(row.entity)">Export</button>';
+		        var lastOperationCellTmpl = '<id="stateButton" button width="99%" ng-disabled="row.entity.processingImport || row.entity.gettingDetails" ng-class="{btn: true, \'btn-primary\': \'isPrimary(row.entity.importState)\',' +
+		        '\'btn-warning\': row.entity.importState == \'Warnings\', \'btn-danger\': row.entity.importState == \'Failed\', \'btn-success\': row.entity.importState == \'OK\'}" ng-click="grid.appScope.getSetImportDetails(row.entity)">{{row.entity.importState}}</button>';
+		         
+		        $scope.columnDefs1 = [{
+		            field: 'name',
+		            displayName: "Import",
+		            width: '9%',
+		            enableColumnMenu: false,
+		            cellTemplate: importCellTmpl
+		        }, {
+		        	field: 'name',
+		        	displayName: "Export",
+		        	width: '9%',
+		        	enableColumnMenu: false,
+		        	cellTemplate: exportCellTmpl
+		        }, {
+		        	field: 'name',
+		            displayName: "Last Operation",
+		            width: '15%',
+		            enableColumnMenu: false,
+		        	cellTemplate: lastOperationCellTmpl
+		        }, {
+		            field: 'name',
+		            displayName: "Name",
+		            width: '20%',
+		            enableColumnMenu: false,
+		        }, {
+		            field: 'importPath',
+		            displayName: "Path",
+		            enableColumnMenu: false,
+		        }];
 
-		        $scope.programs = Program.query();
+		        $scope.columnDefs2 = [{
+		            field: 'name',
+		            displayName: "Import",
+		            width: '9%',
+		            enableColumnMenu: false,
+		            cellTemplate: importCellTmpl
+		        }, {
+		        	field: 'name',
+		        	displayName: "Export",
+		        	width: '9%',
+		            enableColumnMenu: false,
+		        	cellTemplate: exportCellTmpl
+		        }, {
+		        	field: 'name',
+		            displayName: "Last Operation",
+		            width: '15%',
+		            enableColumnMenu: false,
+		        	cellTemplate: lastOperationCellTmpl
+		        }, {
+		            field: 'name',
+		            displayName: "Name",
+		            width: '20%',
+		            enableColumnMenu: false,
+		        }, {
+		            field: 'importPath',
+		            displayName: "Path",
+		            enableColumnMenu: false,
+		        }, {
+		            field: 'name',
+		            displayName: "",
+		            width: '5%',
+		            enableColumnMenu: false,
+		            cellTemplate: dellCellTmpl
+		        }];
+		        
+		        $scope.gridOptions.columnDefs = $scope.columnDefs1;
+		        
+		        $scope.gridOptions.onRegisterApi = function(gridApi) {
+
+		            $scope.subGridApi = gridApi;
+
+		            gridApi.edit.on.afterCellEdit($scope, function(rowEntity, colDef, newValue, oldValue) {
+		                if (oldValue != newValue) {
+		                    $scope.editSet(rowEntity);
+		                }
+		            });
+
+		        };
 
 		        $scope.toggleModal = function() {
 		            $scope.modalShown = !$scope.modalShown
@@ -150,10 +154,10 @@
 
 		        $scope.toggleReadOnly = function() {
 		            if ($scope.readOnly) {
-		                $scope.columnDefs = $scope.columnDefs2;
+				        $scope.gridOptions.columnDefs = $scope.columnDefs2;
 		                $scope.readOnly = false;
 		            } else {
-		                $scope.columnDefs = $scope.columnDefs1;
+				        $scope.gridOptions.columnDefs = $scope.columnDefs1;
 		                $scope.readOnly = true;
 		            }
 
@@ -182,6 +186,7 @@
 		        	}, function(data) {
 		        		set.gettingDetails = false;
 			        	$scope.operationSummary = data.operationSummary;
+			            $scope.summaryGrid.data = $scope.operationSummary.entries;
 			        	set.importState = data.importState;
 		        	}, function(data) {
 		        		set.gettingDetails = false;
@@ -345,34 +350,28 @@
 			            data: 'operationSummary.entries',
 			            enableHighlighting: true,
 			            enableColumnResize: true,
-			            enableRowReordering: true,
 			            multiSelect: false,
+			            showFilter: true,
+			            enableFiltering: true,
 			            headerRowHeight: 60, // give room for filter bar
-			            plugins: [filterBarPlugin],
 			            columnDefs: [{
 				        	field: "severity.name",
 				        	displayName: "Severity",
-				        	headerCellTemplate: '/dispo/views/nameFilterTmpl.html',
-				        	width: 70
+				            width: '7%',
 				        },{
 				            field: "name",
 				            displayName: "Name",
-				            width: 350,
-				            headerCellTemplate: '/dispo/views/nameFilterTmpl.html',
-				            enableCellEdit: false
+				            width: '20%',
 				        },{
 				            field: "message",
-				            width: 782,
 				            displayName: "Message",
-				            headerCellTemplate: '/dispo/views/nameFilterTmpl.html',
-				            enableCellEdit: false
 				        }]
 			    }
-
-
-
 		        
-		        
+		        $scope.summaryGrid.onRegisterApi = function(gridApi) {
+		            $scope.subGridApi = gridApi;
+		        };
+
 		        // Loading Modal
 		        $scope.showLoadingModal = function() {
 		            var modalInstance = $modal.open({

@@ -2,292 +2,207 @@ app.controller('userController', [
     '$scope',
     '$modal',
     '$rootScope',
-    '$cookieStore',
     'Program',
     'Set',
     'Item',
     'Annotation',
     'SetSearch',
     'SourceFile',
-    'ColumnFactory',
     'Config',
-    function($scope, $modal, $rootScope, $cookieStore, Program, Set, Item, Annotation, SetSearch, SourceFile, ColumnFactory, Config) {
-    	$scope.unselectingItem = false;
-    	$scope.editItems = false;
-    	$scope.selectedItems = [];
+    'uiGridConstants',
+    'uiGridTreeViewConstants',
+    'ColumnFactory',
+    function($scope, $modal, $rootScope, Program, Set, Item, Annotation, SetSearch, SourceFile, Config, uiGridConstants, uiGridTreeViewConstants, ColumnFactory) {
+        $scope.editItems = false;
+        $scope.selectedItems = [];
         $scope.programSelection = null;
-        $scope.setSelection = null; 	
-        $scope.lastFocused = null;
+        $scope.setSelection = null;
         $scope.isMulitEditRequest = false;
         $scope.loading = false;
-     	$scope.isSearchView = false;
-		
-        $scope.getDispoType = function() {
-        	if($rootScope.type == 'codeCoverage') {
-        		$scope.annotationHeaders = {
-        				'locationRefs': 'Code Line',
-        				'resolutionType': 'Disposition Type',
-        				'resolution': 'Resolution'}
-        	} else if($rootScope.type == 'testScript') {
-        		$scope.annotationHeaders = {
-        				'locationRefs': 'Test Point(s)',
-        				'resolutionType': 'PCR Type',
-        				'resolution': 'PCR'}
-        	}
-        };
+        $scope.isSearchView = false;
+        $scope.isMultiEditView = false;
+        $scope.isFirstSplit = false;
+        $scope.isCoverage = $rootScope.type == 'codeCoverage';
         
+        function split() {
+            Split(['#itemsGridDiv', '#subGridDiv'], {
+                direction: 'vertical',
+                sizes: [75, 25],
+                minSize: [200, 200],
+                gutterSize: 10,
+                cursor: 'row-resize'
+            });
+        }
+
         // if this is a search result view, populate program, set and items from parent scope
-        if(window.opener != null &&  window.opener.$windowScope != undefined) {
-        	$scope.programs = window.opener.$windowScope.programs;
-        	$scope.sets = window.opener.$windowScope.sets;
-        	$scope.programSelection = window.opener.$windowScope.programSelection;
-        	$scope.setSelection = window.opener.$windowScope.setSelection;
-    		$scope.items = window.opener.$windowScope.searchData;
-    		
-    		$scope.isSearchView = true;
-    		$scope.searchValue = window.opener.$windowScope.searchValue;
-    		
-    		$scope.dispoType = window.opener.$windowScope.dispoType;
-    	} else {
+        if (window.opener != null && window.opener.$windowScope != undefined) {
+            $scope.programs = window.opener.$windowScope.programs;
+            $scope.sets = window.opener.$windowScope.sets;
+            $scope.programSelection = window.opener.$windowScope.programSelection;
+            $scope.setSelection = window.opener.$windowScope.setSelection;
+            $scope.items = window.opener.$windowScope.searchData;
+
+            $scope.isSearchView = true;
+            $scope.searchValue = window.opener.$windowScope.searchValue;
+
+            $scope.type = window.opener.$windowScope.type;
+        } else {
             // Get programs from server
             Program.query(function(data) {
                 $scope.programs = data;
             });
-            $scope.getDispoType();
-    	}
-        
-        $scope.isDefaultResolution = function isDefaultResolution(annotation) {
-        	var resolutionType = annotation.resolutionType;
-        	return resolutionType == 'Test_Script' || resolutionType == 'Exception_Handling';
         }
 
         $scope.updateProgram = function updateProgram() {
-        	var loadingModal = $scope.showLoadingModal();
-        	$scope.items = {};
-        	$scope.sets = {};
+            var loadingModal = $scope.showLoadingModal();
+            $scope.items = [];
+            $scope.sets = [];
             Set.query({
                 programId: $scope.programSelection,
                 type: $rootScope.type
             }, function(data) {
-            	loadingModal.close();
+                loadingModal.close();
                 $scope.sets = data;
             }, function(data) {
-            	loadingModal.close();
-            	alert(data.statusText);
+                loadingModal.close();
+                alert(data.statusText);
             });
-            
-            // Try to get custom config
-            Config.get({
-                programId: $scope.programSelection,
-                type: $rootScope.type
-            }, function(data) {
-                $scope.coverageResolutionTypes = data.validResolutions;
-            });
+
+            if(!$scope.isCoverage) {
+                $scope.validResolutions = [{
+                    text: "Code",
+                    value: "CODE"
+                }, {
+                    text: "Test",
+                    value: "TEST"
+                }, {
+                    text: "Requirement",
+                    value: "REQUIREMENT"
+                }, {
+                    text: "Other",
+                    value: "OTHER"
+                }, {
+                    text: "Undetermined",
+                    value: "UNDETERMINED"
+                }];
+                ColumnFactory.setResolutionTypeArray($rootScope.type, $scope.validResolutions);
+            } else {
+                Config.get({
+                    programId: $scope.programSelection,
+                    type: $rootScope.type
+                }, function(data) {
+                    $scope.resolutionTypes = data.validResolutions;
+                    ColumnFactory.setResolutionTypeArray($rootScope.type, $scope.resolutionTypes);
+                });
+            }
+
         };
-        
+
         $scope.updateSet = function updateSet() {
-        	var loadingModal = $scope.showLoadingModal();
-        	$scope.items = {};
-        	
-        	if($scope.isSearchView) {
-        		$scope.doAdvSearch($scope.searchValue, loadingModal);
-        	} else {
+            var loadingModal = $scope.showLoadingModal();
+
+            if ($scope.isSearchView) {
+                $scope.doAdvSearch($scope.searchValue, loadingModal);
+            } else {
                 Item.query({
                     programId: $scope.programSelection,
                     setId: $scope.setSelection,
-                    isDetailed: $rootScope.type == 'codeCoverage'
+                    isDetailed: $scope.isCoverage
                 }, function(data) {
-                	loadingModal.close();
+                    loadingModal.close();
                     $scope.items = data;
+                    if(!$scope.isFirstSplit) {
+                    	setTimeout(split, 100);
+                    	$scope.isFirstSplit = true;
+                    } 
                 }, function(data) {
-                	loadingModal.close();
-                	alert("Ooops...Something went wrong");
+                    loadingModal.close();
+                    alert("Ooops...Something went wrong");
                 });
-        	}
+            }
         };
 
-        $scope.getItemDetails = function getItemDetails(item, row) {
-        	$scope.unselectingItem = true;
-        	$scope.gridOptions.selectAll(false);
-        	$scope.unselectingItem = false;
-            $scope.selectedItem = item;
-            Annotation.query({
-                programId: $scope.programSelection,
-                setId: $scope.setSelection,
-                itemId: item.guid
-            }, function(data) {
-                $scope.annotations = data;
-                if($rootScope.type == 'codeCoverage') {
-	               	$scope.annotations.sort(sortStuff);
-            	}
-                var blankAnnotation = new Annotation();
-                $scope.annotations.push(blankAnnotation);
-
-                $scope.gridOptions.selectRow(row.rowIndex, true);
-            });
-
-
-        };
-        
         var sortStuff = function(a, b) {
-   			if(a.locationRefs == undefined) {
-   				return 1;
-   			}
-   			if(b.locationRefs == undefined) {
-   				return -1;
-   			}
-   			if(!isNaN(parseFloat(a)) && isFinite(a)) {
-       		  return a.locationRefs-b.locationRefs
-   			} else {
-   			  var aSplit = a.locationRefs.split(".");
-   			  var bSplit = b.locationRefs.split(".");
-   			  
-   			  var delta = aSplit[0] - bSplit[0];
-   			  if(delta == 0) {
-   				 if(aSplit[1].match("RESULT") && !bSplit[1].match("RESULT")) {
-   					return -1;
-   				 } else if(!aSplit[1].match("RESULT") && bSplit[1].match("RESULT")){
-   					return 1;
-   				 }else {
-   	   				 return a.locationRefs.localeCompare(b.locationRefs);
-   				 }
-   			  } else {
-   			 	 return delta;
-   			  }
-   			} 
-        }
-
-        $scope.$on('ngGridEventStartCellEdit', function(data) {
-            var field = data.targetScope.col.field;
-            $scope.cachedValue = data.targetScope.row.getProperty(field);
-        });
-
-        $scope.$on('ngGridEventEndCellEdit', function(data) {
-            var field = data.targetScope.col.field;
-            var newValue = data.targetScope.row.getProperty(field);
-
-            if ($scope.cachedValue != newValue) {
-                var object = data.targetScope.row.entity;
-                $scope.editItem(data.targetScope.row.entity);
+            if (a.locationRefs == undefined) {
+                return 1;
             }
-        });
-        
-        $scope.saveLastFocused = function saveLastFocused(element) {
-            $scope.lastFocused = element;
+            if (b.locationRefs == undefined) {
+                return -1;
+            }
+            if (!isNaN(parseFloat(a)) && isFinite(a)) {
+                return b.locationRefs - a.locationRefs
+            } else {
+                var aSplit = a.locationRefs.split(".");
+                var bSplit = b.locationRefs.split(".");
+
+                var delta = bSplit[0] - aSplit[0];
+                if (delta == 0) {
+                    if (bSplit[1].match("RESULT") && !aSplit[1].match("RESULT")) {
+                        return -1;
+                    } else if (!bSplit[1].match("RESULT") && aSplit[1].match("RESULT")) {
+                        return 1;
+                    } else {
+                        return b.locationRefs.localeCompare(a.locationRefs);
+                    }
+                } else {
+                    return delta;
+                }
+            }
         }
-        
-        $scope.getSourceFlie = function () {
-        		if($rootScope.type == 'codeCoverage') {
-	         	var requst = [];
-	         	requst.push(
-	         	  "/dispo/",
-	         	  "program/",
-	         	  $scope.programSelection,
-	         	  "/set/",
-	         	  $scope.setSelection,
-	         	  "/file/",
-	         	  $scope.selectedItem.name
-	         	  );
-	         	  var url = requst.join("");
-	             
-	             window.open(url);
-	         }
-         }
-        
+
+        $scope.getSourceFlie = function() {
+            var requst = [];
+            requst.push(
+                "program/",
+                $scope.programSelection,
+                "/set/",
+                $scope.setSelection,
+                "/file/",
+                $scope.selectedItem.name
+            );
+            var url = requst.join("");
+
+            window.open(url);
+        }
+
         $scope.toggleEditItems = function toggleEditItems() {
-        	var size = $scope.selectedItems.length;
-        	$scope.gridOptions.selectAll(false);
-        	
-        	// Why do this last? Good question, checkSeletable gets called by selectAll and needs editItems to be true so ng-grid can properly unselect the selected items withouth breaking it's 'watch' function
-        	$scope.editItems = !$scope.editItems;
-        	$scope.annotations.length = 0;
-        }
-        
-        // Need this so that user clicks on grid rows doesn't automatically change the selected/highlighted row
-        var checkSelectable = function checkSelectable(data) {
-        	if($scope.editItems || $scope.unselectingItem){
-        		return true;
-        	} else {
-        		return false;
-        	}
-        };
-        
-        $scope.$on('ngGridEventStartCellEdit', function (event) {
-        	$scope.previousCellData = event.targetScope.row.entity[event.targetScope.col.field];
-        });
-        
-        $scope.$on('ngGridEventEndCellEdit', function (event) {
-            cellData = event.targetScope.row.entity[event.targetScope.col.field];
-            if(cellData != $scope.previousCellData) {
-            }
-        });
-        
-        $scope.checkEditable = function checkEditable(item) {
-        	return  item.assignee != $rootScope.cachedName;
+            $scope.isMultiEditView = !$scope.isMultiEditView;
+            console.log($scope.gridOptions.enableRowSelection);
+
+            $scope.gridApi.selection.clearSelectedRows();
+            $scope.gridOptions.enableRowSelection = $scope.isMultiEditView;
+            $scope.gridApi.selection.setMultiSelect($scope.isMultiEditView);
+
+            $scope.gridOptions.enableFullRowSelection = $scope.isMultiEditView;
+            $scope.gridOptions.enableRowHeaderSelection = $scope.isMultiEditView;
+
+            $scope.gridApi.core.notifyDataChange(uiGridConstants.dataChange.OPTIONS);
+
+            $scope.annotations = [];
+            $scope.subGridOptions.data = [];
         }
 
-        $scope.columns = ColumnFactory.getColumns($scope.type, window.innerWidth);
-        
-        var filterBarPlugin = {
-                init: function(scope, grid) {
-                    filterBarPlugin.scope = scope;
-                    filterBarPlugin.grid = grid;
-                    $scope.$watch(function() {
-                        var searchQuery = "";
-                        angular.forEach(filterBarPlugin.scope.columns, function(col) {
-                            if (col.visible && col.filterText) {
-                                var filterText = (col.filterText.indexOf('*') == 0 ? col.filterText.replace('*', '') : "^" + col.filterText) + ";";
-                                searchQuery += col.displayName + ": " + filterText;
-                            }
-                        });
-                        return searchQuery;
-                    }, function(searchQuery) {
-                        filterBarPlugin.scope.$parent.filterText = searchQuery;
-                        filterBarPlugin.grid.searchProvider.evalFilter();
-                    });
-                },
-                scope: undefined,
-                grid: undefined,
-            };
-        
-        $scope.gridOptions = {
-            data: 'items',
-            enableHighlighting: true,
-            enableColumnResize: true,
-            enableRowReordering: true,
-            multiSelect: true,
-            showColumnMenu: true,
-            selectedItems: $scope.selectedItems,
-            beforeSelectionChange: checkSelectable,
-            showGroupPanel: true,
-            showFilter: true,
-            noTabInterference: true,
-            tabIndex: 0,
-            columnDefs: 'columns',
-            plugins: [filterBarPlugin],
-            headerRowHeight: 60 // give room for filter bar
-        };
-        
-        $scope.stealItem = function(item) {
+        $scope.stealItem = function(item, row) {
             Item.get({
                 programId: $scope.programSelection,
                 setId: $scope.setSelection,
                 itemId: item.guid
             }, function(data) {
-            	$scope.updateItemFromServer(item, data);
-            	$scope.askToSteal(item);
+                $scope.updateItemFromServer(item, data);
+                $scope.askToSteal(item);
             });
-        }
-        
+        };
+
+
         $scope.askToSteal = function askToSteal(item) {
             if ($rootScope.cachedName != null) {
                 if ($rootScope.cachedName != item.assignee) {
-                	var confirmed = false;
-                	if(item.assignee.toUpperCase() == 'UNASSIGNED'){
-                		confirmed = true;
-                	} else {
-                		confirmed = window.confirm("Are you sure you want to steal this Item from " + item.assignee);
-                	}
+                    var confirmed = false;
+                    if (item.assignee.toUpperCase() == 'UNASSIGNED') {
+                        confirmed = true;
+                    } else {
+                        confirmed = window.confirm("Are you sure you want to steal this Item from " + item.assignee);
+                    }
                     if (confirmed) {
                         item.assignee = $rootScope.cachedName;
                         $scope.editItem(item);
@@ -295,59 +210,280 @@ app.controller('userController', [
                 }
             }
         }
-        
-        
-        $scope.testResolutionTypes = [{
-            text: "Code",
-            value: "CODE"
-        }, {
-            text: "Test",
-            value: "TEST"
-        }, {
-            text: "Requirement",
-            value: "REQUIREMENT"
-        }, {
-            text: "Other",
-            value: "OTHER"
-        }, {
-            text: "Undetermined",
-            value: "UNDETERMINED"
-        }];
 
-        $scope.coverageResolutionTypes = [{
-            text: "Test Script",
-            value: "Test_Script",
-            isDefault: true
-        }, {
-            text: "Exception_Handling",
-            value: "Exception_Handling",
-            isDefault: true
-        }, {
-            text: "Other",
-            value: "other",
-            isDefault: false
-        }, {
-            text: "Undetermined",
-            value: "UNDETERMINED",
-            isDefault: false
-        }];
-        
-        
-        $scope.searchAnnotations = function() {
-        	Item.get({
-        		    programId: $scope.programSelection,
-                    setId: $scope.setSelection,
-                    itemId: $scope.selectedItem.guid,
-                    keyword: "text"
-        	})
+        var dateSorting = function(itemA, itemB) {
+            var DateA = new Date(itemA);
+            var DateB = new Date(itemB);
+
+            if (DateA < DateB) {
+                return -1;
+            } else if (DateB < DateA) {
+                return 1;
+            } else {
+                return 0;
+            }
+        };
+
+        var checkboxSorting = function checkboxSorting(itemA, itemB) {
+            if (itemA == itemB) {
+                return 0;
+            } else if (itemA) {
+                return -1;
+            } else if (itemB) {
+                return 1;
+            }
+        };
+
+        $scope.checkEditable = function checkEditable(item) {
+            return item.assignee != $rootScope.cachedName;
         }
-        
-        $scope.getResolutionTypes = function getResolutionTypes() {
-        	if($scope.type == 'codeCoverage') {
-        		return $scope.coverageResolutionTypes;
-        	} else {
-        		return $scope.testResolutionTypes;
-        	}
+
+        $scope.uiGridConstants = uiGridConstants;
+
+        $scope.gridOptions = {
+            data: 'items',
+            enableCellEdit: false,
+            enableHighlighting: true,
+            enableColumnResize: true,
+            multiSelect: false,
+            showColumnMenu: true,
+            selectedItems: $scope.selectedItems,
+            showGroupPanel: true,
+            showFilter: true,
+            noTabInterference: true,
+            enableGridMenu: true,
+            tabIndex: 0,
+            enableFiltering: true,
+            enableFullRowSelection: true,
+            showGridFooter: true,
+            exporterMenuPdf: false,
+        };
+        $scope.gridOptions.enableRowSelection = false;
+        $scope.gridOptions.enableRowHeaderSelection = false;
+
+        $scope.gridOptions.onRegisterApi = function(gridApi) {
+
+            $scope.gridApi = gridApi;
+
+            gridApi.edit.on.afterCellEdit($scope, function(rowEntity, colDef, newValue, oldValue) {
+                if (oldValue != newValue) {
+                    $scope.editItem(rowEntity);
+                }
+            });
+
+            gridApi.core.on.filterChanged($scope, function(ffff) {
+                var grid = this.grid;
+            })
+
+            gridApi.selection.on.rowSelectionChanged($scope, function(row, event) {
+                $scope.selectedItems = gridApi.selection.getSelectedRows();
+            });
+
+            gridApi.selection.on.rowSelectionChangedBatch($scope, function(row, event) {
+                $scope.selectedItems = gridApi.selection.getSelectedRows();
+            });
+        };
+
+        $scope.gridOptions.columnDefs = ColumnFactory.getColumns($scope.type, window.innerWidth);
+
+        $scope.getText2 = function(annotation) {
+            if (annotation.childrenComplete) {
+                return "COMPLETE"
+            } else {
+                return annotation.resolutionType;
+            }
+        }
+
+        $scope.subGridOptions = {
+            data: 'annotations',
+            enableHighlighting: true,
+            enableCellEdit: true,
+            enableCellEditOnFocus: true,
+            enableColumnResize: true,
+            multiSelect: false,
+            showColumnMenu: true,
+            showFilter: true,
+            noTabInterference: true,
+            enableGridMenu: true,
+            tabIndex: 0,
+            enableFiltering: true,
+            showTreeExpandNoChildren: false,
+            enableFullRowSelection: true,
+        };
+
+        $scope.subGridOptions.enableRowSelection = false;
+        $scope.subGridOptions.enableRowHeaderSelection = false;
+        $scope.subGridOptions.onRegisterApi = function(gridApi) {
+
+            $scope.subGridApi = gridApi;
+
+            gridApi.edit.on.afterCellEdit($scope, function(rowEntity, colDef, newValue, oldValue) {
+                if (oldValue != newValue) {
+                    $scope.editAnnotation(rowEntity);
+                }
+            });
+
+        };
+
+        var id = 0;
+        $scope.writeoutNode = function(childArray, currentLevel, dataArray) {
+            childArray.forEach(function(childNode) {
+                if (childNode.children.length > 0) {
+                    childNode.$$treeLevel = currentLevel;
+                    id = childNode.id;
+                } else {
+                    if ((id != childNode.parentId) || (childNode.id == childNode.parentId)) {
+                        childNode.$$treeLevel = currentLevel;
+                    }
+                }
+                dataArray.push(childNode);
+                $scope.writeoutNode(childNode.children, currentLevel + 1, dataArray);
+            });
+        };
+
+        $scope.subGridOptions.data = [];
+        $scope.subGridOptions.columnDefs = ColumnFactory.getSubGridColumns($rootScope.type);
+
+
+        $scope.treeAnnotations = function(annotations) {
+            var annotationsStack = annotations.slice();
+            var toReturn = [];
+
+            while (annotationsStack.length > 0) {
+                var annotation = annotationsStack[annotationsStack.length - 1] // peek
+                if (annotation.name.match(/\d+\.\w+\..+/gi)) {
+                    var annotationWithChildren = {};
+                    annotation.id = annotation.guid;
+                    var leadingLocRefs = annotation.locationRefs.split(".")[0];
+                    annotationWithChildren.locationRefs = leadingLocRefs;
+                    annotationWithChildren.id = annotation.guid;
+                    annotationWithChildren.guid = annotation.guid;
+                    annotationWithChildren.parentId = -1;
+
+                    var metaData = {};
+                    metaData.childrenComplete = true;
+
+                    var childrenStack = $scope.getAnnotationsStartsWith(annotationsStack, leadingLocRefs, true);
+                    var childrenAsTree = $scope.createTreeAnnotations(annotationsStack, annotationWithChildren, childrenStack, 1, metaData);
+                    annotationWithChildren.children = childrenAsTree;
+                    annotationWithChildren.$treeLevel = 0;
+                    annotationWithChildren.childrenComplete = metaData.childrenComplete;
+                    toReturn.push(annotationWithChildren);
+                } else {
+                    annotationsStack.pop();
+                    annotation.children = [];
+                    annotation.$$treeLevel = -1;
+                    annotation.isLeaf = true;
+
+                    toReturn.push(annotation);
+                }
+            }
+
+            return toReturn;
+        }
+
+
+        $scope.createTreeAnnotations = function(annotationsStack, parent, childrenStack, level, metaData) {
+            if (level >= 2) {
+                var children = $scope.getAnnotationsStartsWith(childrenStack, parent.locationRefs, true);
+                for (var i = 0; i < children.length; i++) {
+                    children[i].$$treeLevel = level;
+
+                    children[i].children = [];
+                    children[i].parentId = parent.id;
+                    children[i].isLeaf = true;
+                    if (children[i].resolution === "") {
+                        metaData.childrenComplete = false;
+                    }
+                }
+                return children;
+            } else {
+                var toReturn = [];
+                while (childrenStack.length > 0) {
+                    var annotation = childrenStack[0]
+                    var leadingLocRefs = $scope.createLocRef(annotation.locationRefs, level);
+
+                    var workingGen = {};
+                    workingGen.id = $scope.generateId();
+                    workingGen.parentId = parent.id;
+                    workingGen.locationRefs = leadingLocRefs;
+                    workingGen.$$treeLevel = level;
+                    var metaDataCur = {};
+                    metaDataCur.childrenComplete = true;
+                    workingGen.children = $scope.createTreeAnnotations(annotationsStack, workingGen, childrenStack, level + 1, metaDataCur);
+                    metaData.childrenComplete = metaData.childrenComplete && metaDataCur.childrenComplete;
+                    workingGen.childrenComplete = metaData.childrenComplete;
+                    toReturn.push(workingGen);
+                }
+                return toReturn;
+            }
+        }
+
+        $scope.createLocRef = function(fullLocRefs, level) {
+            var workingGenLocationRefs = "";
+            for (var i = 0; i <= level; i++) {
+                if (i > 0) {
+                    workingGenLocationRefs += ".";
+                }
+                workingGenLocationRefs += fullLocRefs.split(".")[i];
+            }
+            return workingGenLocationRefs;
+        }
+
+
+        $scope.getAnnotationsStartsWith = function(annotationsStack, startsWith, isPop) {
+            var startsWithRegex = "^" + startsWith + "($|\\.)";
+            var annotationsStackOrig = annotationsStack.slice();
+            var toReturn = [];
+            var toDelete = [];
+            for (var i = 0; i < annotationsStack.length; i++) {
+                var annotation = annotationsStackOrig[i];
+                if (annotation.locationRefs.match(startsWithRegex)) {
+                    toDelete.push(i);
+                    toReturn.push(annotation);
+                }
+            }
+            if (isPop) {
+                for (var i = toDelete.length - 1; i >= 0; i--) {
+                    annotationsStack.splice(toDelete[i], 1);
+                }
+            }
+            return toReturn;
+        }
+
+        $scope.getItemDetails = function(item, row) {
+            if (!$scope.isMultiEditView) {
+                $scope.selectedItem = item;
+                Annotation.query({
+                    programId: $scope.programSelection,
+                    setId: $scope.setSelection,
+                    itemId: item.guid
+                }, function(data) {
+                    $scope.subGridOptions.data = [];
+                    $scope.annotations = data;
+                    if ($scope.isCoverage) {
+                        $scope.annotations.sort(sortStuff);
+                        $scope.annotations = $scope.treeAnnotations(data);
+                        $scope.writeoutNode($scope.annotations, 0, $scope.subGridOptions.data);
+                    } else {
+                        var blankAnnotation = new Annotation();
+                        $scope.annotations.push(blankAnnotation);
+                        $scope.subGridOptions.data = $scope.annotations;
+                    }
+
+                    $scope.gridApi.selection.selectRow(row.entity, $scope.gridApi.grid);
+                });
+            }
+
+        }
+
+        $scope.searchAnnotations = function() {
+            Item.get({
+                programId: $scope.programSelection,
+                setId: $scope.setSelection,
+                itemId: $scope.selectedItem.guid,
+                keyword: "text"
+            })
         }
 
         $scope.deleteAnnotation = function deleteAnnotation(annotation) {
@@ -357,7 +493,7 @@ app.controller('userController', [
                 itemId: $scope.selectedItem.guid,
                 annotationId: annotation.guid,
                 userName: $rootScope.cachedName,
-            }, function(data) {
+            }, function() {
                 var index = $scope.annotations.indexOf(annotation);
                 if (index > -1) {
                     $scope.annotations.splice(index, 1);
@@ -374,50 +510,50 @@ app.controller('userController', [
             });
 
         }
-        
+
         $scope.editItem = function editItem(item) {
-        	$scope.editItem(item, null);
+            $scope.editItem(item, null);
         }
-        
+
         $scope.editAssignees = function(item) {
-        	$scope.editItem(item, 'assignee');
+            $scope.editItem(item, 'assignee');
         }
-        
-        $scope.editNotes = function (item) {
-        	$scope.editItem(item, 'itemNotes');
+
+        $scope.editItemNotes = function(item) {
+            $scope.editItem(item, 'itemNotes');
         }
-        
-        $scope.editCategories = function (item) {
-        	$scope.editItem(item, 'category');
+
+        $scope.editCategories = function(item) {
+            $scope.editItem(item, 'category');
         }
-        
-        $scope.editNeedsRerun = function (item) {
-        	$scope.editItem(item, 'needsRerun');
+
+        $scope.editNeedsRerun = function(item) {
+            $scope.editItem(item, 'needsRerun');
         }
 
         $scope.editItem = function editItem(item, field) {
-        	var newItem = new Item;
-        	if(field == null) {
-        		newItem = item;
-        	} else if(field == 'itemNotes') {
-        		newItem.itemNotes = item.itemNotes;
-        	} else if(field == 'needsRerun') {
-        		newItem.needsRerun = item.needsRerun;
-        	} else if(field == 'assignee') {
-        		newItem.assignee = item.assignee;
-        	} else if(field == 'category') {
-        		newItem.category = item.category;
-        	}
-        	
+            var newItem = new Item();
+            if (field == null) {
+                newItem = item;
+            } else if (field == 'itemNotes') {
+                newItem.itemNotes = item.itemNotes;
+            } else if (field == 'needsRerun') {
+                newItem.needsRerun = item.needsRerun;
+            } else if (field == 'category') {
+                newItem.category = item.category;
+            } else if (field == 'assignee') {
+                newItem.assignee = item.assignee;
+            }
+
             Item.update({
                 programId: $scope.programSelection,
                 setId: $scope.setSelection,
                 itemId: item.guid,
             }, newItem, function() {
-            	if($scope.isMulitEditRequest) {
-                	$scope.gridOptions.selectAll(false);
-            		$scope.isMulitEditRequest=false;
-            	}
+                if ($scope.isMulitEditRequest) {
+                    $scope.gridApi.selection.clearSelectedRows();
+                    $scope.isMulitEditRequest = false;
+                }
             }, function(data) {
                 alert("Could not make change, please try refreshing");
             });
@@ -425,23 +561,55 @@ app.controller('userController', [
         }
 
         $scope.getInvalidLocRefs = function getInvalidLocRefs(annotation) {
-        	if(annotation.isConnected != null) {
-        		return !annotation.isConnected && !annotation.isDefault && annotation.locationRefs != null;
-        	} else {
-        		return false;
-        	}
+            if (annotation.isConnected != null) {
+                return !annotation.isConnected && annotation.locationRefs != null;
+            } else {
+                return false;
+            }
         }
 
         $scope.getInvalidRes = function getInvalidRes(annotation) {
             return annotation.resolution != null && annotation.resolution != "" && !annotation.isResolutionValid;
         }
-        
+
         $scope.editAnnotation = function editAnnotation(annotation) {
-        	$scope.lastFocused;
+            if ($scope.selectedItem.assignee == $rootScope.cachedName) {
+                $scope.editAnnotationServerCall(annotation);
+            } else if ($scope.selectedItem.assignee == "UnAssigned") {
+                var newItem = new Item();
+                newItem.assignee = $rootScope.cachedName;
+
+                Item.get({
+                    programId: $scope.programSelection,
+                    setId: $scope.setSelection,
+                    itemId: $scope.selectedItem.guid
+                }, function(data) {
+                    if (data.assignee == "UnAssigned") {
+                        Item.update({
+                            programId: $scope.programSelection,
+                            setId: $scope.setSelection,
+                            itemId: $scope.selectedItem.guid,
+                        }, newItem, function() {
+                            $scope.selectedItem.assignee = $rootScope.cachedName;
+                            $scope.editAnnotationServerCall
+                        }, function(data) {
+                            alert("Could not make change, please try refreshing");
+                        });
+                    } else {
+                        $scope.selectedItem.assignee = data.assignee;
+                        alert("This item was taken while you weren't looking. Double click on the assignee field for this item to steal it and make changes");
+                    }
+                });
+            } else {
+                alert("You are not assigned to this Item. Double click on the assignee field for this item to steal it and make changes");
+            }
+        }
+
+        $scope.editAnnotationServerCall = function(annotation) {
             if (annotation.guid == null) {
-            	if(/[^\s]+/.test(annotation.locationRefs)) {
-            		$scope.createAnnotation(annotation);
-            	}
+                if (/[^\s]+/.test(annotation.locationRefs)) {
+                    $scope.createAnnotation(annotation);
+                }
             } else {
                 Annotation.update({
                     programId: $scope.programSelection,
@@ -472,11 +640,10 @@ app.controller('userController', [
                 }, function(data) {
                     alert("Could not make change, please try refreshing");
                 });
-                
-	             if($rootScope.type == 'codeCoverage') {
-	               	$scope.annotations.sort(sortStuff);
-	             }
 
+                if ($scope.isCoverage) {
+                    $scope.annotations.sort(sortStuff);
+                }
             }
         }
 
@@ -487,10 +654,6 @@ app.controller('userController', [
                 itemId: $scope.selectedItem.guid,
                 userName: $rootScope.cachedName,
             }, function() {
-            	var nextFocused = $scope.lastFocused.$$prevSibling;
-            	nextFocused.focus;
-            	nextFocused.focusMe;
-            	
                 Item.get({
                     programId: $scope.programSelection,
                     setId: $scope.setSelection,
@@ -501,10 +664,10 @@ app.controller('userController', [
 
                 var blankAnnotation = new Annotation();
                 $scope.annotations.push(blankAnnotation);
-                
-                if($rootScope.type == 'codeCoverage') {
-	               	$scope.annotations.sort(sortStuff);
-            	 }
+
+                if ($scope.isCoverage) {
+                    $scope.annotations.sort(sortStuff);
+                }
             }, function(data) {
                 alert("Could not make change, please try refreshing");
             });
@@ -540,65 +703,81 @@ app.controller('userController', [
                 annotation.showDeets = true;
             }
         }
-        
+
         $scope.updateItemFromServer = function(oldItem, newItem) {
-        	oldItem.assignee = newItem.assignee;
-        	oldItem.scriptNotes = newItem.scriptNotes;
-        	oldItem.status = newItem.status;
+            oldItem.assignee = newItem.assignee;
+            oldItem.itemNotes = newItem.itemNotes;
+            oldItem.status = newItem.status;
         }
-        
+
         $scope.doAdvSearch = function(value, loadingModal) {
-        	SetSearch.query({
+            SetSearch.query({
                 programId: $scope.programSelection,
                 setId: $scope.setSelection,
                 value: value,
-                isDetailed: $rootScope.type == 'codeCoverage',
+                isDetailed: $scope.isCoverage
             }, function(data) {
-            	if($scope.isSearchView) {
-            		$scope.items = data;
-            		if(loadingModal != null) {
-            			loadingModal.close();
-            		}
-            	} else  {
-                	$scope.searchData = data;
-                	window.$windowScope = $scope;
-                	$scope.searchValue = value;
-                	window.open("/dispo/main.html#/search");
-            	}
+                if ($scope.isSearchView) {
+                    $scope.items = data;
+                    if (loadingModal != null) {
+                        loadingModal.close();
+                    }
+                } else {
+                    $scope.searchData = data;
+                    window.$windowScope = $scope;
+                    $scope.searchValue = value;
+                    window.open("/dispo/main.html#/search");
+                }
             }, function(data) {
-            	if($scope.isSearchView) {
-            		$scope.items = $scope.emptyItems;
-            	} else {
-                	$scope.searchData = $scope.emptyItems;
-                	window.$windowScope = $scope;
-                	window.open("/dispo/main.html#/search");
-            	}
-            	if(loadingModal != null) {
-        			loadingModal.close();
-        		}
+                if ($scope.isSearchView) {
+                    $scope.items = $scope.emptyItems;
+                } else {
+                    $scope.searchData = $scope.emptyItems;
+                    window.$windowScope = $scope;
+                    window.open("/dispo/main.html#/search");
+                }
+                if (loadingModal != null) {
+                    loadingModal.close();
+                }
             });
         }
         
-        $scope.getText = function(annotation) {
-        		if(annotation.customerNotes == "") { 
-	        		var discrepancies = $scope.selectedItem.discrepancies;
-	        		var covered = annotation.idsOfCoveredDiscrepancies[0]
-	        		
-	        		if(!discrepancies[covered] == null)
-	        		return discrepancies[covered].text;        		
-		        		else 
-		        			return "";     		
-        		} else {
-        			return annotation.customerNotes;
-        		}
+        $scope.getSourceFile = function () {
+    		if($scope.isCoverage) {
+         	var requst = [];
+         	requst.push(
+         	  "/dispo/",
+         	  "program/",
+         	  $scope.programSelection,
+         	  "/set/",
+         	  $scope.setSelection,
+         	  "/file/",
+         	  $scope.selectedItem.name
+         	  );
+         	  var url = requst.join("");
+             
+             window.open(url);
+         }
+     }
+
+        $scope.emptyItems = [{
+            "name": "NONE FOUND"
+        }];
+
+        $scope.generateId = function() {
+            var text = "";
+            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+            for (var i = 0; i < 10; i++)
+                text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+            return text;
         }
-        
-        $scope.emptyItems = [{"name": "NONE FOUND"}]
-        
-        
+
+
         // MODALS -------------------------------------------------------------------------------------------------
         $scope.showAssigneeModal = function() {
-        	$scope.isMulitEditRequest = true;
+            $scope.isMulitEditRequest = true;
             var modalInstance = $modal.open({
                 templateUrl: 'assigneeModal.html',
                 controller: AssigneeModalCtrl,
@@ -607,16 +786,16 @@ app.controller('userController', [
             });
 
             modalInstance.result.then(function(inputs) {
-            	var size = $scope.selectedItems.length;
-            	for(var i = 0; i < size; i++) {
-            		if($scope.selectedItems[i].assignee != inputs.multiAssignee){
-	            		$scope.selectedItems[i].assignee = inputs.multiAssignee;
-	            		$scope.editAssignees($scope.selectedItems[i]);
-            		}
-            	}
+                var size = $scope.selectedItems.length;
+                for (var i = 0; i < size; i++) {
+                    if ($scope.selectedItems[i].assignee != inputs.multiAssignee) {
+                        $scope.selectedItems[i].assignee = inputs.multiAssignee;
+                        $scope.editAssignees($scope.selectedItems[i]);
+                    }
+                }
             });
         }
-        
+
         var AssigneeModalCtrl = function($scope, $modalInstance) {
             $scope.multiAssignee = "";
 
@@ -630,10 +809,10 @@ app.controller('userController', [
                 $modalInstance.dismiss('cancel');
             };
         };
-        
+
         // Category Modal
         $scope.showCategoryModal = function() {
-        	$scope.isMulitEditRequest = true;
+            $scope.isMulitEditRequest = true;
             var modalInstance = $modal.open({
                 templateUrl: 'categoryModal.html',
                 controller: CategoryModalCtrl,
@@ -642,16 +821,16 @@ app.controller('userController', [
             });
 
             modalInstance.result.then(function(inputs) {
-            	var size = $scope.selectedItems.length;
-            	for(var i = 0; i < size; i++) {
-            		if($scope.selectedItems[i].category != inputs.category){
-	            		$scope.selectedItems[i].category = inputs.category;
-	            		$scope.editCategories($scope.selectedItems[i]);
-            		}
-            	}
+                var size = $scope.selectedItems.length;
+                for (var i = 0; i < size; i++) {
+                    if ($scope.selectedItems[i].category != inputs.category) {
+                        $scope.selectedItems[i].category = inputs.category;
+                        $scope.editCategories($scope.selectedItems[i]);
+                    }
+                }
             });
         }
-        
+
         var CategoryModalCtrl = function($scope, $modalInstance) {
             $scope.multiCategory = "";
 
@@ -665,10 +844,10 @@ app.controller('userController', [
                 $modalInstance.dismiss('cancel');
             };
         };
-        
+
         // Needs Rerun Modal
         $scope.showNeedsRerunModal = function() {
-        	$scope.isMulitEditRequest = true;
+            $scope.isMulitEditRequest = true;
             var modalInstance = $modal.open({
                 templateUrl: 'needsRerunModal.html',
                 controller: NeedsRerunModalCtrl,
@@ -677,23 +856,23 @@ app.controller('userController', [
             });
 
             modalInstance.result.then(function(inputs) {
-            	var size = $scope.selectedItems.length;
-            	for(var i = 0; i < size; i++) {
-            		if($scope.selectedItems[i].needsRerun != inputs.needsRerun) {
-            			$scope.selectedItems[i].needsRerun = inputs.needsRerun;
-            			$scope.editNeedsRerun($scope.selectedItems[i]);
-            		}
-            	}
+                var size = $scope.selectedItems.length;
+                for (var i = 0; i < size; i++) {
+                    if ($scope.selectedItems[i].needsRerun != inputs.needsRerun) {
+                        $scope.selectedItems[i].needsRerun = inputs.needsRerun;
+                        $scope.editNeedsRerun($scope.selectedItems[i]);
+                    }
+                }
             });
         }
-        
+
         var NeedsRerunModalCtrl = function($scope, $modalInstance) {
             $scope.ok = function() {
                 var inputs = {};
-                if(this.formData == undefined) {
-                	inputs.needsRerun = true;
+                if (this.formData == undefined) {
+                    inputs.needsRerun = true;
                 } else {
-                	inputs.needsRerun = this.formData.multiNeedsRerun;
+                    inputs.needsRerun = this.formData.multiNeedsRerun;
                 }
                 $modalInstance.close(inputs);
             };
@@ -702,9 +881,9 @@ app.controller('userController', [
                 $modalInstance.dismiss('cancel');
             };
         };
-        
-        
-        
+
+
+
         // Advanced Serach Modal
         $scope.showAdvSearchModal = function() {
             var modalInstance = $modal.open({
@@ -713,27 +892,27 @@ app.controller('userController', [
                 size: 'md',
                 windowClass: 'advSearch',
                 resolve: {
-                	value: function() {
-                		return $scope.searchValue;
-                	}
+                    value: function() {
+                        return $scope.searchValue;
+                    }
                 }
             });
 
             modalInstance.result.then(function(inputs) {
-            	var loadingModal = null;
-            	if($scope.isSearchView) {
-            		$scope.searchValue = inputs.value;
-            		loadingModal = $scope.showLoadingModal();
-            	}
-            	$scope.doAdvSearch(inputs.value, loadingModal)
+                var loadingModal = null;
+                if ($scope.isSearchView) {
+                    $scope.searchValue = inputs.value;
+                    loadingModal = $scope.showLoadingModal();
+                }
+                $scope.doAdvSearch(inputs.value, loadingModal)
             });
         }
-        
+
         var AdvSearchModalCtrl = function($scope, $modalInstance, value) {
-        	$scope.searchValue = value;
+            $scope.searchValue = value;
             $scope.ok = function() {
                 var inputs = {};
-            	inputs.value = this.searchValue;
+                inputs.value = this.searchValue;
                 $modalInstance.close(inputs);
             };
 
@@ -741,7 +920,42 @@ app.controller('userController', [
                 $modalInstance.dismiss('cancel');
             };
         };
-        
+
+        // Item Notes Modal
+        $scope.showItemNotesModal = function() {
+            $scope.isMulitEditRequest = true;
+            var modalInstance = $modal.open({
+                templateUrl: 'itemNotesModal.html',
+                controller: ItemNotesModalCtrl,
+                size: 'md',
+                windowClass: 'itemNotesModal'
+            });
+
+            modalInstance.result.then(function(inputs) {
+                var size = $scope.selectedItems.length;
+                for (var i = 0; i < size; i++) {
+                    if ($scope.selectedItems[i].itemNotes != inputs.itemNotes) {
+                        $scope.selectedItems[i].itemNotes = inputs.itemNotes;
+                        $scope.editItemNotes($scope.selectedItems[i]);
+                    }
+                }
+            });
+        }
+
+        var ItemNotesModalCtrl = function($scope, $modalInstance) {
+            $scope.itemNotes = "";
+
+            $scope.ok = function() {
+                var inputs = {};
+                inputs.itemNotes = this.itemNotes;
+                $modalInstance.close(inputs);
+            };
+
+            $scope.cancel = function() {
+                $modalInstance.dismiss('cancel');
+            };
+        };
+
         // Loading Modal
         $scope.showLoadingModal = function() {
             var modalInstance = $modal.open({
@@ -750,10 +964,32 @@ app.controller('userController', [
                 windowClass: 'needsRerunModal',
                 backdrop: 'static'
             });
-            
+
             return modalInstance;
         }
+        
+        
+        // Show All Failures Modal
+        $scope.showAllFailuresModal = function() {
+            var modalInstance = $modal.open({
+                templateUrl: 'showAllFailuresModal.html',
+                controller: ShowAllFailuresCtrl,
+                size: 'lg',
+                windowClass: 'showAllFailures',
+                resolve: {
+                    item: function() {
+                        return $scope.selectedItem;
+                    }
+                }
+            });
+        }
 
+        var ShowAllFailuresCtrl = function($scope, $modalInstance, item) {
+        	$scope.item = item;
+            $scope.close = function() {
+                $modalInstance.dismiss('cancel');
+            };
+        };
 
     }
 ]);
@@ -779,17 +1015,19 @@ app.directive('ngModelOnblur', function() {
 
 // http://stackoverflow.com/questions/18398472/disabled-text-box-accessible-using-tab-key
 app.directive('focusMe', function($timeout) {
-	  return {
-	    scope: { trigger: '=focusMe' },
-	    link: function(scope, element) {
-	      scope.$watch('trigger', function(value) {
-	        if(value === true) { 
-	            element[0].focus();
-	        }
-	      });
-	    }
-	  };
-	});
+    return {
+        scope: {
+            trigger: '=focusMe'
+        },
+        link: function(scope, element) {
+            scope.$watch('trigger', function(value) {
+                if (value === true) {
+                    element[0].focus();
+                }
+            });
+        }
+    };
+});
 
 //http://stackoverflow.com/questions/16202254/ng-options-with-disabled-rows
 app.directive('optionsDisabled', function($parse) {
@@ -810,13 +1048,13 @@ app.directive('optionsDisabled', function($parse) {
             var attrToWatch = expElements[3];
             var fnDisableIfTrue = $parse(expElements[1]);
             scope.$watch(attrToWatch, function(newValue, oldValue) {
-                if(newValue)
+                if (newValue)
                     disableOptions(scope, expElements[2], iElement, newValue, fnDisableIfTrue);
             }, true);
             // handle model updates properly
             scope.$watch(iAttrs.ngModel, function(newValue, oldValue) {
                 var disOptions = $parse(attrToWatch)(scope);
-                if(newValue)
+                if (newValue)
                     disableOptions(scope, expElements[2], iElement, disOptions, fnDisableIfTrue);
             });
         }

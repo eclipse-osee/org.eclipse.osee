@@ -10,27 +10,29 @@
       </meta>
       <link rel="stylesheet" href="/ajax/libs/bootstrap/3.3.2/css/bootstrap.min.css">
       </link>
-      <link rel="stylesheet" href="/ajax/libs/ng-grid/2.0.11/ng-grid.min.css">
-      </link>
-      <link rel="stylesheet" href="../css/user.css">
-      </link>
-      <link rel="stylesheet" href="../css/admin.css">
-      </link>
+      <link rel="stylesheet" href="/ajax/libs/ui-grid/4.0.4/ui-grid.min.css">
+      <link rel="stylesheet" href="/dispo/css/user.css"></link>
+      <link rel="stylesheet" href="/dispo/css/admin.css"></link>
+      <link rel="stylesheet" href="/dispo/css/userGrid.css"></link>
+      <link href="stylesheet" href="/ajax/libs/fonts/ui-grid.svg">
+	   <link href="stylesheet" href="/ajax/libs/fonts/ui-grid.eot">
+	   <link href="stylesheet" href="/ajax/libs/fonts/ui-grid.tff">
+	   <link href="stylesheet" href="/ajax/libs/fonts/ui-grid.woff">
+    
       <script src="/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
       <script src="/ajax/libs/angularjs/1.3.11/angular.js"></script>
       <script src="/ajax/libs/angularjs/1.3.11/angular-route.min.js"></script>
       <script src="/ajax/libs/angularjs/1.3.11/angular-resource.min.js"></script>
       <script src="/ajax/libs/angularjs/1.3.11/angular-cookies.js"></script>
-      <script src="/ajax/libs/ng-grid/2.0.11/ng-grid.min.js"></script>
+      <script src="/ajax/libs/ui-grid/4.0.4/ui-grid.min.js"></script>
       <script src="/ajax/libs/bootstrap/3.3.2/js/bootstrap.min.js"></script>
       <script src="/ajax/libs/ui-bootstrap/0.12.0/ui-bootstrap-tpls-0.12.0.min.js"></script>
       <script src="/ajax/libs/ngStorage/0.3.0/ngStorage.min.js"></script>
       <script src="/ajax/libs/oauth-ng/0.3.8/oauth-ng.js"></script>
-      <script src="/libs/js/oseeAuth/oseeAuth.js"></script>
-      <script src="/libs/js/support/linkRewrite.js"></script>
-      <script src="/dispo/js/ColumnFactory.js"></script>
+      <script src="/ajax/libs/splitjs/1.2.0/split.min.js"></script>
       <script src="/dispo/js/resizer.js"></script>
       <script src="/dispo/js/dispoApp.js"></script>
+      <script src="/dispo/js/ColumnFactory.js"></script>
       <script src="/dispo/js/userController.js"></script>
       <script src="/dispo/js/adminController.js"></script>
       <script src="/dispo/js/mainController.js"></script>
@@ -38,7 +40,7 @@
          app.controller("indexController", [
                            				"$scope", "$rootScope",
                            				function($scope, $rootScope) {
-                           					$scope.links = [ { ref: '', name: 'Home'}, { ref: 'user', name: 'User'}, { ref: 'admin', name: 'Admin'}];
+                           					$scope.links = [ { ref: '', name: 'Home', roles: ['all']}, { ref: 'user', name: 'User', roles: ['all']}, { ref: 'admin', name: 'Admin', roles: ['DispoAdmin']}];
                            					$rootScope.type = "testScript";
                            				}]);
                            				
@@ -49,10 +51,24 @@
    </head>
    <body ng-app="dispoApp">
       <div ng-controller="indexController">
-         <osee 
-            redirect-uri="../dispo/ui/index.html"
-            links="links">
-         </osee>
+          <nav ng-controller="mainController" class="navbar navbar-default" role="navigation">
+		        <div class="container-fluid">
+		            <div class="navbar-header">
+		                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+		                    <span class="icon-bar"></span>
+		                    <span class="icon-bar"></span>
+		                    <span class="icon-bar"></span>
+		                </button>
+		                <a class="navbar-brand" href="#/user">Disposition</a>
+		            </div>
+		            <p ng-dblclick="resetUserName()" class="navbar-text">Signed in as {{ cachedName }}</p>
+		            <div class="collapse navbar-collapse">
+		                <ul class="nav navbar-nav navbar-right">
+		                	  <button id="helpButton" class="btn btn-info" ng-click="showHelpModal()">Help</button>
+		                </ul>
+		            </div>
+		        </div>
+    		</nav>
       </div>
       <div ng-view></div>
    </body>
