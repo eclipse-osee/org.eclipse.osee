@@ -5,7 +5,9 @@ Bundle-SymbolicName: org.eclipse.osee.framework.core.dsl.ui.integration;singleto
 Bundle-Version: 0.25.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.eclipse.core.commands.common,
+Import-Package: javax.ws.rs.client,
+ javax.ws.rs.core,
+ org.eclipse.core.commands.common,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.core.runtime.jobs,
@@ -52,6 +54,7 @@ Import-Package: org.eclipse.core.commands.common,
  org.eclipse.osee.framework.ui.skynet.util,
  org.eclipse.osee.framework.ui.swt,
  org.eclipse.osee.framework.ui.ws,
+ org.eclipse.osee.jaxrs.client,
  org.eclipse.swt,
  org.eclipse.swt.widgets,
  org.osgi.framework,

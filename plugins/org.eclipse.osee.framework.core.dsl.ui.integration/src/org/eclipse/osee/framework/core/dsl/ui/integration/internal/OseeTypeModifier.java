@@ -10,25 +10,34 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.ui.integration.internal;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.OseeTypeDefinition;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.core.data.OrcsTypesConfig;
+import org.eclipse.osee.framework.core.data.OrcsTypesData;
+import org.eclipse.osee.framework.core.data.OrcsTypesSheet;
+import org.eclipse.osee.framework.core.data.OrcsTypesVersion;
 import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.render.AttributeModifier;
+import org.eclipse.osee.jaxrs.client.JaxRsClient;
 
 public class OseeTypeModifier implements AttributeModifier {
 
@@ -41,19 +50,35 @@ public class OseeTypeModifier implements AttributeModifier {
          OseeCoreException.wrapAndThrow(ex);
       }
 
-      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(OseeTypeDefinition, COMMON);
-      StringBuilder combinedSheets = new StringBuilder();
-      for (Artifact art : artifacts) {
-         String sheetData;
-         if (art.equals(owner)) {
-            sheetData = value;
-         } else {
-            sheetData = art.getSoleAttributeValueAsString(CoreAttributeTypes.UriGeneralStringData, "");
-         }
-         combinedSheets.append(sheetData.replaceAll("import\\s+\"", "// import \""));
-      }
+      String appServer = OseeClientProperties.getOseeApplicationServer();
+      String typesUri = String.format("%s/orcs/types/config", appServer);
       OseeDsl oseeDsl = null;
       try {
+         Response response = JaxRsClient.newClient().target(typesUri).request(MediaType.APPLICATION_JSON_TYPE).get();
+         if (javax.ws.rs.core.Response.Status.OK.getStatusCode() != response.getStatus()) {
+            throw new OseeStateException("Error retrieving orcs types config " + response);
+         }
+         List<Integer> artIds = new LinkedList<>();
+         OrcsTypesConfig config = response.readEntity(OrcsTypesConfig.class);
+         for (OrcsTypesVersion version : config.getVersions()) {
+            if (OrcsTypesData.OSEE_TYPE_VERSION.intValue() == version.getVersionNum()) {
+               for (OrcsTypesSheet sheet : version.getSheets()) {
+                  artIds.add(new Long(sheet.getArtifactId()).intValue());
+               }
+            }
+         }
+
+         List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(artIds, COMMON);
+         StringBuilder combinedSheets = new StringBuilder();
+         for (Artifact art : artifacts) {
+            String sheetData;
+            if (art.equals(owner)) {
+               sheetData = value;
+            } else {
+               sheetData = art.getSoleAttributeValueAsString(CoreAttributeTypes.UriGeneralStringData, "");
+            }
+            combinedSheets.append(sheetData.replaceAll("import\\s+\"", "// import \""));
+         }
          oseeDsl = OseeDslResourceUtil.loadModel("osee:/TypeModel.osee", combinedSheets.toString()).getModel();
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);
