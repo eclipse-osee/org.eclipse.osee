@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -209,20 +208,13 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    }
 
    @Override
-   public ArtifactReadable getArtifactByAtsId(String id) {
-      ArtifactReadable artifact = null;
-      try {
-         artifact = orcsApi.getQueryFactory().fromBranch(getAtsBranch()).and(AtsAttributeTypes.AtsId,
-            id).getResults().getOneOrNull();
-      } catch (ItemDoesNotExist ex) {
-         // do nothing
-      }
-      return artifact;
+   public Iterable<IAtsDatabaseConversion> getDatabaseConversions() {
+      return externalConversions.values();
    }
 
    @Override
-   public Iterable<IAtsDatabaseConversion> getDatabaseConversions() {
-      return externalConversions.values();
+   public ArtifactReadable getArtifactByAtsId(String id) {
+      return (ArtifactReadable) super.getArtifactByAtsId(id);
    }
 
    @Override

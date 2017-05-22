@@ -189,4 +189,6 @@ public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfig
    Collection<ArtifactToken> getArtifacts(List<Long> ids);
 
    IAgileService getAgileService();
+
+   ArtifactId getArtifactByAtsId(String id);
 }

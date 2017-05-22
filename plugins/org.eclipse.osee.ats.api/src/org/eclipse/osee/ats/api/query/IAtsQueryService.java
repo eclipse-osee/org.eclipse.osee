@@ -56,4 +56,6 @@ public interface IAtsQueryService {
 
    IAtsOrcsScriptQuery createOrcsScriptQuery(String query, Object... data);
 
+   Collection<ArtifactId> getArtifactsFromQuery(String query, Object... data);
+
 }

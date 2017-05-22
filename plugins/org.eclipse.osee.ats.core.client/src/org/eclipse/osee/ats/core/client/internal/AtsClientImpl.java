@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
@@ -34,8 +33,8 @@ import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsEventService;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
@@ -419,13 +418,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
    @Override
    public Artifact getArtifactByAtsId(String id) {
-      Artifact result = null;
-      try {
-         result = ArtifactQuery.getArtifactFromAttribute(AtsAttributeTypes.AtsId, id, getAtsBranch());
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
-      }
-      return result;
+      return (Artifact) super.getArtifactByAtsId(id);
    }
 
    @Override

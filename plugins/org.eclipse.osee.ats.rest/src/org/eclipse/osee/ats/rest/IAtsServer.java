@@ -43,6 +43,7 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
 
    Iterable<IAtsDatabaseConversion> getDatabaseConversions();
 
+   @Override
    ArtifactReadable getArtifactByAtsId(String id);
 
    QueryBuilder getQuery();

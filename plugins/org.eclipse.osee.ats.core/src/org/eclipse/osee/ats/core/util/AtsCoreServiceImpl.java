@@ -73,6 +73,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -544,6 +545,27 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
    @Override
    public IAtsChangeSet createChangeSet(String comment, IAtsUser user) {
       return getStoreService().createAtsChangeSet(comment, user);
+   }
+
+   // Quick Search for ATS Id takes 22 seconds, just use straight database call instead.  Replace this when searching is improved.
+   private static String ATS_ID_QUERY =
+      "SELECT art.art_id FROM osee_artifact art, osee_txs txs, OSEE_ATTRIBUTE attr WHERE art.gamma_id = txs.gamma_id " //
+         + "AND txs.tx_current = 1 AND txs.branch_id = ? and attr.ART_ID = art.ART_ID and " //
+         + "attr.ATTR_TYPE_ID = 1152921504606847877 and attr.VALUE = ?";
+
+   @Override
+   public ArtifactId getArtifactByAtsId(String id) {
+      ArtifactId artifact = null;
+      try {
+         Collection<ArtifactId> workItems =
+            getQueryService().getArtifactsFromQuery(ATS_ID_QUERY, getAtsBranch().getId(), id);
+         if (!workItems.isEmpty()) {
+            artifact = workItems.iterator().next();
+         }
+      } catch (ItemDoesNotExist ex) {
+         // do nothing
+      }
+      return artifact;
    }
 
 }

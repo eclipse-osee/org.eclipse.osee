@@ -36,6 +36,20 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
 
    @Override
    public Collection<IAtsWorkItem> getWorkItemsFromQuery(String query, Object... data) {
+      List<IAtsWorkItem> workItems = new LinkedList<>();
+      for (ArtifactId art : getArtifactsFromQuery(query, data)) {
+         if (services.getStoreService().isOfType(art, AtsArtifactTypes.AbstractWorkflowArtifact)) {
+            IAtsWorkItem workItem = services.getWorkItemFactory().getWorkItem(art);
+            if (workItem != null) {
+               workItems.add(workItem);
+            }
+         }
+      }
+      return workItems;
+   }
+
+   @Override
+   public Collection<ArtifactId> getArtifactsFromQuery(String query, Object... data) {
       JdbcStatement chStmt = jdbcService.getClient().getStatement();
       List<Integer> ids = new LinkedList<Integer>();
       try {
@@ -46,16 +60,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
       } finally {
          chStmt.close();
       }
-      List<IAtsWorkItem> workItems = new LinkedList<>();
-      for (ArtifactId art : services.getQueryService().getArtifacts(ids, services.getAtsBranch())) {
-         if (services.getStoreService().isOfType(art, AtsArtifactTypes.AbstractWorkflowArtifact)) {
-            IAtsWorkItem workItem = services.getWorkItemFactory().getWorkItem(art);
-            if (workItem != null) {
-               workItems.add(workItem);
-            }
-         }
-      }
-      return workItems;
+      return services.getQueryService().getArtifacts(ids, services.getAtsBranch());
    }
 
    @Override
