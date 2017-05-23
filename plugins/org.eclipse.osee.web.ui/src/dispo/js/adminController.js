@@ -60,7 +60,7 @@ app.controller('adminController', [
 		            selectedItems: $scope.selectedItems,
 		            showGroupPanel: false,
 		            enableGridMenu: false,
-		            enableCellEdit: false
+		            enableCellEdit: true
 		        }
 
 		        var editCellTmpl = '<input editable="true" >'
@@ -75,28 +75,33 @@ app.controller('adminController', [
 		            displayName: "Import",
 		            width: '9%',
 		            enableColumnMenu: false,
+		            enableCellEdit: false,
 		            cellTemplate: importCellTmpl
 		        }, {
 		        	field: 'name',
 		        	displayName: "Export",
 		        	width: '9%',
 		        	enableColumnMenu: false,
+		            enableCellEdit: false,
 		        	cellTemplate: exportCellTmpl
 		        }, {
 		        	field: 'name',
 		            displayName: "Last Operation",
 		            width: '15%',
 		            enableColumnMenu: false,
+		            enableCellEdit: false,
 		        	cellTemplate: lastOperationCellTmpl
 		        }, {
 		            field: 'name',
 		            displayName: "Name",
 		            width: '20%',
 		            enableColumnMenu: false,
+		            enableCellEdit: false,
 		        }, {
 		            field: 'importPath',
 		            displayName: "Path",
 		            enableColumnMenu: false,
+		            enableCellEdit: false,
 		        }];
 
 		        $scope.columnDefs2 = [{
@@ -104,28 +109,33 @@ app.controller('adminController', [
 		            displayName: "Import",
 		            width: '9%',
 		            enableColumnMenu: false,
+		            enableCellEdit: false,
 		            cellTemplate: importCellTmpl
 		        }, {
 		        	field: 'name',
 		        	displayName: "Export",
 		        	width: '9%',
 		            enableColumnMenu: false,
+		            enableCellEdit: false,
 		        	cellTemplate: exportCellTmpl
 		        }, {
 		        	field: 'name',
 		            displayName: "Last Operation",
 		            width: '15%',
 		            enableColumnMenu: false,
+		            enableCellEdit: false,
 		        	cellTemplate: lastOperationCellTmpl
 		        }, {
 		            field: 'name',
 		            displayName: "Name",
 		            width: '20%',
 		            enableColumnMenu: false,
+		            enableCellEdit: true,
 		        }, {
 		            field: 'importPath',
 		            displayName: "Path",
 		            enableColumnMenu: false,
+		            enableCellEdit: true,
 		        }, {
 		            field: 'name',
 		            displayName: "",
