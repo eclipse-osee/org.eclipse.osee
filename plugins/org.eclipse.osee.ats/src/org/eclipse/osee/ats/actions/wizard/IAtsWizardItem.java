@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * Allows the New Action wizard to be extended with custom widgets when the appropriate Actionable Items are selected
@@ -28,12 +29,14 @@ public interface IAtsWizardItem {
     * determine what (if any) widgets should be added. eg. <XWidget displayName=\"Description\" height=\"80\" required=\
     * "true\" xwidgetType=\"XText\" fill=\"Vertically\" \"/>");
     */
-   void getWizardXWidgetExtensions(Collection<IAtsActionableItem> aias, StringBuffer stringBuffer) throws Exception;
+   default void getWizardXWidgetExtensions(Collection<IAtsActionableItem> aias, StringBuffer stringBuffer) {
+      // do nothing
+   }
 
    /**
     * @return true if widgets will be added based on selected aias
     */
-   boolean hasWizardXWidgetExtensions(Collection<IAtsActionableItem> aias) throws Exception;
+   boolean hasWizardXWidgetExtensions(Collection<IAtsActionableItem> aias);
 
    /**
     * Determine if Action is valid to create based on wizard data entered. hasWizardXWidgetExtenstions will be called to
@@ -42,13 +45,15 @@ public interface IAtsWizardItem {
     * @return result of validation. if true, action will be created; if not, error will popup and action will not be
     * created
     */
-   Result isActionValidToCreate(Collection<IAtsActionableItem> aias, NewActionWizard wizard);
+   default Result isActionValidToCreate(Collection<IAtsActionableItem> aias, NewActionWizard wizard) {
+      return Result.TrueResult;
+   }
 
    /**
     * Callback with created action upon completion and creation of the action and it's workflows.
     * hasWizardXWidgetExtenstions will be called to determine if this method should be called.
     */
-   void wizardCompleted(ActionResult actionResult, NewActionWizard wizard, IAtsChangeSet changes) throws Exception;
+   void wizardCompleted(ActionResult actionResult, NewActionWizard wizard, IAtsChangeSet changes);
 
    /**
     * Validation that the data entered is valid and the wizard can be finished. This will be called after every
@@ -58,12 +63,22 @@ public interface IAtsWizardItem {
     *
     * @return true if widget data entered is valid
     */
-   Result isWizardXWidgetsComplete(NewActionWizard wizard);
+   default Result isWizardXWidgetsComplete(NewActionWizard wizard) {
+      return Result.TrueResult;
+   }
 
    /**
     * @return Name of the product or team that uses these fields. This will display in Page3 of the wizard to separate
     * out different fields for different teams.
     */
    String getName();
+
+   /**
+    * Add the desired XWidget declarations directly to the composite. These will be displayed after the other xml
+    * xwidget extensions.
+    */
+   public default void getWizardXWidgetExtensions(Collection<IAtsActionableItem> selectedIAtsActionableItems, Composite comp) {
+      // do nothing
+   }
 
 }

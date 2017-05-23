@@ -148,4 +148,6 @@ public interface IAtsChangeSet {
 
    void setName(IAtsObject atsObject, String name);
 
+   List<IAtsWorkItem> getWorkItemsCreated();
+
 }

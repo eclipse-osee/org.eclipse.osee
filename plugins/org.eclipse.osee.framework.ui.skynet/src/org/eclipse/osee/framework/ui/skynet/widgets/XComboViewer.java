@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -48,6 +47,7 @@ public class XComboViewer extends GenericXWidget {
    private Composite parent;
    private Composite composite;
    private boolean grabHorizontal = false;
+   private Object selected;
 
    protected SelectionListener listListener = new SelectionListener() {
 
@@ -65,7 +65,7 @@ public class XComboViewer extends GenericXWidget {
    private IContentProvider contentProvider;
    private ViewerComparator sorter;
    private int widthHint;
-   private int heightHint;	
+   private int heightHint;
 
    public XComboViewer(String displayLabel, int comboWidgetSWTStyle) {
       super(displayLabel);
@@ -191,6 +191,13 @@ public class XComboViewer extends GenericXWidget {
    }
 
    private void handleSelection() {
+      IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
+      Iterator<?> iter = selection.iterator();
+      if (iter.hasNext()) {
+         selected = iter.next();
+      } else {
+         selected = null;
+      }
       validate();
       notifyXModifiedListeners();
    }
@@ -205,12 +212,7 @@ public class XComboViewer extends GenericXWidget {
    }
 
    public Object getSelected() {
-      IStructuredSelection selection = (IStructuredSelection) comboViewer.getSelection();
-      Iterator<?> iter = selection.iterator();
-      if (iter.hasNext()) {
-         return iter.next();
-      }
-      return null;
+      return selected;
    }
 
    public Combo getCombo() {

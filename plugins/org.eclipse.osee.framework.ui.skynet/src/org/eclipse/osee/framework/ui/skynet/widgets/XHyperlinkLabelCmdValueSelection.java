@@ -98,6 +98,7 @@ public abstract class XHyperlinkLabelCmdValueSelection extends GenericXWidget {
       }
       if (toolkit == null) {
          selectHyperLinkLabel = new Hyperlink(comp, SWT.NONE);
+         selectHyperLinkLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
       } else {
          selectHyperLinkLabel = toolkit.createHyperlink(comp, "<select>", SWT.NONE);
       }
@@ -114,6 +115,7 @@ public abstract class XHyperlinkLabelCmdValueSelection extends GenericXWidget {
       if (supportClear) {
          if (toolkit == null) {
             clearHyperLinkLabel = new Hyperlink(comp, SWT.NONE);
+            clearHyperLinkLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
          } else {
             clearHyperLinkLabel = toolkit.createHyperlink(comp, "<clear>", SWT.NONE);
          }

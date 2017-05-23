@@ -218,4 +218,9 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
       notifications.getNotificationEvents().add(notifyEvent);
    }
 
+   @Override
+   public List<IAtsWorkItem> getWorkItemsCreated() {
+      return workItemsCreated;
+   }
+
 }

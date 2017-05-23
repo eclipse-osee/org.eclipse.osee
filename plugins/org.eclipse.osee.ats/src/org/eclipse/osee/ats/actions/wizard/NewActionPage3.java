@@ -113,6 +113,14 @@ public class NewActionPage3 extends WizardPage {
                dynamicWidgetLayoutListener);
             page.createBody(null, comp, null, xModListener, true);
 
+            for (IAtsWizardItem item : wizardExtensionItems) {
+               boolean hasWizardXWidgetExtensions =
+                  item.hasWizardXWidgetExtensions(wizard.getSelectedIAtsActionableItems());
+               if (hasWizardXWidgetExtensions) {
+                  item.getWizardXWidgetExtensions(wizard.getSelectedIAtsActionableItems(), comp);
+               }
+            }
+
             comp.layout();
          }
       } catch (Exception ex) {
@@ -124,8 +132,8 @@ public class NewActionPage3 extends WizardPage {
    public void createControl(Composite parent) {
 
       comp = new Composite(parent, SWT.NONE);
-      comp.setLayout(new GridLayout(2, false));
-      comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      comp.setLayout(new GridLayout(1, false));
+      comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       setControl(comp);
    }

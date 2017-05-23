@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -194,6 +195,11 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
    public double getEstimatedHoursTotal(IAtsWorkItem workItem) throws OseeCoreException {
       return getEstimatedHoursFromArtifact(workItem) + getEstimatedHoursFromTasks(
          workItem) + getEstimatedHoursFromReviews(workItem);
+   }
+
+   @Override
+   public void setWorkPackage(IAtsWorkPackage workPackage, IAtsWorkItem workItem, IAtsChangeSet changes) {
+      changes.setSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageGuid, workPackage.getGuid());
    }
 
 }

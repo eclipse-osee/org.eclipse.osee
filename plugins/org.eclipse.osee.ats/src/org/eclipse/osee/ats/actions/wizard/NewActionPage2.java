@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -112,6 +113,14 @@ public class NewActionPage2 extends WizardPage {
          page.createBody(null, comp, null, xModListener, true);
 
          ((XText) getXWidget(DESCRIPTION)).getLabelWidget().addListener(SWT.MouseUp, new Listener() {
+            @Override
+            public void handleEvent(Event event) {
+               if (event.button == 3) {
+                  handlePopulateWithDebugInfo();
+               }
+            }
+         });
+         ((XCheckBox) getXWidget(VALIDATION_REQUIRED)).getLabelWidget().addListener(SWT.MouseUp, new Listener() {
             @Override
             public void handleEvent(Event event) {
                if (event.button == 3) {
