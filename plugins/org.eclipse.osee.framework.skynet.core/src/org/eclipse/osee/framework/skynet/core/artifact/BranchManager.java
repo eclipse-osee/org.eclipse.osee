@@ -221,7 +221,7 @@ public final class BranchManager {
    }
 
    /**
-    * returns the first merge branch for this source destination pair from the cache or null if not found
+    * returns the first merge branch for this source destination pair from the cache or exception if not found
     */
    public static MergeBranch getFirstMergeBranch(BranchId sourceBranch) throws OseeCoreException {
       return getCache().findFirstMergeBranch(sourceBranch);

@@ -16,6 +16,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
+import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -50,19 +51,17 @@ public class BranchCache extends AbstractOseeLoadingCache<Branch> {
       return toReturn;
    }
 
-   public MergeBranch findFirstMergeBranch(BranchId sourceBranch) throws OseeCoreException {
+   public MergeBranch findFirstMergeBranch(BranchId sourceBranch) throws OseeNotFoundException {
       Conditions.checkNotNull(sourceBranch, "source branch");
-      MergeBranch toReturn = null;
       for (Branch branch : getAll()) {
          if (branch instanceof MergeBranch) {
             MergeBranch mergeBranch = (MergeBranch) branch;
             if (sourceBranch.equals(mergeBranch.getSourceBranch())) {
-               toReturn = mergeBranch;
-               break;
+               return mergeBranch;
             }
          }
       }
-      return toReturn;
+      throw new OseeNotFoundException("Merge branch not found for source [%s]", sourceBranch);
    }
 
    public List<MergeBranch> findAllMergeBranches(BranchId sourceBranch) throws OseeCoreException {
