@@ -48,6 +48,7 @@ import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -109,8 +110,9 @@ public class WfeTransitionComposite extends Composite {
                   if (editor.isDirty()) {
                      editor.doSave(null);
                   }
-                  handleTransitionButtonSelection(awa, editor.isPrivilegedEditModeEnabled(), isEditable,
-                     (IAtsStateDefinition) transitionToStateCombo.getSelected());
+                  IAtsStateDefinition toStateDef = (IAtsStateDefinition) transitionToStateCombo.getSelected();
+                  Conditions.assertNotNull(toStateDef, "toStateDef");
+                  handleTransitionButtonSelection(awa, editor.isPrivilegedEditModeEnabled(), isEditable, toStateDef);
                } finally {
                   transitionButton.setEnabled(true);
                }
@@ -178,6 +180,8 @@ public class WfeTransitionComposite extends Composite {
    }
 
    public static void handleTransitionButtonSelection(AbstractWorkflowArtifact awa, final boolean isPriviledgedEditModeEnabled, final boolean isEditable, IAtsStateDefinition toStateDef) {
+      Conditions.assertNotNull(awa, "awa");
+      Conditions.assertNotNull(toStateDef, "toStateDef");
       final List<IAtsWorkItem> workItems = Arrays.asList((IAtsWorkItem) awa);
       final IAtsStateDefinition fromStateDef = awa.getStateDefinition();
 
