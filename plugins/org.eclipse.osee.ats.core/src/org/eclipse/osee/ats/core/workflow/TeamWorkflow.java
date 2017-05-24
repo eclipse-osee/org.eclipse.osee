@@ -8,35 +8,35 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.rest.internal.workitem.model;
+package org.eclipse.osee.ats.core.workflow;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.workflow.WorkItem;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G. Dunne
  */
 public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
 
-   public TeamWorkflow(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
-      super(logger, atsServer, artifact);
+   public TeamWorkflow(Log logger, IAtsServices services, ArtifactToken artifact) {
+      super(logger, services, artifact);
    }
 
    @Override
    public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
       Set<IAtsActionableItem> ais = new HashSet<>();
-      for (Object aiGuidObj : ((ArtifactReadable) artifact).getAttributeValues(AtsAttributeTypes.ActionableItem)) {
+      for (Object aiGuidObj : services.getAttributeResolver().getAttributeValues(artifact,
+         AtsAttributeTypes.ActionableItem)) {
          String aiGuid = (String) aiGuidObj;
          IAtsActionableItem ai = services.getConfigItem(aiGuid);
          if (ai == null) {
@@ -51,7 +51,8 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
    @Override
    public IAtsTeamDefinition getTeamDefinition() throws OseeCoreException {
       IAtsTeamDefinition teamDef = null;
-      String teamDefGuid = ((ArtifactReadable) artifact).getSoleAttributeValue(AtsAttributeTypes.TeamDefinition);
+      String teamDefGuid =
+         services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.TeamDefinition, "");
       if (Strings.isValid(teamDefGuid)) {
          teamDef = services.getConfigItem(teamDefGuid);
       }

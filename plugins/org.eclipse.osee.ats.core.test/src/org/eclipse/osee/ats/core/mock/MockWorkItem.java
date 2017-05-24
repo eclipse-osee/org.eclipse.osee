@@ -14,7 +14,6 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -36,7 +35,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public class MockWorkItem implements IAtsWorkItem {
 
    private final String name;
-   private String atsId;
+   private final String atsId;
    private IAtsStateManager stateMgr;
    private final AtsUserGroup implementers = new AtsUserGroup();
    private IAtsUser completedBy;
@@ -109,11 +108,6 @@ public class MockWorkItem implements IAtsWorkItem {
    @Override
    public IAtsWorkDefinition getWorkDefinition() {
       return null;
-   }
-
-   @Override
-   public void setAtsId(String atsId, IAtsChangeSet changes) {
-      this.atsId = atsId;
    }
 
    @Override

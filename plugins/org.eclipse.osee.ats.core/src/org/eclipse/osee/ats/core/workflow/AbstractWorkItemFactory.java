@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
@@ -21,6 +24,7 @@ import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.agile.AgileBacklog;
 import org.eclipse.osee.ats.core.agile.AgileSprint;
@@ -34,6 +38,10 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public abstract class AbstractWorkItemFactory implements IAtsWorkItemFactory {
 
    protected final IAtsServices services;
+   CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder() //
+      .expireAfterWrite(1, TimeUnit.MINUTES);
+
+   private final Cache<ArtifactId, IAtsWorkItem> workItemCache = cacheBuilder.build();
 
    public AbstractWorkItemFactory(IAtsServices services) {
       this.services = services;
@@ -75,6 +83,26 @@ public abstract class AbstractWorkItemFactory implements IAtsWorkItemFactory {
          services.getLogger().error(ex, "Error getting work item for [%s]", artifact);
       }
       return workItem;
+   }
+
+   @Override
+   public IAtsTeamWorkflow getTeamWfNoCache(ArtifactId artifact) throws OseeCoreException {
+      if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamWorkflow)) {
+         return new TeamWorkflow(services.getLogger(), services, (ArtifactToken) artifact);
+      }
+      return null;
+   }
+
+   @Override
+   public IAtsTeamWorkflow getTeamWf(ArtifactId artifact) throws OseeCoreException {
+      IAtsTeamWorkflow team = (IAtsTeamWorkflow) workItemCache.getIfPresent(artifact);
+      if (team == null) {
+         if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamWorkflow)) {
+            team = new TeamWorkflow(services.getLogger(), services, (ArtifactToken) artifact);
+            workItemCache.put(artifact, team);
+         }
+      }
+      return team;
    }
 
    @Override

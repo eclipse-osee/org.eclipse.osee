@@ -51,4 +51,6 @@ public interface IAtsWorkItemFactory {
 
    Collection<IAtsWorkItem> getWorkItems(Collection<? extends ArtifactId> artifacts);
 
+   IAtsWorkItem getTeamWfNoCache(ArtifactId artifact);
+
 }

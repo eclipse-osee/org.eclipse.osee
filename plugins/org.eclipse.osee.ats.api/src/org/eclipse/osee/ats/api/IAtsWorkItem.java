@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.api;
 
 import java.util.Date;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.HasAssignees;
@@ -28,8 +27,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public interface IAtsWorkItem extends IAtsObject, HasAssignees {
 
    String getAtsId();
-
-   void setAtsId(String atsId, IAtsChangeSet changes) throws OseeCoreException;
 
    IAtsTeamWorkflow getParentTeamWorkflow() throws OseeCoreException;
 

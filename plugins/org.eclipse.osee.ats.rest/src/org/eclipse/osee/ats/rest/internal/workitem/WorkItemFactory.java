@@ -15,7 +15,6 @@ import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.review.DecisionReview;
 import org.eclipse.osee.ats.core.review.PeerToPeerReview;
 import org.eclipse.osee.ats.core.workflow.AbstractWorkItemFactory;
@@ -23,7 +22,6 @@ import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.workitem.model.Action;
 import org.eclipse.osee.ats.rest.internal.workitem.model.Goal;
 import org.eclipse.osee.ats.rest.internal.workitem.model.Task;
-import org.eclipse.osee.ats.rest.internal.workitem.model.TeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -38,18 +36,6 @@ public class WorkItemFactory extends AbstractWorkItemFactory {
    public WorkItemFactory(IAtsServer atsServer) {
       super(atsServer);
       this.atsServer = atsServer;
-   }
-
-   @Override
-   public IAtsTeamWorkflow getTeamWf(ArtifactId artifact) throws OseeCoreException {
-      IAtsTeamWorkflow team = null;
-      if (artifact instanceof ArtifactReadable) {
-         ArtifactReadable artRead = (ArtifactReadable) artifact;
-         if (artRead.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-            team = new TeamWorkflow(services.getLogger(), atsServer, (ArtifactReadable) artifact);
-         }
-      }
-      return team;
    }
 
    @Override

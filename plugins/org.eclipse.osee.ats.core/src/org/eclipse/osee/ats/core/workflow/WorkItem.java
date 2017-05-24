@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
@@ -51,6 +50,8 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    private IWorkDefinitionMatch match;
    protected final IAtsServices services;
    protected final Log logger;
+   IAtsTeamWorkflow parentTeamWf;
+   IAtsAction parentAction;
 
    public WorkItem(Log logger, IAtsServices services, ArtifactToken artifact) {
       super(artifact.getName(), artifact.getId());
@@ -62,12 +63,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public String getDescription() {
-      try {
-         return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.Description, "");
-      } catch (OseeCoreException ex) {
-         logger.error(ex, "Error getting description for artifact[%s]", artifact);
-         return "exception: " + ex.getLocalizedMessage();
-      }
+      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.Description, "");
    }
 
    @Override
@@ -86,43 +82,40 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    }
 
    @Override
-   public void setAtsId(String atsId, IAtsChangeSet changes) throws OseeCoreException {
-      throw new UnsupportedOperationException("Not implemented");
-   }
-
-   @Override
    public IAtsTeamWorkflow getParentTeamWorkflow() throws OseeCoreException {
-      ArtifactId teamArt = null;
-      if (isTeamWorkflow()) {
-         teamArt = artifact;
-      } else if (isReview()) {
-         Collection<ArtifactToken> results =
-            services.getRelationResolver().getRelated(artifact, AtsRelationTypes.TeamWorkflowToReview_Team);
-         if (!results.isEmpty()) {
-            teamArt = results.iterator().next();
-         }
-      } else if (isTask()) {
-         Collection<ArtifactToken> results =
-            services.getRelationResolver().getRelated(artifact, AtsRelationTypes.TeamWfToTask_TeamWf);
-         if (!results.isEmpty()) {
-            teamArt = results.iterator().next();
-         }
+      if (this.isTeamWorkflow()) {
+         return (IAtsTeamWorkflow) this;
       }
-      return services.getWorkItemFactory().getTeamWf(teamArt);
+      if (parentTeamWf == null) {
+         ArtifactId teamArt = null;
+         if (isTeamWorkflow()) {
+            teamArt = artifact;
+         } else if (isReview()) {
+            teamArt =
+               services.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.TeamWorkflowToReview_Team);
+         } else if (isTask()) {
+            teamArt = services.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.TeamWfToTask_TeamWf);
+         }
+         parentTeamWf = services.getWorkItemFactory().getTeamWf(teamArt);
+      }
+      return parentTeamWf;
    }
 
    @Override
    public IAtsAction getParentAction() {
-      ArtifactId actionArt = null;
-      IAtsTeamWorkflow teamWf = getParentTeamWorkflow();
-      if (teamWf != null) {
-         Collection<ArtifactToken> results = services.getRelationResolver().getRelated(teamWf.getStoreObject(),
-            AtsRelationTypes.ActionToWorkflow_Action);
-         if (!results.isEmpty()) {
-            actionArt = results.iterator().next();
+      if (parentAction == null) {
+         ArtifactId actionArt = null;
+         IAtsTeamWorkflow teamWf = getParentTeamWorkflow();
+         if (teamWf != null) {
+            Collection<ArtifactToken> results = services.getRelationResolver().getRelated(teamWf.getStoreObject(),
+               AtsRelationTypes.ActionToWorkflow_Action);
+            if (!results.isEmpty()) {
+               actionArt = results.iterator().next();
+            }
          }
+         parentAction = services.getWorkItemFactory().getAction(actionArt);
       }
-      return services.getWorkItemFactory().getAction(actionArt);
+      return parentAction;
    }
 
    @Override

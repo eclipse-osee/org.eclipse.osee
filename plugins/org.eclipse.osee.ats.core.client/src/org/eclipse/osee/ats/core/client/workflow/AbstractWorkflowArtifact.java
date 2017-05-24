@@ -779,11 +779,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @Override
-   public void setAtsId(String atsId, IAtsChangeSet changes) throws OseeCoreException {
-      changes.setSoleAttributeValue((IAtsWorkItem) this, AtsAttributeTypes.AtsId, atsId);
-   }
-
-   @Override
    public void setStateManager(IAtsStateManager stateManager) {
       this.stateMgr = stateManager;
    }
