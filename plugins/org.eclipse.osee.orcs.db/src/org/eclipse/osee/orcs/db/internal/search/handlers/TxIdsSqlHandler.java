@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIds;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
@@ -49,9 +50,9 @@ public class TxIdsSqlHandler extends SqlHandler<CriteriaTxIds> {
 
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
-      Collection<Long> ids = criteria.getIds();
+      Collection<TransactionId> ids = criteria.getIds();
       if (ids.size() > 1) {
-         AbstractJoinQuery joinQuery = writer.writeIdJoin(ids);
+         AbstractJoinQuery joinQuery = writer.writeJoin(ids);
          writer.write(txdAlias);
          writer.write(".transaction_id = ");
          writer.write(jIdAlias);

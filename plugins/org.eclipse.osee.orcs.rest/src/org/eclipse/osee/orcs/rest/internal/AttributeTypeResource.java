@@ -55,11 +55,11 @@ public class AttributeTypeResource {
    private final TransactionId transactionId;
 
    public AttributeTypeResource(UriInfo uriInfo, Request request, BranchId branchId, Long artifactUuid) {
-      this(uriInfo, request, branchId, artifactUuid, -1L, TransactionId.valueOf(-1));
+      this(uriInfo, request, branchId, artifactUuid, -1L, TransactionId.SENTINEL);
    }
 
    public AttributeTypeResource(UriInfo uriInfo, Request request, BranchId branchId, Long artifactUuid, Long attributeTypeId) {
-      this(uriInfo, request, branchId, artifactUuid, attributeTypeId, TransactionId.valueOf(-1));
+      this(uriInfo, request, branchId, artifactUuid, attributeTypeId, TransactionId.SENTINEL);
    }
 
    public AttributeTypeResource(UriInfo uriInfo, Request request, BranchId branchId, Long artifactUuid, Long attributeTypeId, TransactionId transactionId) {

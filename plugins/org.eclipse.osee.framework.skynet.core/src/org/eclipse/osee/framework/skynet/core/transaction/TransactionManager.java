@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -94,7 +94,7 @@ public final class TransactionManager {
       "select * from osee_relation_link rel, osee_txs txs where txs.branch_id = ? and (rel.a_art_id = ? or rel.b_art_id = ?) and txs.TRANSACTION_ID = ? and rel.gamma_id = txs.GAMMA_ID";
 
    private static final String SELECT_ART_TRANSACTION_IDS =
-      "select distinct txs.transaction_id from osee_attribute attr, osee_txs txs where txs.branch_id = ? and art_id = ? and attr.GAMMA_ID = txs.gamma_id order by txs.transaction_id desc";
+      "select max(transaction_id) as prevTx from osee_attribute atr, osee_txs txs where branch_id = ? and art_id = ? and atr.gamma_id = txs.gamma_id and transaction_id < ?";
 
    private static final TxMonitorImpl<BranchId> txMonitor = new TxMonitorImpl<>(new TxMonitorCache<>());
    private static final HashCollection<ArtifactId, TransactionRecord> commitArtifactIdMap =
@@ -340,23 +340,8 @@ public final class TransactionManager {
    }
 
    public static TransactionId getPreviousTransactionId(Artifact art, TransactionId trans) {
-      boolean found = false;
-      JdbcStatement chStmt = ConnectionHandler.getStatement();
-      try {
-         chStmt.runPreparedQuery(SELECT_ART_TRANSACTION_IDS, art.getBranch().getId(), art.getArtId());
-         while (chStmt.next()) {
-            Integer transId = chStmt.getInt("transaction_id");
-            if (transId.equals(trans.getId().intValue())) {
-               found = true;
-            }
-            if (found && !transId.equals(trans.getId().intValue())) {
-               return TransactionId.valueOf(transId);
-            }
-         }
-      } finally {
-         chStmt.close();
-      }
-      return null;
+      return ConnectionHandler.getJdbcClient().fetch(TransactionId.SENTINEL, SELECT_ART_TRANSACTION_IDS,
+         art.getBranch(), art, trans);
    }
 
    public static List<RelationRow> getRelationsFromArtifactAndTransaction(Artifact art, TransactionId trans) {

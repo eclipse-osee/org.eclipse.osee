@@ -121,8 +121,8 @@ public class OrcsBranchTest {
    public void testCreateBranchCopyFromTx() throws Exception {
       // this test shows that the change report for a transaction for the newly copied branch is
       // the same as the change report on the branch the transaction is copied from
-      int PRIOR_TX_ID = 15;
-      int SOURCE_TX_ID = 16;
+      TransactionId PRIOR_TX_ID = TransactionId.valueOf(15);
+      TransactionId SOURCE_TX_ID = TransactionId.valueOf(16);
 
       // get the list of changes from the original branch
       TransactionToken priorTx = query.transactionQuery().andTxId(PRIOR_TX_ID).getResults().getExactlyOne();
@@ -135,8 +135,8 @@ public class OrcsBranchTest {
 
       ArtifactId author = SystemUser.OseeSystem;
 
-      TransactionId tx = TransactionId.valueOf(SOURCE_TX_ID);
-      Callable<BranchReadable> callableBranch = branchOps.createCopyTxBranch(branch, author, tx, ArtifactId.SENTINEL);
+      Callable<BranchReadable> callableBranch =
+         branchOps.createCopyTxBranch(branch, author, SOURCE_TX_ID, ArtifactId.SENTINEL);
 
       // the new branch will contain two transactions - these should have the same change report as the original branch
       BranchReadable postBranch = callableBranch.call();

@@ -18,7 +18,6 @@ import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
@@ -62,7 +61,7 @@ public class PurgeTransactionCommand implements ConsoleCommand {
             String[] stringIds = params.getArray("txIds");
             final List<TransactionId> transactions = new ArrayList<>();
             for (String arg : stringIds) {
-               TransactionId tx = TransactionId.valueOf(Integer.parseInt(arg));
+               TransactionId tx = TransactionId.valueOf(arg);
                transactions.add(tx);
             }
             console.writeln();

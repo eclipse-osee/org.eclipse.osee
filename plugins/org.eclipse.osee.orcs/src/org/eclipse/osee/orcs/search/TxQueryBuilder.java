@@ -26,9 +26,7 @@ public interface TxQueryBuilder<T> {
 
    T andTxId(TransactionId id);
 
-   T andTxId(long... id) throws OseeCoreException;
-
-   T andTxIds(Collection<Long> ids) throws OseeCoreException;
+   T andTxIds(Collection<TransactionId> ids);
 
    T andTxId(Operator op, int id) throws OseeCoreException;
 

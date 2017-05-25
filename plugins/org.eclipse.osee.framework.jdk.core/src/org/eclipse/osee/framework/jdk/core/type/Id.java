@@ -65,4 +65,24 @@ public interface Id {
    default boolean isInvalid() {
       return !isValid();
    }
+
+   default <T extends Id> T minus(T id) {
+      return clone(getId() - id.getId());
+   }
+
+   default <T extends Id> T plus(T id) {
+      return clone(getId() + id.getId());
+   }
+
+   default <T extends Id> T clone(Long id) {
+      throw new UnsupportedOperationException();
+   }
+
+   default boolean isLessThan(Id other) {
+      return getId() < other.getId();
+   }
+
+   default boolean isGreaterThan(Id other) {
+      return getId() > other.getId();
+   }
 }

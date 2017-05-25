@@ -11,12 +11,8 @@
 package org.eclipse.osee.orcs.core.internal.transaction;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.common.collect.Sets.SetView;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -24,6 +20,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.CompareResults;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -132,7 +129,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
    @Override
    public boolean purgeTxs(String txIds) {
       boolean modified = false;
-      List<Long> txsToDelete = Collections.fromString(txIds, Long::parseLong);
+      List<TransactionId> txsToDelete = Collections.fromString(txIds, TransactionId::valueOf);
 
       if (!txsToDelete.isEmpty()) {
          ResultSet<? extends TransactionId> results =
@@ -175,15 +172,11 @@ public class TransactionFactoryImpl implements TransactionFactory {
       return queryFactory.transactionQuery().andTxId(tx).getResults().getExactlyOne();
    }
 
-   private void checkAllTxsFound(String opName, List<Long> txIds, ResultSet<? extends TransactionId> result) {
+   private void checkAllTxsFound(String opName, List<TransactionId> txIds, ResultSet<? extends TransactionId> result) {
       if (txIds.size() != result.size()) {
-         Set<Long> found = new HashSet<>();
-         for (TransactionId tx : result) {
-            found.add(tx.getId());
-         }
-         SetView<Long> difference = Sets.difference(Sets.newHashSet(txIds), found);
+         List<TransactionId> difference = Collections.setComplement(txIds, result.getList());
          if (!difference.isEmpty()) {
-            throw new OseeCoreException(
+            throw new OseeNotFoundException(
                "%s Error - The following transactions from %s were not found - txs %s - Please remove them from the request and try again.",
                opName, txIds, difference);
          }

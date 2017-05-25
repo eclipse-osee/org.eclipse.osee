@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
+import com.google.common.collect.Lists;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collection;
@@ -60,7 +61,8 @@ import org.mockito.stubbing.Answer;
  */
 public class TxQuerySqlContextFactoryImplTest {
 
-   private static final Criteria IDS = id(1L, 2L, 3L, 4l, 5L);
+   private static final Criteria IDS =
+      new CriteriaTxIds(Lists.transform(Arrays.asList(1L, 2L, 3L, 4l, 5L), TransactionId::valueOf));
    private static final Criteria COMMENT = comment("SimpleTemplateProviderTask", false);
    private static final Criteria TYPES =
       type(Arrays.asList(TransactionDetailsType.Baselined, TransactionDetailsType.NonBaselined));
@@ -297,10 +299,6 @@ public class TxQuerySqlContextFactoryImplTest {
 
       Iterator<Object> iterator = parameters.iterator();
       assertEquals(tx, iterator.next());
-   }
-
-   private static Criteria id(Long... values) {
-      return new CriteriaTxIds(Arrays.asList(values));
    }
 
    private static Criteria comment(String value, boolean isPattern) {

@@ -25,6 +25,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.change.CompareResults;
@@ -91,7 +92,7 @@ public interface BranchEndpoint {
    @GET
    @Path("{branch}/txs/{tx-id}")
    @Produces({MediaType.APPLICATION_JSON})
-   Transaction getBranchTx(@PathParam("branch") BranchId branch, @PathParam("tx-id") int txId);
+   Transaction getBranchTx(@PathParam("branch") BranchId branch, @PathParam("tx-id") TransactionId txId);
 
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
@@ -161,7 +162,7 @@ public interface BranchEndpoint {
 
    @PUT
    @Path("{branch}/txs/{tx-id}/comment")
-   Response setTxComment(@PathParam("branchd") BranchId branch, @PathParam("tx-id") int txId, String comment);
+   Response setTxComment(@PathParam("branchd") BranchId branch, @PathParam("tx-id") TransactionId txId, String comment);
 
    @DELETE
    @Path("{branch}")

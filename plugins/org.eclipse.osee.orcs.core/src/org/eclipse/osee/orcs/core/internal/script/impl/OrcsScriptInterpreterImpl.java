@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.script.impl;
 
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,6 +30,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -322,7 +324,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       @Override
       public Void caseOsTxQueryById(OsTxQueryById object) {
          int id = resolver.resolveSingle(Integer.class, object.getName());
-         newTxQuery().andTxId(id);
+         newTxQuery().andTxId(TransactionId.valueOf(id));
          return null;
       }
 
@@ -340,8 +342,8 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
 
       @Override
       public Void caseOsTxIdEqualsClause(OsTxIdEqualsClause object) {
-         Collection<Long> ids = resolver.resolve(Long.class, object.getIds());
-         getTxQuery().andTxIds(ids);
+         List<Long> ids = resolver.resolve(Long.class, object.getIds());
+         getTxQuery().andTxIds(Lists.transform(ids, TransactionId::valueOf));
          return null;
       }
 

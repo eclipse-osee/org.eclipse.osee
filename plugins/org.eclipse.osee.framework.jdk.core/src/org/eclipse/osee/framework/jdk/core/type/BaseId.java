@@ -67,9 +67,10 @@ public class BaseId implements Id, Cloneable {
     * Use this method to construct an instance of an Id that is of the same type as the object this is called on (likely
     * a subclass of BaseId). It will set the numeric id to the given value.
     */
-   public BaseId clone(Long id) {
+   @Override
+   public <T extends Id> T clone(Long id) {
       BaseId newId = clone();
       newId.id = id;
-      return newId;
+      return (T) newId;
    }
 }

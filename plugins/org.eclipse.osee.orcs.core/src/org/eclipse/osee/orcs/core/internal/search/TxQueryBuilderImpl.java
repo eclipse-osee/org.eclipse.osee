@@ -25,6 +25,7 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxArtifactIds;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIds;
 import org.eclipse.osee.orcs.search.Operator;
 import org.eclipse.osee.orcs.search.TxQueryBuilder;
 
@@ -50,18 +51,8 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
    }
 
    @Override
-   public T andTxId(long... ids) throws OseeCoreException {
-      Set<Long> values = new LinkedHashSet<>();
-      for (long value : ids) {
-         values.add(value);
-      }
-      return andTxIds(values);
-   }
-
-   @Override
-   public T andTxIds(Collection<Long> ids) throws OseeCoreException {
-      Criteria criteria = criteriaFactory.newByIdsCriteria(ids);
-      return addAndCheck(queryData, criteria);
+   public T andTxIds(Collection<TransactionId> ids) throws OseeCoreException {
+      return addAndCheck(queryData, new CriteriaTxIds(ids));
    }
 
    @Override
@@ -221,6 +212,6 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
 
    @Override
    public T andTxId(TransactionId id) {
-      return andTxIds(Arrays.asList(id.getId()));
+      return addAndCheck(queryData, new CriteriaTxIds(id));
    }
 }

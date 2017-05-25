@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds.criteria;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
@@ -21,10 +24,15 @@ import org.eclipse.osee.orcs.core.ds.Options;
  */
 public class CriteriaTxIds extends Criteria implements TxCriteria {
 
-   private final Collection<Long> ids;
+   private final Collection<TransactionId> ids;
 
-   public CriteriaTxIds(Collection<Long> ids) {
-      super();
+   public CriteriaTxIds(Collection<TransactionId> ids) {
+      this.ids = ids;
+   }
+
+   public CriteriaTxIds(TransactionId txId) {
+      List<TransactionId> ids = new ArrayList<>(1);
+      ids.add(txId);
       this.ids = ids;
    }
 
@@ -33,7 +41,7 @@ public class CriteriaTxIds extends Criteria implements TxCriteria {
       Conditions.checkNotNullOrEmpty(ids, "tx ids");
    }
 
-   public Collection<Long> getIds() {
+   public Collection<TransactionId> getIds() {
       return ids;
    }
 

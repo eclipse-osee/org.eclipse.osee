@@ -18,14 +18,10 @@ import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asTransaction;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asTransactions;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.common.collect.Sets.SetView;
 import java.net.URI;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -144,7 +140,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       return results.getExactlyOne();
    }
 
-   private TransactionReadable getTxByBranchAndId(BranchId branch, int txId) {
+   private TransactionReadable getTxByBranchAndId(BranchId branch, TransactionId txId) {
       return newTxQuery().andBranch(branch).andTxId(txId).getResults().getExactlyOne();
    }
 
@@ -240,7 +236,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public Transaction getBranchTx(BranchId branchUuid, int txId) {
+   public Transaction getBranchTx(BranchId branchUuid, TransactionId txId) {
       return asTransaction(getTxByBranchAndId(branchUuid, txId));
    }
 
@@ -655,7 +651,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public Response setTxComment(BranchId branch, int txId, String comment) {
+   public Response setTxComment(BranchId branch, TransactionId txId, String comment) {
       TransactionReadable tx = getTxByBranchAndId(branch, txId);
       boolean modified = false;
       if (Compare.isDifferent(tx.getComment(), comment)) {
@@ -747,7 +743,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    @Override
    public Response purgeTxs(BranchId branch, String txIds) {
       boolean modified = false;
-      List<Long> txsToDelete = Collections.fromString(txIds, Long::parseLong);
+      List<TransactionId> txsToDelete = Collections.fromString(txIds, TransactionId::valueOf);
       if (!txsToDelete.isEmpty()) {
          ResultSet<? extends TransactionId> results = newTxQuery().andBranch(branch).andTxIds(txsToDelete).getResults();
          if (!results.isEmpty()) {
@@ -771,13 +767,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
       return asResponse(modified);
    }
 
-   private void checkAllTxFoundAreOnBranch(String opName, BranchId branch, List<Long> txIds, ResultSet<? extends TransactionId> result) {
+   private void checkAllTxFoundAreOnBranch(String opName, BranchId branch, List<TransactionId> txIds, ResultSet<? extends TransactionId> result) {
       if (txIds.size() != result.size()) {
-         Set<Long> found = new HashSet<>();
-         for (TransactionId tx : result) {
-            found.add(tx.getId());
-         }
-         SetView<Long> difference = Sets.difference(Sets.newHashSet(txIds), found);
+         List<TransactionId> difference = Collections.setComplement(txIds, result.getList());
          if (!difference.isEmpty()) {
             throw new OseeWebApplicationException(Status.BAD_REQUEST,
                "%s Error - The following transactions from %s were not found on branch [%s] - txs %s - Please remove them from the request and try again.",
