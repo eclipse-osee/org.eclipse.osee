@@ -317,7 +317,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    @Override
    public boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       BranchId branch = getWorkingBranch(teamWf);
-      return  branch.isValid() && !getBranchState(branch).isCommitted();
+      return branch.isValid() && !getBranchState(branch).isCommitted();
    }
 
    @Override
@@ -336,12 +336,8 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
          }
       }
       if (branch.isInvalid()) {
-         BranchId branchId =
-            BranchId.valueOf(services.getAttributeResolver().getSoleAttributeValueAsString(configObject,
-               AtsAttributeTypes.BaselineBranchUuid, ""));
-         if (branchId.isValid()) {
-            branch = branchId;
-         }
+         branch = BranchId.valueOf(services.getAttributeResolver().getSoleAttributeValue(configObject,
+            AtsAttributeTypes.BaselineBranchUuid, BranchId.SENTINEL.getId()));
       }
       return branch;
    }
