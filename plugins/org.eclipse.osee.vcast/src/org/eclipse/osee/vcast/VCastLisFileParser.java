@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.vcast.model.ICoverageUnitFileContentsLoader;
@@ -41,7 +40,7 @@ public class VCastLisFileParser implements ICoverageUnitFileContentsLoader {
       this.vCastDir = vCastDir;
    }
 
-   private synchronized void ensurePopulated() throws OseeArgumentException, IOException {
+   private synchronized void ensurePopulated() {
       if (!populated) {
          populated = true;
          String lisFilePathName = vCastDir + File.separator + lisFileName;
@@ -49,12 +48,16 @@ public class VCastLisFileParser implements ICoverageUnitFileContentsLoader {
          if (!lisFile.exists()) {
             throw new OseeArgumentException(String.format("VectorCast *.LIS file doesn't exist [%s]", lisFilePathName));
          }
-         fileText = Lib.fileToString(lisFile);
+         try {
+            fileText = Lib.fileToString(lisFile);
+         } catch (IOException ex) {
+            throw new OseeArgumentException(String.format("IO Exception trying to read file [%s]", lisFilePathName));
+         }
          lisFileLines = fileText.split("\n");
       }
    }
 
-   public Pair<String, Boolean> getSourceCodeForLine(Integer method, Integer executionLine) throws OseeArgumentException, IOException {
+   public Pair<String, Boolean> getSourceCodeForLine(Integer method, Integer executionLine) {
       ensurePopulated();
 
       String startsWith = method + " " + executionLine + " ";
@@ -84,12 +87,8 @@ public class VCastLisFileParser implements ICoverageUnitFileContentsLoader {
    }
 
    @Override
-   public String getText() throws OseeCoreException {
-      try {
-         ensurePopulated();
-      } catch (IOException ex) {
-         throw new OseeCoreException(ex);
-      }
+   public String getText() {
+      ensurePopulated();
       return fileText;
    }
 }

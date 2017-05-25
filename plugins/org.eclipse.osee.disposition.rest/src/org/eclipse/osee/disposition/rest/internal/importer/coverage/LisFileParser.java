@@ -243,7 +243,6 @@ public class LisFileParser implements DispoImporterApi {
       DispoItemData newItem = new DispoItemData();
       newItem.setAnnotationsList(new ArrayList<DispoAnnotationData>());
       VCastSourceFileJoin sourceFileJoin = dataStore.getSourceFileJoin(lisFile);
-      lisFile.getLISFile();
       newItem.setName(sourceFileJoin.getDisplayName() + "." + function.getName());
       newItem.setFileNumber(Integer.toString(fileNum));
       newItem.setMethodNumber(Integer.toString(functionNum));
@@ -282,9 +281,7 @@ public class LisFileParser implements DispoImporterApi {
       try {
          lineData = lisFileParser.getSourceCodeForLine(functionNumber, lineNumber);
       } catch (Exception ex) {
-         report.addEntry("SQL",
-            String.format("Error parsing LIS file: [%s], on function [%s]", lisFile.getLISFile(), function.getName()),
-            ERROR);
+         report.addEntry("SQL", ex.getMessage(), ERROR);
       }
       String location;
       if (lineData != null) {
