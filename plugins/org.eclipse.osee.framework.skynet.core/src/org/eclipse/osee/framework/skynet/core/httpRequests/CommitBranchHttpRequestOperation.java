@@ -52,7 +52,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.BranchCommitOptions;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
@@ -102,7 +101,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       } catch (Exception ex) {
          BranchManager.setState(sourceBranch, currentState);
          OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.CommitFailed, sourceBranch));
-         throw JaxRsExceptions.asOseeException(ex);
+         throw ex;
       }
    }
 
